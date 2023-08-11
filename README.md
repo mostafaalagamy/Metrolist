@@ -15,9 +15,3 @@ YouTube Music client for Android
 - Skip silence
 - Adjust tempo/pitch
 - Material Ui
-
-## Credit
-
-I want to give credit to [vfsfitvnm/ViMusic](https://github.com/vfsfitvnm/ViMusic) for being an
-example of Jetpack Compose music player. It helped me a lot on my way to learn Compose and
-Android development.
