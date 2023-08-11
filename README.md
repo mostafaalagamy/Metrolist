@@ -7,3 +7,4 @@ Library management
 Cache and download songs for offline playback
 Synchronized lyrics
 Skip silent
+Material Ui
