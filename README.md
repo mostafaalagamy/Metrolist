@@ -1,6 +1,6 @@
 ## Metrolist
 
-<img src="https://i.ibb.co/tsmyBRg/ic-launcher-round.png" alt="ic-launcher-round" border="0" /></a>
+<img src="https://i.ibb.co/56zhnpD/ic-launcher.png" alt="ic-launcher" border="0" /></a>
 
 YouTube Music client for Android
 
