@@ -10,12 +10,21 @@ YouTube Music client for Android
 
 
 ## Features
-
-- Play songs from YT Music without ads
+- Play (almost) any song or video from YT Music
 - Background playback
-- Library management
-- Cache and download songs for offline playback
-- Synchronized lyrics
+- Download and cache songs for offline playback
+- Search for songs, albums, artists videos and playlists
+- Import playlists
+- Local playlist management
+- Reorder songs in playlist or queue
+- Light/Dark/Dynamic theme
 - Skip silence
-- Adjust tempo/pitch
-- Material Ui
+- Sleep timer
+- Open YouTube/YouTube Music links (`watch`, `playlist`, `channel`)
+- .....
+
+
+## Credit
+
+Credit to [vfsfitvnm/ViMusic](https://github.com/vfsfitvnm/ViMusic) for being an
+example of Jetpack Compose music player.
