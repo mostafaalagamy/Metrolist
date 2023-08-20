@@ -18,9 +18,8 @@ YouTube Music client for Android
 - Local playlist management
 - Reorder songs in playlist or queue
 - Light/Dark/Dynamic theme
-- Skip silence
 - Sleep timer
-- .....
+- etc.
 
 
 ## Credit
