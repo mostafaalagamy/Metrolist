@@ -20,7 +20,6 @@ YouTube Music client for Android
 - Light/Dark/Dynamic theme
 - Skip silence
 - Sleep timer
-- Open YouTube/YouTube Music links (`watch`, `playlist`, `channel`)
 - .....
 
 
@@ -28,3 +27,8 @@ YouTube Music client for Android
 
 Credit to [vfsfitvnm/ViMusic](https://github.com/vfsfitvnm/ViMusic) for being an
 example of Jetpack Compose music player.
+
+## Disclaimer
+This project and its contents are not affiliated with, funded, authorized, endorsed by, or in any way associated with YouTube, Google LLC or any of its affiliates and subsidiaries.
+
+Any trademark, service mark, trade name, or other intellectual property rights used in this project are owned by the respective owners.
