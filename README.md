@@ -1,6 +1,6 @@
 <div align="center">
 <h1>Metrolist</h1>
-<img src="https://i.ibb.co/56zhnpD/ic-launcher.png" width="128" height="128" style="display: block; margin: 0 auto"/>
+<img src="https://i.ibb.co/56zhnpD/ic-launcher.png" width="160" height="160" style="display: block; margin: 0 auto"/>
 
 <p>YouTube Music client for Android
 </p>
