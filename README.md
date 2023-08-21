@@ -1,6 +1,6 @@
 <div align="center">
 <h1>Metrolist</h1>
-<img src="https://i.ibb.co/56zhnpD/ic-launcher.png" alt="ic-launcher" border="0" /></a>
+<img src="https://i.ibb.co/56zhnpD/ic-launcher.png" width="128" height="128" style="display: block; margin: 0 auto"/>
 
 <p>YouTube Music client for Android
 </p>
@@ -19,9 +19,13 @@
 </p>
 </div>
 
+<div align="center">
+  
 [![Latest release](https://img.shields.io/github/v/release/mostafaalagamy/Metrolist?include_prereleases)](https://github.com/mostafaalagamy/metrolist/releases)
 [![License](https://img.shields.io/github/license/mostafaalagamy/Metrolist)](https://www.gnu.org/licenses/gpl-3.0)
 [![Downloads](https://img.shields.io/github/downloads/mostafaalagamy/Metrolist/total)](https://github.com/mostafaalagamy/Metrolist/releases)
+
+</div>
 
 <div align="center">
 <h1>Features</h1>
