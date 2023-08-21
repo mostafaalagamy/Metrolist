@@ -33,14 +33,15 @@
 <h1>Features</h1>
 </div>
 
-- Play (almost) any song or video from YT Music
+- Play any song or video from YT Music
 - Background playback
 - Download and cache songs for offline playback
-- Search for songs, albums, artists videos and playlists
+- Search for songs, albums, artists, videos and playlists
+- Synchronized lyrics
 - Import playlists
 - Local playlist management
 - Reorder songs in playlist or queue
-- Light/Dark/Dynamic theme
+- Light - Dark - black - Dynamic theme
 - Sleep timer
 - etc.
 
