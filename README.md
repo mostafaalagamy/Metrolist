@@ -1,8 +1,21 @@
-## Metrolist
-
+<h1>Metrolist</h1>
 <img src="https://i.ibb.co/56zhnpD/ic-launcher.png" alt="ic-launcher" border="0" /></a>
 
-YouTube Music client for Android
+<p>YouTube Music client for Android
+</p>
+</div>
+
+---
+
+<p align="center">
+  <img src="https://i.ibb.co/0pLNPGB/Screenshot-20230821-155341.png" width="30%" />
+  <img src="https://i.ibb.co/xGjmBjy/Screenshot-20230821-153015.png" width="30%" />
+  <img src="https://i.ibb.co/pR9jN01/Screenshot-20230821-153318.png" width="30%" />
+
+  <img src="https://i.ibb.co/LYcctv9/Screenshot-20230821-153342.png" width="30%" />
+  <img src="https://i.ibb.co/YW3yBFS/Screenshot-20230821-153149.png" width="30%" />
+  <img src="https://i.ibb.co/m6rXFrg/Screenshot-20230821-153044.png" width="30%" />
+</p>
 
 [![Latest release](https://img.shields.io/github/v/release/mostafaalagamy/Metrolist?include_prereleases)](https://github.com/mostafaalagamy/metrolist/releases)
 [![License](https://img.shields.io/github/license/mostafaalagamy/Metrolist)](https://www.gnu.org/licenses/gpl-3.0)
