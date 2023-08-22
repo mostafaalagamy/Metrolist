@@ -25,6 +25,8 @@
 [![License](https://img.shields.io/github/license/mostafaalagamy/Metrolist)](https://www.gnu.org/licenses/gpl-3.0)
 [![Downloads](https://img.shields.io/github/downloads/mostafaalagamy/Metrolist/total)](https://github.com/mostafaalagamy/Metrolist/releases)
 
+<h4 align="center"><a href="/CHANGELOG.md">Changelog</a>
+
 </div>
 
 ---
