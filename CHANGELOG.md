@@ -1,6 +1,6 @@
 <h1>Changelog</h1>
 
-## 2.0.0-release
+## 2.0.0
 
 #### What's New
 - Added library page and improve playlists page
