@@ -7,11 +7,11 @@
 ---
 
 <p align="center">
-  <img src="https://i.ibb.co/6bjJHnt/Screenshot-20230822-024147.png" width="30%" />
+  <img src="https://i.ibb.co/8PmtnqY/Screenshot-20230822-032725.png" width="30%" />
   <img src="https://i.ibb.co/7kB3Fhw/Screenshot-20230822-031754.png" width="30%" />
   <img src="https://i.ibb.co/MNnSn9q/Screenshot-20230822-031816.png" width="30%" />
 
-  <img src="https://i.ibb.co/zP7JZhD/Screenshot-20230822-024154.png" width="30%" />
+  <img src="https://i.ibb.co/LZnq8Sq/Screenshot-20230822-032522.png" width="30%" />
   <img src="https://i.ibb.co/JHQSZN5/Screenshot-20230822-024630.png" width="30%" />
   <img src="https://i.ibb.co/PxktpxL/Screenshot-20230822-031807.png" width="30%" />
 </p>
