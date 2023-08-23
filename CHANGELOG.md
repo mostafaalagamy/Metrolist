@@ -1,5 +1,11 @@
 <h1>Changelog</h1>
 
+## 2.0.2
+
+#### What's New
+- Minor enhancement and bug fixes
+- Now everything works normally
+
 ## 2.0.0
 
 #### What's New
