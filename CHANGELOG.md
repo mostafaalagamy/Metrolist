@@ -9,6 +9,7 @@
 - Added likes for artists
 - Removed songs page
 - Improved stats screen
+- New app icon 
 - Minor enhancement and bug fixes
 
 ## 1.1.15
