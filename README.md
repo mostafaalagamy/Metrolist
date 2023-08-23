@@ -1,5 +1,5 @@
 <div align="center">
-<img src="https://i.ibb.co/56zhnpD/ic-launcher.png" width="160" height="160" style="display: block; margin: 0 auto"/>
+<img src="https://i.ibb.co/gj32Fwv/Picsart-23-08-23-03-54-10-350.png" width="160" height="160" style="display: block; margin: 0 auto"/>
 <h1>Metrolist</h1>
 <p>YouTube Music client for Android</p>
 </div>
@@ -13,7 +13,7 @@
 
   <img src="https://i.ibb.co/LZnq8Sq/Screenshot-20230822-032522.png" width="30%" />
   <img src="https://i.ibb.co/JHQSZN5/Screenshot-20230822-024630.png" width="30%" />
-  <img src="https://i.ibb.co/PxktpxL/Screenshot-20230822-031807.png" width="30%" />
+  <img src="https://i.ibb.co/Qkygq75/Screenshot-20230823-035641.png" width="30%" />
 </p>
 </div>
 
