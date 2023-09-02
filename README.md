@@ -12,8 +12,8 @@
   <img src="https://raw.githubusercontent.com/mostafaalagamy/Metrolist/main/Screenshot_10.webp" width="30%" />
 
   <img src="https://raw.githubusercontent.com/mostafaalagamy/Metrolist/main/Screenshot_9.webp" width="30%" />
-  <img src="https://raw.githubusercontent.com/mostafaalagamy/Metrolist/main/Screenshot_5.webp" width="30%" />
-  <img src="https://raw.githubusercontent.com/mostafaalagamy/Metrolist/main/Screenshot_6.webp" width="30%" />
+  <img src="https://raw.githubusercontent.com/mostafaalagamy/Metrolist/main/Screenshot_11.webp " width="30%" />
+  <img src="https://raw.githubusercontent.com/mostafaalagamy/Metrolist/main/Screenshot_12.webp" width="30%" />
 </p>
 </div>
 
