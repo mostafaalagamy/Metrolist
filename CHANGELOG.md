@@ -1,5 +1,11 @@
 <h1>Changelog</h1>
 
+## 3.0.0
+
+#### What's New
+- Fix crashing on old Android devices
+- All changlog in v2.2.2
+
 ## 2.2.2
 
 #### What's New
