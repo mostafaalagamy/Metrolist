@@ -6,7 +6,7 @@
 - Fix some bugs in downloading album or playlist
 - Fix crashing when opening the lyrics search
 - Improve loading speed
-- improve icons
+- Improve icons
 - etc.
 
 ## 2.0.2
