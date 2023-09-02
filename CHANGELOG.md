@@ -1,5 +1,14 @@
 <h1>Changelog</h1>
 
+## 2.2.2
+
+#### What's New
+- Fix some bugs in downloading album or playlist
+- Fix crashing when opening the lyrics search
+- Improve loading speed
+- improve icons
+- etc.
+
 ## 2.0.2
 
 #### What's New
