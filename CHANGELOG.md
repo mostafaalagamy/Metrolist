@@ -1,5 +1,19 @@
 <h1>Changelog</h1>
 
+## 4.0.0
+
+#### What's New
+- New : Play button has been added when clicking on the song link in any application or any place to open it in Metrolist
+- New : Pressing the 'queue' button in the media player
+- Improving Arabic language
+
+## 3.3.3
+
+#### What's New
+- Fix login issues
+- improve icons
+- Bug fixes
+
 ## 3.0.0
 
 #### What's New
