@@ -1,5 +1,6 @@
 package com.zionhuang.music.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zionhuang.innertube.YouTube
@@ -24,8 +25,11 @@ class HomeViewModel @Inject constructor(
     val quickPicks = MutableStateFlow<List<Song>?>(null)
     val explorePage = MutableStateFlow<ExplorePage?>(null)
 
+    val forgottenFavorite = MutableStateFlow<List<Song>?>(null)
+
     private suspend fun load() {
         quickPicks.value = database.quickPicks().first().shuffled().take(20)
+        forgottenFavorite.value = database.forgottenFavorites().first().shuffled().take(20)
         YouTube.explore().onSuccess { page ->
             val artists: Set<String>
             val favouriteArtists: Set<String>

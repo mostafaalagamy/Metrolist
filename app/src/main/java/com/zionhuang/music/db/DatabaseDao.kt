@@ -145,6 +145,90 @@ interface DatabaseDao {
 
     @Transaction
     @Query(
+//        """
+//            SELECT song.*
+//            FROM (
+//            SELECT
+//                songId,
+//                AVG(playTime) AS avg_playtime,
+//                timestamp
+//              FROM
+//                event
+//              WHERE
+//                timestamp BETWEEN (:now - 86400000 * 30 * 4) AND (:now - 86400000 * 30 * 2)
+//              GROUP BY
+//                songId
+//              HAVING
+//                avg_playtime < 0.5 * (
+//                  SELECT
+//                    AVG(avg_dur)
+//                  FROM (
+//                    SELECT
+//                      songId,
+//                      AVG(playTime) AS avg_dur
+//                    FROM
+//                      event
+//                    GROUP BY
+//                      songId
+//                  )
+//                )
+//            )
+//            JOIN song ON song.id = songId
+//            WHERE
+//              timestamp BETWEEN (:now - 86400000 * 30 * 4) AND (:now - 86400000 * 30 * 2)
+//              AND songId NOT IN (
+//                SELECT
+//                  songId
+//                FROM
+//                  event
+//                WHERE
+//                  timestamp > (:now - 86400000 * 30 * 2)
+//              )
+//            ORDER BY
+//              avg_playtime DESC
+//            LIMIT 50;
+"""
+                SELECT
+                    song.*
+                FROM
+                    song
+                LEFT JOIN
+                    (
+                        SELECT
+                            songId,
+                            AVG(playTime) AS avg_playtime_before,
+                            MAX(timestamp) AS max_timestamp_before
+                        FROM
+                            event
+                        WHERE
+                            timestamp BETWEEN (:now - 86400000 * 30 * 6) AND (:now - 86400000 * 30 * 2)
+                        GROUP BY
+                            songId
+                    ) s ON song.id = s.songId
+                LEFT JOIN
+                    (
+                        SELECT
+                            songId,
+                            AVG(playTime) AS avg_playtime_recent
+                        FROM
+                            event
+                        WHERE
+                            timestamp > (:now - 86400000 * 30 * 2)
+                        GROUP BY
+                            songId
+                    ) r ON song.id = r.songId
+                WHERE
+                    s.max_timestamp_before IS NULL OR s.max_timestamp_before < (:now - 86400000 * 30 * 2)
+                ORDER BY
+                    COALESCE(s.avg_playtime_before, 0) - COALESCE(r.avg_playtime_recent, 0) ASC
+                LIMIT 100;
+
+        """
+    )
+    fun forgottenFavorites(now: Long = System.currentTimeMillis()) : Flow<List<Song>>
+
+    @Transaction
+    @Query(
         """
         SELECT *
         FROM song

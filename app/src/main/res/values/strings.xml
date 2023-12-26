@@ -19,6 +19,7 @@
     <string name="quick_picks">Quick picks</string>
     <string name="quick_picks_empty">Listen to songs to generate your quick picks</string>
     <string name="new_release_albums">New release albums</string>
+    <string name="forgotten_favorites">Forgotten Favorites</string>
 
     <!-- History -->
     <string name="today">Today</string>

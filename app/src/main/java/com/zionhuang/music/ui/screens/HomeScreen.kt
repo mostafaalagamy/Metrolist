@@ -61,6 +61,8 @@ fun HomeScreen(
     val quickPicks by viewModel.quickPicks.collectAsState()
     val explorePage by viewModel.explorePage.collectAsState()
 
+    val forgottenFavorite by viewModel.forgottenFavorite.collectAsState()
+
     val isRefreshing by viewModel.isRefreshing.collectAsState()
     val mostPlayedLazyGridState = rememberLazyGridState()
 
@@ -192,7 +194,90 @@ fun HomeScreen(
                                             if (song!!.id == mediaMetadata?.id) {
                                                 playerConnection.player.togglePlayPause()
                                             } else {
-                                                playerConnection.playQueue(YouTubeQueue(WatchEndpoint(videoId = song!!.id), song!!.toMediaMetadata()))
+                                                playerConnection.playQueue(
+                                                    YouTubeQueue(
+                                                        WatchEndpoint(videoId = song!!.id),
+                                                        song!!.toMediaMetadata()
+                                                    )
+                                                )
+                                            }
+                                        }
+                                )
+                            }
+                        }
+                    }
+                }
+
+                NavigationTitle(
+                    title = stringResource(R.string.forgotten_favorites)
+                )
+
+                forgottenFavorite?.let { forgottenFavorite ->
+                    if (forgottenFavorite.isEmpty()) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(ListItemHeight * 4)
+                        ) {
+                            Text(
+                                text = stringResource(R.string.quick_picks_empty),
+                                style = MaterialTheme.typography.bodyMedium,
+                                modifier = Modifier.align(Alignment.Center)
+                            )
+                        }
+                    } else {
+                        LazyHorizontalGrid(
+                            state = mostPlayedLazyGridState,
+                            rows = GridCells.Fixed(4),
+                            flingBehavior = rememberSnapFlingBehavior(snapLayoutInfoProvider),
+                            contentPadding = WindowInsets.systemBars
+                                .only(WindowInsetsSides.Horizontal)
+                                .asPaddingValues(),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(ListItemHeight * 4)
+                        ) {
+                            items(
+                                items = forgottenFavorite,
+                                key = { it.id }
+                            ) { originalSong ->
+                                val song by database.song(originalSong.id).collectAsState(initial = originalSong)
+
+                                SongListItem(
+                                    song = song!!,
+                                    showInLibraryIcon = true,
+                                    isActive = song!!.id == mediaMetadata?.id,
+                                    isPlaying = isPlaying,
+                                    trailingContent = {
+                                        IconButton(
+                                            onClick = {
+                                                menuState.show {
+                                                    SongMenu(
+                                                        originalSong = song!!,
+                                                        navController = navController,
+                                                        onDismiss = menuState::dismiss
+                                                    )
+                                                }
+                                            }
+                                        ) {
+                                            Icon(
+                                                painter = painterResource(R.drawable.more_vert),
+                                                contentDescription = null
+                                            )
+                                        }
+                                    },
+                                    modifier = Modifier
+                                        .width(horizontalLazyGridItemWidth)
+                                        .clickable {
+                                            if (song!!.id == mediaMetadata?.id) {
+                                                playerConnection.player.togglePlayPause()
+                                            } else {
+                                                playerConnection.playQueue(
+                                                    YouTubeQueue(
+                                                        WatchEndpoint(videoId = song!!.id),
+                                                        song!!.toMediaMetadata()
+                                                    )
+                                                )
                                             }
                                         }
                                 )
@@ -275,7 +360,7 @@ fun HomeScreen(
             }
 
             HideOnScrollFAB(
-                visible = !quickPicks.isNullOrEmpty() || explorePage?.newReleaseAlbums?.isNotEmpty() == true,
+                visible = !quickPicks.isNullOrEmpty() || !forgottenFavorite.isNullOrEmpty() || explorePage?.newReleaseAlbums?.isNotEmpty() == true,
                 scrollState = scrollState,
                 icon = R.drawable.casino,
                 onClick = {
