@@ -66,6 +66,9 @@ fun HomeScreen(
     val isRefreshing by viewModel.isRefreshing.collectAsState()
     val mostPlayedLazyGridState = rememberLazyGridState()
 
+    val forgottenFavoritesLazyGridState = rememberLazyGridState()
+
+
     val innerTubeCookie by rememberPreference(InnerTubeCookieKey, "")
     val isLoggedIn = remember(innerTubeCookie) {
         "SAPISID" in parseCookieString(innerTubeCookie)
@@ -84,9 +87,17 @@ fun HomeScreen(
         ) {
             val horizontalLazyGridItemWidthFactor = if (maxWidth * 0.475f >= 320.dp) 0.475f else 0.9f
             val horizontalLazyGridItemWidth = maxWidth * horizontalLazyGridItemWidthFactor
-            val snapLayoutInfoProvider = remember(mostPlayedLazyGridState) {
+            val snapLayoutInfoProviderQuickPicks = remember(mostPlayedLazyGridState) {
                 SnapLayoutInfoProvider(
                     lazyGridState = mostPlayedLazyGridState,
+                    positionInLayout = { layoutSize, itemSize ->
+                        (layoutSize * horizontalLazyGridItemWidthFactor / 2f - itemSize / 2f)
+                    }
+                )
+            }
+            val snapLayoutInfoProviderForgottenFavorite = remember(forgottenFavoritesLazyGridState) {
+                SnapLayoutInfoProvider(
+                    lazyGridState = forgottenFavoritesLazyGridState,
                     positionInLayout = { layoutSize, itemSize ->
                         (layoutSize * horizontalLazyGridItemWidthFactor / 2f - itemSize / 2f)
                     }
@@ -151,7 +162,7 @@ fun HomeScreen(
                         LazyHorizontalGrid(
                             state = mostPlayedLazyGridState,
                             rows = GridCells.Fixed(4),
-                            flingBehavior = rememberSnapFlingBehavior(snapLayoutInfoProvider),
+                            flingBehavior = rememberSnapFlingBehavior(snapLayoutInfoProviderQuickPicks),
                             contentPadding = WindowInsets.systemBars
                                 .only(WindowInsetsSides.Horizontal)
                                 .asPaddingValues(),
@@ -227,9 +238,9 @@ fun HomeScreen(
                         }
                     } else {
                         LazyHorizontalGrid(
-                            state = mostPlayedLazyGridState,
+                            state = forgottenFavoritesLazyGridState,
                             rows = GridCells.Fixed(4),
-                            flingBehavior = rememberSnapFlingBehavior(snapLayoutInfoProvider),
+                            flingBehavior = rememberSnapFlingBehavior(snapLayoutInfoProviderForgottenFavorite),
                             contentPadding = WindowInsets.systemBars
                                 .only(WindowInsetsSides.Horizontal)
                                 .asPaddingValues(),
