@@ -2,7 +2,9 @@ package com.zionhuang.music.ui.player
 
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,6 +18,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -23,8 +26,11 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -43,7 +49,11 @@ import com.zionhuang.music.constants.MiniPlayerHeight
 import com.zionhuang.music.constants.ThumbnailCornerRadius
 import com.zionhuang.music.extensions.togglePlayPause
 import com.zionhuang.music.models.MediaMetadata
+import com.zionhuang.music.ui.utils.HorizontalPager
+import com.zionhuang.music.ui.utils.SnapLayoutInfoProvider
+import kotlinx.coroutines.flow.drop
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MiniPlayer(
     position: Long,
@@ -54,8 +64,39 @@ fun MiniPlayer(
     val isPlaying by playerConnection.isPlaying.collectAsState()
     val playbackState by playerConnection.playbackState.collectAsState()
     val error by playerConnection.error.collectAsState()
+    val windows by playerConnection.queueWindows.collectAsState()
+    val currentWindowIndex by playerConnection.currentWindowIndex.collectAsState()
+
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
     val canSkipNext by playerConnection.canSkipNext.collectAsState()
+
+    val pagerState = rememberPagerState(
+        initialPage = currentWindowIndex.takeIf { it != -1 } ?: 0
+    )
+
+    val snapLayoutInfoProvider = remember(pagerState) {
+        SnapLayoutInfoProvider(
+            pagerState = pagerState,
+            positionInLayout = { _, _ -> 0f }
+        )
+    }
+
+    LaunchedEffect(pagerState, currentWindowIndex) {
+        if (windows.isNotEmpty()) {
+            try {
+                pagerState.animateScrollToPage(currentWindowIndex)
+            } catch (_: Exception) {
+            }
+        }
+    }
+
+    LaunchedEffect(pagerState) {
+        snapshotFlow { pagerState.settledPage }.drop(1).collect { index ->
+            if (!pagerState.isScrollInProgress && index != currentWindowIndex && windows.isNotEmpty()) {
+                playerConnection.player.seekToDefaultPosition(windows[index].firstPeriodIndex)
+            }
+        }
+    }
 
     Box(
         modifier = modifier
@@ -74,9 +115,16 @@ fun MiniPlayer(
             verticalAlignment = Alignment.CenterVertically,
             modifier = modifier
                 .fillMaxSize()
-                .padding(end = 6.dp),
+                .padding(end = 12.dp),
         ) {
-            Box(Modifier.weight(1f)) {
+            HorizontalPager(
+                state = pagerState,
+                flingBehavior = rememberSnapFlingBehavior(snapLayoutInfoProvider),
+                items = windows,
+                key = { it.uid.hashCode() },
+                beyondBoundsPageCount = 2,
+                modifier = Modifier.weight(1f)
+            ) { window ->
                 mediaMetadata?.let {
                     MiniMediaInfo(
                         mediaMetadata = it,
@@ -111,6 +159,7 @@ fun MiniPlayer(
                     contentDescription = null
                 )
             }
+
         }
     }
 }
