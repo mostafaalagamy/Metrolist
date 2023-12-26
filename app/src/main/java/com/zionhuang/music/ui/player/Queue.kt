@@ -4,8 +4,10 @@ import android.text.format.Formatter
 import android.widget.Toast
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -85,18 +87,16 @@ import com.zionhuang.music.ui.component.MediaMetadataListItem
 import com.zionhuang.music.ui.menu.PlayerMenu
 import com.zionhuang.music.utils.makeTimeString
 import com.zionhuang.music.utils.rememberPreference
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import org.burnoutcrew.reorderable.ReorderableItem
 import org.burnoutcrew.reorderable.detectReorder
-import org.burnoutcrew.reorderable.detectReorderAfterLongPress
 import org.burnoutcrew.reorderable.rememberReorderableLazyListState
 import org.burnoutcrew.reorderable.reorderable
 import kotlin.math.roundToInt
 
-@OptIn(ExperimentalAnimationApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalAnimationApi::class, ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun Queue(
     state: BottomSheetState,
@@ -371,6 +371,10 @@ fun Queue(
             }
         }
 
+        LaunchedEffect(mutableQueueWindows) {
+            reorderableState.listState.scrollToItem(currentWindowIndex)
+        }
+
         LazyColumn(
             state = reorderableState.listState,
             contentPadding = WindowInsets.systemBars
@@ -427,17 +431,29 @@ fun Queue(
                                 },
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .clickable {
-                                        coroutineScope.launch(Dispatchers.Main) {
+                                    .combinedClickable(
+                                        onClick = {
                                             if (index == currentWindowIndex) {
                                                 playerConnection.player.togglePlayPause()
                                             } else {
                                                 playerConnection.player.seekToDefaultPosition(window.firstPeriodIndex)
                                                 playerConnection.player.playWhenReady = true
                                             }
+                                        },
+                                        onLongClick = {
+                                            menuState.show {
+                                                PlayerMenu(
+                                                    mediaMetadata = window.mediaItem.metadata!!,
+                                                    navController = navController,
+                                                    playerBottomSheetState = playerBottomSheetState,
+                                                    isQueueTrigger = true,
+                                                    onShowDetailsDialog = { showDetailsDialog = true },
+                                                    onDismiss = menuState::dismiss
+                                                )
+                                            }
                                         }
-                                    }
-                                    .detectReorderAfterLongPress(reorderableState)
+                                    )
+                                //.detectReorderAfterLongPress(reorderableState)
                             )
                         }
                     )
