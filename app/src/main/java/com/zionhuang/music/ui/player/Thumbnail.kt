@@ -41,6 +41,8 @@ fun Thumbnail(
     val currentWindowIndex by playerConnection.currentWindowIndex.collectAsState()
     val error by playerConnection.error.collectAsState()
 
+    val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
+
     val showLyrics by rememberPreference(ShowLyricsKey, false)
 
     val pagerState = rememberPagerState(
@@ -92,7 +94,7 @@ fun Thumbnail(
                     pageCount = windows.size,
                     key = { windows[it].uid.hashCode() },
                     beyondBoundsPageCount = 2,
-                    modifier =  Modifier
+                    modifier = Modifier
                         .fillMaxSize()
                         .statusBarsPadding()
                 ) { index ->
@@ -102,8 +104,14 @@ fun Thumbnail(
                             .fillMaxSize()
                             .padding(horizontal = PlayerHorizontalPadding)
                     ) {
+                        val model = if (currentWindowIndex == index){
+                            mediaMetadata?.thumbnailUrl
+                        } else {
+                            windows[index].mediaItem.metadata?.thumbnailUrl
+                        }
                         AsyncImage(
                             model = windows[index].mediaItem.metadata?.thumbnailUrl,
+//                            model = model,
                             contentDescription = null,
                             modifier = Modifier
                                 .fillMaxWidth()
