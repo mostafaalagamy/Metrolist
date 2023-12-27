@@ -18,9 +18,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Decode google-services.json
-        run: echo ${{ secrets.GOOGLE_SERVICES }} | base64 -d >> app/google-services.json
-
       - name: Decode Keystore
         run: echo ${{ secrets.KEYSTORE }} | base64 -d >> app/music-debug.jks
 

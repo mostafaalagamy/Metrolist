@@ -10,12 +10,6 @@ plugins {
     id("com.google.devtools.ksp")
 }
 
-if (isFullBuild && System.getenv("PULL_REQUEST") == null) {
-    apply(plugin = "com.google.gms.google-services")
-    apply(plugin = "com.google.firebase.crashlytics")
-    apply(plugin = "com.google.firebase.firebase-perf")
-}
-
 android {
     namespace = "com.zionhuang.music"
     compileSdk = 34
@@ -40,9 +34,6 @@ android {
     }
     flavorDimensions += "version"
     productFlavors {
-        create("full") {
-            dimension = "version"
-        }
         create("foss") {
             dimension = "version"
         }
@@ -139,15 +130,6 @@ dependencies {
     implementation(projects.kugou)
 
     coreLibraryDesugaring(libs.desugaring)
-
-    "fullImplementation"(platform(libs.firebase.bom))
-    "fullImplementation"(libs.firebase.analytics)
-    "fullImplementation"(libs.firebase.crashlytics)
-    "fullImplementation"(libs.firebase.config)
-    "fullImplementation"(libs.firebase.perf)
-    "fullImplementation"(libs.mlkit.language.id)
-    "fullImplementation"(libs.mlkit.translate)
-    "fullImplementation"(libs.opencc4j)
 
     implementation(libs.timber)
 }
