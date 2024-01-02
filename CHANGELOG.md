@@ -1,5 +1,11 @@
 <h1>Changelog</h1>
 
+## 5.0.0
+
+#### What's New
+- Fixed the issues in all sections (Songs, Albums, Singles) in artists pages.
+- Bugs fixes and many more .
+
 ## 4.0.0
 
 #### What's New
