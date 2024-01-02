@@ -38,7 +38,7 @@
 - Background playback
 - Download and cache songs for offline playback
 - Search for songs, albums, artists, videos and playlists
-- Synchronized lyrics
+- Live lyrics
 - Import playlists
 - Local playlist management
 - Reorder songs in playlist or queue
