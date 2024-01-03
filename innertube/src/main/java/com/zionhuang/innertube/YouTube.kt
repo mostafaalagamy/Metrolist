@@ -30,17 +30,21 @@ import com.zionhuang.innertube.models.response.PlayerResponse
 import com.zionhuang.innertube.models.response.SearchResponse
 import com.zionhuang.innertube.models.splitBySeparator
 import com.zionhuang.innertube.pages.AlbumPage
+import com.zionhuang.innertube.pages.AlbumUtils
 import com.zionhuang.innertube.pages.ArtistItemsContinuationPage
 import com.zionhuang.innertube.pages.ArtistItemsPage
 import com.zionhuang.innertube.pages.ArtistPage
 import com.zionhuang.innertube.pages.BrowseResult
 import com.zionhuang.innertube.pages.ExplorePage
+import com.zionhuang.innertube.pages.HomePlayList
+import com.zionhuang.innertube.pages.HomeAlbumRecommendation
 import com.zionhuang.innertube.pages.MoodAndGenres
 import com.zionhuang.innertube.pages.NewReleaseAlbumPage
 import com.zionhuang.innertube.pages.NextPage
 import com.zionhuang.innertube.pages.NextResult
 import com.zionhuang.innertube.pages.PlaylistContinuationPage
 import com.zionhuang.innertube.pages.PlaylistPage
+import com.zionhuang.innertube.pages.RecommendationAlbumBundle
 import com.zionhuang.innertube.pages.RelatedPage
 import com.zionhuang.innertube.pages.SearchPage
 import com.zionhuang.innertube.pages.SearchResult
@@ -326,6 +330,30 @@ object YouTube {
             .mapNotNull(MoodAndGenres.Companion::fromSectionListRendererContent)
     }
 
+    suspend fun recommendAlbum(browseId: String, albumUtils: AlbumUtils): Result<HomeAlbumRecommendation> = runCatching {
+        val response = innerTube.browse(WEB_REMIX, browseId = browseId).body<BrowseResponse>()
+        HomeAlbumRecommendation(
+            albums = RecommendationAlbumBundle(
+                recommendedAlbum = albumUtils,
+                recommendationAlbum = response.contents?.sectionListRenderer?.contents?.getOrNull(1)?.musicCarouselShelfRenderer?.contents!!
+                .mapNotNull { it.musicTwoRowItemRenderer }
+                .mapNotNull {
+                    ArtistItemsPage.fromMusicTwoRowItemRenderer(it) as? PlaylistItem
+                }
+            )
+        )
+    }
+
+    suspend fun home(): Result<List<HomePlayList>> = runCatching {
+        val response = innerTube.browse(WEB_REMIX, browseId = "FEmusic_home").body<BrowseResponse>()
+        val continuation = response.contents?.singleColumnBrowseResultsRenderer?.tabs?.firstOrNull()?.tabRenderer?.content?.sectionListRenderer?.continuations?.firstOrNull()?.nextContinuationData?.continuation
+        response.contents?.singleColumnBrowseResultsRenderer?.tabs?.firstOrNull()?.tabRenderer?.content?.sectionListRenderer?.contents!!
+            .mapNotNull { it.musicCarouselShelfRenderer }
+            .mapNotNull {
+                HomePlayList.fromMusicCarouselShelfRenderer(it, continuation)
+            }
+    }
+
     suspend fun browse(browseId: String, params: String?): Result<BrowseResult> = runCatching {
         val response = innerTube.browse(WEB_REMIX, browseId = browseId, params = params).body<BrowseResponse>()
         BrowseResult(
@@ -354,6 +382,16 @@ object YouTube {
                 }
             }.orEmpty()
         )
+    }
+
+    suspend fun browseContinuation(continuation: String): Result<List<HomePlayList>> = runCatching {
+        val response = innerTube.browse(WEB_REMIX, continuation = continuation).body<BrowseResponse>()
+        val newContinuation = response.continuationContents?.sectionListContinuation?.continuations?.firstOrNull()?.nextContinuationData?.continuation
+        response.continuationContents?.sectionListContinuation?.contents!!
+            .mapNotNull { it.musicCarouselShelfRenderer }
+            .mapNotNull {
+                HomePlayList.fromMusicCarouselShelfRenderer(it, newContinuation)
+            }
     }
 
     suspend fun likedPlaylists(): Result<List<PlaylistItem>> = runCatching {
@@ -452,7 +490,7 @@ object YouTube {
                     is AlbumItem -> albums.add(item)
                     is ArtistItem -> artists.add(item)
                     is PlaylistItem -> playlists.add(item)
-                    null -> {}
+                    else -> {}
                 }
             }
         }

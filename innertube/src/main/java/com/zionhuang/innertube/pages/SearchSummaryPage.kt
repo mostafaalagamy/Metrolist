@@ -7,8 +7,10 @@ import com.zionhuang.innertube.models.ArtistItem
 import com.zionhuang.innertube.models.MusicCardShelfRenderer
 import com.zionhuang.innertube.models.MusicResponsiveListItemRenderer
 import com.zionhuang.innertube.models.PlaylistItem
+import com.zionhuang.innertube.models.Run
 import com.zionhuang.innertube.models.SongItem
 import com.zionhuang.innertube.models.YTItem
+import com.zionhuang.innertube.models.clean
 import com.zionhuang.innertube.models.oddElements
 import com.zionhuang.innertube.models.splitBySeparator
 import com.zionhuang.innertube.utils.parseTime
@@ -90,6 +92,10 @@ data class SearchSummaryPage(
             val secondaryLine = renderer.flexColumns.getOrNull(1)
                 ?.musicResponsiveListItemFlexColumnRenderer?.text?.runs?.splitBySeparator()
                 ?: return null
+                val thirdLine = renderer.flexColumns.getOrNull(2)
+                    ?.musicResponsiveListItemFlexColumnRenderer?.text?.runs?.splitBySeparator()
+                    ?: emptyList()
+                val listRun = (secondaryLine + thirdLine).clean()
             return when {
                 renderer.isSong -> {
                     SongItem(
@@ -97,13 +103,13 @@ data class SearchSummaryPage(
                         title = renderer.flexColumns.firstOrNull()
                             ?.musicResponsiveListItemFlexColumnRenderer?.text?.runs
                             ?.firstOrNull()?.text ?: return null,
-                        artists = secondaryLine.getOrNull(1)?.oddElements()?.map {
+                        artists = listRun.getOrNull(0)?.oddElements()?.map {
                             Artist(
                                 name = it.text,
                                 id = it.navigationEndpoint?.browseEndpoint?.browseId
                             )
                         } ?: return null,
-                        album = secondaryLine.getOrNull(2)?.firstOrNull()?.takeIf { it.navigationEndpoint?.browseEndpoint != null }?.let {
+                        album = listRun.getOrNull(1)?.firstOrNull()?.takeIf { it.navigationEndpoint?.browseEndpoint != null }?.let {
                             Album(
                                 name = it.text,
                                 id = it.navigationEndpoint?.browseEndpoint?.browseId!!

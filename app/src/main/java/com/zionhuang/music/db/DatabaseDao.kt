@@ -145,83 +145,42 @@ interface DatabaseDao {
 
     @Transaction
     @Query(
-//        """
-//            SELECT song.*
-//            FROM (
-//            SELECT
-//                songId,
-//                AVG(playTime) AS avg_playtime,
-//                timestamp
-//              FROM
-//                event
-//              WHERE
-//                timestamp BETWEEN (:now - 86400000 * 30 * 4) AND (:now - 86400000 * 30 * 2)
-//              GROUP BY
-//                songId
-//              HAVING
-//                avg_playtime < 0.5 * (
-//                  SELECT
-//                    AVG(avg_dur)
-//                  FROM (
-//                    SELECT
-//                      songId,
-//                      AVG(playTime) AS avg_dur
-//                    FROM
-//                      event
-//                    GROUP BY
-//                      songId
-//                  )
-//                )
-//            )
-//            JOIN song ON song.id = songId
-//            WHERE
-//              timestamp BETWEEN (:now - 86400000 * 30 * 4) AND (:now - 86400000 * 30 * 2)
-//              AND songId NOT IN (
-//                SELECT
-//                  songId
-//                FROM
-//                  event
-//                WHERE
-//                  timestamp > (:now - 86400000 * 30 * 2)
-//              )
-//            ORDER BY
-//              avg_playtime DESC
-//            LIMIT 50;
 """
                 SELECT
                     song.*
                 FROM
-                    song
-                LEFT JOIN
                     (
                         SELECT
-                            songId,
-                            AVG(playTime) AS avg_playtime_before,
-                            MAX(timestamp) AS max_timestamp_before
+                            n.songId AS eid,
+                            SUM(playTime) AS oldPlayTime,
+                            newPlayTime
                         FROM
                             event
+                        JOIN
+                            (
+                              SELECT
+                                songId,
+                                SUM(playTime) AS newPlayTime
+                              FROM
+                                event
+                            WHERE
+                                timestamp > (:now - 86400000 * 30 * 1)
+                              GROUP BY
+                                songId
+                              ORDER BY
+                               newPlayTime
+                            ) as n
+                        ON event.songId = n.songId
                         WHERE
-                            timestamp BETWEEN (:now - 86400000 * 30 * 6) AND (:now - 86400000 * 30 * 2)
+                            timestamp < (:now - 86400000 * 30 * 1)
                         GROUP BY
-                            songId
-                    ) s ON song.id = s.songId
-                LEFT JOIN
-                    (
-                        SELECT
-                            songId,
-                            AVG(playTime) AS avg_playtime_recent
-                        FROM
-                            event
-                        WHERE
-                            timestamp > (:now - 86400000 * 30 * 2)
-                        GROUP BY
-                            songId
-                    ) r ON song.id = r.songId
-                WHERE
-                    s.max_timestamp_before IS NULL OR s.max_timestamp_before < (:now - 86400000 * 30 * 2)
-                ORDER BY
-                    COALESCE(s.avg_playtime_before, 0) - COALESCE(r.avg_playtime_recent, 0) ASC
-                LIMIT 100;
+                            n.songId
+                        ORDER BY
+                            oldPlayTime
+                    ) AS t
+                JOIN song on song.id = t.eid
+                WHERE 0.2 * t.oldPlayTime > t.newPlayTime
+                LIMIT 100
 
         """
     )
@@ -229,18 +188,45 @@ interface DatabaseDao {
 
     @Transaction
     @Query(
+    """
+        SELECT
+            song.*
+        FROM
+            event
+        JOIN
+            song ON event.songId = song.id
+        WHERE
+            event.timestamp > (:now - 86400000 * 7 * 2)
+        GROUP BY
+            song.albumId
+        HAVING
+            song.albumId IS NOT NULL
+        ORDER BY
+            sum(event.playTime) DESC
+        LIMIT :limit
+        OFFSET :offset
+        
         """
-        SELECT *
+    )
+    fun getRecommendationAlbum(now: Long = System.currentTimeMillis(), limit: Int = 5, offset: Int = 0) : Flow<List<Song>>
+
+    @Transaction
+    @Query(
+        """
+        SELECT song.*
         FROM song
-        WHERE id IN (SELECT songId
+        JOIN (SELECT songId
                      FROM event
                      WHERE timestamp > :fromTimeStamp
                      GROUP BY songId
                      ORDER BY SUM(playTime) DESC
                      LIMIT :limit)
+        ON song.id = songId
+        LIMIT :limit
+        OFFSET :offset
     """
     )
-    fun mostPlayedSongs(fromTimeStamp: Long, limit: Int = 6): Flow<List<Song>>
+    fun mostPlayedSongs(fromTimeStamp: Long, limit: Int = 6, offset: Int = 0): Flow<List<Song>>
 
     @Transaction
     @Query(
@@ -248,9 +234,9 @@ interface DatabaseDao {
         SELECT artist.*,
                (SELECT COUNT(1)
                 FROM song_artist_map
-                         JOIN song ON song_artist_map.songId = song.id
+                         JOIN event ON song_artist_map.songId = event.songId
                 WHERE artistId = artist.id
-                  AND song.inLibrary IS NOT NULL) AS songCount
+                  AND timestamp > :fromTimeStamp) AS songCount
         FROM artist
                  JOIN(SELECT artistId, SUM(songTotalPlayTime) AS totalPlayTime
                       FROM song_artist_map
@@ -261,11 +247,12 @@ interface DatabaseDao {
                                     ON song_artist_map.songId = e.songId
                       GROUP BY artistId
                       ORDER BY totalPlayTime DESC
-                      LIMIT :limit)
+                      LIMIT :limit
+                      OFFSET :offset)
                      ON artist.id = artistId
     """
     )
-    fun mostPlayedArtists(fromTimeStamp: Long, limit: Int = 6): Flow<List<Artist>>
+    fun mostPlayedArtists(fromTimeStamp: Long, limit: Int = 6, offset: Int = 0): Flow<List<Artist>>
 
     @Transaction
     @Query(

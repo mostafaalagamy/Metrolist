@@ -1,5 +1,6 @@
 package com.zionhuang.music.ui.screens
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.*
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.*
@@ -20,31 +21,42 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import com.zionhuang.innertube.models.Artist
+import com.zionhuang.innertube.models.ArtistItem
+import com.zionhuang.innertube.models.PlaylistItem
 import com.zionhuang.innertube.models.WatchEndpoint
 import com.zionhuang.innertube.utils.parseCookieString
 import com.zionhuang.music.LocalDatabase
 import com.zionhuang.music.LocalPlayerAwareWindowInsets
 import com.zionhuang.music.LocalPlayerConnection
 import com.zionhuang.music.R
+import com.zionhuang.music.constants.GridThumbnailHeight
 import com.zionhuang.music.constants.InnerTubeCookieKey
 import com.zionhuang.music.constants.ListItemHeight
 import com.zionhuang.music.extensions.togglePlayPause
 import com.zionhuang.music.models.toMediaMetadata
 import com.zionhuang.music.playback.queues.YouTubeAlbumRadio
 import com.zionhuang.music.playback.queues.YouTubeQueue
+import com.zionhuang.music.ui.component.AlbumSmallGridItem
+import com.zionhuang.music.ui.component.ArtistSmallGridItem
 import com.zionhuang.music.ui.component.HideOnScrollFAB
 import com.zionhuang.music.ui.component.LocalMenuState
 import com.zionhuang.music.ui.component.NavigationTile
 import com.zionhuang.music.ui.component.NavigationTitle
 import com.zionhuang.music.ui.component.SongListItem
+import com.zionhuang.music.ui.component.SongSmallGridItem
 import com.zionhuang.music.ui.component.YouTubeGridItem
+import com.zionhuang.music.ui.component.YouTubeSmallGridItem
+import com.zionhuang.music.ui.menu.ArtistMenu
 import com.zionhuang.music.ui.menu.SongMenu
 import com.zionhuang.music.ui.menu.YouTubeAlbumMenu
+import com.zionhuang.music.ui.menu.YouTubePlaylistMenu
 import com.zionhuang.music.ui.utils.SnapLayoutInfoProvider
 import com.zionhuang.music.utils.rememberPreference
 import com.zionhuang.music.viewmodels.HomeViewModel
 import kotlin.random.Random
 
+@SuppressLint("UnrememberedMutableState")
 @Suppress("DEPRECATION")
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -62,11 +74,29 @@ fun HomeScreen(
     val explorePage by viewModel.explorePage.collectAsState()
 
     val forgottenFavorite by viewModel.forgottenFavorite.collectAsState()
+    val homeFirstAlbumRecommendation by viewModel.homeFirstAlbumRecommendation.collectAsState()
+    val homeSecondAlbumRecommendation by viewModel.homeSecondAlbumRecommendation.collectAsState()
+
+    val homeFirstArtistRecommendation by viewModel.homeFirstArtistRecommendation.collectAsState()
+    val homeSecondArtistRecommendation by viewModel.homeSecondArtistRecommendation.collectAsState()
+    val homeThirdArtistRecommendation by viewModel.homeThirdArtistRecommendation.collectAsState()
+    val home by viewModel.home.collectAsState()
+
+    val keepListeningSongs by viewModel.keepListeningSongs.collectAsState()
+    val keepListeningAlbums by viewModel.keepListeningAlbums.collectAsState()
+    val keepListeningArtists by viewModel.keepListeningArtists.collectAsState()
+    val keepListening by viewModel.keepListening.collectAsState()
+
+    val homeFirstContinuation by viewModel.homeFirstContinuation.collectAsState()
+    val homeSecondContinuation by viewModel.homeSecondContinuation.collectAsState()
+    val homeThirdContinuation by viewModel.homeThirdContinuation.collectAsState()
 
     val isRefreshing by viewModel.isRefreshing.collectAsState()
     val mostPlayedLazyGridState = rememberLazyGridState()
 
     val forgottenFavoritesLazyGridState = rememberLazyGridState()
+
+    val listenAgainLazyGridState = rememberLazyGridState()
 
     val innerTubeCookie by rememberPreference(InnerTubeCookieKey, "")
     val isLoggedIn = remember(innerTubeCookie) {
@@ -218,24 +248,146 @@ fun HomeScreen(
                     }
                 }
 
-                NavigationTitle(
-                    title = stringResource(R.string.forgotten_favorites)
-                )
+                if (keepListening?.isNotEmpty() == true) {
+                    keepListening?.let {
+                        NavigationTitle(
+                            title = stringResource(R.string.keep_listening),
+                        )
 
-                forgottenFavorite?.let { forgottenFavorite ->
-                    if (forgottenFavorite.isEmpty()) {
-                        Box(
+                        LazyHorizontalGrid(
+                            state = listenAgainLazyGridState,
+                            rows = GridCells.Fixed(if (keepListening!!.size > 6) 2 else 1),
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(ListItemHeight * 4)
+                                .height(GridThumbnailHeight * if (keepListening!!.size > 6) 2.4f else 1.2f)
                         ) {
-                            Text(
-                                text = stringResource(R.string.quick_picks_empty),
-                                style = MaterialTheme.typography.bodyMedium,
-                                modifier = Modifier.align(Alignment.Center)
-                            )
+                            keepListening?.forEach {
+                                when (it) {
+                                    in 0..4 -> item {
+                                        ArtistSmallGridItem(
+                                            artist = keepListeningArtists!![it],
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .combinedClickable(
+                                                    onClick = {
+                                                        navController.navigate("artist/${keepListeningArtists!![it].id}")
+                                                    },
+                                                    onLongClick = {
+                                                        menuState.show {
+                                                            ArtistMenu(
+                                                                originalArtist = keepListeningArtists!![it],
+                                                                coroutineScope = coroutineScope,
+                                                                onDismiss = menuState::dismiss
+                                                            )
+                                                        }
+                                                    }
+                                                ),
+                                        )
+                                    }
+
+                                    in 5..9 -> item {
+                                        AlbumSmallGridItem(
+                                            song = keepListeningAlbums!![it - 5],
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .combinedClickable(
+                                                    onClick = {
+                                                        navController.navigate("album/${keepListeningAlbums!![it - 5].song.albumId}")
+                                                    },
+                                                    onLongClick = {}
+                                                ),
+
+                                        )
+                                    }
+                                    in 10..19 -> item {
+                                        SongSmallGridItem(
+                                            song = keepListeningSongs!![it - 10],
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .combinedClickable(
+                                                    onClick = {
+                                                        if (keepListeningSongs!![it - 10].id == mediaMetadata?.id) {
+                                                            playerConnection.player.togglePlayPause()
+                                                        } else {
+                                                            playerConnection.playQueue(
+                                                                YouTubeQueue(
+                                                                    WatchEndpoint(videoId = keepListeningSongs!![it - 10].id),
+                                                                    keepListeningSongs!![it - 10].toMediaMetadata()
+                                                                )
+                                                            )
+                                                        }
+                                                    },
+                                                    onLongClick = {}
+                                                ),
+                                                isActive = keepListeningSongs!![it - 10].song.id == mediaMetadata?.id,
+                                                isPlaying = isPlaying,
+                                        )
+                                    }
+                                }
+                            }
                         }
-                    } else {
+                    }
+                }
+
+                homeFirstArtistRecommendation?.let { albums  ->
+                    if (albums.listItem.isNotEmpty()) {
+                        NavigationTitle(
+                            title = stringResource(R.string.similar_to) + " " + albums.artistName,
+                        )
+
+                        LazyRow(
+                            contentPadding = WindowInsets.systemBars
+                                .only(WindowInsetsSides.Horizontal)
+                                .asPaddingValues()
+                        ) {
+                            items(
+                                items = albums.listItem,
+                                key = { it.id }
+                            ) { item ->
+                                if (!item.title.contains("Presenting")) {
+                                    YouTubeSmallGridItem(
+                                        item = item,
+                                        isActive = mediaMetadata?.album?.id == item.id,
+                                        isPlaying = isPlaying,
+                                        coroutineScope = coroutineScope,
+                                        modifier = Modifier
+                                            .combinedClickable(
+                                                onClick = {
+                                                    when (item) {
+                                                        is PlaylistItem -> navController.navigate("online_playlist/${item.id}")
+                                                        else -> navController.navigate("artist/${item.id}")
+                                                    }
+
+                                                },
+                                                onLongClick = {
+                                                    menuState.show {
+                                                        when (item) {
+                                                            is PlaylistItem -> YouTubePlaylistMenu(
+                                                                playlist = item,
+                                                                coroutineScope = coroutineScope,
+                                                                onDismiss = menuState::dismiss
+                                                            )
+
+                                                            is ArtistItem -> {}
+                                                            else -> {}
+                                                        }
+                                                    }
+                                                }
+                                            )
+                                            .animateItemPlacement()
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+
+                forgottenFavorite?.let { forgottenFavorite ->
+                    if (forgottenFavorite.isNotEmpty() && forgottenFavorite.size > 5) {
+                        NavigationTitle(
+                            title = stringResource(R.string.forgotten_favorites)
+                        )
+
                         LazyHorizontalGrid(
                             state = forgottenFavoritesLazyGridState,
                             rows = GridCells.Fixed(4),
@@ -252,7 +404,6 @@ fun HomeScreen(
                                 key = { it.id }
                             ) { originalSong ->
                                 val song by database.song(originalSong.id).collectAsState(initial = originalSong)
-
                                 SongListItem(
                                     song = song!!,
                                     showInLibraryIcon = true,
@@ -291,6 +442,390 @@ fun HomeScreen(
                                             }
                                         }
                                 )
+                            }
+                        }
+                    }
+                }
+
+                home?.forEach { homePlaylists ->
+                    if (homePlaylists.playlists.isNotEmpty()){
+                        homePlaylists.let { playlists  ->
+                            NavigationTitle(
+                                title = playlists.playlistName,
+                            )
+
+                            LazyRow(
+                                contentPadding = WindowInsets.systemBars
+                                    .only(WindowInsetsSides.Horizontal)
+                                    .asPaddingValues()
+                            ) {
+                                items(
+                                    items = playlists.playlists,
+                                    key = { it.id }
+                                ) { playlist ->
+                                    playlist.author ?: run {
+                                        playlist.author = Artist(name="YouTube Music", id=null)
+                                    }
+                                    YouTubeGridItem(
+                                        item = playlist,
+                                        isActive = mediaMetadata?.album?.id == playlist.id,
+                                        isPlaying = isPlaying,
+                                        coroutineScope = coroutineScope,
+                                        modifier = Modifier
+                                            .combinedClickable(
+                                                onClick = {
+                                                    navController.navigate("online_playlist/${playlist.id}")
+                                                },
+                                                onLongClick = {
+                                                    menuState.show {
+                                                        YouTubePlaylistMenu(
+                                                            playlist = playlist,
+                                                            coroutineScope = coroutineScope,
+                                                            onDismiss = menuState::dismiss
+                                                        )
+                                                    }
+                                                }
+                                            )
+                                            .animateItemPlacement()
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+
+                homeFirstAlbumRecommendation?.albums?.let { albums  ->
+                    if (albums.recommendationAlbum.isNotEmpty()) {
+                        NavigationTitle(
+                            title = stringResource(R.string.similar_to) + " " + albums.recommendedAlbum.name,
+                        )
+
+                        LazyRow(
+                            contentPadding = WindowInsets.systemBars
+                                .only(WindowInsetsSides.Horizontal)
+                                .asPaddingValues()
+                        ) {
+                            items(
+                                items = albums.recommendationAlbum,
+                                key = { it.id }
+                            ) { album ->
+                                if (!album.title.contains("Presenting")) {
+                                    YouTubeGridItem(
+                                        item = album,
+                                        isActive = mediaMetadata?.album?.id == album.id,
+                                        isPlaying = isPlaying,
+                                        coroutineScope = coroutineScope,
+                                        modifier = Modifier
+                                            .combinedClickable(
+                                                onClick = {
+                                                    navController.navigate("online_playlist/${album.id}")
+                                                },
+                                                onLongClick = {
+                                                    menuState.show {
+                                                        YouTubePlaylistMenu(
+                                                            playlist = album,
+                                                            coroutineScope = coroutineScope,
+                                                            onDismiss = menuState::dismiss
+                                                        )
+                                                    }
+                                                }
+                                            )
+                                            .animateItemPlacement()
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+
+                homeFirstContinuation?.forEach { homePlaylists ->
+                    if (homePlaylists.playlists.isNotEmpty()){
+                        homePlaylists.let { playlists  ->
+                            NavigationTitle(
+                                title = playlists.playlistName,
+                            )
+
+                            LazyRow(
+                                contentPadding = WindowInsets.systemBars
+                                    .only(WindowInsetsSides.Horizontal)
+                                    .asPaddingValues()
+                            ) {
+                                items(
+                                    items = playlists.playlists,
+                                    key = { it.id }
+                                ) { playlist ->
+                                    playlist.author ?: run {
+                                        playlist.author = Artist(name="YouTube Music", id=null)
+                                    }
+                                    YouTubeGridItem(
+                                        item = playlist,
+                                        isActive = mediaMetadata?.album?.id == playlist.id,
+                                        isPlaying = isPlaying,
+                                        coroutineScope = coroutineScope,
+                                        modifier = Modifier
+                                            .combinedClickable(
+                                                onClick = {
+                                                    navController.navigate("online_playlist/${playlist.id}")
+                                                },
+                                                onLongClick = {
+                                                    menuState.show {
+                                                        YouTubePlaylistMenu(
+                                                            playlist = playlist,
+                                                            coroutineScope = coroutineScope,
+                                                            onDismiss = menuState::dismiss
+                                                        )
+                                                    }
+                                                }
+                                            )
+                                            .animateItemPlacement()
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+
+                homeSecondArtistRecommendation?.let { albums  ->
+                    if (albums.listItem.isNotEmpty()) {
+                        NavigationTitle(
+                            title = stringResource(R.string.similar_to) + " " + albums.artistName,
+                        )
+
+                        LazyRow(
+                            contentPadding = WindowInsets.systemBars
+                                .only(WindowInsetsSides.Horizontal)
+                                .asPaddingValues()
+                        ) {
+                            items(
+                                items = albums.listItem,
+                                key = { it.id }
+                            ) { item ->
+                                if (!item.title.contains("Presenting")) {
+                                    YouTubeSmallGridItem(
+                                        item = item,
+                                        isActive = mediaMetadata?.album?.id == item.id,
+                                        isPlaying = isPlaying,
+                                        coroutineScope = coroutineScope,
+                                        modifier = Modifier
+                                            .combinedClickable(
+                                                onClick = {
+                                                    when (item) {
+                                                        is PlaylistItem -> navController.navigate("online_playlist/${item.id}")
+                                                        else -> navController.navigate("artist/${item.id}")
+                                                    }
+
+                                                },
+                                                onLongClick = {
+                                                    menuState.show {
+                                                        when (item) {
+                                                            is PlaylistItem -> YouTubePlaylistMenu(
+                                                                playlist = item,
+                                                                coroutineScope = coroutineScope,
+                                                                onDismiss = menuState::dismiss
+                                                            )
+
+                                                            is ArtistItem -> {}
+                                                            else -> {}
+                                                        }
+                                                    }
+                                                }
+                                            )
+                                            .animateItemPlacement()
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+
+                homeSecondContinuation?.forEach { homePlaylists ->
+                    if (homePlaylists.playlists.isNotEmpty()){
+                        homePlaylists.let { playlists  ->
+                            NavigationTitle(
+                                title = playlists.playlistName,
+                            )
+
+                            LazyRow(
+                                contentPadding = WindowInsets.systemBars
+                                    .only(WindowInsetsSides.Horizontal)
+                                    .asPaddingValues()
+                            ) {
+                                items(
+                                    items = playlists.playlists,
+                                    key = { it.id }
+                                ) { playlist ->
+                                    playlist.author ?: run {
+                                        playlist.author = Artist(name="YouTube Music", id=null)
+                                    }
+                                    YouTubeGridItem(
+                                        item = playlist,
+                                        isActive = mediaMetadata?.album?.id == playlist.id,
+                                        isPlaying = isPlaying,
+                                        coroutineScope = coroutineScope,
+                                        modifier = Modifier
+                                            .combinedClickable(
+                                                onClick = {
+                                                    navController.navigate("online_playlist/${playlist.id}")
+                                                },
+                                                onLongClick = {
+                                                    menuState.show {
+                                                        YouTubePlaylistMenu(
+                                                            playlist = playlist,
+                                                            coroutineScope = coroutineScope,
+                                                            onDismiss = menuState::dismiss
+                                                        )
+                                                    }
+                                                }
+                                            )
+                                            .animateItemPlacement()
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+
+                homeSecondAlbumRecommendation?.albums?.let { albums  ->
+                    if (albums.recommendationAlbum.isNotEmpty()) {
+                        NavigationTitle(
+                            title = stringResource(R.string.similar_to) + " " + albums.recommendedAlbum.name,
+                        )
+
+                        LazyRow(
+                            contentPadding = WindowInsets.systemBars
+                                .only(WindowInsetsSides.Horizontal)
+                                .asPaddingValues()
+                        ) {
+                            items(
+                                items = albums.recommendationAlbum,
+                                key = { it.id }
+                            ) { album ->
+                                if (!album.title.contains("Presenting")) {
+                                    YouTubeGridItem(
+                                        item = album,
+                                        isActive = mediaMetadata?.album?.id == album.id,
+                                        isPlaying = isPlaying,
+                                        coroutineScope = coroutineScope,
+                                        modifier = Modifier
+                                            .combinedClickable(
+                                                onClick = {
+                                                    navController.navigate("online_playlist/${album.id}")
+                                                },
+                                                onLongClick = {
+                                                    menuState.show {
+                                                        YouTubePlaylistMenu(
+                                                            playlist = album,
+                                                            coroutineScope = coroutineScope,
+                                                            onDismiss = menuState::dismiss
+                                                        )
+                                                    }
+                                                }
+                                            )
+                                            .animateItemPlacement()
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+
+                homeThirdContinuation?.forEach { homePlaylists ->
+                    if (homePlaylists.playlists.isNotEmpty()){
+                        homePlaylists.let { playlists  ->
+                            NavigationTitle(
+                                title = playlists.playlistName,
+                            )
+
+                            LazyRow(
+                                contentPadding = WindowInsets.systemBars
+                                    .only(WindowInsetsSides.Horizontal)
+                                    .asPaddingValues()
+                            ) {
+                                items(
+                                    items = playlists.playlists,
+                                    key = { it.id }
+                                ) { playlist ->
+                                    playlist.author ?: run {
+                                        playlist.author = Artist(name="YouTube Music", id=null)
+                                    }
+//                                    if (playlist.author?.name?.isEmpty() == true || playlist.author?.name?.contains("Youtube Music") != true)
+//                                        playlist.author = Artist(name="YouTube Music", id=null)
+                                    YouTubeGridItem(
+                                        item = playlist,
+                                        isActive = mediaMetadata?.album?.id == playlist.id,
+                                        isPlaying = isPlaying,
+                                        coroutineScope = coroutineScope,
+                                        modifier = Modifier
+                                            .combinedClickable(
+                                                onClick = {
+                                                    navController.navigate("online_playlist/${playlist.id}")
+                                                },
+                                                onLongClick = {
+                                                    menuState.show {
+                                                        YouTubePlaylistMenu(
+                                                            playlist = playlist,
+                                                            coroutineScope = coroutineScope,
+                                                            onDismiss = menuState::dismiss
+                                                        )
+                                                    }
+                                                }
+                                            )
+                                            .animateItemPlacement()
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+
+                homeThirdArtistRecommendation?.let { albums ->
+                    if (albums.listItem.isNotEmpty()) {
+                        NavigationTitle(
+                            title = stringResource(R.string.similar_to) + " " + albums.artistName,
+                        )
+
+                        LazyRow(
+                            contentPadding = WindowInsets.systemBars
+                                .only(WindowInsetsSides.Horizontal)
+                                .asPaddingValues()
+                        ) {
+                            items(
+                                items = albums.listItem,
+                                key = { it.id }
+                            ) { item ->
+                                if (!item.title.contains("Presenting")) {
+                                    YouTubeSmallGridItem(
+                                        item = item,
+                                        isActive = mediaMetadata?.album?.id == item.id,
+                                        isPlaying = isPlaying,
+                                        coroutineScope = coroutineScope,
+                                        modifier = Modifier
+                                            .combinedClickable(
+                                                onClick = {
+                                                    when (item) {
+                                                        is PlaylistItem -> navController.navigate("online_playlist/${item.id}")
+                                                        else -> navController.navigate("artist/${item.id}")
+                                                    }
+
+                                                },
+                                                onLongClick = {
+                                                    menuState.show {
+                                                        when (item) {
+                                                            is PlaylistItem -> YouTubePlaylistMenu(
+                                                                playlist = item,
+                                                                coroutineScope = coroutineScope,
+                                                                onDismiss = menuState::dismiss
+                                                            )
+
+                                                            is ArtistItem -> {}
+                                                            else -> {}
+                                                        }
+                                                    }
+                                                }
+                                            )
+                                            .animateItemPlacement()
+                                    )
+                                }
                             }
                         }
                     }
@@ -338,34 +873,6 @@ fun HomeScreen(
                         }
                     }
                 }
-
-                explorePage?.moodAndGenres?.let { moodAndGenres ->
-                    NavigationTitle(
-                        title = stringResource(R.string.mood_and_genres),
-                        onClick = {
-                            navController.navigate("mood_and_genres")
-                        }
-                    )
-
-                    LazyHorizontalGrid(
-                        rows = GridCells.Fixed(4),
-                        contentPadding = PaddingValues(6.dp),
-                        modifier = Modifier.height((MoodAndGenresButtonHeight + 12.dp) * 4 + 12.dp)
-                    ) {
-                        items(moodAndGenres) {
-                            MoodAndGenresButton(
-                                title = it.title,
-                                onClick = {
-                                    navController.navigate("youtube_browse/${it.endpoint.browseId}?params=${it.endpoint.params}")
-                                },
-                                modifier = Modifier
-                                    .padding(6.dp)
-                                    .width(180.dp)
-                            )
-                        }
-                    }
-                }
-
                 Spacer(Modifier.height(LocalPlayerAwareWindowInsets.current.asPaddingValues().calculateBottomPadding()))
             }
 

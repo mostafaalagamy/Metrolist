@@ -21,6 +21,7 @@ val ListItemHeight = 64.dp
 val SuggestionItemHeight = 56.dp
 val SearchFilterHeight = 48.dp
 val ListThumbnailSize = 48.dp
+val SmallGridThumbnailHeight = 104.dp
 val GridThumbnailHeight = 128.dp
 val AlbumThumbnailSize = 144.dp
 
