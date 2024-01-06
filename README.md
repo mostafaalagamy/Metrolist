@@ -53,19 +53,8 @@
 alt='Get it on GitHub'
 height="80">](https://github.com/mostafaalagamy/Metrolist/releases/latest/download/Metrolist.apk)
 
-</div>
 
-<div align="center">
-<h1>Credit</h1>
-</div>
 
-Credit to [vfsfitvnm/ViMusic](https://github.com/vfsfitvnm/ViMusic) for being an
-example of Jetpack Compose music player.
-
-<div align="center">
-<h1>Disclaimer</h1>
-</div>
-  
 This project and its contents are not affiliated with, funded, authorized, endorsed by, or in any way associated with YouTube, Google LLC or any of its affiliates and subsidiaries.
 
 Any trademark, service mark, trade name, or other intellectual property rights used in this project are owned by the respective owners.
