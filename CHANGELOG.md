@@ -1,5 +1,18 @@
 <h1>Changelog</h1>
 
+## 5.5.0
+
+#### What's New
+1. Some change in source code.
+- Similar to the most listened albums/artists
+- YT music playlists home page added
+- Change the app icon background 
+
+2. Fix displaying the album name instead of the artist's name.
+
+3. Bugs fixes and many more.
+
+
 ## 5.0.0
 
 #### What's New
