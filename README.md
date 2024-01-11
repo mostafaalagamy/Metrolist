@@ -47,7 +47,7 @@
 - etc.
 
 <div align="center">
-<h1>Download</h1>
+<h1>Download app now</h1>
 
 [<img src="https://raw.githubusercontent.com/WSTxda/QP-Gallery-Releases/master/Images/GitHub.svg"
 alt='Get it on GitHub'
