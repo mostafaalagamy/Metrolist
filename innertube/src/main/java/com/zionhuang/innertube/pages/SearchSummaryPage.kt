@@ -7,7 +7,6 @@ import com.zionhuang.innertube.models.ArtistItem
 import com.zionhuang.innertube.models.MusicCardShelfRenderer
 import com.zionhuang.innertube.models.MusicResponsiveListItemRenderer
 import com.zionhuang.innertube.models.PlaylistItem
-import com.zionhuang.innertube.models.Run
 import com.zionhuang.innertube.models.SongItem
 import com.zionhuang.innertube.models.YTItem
 import com.zionhuang.innertube.models.clean
@@ -92,10 +91,10 @@ data class SearchSummaryPage(
             val secondaryLine = renderer.flexColumns.getOrNull(1)
                 ?.musicResponsiveListItemFlexColumnRenderer?.text?.runs?.splitBySeparator()
                 ?: return null
-                val thirdLine = renderer.flexColumns.getOrNull(2)
-                    ?.musicResponsiveListItemFlexColumnRenderer?.text?.runs?.splitBySeparator()
-                    ?: emptyList()
-                val listRun = (secondaryLine + thirdLine).clean()
+            val thirdLine = renderer.flexColumns.getOrNull(2)
+                ?.musicResponsiveListItemFlexColumnRenderer?.text?.runs?.splitBySeparator()
+                ?: emptyList()
+            val listRun = (secondaryLine + thirdLine).clean()
             return when {
                 renderer.isSong -> {
                     SongItem(

@@ -27,21 +27,10 @@ fun List<Run>.splitBySeparator(): List<List<Run>> {
     res.add(tmp)
     return res
 }
-fun List<List<Run>>.clean(): List<List<Run>> {
-    val res = mutableListOf<List<Run>>()
-    var l: List<List<Run>> = emptyList()
-    this.getOrNull(0)?.getOrNull(0)?.navigationEndpoint
-        ?.let {
-            l = this
-        }
-        ?: run {
-            l = this.drop(1)
-        }
-    l.forEach {
-        res.add(it)
-    }
-    return res
-}
+
+fun List<List<Run>>.clean(): List<List<Run>> =
+    if (getOrNull(0)?.getOrNull(0)?.navigationEndpoint != null) this
+    else this.drop(1)
 
 fun List<Run>.oddElements() = filterIndexed { index, _ ->
     index % 2 == 0
