@@ -1,5 +1,14 @@
 <h1>Changelog</h1>
 
+## 5.5.5
+#### what's New
+Some change in source code.
+
+1. Added back the swipe on thumbnail "some issues here"
+2. Added listen again section in home page 
+3. Rename the library in nav bar "songs"
+4. Fix all issues in this version 
+**Full Changelog**: https://github.com/mostafaalagamy/Metrolist/compare/v5.5.0...v5.5.5 
 ## 5.5.0
 
 #### What's New
