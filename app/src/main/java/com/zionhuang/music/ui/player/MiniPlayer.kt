@@ -4,6 +4,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,6 +19,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
@@ -47,9 +49,9 @@ import com.zionhuang.music.LocalPlayerConnection
 import com.zionhuang.music.R
 import com.zionhuang.music.constants.MiniPlayerHeight
 import com.zionhuang.music.constants.ThumbnailCornerRadius
+import com.zionhuang.music.extensions.metadata
 import com.zionhuang.music.extensions.togglePlayPause
 import com.zionhuang.music.models.MediaMetadata
-import com.zionhuang.music.ui.utils.HorizontalPager
 import com.zionhuang.music.ui.utils.SnapLayoutInfoProvider
 import kotlinx.coroutines.flow.drop
 
@@ -117,17 +119,17 @@ fun MiniPlayer(
                 .fillMaxSize()
                 .padding(end = 12.dp),
         ) {
-            HorizontalPager(
-                state = pagerState,
-                flingBehavior = rememberSnapFlingBehavior(snapLayoutInfoProvider),
-                items = windows,
-                key = { it.uid.hashCode() },
-                beyondBoundsPageCount = 2,
-                modifier = Modifier.weight(1f)
-            ) { window ->
-                mediaMetadata?.let {
+            windows.takeIf { it.isNotEmpty() }?.let { windows ->
+                HorizontalPager(
+                    state = pagerState,
+                    flingBehavior = rememberSnapFlingBehavior(snapLayoutInfoProvider),
+                    pageCount = windows.size,
+                    key = { windows[it].uid.hashCode() },
+                    beyondBoundsPageCount = 2,
+                    modifier = Modifier.weight(1f)
+                ) { index ->
                     MiniMediaInfo(
-                        mediaMetadata = it,
+                        mediaMetadata = windows[index].mediaItem.metadata!!,
                         error = error,
                         modifier = Modifier.padding(horizontal = 6.dp)
                     )
@@ -164,6 +166,7 @@ fun MiniPlayer(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MiniMediaInfo(
     mediaMetadata: MediaMetadata,
@@ -218,6 +221,8 @@ fun MiniMediaInfo(
                 fontWeight = FontWeight.Bold,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
+                modifier = Modifier
+                    .basicMarquee()
             )
             Text(
                 text = mediaMetadata.artists.joinToString { it.name },
