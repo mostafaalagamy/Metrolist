@@ -4,8 +4,10 @@ import android.content.res.Configuration
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -73,6 +75,7 @@ import com.zionhuang.music.utils.makeTimeString
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun BottomSheetPlayer(
     state: BottomSheetState,
@@ -145,6 +148,7 @@ fun BottomSheetPlayer(
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier
                     .padding(horizontal = PlayerHorizontalPadding)
+                    .basicMarquee()
                     .clickable(enabled = mediaMetadata.album != null) {
                         navController.navigate("album/${mediaMetadata.album!!.id}")
                         state.collapseSoft()
