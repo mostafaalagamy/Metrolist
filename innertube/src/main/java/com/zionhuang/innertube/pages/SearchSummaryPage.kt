@@ -45,7 +45,7 @@ data class SearchSummaryPage(
                         duration = subtitle.lastOrNull()?.firstOrNull()?.text?.parseTime(),
                         thumbnail = renderer.thumbnail.musicThumbnailRenderer?.getThumbnailUrl() ?: return null,
                         explicit = renderer.subtitleBadges?.find {
-                            it.musicInlineBadgeRenderer.icon.iconType == "MUSIC_EXPLICIT_BADGE"
+                            it.musicInlineBadgeRenderer?.icon?.iconType == "MUSIC_EXPLICIT_BADGE"
                         } != null
                     )
                 }
@@ -78,8 +78,29 @@ data class SearchSummaryPage(
                         year = null,
                         thumbnail = renderer.thumbnail.musicThumbnailRenderer?.getThumbnailUrl() ?: return null,
                         explicit = renderer.subtitleBadges?.find {
-                            it.musicInlineBadgeRenderer.icon.iconType == "MUSIC_EXPLICIT_BADGE"
+                            it.musicInlineBadgeRenderer?.icon?.iconType == "MUSIC_EXPLICIT_BADGE"
                         } != null
+                    )
+                }
+
+                renderer.onTap.browseEndpoint?.isPlaylistEndpoint == true -> {
+                    PlaylistItem(
+                        id = renderer.onTap.browseEndpoint.browseId.removePrefix("VL"),
+                        title = renderer.header.musicCardShelfHeaderBasicRenderer.title.runs?.joinToString(separator = "") { it.text }
+                            ?: return null,
+                        author = Artist(
+                            id = null,
+                            name = renderer.subtitle.runs?.joinToString { it.text } ?: return null
+                        ),
+                        songCountText = null,
+                        thumbnail = renderer.thumbnail.musicThumbnailRenderer?.getThumbnailUrl() ?: return null,
+                        playEndpoint = renderer.buttons.find { it.buttonRenderer.icon?.iconType == "PLAY_ARROW" }
+                            ?.buttonRenderer?.command?.watchPlaylistEndpoint
+                            ?: return null,
+                        shuffleEndpoint = renderer.buttons.find { it.buttonRenderer.icon?.iconType == "MUSIC_SHUFFLE" }
+                            ?.buttonRenderer?.command?.watchPlaylistEndpoint
+                            ?: return null,
+                        radioEndpoint = null
                     )
                 }
 
@@ -117,7 +138,7 @@ data class SearchSummaryPage(
                         duration = secondaryLine.lastOrNull()?.firstOrNull()?.text?.parseTime(),
                         thumbnail = renderer.thumbnail?.musicThumbnailRenderer?.getThumbnailUrl() ?: return null,
                         explicit = renderer.badges?.find {
-                            it.musicInlineBadgeRenderer.icon.iconType == "MUSIC_EXPLICIT_BADGE"
+                            it.musicInlineBadgeRenderer?.icon?.iconType == "MUSIC_EXPLICIT_BADGE"
                         } != null
                     )
                 }
@@ -152,7 +173,7 @@ data class SearchSummaryPage(
                         year = secondaryLine.getOrNull(2)?.firstOrNull()?.text?.toIntOrNull(),
                         thumbnail = renderer.thumbnail?.musicThumbnailRenderer?.getThumbnailUrl() ?: return null,
                         explicit = renderer.badges?.find {
-                            it.musicInlineBadgeRenderer.icon.iconType == "MUSIC_EXPLICIT_BADGE"
+                            it.musicInlineBadgeRenderer?.icon?.iconType == "MUSIC_EXPLICIT_BADGE"
                         } != null
                     )
                 }

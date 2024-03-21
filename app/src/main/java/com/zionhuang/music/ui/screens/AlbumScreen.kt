@@ -71,6 +71,7 @@ import com.zionhuang.music.playback.ExoDownloadService
 import com.zionhuang.music.playback.queues.ListQueue
 import com.zionhuang.music.ui.component.AutoResizeText
 import com.zionhuang.music.ui.component.FontSizeRange
+import com.zionhuang.music.ui.component.IconButton
 import com.zionhuang.music.ui.component.LocalMenuState
 import com.zionhuang.music.ui.component.SongListItem
 import com.zionhuang.music.ui.component.shimmer.ButtonPlaceholder
@@ -79,6 +80,7 @@ import com.zionhuang.music.ui.component.shimmer.ShimmerHost
 import com.zionhuang.music.ui.component.shimmer.TextPlaceholder
 import com.zionhuang.music.ui.menu.AlbumMenu
 import com.zionhuang.music.ui.menu.SongMenu
+import com.zionhuang.music.ui.utils.backToMain
 import com.zionhuang.music.viewmodels.AlbumViewModel
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
@@ -425,7 +427,10 @@ fun AlbumScreen(
     TopAppBar(
         title = { },
         navigationIcon = {
-            IconButton(onClick = navController::navigateUp) {
+            IconButton(
+                onClick = navController::navigateUp,
+                onLongClick = navController::backToMain
+            ) {
                 Icon(
                     painterResource(R.drawable.arrow_back),
                     contentDescription = null

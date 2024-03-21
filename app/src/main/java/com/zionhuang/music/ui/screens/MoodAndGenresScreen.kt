@@ -14,7 +14,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -35,9 +34,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.zionhuang.music.LocalPlayerAwareWindowInsets
 import com.zionhuang.music.R
+import com.zionhuang.music.ui.component.IconButton
 import com.zionhuang.music.ui.component.NavigationTitle
 import com.zionhuang.music.ui.component.shimmer.ListItemPlaceHolder
 import com.zionhuang.music.ui.component.shimmer.ShimmerHost
+import com.zionhuang.music.ui.utils.backToMain
 import com.zionhuang.music.viewmodels.MoodAndGenresViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -101,7 +102,10 @@ fun MoodAndGenresScreen(
     TopAppBar(
         title = { Text(stringResource(R.string.mood_and_genres)) },
         navigationIcon = {
-            IconButton(onClick = navController::navigateUp) {
+            IconButton(
+                onClick = navController::navigateUp,
+                onLongClick = navController::backToMain
+            ) {
                 Icon(
                     painterResource(R.drawable.arrow_back),
                     contentDescription = null

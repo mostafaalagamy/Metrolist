@@ -47,8 +47,8 @@ A Material 3 YouTube Music client for Android
 
 > **Warning**
 >
->If you're in region that YouTube Music is not supported, you won't be able to use this app
-***unless*** you have proxy or VPN to connect to a YTM supported region.
+>If you're in a region where YouTube Music is not supported, you won't be able to use this app
+***unless*** you have a proxy or VPN to connect to a YTM supported region.
 
 ## FAQ
 
@@ -66,7 +66,7 @@ recommend [Pano Scrobbler](https://play.google.com/store/apps/details?id=com.arn
 
 ## Contributing Translations
 
-Follow the [instruction](https://developer.android.com/guide/topics/resources/localization) and
+Follow the [instructions](https://developer.android.com/guide/topics/resources/localization) and
 create a pull request. If possible, please build the app beforehand and make sure there is no error
 before you create a pull request.
 

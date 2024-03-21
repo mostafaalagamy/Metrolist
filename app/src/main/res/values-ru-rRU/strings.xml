@@ -187,7 +187,7 @@
     <string name="sleep_timer">Таймер сна</string>
     <string name="end_of_song">Конец песни</string>
     <plurals name="minute">
-        <item quantity="one" tools:ignore="ImpliedQuantity">1 минута</item>
+        <item quantity="one">%d минута</item>
         <item quantity="few">%d минуты</item>
         <item quantity="many">%d минут</item>
         <item quantity="other">%d минут</item>
@@ -200,11 +200,11 @@
     <!-- Player action -->
     <string name="action_like">Поставить «Нравится»</string>
     <string name="action_remove_like">Убрать «Нравится»</string>
-    <string name="action_shuffle_on">Shuffle on</string>
-    <string name="action_shuffle_off">Shuffle off</string>
-    <string name="repeat_mode_off">Repeat mode off</string>
-    <string name="repeat_mode_one">Repeat current song</string>
-    <string name="repeat_mode_all">Repeat queue</string>
+    <string name="action_shuffle_on">Включить перемешивание</string>
+    <string name="action_shuffle_off">Выключить перемешивание</string>
+    <string name="repeat_mode_off">Выключить повторение</string>
+    <string name="repeat_mode_one">Повторить текущую песню</string>
+    <string name="repeat_mode_all">Повторить очередь</string>
 
     <!-- Queue Title -->
     <string name="queue_all_songs">Все композиции</string>

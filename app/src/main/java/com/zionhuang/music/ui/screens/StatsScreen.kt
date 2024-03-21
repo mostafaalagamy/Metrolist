@@ -36,12 +36,14 @@ import com.zionhuang.music.playback.queues.YouTubeQueue
 import com.zionhuang.music.ui.component.AlbumGridItem
 import com.zionhuang.music.ui.component.ArtistGridItem
 import com.zionhuang.music.ui.component.ChipsRow
+import com.zionhuang.music.ui.component.IconButton
 import com.zionhuang.music.ui.component.LocalMenuState
 import com.zionhuang.music.ui.component.NavigationTitle
 import com.zionhuang.music.ui.component.SongListItem
 import com.zionhuang.music.ui.menu.AlbumMenu
 import com.zionhuang.music.ui.menu.ArtistMenu
 import com.zionhuang.music.ui.menu.SongMenu
+import com.zionhuang.music.ui.utils.backToMain
 import com.zionhuang.music.viewmodels.StatsViewModel
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
@@ -215,7 +217,10 @@ fun StatsScreen(
     TopAppBar(
         title = { Text(stringResource(R.string.stats)) },
         navigationIcon = {
-            IconButton(onClick = navController::navigateUp) {
+            IconButton(
+                onClick = navController::navigateUp,
+                onLongClick = navController::backToMain
+            ) {
                 Icon(
                     painterResource(R.drawable.arrow_back),
                     contentDescription = null

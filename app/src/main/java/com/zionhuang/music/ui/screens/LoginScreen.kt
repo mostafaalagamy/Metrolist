@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -29,6 +28,8 @@ import com.zionhuang.music.constants.AccountEmailKey
 import com.zionhuang.music.constants.AccountNameKey
 import com.zionhuang.music.constants.InnerTubeCookieKey
 import com.zionhuang.music.constants.VisitorDataKey
+import com.zionhuang.music.ui.component.IconButton
+import com.zionhuang.music.ui.utils.backToMain
 import com.zionhuang.music.utils.rememberPreference
 import com.zionhuang.music.utils.reportException
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -97,7 +98,10 @@ fun LoginScreen(
     TopAppBar(
         title = { Text(stringResource(R.string.login)) },
         navigationIcon = {
-            IconButton(onClick = navController::navigateUp) {
+            IconButton(
+                onClick = navController::navigateUp,
+                onLongClick = navController::backToMain
+            ) {
                 Icon(
                     painterResource(R.drawable.arrow_back),
                     contentDescription = null

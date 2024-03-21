@@ -59,6 +59,8 @@
     <string name="liked_songs">Liked songs</string>
     <string name="downloaded_songs">Downloaded songs</string>
     <string name="playlist_is_empty">The playlist is empty</string>
+    <string name="remove_download_playlist_confirm">Do you really want to remove all \"%s\" playlist songs from the Downloaded Songs storage?</string>
+    <string name="delete_playlist_confirm">Do you really want to delete the playlist \"%s\"?</string>
 
     <!-- Button -->
     <string name="retry">Retry</string>

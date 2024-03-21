@@ -99,12 +99,14 @@ fun YouTubePlaylistMenu(
             playerConnection.playQueue(YouTubeQueue(playlist.shuffleEndpoint))
             onDismiss()
         }
-        GridMenuItem(
-            icon = R.drawable.radio,
-            title = R.string.start_radio
-        ) {
-            playerConnection.playQueue(YouTubeQueue(playlist.radioEndpoint))
-            onDismiss()
+        playlist.radioEndpoint?.let { radioEndpoint ->
+            GridMenuItem(
+                icon = R.drawable.radio,
+                title = R.string.start_radio
+            ) {
+                playerConnection.playQueue(YouTubeQueue(radioEndpoint))
+                onDismiss()
+            }
         }
         GridMenuItem(
             icon = R.drawable.playlist_play,

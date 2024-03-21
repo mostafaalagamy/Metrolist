@@ -43,7 +43,7 @@ object NextPage {
             duration = renderer.lengthText?.runs?.firstOrNull()?.text?.parseTime() ?: return null,
             thumbnail = renderer.thumbnail.thumbnails.lastOrNull()?.url ?: return null,
             explicit = renderer.badges?.find {
-                it.musicInlineBadgeRenderer.icon.iconType == "MUSIC_EXPLICIT_BADGE"
+                it.musicInlineBadgeRenderer?.icon?.iconType == "MUSIC_EXPLICIT_BADGE"
             } != null
         )
     }

@@ -56,6 +56,8 @@
     <string name="liked_songs">喜歡的歌曲</string>
     <string name="downloaded_songs">已下載的歌曲</string>
     <string name="playlist_is_empty">播放清單為空</string>
+    <string name="remove_download_playlist_confirm">確定要刪除「%s」的下載嗎？</string>
+    <string name="delete_playlist_confirm">確定要刪除播放清單「%s」嗎?</string>
 
     <!-- Button -->
     <string name="retry">重試</string>

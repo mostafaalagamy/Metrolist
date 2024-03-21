@@ -8,7 +8,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -36,9 +35,11 @@ import com.zionhuang.music.R
 import com.zionhuang.music.constants.MaxImageCacheSizeKey
 import com.zionhuang.music.constants.MaxSongCacheSizeKey
 import com.zionhuang.music.extensions.tryOrNull
+import com.zionhuang.music.ui.component.IconButton
 import com.zionhuang.music.ui.component.ListPreference
 import com.zionhuang.music.ui.component.PreferenceEntry
 import com.zionhuang.music.ui.component.PreferenceGroupTitle
+import com.zionhuang.music.ui.utils.backToMain
 import com.zionhuang.music.ui.utils.formatFileSize
 import com.zionhuang.music.utils.TranslationHelper
 import com.zionhuang.music.utils.rememberPreference
@@ -217,7 +218,10 @@ fun StorageSettings(
     TopAppBar(
         title = { Text(stringResource(R.string.storage)) },
         navigationIcon = {
-            IconButton(onClick = navController::navigateUp) {
+            IconButton(
+                onClick = navController::navigateUp,
+                onLongClick = navController::backToMain
+            ) {
                 Icon(
                     painterResource(R.drawable.arrow_back),
                     contentDescription = null

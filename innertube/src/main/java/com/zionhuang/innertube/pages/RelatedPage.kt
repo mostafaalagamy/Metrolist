@@ -39,7 +39,7 @@ data class RelatedPage(
                 duration = null,
                 thumbnail = renderer.thumbnail?.musicThumbnailRenderer?.getThumbnailUrl() ?: return null,
                 explicit = renderer.badges?.find {
-                    it.musicInlineBadgeRenderer.icon.iconType == "MUSIC_EXPLICIT_BADGE"
+                    it.musicInlineBadgeRenderer?.icon?.iconType == "MUSIC_EXPLICIT_BADGE"
                 } != null
             )
         }
@@ -56,7 +56,7 @@ data class RelatedPage(
                     year = renderer.subtitle?.runs?.lastOrNull()?.text?.toIntOrNull(),
                     thumbnail = renderer.thumbnailRenderer.musicThumbnailRenderer?.getThumbnailUrl() ?: return null,
                     explicit = renderer.subtitleBadges?.find {
-                        it.musicInlineBadgeRenderer.icon.iconType == "MUSIC_EXPLICIT_BADGE"
+                        it.musicInlineBadgeRenderer?.icon?.iconType == "MUSIC_EXPLICIT_BADGE"
                     } != null
                 )
                 renderer.isPlaylist -> PlaylistItem(

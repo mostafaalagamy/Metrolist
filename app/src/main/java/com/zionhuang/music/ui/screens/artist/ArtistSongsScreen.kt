@@ -41,10 +41,12 @@ import com.zionhuang.music.extensions.toMediaItem
 import com.zionhuang.music.extensions.togglePlayPause
 import com.zionhuang.music.playback.queues.ListQueue
 import com.zionhuang.music.ui.component.HideOnScrollFAB
+import com.zionhuang.music.ui.component.IconButton
 import com.zionhuang.music.ui.component.LocalMenuState
 import com.zionhuang.music.ui.component.SongListItem
 import com.zionhuang.music.ui.component.SortHeader
 import com.zionhuang.music.ui.menu.SongMenu
+import com.zionhuang.music.ui.utils.backToMain
 import com.zionhuang.music.utils.rememberEnumPreference
 import com.zionhuang.music.utils.rememberPreference
 import com.zionhuang.music.viewmodels.ArtistSongsViewModel
@@ -158,7 +160,10 @@ fun ArtistSongsScreen(
         TopAppBar(
             title = { Text(artist?.artist?.name.orEmpty()) },
             navigationIcon = {
-                IconButton(onClick = navController::navigateUp) {
+                IconButton(
+                    onClick = navController::navigateUp,
+                    onLongClick = navController::backToMain
+                ) {
                     Icon(
                         painterResource(R.drawable.arrow_back),
                         contentDescription = null

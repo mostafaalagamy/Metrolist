@@ -92,6 +92,7 @@ import com.zionhuang.music.ui.screens.search.OnlineSearchScreen
 import com.zionhuang.music.ui.screens.settings.*
 import com.zionhuang.music.ui.theme.*
 import com.zionhuang.music.ui.utils.appBarScrollBehavior
+import com.zionhuang.music.ui.utils.backToMain
 import com.zionhuang.music.ui.utils.canNavigateUp
 import com.zionhuang.music.ui.utils.resetHeightOffset
 import com.zionhuang.music.utils.dataStore
@@ -205,9 +206,7 @@ class MainActivity : ComponentActivity() {
                     val navController = rememberNavController()
                     val navBackStackEntry by navController.currentBackStackEntryAsState()
 
-                    val navigationItems = remember {
-                        listOf(Screens.Home, Screens.Songs, Screens.Artists, Screens.Albums, Screens.Playlists)
-                    }
+                    val navigationItems = remember { Screens.MainScreens }
                     val defaultOpenTab = remember {
                         dataStore[DefaultOpenTabKey].toEnum(defaultValue = NavigationTab.HOME)
                     }
@@ -586,16 +585,28 @@ class MainActivity : ComponentActivity() {
                                     )
                                 },
                                 leadingIcon = {
-                                    IconButton(onClick = {
-                                        when {
-                                            active -> onActiveChange(false)
-                                            navController.canNavigateUp && !navigationItems.fastAny { it.route == navBackStackEntry?.destination?.route } -> {
-                                                navController.navigateUp()
-                                            }
+                                    IconButton(
+                                        onClick = {
+                                            when {
+                                                active -> onActiveChange(false)
+                                                navController.canNavigateUp && !navigationItems.fastAny { it.route == navBackStackEntry?.destination?.route } -> {
+                                                    navController.navigateUp()
+                                                }
 
-                                            else -> onActiveChange(true)
+                                                else -> onActiveChange(true)
+                                            }
+                                        },
+                                        onLongClick = {
+                                            when {
+                                                active -> {}
+                                                navController.canNavigateUp && !navigationItems.fastAny { it.route == navBackStackEntry?.destination?.route } -> {
+                                                    navController.backToMain()
+                                                }
+
+                                                else -> {}
+                                            }
                                         }
-                                    }) {
+                                    ) {
                                         Icon(
                                             painterResource(
                                                 if (active || (navController.canNavigateUp && !navigationItems.fastAny { it.route == navBackStackEntry?.destination?.route })) {

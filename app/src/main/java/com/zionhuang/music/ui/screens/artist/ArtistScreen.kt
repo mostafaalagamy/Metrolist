@@ -73,6 +73,7 @@ import com.zionhuang.music.models.toMediaMetadata
 import com.zionhuang.music.playback.queues.YouTubeQueue
 import com.zionhuang.music.ui.component.AutoResizeText
 import com.zionhuang.music.ui.component.FontSizeRange
+import com.zionhuang.music.ui.component.IconButton
 import com.zionhuang.music.ui.component.LocalMenuState
 import com.zionhuang.music.ui.component.NavigationTitle
 import com.zionhuang.music.ui.component.SongListItem
@@ -87,6 +88,7 @@ import com.zionhuang.music.ui.menu.YouTubeAlbumMenu
 import com.zionhuang.music.ui.menu.YouTubeArtistMenu
 import com.zionhuang.music.ui.menu.YouTubePlaylistMenu
 import com.zionhuang.music.ui.menu.YouTubeSongMenu
+import com.zionhuang.music.ui.utils.backToMain
 import com.zionhuang.music.ui.utils.fadingEdge
 import com.zionhuang.music.ui.utils.resize
 import com.zionhuang.music.viewmodels.ArtistViewModel
@@ -416,7 +418,10 @@ fun ArtistScreen(
     TopAppBar(
         title = { if (!transparentAppBar) Text(artistPage?.artist?.title.orEmpty()) },
         navigationIcon = {
-            IconButton(onClick = navController::navigateUp) {
+            IconButton(
+                onClick = navController::navigateUp,
+                onLongClick = navController::backToMain
+            ) {
                 Icon(
                     painterResource(R.drawable.arrow_back),
                     contentDescription = null

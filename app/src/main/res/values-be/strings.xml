@@ -187,7 +187,7 @@
     <string name="sleep_timer">Таймер рэжыму сну</string>
     <string name="end_of_song">Канец песні</string>
     <plurals name="minute">
-        <item quantity="one" tools:ignore="ImpliedQuantity">1 хвіліна</item>
+        <item quantity="one">%d хвіліна</item>
         <item quantity="few">%d хвіліны</item>
         <item quantity="many">%d хвілін</item>
         <item quantity="other">%d хвілін</item>
@@ -200,11 +200,11 @@
     <!-- Player action -->
     <string name="action_like">Упадабаць</string>
     <string name="action_remove_like">Выдаліць з упадабаных</string>
-    <string name="action_shuffle_on">Shuffle on</string>
-    <string name="action_shuffle_off">Shuffle off</string>
-    <string name="repeat_mode_off">Repeat mode off</string>
-    <string name="repeat_mode_one">Repeat current song</string>
-    <string name="repeat_mode_all">Repeat queue</string>
+    <string name="action_shuffle_on">Уключыць перамешванне</string>
+    <string name="action_shuffle_off">Выключыць перамешванне</string>
+    <string name="repeat_mode_off">Рэжым паўтору выключаны</string>
+    <string name="repeat_mode_one">Паўтарыць бягучую песню</string>
+    <string name="repeat_mode_all">Паўтарыць чаргу</string>
 
     <!-- Queue Title -->
     <string name="queue_all_songs">Усе песні</string>
@@ -282,7 +282,7 @@
     <string name="about">Аб праграме</string>
     <string name="app_version">Версія праграмы</string>
 
-    <string name="new_version_available">New version available</string>
-    <string name="translation_models">Translation Models</string>
-    <string name="clear_translation_models">Clear translation models</string>
+    <string name="new_version_available">Даступная новая версія</string>
+    <string name="translation_models">Мадэлі перакладу</string>
+    <string name="clear_translation_models">Ачысціць мадэлі перакладу</string>
 </resources>

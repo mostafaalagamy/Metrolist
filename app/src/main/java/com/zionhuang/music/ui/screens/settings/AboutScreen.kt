@@ -39,6 +39,8 @@ import androidx.navigation.NavController
 import com.zionhuang.music.BuildConfig
 import com.zionhuang.music.LocalPlayerAwareWindowInsets
 import com.zionhuang.music.R
+import com.zionhuang.music.ui.component.IconButton
+import com.zionhuang.music.ui.utils.backToMain
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -168,7 +170,10 @@ fun AboutScreen(
     TopAppBar(
         title = { Text(stringResource(R.string.about)) },
         navigationIcon = {
-            IconButton(onClick = navController::navigateUp) {
+            IconButton(
+                onClick = navController::navigateUp,
+                onLongClick = navController::backToMain
+            ) {
                 Icon(
                     painterResource(R.drawable.arrow_back),
                     contentDescription = null

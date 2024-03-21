@@ -187,7 +187,7 @@
     <string name="sleep_timer">Таймер сну</string>
     <string name="end_of_song">Кінець пісні</string>
     <plurals name="minute">
-        <item quantity="one" tools:ignore="ImpliedQuantity">1 хвилина</item>
+        <item quantity="one">%d хвилина</item>
         <item quantity="few">%d хвилини</item>
         <item quantity="many">%d хвилин</item>
         <item quantity="other">%d хвилин</item>
@@ -200,11 +200,11 @@
     <!-- Player action -->
     <string name="action_like">Поставити «Подобається»</string>
     <string name="action_remove_like">Прибрати «Подобається»</string>
-    <string name="action_shuffle_on">Shuffle on</string>
-    <string name="action_shuffle_off">Shuffle off</string>
-    <string name="repeat_mode_off">Repeat mode off</string>
-    <string name="repeat_mode_one">Repeat current song</string>
-    <string name="repeat_mode_all">Repeat queue</string>
+    <string name="action_shuffle_on">Увімкнути перемішування</string>
+    <string name="action_shuffle_off">Вимкнути перемішування</string>
+    <string name="repeat_mode_off">Вимкнути повторення</string>
+    <string name="repeat_mode_one">Повторити поточну пісню</string>
+    <string name="repeat_mode_all">Повторити чергу</string>
 
     <!-- Queue Title -->
     <string name="queue_all_songs">Всі композиції</string>

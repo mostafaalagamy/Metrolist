@@ -30,6 +30,7 @@ import com.zionhuang.music.R
 import com.zionhuang.music.extensions.togglePlayPause
 import com.zionhuang.music.models.toMediaMetadata
 import com.zionhuang.music.playback.queues.YouTubeQueue
+import com.zionhuang.music.ui.component.IconButton
 import com.zionhuang.music.ui.component.LocalMenuState
 import com.zionhuang.music.ui.component.NavigationTitle
 import com.zionhuang.music.ui.component.YouTubeListItem
@@ -39,6 +40,7 @@ import com.zionhuang.music.ui.menu.YouTubeAlbumMenu
 import com.zionhuang.music.ui.menu.YouTubeArtistMenu
 import com.zionhuang.music.ui.menu.YouTubePlaylistMenu
 import com.zionhuang.music.ui.menu.YouTubeSongMenu
+import com.zionhuang.music.ui.utils.backToMain
 import com.zionhuang.music.viewmodels.YouTubeBrowseViewModel
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
@@ -148,7 +150,10 @@ fun YouTubeBrowseScreen(
     TopAppBar(
         title = { Text(browseResult?.title.orEmpty()) },
         navigationIcon = {
-            IconButton(onClick = navController::navigateUp) {
+            IconButton(
+                onClick = navController::navigateUp,
+                onLongClick = navController::backToMain
+            ) {
                 Icon(
                     painterResource(R.drawable.arrow_back),
                     contentDescription = null

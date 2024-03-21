@@ -1,12 +1,43 @@
 package com.zionhuang.music.db
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.RawQuery
+import androidx.room.Transaction
+import androidx.room.Update
+import androidx.room.Upsert
 import androidx.sqlite.db.SupportSQLiteQuery
 import com.zionhuang.innertube.models.SongItem
 import com.zionhuang.innertube.pages.AlbumPage
 import com.zionhuang.innertube.pages.ArtistPage
-import com.zionhuang.music.constants.*
-import com.zionhuang.music.db.entities.*
+import com.zionhuang.music.constants.AlbumSortType
+import com.zionhuang.music.constants.ArtistSongSortType
+import com.zionhuang.music.constants.ArtistSortType
+import com.zionhuang.music.constants.PlaylistSortType
+import com.zionhuang.music.constants.SongSortType
+import com.zionhuang.music.db.entities.Album
+import com.zionhuang.music.db.entities.AlbumArtistMap
+import com.zionhuang.music.db.entities.AlbumEntity
+import com.zionhuang.music.db.entities.AlbumWithSongs
+import com.zionhuang.music.db.entities.Artist
+import com.zionhuang.music.db.entities.ArtistEntity
+import com.zionhuang.music.db.entities.Event
+import com.zionhuang.music.db.entities.EventWithSong
+import com.zionhuang.music.db.entities.FormatEntity
+import com.zionhuang.music.db.entities.LyricsEntity
+import com.zionhuang.music.db.entities.Playlist
+import com.zionhuang.music.db.entities.PlaylistEntity
+import com.zionhuang.music.db.entities.PlaylistSong
+import com.zionhuang.music.db.entities.PlaylistSongMap
+import com.zionhuang.music.db.entities.RelatedSongMap
+import com.zionhuang.music.db.entities.SearchHistory
+import com.zionhuang.music.db.entities.Song
+import com.zionhuang.music.db.entities.SongAlbumMap
+import com.zionhuang.music.db.entities.SongArtistMap
+import com.zionhuang.music.db.entities.SongEntity
 import com.zionhuang.music.extensions.reversed
 import com.zionhuang.music.extensions.toSQLiteQuery
 import com.zionhuang.music.models.MediaMetadata
@@ -520,7 +551,7 @@ interface DatabaseDao {
     fun searchSongs(query: String, previewSize: Int = Int.MAX_VALUE): Flow<List<Song>>
 
     @Transaction
-    @Query("SELECT *, (SELECT COUNT(1) FROM song_artist_map JOIN song ON song_artist_map.songId = song.id WHERE artistId = artist.id AND song.inLibrary IS NOT NULL) AS songCount FROM artist WHERE name LIKE '%' || :query || '%'  AND bookmarkedAt IS NOT NULL LIMIT :previewSize")
+    @Query("SELECT *, (SELECT COUNT(1) FROM song_artist_map JOIN song ON song_artist_map.songId = song.id WHERE artistId = artist.id AND song.inLibrary IS NOT NULL) AS songCount FROM artist WHERE name LIKE '%' || :query || '%' AND songCount > 0 LIMIT :previewSize")
     fun searchArtists(query: String, previewSize: Int = Int.MAX_VALUE): Flow<List<Artist>>
 
     @Transaction

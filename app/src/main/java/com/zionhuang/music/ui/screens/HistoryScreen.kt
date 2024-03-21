@@ -31,10 +31,12 @@ import com.zionhuang.music.R
 import com.zionhuang.music.extensions.togglePlayPause
 import com.zionhuang.music.models.toMediaMetadata
 import com.zionhuang.music.playback.queues.YouTubeQueue
+import com.zionhuang.music.ui.component.IconButton
 import com.zionhuang.music.ui.component.LocalMenuState
 import com.zionhuang.music.ui.component.NavigationTitle
 import com.zionhuang.music.ui.component.SongListItem
 import com.zionhuang.music.ui.menu.SongMenu
+import com.zionhuang.music.ui.utils.backToMain
 import com.zionhuang.music.viewmodels.DateAgo
 import com.zionhuang.music.viewmodels.HistoryViewModel
 import java.time.format.DateTimeFormatter
@@ -123,7 +125,10 @@ fun HistoryScreen(
     TopAppBar(
         title = { Text(stringResource(R.string.history)) },
         navigationIcon = {
-            IconButton(onClick = navController::navigateUp) {
+            IconButton(
+                onClick = navController::navigateUp,
+                onLongClick = navController::backToMain
+            ) {
                 Icon(
                     painterResource(R.drawable.arrow_back),
                     contentDescription = null

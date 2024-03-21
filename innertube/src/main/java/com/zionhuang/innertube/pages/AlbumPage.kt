@@ -1,6 +1,11 @@
 package com.zionhuang.innertube.pages
 
-import com.zionhuang.innertube.models.*
+import com.zionhuang.innertube.models.Album
+import com.zionhuang.innertube.models.AlbumItem
+import com.zionhuang.innertube.models.Artist
+import com.zionhuang.innertube.models.MusicResponsiveListItemRenderer
+import com.zionhuang.innertube.models.SongItem
+import com.zionhuang.innertube.models.oddElements
 import com.zionhuang.innertube.utils.parseTime
 
 data class AlbumPage(
@@ -31,7 +36,7 @@ data class AlbumPage(
                     ?.text?.parseTime() ?: return null,
                 thumbnail = renderer.thumbnail?.musicThumbnailRenderer?.getThumbnailUrl() ?: return null,
                 explicit = renderer.badges?.find {
-                    it.musicInlineBadgeRenderer.icon.iconType == "MUSIC_EXPLICIT_BADGE"
+                    it.musicInlineBadgeRenderer?.icon?.iconType == "MUSIC_EXPLICIT_BADGE"
                 } != null
             )
         }

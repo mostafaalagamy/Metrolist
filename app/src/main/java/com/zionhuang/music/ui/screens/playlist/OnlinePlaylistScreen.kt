@@ -68,6 +68,7 @@ import com.zionhuang.music.models.toMediaMetadata
 import com.zionhuang.music.playback.queues.YouTubeQueue
 import com.zionhuang.music.ui.component.AutoResizeText
 import com.zionhuang.music.ui.component.FontSizeRange
+import com.zionhuang.music.ui.component.IconButton
 import com.zionhuang.music.ui.component.LocalMenuState
 import com.zionhuang.music.ui.component.YouTubeListItem
 import com.zionhuang.music.ui.component.shimmer.ButtonPlaceholder
@@ -76,6 +77,7 @@ import com.zionhuang.music.ui.component.shimmer.ShimmerHost
 import com.zionhuang.music.ui.component.shimmer.TextPlaceholder
 import com.zionhuang.music.ui.menu.YouTubePlaylistMenu
 import com.zionhuang.music.ui.menu.YouTubeSongMenu
+import com.zionhuang.music.ui.utils.backToMain
 import com.zionhuang.music.viewmodels.OnlinePlaylistViewModel
 import kotlinx.coroutines.launch
 
@@ -246,20 +248,22 @@ fun OnlinePlaylistScreen(
                                     Text(stringResource(R.string.shuffle))
                                 }
 
-                                OutlinedButton(
-                                    onClick = {
-                                        playerConnection.playQueue(YouTubeQueue(playlist.radioEndpoint))
-                                    },
-                                    contentPadding = ButtonDefaults.ButtonWithIconContentPadding,
-                                    modifier = Modifier.weight(1f)
-                                ) {
-                                    Icon(
-                                        painter = painterResource(R.drawable.radio),
-                                        contentDescription = null,
-                                        modifier = Modifier.size(ButtonDefaults.IconSize)
-                                    )
-                                    Spacer(Modifier.size(ButtonDefaults.IconSpacing))
-                                    Text(stringResource(R.string.radio))
+                                playlist.radioEndpoint?.let { radioEndpoint ->
+                                    OutlinedButton(
+                                        onClick = {
+                                            playerConnection.playQueue(YouTubeQueue(radioEndpoint))
+                                        },
+                                        contentPadding = ButtonDefaults.ButtonWithIconContentPadding,
+                                        modifier = Modifier.weight(1f)
+                                    ) {
+                                        Icon(
+                                            painter = painterResource(R.drawable.radio),
+                                            contentDescription = null,
+                                            modifier = Modifier.size(ButtonDefaults.IconSize)
+                                        )
+                                        Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+                                        Text(stringResource(R.string.radio))
+                                    }
                                 }
                             }
                         }
@@ -347,7 +351,10 @@ fun OnlinePlaylistScreen(
         TopAppBar(
             title = { if (showTopBarTitle) Text(playlist?.title.orEmpty()) },
             navigationIcon = {
-                IconButton(onClick = navController::navigateUp) {
+                IconButton(
+                    onClick = navController::navigateUp,
+                    onLongClick = navController::backToMain
+                ) {
                     Icon(
                         painterResource(R.drawable.arrow_back),
                         contentDescription = null

@@ -54,7 +54,7 @@ data class PlaylistItem(
     override val thumbnail: String,
     val playEndpoint: WatchEndpoint?,
     val shuffleEndpoint: WatchEndpoint,
-    val radioEndpoint: WatchEndpoint,
+    val radioEndpoint: WatchEndpoint?,
 ) : YTItem() {
     override val explicit: Boolean
         get() = false

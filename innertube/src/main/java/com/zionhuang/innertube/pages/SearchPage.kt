@@ -1,6 +1,15 @@
 package com.zionhuang.innertube.pages
 
-import com.zionhuang.innertube.models.*
+import com.zionhuang.innertube.models.Album
+import com.zionhuang.innertube.models.AlbumItem
+import com.zionhuang.innertube.models.Artist
+import com.zionhuang.innertube.models.ArtistItem
+import com.zionhuang.innertube.models.MusicResponsiveListItemRenderer
+import com.zionhuang.innertube.models.PlaylistItem
+import com.zionhuang.innertube.models.SongItem
+import com.zionhuang.innertube.models.YTItem
+import com.zionhuang.innertube.models.oddElements
+import com.zionhuang.innertube.models.splitBySeparator
 import com.zionhuang.innertube.utils.parseTime
 
 data class SearchResult(
@@ -35,7 +44,7 @@ object SearchPage {
                     duration = secondaryLine.lastOrNull()?.firstOrNull()?.text?.parseTime(),
                     thumbnail = renderer.thumbnail?.musicThumbnailRenderer?.getThumbnailUrl() ?: return null,
                     explicit = renderer.badges?.find {
-                        it.musicInlineBadgeRenderer.icon.iconType == "MUSIC_EXPLICIT_BADGE"
+                        it.musicInlineBadgeRenderer?.icon?.iconType == "MUSIC_EXPLICIT_BADGE"
                     } != null
                 )
             }
@@ -68,7 +77,7 @@ object SearchPage {
                     year = secondaryLine.getOrNull(2)?.firstOrNull()?.text?.toIntOrNull(),
                     thumbnail = renderer.thumbnail?.musicThumbnailRenderer?.getThumbnailUrl() ?: return null,
                     explicit = renderer.badges?.find {
-                        it.musicInlineBadgeRenderer.icon.iconType == "MUSIC_EXPLICIT_BADGE"
+                        it.musicInlineBadgeRenderer?.icon?.iconType == "MUSIC_EXPLICIT_BADGE"
                     } != null
                 )
             }
