@@ -70,6 +70,8 @@
                 <data android:pathPrefix="/c/" />
                 <!-- playlist prefix -->
                 <data android:pathPrefix="/playlist" />
+                <!-- search prefix -->
+                <data android:pathPrefix="/search" />
             </intent-filter>
 
             <intent-filter>
