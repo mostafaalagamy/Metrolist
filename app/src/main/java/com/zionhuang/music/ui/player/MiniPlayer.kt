@@ -66,39 +66,9 @@ fun MiniPlayer(
     val isPlaying by playerConnection.isPlaying.collectAsState()
     val playbackState by playerConnection.playbackState.collectAsState()
     val error by playerConnection.error.collectAsState()
-    val windows by playerConnection.queueWindows.collectAsState()
-    val currentWindowIndex by playerConnection.currentWindowIndex.collectAsState()
 
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
     val canSkipNext by playerConnection.canSkipNext.collectAsState()
-
-    val pagerState = rememberPagerState(
-        initialPage = currentWindowIndex.takeIf { it != -1 } ?: 0
-    )
-
-    val snapLayoutInfoProvider = remember(pagerState) {
-        SnapLayoutInfoProvider(
-            pagerState = pagerState,
-            positionInLayout = { _, _ -> 0f }
-        )
-    }
-
-    LaunchedEffect(pagerState, currentWindowIndex) {
-        if (windows.isNotEmpty()) {
-            try {
-                pagerState.animateScrollToPage(currentWindowIndex)
-            } catch (_: Exception) {
-            }
-        }
-    }
-
-    LaunchedEffect(pagerState) {
-        snapshotFlow { pagerState.settledPage }.drop(1).collect { index ->
-            if (!pagerState.isScrollInProgress && index != currentWindowIndex && windows.isNotEmpty()) {
-                playerConnection.player.seekToDefaultPosition(windows[index].firstPeriodIndex)
-            }
-        }
-    }
 
     Box(
         modifier = modifier
@@ -119,17 +89,10 @@ fun MiniPlayer(
                 .fillMaxSize()
                 .padding(end = 12.dp),
         ) {
-            windows.takeIf { it.isNotEmpty() }?.let { windows ->
-                HorizontalPager(
-                    state = pagerState,
-                    flingBehavior = rememberSnapFlingBehavior(snapLayoutInfoProvider),
-                    pageCount = windows.size,
-                    key = { windows[it].uid.hashCode() },
-                    beyondBoundsPageCount = 2,
-                    modifier = Modifier.weight(1f)
-                ) { index ->
+            Box(Modifier.weight(1f)) {
+                mediaMetadata?.let {
                     MiniMediaInfo(
-                        mediaMetadata = windows[index].mediaItem.metadata!!,
+                        mediaMetadata = it,
                         error = error,
                         modifier = Modifier.padding(horizontal = 6.dp)
                     )

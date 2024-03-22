@@ -114,88 +114,9 @@ fun Queue(
     val currentWindowIndex by playerConnection.currentWindowIndex.collectAsState()
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
 
-    val currentSong by playerConnection.currentSong.collectAsState(initial = null)
     val currentFormat by playerConnection.currentFormat.collectAsState(initial = null)
 
     var showLyrics by rememberPreference(ShowLyricsKey, defaultValue = false)
-
-    val sleepTimerEnabled = remember(playerConnection.service.sleepTimer.triggerTime, playerConnection.service.sleepTimer.pauseWhenSongEnd) {
-        playerConnection.service.sleepTimer.isActive
-    }
-
-    var sleepTimerTimeLeft by remember {
-        mutableStateOf(0L)
-    }
-
-    LaunchedEffect(sleepTimerEnabled) {
-        if (sleepTimerEnabled) {
-            while (isActive) {
-                sleepTimerTimeLeft = if (playerConnection.service.sleepTimer.pauseWhenSongEnd) {
-                    playerConnection.player.duration - playerConnection.player.currentPosition
-                } else {
-                    playerConnection.service.sleepTimer.triggerTime - System.currentTimeMillis()
-                }
-                delay(1000L)
-            }
-        }
-    }
-
-    var showSleepTimerDialog by remember {
-        mutableStateOf(false)
-    }
-
-    var sleepTimerValue by remember {
-        mutableStateOf(30f)
-    }
-    if (showSleepTimerDialog) {
-        AlertDialog(
-            properties = DialogProperties(usePlatformDefaultWidth = false),
-            onDismissRequest = { showSleepTimerDialog = false },
-            icon = { Icon(painter = painterResource(R.drawable.bedtime), contentDescription = null) },
-            title = { Text(stringResource(R.string.sleep_timer)) },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        showSleepTimerDialog = false
-                        playerConnection.service.sleepTimer.start(sleepTimerValue.roundToInt())
-                    }
-                ) {
-                    Text(stringResource(android.R.string.ok))
-                }
-            },
-            dismissButton = {
-                TextButton(
-                    onClick = { showSleepTimerDialog = false }
-                ) {
-                    Text(stringResource(android.R.string.cancel))
-                }
-            },
-            text = {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(
-                        text = pluralStringResource(R.plurals.minute, sleepTimerValue.roundToInt(), sleepTimerValue.roundToInt()),
-                        style = MaterialTheme.typography.bodyLarge
-                    )
-
-                    Slider(
-                        value = sleepTimerValue,
-                        onValueChange = { sleepTimerValue = it },
-                        valueRange = 5f..120f,
-                        steps = (120 - 5) / 5 - 1,
-                    )
-
-                    OutlinedButton(
-                        onClick = {
-                            showSleepTimerDialog = false
-                            playerConnection.service.sleepTimer.start(-1)
-                        }
-                    ) {
-                        Text(stringResource(R.string.end_of_song))
-                    }
-                }
-            }
-        )
-    }
 
     var showDetailsDialog by rememberSaveable {
         mutableStateOf(false)
@@ -287,34 +208,6 @@ fun Queue(
                         painter = painterResource(R.drawable.lyrics),
                         contentDescription = null,
                         modifier = Modifier.alpha(if (showLyrics) 1f else 0.5f)
-                    )
-                }
-                AnimatedContent(
-                    label = "sleepTimer",
-                    targetState = sleepTimerEnabled
-                ) { sleepTimerEnabled ->
-                    if (sleepTimerEnabled) {
-                        Text(
-                            text = makeTimeString(sleepTimerTimeLeft),
-                            style = MaterialTheme.typography.labelLarge,
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(50))
-                                .clickable(onClick = playerConnection.service.sleepTimer::clear)
-                                .padding(8.dp)
-                        )
-                    } else {
-                        IconButton(onClick = { showSleepTimerDialog = true }) {
-                            Icon(
-                                painter = painterResource(R.drawable.bedtime),
-                                contentDescription = null
-                            )
-                        }
-                    }
-                }
-                IconButton(onClick = playerConnection::toggleLibrary) {
-                    Icon(
-                        painter = painterResource(if (currentSong?.song?.inLibrary != null) R.drawable.library_add_check else R.drawable.library_add),
-                        contentDescription = null
                     )
                 }
                 IconButton(
