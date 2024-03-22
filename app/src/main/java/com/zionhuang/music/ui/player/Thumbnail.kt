@@ -72,6 +72,7 @@ fun Thumbnail(
     }
 
     DisposableEffect(showLyrics) {
+        println(currentWindowIndex)
         currentView.keepScreenOn = showLyrics
         onDispose {
             currentView.keepScreenOn = false
@@ -107,11 +108,10 @@ fun Thumbnail(
                         val model = if (currentWindowIndex == index){
                             mediaMetadata?.thumbnailUrl
                         } else {
-                            windows[index].mediaItem.metadata?.thumbnailUrl
+                            windows[currentWindowIndex].mediaItem.metadata?.thumbnailUrl
                         }
                         AsyncImage(
-                            model = windows[index].mediaItem.metadata?.thumbnailUrl,
-//                            model = model,
+                            model = model,
                             contentDescription = null,
                             modifier = Modifier
                                 .fillMaxWidth()
