@@ -21,11 +21,11 @@ jobs:
       - name: Decode Keystore
         run: echo ${{ secrets.KEYSTORE }} | base64 -d >> app/music-debug.jks
 
-      - name: set up JDK 11
+      - name: set up JDK 17
         uses: actions/setup-java@v3
         with:
-          java-version: 11
-          distribution: "temurin"
+          java-version: 17
+          distribution: "zulu"
           cache: 'gradle'
 
       - name: Build debug APK and run jvm tests
