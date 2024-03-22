@@ -196,6 +196,25 @@ class HomeViewModel @Inject constructor(
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
+            val mostPlayedArtists = database.mostPlayedArtists(System.currentTimeMillis() - 86400000 * 7 * 2)
+            viewModelScope.launch {
+                mostPlayedArtists.collect { artists ->
+                    artists
+                        .map { it.artist }
+                        .filter {
+                            it.thumbnailUrl == null
+                        }
+                        .forEach { artist ->
+                            YouTube.artist(artist.id).onSuccess { artistPage ->
+                                database.query {
+                                    update(artist, artistPage)
+                                }
+                            }
+                        }
+                }
+            }
+        }
+        viewModelScope.launch(Dispatchers.IO) {
             isRefreshing.value = true
             load()
             isRefreshing.value = false
