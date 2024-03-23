@@ -64,14 +64,17 @@ import coil.request.ImageRequest
 import com.valentinilk.shimmer.LocalShimmerTheme
 import com.zionhuang.innertube.YouTube
 import com.zionhuang.innertube.models.SongItem
+import com.zionhuang.innertube.models.WatchEndpoint
 import com.zionhuang.music.constants.*
 import com.zionhuang.music.db.MusicDatabase
 import com.zionhuang.music.db.entities.SearchHistory
 import com.zionhuang.music.extensions.*
+import com.zionhuang.music.models.toMediaMetadata
 import com.zionhuang.music.playback.DownloadUtil
 import com.zionhuang.music.playback.MusicService
 import com.zionhuang.music.playback.MusicService.MusicBinder
 import com.zionhuang.music.playback.PlayerConnection
+import com.zionhuang.music.playback.queues.YouTubeQueue
 import com.zionhuang.music.ui.component.*
 import com.zionhuang.music.ui.component.shimmer.ShimmerTheme
 import com.zionhuang.music.ui.menu.YouTubeSongMenu
@@ -372,7 +375,7 @@ class MainActivity : ComponentActivity() {
                                         withContext(Dispatchers.IO) {
                                             YouTube.queue(listOf(videoId))
                                         }.onSuccess {
-                                            sharedSong = it.firstOrNull()
+                                            playerConnection?.playQueue(YouTubeQueue(WatchEndpoint(videoId = it.firstOrNull()?.id), it.firstOrNull()?.toMediaMetadata()))
                                         }.onFailure {
                                             reportException(it)
                                         }
