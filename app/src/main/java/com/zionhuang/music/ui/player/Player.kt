@@ -473,6 +473,7 @@ fun BottomSheetPlayer(
                 Spacer(modifier = Modifier.size(12.dp))
 
                 Box(
+                    contentAlignment = Alignment.Center,
                     modifier = Modifier
                         .size(42.dp)
                         .clip(RoundedCornerShape(24.dp))
@@ -500,7 +501,6 @@ fun BottomSheetPlayer(
                                 modifier = Modifier
                                     .clip(RoundedCornerShape(50))
                                     .clickable(onClick = playerConnection.service.sleepTimer::clear)
-                                    .padding(vertical = 10.dp, horizontal = 2.dp)
                             )
                         } else {
                             IconButton(onClick = { showSleepTimerDialog = true }) {
