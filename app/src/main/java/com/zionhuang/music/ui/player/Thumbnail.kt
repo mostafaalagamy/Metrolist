@@ -72,7 +72,6 @@ fun Thumbnail(
     }
 
     DisposableEffect(showLyrics) {
-        println(currentWindowIndex)
         currentView.keepScreenOn = showLyrics
         onDispose {
             currentView.keepScreenOn = false
