@@ -17,7 +17,7 @@
     <string name="stats">Statistiken</string>
     <string name="mood_and_genres">Stimmungen und Genres</string>
     <string name="account">Account</string>
-    <string name="quick_picks">Schnellauswahl</string>
+    <string name="quick_picks">Empfehlungen</string>
     <string name="quick_picks_empty">Hören Sie sich einige Songs an, um Ihre Schnellauswahl zu treffen</string>
     <string name="new_release_albums">Neu veröffentlichte Alben</string>
 
@@ -36,9 +36,9 @@
     <string name="search">Suche</string>
     <string name="search_yt_music">YouTube Musik durchsuchen…</string>
     <string name="search_library">Bibliothek durchsuchen…</string>
-    <string name="filter_library">Library</string>
-    <string name="filter_liked">Liked</string>
-    <string name="filter_downloaded">Downloaded</string>
+    <string name="filter_library">Bibliothek</string>
+    <string name="filter_liked">Favoriten</string>
+    <string name="filter_downloaded">Offline</string>
     <string name="filter_all">Alles</string>
     <string name="filter_songs">Titel</string>
     <string name="filter_videos">Videos</string>
@@ -86,7 +86,7 @@
     <string name="remove_from_history">aus dem Wiedergabeverlauf entfernen</string>
     <string name="search_online">Online-Suche</string>
     <string name="sync">Sync</string>
-    <string name="advanced">Advanced</string>
+    <string name="advanced">Erweitert</string>
 
     <!-- Sort menu -->
     <string name="sort_by_create_date">Datum hinzugefügt</string>
@@ -95,7 +95,7 @@
     <string name="sort_by_year">Jahr</string>
     <string name="sort_by_song_count">Anzahl der Lieder</string>
     <string name="sort_by_length">Länge</string>
-    <string name="sort_by_play_time">Spielzeit</string>
+    <string name="sort_by_play_time">Wiedergabedauer</string>
     <string name="sort_by_custom">Individuelle Reinfolge</string>
 
     <!-- Dialog -->
@@ -132,8 +132,8 @@
 
     <!-- Noun -->
     <plurals name="n_song">
-        <item quantity="one">%d Lied</item>
-        <item quantity="other">%d Lied</item>
+        <item quantity="one">%d Lieder</item>
+        <item quantity="other">%d Lieder</item>
     </plurals>
     <plurals name="n_artist">
         <item quantity="one">%d Künstler</item>
@@ -182,11 +182,11 @@
     <!-- Player action -->
     <string name="action_like">Favoriten</string>
     <string name="action_remove_like">Aus Favoriten entfernen</string>
-    <string name="action_shuffle_on">Shuffle on</string>
-    <string name="action_shuffle_off">Shuffle off</string>
-    <string name="repeat_mode_off">Repeat mode off</string>
-    <string name="repeat_mode_one">Repeat current song</string>
-    <string name="repeat_mode_all">Repeat queue</string>
+    <string name="action_shuffle_on">Shuffle ein</string>
+    <string name="action_shuffle_off">Shuffle aus</string>
+    <string name="repeat_mode_off">Wiederholungsmodus aus</string>
+    <string name="repeat_mode_one">Aktuellen Titel wiederholen</string>
+    <string name="repeat_mode_all">Warteschlange wiederholen</string>
 
     <!-- Queue Title -->
     <string name="queue_all_songs">Alle Titel</string>
@@ -264,7 +264,7 @@
     <string name="about">Über</string>
     <string name="app_version">App-Version</string>
 
-    <string name="new_version_available">New version available</string>
-    <string name="translation_models">Translation Models</string>
-    <string name="clear_translation_models">Clear translation models</string>
+    <string name="new_version_available">Neue Version verfügbar</string>
+    <string name="translation_models">Übersetzungsmodelle</string>
+    <string name="clear_translation_models">Lösche Übersetzungsmodelle</string>
 </resources>
