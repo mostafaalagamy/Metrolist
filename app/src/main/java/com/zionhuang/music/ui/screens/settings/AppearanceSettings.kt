@@ -78,10 +78,7 @@ fun AppearanceSettings(
             valueText = {
                 when (it) {
                     NavigationTab.HOME -> stringResource(R.string.home)
-                    NavigationTab.SONG -> stringResource(R.string.songs)
-                    NavigationTab.ARTIST -> stringResource(R.string.artists)
-                    NavigationTab.ALBUM -> stringResource(R.string.albums)
-                    NavigationTab.PLAYLIST -> stringResource(R.string.playlists)
+                    NavigationTab.LIBRARY -> stringResource(R.string.filter_library)
                 }
             }
         )
@@ -122,7 +119,8 @@ enum class DarkMode {
 }
 
 enum class NavigationTab {
-    HOME, SONG, ARTIST, ALBUM, PLAYLIST
+//    HOME, SONG, ARTIST, ALBUM, PLAYLIST
+    HOME, LIBRARY
 }
 
 enum class LyricsPosition {

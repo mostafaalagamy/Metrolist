@@ -12,12 +12,9 @@ sealed class Screens(
     val route: String,
 ) {
     object Home : Screens(R.string.home, R.drawable.home, "home")
-    object Songs : Screens(R.string.songs, R.drawable.music_note, "songs")
-    object Artists : Screens(R.string.artists, R.drawable.artist, "artists")
-    object Albums : Screens(R.string.albums, R.drawable.album, "albums")
-    object Playlists : Screens(R.string.playlists, R.drawable.queue_music, "playlists")
+    object Library : Screens(R.string.filter_library, R.drawable.library_music, "library")
 
     companion object {
-        val MainScreens = listOf(Home, Songs, Artists, Albums, Playlists)
+        val MainScreens = listOf(Home, Library)
     }
 }

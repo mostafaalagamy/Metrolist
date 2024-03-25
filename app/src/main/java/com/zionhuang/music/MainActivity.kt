@@ -22,7 +22,6 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -83,10 +82,7 @@ import com.zionhuang.music.ui.screens.*
 import com.zionhuang.music.ui.screens.artist.ArtistItemsScreen
 import com.zionhuang.music.ui.screens.artist.ArtistScreen
 import com.zionhuang.music.ui.screens.artist.ArtistSongsScreen
-import com.zionhuang.music.ui.screens.library.LibraryAlbumsScreen
-import com.zionhuang.music.ui.screens.library.LibraryArtistsScreen
-import com.zionhuang.music.ui.screens.library.LibraryPlaylistsScreen
-import com.zionhuang.music.ui.screens.library.LibrarySongsScreen
+import com.zionhuang.music.ui.screens.library.LibraryScreen
 import com.zionhuang.music.ui.screens.playlist.LocalPlaylistScreen
 import com.zionhuang.music.ui.screens.playlist.OnlinePlaylistScreen
 import com.zionhuang.music.ui.screens.search.LocalSearchScreen
@@ -215,9 +211,7 @@ class MainActivity : ComponentActivity() {
                     }
                     val tabOpenedFromShortcut = remember {
                         when (intent?.action) {
-                            ACTION_SONGS -> NavigationTab.SONG
-                            ACTION_ALBUMS -> NavigationTab.ALBUM
-                            ACTION_PLAYLISTS -> NavigationTab.PLAYLIST
+                            ACTION_LIBRARY -> NavigationTab.LIBRARY
                             else -> null
                         }
                     }
@@ -400,27 +394,15 @@ class MainActivity : ComponentActivity() {
                             navController = navController,
                             startDestination = when (tabOpenedFromShortcut ?: defaultOpenTab) {
                                 NavigationTab.HOME -> Screens.Home
-                                NavigationTab.SONG -> Screens.Songs
-                                NavigationTab.ARTIST -> Screens.Artists
-                                NavigationTab.ALBUM -> Screens.Albums
-                                NavigationTab.PLAYLIST -> Screens.Playlists
+                                NavigationTab.LIBRARY-> Screens.Library
                             }.route,
                             modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
                         ) {
                             composable(Screens.Home.route) {
                                 HomeScreen(navController)
                             }
-                            composable(Screens.Songs.route) {
-                                LibrarySongsScreen(navController)
-                            }
-                            composable(Screens.Artists.route) {
-                                LibraryArtistsScreen(navController)
-                            }
-                            composable(Screens.Albums.route) {
-                                LibraryAlbumsScreen(navController)
-                            }
-                            composable(Screens.Playlists.route) {
-                                LibraryPlaylistsScreen(navController)
+                            composable(Screens.Library.route) {
+                                LibraryScreen(navController)
                             }
                             composable("history") {
                                 HistoryScreen(navController)
@@ -651,10 +633,7 @@ class MainActivity : ComponentActivity() {
                                         }
                                     } else if (navBackStackEntry?.destination?.route in listOf(
                                             Screens.Home.route,
-                                            Screens.Songs.route,
-                                            Screens.Artists.route,
-                                            Screens.Albums.route,
-                                            Screens.Playlists.route
+                                            Screens.Library.route,
                                         )
                                     ) {
                                         Box(
@@ -729,10 +708,18 @@ class MainActivity : ComponentActivity() {
                                 .align(Alignment.BottomCenter)
                                 .offset {
                                     if (navigationBarHeight == 0.dp) {
-                                        IntOffset(x = 0, y = (bottomInset + NavigationBarHeight).roundToPx())
+                                        IntOffset(
+                                            x = 0,
+                                            y = (bottomInset + NavigationBarHeight).roundToPx()
+                                        )
                                     } else {
-                                        val slideOffset = (bottomInset + NavigationBarHeight) * playerBottomSheetState.progress.coerceIn(0f, 1f)
-                                        val hideOffset = (bottomInset + NavigationBarHeight) * (1 - navigationBarHeight / NavigationBarHeight)
+                                        val slideOffset =
+                                            (bottomInset + NavigationBarHeight) * playerBottomSheetState.progress.coerceIn(
+                                                0f,
+                                                1f
+                                            )
+                                        val hideOffset =
+                                            (bottomInset + NavigationBarHeight) * (1 - navigationBarHeight / NavigationBarHeight)
                                         IntOffset(
                                             x = 0,
                                             y = (slideOffset + hideOffset).roundToPx()
@@ -829,9 +816,7 @@ class MainActivity : ComponentActivity() {
 
     companion object {
         const val ACTION_SEARCH = "com.zionhuang.music.action.SEARCH"
-        const val ACTION_SONGS = "com.zionhuang.music.action.SONGS"
-        const val ACTION_ALBUMS = "com.zionhuang.music.action.ALBUMS"
-        const val ACTION_PLAYLISTS = "com.zionhuang.music.action.PLAYLISTS"
+        const val ACTION_LIBRARY = "com.zionhuang.music.action.LIBRARY"
     }
 }
 

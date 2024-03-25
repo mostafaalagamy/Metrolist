@@ -3,6 +3,10 @@
 package com.zionhuang.music.viewmodels
 
 import android.content.Context
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.Recomposer
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -171,7 +175,6 @@ class LibraryPlaylistsViewModel @Inject constructor(
         }
         .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 }
-
 @HiltViewModel
 class ArtistSongsViewModel @Inject constructor(
     @ApplicationContext context: Context,
@@ -191,4 +194,13 @@ class ArtistSongsViewModel @Inject constructor(
             database.artistSongs(artistId, sortType, descending)
         }
         .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
+}
+
+@HiltViewModel
+class LibraryViewModel @Inject constructor(
+    @ApplicationContext context: Context,
+    database: MusicDatabase,
+) : ViewModel() {
+    private val curScreen = mutableStateOf(LibraryFilter.PLAYLISTS) // TODO change it to playlist (and other things accordingly
+    val filter: MutableState<LibraryFilter> = curScreen
 }

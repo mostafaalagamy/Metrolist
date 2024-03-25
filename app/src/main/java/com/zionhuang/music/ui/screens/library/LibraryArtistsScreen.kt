@@ -59,47 +59,16 @@ import com.zionhuang.music.viewmodels.LibraryArtistsViewModel
 @Composable
 fun LibraryArtistsScreen(
     navController: NavController,
+    filterContent: @Composable () -> Unit,
     viewModel: LibraryArtistsViewModel = hiltViewModel(),
 ) {
     val menuState = LocalMenuState.current
-    var filter by rememberEnumPreference(ArtistFilterKey, ArtistFilter.LIBRARY)
     var viewType by rememberEnumPreference(ArtistViewTypeKey, LibraryViewType.GRID)
     val (sortType, onSortTypeChange) = rememberEnumPreference(ArtistSortTypeKey, ArtistSortType.CREATE_DATE)
     val (sortDescending, onSortDescendingChange) = rememberPreference(ArtistSortDescendingKey, true)
 
     val artists by viewModel.allArtists.collectAsState()
     val coroutineScope = rememberCoroutineScope()
-
-    val filterContent = @Composable {
-        Row {
-            ChipsRow(
-                chips = listOf(
-                    ArtistFilter.LIBRARY to stringResource(R.string.filter_library),
-                    ArtistFilter.LIKED to stringResource(R.string.filter_liked)
-                ),
-                currentValue = filter,
-                onValueUpdate = { filter = it },
-                modifier = Modifier.weight(1f)
-            )
-
-            IconButton(
-                onClick = {
-                    viewType = viewType.toggle()
-                },
-                modifier = Modifier.padding(end = 6.dp)
-            ) {
-                Icon(
-                    painter = painterResource(
-                        when (viewType) {
-                            LibraryViewType.LIST -> R.drawable.list
-                            LibraryViewType.GRID -> R.drawable.grid_view
-                        }
-                    ),
-                    contentDescription = null
-                )
-            }
-        }
-    }
 
     val headerContent = @Composable {
         Row(
@@ -183,7 +152,7 @@ fun LibraryArtistsScreen(
                                 .clickable {
                                     navController.navigate("artist/${artist.id}")
                                 }
-                                .animateItemPlacement()
+                                .animateItemPlacement(),
                         )
                     }
                 }
