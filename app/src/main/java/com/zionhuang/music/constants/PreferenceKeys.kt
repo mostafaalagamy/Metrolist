@@ -102,10 +102,6 @@ enum class AlbumFilter {
     LIBRARY, LIKED
 }
 
-enum class LibraryFilter {
-    SONGS, ARTISTS, ALBUMS, PLAYLISTS
-}
-
 val ShowLyricsKey = booleanPreferencesKey("showLyrics")
 val LyricsTextPositionKey = stringPreferencesKey("lyricsTextPosition")
 val TranslateLyricsKey = booleanPreferencesKey("translateLyrics")

@@ -48,6 +48,7 @@ import com.zionhuang.music.constants.PlaylistSortDescendingKey
 import com.zionhuang.music.constants.PlaylistSortType
 import com.zionhuang.music.constants.PlaylistSortTypeKey
 import com.zionhuang.music.constants.PlaylistViewTypeKey
+import com.zionhuang.music.db.entities.Playlist
 import com.zionhuang.music.db.entities.PlaylistEntity
 import com.zionhuang.music.ui.component.HideOnScrollFAB
 import com.zionhuang.music.ui.component.LocalMenuState
@@ -59,6 +60,7 @@ import com.zionhuang.music.ui.menu.PlaylistMenu
 import com.zionhuang.music.utils.rememberEnumPreference
 import com.zionhuang.music.utils.rememberPreference
 import com.zionhuang.music.viewmodels.LibraryPlaylistsViewModel
+import java.util.UUID
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -77,6 +79,20 @@ fun LibraryPlaylistsScreen(
     val (sortDescending, onSortDescendingChange) = rememberPreference(PlaylistSortDescendingKey, true)
 
     val playlists by viewModel.allPlaylists.collectAsState()
+
+    val likedSongs by viewModel.likedSongs.collectAsState()
+    val downloadSongs by viewModel.downloadSongs.collectAsState(initial = null)
+    val likedPlaylist = Playlist(
+        playlist = PlaylistEntity(id = UUID.randomUUID().toString(), name = "Liked"),
+        songCount = if (likedSongs != null) likedSongs!!.size else 0,
+        thumbnails = emptyList()
+    )
+
+    val downloadPlaylist = Playlist(
+        playlist = PlaylistEntity(id = UUID.randomUUID().toString(), name = "Offline"),
+        songCount = if (downloadSongs!= null) downloadSongs!!.size else 0,
+        thumbnails = emptyList()
+    )
 
     val lazyListState = rememberLazyListState()
     val lazyGridState = rememberLazyGridState()
@@ -171,6 +187,74 @@ fun LibraryPlaylistsScreen(
                         headerContent()
                     }
 
+
+                    item(
+                        key = "likedPlaylist",
+                        contentType = { CONTENT_TYPE_PLAYLIST }
+                    ) {
+                        PlaylistListItem(
+                            playlist = likedPlaylist,
+                            trailingContent = {
+                                IconButton(
+                                    onClick = {
+                                        menuState.show {
+                                            PlaylistMenu(
+                                                playlist = likedPlaylist,
+                                                coroutineScope = coroutineScope,
+                                                onDismiss = menuState::dismiss
+                                            )
+                                        }
+                                    }
+                                ) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.more_vert),
+                                        contentDescription = null
+                                    )
+                                }
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    navController.navigate("auto_playlist/liked")
+                                }
+                                .animateItemPlacement()
+                        )
+                    }
+
+
+                    item(
+                        key = "downloadedPlaylist",
+                        contentType = { CONTENT_TYPE_PLAYLIST }
+                    ) {
+                        PlaylistListItem(
+                            playlist = downloadPlaylist,
+                            trailingContent = {
+                                IconButton(
+                                    onClick = {
+                                        menuState.show {
+                                            PlaylistMenu(
+                                                playlist = downloadPlaylist,
+                                                coroutineScope = coroutineScope,
+                                                onDismiss = menuState::dismiss
+                                            )
+                                        }
+                                    }
+                                ) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.more_vert),
+                                        contentDescription = null
+                                    )
+                                }
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    navController.navigate("auto_playlist/downloaded")
+                                }
+                                .animateItemPlacement()
+                        )
+                    }
+
                     items(
                         items = playlists,
                         key = { it.id },
@@ -235,6 +319,60 @@ fun LibraryPlaylistsScreen(
                         contentType = CONTENT_TYPE_HEADER
                     ) {
                         headerContent()
+                    }
+
+                    item(
+                        key = "likedPlaylist",
+                        contentType = { CONTENT_TYPE_PLAYLIST }
+                    ) {
+                        PlaylistGridItem(
+                            playlist = likedPlaylist,
+                            fillMaxWidth = true,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .combinedClickable(
+                                    onClick = {
+                                        navController.navigate("auto_playlist/liked")
+                                    },
+                                    onLongClick = {
+                                        menuState.show {
+                                            PlaylistMenu(
+                                                playlist = likedPlaylist,
+                                                coroutineScope = coroutineScope,
+                                                onDismiss = menuState::dismiss
+                                            )
+                                        }
+                                    }
+                                )
+                                .animateItemPlacement()
+                        )
+                    }
+
+                    item(
+                        key = "downloadedPlaylist",
+                        contentType = { CONTENT_TYPE_PLAYLIST }
+                    ) {
+                        PlaylistGridItem(
+                            playlist = downloadPlaylist,
+                            fillMaxWidth = true,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .combinedClickable(
+                                    onClick = {
+                                        navController.navigate("auto_playlist/downloaded")
+                                    },
+                                    onLongClick = {
+                                        menuState.show {
+                                            PlaylistMenu(
+                                                playlist = downloadPlaylist,
+                                                coroutineScope = coroutineScope,
+                                                onDismiss = menuState::dismiss
+                                            )
+                                        }
+                                    }
+                                )
+                                .animateItemPlacement()
+                        )
                     }
 
                     items(

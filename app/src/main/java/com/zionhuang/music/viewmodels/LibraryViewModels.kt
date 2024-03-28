@@ -4,9 +4,7 @@ package com.zionhuang.music.viewmodels
 
 import android.content.Context
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.Recomposer
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -163,8 +161,21 @@ class LibraryAlbumsViewModel @Inject constructor(
 @HiltViewModel
 class LibraryPlaylistsViewModel @Inject constructor(
     @ApplicationContext context: Context,
+    downloadUtil: DownloadUtil,
     database: MusicDatabase,
 ) : ViewModel() {
+    val likedSongs = database.likedSongs(SongSortType.CREATE_DATE, true)
+        .stateIn(viewModelScope, SharingStarted.Lazily, null)
+    val downloadSongs =
+        downloadUtil.downloads.flatMapLatest { downloads ->
+            database.allSongs()
+                .flowOn(Dispatchers.IO)
+                .map { songs ->
+                    songs.filter {
+                        downloads[it.id]?.state == Download.STATE_COMPLETED
+                    }
+                }
+        }
     val allPlaylists = context.dataStore.data
         .map {
             it[PlaylistSortTypeKey].toEnum(PlaylistSortType.CREATE_DATE) to (it[PlaylistSortDescendingKey] ?: true)
@@ -196,11 +207,65 @@ class ArtistSongsViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 }
 
+
 @HiltViewModel
-class LibraryViewModel @Inject constructor(
+class LibraryMixViewModel @Inject constructor(
     @ApplicationContext context: Context,
     database: MusicDatabase,
+    downloadUtil: DownloadUtil,
 ) : ViewModel() {
-    private val curScreen = mutableStateOf(LibraryFilter.PLAYLISTS) // TODO change it to playlist (and other things accordingly
+    val likedSongs = database.likedSongs(SongSortType.CREATE_DATE, true)
+        .stateIn(viewModelScope, SharingStarted.Lazily, null)
+    val downloadSongs =
+        downloadUtil.downloads.flatMapLatest { downloads ->
+            database.allSongs()
+                .flowOn(Dispatchers.IO)
+                .map { songs ->
+                    songs.filter {
+                        downloads[it.id]?.state == Download.STATE_COMPLETED
+                    }
+                }
+        }
+    val allSongs = context.dataStore.data
+        .map {
+            Triple(
+                it[SongFilterKey].toEnum(SongFilter.LIBRARY),
+                it[SongSortTypeKey].toEnum(SongSortType.CREATE_DATE),
+                (it[SongSortDescendingKey] ?: true)
+            )
+        }
+        .distinctUntilChanged()
+        .flatMapLatest { (filter, sortType, descending) ->
+            when (filter) {
+                SongFilter.LIBRARY -> database.songs(sortType, descending)
+                SongFilter.LIKED -> database.likedSongs(sortType, descending)
+                SongFilter.DOWNLOADED -> downloadUtil.downloads.flatMapLatest { downloads ->
+                    database.allSongs()
+                        .flowOn(Dispatchers.IO)
+                        .map { songs ->
+                            songs.filter {
+                                downloads[it.id]?.state == Download.STATE_COMPLETED
+                            }
+                        }
+                        .map { songs ->
+                            when (sortType) {
+                                SongSortType.CREATE_DATE -> songs.sortedBy { downloads[it.id]?.updateTimeMs ?: 0L }
+                                SongSortType.NAME -> songs.sortedBy { it.song.title }
+                                SongSortType.ARTIST -> songs.sortedBy { song ->
+                                    song.artists.joinToString(separator = "") { it.name }
+                                }
+
+                                SongSortType.PLAY_TIME -> songs.sortedBy { it.song.totalPlayTime }
+                            }.reversed(descending)
+                        }
+                }
+            }
+        }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
+}
+
+@HiltViewModel
+class LibraryViewModel @Inject constructor(
+) : ViewModel() {
+    private val curScreen = mutableStateOf(LibraryFilter.LIBRARY)
     val filter: MutableState<LibraryFilter> = curScreen
 }
