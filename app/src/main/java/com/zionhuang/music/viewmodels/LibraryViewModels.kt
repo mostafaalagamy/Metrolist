@@ -214,6 +214,7 @@ class LibraryMixViewModel @Inject constructor(
     database: MusicDatabase,
     downloadUtil: DownloadUtil,
 ) : ViewModel() {
+    val topValue = context.dataStore.data.map { it[TopSize] ?: "50"}.distinctUntilChanged()
     val likedSongs = database.likedSongs(SongSortType.CREATE_DATE, true)
         .stateIn(viewModelScope, SharingStarted.Lazily, null)
     val downloadSongs =
@@ -261,6 +262,7 @@ class LibraryMixViewModel @Inject constructor(
                 }
             }
         }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
+    val topSongs = database.mostPlayedSongs(0, 100)
 }
 
 @HiltViewModel

@@ -4,6 +4,8 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
+import java.time.LocalDateTime
+import java.time.ZoneOffset
 
 val DynamicThemeKey = booleanPreferencesKey("dynamicTheme")
 val DarkModeKey = stringPreferencesKey("darkMode")
@@ -54,6 +56,7 @@ val AlbumFilterKey = stringPreferencesKey("albumFilter")
 val AlbumViewTypeKey = stringPreferencesKey("albumViewType")
 val PlaylistViewTypeKey = stringPreferencesKey("playlistViewType")
 val LibraryFilterKey = stringPreferencesKey("libraryFilter")
+val MyTopTypeKey = stringPreferencesKey("MyTopType")
 
 val PlaylistEditLockKey = booleanPreferencesKey("playlistEditLock")
 
@@ -101,6 +104,21 @@ enum class ArtistFilter {
 enum class AlbumFilter {
     LIBRARY, LIKED
 }
+
+enum class MyTopFilter {
+    ALL_TIME, DAY, WEEK, MONTH, YEAR;
+
+    fun toTimeMillis(): Long =
+        when (this) {
+            DAY -> LocalDateTime.now().minusDays(1).toInstant(ZoneOffset.UTC).toEpochMilli()
+            WEEK -> LocalDateTime.now().minusWeeks(1).toInstant(ZoneOffset.UTC).toEpochMilli()
+            MONTH -> LocalDateTime.now().minusMonths(1).toInstant(ZoneOffset.UTC).toEpochMilli()
+            YEAR -> LocalDateTime.now().minusMonths(12).toInstant(ZoneOffset.UTC).toEpochMilli()
+            ALL_TIME -> 0
+        }
+}
+
+val TopSize = stringPreferencesKey("topSize")
 
 val ShowLyricsKey = booleanPreferencesKey("showLyrics")
 val LyricsTextPositionKey = stringPreferencesKey("lyricsTextPosition")

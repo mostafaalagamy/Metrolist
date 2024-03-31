@@ -27,10 +27,12 @@ import com.zionhuang.music.constants.ContentLanguageKey
 import com.zionhuang.music.constants.CountryCodeToName
 import com.zionhuang.music.constants.InnerTubeCookieKey
 import com.zionhuang.music.constants.LanguageCodeToName
+import com.zionhuang.music.constants.MyTopTypeKey
 import com.zionhuang.music.constants.ProxyEnabledKey
 import com.zionhuang.music.constants.ProxyTypeKey
 import com.zionhuang.music.constants.ProxyUrlKey
 import com.zionhuang.music.constants.SYSTEM_DEFAULT
+import com.zionhuang.music.constants.TopSize
 import com.zionhuang.music.ui.component.EditTextPreference
 import com.zionhuang.music.ui.component.IconButton
 import com.zionhuang.music.ui.component.ListPreference
@@ -60,6 +62,7 @@ fun ContentSettings(
     val (proxyEnabled, onProxyEnabledChange) = rememberPreference(key = ProxyEnabledKey, defaultValue = false)
     val (proxyType, onProxyTypeChange) = rememberEnumPreference(key = ProxyTypeKey, defaultValue = Proxy.Type.HTTP)
     val (proxyUrl, onProxyUrlChange) = rememberPreference(key = ProxyUrlKey, defaultValue = "host:port")
+    val (lengthTop, onLengthTopChange) = rememberPreference(key = TopSize, defaultValue = "50")
 
 
     Column(
@@ -125,6 +128,17 @@ fun ContentSettings(
                 onValueChange = onProxyUrlChange
             )
         }
+
+        PreferenceGroupTitle(
+            title = "MY TOP"
+        )
+
+        EditTextPreference(
+            title = { Text(stringResource(R.string.top_length)) },
+            value = lengthTop.toString(),
+            isInputValid = {it.toIntOrNull() != null},
+            onValueChange = onLengthTopChange
+        )
     }
 
     TopAppBar(

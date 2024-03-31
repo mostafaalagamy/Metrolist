@@ -35,6 +35,7 @@ inline fun <reified T : Enum<T>> SortHeader(
     crossinline onSortDescendingChange: (Boolean) -> Unit,
     crossinline sortTypeText: (T) -> Int,
     modifier: Modifier = Modifier,
+    showDescending: Boolean? = true
 ) {
     var menuExpanded by remember { mutableStateOf(false) }
 
@@ -84,7 +85,7 @@ inline fun <reified T : Enum<T>> SortHeader(
             }
         }
 
-        if (sortType != PlaylistSongSortType.CUSTOM) {
+        if (sortType != PlaylistSongSortType.CUSTOM && showDescending == true) {
             ResizableIconButton(
                 icon = if (sortDescending) R.drawable.arrow_downward else R.drawable.arrow_upward,
                 color = MaterialTheme.colorScheme.primary,

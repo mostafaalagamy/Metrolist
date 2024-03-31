@@ -939,17 +939,28 @@ fun PlaylistGridItem(
     subtitle = pluralStringResource(R.plurals.n_song, playlist.songCount, playlist.songCount),
     badges = badges,
     thumbnailContent = {
-        val auto = if (playlist.playlist.name == "Liked") 1 else if (playlist.playlist.name == "Downloaded") 2 else 0
+        val painter = when (playlist.playlist.name) {
+            "Liked" -> R.drawable.favorite
+            "Offline" -> R.drawable.offline
+            "My Top 50" -> R.drawable.trending_up
+            else -> R.drawable.queue_music
+        }
         val width = maxWidth
         when (playlist.thumbnails.size) {
-            0 -> Icon(
-                painter = painterResource( if (auto == 0) R.drawable.queue_music else if (auto == 1) R.drawable.favorite else R.drawable.offline),
-                contentDescription = null,
-                tint = LocalContentColor.current.copy(alpha = 0.8f),
+            0 -> Box(
                 modifier = Modifier
-                    .size(width / 2)
-                    .align(Alignment.Center)
-            )
+                    .fillMaxSize()
+                    .background(color = MaterialTheme.colorScheme.secondaryContainer)
+            ){
+                Icon(
+                    painter = painterResource(painter),
+                    contentDescription = null,
+                    tint = LocalContentColor.current.copy(alpha = 0.8f),
+                    modifier = Modifier
+                        .size(width / 2)
+                        .align(Alignment.Center)
+                )
+            }
 
             1 -> AsyncImage(
                 model = playlist.thumbnails[0],

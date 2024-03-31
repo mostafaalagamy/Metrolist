@@ -86,6 +86,7 @@ import com.zionhuang.music.ui.screens.library.LibraryScreen
 import com.zionhuang.music.ui.screens.playlist.AutoPlaylistScreen
 import com.zionhuang.music.ui.screens.playlist.LocalPlaylistScreen
 import com.zionhuang.music.ui.screens.playlist.OnlinePlaylistScreen
+import com.zionhuang.music.ui.screens.playlist.TopPlaylistScreen
 import com.zionhuang.music.ui.screens.search.LocalSearchScreen
 import com.zionhuang.music.ui.screens.search.OnlineSearchResult
 import com.zionhuang.music.ui.screens.search.OnlineSearchScreen
@@ -512,6 +513,16 @@ class MainActivity : ComponentActivity() {
                                 )
                             ) {
                                 AutoPlaylistScreen(navController, scrollBehavior)
+                            }
+                            composable(
+                                route = "top_playlist/{top}",
+                                arguments = listOf(
+                                    navArgument("top") {
+                                        type = NavType.StringType
+                                    }
+                                )
+                            ) {
+                                TopPlaylistScreen(navController, scrollBehavior)
                             }
                             composable(
                                 route = "youtube_browse/{browseId}?params={params}",

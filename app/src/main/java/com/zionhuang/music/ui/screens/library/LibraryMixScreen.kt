@@ -41,6 +41,8 @@ fun LibraryMixScreen(
 
     val likedSongs by viewModel.likedSongs.collectAsState()
     val downloadSongs by viewModel.downloadSongs.collectAsState(initial = null)
+    val topSongs by viewModel.topSongs.collectAsState(initial = null)
+    val topSize by viewModel.topValue.collectAsState(initial = 50)
     val likedPlaylist = Playlist(
         playlist = PlaylistEntity(id = UUID.randomUUID().toString(), name = "Liked"),
         songCount = if (likedSongs != null) likedSongs!!.size else 0,
@@ -50,6 +52,16 @@ fun LibraryMixScreen(
     val downloadPlaylist = Playlist(
         playlist = PlaylistEntity(id = UUID.randomUUID().toString(), name = "Offline"),
         songCount = if (downloadSongs!= null) downloadSongs!!.size else 0,
+        thumbnails = emptyList()
+    )
+
+    val topSizeInt = topSize.toString().toInt()
+    if (topSongs != null)
+        println(topSongs!!.size)
+
+    val topPlaylist = Playlist(
+        playlist = PlaylistEntity(id = UUID.randomUUID().toString(), name = "My Top $topSize"),
+        songCount = topSongs?.let { minOf(it.size, topSizeInt) } ?: 0,
         thumbnails = emptyList()
     )
 
@@ -118,6 +130,33 @@ fun LibraryMixScreen(
                                 menuState.show {
                                     PlaylistMenu(
                                         playlist = downloadPlaylist,
+                                        coroutineScope = coroutineScope,
+                                        onDismiss = menuState::dismiss
+                                    )
+                                }
+                            }
+                        )
+                        .animateItemPlacement()
+                )
+            }
+
+            item(
+                key = "TopPlaylist",
+                contentType = { CONTENT_TYPE_PLAYLIST }
+            ) {
+                PlaylistGridItem(
+                    playlist = topPlaylist,
+                    fillMaxWidth = true,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .combinedClickable(
+                            onClick = {
+                                navController.navigate("top_playlist/$topSize")
+                            },
+                            onLongClick = {
+                                menuState.show {
+                                    PlaylistMenu(
+                                        playlist = topPlaylist,
                                         coroutineScope = coroutineScope,
                                         onDismiss = menuState::dismiss
                                     )
