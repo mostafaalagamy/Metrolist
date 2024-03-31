@@ -27,7 +27,6 @@ import com.zionhuang.music.constants.ContentLanguageKey
 import com.zionhuang.music.constants.CountryCodeToName
 import com.zionhuang.music.constants.InnerTubeCookieKey
 import com.zionhuang.music.constants.LanguageCodeToName
-import com.zionhuang.music.constants.MyTopTypeKey
 import com.zionhuang.music.constants.ProxyEnabledKey
 import com.zionhuang.music.constants.ProxyTypeKey
 import com.zionhuang.music.constants.ProxyUrlKey
@@ -135,8 +134,10 @@ fun ContentSettings(
 
         EditTextPreference(
             title = { Text(stringResource(R.string.top_length)) },
-            value = lengthTop.toString(),
-            isInputValid = {it.toIntOrNull() != null},
+            value = lengthTop,
+            isInputValid = {val number = it.toIntOrNull()
+                number != null && it.isNotEmpty() &&number > 0
+                           },
             onValueChange = onLengthTopChange
         )
     }

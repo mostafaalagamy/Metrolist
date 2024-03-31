@@ -104,7 +104,9 @@ fun LibraryMixScreen(
                                     PlaylistMenu(
                                         playlist = likedPlaylist,
                                         coroutineScope = coroutineScope,
-                                        onDismiss = menuState::dismiss
+                                        onDismiss = menuState::dismiss,
+                                        autoPlaylist = true,
+                                        songList = likedSongs
                                     )
                                 }
                             }
@@ -131,7 +133,10 @@ fun LibraryMixScreen(
                                     PlaylistMenu(
                                         playlist = downloadPlaylist,
                                         coroutineScope = coroutineScope,
-                                        onDismiss = menuState::dismiss
+                                        onDismiss = menuState::dismiss,
+                                        autoPlaylist = true,
+                                        downloadPlaylist = true,
+                                        songList = downloadSongs
                                     )
                                 }
                             }
@@ -158,7 +163,9 @@ fun LibraryMixScreen(
                                     PlaylistMenu(
                                         playlist = topPlaylist,
                                         coroutineScope = coroutineScope,
-                                        onDismiss = menuState::dismiss
+                                        onDismiss = menuState::dismiss,
+                                        autoPlaylist = true,
+                                        songList = topSongs?.subList(0, minOf(topSizeInt, topPlaylist.songCount))
                                     )
                                 }
                             }

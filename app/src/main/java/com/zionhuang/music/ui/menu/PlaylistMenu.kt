@@ -61,6 +61,9 @@ fun PlaylistMenu(
     playlist: Playlist,
     coroutineScope: CoroutineScope,
     onDismiss: () -> Unit,
+    autoPlaylist: Boolean? = false,
+    downloadPlaylist: Boolean? = false,
+    songList: List<Song>?= emptyList()
 ) {
     val context = LocalContext.current
     val database = LocalDatabase.current
@@ -74,8 +77,15 @@ fun PlaylistMenu(
     }
 
     LaunchedEffect(Unit) {
-        database.playlistSongs(playlist.id).collect {
-            songs = it.map(PlaylistSong::song)
+        if (autoPlaylist == false) {
+            database.playlistSongs(playlist.id).collect {
+                songs = it.map(PlaylistSong::song)
+            }
+        } else {
+            if (songList != null) {
+                songs = songList
+            }
+
         }
     }
 
@@ -255,39 +265,45 @@ fun PlaylistMenu(
             playerConnection.addToQueue(songs.map { it.toMediaItem() })
         }
 
-        GridMenuItem(
-            icon = R.drawable.edit,
-            title = R.string.edit
-        ) {
-            showEditDialog = true
+        if (autoPlaylist != true) {
+            GridMenuItem(
+                icon = R.drawable.edit,
+                title = R.string.edit
+            ) {
+                showEditDialog = true
+            }
         }
 
-        DownloadGridMenu(
-            state = downloadState,
-            onDownload = {
-                songs.forEach { song ->
-                    val downloadRequest = DownloadRequest.Builder(song.id, song.id.toUri())
-                        .setCustomCacheKey(song.id)
-                        .setData(song.song.title.toByteArray())
-                        .build()
-                    DownloadService.sendAddDownload(
-                        context,
-                        ExoDownloadService::class.java,
-                        downloadRequest,
-                        false
-                    )
+        if (downloadPlaylist != true) {
+            DownloadGridMenu(
+                state = downloadState,
+                onDownload = {
+                    songs.forEach { song ->
+                        val downloadRequest = DownloadRequest.Builder(song.id, song.id.toUri())
+                            .setCustomCacheKey(song.id)
+                            .setData(song.song.title.toByteArray())
+                            .build()
+                        DownloadService.sendAddDownload(
+                            context,
+                            ExoDownloadService::class.java,
+                            downloadRequest,
+                            false
+                        )
+                    }
+                },
+                onRemoveDownload = {
+                    showRemoveDownloadDialog = true
                 }
-            },
-            onRemoveDownload = {
-                showRemoveDownloadDialog = true
-            }
-        )
+            )
+        }
 
-        GridMenuItem(
-            icon = R.drawable.delete,
-            title = R.string.delete
-        ) {
-            showDeletePlaylistDialog = true
+        if (autoPlaylist != true) {
+            GridMenuItem(
+                icon = R.drawable.delete,
+                title = R.string.delete
+            ) {
+                showDeletePlaylistDialog = true
+            }
         }
 
         if (playlist.playlist.browseId != null) {
