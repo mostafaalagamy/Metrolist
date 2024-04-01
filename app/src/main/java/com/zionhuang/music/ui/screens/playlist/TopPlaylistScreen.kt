@@ -373,7 +373,6 @@ fun TopPlaylistScreen(
                             sortType = sortType,
                             sortDescending = false,
                             onSortTypeChange = {
-                                println(it)
                                 viewModel.topPeriod.value = it
                                                },
                             onSortDescendingChange = {},

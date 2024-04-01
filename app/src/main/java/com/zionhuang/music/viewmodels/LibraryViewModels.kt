@@ -176,6 +176,7 @@ class LibraryPlaylistsViewModel @Inject constructor(
                     }
                 }
         }
+    @OptIn(ExperimentalCoroutinesApi::class)
     val allPlaylists = context.dataStore.data
         .map {
             it[PlaylistSortTypeKey].toEnum(PlaylistSortType.CREATE_DATE) to (it[PlaylistSortDescendingKey] ?: true)
@@ -185,6 +186,8 @@ class LibraryPlaylistsViewModel @Inject constructor(
             database.playlists(sortType, descending)
         }
         .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
+    val topSongs = database.mostPlayedSongs(0, 100)
+    val topValue = context.dataStore.data.map { it[TopSize] ?: "50"}.distinctUntilChanged()
 }
 @HiltViewModel
 class ArtistSongsViewModel @Inject constructor(

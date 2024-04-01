@@ -56,8 +56,6 @@ fun LibraryMixScreen(
     )
 
     val topSizeInt = topSize.toString().toInt()
-    if (topSongs != null)
-        println(topSongs!!.size)
 
     val topPlaylist = Playlist(
         playlist = PlaylistEntity(id = UUID.randomUUID().toString(), name = "My Top $topSize"),

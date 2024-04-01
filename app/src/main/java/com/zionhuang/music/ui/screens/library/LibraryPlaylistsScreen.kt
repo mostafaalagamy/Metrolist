@@ -82,6 +82,8 @@ fun LibraryPlaylistsScreen(
 
     val likedSongs by viewModel.likedSongs.collectAsState()
     val downloadSongs by viewModel.downloadSongs.collectAsState(initial = null)
+    val topSongs by viewModel.topSongs.collectAsState(initial = null)
+    val topSize by viewModel.topValue.collectAsState(initial = 50)
     val likedPlaylist = Playlist(
         playlist = PlaylistEntity(id = UUID.randomUUID().toString(), name = "Liked"),
         songCount = if (likedSongs != null) likedSongs!!.size else 0,
@@ -91,6 +93,14 @@ fun LibraryPlaylistsScreen(
     val downloadPlaylist = Playlist(
         playlist = PlaylistEntity(id = UUID.randomUUID().toString(), name = "Offline"),
         songCount = if (downloadSongs!= null) downloadSongs!!.size else 0,
+        thumbnails = emptyList()
+    )
+
+    val topSizeInt = topSize.toString().toInt()
+
+    val topPlaylist = Playlist(
+        playlist = PlaylistEntity(id = UUID.randomUUID().toString(), name = "My Top $topSize"),
+        songCount = topSongs?.let { minOf(it.size, topSizeInt) } ?: 0,
         thumbnails = emptyList()
     )
 
@@ -201,7 +211,9 @@ fun LibraryPlaylistsScreen(
                                             PlaylistMenu(
                                                 playlist = likedPlaylist,
                                                 coroutineScope = coroutineScope,
-                                                onDismiss = menuState::dismiss
+                                                onDismiss = menuState::dismiss,
+                                                autoPlaylist = true,
+                                                songList = likedSongs
                                             )
                                         }
                                     }
@@ -235,7 +247,10 @@ fun LibraryPlaylistsScreen(
                                             PlaylistMenu(
                                                 playlist = downloadPlaylist,
                                                 coroutineScope = coroutineScope,
-                                                onDismiss = menuState::dismiss
+                                                onDismiss = menuState::dismiss,
+                                                autoPlaylist = true,
+                                                downloadPlaylist = true,
+                                                songList = downloadSongs
                                             )
                                         }
                                     }
@@ -250,6 +265,41 @@ fun LibraryPlaylistsScreen(
                                 .fillMaxWidth()
                                 .clickable {
                                     navController.navigate("auto_playlist/downloaded")
+                                }
+                                .animateItemPlacement()
+                        )
+                    }
+
+                    item(
+                        key = "TopPlaylist",
+                        contentType = { CONTENT_TYPE_PLAYLIST }
+                    ) {
+                        PlaylistListItem(
+                            playlist = topPlaylist,
+                            trailingContent = {
+                                IconButton(
+                                    onClick = {
+                                        menuState.show {
+                                            PlaylistMenu(
+                                                playlist = topPlaylist,
+                                                coroutineScope = coroutineScope,
+                                                onDismiss = menuState::dismiss,
+                                                autoPlaylist = true,
+                                                songList = topSongs
+                                            )
+                                        }
+                                    }
+                                ) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.more_vert),
+                                        contentDescription = null
+                                    )
+                                }
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    navController.navigate("top_playlist/$topSize")
                                 }
                                 .animateItemPlacement()
                         )
@@ -339,7 +389,9 @@ fun LibraryPlaylistsScreen(
                                             PlaylistMenu(
                                                 playlist = likedPlaylist,
                                                 coroutineScope = coroutineScope,
-                                                onDismiss = menuState::dismiss
+                                                onDismiss = menuState::dismiss,
+                                                autoPlaylist = true,
+                                                songList = likedSongs
                                             )
                                         }
                                     }
@@ -366,7 +418,39 @@ fun LibraryPlaylistsScreen(
                                             PlaylistMenu(
                                                 playlist = downloadPlaylist,
                                                 coroutineScope = coroutineScope,
-                                                onDismiss = menuState::dismiss
+                                                onDismiss = menuState::dismiss,
+                                                autoPlaylist = true,
+                                                downloadPlaylist = true,
+                                                songList = downloadSongs
+                                            )
+                                        }
+                                    }
+                                )
+                                .animateItemPlacement()
+                        )
+                    }
+
+                    item(
+                        key = "TopPlaylist",
+                        contentType = { CONTENT_TYPE_PLAYLIST }
+                    ) {
+                        PlaylistGridItem(
+                            playlist = topPlaylist,
+                            fillMaxWidth = true,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .combinedClickable(
+                                    onClick = {
+                                        navController.navigate("top_playlist/$topSize")
+                                    },
+                                    onLongClick = {
+                                        menuState.show {
+                                            PlaylistMenu(
+                                                playlist = topPlaylist,
+                                                coroutineScope = coroutineScope,
+                                                onDismiss = menuState::dismiss,
+                                                autoPlaylist = true,
+                                                songList = topSongs?.subList(0, minOf(topSizeInt, topPlaylist.songCount))
                                             )
                                         }
                                     }
