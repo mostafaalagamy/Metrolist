@@ -396,6 +396,7 @@ class MainActivity : ComponentActivity() {
                             navController = navController,
                             startDestination = when (tabOpenedFromShortcut ?: defaultOpenTab) {
                                 NavigationTab.HOME -> Screens.Home
+                                NavigationTab.EXPLORE -> Screens.Explore
                                 NavigationTab.LIBRARY-> Screens.Library
                             }.route,
                             modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
@@ -405,6 +406,9 @@ class MainActivity : ComponentActivity() {
                             }
                             composable(Screens.Library.route) {
                                 LibraryScreen(navController)
+                            }
+                            composable(Screens.Explore.route) {
+                                ExploreScreen(navController)
                             }
                             composable("history") {
                                 HistoryScreen(navController)
@@ -655,6 +659,7 @@ class MainActivity : ComponentActivity() {
                                         }
                                     } else if (navBackStackEntry?.destination?.route in listOf(
                                             Screens.Home.route,
+                                            Screens.Explore.route,
                                             Screens.Library.route,
                                         )
                                     ) {
