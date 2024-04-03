@@ -50,6 +50,7 @@ import com.zionhuang.music.ui.component.YouTubeSmallGridItem
 import com.zionhuang.music.ui.menu.ArtistMenu
 import com.zionhuang.music.ui.menu.SongMenu
 import com.zionhuang.music.ui.menu.YouTubeAlbumMenu
+import com.zionhuang.music.ui.menu.YouTubeArtistMenu
 import com.zionhuang.music.ui.menu.YouTubePlaylistMenu
 import com.zionhuang.music.ui.utils.SnapLayoutInfoProvider
 import com.zionhuang.music.utils.rememberPreference
@@ -294,9 +295,7 @@ fun HomeScreen(
                                                     onClick = {
                                                         navController.navigate("album/${keepListeningAlbums!![it - 5].song.albumId}")
                                                     },
-                                                    onLongClick = {}
                                                 ),
-
                                         )
                                     }
                                     in 10..19 -> item {
@@ -317,7 +316,15 @@ fun HomeScreen(
                                                             )
                                                         }
                                                     },
-                                                    onLongClick = {}
+                                                    onLongClick = {
+                                                        menuState.show {
+                                                            SongMenu(
+                                                                originalSong = keepListeningSongs!![it - 10],
+                                                                navController = navController,
+                                                                onDismiss = menuState::dismiss
+                                                            )
+                                                        }
+                                                    }
                                                 ),
                                                 isActive = keepListeningSongs!![it - 10].song.id == mediaMetadata?.id,
                                                 isPlaying = isPlaying,
@@ -368,8 +375,12 @@ fun HomeScreen(
                                                                 onDismiss = menuState::dismiss
                                                             )
 
-                                                            is ArtistItem -> {}
-                                                            else -> {}
+                                                            else -> {
+                                                                YouTubeArtistMenu(
+                                                                    artist = item as ArtistItem,
+                                                                    onDismiss = menuState::dismiss
+                                                                )
+                                                            }
                                                         }
                                                     }
                                                 }
@@ -623,9 +634,12 @@ fun HomeScreen(
                                                                 coroutineScope = coroutineScope,
                                                                 onDismiss = menuState::dismiss
                                                             )
-
-                                                            is ArtistItem -> {}
-                                                            else -> {}
+                                                            else -> {
+                                                                YouTubeArtistMenu(
+                                                                    artist = item as ArtistItem,
+                                                                    onDismiss = menuState::dismiss
+                                                                )
+                                                            }
                                                         }
                                                     }
                                                 }
@@ -816,9 +830,12 @@ fun HomeScreen(
                                                                 coroutineScope = coroutineScope,
                                                                 onDismiss = menuState::dismiss
                                                             )
-
-                                                            is ArtistItem -> {}
-                                                            else -> {}
+                                                            else -> {
+                                                                YouTubeArtistMenu(
+                                                                    artist = item as ArtistItem,
+                                                                    onDismiss = menuState::dismiss
+                                                                )
+                                                            }
                                                         }
                                                     }
                                                 }

@@ -77,29 +77,6 @@ class HomeViewModel @Inject constructor(
         songsAlbumRecommendation.value = database.getRecommendationAlbum(limit = 10).first().shuffled().take(2)
 
         artistRecommendation.value = database.mostPlayedArtists(System.currentTimeMillis() - 86400000 * 7, limit = 10).first().shuffled().take(3)
-
-
-//        YouTube.explore().onSuccess { page ->
-//            val artists: Set<String>
-//            val favouriteArtists: Set<String>
-//            database.artistsByCreateDateAsc().first().let { list ->
-//                artists = list.map(Artist::id).toHashSet()
-//                favouriteArtists = list
-//                    .filter { it.artist.bookmarkedAt != null }
-//                    .map { it.id }
-//                    .toHashSet()
-//            }
-//            explorePage.value = page.copy(
-//                newReleaseAlbums = page.newReleaseAlbums
-//                    .sortedBy { album ->
-//                        if (album.artists.orEmpty().any { it.id in favouriteArtists }) 0
-//                        else if (album.artists.orEmpty().any { it.id in artists }) 1
-//                        else 2
-//                    }
-//            )
-//        }.onFailure {
-//            reportException(it)
-//        }
     }
 
     private suspend fun homeLoad() {
