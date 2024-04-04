@@ -2,6 +2,7 @@
 
 package com.zionhuang.music.viewmodels
 
+import android.app.LauncherActivity
 import android.content.Context
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -10,8 +11,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.exoplayer.offline.Download
 import com.zionhuang.innertube.YouTube
+import com.zionhuang.innertube.models.ArtistItem
 import com.zionhuang.music.constants.*
 import com.zionhuang.music.db.MusicDatabase
+import com.zionhuang.music.db.entities.LocalItem
 import com.zionhuang.music.extensions.reversed
 import com.zionhuang.music.extensions.toEnum
 import com.zionhuang.music.playback.DownloadUtil
@@ -231,6 +234,32 @@ class LibraryMixViewModel @Inject constructor(
                 }
         }
     val topSongs = database.mostPlayedSongs(0, 100)
+    val artists = database.artists(ArtistSortType.CREATE_DATE, true).stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
+    val albums = database.albums(AlbumSortType.CREATE_DATE, true).stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
+    val playlists = database.playlists(PlaylistSortType.CREATE_DATE, true).stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
+
+    init {
+        viewModelScope.launch(Dispatchers.IO) {
+            albums.collect { albums ->
+                albums.filter {
+                    it.album.songCount == 0
+                }.forEach { album ->
+                    YouTube.album(album.id).onSuccess { albumPage ->
+                        database.query {
+                            update(album.album, albumPage)
+                        }
+                    }.onFailure {
+                        reportException(it)
+                        if (it.message?.contains("NOT_FOUND") == true) {
+                            database.query {
+                                delete(album.album)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 @HiltViewModel

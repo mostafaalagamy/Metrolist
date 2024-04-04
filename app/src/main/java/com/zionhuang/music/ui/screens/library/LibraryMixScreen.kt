@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -19,13 +20,20 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.zionhuang.music.LocalPlayerAwareWindowInsets
+import com.zionhuang.music.LocalPlayerConnection
 import com.zionhuang.music.constants.CONTENT_TYPE_HEADER
 import com.zionhuang.music.constants.CONTENT_TYPE_PLAYLIST
 import com.zionhuang.music.constants.GridThumbnailHeight
+import com.zionhuang.music.db.entities.Album
+import com.zionhuang.music.db.entities.Artist
 import com.zionhuang.music.db.entities.Playlist
 import com.zionhuang.music.db.entities.PlaylistEntity
+import com.zionhuang.music.ui.component.AlbumGridItem
+import com.zionhuang.music.ui.component.ArtistGridItem
 import com.zionhuang.music.ui.component.LocalMenuState
 import com.zionhuang.music.ui.component.PlaylistGridItem
+import com.zionhuang.music.ui.menu.AlbumMenu
+import com.zionhuang.music.ui.menu.ArtistMenu
 import com.zionhuang.music.ui.menu.PlaylistMenu
 import com.zionhuang.music.viewmodels.LibraryMixViewModel
 import java.util.UUID
@@ -38,6 +46,9 @@ fun LibraryMixScreen(
     viewModel: LibraryMixViewModel = hiltViewModel(),
 ) {
     val menuState = LocalMenuState.current
+    val playerConnection = LocalPlayerConnection.current ?: return
+    val isPlaying by playerConnection.isPlaying.collectAsState()
+    val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
 
     val likedSongs by viewModel.likedSongs.collectAsState()
     val downloadSongs by viewModel.downloadSongs.collectAsState(initial = null)
@@ -62,6 +73,12 @@ fun LibraryMixScreen(
         songCount = topSongs?.let { minOf(it.size, topSizeInt) } ?: 0,
         thumbnails = emptyList()
     )
+
+    val albums = viewModel.albums.collectAsState()
+    val artist = viewModel.artists.collectAsState()
+    val playlist = viewModel.playlists.collectAsState()
+
+    val allItems = albums.value + artist.value + playlist.value
 
     val coroutineScope = rememberCoroutineScope()
 
@@ -163,13 +180,100 @@ fun LibraryMixScreen(
                                         coroutineScope = coroutineScope,
                                         onDismiss = menuState::dismiss,
                                         autoPlaylist = true,
-                                        songList = topSongs?.subList(0, minOf(topSizeInt, topPlaylist.songCount))
+                                        songList = topSongs?.subList(
+                                            0,
+                                            minOf(topSizeInt, topPlaylist.songCount)
+                                        )
                                     )
                                 }
                             }
                         )
                         .animateItemPlacement()
                 )
+            }
+
+
+            items(
+                items = allItems,
+                key = { it.id },
+                contentType = { CONTENT_TYPE_PLAYLIST }
+            ) { item ->
+                when (item) {
+                    is Playlist -> {
+                        PlaylistGridItem(
+                            playlist = item,
+                            fillMaxWidth = true,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .combinedClickable(
+                                    onClick = {
+                                        navController.navigate("local_playlist/${item.id}")
+                                    },
+                                    onLongClick = {
+                                        menuState.show {
+                                            PlaylistMenu(
+                                                playlist = item,
+                                                coroutineScope = coroutineScope,
+                                                onDismiss = menuState::dismiss
+                                            )
+                                        }
+                                    }
+                                )
+                                .animateItemPlacement()
+                        )
+                    }
+                    is Artist -> {
+                        ArtistGridItem(
+                            artist = item,
+                            fillMaxWidth = true,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .combinedClickable(
+                                    onClick = {
+                                        navController.navigate("artist/${item.id}")
+                                    },
+                                    onLongClick = {
+                                        menuState.show {
+                                            ArtistMenu(
+                                                originalArtist = item,
+                                                coroutineScope = coroutineScope,
+                                                onDismiss = menuState::dismiss
+                                            )
+                                        }
+                                    }
+                                )
+                                .animateItemPlacement()
+                        )
+                    }
+                    is Album -> {
+                        AlbumGridItem(
+                            album = item,
+//                            isActive = item.id == mediaMetadata?.item?.id,
+                            isPlaying = isPlaying,
+                            coroutineScope = coroutineScope,
+                            fillMaxWidth = true,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .combinedClickable(
+                                    onClick = {
+                                        navController.navigate("item/${item.id}")
+                                    },
+                                    onLongClick = {
+                                        menuState.show {
+                                            AlbumMenu(
+                                                originalAlbum = item,
+                                                navController = navController,
+                                                onDismiss = menuState::dismiss
+                                            )
+                                        }
+                                    }
+                                )
+                                .animateItemPlacement()
+                        )
+                    }
+                    else -> {}
+                }
+
             }
         }
     }
