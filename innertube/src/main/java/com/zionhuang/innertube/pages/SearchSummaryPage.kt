@@ -4,6 +4,9 @@ import com.zionhuang.innertube.models.Album
 import com.zionhuang.innertube.models.AlbumItem
 import com.zionhuang.innertube.models.Artist
 import com.zionhuang.innertube.models.ArtistItem
+import com.zionhuang.innertube.models.BrowseEndpoint.BrowseEndpointContextSupportedConfigs.BrowseEndpointContextMusicConfig.Companion.MUSIC_PAGE_TYPE_ALBUM
+import com.zionhuang.innertube.models.BrowseEndpoint.BrowseEndpointContextSupportedConfigs.BrowseEndpointContextMusicConfig.Companion.MUSIC_PAGE_TYPE_ARTIST
+import com.zionhuang.innertube.models.BrowseEndpoint.BrowseEndpointContextSupportedConfigs.BrowseEndpointContextMusicConfig.Companion.MUSIC_PAGE_TYPE_USER_CHANNEL
 import com.zionhuang.innertube.models.MusicCardShelfRenderer
 import com.zionhuang.innertube.models.MusicResponsiveListItemRenderer
 import com.zionhuang.innertube.models.PlaylistItem
@@ -116,6 +119,23 @@ data class SearchSummaryPage(
                 ?.musicResponsiveListItemFlexColumnRenderer?.text?.runs?.splitBySeparator()
                 ?: emptyList()
             val listRun = (secondaryLine + thirdLine).clean()
+            var album: Album? = null
+            val artist: MutableList<Artist> = mutableListOf()
+            listRun.forEach { runs ->
+                runs.forEach {
+                    val pageType =it.navigationEndpoint?.browseEndpoint?.browseEndpointContextSupportedConfigs?.browseEndpointContextMusicConfig?.pageType
+                    if (pageType == MUSIC_PAGE_TYPE_ALBUM
+                        ) {
+                        album = Album(name = it.text, id = it.navigationEndpoint.browseEndpoint.browseId)
+                    }
+                    else if (pageType == MUSIC_PAGE_TYPE_ARTIST || pageType == MUSIC_PAGE_TYPE_USER_CHANNEL) {
+                        artist.add(Artist(
+                            name = it.text,
+                            id = it.navigationEndpoint.browseEndpoint.browseId
+                        ))
+                    }
+                }
+            }
             return when {
                 renderer.isSong -> {
                     SongItem(
@@ -123,18 +143,15 @@ data class SearchSummaryPage(
                         title = renderer.flexColumns.firstOrNull()
                             ?.musicResponsiveListItemFlexColumnRenderer?.text?.runs
                             ?.firstOrNull()?.text ?: return null,
-                        artists = listRun.getOrNull(0)?.oddElements()?.map {
-                            Artist(
-                                name = it.text,
-                                id = it.navigationEndpoint?.browseEndpoint?.browseId
-                            )
-                        } ?: return null,
-                        album = listRun.getOrNull(1)?.firstOrNull()?.takeIf { it.navigationEndpoint?.browseEndpoint != null }?.let {
-                            Album(
-                                name = it.text,
-                                id = it.navigationEndpoint?.browseEndpoint?.browseId!!
-                            )
+                        artists =
+                        if (artist.isEmpty()) {
+                            secondaryLine.getOrNull(0)?.oddElements()?.map {
+                                Artist(name = it.text, id = it.navigationEndpoint?.browseEndpoint?.browseId)
+                            } ?: return null
+                        }else {
+                            artist
                         },
+                        album = album,
                         duration = secondaryLine.lastOrNull()?.firstOrNull()?.text?.parseTime(),
                         thumbnail = renderer.thumbnail?.musicThumbnailRenderer?.getThumbnailUrl() ?: return null,
                         explicit = renderer.badges?.find {
