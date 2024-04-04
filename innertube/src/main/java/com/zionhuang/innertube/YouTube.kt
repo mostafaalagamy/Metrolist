@@ -6,7 +6,6 @@ import com.zionhuang.innertube.models.Artist
 import com.zionhuang.innertube.models.ArtistItem
 import com.zionhuang.innertube.models.BrowseEndpoint
 import com.zionhuang.innertube.models.GridRenderer
-import com.zionhuang.innertube.models.MusicCarouselShelfRenderer
 import com.zionhuang.innertube.models.MusicResponsiveListItemRenderer
 import com.zionhuang.innertube.models.MusicTwoRowItemRenderer
 import com.zionhuang.innertube.models.PlaylistItem
@@ -379,7 +378,7 @@ object YouTube {
                                     val renderer = content2.musicTwoRowItemRenderer ?: content2.musicResponsiveListItemRenderer
                                     renderer?.let {
                                         when (renderer) {
-                                            is MusicTwoRowItemRenderer -> RelatedPage.fromMusicTwoRowItemRenderer(renderer)
+                                            is MusicTwoRowItemRenderer -> NewReleaseAlbumPage.fromMusicTwoRowItemRenderer(renderer) ?: RelatedPage.fromMusicTwoRowItemRenderer(renderer)
                                             is MusicResponsiveListItemRenderer -> SearchSummaryPage.fromMusicResponsiveListItemRenderer(renderer)
                                             else -> null // Handle other cases if necessary
                                         }
