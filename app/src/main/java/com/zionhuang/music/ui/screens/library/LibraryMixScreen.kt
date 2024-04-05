@@ -256,7 +256,7 @@ fun LibraryMixScreen(
                                 .fillMaxWidth()
                                 .combinedClickable(
                                     onClick = {
-                                        navController.navigate("item/${item.id}")
+                                        navController.navigate("album/${item.id}")
                                     },
                                     onLongClick = {
                                         menuState.show {
