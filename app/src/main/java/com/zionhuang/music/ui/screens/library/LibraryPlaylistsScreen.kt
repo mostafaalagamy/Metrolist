@@ -80,19 +80,16 @@ fun LibraryPlaylistsScreen(
 
     val playlists by viewModel.allPlaylists.collectAsState()
 
-    val likedSongs by viewModel.likedSongs.collectAsState()
-    val downloadSongs by viewModel.downloadSongs.collectAsState(initial = null)
-    val topSongs by viewModel.topSongs.collectAsState(initial = null)
     val topSize by viewModel.topValue.collectAsState(initial = 50)
     val likedPlaylist = Playlist(
         playlist = PlaylistEntity(id = UUID.randomUUID().toString(), name = "Liked"),
-        songCount = if (likedSongs != null) likedSongs!!.size else 0,
+        songCount = 0,
         thumbnails = emptyList()
     )
 
     val downloadPlaylist = Playlist(
         playlist = PlaylistEntity(id = UUID.randomUUID().toString(), name = "Offline"),
-        songCount = if (downloadSongs!= null) downloadSongs!!.size else 0,
+        songCount = 0,
         thumbnails = emptyList()
     )
 
@@ -100,7 +97,7 @@ fun LibraryPlaylistsScreen(
 
     val topPlaylist = Playlist(
         playlist = PlaylistEntity(id = UUID.randomUUID().toString(), name = "My Top $topSize"),
-        songCount = topSongs?.let { minOf(it.size, topSizeInt) } ?: 0,
+        songCount = 0,
         thumbnails = emptyList()
     )
 
@@ -204,26 +201,7 @@ fun LibraryPlaylistsScreen(
                     ) {
                         PlaylistListItem(
                             playlist = likedPlaylist,
-                            trailingContent = {
-                                IconButton(
-                                    onClick = {
-                                        menuState.show {
-                                            PlaylistMenu(
-                                                playlist = likedPlaylist,
-                                                coroutineScope = coroutineScope,
-                                                onDismiss = menuState::dismiss,
-                                                autoPlaylist = true,
-                                                songList = likedSongs
-                                            )
-                                        }
-                                    }
-                                ) {
-                                    Icon(
-                                        painter = painterResource(R.drawable.more_vert),
-                                        contentDescription = null
-                                    )
-                                }
-                            },
+                            autoPlaylist = true,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .clickable {
@@ -240,27 +218,7 @@ fun LibraryPlaylistsScreen(
                     ) {
                         PlaylistListItem(
                             playlist = downloadPlaylist,
-                            trailingContent = {
-                                IconButton(
-                                    onClick = {
-                                        menuState.show {
-                                            PlaylistMenu(
-                                                playlist = downloadPlaylist,
-                                                coroutineScope = coroutineScope,
-                                                onDismiss = menuState::dismiss,
-                                                autoPlaylist = true,
-                                                downloadPlaylist = true,
-                                                songList = downloadSongs
-                                            )
-                                        }
-                                    }
-                                ) {
-                                    Icon(
-                                        painter = painterResource(R.drawable.more_vert),
-                                        contentDescription = null
-                                    )
-                                }
-                            },
+                            autoPlaylist = true,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .clickable {
@@ -276,26 +234,7 @@ fun LibraryPlaylistsScreen(
                     ) {
                         PlaylistListItem(
                             playlist = topPlaylist,
-                            trailingContent = {
-                                IconButton(
-                                    onClick = {
-                                        menuState.show {
-                                            PlaylistMenu(
-                                                playlist = topPlaylist,
-                                                coroutineScope = coroutineScope,
-                                                onDismiss = menuState::dismiss,
-                                                autoPlaylist = true,
-                                                songList = topSongs
-                                            )
-                                        }
-                                    }
-                                ) {
-                                    Icon(
-                                        painter = painterResource(R.drawable.more_vert),
-                                        contentDescription = null
-                                    )
-                                }
-                            },
+                            autoPlaylist = true,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .clickable {
@@ -378,23 +317,13 @@ fun LibraryPlaylistsScreen(
                         PlaylistGridItem(
                             playlist = likedPlaylist,
                             fillMaxWidth = true,
+                            autoPlaylist = true,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .combinedClickable(
                                     onClick = {
                                         navController.navigate("auto_playlist/liked")
                                     },
-                                    onLongClick = {
-                                        menuState.show {
-                                            PlaylistMenu(
-                                                playlist = likedPlaylist,
-                                                coroutineScope = coroutineScope,
-                                                onDismiss = menuState::dismiss,
-                                                autoPlaylist = true,
-                                                songList = likedSongs
-                                            )
-                                        }
-                                    }
                                 )
                                 .animateItemPlacement()
                         )
@@ -407,24 +336,13 @@ fun LibraryPlaylistsScreen(
                         PlaylistGridItem(
                             playlist = downloadPlaylist,
                             fillMaxWidth = true,
+                            autoPlaylist = true,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .combinedClickable(
                                     onClick = {
                                         navController.navigate("auto_playlist/downloaded")
                                     },
-                                    onLongClick = {
-                                        menuState.show {
-                                            PlaylistMenu(
-                                                playlist = downloadPlaylist,
-                                                coroutineScope = coroutineScope,
-                                                onDismiss = menuState::dismiss,
-                                                autoPlaylist = true,
-                                                downloadPlaylist = true,
-                                                songList = downloadSongs
-                                            )
-                                        }
-                                    }
                                 )
                                 .animateItemPlacement()
                         )
@@ -437,23 +355,13 @@ fun LibraryPlaylistsScreen(
                         PlaylistGridItem(
                             playlist = topPlaylist,
                             fillMaxWidth = true,
+                            autoPlaylist = true,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .combinedClickable(
                                     onClick = {
                                         navController.navigate("top_playlist/$topSize")
                                     },
-                                    onLongClick = {
-                                        menuState.show {
-                                            PlaylistMenu(
-                                                playlist = topPlaylist,
-                                                coroutineScope = coroutineScope,
-                                                onDismiss = menuState::dismiss,
-                                                autoPlaylist = true,
-                                                songList = topSongs?.subList(0, minOf(topSizeInt, topPlaylist.songCount))
-                                            )
-                                        }
-                                    }
                                 )
                                 .animateItemPlacement()
                         )

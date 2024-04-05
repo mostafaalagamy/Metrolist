@@ -880,9 +880,10 @@ fun PlaylistListItem(
     playlist: Playlist,
     modifier: Modifier = Modifier,
     trailingContent: @Composable RowScope.() -> Unit = {},
+    autoPlaylist: Boolean = true,
 ) = ListItem(
     title = playlist.playlist.name,
-    subtitle = pluralStringResource(R.plurals.n_song, playlist.songCount, playlist.songCount),
+    subtitle = if (autoPlaylist) "" else pluralStringResource(R.plurals.n_song, playlist.songCount, playlist.songCount),
     thumbnailContent = {
         val painter = when (playlist.playlist.name) {
             "Liked" -> R.drawable.favorite
@@ -939,9 +940,10 @@ fun PlaylistGridItem(
     modifier: Modifier = Modifier,
     badges: @Composable RowScope.() -> Unit = { },
     fillMaxWidth: Boolean = false,
+    autoPlaylist: Boolean = false
 ) = GridItem(
     title = playlist.playlist.name,
-    subtitle = pluralStringResource(R.plurals.n_song, playlist.songCount, playlist.songCount),
+    subtitle = if (autoPlaylist) "" else pluralStringResource(R.plurals.n_song, playlist.songCount, playlist.songCount),
     badges = badges,
     thumbnailContent = {
         val painter = when (playlist.playlist.name) {

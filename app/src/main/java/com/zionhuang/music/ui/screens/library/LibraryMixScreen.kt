@@ -34,7 +34,6 @@ import com.zionhuang.music.ui.component.LocalMenuState
 import com.zionhuang.music.ui.component.PlaylistGridItem
 import com.zionhuang.music.ui.menu.AlbumMenu
 import com.zionhuang.music.ui.menu.ArtistMenu
-import com.zionhuang.music.ui.menu.PlaylistMenu
 import com.zionhuang.music.viewmodels.LibraryMixViewModel
 import java.util.UUID
 
@@ -50,27 +49,22 @@ fun LibraryMixScreen(
     val isPlaying by playerConnection.isPlaying.collectAsState()
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
 
-    val likedSongs by viewModel.likedSongs.collectAsState()
-    val downloadSongs by viewModel.downloadSongs.collectAsState(initial = null)
-    val topSongs by viewModel.topSongs.collectAsState(initial = null)
     val topSize by viewModel.topValue.collectAsState(initial = 50)
     val likedPlaylist = Playlist(
         playlist = PlaylistEntity(id = UUID.randomUUID().toString(), name = "Liked"),
-        songCount = if (likedSongs != null) likedSongs!!.size else 0,
+        songCount = 0,
         thumbnails = emptyList()
     )
 
     val downloadPlaylist = Playlist(
         playlist = PlaylistEntity(id = UUID.randomUUID().toString(), name = "Offline"),
-        songCount = if (downloadSongs!= null) downloadSongs!!.size else 0,
+        songCount = 0,
         thumbnails = emptyList()
     )
 
-    val topSizeInt = topSize.toString().toInt()
-
     val topPlaylist = Playlist(
         playlist = PlaylistEntity(id = UUID.randomUUID().toString(), name = "My Top $topSize"),
-        songCount = topSongs?.let { minOf(it.size, topSizeInt) } ?: 0,
+        songCount = 0,
         thumbnails = emptyList()
     )
 
@@ -108,23 +102,13 @@ fun LibraryMixScreen(
                 PlaylistGridItem(
                     playlist = likedPlaylist,
                     fillMaxWidth = true,
+                    autoPlaylist = true,
                     modifier = Modifier
                         .fillMaxWidth()
                         .combinedClickable(
                             onClick = {
                                 navController.navigate("auto_playlist/liked")
                             },
-                            onLongClick = {
-                                menuState.show {
-                                    PlaylistMenu(
-                                        playlist = likedPlaylist,
-                                        coroutineScope = coroutineScope,
-                                        onDismiss = menuState::dismiss,
-                                        autoPlaylist = true,
-                                        songList = likedSongs
-                                    )
-                                }
-                            }
                         )
                         .animateItemPlacement()
                 )
@@ -137,24 +121,13 @@ fun LibraryMixScreen(
                 PlaylistGridItem(
                     playlist = downloadPlaylist,
                     fillMaxWidth = true,
+                    autoPlaylist = true,
                     modifier = Modifier
                         .fillMaxWidth()
                         .combinedClickable(
                             onClick = {
                                 navController.navigate("auto_playlist/downloaded")
                             },
-                            onLongClick = {
-                                menuState.show {
-                                    PlaylistMenu(
-                                        playlist = downloadPlaylist,
-                                        coroutineScope = coroutineScope,
-                                        onDismiss = menuState::dismiss,
-                                        autoPlaylist = true,
-                                        downloadPlaylist = true,
-                                        songList = downloadSongs
-                                    )
-                                }
-                            }
                         )
                         .animateItemPlacement()
                 )
@@ -167,26 +140,13 @@ fun LibraryMixScreen(
                 PlaylistGridItem(
                     playlist = topPlaylist,
                     fillMaxWidth = true,
+                    autoPlaylist = true,
                     modifier = Modifier
                         .fillMaxWidth()
                         .combinedClickable(
                             onClick = {
                                 navController.navigate("top_playlist/$topSize")
                             },
-                            onLongClick = {
-                                menuState.show {
-                                    PlaylistMenu(
-                                        playlist = topPlaylist,
-                                        coroutineScope = coroutineScope,
-                                        onDismiss = menuState::dismiss,
-                                        autoPlaylist = true,
-                                        songList = topSongs?.subList(
-                                            0,
-                                            minOf(topSizeInt, topPlaylist.songCount)
-                                        )
-                                    )
-                                }
-                            }
                         )
                         .animateItemPlacement()
                 )
@@ -209,15 +169,6 @@ fun LibraryMixScreen(
                                     onClick = {
                                         navController.navigate("local_playlist/${item.id}")
                                     },
-                                    onLongClick = {
-                                        menuState.show {
-                                            PlaylistMenu(
-                                                playlist = item,
-                                                coroutineScope = coroutineScope,
-                                                onDismiss = menuState::dismiss
-                                            )
-                                        }
-                                    }
                                 )
                                 .animateItemPlacement()
                         )
