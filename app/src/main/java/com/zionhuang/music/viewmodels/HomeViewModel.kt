@@ -54,7 +54,14 @@ class HomeViewModel @Inject constructor(
 
     private suspend fun load() {
         quickPicks.value = database.quickPicks().first().shuffled().take(20)
-        keepListeningArtists.value = database.mostPlayedArtists(System.currentTimeMillis() - 86400000 * 7 * 2).first().shuffled().take(5)
+        val artists = database.mostPlayedArtists(System.currentTimeMillis() - 86400000 * 7 * 2).first().shuffled().take(5)
+        val filteredArtists = mutableListOf<Artist>()
+        artists.forEach {
+            if (it.artist.isYouTubeArtist){
+                filteredArtists.add(it)
+            }
+        }
+        keepListeningArtists.value = filteredArtists
         keepListeningAlbums.value = database.getRecommendationAlbum(limit = 8, offset = 2).first().shuffled().take(5)
         keepListeningSongs.value = database.mostPlayedSongs(System.currentTimeMillis() - 86400000 * 7 * 2, limit = 15, offset = 5).first().shuffled().take(10)
         val listenAgainBuilder = mutableListOf<Int>()
