@@ -2,8 +2,6 @@ package com.zionhuang.music.ui.player
 
 import android.text.format.Formatter
 import android.widget.Toast
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -23,6 +21,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
@@ -38,8 +37,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBarDefaults
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Slider
 import androidx.compose.material3.SwipeToDismiss
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -59,7 +56,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
@@ -70,33 +66,32 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
+import androidx.media3.common.Player
 import androidx.media3.common.Timeline
 import androidx.media3.exoplayer.source.ShuffleOrder.DefaultShuffleOrder
 import androidx.navigation.NavController
 import com.zionhuang.music.LocalPlayerConnection
 import com.zionhuang.music.R
 import com.zionhuang.music.constants.ListItemHeight
-import com.zionhuang.music.constants.ShowLyricsKey
 import com.zionhuang.music.extensions.metadata
 import com.zionhuang.music.extensions.move
 import com.zionhuang.music.extensions.togglePlayPause
+import com.zionhuang.music.extensions.toggleRepeatMode
 import com.zionhuang.music.ui.component.BottomSheet
 import com.zionhuang.music.ui.component.BottomSheetState
 import com.zionhuang.music.ui.component.LocalMenuState
 import com.zionhuang.music.ui.component.MediaMetadataListItem
+import com.zionhuang.music.ui.component.ResizableIconButton
 import com.zionhuang.music.ui.menu.PlayerMenu
 import com.zionhuang.music.utils.makeTimeString
-import com.zionhuang.music.utils.rememberPreference
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import org.burnoutcrew.reorderable.ReorderableItem
 import org.burnoutcrew.reorderable.detectReorder
+import org.burnoutcrew.reorderable.detectReorderAfterLongPress
 import org.burnoutcrew.reorderable.rememberReorderableLazyListState
 import org.burnoutcrew.reorderable.reorderable
-import kotlin.math.roundToInt
 
-@OptIn(ExperimentalAnimationApi::class, ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun Queue(
     state: BottomSheetState,
@@ -110,13 +105,12 @@ fun Queue(
 
     val playerConnection = LocalPlayerConnection.current ?: return
     val isPlaying by playerConnection.isPlaying.collectAsState()
+    val repeatMode by playerConnection.repeatMode.collectAsState()
 
     val currentWindowIndex by playerConnection.currentWindowIndex.collectAsState()
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
 
     val currentFormat by playerConnection.currentFormat.collectAsState(initial = null)
-
-    var showLyrics by rememberPreference(ShowLyricsKey, defaultValue = false)
 
     var showDetailsDialog by rememberSaveable {
         mutableStateOf(false)
@@ -197,34 +191,10 @@ fun Queue(
                             .only(WindowInsetsSides.Bottom + WindowInsetsSides.Horizontal)
                     )
             ) {
+
                 IconButton(onClick = { state.expandSoft() }) {
                     Icon(
-                        painter = painterResource(R.drawable.queue_music),
-                        contentDescription = null
-                    )
-                }
-                IconButton(onClick = { showLyrics = !showLyrics }) {
-                    Icon(
-                        painter = painterResource(R.drawable.lyrics),
-                        contentDescription = null,
-                        modifier = Modifier.alpha(if (showLyrics) 1f else 0.5f)
-                    )
-                }
-                IconButton(
-                    onClick = {
-                        menuState.show {
-                            PlayerMenu(
-                                mediaMetadata = mediaMetadata,
-                                navController = navController,
-                                playerBottomSheetState = playerBottomSheetState,
-                                onShowDetailsDialog = { showDetailsDialog = true },
-                                onDismiss = menuState::dismiss
-                            )
-                        }
-                    }
-                ) {
-                    Icon(
-                        painter = painterResource(R.drawable.more_horiz),
+                        painter = painterResource(R.drawable.expand_less),
                         contentDescription = null
                     )
                 }
@@ -340,7 +310,9 @@ fun Queue(
                                                     navController = navController,
                                                     playerBottomSheetState = playerBottomSheetState,
                                                     isQueueTrigger = true,
-                                                    onShowDetailsDialog = { showDetailsDialog = true },
+                                                    onShowDetailsDialog = {
+                                                        showDetailsDialog = true
+                                                    },
                                                     onDismiss = menuState::dismiss
                                                 )
                                             }
@@ -442,6 +414,20 @@ fun Queue(
                 painter = painterResource(R.drawable.expand_more),
                 contentDescription = null,
                 modifier = Modifier.align(Alignment.Center)
+            )
+
+            ResizableIconButton(
+                icon = when (repeatMode) {
+                    Player.REPEAT_MODE_OFF, Player.REPEAT_MODE_ALL -> R.drawable.repeat
+                    Player.REPEAT_MODE_ONE -> R.drawable.repeat_one
+                    else -> throw IllegalStateException()
+                },
+                modifier = Modifier
+                    .size(32.dp)
+                    .padding(4.dp)
+                    .align(Alignment.CenterEnd)
+                    .alpha(if (repeatMode == Player.REPEAT_MODE_OFF) 0.5f else 1f),
+                onClick = playerConnection.player::toggleRepeatMode
             )
         }
     }

@@ -2,6 +2,8 @@ package com.zionhuang.music.ui.player
 
 import android.content.Intent
 import android.content.res.Configuration
+import android.text.format.Formatter
+import android.widget.Toast
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.LinearEasing
@@ -12,6 +14,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,12 +29,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
@@ -56,11 +61,13 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -68,9 +75,6 @@ import androidx.compose.ui.util.fastForEachIndexed
 import androidx.compose.ui.window.DialogProperties
 import androidx.core.net.toUri
 import androidx.media3.common.C
-import androidx.media3.common.Player.REPEAT_MODE_ALL
-import androidx.media3.common.Player.REPEAT_MODE_OFF
-import androidx.media3.common.Player.REPEAT_MODE_ONE
 import androidx.media3.common.Player.STATE_ENDED
 import androidx.media3.common.Player.STATE_READY
 import androidx.media3.exoplayer.offline.Download
@@ -83,19 +87,20 @@ import com.zionhuang.music.LocalPlayerConnection
 import com.zionhuang.music.R
 import com.zionhuang.music.constants.PlayerHorizontalPadding
 import com.zionhuang.music.constants.QueuePeekHeight
+import com.zionhuang.music.constants.ShowLyricsKey
 import com.zionhuang.music.db.entities.PlaylistSongMap
 import com.zionhuang.music.extensions.togglePlayPause
-import com.zionhuang.music.extensions.toggleRepeatMode
 import com.zionhuang.music.models.MediaMetadata
 import com.zionhuang.music.playback.ExoDownloadService
 import com.zionhuang.music.ui.component.BottomSheet
 import com.zionhuang.music.ui.component.BottomSheetState
-import com.zionhuang.music.ui.component.DownloadGridMenu
-import com.zionhuang.music.ui.component.GridMenuItem
+import com.zionhuang.music.ui.component.LocalMenuState
 import com.zionhuang.music.ui.component.ResizableIconButton
 import com.zionhuang.music.ui.component.rememberBottomSheetState
 import com.zionhuang.music.ui.menu.AddToPlaylistDialog
+import com.zionhuang.music.ui.menu.PlayerMenu
 import com.zionhuang.music.utils.makeTimeString
+import com.zionhuang.music.utils.rememberPreference
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlin.math.roundToInt
@@ -109,17 +114,21 @@ fun BottomSheetPlayer(
 ) {
     val context = LocalContext.current
     val database = LocalDatabase.current
+    val menuState = LocalMenuState.current
+
+    val clipboardManager = LocalClipboardManager.current
 
     val playerConnection = LocalPlayerConnection.current ?: return
 
     val playbackState by playerConnection.playbackState.collectAsState()
     val isPlaying by playerConnection.isPlaying.collectAsState()
-    val repeatMode by playerConnection.repeatMode.collectAsState()
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
     val currentSong by playerConnection.currentSong.collectAsState(initial = null)
 
     val canSkipPrevious by playerConnection.canSkipPrevious.collectAsState()
     val canSkipNext by playerConnection.canSkipNext.collectAsState()
+
+    var showLyrics by rememberPreference(ShowLyricsKey, defaultValue = false)
 
     var position by rememberSaveable(playbackState) {
         mutableStateOf(playerConnection.player.currentPosition)
@@ -246,6 +255,73 @@ fun BottomSheetPlayer(
         }
     }
 
+    val currentFormat by playerConnection.currentFormat.collectAsState(initial = null)
+
+
+    var showDetailsDialog by rememberSaveable {
+        mutableStateOf(false)
+    }
+
+    if (showDetailsDialog) {
+        AlertDialog(
+            properties = DialogProperties(usePlatformDefaultWidth = false),
+            onDismissRequest = { showDetailsDialog = false },
+            icon = {
+                Icon(
+                    painter = painterResource(R.drawable.info),
+                    contentDescription = null
+                )
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = { showDetailsDialog = false }
+                ) {
+                    Text(stringResource(android.R.string.ok))
+                }
+            },
+            text = {
+                Column(
+                    modifier = Modifier
+                        .sizeIn(minWidth = 280.dp, maxWidth = 560.dp)
+                        .verticalScroll(rememberScrollState())
+                ) {
+                    listOf(
+                        stringResource(R.string.song_title) to mediaMetadata?.title,
+                        stringResource(R.string.song_artists) to mediaMetadata?.artists?.joinToString { it.name },
+                        stringResource(R.string.media_id) to mediaMetadata?.id,
+                        "Itag" to currentFormat?.itag?.toString(),
+                        stringResource(R.string.mime_type) to currentFormat?.mimeType,
+                        stringResource(R.string.codecs) to currentFormat?.codecs,
+                        stringResource(R.string.bitrate) to currentFormat?.bitrate?.let { "${it / 1000} Kbps" },
+                        stringResource(R.string.sample_rate) to currentFormat?.sampleRate?.let { "$it Hz" },
+                        stringResource(R.string.loudness) to currentFormat?.loudnessDb?.let { "$it dB" },
+                        stringResource(R.string.volume) to "${(playerConnection.player.volume * 100).toInt()}%",
+                        stringResource(R.string.file_size) to currentFormat?.contentLength?.let { Formatter.formatShortFileSize(context, it) }
+                    ).forEach { (label, text) ->
+                        val displayText = text ?: stringResource(R.string.unknown)
+                        Text(
+                            text = label,
+                            style = MaterialTheme.typography.labelMedium
+                        )
+                        Text(
+                            text = displayText,
+                            style = MaterialTheme.typography.titleMedium,
+                            modifier = Modifier.clickable(
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication = null,
+                                onClick = {
+                                    clipboardManager.setText(AnnotatedString(displayText))
+                                    Toast.makeText(context, R.string.copied, Toast.LENGTH_SHORT).show()
+                                }
+                            )
+                        )
+                        Spacer(Modifier.height(8.dp))
+                    }
+                }
+            }
+        )
+    }
+
     val queueSheetState = rememberBottomSheetState(
         dismissedBound = QueuePeekHeight + WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
         expandedBound = state.expandedBound,
@@ -334,28 +410,6 @@ fun BottomSheetPlayer(
                     .fillMaxWidth()
                     .padding(horizontal = PlayerHorizontalPadding)
             ) {
-
-                Box(
-                    modifier = Modifier
-                        .size(42.dp)
-                        .clip(RoundedCornerShape(24.dp))
-                        .background(MaterialTheme.colorScheme.secondaryContainer)
-                        .clickable {
-                            playerConnection.toggleLibrary()
-                        }
-                ) {
-                    Image(
-                        painter = painterResource(if (currentSong?.song?.inLibrary != null) R.drawable.library_add_check else R.drawable.library_add),
-                        contentDescription = null,
-                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
-                        modifier = Modifier
-                            .align(Alignment.Center)
-                            .size(24.dp)
-                    )
-                }
-                
-                Spacer(modifier = Modifier.size(12.dp))
-
                 Box(
                     modifier = Modifier
                         .size(42.dp)
@@ -383,20 +437,19 @@ fun BottomSheetPlayer(
                         .clip(RoundedCornerShape(24.dp))
                         .background(MaterialTheme.colorScheme.secondaryContainer)
                         .clickable {
-                            if (download?.state == Download.STATE_COMPLETED)
-                            {
+                            if (download?.state == Download.STATE_COMPLETED) {
                                 DownloadService.sendRemoveDownload(
                                     context,
                                     ExoDownloadService::class.java,
                                     mediaMetadata.id,
                                     false
                                 )
-                            }
-                            else {
+                            } else {
                                 database.transaction {
                                     insert(mediaMetadata)
                                 }
-                                val downloadRequest = DownloadRequest.Builder(mediaMetadata.id, mediaMetadata.id.toUri())
+                                val downloadRequest = DownloadRequest
+                                    .Builder(mediaMetadata.id, mediaMetadata.id.toUri())
                                     .setCustomCacheKey(mediaMetadata.id)
                                     .setData(mediaMetadata.title.toByteArray())
                                     .build()
@@ -433,35 +486,6 @@ fun BottomSheetPlayer(
                 ) {
                     Image(
                         painter = painterResource(R.drawable.playlist_add),
-                        contentDescription = null,
-                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
-                        modifier = Modifier
-                            .align(Alignment.Center)
-                            .size(24.dp)
-                    )
-                }
-
-                Spacer(modifier = Modifier.size(12.dp))
-
-                Box(
-                    modifier = Modifier
-                        .size(42.dp)
-                        .clip(RoundedCornerShape(24.dp))
-                        .background(MaterialTheme.colorScheme.secondaryContainer)
-                        .clickable {
-                            val intent = Intent().apply {
-                                action = Intent.ACTION_SEND
-                                type = "text/plain"
-                                putExtra(
-                                    Intent.EXTRA_TEXT,
-                                    "https://music.youtube.com/watch?v=${mediaMetadata.id}"
-                                )
-                            }
-                            context.startActivity(Intent.createChooser(intent, null))
-                        }
-                ) {
-                    Image(
-                        painter = painterResource(R.drawable.share),
                         contentDescription = null,
                         colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
                         modifier = Modifier
@@ -511,6 +535,33 @@ fun BottomSheetPlayer(
                             }
                         }
                     }
+                }
+                
+                Spacer(modifier = Modifier.weight(1f))
+
+
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .size(42.dp)
+                        .clip(RoundedCornerShape(24.dp))
+                        .background(MaterialTheme.colorScheme.secondaryContainer)
+                        .clickable {
+                            menuState.show {
+                                PlayerMenu(
+                                    mediaMetadata = mediaMetadata,
+                                    navController = navController,
+                                    playerBottomSheetState = state,
+                                    onShowDetailsDialog = { showDetailsDialog = true },
+                                    onDismiss = menuState::dismiss
+                                )
+                            }
+                        }
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.more_horiz),
+                        contentDescription = null
+                    )
                 }
             }
 
@@ -625,20 +676,15 @@ fun BottomSheetPlayer(
                     )
                 }
 
+
                 Box(modifier = Modifier.weight(1f)) {
-                    ResizableIconButton(
-                        icon = when (repeatMode) {
-                            REPEAT_MODE_OFF, REPEAT_MODE_ALL -> R.drawable.repeat
-                            REPEAT_MODE_ONE -> R.drawable.repeat_one
-                            else -> throw IllegalStateException()
-                        },
-                        modifier = Modifier
-                            .size(32.dp)
-                            .padding(4.dp)
-                            .align(Alignment.Center)
-                            .alpha(if (repeatMode == REPEAT_MODE_OFF) 0.5f else 1f),
-                        onClick = playerConnection.player::toggleRepeatMode
-                    )
+                    IconButton(onClick = { showLyrics = !showLyrics }) {
+                        Icon(
+                            painter = painterResource(R.drawable.lyrics),
+                            contentDescription = null,
+                            modifier = Modifier.alpha(if (showLyrics) 1f else 0.5f)
+                        )
+                    }
                 }
             }
         }
