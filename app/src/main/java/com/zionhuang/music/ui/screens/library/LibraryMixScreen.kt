@@ -38,10 +38,14 @@ import com.zionhuang.music.constants.CONTENT_TYPE_HEADER
 import com.zionhuang.music.constants.CONTENT_TYPE_PLAYLIST
 import com.zionhuang.music.constants.GridThumbnailHeight
 import com.zionhuang.music.constants.LibraryViewType
+import com.zionhuang.music.constants.MixSortDescendingKey
+import com.zionhuang.music.constants.MixSortType
+import com.zionhuang.music.constants.MixSortTypeKey
 import com.zionhuang.music.db.entities.Album
 import com.zionhuang.music.db.entities.Artist
 import com.zionhuang.music.db.entities.Playlist
 import com.zionhuang.music.db.entities.PlaylistEntity
+import com.zionhuang.music.extensions.reversed
 import com.zionhuang.music.ui.component.AlbumGridItem
 import com.zionhuang.music.ui.component.AlbumListItem
 import com.zionhuang.music.ui.component.ArtistGridItem
@@ -49,11 +53,14 @@ import com.zionhuang.music.ui.component.ArtistListItem
 import com.zionhuang.music.ui.component.LocalMenuState
 import com.zionhuang.music.ui.component.PlaylistGridItem
 import com.zionhuang.music.ui.component.PlaylistListItem
+import com.zionhuang.music.ui.component.SortHeader
 import com.zionhuang.music.ui.menu.AlbumMenu
 import com.zionhuang.music.ui.menu.ArtistMenu
 import com.zionhuang.music.ui.menu.PlaylistMenu
 import com.zionhuang.music.utils.rememberEnumPreference
+import com.zionhuang.music.utils.rememberPreference
 import com.zionhuang.music.viewmodels.LibraryMixViewModel
+import java.time.LocalDateTime
 import java.util.UUID
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -69,6 +76,8 @@ fun LibraryMixScreen(
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
 
     var viewType by rememberEnumPreference(AlbumViewTypeKey, LibraryViewType.GRID)
+    val (sortType, onSortTypeChange) = rememberEnumPreference(MixSortTypeKey, MixSortType.CREATE_DATE)
+    val (sortDescending, onSortDescendingChange) = rememberPreference(MixSortDescendingKey, true)
 
     val topSize by viewModel.topValue.collectAsState(initial = 50)
     val likedPlaylist = Playlist(
@@ -93,7 +102,24 @@ fun LibraryMixScreen(
     val artist = viewModel.artists.collectAsState()
     val playlist = viewModel.playlists.collectAsState()
 
-    val allItems = albums.value + artist.value + playlist.value
+    var allItems = albums.value + artist.value + playlist.value
+    allItems = allItems.sortedBy { item ->
+        when (sortType) {
+            MixSortType.CREATE_DATE -> when (item) {
+                is Album -> item.album.bookmarkedAt
+                is Artist -> item.artist.bookmarkedAt
+                else -> LocalDateTime.now()
+            }
+
+            else -> when (item) {
+                is Album -> item.album.title
+                is Artist -> item.artist.name
+                is Playlist -> item.playlist.name
+                else -> ""
+            }
+        }.toString()
+    }
+    allItems = allItems.reversed(sortDescending)
 
     val coroutineScope = rememberCoroutineScope()
 
@@ -103,6 +129,19 @@ fun LibraryMixScreen(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.padding(start = 16.dp)
         ) {
+
+            SortHeader(
+                sortType = sortType,
+                sortDescending = sortDescending,
+                onSortTypeChange = onSortTypeChange,
+                onSortDescendingChange = onSortDescendingChange,
+                sortTypeText = { sortType ->
+                    when (sortType) {
+                        MixSortType.CREATE_DATE -> R.string.sort_by_create_date
+                        MixSortType.NAME -> R.string.sort_by_name
+                    }
+                }
+            )
 
             Spacer(Modifier.weight(1f))
 

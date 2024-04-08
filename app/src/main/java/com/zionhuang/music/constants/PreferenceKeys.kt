@@ -48,15 +48,12 @@ val PlaylistSortTypeKey = stringPreferencesKey("playlistSortType")
 val PlaylistSortDescendingKey = booleanPreferencesKey("playlistSortDescending")
 val ArtistSongSortTypeKey = stringPreferencesKey("artistSongSortType")
 val ArtistSongSortDescendingKey = booleanPreferencesKey("artistSongSortDescending")
+val MixSortTypeKey = stringPreferencesKey("mixSortType")
+val MixSortDescendingKey = booleanPreferencesKey("albumSortDescending")
 
-val SongFilterKey = stringPreferencesKey("songFilter")
-val ArtistFilterKey = stringPreferencesKey("artistFilter")
 val ArtistViewTypeKey = stringPreferencesKey("artistViewType")
-val AlbumFilterKey = stringPreferencesKey("albumFilter")
 val AlbumViewTypeKey = stringPreferencesKey("albumViewType")
 val PlaylistViewTypeKey = stringPreferencesKey("playlistViewType")
-val LibraryFilterKey = stringPreferencesKey("libraryFilter")
-val MyTopTypeKey = stringPreferencesKey("MyTopType")
 
 val PlaylistEditLockKey = booleanPreferencesKey("playlistEditLock")
 
@@ -93,16 +90,8 @@ enum class PlaylistSortType {
     CREATE_DATE, NAME, SONG_COUNT
 }
 
-enum class SongFilter {
-    LIBRARY, LIKED, DOWNLOADED
-}
-
-enum class ArtistFilter {
-    LIBRARY, LIKED
-}
-
-enum class AlbumFilter {
-    LIBRARY, LIKED
+enum class MixSortType {
+    CREATE_DATE, NAME
 }
 
 enum class MyTopFilter {

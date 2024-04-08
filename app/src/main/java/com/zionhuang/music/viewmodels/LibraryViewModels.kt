@@ -168,9 +168,9 @@ class LibraryMixViewModel @Inject constructor(
     database: MusicDatabase,
 ) : ViewModel() {
     val topValue = context.dataStore.data.map { it[TopSize] ?: "50"}.distinctUntilChanged()
-    val artists = database.artists(ArtistSortType.CREATE_DATE, true).stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
-    val albums = database.albums(AlbumSortType.CREATE_DATE, true).stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
-    val playlists = database.playlists(PlaylistSortType.CREATE_DATE, true).stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
+    var artists = database.artistsBookmarked(ArtistSortType.CREATE_DATE, true).stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
+    var albums = database.albumsLiked(AlbumSortType.CREATE_DATE, true).stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
+    var playlists = database.playlists(PlaylistSortType.CREATE_DATE, true).stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
