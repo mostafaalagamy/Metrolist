@@ -107,18 +107,30 @@ fun HistoryScreen(
                         },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .combinedClickable {
-                                if (event.song.id == mediaMetadata?.id) {
-                                    playerConnection.player.togglePlayPause()
-                                } else {
-                                    playerConnection.playQueue(
-                                        YouTubeQueue(
-                                            endpoint = WatchEndpoint(videoId = event.song.id),
-                                            preloadItem = event.song.toMediaMetadata()
+                            .combinedClickable (
+                                onClick = {
+                                    if (event.song.id == mediaMetadata?.id) {
+                                        playerConnection.player.togglePlayPause()
+                                    } else {
+                                        playerConnection.playQueue(
+                                            YouTubeQueue(
+                                                endpoint = WatchEndpoint(videoId = event.song.id),
+                                                preloadItem = event.song.toMediaMetadata()
+                                            )
                                         )
-                                    )
+                                    }
+                                },
+                                onLongClick = {
+                                    menuState.show {
+                                        SongMenu(
+                                            originalSong = event.song,
+                                            event = event.event,
+                                            navController = navController,
+                                            onDismiss = menuState::dismiss
+                                        )
+                                    }
                                 }
-                            }
+                            )
                             .animateItemPlacement()
 
                     )

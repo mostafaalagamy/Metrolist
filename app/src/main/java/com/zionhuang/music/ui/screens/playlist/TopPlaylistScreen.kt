@@ -421,19 +421,30 @@ fun TopPlaylistScreen(
                         },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .combinedClickable {
-                                if (song.song.id == mediaMetadata?.id) {
-                                    playerConnection.player.togglePlayPause()
-                                } else {
-                                    playerConnection.playQueue(
-                                        ListQueue(
-                                            title = "My Top $maxSize",
-                                            items = songs!!.map { it.toMediaItem() },
-                                            startIndex = index
+                            .combinedClickable (
+                                onClick = {
+                                    if (song.song.id == mediaMetadata?.id) {
+                                        playerConnection.player.togglePlayPause()
+                                    } else {
+                                        playerConnection.playQueue(
+                                            ListQueue(
+                                                title = "My Top $maxSize",
+                                                items = songs!!.map { it.toMediaItem() },
+                                                startIndex = index
+                                            )
                                         )
-                                    )
+                                    }
+                                },
+                                onLongClick = {
+                                    menuState.show {
+                                        SongMenu(
+                                            originalSong = song,
+                                            navController = navController,
+                                            onDismiss = menuState::dismiss
+                                        )
+                                    }
                                 }
-                            }
+                            )
                     )
                 }
             }

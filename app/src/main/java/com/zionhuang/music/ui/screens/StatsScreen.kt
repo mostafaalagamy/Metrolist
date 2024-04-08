@@ -118,18 +118,29 @@ fun StatsScreen(
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .combinedClickable {
-                        if (song.id == mediaMetadata?.id) {
-                            playerConnection.player.togglePlayPause()
-                        } else {
-                            playerConnection.playQueue(
-                                YouTubeQueue(
-                                    endpoint = WatchEndpoint(song.id),
-                                    preloadItem = song.toMediaMetadata()
+                    .combinedClickable (
+                        onClick = {
+                            if (song.id == mediaMetadata?.id) {
+                                playerConnection.player.togglePlayPause()
+                            } else {
+                                playerConnection.playQueue(
+                                    YouTubeQueue(
+                                        endpoint = WatchEndpoint(song.id),
+                                        preloadItem = song.toMediaMetadata()
+                                    )
                                 )
-                            )
+                            }
+                        },
+                        onLongClick = {
+                            menuState.show {
+                                SongMenu(
+                                    originalSong = song,
+                                    navController = navController,
+                                    onDismiss = menuState::dismiss
+                                )
+                            }
                         }
-                    }
+                    )
                     .animateItemPlacement()
             )
         }

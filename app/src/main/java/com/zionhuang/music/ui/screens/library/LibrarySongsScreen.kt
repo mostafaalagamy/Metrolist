@@ -136,19 +136,30 @@ fun LibrarySongsScreen(
                     },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .combinedClickable {
-                            if (song.id == mediaMetadata?.id) {
-                                playerConnection.player.togglePlayPause()
-                            } else {
-                                playerConnection.playQueue(
-                                    ListQueue(
-                                        title = context.getString(R.string.queue_all_songs),
-                                        items = songs.map { it.toMediaItem() },
-                                        startIndex = index
+                        .combinedClickable (
+                            onClick = {
+                                if (song.id == mediaMetadata?.id) {
+                                    playerConnection.player.togglePlayPause()
+                                } else {
+                                    playerConnection.playQueue(
+                                        ListQueue(
+                                            title = context.getString(R.string.queue_all_songs),
+                                            items = songs.map { it.toMediaItem() },
+                                            startIndex = index
+                                        )
                                     )
-                                )
+                                }
+                            },
+                            onLongClick = {
+                                menuState.show {
+                                    SongMenu(
+                                        originalSong = song,
+                                        navController = navController,
+                                        onDismiss = menuState::dismiss
+                                    )
+                                }
                             }
-                        }
+                        )
                         .animateItemPlacement()
                 )
             }
