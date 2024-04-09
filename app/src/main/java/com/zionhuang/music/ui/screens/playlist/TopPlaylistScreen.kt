@@ -78,6 +78,7 @@ import com.zionhuang.music.ui.component.SortHeader
 import com.zionhuang.music.ui.menu.SongMenu
 import com.zionhuang.music.ui.utils.backToMain
 import com.zionhuang.music.utils.makeTimeString
+import com.zionhuang.music.viewmodels.TopPlaylistViewModel
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -86,7 +87,7 @@ fun TopPlaylistScreen(
     scrollBehavior: TopAppBarScrollBehavior,
     viewModel: TopPlaylistViewModel = hiltViewModel(),
 
-) {
+    ) {
     val context = LocalContext.current
     val menuState = LocalMenuState.current
     val playerConnection = LocalPlayerConnection.current ?: return
