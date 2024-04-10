@@ -55,6 +55,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.fastForEachIndexed
+import androidx.compose.ui.zIndex
 import androidx.core.graphics.drawable.toBitmapOrNull
 import androidx.media3.exoplayer.offline.Download
 import androidx.media3.exoplayer.offline.Download.STATE_COMPLETED
@@ -291,6 +292,7 @@ fun SongListItem(
     showLikedIcon: Boolean = true,
     showInLibraryIcon: Boolean = false,
     showDownloadIcon: Boolean = true,
+    isSelected: Boolean = false,
     badges: @Composable RowScope.() -> Unit = {
         if (showLikedIcon && song.song.liked) {
             Icon(
@@ -354,12 +356,36 @@ fun SongListItem(
                     enter = fadeIn() + expandIn(expandFrom = Alignment.Center),
                     exit = shrinkOut(shrinkTowards = Alignment.Center) + fadeOut()
                 ) {
-                    Text(
-                        text = albumIndex.toString(),
-                        style = MaterialTheme.typography.labelLarge
-                    )
+
+                    if (isSelected) {
+                        Icon(
+                            painter = painterResource(R.drawable.done),
+                            modifier = Modifier.align(Alignment.Center),
+                            contentDescription = null
+                        )
+                    }else {
+                        Text(
+                            text = albumIndex.toString(),
+                            style = MaterialTheme.typography.labelLarge
+                        )
+                    }
                 }
             } else {
+                if (isSelected) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .zIndex(1000f)
+                            .clip(RoundedCornerShape(ThumbnailCornerRadius))
+                            .background(Color.Black.copy(alpha = 0.5f))
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.done),
+                            modifier = Modifier.align(Alignment.Center),
+                            contentDescription = null
+                        )
+                    }
+                }
                 AsyncImage(
                     model = song.song.thumbnailUrl,
                     contentDescription = null,

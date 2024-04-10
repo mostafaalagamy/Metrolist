@@ -77,7 +77,9 @@ import com.zionhuang.music.ui.component.FontSizeRange
 import com.zionhuang.music.ui.component.LocalMenuState
 import com.zionhuang.music.ui.component.SongListItem
 import com.zionhuang.music.ui.component.SortHeader
+import com.zionhuang.music.ui.menu.SelectionSongMenu
 import com.zionhuang.music.ui.menu.SongMenu
+import com.zionhuang.music.ui.utils.ItemWrapper
 import com.zionhuang.music.ui.utils.backToMain
 import com.zionhuang.music.utils.makeTimeString
 import com.zionhuang.music.utils.rememberEnumPreference
@@ -106,6 +108,11 @@ fun AutoPlaylistScreen(
 
     val likeLength = remember(songs) {
         songs?.fastSumBy { it.song.duration } ?: 0
+    }
+
+    val wrappedSongs = songs?.map { item -> ItemWrapper(item) }?.toMutableList()
+    var selection by remember {
+        mutableStateOf(false)
     }
 
     val (sortType, onSortTypeChange) = rememberEnumPreference(PlaylistSongSortTypeKey, PlaylistSongSortType.CUSTOM)
@@ -374,81 +381,144 @@ fun AutoPlaylistScreen(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier.padding(start = 16.dp)
                         ) {
-                            SortHeader(
-                                sortType = sortType,
-                                sortDescending = sortDescending,
-                                onSortTypeChange = onSortTypeChange,
-                                onSortDescendingChange = onSortDescendingChange,
-                                sortTypeText = { sortType ->
-                                    when (sortType) {
-                                        PlaylistSongSortType.CUSTOM -> R.string.sort_by_custom
-                                        PlaylistSongSortType.CREATE_DATE -> R.string.sort_by_create_date
-                                        PlaylistSongSortType.NAME -> R.string.sort_by_name
-                                        PlaylistSongSortType.ARTIST -> R.string.sort_by_artist
-                                        PlaylistSongSortType.PLAY_TIME -> R.string.sort_by_play_time
-                                    }
-                                },
-                                modifier = Modifier.weight(1f)
-                            )
+                            if (selection) {
+                                val count = wrappedSongs?.count { it.isSelected }
+                                Text(text = "$count elements selected", modifier = Modifier.weight(1f))
+                                IconButton(
+                                    onClick = {
+                                        if (count == wrappedSongs?.size) {
+                                            wrappedSongs?.forEach { it.isSelected = false }
+                                        }else {
+                                            wrappedSongs?.forEach { it.isSelected = true }
+                                        }
+                                    },
+                                ) {
+                                    Icon(
+                                        painter = painterResource(if (count == wrappedSongs?.size) R.drawable.deselect else R.drawable.select_all),
+                                        contentDescription = null
+                                    )
+                                }
+
+                                IconButton(
+                                    onClick = {
+                                        menuState.show {
+                                            SelectionSongMenu(
+                                                songSelection = wrappedSongs?.filter { it.isSelected }!!.map { it.item },
+                                                onDismiss = menuState::dismiss,
+                                                clearAction = {selection = false}
+                                            )
+                                        }
+                                    },
+                                ) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.more_vert),
+                                        contentDescription = null
+                                    )
+                                }
+
+                                IconButton(
+                                    onClick = { selection = false },
+                                ) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.close),
+                                        contentDescription = null
+                                    )
+                                }
+                            } else {
+                                SortHeader(
+                                    sortType = sortType,
+                                    sortDescending = sortDescending,
+                                    onSortTypeChange = onSortTypeChange,
+                                    onSortDescendingChange = onSortDescendingChange,
+                                    sortTypeText = { sortType ->
+                                        when (sortType) {
+                                            PlaylistSongSortType.CUSTOM -> R.string.sort_by_custom
+                                            PlaylistSongSortType.CREATE_DATE -> R.string.sort_by_create_date
+                                            PlaylistSongSortType.NAME -> R.string.sort_by_name
+                                            PlaylistSongSortType.ARTIST -> R.string.sort_by_artist
+                                            PlaylistSongSortType.PLAY_TIME -> R.string.sort_by_play_time
+                                        }
+                                    },
+                                    modifier = Modifier.weight(1f)
+                                )
+
+                                IconButton(
+                                    onClick = { selection = !selection },
+                                    modifier = Modifier.padding(horizontal = 6.dp)
+                                ) {
+                                    Icon(
+                                        painter = painterResource(if (selection) R.drawable.deselect else R.drawable.select_all),
+                                        contentDescription = null
+                                    )
+                                }
+                            }
                         }
                     }
                 }
 
-                itemsIndexed(
-                    items = mutableSongs,
-                    key = { _, song -> song.id }
-                ) { index, song ->
-                    SongListItem(
-                        song = song,
-                        isActive = song.song.id == mediaMetadata?.id,
-                        isPlaying = isPlaying,
-                        showInLibraryIcon = true,
-                        trailingContent = {
-                            IconButton(
-                                onClick = {
-                                    menuState.show {
-                                        SongMenu(
-                                            originalSong = song,
-                                            navController = navController,
-                                            onDismiss = menuState::dismiss
-                                        )
-                                    }
-                                }
-                            ) {
-                                Icon(
-                                    painter = painterResource(R.drawable.more_vert),
-                                    contentDescription = null
-                                )
-                            }
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .combinedClickable (
-                                onClick = {
-                                    if (song.song.id == mediaMetadata?.id) {
-                                        playerConnection.player.togglePlayPause()
-                                    } else {
-                                        playerConnection.playQueue(
-                                            ListQueue(
-                                                title = playlist + "Playlist",
-                                                items = songs!!.map { it.toMediaItem() },
-                                                startIndex = index
+                if (wrappedSongs != null) {
+                    itemsIndexed(
+                        items = wrappedSongs,
+                        key = { _, song -> song.item.id }
+                    ) { index, songWrapper ->
+                        SongListItem(
+                            song = songWrapper.item,
+                            isActive = songWrapper.item.song.id == mediaMetadata?.id,
+                            isPlaying = isPlaying,
+                            showInLibraryIcon = true,
+                            trailingContent = {
+                                IconButton(
+                                    onClick = {
+                                        menuState.show {
+                                            SongMenu(
+                                                originalSong = songWrapper.item,
+                                                navController = navController,
+                                                onDismiss = menuState::dismiss
                                             )
-                                        )
+                                        }
                                     }
-                                },
-                                onLongClick = {
-                                    menuState.show {
-                                        SongMenu(
-                                            originalSong = song,
-                                            navController = navController,
-                                            onDismiss = menuState::dismiss
-                                        )
-                                    }
+                                ) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.more_vert),
+                                        contentDescription = null
+                                    )
                                 }
-                            )
+                            },
+                            isSelected = songWrapper.isSelected && selection,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .combinedClickable(
+                                    onClick = {
+
+                                        if (!selection) {
+                                            if (songWrapper.item.song.id == mediaMetadata?.id) {
+                                                playerConnection.player.togglePlayPause()
+                                            } else {
+                                                playerConnection.playQueue(
+                                                    ListQueue(
+                                                        title = playlist + "Playlist",
+                                                        items = songs!!.map { it.toMediaItem() },
+                                                        startIndex = index
+                                                    )
+                                                )
+                                            }
+                                        } else {
+                                            songWrapper.isSelected = !songWrapper.isSelected
+                                        }
+                                    },
+                                    onLongClick = {
+                                        menuState.show {
+                                            SongMenu(
+                                                originalSong = songWrapper.item,
+                                                navController = navController,
+                                                onDismiss = menuState::dismiss
+                                            )
+                                        }
+                                    }
+                                )
                         )
                     }
+                }
             }
         }
 
