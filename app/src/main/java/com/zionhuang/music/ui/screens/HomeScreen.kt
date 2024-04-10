@@ -14,6 +14,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -67,6 +69,7 @@ fun HomeScreen(
 ) {
     val menuState = LocalMenuState.current
     val database = LocalDatabase.current
+    val haptic = LocalHapticFeedback.current
     val playerConnection = LocalPlayerConnection.current ?: return
     val isPlaying by playerConnection.isPlaying.collectAsState()
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
@@ -245,6 +248,7 @@ fun HomeScreen(
                                                 }
                                             },
                                             onLongClick = {
+                                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                                                 menuState.show {
                                                     SongMenu(
                                                         originalSong = song!!,
@@ -285,6 +289,7 @@ fun HomeScreen(
                                                         navController.navigate("artist/${keepListeningArtists!![it].id}")
                                                     },
                                                     onLongClick = {
+                                                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                                                         menuState.show {
                                                             ArtistMenu(
                                                                 originalArtist = keepListeningArtists!![it],
@@ -328,6 +333,7 @@ fun HomeScreen(
                                                         }
                                                     },
                                                     onLongClick = {
+                                                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                                                         menuState.show {
                                                             SongMenu(
                                                                 originalSong = keepListeningSongs!![it - 10],
@@ -378,6 +384,7 @@ fun HomeScreen(
 
                                                 },
                                                 onLongClick = {
+                                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                                                     menuState.show {
                                                         when (item) {
                                                             is PlaylistItem -> YouTubePlaylistMenu(
@@ -465,6 +472,7 @@ fun HomeScreen(
                                                 }
                                             },
                                             onLongClick = {
+                                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                                                 menuState.show {
                                                     SongMenu(
                                                         originalSong = song!!,
@@ -510,6 +518,7 @@ fun HomeScreen(
                                                     navController.navigate("online_playlist/${playlist.id}")
                                                 },
                                                 onLongClick = {
+                                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                                                     menuState.show {
                                                         YouTubePlaylistMenu(
                                                             playlist = playlist,
@@ -554,6 +563,7 @@ fun HomeScreen(
                                                     navController.navigate("online_playlist/${album.id}")
                                                 },
                                                 onLongClick = {
+                                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                                                     menuState.show {
                                                         YouTubePlaylistMenu(
                                                             playlist = album,
@@ -601,6 +611,7 @@ fun HomeScreen(
                                                     navController.navigate("online_playlist/${playlist.id}")
                                                 },
                                                 onLongClick = {
+                                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                                                     menuState.show {
                                                         YouTubePlaylistMenu(
                                                             playlist = playlist,
@@ -649,6 +660,7 @@ fun HomeScreen(
 
                                                 },
                                                 onLongClick = {
+                                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                                                     menuState.show {
                                                         when (item) {
                                                             is PlaylistItem -> YouTubePlaylistMenu(
@@ -704,6 +716,7 @@ fun HomeScreen(
                                                     navController.navigate("online_playlist/${playlist.id}")
                                                 },
                                                 onLongClick = {
+                                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                                                     menuState.show {
                                                         YouTubePlaylistMenu(
                                                             playlist = playlist,
@@ -748,6 +761,7 @@ fun HomeScreen(
                                                     navController.navigate("online_playlist/${album.id}")
                                                 },
                                                 onLongClick = {
+                                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                                                     menuState.show {
                                                         YouTubePlaylistMenu(
                                                             playlist = album,
@@ -797,6 +811,7 @@ fun HomeScreen(
                                                     navController.navigate("online_playlist/${playlist.id}")
                                                 },
                                                 onLongClick = {
+                                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                                                     menuState.show {
                                                         YouTubePlaylistMenu(
                                                             playlist = playlist,
@@ -845,6 +860,7 @@ fun HomeScreen(
 
                                                 },
                                                 onLongClick = {
+                                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                                                     menuState.show {
                                                         when (item) {
                                                             is PlaylistItem -> YouTubePlaylistMenu(
@@ -898,6 +914,7 @@ fun HomeScreen(
                                             navController.navigate("album/${album.id}")
                                         },
                                         onLongClick = {
+                                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                                             menuState.show {
                                                 YouTubeAlbumMenu(
                                                     albumItem = album,
