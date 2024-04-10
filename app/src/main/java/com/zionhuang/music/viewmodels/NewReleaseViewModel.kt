@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.zionhuang.innertube.YouTube
 import com.zionhuang.innertube.models.AlbumItem
 import com.zionhuang.music.db.MusicDatabase
-import com.zionhuang.music.db.entities.Artist
 import com.zionhuang.music.utils.reportException
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,20 +23,29 @@ class NewReleaseViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             YouTube.newReleaseAlbums().onSuccess { albums ->
-                val artists: Set<String>
-                val favouriteArtists: Set<String>
-                database.artistsByCreateDateAsc().first().let { list ->
-                    artists = list.map(Artist::id).toHashSet()
-                    favouriteArtists = list
-                        .filter { it.artist.bookmarkedAt != null }
-                        .map { it.id }
-                        .toHashSet()
+                val artists: MutableMap<Int, String> = mutableMapOf()
+                val favouriteArtists: MutableMap<Int, String> = mutableMapOf()
+                database.allArtistsByPlayTime().first().let { list ->
+                    var favIndex = 0
+                    for ((artistsIndex, artist) in list.withIndex()){
+                        artists[artistsIndex] = artist.id
+                        if (artist.artist.bookmarkedAt != null){
+                            favouriteArtists[favIndex] = artist.id
+                            favIndex++
+                        }
+                    }
                 }
                 _newReleaseAlbums.value = albums
                     .sortedBy { album ->
-                        if (album.artists.orEmpty().any { it.id in favouriteArtists }) 0
-                        else if (album.artists.orEmpty().any { it.id in artists }) 1
-                        else 2
+                        val artistIds = album.artists.orEmpty().mapNotNull { it.id }
+                        val firstArtistKey = artistIds.firstNotNullOfOrNull { artistId ->
+                            if (artistId in favouriteArtists.values) {
+                                favouriteArtists.entries.firstOrNull { it.value == artistId }?.key
+                            } else {
+                                artists.entries.firstOrNull { it.value == artistId }?.key
+                            }
+                        } ?: Int.MAX_VALUE
+                        firstArtistKey
                     }
             }.onFailure {
                 reportException(it)
