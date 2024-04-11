@@ -11,7 +11,7 @@ import javax.inject.Inject
 class LyricsHelper @Inject constructor(
     @ApplicationContext private val context: Context,
 ) {
-    private val lyricsProviders = listOf(YouTubeSubtitleLyricsProvider, KuGouLyricsProvider, YouTubeLyricsProvider)
+    private val lyricsProviders = listOf(LrcLibLyricsProvider,KuGouLyricsProvider, YouTubeSubtitleLyricsProvider, YouTubeLyricsProvider)
     private val cache = LruCache<String, List<LyricsResult>>(MAX_CACHE_SIZE)
 
     suspend fun getLyrics(mediaMetadata: MediaMetadata): String {

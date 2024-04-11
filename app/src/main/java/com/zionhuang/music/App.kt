@@ -10,7 +10,6 @@ import coil.ImageLoaderFactory
 import coil.disk.DiskCache
 import com.zionhuang.innertube.YouTube
 import com.zionhuang.innertube.models.YouTubeLocale
-import com.zionhuang.kugou.KuGou
 import com.zionhuang.music.constants.*
 import com.zionhuang.music.extensions.*
 import com.zionhuang.music.utils.dataStore
@@ -44,9 +43,6 @@ class App : Application(), ImageLoaderFactory {
                 ?: languageTag.takeIf { it in LanguageCodeToName }
                 ?: "en"
         )
-        if (languageTag == "zh-TW") {
-            KuGou.useTraditionalChinese = true
-        }
 
         if (dataStore[ProxyEnabledKey] == true) {
             try {
