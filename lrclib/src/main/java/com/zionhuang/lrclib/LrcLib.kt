@@ -38,8 +38,7 @@ object LrcLib {
             parameter("track_name", title)
             parameter("artist_name", artist)
             if (album != null) parameter("album_name", album)
-        }.body<List<Track>>()
-//}.body<List<Track>>().filter { it.syncedLyrics != null }
+    }.body<List<Track>>().filter { it.syncedLyrics != null }
 
     suspend fun getLyrics(
         title: String,
