@@ -54,6 +54,10 @@ alt='Get it on GitHub'
 height="80">](https://github.com/mostafaalagamy/Metrolist/releases/latest/download/Metrolist.apk)
 
 
+<div align="center">
+<h1>Special thanks</h1>
+
+[InnerTune](https://github.com/Malopieds/InnerTune)
 
 This project and its contents are not affiliated with, funded, authorized, endorsed by, or in any way associated with YouTube, Google LLC or any of its affiliates and subsidiaries.
 
