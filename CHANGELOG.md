@@ -3,12 +3,12 @@
 ## 6.0.0
 #### what's New
 
-Redesigned the library.
-Redesigned the player.
-New design for the navigation bar.
-Added an explore page.
-Improved live lyrics provider.
-Bug fixes and performance enhancements.
+1. Redesigned the library.
+2. Redesigned the player.
+3. New design for the navigation bar.
+4. Added an explore page.
+5. Improved live lyrics provider.
+6. Bug fixes and performance enhancements.
 
 ## 5.5.5
 #### What's New
