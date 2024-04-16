@@ -1,7 +1,17 @@
 <h1>Changelog</h1>
 
-## 5.5.5
+## 6.0.0
 #### what's New
+
+Redesigned the library.
+Redesigned the player.
+New design for the navigation bar.
+Added an explore page.
+Improved live lyrics provider.
+Bug fixes and performance enhancements.
+
+## 5.5.5
+#### What's New
 Some change in source code.
 
 1. Added back the swipe on thumbnail "some issues here"
