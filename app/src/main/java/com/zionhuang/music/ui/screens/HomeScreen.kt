@@ -95,6 +95,8 @@ fun HomeScreen(
     val homeSecondContinuation by viewModel.homeSecondContinuation.collectAsState()
     val homeThirdContinuation by viewModel.homeThirdContinuation.collectAsState()
 
+    val youtubePlaylists by viewModel.youtubePlaylists.collectAsState()
+
     val isRefreshing by viewModel.isRefreshing.collectAsState()
     val mostPlayedLazyGridState = rememberLazyGridState()
 
@@ -260,6 +262,45 @@ fun HomeScreen(
                                         )
                                 )
                             }
+                        }
+                    }
+                }
+
+                if (youtubePlaylists?.isNotEmpty() == true) {
+                    NavigationTitle(
+                        title = "Your Youtube playlists",
+                        onClick = {
+                            navController.navigate("account")
+                        }
+                    )
+                    LazyRow(
+                        contentPadding = WindowInsets.systemBars
+                            .only(WindowInsetsSides.Horizontal)
+                            .asPaddingValues()
+                    ) {
+                        items(
+                            items = youtubePlaylists.orEmpty(),
+                            key = { it.id }
+                        ) { item ->
+                            YouTubeGridItem(
+                                item = item,
+                                modifier = Modifier
+                                    .combinedClickable(
+                                        onClick = {
+                                            navController.navigate("online_playlist/${item.id}")
+                                        },
+                                        onLongClick = {
+                                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                            menuState.show {
+                                                YouTubePlaylistMenu(
+                                                    playlist = item,
+                                                    coroutineScope = coroutineScope,
+                                                    onDismiss = menuState::dismiss
+                                                )
+                                            }
+                                        }
+                                    )
+                            )
                         }
                     }
                 }

@@ -3,6 +3,7 @@ package com.zionhuang.music.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zionhuang.innertube.YouTube
+import com.zionhuang.innertube.models.PlaylistItem
 import com.zionhuang.innertube.models.WatchEndpoint
 import com.zionhuang.innertube.models.YTItem
 import com.zionhuang.innertube.pages.AlbumUtils
@@ -52,6 +53,8 @@ class HomeViewModel @Inject constructor(
     val homeSecondArtistRecommendation = MutableStateFlow<HomeArtistRecommendation?>(null)
     val homeThirdArtistRecommendation = MutableStateFlow<HomeArtistRecommendation?>(null)
 
+    val youtubePlaylists = MutableStateFlow<List<PlaylistItem>?>(null)
+
     private suspend fun load() {
         quickPicks.value = database.quickPicks().first().shuffled().take(20)
         val artists = database.mostPlayedArtists(System.currentTimeMillis() - 86400000 * 7 * 2).first().shuffled().take(5)
@@ -84,6 +87,14 @@ class HomeViewModel @Inject constructor(
         songsAlbumRecommendation.value = database.getRecommendationAlbum(limit = 10).first().shuffled().take(2)
 
         artistRecommendation.value = database.mostPlayedArtists(System.currentTimeMillis() - 86400000 * 7, limit = 10).first().shuffled().take(3)
+
+        viewModelScope.launch {
+            YouTube.likedPlaylists().onSuccess {
+                youtubePlaylists.value = it
+            }.onFailure {
+                reportException(it)
+            }
+        }
     }
 
     private suspend fun homeLoad() {
