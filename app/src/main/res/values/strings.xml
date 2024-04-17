@@ -92,6 +92,8 @@
     <string name="search_online">Search online</string>
     <string name="sync">Sync</string>
     <string name="advanced">Advanced</string>
+    <string name="select">Select all</string>
+    <string name="like_all">Like all</string>
 
     <!-- Sort menu -->
     <string name="sort_by_create_date">Date added</string>

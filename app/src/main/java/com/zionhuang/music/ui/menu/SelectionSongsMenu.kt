@@ -205,5 +205,21 @@ fun SelectionSongMenu(
                 showRemoveDownloadDialog = true
             }
         )
+
+        GridMenuItem(
+            icon = if (songSelection.all{it.song.liked}) R.drawable.favorite else R.drawable.favorite_border,
+            title = R.string.like_all
+        ) {
+            val allLiked = songSelection.all {
+                it.song.liked
+            }
+            onDismiss()
+            database.query {
+                songSelection.forEach { song ->
+                    if ((!allLiked && !song.song.liked) || allLiked)
+                        update(song.song.toggleLike())
+                }
+            }
+        }
     }
 }

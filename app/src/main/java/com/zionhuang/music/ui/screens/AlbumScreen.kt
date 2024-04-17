@@ -283,7 +283,8 @@ fun AlbumScreen(
                                             AlbumMenu(
                                                 originalAlbum = Album(albumWithSongs.album, albumWithSongs.artists),
                                                 navController = navController,
-                                                onDismiss = menuState::dismiss
+                                                onDismiss = menuState::dismiss,
+                                                selectAction = { selection = true }
                                             )
                                         }
                                     }
@@ -393,18 +394,6 @@ fun AlbumScreen(
                         ) {
                             Icon(
                                 painter = painterResource(R.drawable.close),
-                                contentDescription = null
-                            )
-                        }
-                    }
-                    else {
-                        Spacer(modifier = Modifier.weight(1f))
-                        IconButton(
-                            onClick = { selection = !selection },
-                            modifier = Modifier.padding(horizontal = 6.dp)
-                        ) {
-                            Icon(
-                                painter = painterResource(if (selection) R.drawable.deselect else R.drawable.select_all),
                                 contentDescription = null
                             )
                         }
