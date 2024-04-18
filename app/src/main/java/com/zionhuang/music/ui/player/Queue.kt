@@ -289,7 +289,6 @@ fun Queue(
                                     modifier = Modifier
                                         .align(Alignment.CenterVertically),
                                     onClick = {
-                                        println(window.mediaItem.metadata!!.title)
                                         if (window.mediaItem.metadata!! in selectedSongs){
                                             selectedSongs.remove(window.mediaItem.metadata!!)
                                             selectedItems.remove(currentItem)
@@ -395,6 +394,19 @@ fun Queue(
                 )
 
                 if (selectedSongs.isNotEmpty()) {
+
+                    IconButton(
+                        onClick = {
+                            selectedSongs.clear()
+                            selectedItems.clear()
+                        }
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.deselect),
+                            contentDescription = null,
+                            tint = LocalContentColor.current
+                        )
+                    }
                     IconButton(
                         onClick = {
                             menuState.show {
