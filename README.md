@@ -7,13 +7,13 @@
 ---
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/mostafaalagamy/Metrolist/main/Screenshot_I.webp" width="30%" />
-  <img src="https://raw.githubusercontent.com/mostafaalagamy/Metrolist/main/Screenshot_VII.webp" width="30%" />
-  <img src="https://raw.githubusercontent.com/mostafaalagamy/Metrolist/main/Screenshot_III.webp" width="30%" />
+  <img src="https://github.com/mostafaalagamy/Metrolist/blob/v6.0.0/screenshot_1.jpeg" width="30%" />
+  <img src="https://github.com/mostafaalagamy/Metrolist/blob/v6.0.0/screenshot_2.jpeg" width="30%" />
+  <img src="https://github.com/mostafaalagamy/Metrolist/blob/v6.0.0/screenshot_3.jpeg" width="30%" />
 
-  <img src="https://raw.githubusercontent.com/mostafaalagamy/Metrolist/main/Screenshot_IV.webp" width="30%" />
-  <img src="https://raw.githubusercontent.com/mostafaalagamy/Metrolist/main/Screenshot_V.webp " width="30%" />
-  <img src="https://raw.githubusercontent.com/mostafaalagamy/Metrolist/main/Screenshot_VI.webp" width="30%" />
+  <img src="https://github.com/mostafaalagamy/Metrolist/blob/v6.0.0/screenshot_4.jpeg" width="30%" />
+  <img src="https://github.com/mostafaalagamy/Metrolist/blob/v6.0.0/screenshot_7.jpeg" width="30%" />
+  <img src="https://github.com/mostafaalagamy/Metrolist/blob/v6.0.0/screenshot_6.jpeg" width="30%" />
 </p>
 </div>
 
