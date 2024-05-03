@@ -1,5 +1,5 @@
 <div align="center">
-<img src="https://raw.githubusercontent.com/mostafaalagamy/Metrolist/main/ic_launcher.webp" width="160" height="160" style="display: block; margin: 0 auto"/>
+<img src="https://raw.githubusercontent.com/mostafaalagamy/Metrolist/main/ic_launcher_github.webp" width="160" height="160" style="display: block; margin: 0 auto"/>
 <h1>Metrolist</h1>
 <p>YouTube Music client for Android</p>
 </div>
