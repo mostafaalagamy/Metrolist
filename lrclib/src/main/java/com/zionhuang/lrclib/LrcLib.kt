@@ -62,14 +62,19 @@ object LrcLib {
         var plain = 0
         tracks.forEach {
             if (count <= 4) {
-                if (it.syncedLyrics != null && abs(it.duration - duration) <= 2) {
+                if (it.syncedLyrics != null && duration == -1){
                     count++
                     it.syncedLyrics.let(callback)
-                }
-                if (it.plainLyrics != null && abs(it.duration - duration) <= 2 && plain == 0) {
-                    count++
-                    plain++
-                    it.plainLyrics.let(callback)
+                } else {
+                    if (it.syncedLyrics != null && abs(it.duration - duration) <= 2) {
+                        count++
+                        it.syncedLyrics.let(callback)
+                    }
+                    if (it.plainLyrics != null && abs(it.duration - duration) <= 2 && plain == 0) {
+                        count++
+                        plain++
+                        it.plainLyrics.let(callback)
+                    }
                 }
             }
         }

@@ -9,7 +9,7 @@ data class Track(
     val id: Int,
     val trackName: String,
     val artistName: String,
-    val duration: Long,
+    val duration: Double,
     val plainLyrics: String?,
     val syncedLyrics: String?
 )
