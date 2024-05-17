@@ -28,10 +28,15 @@ data class PlaylistPage(
                     )
                 } ?: return null,
                 album = renderer.flexColumns.getOrNull(2)?.musicResponsiveListItemFlexColumnRenderer?.text?.runs?.firstOrNull()?.let {
-                    Album(
-                        name = it.text,
-                        id = it.navigationEndpoint?.browseEndpoint?.browseId ?: return null
-                    )
+                    val browseId = it.navigationEndpoint?.browseEndpoint?.browseId
+                    if (browseId != null) {
+                        Album(
+                            name = it.text,
+                            id = browseId
+                        )
+                    } else {
+                        null
+                    }
                 },
                 duration = renderer.fixedColumns?.firstOrNull()?.musicResponsiveListItemFlexColumnRenderer?.text?.runs?.firstOrNull()?.text?.parseTime(),
                 thumbnail = renderer.thumbnail?.musicThumbnailRenderer?.getThumbnailUrl() ?: return null,
