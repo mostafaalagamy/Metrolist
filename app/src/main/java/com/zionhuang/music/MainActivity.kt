@@ -292,7 +292,7 @@ class MainActivity : ComponentActivity() {
                     LaunchedEffect(navBackStackEntry) {
                         if (navBackStackEntry?.destination?.route?.startsWith("search/") == true) {
                             val searchQuery = withContext(Dispatchers.IO) {
-                                URLDecoder.decode(navBackStackEntry?.arguments?.getString("query")!!, "UTF-8")
+                                navBackStackEntry?.arguments?.getString("query")!!
                             }
                             onQueryChange(TextFieldValue(searchQuery, TextRange(searchQuery.length)))
                         } else if (navigationItems.fastAny { it.route == navBackStackEntry?.destination?.route }) {
