@@ -8,7 +8,7 @@ data class Menu(
 ) {
     @Serializable
     data class MenuRenderer(
-        val items: List<Item>,
+        val items: List<Item>?,
         val topLevelButtons: List<TopLevelButton>?,
     ) {
         @Serializable

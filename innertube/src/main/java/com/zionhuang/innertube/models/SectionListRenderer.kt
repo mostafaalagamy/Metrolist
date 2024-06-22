@@ -1,5 +1,6 @@
 package com.zionhuang.innertube.models
 
+import com.zionhuang.innertube.models.response.BrowseResponse
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonNames
@@ -44,5 +45,6 @@ data class SectionListRenderer(
         val musicPlaylistShelfRenderer: MusicPlaylistShelfRenderer?,
         val musicDescriptionShelfRenderer: MusicDescriptionShelfRenderer?,
         val gridRenderer: GridRenderer?,
+        val musicResponsiveHeaderRenderer: BrowseResponse.Header.MusicHeaderRenderer?,
     )
 }
