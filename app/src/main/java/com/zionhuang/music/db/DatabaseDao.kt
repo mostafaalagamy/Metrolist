@@ -39,7 +39,6 @@ import com.zionhuang.music.db.entities.SongAlbumMap
 import com.zionhuang.music.db.entities.SongArtistMap
 import com.zionhuang.music.db.entities.SongEntity
 import com.zionhuang.music.extensions.reversed
-import com.zionhuang.music.extensions.toMediaItem
 import com.zionhuang.music.extensions.toSQLiteQuery
 import com.zionhuang.music.models.MediaMetadata
 import com.zionhuang.music.models.toMediaMetadata
@@ -633,7 +632,7 @@ interface DatabaseDao {
     @Query("SELECT * FROM artist WHERE name = :name")
     fun artistByName(name: String): ArtistEntity?
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(song: SongEntity): Long
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)

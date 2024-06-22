@@ -25,7 +25,7 @@ class AlbumViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             val album = database.album(albumId).first()
-            if (album == null || album.album.songCount == 0 || albumWithSongs.value?.songs?.all { it.song.duration != -1 } == false) {
+            if (album == null || album.album.songCount == 0) {
                 YouTube.album(albumId).onSuccess {
                     database.transaction {
                         if (album == null) insert(it)
