@@ -22,11 +22,13 @@ import com.zionhuang.music.R
 import com.zionhuang.music.constants.AccountChannelHandleKey
 import com.zionhuang.music.constants.AccountEmailKey
 import com.zionhuang.music.constants.AccountNameKey
+import com.zionhuang.music.constants.ChipSortTypeKey
 import com.zionhuang.music.constants.ContentCountryKey
 import com.zionhuang.music.constants.ContentLanguageKey
 import com.zionhuang.music.constants.CountryCodeToName
 import com.zionhuang.music.constants.InnerTubeCookieKey
 import com.zionhuang.music.constants.LanguageCodeToName
+import com.zionhuang.music.constants.LibraryFilter
 import com.zionhuang.music.constants.ProxyEnabledKey
 import com.zionhuang.music.constants.ProxyTypeKey
 import com.zionhuang.music.constants.ProxyUrlKey
@@ -62,6 +64,7 @@ fun ContentSettings(
     val (proxyType, onProxyTypeChange) = rememberEnumPreference(key = ProxyTypeKey, defaultValue = Proxy.Type.HTTP)
     val (proxyUrl, onProxyUrlChange) = rememberPreference(key = ProxyUrlKey, defaultValue = "host:port")
     val (lengthTop, onLengthTopChange) = rememberPreference(key = TopSize, defaultValue = "50")
+    val (defaultChip, onDefaultChipChange) = rememberEnumPreference(key = ChipSortTypeKey, defaultValue = LibraryFilter.LIBRARY)
 
 
     Column(
@@ -139,6 +142,14 @@ fun ContentSettings(
                 number != null && it.isNotEmpty() &&number > 0
                            },
             onValueChange = onLengthTopChange
+        )
+
+        ListPreference(
+            title = { Text("Change default chip") },
+            selectedValue = defaultChip,
+            values = listOf(LibraryFilter.LIBRARY, LibraryFilter.PLAYLISTS, LibraryFilter.SONGS, LibraryFilter.ALBUMS, LibraryFilter.ARTISTS),
+            valueText = { it.name },
+            onValueSelected = onDefaultChipChange
         )
     }
 

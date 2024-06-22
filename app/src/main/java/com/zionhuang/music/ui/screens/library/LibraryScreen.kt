@@ -5,23 +5,21 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.zionhuang.music.ui.component.ChipsRow
 import com.zionhuang.music.R
 import com.zionhuang.music.constants.LibraryFilter
-import com.zionhuang.music.viewmodels.LibraryViewModel
+import com.zionhuang.music.constants.ChipSortTypeKey
+import com.zionhuang.music.utils.rememberEnumPreference
 
 @Composable
 fun LibraryScreen(
     navController: NavController,
-    viewModel: LibraryViewModel = hiltViewModel(),
 ){
-    val filter by remember { mutableStateOf(viewModel.filter) }
+    var filterType by rememberEnumPreference(ChipSortTypeKey, LibraryFilter.LIBRARY)
 
     val filterContent = @Composable {
         Row {
@@ -32,9 +30,9 @@ fun LibraryScreen(
                     LibraryFilter.ALBUMS to stringResource(R.string.filter_albums),
                     LibraryFilter.ARTISTS to stringResource(R.string.filter_artists)
                 ),
-                currentValue = filter.value,
+                currentValue = filterType,
                 onValueUpdate = {
-                    filter.value = if (filter.value == it){
+                    filterType = if (filterType == it) {
                         LibraryFilter.LIBRARY
                     } else {
                         it
@@ -48,7 +46,7 @@ fun LibraryScreen(
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
-        when (filter.value) {
+        when (filterType) {
             LibraryFilter.LIBRARY -> LibraryMixScreen(navController, filterContent)
             LibraryFilter.PLAYLISTS -> LibraryPlaylistsScreen(navController, filterContent)
             LibraryFilter.SONGS -> LibrarySongsScreen(navController, filterContent)
