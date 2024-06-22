@@ -394,7 +394,6 @@ fun Queue(
                 )
 
                 if (selectedSongs.isNotEmpty()) {
-
                     IconButton(
                         onClick = {
                             selectedSongs.clear()
@@ -424,6 +423,21 @@ fun Queue(
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.more_vert),
+                            contentDescription = null,
+                            tint = LocalContentColor.current
+                        )
+                    }
+                } else {
+                    IconButton(
+                        onClick = {
+                            queueWindows.forEach {
+                                selectedSongs.add(it.mediaItem.metadata!!)
+                                selectedItems.add(it)
+                            }
+                        }
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.select_all),
                             contentDescription = null,
                             tint = LocalContentColor.current
                         )
