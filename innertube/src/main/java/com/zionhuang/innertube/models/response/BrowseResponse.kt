@@ -97,7 +97,8 @@ data class BrowseResponse(
         ) {
             @Serializable
             data class Header(
-                val musicDetailHeaderRenderer: MusicDetailHeaderRenderer,
+                val musicDetailHeaderRenderer: MusicDetailHeaderRenderer?,
+                val musicResponsiveHeaderRenderer: MusicHeaderRenderer?,
             )
         }
 
