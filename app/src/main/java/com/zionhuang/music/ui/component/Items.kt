@@ -1437,6 +1437,10 @@ fun YouTubeGridItem(
 fun YouTubeSmallGridItem(
     item: YTItem,
     modifier: Modifier = Modifier,
+    coroutineScope: CoroutineScope? = null,
+    isActive: Boolean = false,
+    isPlaying: Boolean = false,
+    fillMaxWidth: Boolean = false,
 ) = SmallGridItem(
     title = item.title,
     thumbnailContent = {
