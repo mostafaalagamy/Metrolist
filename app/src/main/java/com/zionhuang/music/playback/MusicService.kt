@@ -59,7 +59,6 @@ import com.zionhuang.music.R
 import com.zionhuang.music.constants.AudioNormalizationKey
 import com.zionhuang.music.constants.AudioQuality
 import com.zionhuang.music.constants.AudioQualityKey
-import com.zionhuang.music.constants.MediaSessionConstants.CommandToggleLibrary
 import com.zionhuang.music.constants.MediaSessionConstants.CommandToggleLike
 import com.zionhuang.music.constants.MediaSessionConstants.CommandToggleRepeatMode
 import com.zionhuang.music.constants.MediaSessionConstants.CommandToggleShuffle
@@ -211,7 +210,6 @@ class MusicService : MediaLibraryService(),
             }
         mediaLibrarySessionCallback.apply {
             toggleLike = ::toggleLike
-            toggleLibrary = ::toggleLibrary
         }
         mediaSession = MediaLibrarySession.Builder(this, player, mediaLibrarySessionCallback)
             .setSessionActivity(
@@ -442,14 +440,6 @@ class MusicService : MediaLibraryService(),
     fun addToQueue(items: List<MediaItem>) {
         player.addMediaItems(items)
         player.prepare()
-    }
-
-    fun toggleLibrary() {
-        database.query {
-            currentSong.value?.let {
-                update(it.song.toggleLibrary())
-            }
-        }
     }
 
     fun toggleLike() {

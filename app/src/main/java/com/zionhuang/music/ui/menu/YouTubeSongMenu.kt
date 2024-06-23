@@ -63,7 +63,6 @@ import com.zionhuang.music.ui.component.ListDialog
 import com.zionhuang.music.ui.component.ListItem
 import com.zionhuang.music.utils.joinByBullet
 import com.zionhuang.music.utils.makeTimeString
-import java.time.LocalDateTime
 
 @Composable
 fun YouTubeSongMenu(
@@ -218,26 +217,6 @@ fun YouTubeSongMenu(
         ) {
             playerConnection.addToQueue((song.toMediaItem()))
             onDismiss()
-        }
-        if (librarySong?.song?.inLibrary != null) {
-            GridMenuItem(
-                icon = R.drawable.library_add_check,
-                title = R.string.remove_from_library
-            ) {
-                database.query {
-                    inLibrary(song.id, null)
-                }
-            }
-        } else {
-            GridMenuItem(
-                icon = R.drawable.library_add,
-                title = R.string.add_to_library
-            ) {
-                database.transaction {
-                    insert(song.toMediaMetadata())
-                    inLibrary(song.id, LocalDateTime.now())
-                }
-            }
         }
         GridMenuItem(
             icon = R.drawable.playlist_add,

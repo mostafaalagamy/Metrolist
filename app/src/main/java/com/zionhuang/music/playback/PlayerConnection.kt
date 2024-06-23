@@ -120,10 +120,6 @@ class PlayerConnection(
         service.toggleLike()
     }
 
-    fun toggleLibrary() {
-        service.toggleLibrary()
-    }
-
     override fun onPlaybackStateChanged(state: Int) {
         playbackState.value = state
         error.value = player.playerError
