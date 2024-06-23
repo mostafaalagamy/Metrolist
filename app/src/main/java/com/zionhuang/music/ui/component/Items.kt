@@ -1075,6 +1075,7 @@ fun YouTubeListItem(
     item: YTItem,
     modifier: Modifier = Modifier,
     albumIndex: Int? = null,
+    isSelected: Boolean = false,
     badges: @Composable RowScope.() -> Unit = {
         val database = LocalDatabase.current
         val song by database.song(item.id).collectAsState(initial = null)
@@ -1156,12 +1157,36 @@ fun YouTubeListItem(
                     enter = fadeIn() + expandIn(expandFrom = Alignment.Center),
                     exit = shrinkOut(shrinkTowards = Alignment.Center) + fadeOut()
                 ) {
-                    Text(
-                        text = albumIndex.toString(),
-                        style = MaterialTheme.typography.labelLarge
-                    )
+
+                    if (isSelected) {
+                        Icon(
+                            painter = painterResource(R.drawable.done),
+                            modifier = Modifier.align(Alignment.Center),
+                            contentDescription = null
+                        )
+                    }else {
+                        Text(
+                            text = albumIndex.toString(),
+                            style = MaterialTheme.typography.labelLarge
+                        )
+                    }
                 }
             } else {
+                if (isSelected) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .zIndex(1000f)
+                            .clip(RoundedCornerShape(ThumbnailCornerRadius))
+                            .background(Color.Black.copy(alpha = 0.5f))
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.done),
+                            modifier = Modifier.align(Alignment.Center),
+                            contentDescription = null
+                        )
+                    }
+                }
                 AsyncImage(
                     model = item.thumbnail,
                     contentDescription = null,
@@ -1412,10 +1437,6 @@ fun YouTubeGridItem(
 fun YouTubeSmallGridItem(
     item: YTItem,
     modifier: Modifier = Modifier,
-    coroutineScope: CoroutineScope? = null,
-    isActive: Boolean = false,
-    isPlaying: Boolean = false,
-    fillMaxWidth: Boolean = false,
 ) = SmallGridItem(
     title = item.title,
     thumbnailContent = {

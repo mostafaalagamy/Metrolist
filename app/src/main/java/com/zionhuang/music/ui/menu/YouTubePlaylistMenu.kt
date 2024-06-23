@@ -36,6 +36,7 @@ fun YouTubePlaylistMenu(
     songs: List<SongItem> = emptyList(),
     coroutineScope: CoroutineScope,
     onDismiss: () -> Unit,
+    selectAction: () -> Unit = {},
 ) {
     val context = LocalContext.current
     val database = LocalDatabase.current
@@ -155,6 +156,14 @@ fun YouTubePlaylistMenu(
             }
             context.startActivity(Intent.createChooser(intent, null))
             onDismiss()
+        }
+
+        GridMenuItem(
+            icon = R.drawable.select_all,
+            title = R.string.select
+        ) {
+            onDismiss()
+            selectAction()
         }
     }
 }

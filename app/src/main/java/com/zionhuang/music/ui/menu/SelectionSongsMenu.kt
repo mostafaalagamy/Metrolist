@@ -350,17 +350,19 @@ fun SelectionMediaMetadataMenu(
             bottom = 8.dp + WindowInsets.systemBars.asPaddingValues().calculateBottomPadding()
         )
     ){
-        GridMenuItem(
-            icon = R.drawable.delete,
-            title = R.string.delete
-        ) {
-            onDismiss()
-            var i = 0
-            currentItems.forEach { cur ->
-                playerConnection.player.removeMediaItem(cur.firstPeriodIndex - i)
-                i++
+        if (currentItems.isNotEmpty()) {
+            GridMenuItem(
+                icon = R.drawable.delete,
+                title = R.string.delete
+            ) {
+                onDismiss()
+                var i = 0
+                currentItems.forEach { cur ->
+                    playerConnection.player.removeMediaItem(cur.firstPeriodIndex - i)
+                    i++
+                }
+                clearAction()
             }
-            clearAction()
         }
 
         GridMenuItem(
