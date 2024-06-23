@@ -158,7 +158,8 @@ object YouTube {
 
     suspend fun album(browseId: String, withSongs: Boolean = true): Result<AlbumPage> = runCatching {
         val response = innerTube.browse(WEB_REMIX, browseId).body<BrowseResponse>()
-        val playlistId = response.microformat?.microformatDataRenderer?.urlCanonical?.substringAfterLast('=')!!
+        val playlistId = response.microformat?.microformatDataRenderer?.urlCanonical?.substringAfterLast('=')
+            ?: response.contents?.twoColumnBrowseResultsRenderer?.secondaryContents?.sectionListRenderer?.contents?.firstOrNull()?.musicPlaylistShelfRenderer?.playlistId!!
         AlbumPage(
             album = AlbumItem(
                 browseId = browseId,
@@ -377,7 +378,7 @@ object YouTube {
                                     val renderer = content2.musicTwoRowItemRenderer ?: content2.musicResponsiveListItemRenderer
                                     renderer?.let {
                                         when (renderer) {
-                                            is MusicTwoRowItemRenderer -> NewReleaseAlbumPage.fromMusicTwoRowItemRenderer(renderer) ?: RelatedPage.fromMusicTwoRowItemRenderer(renderer)
+                                            is MusicTwoRowItemRenderer -> RelatedPage.fromMusicTwoRowItemRenderer(renderer)
                                             is MusicResponsiveListItemRenderer -> SearchSummaryPage.fromMusicResponsiveListItemRenderer(renderer)
                                             else -> null // Handle other cases if necessary
                                         }
