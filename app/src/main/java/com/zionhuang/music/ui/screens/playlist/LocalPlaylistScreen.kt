@@ -244,8 +244,10 @@ fun LocalPlaylistScreen(
             }
         },
         onDragEnd = { fromIndex, toIndex ->
+            val from = if (fromIndex < 2) 2 else fromIndex
+            val to = if (toIndex < 2) 2 else toIndex
             database.transaction {
-                move(viewModel.playlistId, fromIndex - headerItems, toIndex - headerItems)
+                move(viewModel.playlistId, from - headerItems, to - headerItems)
             }
         }
     )
