@@ -145,15 +145,6 @@ class MainActivity : ComponentActivity() {
         super.onStop()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        if (playerConnection?.isPlaying?.value == true) {
-            stopService(Intent(this, MusicService::class.java))
-            unbindService(serviceConnection)
-            playerConnection = null
-        }
-    }
-
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
