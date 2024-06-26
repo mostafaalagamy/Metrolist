@@ -160,12 +160,14 @@ class HomeViewModel @Inject constructor(
         val listItem = mutableListOf<YTItem>()
         artist?.id?.let {
             YouTube.artist(it).onSuccess { res ->
-                if (res.sections.size % 2 == 0) {
-                    res.sections.getOrNull(res.sections.size - 2)?.items?.forEach { item ->
-                        listItem.add(item)
-                    }
-                    res.sections.lastOrNull()?.items?.forEach { item ->
-                        listItem.add(item)
+                if (res.artist.radioEndpoint != null && res.artist.shuffleEndpoint != null) {
+                    if (res.sections.size % 2 == 0) {
+                        res.sections.getOrNull(res.sections.size - 2)?.items?.forEach { item ->
+                            listItem.add(item)
+                        }
+                        res.sections.lastOrNull()?.items?.forEach { item ->
+                            listItem.add(item)
+                        }
                     }
                 }
             }
