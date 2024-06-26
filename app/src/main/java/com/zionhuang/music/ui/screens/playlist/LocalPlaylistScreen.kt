@@ -117,6 +117,7 @@ import org.burnoutcrew.reorderable.ReorderableItem
 import org.burnoutcrew.reorderable.detectReorder
 import org.burnoutcrew.reorderable.rememberReorderableLazyListState
 import org.burnoutcrew.reorderable.reorderable
+import java.time.LocalDateTime
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -189,7 +190,7 @@ fun LocalPlaylistScreen(
                 initialTextFieldValue = TextFieldValue(playlistEntity.name, TextRange(playlistEntity.name.length)),
                 onDone = { name ->
                     database.query {
-                        update(playlistEntity.copy(name = name))
+                        update(playlistEntity.copy(name = name, lastUpdateTime = LocalDateTime.now()))
                     }
                 }
             )

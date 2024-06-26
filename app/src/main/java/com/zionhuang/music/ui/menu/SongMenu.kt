@@ -62,6 +62,7 @@ import com.zionhuang.music.ui.component.GridMenuItem
 import com.zionhuang.music.ui.component.ListDialog
 import com.zionhuang.music.ui.component.SongListItem
 import com.zionhuang.music.ui.component.TextFieldDialog
+import java.time.LocalDateTime
 
 @Composable
 fun SongMenu(
@@ -111,6 +112,7 @@ fun SongMenu(
                         position = playlist.songCount
                     )
                 )
+                update(playlist.playlist.copy(lastUpdateTime = LocalDateTime.now()))
             }
         },
         onDismiss = { showChoosePlaylistDialog = false }

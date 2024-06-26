@@ -61,6 +61,7 @@ import com.zionhuang.music.ui.component.DownloadGridMenu
 import com.zionhuang.music.ui.component.GridMenu
 import com.zionhuang.music.ui.component.GridMenuItem
 import com.zionhuang.music.ui.component.ListDialog
+import java.time.LocalDateTime
 
 @Composable
 fun AlbumMenu(
@@ -127,6 +128,7 @@ fun AlbumMenu(
                                 position = playlist.songCount
                             )
                         )
+                        update(playlist.playlist.copy(lastUpdateTime = LocalDateTime.now()))
                     }
             }
         },

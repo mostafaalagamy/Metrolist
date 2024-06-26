@@ -63,6 +63,7 @@ import com.zionhuang.music.ui.component.ListDialog
 import com.zionhuang.music.ui.component.ListItem
 import com.zionhuang.music.utils.joinByBullet
 import com.zionhuang.music.utils.makeTimeString
+import java.time.LocalDateTime
 
 @Composable
 fun YouTubeSongMenu(
@@ -99,6 +100,7 @@ fun YouTubeSongMenu(
                         position = playlist.songCount
                     )
                 )
+                update(playlist.playlist.copy(lastUpdateTime = LocalDateTime.now()))
             }
         },
         onDismiss = { showChoosePlaylistDialog = false }

@@ -55,6 +55,7 @@ import com.zionhuang.music.ui.component.GridMenuItem
 import com.zionhuang.music.ui.component.ListDialog
 import com.zionhuang.music.ui.component.YouTubeListItem
 import com.zionhuang.music.utils.reportException
+import java.time.LocalDateTime
 
 @Composable
 fun YouTubeAlbumMenu(
@@ -120,6 +121,7 @@ fun YouTubeAlbumMenu(
                             position = position++
                         )
                     )
+                    update(playlist.playlist.copy(lastUpdateTime = LocalDateTime.now()))
                 }
             }
         },

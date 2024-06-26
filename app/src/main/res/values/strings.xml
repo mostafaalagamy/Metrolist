@@ -97,6 +97,7 @@
 
     <!-- Sort menu -->
     <string name="sort_by_create_date">Date added</string>
+    <string name="sort_by_last_updated">Date updated</string>
     <string name="sort_by_name">Name</string>
     <string name="sort_by_artist">Artist</string>
     <string name="sort_by_year">Year</string>

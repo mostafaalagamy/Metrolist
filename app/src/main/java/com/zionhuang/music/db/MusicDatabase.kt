@@ -1,5 +1,6 @@
 package com.zionhuang.music.db
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import androidx.core.content.contentValuesOf
@@ -59,7 +60,7 @@ class MusicDatabase(
         SortedSongAlbumMap::class,
         PlaylistSongMapPreview::class
     ],
-    version = 13,
+    version = 14,
     exportSchema = true,
     autoMigrations = [
         AutoMigration(from = 2, to = 3),
@@ -72,7 +73,8 @@ class MusicDatabase(
         AutoMigration(from = 9, to = 10, spec = Migration9To10::class),
         AutoMigration(from = 10, to = 11, spec = Migration10To11::class),
         AutoMigration(from = 11, to = 12, spec = Migration11To12::class),
-        AutoMigration(from = 12, to = 13, spec = Migration12To13::class)
+        AutoMigration(from = 12, to = 13, spec = Migration12To13::class),
+        AutoMigration(from = 13, to = 14, spec = Migration13To14::class),
     ]
 )
 @TypeConverters(Converters::class)
@@ -350,5 +352,13 @@ class Migration11To12 : AutoMigrationSpec {
 class Migration12To13 : AutoMigrationSpec {
     override fun onPostMigrate(db: SupportSQLiteDatabase) {
         db.execSQL("UPDATE song SET liked = 1 WHERE inLibrary IS NOT NULL")
+    }
+}
+
+class Migration13To14 : AutoMigrationSpec {
+    @SuppressLint("Range")
+    override fun onPostMigrate(db: SupportSQLiteDatabase) {
+        db.execSQL("UPDATE playlist SET createdAt = '${Converters().dateToTimestamp(LocalDateTime.now())}'")
+        db.execSQL("UPDATE playlist SET lastUpdateTime = '${Converters().dateToTimestamp(LocalDateTime.now())}'")
     }
 }

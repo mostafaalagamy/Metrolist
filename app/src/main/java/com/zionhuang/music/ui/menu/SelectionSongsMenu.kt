@@ -38,6 +38,7 @@ import com.zionhuang.music.ui.component.DefaultDialog
 import com.zionhuang.music.ui.component.DownloadGridMenu
 import com.zionhuang.music.ui.component.GridMenu
 import com.zionhuang.music.ui.component.GridMenuItem
+import java.time.LocalDateTime
 
 @Composable
 fun SelectionSongMenu(
@@ -88,6 +89,7 @@ fun SelectionSongMenu(
                             position = playlist.songCount
                         )
                     )
+                    update(playlist.playlist.copy(lastUpdateTime = LocalDateTime.now()))
                 }
             }
         },
@@ -294,6 +296,7 @@ fun SelectionMediaMetadataMenu(
                             position = playlist.songCount
                         )
                     )
+                    update(playlist.playlist.copy(lastUpdateTime = LocalDateTime.now()))
                 }
             }
         },

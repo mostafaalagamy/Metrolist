@@ -557,6 +557,10 @@ interface DatabaseDao {
     fun playlistsByCreateDateAsc(): Flow<List<Playlist>>
 
     @Transaction
+    @Query("SELECT *, (SELECT COUNT(*) FROM playlist_song_map WHERE playlistId = playlist.id) AS songCount FROM playlist ORDER BY lastUpdateTime")
+    fun playlistsByUpdatedDateAsc(): Flow<List<Playlist>>
+
+    @Transaction
     @Query("SELECT *, (SELECT COUNT(*) FROM playlist_song_map WHERE playlistId = playlist.id) AS songCount FROM playlist ORDER BY name")
     fun playlistsByNameAsc(): Flow<List<Playlist>>
 
@@ -569,6 +573,7 @@ interface DatabaseDao {
             PlaylistSortType.CREATE_DATE -> playlistsByCreateDateAsc()
             PlaylistSortType.NAME -> playlistsByNameAsc()
             PlaylistSortType.SONG_COUNT -> playlistsBySongCountAsc()
+            PlaylistSortType.LAST_UPDATED -> playlistsByUpdatedDateAsc()
         }.map { it.reversed(descending) }
 
     @Transaction

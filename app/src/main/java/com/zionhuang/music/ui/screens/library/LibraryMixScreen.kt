@@ -111,6 +111,14 @@ fun LibraryMixScreen(
             MixSortType.CREATE_DATE -> when (item) {
                 is Album -> item.album.bookmarkedAt
                 is Artist -> item.artist.bookmarkedAt
+                is Playlist -> item.playlist.createdAt
+                else -> LocalDateTime.now()
+            }
+
+            MixSortType.LAST_UPDATED -> when(item) {
+                is Album -> item.album.lastUpdateTime
+                is Artist -> item.artist.lastUpdateTime
+                is Playlist -> item.playlist.lastUpdateTime
                 else -> LocalDateTime.now()
             }
 
@@ -141,6 +149,7 @@ fun LibraryMixScreen(
                 sortTypeText = { sortType ->
                     when (sortType) {
                         MixSortType.CREATE_DATE -> R.string.sort_by_create_date
+                        MixSortType.LAST_UPDATED -> R.string.sort_by_last_updated
                         MixSortType.NAME -> R.string.sort_by_name
                     }
                 }

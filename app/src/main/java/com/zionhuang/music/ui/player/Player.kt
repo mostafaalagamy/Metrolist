@@ -103,6 +103,7 @@ import com.zionhuang.music.utils.makeTimeString
 import com.zionhuang.music.utils.rememberPreference
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
+import java.time.LocalDateTime
 import kotlin.math.roundToInt
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalAnimationApi::class)
@@ -232,11 +233,12 @@ fun BottomSheetPlayer(
                     insert(it)
                     insert(
                         PlaylistSongMap(
-                        songId = it.id,
-                        playlistId = playlist.id,
-                        position = playlist.songCount
+                            songId = it.id,
+                            playlistId = playlist.id,
+                            position = playlist.songCount
+                        )
                     )
-                    )
+                    update(playlist.playlist.copy(lastUpdateTime = LocalDateTime.now()))
                 }
             }
         },

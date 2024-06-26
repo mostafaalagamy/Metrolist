@@ -29,6 +29,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.time.LocalDateTime
 
 @Composable
 fun YouTubePlaylistMenu(
@@ -68,6 +69,7 @@ fun YouTubePlaylistMenu(
                                         position = position++
                                     )
                                 )
+                                update(targetPlaylist.playlist.copy(lastUpdateTime = LocalDateTime.now()))
                             }
                     }
                 }

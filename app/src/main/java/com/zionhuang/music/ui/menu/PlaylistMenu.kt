@@ -55,6 +55,7 @@ import com.zionhuang.music.utils.makeTimeString
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
 
 @Composable
 fun PlaylistMenu(
@@ -126,7 +127,7 @@ fun PlaylistMenu(
             onDone = { name ->
                 onDismiss()
                 database.query {
-                    update(playlist.playlist.copy(name = name))
+                    update(playlist.playlist.copy(name = name, lastUpdateTime = LocalDateTime.now()))
                 }
             }
         )

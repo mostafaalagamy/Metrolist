@@ -63,6 +63,7 @@ import com.zionhuang.music.ui.component.DownloadGridMenu
 import com.zionhuang.music.ui.component.GridMenu
 import com.zionhuang.music.ui.component.GridMenuItem
 import com.zionhuang.music.ui.component.ListDialog
+import java.time.LocalDateTime
 import kotlin.math.log2
 import kotlin.math.pow
 import kotlin.math.round
@@ -101,6 +102,7 @@ fun PlayerMenu(
                         position = playlist.songCount
                     )
                 )
+                update(playlist.playlist.copy(lastUpdateTime = LocalDateTime.now()))
             }
         },
         onDismiss = {
