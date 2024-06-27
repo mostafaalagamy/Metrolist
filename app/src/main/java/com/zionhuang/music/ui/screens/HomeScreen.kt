@@ -26,6 +26,7 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.zionhuang.innertube.models.Artist
 import com.zionhuang.innertube.models.ArtistItem
 import com.zionhuang.innertube.models.PlaylistItem
+import com.zionhuang.innertube.models.SongItem
 import com.zionhuang.innertube.models.WatchEndpoint
 import com.zionhuang.innertube.utils.parseCookieString
 import com.zionhuang.music.LocalDatabase
@@ -54,6 +55,7 @@ import com.zionhuang.music.ui.menu.SongMenu
 import com.zionhuang.music.ui.menu.YouTubeAlbumMenu
 import com.zionhuang.music.ui.menu.YouTubeArtistMenu
 import com.zionhuang.music.ui.menu.YouTubePlaylistMenu
+import com.zionhuang.music.ui.menu.YouTubeSongMenu
 import com.zionhuang.music.ui.utils.SnapLayoutInfoProvider
 import com.zionhuang.music.utils.rememberPreference
 import com.zionhuang.music.viewmodels.HomeViewModel
@@ -236,7 +238,7 @@ fun HomeScreen(
                                     },
                                     modifier = Modifier
                                         .width(horizontalLazyGridItemWidth)
-                                        .combinedClickable (
+                                        .combinedClickable(
                                             onClick = {
                                                 if (song!!.id == mediaMetadata?.id) {
                                                     playerConnection.player.togglePlayPause()
@@ -330,7 +332,9 @@ fun HomeScreen(
                                                         navController.navigate("artist/${keepListeningArtists!![it].id}")
                                                     },
                                                     onLongClick = {
-                                                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                                        haptic.performHapticFeedback(
+                                                            HapticFeedbackType.LongPress
+                                                        )
                                                         menuState.show {
                                                             ArtistMenu(
                                                                 originalArtist = keepListeningArtists!![it],
@@ -374,7 +378,9 @@ fun HomeScreen(
                                                         }
                                                     },
                                                     onLongClick = {
-                                                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                                        haptic.performHapticFeedback(
+                                                            HapticFeedbackType.LongPress
+                                                        )
                                                         menuState.show {
                                                             SongMenu(
                                                                 originalSong = keepListeningSongs!![it - 10],
@@ -420,6 +426,18 @@ fun HomeScreen(
                                                 onClick = {
                                                     when (item) {
                                                         is PlaylistItem -> navController.navigate("online_playlist/${item.id}")
+                                                        is SongItem -> {
+                                                            if (item.id == mediaMetadata?.id) {
+                                                                playerConnection.player.togglePlayPause()
+                                                            } else {
+                                                                playerConnection.playQueue(
+                                                                    YouTubeQueue(
+                                                                        WatchEndpoint(videoId = item.id),
+                                                                        item.toMediaMetadata()
+                                                                    )
+                                                                )
+                                                            }
+                                                        }
                                                         else -> navController.navigate("artist/${item.id}")
                                                     }
 
@@ -434,11 +452,21 @@ fun HomeScreen(
                                                                 onDismiss = menuState::dismiss
                                                             )
 
-                                                            else -> {
+                                                            is ArtistItem -> {
                                                                 YouTubeArtistMenu(
-                                                                    artist = item as ArtistItem,
+                                                                    artist = item,
                                                                     onDismiss = menuState::dismiss
                                                                 )
+                                                            }
+
+                                                            is SongItem -> {
+                                                                YouTubeSongMenu(
+                                                                    song = item,
+                                                                    navController = navController,
+                                                                    onDismiss = menuState::dismiss
+                                                                )
+                                                            }
+                                                            else -> {
                                                             }
                                                         }
                                                     }
@@ -696,6 +724,18 @@ fun HomeScreen(
                                                 onClick = {
                                                     when (item) {
                                                         is PlaylistItem -> navController.navigate("online_playlist/${item.id}")
+                                                        is SongItem -> {
+                                                            if (item.id == mediaMetadata?.id) {
+                                                                playerConnection.player.togglePlayPause()
+                                                            } else {
+                                                                playerConnection.playQueue(
+                                                                    YouTubeQueue(
+                                                                        WatchEndpoint(videoId = item.id),
+                                                                        item.toMediaMetadata()
+                                                                    )
+                                                                )
+                                                            }
+                                                        }
                                                         else -> navController.navigate("artist/${item.id}")
                                                     }
 
@@ -709,11 +749,22 @@ fun HomeScreen(
                                                                 coroutineScope = coroutineScope,
                                                                 onDismiss = menuState::dismiss
                                                             )
-                                                            else -> {
+
+                                                            is ArtistItem -> {
                                                                 YouTubeArtistMenu(
-                                                                    artist = item as ArtistItem,
+                                                                    artist = item,
                                                                     onDismiss = menuState::dismiss
                                                                 )
+                                                            }
+
+                                                            is SongItem -> {
+                                                                YouTubeSongMenu(
+                                                                    song = item,
+                                                                    navController = navController,
+                                                                    onDismiss = menuState::dismiss
+                                                                )
+                                                            }
+                                                            else -> {
                                                             }
                                                         }
                                                     }
@@ -896,6 +947,18 @@ fun HomeScreen(
                                                 onClick = {
                                                     when (item) {
                                                         is PlaylistItem -> navController.navigate("online_playlist/${item.id}")
+                                                        is SongItem -> {
+                                                            if (item.id == mediaMetadata?.id) {
+                                                                playerConnection.player.togglePlayPause()
+                                                            } else {
+                                                                playerConnection.playQueue(
+                                                                    YouTubeQueue(
+                                                                        WatchEndpoint(videoId = item.id),
+                                                                        item.toMediaMetadata()
+                                                                    )
+                                                                )
+                                                            }
+                                                        }
                                                         else -> navController.navigate("artist/${item.id}")
                                                     }
 
@@ -909,11 +972,22 @@ fun HomeScreen(
                                                                 coroutineScope = coroutineScope,
                                                                 onDismiss = menuState::dismiss
                                                             )
-                                                            else -> {
+
+                                                            is ArtistItem -> {
                                                                 YouTubeArtistMenu(
-                                                                    artist = item as ArtistItem,
+                                                                    artist = item,
                                                                     onDismiss = menuState::dismiss
                                                                 )
+                                                            }
+
+                                                            is SongItem -> {
+                                                                YouTubeSongMenu(
+                                                                    song = item,
+                                                                    navController = navController,
+                                                                    onDismiss = menuState::dismiss
+                                                                )
+                                                            }
+                                                            else -> {
                                                             }
                                                         }
                                                     }
