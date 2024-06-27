@@ -618,6 +618,8 @@ interface DatabaseDao {
     @Query("SELECT COUNT(1) FROM related_song_map WHERE songId = :songId LIMIT 1")
     fun hasRelatedSongs(songId: String): Boolean
 
+    @Query("SELECT song.* FROM (SELECT * from related_song_map GROUP BY relatedSongId) map JOIN song ON song.id = map.relatedSongId where songId = :songId")
+    fun getRelatedSongs(songId: String): Flow<List<Song>>
     @Query(
         """
         UPDATE playlist_song_map SET position = 

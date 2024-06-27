@@ -57,6 +57,7 @@ val AlbumViewTypeKey = stringPreferencesKey("albumViewType")
 val PlaylistViewTypeKey = stringPreferencesKey("playlistViewType")
 
 val PlaylistEditLockKey = booleanPreferencesKey("playlistEditLock")
+val QuickPicksKey = stringPreferencesKey("discover")
 
 enum class LibraryViewType {
     LIST, GRID;
@@ -106,6 +107,10 @@ enum class MyTopFilter {
             YEAR -> LocalDateTime.now().minusMonths(12).toInstant(ZoneOffset.UTC).toEpochMilli()
             ALL_TIME -> 0
         }
+}
+
+enum class QuickPicks {
+    QUICK_PICKS, LAST_LISTEN
 }
 
 val TopSize = stringPreferencesKey("topSize")

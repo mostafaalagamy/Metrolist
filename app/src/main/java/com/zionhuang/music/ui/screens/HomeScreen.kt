@@ -466,6 +466,7 @@ fun HomeScreen(
                                                                     onDismiss = menuState::dismiss
                                                                 )
                                                             }
+
                                                             else -> {
                                                             }
                                                         }
@@ -764,6 +765,7 @@ fun HomeScreen(
                                                                     onDismiss = menuState::dismiss
                                                                 )
                                                             }
+
                                                             else -> {
                                                             }
                                                         }
@@ -890,8 +892,6 @@ fun HomeScreen(
                                     playlist.author ?: run {
                                         playlist.author = Artist(name="YouTube Music", id=null)
                                     }
-//                                    if (playlist.author?.name?.isEmpty() == true || playlist.author?.name?.contains("Youtube Music") != true)
-//                                        playlist.author = Artist(name="YouTube Music", id=null)
                                     YouTubeGridItem(
                                         item = playlist,
                                         isActive = mediaMetadata?.album?.id == playlist.id,
@@ -959,6 +959,7 @@ fun HomeScreen(
                                                                 )
                                                             }
                                                         }
+
                                                         else -> navController.navigate("artist/${item.id}")
                                                     }
 
@@ -987,6 +988,7 @@ fun HomeScreen(
                                                                     onDismiss = menuState::dismiss
                                                                 )
                                                             }
+
                                                             else -> {
                                                             }
                                                         }

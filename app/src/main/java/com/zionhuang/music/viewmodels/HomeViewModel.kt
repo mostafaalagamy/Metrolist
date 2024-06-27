@@ -1,5 +1,6 @@
 package com.zionhuang.music.viewmodels
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zionhuang.innertube.YouTube
@@ -11,22 +12,33 @@ import com.zionhuang.innertube.pages.ExplorePage
 import com.zionhuang.innertube.pages.HomePlayList
 import com.zionhuang.innertube.pages.HomeAlbumRecommendation
 import com.zionhuang.innertube.pages.HomeArtistRecommendation
+import com.zionhuang.music.constants.QuickPicks
+import com.zionhuang.music.constants.QuickPicksKey
 import com.zionhuang.music.db.MusicDatabase
 import com.zionhuang.music.db.entities.Artist
 import com.zionhuang.music.db.entities.Song
+import com.zionhuang.music.extensions.toEnum
+import com.zionhuang.music.utils.dataStore
 import com.zionhuang.music.utils.reportException
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
+    @ApplicationContext context: Context,
     val database: MusicDatabase,
 ) : ViewModel() {
     val isRefreshing = MutableStateFlow(false)
+    private val quickPicksEnum = context.dataStore.data.map {
+        it[QuickPicksKey].toEnum(QuickPicks.QUICK_PICKS)
+    }.distinctUntilChanged()
 
     val quickPicks = MutableStateFlow<List<Song>?>(null)
     val explorePage = MutableStateFlow<ExplorePage?>(null)
@@ -55,8 +67,15 @@ class HomeViewModel @Inject constructor(
 
     val youtubePlaylists = MutableStateFlow<List<PlaylistItem>?>(null)
 
+    private suspend fun getQuickPicks(){
+        when (quickPicksEnum.first()) {
+            QuickPicks.QUICK_PICKS -> quickPicks.value = database.quickPicks().first().shuffled().take(20)
+            QuickPicks.LAST_LISTEN -> songLoad()
+        }
+    }
+
     private suspend fun load() {
-        quickPicks.value = database.quickPicks().first().shuffled().take(20)
+        getQuickPicks()
         val artists = database.mostPlayedArtists(System.currentTimeMillis() - 86400000 * 7 * 2).first().shuffled().take(5)
         val filteredArtists = mutableListOf<Artist>()
         artists.forEach {
@@ -141,6 +160,17 @@ class HomeViewModel @Inject constructor(
         albumLoad(songsAlbumRecommendation.value?.getOrNull(1), homeSecondAlbumRecommendation)
 
         artistLoad(artistRecommendation.value?.getOrNull(2), homeThirdArtistRecommendation)
+    }
+
+    private suspend fun songLoad(){
+        val song = database.events().first().firstOrNull()?.song
+        if (song != null) {
+            println(song.song.title)
+            if (database.hasRelatedSongs(song.id)){
+                val relatedSongs = database.getRelatedSongs(song.id).first().shuffled().take(20)
+                quickPicks.value = relatedSongs
+            }
+        }
     }
 
     private suspend fun albumLoad(song: Song?, next:  MutableStateFlow<HomeAlbumRecommendation?>){

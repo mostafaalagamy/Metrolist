@@ -28,10 +28,12 @@ import com.zionhuang.music.constants.ContentLanguageKey
 import com.zionhuang.music.constants.CountryCodeToName
 import com.zionhuang.music.constants.InnerTubeCookieKey
 import com.zionhuang.music.constants.LanguageCodeToName
-import com.zionhuang.music.constants.LibraryFilter
+import com.zionhuang.music.constants.LibraryFilter.*
 import com.zionhuang.music.constants.ProxyEnabledKey
 import com.zionhuang.music.constants.ProxyTypeKey
 import com.zionhuang.music.constants.ProxyUrlKey
+import com.zionhuang.music.constants.QuickPicks.*
+import com.zionhuang.music.constants.QuickPicksKey
 import com.zionhuang.music.constants.SYSTEM_DEFAULT
 import com.zionhuang.music.constants.TopSize
 import com.zionhuang.music.ui.component.EditTextPreference
@@ -64,7 +66,8 @@ fun ContentSettings(
     val (proxyType, onProxyTypeChange) = rememberEnumPreference(key = ProxyTypeKey, defaultValue = Proxy.Type.HTTP)
     val (proxyUrl, onProxyUrlChange) = rememberPreference(key = ProxyUrlKey, defaultValue = "host:port")
     val (lengthTop, onLengthTopChange) = rememberPreference(key = TopSize, defaultValue = "50")
-    val (defaultChip, onDefaultChipChange) = rememberEnumPreference(key = ChipSortTypeKey, defaultValue = LibraryFilter.LIBRARY)
+    val (defaultChip, onDefaultChipChange) = rememberEnumPreference(key = ChipSortTypeKey, defaultValue = LIBRARY)
+    val (quickPicks, onQuickPicksChange) = rememberEnumPreference(key = QuickPicksKey, defaultValue = QUICK_PICKS)
 
 
     Column(
@@ -131,10 +134,6 @@ fun ContentSettings(
             )
         }
 
-        PreferenceGroupTitle(
-            title = "MY TOP"
-        )
-
         EditTextPreference(
             title = { Text(stringResource(R.string.top_length)) },
             value = lengthTop,
@@ -145,11 +144,32 @@ fun ContentSettings(
         )
 
         ListPreference(
-            title = { Text("Change default chip") },
+            title = { Text(stringResource(R.string.default_lib_chips)) },
             selectedValue = defaultChip,
-            values = listOf(LibraryFilter.LIBRARY, LibraryFilter.PLAYLISTS, LibraryFilter.SONGS, LibraryFilter.ALBUMS, LibraryFilter.ARTISTS),
-            valueText = { it.name },
+            values = listOf(LIBRARY, PLAYLISTS, SONGS, ALBUMS, ARTISTS),
+            valueText = {
+                when(it) {
+                    SONGS -> stringResource(R.string.songs)
+                    ARTISTS -> stringResource(R.string.artists)
+                    ALBUMS -> stringResource(R.string.albums)
+                    PLAYLISTS -> stringResource(R.string.playlists)
+                    LIBRARY -> stringResource(R.string.filter_library)
+                }
+            },
             onValueSelected = onDefaultChipChange
+        )
+
+        ListPreference(
+            title = { Text(stringResource(R.string.set_quick_picks)) },
+            selectedValue = quickPicks,
+            values = listOf(QUICK_PICKS, LAST_LISTEN),
+            valueText = {
+                when (it) {
+                    QUICK_PICKS -> stringResource(R.string.quick_picks)
+                    LAST_LISTEN -> stringResource(R.string.last_song_listened)
+                }
+            },
+            onValueSelected = onQuickPicksChange
         )
     }
 
