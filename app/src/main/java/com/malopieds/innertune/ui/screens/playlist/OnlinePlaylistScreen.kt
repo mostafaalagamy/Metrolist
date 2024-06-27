@@ -227,7 +227,8 @@ fun OnlinePlaylistScreen(
                                                         songs = songs,
                                                         coroutineScope = coroutineScope,
                                                         onDismiss = menuState::dismiss,
-                                                        selectAction = { selection = true }
+                                                        selectAction = { selection = true },
+                                                        canSelect = true
                                                     )
                                                 }
                                             }

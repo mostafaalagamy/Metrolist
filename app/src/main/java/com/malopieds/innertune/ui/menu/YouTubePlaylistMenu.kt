@@ -38,6 +38,7 @@ fun YouTubePlaylistMenu(
     coroutineScope: CoroutineScope,
     onDismiss: () -> Unit,
     selectAction: () -> Unit = {},
+    canSelect: Boolean = false,
 ) {
     val context = LocalContext.current
     val database = LocalDatabase.current
@@ -160,12 +161,14 @@ fun YouTubePlaylistMenu(
             onDismiss()
         }
 
-        GridMenuItem(
-            icon = R.drawable.select_all,
-            title = R.string.select
-        ) {
-            onDismiss()
-            selectAction()
+        if (canSelect) {
+            GridMenuItem(
+                icon = R.drawable.select_all,
+                title = R.string.select
+            ) {
+                onDismiss()
+                selectAction()
+            }
         }
     }
 }
