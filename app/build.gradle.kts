@@ -11,11 +11,11 @@ plugins {
 }
 
 android {
-    namespace = "com.zionhuang.music"
+    namespace = "com.malopieds.innertune"
     compileSdk = 34
     buildToolsVersion = "30.0.3"
     defaultConfig {
-        applicationId = "com.zionhuang.music"
+        applicationId = "com.malopieds.innertune"
         minSdk = 24
         targetSdk = 34
         versionCode = 23
