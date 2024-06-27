@@ -291,6 +291,7 @@ fun SelectionMediaMetadataMenu(
             database.query {
                 var position = playlist.songCount
                 songSelection.forEach { song ->
+                    insert(song)
                     insert(
                         PlaylistSongMap(
                             songId = song.id,
