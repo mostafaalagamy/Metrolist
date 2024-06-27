@@ -80,13 +80,14 @@ fun SelectionSongMenu(
     AddToPlaylistDialog(
         isVisible = showChoosePlaylistDialog,
         onAdd = { playlist ->
+            var position = playlist.songCount
             database.query {
                 songSelection.forEach { song ->
                     insert(
                         PlaylistSongMap(
                             songId = song.id,
                             playlistId = playlist.id,
-                            position = playlist.songCount
+                            position = position++
                         )
                     )
                     update(playlist.playlist.copy(lastUpdateTime = LocalDateTime.now()))
@@ -288,12 +289,13 @@ fun SelectionMediaMetadataMenu(
         isVisible = showChoosePlaylistDialog,
         onAdd = { playlist ->
             database.query {
+                var position = playlist.songCount
                 songSelection.forEach { song ->
                     insert(
                         PlaylistSongMap(
                             songId = song.id,
                             playlistId = playlist.id,
-                            position = playlist.songCount
+                            position = position++
                         )
                     )
                     update(playlist.playlist.copy(lastUpdateTime = LocalDateTime.now()))

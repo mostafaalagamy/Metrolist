@@ -118,6 +118,7 @@ fun AlbumMenu(
     AddToPlaylistDialog(
         isVisible = showChoosePlaylistDialog,
         onAdd = { playlist ->
+            var position = playlist.songCount
             database.transaction {
                 songs.map { it.id }
                     .forEach {
@@ -125,7 +126,7 @@ fun AlbumMenu(
                             PlaylistSongMap(
                                 songId = it,
                                 playlistId = playlist.id,
-                                position = playlist.songCount
+                                position = position++
                             )
                         )
                         update(playlist.playlist.copy(lastUpdateTime = LocalDateTime.now()))
