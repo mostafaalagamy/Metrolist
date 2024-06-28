@@ -151,7 +151,7 @@ fun TopPlaylistScreen(
             onDismiss = { showRemoveDownloadDialog = false },
             content = {
                 Text(
-                    text = stringResource(R.string.remove_download_playlist_confirm, "My Top Playlist"),
+                    text = stringResource(R.string.remove_download_playlist_confirm, stringResource(R.string.my_top) + " Playlist"),
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.padding(horizontal = 18.dp)
                 )
@@ -225,7 +225,7 @@ fun TopPlaylistScreen(
                                     verticalArrangement = Arrangement.Center,
                                 ) {
                                     AutoResizeText(
-                                        text = "My Top " + maxSize,
+                                        text = stringResource(R.string.my_top) + " $maxSize",
                                         fontWeight = FontWeight.Bold,
                                         maxLines = 2,
                                         overflow = TextOverflow.Ellipsis,
