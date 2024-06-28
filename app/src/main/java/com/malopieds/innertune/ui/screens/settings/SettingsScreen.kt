@@ -88,7 +88,7 @@ fun SettingsScreen(
                     }
                 },
                 onClick = {
-                    uriHandler.openUri("https://github.com/z-huang/InnerTune/releases/latest")
+                    uriHandler.openUri("https://github.com/Malopieds/InnerTText(une/releases/latest")
                 }
             )
         }

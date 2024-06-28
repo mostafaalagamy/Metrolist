@@ -101,7 +101,7 @@ fun AutoPlaylistScreen(
     val playerConnection = LocalPlayerConnection.current ?: return
     val isPlaying by playerConnection.isPlaying.collectAsState()
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
-    val playlist = if (viewModel.playlist == "liked") "Liked " else "Offline "
+    val playlist = if (viewModel.playlist == "liked") stringResource(R.string.liked) + " " else stringResource(R.string.offline) + " "
 
 
     val songs by viewModel.likedSongs.collectAsState(null)
@@ -385,12 +385,12 @@ fun AutoPlaylistScreen(
                             modifier = Modifier.padding(start = 16.dp)
                         ) {
                             if (selection) {
-                                val count = wrappedSongs?.count { it.isSelected }
-                                Text(text = "$count elements selected", modifier = Modifier.weight(1f))
+                                val count = wrappedSongs?.count { it.isSelected }?: 0
+                                Text(text = pluralStringResource(R.plurals.n_elements, count, count), modifier = Modifier.weight(1f))
                                 IconButton(
                                     onClick = {
                                         if (count == wrappedSongs?.size) {
-                                            wrappedSongs?.forEach { it.isSelected = false }
+                                            wrappedSongs.forEach { it.isSelected = false }
                                         }else {
                                             wrappedSongs?.forEach { it.isSelected = true }
                                         }

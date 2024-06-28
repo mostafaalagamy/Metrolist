@@ -56,6 +56,12 @@
     <!-- Artist screen -->
     <string name="from_your_library">From your library</string>
 
+    <!-- Library -->
+    <string name="liked">Liked</string>
+    <string name="offline">Offline</string>
+    <string name="my_top">My Top</string>
+
+
     <!-- Playlist -->
     <string name="liked_songs">Liked songs</string>
     <string name="downloaded_songs">Downloaded songs</string>
@@ -167,6 +173,10 @@
         <item quantity="one">%d year</item>
         <item quantity="other">%d years</item>
     </plurals>
+    <plurals name="n_elements">
+        <item quantity="one">%d element</item>
+        <item quantity="other">%d elements</item>
+    </plurals>
 
     <!-- Snackbar -->
     <string name="playlist_imported">Playlist imported</string>
@@ -224,6 +234,7 @@
     <string name="content_language">Default content language</string>
     <string name="content_country">Default content country</string>
     <string name="system_default">System default</string>
+    <string name="proxy">Proxy</string>
     <string name="enable_proxy">Enable proxy</string>
     <string name="proxy_type">Proxy type</string>
     <string name="proxy_url">Proxy URL</string>

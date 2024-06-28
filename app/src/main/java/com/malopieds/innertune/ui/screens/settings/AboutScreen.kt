@@ -129,7 +129,7 @@ fun AboutScreen(
         Spacer(Modifier.height(4.dp))
 
         Text(
-            text = "by Zion Huang",
+            text = "by Zion Huang, forked my Malopieds",
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.secondary
         )
@@ -138,28 +138,10 @@ fun AboutScreen(
 
         Row {
             IconButton(
-                onClick = { uriHandler.openUri("https://github.com/z-huang/InnerTune") }
+                onClick = { uriHandler.openUri("https://github.com/Malopieds/InnerTune") }
             ) {
                 Icon(
                     painter = painterResource(R.drawable.github),
-                    contentDescription = null
-                )
-            }
-
-            IconButton(
-                onClick = { uriHandler.openUri("https://liberapay.com/zionhuang") }
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.liberapay),
-                    contentDescription = null
-                )
-            }
-
-            IconButton(
-                onClick = { uriHandler.openUri("https://www.buymeacoffee.com/zionhuang") }
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.buymeacoffee),
                     contentDescription = null
                 )
             }

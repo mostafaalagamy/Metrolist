@@ -45,6 +45,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -288,7 +289,7 @@ fun OnlinePlaylistScreen(
                         ) {
                             if (selection) {
                                 val count = wrappedSongs.count { it.isSelected }
-                                Text(text = "$count elements selected", modifier = Modifier.weight(1f))
+                                Text(text = pluralStringResource(R.plurals.n_elements, count, count), modifier = Modifier.weight(1f))
                                 IconButton(
                                     onClick = {
                                         if (count == wrappedSongs.size) {
@@ -306,7 +307,7 @@ fun OnlinePlaylistScreen(
 
                                 IconButton(
                                     onClick = {
-                                        wrappedSongs.get(0).item.toMediaItem()
+                                        wrappedSongs[0].item.toMediaItem()
                                         menuState.show {
                                             wrappedSongs.filter { it.isSelected }.map { it.item.toMediaItem().metadata!! }
                                                 .let {

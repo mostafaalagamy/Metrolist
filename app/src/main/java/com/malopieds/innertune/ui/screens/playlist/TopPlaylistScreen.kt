@@ -381,12 +381,12 @@ fun TopPlaylistScreen(
                         modifier = Modifier.padding(start = 16.dp)
                     ) {
                         if (selection) {
-                            val count = wrappedSongs?.count { it.isSelected }
-                            Text(text = "$count elements selected", modifier = Modifier.weight(1f))
+                            val count = wrappedSongs?.count { it.isSelected } ?: 0
+                            Text(text = pluralStringResource(R.plurals.n_elements, count, count), modifier = Modifier.weight(1f))
                             IconButton(
                                 onClick = {
                                     if (count == wrappedSongs?.size) {
-                                        wrappedSongs?.forEach { it.isSelected = false }
+                                        wrappedSongs.forEach { it.isSelected = false }
                                     }else {
                                         wrappedSongs?.forEach { it.isSelected = true }
                                     }
@@ -526,7 +526,7 @@ fun TopPlaylistScreen(
         }
 
         TopAppBar(
-            title = { "My Top $maxSize" },
+            title = { Text(stringResource(R.string.my_top) + " $maxSize") },
             navigationIcon = {
                 IconButton(
                     onClick = navController::navigateUp,
