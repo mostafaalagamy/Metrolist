@@ -91,13 +91,13 @@ fun LibraryPlaylistsScreen(
     )
 
     val downloadPlaylist = Playlist(
-        playlist = PlaylistEntity(id = UUID.randomUUID().toString(), name = stringResource(R.string.liked)),
+        playlist = PlaylistEntity(id = UUID.randomUUID().toString(), name = stringResource(R.string.offline)),
         songCount = 0,
         thumbnails = emptyList()
     )
 
     val topPlaylist = Playlist(
-        playlist = PlaylistEntity(id = UUID.randomUUID().toString(), name = stringResource(R.string.liked) + topSize),
+        playlist = PlaylistEntity(id = UUID.randomUUID().toString(), name = stringResource(R.string.liked) + " $topSize"),
         songCount = 0,
         thumbnails = emptyList()
     )
