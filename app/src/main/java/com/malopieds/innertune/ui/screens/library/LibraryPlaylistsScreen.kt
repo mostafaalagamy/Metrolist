@@ -273,9 +273,21 @@ fun LibraryPlaylistsScreen(
                             },
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .clickable {
-                                    navController.navigate("local_playlist/${playlist.id}")
-                                }
+                                .combinedClickable(
+                                    onClick = {
+                                        navController.navigate("local_playlist/${playlist.id}")
+                                    },
+                                    onLongClick = {
+                                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                        menuState.show {
+                                            PlaylistMenu(
+                                                playlist = playlist,
+                                                coroutineScope = coroutineScope,
+                                                onDismiss = menuState::dismiss
+                                            )
+                                        }
+                                    }
+                                )
                                 .animateItemPlacement()
                         )
                     }

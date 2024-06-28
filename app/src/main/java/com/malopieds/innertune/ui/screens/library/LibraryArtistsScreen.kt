@@ -1,7 +1,6 @@
 package com.malopieds.innertune.ui.screens.library
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -165,9 +164,21 @@ fun LibraryArtistsScreen(
                             },
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .clickable {
-                                    navController.navigate("artist/${artist.id}")
-                                }
+                                .combinedClickable(
+                                    onClick = {
+                                        navController.navigate("artist/${artist.id}")
+                                    },
+                                    onLongClick = {
+                                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                        menuState.show {
+                                            ArtistMenu(
+                                                originalArtist = artist,
+                                                coroutineScope = coroutineScope,
+                                                onDismiss = menuState::dismiss
+                                            )
+                                        }
+                                    }
+                                )
                                 .animateItemPlacement(),
                         )
                     }

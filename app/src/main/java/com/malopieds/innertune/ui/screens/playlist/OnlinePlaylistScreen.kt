@@ -2,7 +2,7 @@ package com.malopieds.innertune.ui.screens.playlist
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -43,7 +43,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
@@ -98,6 +100,7 @@ fun OnlinePlaylistScreen(
     val context = LocalContext.current
     val menuState = LocalMenuState.current
     val database = LocalDatabase.current
+    val haptic = LocalHapticFeedback.current
     val playerConnection = LocalPlayerConnection.current ?: return
     val isPlaying by playerConnection.isPlaying.collectAsState()
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
@@ -366,23 +369,35 @@ fun OnlinePlaylistScreen(
                                 }
                             },
                             modifier = Modifier
-                                .clickable {
-                                    if (!selection) {
-                                        if (song.item.id == mediaMetadata?.id) {
-                                            playerConnection.player.togglePlayPause()
-                                        } else {
-                                            playerConnection.playQueue(
-                                                YouTubeQueue(
-                                                    song.item.endpoint
-                                                        ?: WatchEndpoint(videoId = song.item.id),
-                                                    song.item.toMediaMetadata()
+                                .combinedClickable(
+                                    onClick = {
+                                        if (!selection) {
+                                            if (song.item.id == mediaMetadata?.id) {
+                                                playerConnection.player.togglePlayPause()
+                                            } else {
+                                                playerConnection.playQueue(
+                                                    YouTubeQueue(
+                                                        song.item.endpoint
+                                                            ?: WatchEndpoint(videoId = song.item.id),
+                                                        song.item.toMediaMetadata()
+                                                    )
                                                 )
+                                            }
+                                        } else {
+                                            song.isSelected = !song.isSelected
+                                        }
+                                    },
+                                    onLongClick = {
+                                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                        menuState.show {
+                                            YouTubeSongMenu(
+                                                song = song.item,
+                                                navController = navController,
+                                                onDismiss = menuState::dismiss
                                             )
                                         }
-                                    } else {
-                                        song.isSelected = !song.isSelected
                                     }
-                                }
+                                )
                                 .animateItemPlacement()
                         )
                     }
