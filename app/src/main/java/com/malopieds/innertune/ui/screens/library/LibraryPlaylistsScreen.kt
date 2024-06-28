@@ -97,7 +97,7 @@ fun LibraryPlaylistsScreen(
     )
 
     val topPlaylist = Playlist(
-        playlist = PlaylistEntity(id = UUID.randomUUID().toString(), name = stringResource(R.string.liked) + " $topSize"),
+        playlist = PlaylistEntity(id = UUID.randomUUID().toString(), name = stringResource(R.string.my_top) + " $topSize"),
         songCount = 0,
         thumbnails = emptyList()
     )

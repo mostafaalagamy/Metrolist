@@ -53,6 +53,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -112,15 +113,15 @@ inline fun ListItem(
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = if (isActive)
-                modifier
-                    .height(ListItemHeight)
-                    .padding(horizontal = 8.dp)
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(color = MaterialTheme.colorScheme.secondaryContainer)
+            modifier
+                .height(ListItemHeight)
+                .padding(horizontal = 8.dp)
+                .clip(RoundedCornerShape(8.dp))
+                .background(color = MaterialTheme.colorScheme.secondaryContainer)
             else
-                modifier
-            .height(ListItemHeight)
-            .padding(horizontal = 8.dp)
+            modifier
+                .height(ListItemHeight)
+                .padding(horizontal = 8.dp)
     ) {
         Box(
             modifier = Modifier.padding(6.dp),
@@ -905,16 +906,22 @@ fun PlaylistListItem(
     playlist: Playlist,
     modifier: Modifier = Modifier,
     trailingContent: @Composable RowScope.() -> Unit = {},
-    autoPlaylist: Boolean = true,
+    autoPlaylist: Boolean = false,
 ) = ListItem(
     title = playlist.playlist.name,
     subtitle = if (autoPlaylist) "" else pluralStringResource(R.plurals.n_song, playlist.songCount, playlist.songCount),
     thumbnailContent = {
         val painter = when (playlist.playlist.name) {
-            "Liked" -> R.drawable.favorite
-            "Offline" -> R.drawable.offline
-            "My Top 50" -> R.drawable.trending_up
-            else -> R.drawable.queue_music
+            stringResource(R.string.liked) -> R.drawable.favorite
+            stringResource(R.string.offline) -> R.drawable.offline
+            else -> {
+                println(playlist.playlist.name + " " + autoPlaylist)
+                if (autoPlaylist){
+                    R.drawable.trending_up
+                } else {
+                    R.drawable.queue_music
+                }
+            }
         }
         when (playlist.thumbnails.size) {
             0 -> Icon(
@@ -972,10 +979,16 @@ fun PlaylistGridItem(
     badges = badges,
     thumbnailContent = {
         val painter = when (playlist.playlist.name) {
-            "Liked" -> R.drawable.favorite
-            "Offline" -> R.drawable.offline
-            "My Top 50" -> R.drawable.trending_up
-            else -> R.drawable.queue_music
+            stringResource(R.string.liked) -> R.drawable.favorite
+            stringResource(R.string.offline) -> R.drawable.offline
+            else -> {
+                println(playlist.playlist.name + " " + autoPlaylist)
+                if (autoPlaylist){
+                    R.drawable.trending_up
+                } else {
+                    R.drawable.queue_music
+                }
+            }
         }
         val width = maxWidth
         when (playlist.thumbnails.size) {
