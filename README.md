@@ -1,5 +1,5 @@
 <div align="center">
-<img src="https://raw.githubusercontent.com/mostafaalagamy/Metrolist/main/ic_launcher.webp" width="160" height="160" style="display: block; margin: 0 auto"/>
+<img src="https://raw.githubusercontent.com/mostafaalagamy/Metrolist/main/ic_launcher_github.webp" width="160" height="160" style="display: block; margin: 0 auto"/>
 <h1>Metrolist</h1>
 <p>YouTube Music client for Android</p>
 </div>
@@ -13,7 +13,7 @@
 
   <img src="https://github.com/mostafaalagamy/Metrolist/blob/v6.0.0/screenshot_4.jpeg" width="30%" />
   <img src="https://github.com/mostafaalagamy/Metrolist/blob/v6.0.0/screenshot_7.jpeg" width="30%" />
-  <img src="https://github.com/mostafaalagamy/Metrolist/blob/v6.0.0/screenshot_6.jpeg" width="30%" />
+  <img src="https://github.com/mostafaalagamy/Metrolist/blob/v6.0.0/Screenshot_8.jpg" width="30%" />
 </p>
 </div>
 
