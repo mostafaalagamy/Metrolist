@@ -228,7 +228,7 @@ fun SelectionSongMenu(
             }
         }
 
-        if (songPosition != null) {
+        if (songPosition?.size != 0) {
             GridMenuItem(
                 icon = R.drawable.delete,
                 title = R.string.delete
@@ -236,7 +236,7 @@ fun SelectionSongMenu(
                 onDismiss()
                 var i = 0
                 database.query {
-                    songPosition.forEach {cur ->
+                    songPosition?.forEach {cur ->
                         move(cur.playlistId, cur.position - i, Int.MAX_VALUE)
                         delete(cur.copy(position = Int.MAX_VALUE))
                         i++
