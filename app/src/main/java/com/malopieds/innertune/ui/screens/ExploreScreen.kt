@@ -143,6 +143,7 @@ fun ExploreScreen(
                         )
                     }
                 }
+                Spacer(Modifier.height(LocalPlayerAwareWindowInsets.current.asPaddingValues().calculateBottomPadding()))
             }
 
             if (explorePage == null) {
