@@ -36,13 +36,14 @@ A fork of InnerTune, A Material 3 YouTube Music client for Android
 ## Screenshots
 
 <p float="left">
-  <img src="https://raw.githubusercontent.com/Malopieds/InnerTune/dev/fastlane/metadata/android/en-US/images/phoneScreenshots/01.jpg" width="200" />
-  <img src="https://raw.githubusercontent.com/Malopieds/InnerTune/dev/fastlane/metadata/android/en-US/images/phoneScreenshots/02.jpg" width="200" />
-  <img src="https://raw.githubusercontent.com/Malopieds/InnerTune/dev/fastlane/metadata/android/en-US/images/phoneScreenshots/03.jpg" width="200" />
+  <img src="https://raw.githubusercontent.com/Malopieds/InnerTune/dev/fastlane/metadata/android/en-US/images/phoneScreenshots/01.png" width="200" />
+  <img src="https://raw.githubusercontent.com/Malopieds/InnerTune/dev/fastlane/metadata/android/en-US/images/phoneScreenshots/02.png" width="200" />
+  <img src="https://raw.githubusercontent.com/Malopieds/InnerTune/dev/fastlane/metadata/android/en-US/images/phoneScreenshots/03.png" width="200" />
 </p>
 <p float="left">
-  <img src="https://raw.githubusercontent.com/Malopieds/InnerTune/dev/fastlane/metadata/android/en-US/images/phoneScreenshots/04.jpg" width="200" />
-  <img src="https://raw.githubusercontent.com/Malopieds/InnerTune/dev/fastlane/metadata/android/en-US/images/phoneScreenshots/05.jpg" width="200" />
+  <img src="https://raw.githubusercontent.com/Malopieds/InnerTune/dev/fastlane/metadata/android/en-US/images/phoneScreenshots/04.png" width="200" />
+  <img src="https://raw.githubusercontent.com/Malopieds/InnerTune/dev/fastlane/metadata/android/en-US/images/phoneScreenshots/05.png" width="200" />
+  <img src="https://raw.githubusercontent.com/Malopieds/InnerTune/dev/fastlane/metadata/android/en-US/images/phoneScreenshots/06.png" width="200" />
 </p>
 
 > **Warning**

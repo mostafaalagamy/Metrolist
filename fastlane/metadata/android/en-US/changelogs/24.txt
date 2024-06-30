@@ -1,0 +1,11 @@
+This is a fork of InnerTune, it will be installed as a different app !
+
+- Improved Player UI
+- Keep Listening feature
+- Forgotten favorites feature
+- YouTube Music home playlists
+- Revamp of library
+- Fix YouTube Music API
+- Quick picks based on last song played
+- Multiple select, in playlist, albums and queue
+- Logged YouTube Music to Home Screen
