@@ -101,7 +101,7 @@ fun AutoPlaylistScreen(
     val playerConnection = LocalPlayerConnection.current ?: return
     val isPlaying by playerConnection.isPlaying.collectAsState()
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
-    val playlist = if (viewModel.playlist == "liked") stringResource(R.string.liked) + " " else stringResource(R.string.offline) + " "
+    val playlist = if (viewModel.playlist == "liked") stringResource(R.string.liked) else stringResource(R.string.offline)
 
 
     val songs by viewModel.likedSongs.collectAsState(null)
@@ -156,7 +156,7 @@ fun AutoPlaylistScreen(
             onDismiss = { showRemoveDownloadDialog = false },
             content = {
                 Text(
-                    text = stringResource(R.string.remove_download_playlist_confirm, playlist + "Playlist"),
+                    text = stringResource(R.string.remove_download_playlist_confirm, playlist),
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.padding(horizontal = 18.dp)
                 )
@@ -359,7 +359,7 @@ fun AutoPlaylistScreen(
                                     onClick = {
                                         playerConnection.playQueue(
                                             ListQueue(
-                                                title = playlist + "Playlist",
+                                                title = playlist,
                                                 items = songs!!.shuffled().map { it.toMediaItem() }
                                             )
                                         )
@@ -499,7 +499,7 @@ fun AutoPlaylistScreen(
                                             } else {
                                                 playerConnection.playQueue(
                                                     ListQueue(
-                                                        title = playlist + "Playlist",
+                                                        title = playlist,
                                                         items = songs!!.map { it.toMediaItem() },
                                                         startIndex = index
                                                     )
@@ -527,7 +527,7 @@ fun AutoPlaylistScreen(
         }
 
         TopAppBar(
-            title = { playlist + "Playlist" },
+            title = { playlist },
             navigationIcon = {
                 com.malopieds.innertune.ui.component.IconButton(
                     onClick = navController::navigateUp,

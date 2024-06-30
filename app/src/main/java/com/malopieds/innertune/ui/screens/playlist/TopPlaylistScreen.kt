@@ -115,6 +115,7 @@ fun TopPlaylistScreen(
     }
 
     val sortType by viewModel.topPeriod.collectAsState()
+    val name = stringResource(R.string.my_top) + " $maxSize"
 
     val downloadUtil = LocalDownloadUtil.current
     var downloadState by remember {
@@ -151,7 +152,7 @@ fun TopPlaylistScreen(
             onDismiss = { showRemoveDownloadDialog = false },
             content = {
                 Text(
-                    text = stringResource(R.string.remove_download_playlist_confirm, stringResource(R.string.my_top) + " Playlist"),
+                    text = stringResource(R.string.remove_download_playlist_confirm, name),
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.padding(horizontal = 18.dp)
                 )
@@ -225,7 +226,7 @@ fun TopPlaylistScreen(
                                     verticalArrangement = Arrangement.Center,
                                 ) {
                                     AutoResizeText(
-                                        text = stringResource(R.string.my_top) + " $maxSize",
+                                        text = name,
                                         fontWeight = FontWeight.Bold,
                                         maxLines = 2,
                                         overflow = TextOverflow.Ellipsis,
@@ -354,7 +355,7 @@ fun TopPlaylistScreen(
                                     onClick = {
                                         playerConnection.playQueue(
                                             ListQueue(
-                                                title = "My Top",
+                                                title = name,
                                                 items = songs!!.shuffled().map { it.toMediaItem() }
                                             )
                                         )
@@ -498,7 +499,7 @@ fun TopPlaylistScreen(
                                             } else {
                                                 playerConnection.playQueue(
                                                     ListQueue(
-                                                        title = "My Top $maxSize",
+                                                        title = name,
                                                         items = songs!!.map { it.toMediaItem() },
                                                         startIndex = index
                                                     )
@@ -526,7 +527,7 @@ fun TopPlaylistScreen(
         }
 
         TopAppBar(
-            title = { Text(stringResource(R.string.my_top) + " $maxSize") },
+            title = { "My Top" },
             navigationIcon = {
                 IconButton(
                     onClick = navController::navigateUp,
