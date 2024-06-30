@@ -23,6 +23,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import com.malopieds.innertube.models.AlbumItem
 import com.malopieds.innertube.models.Artist
 import com.malopieds.innertube.models.ArtistItem
 import com.malopieds.innertube.models.PlaylistItem
@@ -438,6 +439,8 @@ fun HomeScreen(
                                                                 )
                                                             }
                                                         }
+                                                        is AlbumItem -> navController.navigate("album/${item.id}")
+
                                                         else -> navController.navigate("artist/${item.id}")
                                                     }
 
@@ -462,6 +465,14 @@ fun HomeScreen(
                                                             is SongItem -> {
                                                                 YouTubeSongMenu(
                                                                     song = item,
+                                                                    navController = navController,
+                                                                    onDismiss = menuState::dismiss
+                                                                )
+                                                            }
+
+                                                            is AlbumItem -> {
+                                                                YouTubeAlbumMenu(
+                                                                    albumItem = item,
                                                                     navController = navController,
                                                                     onDismiss = menuState::dismiss
                                                                 )
@@ -737,6 +748,8 @@ fun HomeScreen(
                                                                 )
                                                             }
                                                         }
+                                                        is AlbumItem -> navController.navigate("album/${item.id}")
+
                                                         else -> navController.navigate("artist/${item.id}")
                                                     }
 
@@ -761,6 +774,14 @@ fun HomeScreen(
                                                             is SongItem -> {
                                                                 YouTubeSongMenu(
                                                                     song = item,
+                                                                    navController = navController,
+                                                                    onDismiss = menuState::dismiss
+                                                                )
+                                                            }
+
+                                                            is AlbumItem -> {
+                                                                YouTubeAlbumMenu(
+                                                                    albumItem = item,
                                                                     navController = navController,
                                                                     onDismiss = menuState::dismiss
                                                                 )
@@ -959,6 +980,7 @@ fun HomeScreen(
                                                                 )
                                                             }
                                                         }
+                                                        is AlbumItem -> navController.navigate("album/${item.id}")
 
                                                         else -> navController.navigate("artist/${item.id}")
                                                     }
@@ -984,6 +1006,14 @@ fun HomeScreen(
                                                             is SongItem -> {
                                                                 YouTubeSongMenu(
                                                                     song = item,
+                                                                    navController = navController,
+                                                                    onDismiss = menuState::dismiss
+                                                                )
+                                                            }
+
+                                                            is AlbumItem -> {
+                                                                YouTubeAlbumMenu(
+                                                                    albumItem = item,
                                                                     navController = navController,
                                                                     onDismiss = menuState::dismiss
                                                                 )
