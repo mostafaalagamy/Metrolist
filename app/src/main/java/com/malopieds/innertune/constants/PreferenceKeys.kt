@@ -35,6 +35,7 @@ val MaxSongCacheSizeKey = intPreferencesKey("maxSongCacheSize")
 val PauseListenHistoryKey = booleanPreferencesKey("pauseListenHistory")
 val PauseSearchHistoryKey = booleanPreferencesKey("pauseSearchHistory")
 val EnableKugouKey = booleanPreferencesKey("enableKugou")
+val EnableLrcLibKey = booleanPreferencesKey("enableLrclib")
 
 val ChipSortTypeKey = stringPreferencesKey("chipSortType")
 val SongSortTypeKey = stringPreferencesKey("songSortType")
@@ -58,6 +59,7 @@ val PlaylistViewTypeKey = stringPreferencesKey("playlistViewType")
 
 val PlaylistEditLockKey = booleanPreferencesKey("playlistEditLock")
 val QuickPicksKey = stringPreferencesKey("discover")
+val PreferredLyricsProviderKey = stringPreferencesKey("lyricsProvider")
 
 enum class LibraryViewType {
     LIST, GRID;
@@ -111,6 +113,10 @@ enum class MyTopFilter {
 
 enum class QuickPicks {
     QUICK_PICKS, LAST_LISTEN
+}
+
+enum class PreferredLyricsProvider {
+    KUGOU, LRCLIB
 }
 
 val TopSize = stringPreferencesKey("topSize")

@@ -2,16 +2,32 @@ package com.malopieds.innertune.lyrics
 
 import android.content.Context
 import android.util.LruCache
+import com.malopieds.innertune.constants.PreferredLyricsProvider
+import com.malopieds.innertune.constants.PreferredLyricsProviderKey
 import com.malopieds.innertune.db.entities.LyricsEntity.Companion.LYRICS_NOT_FOUND
+import com.malopieds.innertune.extensions.toEnum
 import com.malopieds.innertune.models.MediaMetadata
+import com.malopieds.innertune.utils.dataStore
 import com.malopieds.innertune.utils.reportException
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class LyricsHelper @Inject constructor(
     @ApplicationContext private val context: Context,
 ) {
-    private val lyricsProviders = listOf(LrcLibLyricsProvider,KuGouLyricsProvider, YouTubeSubtitleLyricsProvider, YouTubeLyricsProvider)
+    private var lyricsProviders = listOf(LrcLibLyricsProvider,KuGouLyricsProvider, YouTubeSubtitleLyricsProvider, YouTubeLyricsProvider)
+    val preferred = context.dataStore.data.map {
+        it[PreferredLyricsProviderKey].toEnum(PreferredLyricsProvider.LRCLIB)
+    }.distinctUntilChanged()
+        .map {
+            lyricsProviders = if (it == PreferredLyricsProvider.LRCLIB) {
+                listOf(LrcLibLyricsProvider,KuGouLyricsProvider, YouTubeSubtitleLyricsProvider, YouTubeLyricsProvider)
+            } else {
+                listOf(KuGouLyricsProvider, LrcLibLyricsProvider, YouTubeSubtitleLyricsProvider, YouTubeLyricsProvider)
+            }
+        }
     private val cache = LruCache<String, List<LyricsResult>>(MAX_CACHE_SIZE)
 
     suspend fun getLyrics(mediaMetadata: MediaMetadata): String {
