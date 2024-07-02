@@ -1,12 +1,15 @@
 package com.malopieds.innertune.ui.menu
 
+import android.annotation.SuppressLint
 import android.content.Intent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -29,8 +32,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -50,6 +55,7 @@ import com.malopieds.innertune.constants.ListItemHeight
 import com.malopieds.innertune.constants.ListThumbnailSize
 import com.malopieds.innertune.constants.ThumbnailCornerRadius
 import com.malopieds.innertune.db.entities.PlaylistSongMap
+import com.malopieds.innertune.db.entities.Song
 import com.malopieds.innertune.db.entities.SongEntity
 import com.malopieds.innertune.extensions.toMediaItem
 import com.malopieds.innertune.models.MediaMetadata
@@ -65,6 +71,7 @@ import com.malopieds.innertune.utils.joinByBullet
 import com.malopieds.innertune.utils.makeTimeString
 import java.time.LocalDateTime
 
+@SuppressLint("MutableCollectionMutableState")
 @Composable
 fun YouTubeSongMenu(
     song: SongItem,
@@ -88,23 +95,86 @@ fun YouTubeSongMenu(
         mutableStateOf(false)
     }
 
+    var showErrorPlaylistAddDialog by rememberSaveable {
+        mutableStateOf(false)
+    }
+
+    val notAddedList by remember {
+        mutableStateOf(mutableListOf<MediaMetadata>())
+    }
+
     AddToPlaylistDialog(
         isVisible = showChoosePlaylistDialog,
         onAdd = { playlist ->
             database.transaction {
                 insert(song.toMediaMetadata())
-                insert(
-                    PlaylistSongMap(
-                        songId = song.id,
-                        playlistId = playlist.id,
-                        position = playlist.songCount
+                if (checkInPlaylist(playlist.id, song.id) == 0) {
+                    insert(
+                        PlaylistSongMap(
+                            songId = song.id,
+                            playlistId = playlist.id,
+                            position = playlist.songCount
+                        )
                     )
-                )
-                update(playlist.playlist.copy(lastUpdateTime = LocalDateTime.now()))
+                    update(playlist.playlist.copy(lastUpdateTime = LocalDateTime.now()))
+                    onDismiss()
+                } else {
+                    notAddedList.add(song.toMediaMetadata())
+                    showErrorPlaylistAddDialog = true
+                }
             }
         },
         onDismiss = { showChoosePlaylistDialog = false }
     )
+
+    if (showErrorPlaylistAddDialog) {
+        ListDialog(
+            onDismiss = {
+                showErrorPlaylistAddDialog = false
+                onDismiss()
+            }
+        ) {
+            item {
+                ListItem(
+                    title = stringResource(R.string.already_in_playlist),
+                    thumbnailContent = {
+                        Image(
+                            painter = painterResource(R.drawable.close),
+                            contentDescription = null,
+                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
+                            modifier = Modifier.size(ListThumbnailSize)
+                        )
+                    },
+                    modifier = Modifier
+                        .clickable { showErrorPlaylistAddDialog = false }
+                )
+            }
+
+            items(notAddedList) { song ->
+                ListItem(
+                    title = song.title,
+                    thumbnailContent = {
+                        Box(
+                            contentAlignment = Alignment.Center,
+                            modifier = Modifier.size(ListThumbnailSize)
+                        ) {
+                            AsyncImage(
+                                model = song.thumbnailUrl,
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .clip(RoundedCornerShape(ThumbnailCornerRadius))
+                            )
+                        }
+                    },
+                    subtitle = joinByBullet(
+                        song.artists.joinToString { it.name },
+                        makeTimeString(song.duration * 1000L)
+                    ),
+                )
+            }
+        }
+    }
 
     var showSelectArtistDialog by rememberSaveable {
         mutableStateOf(false)

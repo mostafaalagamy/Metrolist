@@ -140,6 +140,7 @@
     <string name="create_playlist">Create playlist</string>
     <string name="playlist_name">Playlist name</string>
     <string name="error_playlist_name_empty">Playlist name cannot be empty.</string>
+    <string name="already_in_playlist">Already in playlist:</string>
 
     <string name="edit_artist">Edit artist</string>
     <string name="artist_name">Artist name</string>

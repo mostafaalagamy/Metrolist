@@ -1,6 +1,7 @@
 package com.malopieds.innertune.ui.menu
 
 import android.content.Intent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -28,6 +29,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -60,6 +62,7 @@ import com.malopieds.innertune.ui.component.DownloadGridMenu
 import com.malopieds.innertune.ui.component.GridMenu
 import com.malopieds.innertune.ui.component.GridMenuItem
 import com.malopieds.innertune.ui.component.ListDialog
+import com.malopieds.innertune.ui.component.ListItem
 import com.malopieds.innertune.ui.component.SongListItem
 import com.malopieds.innertune.ui.component.TextFieldDialog
 import java.time.LocalDateTime
@@ -101,22 +104,63 @@ fun SongMenu(
         mutableStateOf(false)
     }
 
+    var showErrorPlaylistAddDialog by rememberSaveable {
+        mutableStateOf(false)
+    }
+
     AddToPlaylistDialog(
         isVisible = showChoosePlaylistDialog,
         onAdd = { playlist ->
-            database.query {
-                insert(
-                    PlaylistSongMap(
-                        songId = song.id,
-                        playlistId = playlist.id,
-                        position = playlist.songCount
-                    )
-                )
-                update(playlist.playlist.copy(lastUpdateTime = LocalDateTime.now()))
-            }
+                database.query {
+                    if (checkInPlaylist(playlist.id, song.id) == 0) {
+                        insert(
+                            PlaylistSongMap(
+                                songId = song.id,
+                                playlistId = playlist.id,
+                                position = playlist.songCount
+                            )
+                        )
+                        update(playlist.playlist.copy(lastUpdateTime = LocalDateTime.now()))
+                        onDismiss()
+                    } else {
+                        showErrorPlaylistAddDialog = true
+                    }
+                }
         },
-        onDismiss = { showChoosePlaylistDialog = false }
+        onDismiss = {
+            showChoosePlaylistDialog = false
+        }
     )
+
+
+    if (showErrorPlaylistAddDialog) {
+        ListDialog(
+            onDismiss = {
+                showErrorPlaylistAddDialog = false
+                onDismiss()
+            }
+        ) {
+            item {
+                ListItem(
+                    title = stringResource(R.string.already_in_playlist),
+                    thumbnailContent = {
+                        Image(
+                            painter = painterResource(R.drawable.close),
+                            contentDescription = null,
+                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
+                            modifier = Modifier.size(ListThumbnailSize)
+                        )
+                    },
+                    modifier = Modifier
+                        .clickable { showErrorPlaylistAddDialog = false }
+                )
+            }
+
+            items(listOf(song)) { song ->
+                SongListItem(song = song)
+            }
+        }
+    }
 
     var showSelectArtistDialog by rememberSaveable {
         mutableStateOf(false)

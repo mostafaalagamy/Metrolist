@@ -9,6 +9,7 @@ media3 = "1.1.1"
 room = "2.5.2"
 hilt = "2.46.1"
 ktor = "2.2.2"
+uiAndroid = "1.6.8"
 
 [libraries]
 guava = { group = "com.google.guava", name = "guava", version = "31.0.1-android" }
@@ -87,6 +88,7 @@ firebase-perf-plugin = { module = "com.google.firebase:perf-plugin", version = "
 
 mlkit-language-id = { group = "com.google.mlkit", name = "language-id", version = "17.0.4" }
 mlkit-translate = { group = "com.google.mlkit", name = "translate", version = "17.0.1" }
+ui-android = { group = "androidx.compose.ui", name = "ui-android", version.ref = "uiAndroid" }
 
 [plugins]
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
