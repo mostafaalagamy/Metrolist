@@ -4,9 +4,11 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.malopieds.innertube.YouTube
+import com.malopieds.innertube.models.AlbumItem
 import com.malopieds.innertune.db.MusicDatabase
 import com.malopieds.innertune.utils.reportException
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
@@ -21,16 +23,17 @@ class AlbumViewModel @Inject constructor(
     val albumId = savedStateHandle.get<String>("albumId")!!
     val albumWithSongs = database.albumWithSongs(albumId)
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+    var otherVersions = MutableStateFlow<List<AlbumItem>>(emptyList())
 
     init {
         viewModelScope.launch {
             val album = database.album(albumId).first()
-            if (album == null || album.album.songCount == 0) {
                 YouTube.album(albumId).onSuccess {
                     database.transaction {
                         if (album == null) insert(it)
                         else update(album.album, it)
                     }
+                    otherVersions.value = it.album.otherVersions
                 }.onFailure {
                     reportException(it)
                     if (it.message?.contains("NOT_FOUND") == true) {
@@ -39,7 +42,6 @@ class AlbumViewModel @Inject constructor(
                         }
                     }
                 }
-            }
         }
     }
 }

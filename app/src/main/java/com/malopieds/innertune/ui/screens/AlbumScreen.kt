@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
@@ -35,6 +37,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -76,7 +79,9 @@ import com.malopieds.innertune.ui.component.AutoResizeText
 import com.malopieds.innertune.ui.component.FontSizeRange
 import com.malopieds.innertune.ui.component.IconButton
 import com.malopieds.innertune.ui.component.LocalMenuState
+import com.malopieds.innertune.ui.component.NavigationTitle
 import com.malopieds.innertune.ui.component.SongListItem
+import com.malopieds.innertune.ui.component.YouTubeGridItem
 import com.malopieds.innertune.ui.component.shimmer.ButtonPlaceholder
 import com.malopieds.innertune.ui.component.shimmer.ListItemPlaceHolder
 import com.malopieds.innertune.ui.component.shimmer.ShimmerHost
@@ -84,6 +89,7 @@ import com.malopieds.innertune.ui.component.shimmer.TextPlaceholder
 import com.malopieds.innertune.ui.menu.AlbumMenu
 import com.malopieds.innertune.ui.menu.SelectionSongMenu
 import com.malopieds.innertune.ui.menu.SongMenu
+import com.malopieds.innertune.ui.menu.YouTubeAlbumMenu
 import com.malopieds.innertune.ui.utils.ItemWrapper
 import com.malopieds.innertune.ui.utils.backToMain
 import com.malopieds.innertune.viewmodels.AlbumViewModel
@@ -99,11 +105,13 @@ fun AlbumScreen(
     val menuState = LocalMenuState.current
     val database = LocalDatabase.current
     val haptic = LocalHapticFeedback.current
+    val coroutineScope = rememberCoroutineScope()
     val playerConnection = LocalPlayerConnection.current ?: return
     val isPlaying by playerConnection.isPlaying.collectAsState()
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
 
     val albumWithSongs by viewModel.albumWithSongs.collectAsState()
+    val otherVersions by viewModel.otherVersions.collectAsState()
 
     val wrappedSongs = albumWithSongs?.songs?.map { item -> ItemWrapper(item) }?.toMutableList()
     var selection by remember {
@@ -463,6 +471,44 @@ fun AlbumScreen(
                                 }
                             )
                     )
+                }
+            }
+
+            if (otherVersions.isNotEmpty()) {
+                item {
+                    NavigationTitle(
+                        title = "Other versions",
+                    )
+                }
+                item {
+                    LazyRow {
+                        items(
+                            items = otherVersions,
+                            key = { it.id }
+                        ) { item ->
+                            YouTubeGridItem(
+                                item = item,
+                                isActive = mediaMetadata?.album?.id == item.id,
+                                isPlaying = isPlaying,
+                                coroutineScope = coroutineScope,
+                                modifier = Modifier
+                                    .combinedClickable(
+                                        onClick = { navController.navigate("album/${item.id}") },
+                                        onLongClick = {
+                                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                            menuState.show {
+                                                YouTubeAlbumMenu(
+                                                    albumItem = item,
+                                                    navController = navController,
+                                                    onDismiss = menuState::dismiss
+                                                )
+                                            }
+                                        }
+                                    )
+                                    .animateItemPlacement()
+                            )
+                        }
+                    }
                 }
             }
         } else {
