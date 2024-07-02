@@ -45,7 +45,9 @@ import com.malopieds.innertune.models.toMediaMetadata
 import com.malopieds.innertune.ui.utils.resize
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import java.text.Collator
 import java.time.LocalDateTime
+import java.util.Locale
 
 @Dao
 interface DatabaseDao {
@@ -68,13 +70,16 @@ interface DatabaseDao {
     fun songs(sortType: SongSortType, descending: Boolean) =
         when (sortType) {
             SongSortType.CREATE_DATE -> songsByCreateDateAsc()
-            SongSortType.NAME -> songsByNameAsc()
-            SongSortType.ARTIST -> songsByRowIdAsc().map { songs ->
-                songs.sortedBy { song ->
-                    song.artists.joinToString(separator = "") { it.name }
-                }
+            SongSortType.NAME -> songsByNameAsc().map { songs ->
+                val collator = Collator.getInstance(Locale.getDefault())
+                collator.strength = Collator.PRIMARY
+                songs.sortedWith(compareBy(collator) { it.song.title })
             }
-
+            SongSortType.ARTIST -> songsByRowIdAsc().map { songs ->
+                val collator = Collator.getInstance(Locale.getDefault())
+                collator.strength = Collator.PRIMARY
+                songs.sortedWith(compareBy(collator) { song -> song.artists.joinToString("") { it.name } })
+            }
             SongSortType.PLAY_TIME -> songsByPlayTimeAsc()
         }.map { it.reversed(descending) }
 
@@ -97,13 +102,16 @@ interface DatabaseDao {
     fun likedSongs(sortType: SongSortType, descending: Boolean) =
         when (sortType) {
             SongSortType.CREATE_DATE -> likedSongsByCreateDateAsc()
-            SongSortType.NAME -> likedSongsByNameAsc()
-            SongSortType.ARTIST -> likedSongsByRowIdAsc().map { songs ->
-                songs.sortedBy { song ->
-                    song.artists.joinToString(separator = "") { it.name }
-                }
+            SongSortType.NAME -> likedSongsByNameAsc().map { songs ->
+                val collator = Collator.getInstance(Locale.getDefault())
+                collator.strength = Collator.PRIMARY
+                songs.sortedWith(compareBy(collator) { it.song.title })
             }
-
+            SongSortType.ARTIST -> likedSongsByRowIdAsc().map { songs ->
+                val collator = Collator.getInstance(Locale.getDefault())
+                collator.strength = Collator.PRIMARY
+                songs.sortedWith(compareBy(collator) { song -> song.artists.joinToString("") { it.name } })
+            }
             SongSortType.PLAY_TIME -> likedSongsByPlayTimeAsc()
         }.map { it.reversed(descending) }
 
@@ -133,7 +141,11 @@ interface DatabaseDao {
     fun artistSongs(artistId: String, sortType: ArtistSongSortType, descending: Boolean) =
         when (sortType) {
             ArtistSongSortType.CREATE_DATE -> artistSongsByCreateDateAsc(artistId)
-            ArtistSongSortType.NAME -> artistSongsByNameAsc(artistId)
+            ArtistSongSortType.NAME -> artistSongsByNameAsc(artistId).map{ artistSongs ->
+                val collator = Collator.getInstance(Locale.getDefault())
+                collator.strength = Collator.PRIMARY
+                artistSongs.sortedWith(compareBy(collator) { it.song.title })
+            }
             ArtistSongSortType.PLAY_TIME -> artistSongsByPlayTimeAsc(artistId)
         }.map { it.reversed(descending) }
 
@@ -420,7 +432,11 @@ interface DatabaseDao {
     fun artists(sortType: ArtistSortType, descending: Boolean) =
         when (sortType) {
             ArtistSortType.CREATE_DATE -> artistsByCreateDateAsc()
-            ArtistSortType.NAME -> artistsByNameAsc()
+            ArtistSortType.NAME -> artistsByNameAsc().map { artist ->
+                val collator = Collator.getInstance(Locale.getDefault())
+                collator.strength = Collator.PRIMARY
+                artist.sortedWith(compareBy(collator) { it.artist.name })
+            }
             ArtistSortType.SONG_COUNT -> artistsBySongCountAsc()
             ArtistSortType.PLAY_TIME -> artistsByPlayTimeAsc()
         }.map { artists ->
@@ -432,7 +448,11 @@ interface DatabaseDao {
     fun artistsBookmarked(sortType: ArtistSortType, descending: Boolean) =
         when (sortType) {
             ArtistSortType.CREATE_DATE -> artistsBookmarkedByCreateDateAsc()
-            ArtistSortType.NAME -> artistsBookmarkedByNameAsc()
+            ArtistSortType.NAME -> artistsBookmarkedByNameAsc().map { artist ->
+                val collator = Collator.getInstance(Locale.getDefault())
+                collator.strength = Collator.PRIMARY
+                artist.sortedWith(compareBy(collator) { it.artist.name })
+            }
             ArtistSortType.SONG_COUNT -> artistsBookmarkedBySongCountAsc()
             ArtistSortType.PLAY_TIME -> artistsBookmarkedByPlayTimeAsc()
         }.map { artists ->
@@ -515,13 +535,16 @@ interface DatabaseDao {
     fun albums(sortType: AlbumSortType, descending: Boolean) =
         when (sortType) {
             AlbumSortType.CREATE_DATE -> albumsByCreateDateAsc()
-            AlbumSortType.NAME -> albumsByNameAsc()
-            AlbumSortType.ARTIST -> albumsByCreateDateAsc().map { albums ->
-                albums.sortedBy { album ->
-                    album.artists.joinToString(separator = "") { it.name }
-                }
+            AlbumSortType.NAME -> albumsByNameAsc().map { albums ->
+                val collator = Collator.getInstance(Locale.getDefault())
+                collator.strength = Collator.PRIMARY
+                albums.sortedWith(compareBy(collator) { it.album.title })
             }
-
+            AlbumSortType.ARTIST -> albumsByCreateDateAsc().map { albums ->
+                val collator = Collator.getInstance(Locale.getDefault())
+                collator.strength = Collator.PRIMARY
+                albums.sortedWith(compareBy(collator) { album -> album.artists.joinToString("") { it.name } })
+            }
             AlbumSortType.YEAR -> albumsByYearAsc()
             AlbumSortType.SONG_COUNT -> albumsBySongCountAsc()
             AlbumSortType.LENGTH -> albumsByLengthAsc()
@@ -531,13 +554,16 @@ interface DatabaseDao {
     fun albumsLiked(sortType: AlbumSortType, descending: Boolean) =
         when (sortType) {
             AlbumSortType.CREATE_DATE -> albumsLikedByCreateDateAsc()
-            AlbumSortType.NAME -> albumsLikedByNameAsc()
-            AlbumSortType.ARTIST -> albumsLikedByCreateDateAsc().map { albums ->
-                albums.sortedBy { album ->
-                    album.artists.joinToString(separator = "") { it.name }
-                }
+            AlbumSortType.NAME -> albumsLikedByNameAsc().map { albums ->
+                val collator = Collator.getInstance(Locale.getDefault())
+                collator.strength = Collator.PRIMARY
+                albums.sortedWith(compareBy(collator) { it.album.title })
             }
-
+            AlbumSortType.ARTIST -> albumsLikedByCreateDateAsc().map { albums ->
+                val collator = Collator.getInstance(Locale.getDefault())
+                collator.strength = Collator.PRIMARY
+                albums.sortedWith(compareBy(collator) { album -> album.artists.joinToString("") { it.name } })
+            }
             AlbumSortType.YEAR -> albumsLikedByYearAsc()
             AlbumSortType.SONG_COUNT -> albumsLikedBySongCountAsc()
             AlbumSortType.LENGTH -> albumsLikedByLengthAsc()
@@ -571,7 +597,11 @@ interface DatabaseDao {
     fun playlists(sortType: PlaylistSortType, descending: Boolean) =
         when (sortType) {
             PlaylistSortType.CREATE_DATE -> playlistsByCreateDateAsc()
-            PlaylistSortType.NAME -> playlistsByNameAsc()
+            PlaylistSortType.NAME -> playlistsByNameAsc().map { playlists ->
+                val collator = Collator.getInstance(Locale.getDefault())
+                collator.strength = Collator.PRIMARY
+                playlists.sortedWith(compareBy(collator) { it.playlist.name })
+            }
             PlaylistSortType.SONG_COUNT -> playlistsBySongCountAsc()
             PlaylistSortType.LAST_UPDATED -> playlistsByUpdatedDateAsc()
         }.map { it.reversed(descending) }

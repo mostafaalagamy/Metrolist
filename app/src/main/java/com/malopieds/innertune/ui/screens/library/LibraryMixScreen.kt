@@ -63,7 +63,9 @@ import com.malopieds.innertune.ui.menu.PlaylistMenu
 import com.malopieds.innertune.utils.rememberEnumPreference
 import com.malopieds.innertune.utils.rememberPreference
 import com.malopieds.innertune.viewmodels.LibraryMixViewModel
+import java.text.Collator
 import java.time.LocalDateTime
+import java.util.Locale
 import java.util.UUID
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -107,31 +109,34 @@ fun LibraryMixScreen(
     val playlist = viewModel.playlists.collectAsState()
 
     var allItems = albums.value + artist.value + playlist.value
-    allItems = allItems.sortedBy { item ->
-        when (sortType) {
-            MixSortType.CREATE_DATE -> when (item) {
+    val collator = Collator.getInstance(Locale.getDefault())
+    collator.strength = Collator.PRIMARY
+    allItems = when(sortType) {
+        MixSortType.CREATE_DATE -> allItems.sortedBy { item ->
+            when (item) {
                 is Album -> item.album.bookmarkedAt
                 is Artist -> item.artist.bookmarkedAt
                 is Playlist -> item.playlist.createdAt
                 else -> LocalDateTime.now()
             }
-
-            MixSortType.LAST_UPDATED -> when(item) {
-                is Album -> item.album.lastUpdateTime
-                is Artist -> item.artist.lastUpdateTime
-                is Playlist -> item.playlist.lastUpdateTime
-                else -> LocalDateTime.now()
-            }
-
-            else -> when (item) {
+        }
+        MixSortType.NAME -> allItems.sortedWith(compareBy(collator) { item ->
+            when (item) {
                 is Album -> item.album.title
                 is Artist -> item.artist.name
                 is Playlist -> item.playlist.name
                 else -> ""
             }
-        }.toString()
-    }
-    allItems = allItems.reversed(sortDescending)
+        })
+        MixSortType.LAST_UPDATED -> allItems.sortedBy { item ->
+            when(item) {
+                is Album -> item.album.lastUpdateTime
+                is Artist -> item.artist.lastUpdateTime
+                is Playlist -> item.playlist.lastUpdateTime
+                else -> LocalDateTime.now()
+            }
+        }
+    }.reversed(sortDescending)
 
     val coroutineScope = rememberCoroutineScope()
 
