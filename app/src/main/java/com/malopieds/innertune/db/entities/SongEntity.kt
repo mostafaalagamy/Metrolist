@@ -27,6 +27,9 @@ data class SongEntity(
     val inLibrary: LocalDateTime? = null,
 ) {
     fun toggleLike() = copy(
-        liked = !liked
+        liked = !liked,
+        inLibrary = if (!liked) inLibrary ?: LocalDateTime.now() else inLibrary
     )
+
+    fun toggleLibrary() = copy(inLibrary = if (inLibrary == null) LocalDateTime.now() else null)
 }
