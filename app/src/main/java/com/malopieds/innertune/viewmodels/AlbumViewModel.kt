@@ -28,20 +28,20 @@ class AlbumViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             val album = database.album(albumId).first()
-                YouTube.album(albumId).onSuccess {
-                    database.transaction {
-                        if (album == null) insert(it)
-                        else update(album.album, it)
-                    }
-                    otherVersions.value = it.album.otherVersions
-                }.onFailure {
-                    reportException(it)
-                    if (it.message?.contains("NOT_FOUND") == true) {
-                        database.query {
-                            album?.album?.let(::delete)
-                        }
+            YouTube.album(albumId).onSuccess {
+                otherVersions.value = it.album.otherVersions
+                database.transaction {
+                    if (album == null) insert(it)
+                    else update(album.album, it)
+                }
+            }.onFailure {
+                reportException(it)
+                if (it.message?.contains("NOT_FOUND") == true) {
+                    database.query {
+                        album?.album?.let(::delete)
                     }
                 }
+            }
         }
     }
 }
