@@ -57,6 +57,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
@@ -182,9 +184,11 @@ fun Queue(
         )
     }
 
+    val mainColor = MaterialTheme.colorScheme.surfaceColorAtElevation(NavigationBarDefaults.Elevation)
+
     BottomSheet(
         state = state,
-        backgroundColor = MaterialTheme.colorScheme.surfaceColorAtElevation(NavigationBarDefaults.Elevation),
+        brushBackgroundColor = Brush.verticalGradient(listOf(mainColor, mainColor)),
         modifier = modifier,
         collapsedContent = {
             Row(
@@ -192,6 +196,10 @@ fun Queue(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .fillMaxSize()
+                    .background(Brush.verticalGradient(
+                        listOf(Color.White.copy(alpha = 0f),
+                        Color.White.copy(alpha = 0f))
+                    ))
                     .windowInsetsPadding(
                         WindowInsets.systemBars
                             .only(WindowInsetsSides.Bottom + WindowInsetsSides.Horizontal)

@@ -61,6 +61,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalClipboardManager
@@ -88,12 +90,14 @@ import com.malopieds.innertune.LocalDatabase
 import com.malopieds.innertune.LocalDownloadUtil
 import com.malopieds.innertune.LocalPlayerConnection
 import com.malopieds.innertune.R
+import com.malopieds.innertune.constants.DarkModeKey
 import com.malopieds.innertune.constants.ListThumbnailSize
 import com.malopieds.innertune.constants.PlayerHorizontalPadding
 import com.malopieds.innertune.constants.QueuePeekHeight
 import com.malopieds.innertune.constants.ShowLyricsKey
 import com.malopieds.innertune.constants.ThumbnailCornerRadius
 import com.malopieds.innertune.db.entities.PlaylistSongMap
+import com.malopieds.innertune.extensions.toEnum
 import com.malopieds.innertune.extensions.togglePlayPause
 import com.malopieds.innertune.models.MediaMetadata
 import com.malopieds.innertune.playback.ExoDownloadService
@@ -106,6 +110,9 @@ import com.malopieds.innertune.ui.component.ResizableIconButton
 import com.malopieds.innertune.ui.component.rememberBottomSheetState
 import com.malopieds.innertune.ui.menu.AddToPlaylistDialog
 import com.malopieds.innertune.ui.menu.PlayerMenu
+import com.malopieds.innertune.ui.screens.settings.DarkMode
+import com.malopieds.innertune.utils.dataStore
+import com.malopieds.innertune.utils.get
 import com.malopieds.innertune.utils.joinByBullet
 import com.malopieds.innertune.utils.makeTimeString
 import com.malopieds.innertune.utils.rememberPreference
@@ -395,10 +402,28 @@ fun BottomSheetPlayer(
         expandedBound = state.expandedBound,
     )
 
+    val backgroundColor = MaterialTheme.colorScheme.background
+    val darkMode = context.dataStore[DarkModeKey].toEnum(DarkMode.ON)
+
+    val brushColors = when (darkMode) {
+        DarkMode.OFF -> {
+            Color.White
+        }
+        DarkMode.ON -> {
+            Color.Black
+        }
+        else -> {
+            backgroundColor
+        }
+    }
+
     BottomSheet(
         state = state,
         modifier = modifier,
-        backgroundColor = MaterialTheme.colorScheme.surfaceColorAtElevation(NavigationBarDefaults.Elevation),
+        brushBackgroundColor = Brush.verticalGradient(
+            0.3f to MaterialTheme.colorScheme.surfaceColorAtElevation(NavigationBarDefaults.Elevation),
+            1f to brushColors
+        ),
         onDismiss = {
             playerConnection.player.stop()
             playerConnection.player.clearMediaItems()
