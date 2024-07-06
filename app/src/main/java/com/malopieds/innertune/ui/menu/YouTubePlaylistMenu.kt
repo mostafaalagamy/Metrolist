@@ -81,42 +81,47 @@ fun YouTubePlaylistMenu(
         mutableStateOf(mutableListOf<MediaMetadata>())
     }
 
-
     AddToPlaylistDialog(
         isVisible = showChoosePlaylistDialog,
         onAdd = { targetPlaylist ->
             coroutineScope.launch(Dispatchers.IO) {
                 var position = targetPlaylist.songCount
-                songs.ifEmpty {
-                    withContext(Dispatchers.IO) {
-                        YouTube.playlist(playlist.id).completed().getOrNull()?.songs.orEmpty()
-                    }
-                }.let { songs ->
-                    database.transaction {
-                        songs
-                            .map { it.toMediaMetadata() }
-                            .onEach(::insert)
-                            .forEach { song ->
-                                if (checkInPlaylist(playlist.id, song.id) == 0) {
-                                    insert(
-                                        PlaylistSongMap(
-                                            songId = song.id,
-                                            playlistId = targetPlaylist.id,
-                                            position = position++
+                songs
+                    .ifEmpty {
+                        withContext(Dispatchers.IO) {
+                            YouTube
+                                .playlist(playlist.id)
+                                .completed()
+                                .getOrNull()
+                                ?.songs
+                                .orEmpty()
+                        }
+                    }.let { songs ->
+                        database.transaction {
+                            songs
+                                .map { it.toMediaMetadata() }
+                                .onEach(::insert)
+                                .forEach { song ->
+                                    if (checkInPlaylist(playlist.id, song.id) == 0) {
+                                        insert(
+                                            PlaylistSongMap(
+                                                songId = song.id,
+                                                playlistId = targetPlaylist.id,
+                                                position = position++,
+                                            ),
                                         )
-                                    )
-                                    update(targetPlaylist.playlist.copy(lastUpdateTime = LocalDateTime.now()))
-                                    onDismiss()
-                                } else {
-                                    notAddedList.add(song)
-                                    showErrorPlaylistAddDialog = true
+                                        update(targetPlaylist.playlist.copy(lastUpdateTime = LocalDateTime.now()))
+                                        onDismiss()
+                                    } else {
+                                        notAddedList.add(song)
+                                        showErrorPlaylistAddDialog = true
+                                    }
                                 }
-                            }
+                        }
                     }
-                }
             }
         },
-        onDismiss = { showChoosePlaylistDialog = false }
+        onDismiss = { showChoosePlaylistDialog = false },
     )
 
     if (showErrorPlaylistAddDialog) {
@@ -124,7 +129,7 @@ fun YouTubePlaylistMenu(
             onDismiss = {
                 showErrorPlaylistAddDialog = false
                 onDismiss()
-            }
+            },
         ) {
             item {
                 ListItem(
@@ -134,11 +139,12 @@ fun YouTubePlaylistMenu(
                             painter = painterResource(R.drawable.close),
                             contentDescription = null,
                             colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
-                            modifier = Modifier.size(ListThumbnailSize)
+                            modifier = Modifier.size(ListThumbnailSize),
                         )
                     },
-                    modifier = Modifier
-                        .clickable { showErrorPlaylistAddDialog = false }
+                    modifier =
+                        Modifier
+                            .clickable { showErrorPlaylistAddDialog = false },
                 )
             }
 
@@ -148,38 +154,41 @@ fun YouTubePlaylistMenu(
                     thumbnailContent = {
                         Box(
                             contentAlignment = Alignment.Center,
-                            modifier = Modifier.size(ListThumbnailSize)
+                            modifier = Modifier.size(ListThumbnailSize),
                         ) {
                             AsyncImage(
                                 model = song.thumbnailUrl,
                                 contentDescription = null,
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .clip(RoundedCornerShape(ThumbnailCornerRadius))
+                                modifier =
+                                    Modifier
+                                        .fillMaxSize()
+                                        .clip(RoundedCornerShape(ThumbnailCornerRadius)),
                             )
                         }
                     },
-                    subtitle = joinByBullet(
-                        song.artists.joinToString { it.name },
-                        makeTimeString(song.duration * 1000L)
-                    ),
+                    subtitle =
+                        joinByBullet(
+                            song.artists.joinToString { it.name },
+                            makeTimeString(song.duration * 1000L),
+                        ),
                 )
             }
         }
     }
 
     GridMenu(
-        contentPadding = PaddingValues(
-            start = 8.dp,
-            top = 8.dp,
-            end = 8.dp,
-            bottom = 8.dp + WindowInsets.systemBars.asPaddingValues().calculateBottomPadding()
-        )
+        contentPadding =
+            PaddingValues(
+                start = 8.dp,
+                top = 8.dp,
+                end = 8.dp,
+                bottom = 8.dp + WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
+            ),
     ) {
         playlist.playEndpoint?.let {
             GridMenuItem(
                 icon = R.drawable.play,
-                title = R.string.play
+                title = R.string.play,
             ) {
                 playerConnection.playQueue(YouTubeQueue(it))
                 onDismiss()
@@ -187,7 +196,7 @@ fun YouTubePlaylistMenu(
         }
         GridMenuItem(
             icon = R.drawable.shuffle,
-            title = R.string.shuffle
+            title = R.string.shuffle,
         ) {
             playerConnection.playQueue(YouTubeQueue(playlist.shuffleEndpoint))
             onDismiss()
@@ -195,7 +204,7 @@ fun YouTubePlaylistMenu(
         playlist.radioEndpoint?.let { radioEndpoint ->
             GridMenuItem(
                 icon = R.drawable.radio,
-                title = R.string.start_radio
+                title = R.string.start_radio,
             ) {
                 playerConnection.playQueue(YouTubeQueue(radioEndpoint))
                 onDismiss()
@@ -203,49 +212,62 @@ fun YouTubePlaylistMenu(
         }
         GridMenuItem(
             icon = R.drawable.playlist_play,
-            title = R.string.play_next
+            title = R.string.play_next,
         ) {
             coroutineScope.launch {
-                songs.ifEmpty {
-                    withContext(Dispatchers.IO) {
-                        YouTube.playlist(playlist.id).completed().getOrNull()?.songs.orEmpty()
+                songs
+                    .ifEmpty {
+                        withContext(Dispatchers.IO) {
+                            YouTube
+                                .playlist(playlist.id)
+                                .completed()
+                                .getOrNull()
+                                ?.songs
+                                .orEmpty()
+                        }
+                    }.let { songs ->
+                        playerConnection.playNext(songs.map { it.toMediaItem() })
                     }
-                }.let { songs ->
-                    playerConnection.playNext(songs.map { it.toMediaItem() })
-                }
             }
             onDismiss()
         }
         GridMenuItem(
             icon = R.drawable.queue_music,
-            title = R.string.add_to_queue
+            title = R.string.add_to_queue,
         ) {
             coroutineScope.launch {
-                songs.ifEmpty {
-                    withContext(Dispatchers.IO) {
-                        YouTube.playlist(playlist.id).completed().getOrNull()?.songs.orEmpty()
+                songs
+                    .ifEmpty {
+                        withContext(Dispatchers.IO) {
+                            YouTube
+                                .playlist(playlist.id)
+                                .completed()
+                                .getOrNull()
+                                ?.songs
+                                .orEmpty()
+                        }
+                    }.let { songs ->
+                        playerConnection.addToQueue(songs.map { it.toMediaItem() })
                     }
-                }.let { songs ->
-                    playerConnection.addToQueue(songs.map { it.toMediaItem() })
-                }
             }
             onDismiss()
         }
         GridMenuItem(
             icon = R.drawable.playlist_add,
-            title = R.string.add_to_playlist
+            title = R.string.add_to_playlist,
         ) {
             showChoosePlaylistDialog = true
         }
         GridMenuItem(
             icon = R.drawable.share,
-            title = R.string.share
+            title = R.string.share,
         ) {
-            val intent = Intent().apply {
-                action = Intent.ACTION_SEND
-                type = "text/plain"
-                putExtra(Intent.EXTRA_TEXT, playlist.shareLink)
-            }
+            val intent =
+                Intent().apply {
+                    action = Intent.ACTION_SEND
+                    type = "text/plain"
+                    putExtra(Intent.EXTRA_TEXT, playlist.shareLink)
+                }
             context.startActivity(Intent.createChooser(intent, null))
             onDismiss()
         }
@@ -253,7 +275,7 @@ fun YouTubePlaylistMenu(
         if (canSelect) {
             GridMenuItem(
                 icon = R.drawable.select_all,
-                title = R.string.select
+                title = R.string.select,
             ) {
                 onDismiss()
                 selectAction()

@@ -15,11 +15,12 @@ data class Playlist(
         entityColumn = "id",
         parentColumn = "id",
         projection = ["thumbnailUrl"],
-        associateBy = Junction(
-            value = PlaylistSongMapPreview::class,
-            parentColumn = "playlistId",
-            entityColumn = "songId"
-        )
+        associateBy =
+            Junction(
+                value = PlaylistSongMapPreview::class,
+                parentColumn = "playlistId",
+                entityColumn = "songId",
+            ),
     )
     val thumbnails: List<String>,
 ) : LocalItem() {

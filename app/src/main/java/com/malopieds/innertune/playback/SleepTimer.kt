@@ -30,11 +30,12 @@ class SleepTimer(
             pauseWhenSongEnd = true
         } else {
             triggerTime = System.currentTimeMillis() + minute.minutes.inWholeMilliseconds
-            sleepTimerJob = scope.launch {
-                delay(minute.minutes)
-                player.pause()
-                triggerTime = -1L
-            }
+            sleepTimerJob =
+                scope.launch {
+                    delay(minute.minutes)
+                    player.pause()
+                    triggerTime = -1L
+                }
         }
     }
 
@@ -45,14 +46,19 @@ class SleepTimer(
         triggerTime = -1L
     }
 
-    override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
+    override fun onMediaItemTransition(
+        mediaItem: MediaItem?,
+        reason: Int,
+    ) {
         if (pauseWhenSongEnd) {
             pauseWhenSongEnd = false
             player.pause()
         }
     }
 
-    override fun onPlaybackStateChanged(@Player.State playbackState: Int) {
+    override fun onPlaybackStateChanged(
+        @Player.State playbackState: Int,
+    ) {
         if (playbackState == Player.STATE_ENDED && pauseWhenSongEnd) {
             pauseWhenSongEnd = false
             player.pause()

@@ -56,7 +56,6 @@ import com.malopieds.innertune.ui.component.ListDialog
 import com.malopieds.innertune.ui.component.TextFieldDialog
 import com.malopieds.innertune.viewmodels.LyricsMenuViewModel
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LyricsMenu(
@@ -84,11 +83,11 @@ fun LyricsMenu(
                     upsert(
                         LyricsEntity(
                             id = mediaMetadataProvider().id,
-                            lyrics = it
-                        )
+                            lyrics = it,
+                        ),
                     )
                 }
-            }
+            },
         )
     }
 
@@ -99,23 +98,26 @@ fun LyricsMenu(
         mutableStateOf(false)
     }
 
-    val searchMediaMetadata = remember(showSearchDialog) {
-        mediaMetadataProvider()
-    }
-    val (titleField, onTitleFieldChange) = rememberSaveable(showSearchDialog, stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(
-            TextFieldValue(
-                text = mediaMetadataProvider().title
+    val searchMediaMetadata =
+        remember(showSearchDialog) {
+            mediaMetadataProvider()
+        }
+    val (titleField, onTitleFieldChange) =
+        rememberSaveable(showSearchDialog, stateSaver = TextFieldValue.Saver) {
+            mutableStateOf(
+                TextFieldValue(
+                    text = mediaMetadataProvider().title,
+                ),
             )
-        )
-    }
-    val (artistField, onArtistFieldChange) = rememberSaveable(showSearchDialog, stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(
-            TextFieldValue(
-                text = mediaMetadataProvider().artists.joinToString { it.name }
+        }
+    val (artistField, onArtistFieldChange) =
+        rememberSaveable(showSearchDialog, stateSaver = TextFieldValue.Saver) {
+            mutableStateOf(
+                TextFieldValue(
+                    text = mediaMetadataProvider().artists.joinToString { it.name },
+                ),
             )
-        )
-    }
+        }
 
     if (showSearchDialog) {
         DefaultDialog(
@@ -125,7 +127,7 @@ fun LyricsMenu(
             title = { Text(stringResource(R.string.search_lyrics)) },
             buttons = {
                 TextButton(
-                    onClick = { showSearchDialog = false }
+                    onClick = { showSearchDialog = false },
                 ) {
                     Text(stringResource(android.R.string.cancel))
                 }
@@ -140,11 +142,11 @@ fun LyricsMenu(
                             context.startActivity(
                                 Intent(Intent.ACTION_WEB_SEARCH).apply {
                                     putExtra(SearchManager.QUERY, "${artistField.text} ${titleField.text} lyrics")
-                                }
+                                },
                             )
                         } catch (_: Exception) {
                         }
-                    }
+                    },
                 ) {
                     Text(stringResource(R.string.search_online))
                 }
@@ -155,17 +157,17 @@ fun LyricsMenu(
                     onClick = {
                         viewModel.search(searchMediaMetadata.id, titleField.text, artistField.text, searchMediaMetadata.duration)
                         showSearchResultDialog = true
-                    }
+                    },
                 ) {
                     Text(stringResource(android.R.string.ok))
                 }
-            }
+            },
         ) {
             OutlinedTextField(
                 value = titleField,
                 onValueChange = onTitleFieldChange,
                 singleLine = true,
-                label = { Text(stringResource(R.string.song_title)) }
+                label = { Text(stringResource(R.string.song_title)) },
             )
 
             Spacer(Modifier.height(12.dp))
@@ -174,7 +176,7 @@ fun LyricsMenu(
                 value = artistField,
                 onValueChange = onArtistFieldChange,
                 singleLine = true,
-                label = { Text(stringResource(R.string.song_artists)) }
+                label = { Text(stringResource(R.string.song_artists)) },
             )
         }
     }
@@ -188,55 +190,56 @@ fun LyricsMenu(
         }
 
         ListDialog(
-            onDismiss = { showSearchResultDialog = false }
+            onDismiss = { showSearchResultDialog = false },
         ) {
             itemsIndexed(results) { index, result ->
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable {
-                            onDismiss()
-                            viewModel.cancelSearch()
-                            database.query {
-                                upsert(
-                                    LyricsEntity(
-                                        id = searchMediaMetadata.id,
-                                        lyrics = result.lyrics
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                onDismiss()
+                                viewModel.cancelSearch()
+                                database.query {
+                                    upsert(
+                                        LyricsEntity(
+                                            id = searchMediaMetadata.id,
+                                            lyrics = result.lyrics,
+                                        ),
                                     )
-                                )
-                            }
-                        }
-                        .padding(12.dp)
-                        .animateContentSize()
+                                }
+                            }.padding(12.dp)
+                            .animateContentSize(),
                 ) {
                     Column(
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.weight(1f),
                     ) {
                         Text(
                             text = result.lyrics,
                             style = MaterialTheme.typography.bodyMedium,
                             maxLines = if (index == expandedItemIndex) Int.MAX_VALUE else 2,
                             overflow = TextOverflow.Ellipsis,
-                            modifier = Modifier.padding(bottom = 4.dp)
+                            modifier = Modifier.padding(bottom = 4.dp),
                         )
 
                         Row(
-                            verticalAlignment = Alignment.CenterVertically
+                            verticalAlignment = Alignment.CenterVertically,
                         ) {
                             Text(
                                 text = result.providerName,
                                 style = MaterialTheme.typography.labelMedium,
                                 color = MaterialTheme.colorScheme.secondary,
-                                maxLines = 1
+                                maxLines = 1,
                             )
                             if (result.lyrics.startsWith("[")) {
                                 Icon(
                                     painter = painterResource(R.drawable.sync),
                                     contentDescription = null,
                                     tint = MaterialTheme.colorScheme.secondary,
-                                    modifier = Modifier
-                                        .padding(start = 4.dp)
-                                        .size(18.dp)
+                                    modifier =
+                                        Modifier
+                                            .padding(start = 4.dp)
+                                            .size(18.dp),
                                 )
                             }
                         }
@@ -245,11 +248,11 @@ fun LyricsMenu(
                     IconButton(
                         onClick = {
                             expandedItemIndex = if (expandedItemIndex == index) -1 else index
-                        }
+                        },
                     ) {
                         Icon(
                             painter = painterResource(if (index == expandedItemIndex) R.drawable.expand_less else R.drawable.expand_more),
-                            contentDescription = null
+                            contentDescription = null,
                         )
                     }
                 }
@@ -259,7 +262,7 @@ fun LyricsMenu(
                 item {
                     Box(
                         contentAlignment = Alignment.Center,
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
                     ) {
                         CircularProgressIndicator()
                     }
@@ -271,8 +274,9 @@ fun LyricsMenu(
                     Text(
                         text = context.getString(R.string.lyrics_not_found),
                         textAlign = TextAlign.Center,
-                        modifier = Modifier
-                            .fillMaxWidth()
+                        modifier =
+                            Modifier
+                                .fillMaxWidth(),
                     )
                 }
             }
@@ -280,22 +284,23 @@ fun LyricsMenu(
     }
 
     GridMenu(
-        contentPadding = PaddingValues(
-            start = 8.dp,
-            top = 8.dp,
-            end = 8.dp,
-            bottom = 8.dp + WindowInsets.systemBars.asPaddingValues().calculateBottomPadding()
-        )
+        contentPadding =
+            PaddingValues(
+                start = 8.dp,
+                top = 8.dp,
+                end = 8.dp,
+                bottom = 8.dp + WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
+            ),
     ) {
         GridMenuItem(
             icon = R.drawable.edit,
-            title = R.string.edit
+            title = R.string.edit,
         ) {
             showEditDialog = true
         }
         GridMenuItem(
             icon = R.drawable.cached,
-            title = R.string.refetch
+            title = R.string.refetch,
         ) {
             onDismiss()
             viewModel.refetchLyrics(mediaMetadataProvider(), lyricsProvider())

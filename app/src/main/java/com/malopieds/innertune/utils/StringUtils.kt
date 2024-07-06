@@ -25,6 +25,7 @@ fun md5(str: String): String {
 }
 
 fun joinByBullet(vararg str: String?) =
-    str.filterNot {
-        it.isNullOrEmpty()
-    }.joinToString(separator = " • ")
+    str
+        .filterNot {
+            it.isNullOrEmpty()
+        }.joinToString(separator = " • ")

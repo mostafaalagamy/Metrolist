@@ -51,31 +51,32 @@ fun AccountScreen(
 
     LazyVerticalGrid(
         columns = GridCells.Adaptive(minSize = GridThumbnailHeight + 24.dp),
-        contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues()
+        contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues(),
     ) {
         items(
             items = playlists.orEmpty(),
-            key = { it.id }
+            key = { it.id },
         ) { item ->
             YouTubeGridItem(
                 item = item,
                 fillMaxWidth = true,
-                modifier = Modifier
-                    .combinedClickable(
-                        onClick = {
-                            navController.navigate("online_playlist/${item.id}")
-                        },
-                        onLongClick = {
-                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                            menuState.show {
-                                YouTubePlaylistMenu(
-                                    playlist = item,
-                                    coroutineScope = coroutineScope,
-                                    onDismiss = menuState::dismiss
-                                )
-                            }
-                        }
-                    )
+                modifier =
+                    Modifier
+                        .combinedClickable(
+                            onClick = {
+                                navController.navigate("online_playlist/${item.id}")
+                            },
+                            onLongClick = {
+                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                menuState.show {
+                                    YouTubePlaylistMenu(
+                                        playlist = item,
+                                        coroutineScope = coroutineScope,
+                                        onDismiss = menuState::dismiss,
+                                    )
+                                }
+                            },
+                        ),
             )
         }
 
@@ -93,14 +94,14 @@ fun AccountScreen(
         navigationIcon = {
             IconButton(
                 onClick = navController::navigateUp,
-                onLongClick = navController::backToMain
+                onLongClick = navController::backToMain,
             ) {
                 Icon(
                     painterResource(R.drawable.arrow_back),
-                    contentDescription = null
+                    contentDescription = null,
                 )
             }
         },
-        scrollBehavior = scrollBehavior
+        scrollBehavior = scrollBehavior,
     )
 }

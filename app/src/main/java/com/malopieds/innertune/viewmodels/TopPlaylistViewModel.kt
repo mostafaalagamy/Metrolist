@@ -16,19 +16,21 @@ import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @HiltViewModel
-class TopPlaylistViewModel  @Inject constructor(
-    @ApplicationContext context: Context,
-    database: MusicDatabase,
-    savedStateHandle: SavedStateHandle,
-) : ViewModel() {
-    val top = savedStateHandle.get<String>("top")!!
+class TopPlaylistViewModel
+    @Inject
+    constructor(
+        @ApplicationContext context: Context,
+        database: MusicDatabase,
+        savedStateHandle: SavedStateHandle,
+    ) : ViewModel() {
+        val top = savedStateHandle.get<String>("top")!!
 
-    val topPeriod = MutableStateFlow(MyTopFilter.ALL_TIME)
+        val topPeriod = MutableStateFlow(MyTopFilter.ALL_TIME)
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val topSongs = topPeriod.flatMapLatest { period ->
-        database.mostPlayedSongs(period.toTimeMillis(), top.toInt())
-    }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
-
-}
-
+        @OptIn(ExperimentalCoroutinesApi::class)
+        val topSongs =
+            topPeriod
+                .flatMapLatest { period ->
+                    database.mostPlayedSongs(period.toTimeMillis(), top.toInt())
+                }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
+    }

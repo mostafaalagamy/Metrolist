@@ -5,11 +5,14 @@ import java.net.InetSocketAddress
 import java.net.InetSocketAddress.createUnresolved
 
 inline fun <reified T : Enum<T>> String?.toEnum(defaultValue: T): T =
-    if (this == null) defaultValue
-    else try {
-        enumValueOf(this)
-    } catch (e: IllegalArgumentException) {
+    if (this == null) {
         defaultValue
+    } else {
+        try {
+            enumValueOf(this)
+        } catch (e: IllegalArgumentException) {
+            defaultValue
+        }
     }
 
 fun String.toSQLiteQuery(): SimpleSQLiteQuery = SimpleSQLiteQuery(this)

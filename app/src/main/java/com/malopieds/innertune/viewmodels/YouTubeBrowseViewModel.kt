@@ -12,21 +12,25 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class YouTubeBrowseViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle,
-) : ViewModel() {
-    private val browseId = savedStateHandle.get<String>("browseId")!!
-    private val params = savedStateHandle.get<String>("params")
+class YouTubeBrowseViewModel
+    @Inject
+    constructor(
+        savedStateHandle: SavedStateHandle,
+    ) : ViewModel() {
+        private val browseId = savedStateHandle.get<String>("browseId")!!
+        private val params = savedStateHandle.get<String>("params")
 
-    val result = MutableStateFlow<BrowseResult?>(null)
+        val result = MutableStateFlow<BrowseResult?>(null)
 
-    init {
-        viewModelScope.launch {
-            YouTube.browse(browseId, params).onSuccess {
-                result.value = it
-            }.onFailure {
-                reportException(it)
+        init {
+            viewModelScope.launch {
+                YouTube
+                    .browse(browseId, params)
+                    .onSuccess {
+                        result.value = it
+                    }.onFailure {
+                        reportException(it)
+                    }
             }
         }
     }
-}

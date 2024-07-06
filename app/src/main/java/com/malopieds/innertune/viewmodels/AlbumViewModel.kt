@@ -16,32 +16,41 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class AlbumViewModel @Inject constructor(
-    database: MusicDatabase,
-    savedStateHandle: SavedStateHandle,
-) : ViewModel() {
-    val albumId = savedStateHandle.get<String>("albumId")!!
-    val albumWithSongs = database.albumWithSongs(albumId)
-        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
-    var otherVersions = MutableStateFlow<List<AlbumItem>>(emptyList())
+class AlbumViewModel
+    @Inject
+    constructor(
+        database: MusicDatabase,
+        savedStateHandle: SavedStateHandle,
+    ) : ViewModel() {
+        val albumId = savedStateHandle.get<String>("albumId")!!
+        val albumWithSongs =
+            database
+                .albumWithSongs(albumId)
+                .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+        var otherVersions = MutableStateFlow<List<AlbumItem>>(emptyList())
 
-    init {
-        viewModelScope.launch {
-            val album = database.album(albumId).first()
-            YouTube.album(albumId).onSuccess {
-                otherVersions.value = it.album.otherVersions
-                database.transaction {
-                    if (album == null) insert(it)
-                    else update(album.album, it)
-                }
-            }.onFailure {
-                reportException(it)
-                if (it.message?.contains("NOT_FOUND") == true) {
-                    database.query {
-                        album?.album?.let(::delete)
+        init {
+            viewModelScope.launch {
+                val album = database.album(albumId).first()
+                YouTube
+                    .album(albumId)
+                    .onSuccess {
+                        otherVersions.value = it.album.otherVersions
+                        database.transaction {
+                            if (album == null) {
+                                insert(it)
+                            } else {
+                                update(album.album, it)
+                            }
+                        }
+                    }.onFailure {
+                        reportException(it)
+                        if (it.message?.contains("NOT_FOUND") == true) {
+                            database.query {
+                                album?.album?.let(::delete)
+                            }
+                        }
                     }
-                }
             }
         }
     }
-}

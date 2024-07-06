@@ -11,7 +11,7 @@ data class EventWithSong(
     @Relation(
         entity = SongEntity::class,
         parentColumn = "songId",
-        entityColumn = "id"
+        entityColumn = "id",
     )
     val song: Song,
 )

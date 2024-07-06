@@ -43,13 +43,13 @@ fun AppearanceSettings(
     Column(
         Modifier
             .windowInsetsPadding(LocalPlayerAwareWindowInsets.current)
-            .verticalScroll(rememberScrollState())
+            .verticalScroll(rememberScrollState()),
     ) {
         SwitchPreference(
             title = { Text(stringResource(R.string.enable_dynamic_theme)) },
             icon = { Icon(painterResource(R.drawable.palette), null) },
             checked = dynamicTheme,
-            onCheckedChange = onDynamicThemeChange
+            onCheckedChange = onDynamicThemeChange,
         )
         EnumListPreference(
             title = { Text(stringResource(R.string.dark_theme)) },
@@ -62,13 +62,13 @@ fun AppearanceSettings(
                     DarkMode.OFF -> stringResource(R.string.dark_theme_off)
                     DarkMode.AUTO -> stringResource(R.string.dark_theme_follow_system)
                 }
-            }
+            },
         )
         SwitchPreference(
             title = { Text(stringResource(R.string.pure_black)) },
             icon = { Icon(painterResource(R.drawable.contrast), null) },
             checked = pureBlack,
-            onCheckedChange = onPureBlackChange
+            onCheckedChange = onPureBlackChange,
         )
         EnumListPreference(
             title = { Text(stringResource(R.string.default_open_tab)) },
@@ -81,7 +81,7 @@ fun AppearanceSettings(
                     NavigationTab.EXPLORE -> stringResource(R.string.explore)
                     NavigationTab.LIBRARY -> stringResource(R.string.filter_library)
                 }
-            }
+            },
         )
         EnumListPreference(
             title = { Text(stringResource(R.string.lyrics_text_position)) },
@@ -94,7 +94,7 @@ fun AppearanceSettings(
                     LyricsPosition.CENTER -> stringResource(R.string.center)
                     LyricsPosition.RIGHT -> stringResource(R.string.right)
                 }
-            }
+            },
         )
     }
 
@@ -103,26 +103,32 @@ fun AppearanceSettings(
         navigationIcon = {
             IconButton(
                 onClick = navController::navigateUp,
-                onLongClick = navController::backToMain
+                onLongClick = navController::backToMain,
             ) {
                 Icon(
                     painterResource(R.drawable.arrow_back),
-                    contentDescription = null
+                    contentDescription = null,
                 )
             }
         },
-        scrollBehavior = scrollBehavior
+        scrollBehavior = scrollBehavior,
     )
 }
 
 enum class DarkMode {
-    ON, OFF, AUTO
+    ON,
+    OFF,
+    AUTO,
 }
 
 enum class NavigationTab {
-    HOME, EXPLORE, LIBRARY
+    HOME,
+    EXPLORE,
+    LIBRARY,
 }
 
 enum class LyricsPosition {
-    LEFT, CENTER, RIGHT
+    LEFT,
+    CENTER,
+    RIGHT,
 }

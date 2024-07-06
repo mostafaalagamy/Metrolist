@@ -68,34 +68,39 @@ fun StatsScreen(
     val coroutineScope = rememberCoroutineScope()
 
     LazyColumn(
-        contentPadding = LocalPlayerAwareWindowInsets.current.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom).asPaddingValues(),
-        modifier = Modifier.windowInsetsPadding(LocalPlayerAwareWindowInsets.current.only(WindowInsetsSides.Top))
+        contentPadding =
+            LocalPlayerAwareWindowInsets.current
+                .only(
+                    WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom,
+                ).asPaddingValues(),
+        modifier = Modifier.windowInsetsPadding(LocalPlayerAwareWindowInsets.current.only(WindowInsetsSides.Top)),
     ) {
         item {
             ChipsRow(
-                chips = listOf(
-                    StatPeriod.`1_WEEK` to pluralStringResource(R.plurals.n_week, 1, 1),
-                    StatPeriod.`1_MONTH` to pluralStringResource(R.plurals.n_month, 1, 1),
-                    StatPeriod.`3_MONTH` to pluralStringResource(R.plurals.n_month, 3, 3),
-                    StatPeriod.`6_MONTH` to pluralStringResource(R.plurals.n_month, 6, 6),
-                    StatPeriod.`1_YEAR` to pluralStringResource(R.plurals.n_year, 1, 1),
-                    StatPeriod.ALL to stringResource(R.string.filter_all)
-                ),
+                chips =
+                    listOf(
+                        StatPeriod.WEEK_1 to pluralStringResource(R.plurals.n_week, 1, 1),
+                        StatPeriod.MONTH_1 to pluralStringResource(R.plurals.n_month, 1, 1),
+                        StatPeriod.MONTH_3 to pluralStringResource(R.plurals.n_month, 3, 3),
+                        StatPeriod.MONTH_6 to pluralStringResource(R.plurals.n_month, 6, 6),
+                        StatPeriod.YEAR_1 to pluralStringResource(R.plurals.n_year, 1, 1),
+                        StatPeriod.ALL to stringResource(R.string.filter_all),
+                    ),
                 currentValue = statPeriod,
-                onValueUpdate = { viewModel.statPeriod.value = it }
+                onValueUpdate = { viewModel.statPeriod.value = it },
             )
         }
 
         item(key = "mostPlayedSongs") {
             NavigationTitle(
                 title = stringResource(R.string.most_played_songs),
-                modifier = Modifier.animateItemPlacement()
+                modifier = Modifier.animateItemPlacement(),
             )
         }
 
         items(
             items = mostPlayedSongs,
-            key = { it.id }
+            key = { it.id },
         ) { song ->
             SongListItem(
                 song = song,
@@ -108,80 +113,80 @@ fun StatsScreen(
                                 SongMenu(
                                     originalSong = song,
                                     navController = navController,
-                                    onDismiss = menuState::dismiss
-                                )
-                            }
-                        }
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.more_vert),
-                            contentDescription = null
-                        )
-                    }
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .combinedClickable (
-                        onClick = {
-                            if (song.id == mediaMetadata?.id) {
-                                playerConnection.player.togglePlayPause()
-                            } else {
-                                playerConnection.playQueue(
-                                    YouTubeQueue(
-                                        endpoint = WatchEndpoint(song.id),
-                                        preloadItem = song.toMediaMetadata()
-                                    )
+                                    onDismiss = menuState::dismiss,
                                 )
                             }
                         },
-                        onLongClick = {
-                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                            menuState.show {
-                                SongMenu(
-                                    originalSong = song,
-                                    navController = navController,
-                                    onDismiss = menuState::dismiss
-                                )
-                            }
-                        }
-                    )
-                    .animateItemPlacement()
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.more_vert),
+                            contentDescription = null,
+                        )
+                    }
+                },
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .combinedClickable(
+                            onClick = {
+                                if (song.id == mediaMetadata?.id) {
+                                    playerConnection.player.togglePlayPause()
+                                } else {
+                                    playerConnection.playQueue(
+                                        YouTubeQueue(
+                                            endpoint = WatchEndpoint(song.id),
+                                            preloadItem = song.toMediaMetadata(),
+                                        ),
+                                    )
+                                }
+                            },
+                            onLongClick = {
+                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                menuState.show {
+                                    SongMenu(
+                                        originalSong = song,
+                                        navController = navController,
+                                        onDismiss = menuState::dismiss,
+                                    )
+                                }
+                            },
+                        ).animateItemPlacement(),
             )
         }
 
         item(key = "mostPlayedArtists") {
             NavigationTitle(
                 title = stringResource(R.string.most_played_artists),
-                modifier = Modifier.animateItemPlacement()
+                modifier = Modifier.animateItemPlacement(),
             )
 
             LazyRow(
-                modifier = Modifier.animateItemPlacement()
+                modifier = Modifier.animateItemPlacement(),
             ) {
                 items(
                     items = mostPlayedArtists,
-                    key = { it.id }
+                    key = { it.id },
                 ) { artist ->
                     ArtistGridItem(
                         artist = artist,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .combinedClickable(
-                                onClick = {
-                                    navController.navigate("artist/${artist.id}")
-                                },
-                                onLongClick = {
-                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                    menuState.show {
-                                        ArtistMenu(
-                                            originalArtist = artist,
-                                            coroutineScope = coroutineScope,
-                                            onDismiss = menuState::dismiss
-                                        )
-                                    }
-                                }
-                            )
-                            .animateItemPlacement()
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .combinedClickable(
+                                    onClick = {
+                                        navController.navigate("artist/${artist.id}")
+                                    },
+                                    onLongClick = {
+                                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                        menuState.show {
+                                            ArtistMenu(
+                                                originalArtist = artist,
+                                                coroutineScope = coroutineScope,
+                                                onDismiss = menuState::dismiss,
+                                            )
+                                        }
+                                    },
+                                ).animateItemPlacement(),
                     )
                 }
             }
@@ -191,39 +196,39 @@ fun StatsScreen(
             item(key = "mostPlayedAlbums") {
                 NavigationTitle(
                     title = stringResource(R.string.most_played_albums),
-                    modifier = Modifier.animateItemPlacement()
+                    modifier = Modifier.animateItemPlacement(),
                 )
 
                 LazyRow(
-                    modifier = Modifier.animateItemPlacement()
+                    modifier = Modifier.animateItemPlacement(),
                 ) {
                     items(
                         items = mostPlayedAlbums,
-                        key = { it.id }
+                        key = { it.id },
                     ) { album ->
                         AlbumGridItem(
                             album = album,
                             isActive = album.id == mediaMetadata?.album?.id,
                             isPlaying = isPlaying,
                             coroutineScope = coroutineScope,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .combinedClickable(
-                                    onClick = {
-                                        navController.navigate("album/${album.id}")
-                                    },
-                                    onLongClick = {
-                                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                        menuState.show {
-                                            AlbumMenu(
-                                                originalAlbum = album,
-                                                navController = navController,
-                                                onDismiss = menuState::dismiss
-                                            )
-                                        }
-                                    }
-                                )
-                                .animateItemPlacement()
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .combinedClickable(
+                                        onClick = {
+                                            navController.navigate("album/${album.id}")
+                                        },
+                                        onLongClick = {
+                                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                            menuState.show {
+                                                AlbumMenu(
+                                                    originalAlbum = album,
+                                                    navController = navController,
+                                                    onDismiss = menuState::dismiss,
+                                                )
+                                            }
+                                        },
+                                    ).animateItemPlacement(),
                         )
                     }
                 }
@@ -236,13 +241,13 @@ fun StatsScreen(
         navigationIcon = {
             IconButton(
                 onClick = navController::navigateUp,
-                onLongClick = navController::backToMain
+                onLongClick = navController::backToMain,
             ) {
                 Icon(
                     painterResource(R.drawable.arrow_back),
-                    contentDescription = null
+                    contentDescription = null,
                 )
             }
-        }
+        },
     )
 }

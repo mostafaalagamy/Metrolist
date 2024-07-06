@@ -96,16 +96,16 @@ fun StorageSettings(
     Column(
         Modifier
             .windowInsetsPadding(LocalPlayerAwareWindowInsets.current)
-            .verticalScroll(rememberScrollState())
+            .verticalScroll(rememberScrollState()),
     ) {
         PreferenceGroupTitle(
-            title = stringResource(R.string.downloaded_songs)
+            title = stringResource(R.string.downloaded_songs),
         )
 
         Text(
             text = stringResource(R.string.size_used, formatFileSize(downloadCacheSize)),
             style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp)
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp),
         )
 
         PreferenceEntry(
@@ -120,27 +120,34 @@ fun StorageSettings(
         )
 
         PreferenceGroupTitle(
-            title = stringResource(R.string.song_cache)
+            title = stringResource(R.string.song_cache),
         )
 
         if (maxSongCacheSize == -1) {
             Text(
                 text = stringResource(R.string.size_used, formatFileSize(playerCacheSize)),
                 style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp)
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp),
             )
         } else {
             LinearProgressIndicator(
                 progress = (playerCacheSize.toFloat() / (maxSongCacheSize * 1024 * 1024L)).coerceIn(0f, 1f),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 6.dp)
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 6.dp),
             )
 
             Text(
-                text = stringResource(R.string.size_used, "${formatFileSize(playerCacheSize)} / ${formatFileSize(maxSongCacheSize * 1024 * 1024L)}"),
+                text =
+                    stringResource(
+                        R.string.size_used,
+                        "${formatFileSize(playerCacheSize)} / ${formatFileSize(
+                            maxSongCacheSize * 1024 * 1024L,
+                        )}",
+                    ),
                 style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp)
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp),
             )
         }
 
@@ -151,7 +158,7 @@ fun StorageSettings(
             valueText = {
                 if (it == -1) stringResource(R.string.unlimited) else formatFileSize(it * 1024 * 1024L)
             },
-            onValueSelected = onMaxSongCacheSizeChange
+            onValueSelected = onMaxSongCacheSizeChange,
         )
 
         PreferenceEntry(
@@ -166,20 +173,21 @@ fun StorageSettings(
         )
 
         PreferenceGroupTitle(
-            title = stringResource(R.string.image_cache)
+            title = stringResource(R.string.image_cache),
         )
 
         LinearProgressIndicator(
             progress = (imageCacheSize.toFloat() / imageDiskCache.maxSize).coerceIn(0f, 1f),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 6.dp)
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 6.dp),
         )
 
         Text(
             text = stringResource(R.string.size_used, "${formatFileSize(imageCacheSize)} / ${formatFileSize(imageDiskCache.maxSize)}"),
             style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp)
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp),
         )
 
         ListPreference(
@@ -187,7 +195,7 @@ fun StorageSettings(
             selectedValue = maxImageCacheSize,
             values = listOf(128, 256, 512, 1024, 2048, 4096, 8192),
             valueText = { formatFileSize(it * 1024 * 1024L) },
-            onValueSelected = onMaxImageCacheSizeChange
+            onValueSelected = onMaxImageCacheSizeChange,
         )
 
         PreferenceEntry(
@@ -201,7 +209,7 @@ fun StorageSettings(
 
         if (BuildConfig.FLAVOR != "foss") {
             PreferenceGroupTitle(
-                title = stringResource(R.string.translation_models)
+                title = stringResource(R.string.translation_models),
             )
 
             PreferenceEntry(
@@ -220,14 +228,14 @@ fun StorageSettings(
         navigationIcon = {
             IconButton(
                 onClick = navController::navigateUp,
-                onLongClick = navController::backToMain
+                onLongClick = navController::backToMain,
             ) {
                 Icon(
                     painterResource(R.drawable.arrow_back),
-                    contentDescription = null
+                    contentDescription = null,
                 )
             }
         },
-        scrollBehavior = scrollBehavior
+        scrollBehavior = scrollBehavior,
     )
 }

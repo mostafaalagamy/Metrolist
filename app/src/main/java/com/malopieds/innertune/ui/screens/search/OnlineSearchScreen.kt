@@ -80,11 +80,11 @@ fun OnlineSearchScreen(
     }
 
     LazyColumn(
-        state = lazyListState
+        state = lazyListState,
     ) {
         items(
             items = viewState.history,
-            key = { it.query }
+            key = { it.query },
         ) { history ->
             SuggestionItem(
                 query = history.query,
@@ -102,17 +102,17 @@ fun OnlineSearchScreen(
                     onQueryChange(
                         TextFieldValue(
                             text = history.query,
-                            selection = TextRange(history.query.length)
-                        )
+                            selection = TextRange(history.query.length),
+                        ),
                     )
                 },
-                modifier = Modifier.animateItemPlacement()
+                modifier = Modifier.animateItemPlacement(),
             )
         }
 
         items(
             items = viewState.suggestions,
-            key = { it }
+            key = { it },
         ) { query ->
             SuggestionItem(
                 query = query,
@@ -125,11 +125,11 @@ fun OnlineSearchScreen(
                     onQueryChange(
                         TextFieldValue(
                             text = query,
-                            selection = TextRange(query.length)
-                        )
+                            selection = TextRange(query.length),
+                        ),
                     )
                 },
-                modifier = Modifier.animateItemPlacement()
+                modifier = Modifier.animateItemPlacement(),
             )
         }
 
@@ -141,45 +141,46 @@ fun OnlineSearchScreen(
 
         items(
             items = viewState.items,
-            key = { it.id }
+            key = { it.id },
         ) { item ->
             YouTubeListItem(
                 item = item,
-                isActive = when (item) {
-                    is SongItem -> mediaMetadata?.id == item.id
-                    is AlbumItem -> mediaMetadata?.album?.id == item.id
-                    else -> false
-                },
+                isActive =
+                    when (item) {
+                        is SongItem -> mediaMetadata?.id == item.id
+                        is AlbumItem -> mediaMetadata?.album?.id == item.id
+                        else -> false
+                    },
                 isPlaying = isPlaying,
-                modifier = Modifier
-                    .clickable {
-                        when (item) {
-                            is SongItem -> {
-                                if (item.id == mediaMetadata?.id) {
-                                    playerConnection.player.togglePlayPause()
-                                } else {
-                                    playerConnection.playQueue(YouTubeQueue(WatchEndpoint(videoId = item.id), item.toMediaMetadata()))
+                modifier =
+                    Modifier
+                        .clickable {
+                            when (item) {
+                                is SongItem -> {
+                                    if (item.id == mediaMetadata?.id) {
+                                        playerConnection.player.togglePlayPause()
+                                    } else {
+                                        playerConnection.playQueue(YouTubeQueue(WatchEndpoint(videoId = item.id), item.toMediaMetadata()))
+                                        onDismiss()
+                                    }
+                                }
+
+                                is AlbumItem -> {
+                                    navController.navigate("album/${item.id}")
+                                    onDismiss()
+                                }
+
+                                is ArtistItem -> {
+                                    navController.navigate("artist/${item.id}")
+                                    onDismiss()
+                                }
+
+                                is PlaylistItem -> {
+                                    navController.navigate("online_playlist/${item.id}")
                                     onDismiss()
                                 }
                             }
-
-                            is AlbumItem -> {
-                                navController.navigate("album/${item.id}")
-                                onDismiss()
-                            }
-
-                            is ArtistItem -> {
-                                navController.navigate("artist/${item.id}")
-                                onDismiss()
-                            }
-
-                            is PlaylistItem -> {
-                                navController.navigate("online_playlist/${item.id}")
-                                onDismiss()
-                            }
-                        }
-                    }
-                    .animateItemPlacement()
+                        }.animateItemPlacement(),
             )
         }
     }
@@ -196,46 +197,48 @@ fun SuggestionItem(
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier
-            .fillMaxWidth()
-            .height(SuggestionItemHeight)
-            .clickable(onClick = onClick)
-            .padding(end = SearchBarIconOffsetX)
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .height(SuggestionItemHeight)
+                .clickable(onClick = onClick)
+                .padding(end = SearchBarIconOffsetX),
     ) {
         Icon(
             painterResource(if (online) R.drawable.search else R.drawable.history),
             contentDescription = null,
-            modifier = Modifier
-                .padding(horizontal = 16.dp)
-                .alpha(0.5f)
+            modifier =
+                Modifier
+                    .padding(horizontal = 16.dp)
+                    .alpha(0.5f),
         )
 
         Text(
             text = query,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
         )
 
         if (!online) {
             IconButton(
                 onClick = onDelete,
-                modifier = Modifier.alpha(0.5f)
+                modifier = Modifier.alpha(0.5f),
             ) {
                 Icon(
                     painter = painterResource(R.drawable.close),
-                    contentDescription = null
+                    contentDescription = null,
                 )
             }
         }
 
         IconButton(
             onClick = onFillTextField,
-            modifier = Modifier.alpha(0.5f)
+            modifier = Modifier.alpha(0.5f),
         ) {
             Icon(
                 painter = painterResource(R.drawable.arrow_top_left),
-                contentDescription = null
+                contentDescription = null,
             )
         }
     }

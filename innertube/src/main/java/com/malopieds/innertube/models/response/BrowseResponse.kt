@@ -19,7 +19,7 @@ data class BrowseResponse(
     val header: Header?,
     val microformat: Microformat?,
     val responseContext: ResponseContext,
-    val background: MusicThumbnailRenderer?
+    val background: MusicThumbnailRenderer?,
 ) {
     @Serializable
     data class Contents(
@@ -36,7 +36,7 @@ data class BrowseResponse(
 
     @Serializable
     data class SecondaryContents(
-        val sectionListRenderer: SectionListRenderer?
+        val sectionListRenderer: SectionListRenderer?,
     )
 
     @Serializable
@@ -108,6 +108,7 @@ data class BrowseResponse(
             val foregroundThumbnail: ThumbnailRenderer,
             val thumbnail: ThumbnailRenderer?,
         )
+
         @Serializable
         data class Buttons(
             val menuRenderer: Menu.MenuRenderer?,
@@ -121,18 +122,18 @@ data class BrowseResponse(
             val subtitle: Runs?,
             val secondSubtitle: Runs?,
             val straplineTextOne: Runs?,
-            val straplineThumbnail: MusicThumbnailRenderer?
+            val straplineThumbnail: MusicThumbnailRenderer?,
         )
 
         @Serializable
         data class MusicThumbnail(
-            val url: String?
+            val url: String?,
         )
 
         @Serializable
         data class MusicThumbnailRenderer(
             val musicThumbnailRenderer: BrowseResponse.MusicThumbnailRenderer,
-            val thumbnails: List<MusicThumbnail>?
+            val thumbnails: List<MusicThumbnail>?,
         )
     }
 

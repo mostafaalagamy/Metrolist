@@ -40,18 +40,18 @@ fun PreferenceEntry(
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier
-            .fillMaxWidth()
-            .clickable(
-                enabled = isEnabled,
-                onClick = onClick
-            )
-            .alpha(if (isEnabled) 1f else 0.5f)
-            .padding(horizontal = 16.dp, vertical = 16.dp)
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .clickable(
+                    enabled = isEnabled,
+                    onClick = onClick,
+                ).alpha(if (isEnabled) 1f else 0.5f)
+                .padding(horizontal = 16.dp, vertical = 16.dp),
     ) {
         if (icon != null) {
             Box(
-                modifier = Modifier.padding(horizontal = 4.dp)
+                modifier = Modifier.padding(horizontal = 4.dp),
             ) {
                 icon()
             }
@@ -61,7 +61,7 @@ fun PreferenceEntry(
 
         Column(
             verticalArrangement = Arrangement.Center,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
         ) {
             ProvideTextStyle(MaterialTheme.typography.titleMedium) {
                 title()
@@ -71,7 +71,7 @@ fun PreferenceEntry(
                 Text(
                     text = description,
                     style = MaterialTheme.typography.titleSmall,
-                    color = MaterialTheme.colorScheme.secondary
+                    color = MaterialTheme.colorScheme.secondary,
                 )
             }
 
@@ -102,28 +102,28 @@ fun <T> ListPreference(
     }
     if (showDialog) {
         ListDialog(
-            onDismiss = { showDialog = false }
+            onDismiss = { showDialog = false },
         ) {
             items(values) { value ->
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable {
-                            showDialog = false
-                            onValueSelected(value)
-                        }
-                        .padding(horizontal = 16.dp, vertical = 12.dp)
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                showDialog = false
+                                onValueSelected(value)
+                            }.padding(horizontal = 16.dp, vertical = 12.dp),
                 ) {
                     RadioButton(
                         selected = value == selectedValue,
-                        onClick = null
+                        onClick = null,
                     )
 
                     Text(
                         text = valueText(value),
                         style = MaterialTheme.typography.bodyLarge,
-                        modifier = Modifier.padding(start = 16.dp)
+                        modifier = Modifier.padding(start = 16.dp),
                     )
                 }
             }
@@ -136,7 +136,7 @@ fun <T> ListPreference(
         description = valueText(selectedValue),
         icon = icon,
         onClick = { showDialog = true },
-        isEnabled = isEnabled
+        isEnabled = isEnabled,
     )
 }
 
@@ -158,7 +158,7 @@ inline fun <reified T : Enum<T>> EnumListPreference(
         values = enumValues<T>().toList(),
         valueText = valueText,
         onValueSelected = onValueSelected,
-        isEnabled = isEnabled
+        isEnabled = isEnabled,
     )
 }
 
@@ -180,11 +180,11 @@ fun SwitchPreference(
         trailingContent = {
             Switch(
                 checked = checked,
-                onCheckedChange = onCheckedChange
+                onCheckedChange = onCheckedChange,
             )
         },
         onClick = { onCheckedChange(!checked) },
-        isEnabled = isEnabled
+        isEnabled = isEnabled,
     )
 }
 
@@ -205,14 +205,15 @@ fun EditTextPreference(
 
     if (showDialog) {
         TextFieldDialog(
-            initialTextFieldValue = TextFieldValue(
-                text = value,
-                selection = TextRange(value.length)
-            ),
+            initialTextFieldValue =
+                TextFieldValue(
+                    text = value,
+                    selection = TextRange(value.length),
+                ),
             singleLine = singleLine,
             isInputValid = isInputValid,
             onDone = onValueChange,
-            onDismiss = { showDialog = false }
+            onDismiss = { showDialog = false },
         )
     }
 
@@ -222,7 +223,7 @@ fun EditTextPreference(
         description = value,
         icon = icon,
         onClick = { showDialog = true },
-        isEnabled = isEnabled
+        isEnabled = isEnabled,
     )
 }
 
@@ -235,6 +236,6 @@ fun PreferenceGroupTitle(
         text = title.uppercase(),
         style = MaterialTheme.typography.labelLarge,
         color = MaterialTheme.colorScheme.primary,
-        modifier = modifier.padding(16.dp)
+        modifier = modifier.padding(16.dp),
     )
 }

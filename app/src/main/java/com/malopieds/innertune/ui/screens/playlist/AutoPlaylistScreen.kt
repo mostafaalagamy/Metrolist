@@ -32,6 +32,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -103,15 +104,16 @@ fun AutoPlaylistScreen(
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
     val playlist = if (viewModel.playlist == "liked") stringResource(R.string.liked) else stringResource(R.string.offline)
 
-
     val songs by viewModel.likedSongs.collectAsState(null)
-    val mutableSongs = remember {
-        mutableStateListOf<Song>()
-    }
+    val mutableSongs =
+        remember {
+            mutableStateListOf<Song>()
+        }
 
-    val likeLength = remember(songs) {
-        songs?.fastSumBy { it.song.duration } ?: 0
-    }
+    val likeLength =
+        remember(songs) {
+            songs?.fastSumBy { it.song.duration } ?: 0
+        }
 
     val wrappedSongs = songs?.map { item -> ItemWrapper(item) }?.toMutableList()
     var selection by remember {
@@ -123,7 +125,7 @@ fun AutoPlaylistScreen(
 
     val downloadUtil = LocalDownloadUtil.current
     var downloadState by remember {
-        mutableStateOf(Download.STATE_STOPPED)
+        mutableIntStateOf(Download.STATE_STOPPED)
     }
 
     LaunchedEffect(songs) {
@@ -134,16 +136,18 @@ fun AutoPlaylistScreen(
         if (songs?.isEmpty() == true) return@LaunchedEffect
         downloadUtil.downloads.collect { downloads ->
             downloadState =
-                if (songs?.all { downloads[it.song.id]?.state == Download.STATE_COMPLETED } == true)
+                if (songs?.all { downloads[it.song.id]?.state == Download.STATE_COMPLETED } == true) {
                     Download.STATE_COMPLETED
-                else if (songs?.all {
-                        downloads[it.song.id]?.state == Download.STATE_QUEUED
-                                || downloads[it.song.id]?.state == Download.STATE_DOWNLOADING
-                                || downloads[it.song.id]?.state == Download.STATE_COMPLETED
-                    } == true)
+                } else if (songs?.all {
+                        downloads[it.song.id]?.state == Download.STATE_QUEUED ||
+                            downloads[it.song.id]?.state == Download.STATE_DOWNLOADING ||
+                            downloads[it.song.id]?.state == Download.STATE_COMPLETED
+                    } == true
+                ) {
                     Download.STATE_DOWNLOADING
-                else
+                } else {
                     Download.STATE_STOPPED
+                }
         }
     }
 
@@ -158,12 +162,12 @@ fun AutoPlaylistScreen(
                 Text(
                     text = stringResource(R.string.remove_download_playlist_confirm, playlist),
                     style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.padding(horizontal = 18.dp)
+                    modifier = Modifier.padding(horizontal = 18.dp),
                 )
             },
             buttons = {
                 TextButton(
-                    onClick = { showRemoveDownloadDialog = false }
+                    onClick = { showRemoveDownloadDialog = false },
                 ) {
                     Text(text = stringResource(android.R.string.cancel))
                 }
@@ -176,54 +180,52 @@ fun AutoPlaylistScreen(
                                 context,
                                 ExoDownloadService::class.java,
                                 song.song.id,
-                                false
+                                false,
                             )
                         }
-                    }
+                    },
                 ) {
                     Text(text = stringResource(android.R.string.ok))
                 }
-            }
+            },
         )
     }
 
     val state = rememberLazyListState()
 
-
-
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
     ) {
         LazyColumn(
             state = state,
             contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues(),
         ) {
             if (songs != null) {
-
                 if (songs!!.isEmpty()) {
                     item {
                         EmptyPlaceholder(
                             icon = R.drawable.music_note,
-                            text = stringResource(R.string.playlist_is_empty)
+                            text = stringResource(R.string.playlist_is_empty),
                         )
                     }
                 } else {
                     item {
                         Column(
                             verticalArrangement = Arrangement.spacedBy(12.dp),
-                            modifier = Modifier.padding(12.dp)
+                            modifier = Modifier.padding(12.dp),
                         ) {
                             Row(
                                 horizontalArrangement = Arrangement.spacedBy(12.dp),
-                                verticalAlignment = Alignment.CenterVertically
+                                verticalAlignment = Alignment.CenterVertically,
                             ) {
                                 AsyncImage(
                                     model = songs!![0].song.thumbnailUrl,
                                     contentDescription = null,
                                     contentScale = ContentScale.Crop,
-                                    modifier = Modifier
-                                        .size(AlbumThumbnailSize)
-                                        .clip(RoundedCornerShape(ThumbnailCornerRadius))
+                                    modifier =
+                                        Modifier
+                                            .size(AlbumThumbnailSize)
+                                            .clip(RoundedCornerShape(ThumbnailCornerRadius)),
                                 )
 
                                 Column(
@@ -234,23 +236,24 @@ fun AutoPlaylistScreen(
                                         fontWeight = FontWeight.Bold,
                                         maxLines = 2,
                                         overflow = TextOverflow.Ellipsis,
-                                        fontSizeRange = FontSizeRange(16.sp, 22.sp)
+                                        fontSizeRange = FontSizeRange(16.sp, 22.sp),
                                     )
 
                                     Text(
-                                        text = pluralStringResource(
-                                            R.plurals.n_song,
-                                            songs!!.size,
-                                            songs!!.size
-                                        ),
+                                        text =
+                                            pluralStringResource(
+                                                R.plurals.n_song,
+                                                songs!!.size,
+                                                songs!!.size,
+                                            ),
                                         style = MaterialTheme.typography.titleMedium,
-                                        fontWeight = FontWeight.Normal
+                                        fontWeight = FontWeight.Normal,
                                     )
 
                                     Text(
                                         text = makeTimeString(likeLength * 1000L),
                                         style = MaterialTheme.typography.titleMedium,
-                                        fontWeight = FontWeight.Normal
+                                        fontWeight = FontWeight.Normal,
                                     )
 
                                     Row {
@@ -259,11 +262,11 @@ fun AutoPlaylistScreen(
                                                 IconButton(
                                                     onClick = {
                                                         showRemoveDownloadDialog = true
-                                                    }
+                                                    },
                                                 ) {
                                                     Icon(
                                                         painter = painterResource(R.drawable.offline),
-                                                        contentDescription = null
+                                                        contentDescription = null,
                                                     )
                                                 }
                                             }
@@ -276,14 +279,14 @@ fun AutoPlaylistScreen(
                                                                 context,
                                                                 ExoDownloadService::class.java,
                                                                 song.song.id,
-                                                                false
+                                                                false,
                                                             )
                                                         }
-                                                    }
+                                                    },
                                                 ) {
                                                     CircularProgressIndicator(
                                                         strokeWidth = 2.dp,
-                                                        modifier = Modifier.size(24.dp)
+                                                        modifier = Modifier.size(24.dp),
                                                     )
                                                 }
                                             }
@@ -293,25 +296,25 @@ fun AutoPlaylistScreen(
                                                     onClick = {
                                                         songs!!.forEach { song ->
                                                             val downloadRequest =
-                                                                DownloadRequest.Builder(
-                                                                    song.song.id,
-                                                                    song.song.id.toUri()
-                                                                )
-                                                                    .setCustomCacheKey(song.song.id)
+                                                                DownloadRequest
+                                                                    .Builder(
+                                                                        song.song.id,
+                                                                        song.song.id.toUri(),
+                                                                    ).setCustomCacheKey(song.song.id)
                                                                     .setData(song.song.title.toByteArray())
                                                                     .build()
                                                             DownloadService.sendAddDownload(
                                                                 context,
                                                                 ExoDownloadService::class.java,
                                                                 downloadRequest,
-                                                                false
+                                                                false,
                                                             )
                                                         }
-                                                    }
+                                                    },
                                                 ) {
                                                     Icon(
                                                         painter = painterResource(R.drawable.download),
-                                                        contentDescription = null
+                                                        contentDescription = null,
                                                     )
                                                 }
                                             }
@@ -322,11 +325,11 @@ fun AutoPlaylistScreen(
                                                 playerConnection.addToQueue(
                                                     items = songs!!.map { it.toMediaItem() },
                                                 )
-                                            }
+                                            },
                                         ) {
                                             Icon(
                                                 painter = painterResource(R.drawable.queue_music),
-                                                contentDescription = null
+                                                contentDescription = null,
                                             )
                                         }
                                     }
@@ -339,17 +342,17 @@ fun AutoPlaylistScreen(
                                         playerConnection.playQueue(
                                             ListQueue(
                                                 title = "Auto Playlist",
-                                                items = songs!!.map { it.toMediaItem() }
-                                            )
+                                                items = songs!!.map { it.toMediaItem() },
+                                            ),
                                         )
                                     },
                                     contentPadding = ButtonDefaults.ButtonWithIconContentPadding,
-                                    modifier = Modifier.weight(1f)
+                                    modifier = Modifier.weight(1f),
                                 ) {
                                     Icon(
                                         painter = painterResource(R.drawable.play),
                                         contentDescription = null,
-                                        modifier = Modifier.size(ButtonDefaults.IconSize)
+                                        modifier = Modifier.size(ButtonDefaults.IconSize),
                                     )
                                     Spacer(Modifier.size(ButtonDefaults.IconSpacing))
                                     Text(stringResource(R.string.play))
@@ -360,17 +363,17 @@ fun AutoPlaylistScreen(
                                         playerConnection.playQueue(
                                             ListQueue(
                                                 title = playlist,
-                                                items = songs!!.shuffled().map { it.toMediaItem() }
-                                            )
+                                                items = songs!!.shuffled().map { it.toMediaItem() },
+                                            ),
                                         )
                                     },
                                     contentPadding = ButtonDefaults.ButtonWithIconContentPadding,
-                                    modifier = Modifier.weight(1f)
+                                    modifier = Modifier.weight(1f),
                                 ) {
                                     Icon(
                                         painter = painterResource(R.drawable.shuffle),
                                         contentDescription = null,
-                                        modifier = Modifier.size(ButtonDefaults.IconSize)
+                                        modifier = Modifier.size(ButtonDefaults.IconSize),
                                     )
                                     Spacer(Modifier.size(ButtonDefaults.IconSpacing))
                                     Text(stringResource(R.string.shuffle))
@@ -382,23 +385,32 @@ fun AutoPlaylistScreen(
                     item {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.padding(start = 16.dp)
+                            modifier = Modifier.padding(start = 16.dp),
                         ) {
                             if (selection) {
-                                val count = wrappedSongs?.count { it.isSelected }?: 0
+                                val count = wrappedSongs?.count { it.isSelected } ?: 0
                                 Text(text = pluralStringResource(R.plurals.n_elements, count, count), modifier = Modifier.weight(1f))
                                 IconButton(
                                     onClick = {
                                         if (count == wrappedSongs?.size) {
                                             wrappedSongs.forEach { it.isSelected = false }
-                                        }else {
+                                        } else {
                                             wrappedSongs?.forEach { it.isSelected = true }
                                         }
                                     },
                                 ) {
                                     Icon(
-                                        painter = painterResource(if (count == wrappedSongs?.size) R.drawable.deselect else R.drawable.select_all),
-                                        contentDescription = null
+                                        painter =
+                                            painterResource(
+                                                if (count ==
+                                                    wrappedSongs?.size
+                                                ) {
+                                                    R.drawable.deselect
+                                                } else {
+                                                    R.drawable.select_all
+                                                },
+                                            ),
+                                        contentDescription = null,
                                     )
                                 }
 
@@ -408,14 +420,14 @@ fun AutoPlaylistScreen(
                                             SelectionSongMenu(
                                                 songSelection = wrappedSongs?.filter { it.isSelected }!!.map { it.item },
                                                 onDismiss = menuState::dismiss,
-                                                clearAction = {selection = false}
+                                                clearAction = { selection = false },
                                             )
                                         }
                                     },
                                 ) {
                                     Icon(
                                         painter = painterResource(R.drawable.more_vert),
-                                        contentDescription = null
+                                        contentDescription = null,
                                     )
                                 }
 
@@ -424,7 +436,7 @@ fun AutoPlaylistScreen(
                                 ) {
                                     Icon(
                                         painter = painterResource(R.drawable.close),
-                                        contentDescription = null
+                                        contentDescription = null,
                                     )
                                 }
                             } else {
@@ -442,16 +454,16 @@ fun AutoPlaylistScreen(
                                             PlaylistSongSortType.PLAY_TIME -> R.string.sort_by_play_time
                                         }
                                     },
-                                    modifier = Modifier.weight(1f)
+                                    modifier = Modifier.weight(1f),
                                 )
 
                                 IconButton(
                                     onClick = { selection = !selection },
-                                    modifier = Modifier.padding(horizontal = 6.dp)
+                                    modifier = Modifier.padding(horizontal = 6.dp),
                                 ) {
                                     Icon(
                                         painter = painterResource(if (selection) R.drawable.deselect else R.drawable.select_all),
-                                        contentDescription = null
+                                        contentDescription = null,
                                     )
                                 }
                             }
@@ -462,7 +474,7 @@ fun AutoPlaylistScreen(
                 if (wrappedSongs != null) {
                     itemsIndexed(
                         items = wrappedSongs,
-                        key = { _, song -> song.item.id }
+                        key = { _, song -> song.item.id },
                     ) { index, songWrapper ->
                         SongListItem(
                             song = songWrapper.item,
@@ -476,50 +488,50 @@ fun AutoPlaylistScreen(
                                             SongMenu(
                                                 originalSong = songWrapper.item,
                                                 navController = navController,
-                                                onDismiss = menuState::dismiss
+                                                onDismiss = menuState::dismiss,
                                             )
                                         }
-                                    }
+                                    },
                                 ) {
                                     Icon(
                                         painter = painterResource(R.drawable.more_vert),
-                                        contentDescription = null
+                                        contentDescription = null,
                                     )
                                 }
                             },
                             isSelected = songWrapper.isSelected && selection,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .combinedClickable(
-                                    onClick = {
-
-                                        if (!selection) {
-                                            if (songWrapper.item.song.id == mediaMetadata?.id) {
-                                                playerConnection.player.togglePlayPause()
-                                            } else {
-                                                playerConnection.playQueue(
-                                                    ListQueue(
-                                                        title = playlist,
-                                                        items = songs!!.map { it.toMediaItem() },
-                                                        startIndex = index
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .combinedClickable(
+                                        onClick = {
+                                            if (!selection) {
+                                                if (songWrapper.item.song.id == mediaMetadata?.id) {
+                                                    playerConnection.player.togglePlayPause()
+                                                } else {
+                                                    playerConnection.playQueue(
+                                                        ListQueue(
+                                                            title = playlist,
+                                                            items = songs!!.map { it.toMediaItem() },
+                                                            startIndex = index,
+                                                        ),
                                                     )
+                                                }
+                                            } else {
+                                                songWrapper.isSelected = !songWrapper.isSelected
+                                            }
+                                        },
+                                        onLongClick = {
+                                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                            menuState.show {
+                                                SongMenu(
+                                                    originalSong = songWrapper.item,
+                                                    navController = navController,
+                                                    onDismiss = menuState::dismiss,
                                                 )
                                             }
-                                        } else {
-                                            songWrapper.isSelected = !songWrapper.isSelected
-                                        }
-                                    },
-                                    onLongClick = {
-                                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                        menuState.show {
-                                            SongMenu(
-                                                originalSong = songWrapper.item,
-                                                navController = navController,
-                                                onDismiss = menuState::dismiss
-                                            )
-                                        }
-                                    }
-                                )
+                                        },
+                                    ),
                         )
                     }
                 }
@@ -531,15 +543,15 @@ fun AutoPlaylistScreen(
             navigationIcon = {
                 com.malopieds.innertune.ui.component.IconButton(
                     onClick = navController::navigateUp,
-                    onLongClick = navController::backToMain
+                    onLongClick = navController::backToMain,
                 ) {
                     Icon(
                         painterResource(R.drawable.arrow_back),
-                        contentDescription = null
+                        contentDescription = null,
                     )
                 }
             },
-            scrollBehavior = scrollBehavior
+            scrollBehavior = scrollBehavior,
         )
     }
 }

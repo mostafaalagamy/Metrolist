@@ -2,7 +2,12 @@ package com.malopieds.innertune.ui.component
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,22 +25,23 @@ fun EmptyPlaceholder(
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier
-            .fillMaxSize()
-            .padding(12.dp)
+        modifier =
+            modifier
+                .fillMaxSize()
+                .padding(12.dp),
     ) {
         Image(
             painter = painterResource(icon),
             contentDescription = null,
             colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
-            modifier = Modifier.size(64.dp)
+            modifier = Modifier.size(64.dp),
         )
 
         Spacer(Modifier.height(12.dp))
 
         Text(
             text = text,
-            style = MaterialTheme.typography.bodyLarge
+            style = MaterialTheme.typography.bodyLarge,
         )
     }
 }

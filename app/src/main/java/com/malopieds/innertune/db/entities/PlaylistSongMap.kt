@@ -12,14 +12,15 @@ import androidx.room.PrimaryKey
             entity = PlaylistEntity::class,
             parentColumns = ["id"],
             childColumns = ["playlistId"],
-            onDelete = ForeignKey.CASCADE
+            onDelete = ForeignKey.CASCADE,
         ),
         ForeignKey(
             entity = SongEntity::class,
             parentColumns = ["id"],
             childColumns = ["songId"],
-            onDelete = ForeignKey.CASCADE)
-    ]
+            onDelete = ForeignKey.CASCADE,
+        ),
+    ],
 )
 data class PlaylistSongMap(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,

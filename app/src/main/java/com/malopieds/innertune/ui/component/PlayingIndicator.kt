@@ -30,7 +30,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
-
 @Composable
 fun PlayingIndicator(
     color: Color,
@@ -39,11 +38,12 @@ fun PlayingIndicator(
     barWidth: Dp = 4.dp,
     cornerRadius: Dp = ThumbnailCornerRadius,
 ) {
-    val animatables = remember {
-        List(bars) {
-            Animatable(0.1f)
+    val animatables =
+        remember {
+            List(bars) {
+                Animatable(0.1f)
+            }
         }
-    }
 
     LaunchedEffect(Unit) {
         delay(300)
@@ -60,19 +60,20 @@ fun PlayingIndicator(
     Row(
         horizontalArrangement = Arrangement.spacedBy(6.dp),
         verticalAlignment = Alignment.Bottom,
-        modifier = modifier
+        modifier = modifier,
     ) {
         animatables.forEach { animatable ->
             Canvas(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .width(barWidth)
+                modifier =
+                    Modifier
+                        .fillMaxHeight()
+                        .width(barWidth),
             ) {
                 drawRoundRect(
                     color = color,
                     topLeft = Offset(x = 0f, y = size.height * (1 - animatable.value)),
                     size = size.copy(height = animatable.value * size.height),
-                    cornerRadius = CornerRadius(cornerRadius.toPx())
+                    cornerRadius = CornerRadius(cornerRadius.toPx()),
                 )
             }
         }
@@ -89,22 +90,22 @@ fun PlayingIndicatorBox(
     AnimatedVisibility(
         visible = isActive,
         enter = fadeIn(tween(500)),
-        exit = fadeOut(tween(500))
+        exit = fadeOut(tween(500)),
     ) {
         Box(
             contentAlignment = Alignment.Center,
-            modifier = modifier
+            modifier = modifier,
         ) {
             if (playWhenReady) {
                 PlayingIndicator(
                     color = color,
-                    modifier = Modifier.height(24.dp)
+                    modifier = Modifier.height(24.dp),
                 )
             } else {
                 Icon(
                     painter = painterResource(R.drawable.play),
                     contentDescription = null,
-                    tint = color
+                    tint = color,
                 )
             }
         }

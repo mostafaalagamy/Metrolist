@@ -18,12 +18,13 @@ fun Player.togglePlayPause() {
 }
 
 fun Player.toggleRepeatMode() {
-    repeatMode = when (repeatMode) {
-        REPEAT_MODE_OFF -> REPEAT_MODE_ALL
-        REPEAT_MODE_ALL -> REPEAT_MODE_ONE
-        REPEAT_MODE_ONE -> REPEAT_MODE_OFF
-        else -> throw IllegalStateException()
-    }
+    repeatMode =
+        when (repeatMode) {
+            REPEAT_MODE_OFF -> REPEAT_MODE_ALL
+            REPEAT_MODE_ALL -> REPEAT_MODE_ONE
+            REPEAT_MODE_ONE -> REPEAT_MODE_OFF
+            else -> throw IllegalStateException()
+        }
 }
 
 fun Player.getQueueWindows(): List<Timeline.Window> {
@@ -76,12 +77,13 @@ val Player.currentMetadata: MediaMetadata?
     get() = currentMediaItem?.metadata
 
 val Player.mediaItems: List<MediaItem>
-    get() = object : AbstractList<MediaItem>() {
-        override val size: Int
-            get() = mediaItemCount
+    get() =
+        object : AbstractList<MediaItem>() {
+            override val size: Int
+                get() = mediaItemCount
 
-        override fun get(index: Int): MediaItem = getMediaItemAt(index)
-    }
+            override fun get(index: Int): MediaItem = getMediaItemAt(index)
+        }
 
 fun Player.findNextMediaItemById(mediaId: String): MediaItem? {
     for (i in currentMediaItemIndex until mediaItemCount) {

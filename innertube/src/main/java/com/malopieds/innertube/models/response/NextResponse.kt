@@ -1,8 +1,8 @@
 package com.malopieds.innertube.models.response
 
+import com.malopieds.innertube.models.NavigationEndpoint
 import com.malopieds.innertube.models.PlaylistPanelRenderer
 import com.malopieds.innertube.models.Tabs
-import com.malopieds.innertube.models.NavigationEndpoint
 import kotlinx.serialization.Serializable
 
 @Serializable

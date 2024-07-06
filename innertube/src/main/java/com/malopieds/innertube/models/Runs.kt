@@ -29,9 +29,15 @@ fun List<Run>.splitBySeparator(): List<List<Run>> {
 }
 
 fun List<List<Run>>.clean(): List<List<Run>> =
-    if (getOrNull(0)?.getOrNull(0)?.navigationEndpoint != null || (getOrNull(0)?.getOrNull(0)?.text?.contains(regex = Regex("[&,]"))) != false) this
-    else this.drop(1)
+    if (getOrNull(0)?.getOrNull(0)?.navigationEndpoint != null ||
+        (getOrNull(0)?.getOrNull(0)?.text?.contains(regex = Regex("[&,]"))) != false
+    ) {
+        this
+    } else {
+        this.drop(1)
+    }
 
-fun List<Run>.oddElements() = filterIndexed { index, _ ->
-    index % 2 == 0
-}
+fun List<Run>.oddElements() =
+    filterIndexed { index, _ ->
+        index % 2 == 0
+    }

@@ -42,7 +42,7 @@ fun PlayerSettings(
     Column(
         Modifier
             .windowInsetsPadding(LocalPlayerAwareWindowInsets.current)
-            .verticalScroll(rememberScrollState())
+            .verticalScroll(rememberScrollState()),
     ) {
         EnumListPreference(
             title = { Text(stringResource(R.string.audio_quality)) },
@@ -55,25 +55,25 @@ fun PlayerSettings(
                     AudioQuality.HIGH -> stringResource(R.string.audio_quality_high)
                     AudioQuality.LOW -> stringResource(R.string.audio_quality_low)
                 }
-            }
+            },
         )
         SwitchPreference(
             title = { Text(stringResource(R.string.persistent_queue)) },
             icon = { Icon(painterResource(R.drawable.queue_music), null) },
             checked = persistentQueue,
-            onCheckedChange = onPersistentQueueChange
+            onCheckedChange = onPersistentQueueChange,
         )
         SwitchPreference(
             title = { Text(stringResource(R.string.skip_silence)) },
             icon = { Icon(painterResource(R.drawable.skip_next), null) },
             checked = skipSilence,
-            onCheckedChange = onSkipSilenceChange
+            onCheckedChange = onSkipSilenceChange,
         )
         SwitchPreference(
             title = { Text(stringResource(R.string.audio_normalization)) },
             icon = { Icon(painterResource(R.drawable.volume_up), null) },
             checked = audioNormalization,
-            onCheckedChange = onAudioNormalizationChange
+            onCheckedChange = onAudioNormalizationChange,
         )
     }
 
@@ -82,14 +82,14 @@ fun PlayerSettings(
         navigationIcon = {
             IconButton(
                 onClick = navController::navigateUp,
-                onLongClick = navController::backToMain
+                onLongClick = navController::backToMain,
             ) {
                 Icon(
                     painterResource(R.drawable.arrow_back),
-                    contentDescription = null
+                    contentDescription = null,
                 )
             }
         },
-        scrollBehavior = scrollBehavior
+        scrollBehavior = scrollBehavior,
     )
 }

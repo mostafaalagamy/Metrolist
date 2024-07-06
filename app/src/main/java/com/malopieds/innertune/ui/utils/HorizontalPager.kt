@@ -1,4 +1,3 @@
-
 @file:Suppress("INVISIBLE_MEMBER", "INVISIBLE_REFERENCE")
 
 package com.malopieds.innertune.ui.utils
@@ -8,19 +7,33 @@ import androidx.compose.foundation.gestures.FlingBehavior
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.ScrollScope
 import androidx.compose.foundation.gestures.snapping.SnapFlingBehavior
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyList
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.pager.*
-import androidx.compose.runtime.*
+import androidx.compose.foundation.pager.PageSize
+import androidx.compose.foundation.pager.PagerDefaults
+import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
-import androidx.compose.ui.semantics.*
+import androidx.compose.ui.semantics.pageDown
+import androidx.compose.ui.semantics.pageLeft
+import androidx.compose.ui.semantics.pageRight
+import androidx.compose.ui.semantics.pageUp
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
@@ -233,7 +246,7 @@ private fun Modifier.pagerSemantics(
     fun performForwardPaging(): Boolean =
         if (state.canScrollForward) {
             scope.launch {
-                state.animateToNextPage()
+                state.animateScrollToPage(state.currentPage + 1)
             }
             true
         } else {
@@ -243,7 +256,7 @@ private fun Modifier.pagerSemantics(
     fun performBackwardPaging(): Boolean =
         if (state.canScrollBackward) {
             scope.launch {
-                state.animateToPreviousPage()
+                state.animateScrollToPage(state.currentPage - 1)
             }
             true
         } else {

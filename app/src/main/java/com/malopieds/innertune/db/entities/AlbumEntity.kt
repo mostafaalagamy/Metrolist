@@ -18,7 +18,8 @@ data class AlbumEntity(
     val lastUpdateTime: LocalDateTime = LocalDateTime.now(),
     val bookmarkedAt: LocalDateTime? = null,
 ) {
-    fun toggleLike() = copy(
-        bookmarkedAt = if (bookmarkedAt != null) null else LocalDateTime.now()
-    )
+    fun toggleLike() =
+        copy(
+            bookmarkedAt = if (bookmarkedAt != null) null else LocalDateTime.now(),
+        )
 }

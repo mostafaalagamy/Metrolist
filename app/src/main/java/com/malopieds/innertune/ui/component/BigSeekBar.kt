@@ -23,7 +23,7 @@ fun BigSeekBar(
     color: Color = MaterialTheme.colorScheme.primary,
 ) {
     var width by remember {
-        mutableStateOf(0f)
+        mutableFloatStateOf(0f)
     }
 
     Canvas(
@@ -33,18 +33,17 @@ fun BigSeekBar(
             .clip(RoundedCornerShape(16.dp))
             .onPlaced {
                 width = it.size.width.toFloat()
-            }
-            .pointerInput(progressProvider) {
+            }.pointerInput(progressProvider) {
                 detectHorizontalDragGestures { _, dragAmount ->
                     onProgressChange((progressProvider() + dragAmount * 1.2f / width).coerceIn(0f, 1f))
                 }
-            }
+            },
     ) {
         drawRect(color = background)
 
         drawRect(
             color = color,
-            size = size.copy(width = size.width * progressProvider())
+            size = size.copy(width = size.width * progressProvider()),
         )
     }
 }

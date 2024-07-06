@@ -28,72 +28,88 @@ fun InnerTuneTheme(
     content: @Composable () -> Unit,
 ) {
     val context = LocalContext.current
-    val colorScheme = remember(darkTheme, pureBlack, themeColor) {
-        if (themeColor == DefaultThemeColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            if (darkTheme) dynamicDarkColorScheme(context).pureBlack(pureBlack)
-            else dynamicLightColorScheme(context)
-        } else {
-            if (darkTheme) Scheme.dark(themeColor.toArgb()).toColorScheme().pureBlack(pureBlack)
-            else Scheme.light(themeColor.toArgb()).toColorScheme()
+    val colorScheme =
+        remember(darkTheme, pureBlack, themeColor) {
+            if (themeColor == DefaultThemeColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                if (darkTheme) {
+                    dynamicDarkColorScheme(context).pureBlack(pureBlack)
+                } else {
+                    dynamicLightColorScheme(context)
+                }
+            } else {
+                if (darkTheme) {
+                    Scheme.dark(themeColor.toArgb()).toColorScheme().pureBlack(pureBlack)
+                } else {
+                    Scheme.light(themeColor.toArgb()).toColorScheme()
+                }
+            }
         }
-    }
 
     MaterialTheme(
         colorScheme = colorScheme,
         typography = MaterialTheme.typography,
-        content = content
+        content = content,
     )
 }
 
 fun Bitmap.extractThemeColor(): Color {
-    val colorsToPopulation = Palette.from(this)
-        .maximumColorCount(8)
-        .generate()
-        .swatches
-        .associate { it.rgb to it.population }
+    val colorsToPopulation =
+        Palette
+            .from(this)
+            .maximumColorCount(8)
+            .generate()
+            .swatches
+            .associate { it.rgb to it.population }
     val rankedColors = Score.score(colorsToPopulation)
     return Color(rankedColors.first())
 }
 
-fun Scheme.toColorScheme() = ColorScheme(
-    primary = Color(primary),
-    onPrimary = Color(onPrimary),
-    primaryContainer = Color(primaryContainer),
-    onPrimaryContainer = Color(onPrimaryContainer),
-    inversePrimary = Color(inversePrimary),
-    secondary = Color(secondary),
-    onSecondary = Color(onSecondary),
-    secondaryContainer = Color(secondaryContainer),
-    onSecondaryContainer = Color(onSecondaryContainer),
-    tertiary = Color(tertiary),
-    onTertiary = Color(onTertiary),
-    tertiaryContainer = Color(tertiaryContainer),
-    onTertiaryContainer = Color(onTertiaryContainer),
-    background = Color(background),
-    onBackground = Color(onBackground),
-    surface = Color(surface),
-    onSurface = Color(onSurface),
-    surfaceVariant = Color(surfaceVariant),
-    onSurfaceVariant = Color(onSurfaceVariant),
-    surfaceTint = Color(primary),
-    inverseSurface = Color(inverseSurface),
-    inverseOnSurface = Color(inverseOnSurface),
-    error = Color(error),
-    onError = Color(onError),
-    errorContainer = Color(errorContainer),
-    onErrorContainer = Color(onErrorContainer),
-    outline = Color(outline),
-    outlineVariant = Color(outlineVariant),
-    scrim = Color(scrim),
-)
+fun Scheme.toColorScheme() =
+    ColorScheme(
+        primary = Color(primary),
+        onPrimary = Color(onPrimary),
+        primaryContainer = Color(primaryContainer),
+        onPrimaryContainer = Color(onPrimaryContainer),
+        inversePrimary = Color(inversePrimary),
+        secondary = Color(secondary),
+        onSecondary = Color(onSecondary),
+        secondaryContainer = Color(secondaryContainer),
+        onSecondaryContainer = Color(onSecondaryContainer),
+        tertiary = Color(tertiary),
+        onTertiary = Color(onTertiary),
+        tertiaryContainer = Color(tertiaryContainer),
+        onTertiaryContainer = Color(onTertiaryContainer),
+        background = Color(background),
+        onBackground = Color(onBackground),
+        surface = Color(surface),
+        onSurface = Color(onSurface),
+        surfaceVariant = Color(surfaceVariant),
+        onSurfaceVariant = Color(onSurfaceVariant),
+        surfaceTint = Color(primary),
+        inverseSurface = Color(inverseSurface),
+        inverseOnSurface = Color(inverseOnSurface),
+        error = Color(error),
+        onError = Color(onError),
+        errorContainer = Color(errorContainer),
+        onErrorContainer = Color(onErrorContainer),
+        outline = Color(outline),
+        outlineVariant = Color(outlineVariant),
+        scrim = Color(scrim),
+    )
 
 fun ColorScheme.pureBlack(apply: Boolean) =
-    if (apply) copy(
-        surface = Color.Black,
-        background = Color.Black
-    ) else this
+    if (apply) {
+        copy(
+            surface = Color.Black,
+            background = Color.Black,
+        )
+    } else {
+        this
+    }
 
-val ColorSaver = object : Saver<Color, Int> {
-    override fun restore(value: Int): Color = Color(value)
-    override fun SaverScope.save(value: Color): Int = value.toArgb()
-}
+val ColorSaver =
+    object : Saver<Color, Int> {
+        override fun restore(value: Int): Color = Color(value)
+
+        override fun SaverScope.save(value: Color): Int = value.toArgb()
+    }

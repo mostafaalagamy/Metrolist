@@ -18,16 +18,27 @@ data class MoodAndGenres(
     companion object {
         fun fromSectionListRendererContent(content: SectionListRenderer.Content): MoodAndGenres? {
             return MoodAndGenres(
-                title = content.gridRenderer?.header?.gridHeaderRenderer?.title?.runs?.firstOrNull()?.text ?: return null,
-                items = content.gridRenderer.items
-                    .mapNotNull(GridRenderer.Item::musicNavigationButtonRenderer)
-                    .mapNotNull(::fromMusicNavigationButtonRenderer)
+                title =
+                    content.gridRenderer
+                        ?.header
+                        ?.gridHeaderRenderer
+                        ?.title
+                        ?.runs
+                        ?.firstOrNull()
+                        ?.text ?: return null,
+                items =
+                    content.gridRenderer.items
+                        .mapNotNull(GridRenderer.Item::musicNavigationButtonRenderer)
+                        .mapNotNull(::fromMusicNavigationButtonRenderer),
             )
         }
 
         fun fromMusicNavigationButtonRenderer(renderer: MusicNavigationButtonRenderer): Item? {
             return Item(
-                title = renderer.buttonText.runs?.firstOrNull()?.text ?: return null,
+                title =
+                    renderer.buttonText.runs
+                        ?.firstOrNull()
+                        ?.text ?: return null,
                 stripeColor = renderer.solid?.leftStripeColor ?: return null,
                 endpoint = renderer.clickCommand.browseEndpoint ?: return null,
             )

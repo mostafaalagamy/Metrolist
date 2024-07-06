@@ -15,9 +15,9 @@ import java.time.LocalDateTime
             entity = SongEntity::class,
             parentColumns = ["id"],
             childColumns = ["songId"],
-            onDelete = ForeignKey.CASCADE
-        )
-    ]
+            onDelete = ForeignKey.CASCADE,
+        ),
+    ],
 )
 data class Event(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,

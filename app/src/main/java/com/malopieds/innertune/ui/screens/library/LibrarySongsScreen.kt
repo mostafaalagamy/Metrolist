@@ -2,7 +2,13 @@ package com.malopieds.innertune.ui.screens.library
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -28,7 +34,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.malopieds.innertune.LocalPlayerAwareWindowInsets
 import com.malopieds.innertune.LocalPlayerConnection
-import com.malopieds.innertune.constants.*
+import com.malopieds.innertune.R
+import com.malopieds.innertune.constants.CONTENT_TYPE_HEADER
+import com.malopieds.innertune.constants.CONTENT_TYPE_SONG
+import com.malopieds.innertune.constants.SongSortDescendingKey
+import com.malopieds.innertune.constants.SongSortType
+import com.malopieds.innertune.constants.SongSortTypeKey
 import com.malopieds.innertune.extensions.toMediaItem
 import com.malopieds.innertune.extensions.togglePlayPause
 import com.malopieds.innertune.playback.queues.ListQueue
@@ -42,7 +53,6 @@ import com.malopieds.innertune.ui.utils.ItemWrapper
 import com.malopieds.innertune.utils.rememberEnumPreference
 import com.malopieds.innertune.utils.rememberPreference
 import com.malopieds.innertune.viewmodels.LibrarySongsViewModel
-import com.malopieds.innertune.R
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -71,26 +81,26 @@ fun LibrarySongsScreen(
     val lazyListState = rememberLazyListState()
 
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
     ) {
         LazyColumn(
             state = lazyListState,
-            contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues()
+            contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues(),
         ) {
             item(
                 key = "filter",
-                contentType = CONTENT_TYPE_HEADER
+                contentType = CONTENT_TYPE_HEADER,
             ) {
                 filterContent()
             }
 
             item(
                 key = "header",
-                contentType = CONTENT_TYPE_HEADER
+                contentType = CONTENT_TYPE_HEADER,
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(horizontal = 16.dp)
+                    modifier = Modifier.padding(horizontal = 16.dp),
                 ) {
                     if (selection) {
                         val count = wrappedSongs.count { it.isSelected }
@@ -99,14 +109,14 @@ fun LibrarySongsScreen(
                             onClick = {
                                 if (count == wrappedSongs.size) {
                                     wrappedSongs.forEach { it.isSelected = false }
-                                }else {
+                                } else {
                                     wrappedSongs.forEach { it.isSelected = true }
                                 }
                             },
                         ) {
                             Icon(
                                 painter = painterResource(if (count == wrappedSongs.size) R.drawable.deselect else R.drawable.select_all),
-                                contentDescription = null
+                                contentDescription = null,
                             )
                         }
 
@@ -116,14 +126,14 @@ fun LibrarySongsScreen(
                                     SelectionSongMenu(
                                         songSelection = wrappedSongs.filter { it.isSelected }.map { it.item },
                                         onDismiss = menuState::dismiss,
-                                        clearAction = {selection = false}
+                                        clearAction = { selection = false },
                                     )
                                 }
                             },
                         ) {
                             Icon(
                                 painter = painterResource(R.drawable.more_vert),
-                                contentDescription = null
+                                contentDescription = null,
                             )
                         }
 
@@ -132,7 +142,7 @@ fun LibrarySongsScreen(
                         ) {
                             Icon(
                                 painter = painterResource(R.drawable.close),
-                                contentDescription = null
+                                contentDescription = null,
                             )
                         }
                     } else {
@@ -148,25 +158,25 @@ fun LibrarySongsScreen(
                                     SongSortType.ARTIST -> R.string.sort_by_artist
                                     SongSortType.PLAY_TIME -> R.string.sort_by_play_time
                                 }
-                            }
+                            },
                         )
 
                         Spacer(Modifier.weight(1f))
 
                         IconButton(
                             onClick = { selection = !selection },
-                            modifier = Modifier.padding(horizontal = 6.dp)
+                            modifier = Modifier.padding(horizontal = 6.dp),
                         ) {
                             Icon(
                                 painter = painterResource(if (selection) R.drawable.deselect else R.drawable.select_all),
-                                contentDescription = null
+                                contentDescription = null,
                             )
                         }
 
                         Text(
                             text = pluralStringResource(R.plurals.n_song, songs.size, songs.size),
                             style = MaterialTheme.typography.titleSmall,
-                            color = MaterialTheme.colorScheme.secondary
+                            color = MaterialTheme.colorScheme.secondary,
                         )
                     }
                 }
@@ -175,7 +185,7 @@ fun LibrarySongsScreen(
             itemsIndexed(
                 items = wrappedSongs,
                 key = { _, item -> item.item.song.id },
-                contentType = { _, _ -> CONTENT_TYPE_SONG }
+                contentType = { _, _ -> CONTENT_TYPE_SONG },
             ) { index, songWrapper ->
                 SongListItem(
                     song = songWrapper.item,
@@ -188,50 +198,50 @@ fun LibrarySongsScreen(
                                     SongMenu(
                                         originalSong = songWrapper.item,
                                         navController = navController,
-                                        onDismiss = menuState::dismiss
+                                        onDismiss = menuState::dismiss,
                                     )
                                 }
-                            }
+                            },
                         ) {
                             Icon(
                                 painter = painterResource(R.drawable.more_vert),
-                                contentDescription = null
+                                contentDescription = null,
                             )
                         }
                     },
                     isSelected = songWrapper.isSelected && selection,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .combinedClickable(
-                            onClick = {
-                                if (!selection) {
-                                    if (songWrapper.item.id == mediaMetadata?.id) {
-                                        playerConnection.player.togglePlayPause()
-                                    } else {
-                                        playerConnection.playQueue(
-                                            ListQueue(
-                                                title = context.getString(R.string.queue_all_songs),
-                                                items = songs.map { it.toMediaItem() },
-                                                startIndex = index
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .combinedClickable(
+                                onClick = {
+                                    if (!selection) {
+                                        if (songWrapper.item.id == mediaMetadata?.id) {
+                                            playerConnection.player.togglePlayPause()
+                                        } else {
+                                            playerConnection.playQueue(
+                                                ListQueue(
+                                                    title = context.getString(R.string.queue_all_songs),
+                                                    items = songs.map { it.toMediaItem() },
+                                                    startIndex = index,
+                                                ),
                                             )
+                                        }
+                                    } else {
+                                        songWrapper.isSelected = !songWrapper.isSelected
+                                    }
+                                },
+                                onLongClick = {
+                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                    menuState.show {
+                                        SongMenu(
+                                            originalSong = songWrapper.item,
+                                            navController = navController,
+                                            onDismiss = menuState::dismiss,
                                         )
                                     }
-                                } else {
-                                    songWrapper.isSelected = !songWrapper.isSelected
-                                }
-                            },
-                            onLongClick = {
-                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                menuState.show {
-                                    SongMenu(
-                                        originalSong = songWrapper.item,
-                                        navController = navController,
-                                        onDismiss = menuState::dismiss
-                                    )
-                                }
-                            }
-                        )
-                        .animateItemPlacement()
+                                },
+                            ).animateItemPlacement(),
                 )
             }
         }
@@ -245,9 +255,9 @@ fun LibrarySongsScreen(
                     ListQueue(
                         title = context.getString(R.string.queue_all_songs),
                         items = songs.shuffled().map { it.toMediaItem() },
-                    )
+                    ),
                 )
-            }
+            },
         )
     }
 }

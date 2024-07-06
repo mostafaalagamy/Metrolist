@@ -13,6 +13,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -64,7 +65,7 @@ fun PlaylistMenu(
     onDismiss: () -> Unit,
     autoPlaylist: Boolean? = false,
     downloadPlaylist: Boolean? = false,
-    songList: List<Song>?= emptyList()
+    songList: List<Song>? = emptyList(),
 ) {
     val context = LocalContext.current
     val database = LocalDatabase.current
@@ -73,9 +74,10 @@ fun PlaylistMenu(
     var songs by remember {
         mutableStateOf(emptyList<Song>())
     }
-    val playlistLength = remember(songs) {
-        songs.fastSumBy { it.song.duration }
-    }
+    val playlistLength =
+        remember(songs) {
+            songs.fastSumBy { it.song.duration }
+        }
 
     LaunchedEffect(Unit) {
         if (autoPlaylist == false) {
@@ -86,28 +88,29 @@ fun PlaylistMenu(
             if (songList != null) {
                 songs = songList
             }
-
         }
     }
 
     var downloadState by remember {
-        mutableStateOf(Download.STATE_STOPPED)
+        mutableIntStateOf(Download.STATE_STOPPED)
     }
 
     LaunchedEffect(songs) {
         if (songs.isEmpty()) return@LaunchedEffect
         downloadUtil.downloads.collect { downloads ->
             downloadState =
-                if (songs.all { downloads[it.id]?.state == Download.STATE_COMPLETED })
+                if (songs.all { downloads[it.id]?.state == Download.STATE_COMPLETED }) {
                     Download.STATE_COMPLETED
-                else if (songs.all {
-                        downloads[it.id]?.state == Download.STATE_QUEUED
-                                || downloads[it.id]?.state == Download.STATE_DOWNLOADING
-                                || downloads[it.id]?.state == Download.STATE_COMPLETED
-                    })
+                } else if (songs.all {
+                        downloads[it.id]?.state == Download.STATE_QUEUED ||
+                            downloads[it.id]?.state == Download.STATE_DOWNLOADING ||
+                            downloads[it.id]?.state == Download.STATE_COMPLETED
+                    }
+                ) {
                     Download.STATE_DOWNLOADING
-                else
+                } else {
                     Download.STATE_STOPPED
+                }
         }
     }
 
@@ -120,16 +123,17 @@ fun PlaylistMenu(
             icon = { Icon(painter = painterResource(R.drawable.edit), contentDescription = null) },
             title = { Text(text = stringResource(R.string.edit_playlist)) },
             onDismiss = { showEditDialog = false },
-            initialTextFieldValue = TextFieldValue(
-                playlist.playlist.name,
-                TextRange(playlist.playlist.name.length)
-            ),
+            initialTextFieldValue =
+                TextFieldValue(
+                    playlist.playlist.name,
+                    TextRange(playlist.playlist.name.length),
+                ),
             onDone = { name ->
                 onDismiss()
                 database.query {
                     update(playlist.playlist.copy(name = name, lastUpdateTime = LocalDateTime.now()))
                 }
-            }
+            },
         )
     }
 
@@ -144,14 +148,14 @@ fun PlaylistMenu(
                 Text(
                     text = stringResource(R.string.remove_download_playlist_confirm, playlist.playlist.name),
                     style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.padding(horizontal = 18.dp)
+                    modifier = Modifier.padding(horizontal = 18.dp),
                 )
             },
             buttons = {
                 TextButton(
                     onClick = {
                         showRemoveDownloadDialog = false
-                    }
+                    },
                 ) {
                     Text(text = stringResource(android.R.string.cancel))
                 }
@@ -164,14 +168,14 @@ fun PlaylistMenu(
                                 context,
                                 ExoDownloadService::class.java,
                                 song.song.id,
-                                false
+                                false,
                             )
                         }
-                    }
+                    },
                 ) {
                     Text(text = stringResource(android.R.string.ok))
                 }
-            }
+            },
         )
     }
 
@@ -186,14 +190,14 @@ fun PlaylistMenu(
                 Text(
                     text = stringResource(R.string.delete_playlist_confirm, playlist.playlist.name),
                     style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.padding(horizontal = 18.dp)
+                    modifier = Modifier.padding(horizontal = 18.dp),
                 )
             },
             buttons = {
                 TextButton(
                     onClick = {
                         showDeletePlaylistDialog = false
-                    }
+                    },
                 ) {
                     Text(text = stringResource(android.R.string.cancel))
                 }
@@ -205,11 +209,11 @@ fun PlaylistMenu(
                         database.query {
                             delete(playlist.playlist)
                         }
-                    }
+                    },
                 ) {
                     Text(text = stringResource(android.R.string.ok))
                 }
-            }
+            },
         )
     }
 
@@ -221,46 +225,51 @@ fun PlaylistMenu(
                 fontSize = 14.sp,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.padding(end = 12.dp)
+                modifier = Modifier.padding(end = 12.dp),
             )
-        }
+        },
     )
 
     Divider()
 
     GridMenu(
-        contentPadding = PaddingValues(
-            start = 8.dp,
-            top = 8.dp,
-            end = 8.dp,
-            bottom = 8.dp + WindowInsets.systemBars.asPaddingValues().calculateBottomPadding()
-        )
+        contentPadding =
+            PaddingValues(
+                start = 8.dp,
+                top = 8.dp,
+                end = 8.dp,
+                bottom = 8.dp + WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
+            ),
     ) {
         GridMenuItem(
             icon = R.drawable.play,
-            title = R.string.play
+            title = R.string.play,
         ) {
             onDismiss()
-            playerConnection.playQueue(ListQueue(
-                title = playlist.playlist.name,
-                items = songs.map { it.toMediaItem() }
-            ))
+            playerConnection.playQueue(
+                ListQueue(
+                    title = playlist.playlist.name,
+                    items = songs.map { it.toMediaItem() },
+                ),
+            )
         }
 
         GridMenuItem(
             icon = R.drawable.shuffle,
-            title = R.string.shuffle
+            title = R.string.shuffle,
         ) {
             onDismiss()
-            playerConnection.playQueue(ListQueue(
-                title = playlist.playlist.name,
-                items = songs.shuffled().map { it.toMediaItem() }
-            ))
+            playerConnection.playQueue(
+                ListQueue(
+                    title = playlist.playlist.name,
+                    items = songs.shuffled().map { it.toMediaItem() },
+                ),
+            )
         }
 
         GridMenuItem(
             icon = R.drawable.queue_music,
-            title = R.string.add_to_queue
+            title = R.string.add_to_queue,
         ) {
             onDismiss()
             playerConnection.addToQueue(songs.map { it.toMediaItem() })
@@ -269,7 +278,7 @@ fun PlaylistMenu(
         if (autoPlaylist != true) {
             GridMenuItem(
                 icon = R.drawable.edit,
-                title = R.string.edit
+                title = R.string.edit,
             ) {
                 showEditDialog = true
             }
@@ -280,28 +289,30 @@ fun PlaylistMenu(
                 state = downloadState,
                 onDownload = {
                     songs.forEach { song ->
-                        val downloadRequest = DownloadRequest.Builder(song.id, song.id.toUri())
-                            .setCustomCacheKey(song.id)
-                            .setData(song.song.title.toByteArray())
-                            .build()
+                        val downloadRequest =
+                            DownloadRequest
+                                .Builder(song.id, song.id.toUri())
+                                .setCustomCacheKey(song.id)
+                                .setData(song.song.title.toByteArray())
+                                .build()
                         DownloadService.sendAddDownload(
                             context,
                             ExoDownloadService::class.java,
                             downloadRequest,
-                            false
+                            false,
                         )
                     }
                 },
                 onRemoveDownload = {
                     showRemoveDownloadDialog = true
-                }
+                },
             )
         }
 
         if (autoPlaylist != true) {
             GridMenuItem(
                 icon = R.drawable.delete,
-                title = R.string.delete
+                title = R.string.delete,
             ) {
                 showDeletePlaylistDialog = true
             }
@@ -310,7 +321,7 @@ fun PlaylistMenu(
         if (playlist.playlist.browseId != null) {
             GridMenuItem(
                 icon = R.drawable.sync,
-                title = R.string.sync
+                title = R.string.sync,
             ) {
                 onDismiss()
                 coroutineScope.launch(Dispatchers.IO) {
@@ -326,10 +337,9 @@ fun PlaylistMenu(
                                 PlaylistSongMap(
                                     songId = song.id,
                                     playlistId = playlist.id,
-                                    position = position
+                                    position = position,
                                 )
-                            }
-                            .forEach(::insert)
+                            }.forEach(::insert)
                     }
                 }
             }

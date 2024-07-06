@@ -14,23 +14,26 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class OnlinePlaylistViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle,
-) : ViewModel() {
-    private val playlistId = savedStateHandle.get<String>("playlistId")!!
+class OnlinePlaylistViewModel
+    @Inject
+    constructor(
+        savedStateHandle: SavedStateHandle,
+    ) : ViewModel() {
+        private val playlistId = savedStateHandle.get<String>("playlistId")!!
 
-    val playlist = MutableStateFlow<PlaylistItem?>(null)
-    val playlistSongs = MutableStateFlow<List<SongItem>>(emptyList())
+        val playlist = MutableStateFlow<PlaylistItem?>(null)
+        val playlistSongs = MutableStateFlow<List<SongItem>>(emptyList())
 
-    init {
-        viewModelScope.launch(Dispatchers.IO) {
-            YouTube.playlist(playlistId)
-                .onSuccess { playlistPage ->
-                    playlist.value = playlistPage.playlist
-                    playlistSongs.value = playlistPage.songs
-                }.onFailure {
-                    reportException(it)
+        init {
+            viewModelScope.launch(Dispatchers.IO) {
+                YouTube
+                    .playlist(playlistId)
+                    .onSuccess { playlistPage ->
+                        playlist.value = playlistPage.playlist
+                        playlistSongs.value = playlistPage.songs
+                    }.onFailure {
+                        reportException(it)
+                    }
             }
         }
     }
-}

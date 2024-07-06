@@ -1,12 +1,32 @@
 package com.malopieds.innertune.ui.component
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.AlertDialogDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ProvideTextStyle
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -30,23 +50,24 @@ fun DefaultDialog(
 ) {
     Dialog(
         onDismissRequest = onDismiss,
-        properties = DialogProperties(usePlatformDefaultWidth = false)
+        properties = DialogProperties(usePlatformDefaultWidth = false),
     ) {
         Surface(
             modifier = Modifier.padding(24.dp),
             shape = AlertDialogDefaults.shape,
             color = AlertDialogDefaults.containerColor,
-            tonalElevation = AlertDialogDefaults.TonalElevation
+            tonalElevation = AlertDialogDefaults.TonalElevation,
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = modifier
-                    .padding(24.dp)
+                modifier =
+                    modifier
+                        .padding(24.dp),
             ) {
                 if (icon != null) {
                     CompositionLocalProvider(LocalContentColor provides AlertDialogDefaults.iconContentColor) {
                         Box(
-                            Modifier.align(Alignment.CenterHorizontally)
+                            Modifier.align(Alignment.CenterHorizontally),
                         ) {
                             icon()
                         }
@@ -59,7 +80,7 @@ fun DefaultDialog(
                         ProvideTextStyle(MaterialTheme.typography.headlineSmall) {
                             Box(
                                 // Align the title to the center when an icon is present.
-                                Modifier.align(if (icon == null) Alignment.Start else Alignment.CenterHorizontally)
+                                Modifier.align(if (icon == null) Alignment.Start else Alignment.CenterHorizontally),
                             ) {
                                 title()
                             }
@@ -75,11 +96,11 @@ fun DefaultDialog(
                     Spacer(Modifier.height(24.dp))
 
                     Row(
-                        modifier = Modifier.align(Alignment.End)
+                        modifier = Modifier.align(Alignment.End),
                     ) {
                         CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.primary) {
                             ProvideTextStyle(
-                                value = MaterialTheme.typography.labelLarge
+                                value = MaterialTheme.typography.labelLarge,
                             ) {
                                 buttons()
                             }
@@ -99,17 +120,17 @@ fun ListDialog(
 ) {
     Dialog(
         onDismissRequest = onDismiss,
-        properties = DialogProperties(usePlatformDefaultWidth = false)
+        properties = DialogProperties(usePlatformDefaultWidth = false),
     ) {
         Surface(
             modifier = Modifier.padding(24.dp),
             shape = AlertDialogDefaults.shape,
             color = AlertDialogDefaults.containerColor,
-            tonalElevation = AlertDialogDefaults.TonalElevation
+            tonalElevation = AlertDialogDefaults.TonalElevation,
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = modifier.padding(vertical = 24.dp)
+                modifier = modifier.padding(vertical = 24.dp),
             ) {
                 LazyColumn(content = content)
             }
@@ -131,13 +152,15 @@ fun TextFieldDialog(
     onDone: (String) -> Unit,
     onDismiss: () -> Unit,
 ) {
-    val (textFieldValue, onTextFieldValueChange) = remember {
-        mutableStateOf(initialTextFieldValue)
-    }
+    val (textFieldValue, onTextFieldValueChange) =
+        remember {
+            mutableStateOf(initialTextFieldValue)
+        }
 
-    val focusRequester = remember {
-        FocusRequester()
-    }
+    val focusRequester =
+        remember {
+            FocusRequester()
+        }
 
     LaunchedEffect(Unit) {
         delay(300)
@@ -159,11 +182,11 @@ fun TextFieldDialog(
                 onClick = {
                     onDismiss()
                     onDone(textFieldValue.text)
-                }
+                },
             ) {
                 Text(text = stringResource(android.R.string.ok))
             }
-        }
+        },
     ) {
         TextField(
             value = textFieldValue,
@@ -173,15 +196,17 @@ fun TextFieldDialog(
             maxLines = maxLines,
             colors = TextFieldDefaults.outlinedTextFieldColors(),
             keyboardOptions = KeyboardOptions(imeAction = if (singleLine) ImeAction.Done else ImeAction.None),
-            keyboardActions = KeyboardActions(
-                onDone = {
-                    onDone(textFieldValue.text)
-                    onDismiss()
-                }
-            ),
-            modifier = Modifier
-                .weight(weight = 1f, fill = false)
-                .focusRequester(focusRequester)
+            keyboardActions =
+                KeyboardActions(
+                    onDone = {
+                        onDone(textFieldValue.text)
+                        onDismiss()
+                    },
+                ),
+            modifier =
+                Modifier
+                    .weight(weight = 1f, fill = false)
+                    .focusRequester(focusRequester),
         )
     }
 }

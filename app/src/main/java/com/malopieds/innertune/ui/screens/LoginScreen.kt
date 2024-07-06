@@ -39,9 +39,7 @@ import kotlinx.coroutines.launch
 @SuppressLint("SetJavaScriptEnabled")
 @OptIn(ExperimentalMaterial3Api::class, DelicateCoroutinesApi::class)
 @Composable
-fun LoginScreen(
-    navController: NavController,
-) {
+fun LoginScreen(navController: NavController) {
     var visitorData by rememberPreference(VisitorDataKey, "")
     var innerTubeCookie by rememberPreference(InnerTubeCookieKey, "")
     var accountName by rememberPreference(AccountNameKey, "")
@@ -51,48 +49,64 @@ fun LoginScreen(
     var webView: WebView? = null
 
     AndroidView(
-        modifier = Modifier
-            .windowInsetsPadding(LocalPlayerAwareWindowInsets.current)
-            .fillMaxSize(),
+        modifier =
+            Modifier
+                .windowInsetsPadding(LocalPlayerAwareWindowInsets.current)
+                .fillMaxSize(),
         factory = { context ->
             WebView(context).apply {
-                webViewClient = object : WebViewClient() {
-                    override fun doUpdateVisitedHistory(view: WebView, url: String, isReload: Boolean) {
-                        if (url.startsWith("https://music.youtube.com")) {
-                            innerTubeCookie = CookieManager.getInstance().getCookie(url)
-                            GlobalScope.launch {
-                                YouTube.accountInfo().onSuccess {
-                                    accountName = it.name
-                                    accountEmail = it.email.orEmpty()
-                                    accountChannelHandle = it.channelHandle.orEmpty()
-                                }.onFailure {
-                                    reportException(it)
+                webViewClient =
+                    object : WebViewClient() {
+                        override fun doUpdateVisitedHistory(
+                            view: WebView,
+                            url: String,
+                            isReload: Boolean,
+                        ) {
+                            if (url.startsWith("https://music.youtube.com")) {
+                                innerTubeCookie = CookieManager.getInstance().getCookie(url)
+                                GlobalScope.launch {
+                                    YouTube
+                                        .accountInfo()
+                                        .onSuccess {
+                                            accountName = it.name
+                                            accountEmail = it.email.orEmpty()
+                                            accountChannelHandle = it.channelHandle.orEmpty()
+                                        }.onFailure {
+                                            reportException(it)
+                                        }
                                 }
                             }
                         }
-                    }
 
-                    override fun onPageFinished(view: WebView, url: String?) {
-                        loadUrl("javascript:Android.onRetrieveVisitorData(window.yt.config_.VISITOR_DATA)")
+                        override fun onPageFinished(
+                            view: WebView,
+                            url: String?,
+                        ) {
+                            loadUrl("javascript:Android.onRetrieveVisitorData(window.yt.config_.VISITOR_DATA)")
+                        }
                     }
-                }
                 settings.apply {
                     javaScriptEnabled = true
                     setSupportZoom(true)
                     builtInZoomControls = true
                 }
-                addJavascriptInterface(object {
-                    @JavascriptInterface
-                    fun onRetrieveVisitorData(newVisitorData: String?) {
-                        if (newVisitorData != null) {
-                            visitorData = newVisitorData
+                addJavascriptInterface(
+                    object {
+                        @JavascriptInterface
+                        fun onRetrieveVisitorData(newVisitorData: String?) {
+                            if (newVisitorData != null) {
+                                visitorData = newVisitorData
+                            }
                         }
-                    }
-                }, "Android")
+                    },
+                    "Android",
+                )
                 webView = this
-                loadUrl("https://accounts.google.com/ServiceLogin?ltmpl=music&service=youtube&passive=true&continue=https%3A%2F%2Fwww.youtube.com%2Fsignin%3Faction_handle_signin%3Dtrue%26next%3Dhttps%253A%252F%252Fmusic.youtube.com%252F")
+                loadUrl(
+                    "https://accounts.google.com/ServiceLogin?ltmpl=music&service=youtube&passive=true&continue=https%3A%2F%2Fwww.youtube.com%2Fsignin%3Faction_handle_signin%3Dtrue%26next%3Dhttps%253A%252F%252Fmusic.youtube.com%252F",
+                )
             }
-        }
+        },
     )
 
     TopAppBar(
@@ -100,14 +114,14 @@ fun LoginScreen(
         navigationIcon = {
             IconButton(
                 onClick = navController::navigateUp,
-                onLongClick = navController::backToMain
+                onLongClick = navController::backToMain,
             ) {
                 Icon(
                     painterResource(R.drawable.arrow_back),
-                    contentDescription = null
+                    contentDescription = null,
                 )
             }
-        }
+        },
     )
 
     BackHandler(enabled = webView?.canGoBack() == true) {

@@ -100,16 +100,18 @@ fun AlbumMenu(
         if (songs.isEmpty()) return@LaunchedEffect
         downloadUtil.downloads.collect { downloads ->
             downloadState =
-                if (songs.all { downloads[it.id]?.state == STATE_COMPLETED })
+                if (songs.all { downloads[it.id]?.state == STATE_COMPLETED }) {
                     STATE_COMPLETED
-                else if (songs.all {
-                        downloads[it.id]?.state == STATE_QUEUED
-                                || downloads[it.id]?.state == STATE_DOWNLOADING
-                                || downloads[it.id]?.state == STATE_COMPLETED
-                    })
+                } else if (songs.all {
+                        downloads[it.id]?.state == STATE_QUEUED ||
+                            downloads[it.id]?.state == STATE_DOWNLOADING ||
+                            downloads[it.id]?.state == STATE_COMPLETED
+                    }
+                ) {
                     STATE_DOWNLOADING
-                else
+                } else {
                     STATE_STOPPED
+                }
         }
     }
 
@@ -141,8 +143,8 @@ fun AlbumMenu(
                                 PlaylistSongMap(
                                     songId = song.id,
                                     playlistId = playlist.id,
-                                    position = position++
-                                )
+                                    position = position++,
+                                ),
                             )
                             update(playlist.playlist.copy(lastUpdateTime = LocalDateTime.now()))
                             onDismiss()
@@ -155,7 +157,7 @@ fun AlbumMenu(
         },
         onDismiss = {
             showChoosePlaylistDialog = false
-        }
+        },
     )
 
     if (showErrorPlaylistAddDialog) {
@@ -163,7 +165,7 @@ fun AlbumMenu(
             onDismiss = {
                 showErrorPlaylistAddDialog = false
                 onDismiss()
-            }
+            },
         ) {
             item {
                 ListItem(
@@ -173,11 +175,12 @@ fun AlbumMenu(
                             painter = painterResource(R.drawable.close),
                             contentDescription = null,
                             colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
-                            modifier = Modifier.size(ListThumbnailSize)
+                            modifier = Modifier.size(ListThumbnailSize),
                         )
                     },
-                    modifier = Modifier
-                        .clickable { showErrorPlaylistAddDialog = false }
+                    modifier =
+                        Modifier
+                            .clickable { showErrorPlaylistAddDialog = false },
                 )
             }
 
@@ -189,33 +192,34 @@ fun AlbumMenu(
 
     if (showSelectArtistDialog) {
         ListDialog(
-            onDismiss = { showSelectArtistDialog = false }
+            onDismiss = { showSelectArtistDialog = false },
         ) {
             items(
                 items = album.artists,
-                key = { it.id }
+                key = { it.id },
             ) { artist ->
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .height(ListItemHeight)
-                        .clickable {
-                            navController.navigate("artist/${artist.id}")
-                            showSelectArtistDialog = false
-                            onDismiss()
-                        }
-                        .padding(horizontal = 12.dp),
+                    modifier =
+                        Modifier
+                            .height(ListItemHeight)
+                            .clickable {
+                                navController.navigate("artist/${artist.id}")
+                                showSelectArtistDialog = false
+                                onDismiss()
+                            }.padding(horizontal = 12.dp),
                 ) {
                     Box(
                         modifier = Modifier.padding(8.dp),
-                        contentAlignment = Alignment.Center
+                        contentAlignment = Alignment.Center,
                     ) {
                         AsyncImage(
                             model = artist.thumbnailUrl,
                             contentDescription = null,
-                            modifier = Modifier
-                                .size(ListThumbnailSize)
-                                .clip(CircleShape)
+                            modifier =
+                                Modifier
+                                    .size(ListThumbnailSize)
+                                    .clip(CircleShape),
                         )
                     }
                     Text(
@@ -224,9 +228,10 @@ fun AlbumMenu(
                         fontWeight = FontWeight.Bold,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier
-                            .weight(1f)
-                            .padding(horizontal = 8.dp)
+                        modifier =
+                            Modifier
+                                .weight(1f)
+                                .padding(horizontal = 8.dp),
                     )
                 }
             }
@@ -243,44 +248,45 @@ fun AlbumMenu(
                     database.query {
                         update(album.album.toggleLike())
                     }
-                }
+                },
             ) {
                 Icon(
                     painter = painterResource(if (album.album.bookmarkedAt != null) R.drawable.favorite else R.drawable.favorite_border),
                     tint = if (album.album.bookmarkedAt != null) MaterialTheme.colorScheme.error else LocalContentColor.current,
-                    contentDescription = null
+                    contentDescription = null,
                 )
             }
-        }
+        },
     )
 
     Divider()
 
     GridMenu(
-        contentPadding = PaddingValues(
-            start = 8.dp,
-            top = 8.dp,
-            end = 8.dp,
-            bottom = 8.dp + WindowInsets.systemBars.asPaddingValues().calculateBottomPadding()
-        )
+        contentPadding =
+            PaddingValues(
+                start = 8.dp,
+                top = 8.dp,
+                end = 8.dp,
+                bottom = 8.dp + WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
+            ),
     ) {
         GridMenuItem(
             icon = R.drawable.playlist_play,
-            title = R.string.play_next
+            title = R.string.play_next,
         ) {
             onDismiss()
             playerConnection.playNext(songs.map { it.toMediaItem() })
         }
         GridMenuItem(
             icon = R.drawable.queue_music,
-            title = R.string.add_to_queue
+            title = R.string.add_to_queue,
         ) {
             onDismiss()
             playerConnection.addToQueue(songs.map { it.toMediaItem() })
         }
         GridMenuItem(
             icon = R.drawable.playlist_add,
-            title = R.string.add_to_playlist
+            title = R.string.add_to_playlist,
         ) {
             showChoosePlaylistDialog = true
         }
@@ -288,15 +294,17 @@ fun AlbumMenu(
             state = downloadState,
             onDownload = {
                 songs.forEach { song ->
-                    val downloadRequest = DownloadRequest.Builder(song.id, song.id.toUri())
-                        .setCustomCacheKey(song.id)
-                        .setData(song.song.title.toByteArray())
-                        .build()
+                    val downloadRequest =
+                        DownloadRequest
+                            .Builder(song.id, song.id.toUri())
+                            .setCustomCacheKey(song.id)
+                            .setData(song.song.title.toByteArray())
+                            .build()
                     DownloadService.sendAddDownload(
                         context,
                         ExoDownloadService::class.java,
                         downloadRequest,
-                        false
+                        false,
                     )
                 }
             },
@@ -306,14 +314,14 @@ fun AlbumMenu(
                         context,
                         ExoDownloadService::class.java,
                         song.id,
-                        false
+                        false,
                     )
                 }
-            }
+            },
         )
         GridMenuItem(
             icon = R.drawable.artist,
-            title = R.string.view_artist
+            title = R.string.view_artist,
         ) {
             if (album.artists.size == 1) {
                 navController.navigate("artist/${album.artists[0].id}")
@@ -324,14 +332,15 @@ fun AlbumMenu(
         }
         GridMenuItem(
             icon = R.drawable.share,
-            title = R.string.share
+            title = R.string.share,
         ) {
             onDismiss()
-            val intent = Intent().apply {
-                action = Intent.ACTION_SEND
-                type = "text/plain"
-                putExtra(Intent.EXTRA_TEXT, "https://music.youtube.com/browse/${album.album.id}")
-            }
+            val intent =
+                Intent().apply {
+                    action = Intent.ACTION_SEND
+                    type = "text/plain"
+                    putExtra(Intent.EXTRA_TEXT, "https://music.youtube.com/browse/${album.album.id}")
+                }
             context.startActivity(Intent.createChooser(intent, null))
         }
     }

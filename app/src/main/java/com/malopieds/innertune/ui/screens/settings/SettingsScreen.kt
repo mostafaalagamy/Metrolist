@@ -34,44 +34,45 @@ fun SettingsScreen(
     val uriHandler = LocalUriHandler.current
 
     Column(
-        modifier = Modifier
-            .windowInsetsPadding(LocalPlayerAwareWindowInsets.current)
-            .verticalScroll(rememberScrollState())
+        modifier =
+            Modifier
+                .windowInsetsPadding(LocalPlayerAwareWindowInsets.current)
+                .verticalScroll(rememberScrollState()),
     ) {
         PreferenceEntry(
             title = { Text(stringResource(R.string.appearance)) },
             icon = { Icon(painterResource(R.drawable.palette), null) },
-            onClick = { navController.navigate("settings/appearance") }
+            onClick = { navController.navigate("settings/appearance") },
         )
         PreferenceEntry(
             title = { Text(stringResource(R.string.content)) },
             icon = { Icon(painterResource(R.drawable.language), null) },
-            onClick = { navController.navigate("settings/content") }
+            onClick = { navController.navigate("settings/content") },
         )
         PreferenceEntry(
             title = { Text(stringResource(R.string.player_and_audio)) },
             icon = { Icon(painterResource(R.drawable.play), null) },
-            onClick = { navController.navigate("settings/player") }
+            onClick = { navController.navigate("settings/player") },
         )
         PreferenceEntry(
             title = { Text(stringResource(R.string.storage)) },
             icon = { Icon(painterResource(R.drawable.storage), null) },
-            onClick = { navController.navigate("settings/storage") }
+            onClick = { navController.navigate("settings/storage") },
         )
         PreferenceEntry(
             title = { Text(stringResource(R.string.privacy)) },
             icon = { Icon(painterResource(R.drawable.security), null) },
-            onClick = { navController.navigate("settings/privacy") }
+            onClick = { navController.navigate("settings/privacy") },
         )
         PreferenceEntry(
             title = { Text(stringResource(R.string.backup_restore)) },
             icon = { Icon(painterResource(R.drawable.restore), null) },
-            onClick = { navController.navigate("settings/backup_restore") }
+            onClick = { navController.navigate("settings/backup_restore") },
         )
         PreferenceEntry(
             title = { Text(stringResource(R.string.about)) },
             icon = { Icon(painterResource(R.drawable.info), null) },
-            onClick = { navController.navigate("settings/about") }
+            onClick = { navController.navigate("settings/about") },
         )
         if (latestVersion > BuildConfig.VERSION_CODE) {
             PreferenceEntry(
@@ -82,14 +83,14 @@ fun SettingsScreen(
                 },
                 icon = {
                     BadgedBox(
-                        badge = { Badge() }
+                        badge = { Badge() },
                     ) {
                         Icon(painterResource(R.drawable.update), null)
                     }
                 },
                 onClick = {
                     uriHandler.openUri("https://github.com/Malopieds/InnerTText(une/releases/latest")
-                }
+                },
             )
         }
     }
@@ -99,14 +100,14 @@ fun SettingsScreen(
         navigationIcon = {
             IconButton(
                 onClick = navController::navigateUp,
-                onLongClick = navController::backToMain
+                onLongClick = navController::backToMain,
             ) {
                 Icon(
                     painterResource(R.drawable.arrow_back),
-                    contentDescription = null
+                    contentDescription = null,
                 )
             }
         },
-        scrollBehavior = scrollBehavior
+        scrollBehavior = scrollBehavior,
     )
 }

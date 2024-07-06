@@ -52,61 +52,68 @@ fun ArtistMenu(
                     database.transaction {
                         update(artist.artist.toggleLike())
                     }
-                }
+                },
             ) {
                 Icon(
                     painter = painterResource(if (artist.artist.bookmarkedAt != null) R.drawable.favorite else R.drawable.favorite_border),
                     tint = if (artist.artist.bookmarkedAt != null) MaterialTheme.colorScheme.error else LocalContentColor.current,
-                    contentDescription = null
+                    contentDescription = null,
                 )
             }
-        }
+        },
     )
 
     Divider()
 
     GridMenu(
-        contentPadding = PaddingValues(
-            start = 8.dp,
-            top = 8.dp,
-            end = 8.dp,
-            bottom = 8.dp + WindowInsets.systemBars.asPaddingValues().calculateBottomPadding()
-        )
+        contentPadding =
+            PaddingValues(
+                start = 8.dp,
+                top = 8.dp,
+                end = 8.dp,
+                bottom = 8.dp + WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
+            ),
     ) {
         if (artist.songCount > 0) {
             GridMenuItem(
                 icon = R.drawable.play,
-                title = R.string.play
+                title = R.string.play,
             ) {
                 coroutineScope.launch {
-                    val songs = withContext(Dispatchers.IO) {
-                        database.artistSongs(artist.id, ArtistSongSortType.CREATE_DATE, true).first()
-                            .map { it.toMediaItem() }
-                    }
+                    val songs =
+                        withContext(Dispatchers.IO) {
+                            database
+                                .artistSongs(artist.id, ArtistSongSortType.CREATE_DATE, true)
+                                .first()
+                                .map { it.toMediaItem() }
+                        }
                     playerConnection.playQueue(
                         ListQueue(
                             title = artist.artist.name,
-                            items = songs
-                        )
+                            items = songs,
+                        ),
                     )
                 }
                 onDismiss()
             }
             GridMenuItem(
                 icon = R.drawable.shuffle,
-                title = R.string.shuffle
+                title = R.string.shuffle,
             ) {
                 coroutineScope.launch {
-                    val songs = withContext(Dispatchers.IO) {
-                        database.artistSongs(artist.id, ArtistSongSortType.CREATE_DATE, true).first()
-                            .map { it.toMediaItem() }
-                            .shuffled()
-                    }
+                    val songs =
+                        withContext(Dispatchers.IO) {
+                            database
+                                .artistSongs(artist.id, ArtistSongSortType.CREATE_DATE, true)
+                                .first()
+                                .map { it.toMediaItem() }
+                                .shuffled()
+                        }
                     playerConnection.playQueue(
                         ListQueue(
                             title = artist.artist.name,
-                            items = songs
-                        )
+                            items = songs,
+                        ),
                     )
                 }
                 onDismiss()
@@ -115,14 +122,15 @@ fun ArtistMenu(
         if (artist.artist.isYouTubeArtist) {
             GridMenuItem(
                 icon = R.drawable.share,
-                title = R.string.share
+                title = R.string.share,
             ) {
                 onDismiss()
-                val intent = Intent().apply {
-                    action = Intent.ACTION_SEND
-                    type = "text/plain"
-                    putExtra(Intent.EXTRA_TEXT, "https://music.youtube.com/channel/${artist.id}")
-                }
+                val intent =
+                    Intent().apply {
+                        action = Intent.ACTION_SEND
+                        type = "text/plain"
+                        putExtra(Intent.EXTRA_TEXT, "https://music.youtube.com/channel/${artist.id}")
+                    }
                 context.startActivity(Intent.createChooser(intent, null))
             }
         }

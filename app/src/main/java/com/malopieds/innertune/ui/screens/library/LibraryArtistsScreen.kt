@@ -71,7 +71,7 @@ fun LibraryArtistsScreen(
     val headerContent = @Composable {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(start = 16.dp)
+            modifier = Modifier.padding(start = 16.dp),
         ) {
             SortHeader(
                 sortType = sortType,
@@ -85,7 +85,7 @@ fun LibraryArtistsScreen(
                         ArtistSortType.SONG_COUNT -> R.string.sort_by_song_count
                         ArtistSortType.PLAY_TIME -> R.string.sort_by_play_time
                     }
-                }
+                },
             )
 
             Spacer(Modifier.weight(1f))
@@ -93,46 +93,47 @@ fun LibraryArtistsScreen(
             Text(
                 text = pluralStringResource(R.plurals.n_artist, artists.size, artists.size),
                 style = MaterialTheme.typography.titleSmall,
-                color = MaterialTheme.colorScheme.secondary
+                color = MaterialTheme.colorScheme.secondary,
             )
 
             IconButton(
                 onClick = {
                     viewType = viewType.toggle()
                 },
-                modifier = Modifier.padding(start = 6.dp, end = 6.dp)
+                modifier = Modifier.padding(start = 6.dp, end = 6.dp),
             ) {
                 Icon(
-                    painter = painterResource(
-                        when (viewType) {
-                            LibraryViewType.LIST -> R.drawable.list
-                            LibraryViewType.GRID -> R.drawable.grid_view
-                        }
-                    ),
-                    contentDescription = null
+                    painter =
+                        painterResource(
+                            when (viewType) {
+                                LibraryViewType.LIST -> R.drawable.list
+                                LibraryViewType.GRID -> R.drawable.grid_view
+                            },
+                        ),
+                    contentDescription = null,
                 )
             }
         }
     }
 
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
     ) {
         when (viewType) {
             LibraryViewType.LIST ->
                 LazyColumn(
-                    contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues()
+                    contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues(),
                 ) {
                     item(
                         key = "filter",
-                        contentType = CONTENT_TYPE_HEADER
+                        contentType = CONTENT_TYPE_HEADER,
                     ) {
                         filterContent()
                     }
 
                     item(
                         key = "header",
-                        contentType = CONTENT_TYPE_HEADER
+                        contentType = CONTENT_TYPE_HEADER,
                     ) {
                         headerContent()
                     }
@@ -140,7 +141,7 @@ fun LibraryArtistsScreen(
                     items(
                         items = artists,
                         key = { it.id },
-                        contentType = { CONTENT_TYPE_ARTIST }
+                        contentType = { CONTENT_TYPE_ARTIST },
                     ) { artist ->
                         ArtistListItem(
                             artist = artist,
@@ -151,35 +152,35 @@ fun LibraryArtistsScreen(
                                             ArtistMenu(
                                                 originalArtist = artist,
                                                 coroutineScope = coroutineScope,
-                                                onDismiss = menuState::dismiss
+                                                onDismiss = menuState::dismiss,
                                             )
                                         }
-                                    }
+                                    },
                                 ) {
                                     Icon(
                                         painter = painterResource(R.drawable.more_vert),
-                                        contentDescription = null
+                                        contentDescription = null,
                                     )
                                 }
                             },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .combinedClickable(
-                                    onClick = {
-                                        navController.navigate("artist/${artist.id}")
-                                    },
-                                    onLongClick = {
-                                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                        menuState.show {
-                                            ArtistMenu(
-                                                originalArtist = artist,
-                                                coroutineScope = coroutineScope,
-                                                onDismiss = menuState::dismiss
-                                            )
-                                        }
-                                    }
-                                )
-                                .animateItemPlacement(),
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .combinedClickable(
+                                        onClick = {
+                                            navController.navigate("artist/${artist.id}")
+                                        },
+                                        onLongClick = {
+                                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                            menuState.show {
+                                                ArtistMenu(
+                                                    originalArtist = artist,
+                                                    coroutineScope = coroutineScope,
+                                                    onDismiss = menuState::dismiss,
+                                                )
+                                            }
+                                        },
+                                    ).animateItemPlacement(),
                         )
                     }
                 }
@@ -187,12 +188,12 @@ fun LibraryArtistsScreen(
             LibraryViewType.GRID ->
                 LazyVerticalGrid(
                     columns = GridCells.Adaptive(minSize = GridThumbnailHeight + 24.dp),
-                    contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues()
+                    contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues(),
                 ) {
                     item(
                         key = "filter",
                         span = { GridItemSpan(maxLineSpan) },
-                        contentType = CONTENT_TYPE_HEADER
+                        contentType = CONTENT_TYPE_HEADER,
                     ) {
                         filterContent()
                     }
@@ -200,7 +201,7 @@ fun LibraryArtistsScreen(
                     item(
                         key = "header",
                         span = { GridItemSpan(maxLineSpan) },
-                        contentType = CONTENT_TYPE_HEADER
+                        contentType = CONTENT_TYPE_HEADER,
                     ) {
                         headerContent()
                     }
@@ -208,29 +209,29 @@ fun LibraryArtistsScreen(
                     items(
                         items = artists,
                         key = { it.id },
-                        contentType = { CONTENT_TYPE_ARTIST }
+                        contentType = { CONTENT_TYPE_ARTIST },
                     ) { artist ->
                         ArtistGridItem(
                             artist = artist,
                             fillMaxWidth = true,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .combinedClickable(
-                                    onClick = {
-                                        navController.navigate("artist/${artist.id}")
-                                    },
-                                    onLongClick = {
-                                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                        menuState.show {
-                                            ArtistMenu(
-                                                originalArtist = artist,
-                                                coroutineScope = coroutineScope,
-                                                onDismiss = menuState::dismiss
-                                            )
-                                        }
-                                    }
-                                )
-                                .animateItemPlacement()
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .combinedClickable(
+                                        onClick = {
+                                            navController.navigate("artist/${artist.id}")
+                                        },
+                                        onLongClick = {
+                                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                            menuState.show {
+                                                ArtistMenu(
+                                                    originalArtist = artist,
+                                                    coroutineScope = coroutineScope,
+                                                    onDismiss = menuState::dismiss,
+                                                )
+                                            }
+                                        },
+                                    ).animateItemPlacement(),
                         )
                     }
                 }

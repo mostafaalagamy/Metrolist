@@ -1,7 +1,12 @@
 package com.malopieds.innertune.ui.component.shimmer
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -21,22 +26,25 @@ fun ListItemPlaceHolder(
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier
-            .height(ListItemHeight)
-            .padding(horizontal = 6.dp),
+        modifier =
+            modifier
+                .height(ListItemHeight)
+                .padding(horizontal = 6.dp),
     ) {
         Spacer(
-            modifier = Modifier
-                .padding(6.dp)
-                .size(ListThumbnailSize)
-                .clip(thumbnailShape)
-                .background(MaterialTheme.colorScheme.onSurface)
+            modifier =
+                Modifier
+                    .padding(6.dp)
+                    .size(ListThumbnailSize)
+                    .clip(thumbnailShape)
+                    .background(MaterialTheme.colorScheme.onSurface),
         )
 
         Column(
-            modifier = Modifier
-                .weight(1f)
-                .padding(horizontal = 6.dp)
+            modifier =
+                Modifier
+                    .weight(1f)
+                    .padding(horizontal = 6.dp),
         ) {
             TextPlaceholder()
             TextPlaceholder()

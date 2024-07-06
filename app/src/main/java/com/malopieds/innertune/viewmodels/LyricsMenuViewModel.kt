@@ -17,40 +17,52 @@ import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @HiltViewModel
-class LyricsMenuViewModel @Inject constructor(
-    private val lyricsHelper: LyricsHelper,
-    val database: MusicDatabase,
-) : ViewModel() {
-    private var job: Job? = null
-    val results = MutableStateFlow(emptyList<LyricsResult>())
-    val isLoading = MutableStateFlow(false)
+class LyricsMenuViewModel
+    @Inject
+    constructor(
+        private val lyricsHelper: LyricsHelper,
+        val database: MusicDatabase,
+    ) : ViewModel() {
+        private var job: Job? = null
+        val results = MutableStateFlow(emptyList<LyricsResult>())
+        val isLoading = MutableStateFlow(false)
 
-    fun search(mediaId: String, title: String, artist: String, duration: Int) {
-        isLoading.value = true
-        results.value = emptyList()
-        job?.cancel()
-        job = viewModelScope.launch(Dispatchers.IO) {
-            lyricsHelper.getAllLyrics(mediaId, title, artist, duration) { result ->
-                results.update {
-                    it + result
+        fun search(
+            mediaId: String,
+            title: String,
+            artist: String,
+            duration: Int,
+        ) {
+            isLoading.value = true
+            results.value = emptyList()
+            job?.cancel()
+            job =
+                viewModelScope.launch(Dispatchers.IO) {
+                    lyricsHelper.getAllLyrics(mediaId, title, artist, duration) { result ->
+                        results.update {
+                            it + result
+                        }
+                    }
+                    isLoading.value = false
                 }
+        }
+
+        fun cancelSearch() {
+            job?.cancel()
+            job = null
+        }
+
+        fun refetchLyrics(
+            mediaMetadata: MediaMetadata,
+            lyricsEntity: LyricsEntity?,
+        ) {
+            database.query {
+                lyricsEntity?.let(::delete)
+                val lyrics =
+                    runBlocking {
+                        lyricsHelper.getLyrics(mediaMetadata)
+                    }
+                upsert(LyricsEntity(mediaMetadata.id, lyrics))
             }
-            isLoading.value = false
         }
     }
-
-    fun cancelSearch() {
-        job?.cancel()
-        job = null
-    }
-
-    fun refetchLyrics(mediaMetadata: MediaMetadata, lyricsEntity: LyricsEntity?) {
-        database.query {
-            lyricsEntity?.let(::delete)
-            val lyrics = runBlocking {
-                lyricsHelper.getLyrics(mediaMetadata)
-            }
-            upsert(LyricsEntity(mediaMetadata.id, lyrics))
-        }
-    }
-}

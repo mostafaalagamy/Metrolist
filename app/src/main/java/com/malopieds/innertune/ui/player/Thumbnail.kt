@@ -53,33 +53,36 @@ fun Thumbnail(
             visible = !showLyrics && error == null,
             enter = fadeIn(),
             exit = fadeOut(),
-            modifier = Modifier
-                .fillMaxSize()
-                .statusBarsPadding()
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .statusBarsPadding(),
         ) {
             Box(
                 contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = PlayerHorizontalPadding)
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = PlayerHorizontalPadding),
             ) {
                 AsyncImage(
                     model = mediaMetadata?.thumbnailUrl,
                     contentDescription = null,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(ThumbnailCornerRadius * 2))
-                        .pointerInput(Unit) {
-                            detectTapGestures(
-                                onDoubleTap = { offset ->
-                                    if (offset.x < size.width / 2) {
-                                        playerConnection.player.seekBack()
-                                    } else {
-                                        playerConnection.player.seekForward()
-                                    }
-                                }
-                            )
-                        }
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(ThumbnailCornerRadius * 2))
+                            .pointerInput(Unit) {
+                                detectTapGestures(
+                                    onDoubleTap = { offset ->
+                                        if (offset.x < size.width / 2) {
+                                            playerConnection.player.seekBack()
+                                        } else {
+                                            playerConnection.player.seekForward()
+                                        }
+                                    },
+                                )
+                            },
                 )
             }
         }
@@ -87,7 +90,7 @@ fun Thumbnail(
         AnimatedVisibility(
             visible = showLyrics && error == null,
             enter = fadeIn(),
-            exit = fadeOut()
+            exit = fadeOut(),
         ) {
             Lyrics(sliderPositionProvider = sliderPositionProvider)
         }
@@ -96,14 +99,15 @@ fun Thumbnail(
             visible = error != null,
             enter = fadeIn(),
             exit = fadeOut(),
-            modifier = Modifier
-                .padding(32.dp)
-                .align(Alignment.Center)
+            modifier =
+                Modifier
+                    .padding(32.dp)
+                    .align(Alignment.Center),
         ) {
             error?.let { error ->
                 PlaybackError(
                     error = error,
-                    retry = playerConnection.player::prepare
+                    retry = playerConnection.player::prepare,
                 )
             }
         }

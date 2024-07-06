@@ -52,37 +52,46 @@ fun YouTubeArtistMenu(
                                     id = artist.id,
                                     name = artist.title,
                                     thumbnailUrl = artist.thumbnail,
-                                    bookmarkedAt = LocalDateTime.now()
-                                )
+                                    bookmarkedAt = LocalDateTime.now(),
+                                ),
                             )
                         }
                     }
-                }
+                },
             ) {
                 Icon(
-                    painter = painterResource(if (libraryArtist?.artist?.bookmarkedAt != null) R.drawable.favorite else R.drawable.favorite_border),
+                    painter =
+                        painterResource(
+                            if (libraryArtist?.artist?.bookmarkedAt !=
+                                null
+                            ) {
+                                R.drawable.favorite
+                            } else {
+                                R.drawable.favorite_border
+                            },
+                        ),
                     tint = if (libraryArtist?.artist?.bookmarkedAt != null) MaterialTheme.colorScheme.error else LocalContentColor.current,
-                    contentDescription = null
+                    contentDescription = null,
                 )
             }
-
-        }
+        },
     )
 
     Divider()
 
     GridMenu(
-        contentPadding = PaddingValues(
-            start = 8.dp,
-            top = 8.dp,
-            end = 8.dp,
-            bottom = 8.dp + WindowInsets.systemBars.asPaddingValues().calculateBottomPadding()
-        )
+        contentPadding =
+            PaddingValues(
+                start = 8.dp,
+                top = 8.dp,
+                end = 8.dp,
+                bottom = 8.dp + WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
+            ),
     ) {
         artist.radioEndpoint?.let { watchEndpoint ->
             GridMenuItem(
                 icon = R.drawable.radio,
-                title = R.string.start_radio
+                title = R.string.start_radio,
             ) {
                 playerConnection.playQueue(YouTubeQueue(watchEndpoint))
                 onDismiss()
@@ -91,7 +100,7 @@ fun YouTubeArtistMenu(
         artist.shuffleEndpoint?.let { watchEndpoint ->
             GridMenuItem(
                 icon = R.drawable.shuffle,
-                title = R.string.shuffle
+                title = R.string.shuffle,
             ) {
                 playerConnection.playQueue(YouTubeQueue(watchEndpoint))
                 onDismiss()
@@ -99,13 +108,14 @@ fun YouTubeArtistMenu(
         }
         GridMenuItem(
             icon = R.drawable.share,
-            title = R.string.share
+            title = R.string.share,
         ) {
-            val intent = Intent().apply {
-                action = Intent.ACTION_SEND
-                type = "text/plain"
-                putExtra(Intent.EXTRA_TEXT, artist.shareLink)
-            }
+            val intent =
+                Intent().apply {
+                    action = Intent.ACTION_SEND
+                    type = "text/plain"
+                    putExtra(Intent.EXTRA_TEXT, artist.shareLink)
+                }
             context.startActivity(Intent.createChooser(intent, null))
             onDismiss()
         }

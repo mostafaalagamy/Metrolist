@@ -32,18 +32,23 @@ annotation class DownloadCache
 object AppModule {
     @Singleton
     @Provides
-    fun provideDatabase(@ApplicationContext context: Context): MusicDatabase =
-        InternalDatabase.newInstance(context)
+    fun provideDatabase(
+        @ApplicationContext context: Context,
+    ): MusicDatabase = InternalDatabase.newInstance(context)
 
     @Singleton
     @Provides
-    fun provideDatabaseProvider(@ApplicationContext context: Context): DatabaseProvider =
-        StandaloneDatabaseProvider(context)
+    fun provideDatabaseProvider(
+        @ApplicationContext context: Context,
+    ): DatabaseProvider = StandaloneDatabaseProvider(context)
 
     @Singleton
     @Provides
     @PlayerCache
-    fun providePlayerCache(@ApplicationContext context: Context, databaseProvider: DatabaseProvider): SimpleCache {
+    fun providePlayerCache(
+        @ApplicationContext context: Context,
+        databaseProvider: DatabaseProvider,
+    ): SimpleCache {
         val constructor = {
             SimpleCache(
                 context.filesDir.resolve("exoplayer"),
@@ -51,7 +56,7 @@ object AppModule {
                     -1 -> NoOpCacheEvictor()
                     else -> LeastRecentlyUsedCacheEvictor(cacheSize * 1024 * 1024L)
                 },
-                databaseProvider
+                databaseProvider,
             )
         }
         constructor().release()
@@ -61,7 +66,10 @@ object AppModule {
     @Singleton
     @Provides
     @DownloadCache
-    fun provideDownloadCache(@ApplicationContext context: Context, databaseProvider: DatabaseProvider): SimpleCache {
+    fun provideDownloadCache(
+        @ApplicationContext context: Context,
+        databaseProvider: DatabaseProvider,
+    ): SimpleCache {
         val constructor = {
             SimpleCache(context.filesDir.resolve("download"), NoOpCacheEvictor(), databaseProvider)
         }

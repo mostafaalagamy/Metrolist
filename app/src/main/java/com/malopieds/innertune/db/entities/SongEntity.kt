@@ -11,9 +11,9 @@ import java.time.LocalDateTime
     tableName = "song",
     indices = [
         Index(
-            value = ["albumId"]
-        )
-    ]
+            value = ["albumId"],
+        ),
+    ],
 )
 data class SongEntity(
     @PrimaryKey val id: String,
@@ -26,10 +26,11 @@ data class SongEntity(
     val totalPlayTime: Long = 0, // in milliseconds
     val inLibrary: LocalDateTime? = null,
 ) {
-    fun toggleLike() = copy(
-        liked = !liked,
-        inLibrary = if (!liked) inLibrary ?: LocalDateTime.now() else inLibrary
-    )
+    fun toggleLike() =
+        copy(
+            liked = !liked,
+            inLibrary = if (!liked) inLibrary ?: LocalDateTime.now() else inLibrary,
+        )
 
     fun toggleLibrary() = copy(inLibrary = if (inLibrary == null) LocalDateTime.now() else null)
 }

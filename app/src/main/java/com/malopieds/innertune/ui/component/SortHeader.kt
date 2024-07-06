@@ -35,32 +35,32 @@ inline fun <reified T : Enum<T>> SortHeader(
     crossinline onSortDescendingChange: (Boolean) -> Unit,
     crossinline sortTypeText: (T) -> Int,
     modifier: Modifier = Modifier,
-    showDescending: Boolean? = true
+    showDescending: Boolean? = true,
 ) {
     var menuExpanded by remember { mutableStateOf(false) }
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier.padding(vertical = 8.dp)
+        modifier = modifier.padding(vertical = 8.dp),
     ) {
         Text(
             text = stringResource(sortTypeText(sortType)),
             color = MaterialTheme.colorScheme.primary,
             style = MaterialTheme.typography.labelLarge,
-            modifier = Modifier
-                .clickable(
-                    interactionSource = remember { MutableInteractionSource() },
-                    indication = rememberRipple(bounded = false)
-                ) {
-                    menuExpanded = !menuExpanded
-                }
-                .padding(horizontal = 4.dp, vertical = 8.dp)
+            modifier =
+                Modifier
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = rememberRipple(bounded = false),
+                    ) {
+                        menuExpanded = !menuExpanded
+                    }.padding(horizontal = 4.dp, vertical = 8.dp),
         )
 
         DropdownMenu(
             expanded = menuExpanded,
             onDismissRequest = { menuExpanded = false },
-            modifier = Modifier.widthIn(min = 172.dp)
+            modifier = Modifier.widthIn(min = 172.dp),
         ) {
             enumValues<T>().forEach { type ->
                 DropdownMenuItem(
@@ -68,19 +68,28 @@ inline fun <reified T : Enum<T>> SortHeader(
                         Text(
                             text = stringResource(sortTypeText(type)),
                             fontSize = 16.sp,
-                            fontWeight = FontWeight.Normal
+                            fontWeight = FontWeight.Normal,
                         )
                     },
                     trailingIcon = {
                         Icon(
-                            painter = painterResource(if (sortType == type) R.drawable.radio_button_checked else R.drawable.radio_button_unchecked),
-                            contentDescription = null
+                            painter =
+                                painterResource(
+                                    if (sortType ==
+                                        type
+                                    ) {
+                                        R.drawable.radio_button_checked
+                                    } else {
+                                        R.drawable.radio_button_unchecked
+                                    },
+                                ),
+                            contentDescription = null,
                         )
                     },
                     onClick = {
                         onSortTypeChange(type)
                         menuExpanded = false
-                    }
+                    },
                 )
             }
         }
@@ -89,10 +98,11 @@ inline fun <reified T : Enum<T>> SortHeader(
             ResizableIconButton(
                 icon = if (sortDescending) R.drawable.arrow_downward else R.drawable.arrow_upward,
                 color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier
-                    .size(32.dp)
-                    .padding(8.dp),
-                onClick = { onSortDescendingChange(!sortDescending) }
+                modifier =
+                    Modifier
+                        .size(32.dp)
+                        .padding(8.dp),
+                onClick = { onSortDescendingChange(!sortDescending) },
             )
         }
     }

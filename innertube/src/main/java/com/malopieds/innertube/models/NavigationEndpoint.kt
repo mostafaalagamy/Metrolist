@@ -12,10 +12,11 @@ data class NavigationEndpoint(
     val shareEntityEndpoint: ShareEntityEndpoint? = null,
 ) {
     val endpoint: Endpoint?
-        get() = watchEndpoint
-            ?: watchPlaylistEndpoint
-            ?: browseEndpoint
-            ?: searchEndpoint
-            ?: queueAddEndpoint
-            ?: shareEntityEndpoint
+        get() =
+            watchEndpoint
+                ?: watchPlaylistEndpoint
+                ?: browseEndpoint
+                ?: searchEndpoint
+                ?: queueAddEndpoint
+                ?: shareEntityEndpoint
 }

@@ -35,21 +35,23 @@ fun BackupAndRestore(
     viewModel: BackupRestoreViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
-    val backupLauncher = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("application/octet-stream")) { uri ->
-        if (uri != null) {
-            viewModel.backup(context, uri)
+    val backupLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("application/octet-stream")) { uri ->
+            if (uri != null) {
+                viewModel.backup(context, uri)
+            }
         }
-    }
-    val restoreLauncher = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
-        if (uri != null) {
-            viewModel.restore(context, uri)
+    val restoreLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+            if (uri != null) {
+                viewModel.restore(context, uri)
+            }
         }
-    }
 
     Column(
         Modifier
             .windowInsetsPadding(LocalPlayerAwareWindowInsets.current)
-            .verticalScroll(rememberScrollState())
+            .verticalScroll(rememberScrollState()),
     ) {
         PreferenceEntry(
             title = { Text(stringResource(R.string.backup)) },
@@ -57,14 +59,14 @@ fun BackupAndRestore(
             onClick = {
                 val formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss")
                 backupLauncher.launch("${context.getString(R.string.app_name)}_${LocalDateTime.now().format(formatter)}.backup")
-            }
+            },
         )
         PreferenceEntry(
             title = { Text(stringResource(R.string.restore)) },
             icon = { Icon(painterResource(R.drawable.restore), null) },
             onClick = {
                 restoreLauncher.launch(arrayOf("application/octet-stream"))
-            }
+            },
         )
     }
 
@@ -73,14 +75,14 @@ fun BackupAndRestore(
         navigationIcon = {
             IconButton(
                 onClick = navController::navigateUp,
-                onLongClick = navController::backToMain
+                onLongClick = navController::backToMain,
             ) {
                 Icon(
                     painterResource(R.drawable.arrow_back),
-                    contentDescription = null
+                    contentDescription = null,
                 )
             }
         },
-        scrollBehavior = scrollBehavior
+        scrollBehavior = scrollBehavior,
     )
 }

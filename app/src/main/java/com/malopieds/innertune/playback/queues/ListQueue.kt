@@ -10,7 +10,10 @@ class ListQueue(
     val position: Long = 0L,
 ) : Queue {
     override val preloadItem: MediaMetadata? = null
+
     override suspend fun getInitialStatus() = Queue.Status(title, items, startIndex, position)
+
     override fun hasNextPage(): Boolean = false
+
     override suspend fun nextPage() = throw UnsupportedOperationException()
 }

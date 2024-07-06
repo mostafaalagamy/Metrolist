@@ -50,7 +50,7 @@ fun AddToPlaylistDialog(
 
     if (isVisible) {
         ListDialog(
-            onDismiss = onDismiss
+            onDismiss = onDismiss,
         ) {
             item {
                 ListItem(
@@ -60,22 +60,24 @@ fun AddToPlaylistDialog(
                             painter = painterResource(R.drawable.add),
                             contentDescription = null,
                             colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
-                            modifier = Modifier.size(ListThumbnailSize)
+                            modifier = Modifier.size(ListThumbnailSize),
                         )
                     },
-                    modifier = Modifier.clickable {
-                        showCreatePlaylistDialog = true
-                    }
+                    modifier =
+                        Modifier.clickable {
+                            showCreatePlaylistDialog = true
+                        },
                 )
             }
 
             items(playlists) { playlist ->
                 PlaylistListItem(
                     playlist = playlist,
-                    modifier = Modifier.clickable {
-                        onAdd(playlist)
-                        onDismiss()
-                    }
+                    modifier =
+                        Modifier.clickable {
+                            onAdd(playlist)
+                            onDismiss()
+                        },
                 )
             }
         }
@@ -90,11 +92,11 @@ fun AddToPlaylistDialog(
                 database.query {
                     insert(
                         PlaylistEntity(
-                            name = playlistName
-                        )
+                            name = playlistName,
+                        ),
                     )
                 }
-            }
+            },
         )
     }
 }

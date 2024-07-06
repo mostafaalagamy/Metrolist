@@ -19,10 +19,11 @@ fun TextPlaceholder(
     height: Dp = 16.dp,
 ) {
     Spacer(
-        modifier = modifier
-            .padding(vertical = 4.dp)
-            .background(MaterialTheme.colorScheme.onSurface)
-            .fillMaxWidth(remember { 0.25f + Random.nextFloat() * 0.5f })
-            .height(height)
+        modifier =
+            modifier
+                .padding(vertical = 4.dp)
+                .background(MaterialTheme.colorScheme.onSurface)
+                .fillMaxWidth(remember { 0.25f + Random.nextFloat() * 0.5f })
+                .height(height),
     )
 }

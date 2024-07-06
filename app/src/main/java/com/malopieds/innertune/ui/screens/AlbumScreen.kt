@@ -128,37 +128,40 @@ fun AlbumScreen(
         if (songs.isNullOrEmpty()) return@LaunchedEffect
         downloadUtil.downloads.collect { downloads ->
             downloadState =
-                if (songs.all { downloads[it]?.state == Download.STATE_COMPLETED })
+                if (songs.all { downloads[it]?.state == Download.STATE_COMPLETED }) {
                     Download.STATE_COMPLETED
-                else if (songs.all {
-                        downloads[it]?.state == Download.STATE_QUEUED
-                                || downloads[it]?.state == Download.STATE_DOWNLOADING
-                                || downloads[it]?.state == Download.STATE_COMPLETED
-                    })
+                } else if (songs.all {
+                        downloads[it]?.state == Download.STATE_QUEUED ||
+                            downloads[it]?.state == Download.STATE_DOWNLOADING ||
+                            downloads[it]?.state == Download.STATE_COMPLETED
+                    }
+                ) {
                     Download.STATE_DOWNLOADING
-                else
+                } else {
                     Download.STATE_STOPPED
+                }
         }
     }
 
     LazyColumn(
-        contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues()
+        contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues(),
     ) {
         val albumWithSongs = albumWithSongs
         if (albumWithSongs != null && albumWithSongs.songs.isNotEmpty()) {
             item {
                 Column(
-                    modifier = Modifier.padding(12.dp)
+                    modifier = Modifier.padding(12.dp),
                 ) {
                     Row(
-                        verticalAlignment = Alignment.CenterVertically
+                        verticalAlignment = Alignment.CenterVertically,
                     ) {
                         AsyncImage(
                             model = albumWithSongs.album.thumbnailUrl,
                             contentDescription = null,
-                            modifier = Modifier
-                                .size(AlbumThumbnailSize)
-                                .clip(RoundedCornerShape(ThumbnailCornerRadius))
+                            modifier =
+                                Modifier
+                                    .size(AlbumThumbnailSize)
+                                    .clip(RoundedCornerShape(ThumbnailCornerRadius)),
                         )
 
                         Spacer(Modifier.width(16.dp))
@@ -171,26 +174,29 @@ fun AlbumScreen(
                                 fontWeight = FontWeight.Bold,
                                 maxLines = 2,
                                 overflow = TextOverflow.Ellipsis,
-                                fontSizeRange = FontSizeRange(16.sp, 22.sp)
+                                fontSizeRange = FontSizeRange(16.sp, 22.sp),
                             )
 
-                            val annotatedString = buildAnnotatedString {
-                                withStyle(
-                                    style = MaterialTheme.typography.titleMedium.copy(
-                                        fontWeight = FontWeight.Normal,
-                                        color = MaterialTheme.colorScheme.onBackground
-                                    ).toSpanStyle()
-                                ) {
-                                    albumWithSongs.artists.fastForEachIndexed { index, artist ->
-                                        pushStringAnnotation(artist.id, artist.name)
-                                        append(artist.name)
-                                        pop()
-                                        if (index != albumWithSongs.artists.lastIndex) {
-                                            append(", ")
+                            val annotatedString =
+                                buildAnnotatedString {
+                                    withStyle(
+                                        style =
+                                            MaterialTheme.typography.titleMedium
+                                                .copy(
+                                                    fontWeight = FontWeight.Normal,
+                                                    color = MaterialTheme.colorScheme.onBackground,
+                                                ).toSpanStyle(),
+                                    ) {
+                                        albumWithSongs.artists.fastForEachIndexed { index, artist ->
+                                            pushStringAnnotation(artist.id, artist.name)
+                                            append(artist.name)
+                                            pop()
+                                            if (index != albumWithSongs.artists.lastIndex) {
+                                                append(", ")
+                                            }
                                         }
                                     }
                                 }
-                            }
                             ClickableText(annotatedString) { offset ->
                                 annotatedString.getStringAnnotations(offset, offset).firstOrNull()?.let { range ->
                                     navController.navigate("artist/${range.tag}")
@@ -201,7 +207,7 @@ fun AlbumScreen(
                                 Text(
                                     text = albumWithSongs.album.year.toString(),
                                     style = MaterialTheme.typography.titleMedium,
-                                    fontWeight = FontWeight.Normal
+                                    fontWeight = FontWeight.Normal,
                                 )
                             }
 
@@ -211,12 +217,28 @@ fun AlbumScreen(
                                         database.query {
                                             update(albumWithSongs.album.toggleLike())
                                         }
-                                    }
+                                    },
                                 ) {
                                     Icon(
-                                        painter = painterResource(if (albumWithSongs.album.bookmarkedAt != null) R.drawable.favorite else R.drawable.favorite_border),
+                                        painter =
+                                            painterResource(
+                                                if (albumWithSongs.album.bookmarkedAt !=
+                                                    null
+                                                ) {
+                                                    R.drawable.favorite
+                                                } else {
+                                                    R.drawable.favorite_border
+                                                },
+                                            ),
                                         contentDescription = null,
-                                        tint = if (albumWithSongs.album.bookmarkedAt != null) MaterialTheme.colorScheme.error else LocalContentColor.current
+                                        tint =
+                                            if (albumWithSongs.album.bookmarkedAt !=
+                                                null
+                                            ) {
+                                                MaterialTheme.colorScheme.error
+                                            } else {
+                                                LocalContentColor.current
+                                            },
                                     )
                                 }
 
@@ -229,14 +251,14 @@ fun AlbumScreen(
                                                         context,
                                                         ExoDownloadService::class.java,
                                                         song.id,
-                                                        false
+                                                        false,
                                                     )
                                                 }
-                                            }
+                                            },
                                         ) {
                                             Icon(
                                                 painter = painterResource(R.drawable.offline),
-                                                contentDescription = null
+                                                contentDescription = null,
                                             )
                                         }
                                     }
@@ -249,14 +271,14 @@ fun AlbumScreen(
                                                         context,
                                                         ExoDownloadService::class.java,
                                                         song.id,
-                                                        false
+                                                        false,
                                                     )
                                                 }
-                                            }
+                                            },
                                         ) {
                                             CircularProgressIndicator(
                                                 strokeWidth = 2.dp,
-                                                modifier = Modifier.size(24.dp)
+                                                modifier = Modifier.size(24.dp),
                                             )
                                         }
                                     }
@@ -265,22 +287,24 @@ fun AlbumScreen(
                                         IconButton(
                                             onClick = {
                                                 albumWithSongs.songs.forEach { song ->
-                                                    val downloadRequest = DownloadRequest.Builder(song.id, song.id.toUri())
-                                                        .setCustomCacheKey(song.id)
-                                                        .setData(song.song.title.toByteArray())
-                                                        .build()
+                                                    val downloadRequest =
+                                                        DownloadRequest
+                                                            .Builder(song.id, song.id.toUri())
+                                                            .setCustomCacheKey(song.id)
+                                                            .setData(song.song.title.toByteArray())
+                                                            .build()
                                                     DownloadService.sendAddDownload(
                                                         context,
                                                         ExoDownloadService::class.java,
                                                         downloadRequest,
-                                                        false
+                                                        false,
                                                     )
                                                 }
-                                            }
+                                            },
                                         ) {
                                             Icon(
                                                 painter = painterResource(R.drawable.download),
-                                                contentDescription = null
+                                                contentDescription = null,
                                             )
                                         }
                                     }
@@ -295,11 +319,11 @@ fun AlbumScreen(
                                                 onDismiss = menuState::dismiss,
                                             )
                                         }
-                                    }
+                                    },
                                 ) {
                                     Icon(
                                         painter = painterResource(R.drawable.more_vert),
-                                        contentDescription = null
+                                        contentDescription = null,
                                     )
                                 }
                             }
@@ -314,21 +338,21 @@ fun AlbumScreen(
                                 playerConnection.playQueue(
                                     ListQueue(
                                         title = albumWithSongs.album.title,
-                                        items = albumWithSongs.songs.map(Song::toMediaItem)
-                                    )
+                                        items = albumWithSongs.songs.map(Song::toMediaItem),
+                                    ),
                                 )
                             },
                             contentPadding = ButtonDefaults.ButtonWithIconContentPadding,
-                            modifier = Modifier.weight(1f)
+                            modifier = Modifier.weight(1f),
                         ) {
                             Icon(
                                 painter = painterResource(R.drawable.play),
                                 contentDescription = null,
-                                modifier = Modifier.size(ButtonDefaults.IconSize)
+                                modifier = Modifier.size(ButtonDefaults.IconSize),
                             )
                             Spacer(Modifier.size(ButtonDefaults.IconSpacing))
                             Text(
-                                text = stringResource(R.string.play)
+                                text = stringResource(R.string.play),
                             )
                         }
 
@@ -337,17 +361,17 @@ fun AlbumScreen(
                                 playerConnection.playQueue(
                                     ListQueue(
                                         title = albumWithSongs.album.title,
-                                        items = albumWithSongs.songs.shuffled().map(Song::toMediaItem)
-                                    )
+                                        items = albumWithSongs.songs.shuffled().map(Song::toMediaItem),
+                                    ),
                                 )
                             },
                             contentPadding = ButtonDefaults.ButtonWithIconContentPadding,
-                            modifier = Modifier.weight(1f)
+                            modifier = Modifier.weight(1f),
                         ) {
                             Icon(
                                 painter = painterResource(R.drawable.shuffle),
                                 contentDescription = null,
-                                modifier = Modifier.size(ButtonDefaults.IconSize)
+                                modifier = Modifier.size(ButtonDefaults.IconSize),
                             )
                             Spacer(Modifier.size(ButtonDefaults.IconSpacing))
                             Text(stringResource(R.string.shuffle))
@@ -359,7 +383,7 @@ fun AlbumScreen(
             item {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(start = 16.dp)
+                    modifier = Modifier.padding(start = 16.dp),
                 ) {
                     if (selection) {
                         val count = wrappedSongs?.count { it.isSelected } ?: 0
@@ -368,14 +392,14 @@ fun AlbumScreen(
                             onClick = {
                                 if (count == wrappedSongs?.size) {
                                     wrappedSongs.forEach { it.isSelected = false }
-                                }else {
+                                } else {
                                     wrappedSongs?.forEach { it.isSelected = true }
                                 }
                             },
                         ) {
                             Icon(
                                 painter = painterResource(if (count == wrappedSongs?.size) R.drawable.deselect else R.drawable.select_all),
-                                contentDescription = null
+                                contentDescription = null,
                             )
                         }
 
@@ -386,14 +410,14 @@ fun AlbumScreen(
                                     SelectionSongMenu(
                                         songSelection = wrappedSongs?.filter { it.isSelected }!!.map { it.item },
                                         onDismiss = menuState::dismiss,
-                                        clearAction = {selection = false}
+                                        clearAction = { selection = false },
                                     )
                                 }
                             },
                         ) {
                             Icon(
                                 painter = painterResource(R.drawable.more_vert),
-                                contentDescription = null
+                                contentDescription = null,
                             )
                         }
 
@@ -402,7 +426,7 @@ fun AlbumScreen(
                         ) {
                             Icon(
                                 painter = painterResource(R.drawable.close),
-                                contentDescription = null
+                                contentDescription = null,
                             )
                         }
                     }
@@ -412,7 +436,7 @@ fun AlbumScreen(
             if (wrappedSongs != null) {
                 itemsIndexed(
                     items = wrappedSongs,
-                    key = { _, song -> song.item.id }
+                    key = { _, song -> song.item.id },
                 ) { index, songWrapper ->
                     SongListItem(
                         song = songWrapper.item,
@@ -427,49 +451,50 @@ fun AlbumScreen(
                                         SongMenu(
                                             originalSong = songWrapper.item,
                                             navController = navController,
-                                            onDismiss = menuState::dismiss
+                                            onDismiss = menuState::dismiss,
                                         )
                                     }
-                                }
+                                },
                             ) {
                                 Icon(
                                     painter = painterResource(R.drawable.more_vert),
-                                    contentDescription = null
+                                    contentDescription = null,
                                 )
                             }
                         },
                         isSelected = songWrapper.isSelected && selection,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .combinedClickable(
-                                onClick = {
-                                    if (!selection) {
-                                        if (songWrapper.item.id == mediaMetadata?.id) {
-                                            playerConnection.player.togglePlayPause()
-                                        } else {
-                                            playerConnection.playQueue(
-                                                ListQueue(
-                                                    title = albumWithSongs.album.title,
-                                                    items = albumWithSongs.songs.map { it.toMediaItem() },
-                                                    startIndex = index
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .combinedClickable(
+                                    onClick = {
+                                        if (!selection) {
+                                            if (songWrapper.item.id == mediaMetadata?.id) {
+                                                playerConnection.player.togglePlayPause()
+                                            } else {
+                                                playerConnection.playQueue(
+                                                    ListQueue(
+                                                        title = albumWithSongs.album.title,
+                                                        items = albumWithSongs.songs.map { it.toMediaItem() },
+                                                        startIndex = index,
+                                                    ),
                                                 )
+                                            }
+                                        } else {
+                                            songWrapper.isSelected = !songWrapper.isSelected
+                                        }
+                                    },
+                                    onLongClick = {
+                                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                        menuState.show {
+                                            SongMenu(
+                                                originalSong = songWrapper.item,
+                                                navController = navController,
+                                                onDismiss = menuState::dismiss,
                                             )
                                         }
-                                    } else {
-                                        songWrapper.isSelected = !songWrapper.isSelected
-                                    }
-                                },
-                                onLongClick = {
-                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                    menuState.show {
-                                        SongMenu(
-                                            originalSong = songWrapper.item,
-                                            navController = navController,
-                                            onDismiss = menuState::dismiss
-                                        )
-                                    }
-                                }
-                            )
+                                    },
+                                ),
                     )
                 }
             }
@@ -484,28 +509,28 @@ fun AlbumScreen(
                     LazyRow {
                         items(
                             items = otherVersions,
-                            key = { it.id }
+                            key = { it.id },
                         ) { item ->
                             YouTubeGridItem(
                                 item = item,
                                 isActive = mediaMetadata?.album?.id == item.id,
                                 isPlaying = isPlaying,
                                 coroutineScope = coroutineScope,
-                                modifier = Modifier
-                                    .combinedClickable(
-                                        onClick = { navController.navigate("album/${item.id}") },
-                                        onLongClick = {
-                                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                            menuState.show {
-                                                YouTubeAlbumMenu(
-                                                    albumItem = item,
-                                                    navController = navController,
-                                                    onDismiss = menuState::dismiss
-                                                )
-                                            }
-                                        }
-                                    )
-                                    .animateItemPlacement()
+                                modifier =
+                                    Modifier
+                                        .combinedClickable(
+                                            onClick = { navController.navigate("album/${item.id}") },
+                                            onLongClick = {
+                                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                                menuState.show {
+                                                    YouTubeAlbumMenu(
+                                                        albumItem = item,
+                                                        navController = navController,
+                                                        onDismiss = menuState::dismiss,
+                                                    )
+                                                }
+                                            },
+                                        ).animateItemPlacement(),
                             )
                         }
                     }
@@ -517,10 +542,11 @@ fun AlbumScreen(
                     Column(Modifier.padding(12.dp)) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Spacer(
-                                modifier = Modifier
-                                    .size(AlbumThumbnailSize)
-                                    .clip(RoundedCornerShape(ThumbnailCornerRadius))
-                                    .background(MaterialTheme.colorScheme.onSurface)
+                                modifier =
+                                    Modifier
+                                        .size(AlbumThumbnailSize)
+                                        .clip(RoundedCornerShape(ThumbnailCornerRadius))
+                                        .background(MaterialTheme.colorScheme.onSurface),
                             )
 
                             Spacer(Modifier.width(16.dp))
@@ -558,14 +584,14 @@ fun AlbumScreen(
         navigationIcon = {
             IconButton(
                 onClick = navController::navigateUp,
-                onLongClick = navController::backToMain
+                onLongClick = navController::backToMain,
             ) {
                 Icon(
                     painterResource(R.drawable.arrow_back),
-                    contentDescription = null
+                    contentDescription = null,
                 )
             }
         },
-        scrollBehavior = scrollBehavior
+        scrollBehavior = scrollBehavior,
     )
 }

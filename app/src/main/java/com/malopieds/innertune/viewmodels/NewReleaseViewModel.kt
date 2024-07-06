@@ -14,42 +14,49 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class NewReleaseViewModel @Inject constructor(
-    database: MusicDatabase,
-) : ViewModel() {
-    private val _newReleaseAlbums = MutableStateFlow<List<AlbumItem>>(emptyList())
-    val newReleaseAlbums = _newReleaseAlbums.asStateFlow()
+class NewReleaseViewModel
+    @Inject
+    constructor(
+        database: MusicDatabase,
+    ) : ViewModel() {
+        private val _newReleaseAlbums = MutableStateFlow<List<AlbumItem>>(emptyList())
+        val newReleaseAlbums = _newReleaseAlbums.asStateFlow()
 
-    init {
-        viewModelScope.launch {
-            YouTube.newReleaseAlbums().onSuccess { albums ->
-                val artists: MutableMap<Int, String> = mutableMapOf()
-                val favouriteArtists: MutableMap<Int, String> = mutableMapOf()
-                database.allArtistsByPlayTime().first().let { list ->
-                    var favIndex = 0
-                    for ((artistsIndex, artist) in list.withIndex()){
-                        artists[artistsIndex] = artist.id
-                        if (artist.artist.bookmarkedAt != null){
-                            favouriteArtists[favIndex] = artist.id
-                            favIndex++
-                        }
-                    }
-                }
-                _newReleaseAlbums.value = albums
-                    .sortedBy { album ->
-                        val artistIds = album.artists.orEmpty().mapNotNull { it.id }
-                        val firstArtistKey = artistIds.firstNotNullOfOrNull { artistId ->
-                            if (artistId in favouriteArtists.values) {
-                                favouriteArtists.entries.firstOrNull { it.value == artistId }?.key
-                            } else {
-                                artists.entries.firstOrNull { it.value == artistId }?.key
+        init {
+            viewModelScope.launch {
+                YouTube
+                    .newReleaseAlbums()
+                    .onSuccess { albums ->
+                        val artists: MutableMap<Int, String> = mutableMapOf()
+                        val favouriteArtists: MutableMap<Int, String> = mutableMapOf()
+                        database.allArtistsByPlayTime().first().let { list ->
+                            var favIndex = 0
+                            for ((artistsIndex, artist) in list.withIndex()) {
+                                artists[artistsIndex] = artist.id
+                                if (artist.artist.bookmarkedAt != null)
+                                    {
+                                        favouriteArtists[favIndex] = artist.id
+                                        favIndex++
+                                    }
                             }
-                        } ?: Int.MAX_VALUE
-                        firstArtistKey
+                        }
+                        _newReleaseAlbums.value =
+                            albums
+                                .sortedBy { album ->
+                                    val artistIds = album.artists.orEmpty().mapNotNull { it.id }
+                                    val firstArtistKey =
+                                        artistIds.firstNotNullOfOrNull { artistId ->
+                                            if (artistId in favouriteArtists.values) {
+                                                favouriteArtists.entries.firstOrNull { it.value == artistId }?.key
+                                            } else {
+                                                artists.entries.firstOrNull { it.value == artistId }?.key
+                                            }
+                                        } ?: Int.MAX_VALUE
+                                    firstArtistKey
+                                }
+                    }.onFailure {
+                        reportException(it)
                     }
-            }.onFailure {
-                reportException(it)
             }
         }
     }
-}

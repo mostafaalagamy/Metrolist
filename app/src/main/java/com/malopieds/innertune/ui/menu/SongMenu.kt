@@ -14,7 +14,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
@@ -96,7 +96,7 @@ fun SongMenu(
                 database.query {
                     update(song.song.copy(title = title))
                 }
-            }
+            },
         )
     }
 
@@ -111,34 +111,33 @@ fun SongMenu(
     AddToPlaylistDialog(
         isVisible = showChoosePlaylistDialog,
         onAdd = { playlist ->
-                database.query {
-                    if (checkInPlaylist(playlist.id, song.id) == 0) {
-                        insert(
-                            PlaylistSongMap(
-                                songId = song.id,
-                                playlistId = playlist.id,
-                                position = playlist.songCount
-                            )
-                        )
-                        update(playlist.playlist.copy(lastUpdateTime = LocalDateTime.now()))
-                        onDismiss()
-                    } else {
-                        showErrorPlaylistAddDialog = true
-                    }
+            database.query {
+                if (checkInPlaylist(playlist.id, song.id) == 0) {
+                    insert(
+                        PlaylistSongMap(
+                            songId = song.id,
+                            playlistId = playlist.id,
+                            position = playlist.songCount,
+                        ),
+                    )
+                    update(playlist.playlist.copy(lastUpdateTime = LocalDateTime.now()))
+                    onDismiss()
+                } else {
+                    showErrorPlaylistAddDialog = true
                 }
+            }
         },
         onDismiss = {
             showChoosePlaylistDialog = false
-        }
+        },
     )
-
 
     if (showErrorPlaylistAddDialog) {
         ListDialog(
             onDismiss = {
                 showErrorPlaylistAddDialog = false
                 onDismiss()
-            }
+            },
         ) {
             item {
                 ListItem(
@@ -148,11 +147,12 @@ fun SongMenu(
                             painter = painterResource(R.drawable.close),
                             contentDescription = null,
                             colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
-                            modifier = Modifier.size(ListThumbnailSize)
+                            modifier = Modifier.size(ListThumbnailSize),
                         )
                     },
-                    modifier = Modifier
-                        .clickable { showErrorPlaylistAddDialog = false }
+                    modifier =
+                        Modifier
+                            .clickable { showErrorPlaylistAddDialog = false },
                 )
             }
 
@@ -168,33 +168,34 @@ fun SongMenu(
 
     if (showSelectArtistDialog) {
         ListDialog(
-            onDismiss = { showSelectArtistDialog = false }
+            onDismiss = { showSelectArtistDialog = false },
         ) {
             items(
                 items = song.artists,
-                key = { it.id }
+                key = { it.id },
             ) { artist ->
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .height(ListItemHeight)
-                        .clickable {
-                            navController.navigate("artist/${artist.id}")
-                            showSelectArtistDialog = false
-                            onDismiss()
-                        }
-                        .padding(horizontal = 12.dp),
+                    modifier =
+                        Modifier
+                            .height(ListItemHeight)
+                            .clickable {
+                                navController.navigate("artist/${artist.id}")
+                                showSelectArtistDialog = false
+                                onDismiss()
+                            }.padding(horizontal = 12.dp),
                 ) {
                     Box(
                         modifier = Modifier.padding(8.dp),
-                        contentAlignment = Alignment.Center
+                        contentAlignment = Alignment.Center,
                     ) {
                         AsyncImage(
                             model = artist.thumbnailUrl,
                             contentDescription = null,
-                            modifier = Modifier
-                                .size(ListThumbnailSize)
-                                .clip(CircleShape)
+                            modifier =
+                                Modifier
+                                    .size(ListThumbnailSize)
+                                    .clip(CircleShape),
                         )
                     }
                     Text(
@@ -203,9 +204,10 @@ fun SongMenu(
                         fontWeight = FontWeight.Bold,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier
-                            .weight(1f)
-                            .padding(horizontal = 8.dp)
+                        modifier =
+                            Modifier
+                                .weight(1f)
+                                .padding(horizontal = 8.dp),
                     )
                 }
             }
@@ -221,72 +223,75 @@ fun SongMenu(
                     database.query {
                         update(song.song.toggleLike())
                     }
-                }
+                },
             ) {
                 Icon(
                     painter = painterResource(if (song.song.liked) R.drawable.favorite else R.drawable.favorite_border),
                     tint = if (song.song.liked) MaterialTheme.colorScheme.error else LocalContentColor.current,
-                    contentDescription = null
+                    contentDescription = null,
                 )
             }
-        }
+        },
     )
 
-    Divider()
+    HorizontalDivider()
 
     GridMenu(
-        contentPadding = PaddingValues(
-            start = 8.dp,
-            top = 8.dp,
-            end = 8.dp,
-            bottom = 8.dp + WindowInsets.systemBars.asPaddingValues().calculateBottomPadding()
-        )
+        contentPadding =
+            PaddingValues(
+                start = 8.dp,
+                top = 8.dp,
+                end = 8.dp,
+                bottom = 8.dp + WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
+            ),
     ) {
         GridMenuItem(
             icon = R.drawable.radio,
-            title = R.string.start_radio
+            title = R.string.start_radio,
         ) {
             onDismiss()
             playerConnection.playQueue(YouTubeQueue(WatchEndpoint(videoId = song.id), song.toMediaMetadata()))
         }
         GridMenuItem(
             icon = R.drawable.playlist_play,
-            title = R.string.play_next
+            title = R.string.play_next,
         ) {
             onDismiss()
             playerConnection.playNext(song.toMediaItem())
         }
         GridMenuItem(
             icon = R.drawable.queue_music,
-            title = R.string.add_to_queue
+            title = R.string.add_to_queue,
         ) {
             onDismiss()
             playerConnection.addToQueue((song.toMediaItem()))
         }
         GridMenuItem(
             icon = R.drawable.edit,
-            title = R.string.edit
+            title = R.string.edit,
         ) {
             showEditDialog = true
         }
         GridMenuItem(
             icon = R.drawable.playlist_add,
-            title = R.string.add_to_playlist
+            title = R.string.add_to_playlist,
         ) {
             showChoosePlaylistDialog = true
         }
         DownloadGridMenu(
             state = download?.state,
             onDownload = {
-                val downloadRequest = DownloadRequest.Builder(song.id, song.id.toUri())
-                    .setCustomCacheKey(song.id)
-                    .setData(song.song.title.toByteArray())
-                    .build()
+                val downloadRequest =
+                    DownloadRequest
+                        .Builder(song.id, song.id.toUri())
+                        .setCustomCacheKey(song.id)
+                        .setData(song.song.title.toByteArray())
+                        .build()
                 DownloadService.sendAddDownload(
                     context,
                     ExoDownloadService::class.java,
                     downloadRequest,
-                    false
+                    false,
                 )
             },
             onRemoveDownload = {
@@ -294,13 +299,13 @@ fun SongMenu(
                     context,
                     ExoDownloadService::class.java,
                     song.id,
-                    false
+                    false,
                 )
-            }
+            },
         )
         GridMenuItem(
             icon = R.drawable.artist,
-            title = R.string.view_artist
+            title = R.string.view_artist,
         ) {
             if (song.artists.size == 1) {
                 navController.navigate("artist/${song.artists[0].id}")
@@ -312,7 +317,7 @@ fun SongMenu(
         if (song.song.albumId != null) {
             GridMenuItem(
                 icon = R.drawable.album,
-                title = R.string.view_album
+                title = R.string.view_album,
             ) {
                 onDismiss()
                 navController.navigate("album/${song.song.albumId}")
@@ -320,20 +325,21 @@ fun SongMenu(
         }
         GridMenuItem(
             icon = R.drawable.share,
-            title = R.string.share
+            title = R.string.share,
         ) {
             onDismiss()
-            val intent = Intent().apply {
-                action = Intent.ACTION_SEND
-                type = "text/plain"
-                putExtra(Intent.EXTRA_TEXT, "https://music.youtube.com/watch?v=${song.id}")
-            }
+            val intent =
+                Intent().apply {
+                    action = Intent.ACTION_SEND
+                    type = "text/plain"
+                    putExtra(Intent.EXTRA_TEXT, "https://music.youtube.com/watch?v=${song.id}")
+                }
             context.startActivity(Intent.createChooser(intent, null))
         }
         if (event != null) {
             GridMenuItem(
                 icon = R.drawable.delete,
-                title = R.string.remove_from_history
+                title = R.string.remove_from_history,
             ) {
                 onDismiss()
                 database.query {

@@ -59,29 +59,35 @@ fun HistoryScreen(
     val events by viewModel.events.collectAsState()
 
     LazyColumn(
-        contentPadding = LocalPlayerAwareWindowInsets.current.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom).asPaddingValues(),
-        modifier = Modifier.windowInsetsPadding(LocalPlayerAwareWindowInsets.current.only(WindowInsetsSides.Top))
+        contentPadding =
+            LocalPlayerAwareWindowInsets.current
+                .only(
+                    WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom,
+                ).asPaddingValues(),
+        modifier = Modifier.windowInsetsPadding(LocalPlayerAwareWindowInsets.current.only(WindowInsetsSides.Top)),
     ) {
         events.forEach { (dateAgo, events) ->
             stickyHeader {
                 NavigationTitle(
-                    title = when (dateAgo) {
-                        DateAgo.Today -> stringResource(R.string.today)
-                        DateAgo.Yesterday -> stringResource(R.string.yesterday)
-                        DateAgo.ThisWeek -> stringResource(R.string.this_week)
-                        DateAgo.LastWeek -> stringResource(R.string.last_week)
-                        is DateAgo.Other -> dateAgo.date.format(DateTimeFormatter.ofPattern("yyyy/MM"))
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(MaterialTheme.colorScheme.background)
+                    title =
+                        when (dateAgo) {
+                            DateAgo.Today -> stringResource(R.string.today)
+                            DateAgo.Yesterday -> stringResource(R.string.yesterday)
+                            DateAgo.ThisWeek -> stringResource(R.string.this_week)
+                            DateAgo.LastWeek -> stringResource(R.string.last_week)
+                            is DateAgo.Other -> dateAgo.date.format(DateTimeFormatter.ofPattern("yyyy/MM"))
+                        },
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .background(MaterialTheme.colorScheme.background),
                 )
             }
 
             var prev: EventWithSong? = null
             items(
                 items = events,
-                key = { it.event.id }
+                key = { it.event.id },
             ) { event ->
                 if (prev == null || prev!!.song.song.id != event.song.song.id) {
                     SongListItem(
@@ -97,46 +103,45 @@ fun HistoryScreen(
                                             originalSong = event.song,
                                             event = event.event,
                                             navController = navController,
-                                            onDismiss = menuState::dismiss
-                                        )
-                                    }
-                                }
-                            ) {
-                                Icon(
-                                    painter = painterResource(R.drawable.more_vert),
-                                    contentDescription = null
-                                )
-                            }
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .combinedClickable (
-                                onClick = {
-                                    if (event.song.id == mediaMetadata?.id) {
-                                        playerConnection.player.togglePlayPause()
-                                    } else {
-                                        playerConnection.playQueue(
-                                            YouTubeQueue(
-                                                endpoint = WatchEndpoint(videoId = event.song.id),
-                                                preloadItem = event.song.toMediaMetadata()
-                                            )
+                                            onDismiss = menuState::dismiss,
                                         )
                                     }
                                 },
-                                onLongClick = {
-                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                    menuState.show {
-                                        SongMenu(
-                                            originalSong = event.song,
-                                            event = event.event,
-                                            navController = navController,
-                                            onDismiss = menuState::dismiss
-                                        )
-                                    }
-                                }
-                            )
-                            .animateItemPlacement()
-
+                            ) {
+                                Icon(
+                                    painter = painterResource(R.drawable.more_vert),
+                                    contentDescription = null,
+                                )
+                            }
+                        },
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .combinedClickable(
+                                    onClick = {
+                                        if (event.song.id == mediaMetadata?.id) {
+                                            playerConnection.player.togglePlayPause()
+                                        } else {
+                                            playerConnection.playQueue(
+                                                YouTubeQueue(
+                                                    endpoint = WatchEndpoint(videoId = event.song.id),
+                                                    preloadItem = event.song.toMediaMetadata(),
+                                                ),
+                                            )
+                                        }
+                                    },
+                                    onLongClick = {
+                                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                        menuState.show {
+                                            SongMenu(
+                                                originalSong = event.song,
+                                                event = event.event,
+                                                navController = navController,
+                                                onDismiss = menuState::dismiss,
+                                            )
+                                        }
+                                    },
+                                ).animateItemPlacement(),
                     )
                 }
                 prev = event
@@ -149,13 +154,13 @@ fun HistoryScreen(
         navigationIcon = {
             IconButton(
                 onClick = navController::navigateUp,
-                onLongClick = navController::backToMain
+                onLongClick = navController::backToMain,
             ) {
                 Icon(
                     painterResource(R.drawable.arrow_back),
-                    contentDescription = null
+                    contentDescription = null,
                 )
             }
-        }
+        },
     )
 }

@@ -44,36 +44,41 @@ class PlayerConnection(
 
     val playbackState = MutableStateFlow(player.playbackState)
     private val playWhenReady = MutableStateFlow(player.playWhenReady)
-    val isPlaying = combine(playbackState, playWhenReady) { playbackState, playWhenReady ->
-        playWhenReady && playbackState != STATE_ENDED
-    }.stateIn(scope, SharingStarted.Lazily, player.playWhenReady && player.playbackState != STATE_ENDED)
+    val isPlaying =
+        combine(playbackState, playWhenReady) { playbackState, playWhenReady ->
+            playWhenReady && playbackState != STATE_ENDED
+        }.stateIn(scope, SharingStarted.Lazily, player.playWhenReady && player.playbackState != STATE_ENDED)
     val mediaMetadata = MutableStateFlow(player.currentMetadata)
-    val currentSong = mediaMetadata.flatMapLatest {
-        database.song(it?.id)
-    }
+    val currentSong =
+        mediaMetadata.flatMapLatest {
+            database.song(it?.id)
+        }
     val translating = MutableStateFlow(false)
-    val currentLyrics = combine(
-        context.dataStore.data.map {
-            it[TranslateLyricsKey] ?: false
-        }.distinctUntilChanged(),
+    val currentLyrics =
+        combine(
+            context.dataStore.data
+                .map {
+                    it[TranslateLyricsKey] ?: false
+                }.distinctUntilChanged(),
+            mediaMetadata.flatMapLatest { mediaMetadata ->
+                database.lyrics(mediaMetadata?.id)
+            },
+        ) { translateEnabled, lyrics ->
+            if (!translateEnabled || lyrics == null || lyrics.lyrics == LYRICS_NOT_FOUND) return@combine lyrics
+            translating.value = true
+            try {
+                TranslationHelper.translate(lyrics)
+            } catch (e: Exception) {
+                reportException(e)
+                lyrics
+            }.also {
+                translating.value = false
+            }
+        }.stateIn(scope, SharingStarted.Lazily, null)
+    val currentFormat =
         mediaMetadata.flatMapLatest { mediaMetadata ->
-            database.lyrics(mediaMetadata?.id)
+            database.format(mediaMetadata?.id)
         }
-    ) { translateEnabled, lyrics ->
-        if (!translateEnabled || lyrics == null || lyrics.lyrics == LYRICS_NOT_FOUND) return@combine lyrics
-        translating.value = true
-        try {
-            TranslationHelper.translate(lyrics)
-        } catch (e: Exception) {
-            reportException(e)
-            lyrics
-        }.also {
-            translating.value = false
-        }
-    }.stateIn(scope, SharingStarted.Lazily, null)
-    val currentFormat = mediaMetadata.flatMapLatest { mediaMetadata ->
-        database.format(mediaMetadata?.id)
-    }
 
     val queueTitle = MutableStateFlow<String?>(null)
     val queueWindows = MutableStateFlow<List<Timeline.Window>>(emptyList())
@@ -107,11 +112,13 @@ class PlayerConnection(
     }
 
     fun playNext(item: MediaItem) = playNext(listOf(item))
+
     fun playNext(items: List<MediaItem>) {
         service.playNext(items)
     }
 
     fun addToQueue(item: MediaItem) = addToQueue(listOf(item))
+
     fun addToQueue(items: List<MediaItem>) {
         service.addToQueue(items)
     }
@@ -125,18 +132,27 @@ class PlayerConnection(
         error.value = player.playerError
     }
 
-    override fun onPlayWhenReadyChanged(newPlayWhenReady: Boolean, reason: Int) {
+    override fun onPlayWhenReadyChanged(
+        newPlayWhenReady: Boolean,
+        reason: Int,
+    ) {
         playWhenReady.value = newPlayWhenReady
     }
 
-    override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
+    override fun onMediaItemTransition(
+        mediaItem: MediaItem?,
+        reason: Int,
+    ) {
         mediaMetadata.value = mediaItem?.metadata
         currentMediaItemIndex.value = player.currentMediaItemIndex
         currentWindowIndex.value = player.getCurrentQueueIndex()
         updateCanSkipPreviousAndNext()
     }
 
-    override fun onTimelineChanged(timeline: Timeline, reason: Int) {
+    override fun onTimelineChanged(
+        timeline: Timeline,
+        reason: Int,
+    ) {
         queueWindows.value = player.getQueueWindows()
         queueTitle.value = service.queueTitle
         currentMediaItemIndex.value = player.currentMediaItemIndex
@@ -166,11 +182,12 @@ class PlayerConnection(
     private fun updateCanSkipPreviousAndNext() {
         if (!player.currentTimeline.isEmpty) {
             val window = player.currentTimeline.getWindow(player.currentMediaItemIndex, Timeline.Window())
-            canSkipPrevious.value = player.isCommandAvailable(COMMAND_SEEK_IN_CURRENT_MEDIA_ITEM)
-                    || !window.isLive()
-                    || player.isCommandAvailable(COMMAND_SEEK_TO_PREVIOUS_MEDIA_ITEM)
-            canSkipNext.value = window.isLive() && window.isDynamic
-                    || player.isCommandAvailable(COMMAND_SEEK_TO_NEXT_MEDIA_ITEM)
+            canSkipPrevious.value = player.isCommandAvailable(COMMAND_SEEK_IN_CURRENT_MEDIA_ITEM) ||
+                !window.isLive() ||
+                player.isCommandAvailable(COMMAND_SEEK_TO_PREVIOUS_MEDIA_ITEM)
+            canSkipNext.value = window.isLive() &&
+                window.isDynamic ||
+                player.isCommandAvailable(COMMAND_SEEK_TO_NEXT_MEDIA_ITEM)
         } else {
             canSkipPrevious.value = false
             canSkipNext.value = false

@@ -36,7 +36,14 @@ import androidx.navigation.NavController
 import com.malopieds.innertune.LocalPlayerAwareWindowInsets
 import com.malopieds.innertune.LocalPlayerConnection
 import com.malopieds.innertune.R
-import com.malopieds.innertune.constants.*
+import com.malopieds.innertune.constants.AlbumSortDescendingKey
+import com.malopieds.innertune.constants.AlbumSortType
+import com.malopieds.innertune.constants.AlbumSortTypeKey
+import com.malopieds.innertune.constants.AlbumViewTypeKey
+import com.malopieds.innertune.constants.CONTENT_TYPE_ALBUM
+import com.malopieds.innertune.constants.CONTENT_TYPE_HEADER
+import com.malopieds.innertune.constants.GridThumbnailHeight
+import com.malopieds.innertune.constants.LibraryViewType
 import com.malopieds.innertune.ui.component.AlbumGridItem
 import com.malopieds.innertune.ui.component.AlbumListItem
 import com.malopieds.innertune.ui.component.LocalMenuState
@@ -70,7 +77,7 @@ fun LibraryAlbumsScreen(
     val headerContent = @Composable {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(start = 16.dp)
+            modifier = Modifier.padding(start = 16.dp),
         ) {
             SortHeader(
                 sortType = sortType,
@@ -87,7 +94,7 @@ fun LibraryAlbumsScreen(
                         AlbumSortType.LENGTH -> R.string.sort_by_length
                         AlbumSortType.PLAY_TIME -> R.string.sort_by_play_time
                     }
-                }
+                },
             )
 
             Spacer(Modifier.weight(1f))
@@ -95,46 +102,47 @@ fun LibraryAlbumsScreen(
             Text(
                 text = pluralStringResource(R.plurals.n_album, albums.size, albums.size),
                 style = MaterialTheme.typography.titleSmall,
-                color = MaterialTheme.colorScheme.secondary
+                color = MaterialTheme.colorScheme.secondary,
             )
 
             IconButton(
                 onClick = {
                     viewType = viewType.toggle()
                 },
-                modifier = Modifier.padding(start = 6.dp, end = 6.dp)
+                modifier = Modifier.padding(start = 6.dp, end = 6.dp),
             ) {
                 Icon(
-                    painter = painterResource(
-                        when (viewType) {
-                            LibraryViewType.LIST -> R.drawable.list
-                            LibraryViewType.GRID -> R.drawable.grid_view
-                        }
-                    ),
-                    contentDescription = null
+                    painter =
+                        painterResource(
+                            when (viewType) {
+                                LibraryViewType.LIST -> R.drawable.list
+                                LibraryViewType.GRID -> R.drawable.grid_view
+                            },
+                        ),
+                    contentDescription = null,
                 )
             }
         }
     }
 
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
     ) {
         when (viewType) {
             LibraryViewType.LIST ->
                 LazyColumn(
-                    contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues()
+                    contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues(),
                 ) {
                     item(
                         key = "filter",
-                        contentType = CONTENT_TYPE_HEADER
+                        contentType = CONTENT_TYPE_HEADER,
                     ) {
                         filterContent()
                     }
 
                     item(
                         key = "header",
-                        contentType = CONTENT_TYPE_HEADER
+                        contentType = CONTENT_TYPE_HEADER,
                     ) {
                         headerContent()
                     }
@@ -142,7 +150,7 @@ fun LibraryAlbumsScreen(
                     items(
                         items = albums,
                         key = { it.id },
-                        contentType = { CONTENT_TYPE_ALBUM }
+                        contentType = { CONTENT_TYPE_ALBUM },
                     ) { album ->
                         AlbumListItem(
                             album = album,
@@ -155,35 +163,35 @@ fun LibraryAlbumsScreen(
                                             AlbumMenu(
                                                 originalAlbum = album,
                                                 navController = navController,
-                                                onDismiss = menuState::dismiss
+                                                onDismiss = menuState::dismiss,
                                             )
                                         }
-                                    }
+                                    },
                                 ) {
                                     Icon(
                                         painter = painterResource(R.drawable.more_vert),
-                                        contentDescription = null
+                                        contentDescription = null,
                                     )
                                 }
                             },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .combinedClickable(
-                                    onClick = {
-                                        navController.navigate("album/${album.id}")
-                                    },
-                                    onLongClick = {
-                                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                        menuState.show {
-                                            AlbumMenu(
-                                                originalAlbum = album,
-                                                navController = navController,
-                                                onDismiss = menuState::dismiss
-                                            )
-                                        }
-                                    }
-                                )
-                                .animateItemPlacement()
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .combinedClickable(
+                                        onClick = {
+                                            navController.navigate("album/${album.id}")
+                                        },
+                                        onLongClick = {
+                                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                            menuState.show {
+                                                AlbumMenu(
+                                                    originalAlbum = album,
+                                                    navController = navController,
+                                                    onDismiss = menuState::dismiss,
+                                                )
+                                            }
+                                        },
+                                    ).animateItemPlacement(),
                         )
                     }
                 }
@@ -191,12 +199,12 @@ fun LibraryAlbumsScreen(
             LibraryViewType.GRID ->
                 LazyVerticalGrid(
                     columns = GridCells.Adaptive(minSize = GridThumbnailHeight + 24.dp),
-                    contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues()
+                    contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues(),
                 ) {
                     item(
                         key = "filter",
                         span = { GridItemSpan(maxLineSpan) },
-                        contentType = CONTENT_TYPE_HEADER
+                        contentType = CONTENT_TYPE_HEADER,
                     ) {
                         filterContent()
                     }
@@ -204,7 +212,7 @@ fun LibraryAlbumsScreen(
                     item(
                         key = "header",
                         span = { GridItemSpan(maxLineSpan) },
-                        contentType = CONTENT_TYPE_HEADER
+                        contentType = CONTENT_TYPE_HEADER,
                     ) {
                         headerContent()
                     }
@@ -212,7 +220,7 @@ fun LibraryAlbumsScreen(
                     items(
                         items = albums,
                         key = { it.id },
-                        contentType = { CONTENT_TYPE_ALBUM }
+                        contentType = { CONTENT_TYPE_ALBUM },
                     ) { album ->
                         AlbumGridItem(
                             album = album,
@@ -220,24 +228,24 @@ fun LibraryAlbumsScreen(
                             isPlaying = isPlaying,
                             coroutineScope = coroutineScope,
                             fillMaxWidth = true,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .combinedClickable(
-                                    onClick = {
-                                        navController.navigate("album/${album.id}")
-                                    },
-                                    onLongClick = {
-                                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                        menuState.show {
-                                            AlbumMenu(
-                                                originalAlbum = album,
-                                                navController = navController,
-                                                onDismiss = menuState::dismiss
-                                            )
-                                        }
-                                    }
-                                )
-                                .animateItemPlacement()
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .combinedClickable(
+                                        onClick = {
+                                            navController.navigate("album/${album.id}")
+                                        },
+                                        onLongClick = {
+                                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                            menuState.show {
+                                                AlbumMenu(
+                                                    originalAlbum = album,
+                                                    navController = navController,
+                                                    onDismiss = menuState::dismiss,
+                                                )
+                                            }
+                                        },
+                                    ).animateItemPlacement(),
                         )
                     }
                 }

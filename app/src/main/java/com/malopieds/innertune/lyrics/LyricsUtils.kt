@@ -1,7 +1,7 @@
 package com.malopieds.innertune.lyrics
 
 import android.text.format.DateUtils
-import com.malopieds.innertune.ui.component.animateScrollDuration
+import com.malopieds.innertune.ui.component.ANIMATE_SCROLL_DURATION
 
 @Suppress("RegExpRedundantEscape")
 object LyricsUtils {
@@ -9,7 +9,8 @@ object LyricsUtils {
     val TIME_REGEX = "\\[(\\d\\d):(\\d\\d)\\.(\\d{2,3})\\]".toRegex()
 
     fun parseLyrics(lyrics: String): List<LyricsEntry> =
-        lyrics.lines()
+        lyrics
+            .lines()
             .flatMap { line ->
                 parseLine(line).orEmpty()
             }.sorted()
@@ -23,22 +24,26 @@ object LyricsUtils {
         val text = matchResult.groupValues[3]
         val timeMatchResults = TIME_REGEX.findAll(times)
 
-        return timeMatchResults.map { timeMatchResult ->
-            val min = timeMatchResult.groupValues[1].toLong()
-            val sec = timeMatchResult.groupValues[2].toLong()
-            val milString = timeMatchResult.groupValues[3]
-            var mil = milString.toLong()
-            if (milString.length == 2) {
-                mil *= 10
-            }
-            val time = min * DateUtils.MINUTE_IN_MILLIS + sec * DateUtils.SECOND_IN_MILLIS + mil
-            LyricsEntry(time, text)
-        }.toList()
+        return timeMatchResults
+            .map { timeMatchResult ->
+                val min = timeMatchResult.groupValues[1].toLong()
+                val sec = timeMatchResult.groupValues[2].toLong()
+                val milString = timeMatchResult.groupValues[3]
+                var mil = milString.toLong()
+                if (milString.length == 2) {
+                    mil *= 10
+                }
+                val time = min * DateUtils.MINUTE_IN_MILLIS + sec * DateUtils.SECOND_IN_MILLIS + mil
+                LyricsEntry(time, text)
+            }.toList()
     }
 
-    fun findCurrentLineIndex(lines: List<LyricsEntry>, position: Long): Int {
+    fun findCurrentLineIndex(
+        lines: List<LyricsEntry>,
+        position: Long,
+    ): Int {
         for (index in lines.indices) {
-            if (lines[index].time >= position + animateScrollDuration) {
+            if (lines[index].time >= position + ANIMATE_SCROLL_DURATION) {
                 return index - 1
             }
         }

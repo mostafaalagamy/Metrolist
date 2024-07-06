@@ -21,9 +21,10 @@ data class ArtistEntity(
     val isLocalArtist: Boolean
         get() = id.startsWith("LA")
 
-    fun toggleLike() = copy(
-        bookmarkedAt = if (bookmarkedAt != null) null else LocalDateTime.now()
-    )
+    fun toggleLike() =
+        copy(
+            bookmarkedAt = if (bookmarkedAt != null) null else LocalDateTime.now(),
+        )
 
     companion object {
         fun generateArtistId() = "LA" + RandomStringUtils.random(8, true, false)

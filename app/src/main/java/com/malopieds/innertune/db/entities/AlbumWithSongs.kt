@@ -13,22 +13,24 @@ data class AlbumWithSongs(
         entity = ArtistEntity::class,
         entityColumn = "id",
         parentColumn = "id",
-        associateBy = Junction(
-            value = AlbumArtistMap::class,
-            parentColumn = "albumId",
-            entityColumn = "artistId"
-        )
+        associateBy =
+            Junction(
+                value = AlbumArtistMap::class,
+                parentColumn = "albumId",
+                entityColumn = "artistId",
+            ),
     )
     val artists: List<ArtistEntity>,
     @Relation(
         entity = SongEntity::class,
         entityColumn = "id",
         parentColumn = "id",
-        associateBy = Junction(
-            value = SortedSongAlbumMap::class,
-            parentColumn = "albumId",
-            entityColumn = "songId"
-        )
+        associateBy =
+            Junction(
+                value = SortedSongAlbumMap::class,
+                parentColumn = "albumId",
+                entityColumn = "songId",
+            ),
     )
     val songs: List<Song>,
 )

@@ -51,11 +51,12 @@ fun AboutScreen(
     val uriHandler = LocalUriHandler.current
 
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .windowInsetsPadding(LocalPlayerAwareWindowInsets.current)
-            .verticalScroll(rememberScrollState()),
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .windowInsetsPadding(LocalPlayerAwareWindowInsets.current)
+                .verticalScroll(rememberScrollState()),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Spacer(Modifier.height(4.dp))
 
@@ -63,10 +64,11 @@ fun AboutScreen(
             painter = painterResource(R.drawable.launcher_monochrome),
             contentDescription = null,
             colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground, BlendMode.SrcIn),
-            modifier = Modifier
-                .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.surfaceColorAtElevation(NavigationBarDefaults.Elevation))
-                .clickable { }
+            modifier =
+                Modifier
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.surfaceColorAtElevation(NavigationBarDefaults.Elevation))
+                    .clickable { },
         )
 
         Row(
@@ -76,7 +78,7 @@ fun AboutScreen(
                 text = "InnerTune",
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(top = 8.dp, bottom = 4.dp)
+                modifier = Modifier.padding(top = 8.dp, bottom = 4.dp),
             )
         }
 
@@ -84,7 +86,7 @@ fun AboutScreen(
             Text(
                 text = BuildConfig.VERSION_NAME,
                 style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.secondary
+                color = MaterialTheme.colorScheme.secondary,
             )
 
             Spacer(Modifier.width(4.dp))
@@ -93,16 +95,16 @@ fun AboutScreen(
                 text = BuildConfig.FLAVOR.uppercase(),
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.secondary,
-                modifier = Modifier
-                    .border(
-                        width = 1.dp,
-                        color = MaterialTheme.colorScheme.secondary,
-                        shape = CircleShape
-                    )
-                    .padding(
-                        horizontal = 6.dp,
-                        vertical = 2.dp
-                    )
+                modifier =
+                    Modifier
+                        .border(
+                            width = 1.dp,
+                            color = MaterialTheme.colorScheme.secondary,
+                            shape = CircleShape,
+                        ).padding(
+                            horizontal = 6.dp,
+                            vertical = 2.dp,
+                        ),
             )
 
             if (BuildConfig.DEBUG) {
@@ -112,16 +114,16 @@ fun AboutScreen(
                     text = "DEBUG",
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.secondary,
-                    modifier = Modifier
-                        .border(
-                            width = 1.dp,
-                            color = MaterialTheme.colorScheme.secondary,
-                            shape = CircleShape
-                        )
-                        .padding(
-                            horizontal = 6.dp,
-                            vertical = 2.dp
-                        )
+                    modifier =
+                        Modifier
+                            .border(
+                                width = 1.dp,
+                                color = MaterialTheme.colorScheme.secondary,
+                                shape = CircleShape,
+                            ).padding(
+                                horizontal = 6.dp,
+                                vertical = 2.dp,
+                            ),
                 )
             }
         }
@@ -131,22 +133,21 @@ fun AboutScreen(
         Text(
             text = "by Zion Huang, forked my Malopieds",
             style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.secondary
+            color = MaterialTheme.colorScheme.secondary,
         )
 
         Spacer(Modifier.height(8.dp))
 
         Row {
             IconButton(
-                onClick = { uriHandler.openUri("https://github.com/Malopieds/InnerTune") }
+                onClick = { uriHandler.openUri("https://github.com/Malopieds/InnerTune") },
             ) {
                 Icon(
                     painter = painterResource(R.drawable.github),
-                    contentDescription = null
+                    contentDescription = null,
                 )
             }
         }
-
     }
 
     TopAppBar(
@@ -154,14 +155,14 @@ fun AboutScreen(
         navigationIcon = {
             IconButton(
                 onClick = navController::navigateUp,
-                onLongClick = navController::backToMain
+                onLongClick = navController::backToMain,
             ) {
                 Icon(
                     painterResource(R.drawable.arrow_back),
-                    contentDescription = null
+                    contentDescription = null,
                 )
             }
         },
-        scrollBehavior = scrollBehavior
+        scrollBehavior = scrollBehavior,
     )
 }

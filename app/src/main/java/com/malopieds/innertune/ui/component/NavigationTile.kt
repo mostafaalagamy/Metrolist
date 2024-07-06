@@ -35,15 +35,16 @@ fun NavigationTile(
     ) {
         Box(
             contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .size(56.dp)
-                .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp))
-                .clickable(onClick = onClick)
+            modifier =
+                Modifier
+                    .size(56.dp)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp))
+                    .clickable(onClick = onClick),
         ) {
             Icon(
                 painter = painterResource(icon),
-                contentDescription = null
+                contentDescription = null,
             )
         }
 
@@ -51,7 +52,7 @@ fun NavigationTile(
             text = title,
             style = MaterialTheme.typography.labelMedium,
             maxLines = 1,
-            overflow = TextOverflow.Ellipsis
+            overflow = TextOverflow.Ellipsis,
         )
     }
 }
