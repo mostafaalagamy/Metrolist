@@ -34,12 +34,13 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Decoration
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SearchBarColors
 import androidx.compose.material3.SearchBarDefaults
+import androidx.compose.material3.SearchBarDefaults.TonalElevation
 import androidx.compose.material3.Strings
 import androidx.compose.material3.Surface
 import androidx.compose.material3.TextFieldColors
@@ -99,15 +100,16 @@ fun SearchBar(
     trailingIcon: @Composable (() -> Unit)? = null,
     shape: Shape = SearchBarDefaults.inputFieldShape,
     colors: SearchBarColors = SearchBarDefaults.colors(),
-    tonalElevation: Dp = SearchBarDefaults.Elevation,
+    tonalElevation: Dp = TonalElevation,
     windowInsets: WindowInsets = WindowInsets.systemBars,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     focusRequester: FocusRequester = remember { FocusRequester() },
     content: @Composable ColumnScope.() -> Unit,
 ) {
-    val heightOffsetLimit = with(LocalDensity.current) {
-        -(AppBarHeight.toPx() + WindowInsets.systemBars.getTop(this))
-    }
+    val heightOffsetLimit =
+        with(LocalDensity.current) {
+            -(AppBarHeight.toPx() + WindowInsets.systemBars.getTop(this))
+        }
     SideEffect {
         if (scrollBehavior.state.heightOffsetLimit != heightOffsetLimit) {
             scrollBehavior.state.heightOffsetLimit = heightOffsetLimit
@@ -116,11 +118,12 @@ fun SearchBar(
 
     val animationProgress: Float by animateFloatAsState(
         targetValue = if (active) 1f else 0f,
-        animationSpec = tween(
-            durationMillis = AnimationDurationMillis,
-            easing = MotionTokens.EasingLegacyCubicBezier,
-        ),
-        label = ""
+        animationSpec =
+            tween(
+                durationMillis = AnimationDurationMillis,
+                easing = MotionTokens.EasingLegacyCubicBezier,
+            ),
+        label = "",
     )
 
     val defaultInputFieldShape = SearchBarDefaults.inputFieldShape
@@ -158,11 +161,12 @@ fun SearchBar(
     }
 
     BoxWithConstraints(
-        modifier = modifier
-            .offset {
-                IntOffset(x = 0, y = scrollBehavior.state.heightOffset.roundToInt())
-            },
-        propagateMinConstraints = true
+        modifier =
+            modifier
+                .offset {
+                    IntOffset(x = 0, y = scrollBehavior.state.heightOffset.roundToInt())
+                },
+        propagateMinConstraints = true,
     ) {
         val height: Dp
         val width: Dp
@@ -170,9 +174,10 @@ fun SearchBar(
         val endPadding: Dp
         with(LocalDensity.current) {
             val startWidth = constraints.maxWidth.toFloat()
-            val startHeight = max(constraints.minHeight, InputFieldHeight.roundToPx())
-                .coerceAtMost(constraints.maxHeight)
-                .toFloat()
+            val startHeight =
+                max(constraints.minHeight, InputFieldHeight.roundToPx())
+                    .coerceAtMost(constraints.maxHeight)
+                    .toFloat()
             val endWidth = constraints.maxWidth.toFloat()
             val endHeight = constraints.maxHeight.toFloat()
 
@@ -187,13 +192,13 @@ fun SearchBar(
             color = colors.containerColor,
             contentColor = contentColorFor(colors.containerColor),
             tonalElevation = tonalElevation,
-            modifier = Modifier
-                .padding(
-                    top = animatedSurfaceTopPadding,
-                    start = startPadding,
-                    end = endPadding
-                )
-                .size(width = width, height = height)
+            modifier =
+                Modifier
+                    .padding(
+                        top = animatedSurfaceTopPadding,
+                        start = startPadding,
+                        end = endPadding,
+                    ).size(width = width, height = height),
         ) {
             Column {
                 SearchBarInputField(
@@ -214,7 +219,7 @@ fun SearchBar(
 
                 if (animationProgress > 0) {
                     Column(Modifier.alpha(animationProgress)) {
-                        Divider(color = colors.dividerColor)
+                        HorizontalDivider(color = colors.dividerColor)
                         content()
                     }
                 }
@@ -246,15 +251,17 @@ private fun SearchBarInputField(
 ) {
     val searchSemantics = getString(Strings.SearchBarSearch)
     val suggestionsAvailableSemantics = getString(Strings.SuggestionsAvailable)
-    val textColor = LocalTextStyle.current.color.takeOrElse {
-        colors.textColor(enabled).value
-    }
+    val textColor =
+        LocalTextStyle.current.color.takeOrElse {
+            colors.focusedTextColor
+        }
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier
-            .fillMaxWidth()
-            .height(InputFieldHeight)
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .height(InputFieldHeight),
     ) {
         if (leadingIcon != null) {
             Spacer(Modifier.width(SearchBarIconOffsetX))
@@ -264,33 +271,32 @@ private fun SearchBarInputField(
         BasicTextField(
             value = query,
             onValueChange = onQueryChange,
-            modifier = Modifier
-                .weight(1f)
-                .focusRequester(focusRequester)
-                .pointerInput(Unit) {
-                    awaitEachGesture {
-                        // Must be PointerEventPass.Initial to observe events before the text field
-                        // consumes them in the Main pass
-                        awaitFirstDown(pass = PointerEventPass.Initial)
-                        val upEvent = waitForUpOrCancellation(pass = PointerEventPass.Initial)
-                        if (upEvent != null) {
-                            onActiveChange(true)
+            modifier =
+                Modifier
+                    .weight(1f)
+                    .focusRequester(focusRequester)
+                    .pointerInput(Unit) {
+                        awaitEachGesture {
+                            // Must be PointerEventPass.Initial to observe events before the text field
+                            // consumes them in the Main pass
+                            awaitFirstDown(pass = PointerEventPass.Initial)
+                            val upEvent = waitForUpOrCancellation(pass = PointerEventPass.Initial)
+                            if (upEvent != null) {
+                                onActiveChange(true)
+                            }
                         }
-                    }
-                }
-                .semantics {
-                    contentDescription = searchSemantics
-                    if (active) {
-                        stateDescription = suggestionsAvailableSemantics
-                    }
-                }
-                .onKeyEvent {
-                    if (it.key == Key.Enter) {
-                        onSearch(query.text)
-                        return@onKeyEvent true
-                    }
-                    false
-                },
+                    }.semantics {
+                        contentDescription = searchSemantics
+                        if (active) {
+                            stateDescription = suggestionsAvailableSemantics
+                        }
+                    }.onKeyEvent {
+                        if (it.key == Key.Enter) {
+                            onSearch(query.text)
+                            return@onKeyEvent true
+                        }
+                        false
+                    },
             enabled = enabled,
             singleLine = true,
             textStyle = LocalTextStyle.current.merge(TextStyle(color = textColor)),
@@ -301,20 +307,20 @@ private fun SearchBarInputField(
             decorationBox = { innerTextField ->
                 Box(
                     modifier = Modifier.fillMaxHeight(),
-                    contentAlignment = Alignment.CenterStart
+                    contentAlignment = Alignment.CenterStart,
                 ) {
                     if (placeholder != null && query.text.isEmpty()) {
                         Box(Modifier.alpha(0.8f)) {
                             Decoration(
-                                contentColor = colors.placeholderColor(enabled).value,
+                                contentColor = colors.focusedPlaceholderColor,
                                 typography = MaterialTheme.typography.bodyLarge,
-                                content = placeholder
+                                content = placeholder,
                             )
                         }
                     }
                     innerTextField()
                 }
-            }
+            },
         )
 
         if (trailingIcon != null) {

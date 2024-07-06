@@ -5,7 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
-import androidx.media3.session.BitmapLoader
+import androidx.media3.common.util.BitmapLoader
 import coil.imageLoader
 import coil.request.ErrorResult
 import coil.request.ImageRequest
@@ -19,6 +19,8 @@ class CoilBitmapLoader(
     private val context: Context,
     private val scope: CoroutineScope,
 ) : BitmapLoader {
+    override fun supportsMimeType(mimeType: String): Boolean = mimeType.startsWith("image/")
+
     override fun decodeBitmap(data: ByteArray): ListenableFuture<Bitmap> =
         scope.future(Dispatchers.IO) {
             BitmapFactory.decodeByteArray(data, 0, data.size) ?: error("Could not decode image data")
@@ -26,12 +28,14 @@ class CoilBitmapLoader(
 
     override fun loadBitmap(uri: Uri): ListenableFuture<Bitmap> =
         scope.future(Dispatchers.IO) {
-            val result = context.imageLoader.execute(
-                ImageRequest.Builder(context)
-                    .data(uri)
-                    .allowHardware(false)
-                    .build()
-            )
+            val result =
+                context.imageLoader.execute(
+                    ImageRequest
+                        .Builder(context)
+                        .data(uri)
+                        .allowHardware(false)
+                        .build(),
+                )
             if (result is ErrorResult) {
                 throw ExecutionException(result.throwable)
             }

@@ -2,7 +2,7 @@ package com.malopieds.innertune.ui.screens
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -63,56 +63,57 @@ fun ExploreScreen(
     val coroutineScope = rememberCoroutineScope()
     val scrollState = rememberScrollState()
 
-    BoxWithConstraints(
-        modifier = Modifier.fillMaxSize()
+    Box(
+        modifier = Modifier.fillMaxSize(),
     ) {
         Column(
-            modifier = Modifier.verticalScroll(scrollState)
+            modifier = Modifier.verticalScroll(scrollState),
         ) {
             Spacer(
                 Modifier.height(
-                    LocalPlayerAwareWindowInsets.current.asPaddingValues().calculateTopPadding()
-                )
+                    LocalPlayerAwareWindowInsets.current.asPaddingValues().calculateTopPadding(),
+                ),
             )
             explorePage?.newReleaseAlbums?.let { newReleaseAlbums ->
                 NavigationTitle(
                     title = stringResource(R.string.new_release_albums),
                     onClick = {
                         navController.navigate("new_release")
-                    }
+                    },
                 )
 
                 LazyRow(
-                    contentPadding = WindowInsets.systemBars
-                        .only(WindowInsetsSides.Horizontal)
-                        .asPaddingValues()
+                    contentPadding =
+                        WindowInsets.systemBars
+                            .only(WindowInsetsSides.Horizontal)
+                            .asPaddingValues(),
                 ) {
                     items(
                         items = newReleaseAlbums,
-                        key = { it.id }
+                        key = { it.id },
                     ) { album ->
                         YouTubeGridItem(
                             item = album,
                             isActive = mediaMetadata?.album?.id == album.id,
                             isPlaying = isPlaying,
                             coroutineScope = coroutineScope,
-                            modifier = Modifier
-                                .combinedClickable(
-                                    onClick = {
-                                        navController.navigate("album/${album.id}")
-                                    },
-                                    onLongClick = {
-                                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                        menuState.show {
-                                            YouTubeAlbumMenu(
-                                                albumItem = album,
-                                                navController = navController,
-                                                onDismiss = menuState::dismiss
-                                            )
-                                        }
-                                    }
-                                )
-                                .animateItemPlacement()
+                            modifier =
+                                Modifier
+                                    .combinedClickable(
+                                        onClick = {
+                                            navController.navigate("album/${album.id}")
+                                        },
+                                        onLongClick = {
+                                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                            menuState.show {
+                                                YouTubeAlbumMenu(
+                                                    albumItem = album,
+                                                    navController = navController,
+                                                    onDismiss = menuState::dismiss,
+                                                )
+                                            }
+                                        },
+                                    ).animateItemPlacement(),
                         )
                     }
                 }
@@ -123,13 +124,13 @@ fun ExploreScreen(
                     title = stringResource(R.string.mood_and_genres),
                     onClick = {
                         navController.navigate("mood_and_genres")
-                    }
+                    },
                 )
 
                 LazyHorizontalGrid(
                     rows = GridCells.Fixed(4),
                     contentPadding = PaddingValues(6.dp),
-                    modifier = Modifier.height((MoodAndGenresButtonHeight + 12.dp) * 4 + 12.dp)
+                    modifier = Modifier.height((MoodAndGenresButtonHeight + 12.dp) * 4 + 12.dp),
                 ) {
                     items(moodAndGenres) {
                         MoodAndGenresButton(
@@ -137,9 +138,10 @@ fun ExploreScreen(
                             onClick = {
                                 navController.navigate("youtube_browse/${it.endpoint.browseId}?params=${it.endpoint.params}")
                             },
-                            modifier = Modifier
-                                .padding(6.dp)
-                                .width(180.dp)
+                            modifier =
+                                Modifier
+                                    .padding(6.dp)
+                                    .width(180.dp),
                         )
                     }
                 }
@@ -150,29 +152,32 @@ fun ExploreScreen(
                 ShimmerHost {
                     TextPlaceholder(
                         height = 36.dp,
-                        modifier = Modifier
-                            .padding(vertical = 12.dp, horizontal = 12.dp)
-                            .width(250.dp)
+                        modifier =
+                            Modifier
+                                .padding(vertical = 12.dp, horizontal = 12.dp)
+                                .width(250.dp),
                     )
-                    Row{
+                    Row {
                         repeat(2) {
                             GridItemPlaceHolder()
                         }
                     }
                     TextPlaceholder(
                         height = 36.dp,
-                        modifier = Modifier
-                            .padding(vertical = 12.dp, horizontal = 12.dp)
-                            .width(250.dp)
+                        modifier =
+                            Modifier
+                                .padding(vertical = 12.dp, horizontal = 12.dp)
+                                .width(250.dp),
                     )
                     repeat(4) {
                         Row {
                             repeat(2) {
                                 TextPlaceholder(
                                     height = MoodAndGenresButtonHeight,
-                                    modifier = Modifier
-                                        .padding(horizontal = 6.dp)
-                                        .width(200.dp)
+                                    modifier =
+                                        Modifier
+                                            .padding(horizontal = 6.dp)
+                                            .width(200.dp),
                                 )
                             }
                         }
