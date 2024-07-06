@@ -62,7 +62,7 @@ class ExoDownloadService :
             finalException: Exception?,
         ) {
             if (download.state == Download.STATE_FAILED) {
-                Timber.tag("Download failed").e(finalException)
+                Timber.tag("Download failed").e(finalException.toString())
                 val notification =
                     notificationHelper.buildDownloadFailedNotification(
                         context,
