@@ -12,7 +12,6 @@ import androidx.media3.exoplayer.scheduler.PlatformScheduler
 import androidx.media3.exoplayer.scheduler.Scheduler
 import com.malopieds.innertune.R
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -62,13 +61,12 @@ class ExoDownloadService :
             finalException: Exception?,
         ) {
             if (download.state == Download.STATE_FAILED) {
-                Timber.tag("Download failed").e(finalException.toString())
                 val notification =
                     notificationHelper.buildDownloadFailedNotification(
                         context,
                         R.drawable.error,
                         null,
-                        Util.fromUtf8Bytes(download.request.data) + " " + finalException,
+                        Util.fromUtf8Bytes(download.request.data),
                     )
                 NotificationUtil.setNotification(context, nextNotificationId++, notification)
             }
