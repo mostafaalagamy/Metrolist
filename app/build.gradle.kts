@@ -71,6 +71,10 @@ android {
     lint {
         disable += "MissingTranslation"
     }
+    dependenciesInfo {
+        includeInApk = false
+        includeInBundle = false
+    }
 }
 
 ksp {
