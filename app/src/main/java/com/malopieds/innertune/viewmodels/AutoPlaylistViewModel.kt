@@ -25,6 +25,8 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import java.text.Collator
+import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
@@ -52,10 +54,11 @@ class AutoPlaylistViewModel
                         PlaylistSongSortType.CUSTOM -> songs
                         PlaylistSongSortType.CREATE_DATE -> songs.sortedBy { it.id }
                         PlaylistSongSortType.NAME -> songs.sortedBy { it.song.title }
-                        PlaylistSongSortType.ARTIST ->
-                            songs.sortedBy { song ->
-                                song.artists.joinToString { it.name }
-                            }
+                        PlaylistSongSortType.ARTIST -> {
+                            val collator = Collator.getInstance(Locale.getDefault())
+                            collator.strength = Collator.PRIMARY
+                            songs.sortedWith(compareBy(collator) { song -> song.artists.joinToString("") { it.name } })
+                        }
                         PlaylistSongSortType.PLAY_TIME -> songs.sortedBy { it.song.totalPlayTime }
                     }.reversed(sortDescending && sortType != PlaylistSongSortType.CUSTOM)
                 }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
