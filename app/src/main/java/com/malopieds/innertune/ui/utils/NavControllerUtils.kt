@@ -5,7 +5,7 @@ import androidx.navigation.NavController
 import com.malopieds.innertune.ui.screens.Screens
 
 val NavController.canNavigateUp: Boolean
-    get() = currentBackStackEntry?.destination?.parent?.route != null
+    get() = currentDestination?.route != "home"
 
 fun NavController.backToMain() {
     while (canNavigateUp && !Screens.MainScreens.fastAny { it.route == currentBackStackEntry?.destination?.route }) {
