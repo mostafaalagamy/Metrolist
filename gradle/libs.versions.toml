@@ -17,12 +17,12 @@ concurrent-futures = { group = "androidx.concurrent", name = "concurrent-futures
 
 gradle = { group = "com.android.tools.build", name = "gradle", version.ref = "androidGradlePlugin" }
 activity = { group = "androidx.activity", name = "activity-compose", version = "1.9.0" }
-navigation = { group = "androidx.navigation", name = "navigation-compose", version = "2.7.7" }
+navigation = { group = "androidx.navigation", name = "navigation-compose", version = "2.6.0" }
 hilt-navigation = { group = "androidx.hilt", name = "hilt-navigation-compose", version = "1.2.0" }
 datastore = { group = "androidx.datastore", name = "datastore-preferences", version = "1.1.1" }
 
 compose-runtime = { group = "androidx.compose.runtime", name = "runtime", version.ref = "compose" }
-compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version = "1.6.8" }
+compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version = "compose" }
 compose-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "compose" }
 compose-ui-util = { group = "androidx.compose.ui", name = "ui-util", version.ref = "compose" }
 compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling", version.ref = "compose" }
