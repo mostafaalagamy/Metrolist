@@ -9,9 +9,12 @@ import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -29,6 +32,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -37,12 +41,15 @@ import com.malopieds.innertune.LocalPlayerConnection
 import com.malopieds.innertune.R
 import com.malopieds.innertune.constants.CONTENT_TYPE_HEADER
 import com.malopieds.innertune.constants.CONTENT_TYPE_SONG
+import com.malopieds.innertune.constants.SongFilter
+import com.malopieds.innertune.constants.SongFilterKey
 import com.malopieds.innertune.constants.SongSortDescendingKey
 import com.malopieds.innertune.constants.SongSortType
 import com.malopieds.innertune.constants.SongSortTypeKey
 import com.malopieds.innertune.extensions.toMediaItem
 import com.malopieds.innertune.extensions.togglePlayPause
 import com.malopieds.innertune.playback.queues.ListQueue
+import com.malopieds.innertune.ui.component.ChipsRow
 import com.malopieds.innertune.ui.component.HideOnScrollFAB
 import com.malopieds.innertune.ui.component.LocalMenuState
 import com.malopieds.innertune.ui.component.SongListItem
@@ -58,7 +65,7 @@ import com.malopieds.innertune.viewmodels.LibrarySongsViewModel
 @Composable
 fun LibrarySongsScreen(
     navController: NavController,
-    filterContent: @Composable () -> Unit,
+    onDeselect: () -> Unit,
     viewModel: LibrarySongsViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
@@ -78,6 +85,8 @@ fun LibrarySongsScreen(
         mutableStateOf(false)
     }
 
+    var filter by rememberEnumPreference(SongFilterKey, SongFilter.LIBRARY)
+
     val lazyListState = rememberLazyListState()
 
     Box(
@@ -91,7 +100,31 @@ fun LibrarySongsScreen(
                 key = "filter",
                 contentType = CONTENT_TYPE_HEADER,
             ) {
-                filterContent()
+                Row {
+                    Spacer(Modifier.width(12.dp))
+                    FilterChip(
+                        label = { Text(stringResource(R.string.songs)) },
+                        selected = true,
+                        colors = FilterChipDefaults.filterChipColors(containerColor = MaterialTheme.colorScheme.background),
+                        onClick = onDeselect,
+                        leadingIcon = {
+                            Icon(painter = painterResource(R.drawable.close), contentDescription = "")
+                        },
+                    )
+                    ChipsRow(
+                        chips =
+                            listOf(
+                                SongFilter.LIBRARY to stringResource(R.string.filter_library),
+                                SongFilter.LIKED to stringResource(R.string.filter_liked),
+                                SongFilter.DOWNLOADED to stringResource(R.string.filter_downloaded),
+                            ),
+                        currentValue = filter,
+                        onValueUpdate = {
+                            filter = it
+                        },
+                        modifier = Modifier.weight(1f),
+                    )
+                }
             }
 
             item(

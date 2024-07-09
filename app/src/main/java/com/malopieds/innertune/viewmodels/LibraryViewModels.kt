@@ -8,10 +8,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.media3.exoplayer.offline.Download
 import com.malopieds.innertube.YouTube
 import com.malopieds.innertune.constants.*
 import com.malopieds.innertune.db.MusicDatabase
+import com.malopieds.innertune.extensions.reversed
 import com.malopieds.innertune.extensions.toEnum
+import com.malopieds.innertune.playback.DownloadUtil
 import com.malopieds.innertune.utils.dataStore
 import com.malopieds.innertune.utils.reportException
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -30,17 +33,44 @@ class LibrarySongsViewModel
     constructor(
         @ApplicationContext context: Context,
         database: MusicDatabase,
+        downloadUtil: DownloadUtil,
     ) : ViewModel() {
         val allSongs =
             context.dataStore.data
                 .map {
-                    Pair(
+                    Triple(
+                        it[SongFilterKey].toEnum(SongFilter.LIBRARY),
                         it[SongSortTypeKey].toEnum(SongSortType.CREATE_DATE),
                         (it[SongSortDescendingKey] ?: true),
                     )
                 }.distinctUntilChanged()
-                .flatMapLatest { (sortType, descending) ->
-                    database.likedSongs(sortType, descending)
+                .flatMapLatest { (filter, sortType, descending) ->
+                    when (filter) {
+                        SongFilter.LIBRARY -> database.songs(sortType, descending)
+                        SongFilter.LIKED -> database.likedSongs(sortType, descending)
+                        SongFilter.DOWNLOADED ->
+                            downloadUtil.downloads.flatMapLatest { downloads ->
+                                database
+                                    .allSongs()
+                                    .flowOn(Dispatchers.IO)
+                                    .map { songs ->
+                                        songs.filter {
+                                            downloads[it.id]?.state == Download.STATE_COMPLETED
+                                        }
+                                    }.map { songs ->
+                                        when (sortType) {
+                                            SongSortType.CREATE_DATE -> songs.sortedBy { downloads[it.id]?.updateTimeMs ?: 0L }
+                                            SongSortType.NAME -> songs.sortedBy { it.song.title }
+                                            SongSortType.ARTIST ->
+                                                songs.sortedBy { song ->
+                                                    song.artists.joinToString(separator = "") { it.name }
+                                                }
+
+                                            SongSortType.PLAY_TIME -> songs.sortedBy { it.song.totalPlayTime }
+                                        }.reversed(descending)
+                                    }
+                            }
+                    }
                 }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
     }
 
@@ -54,13 +84,17 @@ class LibraryArtistsViewModel
         val allArtists =
             context.dataStore.data
                 .map {
-                    Pair(
+                    Triple(
+                        it[ArtistFilterKey].toEnum(ArtistFilter.LIBRARY),
                         it[ArtistSortTypeKey].toEnum(ArtistSortType.CREATE_DATE),
                         it[ArtistSortDescendingKey] ?: true,
                     )
                 }.distinctUntilChanged()
-                .flatMapLatest { (sortType, descending) ->
-                    database.artistsBookmarked(sortType, descending)
+                .flatMapLatest { (filter, sortType, descending) ->
+                    when (filter) {
+                        ArtistFilter.LIBRARY -> database.artists(sortType, descending)
+                        ArtistFilter.LIKED -> database.artistsBookmarked(sortType, descending)
+                    }
                 }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
         init {
@@ -92,13 +126,17 @@ class LibraryAlbumsViewModel
         val allAlbums =
             context.dataStore.data
                 .map {
-                    Pair(
+                    Triple(
+                        it[AlbumFilterKey].toEnum(AlbumFilter.LIBRARY),
                         it[AlbumSortTypeKey].toEnum(AlbumSortType.CREATE_DATE),
                         it[AlbumSortDescendingKey] ?: true,
                     )
                 }.distinctUntilChanged()
-                .flatMapLatest { (sortType, descending) ->
-                    database.albumsLiked(sortType, descending)
+                .flatMapLatest { (filter, sortType, descending) ->
+                    when (filter) {
+                        AlbumFilter.LIBRARY -> database.albums(sortType, descending)
+                        AlbumFilter.LIKED -> database.albumsLiked(sortType, descending)
+                    }
                 }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
         init {

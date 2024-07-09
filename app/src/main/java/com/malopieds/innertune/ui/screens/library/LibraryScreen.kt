@@ -16,7 +16,7 @@ import com.malopieds.innertune.ui.component.ChipsRow
 import com.malopieds.innertune.utils.rememberEnumPreference
 
 @Composable
-fun LibraryScreen(navController: NavController)  {
+fun LibraryScreen(navController: NavController) {
     var filterType by rememberEnumPreference(ChipSortTypeKey, LibraryFilter.LIBRARY)
 
     val filterContent = @Composable {
@@ -49,9 +49,9 @@ fun LibraryScreen(navController: NavController)  {
         when (filterType) {
             LibraryFilter.LIBRARY -> LibraryMixScreen(navController, filterContent)
             LibraryFilter.PLAYLISTS -> LibraryPlaylistsScreen(navController, filterContent)
-            LibraryFilter.SONGS -> LibrarySongsScreen(navController, filterContent)
-            LibraryFilter.ALBUMS -> LibraryAlbumsScreen(navController, filterContent)
-            LibraryFilter.ARTISTS -> LibraryArtistsScreen(navController, filterContent)
+            LibraryFilter.SONGS -> LibrarySongsScreen(navController, { filterType = LibraryFilter.LIBRARY })
+            LibraryFilter.ALBUMS -> LibraryAlbumsScreen(navController, { filterType = LibraryFilter.LIBRARY })
+            LibraryFilter.ARTISTS -> LibraryArtistsScreen(navController, { filterType = LibraryFilter.LIBRARY })
         }
     }
 }

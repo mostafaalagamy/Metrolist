@@ -55,6 +55,10 @@ val ArtistSongSortDescendingKey = booleanPreferencesKey("artistSongSortDescendin
 val MixSortTypeKey = stringPreferencesKey("mixSortType")
 val MixSortDescendingKey = booleanPreferencesKey("albumSortDescending")
 
+val SongFilterKey = stringPreferencesKey("songFilter")
+val ArtistFilterKey = stringPreferencesKey("artistFilter")
+val AlbumFilterKey = stringPreferencesKey("albumFilter")
+
 val ArtistViewTypeKey = stringPreferencesKey("artistViewType")
 val AlbumViewTypeKey = stringPreferencesKey("albumViewType")
 val PlaylistViewTypeKey = stringPreferencesKey("playlistViewType")
@@ -73,6 +77,22 @@ enum class LibraryViewType {
             LIST -> GRID
             GRID -> LIST
         }
+}
+
+enum class SongFilter {
+    LIBRARY,
+    LIKED,
+    DOWNLOADED,
+}
+
+enum class ArtistFilter {
+    LIBRARY,
+    LIKED,
+}
+
+enum class AlbumFilter {
+    LIBRARY,
+    LIKED,
 }
 
 enum class SongSortType {
