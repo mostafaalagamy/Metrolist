@@ -271,6 +271,5 @@ fun YouTubeBrowseScreen(
                 )
             }
         },
-        scrollBehavior = scrollBehavior,
     )
 }

@@ -592,6 +592,5 @@ fun AlbumScreen(
                 )
             }
         },
-        scrollBehavior = scrollBehavior,
     )
 }

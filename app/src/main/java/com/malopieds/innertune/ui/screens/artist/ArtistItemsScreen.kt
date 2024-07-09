@@ -270,6 +270,5 @@ fun ArtistItemsScreen(
                 )
             }
         },
-        scrollBehavior = scrollBehavior,
     )
 }

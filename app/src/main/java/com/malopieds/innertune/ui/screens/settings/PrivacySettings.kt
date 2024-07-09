@@ -192,6 +192,5 @@ fun PrivacySettings(
                 )
             }
         },
-        scrollBehavior = scrollBehavior,
     )
 }

@@ -111,7 +111,6 @@ fun AppearanceSettings(
                 )
             }
         },
-        scrollBehavior = scrollBehavior,
     )
 }
 

@@ -197,6 +197,5 @@ fun ContentSettings(
                 )
             }
         },
-        scrollBehavior = scrollBehavior,
     )
 }

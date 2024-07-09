@@ -456,10 +456,14 @@ class MainActivity : ComponentActivity() {
                                 }.route,
                             modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
                         ) {
-                            composable(Screens.Home.route) {
+                            composable(
+                                Screens.Home.route,
+                            ) {
                                 HomeScreen(navController)
                             }
-                            composable(Screens.Library.route) {
+                            composable(
+                                Screens.Library.route,
+                            ) {
                                 LibraryScreen(navController)
                             }
                             composable(Screens.Explore.route) {

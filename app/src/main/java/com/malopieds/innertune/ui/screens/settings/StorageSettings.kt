@@ -236,6 +236,5 @@ fun StorageSettings(
                 )
             }
         },
-        scrollBehavior = scrollBehavior,
     )
 }

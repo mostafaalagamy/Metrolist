@@ -971,10 +971,9 @@ fun PlaylistListItem(
                 stringResource(R.string.offline) -> R.drawable.offline
                 else -> {
                     println(playlist.playlist.name + " " + autoPlaylist)
-                    if (autoPlaylist)
-                        {
-                            R.drawable.trending_up
-                        } else {
+                    if (autoPlaylist) {
+                        R.drawable.trending_up
+                    } else {
                         R.drawable.queue_music
                     }
                 }
@@ -1046,10 +1045,9 @@ fun PlaylistGridItem(
                 stringResource(R.string.offline) -> R.drawable.offline
                 else -> {
                     println(playlist.playlist.name + " " + autoPlaylist)
-                    if (autoPlaylist)
-                        {
-                            R.drawable.trending_up
-                        } else {
+                    if (autoPlaylist) {
+                        R.drawable.trending_up
+                    } else {
                         R.drawable.queue_music
                     }
                 }
@@ -1551,59 +1549,58 @@ fun YouTubeSmallGridItem(
             model = item.thumbnail,
             contentDescription = null,
             contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxWidth(),
         )
-        if (item is SongItem)
-            {
-                AnimatedVisibility(
-                    visible = isActive,
-                    enter = fadeIn(tween(500)),
-                    exit = fadeOut(tween(500)),
-                ) {
-                    Box(
-                        contentAlignment = Alignment.Center,
-                        modifier =
-                            Modifier
-                                .fillMaxSize()
-                                .background(
-                                    color = Color.Black.copy(alpha = if (isPlaying) 0.4f else 0f),
-                                    shape = RoundedCornerShape(ThumbnailCornerRadius),
-                                ),
-                    ) {
-                        if (isPlaying) {
-                            PlayingIndicator(
-                                color = Color.White,
-                                modifier = Modifier.height(24.dp),
-                            )
-                        }
-                    }
-                }
-
-                AnimatedVisibility(
-                    visible = !(isActive && isPlaying),
-                    enter = fadeIn(),
-                    exit = fadeOut(),
+        if (item is SongItem) {
+            AnimatedVisibility(
+                visible = isActive,
+                enter = fadeIn(tween(500)),
+                exit = fadeOut(tween(500)),
+            ) {
+                Box(
+                    contentAlignment = Alignment.Center,
                     modifier =
                         Modifier
-                            .align(Alignment.Center)
-                            .padding(8.dp),
+                            .fillMaxSize()
+                            .background(
+                                color = Color.Black.copy(alpha = if (isPlaying) 0.4f else 0f),
+                                shape = RoundedCornerShape(ThumbnailCornerRadius),
+                            ),
                 ) {
-                    Box(
-                        contentAlignment = Alignment.Center,
-                        modifier =
-                            Modifier
-                                .size(36.dp)
-                                .clip(CircleShape)
-                                .background(Color.Black.copy(alpha = 0.6f)),
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.play),
-                            contentDescription = null,
-                            tint = Color.White,
+                    if (isPlaying) {
+                        PlayingIndicator(
+                            color = Color.White,
+                            modifier = Modifier.height(24.dp),
                         )
                     }
                 }
             }
+
+            AnimatedVisibility(
+                visible = !(isActive && isPlaying),
+                enter = fadeIn(),
+                exit = fadeOut(),
+                modifier =
+                    Modifier
+                        .align(Alignment.Center)
+                        .padding(8.dp),
+            ) {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier =
+                        Modifier
+                            .size(36.dp)
+                            .clip(CircleShape)
+                            .background(Color.Black.copy(alpha = 0.6f)),
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.play),
+                        contentDescription = null,
+                        tint = Color.White,
+                    )
+                }
+            }
+        }
     },
     thumbnailShape =
         when (item) {

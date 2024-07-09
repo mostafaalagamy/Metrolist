@@ -90,6 +90,5 @@ fun PlayerSettings(
                 )
             }
         },
-        scrollBehavior = scrollBehavior,
     )
 }

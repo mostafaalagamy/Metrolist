@@ -163,6 +163,5 @@ fun AboutScreen(
                 )
             }
         },
-        scrollBehavior = scrollBehavior,
     )
 }

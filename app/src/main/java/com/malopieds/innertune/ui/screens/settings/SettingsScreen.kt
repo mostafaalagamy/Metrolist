@@ -108,6 +108,5 @@ fun SettingsScreen(
                 )
             }
         },
-        scrollBehavior = scrollBehavior,
     )
 }

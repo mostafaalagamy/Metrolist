@@ -185,7 +185,6 @@ fun ArtistSongsScreen(
                     )
                 }
             },
-            scrollBehavior = scrollBehavior,
         )
 
         HideOnScrollFAB(

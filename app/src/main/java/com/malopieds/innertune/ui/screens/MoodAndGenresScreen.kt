@@ -113,7 +113,6 @@ fun MoodAndGenresScreen(
                 )
             }
         },
-        scrollBehavior = scrollBehavior,
     )
 }
 

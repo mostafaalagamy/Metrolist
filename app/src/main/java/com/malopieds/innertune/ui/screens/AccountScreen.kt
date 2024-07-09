@@ -102,6 +102,5 @@ fun AccountScreen(
                 )
             }
         },
-        scrollBehavior = scrollBehavior,
     )
 }

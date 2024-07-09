@@ -109,6 +109,5 @@ fun NewReleaseScreen(
                 )
             }
         },
-        scrollBehavior = scrollBehavior,
     )
 }

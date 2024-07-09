@@ -551,7 +551,6 @@ fun AutoPlaylistScreen(
                     )
                 }
             },
-            scrollBehavior = scrollBehavior,
         )
     }
 }

@@ -920,7 +920,6 @@ fun LocalPlaylistScreen(
                     )
                 }
             },
-            scrollBehavior = scrollBehavior,
         )
 
         SnackbarHost(

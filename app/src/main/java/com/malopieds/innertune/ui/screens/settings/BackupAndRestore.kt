@@ -83,6 +83,5 @@ fun BackupAndRestore(
                 )
             }
         },
-        scrollBehavior = scrollBehavior,
     )
 }

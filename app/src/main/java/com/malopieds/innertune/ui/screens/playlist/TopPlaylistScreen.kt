@@ -550,7 +550,6 @@ fun TopPlaylistScreen(
                     )
                 }
             },
-            scrollBehavior = scrollBehavior,
         )
     }
 }

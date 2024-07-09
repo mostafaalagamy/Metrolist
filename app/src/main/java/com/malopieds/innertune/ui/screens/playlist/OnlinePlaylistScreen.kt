@@ -474,7 +474,6 @@ fun OnlinePlaylistScreen(
                     )
                 }
             },
-            scrollBehavior = scrollBehavior,
         )
 
         SnackbarHost(
