@@ -96,6 +96,7 @@ fun PlayerMenu(
     val playerConnection = LocalPlayerConnection.current ?: return
     val playerVolume = playerConnection.service.playerVolume.collectAsState()
     val activityResultLauncher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { }
+    val librarySong by database.song(mediaMetadata.id).collectAsState(initial = null)
 
     val download by LocalDownloadUtil.current.getDownload(mediaMetadata.id).collectAsState(initial = null)
 
@@ -301,6 +302,26 @@ fun PlayerMenu(
                 )
             },
         )
+        if (librarySong?.song?.inLibrary != null) {
+            GridMenuItem(
+                icon = R.drawable.library_add_check,
+                title = R.string.remove_from_library,
+            ) {
+                database.query {
+                    inLibrary(mediaMetadata.id, null)
+                }
+            }
+        } else {
+            GridMenuItem(
+                icon = R.drawable.library_add,
+                title = R.string.add_to_library,
+            ) {
+                database.transaction {
+                    insert(mediaMetadata)
+                    inLibrary(mediaMetadata.id, LocalDateTime.now())
+                }
+            }
+        }
         GridMenuItem(
             icon = R.drawable.artist,
             title = R.string.view_artist,

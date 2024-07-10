@@ -317,6 +317,7 @@ fun AlbumScreen(
                                                 originalAlbum = Album(albumWithSongs.album, albumWithSongs.artists),
                                                 navController = navController,
                                                 onDismiss = menuState::dismiss,
+                                                selectAction = { selection = true },
                                             )
                                         }
                                     },

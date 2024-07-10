@@ -15,7 +15,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
@@ -75,6 +75,7 @@ fun AlbumMenu(
     originalAlbum: Album,
     navController: NavController,
     onDismiss: () -> Unit,
+    selectAction: () -> Unit = {},
 ) {
     val context = LocalContext.current
     val database = LocalDatabase.current
@@ -259,7 +260,7 @@ fun AlbumMenu(
         },
     )
 
-    Divider()
+    HorizontalDivider()
 
     GridMenu(
         contentPadding =
@@ -342,6 +343,15 @@ fun AlbumMenu(
                     putExtra(Intent.EXTRA_TEXT, "https://music.youtube.com/browse/${album.album.id}")
                 }
             context.startActivity(Intent.createChooser(intent, null))
+        }
+        if (selectAction != {}) {
+            GridMenuItem(
+                icon = R.drawable.select_all,
+                title = R.string.select,
+            ) {
+                onDismiss()
+                selectAction()
+            }
         }
     }
 }

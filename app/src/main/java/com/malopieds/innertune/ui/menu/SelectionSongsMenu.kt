@@ -48,6 +48,7 @@ import com.malopieds.innertune.db.entities.PlaylistSongMap
 import com.malopieds.innertune.db.entities.Song
 import com.malopieds.innertune.extensions.toMediaItem
 import com.malopieds.innertune.models.MediaMetadata
+import com.malopieds.innertune.models.toMediaMetadata
 import com.malopieds.innertune.playback.ExoDownloadService
 import com.malopieds.innertune.playback.queues.ListQueue
 import com.malopieds.innertune.ui.component.DefaultDialog
@@ -73,6 +74,14 @@ fun SelectionSongMenu(
     val database = LocalDatabase.current
     val downloadUtil = LocalDownloadUtil.current
     val playerConnection = LocalPlayerConnection.current ?: return
+
+    val allInLibrary by remember {
+        mutableStateOf(
+            songSelection.all {
+                it.song.inLibrary != null
+            },
+        )
+    }
 
     var downloadState by remember {
         mutableIntStateOf(Download.STATE_STOPPED)
@@ -242,6 +251,31 @@ fun SelectionSongMenu(
                 ),
             )
             clearAction()
+        }
+
+        if (allInLibrary) {
+            GridMenuItem(
+                icon = R.drawable.library_add_check,
+                title = R.string.remove_from_library,
+            ) {
+                database.query {
+                    songSelection.forEach { song ->
+                        inLibrary(song.id, null)
+                    }
+                }
+            }
+        } else {
+            GridMenuItem(
+                icon = R.drawable.library_add,
+                title = R.string.add_to_library,
+            ) {
+                database.transaction {
+                    songSelection.forEach { song ->
+                        insert(song.toMediaMetadata())
+                        inLibrary(song.id, LocalDateTime.now())
+                    }
+                }
+            }
         }
 
         GridMenuItem(
