@@ -2,6 +2,7 @@ package com.malopieds.innertune.ui.screens.search
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -9,7 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -17,11 +18,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextRange
@@ -42,8 +46,13 @@ import com.malopieds.innertune.constants.SuggestionItemHeight
 import com.malopieds.innertune.extensions.togglePlayPause
 import com.malopieds.innertune.models.toMediaMetadata
 import com.malopieds.innertune.playback.queues.YouTubeQueue
+import com.malopieds.innertune.ui.component.LocalMenuState
 import com.malopieds.innertune.ui.component.SearchBarIconOffsetX
 import com.malopieds.innertune.ui.component.YouTubeListItem
+import com.malopieds.innertune.ui.menu.YouTubeAlbumMenu
+import com.malopieds.innertune.ui.menu.YouTubeArtistMenu
+import com.malopieds.innertune.ui.menu.YouTubePlaylistMenu
+import com.malopieds.innertune.ui.menu.YouTubeSongMenu
 import com.malopieds.innertune.viewmodels.OnlineSearchSuggestionViewModel
 import kotlinx.coroutines.flow.drop
 
@@ -59,10 +68,13 @@ fun OnlineSearchScreen(
 ) {
     val database = LocalDatabase.current
     val keyboardController = LocalSoftwareKeyboardController.current
+    val menuState = LocalMenuState.current
     val playerConnection = LocalPlayerConnection.current ?: return
+    val haptic = LocalHapticFeedback.current
     val isPlaying by playerConnection.isPlaying.collectAsState()
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
 
+    val coroutineScope = rememberCoroutineScope()
     val viewState by viewModel.viewState.collectAsState()
 
     val lazyListState = rememberLazyListState()
@@ -135,7 +147,7 @@ fun OnlineSearchScreen(
 
         if (viewState.items.isNotEmpty() && viewState.history.size + viewState.suggestions.size > 0) {
             item {
-                Divider()
+                HorizontalDivider()
             }
         }
 
@@ -154,33 +166,70 @@ fun OnlineSearchScreen(
                 isPlaying = isPlaying,
                 modifier =
                     Modifier
-                        .clickable {
-                            when (item) {
-                                is SongItem -> {
-                                    if (item.id == mediaMetadata?.id) {
-                                        playerConnection.player.togglePlayPause()
-                                    } else {
-                                        playerConnection.playQueue(YouTubeQueue(WatchEndpoint(videoId = item.id), item.toMediaMetadata()))
+                        .combinedClickable(
+                            onClick = {
+                                when (item) {
+                                    is SongItem -> {
+                                        if (item.id == mediaMetadata?.id) {
+                                            playerConnection.player.togglePlayPause()
+                                        } else {
+                                            playerConnection.playQueue(
+                                                YouTubeQueue(WatchEndpoint(videoId = item.id), item.toMediaMetadata()),
+                                            )
+                                            onDismiss()
+                                        }
+                                    }
+
+                                    is AlbumItem -> {
+                                        navController.navigate("album/${item.id}")
+                                        onDismiss()
+                                    }
+
+                                    is ArtistItem -> {
+                                        navController.navigate("artist/${item.id}")
+                                        onDismiss()
+                                    }
+
+                                    is PlaylistItem -> {
+                                        navController.navigate("online_playlist/${item.id}")
                                         onDismiss()
                                     }
                                 }
+                            },
+                            onLongClick = {
+                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                menuState.show {
+                                    when (item) {
+                                        is SongItem ->
+                                            YouTubeSongMenu(
+                                                song = item,
+                                                navController = navController,
+                                                onDismiss = menuState::dismiss,
+                                            )
 
-                                is AlbumItem -> {
-                                    navController.navigate("album/${item.id}")
-                                    onDismiss()
-                                }
+                                        is AlbumItem ->
+                                            YouTubeAlbumMenu(
+                                                albumItem = item,
+                                                navController = navController,
+                                                onDismiss = menuState::dismiss,
+                                            )
 
-                                is ArtistItem -> {
-                                    navController.navigate("artist/${item.id}")
-                                    onDismiss()
-                                }
+                                        is ArtistItem ->
+                                            YouTubeArtistMenu(
+                                                artist = item,
+                                                onDismiss = menuState::dismiss,
+                                            )
 
-                                is PlaylistItem -> {
-                                    navController.navigate("online_playlist/${item.id}")
-                                    onDismiss()
+                                        is PlaylistItem ->
+                                            YouTubePlaylistMenu(
+                                                playlist = item,
+                                                coroutineScope = coroutineScope,
+                                                onDismiss = menuState::dismiss,
+                                            )
+                                    }
                                 }
-                            }
-                        }.animateItemPlacement(),
+                            },
+                        ).animateItemPlacement(),
             )
         }
     }
