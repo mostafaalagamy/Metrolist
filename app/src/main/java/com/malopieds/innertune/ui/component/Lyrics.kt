@@ -25,6 +25,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -33,6 +35,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -48,6 +51,8 @@ import com.malopieds.innertune.BuildConfig
 import com.malopieds.innertune.LocalPlayerConnection
 import com.malopieds.innertune.R
 import com.malopieds.innertune.constants.LyricsTextPositionKey
+import com.malopieds.innertune.constants.PlayerBackgroundStyle
+import com.malopieds.innertune.constants.PlayerBackgroundStyleKey
 import com.malopieds.innertune.constants.TranslateLyricsKey
 import com.malopieds.innertune.db.entities.LyricsEntity.Companion.LYRICS_NOT_FOUND
 import com.malopieds.innertune.lyrics.LyricsEntry
@@ -69,6 +74,7 @@ import kotlin.time.Duration.Companion.seconds
 fun Lyrics(
     sliderPositionProvider: () -> Long?,
     modifier: Modifier = Modifier,
+    changeColor: Boolean = false,
 ) {
     val playerConnection = LocalPlayerConnection.current ?: return
     val menuState = LocalMenuState.current
@@ -110,15 +116,16 @@ fun Lyrics(
     // Because LaunchedEffect has delay, which leads to inconsistent with current line color and scroll animation,
     // we use deferredCurrentLineIndex when user is scrolling
     var deferredCurrentLineIndex by rememberSaveable {
-        mutableStateOf(0)
+        mutableIntStateOf(0)
     }
 
     var lastPreviewTime by rememberSaveable {
-        mutableStateOf(0L)
+        mutableLongStateOf(0L)
     }
     var isSeeking by remember {
         mutableStateOf(false)
     }
+    val playerBackground by rememberEnumPreference(key = PlayerBackgroundStyleKey, defaultValue = PlayerBackgroundStyle.DEFAULT)
 
     LaunchedEffect(lyrics) {
         if (lyrics.isNullOrEmpty() || !lyrics.startsWith("[")) {
@@ -157,6 +164,28 @@ fun Lyrics(
             }
         }
     }
+
+    val currentLine =
+        when (playerBackground) {
+            PlayerBackgroundStyle.DEFAULT -> MaterialTheme.colorScheme.primary
+            else ->
+                if (changeColor) {
+                    Color.Black
+                } else {
+                    MaterialTheme.colorScheme.primary
+                }
+        }
+
+    val outLines =
+        when (playerBackground) {
+            PlayerBackgroundStyle.DEFAULT -> MaterialTheme.colorScheme.secondary
+            else ->
+                if (changeColor) {
+                    MaterialTheme.colorScheme.onSecondary
+                } else {
+                    MaterialTheme.colorScheme.secondary
+                }
+        }
 
     BoxWithConstraints(
         contentAlignment = Alignment.Center,
@@ -232,9 +261,11 @@ fun Lyrics(
                             if (index ==
                                 displayedCurrentLineIndex
                             ) {
-                                MaterialTheme.colorScheme.primary
+                                currentLine
+//                                MaterialTheme.colorScheme.primary
                             } else {
-                                MaterialTheme.colorScheme.secondary
+//                                MaterialTheme.colorScheme.secondary
+                                outLines
                             },
                         textAlign =
                             when (lyricsTextPosition) {

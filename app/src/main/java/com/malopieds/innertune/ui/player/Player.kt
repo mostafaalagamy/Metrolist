@@ -167,6 +167,10 @@ fun BottomSheetPlayer(
         mutableStateOf<List<Color>>(emptyList())
     }
 
+    var changeColor by remember {
+        mutableStateOf(false)
+    }
+
     LaunchedEffect(mediaMetadata, playerBackground) {
         if (playerBackground == PlayerBackgroundStyle.GRADIENT) {
             withContext(Dispatchers.IO) {
@@ -198,8 +202,10 @@ fun BottomSheetPlayer(
                 if (gradientColors.size >= 2 &&
                     ColorUtils.calculateContrast(gradientColors.first().toArgb(), Color.White.toArgb()) < 1.5f
                 ) {
+                    changeColor = true
                     Color.Black
                 } else {
+                    changeColor = false
                     MaterialTheme.colorScheme.onSurface
                 }
         }
@@ -908,6 +914,7 @@ fun BottomSheetPlayer(
                         Thumbnail(
                             sliderPositionProvider = { sliderPosition },
                             modifier = Modifier.nestedScroll(state.preUpPostDownNestedScrollConnection),
+                            changeColor = changeColor,
                         )
                     }
 
@@ -944,6 +951,7 @@ fun BottomSheetPlayer(
                         Thumbnail(
                             sliderPositionProvider = { sliderPosition },
                             modifier = Modifier.nestedScroll(state.preUpPostDownNestedScrollConnection),
+                            changeColor = changeColor,
                         )
                     }
 
