@@ -10,7 +10,6 @@
     <plurals name="n_selected">
         <item quantity="one">%d sélectionné</item>
         <item quantity="many">%d sélectionnés</item>
-        <item quantity="other">%d sélectionnés</item>
     </plurals>
 
     <!-- Home -->
@@ -21,6 +20,10 @@
     <string name="quick_picks">Sélections rapides</string>
     <string name="quick_picks_empty">Écoutez quelques musiques pour générer vos sélections rapides</string>
     <string name="new_release_albums">Nouveautés</string>
+    <string name="forgotten_favorites">Favoris oubliés</string>
+    <string name="similar_to">Similaire à</string>
+    <string name="keep_listening">Continuez à écouter</string>
+    <string name="your_ytb_playlists">Vos playlists YouTube</string>
 
     <!-- History -->
     <string name="today">Aujourd\’hui</string>
@@ -50,6 +53,11 @@
     <string name="filter_featured_playlists">Listes de lecture mises en avant</string>
     <string name="filter_bookmarked">Favoris</string>
     <string name="no_results_found">Aucun résultat trouvé</string>
+
+    <!-- Library -->
+    <string name="liked">Aimées</string>
+    <string name="offline">Hors ligne</string>
+    <string name="my_top">Mon top</string>
 
     <!-- Artist screen -->
     <string name="from_your_library">De votre bibliothèque</string>
@@ -88,9 +96,12 @@
     <string name="search_online">Rechercher en ligne</string>
     <string name="sync">Synchroniser</string>
     <string name="advanced">Avancé</string>
+    <string name="select">Tout sélectionner</string>
+    <string name="like_all">Tout aimer</string>
 
     <!-- Sort menu -->
     <string name="sort_by_create_date">Date d\’ajout</string>
+    <string name="sort_by_last_updated">Date de mise à jour</string>
     <string name="sort_by_name">Nom</string>
     <string name="sort_by_artist">Artiste</string>
     <string name="sort_by_year">Année</string>
@@ -138,7 +149,7 @@
         <item quantity="many">%d chansons</item>
     </plurals>
     <plurals name="n_artist">
-        <item quantity="one">%d artist</item>
+        <item quantity="one">%d artiste</item>
         <item quantity="other">%d artistes</item>
         <item quantity="many">%d artistes</item>
     </plurals>
@@ -163,9 +174,13 @@
         <item quantity="other">%d mois</item>
     </plurals>
     <plurals name="n_year">
-        <item quantity="one">%d ans</item>
+        <item quantity="one">%d an</item>
         <item quantity="many">%d ans</item>
         <item quantity="other">%d ans</item>
+    </plurals>
+    <plurals name="n_elements">
+        <item quantity="one">%d élément</item>
+        <item quantity="many">%d éléments</item>
     </plurals>
 
     <!-- Snackbar -->
@@ -225,9 +240,13 @@
     <string name="content_language">Langue du contenu par défaut</string>
     <string name="content_country">Pays du contenu par défaut</string>
     <string name="system_default">Système par défaut</string>
+    <string name="proxy">Proxy</string>
     <string name="enable_proxy">Activer un proxy</string>
     <string name="proxy_type">Type de proxy</string>
-    <string name="proxy_url">URL proxy</string>
+    <string name="proxy_url">URL du proxy</string>
+    <string name="default_lib_chips">Choix de la bibliothèque par défaut</string>
+    <string name="set_quick_picks">Choix des sélections rapides</string>
+    <string name="last_song_listened">Basé sur la dernière chanson écoutée</string>
     <string name="restart_to_take_effect">Redémarrer pour prendre effet</string>
 
     <string name="player_and_audio">Lecteur et audio</string>
@@ -270,10 +289,17 @@
     <string name="backup_create_failed">Impossible de créer la sauvegarde</string>
     <string name="restore_failed">Échec de la restauration de la sauvegarde</string>
 
-    <string name="about">À propos de</string>
+    <string name="about">À propos</string>
     <string name="app_version">Version de l\’application</string>
 
     <string name="new_version_available">Nouvelle version disponible</string>
     <string name="translation_models">Modèles de traduction</string>
     <string name="clear_translation_models">Effacer les modèles de traduction</string>
+
+    <string name="all_time">Tout le temps</string>
+    <string name="past_24_hours">Dernières 24 heures</string>
+    <string name="past_week">Semaine dernière</string>
+    <string name="past_month">Mois dernier</string>
+    <string name="past_year">L\’année dernière</string>
+    <string name="top_length">Longueur de ma Top liste</string>
 </resources>
