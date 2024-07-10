@@ -65,6 +65,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalConfiguration
@@ -78,6 +79,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEachIndexed
 import androidx.compose.ui.window.DialogProperties
+import androidx.core.graphics.ColorUtils
 import androidx.core.net.toUri
 import androidx.media3.common.C
 import androidx.media3.common.Player.STATE_ENDED
@@ -161,23 +163,6 @@ fun BottomSheetPlayer(
         mutableStateOf<Long?>(null)
     }
 
-    val onBackgroundColor =
-        when (playerBackground) {
-            PlayerBackgroundStyle.DEFAULT -> MaterialTheme.colorScheme.onBackground
-            else -> MaterialTheme.colorScheme.onSurface
-        }
-
-    val download by LocalDownloadUtil.current.getDownload(mediaMetadata?.id ?: "").collectAsState(initial = null)
-
-    val sleepTimerEnabled =
-        remember(playerConnection.service.sleepTimer.triggerTime, playerConnection.service.sleepTimer.pauseWhenSongEnd) {
-            playerConnection.service.sleepTimer.isActive
-        }
-
-    var sleepTimerTimeLeft by remember {
-        mutableLongStateOf(0L)
-    }
-
     var gradientColors by remember {
         mutableStateOf<List<Color>>(emptyList())
     }
@@ -204,6 +189,30 @@ fun BottomSheetPlayer(
         } else {
             gradientColors = emptyList()
         }
+    }
+
+    val onBackgroundColor =
+        when (playerBackground) {
+            PlayerBackgroundStyle.DEFAULT -> MaterialTheme.colorScheme.onBackground
+            else ->
+                if (gradientColors.size >= 2 &&
+                    ColorUtils.calculateContrast(gradientColors.first().toArgb(), Color.White.toArgb()) < 1.5f
+                ) {
+                    Color.Black
+                } else {
+                    MaterialTheme.colorScheme.onSurface
+                }
+        }
+
+    val download by LocalDownloadUtil.current.getDownload(mediaMetadata?.id ?: "").collectAsState(initial = null)
+
+    val sleepTimerEnabled =
+        remember(playerConnection.service.sleepTimer.triggerTime, playerConnection.service.sleepTimer.pauseWhenSongEnd) {
+            playerConnection.service.sleepTimer.isActive
+        }
+
+    var sleepTimerTimeLeft by remember {
+        mutableLongStateOf(0L)
     }
 
     LaunchedEffect(sleepTimerEnabled) {
@@ -499,7 +508,7 @@ fun BottomSheetPlayer(
                     fontWeight = FontWeight.Bold,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    color = MaterialTheme.colorScheme.onBackground,
+                    color = onBackgroundColor,
                     modifier =
                         Modifier
                             .basicMarquee()
