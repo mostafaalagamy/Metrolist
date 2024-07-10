@@ -440,7 +440,6 @@ class MusicService :
                 player.addMediaItems(0, initialStatus.items.subList(0, initialStatus.mediaItemIndex))
                 player.addMediaItems(initialStatus.items.subList(initialStatus.mediaItemIndex + 1, initialStatus.items.size))
             } else {
-                println("here")
                 player.setMediaItems(
                     initialStatus.items,
                     if (initialStatus.mediaItemIndex >

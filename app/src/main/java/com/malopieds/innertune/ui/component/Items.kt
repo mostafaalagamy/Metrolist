@@ -970,7 +970,6 @@ fun PlaylistListItem(
                 stringResource(R.string.liked) -> R.drawable.favorite
                 stringResource(R.string.offline) -> R.drawable.offline
                 else -> {
-                    println(playlist.playlist.name + " " + autoPlaylist)
                     if (autoPlaylist) {
                         R.drawable.trending_up
                     } else {
@@ -1044,7 +1043,6 @@ fun PlaylistGridItem(
                 stringResource(R.string.liked) -> R.drawable.favorite
                 stringResource(R.string.offline) -> R.drawable.offline
                 else -> {
-                    println(playlist.playlist.name + " " + autoPlaylist)
                     if (autoPlaylist) {
                         R.drawable.trending_up
                     } else {

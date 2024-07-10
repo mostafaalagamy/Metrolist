@@ -735,7 +735,6 @@ fun HomeScreen(
                 }
 
                 homeFirstContinuation?.forEach { homePlaylists ->
-                    println(homePlaylists.playlistName)
                     if (homePlaylists.playlists.isNotEmpty()) {
                         homePlaylists.let { playlists ->
                             NavigationTitle(

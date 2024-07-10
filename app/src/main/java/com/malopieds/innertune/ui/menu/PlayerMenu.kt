@@ -113,7 +113,6 @@ fun PlayerMenu(
         onAdd = { playlist ->
             database.transaction {
                 insert(mediaMetadata)
-                println(playlist.id)
                 if (checkInPlaylist(playlist.id, mediaMetadata.id) == 0) {
                     insert(
                         PlaylistSongMap(

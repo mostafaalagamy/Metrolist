@@ -71,7 +71,7 @@ class HomeViewModel
 
         val youtubePlaylists = MutableStateFlow<List<PlaylistItem>?>(null)
 
-        private suspend fun getQuickPicks()  {
+        private suspend fun getQuickPicks() {
             when (quickPicksEnum.first()) {
                 QuickPicks.QUICK_PICKS ->
                     quickPicks.value =
@@ -94,10 +94,9 @@ class HomeViewModel
                     .take(5)
             val filteredArtists = mutableListOf<Artist>()
             artists.forEach {
-                if (it.artist.isYouTubeArtist)
-                    {
-                        filteredArtists.add(it)
-                    }
+                if (it.artist.isYouTubeArtist) {
+                    filteredArtists.add(it)
+                }
             }
             keepListeningArtists.value = filteredArtists
             keepListeningAlbums.value =
@@ -171,7 +170,7 @@ class HomeViewModel
         private suspend fun continuation(
             continuationVal: String?,
             next: MutableStateFlow<List<HomePlayList>?>,
-        )  {
+        ) {
             continuationVal?.run {
                 YouTube
                     .browseContinuation(this)
@@ -186,7 +185,7 @@ class HomeViewModel
             }
         }
 
-        private suspend fun continuationsLoad()  {
+        private suspend fun continuationsLoad() {
             artistLoad(artistRecommendation.value?.getOrNull(0), homeFirstArtistRecommendation)
             forgottenFavorite.value =
                 database
@@ -212,7 +211,7 @@ class HomeViewModel
             artistLoad(artistRecommendation.value?.getOrNull(2), homeThirdArtistRecommendation)
         }
 
-        private suspend fun songLoad()  {
+        private suspend fun songLoad() {
             val song =
                 database
                     .events()
@@ -220,24 +219,22 @@ class HomeViewModel
                     .firstOrNull()
                     ?.song
             if (song != null) {
-                println(song.song.title)
-                if (database.hasRelatedSongs(song.id))
-                    {
-                        val relatedSongs =
-                            database
-                                .getRelatedSongs(song.id)
-                                .first()
-                                .shuffled()
-                                .take(20)
-                        quickPicks.value = relatedSongs
-                    }
+                if (database.hasRelatedSongs(song.id)) {
+                    val relatedSongs =
+                        database
+                            .getRelatedSongs(song.id)
+                            .first()
+                            .shuffled()
+                            .take(20)
+                    quickPicks.value = relatedSongs
+                }
             }
         }
 
         private suspend fun albumLoad(
             song: Song?,
             next: MutableStateFlow<HomeAlbumRecommendation?>,
-        )  {
+        ) {
             val albumUtils = AlbumUtils(song?.song?.albumName, song?.song?.thumbnailUrl)
             YouTube.next(WatchEndpoint(videoId = song?.id)).onSuccess { res ->
                 YouTube
@@ -256,7 +253,7 @@ class HomeViewModel
         private suspend fun artistLoad(
             artist: Artist?,
             next: MutableStateFlow<HomeArtistRecommendation?>,
-        )  {
+        ) {
             val listItem = mutableListOf<YTItem>()
             artist?.id?.let {
                 YouTube.artist(it).onSuccess { res ->
