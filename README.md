@@ -7,11 +7,12 @@ A fork of InnerTune, A Material 3 YouTube Music client for Android
 [![Latest release](https://img.shields.io/github/v/release/Malopieds/InnerTune?include_prereleases)](https://github.com/Malopieds/InnerTune/releases)
 [![License](https://img.shields.io/github/license/Malopieds/InnerTune)](https://www.gnu.org/licenses/gpl-3.0)
 [![Downloads](https://img.shields.io/github/downloads/Malopieds/InnerTune/total)](https://github.com/Malopieds/InnerTune/releases)
+[![Downloads](https://img.shields.io/endpoint?url=https://apt.izzysoft.de/fdroid/api/v1/shield/com.malopieds.innertune)](https://apt.izzysoft.de/fdroid/index/apk/com.malopieds.innertune)
 
 [<img src="https://github.com/machiav3lli/oandbackupx/blob/034b226cea5c1b30eb4f6a6f313e4dadcbb0ece4/badge_github.png" alt="Get it on GitHub" height="80">](https://github.com/Malopieds/InnerTune/releases/latest)
-<!---[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" alt="Get it on F-Droid" height="80">](https://f-droid.org/packages/com.zionhuang.music)
-[<img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png" height="80">](https://apt.izzysoft.de/fdroid/index/apk/com.zionhuang.music)
+[<img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png" height="80">](https://apt.izzysoft.de/fdroid/index/apk/com.malopieds.innertune)
 
+<!---[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" alt="Get it on F-Droid" height="80">](https://f-droid.org/packages/com.zionhuang.music)
 [Compare versions](https://github.com/Malopieds/InnerTune/wiki/App-Versions) --->
 
 ## Features
@@ -77,10 +78,10 @@ If you like InnerTune, you're welcome to send a donation. Donations will support
 including bug fixes and new features.
 
 <a href="https://liberapay.com/zionhuang"><img src="https://raw.githubusercontent.com/Malopieds/InnerTune/dev/assets/liberapay.png" alt="Liberapay" height="60" ></a>
-<a href="https://www.buymeacoffee.com/zionhuang"><img src="https://raw.githubusercontent.com/Malopieds/InnerTune/dev/assets/buymeacoffee.png" alt="Liberapay" height="60" ></a>
+<a href="https://www.buymeacoffee.com/zionhuang"><img src="https://raw.githubusercontent.com/Malopieds/InnerTune/dev/assets/buymeacoffee.png" alt="Liberapay" height="60" ></a> --->
 
 ## Credit
 
 I want to give credit to [vfsfitvnm/ViMusic](https://github.com/vfsfitvnm/ViMusic) for being an
 example of Jetpack Compose music player. It helped me a lot on my way to learn Compose and
-Android development. --->
+Android development. And obviously the forked repo [z-huang/InnerTune](https://github.com/z-huang/InnerTune).
