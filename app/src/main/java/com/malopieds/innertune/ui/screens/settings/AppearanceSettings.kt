@@ -20,6 +20,8 @@ import com.malopieds.innertune.constants.DarkModeKey
 import com.malopieds.innertune.constants.DefaultOpenTabKey
 import com.malopieds.innertune.constants.DynamicThemeKey
 import com.malopieds.innertune.constants.LyricsTextPositionKey
+import com.malopieds.innertune.constants.PlayerBackgroundStyle
+import com.malopieds.innertune.constants.PlayerBackgroundStyleKey
 import com.malopieds.innertune.constants.PureBlackKey
 import com.malopieds.innertune.ui.component.EnumListPreference
 import com.malopieds.innertune.ui.component.IconButton
@@ -36,6 +38,11 @@ fun AppearanceSettings(
 ) {
     val (dynamicTheme, onDynamicThemeChange) = rememberPreference(DynamicThemeKey, defaultValue = true)
     val (darkMode, onDarkModeChange) = rememberEnumPreference(DarkModeKey, defaultValue = DarkMode.AUTO)
+    val (playerBackground, onPlayerBackgroundChange) =
+        rememberEnumPreference(
+            PlayerBackgroundStyleKey,
+            defaultValue = PlayerBackgroundStyle.DEFAULT,
+        )
     val (pureBlack, onPureBlackChange) = rememberPreference(PureBlackKey, defaultValue = false)
     val (defaultOpenTab, onDefaultOpenTabChange) = rememberEnumPreference(DefaultOpenTabKey, defaultValue = NavigationTab.HOME)
     val (lyricsPosition, onLyricsPositionChange) = rememberEnumPreference(LyricsTextPositionKey, defaultValue = LyricsPosition.CENTER)
@@ -64,6 +71,20 @@ fun AppearanceSettings(
                 }
             },
         )
+
+        EnumListPreference(
+            title = { Text(stringResource(R.string.player_background_style)) },
+            icon = { Icon(painterResource(R.drawable.gradient), null) },
+            selectedValue = playerBackground,
+            onValueSelected = onPlayerBackgroundChange,
+            valueText = {
+                when (it) {
+                    PlayerBackgroundStyle.DEFAULT -> stringResource(R.string.follow_theme)
+                    PlayerBackgroundStyle.GRADIENT -> stringResource(R.string.gradient)
+                }
+            },
+        )
+
         SwitchPreference(
             title = { Text(stringResource(R.string.pure_black)) },
             icon = { Icon(painterResource(R.drawable.contrast), null) },

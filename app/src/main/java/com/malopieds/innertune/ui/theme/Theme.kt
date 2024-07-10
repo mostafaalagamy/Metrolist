@@ -12,6 +12,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.SaverScope
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.palette.graphics.Palette
@@ -62,6 +63,33 @@ fun Bitmap.extractThemeColor(): Color {
             .associate { it.rgb to it.population }
     val rankedColors = Score.score(colorsToPopulation)
     return Color(rankedColors.first())
+}
+
+// from OuterTune
+fun Bitmap.extractGradientColors(): List<Color> {
+    val extractedColors =
+        Palette
+            .from(this)
+            .maximumColorCount(16)
+            .generate()
+            .swatches
+            .associate { it.rgb to it.population }
+
+    val orderedColors =
+        Score
+            .order(extractedColors)
+            .take(2)
+            .sortedByDescending { Color(it).luminance() }
+
+    val res = mutableListOf<Color>()
+    return if (orderedColors.size >= 2) {
+        orderedColors.forEach {
+            res.add(Color(it))
+        }
+        res
+    } else {
+        emptyList()
+    }
 }
 
 fun Scheme.toColorScheme() =

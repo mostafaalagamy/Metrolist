@@ -154,6 +154,95 @@ public final class Score {
         return colorsByScoreDescending;
     }
 
+    /**
+     * Given a map with keys of colors and values of how often the color appears, rank the colors
+     * based on it and discard colors too close to each other.
+     *
+     * @param colorsToPopulation map with keys of colors and values of how often the color appears,
+     *                           usually from a source image.
+     * @return Colors sorted by population. The most suitable color is the first item,
+     * the least suitable is the last.
+     * The list might be empty.
+     */
+    public static List<Integer> order(Map<Integer, Integer> colorsToPopulation) {
+        // Determine the total count of all colors.
+        double populationSum = 0.;
+        for (Map.Entry<Integer, Integer> entry : colorsToPopulation.entrySet()) {
+            populationSum += entry.getValue();
+        }
+
+        // Turn the count of each color into a proportion by dividing by the total
+        // count. Also, fill a cache of CAM16 colors representing each color, and
+        // record the proportion of colors for each CAM16 hue.
+        Map<Integer, Cam16> colorsToCam = new HashMap<>();
+        double[] hueProportions = new double[361];
+        for (Map.Entry<Integer, Integer> entry : colorsToPopulation.entrySet()) {
+            int color = entry.getKey();
+            double population = entry.getValue();
+            double proportion = population / populationSum;
+
+            Cam16 cam = Cam16.fromInt(color);
+            colorsToCam.put(color, cam);
+
+            int hue = (int) Math.round(cam.getHue());
+            hueProportions[hue] += proportion;
+        }
+
+        // Determine the proportion of the colors around each color, by summing the
+        // proportions around each color's hue.
+        Map<Integer, Double> colorsToExcitedProportion = new HashMap<>();
+        for (Map.Entry<Integer, Cam16> entry : colorsToCam.entrySet()) {
+            int color = entry.getKey();
+            Cam16 cam = entry.getValue();
+            int hue = (int) Math.round(cam.getHue());
+
+            double excitedProportion = 0.;
+            for (int j = (hue - 15); j < (hue + 15); j++) {
+                int neighborHue = MathUtils.sanitizeDegreesInt(j);
+                excitedProportion += hueProportions[neighborHue];
+            }
+
+            colorsToExcitedProportion.put(color, excitedProportion);
+        }
+
+        // Score the colors by their proportion.
+        Map<Integer, Double> colorsToScore = new HashMap<>();
+        for (Map.Entry<Integer, Cam16> entry : colorsToCam.entrySet()) {
+            int color = entry.getKey();
+
+            double proportion = colorsToExcitedProportion.get(color);
+            double proportionScore = proportion * 100.0 * WEIGHT_PROPORTION;
+
+            colorsToScore.put(color, proportionScore);
+        }
+
+        // Ensure the list of colors returned is sorted such that the first in the
+        // list is the most suitable, and the last is the least suitable.
+        List<Map.Entry<Integer, Double>> entryList = new ArrayList<>(colorsToScore.entrySet());
+        entryList.sort(new ScoredComparator());
+        List<Integer> colorsByScoreDescending = new ArrayList<>();
+        for (Map.Entry<Integer, Double> entry : entryList) {
+            int color = entry.getKey();
+            Cam16 cam = colorsToCam.get(color);
+            boolean duplicateHue = false;
+
+            for (Integer alreadyChosenColor : colorsByScoreDescending) {
+                Cam16 alreadyChosenCam = colorsToCam.get(alreadyChosenColor);
+                if (MathUtils.differenceDegrees(cam.getHue(), alreadyChosenCam.getHue()) < 15) {
+                    duplicateHue = true;
+                    break;
+                }
+            }
+
+            if (duplicateHue) {
+                continue;
+            }
+            colorsByScoreDescending.add(entry.getKey());
+        }
+
+        return colorsByScoreDescending;
+    }
+
     private static List<Integer> filter(
             Map<Integer, Double> colorsToExcitedProportion, Map<Integer, Cam16> colorsToCam) {
         List<Integer> filtered = new ArrayList<>();

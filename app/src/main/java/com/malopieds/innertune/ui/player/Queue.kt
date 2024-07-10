@@ -103,6 +103,7 @@ fun Queue(
     playerBottomSheetState: BottomSheetState,
     navController: NavController,
     modifier: Modifier = Modifier,
+    backgroundColor: Color,
 ) {
     val context = LocalContext.current
     val clipboardManager = LocalClipboardManager.current
@@ -187,11 +188,9 @@ fun Queue(
         )
     }
 
-    val mainColor = MaterialTheme.colorScheme.surfaceColorAtElevation(NavigationBarDefaults.Elevation)
-
     BottomSheet(
         state = state,
-        brushBackgroundColor = Brush.verticalGradient(listOf(mainColor, mainColor)),
+        brushBackgroundColor = Brush.verticalGradient(listOf(backgroundColor, backgroundColor)),
         modifier = modifier,
         collapsedContent = {
             Row(

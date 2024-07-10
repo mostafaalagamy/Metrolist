@@ -194,8 +194,14 @@ enum class PreferredLyricsProvider {
     LRCLIB,
 }
 
+enum class PlayerBackgroundStyle {
+    DEFAULT,
+    GRADIENT,
+}
+
 val TopSize = stringPreferencesKey("topSize")
 
+val PlayerBackgroundStyleKey = stringPreferencesKey("playerBackgroundStyle")
 val ShowLyricsKey = booleanPreferencesKey("showLyrics")
 val LyricsTextPositionKey = stringPreferencesKey("lyricsTextPosition")
 val TranslateLyricsKey = booleanPreferencesKey("translateLyrics")

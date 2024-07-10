@@ -2,10 +2,10 @@ package com.malopieds.innertune.ui.player
 
 import android.content.Intent
 import android.content.res.Configuration
+import android.graphics.drawable.BitmapDrawable
 import android.text.format.Formatter
 import android.widget.Toast
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
@@ -41,7 +41,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBarDefaults
 import androidx.compose.material3.OutlinedButton
@@ -87,19 +86,21 @@ import androidx.media3.exoplayer.offline.Download
 import androidx.media3.exoplayer.offline.DownloadRequest
 import androidx.media3.exoplayer.offline.DownloadService
 import androidx.navigation.NavController
+import coil.ImageLoader
 import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.malopieds.innertune.LocalDatabase
 import com.malopieds.innertune.LocalDownloadUtil
 import com.malopieds.innertune.LocalPlayerConnection
 import com.malopieds.innertune.R
-import com.malopieds.innertune.constants.DarkModeKey
 import com.malopieds.innertune.constants.ListThumbnailSize
+import com.malopieds.innertune.constants.PlayerBackgroundStyle
+import com.malopieds.innertune.constants.PlayerBackgroundStyleKey
 import com.malopieds.innertune.constants.PlayerHorizontalPadding
 import com.malopieds.innertune.constants.QueuePeekHeight
 import com.malopieds.innertune.constants.ShowLyricsKey
 import com.malopieds.innertune.constants.ThumbnailCornerRadius
 import com.malopieds.innertune.db.entities.PlaylistSongMap
-import com.malopieds.innertune.extensions.toEnum
 import com.malopieds.innertune.extensions.togglePlayPause
 import com.malopieds.innertune.models.MediaMetadata
 import com.malopieds.innertune.playback.ExoDownloadService
@@ -112,18 +113,19 @@ import com.malopieds.innertune.ui.component.ResizableIconButton
 import com.malopieds.innertune.ui.component.rememberBottomSheetState
 import com.malopieds.innertune.ui.menu.AddToPlaylistDialog
 import com.malopieds.innertune.ui.menu.PlayerMenu
-import com.malopieds.innertune.ui.screens.settings.DarkMode
-import com.malopieds.innertune.utils.dataStore
-import com.malopieds.innertune.utils.get
+import com.malopieds.innertune.ui.theme.extractGradientColors
 import com.malopieds.innertune.utils.joinByBullet
 import com.malopieds.innertune.utils.makeTimeString
+import com.malopieds.innertune.utils.rememberEnumPreference
 import com.malopieds.innertune.utils.rememberPreference
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
+import kotlinx.coroutines.withContext
 import java.time.LocalDateTime
 import kotlin.math.roundToInt
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalAnimationApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun BottomSheetPlayer(
     state: BottomSheetState,
@@ -147,6 +149,7 @@ fun BottomSheetPlayer(
     val canSkipNext by playerConnection.canSkipNext.collectAsState()
 
     var showLyrics by rememberPreference(ShowLyricsKey, defaultValue = false)
+    val playerBackground by rememberEnumPreference(key = PlayerBackgroundStyleKey, defaultValue = PlayerBackgroundStyle.DEFAULT)
 
     var position by rememberSaveable(playbackState) {
         mutableLongStateOf(playerConnection.player.currentPosition)
@@ -158,6 +161,12 @@ fun BottomSheetPlayer(
         mutableStateOf<Long?>(null)
     }
 
+    val onBackgroundColor =
+        when (playerBackground) {
+            PlayerBackgroundStyle.DEFAULT -> MaterialTheme.colorScheme.onBackground
+            else -> MaterialTheme.colorScheme.onSurface
+        }
+
     val download by LocalDownloadUtil.current.getDownload(mediaMetadata?.id ?: "").collectAsState(initial = null)
 
     val sleepTimerEnabled =
@@ -167,6 +176,34 @@ fun BottomSheetPlayer(
 
     var sleepTimerTimeLeft by remember {
         mutableLongStateOf(0L)
+    }
+
+    var gradientColors by remember {
+        mutableStateOf<List<Color>>(emptyList())
+    }
+
+    LaunchedEffect(mediaMetadata, playerBackground) {
+        if (playerBackground == PlayerBackgroundStyle.GRADIENT) {
+            withContext(Dispatchers.IO) {
+                val result =
+                    (
+                        ImageLoader(context)
+                            .execute(
+                                ImageRequest
+                                    .Builder(context)
+                                    .data(mediaMetadata?.thumbnailUrl)
+                                    .allowHardware(false)
+                                    .build(),
+                            ).drawable as? BitmapDrawable
+                    )?.bitmap?.extractGradientColors()
+
+                result?.let {
+                    gradientColors = it
+                }
+            }
+        } else {
+            gradientColors = emptyList()
+        }
     }
 
     LaunchedEffect(sleepTimerEnabled) {
@@ -410,30 +447,27 @@ fun BottomSheetPlayer(
             expandedBound = state.expandedBound,
         )
 
-    val backgroundColor = MaterialTheme.colorScheme.background
-    val darkMode = context.dataStore[DarkModeKey].toEnum(DarkMode.ON)
-
-    val brushColors =
-        when (darkMode) {
-            DarkMode.OFF -> {
-                Color.White
-            }
-            DarkMode.ON -> {
-                Color.Black
-            }
-            else -> {
-                backgroundColor
-            }
-        }
-
     BottomSheet(
         state = state,
         modifier = modifier,
         brushBackgroundColor =
-            Brush.verticalGradient(
-                0.3f to MaterialTheme.colorScheme.surfaceColorAtElevation(NavigationBarDefaults.Elevation),
-                1f to brushColors,
-            ),
+            if (gradientColors.size >=
+                2 &&
+                state.value > state.expandedBound / 3
+            ) {
+                Brush.verticalGradient(gradientColors)
+            } else {
+                Brush.verticalGradient(
+                    listOf(
+                        MaterialTheme.colorScheme.surfaceColorAtElevation(
+                            NavigationBarDefaults.Elevation,
+                        ),
+                        MaterialTheme.colorScheme.surfaceColorAtElevation(
+                            NavigationBarDefaults.Elevation,
+                        ),
+                    ),
+                )
+            },
         onDismiss = {
             playerConnection.player.stop()
             playerConnection.player.clearMediaItems()
@@ -465,6 +499,7 @@ fun BottomSheetPlayer(
                     fontWeight = FontWeight.Bold,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
+                    color = MaterialTheme.colorScheme.onBackground,
                     modifier =
                         Modifier
                             .basicMarquee()
@@ -488,7 +523,7 @@ fun BottomSheetPlayer(
                     Text(
                         text = artist.name,
                         style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.secondary,
+                        color = onBackgroundColor,
                         maxLines = 1,
                         modifier =
                             Modifier.clickable(enabled = artist.id != null) {
@@ -501,7 +536,7 @@ fun BottomSheetPlayer(
                         Text(
                             text = ", ",
                             style = MaterialTheme.typography.titleMedium,
-                            color = MaterialTheme.colorScheme.secondary,
+                            color = onBackgroundColor,
                         )
                     }
                 }
@@ -522,7 +557,7 @@ fun BottomSheetPlayer(
                         Modifier
                             .size(42.dp)
                             .clip(RoundedCornerShape(24.dp))
-                            .background(MaterialTheme.colorScheme.secondaryContainer)
+                            .background(MaterialTheme.colorScheme.primary)
                             .clickable {
                                 playerConnection.service.startRadioSeamlessly()
                             },
@@ -530,7 +565,7 @@ fun BottomSheetPlayer(
                     Image(
                         painter = painterResource(R.drawable.radio),
                         contentDescription = null,
-                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
+                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary),
                         modifier =
                             Modifier
                                 .align(Alignment.Center)
@@ -545,7 +580,7 @@ fun BottomSheetPlayer(
                         Modifier
                             .size(42.dp)
                             .clip(RoundedCornerShape(24.dp))
-                            .background(MaterialTheme.colorScheme.secondaryContainer)
+                            .background(MaterialTheme.colorScheme.primary)
                             .clickable {
                                 if (download?.state == Download.STATE_COMPLETED) {
                                     DownloadService.sendRemoveDownload(
@@ -585,7 +620,7 @@ fun BottomSheetPlayer(
                                 },
                             ),
                         contentDescription = null,
-                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
+                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary),
                         modifier =
                             Modifier
                                 .align(Alignment.Center)
@@ -600,7 +635,7 @@ fun BottomSheetPlayer(
                         Modifier
                             .size(42.dp)
                             .clip(RoundedCornerShape(24.dp))
-                            .background(MaterialTheme.colorScheme.secondaryContainer)
+                            .background(MaterialTheme.colorScheme.primary)
                             .clickable {
                                 showChoosePlaylistDialog = true
                             },
@@ -608,7 +643,7 @@ fun BottomSheetPlayer(
                     Image(
                         painter = painterResource(R.drawable.playlist_add),
                         contentDescription = null,
-                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
+                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary),
                         modifier =
                             Modifier
                                 .align(Alignment.Center)
@@ -624,7 +659,7 @@ fun BottomSheetPlayer(
                         Modifier
                             .size(42.dp)
                             .clip(RoundedCornerShape(24.dp))
-                            .background(MaterialTheme.colorScheme.secondaryContainer)
+                            .background(MaterialTheme.colorScheme.primary)
                             .clickable {
                                 val intent =
                                     Intent().apply {
@@ -646,6 +681,7 @@ fun BottomSheetPlayer(
                             Text(
                                 text = makeTimeString(sleepTimerTimeLeft),
                                 style = MaterialTheme.typography.labelLarge,
+                                color = onBackgroundColor,
                                 modifier =
                                     Modifier
                                         .clip(RoundedCornerShape(50))
@@ -653,8 +689,9 @@ fun BottomSheetPlayer(
                             )
                         } else {
                             IconButton(onClick = { showSleepTimerDialog = true }) {
-                                Icon(
+                                Image(
                                     painter = painterResource(R.drawable.bedtime),
+                                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary),
                                     contentDescription = null,
                                 )
                             }
@@ -670,7 +707,7 @@ fun BottomSheetPlayer(
                         Modifier
                             .size(42.dp)
                             .clip(RoundedCornerShape(24.dp))
-                            .background(MaterialTheme.colorScheme.secondaryContainer)
+                            .background(MaterialTheme.colorScheme.primary)
                             .clickable {
                                 menuState.show {
                                     PlayerMenu(
@@ -683,9 +720,10 @@ fun BottomSheetPlayer(
                                 }
                             },
                 ) {
-                    Icon(
+                    Image(
                         painter = painterResource(R.drawable.more_horiz),
                         contentDescription = null,
+                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary),
                     )
                 }
             }
@@ -719,6 +757,7 @@ fun BottomSheetPlayer(
                 Text(
                     text = makeTimeString(sliderPosition ?: position),
                     style = MaterialTheme.typography.labelMedium,
+                    color = onBackgroundColor,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )
@@ -726,6 +765,7 @@ fun BottomSheetPlayer(
                 Text(
                     text = if (duration != C.TIME_UNSET) makeTimeString(duration) else "",
                     style = MaterialTheme.typography.labelMedium,
+                    color = onBackgroundColor,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )
@@ -743,7 +783,7 @@ fun BottomSheetPlayer(
                 Box(modifier = Modifier.weight(1f)) {
                     ResizableIconButton(
                         icon = if (currentSong?.song?.liked == true) R.drawable.favorite else R.drawable.favorite_border,
-                        color = if (currentSong?.song?.liked == true) MaterialTheme.colorScheme.error else LocalContentColor.current,
+                        color = if (currentSong?.song?.liked == true) MaterialTheme.colorScheme.error else onBackgroundColor,
                         modifier =
                             Modifier
                                 .size(32.dp)
@@ -757,6 +797,7 @@ fun BottomSheetPlayer(
                     ResizableIconButton(
                         icon = R.drawable.skip_previous,
                         enabled = canSkipPrevious,
+                        color = onBackgroundColor,
                         modifier =
                             Modifier
                                 .size(32.dp)
@@ -772,7 +813,7 @@ fun BottomSheetPlayer(
                         Modifier
                             .size(72.dp)
                             .clip(RoundedCornerShape(playPauseRoundness))
-                            .background(MaterialTheme.colorScheme.secondaryContainer)
+                            .background(MaterialTheme.colorScheme.primary)
                             .clickable {
                                 if (playbackState == STATE_ENDED) {
                                     playerConnection.player.seekTo(0, 0)
@@ -796,7 +837,7 @@ fun BottomSheetPlayer(
                                 },
                             ),
                         contentDescription = null,
-                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
+                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary),
                         modifier =
                             Modifier
                                 .align(Alignment.Center)
@@ -810,6 +851,7 @@ fun BottomSheetPlayer(
                     ResizableIconButton(
                         icon = R.drawable.skip_next,
                         enabled = canSkipNext,
+                        color = onBackgroundColor,
                         modifier =
                             Modifier
                                 .size(32.dp)
@@ -820,14 +862,26 @@ fun BottomSheetPlayer(
 
                 Box(modifier = Modifier.weight(1f)) {
                     IconButton(onClick = { showLyrics = !showLyrics }) {
-                        Icon(
+                        Image(
                             painter = painterResource(R.drawable.lyrics),
                             contentDescription = null,
-                            modifier = Modifier.alpha(if (showLyrics) 1f else 0.5f),
+                            colorFilter = ColorFilter.tint(onBackgroundColor),
+                            modifier =
+                                Modifier
+                                    .alpha(if (showLyrics) 1f else 0.5f),
                         )
                     }
                 }
             }
+        }
+
+        if (gradientColors.size >= 2 && state.isExpanded) {
+            Box(
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .background(Brush.verticalGradient(gradientColors)),
+            )
         }
 
         when (LocalConfiguration.current.orientation) {
@@ -897,6 +951,7 @@ fun BottomSheetPlayer(
             state = queueSheetState,
             playerBottomSheetState = state,
             navController = navController,
+            backgroundColor = MaterialTheme.colorScheme.surfaceColorAtElevation(NavigationBarDefaults.Elevation),
         )
     }
 }
