@@ -1,0 +1,12 @@
+<resources>
+<plurals name="minute"><item quantity="other">%d من الدقائق</item><item quantity="one">1 دقيقة</item></plurals>
+<plurals name="n_album"><item quantity="other">%d من الألبومات</item><item quantity="one">%d ألبوم</item></plurals>
+<plurals name="n_artist"><item quantity="other">%d من الفنانين</item><item quantity="one">%d فنان</item></plurals>
+<plurals name="n_elements"><item quantity="other">%d من العناصر</item><item quantity="one">%d عنصر</item></plurals>
+<plurals name="n_month"><item quantity="other">%d من الأشهر</item><item quantity="one">%d شهر</item></plurals>
+<plurals name="n_playlist"><item quantity="other">%d من قوائم التشغيل</item><item quantity="one">%d قائمة تشغيل</item></plurals>
+<plurals name="n_selected"><item quantity="other">%d محددة</item></plurals>
+<plurals name="n_song"><item quantity="other">%d من الأغاني</item><item quantity="one">%d أغنية</item></plurals>
+<plurals name="n_week"><item quantity="other">%d من الأسابيع</item><item quantity="one">%d أسبوع</item></plurals>
+<plurals name="n_year"><item quantity="other">%d من السنوات</item><item quantity="one">%d سنة</item></plurals>
+</resources>
