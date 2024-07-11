@@ -8,7 +8,7 @@ body:
       label: Checklist
       description: You should ensure the completion of the task before proceeding to check it off the checklist. Neglecting to do so may impede the efficiency of the issue resolution process. The developer has the right to delete the issue directly if you check the list blindly.
       options:
-        - label: I am able to reproduce the bug with the [latest debug version](https://github.com/z-huang/InnerTune/actions).
+        - label: I am able to reproduce the bug with the [latest debug version](https://github.com/Malopieds/InnerTune/actions).
           required: true
         - label: I've checked that there is no open or closed issue about this bug.
           required: true
