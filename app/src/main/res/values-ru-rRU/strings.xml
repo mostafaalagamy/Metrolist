@@ -22,7 +22,11 @@
     <string name="quick_picks">Быстрый выбор</string>
     <string name="quick_picks_empty">Послушайте несколько песен, чтобы создать ваш быстрый выбор</string>
     <string name="new_release_albums">Новые релизы альбомов</string>
-
+    <string name="forgotten_favorites">Забытые любимые песни</string>
+    <string name="similar_to">Похожие на</string>
+    <string name="keep_listening">Продолжайте слушать</string>
+    <string name="your_ytb_playlists">Ваши плейлисты на YouTube</string>
+ 
     <!-- History -->
     <string name="today">Сегодня</string>
     <string name="yesterday">Вчера</string>
