@@ -199,6 +199,7 @@ enum class PlayerBackgroundStyle {
     GRADIENT,
 }
 
+val EnableSquigglySlider = booleanPreferencesKey("enableSquigglySlider")
 val TopSize = stringPreferencesKey("topSize")
 
 val PlayerBackgroundStyleKey = stringPreferencesKey("playerBackgroundStyle")

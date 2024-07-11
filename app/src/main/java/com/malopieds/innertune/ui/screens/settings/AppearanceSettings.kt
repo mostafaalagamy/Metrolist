@@ -19,6 +19,7 @@ import com.malopieds.innertune.R
 import com.malopieds.innertune.constants.DarkModeKey
 import com.malopieds.innertune.constants.DefaultOpenTabKey
 import com.malopieds.innertune.constants.DynamicThemeKey
+import com.malopieds.innertune.constants.EnableSquigglySlider
 import com.malopieds.innertune.constants.LyricsTextPositionKey
 import com.malopieds.innertune.constants.PlayerBackgroundStyle
 import com.malopieds.innertune.constants.PlayerBackgroundStyleKey
@@ -46,6 +47,7 @@ fun AppearanceSettings(
     val (pureBlack, onPureBlackChange) = rememberPreference(PureBlackKey, defaultValue = false)
     val (defaultOpenTab, onDefaultOpenTabChange) = rememberEnumPreference(DefaultOpenTabKey, defaultValue = NavigationTab.HOME)
     val (lyricsPosition, onLyricsPositionChange) = rememberEnumPreference(LyricsTextPositionKey, defaultValue = LyricsPosition.CENTER)
+    val (squigglySlider, onSquigglySliderChange) = rememberPreference(EnableSquigglySlider, defaultValue = true)
 
     Column(
         Modifier
@@ -83,6 +85,13 @@ fun AppearanceSettings(
                     PlayerBackgroundStyle.GRADIENT -> stringResource(R.string.gradient)
                 }
             },
+        )
+
+        SwitchPreference(
+            title = { Text(stringResource(R.string.enable_squiggly_slider)) },
+            icon = { Icon(painterResource(R.drawable.waves), null) },
+            checked = squigglySlider,
+            onCheckedChange = onSquigglySliderChange,
         )
 
         SwitchPreference(
