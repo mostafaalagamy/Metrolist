@@ -175,7 +175,7 @@
 <string name="sleep_timer">مؤقت النوم</string>
 <string name="end_of_song">نهاية الأغنية</string>
 <plurals name="minute">
-    <item quantity="one">1 دقيقة</item>
+    <item quantity="one">%d دقيقة</item>
     <item quantity="other">%d من الدقائق</item>
 </plurals>
 <string name="error_no_stream">لا يوجد بث متاح</string>
