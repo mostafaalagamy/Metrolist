@@ -1,0 +1,6 @@
+- Improved Player UI with gradient and squiggly progress bar
+- Bring back library features
+- Improved sorting of artists
+- No duplication in playlists
+- Other versions of albums
+- Update languages
