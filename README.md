@@ -15,6 +15,11 @@
   <img src="https://github.com/mostafaalagamy/Metrolist/blob/v6.0.0/screenshot_7.jpeg" width="30%" />
   <img src="https://github.com/mostafaalagamy/Metrolist/blob/v6.0.0/Screenshot_8.jpg" width="30%" />
 </p>
+
+<div align="center">
+
+[![Latest release](https://img.shields.io/github/v/release/mostafaalagamy/Metrolist?style=for-the-badge)](https://github.com/mostafaalagamy/Metrolist/releases)
+[![Downloads](https://img.shields.io/github/downloads/mostafaalagamy/Metrolist/total?style=for-the-badge)](https://github.com/mostafaalagamy/Metrolist/releases)
 </div>
 
 ---
