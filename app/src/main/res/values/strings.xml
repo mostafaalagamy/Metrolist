@@ -57,9 +57,12 @@
     <!-- Artist screen -->
     <string name="from_your_library">From your library</string>
 
+    <!-- Album screen -->
+    <string name="other_versions">Other Versions</string>
+
     <!-- Library -->
     <string name="liked">Liked</string>
-    <string name="offline">Offline</string>
+    <string name="offline">Downloaded</string>
     <string name="my_top">My Top</string>
 
 
