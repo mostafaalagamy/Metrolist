@@ -3,15 +3,20 @@
 package com.malopieds.innertune.ui.utils
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.snapping.SnapLayoutInfoProvider
-import androidx.compose.foundation.lazy.LazyListLayoutInfo
+import androidx.compose.foundation.lazy.grid.LazyGridItemInfo
 import androidx.compose.foundation.lazy.grid.LazyGridLayoutInfo
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.ui.util.fastForEach
-import kotlin.math.abs
 
 @ExperimentalFoundationApi
-fun SnapLayoutInfoProvider(lazyGridState: LazyGridState): SnapLayoutInfoProvider =
+fun SnapLayoutInfoProvider(
+    lazyGridState: LazyGridState,
+    positionInLayout: (layoutSize: Float, itemSize: Float) -> Float = { layoutSize, itemSize ->
+        (layoutSize / 2f - itemSize / 2f)
+    },
+): SnapLayoutInfoProvider =
     object : SnapLayoutInfoProvider {
         private val layoutInfo: LazyGridLayoutInfo
             get() = lazyGridState.layoutInfo
@@ -19,36 +24,48 @@ fun SnapLayoutInfoProvider(lazyGridState: LazyGridState): SnapLayoutInfoProvider
         override fun calculateApproachOffset(initialVelocity: Float): Float = 0f
 
         override fun calculateSnappingOffset(currentVelocity: Float): Float {
-            var closestItemOffset = Float.MAX_VALUE
+            val bounds = calculateSnappingOffsetBounds()
+            return when {
+                currentVelocity < 0 -> bounds.start
+                currentVelocity > 0 -> bounds.endInclusive
+                else -> 0f
+            }
+        }
+
+        fun calculateSnappingOffsetBounds(): ClosedFloatingPointRange<Float> {
+            var lowerBoundOffset = Float.NEGATIVE_INFINITY
+            var upperBoundOffset = Float.POSITIVE_INFINITY
 
             layoutInfo.visibleItemsInfo.fastForEach { item ->
-                val offset = item.offset.x.toFloat()
+                val offset = calculateDistanceToDesiredSnapPosition(layoutInfo, item, positionInLayout)
 
-                if (abs(offset) < abs(closestItemOffset)) {
-                    closestItemOffset = offset
+                // Find item that is closest to the center
+                if (offset <= 0 && offset > lowerBoundOffset) {
+                    lowerBoundOffset = offset
+                }
+
+                // Find item that is closest to center, but after it
+                if (offset >= 0 && offset < upperBoundOffset) {
+                    upperBoundOffset = offset
                 }
             }
 
-            return closestItemOffset + currentVelocity
+            return lowerBoundOffset.rangeTo(upperBoundOffset)
         }
     }
 
-@ExperimentalFoundationApi
-fun SnapLayoutInfoProvider(layoutInfo: LazyListLayoutInfo): SnapLayoutInfoProvider =
-    object : SnapLayoutInfoProvider {
-        override fun calculateApproachOffset(initialVelocity: Float): Float = 0f
+fun calculateDistanceToDesiredSnapPosition(
+    layoutInfo: LazyGridLayoutInfo,
+    item: LazyGridItemInfo,
+    positionInLayout: (layoutSize: Float, itemSize: Float) -> Float,
+): Float {
+    val containerSize = layoutInfo.singleAxisViewportSize - layoutInfo.beforeContentPadding - layoutInfo.afterContentPadding
 
-        override fun calculateSnappingOffset(currentVelocity: Float): Float {
-            var closestItemOffset = Float.MAX_VALUE
+    val desiredDistance = positionInLayout(containerSize.toFloat(), item.size.width.toFloat())
+    val itemCurrentPosition = item.offset.x.toFloat()
 
-            layoutInfo.visibleItemsInfo.fastForEach { item ->
-                val offset = item.offset.toFloat()
+    return itemCurrentPosition - desiredDistance
+}
 
-                if (abs(offset) < abs(closestItemOffset)) {
-                    closestItemOffset = offset
-                }
-            }
-
-            return closestItemOffset + currentVelocity
-        }
-    }
+private val LazyGridLayoutInfo.singleAxisViewportSize: Int
+    get() = if (orientation == Orientation.Vertical) viewportSize.height else viewportSize.width
