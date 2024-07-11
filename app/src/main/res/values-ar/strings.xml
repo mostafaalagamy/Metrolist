@@ -12,7 +12,6 @@
     </plurals>
 
     <!-- Home -->
-    <string name="history">التاريخ</string>
     <string name="history">السجل</string>
     <string name="stats">الإحصائيات</string>
     <string name="mood_and_genres">المزاج والأنواع</string>
