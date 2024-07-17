@@ -280,8 +280,8 @@ fun Queue(
                 WindowInsets.systemBars
                     .add(
                         WindowInsets(
-                            top = ListItemHeight,
-                            bottom = ListItemHeight,
+                            top = ListItemHeight + 12.dp + 8.dp,
+                            bottom = ListItemHeight + 8.dp,
                         ),
                     ).asPaddingValues(),
             modifier =
@@ -409,7 +409,8 @@ fun Queue(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier =
                     Modifier
-                        .padding(horizontal = 12.dp, vertical = 12.dp),
+                        .height(ListItemHeight + 12.dp)
+                        .padding(horizontal = 12.dp),
             ) {
                 Text(
                     text = queueTitle.orEmpty(),
