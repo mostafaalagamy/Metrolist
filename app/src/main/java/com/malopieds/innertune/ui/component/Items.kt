@@ -1116,6 +1116,70 @@ fun PlaylistGridItem(
 fun MediaMetadataListItem(
     mediaMetadata: MediaMetadata,
     modifier: Modifier,
+    isSelected: Boolean = false,
+    isActive: Boolean = false,
+    isPlaying: Boolean = false,
+    trailingContent: @Composable RowScope.() -> Unit = {},
+) = ListItem(
+    title = mediaMetadata.title,
+    subtitle =
+        joinByBullet(
+            mediaMetadata.artists.joinToString { it.name },
+            makeTimeString(mediaMetadata.duration * 1000L),
+        ),
+    thumbnailContent = {
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier.size(ListThumbnailSize),
+        ) {
+            if (isSelected) {
+                Box(
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .zIndex(1000f)
+                            .clip(RoundedCornerShape(ThumbnailCornerRadius))
+                            .background(Color.Black.copy(alpha = 0.5f)),
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.done),
+                        modifier = Modifier.align(Alignment.Center),
+                        contentDescription = null,
+                    )
+                }
+            }
+            AsyncImage(
+                model = mediaMetadata.thumbnailUrl,
+                contentDescription = null,
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .clip(RoundedCornerShape(ThumbnailCornerRadius)),
+            )
+
+            PlayingIndicatorBox(
+                isActive = isActive,
+                playWhenReady = isPlaying,
+                color = Color.White,
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .background(
+                            color = Color.Black.copy(alpha = 0.4f),
+                            shape = RoundedCornerShape(ThumbnailCornerRadius),
+                        ),
+            )
+        }
+    },
+    trailingContent = trailingContent,
+    modifier = modifier,
+    isActive = isActive,
+)
+
+@Composable
+fun MediaMetadataListItemOld(
+    mediaMetadata: MediaMetadata,
+    modifier: Modifier,
     isActive: Boolean = false,
     isPlaying: Boolean = false,
     trailingContent: @Composable RowScope.() -> Unit = {},
