@@ -75,7 +75,6 @@ fun AlbumMenu(
     originalAlbum: Album,
     navController: NavController,
     onDismiss: () -> Unit,
-    selectAction: () -> Unit = {},
 ) {
     val context = LocalContext.current
     val database = LocalDatabase.current
@@ -343,15 +342,6 @@ fun AlbumMenu(
                     putExtra(Intent.EXTRA_TEXT, "https://music.youtube.com/browse/${album.album.id}")
                 }
             context.startActivity(Intent.createChooser(intent, null))
-        }
-        if (selectAction != {}) {
-            GridMenuItem(
-                icon = R.drawable.select_all,
-                title = R.string.select,
-            ) {
-                onDismiss()
-                selectAction()
-            }
         }
     }
 }
