@@ -30,7 +30,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
@@ -93,7 +92,6 @@ import com.malopieds.innertune.ui.component.BottomSheet
 import com.malopieds.innertune.ui.component.BottomSheetState
 import com.malopieds.innertune.ui.component.LocalMenuState
 import com.malopieds.innertune.ui.component.MediaMetadataListItem
-import com.malopieds.innertune.ui.component.ResizableIconButton
 import com.malopieds.innertune.ui.menu.PlayerMenu
 import com.malopieds.innertune.ui.menu.SelectionMediaMetadataMenu
 import com.malopieds.innertune.utils.makeTimeString
