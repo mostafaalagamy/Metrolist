@@ -3,14 +3,6 @@ package com.malopieds.innertune.ui.player
 import android.annotation.SuppressLint
 import android.text.format.Formatter
 import android.widget.Toast
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkVertically
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -126,9 +118,6 @@ fun Queue(
 
     val selectedSongs: MutableList<MediaMetadata> = mutableStateListOf()
     val selectedItems: MutableList<Timeline.Window> = mutableStateListOf()
-    var selection by remember {
-        mutableStateOf(false)
-    }
 
     var showDetailsDialog by rememberSaveable {
         mutableStateOf(false)
@@ -278,7 +267,7 @@ fun Queue(
                 WindowInsets.systemBars
                     .add(
                         WindowInsets(
-                             top = ListItemHeight + 12.dp + 8.dp,
+                            top = ListItemHeight + 12.dp + 8.dp,
                             bottom = ListItemHeight + 8.dp,
                         ),
                     ).asPaddingValues(),
@@ -287,15 +276,6 @@ fun Queue(
                     .reorderable(reorderableState)
                     .nestedScroll(state.preUpPostDownNestedScrollConnection),
         ) {
-            item {
-                Spacer(
-                    modifier =
-                        Modifier
-                            .animateContentSize()
-                            .height(if (selection) 64.dp else 0.dp),
-                )
-            }
-
             itemsIndexed(
                 items = mutableQueueWindows,
                 key = { _, item -> item.uid.hashCode() },
@@ -326,9 +306,40 @@ fun Queue(
 //                        state = dismissState,
 //                        = {
                     ) {
+                        Row(
+                            horizontalArrangement = Arrangement.Center,
+                        ) {
+                            IconButton(
+                                modifier =
+                                    Modifier
+                                        .align(Alignment.CenterVertically),
+                                onClick = {
+                                    if (window.mediaItem.metadata!! in selectedSongs) {
+                                        selectedSongs.remove(window.mediaItem.metadata!!)
+                                        selectedItems.remove(currentItem)
+                                    } else {
+                                        selectedSongs.add(window.mediaItem.metadata!!)
+                                        selectedItems.add(currentItem)
+                                    }
+                                },
+                            ) {
+                                Icon(
+                                    painter =
+                                        painterResource(
+                                            if (window.mediaItem.metadata!! in
+                                                selectedSongs
+                                            ) {
+                                                R.drawable.check_box
+                                            } else {
+                                                R.drawable.uncheck_box
+                                            },
+                                        ),
+                                    contentDescription = null,
+                                    tint = LocalContentColor.current,
+                                )
+                            }
                             MediaMetadataListItem(
                                 mediaMetadata = window.mediaItem.metadata!!,
-                                isSelected = selection && window.mediaItem.metadata!! in selectedSongs,
                                 isActive = index == currentWindowIndex,
                                 isPlaying = isPlaying,
                                 trailingContent = {
@@ -349,15 +360,7 @@ fun Queue(
                                         .fillMaxWidth()
                                         .combinedClickable(
                                             onClick = {
-                                                if (selection) {
-                                                    if (window.mediaItem.metadata!! in selectedSongs) {
-                                                        selectedSongs.remove(window.mediaItem.metadata!!)
-                                                        selectedItems.remove(currentItem)
-                                                    } else {
-                                                        selectedSongs.add(window.mediaItem.metadata!!)
-                                                        selectedItems.add(currentItem)
-                                                    }
-                                                } else {
+                                                if (selectedSongs.isEmpty()) {
                                                     if (index == currentWindowIndex) {
                                                         playerConnection.player.togglePlayPause()
                                                     } else {
@@ -365,6 +368,14 @@ fun Queue(
                                                             window.firstPeriodIndex,
                                                         )
                                                         playerConnection.player.playWhenReady = true
+                                                    }
+                                                } else {
+                                                    if (window.mediaItem.metadata!! in selectedSongs) {
+                                                        selectedSongs.remove(window.mediaItem.metadata!!)
+                                                        selectedItems.remove(currentItem)
+                                                    } else {
+                                                        selectedSongs.add(window.mediaItem.metadata!!)
+                                                        selectedItems.add(currentItem)
                                                     }
                                                 }
                                             },
@@ -385,12 +396,13 @@ fun Queue(
                                         ),
                                 // .detectReorderAfterLongPress(reorderableState)
                             )
+                        }
                     }
                 }
             }
         }
 
-        Column(
+        Box(
             modifier =
                 Modifier
                     .background(
@@ -418,80 +430,19 @@ fun Queue(
                     modifier = Modifier.weight(1f),
                 )
 
-                AnimatedVisibility(
-                    visible = !selection,
-                    enter = fadeIn() + slideInVertically { it },
-                    exit = fadeOut() + slideOutVertically { it },
-                ) {
+                if (selectedSongs.isNotEmpty()) {
                     IconButton(
                         onClick = {
-                            selection = true
+                            selectedSongs.clear()
+                            selectedItems.clear()
                         },
                     ) {
                         Icon(
-                            painter = painterResource(R.drawable.select_all),
+                            painter = painterResource(R.drawable.deselect),
                             contentDescription = null,
+                            tint = LocalContentColor.current,
                         )
                     }
-                }
-
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(4.dp),
-                    horizontalAlignment = Alignment.End,
-                ) {
-                    Text(
-                        text = pluralStringResource(R.plurals.n_song, queueWindows.size, queueWindows.size),
-                        style = MaterialTheme.typography.bodyMedium,
-                    )
-
-                    Text(
-                        text = makeTimeString(queueLength * 1000L),
-                        style = MaterialTheme.typography.bodyMedium,
-                    )
-                }
-            }
-
-            AnimatedVisibility(
-                visible = selection,
-                enter = fadeIn() + expandVertically(),
-                exit = fadeOut() + shrinkVertically(),
-            ) {
-                Row(
-                    modifier = Modifier
-                        .height(64.dp)
-                        .padding(start = 16.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    val count = selectedSongs.size
-                    Text(text = "$count elements selected", modifier = Modifier.weight(1f))
-                    IconButton(
-                        onClick = {
-                            if (count == mutableQueueWindows.size) {
-                                selectedSongs.clear()
-                                selectedItems.clear()
-                            } else {
-                                queueWindows
-                                    .filter { it.mediaItem.metadata!! !in selectedSongs }
-                                    .forEach {
-                                        selectedSongs.add(it.mediaItem.metadata!!)
-                                        selectedItems.add(it)
-                                    }
-                            }
-                        },
-                    ) {
-                        Icon(
-                            painter =
-                            painterResource(
-                                if (count == mutableQueueWindows.size) {
-                                    R.drawable.deselect
-                                } else {
-                                    R.drawable.select_all
-                                },
-                            ),
-                            contentDescription = null,
-                        )
-                    }
-
                     IconButton(
                         onClick = {
                             menuState.show {
@@ -513,15 +464,36 @@ fun Queue(
                             tint = LocalContentColor.current,
                         )
                     }
-
+                } else {
                     IconButton(
-                        onClick = { selection = false },
+                        onClick = {
+                            queueWindows.forEach {
+                                selectedSongs.add(it.mediaItem.metadata!!)
+                                selectedItems.add(it)
+                            }
+                        },
                     ) {
                         Icon(
-                            painter = painterResource(R.drawable.close),
+                            painter = painterResource(R.drawable.select_all),
                             contentDescription = null,
+                            tint = LocalContentColor.current,
                         )
                     }
+                }
+
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                    horizontalAlignment = Alignment.End,
+                ) {
+                    Text(
+                        text = pluralStringResource(R.plurals.n_song, queueWindows.size, queueWindows.size),
+                        style = MaterialTheme.typography.bodyMedium,
+                    )
+
+                    Text(
+                        text = makeTimeString(queueLength * 1000L),
+                        style = MaterialTheme.typography.bodyMedium,
+                    )
                 }
             }
         }
@@ -562,7 +534,7 @@ fun Queue(
                 Icon(
                     painter = painterResource(R.drawable.shuffle),
                     contentDescription = null,
-                    modifier = Modifier.alpha(if (repeatMode == Player.REPEAT_MODE_OFF) 0.5f else 1f),
+                    modifier = Modifier.alpha(if (shuffleModeEnabled) 1f else 0.5f),
                 )
             }
 
@@ -585,7 +557,7 @@ fun Queue(
                         }
                     ),
                     contentDescription = null,
-                    modifier = Modifier.alpha(if (shuffleModeEnabled) 1f else 0.5f),
+                    modifier = Modifier.alpha(if (repeatMode == Player.REPEAT_MODE_OFF) 0.5f else 1f),
                 )
             }
         }
