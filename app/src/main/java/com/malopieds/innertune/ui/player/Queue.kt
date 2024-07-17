@@ -572,21 +572,22 @@ fun Queue(
                 modifier = Modifier.align(Alignment.Center),
             )
 
-            ResizableIconButton(
-                icon =
-                    when (repeatMode) {
-                        Player.REPEAT_MODE_OFF, Player.REPEAT_MODE_ALL -> R.drawable.repeat
-                        Player.REPEAT_MODE_ONE -> R.drawable.repeat_one
-                        else -> throw IllegalStateException()
-                    },
-                modifier =
-                    Modifier
-                        .size(32.dp)
-                        .padding(4.dp)
-                        .align(Alignment.CenterEnd)
-                        .alpha(if (repeatMode == Player.REPEAT_MODE_OFF) 0.5f else 1f),
+            IconButton(
+                modifier = Modifier.align(Alignment.CenterEnd),
                 onClick = playerConnection.player::toggleRepeatMode,
-            )
+            ) {
+                Icon(
+                    painter = painterResource(
+                        when (repeatMode) {
+                            Player.REPEAT_MODE_OFF, Player.REPEAT_MODE_ALL -> R.drawable.repeat
+                            Player.REPEAT_MODE_ONE -> R.drawable.repeat_one
+                            else -> throw IllegalStateException()
+                        }
+                    ),
+                    contentDescription = null,
+                    modifier = Modifier.alpha(if (repeatMode == Player.REPEAT_MODE_OFF) 0.5f else 1f),
+                )
+            }
         }
     }
 }
