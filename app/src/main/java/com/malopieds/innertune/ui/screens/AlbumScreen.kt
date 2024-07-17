@@ -317,8 +317,8 @@ fun AlbumScreen(
                                                 originalAlbum = Album(albumWithSongs.album, albumWithSongs.artists),
                                                 navController = navController,
                                                 onDismiss = menuState::dismiss,
-                                        }
-                                    },
+                                      }
+                                    }
                                 ) {
                                     Icon(
                                         painter = painterResource(R.drawable.more_vert),
