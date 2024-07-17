@@ -41,7 +41,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBarDefaults
 import androidx.compose.material3.OutlinedButton
@@ -917,16 +916,17 @@ fun BottomSheetPlayer(
                 }
 
                 Box(modifier = Modifier.weight(1f)) {
-                    IconButton(onClick = { showLyrics = !showLyrics }) {
-                        Image(
-                            painter = painterResource(R.drawable.lyrics),
-                            contentDescription = null,
-                            colorFilter = ColorFilter.tint(onBackgroundColor),
-                            modifier =
-                                Modifier
-                                    .alpha(if (showLyrics) 1f else 0.5f),
-                        )
-                    }
+                    ResizableIconButton(
+                        icon = R.drawable.lyrics,
+                        color = onBackgroundColor,
+                        modifier =
+                            Modifier
+                                .size(32.dp)
+                                .padding(4.dp)
+                                .align(Alignment.Center)
+                                .alpha(if (showLyrics) 1f else 0.5f),
+                        onClick = { showLyrics = !showLyrics },
+                    )
                 }
             }
         }
