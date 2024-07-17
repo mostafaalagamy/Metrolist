@@ -1148,6 +1148,7 @@ fun MediaMetadataListItem(
                     )
                 }
             }
+
             AsyncImage(
                 model = mediaMetadata.thumbnailUrl,
                 contentDescription = null,
@@ -1170,47 +1171,6 @@ fun MediaMetadataListItem(
                         ),
             )
         }
-    },
-    trailingContent = trailingContent,
-    modifier = modifier,
-    isActive = isActive,
-)
-
-@Composable
-fun MediaMetadataListItemOld(
-    mediaMetadata: MediaMetadata,
-    modifier: Modifier,
-    isActive: Boolean = false,
-    isPlaying: Boolean = false,
-    trailingContent: @Composable RowScope.() -> Unit = {},
-) = ListItem(
-    title = mediaMetadata.title,
-    subtitle =
-        joinByBullet(
-            mediaMetadata.artists.joinToString { it.name },
-            makeTimeString(mediaMetadata.duration * 1000L),
-        ),
-    thumbnailContent = {
-        AsyncImage(
-            model = mediaMetadata.thumbnailUrl,
-            contentDescription = null,
-            modifier =
-                Modifier
-                    .size(ListThumbnailSize)
-                    .clip(RoundedCornerShape(ThumbnailCornerRadius)),
-        )
-
-        PlayingIndicatorBox(
-            isActive = isActive,
-            playWhenReady = isPlaying,
-            modifier =
-                Modifier
-                    .size(ListThumbnailSize)
-                    .background(
-                        color = Color.Black.copy(alpha = 0.4f),
-                        shape = RoundedCornerShape(ThumbnailCornerRadius),
-                    ),
-        )
     },
     trailingContent = trailingContent,
     modifier = modifier,
