@@ -12,10 +12,10 @@ plugins {
 }
 
 android {
-    namespace = "com.malopieds.innertune"
+    namespace = "com.moxxaxx.music"
     compileSdk = 34
     defaultConfig {
-        applicationId = "com.malopieds.innertune"
+        applicationId = "com.moxxaxx.music"
         minSdk = 24
         targetSdk = 34
         versionCode = 25
