@@ -44,8 +44,8 @@ import androidx.media3.exoplayer.offline.Download
 import androidx.media3.exoplayer.offline.DownloadRequest
 import androidx.media3.exoplayer.offline.DownloadService
 import androidx.navigation.NavController
-import com.malopieds.innertube.YouTube
-import com.malopieds.innertube.models.AlbumItem
+import com.moxxaxx.innertube.YouTube
+import com.moxxaxx.innertube.models.AlbumItem
 import com.moxxaxx.music.LocalDatabase
 import com.moxxaxx.music.LocalDownloadUtil
 import com.moxxaxx.music.LocalPlayerConnection

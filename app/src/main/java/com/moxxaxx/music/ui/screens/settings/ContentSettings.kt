@@ -16,7 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
-import com.malopieds.innertube.utils.parseCookieString
+import com.moxxaxx.innertube.utils.parseCookieString
 import com.moxxaxx.music.LocalPlayerAwareWindowInsets
 import com.moxxaxx.music.R
 import com.moxxaxx.music.constants.AccountChannelHandleKey

@@ -10,9 +10,9 @@ import androidx.room.Transaction
 import androidx.room.Update
 import androidx.room.Upsert
 import androidx.sqlite.db.SupportSQLiteQuery
-import com.malopieds.innertube.models.SongItem
-import com.malopieds.innertube.pages.AlbumPage
-import com.malopieds.innertube.pages.ArtistPage
+import com.moxxaxx.innertube.models.SongItem
+import com.moxxaxx.innertube.pages.AlbumPage
+import com.moxxaxx.innertube.pages.ArtistPage
 import com.moxxaxx.music.constants.AlbumSortType
 import com.moxxaxx.music.constants.ArtistSongSortType
 import com.moxxaxx.music.constants.ArtistSortType

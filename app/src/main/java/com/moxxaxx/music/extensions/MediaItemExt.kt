@@ -3,7 +3,7 @@ package com.moxxaxx.music.extensions
 import androidx.core.net.toUri
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata.MEDIA_TYPE_MUSIC
-import com.malopieds.innertube.models.SongItem
+import com.moxxaxx.innertube.models.SongItem
 import com.moxxaxx.music.db.entities.Song
 import com.moxxaxx.music.models.MediaMetadata
 import com.moxxaxx.music.models.toMediaMetadata

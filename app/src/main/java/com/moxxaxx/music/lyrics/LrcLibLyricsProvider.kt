@@ -4,7 +4,7 @@ import android.content.Context
 import com.moxxaxx.music.constants.EnableLrcLibKey
 import com.moxxaxx.music.utils.dataStore
 import com.moxxaxx.music.utils.get
-import com.malopieds.lrclib.LrcLib
+import com.moxxaxx.lrclib.LrcLib
 
 object LrcLibLyricsProvider : LyricsProvider {
     override val name = "LrcLib"

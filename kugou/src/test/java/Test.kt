@@ -1,5 +1,5 @@
-import com.malopieds.kugou.KuGou
-import com.malopieds.kugou.KuGou.generateKeyword
+import com.moxxaxx.kugou.KuGou
+import com.moxxaxx.kugou.KuGou.generateKeyword
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertTrue
 import org.junit.Test

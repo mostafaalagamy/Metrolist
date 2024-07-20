@@ -4,7 +4,7 @@ import android.content.Context
 import com.moxxaxx.music.constants.EnableKugouKey
 import com.moxxaxx.music.utils.dataStore
 import com.moxxaxx.music.utils.get
-import com.malopieds.kugou.KuGou
+import com.moxxaxx.kugou.KuGou
 
 object KuGouLyricsProvider : LyricsProvider {
     override val name = "Kugou"

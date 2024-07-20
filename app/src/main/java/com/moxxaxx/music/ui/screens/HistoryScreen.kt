@@ -26,7 +26,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.malopieds.innertube.models.WatchEndpoint
+import com.moxxaxx.innertube.models.WatchEndpoint
 import com.moxxaxx.music.LocalPlayerAwareWindowInsets
 import com.moxxaxx.music.LocalPlayerConnection
 import com.moxxaxx.music.R

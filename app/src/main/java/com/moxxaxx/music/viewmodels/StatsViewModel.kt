@@ -2,7 +2,7 @@ package com.moxxaxx.music.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.malopieds.innertube.YouTube
+import com.moxxaxx.innertube.YouTube
 import com.moxxaxx.music.constants.StatPeriod
 import com.moxxaxx.music.db.MusicDatabase
 import com.moxxaxx.music.utils.reportException

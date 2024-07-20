@@ -50,10 +50,10 @@ import androidx.media3.session.MediaLibraryService
 import androidx.media3.session.MediaSession
 import androidx.media3.session.SessionToken
 import com.google.common.util.concurrent.MoreExecutors
-import com.malopieds.innertube.YouTube
-import com.malopieds.innertube.models.SongItem
-import com.malopieds.innertube.models.WatchEndpoint
-import com.malopieds.innertube.models.response.PlayerResponse
+import com.moxxaxx.innertube.YouTube
+import com.moxxaxx.innertube.models.SongItem
+import com.moxxaxx.innertube.models.WatchEndpoint
+import com.moxxaxx.innertube.models.response.PlayerResponse
 import com.moxxaxx.music.MainActivity
 import com.moxxaxx.music.R
 import com.moxxaxx.music.constants.AudioNormalizationKey

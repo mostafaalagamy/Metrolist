@@ -60,9 +60,9 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import coil.imageLoader
 import coil.request.ImageRequest
-import com.malopieds.innertube.YouTube
-import com.malopieds.innertube.models.SongItem
-import com.malopieds.innertube.models.WatchEndpoint
+import com.moxxaxx.innertube.YouTube
+import com.moxxaxx.innertube.models.SongItem
+import com.moxxaxx.innertube.models.WatchEndpoint
 import com.moxxaxx.music.constants.*
 import com.moxxaxx.music.db.MusicDatabase
 import com.moxxaxx.music.db.entities.SearchHistory

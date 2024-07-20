@@ -1,8 +1,8 @@
 package com.moxxaxx.music.playback.queues
 
 import androidx.media3.common.MediaItem
-import com.malopieds.innertube.YouTube
-import com.malopieds.innertube.models.WatchEndpoint
+import com.moxxaxx.innertube.YouTube
+import com.moxxaxx.innertube.models.WatchEndpoint
 import com.moxxaxx.music.extensions.toMediaItem
 import com.moxxaxx.music.models.MediaMetadata
 import kotlinx.coroutines.Dispatchers.IO

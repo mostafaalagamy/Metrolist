@@ -1,7 +1,7 @@
 package com.moxxaxx.music.models
 
 import androidx.compose.runtime.Immutable
-import com.malopieds.innertube.models.SongItem
+import com.moxxaxx.innertube.models.SongItem
 import com.moxxaxx.music.db.entities.Song
 import com.moxxaxx.music.db.entities.SongEntity
 import com.moxxaxx.music.ui.utils.resize

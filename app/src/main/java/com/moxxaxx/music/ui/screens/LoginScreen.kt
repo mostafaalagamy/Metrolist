@@ -20,7 +20,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavController
-import com.malopieds.innertube.YouTube
+import com.moxxaxx.innertube.YouTube
 import com.moxxaxx.music.LocalPlayerAwareWindowInsets
 import com.moxxaxx.music.R
 import com.moxxaxx.music.constants.AccountChannelHandleKey

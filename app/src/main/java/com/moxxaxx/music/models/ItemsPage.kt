@@ -1,6 +1,6 @@
 package com.moxxaxx.music.models
 
-import com.malopieds.innertube.models.YTItem
+import com.moxxaxx.innertube.models.YTItem
 
 data class ItemsPage(
     val items: List<YTItem>,

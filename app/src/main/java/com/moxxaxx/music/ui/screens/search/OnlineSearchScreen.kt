@@ -34,11 +34,11 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.malopieds.innertube.models.AlbumItem
-import com.malopieds.innertube.models.ArtistItem
-import com.malopieds.innertube.models.PlaylistItem
-import com.malopieds.innertube.models.SongItem
-import com.malopieds.innertube.models.WatchEndpoint
+import com.moxxaxx.innertube.models.AlbumItem
+import com.moxxaxx.innertube.models.ArtistItem
+import com.moxxaxx.innertube.models.PlaylistItem
+import com.moxxaxx.innertube.models.SongItem
+import com.moxxaxx.innertube.models.WatchEndpoint
 import com.moxxaxx.music.LocalDatabase
 import com.moxxaxx.music.LocalPlayerConnection
 import com.moxxaxx.music.R

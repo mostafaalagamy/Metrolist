@@ -2,8 +2,8 @@ package com.moxxaxx.music.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.malopieds.innertube.YouTube
-import com.malopieds.innertube.models.PlaylistItem
+import com.moxxaxx.innertube.YouTube
+import com.moxxaxx.innertube.models.PlaylistItem
 import com.moxxaxx.music.utils.reportException
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

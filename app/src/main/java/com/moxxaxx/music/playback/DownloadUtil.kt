@@ -13,7 +13,7 @@ import androidx.media3.datasource.okhttp.OkHttpDataSource
 import androidx.media3.exoplayer.offline.Download
 import androidx.media3.exoplayer.offline.DownloadManager
 import androidx.media3.exoplayer.offline.DownloadNotificationHelper
-import com.malopieds.innertube.YouTube
+import com.moxxaxx.innertube.YouTube
 import com.moxxaxx.music.constants.AudioQuality
 import com.moxxaxx.music.constants.AudioQualityKey
 import com.moxxaxx.music.db.MusicDatabase

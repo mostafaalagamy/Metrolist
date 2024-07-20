@@ -58,8 +58,8 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import com.malopieds.innertube.models.SongItem
-import com.malopieds.innertube.models.WatchEndpoint
+import com.moxxaxx.innertube.models.SongItem
+import com.moxxaxx.innertube.models.WatchEndpoint
 import com.moxxaxx.music.LocalDatabase
 import com.moxxaxx.music.LocalPlayerAwareWindowInsets
 import com.moxxaxx.music.LocalPlayerConnection

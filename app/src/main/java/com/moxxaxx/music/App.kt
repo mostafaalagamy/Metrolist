@@ -8,8 +8,8 @@ import androidx.datastore.preferences.core.edit
 import coil.ImageLoader
 import coil.ImageLoaderFactory
 import coil.disk.DiskCache
-import com.malopieds.innertube.YouTube
-import com.malopieds.innertube.models.YouTubeLocale
+import com.moxxaxx.innertube.YouTube
+import com.moxxaxx.innertube.models.YouTubeLocale
 import com.moxxaxx.music.constants.ContentCountryKey
 import com.moxxaxx.music.constants.ContentLanguageKey
 import com.moxxaxx.music.constants.CountryCodeToName

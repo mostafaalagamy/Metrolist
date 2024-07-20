@@ -2,8 +2,8 @@ package com.moxxaxx.music.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.malopieds.innertube.YouTube
-import com.malopieds.innertube.models.YTItem
+import com.moxxaxx.innertube.YouTube
+import com.moxxaxx.innertube.models.YTItem
 import com.moxxaxx.music.db.MusicDatabase
 import com.moxxaxx.music.db.entities.SearchHistory
 import dagger.hilt.android.lifecycle.HiltViewModel

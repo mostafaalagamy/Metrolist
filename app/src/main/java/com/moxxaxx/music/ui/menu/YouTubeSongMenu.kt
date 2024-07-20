@@ -45,8 +45,8 @@ import androidx.media3.exoplayer.offline.DownloadRequest
 import androidx.media3.exoplayer.offline.DownloadService
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import com.malopieds.innertube.models.SongItem
-import com.malopieds.innertube.models.WatchEndpoint
+import com.moxxaxx.innertube.models.SongItem
+import com.moxxaxx.innertube.models.WatchEndpoint
 import com.moxxaxx.music.LocalDatabase
 import com.moxxaxx.music.LocalDownloadUtil
 import com.moxxaxx.music.LocalPlayerConnection
