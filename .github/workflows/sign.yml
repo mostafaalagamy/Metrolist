@@ -31,11 +31,11 @@ jobs:
 
       - name: Sign APK
         run: |
-          jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore debug.keystore -storepass android -keypass android app/build/outputs/apk/foss/release/app-release-unsigned.apk androiddebugkey
-          zipalign -v 4 app/build/outputs/apk/foss/release/app-release-unsigned.apk app/build/outputs/apk/foss/release/app-release.apk
+          jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore debug.keystore -storepass android -keypass android app/build/outputs/apk/release/app-release-unsigned.apk androiddebugkey
+          zipalign -v 4 app/build/outputs/apk/release/app-release-unsigned.apk app/build/outputs/apk/release/app-release.apk
 
       - name: Upload APK
         uses: actions/upload-artifact@v2
         with:
           name: app
-          path: app/build/outputs/apk/foss/release/app-release.apk
+          path: app/build/outputs/apk/release/app-release.apk
