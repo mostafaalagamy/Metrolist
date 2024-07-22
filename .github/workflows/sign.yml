@@ -24,7 +24,7 @@ jobs:
           keytool -genkey -v -keystore debug.keystore -keyalg RSA -keysize 2048 -validity 10000 -alias androiddebugkey -dname "CN=Android Debug,O=Android,C=US" -storepass android -keypass android
 
       - name: Unzip APK
-        run: unzip app/build/outputs/apk/foss/release/app.zip -d app/build/outputs/apk/foss/release/
+        run: unzip app/build/outputs/apk/foss/release/app -d app/build/outputs/apk/foss/release/
 
       - name: List files for debugging
         run: |
