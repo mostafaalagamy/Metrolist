@@ -74,7 +74,7 @@ jobs:
         jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore debug.keystore -storepass android -keypass android app/build/outputs/apk/foss/release/app-foss-release-unsigned.apk androiddebugkey
         zipalign -v 4 app/build/outputs/apk/foss/release/app-foss-release-unsigned.apk app/build/outputs/apk/foss/release/app-foss-release.apk
 
-     - name: Release
+    - name: Release
       uses: softprops/action-gh-release@v1
       with:
         files: app/build/outputs/apk/foss/release/app-foss-release.apk
