@@ -1,41 +1,41 @@
-name: Build and Sign Android App
+name: Sign Android App
 
 on:
   push:
-    branches:
-      - dev
+    branches: [ "dev" ]
+  pull_request:
+    branches: [ "dev" ]
 
 jobs:
-  build:
+  sign:
+
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
+    - uses: actions/checkout@v4
+    - name: set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'zulu'
+        cache: gradle
 
-      - name: Set up JDK 17
-        uses: actions/setup-java@v2
-        with:
-          distribution: 'zulu'
-          java-version: '17'
-          
-      - name: Download dependencies
-        run: ./gradlew build
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+      
+    - name: Download APK from build job
+      uses: actions/download-artifact@v2
+      with:
+        name: app
+        path: app/build/outputs/apk/foss/release/
 
-      - name: Build the app
-        run: ./gradlew assembleRelease
+    - name: Sign APK
+      run: |
+        jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore debug.keystore -storepass android -keypass android app/build/outputs/apk/foss/release/app-release-unsigned.apk androiddebugkey
+        zipalign -v 4 app/build/outputs/apk/foss/release/app-release-unsigned.apk app/build/outputs/apk/foss/release/app-release.apk
 
-      - name: Generate debug keystore
-        run: |
-          keytool -genkey -v -keystore debug.keystore -keyalg RSA -keysize 2048 -validity 10000 -alias androiddebugkey -dname "CN=Android Debug,O=Android,C=US" -storepass android -keypass android
-
-      - name: Sign APK
-        run: |
-          jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore debug.keystore -storepass android -keypass android app/build/outputs/apk/release/app.apk androiddebugkey
-          zipalign -v 4 app/build/outputs/apk/release/app.apk app/build/outputs/apk/release/app.apk
-
-      - name: Upload APK
-        uses: actions/upload-artifact@v2
-        with:
-          name: app
-          path: app/build/outputs/apk/release/*.apk
+    - name: Upload Signed APK
+      uses: actions/upload-artifact@v3
+      with:
+        name: signed-app
+        path: app/build/outputs/apk/foss/release/app-release.apk
