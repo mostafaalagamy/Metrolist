@@ -1,0 +1,37 @@
+name: Build and Sign Android App
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+          
+      - name: Download dependencies
+        run: ./gradlew build
+
+      - name: Build the app
+        run: ./gradlew assembleRelease
+
+      - name: Sign APK
+        run: |
+          jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore my-release-key.jks -storepass Metrolist -keypass Metrolist app/src/build/outputs/apk/foss/release/app.apk ANDROID_SIGNING_KEY
+          zipalign -v 4 app/build/outputs/apk/foss/release/app.apk app/build/outputs/apk/foss/release/app-release.apk
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v2
+        with:
+          name: app
+          path: app/src/build/outputs/apk/foss/release/*.apk
