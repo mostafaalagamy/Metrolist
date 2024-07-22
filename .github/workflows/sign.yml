@@ -26,8 +26,12 @@ jobs:
     - name: Build with Gradle
       run: ./gradlew assembleRelease
 
+    - name: Rename APK file
+      run: |
+        mv app/build/outputs/apk/foss/release/app-release-unsigned.apk app/build/outputs/apk/foss/release/app-foss-release-unsigned.apk
+
     - name: List files in APK directory
-      run: ls -R app/build/outputs/apk
+      run: ls -R app/build/outputs/apk/foss/release
 
     - name: Upload APK
       uses: actions/upload-artifact@v3
@@ -58,10 +62,20 @@ jobs:
     - name: List files in downloaded APK directory
       run: ls -R app/build/outputs/apk/foss/release
 
+    - name: Install Android SDK tools
+      run: sudo apt-get install -y android-sdk
+
     - name: Create debug keystore if it doesn't exist
       run: |
         if [ ! -f debug.keystore ]; then
           keytool -genkey -v -keystore debug.keystore -storepass android -alias androiddebugkey -keypass android -dname "CN=Android Debug,O=Android,C=US" -keyalg RSA -keysize 2048 -validity 10000
+        fi
+
+    - name: Verify APK file exists
+      run: |
+        if [ ! -f app/build/outputs/apk/foss/release/app-foss-release-unsigned.apk ]; then
+          echo "APK file not found!"
+          exit 1
         fi
 
     - name: Sign APK
