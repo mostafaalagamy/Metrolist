@@ -11,18 +11,6 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: set up JDK 17
-      uses: actions/setup-java@v3
-      with:
-        java-version: '17'
-        distribution: 'zulu'
-
-    - name: Download APK
-      uses: actions/download-artifact@v3
-      with:
-        name: app
-        path: app/build/outputs/apk/foss/release/
-
     - name: Verify APK file exists
       run: |
         if [ ! -f app/build/outputs/apk/foss/release/app-foss-release.apk ]; then
