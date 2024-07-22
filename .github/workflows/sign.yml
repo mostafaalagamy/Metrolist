@@ -58,6 +58,12 @@ jobs:
     - name: List files in downloaded APK directory
       run: ls -R app/build/outputs/apk/foss/release
 
+    - name: Create debug keystore if it doesn't exist
+      run: |
+        if [ ! -f debug.keystore ]; then
+          keytool -genkey -v -keystore debug.keystore -storepass android -alias androiddebugkey -keypass android -dname "CN=Android Debug,O=Android,C=US" -keyalg RSA -keysize 2048 -validity 10000
+        fi
+
     - name: Sign APK
       run: |
         jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore debug.keystore -storepass android -keypass android app/build/outputs/apk/foss/release/app-release-unsigned.apk androiddebugkey
