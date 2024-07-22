@@ -26,10 +26,6 @@ jobs:
     - name: Build with Gradle
       run: ./gradlew assembleRelease
 
-    - name: Rename APK file
-      run: |
-        mv app/build/outputs/apk/foss/release/app-release-unsigned.apk app/build/outputs/apk/foss/release/app-foss-release-unsigned.apk
-
     - name: List files in APK directory
       run: ls -R app/build/outputs/apk/foss/release
 
@@ -81,7 +77,7 @@ jobs:
     - name: Sign APK
       run: |
         jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore debug.keystore -storepass android -keypass android app/build/outputs/apk/foss/release/app-foss-release-unsigned.apk androiddebugkey
-        zipalign -v 4 app/build/outputs/apk/foss/release/app-foss-release-unsigned.apk app/build/outputs/apk/foss/release/app-foss-release.apk
+        zipalign -v 4 app/build/outputs/apk/foss/release/app-release-unsigned.apk app/build/outputs/apk/foss/release/app-foss-release.apk
 
     - name: Upload Signed APK
       uses: actions/upload-artifact@v3
