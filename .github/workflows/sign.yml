@@ -66,11 +66,11 @@ jobs:
 
     - name: Sign APK
       run: |
-        jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore debug.keystore -storepass android -keypass android app/build/outputs/apk/foss/release/app-release-unsigned.apk androiddebugkey
-        zipalign -v 4 app/build/outputs/apk/foss/release/app-release-unsigned.apk app/build/outputs/apk/foss/release/app-release.apk
+        jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore debug.keystore -storepass android -keypass android app/build/outputs/apk/foss/release/app-foss-release-unsigned.apk androiddebugkey
+        zipalign -v 4 app/build/outputs/apk/foss/release/app-foss-release-unsigned.apk app/build/outputs/apk/foss/release/app-foss-release.apk
 
     - name: Upload Signed APK
       uses: actions/upload-artifact@v3
       with:
         name: signed-app
-        path: app/build/outputs/apk/foss/release/app-release.apk
+        path: app/build/outputs/apk/foss/release/app-foss-release.apk
