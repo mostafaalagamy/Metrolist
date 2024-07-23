@@ -10,6 +10,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Decode Keystore
+        run: echo ${{ secrets.KEYSTORE }} | base64 -d >> app/music-debug.jks
+
       - name: set up JDK 17
         uses: actions/setup-java@v3
         with:
@@ -18,12 +21,14 @@ jobs:
           cache: 'gradle'
 
       - name: Build debug APK and run jvm tests
-        run: ./gradlew assembleDebug lintFullDebug testFullDebugUnitTest --stacktrace -DskipFormatKtlint
+        run: ./gradlew assembleDebug lintFossDebug testFossDebugUnitTest --stacktrace -DskipFormatKtlint
         env:
-          PULL_REQUEST: 'true'
+          MUSIC_DEBUG_KEYSTORE_FILE: 'music-debug.jks'
+          MUSIC_DEBUG_SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
+          MUSIC_DEBUG_SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
 
       - name: Upload APK
         uses: actions/upload-artifact@v3
         with:
           name: app
-          path: app/build/outputs/apk/full/debug/*.apk
+          path: app/build/outputs/apk/foss/debug/*.apk
