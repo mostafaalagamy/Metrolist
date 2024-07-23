@@ -23,7 +23,7 @@
     <string name="quick_picks">Szybki wybór</string>
     <string name="quick_picks_empty">Słuchaj utworów, aby wygenerować Szybki wybór</string>
     <string name="new_release_albums">Nowości</string>
-    <string name="forgotten_favorites">Zapomniane przeboje</string>
+    <string name="forgotten_favorites">Zapomniane ulubione</string>
     <string name="similar_to">Podobne do</string>
     <string name="keep_listening">Słuchaj dalej</string>
     <string name="your_ytb_playlists">Twoje playlisty YouTube</string>
@@ -83,7 +83,7 @@
     <string name="reset">Resetuj</string>
 
     <!-- Menu -->
-    <string name="details">Detale</string>
+    <string name="details">Szczegóły</string>
     <string name="edit">Edytuj</string>
     <string name="start_radio">Włącz radio</string>
     <string name="play">Odtwórz</string>
@@ -91,7 +91,7 @@
     <string name="add_to_queue">Dodaj do kolejki</string>
     <string name="add_to_library">Dodaj do biblioteki</string>
     <string name="remove_from_library">Usuń z biblioteki</string>
-    <string name="download">Pobrane</string>
+    <string name="download">Pobierz</string>
     <string name="downloading">Pobieranie</string>
     <string name="remove_download">Usuń pobrane</string>
     <string name="import_playlist">Importuj playlistę</string>
@@ -138,7 +138,7 @@
     <string name="song_title">Tytuł utworu</string>
     <string name="song_artists">Artyści utworu</string>
     <string name="error_song_title_empty">Tytuł nie może być pusty.</string>
-    <string name="error_song_artist_empty">Artysta nie może być pusty.</string>
+    <string name="error_song_artist_empty">Lista artystów nie może być pusta.</string>
     <string name="save">Zapisz</string>
 
     <string name="choose_playlist">Wybierz playlistę</string>
@@ -160,10 +160,10 @@
         <item quantity="other">%d utworów</item>
     </plurals>
     <plurals name="n_artist">
-        <item quantity="one">%d wykonawca</item>
-        <item quantity="few">%d wykonawców</item>
-        <item quantity="many">%d wykonawców</item>
-        <item quantity="other">%d wykonawców</item>
+        <item quantity="one">%d artysta</item>
+        <item quantity="few">%d artystów</item>
+        <item quantity="many">%d artystów</item>
+        <item quantity="other">%d artystów</item>
     </plurals>
     <plurals name="n_album">
         <item quantity="one">%d album</item>
@@ -220,7 +220,7 @@
     </plurals>
     <string name="error_no_stream">Strumień niedostępny</string>
     <string name="error_no_internet">Brak połączenia</string>
-    <string name="error_timeout">Timeout</string>
+    <string name="error_timeout">Błąd limitu czasu</string>
     <string name="error_unknown">Nieznany błąd</string>
 
     <!-- Player action -->
@@ -242,7 +242,7 @@
     <!-- Settings -->
     <string name="settings">Ustawienia</string>
     <string name="appearance">Wygląd</string>
-    <string name="enable_dynamic_theme">Włącz dynamiczny motyw</string>
+    <string name="enable_dynamic_theme">Włącz motyw dynamiczny</string>
     <string name="dark_theme">Ciemny motyw</string>
     <string name="dark_theme_on">Wł.</string>
     <string name="dark_theme_off">Wył.</string>
@@ -311,10 +311,10 @@
     <string name="restore">Przywróć</string>
     <string name="imported_playlist">Zaimportowano playlistę</string>
     <string name="backup_create_success">Kopia utworzona pomyślnie</string>
-    <string name="backup_create_failed">Nie można było utworzyć kopii</string>
+    <string name="backup_create_failed">Tworzenie kopii zakończone niepowodzeniem</string>
     <string name="restore_failed">Przywracanie zakończone niepowodzeniem</string>
 
-    <string name="about">O aplikacji</string>
+    <string name="about">Informacje o aplikacji InnerTune</string>
     <string name="app_version">Wersja aplikacji</string>
 
     <string name="new_version_available">Nowa wersja już dostępna</string>
