@@ -5,10 +5,10 @@
     <string name="artists">Künstler</string>
     <string name="albums">Alben</string>
     <string name="playlists">Wiedergabelisten</string>
+    <string name="explore">Entdecken</string>
 
     <!-- Top bar -->
     <plurals name="n_selected">
-        <item quantity="one">%d ausgewählt</item>
         <item quantity="other">%d ausgewählt</item>
     </plurals>
 
@@ -17,9 +17,13 @@
     <string name="stats">Statistiken</string>
     <string name="mood_and_genres">Stimmungen und Genres</string>
     <string name="account">Account</string>
-    <string name="quick_picks">Empfehlungen</string>
+    <string name="quick_picks">Schnellauswahl</string>
     <string name="quick_picks_empty">Hören Sie sich einige Songs an, um Ihre Schnellauswahl zu treffen</string>
     <string name="new_release_albums">Neu veröffentlichte Alben</string>
+    <string name="forgotten_favorites">Vergessene Favoriten</string>
+    <string name="similar_to">Ähnlich zu</string>
+    <string name="keep_listening">Höre weiter</string>
+    <string name="your_ytb_playlists">Deine YouTube Wiedergabelisten</string>
 
     <!-- History -->
     <string name="today">Heute</string>
@@ -53,16 +57,27 @@
     <!-- Artist screen -->
     <string name="from_your_library">Aus der Bibliothek</string>
 
+    <!-- Album screen -->
+    <string name="other_versions">Andere Versionen</string>
+
+    <!-- Library -->
+    <string name="liked">Favoriten</string>
+    <string name="offline">Heruntergeladen</string>
+    <string name="my_top">Meine Top</string>
+
+
     <!-- Playlist -->
-    <string name="liked_songs">Beliebte Titel</string>
+    <string name="liked_songs">Favorisierte Titel</string>
     <string name="downloaded_songs">Heruntergeladene Titel</string>
     <string name="playlist_is_empty">Die Wiedergabeliste ist leer</string>
+    <string name="remove_download_playlist_confirm">Bist du dir sicher, dass du alle \"%s\" Wiedergabeliste Lieder aus dem heruntergeladene Lieder Speicher entfernen löschen willst?</string>
+    <string name="delete_playlist_confirm">Bist du dir sicher, dass du die Wiedergabeliste \"%s\" löschen willst?</string>
 
     <!-- Button -->
     <string name="retry">Wiederholen</string>
     <string name="radio">Radio</string>
     <string name="shuffle">Shuffle</string>
-    <string name="reset">Reset</string>
+    <string name="reset">Zurücksetzen</string>
 
     <!-- Menu -->
     <string name="details">Details</string>
@@ -74,7 +89,7 @@
     <string name="add_to_library">Zur Bibliothek hinzufügen</string>
     <string name="remove_from_library">Aus der Bibliothek entfernen</string>
     <string name="download">Herunterladen</string>
-    <string name="downloading">Downloading</string>
+    <string name="downloading">Lade herunter</string>
     <string name="remove_download">Download entfernen</string>
     <string name="import_playlist">Wiedergabeliste importieren</string>
     <string name="add_to_playlist">Zur Wiedergabeliste hinzufügen</string>
@@ -87,9 +102,12 @@
     <string name="search_online">Online-Suche</string>
     <string name="sync">Sync</string>
     <string name="advanced">Erweitert</string>
+    <string name="select">Alles auswählen</string>
+    <string name="like_all">Alles favorisieren</string>
 
     <!-- Sort menu -->
     <string name="sort_by_create_date">Datum hinzugefügt</string>
+    <string name="sort_by_last_updated">Datum aktualisiert</string>
     <string name="sort_by_name">Name</string>
     <string name="sort_by_artist">Künstler</string>
     <string name="sort_by_year">Jahr</string>
@@ -100,7 +118,7 @@
 
     <!-- Dialog -->
     <string name="media_id">Medien-ID</string>
-    <string name="mime_type">MIME type</string>
+    <string name="mime_type">MIME Typ</string>
     <string name="codecs">Codecs</string>
     <string name="bitrate">Bitrate</string>
     <string name="sample_rate">Abtastfrequenz</string>
@@ -125,6 +143,7 @@
     <string name="create_playlist">Wiedergabeliste erstellen</string>
     <string name="playlist_name">Name der Wiedergabeliste</string>
     <string name="error_playlist_name_empty">Der Name der Wiedergabeliste darf nicht leer sein.</string>
+    <string name="already_in_playlist">Bereits in Wiedergabeliste:</string>
 
     <string name="edit_artist">Künstler bearbeiten</string>
     <string name="artist_name">Name des Künstlers</string>
@@ -159,10 +178,14 @@
         <item quantity="one">%d Jahr</item>
         <item quantity="other">%d Jahre</item>
     </plurals>
+    <plurals name="n_elements">
+        <item quantity="one">%d Element</item>
+        <item quantity="other">%d Elemente</item>
+    </plurals>
 
     <!-- Snackbar -->
     <string name="playlist_imported">Wiedergabeliste importiert</string>
-    <string name="removed_song_from_playlist">Entfernt \"%s\" aus der Wiedergabeliste</string>
+    <string name="removed_song_from_playlist">\"%s\" aus der Wiedergabeliste entfernt</string>
     <string name="playlist_synced">Wiedergabeliste synchronisiert</string>
     <string name="undo">Rückgängig machen</string>
 
@@ -171,7 +194,7 @@
     <string name="sleep_timer">Schlaf-Timer</string>
     <string name="end_of_song">Ende des Liedes</string>
     <plurals name="minute">
-        <item quantity="one">1 minute</item>
+        <item quantity="one">1 Minute</item>
         <item quantity="other">%d Minuten</item>
     </plurals>
     <string name="error_no_stream">Kein Stream verfügbar</string>
@@ -203,6 +226,10 @@
     <string name="dark_theme_on">An</string>
     <string name="dark_theme_off">Aus</string>
     <string name="dark_theme_follow_system">System folgen</string>
+    <string name="player_background_style">Player Hintergrund Stil</string>
+    <string name="follow_theme">Thema folgen</string>
+    <string name="gradient">Farbverlauf</string>
+    <string name="enable_squiggly_slider">Welliger Schieberegler</string>
     <string name="pure_black">Reines Schwarz</string>
     <string name="default_open_tab">Standardmäßig geöffnete Registerkarte</string>
     <string name="customize_navigation_tabs">Anpassen der Navigationsregisterkarten</string>
@@ -216,9 +243,13 @@
     <string name="content_language">Standard-Inhaltssprache</string>
     <string name="content_country">Standard-Inhaltsland</string>
     <string name="system_default">Systemvorgabe</string>
+    <string name="proxy">Proxy</string>
     <string name="enable_proxy">Proxy einschalten</string>
     <string name="proxy_type">Proxy-Typ</string>
     <string name="proxy_url">Proxy-URL</string>
+    <string name="default_lib_chips">Ändere Standard-Bibliothekschip</string>
+    <string name="set_quick_picks">Setze Quick Picks</string>
+    <string name="last_song_listened">Basierend auf zuletzt gehörtes Lied</string>
     <string name="restart_to_take_effect">Neustart, damit Änderungen wirksam werden</string>
 
     <string name="player_and_audio">Player und Audio</string>
@@ -252,6 +283,7 @@
     <string name="clear_search_history">Suchverlauf löschen</string>
     <string name="clear_search_history_confirm">Sind Sie sicher, dass Sie den gesamten Suchverlauf löschen wollen?</string>
     <string name="enable_kugou">KuGou-Liedtextanbieter aktivieren</string>
+    <string name="enable_lrclib">LrcLib-Liedtextanbieter aktivieren</string>
 
     <string name="backup_restore">Sichern und Wiederherstellen</string>
     <string name="backup">Datensicherung</string>
@@ -267,4 +299,11 @@
     <string name="new_version_available">Neue Version verfügbar</string>
     <string name="translation_models">Übersetzungsmodelle</string>
     <string name="clear_translation_models">Lösche Übersetzungsmodelle</string>
+
+    <string name="all_time">Gesamte Zeit</string>
+    <string name="past_24_hours">Letzte 24 Stunden</string>
+    <string name="past_week">Letzte Woche</string>
+    <string name="past_month">Letzter Monat</string>
+    <string name="past_year">Letztes Jahr</string>
+    <string name="top_length">Meine Top-Liste Länge</string>
 </resources>
