@@ -8,7 +8,7 @@
     <string name="explore">Entdecken</string>
 
     <!-- Top bar -->
-    <plurals name="n_selected">
+    <plurals name="n_selected" tools:ignore="MissingQuantity">
         <item quantity="other">%d ausgewählt</item>
     </plurals>
 
