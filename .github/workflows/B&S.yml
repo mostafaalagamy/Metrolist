@@ -1,0 +1,81 @@
+name: Build and Sign Android App
+
+on:
+  push:
+    branches: [ "dev" ]
+  pull_request:
+    branches: [ "dev" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'zulu'
+        cache: gradle
+
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+      
+    - name: Build with Gradle
+      run: ./gradlew assembleRelease
+
+    - name: List files in APK directory
+      run: ls -R app/build/outputs/apk/foss/release
+
+    - name: Upload APK
+      uses: actions/upload-artifact@v3
+      with:
+        name: app
+        path: app/build/outputs/apk/foss/release/*.apk
+
+  sign:
+
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'zulu'
+        cache: gradle
+
+    - name: Download APK from build job
+      uses: actions/download-artifact@v3
+      with:
+        name: app
+        path: app/build/outputs/apk/foss/release/
+
+    - name: List files in downloaded APK directory
+      run: ls -R app/build/outputs/apk/foss/release
+
+    - name: Verify APK file exists
+      run: |
+        if [ ! -f app/build/outputs/apk/foss/release/app-foss-release-unsigned.apk ]; then
+          echo "APK file not found!"
+          exit 1
+        fi
+
+    - name: Decode keystore secret
+      run: |
+        echo "${{ secrets.KEYSTORE }}" | base64 --decode > my-release-key.jks
+
+    - name: Sign APK
+      run: |
+        jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 -keystore my-release-key.jks -storepass ${{ secrets.KEYSTORE_PASSWORD }} -keypass ${{ secrets.KEY_PASSWORD }} app/build/outputs/apk/foss/release/app-foss-release-unsigned.apk ${{ secrets.KEY_ALIAS }}
+        zipalign -v 4 app/build/outputs/apk/foss/release/app-foss-release-unsigned.apk app/build/outputs/apk/foss/release/app-foss-release.apk
+
+    - name: Upload Signed APK
+      uses: actions/upload-artifact@v3
+      with:
+        name: signed-app
+        path: app/build/outputs/apk/foss/release/app-foss-release.apk
