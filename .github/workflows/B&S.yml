@@ -78,12 +78,12 @@ jobs:
         export ANDROID_HOME=$HOME/android-sdk
         export PATH=$ANDROID_HOME/cmdline-tools/bin:$PATH
         yes | sdkmanager --licenses
-        sdkmanager "build-tools;30.0.3"
+        sdkmanager "build-tools;34.0.0"
 
     - name: Sign APK
       run: |
         jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 -keystore my-release-key.jks -storepass ${{ secrets.KEYSTORE_PASSWORD }} -keypass ${{ secrets.KEY_PASSWORD }} app/build/outputs/apk/foss/release/app-foss-release-unsigned.apk ${{ secrets.KEY_ALIAS }}
-        $ANDROID_HOME/build-tools/30.0.3/zipalign -v 4 app/build/outputs/apk/foss/release/app-foss-release-unsigned.apk app/build/outputs/apk/foss/release/app-foss-release.apk
+        $ANDROID_HOME/build-tools/34.0.0/zipalign -v 4 app/build/outputs/apk/foss/release/app-foss-release-unsigned.apk app/build/outputs/apk/foss/release/app-foss-release.apk
 
     - name: Upload Signed APK
       uses: actions/upload-artifact@v3
