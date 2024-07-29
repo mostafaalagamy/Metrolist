@@ -69,27 +69,32 @@ jobs:
       run: |
         echo "${{ secrets.KEYSTORE }}" | base64 --decode > my-release-key.jks
 
-    - name: Install Android SDK Build Tools
+    - name: Install Android SDK Command-line Tools
       run: |
         sudo apt-get update
         sudo apt-get install -y wget unzip
-        wget "https://dl.google.com/android/repository/commandlinetools-linux-8092744_latest.zip" -O android-sdk.zip
-        unzip android-sdk.zip -d $HOME/android-sdk
+        wget "https://dl.google.com/android/repository/commandlinetools-linux-8092744_latest.zip" -O commandlinetools.zip
+        unzip commandlinetools.zip -d $HOME/android-sdk
         mkdir -p $HOME/android-sdk/cmdline-tools/latest
-        mv $HOME/android-sdk/cmdline-tools/* $HOME/android-sdk/cmdline-tools/latest/ --backup=numbered || true
+        mv $HOME/android-sdk/cmdline-tools/* $HOME/android-sdk/cmdline-tools/latest/
         export ANDROID_HOME=$HOME/android-sdk
         export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$PATH
         yes | sdkmanager --licenses
         sdkmanager "build-tools;34.0.0"
 
-    - name: Sign APK
-      run: |
-        jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 -keystore my-release-key.jks -storepass ${{ secrets.KEYSTORE_PASSWORD }} -keypass ${{ secrets.KEY_PASSWORD }} app/build/outputs/apk/foss/release/app-foss-release-unsigned.apk ${{ secrets.KEY_ALIAS }}
-        $ANDROID_HOME/build-tools/34.0.0/zipalign -v 4 app/build/outputs/apk/foss/release/app-foss-release-unsigned.apk app/build/outputs/apk/foss/release/app-foss-release.apk
+   - name: Sign APK with apksigner
+     run: |
+      $ANDROID_HOME/build-tools/34.0.0/apksigner sign \
+       --ks my-release-key.jks \
+       --ks-key-alias ${{ secrets.KEY_ALIAS }} \
+       --ks-pass pass:${{ secrets.KEYSTORE_PASSWORD }} \
+       --key-pass pass:${{ secrets.KEY_PASSWORD }} \
+       --out app/build/outputs/apk/foss/release/app-foss-release.apk \
+       app/build/outputs/apk/foss/release/app-foss-release-unsigned.apk
 
-    - name: Verify Signed APK
-      run: |
-        jarsigner -verify -verbose -certs app/build/outputs/apk/foss/release/app-foss-release.apk
+   - name: Verify Signed APK
+     run: |
+      $ANDROID_HOME/build-tools/34.0.0/apksigner verify --verbose app/build/outputs/apk/foss/release/app-foss-release.apk
 
     - name: Upload Signed APK
       uses: actions/upload-artifact@v3
