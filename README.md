@@ -2,7 +2,7 @@
 
 <img src="https://raw.githubusercontent.com/moaxaxx/ColdSoup/dev/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.webp" height="72">
 
-A fork of ColdSoup, A Material 3 YouTube Music client for Android
+A Material 3 YouTube Music client for Android
 
 [![Latest release](https://img.shields.io/github/v/release/moaxaxx/ColdSoup?include_prereleases)](https://github.com/moaxaxx/ColdSoup/releases)
 [![License](https://img.shields.io/github/license/moaxaxx/ColdSoup)](https://www.gnu.org/licenses/gpl-3.0)
