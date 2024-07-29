@@ -38,9 +38,9 @@ jobs:
         echo "Renamed directories containing '${old_phrase}' to '${new_phrase}'"
         find . -type d -name "*${new_phrase}*"
 
-        - name: Replace old phrase with new phrase in files
+    - name: Replace old phrase with new phrase in files
       run: |
-        old_phrase="Innertune"
+        old_phrase="InnerTune"
         new_phrase="ColdSoup"
         find . -type f -name "*.java" -o -name "*.kt" -o -name "AndroidManifest.xml" -o -name "build.gradle" -o -name "build.gradle.kts" -o -name "*.xml" -o -name "*.md" | xargs sed -i "s/${old_phrase}/${new_phrase}/g"
         echo "Replaced '${old_phrase}' with '${new_phrase}' in all files:"
@@ -48,7 +48,7 @@ jobs:
 
     - name: Rename directories containing old phrase
       run: |
-        old_phrase="Innertune"
+        old_phrase="InnerTune"
         new_phrase="ColdSoup"
         find . -depth -type d -name "*${old_phrase}*" | while read dir; do
           new_dir=$(echo $dir | sed "s/${old_phrase}/${new_phrase}/g")
