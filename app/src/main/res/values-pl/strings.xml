@@ -314,7 +314,7 @@
     <string name="backup_create_failed">Tworzenie kopii zakończone niepowodzeniem</string>
     <string name="restore_failed">Przywracanie zakończone niepowodzeniem</string>
 
-    <string name="about">Informacje o aplikacji InnerTune</string>
+    <string name="about">Informacje o aplikacji ColdSoup</string>
     <string name="app_version">Wersja aplikacji</string>
 
     <string name="new_version_available">Nowa wersja już dostępna</string>

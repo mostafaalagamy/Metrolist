@@ -22,7 +22,7 @@ import com.google.material.color.score.Score
 val DefaultThemeColor = Color(0xFF4285F4)
 
 @Composable
-fun InnerTuneTheme(
+fun ColdSoupTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     pureBlack: Boolean = false,
     themeColor: Color = DefaultThemeColor,

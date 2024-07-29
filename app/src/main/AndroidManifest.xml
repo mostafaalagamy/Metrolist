@@ -24,7 +24,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.InnerTune"
+        android:theme="@style/Theme.ColdSoup"
         tools:targetApi="o">
         <uses-library
             android:name="org.apache.http.legacy"
@@ -34,7 +34,7 @@
             android:name=".MainActivity"
             android:exported="true"
             android:launchMode="singleTask"
-            android:theme="@style/Theme.InnerTune"
+            android:theme="@style/Theme.ColdSoup"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
