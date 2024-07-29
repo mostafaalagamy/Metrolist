@@ -1,1 +1,1 @@
-A fork of InnerTune, a Material 3 YouTube Music client for Android
+Material 3 YouTube Music client for Android
