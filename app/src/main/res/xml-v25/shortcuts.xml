@@ -8,36 +8,6 @@
         <intent
             android:targetClass="com.moxxaxx.music.MainActivity"
             android:targetPackage="com.moxxaxx.music"
-            android:action="com.zionhuang.music.action.SEARCH" />
-    </shortcut>
-    <shortcut
-        android:shortcutId="songs"
-        android:enabled="true"
-        android:icon="@drawable/shortcut_songs"
-        android:shortcutShortLabel="@string/songs">
-        <intent
-            android:targetClass="com.moxxaxx.music.MainActivity"
-            android:targetPackage="com.moxxaxx.music"
-            android:action="com.zionhuang.music.action.SONGS" />
-    </shortcut>
-    <shortcut
-        android:shortcutId="albums"
-        android:enabled="true"
-        android:icon="@drawable/shortcut_albums"
-        android:shortcutShortLabel="@string/albums">
-        <intent
-            android:targetClass="com.moxxaxx.music.MainActivity"
-            android:targetPackage="com.moxxaxx.music"
-            android:action="com.zionhuang.music.action.ALBUMS" />
-    </shortcut>
-    <shortcut
-        android:shortcutId="playlists"
-        android:enabled="true"
-        android:icon="@drawable/shortcut_playlists"
-        android:shortcutShortLabel="@string/playlists">
-        <intent
-            android:targetClass="com.moxxaxx.music.MainActivity"
-            android:targetPackage="com.moxxaxx.music"
-            android:action="com.zionhuang.music.action.PLAYLISTS" />
+            android:action="com.moxxaxx.music.action.SEARCH" />
     </shortcut>
 </shortcuts>
