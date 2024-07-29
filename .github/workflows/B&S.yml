@@ -89,7 +89,7 @@ jobs:
 
     - name: Verify Signed APK
       run: |
-        jarsigner -verify app/build/outputs/apk/foss/release/app-foss-release.apk
+        jarsigner -verify -verbose -certs app/build/outputs/apk/foss/release/app-foss-release.apk
 
     - name: Upload Signed APK
       uses: actions/upload-artifact@v3
