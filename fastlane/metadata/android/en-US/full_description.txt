@@ -1,4 +1,4 @@
-A fork of InnerTune, Material 3 YouTube Music client for Android
+Material 3 YouTube Music client for Android
 
 <br><b>Features:</b>
 
