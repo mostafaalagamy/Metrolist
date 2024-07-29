@@ -71,16 +71,16 @@ jobs:
 
     - name: Install Android SDK Build Tools
       run: |
-    sudo apt-get update
-    sudo apt-get install -y wget unzip
-    wget "https://dl.google.com/android/repository/commandlinetools-linux-8092744_latest.zip" -O android-sdk.zip
-    unzip android-sdk.zip -d $HOME/android-sdk
-    mkdir -p $HOME/android-sdk/cmdline-tools/latest
-    mv $HOME/android-sdk/cmdline-tools/* $HOME/android-sdk/cmdline-tools/latest/ --backup=numbered
-    export ANDROID_HOME=$HOME/android-sdk
-    export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$PATH
-    yes | sdkmanager --licenses
-    sdkmanager "build-tools;34.0.0"
+        sudo apt-get update
+        sudo apt-get install -y wget unzip
+        wget "https://dl.google.com/android/repository/commandlinetools-linux-8092744_latest.zip" -O android-sdk.zip
+        unzip android-sdk.zip -d $HOME/android-sdk
+        mkdir -p $HOME/android-sdk/cmdline-tools/latest
+        mv $HOME/android-sdk/cmdline-tools/* $HOME/android-sdk/cmdline-tools/latest/ --backup=numbered
+        export ANDROID_HOME=$HOME/android-sdk
+        export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$PATH
+        yes | sdkmanager --licenses
+        sdkmanager "build-tools;34.0.0"
     
     - name: Sign APK
       run: |
