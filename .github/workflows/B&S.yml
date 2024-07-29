@@ -8,6 +8,7 @@ on:
 
 jobs:
   build:
+
     runs-on: ubuntu-latest
 
     steps:
@@ -21,7 +22,7 @@ jobs:
 
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
-
+      
     - name: Build with Gradle
       run: ./gradlew assembleRelease
 
@@ -35,6 +36,7 @@ jobs:
         path: app/build/outputs/apk/foss/release/*.apk
 
   sign:
+
     runs-on: ubuntu-latest
     needs: build
 
@@ -74,7 +76,7 @@ jobs:
         wget "https://dl.google.com/android/repository/commandlinetools-linux-8092744_latest.zip" -O android-sdk.zip
         unzip android-sdk.zip -d $HOME/android-sdk
         mkdir -p $HOME/android-sdk/cmdline-tools/latest
-        mv $HOME/android-sdk/cmdline-tools/* $HOME/android-sdk/cmdline-tools/latest/ --backup=numbered
+        mv $HOME/android-sdk/cmdline-tools/* $HOME/android-sdk/cmdline-tools/latest/ --backup=numbered || true
         export ANDROID_HOME=$HOME/android-sdk
         export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$PATH
         yes | sdkmanager --licenses
