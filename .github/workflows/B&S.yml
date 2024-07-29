@@ -70,34 +70,34 @@ jobs:
         echo "${{ secrets.KEYSTORE }}" | base64 --decode > my-release-key.jks
 
     - name: Install Android SDK Command-line Tools
-   run: |
-    sudo apt-get update
-    sudo apt-get install -y wget unzip
-    wget "https://dl.google.com/android/repository/commandlinetools-linux-8092744_latest.zip" -O commandlinetools.zip
-    unzip commandlinetools.zip -d $HOME/android-sdk
-    mkdir -p $HOME/android-sdk/cmdline-tools/latest
-    mv $HOME/android-sdk/cmdline-tools/* $HOME/android-sdk/cmdline-tools/latest/
-    export ANDROID_HOME=$HOME/android-sdk
-    export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$PATH
-    yes | sdkmanager --licenses
-    sdkmanager "build-tools;34.0.0"
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y wget unzip
+        wget "https://dl.google.com/android/repository/commandlinetools-linux-8092744_latest.zip" -O commandlinetools.zip
+        unzip commandlinetools.zip -d $HOME/android-sdk
+        mkdir -p $HOME/android-sdk/cmdline-tools/latest
+        mv $HOME/android-sdk/cmdline-tools/* $HOME/android-sdk/cmdline-tools/latest/
+        export ANDROID_HOME=$HOME/android-sdk
+        export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$PATH
+        yes | sdkmanager --licenses
+        sdkmanager "build-tools;34.0.0"
 
-- name: Sign APK with apksigner
-  run: |
-    $ANDROID_HOME/build-tools/34.0.0/apksigner sign \
-      --ks my-release-key.jks \
-      --ks-key-alias ${{ secrets.KEY_ALIAS }} \
-      --ks-pass pass:${{ secrets.KEYSTORE_PASSWORD }} \
-      --key-pass pass:${{ secrets.KEY_PASSWORD }} \
-      --out app/build/outputs/apk/foss/release/app-foss-release.apk \
-      app/build/outputs/apk/foss/release/app-foss-release-unsigned.apk
+    - name: Sign APK with apksigner
+      run: |
+        $ANDROID_HOME/build-tools/34.0.0/apksigner sign \
+          --ks my-release-key.jks \
+          --ks-key-alias ${{ secrets.KEY_ALIAS }} \
+          --ks-pass pass:${{ secrets.KEYSTORE_PASSWORD }} \
+          --key-pass pass:${{ secrets.KEY_PASSWORD }} \
+          --out app/build/outputs/apk/foss/release/app-foss-release.apk \
+          app/build/outputs/apk/foss/release/app-foss-release-unsigned.apk
 
-- name: Verify Signed APK
-  run: |
-    $ANDROID_HOME/build-tools/34.0.0/apksigner verify --verbose app/build/outputs/apk/foss/release/app-foss-release.a
+    - name: Verify Signed APK
+      run: |
+        $ANDROID_HOME/build-tools/34.0.0/apksigner verify --verbose app/build/outputs/apk/foss/release/app-foss-release.apk
 
-- name: Upload Signed APK
-  uses: actions/upload-artifact@v3
+    - name: Upload Signed APK
+      uses: actions/upload-artifact@v3
       with:
         name: signed-app
         path: app/build/outputs/apk/foss/release/app-foss-release.apk
