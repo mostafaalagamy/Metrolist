@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalFoundationApi::class)
 
-package com.moxxaxx.innertune.ui.component
+package com.moxxaxx.music.ui.component
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
@@ -75,26 +75,26 @@ import com.moxxaxx.innertube.models.ArtistItem
 import com.moxxaxx.innertube.models.PlaylistItem
 import com.moxxaxx.innertube.models.SongItem
 import com.moxxaxx.innertube.models.YTItem
-import com.moxxaxx.innertune.LocalDatabase
-import com.moxxaxx.innertune.LocalDownloadUtil
-import com.moxxaxx.innertune.LocalPlayerConnection
-import com.moxxaxx.innertune.R
-import com.moxxaxx.innertune.constants.GridThumbnailHeight
-import com.moxxaxx.innertune.constants.ListItemHeight
-import com.moxxaxx.innertune.constants.ListThumbnailSize
-import com.moxxaxx.innertune.constants.SmallGridThumbnailHeight
-import com.moxxaxx.innertune.constants.ThumbnailCornerRadius
-import com.moxxaxx.innertune.db.entities.Album
-import com.moxxaxx.innertune.db.entities.Artist
-import com.moxxaxx.innertune.db.entities.Playlist
-import com.moxxaxx.innertune.db.entities.Song
-import com.moxxaxx.innertune.extensions.toMediaItem
-import com.moxxaxx.innertune.models.MediaMetadata
-import com.moxxaxx.innertune.playback.queues.ListQueue
-import com.moxxaxx.innertune.ui.theme.extractThemeColor
-import com.moxxaxx.innertune.utils.joinByBullet
-import com.moxxaxx.innertune.utils.makeTimeString
-import com.moxxaxx.innertune.utils.reportException
+import com.moxxaxx.music.LocalDatabase
+import com.moxxaxx.music.LocalDownloadUtil
+import com.moxxaxx.music.LocalPlayerConnection
+import com.moxxaxx.music.R
+import com.moxxaxx.music.constants.GridThumbnailHeight
+import com.moxxaxx.music.constants.ListItemHeight
+import com.moxxaxx.music.constants.ListThumbnailSize
+import com.moxxaxx.music.constants.SmallGridThumbnailHeight
+import com.moxxaxx.music.constants.ThumbnailCornerRadius
+import com.moxxaxx.music.db.entities.Album
+import com.moxxaxx.music.db.entities.Artist
+import com.moxxaxx.music.db.entities.Playlist
+import com.moxxaxx.music.db.entities.Song
+import com.moxxaxx.music.extensions.toMediaItem
+import com.moxxaxx.music.models.MediaMetadata
+import com.moxxaxx.music.playback.queues.ListQueue
+import com.moxxaxx.music.ui.theme.extractThemeColor
+import com.moxxaxx.music.utils.joinByBullet
+import com.moxxaxx.music.utils.makeTimeString
+import com.moxxaxx.music.utils.reportException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
@@ -1116,6 +1116,7 @@ fun PlaylistGridItem(
 fun MediaMetadataListItem(
     mediaMetadata: MediaMetadata,
     modifier: Modifier,
+    isSelected: Boolean = false,
     isActive: Boolean = false,
     isPlaying: Boolean = false,
     trailingContent: @Composable RowScope.() -> Unit = {},
@@ -1127,26 +1128,49 @@ fun MediaMetadataListItem(
             makeTimeString(mediaMetadata.duration * 1000L),
         ),
     thumbnailContent = {
-        AsyncImage(
-            model = mediaMetadata.thumbnailUrl,
-            contentDescription = null,
-            modifier =
-                Modifier
-                    .size(ListThumbnailSize)
-                    .clip(RoundedCornerShape(ThumbnailCornerRadius)),
-        )
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier.size(ListThumbnailSize),
+        ) {
+            if (isSelected) {
+                Box(
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .zIndex(1000f)
+                            .clip(RoundedCornerShape(ThumbnailCornerRadius))
+                            .background(Color.Black.copy(alpha = 0.5f)),
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.done),
+                        modifier = Modifier.align(Alignment.Center),
+                        contentDescription = null,
+                    )
+                }
+            }
 
-        PlayingIndicatorBox(
-            isActive = isActive,
-            playWhenReady = isPlaying,
-            modifier =
-                Modifier
-                    .size(ListThumbnailSize)
-                    .background(
-                        color = Color.Black.copy(alpha = 0.4f),
-                        shape = RoundedCornerShape(ThumbnailCornerRadius),
-                    ),
-        )
+            AsyncImage(
+                model = mediaMetadata.thumbnailUrl,
+                contentDescription = null,
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .clip(RoundedCornerShape(ThumbnailCornerRadius)),
+            )
+
+            PlayingIndicatorBox(
+                isActive = isActive,
+                playWhenReady = isPlaying,
+                color = Color.White,
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .background(
+                            color = Color.Black.copy(alpha = 0.4f),
+                            shape = RoundedCornerShape(ThumbnailCornerRadius),
+                        ),
+            )
+        }
     },
     trailingContent = trailingContent,
     modifier = modifier,
