@@ -1,0 +1,63 @@
+name: Replace ColdSoup with Metrolist
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  replace-word:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Replace ColdSoup with Metrolist in all files
+      run: |
+        old_word="zionhuang"
+        new_word="metrolist"
+        
+        # Replace the old word with the new word in all files
+        find . -type f -exec sed -i "s/$old_word/$new_word/g" {} +
+
+        # Optional: Display files with changes
+        echo "Files with changes:"
+        grep -rl "$new_word" .
+
+        
+    - name: Update package name in files
+      run: |
+        find . -type f -name "*.java" -o -name "*.kt" -o -name "AndroidManifest.xml" -o -name "build.gradle" -o -name "build.gradle.kts" | xargs sed -i 's/com.zionhuang.music/com.metrolist.music/g'
+        echo "Updated package names in files:"
+        grep -r 'com.metrolist.music' .
+
+    - name: Print directory structure before rename
+      run: |
+        echo "Before renaming directories:"
+        find . -type d
+
+    - name: Rename directories
+      run: |
+        old_base_dir=$(find . -type d -path "*/com/zionhuang/music")
+        for base_dir in $old_base_dir; do
+          new_base_dir=$(echo $base_dir | sed 's/com\/zionhuang\/music/com\/metrolist\/music/')
+          mkdir -p "$(dirname "$new_base_dir")"
+          mv "$base_dir" "$new_base_dir"
+        done
+        echo "Renamed directories:"
+        find . -type d -path "*/com/metrolist/music"
+
+    - name: Print directory structure after rename
+      run: |
+        echo "After renaming directories:"
+        find . -type d
+
+    - name: Commit changes
+      run: |
+        git config --global user.name 'github-actions'
+        git config --global user.email 'github-actions@github.com'
+        git add .
+        git status
+        git commit -m "Replaced $old_word with $new_word in files" || echo "Nothing to commit"
+        git push || echo "Nothing to push"
