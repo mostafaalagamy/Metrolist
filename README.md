@@ -8,40 +8,38 @@ A Material 3 YouTube Music client for Android
 [![License](https://img.shields.io/github/license/moaxaxx/Metrolist)](https://www.gnu.org/licenses/gpl-3.0)
 [![Downloads](https://img.shields.io/github/downloads/moaxaxx/Metrolist/total)](https://github.com/moaxaxx/Metrolist/releases)
 
-
-<!---[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" alt="Get it on F-Droid" height="80">](https://f-droid.org/packages/com.zionhuang.music)
-[Compare versions](https://github.com/Malopieds/Metrolist/wiki/App-Versions) --->
-
 ## Features
 
-- Play songs from YT/YT Music without ads
+- Play any song or video from YT Music
 - Background playback
-- Search songs, videos, albums, and playlists from YouTube Music
-- Login support
+- Personalized quick picks
 - Library management
-- Cache and download songs for offline playback
-- Synchronized lyrics
-- Lyrics translator (experimental)
+- Download and cache songs for offline playback
+- Search for songs, albums, artists, videos and playlists
+- Live lyrics
+- Login support
 - Skip silence
+- Import playlists
 - Audio normalization
 - Adjust tempo/pitch
-- Dynamic theme
-- Localization
-- Android Auto support
-- Personalized quick picks
+- Local playlist management
+- Reorder songs in playlist or queue
+- Light - Dark - black - Dynamic theme
+- Sleep timer
 - Material 3
+- etc.
 
 ## Screenshots
 
 <p float="left">
-  <img src="https://raw.githubusercontent.com/moaxaxx/Metrolist/dev/fastlane/metadata/android/en-US/images/phoneScreenshots/01.png" width="200" />
-  <img src="https://raw.githubusercontent.com/moaxaxx/Metrolist/dev/fastlane/metadata/android/en-US/images/phoneScreenshots/02.png" width="200" />
-  <img src="https://raw.githubusercontent.com/moaxaxx/Metrolist/dev/fastlane/metadata/android/en-US/images/phoneScreenshots/03.png" width="200" />
+  <img src="https://raw.githubusercontent.com/moaxaxx/Metrolist/dev/fastlane/metadata/android/en-US/images/screenshots/01.png" width="200" />
+  <img src="https://raw.githubusercontent.com/moaxaxx/Metrolist/dev/fastlane/metadata/android/en-US/images/screenshots/02.png" width="200" />
+  <img src="https://raw.githubusercontent.com/moaxaxx/Metrolist/dev/fastlane/metadata/android/en-US/images/screenshots/03.png" width="200" />
 </p>
 <p float="left">
-  <img src="https://raw.githubusercontent.com/moaxaxx/Metrolist/dev/fastlane/metadata/android/en-US/images/phoneScreenshots/04.png" width="200" />
-  <img src="https://raw.githubusercontent.com/moaxaxx/Metrolist/dev/fastlane/metadata/android/en-US/images/phoneScreenshots/05.png" width="200" />
-  <img src="https://raw.githubusercontent.com/moaxaxx/Metrolist/dev/fastlane/metadata/android/en-US/images/phoneScreenshots/06.png" width="200" />
+  <img src="https://raw.githubusercontent.com/moaxaxx/Metrolist/dev/fastlane/metadata/android/en-US/images/screenshots/04.png" width="200" />
+  <img src="https://raw.githubusercontent.com/moaxaxx/Metrolist/dev/fastlane/metadata/android/en-US/images/screenshots/05.png" width="200" />
+  <img src="https://raw.githubusercontent.com/moaxaxx/Metrolist/dev/fastlane/metadata/android/en-US/images/screenshots/06.png" width="200" />
 </p>
 
 > **Warning**
