@@ -12,10 +12,10 @@ plugins {
 }
 
 android {
-    namespace = "com.moxxaxx.music"
+    namespace = "com.metrolist.music"
     compileSdk = 34
     defaultConfig {
-        applicationId = "com.moxxaxx.music"
+        applicationId = "com.metrolist.music"
         minSdk = 24
         targetSdk = 34
         versionCode = 10
