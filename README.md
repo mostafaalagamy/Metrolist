@@ -1,4 +1,4 @@
-# ColdSoup
+# ColdSoup 
 
 <img src="https://raw.githubusercontent.com/moaxaxx/ColdSoup/dev/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.webp" height="72">
 
