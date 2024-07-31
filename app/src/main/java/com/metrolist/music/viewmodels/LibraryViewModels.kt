@@ -9,7 +9,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.exoplayer.offline.Download
-import com.moxxaxx.innertube.YouTube
+import com.metrolist.innertube.YouTube
 import com.metrolist.music.constants.*
 import com.metrolist.music.db.MusicDatabase
 import com.metrolist.music.extensions.reversed

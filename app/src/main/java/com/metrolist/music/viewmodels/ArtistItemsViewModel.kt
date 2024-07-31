@@ -3,8 +3,8 @@ package com.metrolist.music.viewmodels
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.moxxaxx.innertube.YouTube
-import com.moxxaxx.innertube.models.BrowseEndpoint
+import com.metrolist.innertube.YouTube
+import com.metrolist.innertube.models.BrowseEndpoint
 import com.metrolist.music.models.ItemsPage
 import com.metrolist.music.utils.reportException
 import dagger.hilt.android.lifecycle.HiltViewModel

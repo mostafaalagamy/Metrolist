@@ -1,7 +1,7 @@
 package com.metrolist.music.models
 
 import androidx.compose.runtime.Immutable
-import com.moxxaxx.innertube.models.SongItem
+import com.metrolist.innertube.models.SongItem
 import com.metrolist.music.db.entities.Song
 import com.metrolist.music.db.entities.SongEntity
 import com.metrolist.music.ui.utils.resize

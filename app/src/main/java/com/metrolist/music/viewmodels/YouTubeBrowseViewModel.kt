@@ -3,8 +3,8 @@ package com.metrolist.music.viewmodels
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.moxxaxx.innertube.YouTube
-import com.moxxaxx.innertube.pages.BrowseResult
+import com.metrolist.innertube.YouTube
+import com.metrolist.innertube.pages.BrowseResult
 import com.metrolist.music.utils.reportException
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

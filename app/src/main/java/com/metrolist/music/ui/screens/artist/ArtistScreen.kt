@@ -57,11 +57,11 @@ import androidx.compose.ui.util.fastForEach
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import com.moxxaxx.innertube.models.AlbumItem
-import com.moxxaxx.innertube.models.ArtistItem
-import com.moxxaxx.innertube.models.PlaylistItem
-import com.moxxaxx.innertube.models.SongItem
-import com.moxxaxx.innertube.models.WatchEndpoint
+import com.metrolist.innertube.models.AlbumItem
+import com.metrolist.innertube.models.ArtistItem
+import com.metrolist.innertube.models.PlaylistItem
+import com.metrolist.innertube.models.SongItem
+import com.metrolist.innertube.models.WatchEndpoint
 import com.metrolist.music.LocalDatabase
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.LocalPlayerConnection

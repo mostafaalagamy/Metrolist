@@ -6,8 +6,8 @@
         android:icon="@drawable/shortcut_search"
         android:shortcutShortLabel="@string/search">
         <intent
-            android:targetClass="com.moxxaxx.music.MainActivity"
-            android:targetPackage="com.moxxaxx.music.debug"
-            android:action="com.moxxaxx.music.action.SEARCH" />
+            android:targetClass="com.metrolist.music.MainActivity"
+            android:targetPackage="com.metrolist.music.debug"
+            android:action="com.metrolist.music.action.SEARCH" />
     </shortcut>
 </shortcuts>

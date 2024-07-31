@@ -2,8 +2,8 @@ package com.metrolist.music.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.moxxaxx.innertube.YouTube
-import com.moxxaxx.innertube.models.YTItem
+import com.metrolist.innertube.YouTube
+import com.metrolist.innertube.models.YTItem
 import com.metrolist.music.db.MusicDatabase
 import com.metrolist.music.db.entities.SearchHistory
 import dagger.hilt.android.lifecycle.HiltViewModel

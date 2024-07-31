@@ -2,7 +2,7 @@ package com.metrolist.music.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.moxxaxx.innertube.YouTube
+import com.metrolist.innertube.YouTube
 import com.metrolist.music.constants.StatPeriod
 import com.metrolist.music.db.MusicDatabase
 import com.metrolist.music.utils.reportException

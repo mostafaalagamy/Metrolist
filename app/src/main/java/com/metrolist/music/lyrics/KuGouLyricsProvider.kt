@@ -4,7 +4,7 @@ import android.content.Context
 import com.metrolist.music.constants.EnableKugouKey
 import com.metrolist.music.utils.dataStore
 import com.metrolist.music.utils.get
-import com.moxxaxx.kugou.KuGou
+import com.metrolist.kugou.KuGou
 
 object KuGouLyricsProvider : LyricsProvider {
     override val name = "Kugou"

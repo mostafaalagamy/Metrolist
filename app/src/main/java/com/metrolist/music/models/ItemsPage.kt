@@ -1,6 +1,6 @@
 package com.metrolist.music.models
 
-import com.moxxaxx.innertube.models.YTItem
+import com.metrolist.innertube.models.YTItem
 
 data class ItemsPage(
     val items: List<YTItem>,
