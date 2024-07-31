@@ -14,7 +14,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: set up JDK 17
-      uses: actions/setup-java@v3
+      uses: actions/setup-java@v4
       with:
         java-version: '17'
         distribution: 'zulu'
@@ -30,7 +30,7 @@ jobs:
       run: ls -R app/build/outputs/apk/foss/release
 
     - name: Upload APK
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: app
         path: app/build/outputs/apk/foss/release/*.apk
@@ -43,14 +43,14 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: set up JDK 17
-      uses: actions/setup-java@v3
+      uses: actions/setup-java@v4
       with:
         java-version: '17'
         distribution: 'zulu'
         cache: gradle
 
     - name: Download APK from build job
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: app
         path: app/build/outputs/apk/foss/release/
@@ -98,7 +98,7 @@ jobs:
         $ANDROID_HOME/build-tools/34.0.0/apksigner verify --verbose app/build/outputs/apk/foss/release/app-foss-release.apk
 
     - name: Upload Signed APK
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: signed-app
         path: app/build/outputs/apk/foss/release/app-foss-release.apk
