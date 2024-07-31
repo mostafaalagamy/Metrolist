@@ -1,4 +1,4 @@
-package com.zionhuang.music.utils
+package com.metrolist.music.utils
 
 import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.ktx.Firebase
@@ -7,7 +7,7 @@ import com.google.firebase.remoteconfig.ConfigUpdateListener
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigException
 import com.google.firebase.remoteconfig.ktx.remoteConfig
 import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
-import com.zionhuang.music.MainActivity
+import com.metrolist.music.MainActivity
 import kotlin.time.Duration.Companion.hours
 
 fun MainActivity.setupRemoteConfig() {
