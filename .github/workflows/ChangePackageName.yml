@@ -1,4 +1,4 @@
-name: Update Package Name and File Names
+name: Change Package Name
 
 on:
   push:
@@ -6,51 +6,45 @@ on:
       - dev
 
 jobs:
-  update-package-name-and-files:
+  update-package-name:
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v2
 
     - name: Set up JDK 17
-      uses: actions/setup-java@v3
+      uses: actions/setup-java@v2
       with:
         distribution: 'zulu'
         java-version: '17'
 
     - name: Update package name in files
       run: |
-        # Update package name in source files
-        find . -type f \( -name "*.java" -o -name "*.kt" -o -name "AndroidManifest.xml" -o -name "build.gradle" -o -name "build.gradle.kts" \) -exec sed -i 's/com.moxxaxx.music/com.metrolist.music/g' {} +
+        find . -type f -name "*.java" -o -name "*.kt" -o -name "AndroidManifest.xml" -o -name "build.gradle" -o -name "build.gradle.kts" | xargs sed -i 's/com.moxxaxx.music/com.metrolist.music/g'
         echo "Updated package names in files:"
         grep -r 'com.metrolist.music' .
 
+    - name: Print directory structure before rename
+      run: |
+        echo "Before renaming directories:"
+        find . -type d
+
     - name: Rename directories
       run: |
-        # Rename directories to reflect new package name
-        find . -type d -path "*/com/moxxaxx/music" | while read old_dir; do
-          new_dir=$(echo "$old_dir" | sed 's/com\/moxxaxx\/music/com\/metrolist\/music/')
-          mkdir -p "$(dirname "$new_dir")"
-          mv "$old_dir" "$new_dir"
+        old_base_dir=$(find . -type d -path "*/com/moxxaxx/music")
+        for base_dir in $old_base_dir; do
+          new_base_dir=$(echo $base_dir | sed 's/com\/moxxaxx\/music/com\/metrolist\/music/')
+          mkdir -p "$(dirname "$new_base_dir")"
+          mv "$base_dir" "$new_base_dir"
         done
         echo "Renamed directories:"
         find . -type d -path "*/com/metrolist/music"
 
-    - name: Rename files
+    - name: Print directory structure after rename
       run: |
-        # Rename files to reflect new package name
-        find . -type f -name "*.java" -o -name "*.kt" | while read file; do
-          dir=$(dirname "$file")
-          base=$(basename "$file")
-          new_file=$(echo "$file" | sed 's/com\/moxxaxx\/music/com\/metrolist\/music/')
-          if [ "$file" != "$new_file" ]; then
-            mkdir -p "$(dirname "$new_file")"
-            mv "$file" "$new_file"
-          fi
-        done
-        echo "Renamed files:"
-        find . -type f
+        echo "After renaming directories:"
+        find . -type d
 
     - name: Commit changes
       run: |
@@ -58,5 +52,5 @@ jobs:
         git config --global user.email 'github-actions@github.com'
         git add .
         git status
-        git commit -m "Update package name and file names from com.moxxaxx.music to com.metrolist.music" || echo "Nothing to commit"
+        git commit -m "Update package name and directories from com.moxxaxx.music to com.metrolist.music" || echo "Nothing to commit"
         git push || echo "Nothing to push"
