@@ -1,16 +1,16 @@
-# ColdSoup 
+# Metrolist 
 
-<img src="https://raw.githubusercontent.com/moaxaxx/ColdSoup/dev/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.webp" height="72">
+<img src="https://raw.githubusercontent.com/moaxaxx/Metrolist/dev/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.webp" height="72">
 
 A Material 3 YouTube Music client for Android
 
-[![Latest release](https://img.shields.io/github/v/release/moaxaxx/ColdSoup?include_prereleases)](https://github.com/moaxaxx/ColdSoup/releases)
-[![License](https://img.shields.io/github/license/moaxaxx/ColdSoup)](https://www.gnu.org/licenses/gpl-3.0)
-[![Downloads](https://img.shields.io/github/downloads/moaxaxx/ColdSoup/total)](https://github.com/moaxaxx/ColdSoup/releases)
+[![Latest release](https://img.shields.io/github/v/release/moaxaxx/Metrolist?include_prereleases)](https://github.com/moaxaxx/Metrolist/releases)
+[![License](https://img.shields.io/github/license/moaxaxx/Metrolist)](https://www.gnu.org/licenses/gpl-3.0)
+[![Downloads](https://img.shields.io/github/downloads/moaxaxx/Metrolist/total)](https://github.com/moaxaxx/Metrolist/releases)
 
 
 <!---[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" alt="Get it on F-Droid" height="80">](https://f-droid.org/packages/com.zionhuang.music)
-[Compare versions](https://github.com/Malopieds/ColdSoup/wiki/App-Versions) --->
+[Compare versions](https://github.com/Malopieds/Metrolist/wiki/App-Versions) --->
 
 ## Features
 
@@ -34,14 +34,14 @@ A Material 3 YouTube Music client for Android
 ## Screenshots
 
 <p float="left">
-  <img src="https://raw.githubusercontent.com/moaxaxx/ColdSoup/dev/fastlane/metadata/android/en-US/images/phoneScreenshots/01.png" width="200" />
-  <img src="https://raw.githubusercontent.com/moaxaxx/ColdSoup/dev/fastlane/metadata/android/en-US/images/phoneScreenshots/02.png" width="200" />
-  <img src="https://raw.githubusercontent.com/moaxaxx/ColdSoup/dev/fastlane/metadata/android/en-US/images/phoneScreenshots/03.png" width="200" />
+  <img src="https://raw.githubusercontent.com/moaxaxx/Metrolist/dev/fastlane/metadata/android/en-US/images/phoneScreenshots/01.png" width="200" />
+  <img src="https://raw.githubusercontent.com/moaxaxx/Metrolist/dev/fastlane/metadata/android/en-US/images/phoneScreenshots/02.png" width="200" />
+  <img src="https://raw.githubusercontent.com/moaxaxx/Metrolist/dev/fastlane/metadata/android/en-US/images/phoneScreenshots/03.png" width="200" />
 </p>
 <p float="left">
-  <img src="https://raw.githubusercontent.com/moaxaxx/ColdSoup/dev/fastlane/metadata/android/en-US/images/phoneScreenshots/04.png" width="200" />
-  <img src="https://raw.githubusercontent.com/moaxaxx/ColdSoup/dev/fastlane/metadata/android/en-US/images/phoneScreenshots/05.png" width="200" />
-  <img src="https://raw.githubusercontent.com/moaxaxx/ColdSoup/dev/fastlane/metadata/android/en-US/images/phoneScreenshots/06.png" width="200" />
+  <img src="https://raw.githubusercontent.com/moaxaxx/Metrolist/dev/fastlane/metadata/android/en-US/images/phoneScreenshots/04.png" width="200" />
+  <img src="https://raw.githubusercontent.com/moaxaxx/Metrolist/dev/fastlane/metadata/android/en-US/images/phoneScreenshots/05.png" width="200" />
+  <img src="https://raw.githubusercontent.com/moaxaxx/Metrolist/dev/fastlane/metadata/android/en-US/images/phoneScreenshots/06.png" width="200" />
 </p>
 
 > **Warning**
@@ -56,7 +56,7 @@ A Material 3 YouTube Music client for Android
 Use other music scrobbler apps. I
 recommend [Pano Scrobbler](https://play.google.com/store/apps/details?id=com.arn.scrobble).
 
-### Q: Why ColdSoup isn't showing in Android Auto?
+### Q: Why Metrolist isn't showing in Android Auto?
 
 1. Go to Android Auto's settings and tap multiple times on the version in the bottom to enable
    developer settings
@@ -71,11 +71,11 @@ before you create a pull request.
 
 <!--- ## Donate
 
-If you like ColdSoup, you're welcome to send a donation. Donations will support the development,
+If you like Metrolist, you're welcome to send a donation. Donations will support the development,
 including bug fixes and new features.
 
-<a href="https://liberapay.com/zionhuang"><img src="https://raw.githubusercontent.com/Malopieds/ColdSoup/dev/assets/liberapay.png" alt="Liberapay" height="60" ></a>
-<a href="https://www.buymeacoffee.com/zionhuang"><img src="https://raw.githubusercontent.com/Malopieds/ColdSoup/dev/assets/buymeacoffee.png" alt="Liberapay" height="60" ></a> --->
+<a href="https://liberapay.com/zionhuang"><img src="https://raw.githubusercontent.com/Malopieds/Metrolist/dev/assets/liberapay.png" alt="Liberapay" height="60" ></a>
+<a href="https://www.buymeacoffee.com/zionhuang"><img src="https://raw.githubusercontent.com/Malopieds/Metrolist/dev/assets/buymeacoffee.png" alt="Liberapay" height="60" ></a> --->
 
 ## Credit
 

@@ -199,7 +199,7 @@ class MainActivity : ComponentActivity() {
                 }
             }
 
-            ColdSoupTheme(
+            MetrolistTheme(
                 darkTheme = useDarkTheme,
                 pureBlack = pureBlack,
                 themeColor = themeColor,
