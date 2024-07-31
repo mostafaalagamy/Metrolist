@@ -1,4 +1,4 @@
-name: Replace Old with New Word
+name: Replace ColdSoup with Metrolist
 
 on:
   push:
@@ -13,13 +13,13 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    - name: Replace ColdSoup with Metrolist in files
+    - name: Replace ColdSoup with Metrolist in all files
       run: |
         old_word="ColdSoup"
         new_word="Metrolist"
         
-        # Replace the old word with the new word in all relevant files
-        find . -type f \( -name "*.txt" -o -name "*.java" -o -name "*.kt" -o -name "*.xml" -o -name "*.gradle" \) -exec sed -i "s/$old_word/$new_word/g" {} +
+        # Replace the old word with the new word in all files
+        find . -type f -exec sed -i "s/$old_word/$new_word/g" {} +
 
         # Optional: Display files with changes
         echo "Files with changes:"
