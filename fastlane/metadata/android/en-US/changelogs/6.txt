@@ -1,4 +1,0 @@
-<br><b>Fixed</b>
-
-* Fix YouTube not playing any streams #27, TeamNewPipe/NewPipe#8202
-* Fix YouTube age restricted videos being throttled TeamNewPipe/NewPipeExtractor#832

@@ -1,9 +1,0 @@
-In this version, we are using a new library: <b><i>Innertube</i></b>, which makes more powerful features possible!
-* Browse everything as in YouTube Music
-* New home page to browse suggestions and find new music releases
-* Search result summary tab
-* Loading stream is faster
-
-Credit: vfsfitvnm/ViMusic, tombulled/innertube, zerodytrash/YouTube-Internal-Clients
-
-⚠️ Note: For users upgrading from <0.3.3, please select all songs in your library and do "Refetch" to get thumbnails shown.

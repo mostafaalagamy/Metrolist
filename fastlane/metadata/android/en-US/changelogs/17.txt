@@ -1,5 +1,0 @@
-- Login support
-- Mood & Genres
-- Better stats screen
-- Bookmark artists
-- Minor enhancement and bug fixes

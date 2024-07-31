@@ -1,8 +1,0 @@
-* Material You #25
-* Dark mode settings
-* Show an icon indicating if a song is in your library in search fragment
-* Make search filter bar fixed
-* Move song downloaded icon to second line
-* Smoother transition animation
-* Merge artists with same name (#50)
-* Minor fixes

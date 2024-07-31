@@ -1,8 +1,0 @@
-- New app icon
-- Rewrite UI using Jetpack Compose
-- Better UI/UX
-- Dynamic theme
-- Redesigned home screen
-- Improved download experience
-- New lyrics source: YouTube subtitle
-- Show replay button when playing ended

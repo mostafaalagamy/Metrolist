@@ -1,6 +1,0 @@
-* Start radio from library songs
-* Default open tab setting
-* Audio quality setting
-* Pause or clear search history
-* Backup and restore
-* Support SOCKS proxy

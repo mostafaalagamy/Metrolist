@@ -1,7 +1,0 @@
-<br><b>Improved</b>
-
-* Support Android 13 themed icon (#157)
-
-<br><b>Fixed</b>
-
-* Fix stream can't be played (#161)

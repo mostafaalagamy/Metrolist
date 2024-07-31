@@ -1,8 +1,0 @@
-* App updater (Preview)
-* Share button function in bottom control fragment
-* Open YouTube urls by this app #11
-* You can now search for YouTube Music albums
-* Remove download of a song
-* Show channel or playlist name in search fragment title
-* Scrollable search filter chip group
-* Minor fixes
