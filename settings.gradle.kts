@@ -10,7 +10,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "ColdSoup"
+rootProject.name = "Metrolist"
 include(":app")
 include(":innertube")
 include(":kugou")
