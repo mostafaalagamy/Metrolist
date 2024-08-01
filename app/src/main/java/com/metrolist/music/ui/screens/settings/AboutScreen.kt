@@ -156,6 +156,14 @@ fun AboutScreen(
                     painter = painterResource(R.drawable.github),
                     contentDescription = null,
                 )
+        Row {
+            IconButton(
+                onClick = { uriHandler.openUri("https://github.com/metrolist") },
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.github),
+                    contentDescription = null,
+                )
             }
         }
     }
