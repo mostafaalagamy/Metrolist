@@ -2,7 +2,9 @@
 <img src="https://github.com/mostafaalagamy/Metrolist/blob/dev/fastlane/metadata/android/ic_launcher_github.webp" width="160" height="160" style="display: block; margin: 0 auto"/>
 <h1>Metrolist</h1>
 <p>YouTube Music client for Android</p>
-</div>
+
+<div align="center">
+<h1>Screenshots</h1>
 
 <p align="center">
   <img src="https://github.com/mostafaalagamy/Metrolist/blob/dev/fastlane/metadata/android/images/screenshots/screenshot_1.jpeg" width="30%" />
@@ -19,12 +21,9 @@
 [![Latest release](https://img.shields.io/github/v/release/mostafaalagamy/Metrolist?style=for-the-badge)](https://github.com/mostafaalagamy/Metrolist/releases)
 [![GitHub license](https://img.shields.io/github/license/mostafaalagamy/metrolist?style=for-the-badge)](https://github.com/mostafaalagamy/metrolist/blob/master/LICENSE)
 [![Downloads](https://img.shields.io/github/downloads/mostafaalagamy/Metrolist/total?style=for-the-badge)](https://github.com/mostafaalagamy/Metrolist/releases)
-</div>
-
 
 <div align="center">
 <h1>Features</h1>
-</div>
 
   <div align="center"> 
 Play any song or video from YT Music
@@ -62,7 +61,6 @@ Sleep timer
 Material 3
   <div align="center"> 
 etc.
-  </div>
 
 <div align="center">
 <h1>Download Now</h1>
@@ -70,7 +68,6 @@ etc.
 [<img src="https://raw.githubusercontent.com/WSTxda/QP-Gallery-Releases/master/Images/GitHub.svg"
 alt='Get it on GitHub'
 height="80">](https://github.com/mostafaalagamy/Metrolist/releases/latest/download/Metrolist.apk)
-
 
 <div align="center">
 <h1>Special thanks</h1>
@@ -84,3 +81,4 @@ height="80">](https://github.com/mostafaalagamy/Metrolist/releases/latest/downlo
 This project and its contents are not affiliated with, funded, authorized, endorsed by, or in any way associated with YouTube, Google LLC or any of its affiliates and subsidiaries.
 
 Any trademark, service mark, trade name, or other intellectual property rights used in this project are owned by the respective owners.
+</div>
