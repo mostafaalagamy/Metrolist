@@ -8,7 +8,7 @@ body:
       label: Checklist
       description: You should ensure the completion of the task before proceeding to check it off the checklist. Neglecting to do so may impede the efficiency of the issue resolution process. The developer has the right to delete the issue directly if you check the list blindly.
       options:
-        - label: I am able to reproduce the bug with the [latest debug version](https://github.com/Malopieds/InnerTune/actions).
+        - label: I am able to reproduce the bug with the [latest debug version](https://github.com/mostafaalagamy/Metrolist/actions).
           required: true
         - label: I've checked that there is no open or closed issue about this bug.
           required: true
@@ -72,9 +72,9 @@ body:
   - type: input
     id: app-version
     attributes:
-      label: InnerTune version
+      label: Metrolist version
       description: |
-        You can find your InnerTune version in **Settings**.
+        You can find your Metrolist version in **Settings**.
       placeholder: |
         Example: "0.5.3"
     validations:
