@@ -150,7 +150,7 @@ fun AboutScreen(
 
         Row {
             IconButton(
-                onClick = { uriHandler.openUri("https://github.com/metrolist") },
+                onClick = { uriHandler.openUri("https://github.com/mostafaalagamy/metrolist") },
             ) {
                 Icon(
                     painter = painterResource(R.drawable.github),
@@ -159,10 +159,10 @@ fun AboutScreen(
             }
             
             IconButton(
-                onClick = { uriHandler.openUri("https://www.buymeacoffee.com/mostafaalagamy") }
+                onClick = { uriHandler.openUri("https://www.instagram.com/mostafaalagamy") }
             ) {
                 Icon(
-                    painter = painterResource(R.drawable.buymeacoffee),
+                    painter = painterResource(R.drawable.instagram),
                     contentDescription = null
                 )
             }
