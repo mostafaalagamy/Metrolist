@@ -75,7 +75,7 @@ fun AboutScreen(
             verticalAlignment = Alignment.Top,
         ) {
             Text(
-                text = "Metrolist",
+                text = "METROLIST",
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(top = 8.dp, bottom = 4.dp),
@@ -85,7 +85,7 @@ fun AboutScreen(
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
                 text = BuildConfig.VERSION_NAME,
-                style = MaterialTheme.typography.titleMedium,
+                style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.secondary,
             )
 
@@ -131,7 +131,7 @@ fun AboutScreen(
         Spacer(Modifier.height(4.dp))
 
         Text(
-            text = "MOXXAXX",
+            text = "MO AGAMY",
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.secondary,
         )
