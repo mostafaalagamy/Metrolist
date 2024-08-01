@@ -1,7 +1,6 @@
 name: Build and Sign Android App
 on:
   workflow_dispatch:
-on:
   push:
     branches: [ "dev" ]
   pull_request:
