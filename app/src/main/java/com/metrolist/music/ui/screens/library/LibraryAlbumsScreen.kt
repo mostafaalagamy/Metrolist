@@ -150,8 +150,8 @@ fun LibraryAlbumsScreen(
                     painter =
                         painterResource(
                             when (viewType) {
-                                LibraryViewType.LIST -> R.drawable.list
-                                LibraryViewType.GRID -> R.drawable.grid_view
+                                LibraryViewType.LIST -> R.drawable.grid_view
+                                LibraryViewType.GRID -> R.drawable.list
                             },
                         ),
                     contentDescription = null,
