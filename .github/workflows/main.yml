@@ -1,4 +1,4 @@
-name: Build and Sign Android App
+name: Build release APK
 on:
   workflow_dispatch:
   push:
