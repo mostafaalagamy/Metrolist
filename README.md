@@ -1,5 +1,5 @@
 <div align="center">
-<img src="https://raw.githubusercontent.com/mostafaalagamy/Metrolist/main/ic_launcher_github.webp" width="160" height="160" style="display: block; margin: 0 auto"/>
+<img src="https://github.com/mostafaalagamy/Metrolist/blob/dev/fastlane/metadata/android/ic_launcher_github.webp" width="160" height="160" style="display: block; margin: 0 auto"/>
 <h1>Metrolist</h1>
 <p>YouTube Music client for Android</p>
 </div>
@@ -7,13 +7,13 @@
 ---
 
 <p align="center">
-  <img src="https://github.com/mostafaalagamy/Metrolist/blob/v6.0.0/screenshot_1.jpeg" width="30%" />
-  <img src="https://github.com/mostafaalagamy/Metrolist/blob/v6.0.0/screenshot_2.jpeg" width="30%" />
-  <img src="https://github.com/mostafaalagamy/Metrolist/blob/v6.0.0/screenshot_3.jpeg" width="30%" />
+  <img src="https://github.com/mostafaalagamy/Metrolist/blob/dev/fastlane/metadata/android/images/screenshots/screenshot_1.jpeg" width="30%" />
+  <img src="https://github.com/mostafaalagamy/Metrolist/blob/dev/fastlane/metadata/android/images/screenshots/screenshot_2.jpeg" width="30%" />
+  <img src="https://github.com/mostafaalagamy/Metrolist/blob/dev/fastlane/metadata/android/images/screenshots/screenshot_3.jpeg" width="30%" />
 
-  <img src="https://github.com/mostafaalagamy/Metrolist/blob/v6.0.0/screenshot_4.jpeg" width="30%" />
-  <img src="https://github.com/mostafaalagamy/Metrolist/blob/v6.0.0/screenshot_7.jpeg" width="30%" />
-  <img src="https://github.com/mostafaalagamy/Metrolist/blob/v6.0.0/Screenshot_8.jpg" width="30%" />
+  <img src="https://github.com/mostafaalagamy/Metrolist/blob/dev/fastlane/metadata/android/images/screenshots/screenshot_4.jpeg" width="30%" />
+  <img src="https://github.com/mostafaalagamy/Metrolist/blob/dev/fastlane/metadata/android/images/screenshots/screenshot_5.jpeg" width="30%" />
+  <img src="https://github.com/mostafaalagamy/Metrolist/blob/dev/fastlane/metadata/android/images/screenshots/screenshot_6.jpeg" width="30%" />
 </p>
 
 <div align="center">
