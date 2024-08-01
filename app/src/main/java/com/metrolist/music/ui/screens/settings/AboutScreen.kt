@@ -87,6 +87,16 @@ fun AboutScreen(
                 text = BuildConfig.VERSION_NAME,
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.secondary,
+                modifier =
+                    Modifier
+                        .border(
+                            width = 1.dp,
+                            color = MaterialTheme.colorScheme.secondary,
+                            shape = CircleShape,
+                        ).padding(
+                            horizontal = 6.dp,
+                            vertical = 2.dp,
+                        ),
             )
 
             Spacer(Modifier.width(4.dp))
