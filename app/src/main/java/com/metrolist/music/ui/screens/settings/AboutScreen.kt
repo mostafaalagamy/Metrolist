@@ -154,18 +154,20 @@ fun AboutScreen(
             ) {
                 Icon(
                     painter = painterResource(R.drawable.github),
-                    contentDescription = null,
+                    contentDescription = null
                 )
-        Row {
+            }
+            
             IconButton(
-                onClick = { uriHandler.openUri("https://github.com/metrolist") },
+                onClick = { uriHandler.openUri("https://www.buymeacoffee.com/mostafaalagamy") }
             ) {
                 Icon(
-                    painter = painterResource(R.drawable.github),
-                    contentDescription = null,
+                    painter = painterResource(R.drawable.buymeacoffee),
+                    contentDescription = null
                 )
             }
         }
+
     }
 
     TopAppBar(
