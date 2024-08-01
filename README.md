@@ -4,8 +4,6 @@
 <p>YouTube Music client for Android</p>
 </div>
 
----
-
 <p align="center">
   <img src="https://github.com/mostafaalagamy/Metrolist/blob/dev/fastlane/metadata/android/images/screenshots/screenshot_1.jpeg" width="30%" />
   <img src="https://github.com/mostafaalagamy/Metrolist/blob/dev/fastlane/metadata/android/images/screenshots/screenshot_2.jpeg" width="30%" />
@@ -23,30 +21,48 @@
 [![Downloads](https://img.shields.io/github/downloads/mostafaalagamy/Metrolist/total?style=for-the-badge)](https://github.com/mostafaalagamy/Metrolist/releases)
 </div>
 
----
 
 <div align="center">
 <h1>Features</h1>
 </div>
 
-- Play any song or video from YT Music
-- Background playback
-- Personalized quick picks
-- Library management
-- Download and cache songs for offline playback
-- Search for songs, albums, artists, videos and playlists
-- Live lyrics
-- Login support
-- Skip silence
-- Import playlists
-- Audio normalization
-- Adjust tempo/pitch
-- Local playlist management
-- Reorder songs in playlist or queue
-- Light - Dark - black - Dynamic theme
-- Sleep timer
-- Material 3
-- etc.
+  <div align="center"> 
+Play any song or video from YT Music
+  <div align="center"> 
+Background playback
+  <div align="center"> 
+Personalized quick picks
+  <div align="center"> 
+Library management
+  <div align="center"> 
+Download and cache songs for offline playback
+  <div align="center"> 
+Search for songs, albums, artists, videos and playlists
+  <div align="center"> 
+Live lyrics
+  <div align="center"> 
+Login support
+  <div align="center"> 
+Skip silence
+  <div align="center"> 
+Import playlists
+  <div align="center"> 
+Audio normalization
+  <div align="center"> 
+Adjust tempo/pitch
+  <div align="center"> 
+Local playlist management
+  <div align="center"> 
+Reorder songs in playlist or queue
+  <div align="center"> 
+Light - Dark - black - Dynamic theme
+  <div align="center"> 
+Sleep timer
+  <div align="center"> 
+Material 3
+  <div align="center"> 
+etc.
+  </div>
 
 <div align="center">
 <h1>Download Now</h1>
@@ -61,7 +77,9 @@ height="80">](https://github.com/mostafaalagamy/Metrolist/releases/latest/downlo
 
 [InnerTune](https://github.com/Malopieds/InnerTune) , [Malopieds](https://github.com/Malopieds)
 
----
+<div align="center">
+<h1>Disclaimer</h1>
+
 
 This project and its contents are not affiliated with, funded, authorized, endorsed by, or in any way associated with YouTube, Google LLC or any of its affiliates and subsidiaries.
 
