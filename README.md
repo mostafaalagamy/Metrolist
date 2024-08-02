@@ -25,41 +25,41 @@
 <div align="center">
 <h1>Features</h1>
 
-  <div align="center"> 
+ 
 Play any song or video from YT Music
-  <div align="center"> 
-Background playback
-  <div align="center"> 
-Personalized quick picks
-  <div align="center"> 
-Library management
-  <div align="center"> 
+
+Background playback 
+
+Personalized quick picks 
+
+Library management 
+
 Download and cache songs for offline playback
-  <div align="center"> 
+
 Search for songs, albums, artists, videos and playlists
-  <div align="center"> 
-Live lyrics
-  <div align="center"> 
-Login support
-  <div align="center"> 
-Skip silence
-  <div align="center"> 
-Import playlists
-  <div align="center"> 
-Audio normalization
-  <div align="center"> 
-Adjust tempo/pitch
-  <div align="center"> 
+
+Live lyrics 
+
+Login support 
+
+Skip silence 
+
+Import playlists 
+
+Audio normalization 
+
+Adjust tempo/pitch 
+
 Local playlist management
-  <div align="center"> 
-Reorder songs in playlist or queue
-  <div align="center"> 
+
+Reorder songs in playlist or queue 
+
 Light - Dark - black - Dynamic theme
-  <div align="center"> 
+
 Sleep timer
-  <div align="center"> 
-Material 3
-  <div align="center"> 
+
+Material 3 
+
 etc.
 
 <div align="center">
@@ -68,6 +68,19 @@ etc.
 [<img src="https://raw.githubusercontent.com/WSTxda/QP-Gallery-Releases/master/Images/GitHub.svg"
 alt='Get it on GitHub'
 height="80">](https://github.com/mostafaalagamy/Metrolist/releases/latest/download/Metrolist.apk)
+
+> **Warning**
+>
+>If you're in a region where YouTube Music is not supported, you won't be able to use this app
+***unless*** you have a proxy or VPN to connect to a YTM supported region.
+
+<div align="center">
+<h1> Q: Why Metrolist isn't showing in Android Auto? </h1>
+
+1. Go to Android Auto's settings and tap multiple times on the version in the bottom to enable
+   developer settings
+2. In the three dots menu at the top-right of the screen, click "Developer settings"
+3. Enable "Unknown sources"
 
 <div align="center">
 <h1>Special thanks</h1>
