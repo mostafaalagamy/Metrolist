@@ -7,7 +7,6 @@ on:
     paths-ignore:
       - 'README.md'
       - 'fastlane/**'
-      - 'assets/**'
       - '.github/**/*.md'
       - '.github/FUNDING.yml'
       - '.github/ISSUE_TEMPLATE/**'
