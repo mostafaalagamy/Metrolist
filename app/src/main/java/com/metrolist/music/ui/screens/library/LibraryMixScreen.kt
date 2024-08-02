@@ -223,6 +223,7 @@ fun LibraryMixScreen(
                             modifier =
                                 Modifier
                                     .fillMaxWidth()
+                                    .background(MaterialTheme.colorScheme.surface)
                                     .clickable {
                                         navController.navigate("auto_playlist/liked")
                                     }.animateItemPlacement(),
@@ -239,6 +240,7 @@ fun LibraryMixScreen(
                             modifier =
                                 Modifier
                                     .fillMaxWidth()
+                                    .background(MaterialTheme.colorScheme.surface)
                                     .clickable {
                                         navController.navigate("auto_playlist/downloaded")
                                     }.animateItemPlacement(),
@@ -255,6 +257,7 @@ fun LibraryMixScreen(
                             modifier =
                                 Modifier
                                     .fillMaxWidth()
+                                    .background(MaterialTheme.colorScheme.surface)
                                     .clickable {
                                         navController.navigate("top_playlist/$topSize")
                                     }.animateItemPlacement(),
