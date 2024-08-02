@@ -69,7 +69,6 @@ import java.util.Locale
 import java.util.UUID
 import androidx.compose.foundation.background
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 
 @OptIn(ExperimentalFoundationApi::class)
