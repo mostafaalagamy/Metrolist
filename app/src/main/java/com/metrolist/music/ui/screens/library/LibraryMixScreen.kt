@@ -67,9 +67,6 @@ import java.text.Collator
 import java.time.LocalDateTime
 import java.util.Locale
 import java.util.UUID
-import androidx.compose.foundation.background
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.ui.graphics.Color
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -184,8 +181,8 @@ fun LibraryMixScreen(
                     painter =
                         painterResource(
                             when (viewType) {
-                                LibraryViewType.LIST -> R.drawable.grid_view
-                                LibraryViewType.GRID -> R.drawable.list
+                                LibraryViewType.LIST -> R.drawable.list
+                                LibraryViewType.GRID -> R.drawable.grid_view
                             },
                         ),
                     contentDescription = null,
@@ -226,7 +223,6 @@ fun LibraryMixScreen(
                             modifier =
                                 Modifier
                                     .fillMaxWidth()
-                                    .background(MaterialTheme.colorScheme.surface)
                                     .clickable {
                                         navController.navigate("auto_playlist/liked")
                                     }.animateItemPlacement(),
@@ -243,7 +239,6 @@ fun LibraryMixScreen(
                             modifier =
                                 Modifier
                                     .fillMaxWidth()
-                                    .background(MaterialTheme.colorScheme.surface)
                                     .clickable {
                                         navController.navigate("auto_playlist/downloaded")
                                     }.animateItemPlacement(),
@@ -260,7 +255,6 @@ fun LibraryMixScreen(
                             modifier =
                                 Modifier
                                     .fillMaxWidth()
-                                    .background(MaterialTheme.colorScheme.surface)
                                     .clickable {
                                         navController.navigate("top_playlist/$topSize")
                                     }.animateItemPlacement(),
