@@ -1,7 +1,5 @@
 @file:Suppress("UnstableApiUsage")
 
-val isFullBuild: Boolean by rootProject.extra
-
 plugins {
     id("com.android.application")
     kotlin("android")
