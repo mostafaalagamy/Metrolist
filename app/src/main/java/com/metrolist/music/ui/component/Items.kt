@@ -979,11 +979,21 @@ fun PlaylistListItem(
             }
         when (playlist.thumbnails.size) {
             0 ->
+                Box(
+                    modifier =
+                        Modifier
+                            .size(ListThumbnailSize)
+                            .clip(RoundedCornerShape(ThumbnailCornerRadius))
+                            .background(color = MaterialTheme.colorScheme.secondaryContainer)
+            ) { 
                 Icon(
-                    painter = painterResource(painter),
-                    contentDescription = null,
-                    modifier = Modifier.size(ListThumbnailSize),
-                )
+                     painter = painterResource(painter), 
+                     contentDescription = null, 
+                     modifier = Modifier
+                         .size(24.dp)
+                         .align(Alignment.Center)
+              ) 
+            }
 
             1 ->
                 AsyncImage(
