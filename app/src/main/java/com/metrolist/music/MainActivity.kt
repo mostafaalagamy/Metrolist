@@ -931,7 +931,6 @@ class MainActivity : ComponentActivity() {
 
     companion object {
         const val ACTION_SEARCH = "com.metrolist.music.action.SEARCH"
-        const val ACTION_EXPLORE = "com.metrolist.music.action.EXPLORE"
         const val ACTION_LIBRARY = "com.metrolist.music.action.LIBRARY"
     }
 }
