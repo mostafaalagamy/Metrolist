@@ -10,4 +10,24 @@
             android:targetPackage="com.metrolist.music.debug"
             android:action="com.metrolist.music.action.SEARCH" />
     </shortcut>
+    <shortcut
+        android:shortcutId="explore"
+        android:enabled="true"
+        android:icon="@drawable/shortcut_explore"
+        android:shortcutShortLabel="@string/explore">
+        <intent
+            android:targetClass="com.metrolist.music.MainActivity"
+            android:targetPackage="com.metrolist.music.debug"
+            android:action="com.metrolist.music.action.EXPLORE" />
+    </shortcut>
+    <shortcut
+        android:shortcutId="library"
+        android:enabled="true"
+        android:icon="@drawable/shortcut_library"
+        android:shortcutShortLabel="@string/filter_library">
+        <intent
+            android:targetClass="com.metrolist.music.MainActivity"
+            android:targetPackage="com.metrolist.music.debug"
+            android:action="com.metrolist.music.action.LIBRARY" />
+    </shortcut>
 </shortcuts>
