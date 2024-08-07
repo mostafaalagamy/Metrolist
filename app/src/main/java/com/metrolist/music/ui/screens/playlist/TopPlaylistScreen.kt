@@ -2,6 +2,7 @@ package com.metrolist.music.ui.screens.playlist
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -211,8 +212,15 @@ fun TopPlaylistScreen(
                         ) {
                             Row(
                                 horizontalArrangement = Arrangement.spacedBy(12.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                            ) {
+                                verticalAlignment = Alignment.CenterVertically,                             
+                        ) {
+                                Box(
+                                   modifier =
+                                       Modifier
+                                         .size(AlbumThumbnailSize)
+                                         .clip(RoundedCornerShape(ThumbnailCornerRadius))
+                                         .background(MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp))
+                        ) { 
                                 Icon(
                                     painter = painterResource(R.drawable.trending_up),
                                     contentDescription = null,
@@ -222,6 +230,7 @@ fun TopPlaylistScreen(
                                             .size(AlbumThumbnailSize)
                                             .clip(RoundedCornerShape(ThumbnailCornerRadius)),
                                 )
+                              }
 
                                 Column(
                                     verticalArrangement = Arrangement.Center,
