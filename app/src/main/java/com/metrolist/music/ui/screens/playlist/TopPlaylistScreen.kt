@@ -228,7 +228,8 @@ fun TopPlaylistScreen(
                                     tint = LocalContentColor.current.copy(alpha = 0.8f),
                                     modifier =
                                         Modifier
-                                            .size(AlbumThumbnailSize)
+                                            .size(width / 2)
+                                            .align(Alignment.Center)
                                             .clip(RoundedCornerShape(ThumbnailCornerRadius)),
                                 )
                               }
