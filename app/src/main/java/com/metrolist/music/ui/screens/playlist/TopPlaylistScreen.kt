@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -229,7 +228,7 @@ fun TopPlaylistScreen(
                                     tint = LocalContentColor.current.copy(alpha = 0.8f),
                                     modifier =
                                         Modifier
-                                            .size(width / 2)
+                                            .size(AlbumThumbnailSize.div(2))
                                             .align(Alignment.Center)
                                             .clip(RoundedCornerShape(ThumbnailCornerRadius)),
                                 )
