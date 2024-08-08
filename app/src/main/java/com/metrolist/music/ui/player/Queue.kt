@@ -429,7 +429,7 @@ fun Queue(
                         },
                     ) {
                         Icon(
-                            painter = painterResource(R.drawable.select_all),
+                            painter = painterResource(R.drawable.select),
                             contentDescription = null,
                         )
                     }
