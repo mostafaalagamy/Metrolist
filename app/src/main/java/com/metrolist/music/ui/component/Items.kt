@@ -991,7 +991,7 @@ fun PlaylistListItem(
                      painter = painterResource(painter), 
                      contentDescription = null, 
                      modifier = Modifier
-                         .size(24.dp)
+                         .size(ListThumbnailSize / 2)
                          .align(Alignment.Center)
               ) 
             }
