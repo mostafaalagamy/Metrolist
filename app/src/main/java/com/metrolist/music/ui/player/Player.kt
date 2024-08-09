@@ -15,6 +15,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -95,11 +96,13 @@ import com.metrolist.music.LocalDatabase
 import com.metrolist.music.LocalDownloadUtil
 import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
+import com.metrolist.music.constants.DarkModeKey
 import com.metrolist.music.constants.EnableSquigglySlider
 import com.metrolist.music.constants.ListThumbnailSize
 import com.metrolist.music.constants.PlayerBackgroundStyle
 import com.metrolist.music.constants.PlayerBackgroundStyleKey
 import com.metrolist.music.constants.PlayerHorizontalPadding
+import com.metrolist.music.constants.PureBlackKey
 import com.metrolist.music.constants.QueuePeekHeight
 import com.metrolist.music.constants.ShowLyricsKey
 import com.metrolist.music.constants.ThumbnailCornerRadius
@@ -116,6 +119,7 @@ import com.metrolist.music.ui.component.ResizableIconButton
 import com.metrolist.music.ui.component.rememberBottomSheetState
 import com.metrolist.music.ui.menu.AddToPlaylistDialog
 import com.metrolist.music.ui.menu.PlayerMenu
+import com.metrolist.music.ui.screens.settings.DarkMode
 import com.metrolist.music.ui.theme.extractGradientColors
 import com.metrolist.music.utils.joinByBullet
 import com.metrolist.music.utils.makeTimeString
@@ -143,6 +147,21 @@ fun BottomSheetPlayer(
     val clipboardManager = LocalClipboardManager.current
 
     val playerConnection = LocalPlayerConnection.current ?: return
+
+    val isSystemInDarkTheme = isSystemInDarkTheme()
+    val darkTheme by rememberEnumPreference(DarkModeKey, defaultValue = DarkMode.AUTO)
+    val pureBlack by rememberPreference(PureBlackKey, defaultValue = false)
+    val useBlackBackground =
+        remember(isSystemInDarkTheme, darkTheme, pureBlack) {
+            val useDarkTheme = if (darkTheme == DarkMode.AUTO) isSystemInDarkTheme else darkTheme == DarkMode.ON
+            useDarkTheme && pureBlack
+        }
+    val backgroundColor =
+        if (useBlackBackground && !state.isCollapsed) {
+            Color.Black
+        } else {
+            MaterialTheme.colorScheme.surfaceColorAtElevation(NavigationBarDefaults.Elevation)
+        }
 
     val playbackState by playerConnection.playbackState.collectAsState()
     val isPlaying by playerConnection.isPlaying.collectAsState()
@@ -478,12 +497,8 @@ fun BottomSheetPlayer(
             } else {
                 Brush.verticalGradient(
                     listOf(
-                        MaterialTheme.colorScheme.surfaceColorAtElevation(
-                            NavigationBarDefaults.Elevation,
-                        ),
-                        MaterialTheme.colorScheme.surfaceColorAtElevation(
-                            NavigationBarDefaults.Elevation,
-                        ),
+                        backgroundColor,
+                        backgroundColor,
                     ),
                 )
             },
@@ -857,7 +872,7 @@ fun BottomSheetPlayer(
                             Modifier
                                 .size(32.dp)
                                 .align(Alignment.Center),
-                        onClick = playerConnection.player::seekToPrevious,
+                        onClick = playerConnection::seekToPrevious,
                     )
                 }
 
@@ -911,7 +926,7 @@ fun BottomSheetPlayer(
                             Modifier
                                 .size(32.dp)
                                 .align(Alignment.Center),
-                        onClick = playerConnection.player::seekToNext,
+                        onClick = playerConnection::seekToNext,
                     )
                 }
 
@@ -1009,7 +1024,7 @@ fun BottomSheetPlayer(
             state = queueSheetState,
             playerBottomSheetState = state,
             navController = navController,
-            backgroundColor = MaterialTheme.colorScheme.surfaceColorAtElevation(NavigationBarDefaults.Elevation),
+            backgroundColor = backgroundColor,
         )
     }
 }

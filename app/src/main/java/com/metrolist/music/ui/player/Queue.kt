@@ -44,6 +44,10 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBarDefaults
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.SwipeToDismissBox
 import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
@@ -83,6 +87,7 @@ import androidx.navigation.NavController
 import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
 import com.metrolist.music.constants.ListItemHeight
+import com.metrolist.music.constants.QueueEditLockKey
 import com.metrolist.music.extensions.metadata
 import com.metrolist.music.extensions.move
 import com.metrolist.music.extensions.togglePlayPause
@@ -95,6 +100,8 @@ import com.metrolist.music.ui.component.MediaMetadataListItem
 import com.metrolist.music.ui.menu.PlayerMenu
 import com.metrolist.music.ui.menu.SelectionMediaMetadataMenu
 import com.metrolist.music.utils.makeTimeString
+import com.metrolist.music.utils.rememberPreference
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.burnoutcrew.reorderable.ReorderableItem
 import org.burnoutcrew.reorderable.detectReorder
@@ -133,6 +140,11 @@ fun Queue(
     var showDetailsDialog by rememberSaveable {
         mutableStateOf(false)
     }
+
+    var locked by rememberPreference(QueueEditLockKey, defaultValue = false)
+
+    val snackbarHostState = remember { SnackbarHostState() }
+    var dismissJob: Job? by remember { mutableStateOf(null) }
 
     if (showDetailsDialog) {
         AlertDialog(
@@ -238,21 +250,34 @@ fun Queue(
             }
 
         val coroutineScope = rememberCoroutineScope()
+
+        val headerItems = 1
         val reorderableState =
             rememberReorderableLazyListState(
                 onMove = { from, to ->
-                    mutableQueueWindows.move(from.index, to.index)
+                    if (to.index >= headerItems && from.index >= headerItems) {
+                        mutableQueueWindows.move(
+                            from.index - headerItems,
+                            to.index - headerItems,
+                        )
+                    }
                 },
                 onDragEnd = { fromIndex, toIndex ->
+                    println(fromIndex)
+                    println(toIndex)
+                    val to = if (toIndex == 0) 1 else toIndex
                     if (!playerConnection.player.shuffleModeEnabled) {
-                        playerConnection.player.moveMediaItem(fromIndex, toIndex)
+                        playerConnection.player.moveMediaItem(fromIndex - headerItems, to - headerItems)
+                        queueWindows.forEach {
+                            println(it.mediaItem.metadata?.title)
+                        }
                     } else {
                         playerConnection.player.setShuffleOrder(
                             DefaultShuffleOrder(
                                 queueWindows
                                     .map { it.firstPeriodIndex }
                                     .toMutableList()
-                                    .move(fromIndex, toIndex)
+                                    .move(fromIndex - headerItems, to - headerItems)
                                     .toIntArray(),
                                 System.currentTimeMillis(),
                             ),
@@ -292,7 +317,7 @@ fun Queue(
                     modifier =
                         Modifier
                             .animateContentSize()
-                            .height(if (selection) 64.dp else 0.dp),
+                            .height(if (selection) 48.dp else 0.dp),
                 )
             }
 
@@ -315,33 +340,54 @@ fun Queue(
                                     dismissValue == SwipeToDismissBoxValue.EndToStart
                                 ) {
                                     playerConnection.player.removeMediaItem(currentItem.firstPeriodIndex)
+                                    dismissJob?.cancel()
+                                    dismissJob =
+                                        coroutineScope.launch {
+                                            val snackbarResult =
+                                                snackbarHostState.showSnackbar(
+                                                    message =
+                                                        context.getString(
+                                                            R.string.removed_song_from_playlist,
+                                                            currentItem.mediaItem.metadata?.title,
+                                                        ),
+                                                    actionLabel = context.getString(R.string.undo),
+                                                    duration = SnackbarDuration.Short,
+                                                )
+                                            if (snackbarResult == SnackbarResult.ActionPerformed) {
+                                                playerConnection.player.addMediaItem(currentItem.mediaItem)
+                                                playerConnection.player.moveMediaItem(
+                                                    mutableQueueWindows.size,
+                                                    currentItem.firstPeriodIndex,
+                                                )
+                                            }
+                                        }
                                 }
                                 true
                             },
                         )
 
-                    SwipeToDismissBox(
-                        state = dismissBoxState,
-                        backgroundContent = {},
-//                        state = dismissState,
-//                        = {
-                    ) {
+                    val content: @Composable () -> Unit = {
+                        Row(
+                            horizontalArrangement = Arrangement.Center,
+                        ) {
                             MediaMetadataListItem(
                                 mediaMetadata = window.mediaItem.metadata!!,
                                 isSelected = selection && window.mediaItem.metadata!! in selectedSongs,
                                 isActive = index == currentWindowIndex,
                                 isPlaying = isPlaying,
                                 trailingContent = {
-                                    IconButton(
-                                        onClick = { },
-                                        modifier =
-                                            Modifier
-                                                .detectReorder(reorderableState),
-                                    ) {
-                                        Icon(
-                                            painter = painterResource(R.drawable.drag_handle),
-                                            contentDescription = null,
-                                        )
+                                    if (!locked) {
+                                        IconButton(
+                                            onClick = { },
+                                            modifier =
+                                                Modifier
+                                                    .detectReorder(reorderableState),
+                                        ) {
+                                            Icon(
+                                                painter = painterResource(R.drawable.drag_handle),
+                                                contentDescription = null,
+                                            )
+                                        }
                                     }
                                 },
                                 modifier =
@@ -383,8 +429,19 @@ fun Queue(
                                                 }
                                             },
                                         ),
-                                // .detectReorderAfterLongPress(reorderableState)
                             )
+                        }
+                    }
+
+                    if (locked) {
+                        content()
+                    } else {
+                        SwipeToDismissBox(
+                            state = dismissBoxState,
+                            backgroundContent = {},
+                        ) {
+                            content()
+                        }
                     }
                 }
             }
@@ -407,7 +464,7 @@ fun Queue(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier =
                     Modifier
-                        .height(ListItemHeight + 12.dp)
+                        .height(ListItemHeight)
                         .padding(horizontal = 12.dp),
             ) {
                 Text(
@@ -423,15 +480,27 @@ fun Queue(
                     enter = fadeIn() + slideInVertically { it },
                     exit = fadeOut() + slideOutVertically { it },
                 ) {
-                    IconButton(
-                        onClick = {
-                            selection = true
-                        },
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.select),
-                            contentDescription = null,
-                        )
+                    Row {
+                        IconButton(
+                            onClick = {
+                                selection = true
+                            },
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.select),
+                                contentDescription = null,
+                            )
+                        }
+
+                        IconButton(
+                            onClick = { locked = !locked },
+                            modifier = Modifier.padding(horizontal = 6.dp),
+                        ) {
+                            Icon(
+                                painter = painterResource(if (locked) R.drawable.lock else R.drawable.lock_open),
+                                contentDescription = null,
+                            )
+                        }
                     }
                 }
 
@@ -457,9 +526,10 @@ fun Queue(
                 exit = fadeOut() + shrinkVertically(),
             ) {
                 Row(
-                    modifier = Modifier
-                        .height(64.dp)
-                        .padding(start = 16.dp),
+                    modifier =
+                        Modifier
+                            .height(48.dp)
+                            .padding(start = 16.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     val count = selectedSongs.size
@@ -481,13 +551,13 @@ fun Queue(
                     ) {
                         Icon(
                             painter =
-                            painterResource(
-                                if (count == mutableQueueWindows.size) {
-                                    R.drawable.deselect
-                                } else {
-                                    R.drawable.select_all
-                                },
-                            ),
+                                painterResource(
+                                    if (count == mutableQueueWindows.size) {
+                                        R.drawable.deselect
+                                    } else {
+                                        R.drawable.select_all
+                                    },
+                                ),
                             contentDescription = null,
                         )
                     }
@@ -515,7 +585,9 @@ fun Queue(
                     }
 
                     IconButton(
-                        onClick = { selection = false },
+                        onClick = {
+                            selection = false
+                        },
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.close),
@@ -577,17 +649,31 @@ fun Queue(
                 onClick = playerConnection.player::toggleRepeatMode,
             ) {
                 Icon(
-                    painter = painterResource(
-                        when (repeatMode) {
-                            Player.REPEAT_MODE_OFF, Player.REPEAT_MODE_ALL -> R.drawable.repeat
-                            Player.REPEAT_MODE_ONE -> R.drawable.repeat_one
-                            else -> throw IllegalStateException()
-                        }
-                    ),
+                    painter =
+                        painterResource(
+                            when (repeatMode) {
+                                Player.REPEAT_MODE_OFF, Player.REPEAT_MODE_ALL -> R.drawable.repeat
+                                Player.REPEAT_MODE_ONE -> R.drawable.repeat_one
+                                else -> throw IllegalStateException()
+                            },
+                        ),
                     contentDescription = null,
                     modifier = Modifier.alpha(if (repeatMode == Player.REPEAT_MODE_OFF) 0.5f else 1f),
                 )
             }
         }
+
+        SnackbarHost(
+            hostState = snackbarHostState,
+            modifier =
+                Modifier
+                    .padding(
+                        bottom =
+                            ListItemHeight +
+                                WindowInsets.systemBars
+                                    .asPaddingValues()
+                                    .calculateBottomPadding(),
+                    ).align(Alignment.BottomCenter),
+        )
     }
 }
