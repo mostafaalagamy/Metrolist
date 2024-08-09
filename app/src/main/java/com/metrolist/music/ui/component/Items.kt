@@ -70,12 +70,12 @@ import androidx.media3.exoplayer.offline.Download.STATE_QUEUED
 import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
 import coil.request.ImageRequest
-import com.metrolist.innertube.YouTube
-import com.metrolist.innertube.models.AlbumItem
-import com.metrolist.innertube.models.ArtistItem
-import com.metrolist.innertube.models.PlaylistItem
-import com.metrolist.innertube.models.SongItem
-import com.metrolist.innertube.models.YTItem
+import com.malopieds.innertube.YouTube
+import com.malopieds.innertube.models.AlbumItem
+import com.malopieds.innertube.models.ArtistItem
+import com.malopieds.innertube.models.PlaylistItem
+import com.malopieds.innertube.models.SongItem
+import com.malopieds.innertube.models.YTItem
 import com.metrolist.music.LocalDatabase
 import com.metrolist.music.LocalDownloadUtil
 import com.metrolist.music.LocalPlayerConnection
@@ -980,21 +980,21 @@ fun PlaylistListItem(
             }
         when (playlist.thumbnails.size) {
             0 ->
-                Box(
+            Box(
                     modifier =
                         Modifier
                             .size(ListThumbnailSize)
                             .clip(RoundedCornerShape(ThumbnailCornerRadius))
                             .background(MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp))
-            ) { 
+            ) {
                 Icon(
-                     painter = painterResource(painter), 
+                    painter = painterResource(painter), 
                      contentDescription = null, 
                      modifier = Modifier
                          .size(ListThumbnailSize / 2)
                          .align(Alignment.Center)
               ) 
-            }
+                }
 
             1 ->
                 AsyncImage(
