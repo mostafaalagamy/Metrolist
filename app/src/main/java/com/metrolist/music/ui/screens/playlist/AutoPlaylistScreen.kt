@@ -446,8 +446,7 @@ fun AutoPlaylistScreen(
                                     onSortTypeChange = onSortTypeChange,
                                     onSortDescendingChange = onSortDescendingChange,
                                     sortTypeText = { sortType ->
-                                        when (sortType) {
-                                            
+                                        when (sortType) {                               
                                             AutoPlaylistSongSortType.CREATE_DATE -> R.string.sort_by_create_date
                                             AutoPlaylistSongSortType.NAME -> R.string.sort_by_name
                                             AutoPlaylistSongSortType.ARTIST -> R.string.sort_by_artist
