@@ -5,9 +5,9 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.exoplayer.offline.Download
-import com.metrolist.music.constants.PlaylistSongSortDescendingKey
-import com.metrolist.music.constants.PlaylistSongSortType
-import com.metrolist.music.constants.PlaylistSongSortTypeKey
+import com.metrolist.music.constants.AutoPlaylistSongSortDescendingKey
+import com.metrolist.music.constants.AutoPlaylistSongSortType
+import com.metrolist.music.constants.AutoPlaylistSongSortTypeKey
 import com.metrolist.music.constants.SongSortType
 import com.metrolist.music.db.MusicDatabase
 import com.metrolist.music.extensions.reversed
@@ -47,7 +47,8 @@ class AutoPlaylistViewModel
                     database.likedSongs(SongSortType.CREATE_DATE, true),
                     context.dataStore.data
                         .map {
-                            it[PlaylistSongSortTypeKey].toEnum(PlaylistSongSortType.CUSTOM) to (it[PlaylistSongSortDescendingKey] ?: true)
+                            it[AutoPlaylistSongSortTypeKey].toEnum(AutoPlaylistSongSortType.CREATE_DATE) to
+                                (it[AutoPlaylistSongSortDescendingKey] ?: true)
                         }.distinctUntilChanged(),
                 ) { songs, (sortType, sortDescending) ->
                     when (sortType) {
@@ -59,8 +60,8 @@ class AutoPlaylistViewModel
                             collator.strength = Collator.PRIMARY
                             songs.sortedWith(compareBy(collator) { song -> song.artists.joinToString("") { it.name } })
                         }
-                        PlaylistSongSortType.PLAY_TIME -> songs.sortedBy { it.song.totalPlayTime }
-                    }.reversed(sortDescending && sortType != PlaylistSongSortType.CUSTOM)
+                        AutoPlaylistSongSortType.PLAY_TIME -> songs.sortedBy { it.song.totalPlayTime }
+                    }.reversed(sortDescending)
                 }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
                     .stateIn(viewModelScope, SharingStarted.Lazily, null)
             } else {
