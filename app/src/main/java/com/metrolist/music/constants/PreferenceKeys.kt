@@ -68,6 +68,7 @@ val PlaylistViewTypeKey = stringPreferencesKey("playlistViewType")
 val PlaylistEditLockKey = booleanPreferencesKey("playlistEditLock")
 val QuickPicksKey = stringPreferencesKey("discover")
 val PreferredLyricsProviderKey = stringPreferencesKey("lyricsProvider")
+val QueueEditLockKey = booleanPreferencesKey("queueEditLock")
 
 enum class LibraryViewType {
     LIST,
@@ -112,17 +113,17 @@ enum class PlaylistSongSortType {
     PLAY_TIME,
 }
 
-enum class ArtistSortType {
-    CREATE_DATE,
-    NAME,
-    SONG_COUNT,
-    PLAY_TIME,
-}
-
 enum class AutoPlaylistSongSortType {
     CREATE_DATE,
     NAME,
     ARTIST,
+    PLAY_TIME,
+}
+
+enum class ArtistSortType {
+    CREATE_DATE,
+    NAME,
+    SONG_COUNT,
     PLAY_TIME,
 }
 
