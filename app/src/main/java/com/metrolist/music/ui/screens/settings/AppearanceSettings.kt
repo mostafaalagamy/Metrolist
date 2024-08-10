@@ -23,6 +23,7 @@ import com.metrolist.music.constants.EnableSquigglySlider
 import com.metrolist.music.constants.LyricsTextPositionKey
 import com.metrolist.music.constants.PlayerBackgroundStyle
 import com.metrolist.music.constants.PlayerBackgroundStyleKey
+import com.metrolist.music.constants.SwipeThumbnailKey
 import com.metrolist.music.constants.PureBlackKey
 import com.metrolist.music.ui.component.EnumListPreference
 import com.metrolist.music.ui.component.IconButton
@@ -48,6 +49,7 @@ fun AppearanceSettings(
     val (defaultOpenTab, onDefaultOpenTabChange) = rememberEnumPreference(DefaultOpenTabKey, defaultValue = NavigationTab.HOME)
     val (lyricsPosition, onLyricsPositionChange) = rememberEnumPreference(LyricsTextPositionKey, defaultValue = LyricsPosition.CENTER)
     val (squigglySlider, onSquigglySliderChange) = rememberPreference(EnableSquigglySlider, defaultValue = true)
+    val (swipeThumbnail, onSwipeThumbnailChange) = rememberPreference(SwipeThumbnailKey, defaultValue = true)
 
     Column(
         Modifier
@@ -94,6 +96,13 @@ fun AppearanceSettings(
             onCheckedChange = onSquigglySliderChange,
         )
 
+        SwitchPreference(
+            title = { Text(stringResource(R.string.enable_swipe_thumbnail)) },
+            icon = { Icon(painterResource(R.drawable.swipe), null) },
+            checked = swipeThumbnail,
+            onCheckedChange = onSwipeThumbnailChange,
+        )
+        
         SwitchPreference(
             title = { Text(stringResource(R.string.pure_black)) },
             icon = { Icon(painterResource(R.drawable.contrast), null) },
