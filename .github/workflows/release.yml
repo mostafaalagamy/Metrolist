@@ -156,7 +156,7 @@ jobs:
 
       - name: Create Release
         env:
-          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+          GH_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         run: |
           gh release create v${{ needs.check-version.outputs.new_version }} \
             --title "${{ needs.check-version.outputs.new_version }}" \
