@@ -3,10 +3,12 @@ package com.metrolist.music.ui.player
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -14,19 +16,25 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.constants.PlayerHorizontalPadding
 import com.metrolist.music.constants.ShowLyricsKey
+import com.metrolist.music.constants.SwipeThumbnailKey
 import com.metrolist.music.constants.ThumbnailCornerRadius
 import com.metrolist.music.ui.component.Lyrics
 import com.metrolist.music.utils.rememberPreference
+import kotlin.math.roundToInt
 
 @Composable
 fun Thumbnail(
@@ -41,6 +49,7 @@ fun Thumbnail(
     val error by playerConnection.error.collectAsState()
 
     val showLyrics by rememberPreference(ShowLyricsKey, false)
+    val swipeThumbnail by rememberPreference(SwipeThumbnailKey, true)
 
     DisposableEffect(showLyrics) {
         currentView.keepScreenOn = showLyrics
@@ -48,6 +57,8 @@ fun Thumbnail(
             currentView.keepScreenOn = false
         }
     }
+
+    var offsetX by remember { mutableFloatStateOf(0f) }
 
     Box(modifier = modifier) {
         AnimatedVisibility(
@@ -64,13 +75,39 @@ fun Thumbnail(
                 modifier =
                     Modifier
                         .fillMaxSize()
-                        .padding(horizontal = PlayerHorizontalPadding),
+                        .padding(horizontal = PlayerHorizontalPadding)
+                        .pointerInput(Unit) {
+                            detectHorizontalDragGestures(
+                                onDragCancel = {
+                                    offsetX = 0f
+                                },
+                                onHorizontalDrag = { _, dragAmount ->
+                                    if (swipeThumbnail) {
+                                        offsetX += dragAmount
+                                    }
+                                },
+                                onDragEnd = {
+                                    println(offsetX)
+                                    if (offsetX > 400) {
+                                        if (playerConnection.player.previousMediaItemIndex != -1) {
+                                            playerConnection.player.seekToPreviousMediaItem()
+                                        }
+                                    } else if (offsetX < -400) {
+                                        if (playerConnection.player.nextMediaItemIndex != -1) {
+                                            playerConnection.player.seekToNext()
+                                        }
+                                    }
+                                    offsetX = 0f
+                                },
+                            )
+                        },
             ) {
                 AsyncImage(
                     model = mediaMetadata?.thumbnailUrl,
                     contentDescription = null,
                     modifier =
                         Modifier
+                            .offset { IntOffset(offsetX.roundToInt(), 0) }
                             .fillMaxWidth()
                             .clip(RoundedCornerShape(ThumbnailCornerRadius * 2))
                             .pointerInput(Unit) {
