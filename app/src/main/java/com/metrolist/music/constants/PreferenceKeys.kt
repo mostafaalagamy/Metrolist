@@ -221,6 +221,7 @@ val PlayerVolumeKey = floatPreferencesKey("playerVolume")
 val RepeatModeKey = intPreferencesKey("repeatMode")
 
 val SearchSourceKey = stringPreferencesKey("searchSource")
+val SwipeThumbnailKey = booleanPreferencesKey("swipeThumbnail")
 
 enum class SearchSource {
     LOCAL,
