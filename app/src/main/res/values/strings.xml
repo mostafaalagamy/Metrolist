@@ -231,6 +231,7 @@
     <string name="follow_theme">Follow theme</string>
     <string name="gradient">Gradient</string>
     <string name="enable_squiggly_slider">Enable squiggly slider</string>
+    <string name="enable_swipe_thumbnail">Enable swipe to change song</string>
     <string name="pure_black">Pure black</string>
     <string name="default_open_tab">Default open tab</string>
     <string name="customize_navigation_tabs">Customize navigation tabs</string>
