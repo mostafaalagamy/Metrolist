@@ -72,6 +72,7 @@ fun SongMenu(
     originalSong: Song,
     event: Event? = null,
     navController: NavController,
+    onDeleteFromPlaylist: (() -> Unit)? = null,
     onDismiss: () -> Unit,
 ) {
     val context = LocalContext.current
@@ -364,6 +365,15 @@ fun SongMenu(
                 database.query {
                     delete(event)
                 }
+            }
+        }
+        if (onDeleteFromPlaylist != null) {
+            GridMenuItem(
+                icon = R.drawable.delete,
+                title = R.string.remove_from_playlist
+            ) {
+                onDismiss()
+                onDeleteFromPlaylist()
             }
         }
     }
