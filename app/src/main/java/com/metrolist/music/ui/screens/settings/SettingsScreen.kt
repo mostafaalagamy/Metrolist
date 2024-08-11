@@ -13,7 +13,6 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
@@ -73,26 +72,7 @@ fun SettingsScreen(
             title = { Text(stringResource(R.string.about)) },
             icon = { Icon(painterResource(R.drawable.info), null) },
             onClick = { navController.navigate("settings/about") },
-        )
-        if (latestVersion > BuildConfig.VERSION_CODE) {
-            PreferenceEntry(
-                title = {
-                    Text(
-                        text = stringResource(R.string.new_version_available),
-                    )
-                },
-                icon = {
-                    BadgedBox(
-                        badge = { Badge() },
-                    ) {
-                        Icon(painterResource(R.drawable.update), null)
-                    }
-                },
-                onClick = {
-                    uriHandler.openUri("https://github.com/Malopieds/InnerTText(une/releases/latest")
-                },
-            )
-        }
+        )   
     }
 
     TopAppBar(
@@ -108,5 +88,6 @@ fun SettingsScreen(
                 )
             }
         },
+        scrollBehavior = scrollBehavior
     )
 }
