@@ -84,16 +84,8 @@ fun Lyrics(
     var translationEnabled by rememberPreference(TranslateLyricsKey, false)
 
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
-    val translating by playerConnection.translating.collectAsState()
     val lyricsEntity by playerConnection.currentLyrics.collectAsState(initial = null)
-    val lyrics =
-        remember(lyricsEntity, translating) {
-            if (translating) {
-                null
-            } else {
-                lyricsEntity?.lyrics
-            }
-        }
+    val lyrics = remember(lyricsEntity) { lyricsEntity?.lyrics?.trim() }
 
     val lines =
         remember(lyrics) {
