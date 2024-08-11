@@ -300,7 +300,6 @@ fun Lyrics(
                     .padding(end = 12.dp)
             ) {
                 
-                }
                 IconButton(
                     onClick = {
                         menuState.show {
