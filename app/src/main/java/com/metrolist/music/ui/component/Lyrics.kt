@@ -299,10 +299,7 @@ fun Lyrics(
                     .align(Alignment.BottomEnd)
                     .padding(end = 12.dp)
             ) {
-                IconButton(
-                    onClick = { showLyrics = false }
-                ) {
-                    
+                
                 }
                 IconButton(
                     onClick = {
