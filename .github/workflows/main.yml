@@ -82,6 +82,13 @@ jobs:
         yes | sdkmanager --licenses
         sdkmanager "build-tools;34.0.0"
 
+    - name: Check environment
+      run: |
+      echo "ANDROID_HOME: $ANDROID_HOME"
+          ls -l $ANDROID_HOME/build-tools/34.0.0/
+          ls -l app/build/outputs/apk/release/
+          which apksigner
+
     - name: Sign APK with apksigner
       run: |
         $ANDROID_HOME/build-tools/34.0.0/apksigner sign \
