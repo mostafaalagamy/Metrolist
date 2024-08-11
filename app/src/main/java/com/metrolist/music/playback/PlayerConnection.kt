@@ -19,7 +19,6 @@ import com.metrolist.music.extensions.getQueueWindows
 import com.metrolist.music.extensions.metadata
 import com.metrolist.music.playback.MusicService.MusicBinder
 import com.metrolist.music.playback.queues.Queue
-import com.metrolist.music.utils.TranslationHelper
 import com.metrolist.music.utils.dataStore
 import com.metrolist.music.utils.reportException
 import kotlinx.coroutines.CoroutineScope
@@ -53,28 +52,9 @@ class PlayerConnection(
         mediaMetadata.flatMapLatest {
             database.song(it?.id)
         }
-    val translating = MutableStateFlow(false)
-    val currentLyrics =
-        combine(
-            context.dataStore.data
-                .map {
-                    it[TranslateLyricsKey] ?: false
-                }.distinctUntilChanged(),
-            mediaMetadata.flatMapLatest { mediaMetadata ->
-                database.lyrics(mediaMetadata?.id)
-            },
-        ) { translateEnabled, lyrics ->
-            if (!translateEnabled || lyrics == null || lyrics.lyrics == LYRICS_NOT_FOUND) return@combine lyrics
-            translating.value = true
-            try {
-                TranslationHelper.translate(lyrics)
-            } catch (e: Exception) {
-                reportException(e)
-                lyrics
-            }.also {
-                translating.value = false
-            }
-        }.stateIn(scope, SharingStarted.Lazily, null)
+    val currentLyrics = mediaMetadata.flatMapLatest { mediaMetadata ->
+        database.lyrics(mediaMetadata?.id)
+    }
     val currentFormat =
         mediaMetadata.flatMapLatest { mediaMetadata ->
             database.format(mediaMetadata?.id)
