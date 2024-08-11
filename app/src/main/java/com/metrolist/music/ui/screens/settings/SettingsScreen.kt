@@ -30,9 +30,8 @@ fun SettingsScreen(
     navController: NavController,
     scrollBehavior: TopAppBarScrollBehavior,
 ) {
-    val uriHandler = LocalUriHandler.current
-
-    Column(
+    
+        Column(
         modifier =
             Modifier
                 .windowInsetsPadding(LocalPlayerAwareWindowInsets.current)
