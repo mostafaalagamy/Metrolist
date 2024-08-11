@@ -73,13 +73,13 @@ jobs:
       run: ./gradlew assembleRelease
 
     - name: List APK files
-      run: ls -R app/build/outputs/apk/foss/release/
+      run: ls -R app/build/outputs/apk/release/
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
         name: app
-        path: app/build/outputs/apk/foss/release/*.apk
+        path: app/build/outputs/apk/release/*.apk
 
   sign:
     needs: build
@@ -98,10 +98,10 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: app
-        path: app/build/outputs/apk/foss/release/
+        path: app/build/outputs/apk/release/
 
     - name: List downloaded APK files
-      run: ls -R app/build/outputs/apk/foss/release/
+      run: ls -R app/build/outputs/apk/release/
 
     - name: Decode keystore secret
       run: echo "${{ secrets.KEYSTORE }}" | base64 --decode > my-release-key.jks
@@ -125,22 +125,22 @@ jobs:
           --ks-key-alias ${{ secrets.KEY_ALIAS }} \
           --ks-pass pass:${{ secrets.KEYSTORE_PASSWORD }} \
           --key-pass pass:${{ secrets.KEY_PASSWORD }} \
-          --out app/build/outputs/apk/foss/release/app-foss-release.apk \
+          --out app/build/outputs/apk/release/app-release.apk \
           --v4-signing-enabled true \
-          app/build/outputs/apk/foss/release/app-foss-release-unsigned.apk          
+          app/build/outputs/apk/release/app-release-unsigned.apk          
       
     - name: Verify Signed APK
       run: |
-        $ANDROID_HOME/build-tools/34.0.0/apksigner verify --verbose app/build/outputs/apk/foss/release/app-foss-release.apk
+        $ANDROID_HOME/build-tools/34.0.0/apksigner verify --verbose app/build/outputs/apk/release/app-release.apk
 
     - name: Rename APK to Metrolist.apk
-      run: mv app/build/outputs/apk/foss/release/app-foss-release.apk app/build/outputs/apk/foss/release/Metrolist.apk 
+      run: mv app/build/outputs/apk/release/app-release.apk app/build/outputs/apk/release/Metrolist.apk 
       
     - name: Upload Signed APK
       uses: actions/upload-artifact@v4
       with:
         name: Metrolist
-        path: app/build/outputs/apk/foss/release/Metrolist.apk
+        path: app/build/outputs/apk/release/Metrolist.apk
       
   create-release:
     needs: [check-version, sign]
