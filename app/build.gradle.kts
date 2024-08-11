@@ -30,12 +30,6 @@ android {
             applicationIdSuffix = ".debug"
         }
     }
-    flavorDimensions += "version"
-    productFlavors {
-        create("foss") {
-            dimension = "version"
-        }
-    }
     signingConfigs {
         getByName("debug") {
             if (System.getenv("MUSIC_DEBUG_SIGNING_STORE_PASSWORD") != null) {
