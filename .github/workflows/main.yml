@@ -8,9 +8,7 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v4
     - name: set up JDK 17
@@ -36,10 +34,8 @@ jobs:
         path: app/build/outputs/apk/release/*.apk
 
   sign:
-
     runs-on: ubuntu-latest
     needs: build
-
     steps:
     - uses: actions/checkout@v4
     - name: set up JDK 17
@@ -84,18 +80,18 @@ jobs:
 
     - name: Check environment
       run: |
-      echo "ANDROID_HOME: $ANDROID_HOME"
-          ls -l $ANDROID_HOME/build-tools/34.0.0/
-          ls -l app/build/outputs/apk/release/
-          which apksigner
+        echo "ANDROID_HOME: $ANDROID_HOME"
+        ls -l $ANDROID_HOME/build-tools/34.0.0/
+        ls -l app/build/outputs/apk/release/
+        which apksigner
 
     - name: Sign APK with apksigner
       run: |
         $ANDROID_HOME/build-tools/34.0.0/apksigner sign \
           --ks my-release-key.jks \
-          --ks-key-alias ${{ secrets.KEY_ALIAS }} \
-          --ks-pass pass:${{ secrets.KEYSTORE_PASSWORD }} \
-          --key-pass pass:${{ secrets.KEY_PASSWORD }} \
+          --ks-key-alias "${{ secrets.KEY_ALIAS }}" \
+          --ks-pass "pass:${{ secrets.KEYSTORE_PASSWORD }}" \
+          --key-pass "pass:${{ secrets.KEY_PASSWORD }}" \
           --out app/build/outputs/apk/release/app-release.apk \
           app/build/outputs/apk/release/app-release-unsigned.apk
 
