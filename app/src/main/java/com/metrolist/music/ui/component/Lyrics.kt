@@ -53,7 +53,6 @@ import com.metrolist.music.R
 import com.metrolist.music.constants.LyricsTextPositionKey
 import com.metrolist.music.constants.PlayerBackgroundStyle
 import com.metrolist.music.constants.PlayerBackgroundStyleKey
-import com.metrolist.music.constants.TranslateLyricsKey
 import com.metrolist.music.db.entities.LyricsEntity.Companion.LYRICS_NOT_FOUND
 import com.metrolist.music.lyrics.LyricsEntry
 import com.metrolist.music.lyrics.LyricsEntry.Companion.HEAD_LYRICS_ENTRY
@@ -81,19 +80,10 @@ fun Lyrics(
     val density = LocalDensity.current
 
     val lyricsTextPosition by rememberEnumPreference(LyricsTextPositionKey, LyricsPosition.CENTER)
-    var translationEnabled by rememberPreference(TranslateLyricsKey, false)
 
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
-    val translating by playerConnection.translating.collectAsState()
     val lyricsEntity by playerConnection.currentLyrics.collectAsState(initial = null)
-    val lyrics =
-        remember(lyricsEntity, translating) {
-            if (translating) {
-                null
-            } else {
-                lyricsEntity?.lyrics
-            }
-        }
+    val lyrics = remember(lyricsEntity) { lyricsEntity?.lyrics?.trim() }
 
     val lines =
         remember(lyrics) {
@@ -229,21 +219,19 @@ fun Lyrics(
         ) {
             val displayedCurrentLineIndex = if (isSeeking) deferredCurrentLineIndex else currentLineIndex
 
-            if (lyrics == null || translating) {
+            if (lyrics == null) {
                 item {
                     ShimmerHost {
                         repeat(10) {
                             Box(
-                                contentAlignment =
-                                    when (lyricsTextPosition) {
-                                        LyricsPosition.LEFT -> Alignment.CenterStart
-                                        LyricsPosition.CENTER -> Alignment.Center
-                                        LyricsPosition.RIGHT -> Alignment.CenterEnd
-                                    },
-                                modifier =
-                                    Modifier
-                                        .fillMaxWidth()
-                                        .padding(horizontal = 24.dp, vertical = 4.dp),
+                                contentAlignment = when (lyricsTextPosition) {
+                                    LyricsPosition.LEFT -> Alignment.CenterStart
+                                    LyricsPosition.CENTER -> Alignment.Center
+                                    LyricsPosition.RIGHT -> Alignment.CenterEnd
+                                },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 24.dp, vertical = 4.dp)
                             ) {
                                 TextPlaceholder()
                             }
@@ -292,52 +280,36 @@ fun Lyrics(
                 text = stringResource(R.string.lyrics_not_found),
                 fontSize = 20.sp,
                 color = MaterialTheme.colorScheme.secondary,
-                textAlign =
-                    when (lyricsTextPosition) {
-                        LyricsPosition.LEFT -> TextAlign.Left
-                        LyricsPosition.CENTER -> TextAlign.Center
-                        LyricsPosition.RIGHT -> TextAlign.Right
-                    },
+                textAlign = when (lyricsTextPosition) {
+                    LyricsPosition.LEFT -> TextAlign.Left
+                    LyricsPosition.CENTER -> TextAlign.Center
+                    LyricsPosition.RIGHT -> TextAlign.Right
+                },
                 fontWeight = FontWeight.Bold,
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp, vertical = 8.dp)
-                        .alpha(0.5f),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp, vertical = 8.dp)
+                    .alpha(0.5f)
             )
         }
 
         mediaMetadata?.let { mediaMetadata ->
             Row(
-                modifier =
-                    Modifier
-                        .align(Alignment.BottomEnd)
-                        .padding(end = 12.dp),
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(end = 12.dp)
             ) {
-                if (BuildConfig.FLAVOR != "foss") {
-                    IconButton(
-                        onClick = {
-                            translationEnabled = !translationEnabled
-                        },
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.translate),
-                            contentDescription = null,
-                            tint = LocalContentColor.current.copy(alpha = if (translationEnabled) 1f else 0.3f),
-                        )
-                    }
-                }
-
+                
                 IconButton(
                     onClick = {
                         menuState.show {
                             LyricsMenu(
                                 lyricsProvider = { lyricsEntity },
                                 mediaMetadataProvider = { mediaMetadata },
-                                onDismiss = menuState::dismiss,
+                                onDismiss = menuState::dismiss
                             )
                         }
-                    },
+                    }
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.more_horiz),

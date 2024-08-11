@@ -10,7 +10,6 @@ import androidx.media3.common.Player.COMMAND_SEEK_TO_PREVIOUS_MEDIA_ITEM
 import androidx.media3.common.Player.REPEAT_MODE_OFF
 import androidx.media3.common.Player.STATE_ENDED
 import androidx.media3.common.Timeline
-import com.metrolist.music.constants.TranslateLyricsKey
 import com.metrolist.music.db.MusicDatabase
 import com.metrolist.music.db.entities.LyricsEntity.Companion.LYRICS_NOT_FOUND
 import com.metrolist.music.extensions.currentMetadata
@@ -19,7 +18,6 @@ import com.metrolist.music.extensions.getQueueWindows
 import com.metrolist.music.extensions.metadata
 import com.metrolist.music.playback.MusicService.MusicBinder
 import com.metrolist.music.playback.queues.Queue
-import com.metrolist.music.utils.TranslationHelper
 import com.metrolist.music.utils.dataStore
 import com.metrolist.music.utils.reportException
 import kotlinx.coroutines.CoroutineScope
@@ -53,28 +51,9 @@ class PlayerConnection(
         mediaMetadata.flatMapLatest {
             database.song(it?.id)
         }
-    val translating = MutableStateFlow(false)
-    val currentLyrics =
-        combine(
-            context.dataStore.data
-                .map {
-                    it[TranslateLyricsKey] ?: false
-                }.distinctUntilChanged(),
-            mediaMetadata.flatMapLatest { mediaMetadata ->
-                database.lyrics(mediaMetadata?.id)
-            },
-        ) { translateEnabled, lyrics ->
-            if (!translateEnabled || lyrics == null || lyrics.lyrics == LYRICS_NOT_FOUND) return@combine lyrics
-            translating.value = true
-            try {
-                TranslationHelper.translate(lyrics)
-            } catch (e: Exception) {
-                reportException(e)
-                lyrics
-            }.also {
-                translating.value = false
-            }
-        }.stateIn(scope, SharingStarted.Lazily, null)
+    val currentLyrics = mediaMetadata.flatMapLatest { mediaMetadata ->
+        database.lyrics(mediaMetadata?.id)
+    }
     val currentFormat =
         mediaMetadata.flatMapLatest { mediaMetadata ->
             database.format(mediaMetadata?.id)
