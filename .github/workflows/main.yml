@@ -27,13 +27,13 @@ jobs:
       run: ./gradlew assembleRelease
 
     - name: List files in APK directory
-      run: ls -R app/build/outputs/apk/foss/release
+      run: ls -R app/build/outputs/apk/release
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
         name: app
-        path: app/build/outputs/apk/foss/release/*.apk
+        path: app/build/outputs/apk/release/*.apk
 
   sign:
 
@@ -53,14 +53,14 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: app
-        path: app/build/outputs/apk/foss/release/
+        path: app/build/outputs/apk/release/
 
     - name: List files in downloaded APK directory
-      run: ls -R app/build/outputs/apk/foss/release
+      run: ls -R app/build/outputs/apk/release
 
     - name: Verify APK file exists
       run: |
-        if [ ! -f app/build/outputs/apk/foss/release/app-foss-release-unsigned.apk ]; then
+        if [ ! -f app/build/outputs/apk/release/app-release-unsigned.apk ]; then
           echo "APK file not found!"
           exit 1
         fi
@@ -91,14 +91,14 @@ jobs:
           --key-pass pass:${{ secrets.KEY_PASSWORD }} \
           --out app/build/outputs/apk/foss/release/app-foss-release.apk \
           --v4-signing-enabled true \
-          app/build/outputs/apk/foss/release/app-foss-release-unsigned.apk
+          app/build/outputs/apk/release/app-release-unsigned.apk
 
     - name: Verify Signed APK
       run: |
-        $ANDROID_HOME/build-tools/34.0.0/apksigner verify --verbose app/build/outputs/apk/foss/release/app-foss-release.apk
+        $ANDROID_HOME/build-tools/34.0.0/apksigner verify --verbose app/build/outputs/apk/release/app-release.apk
 
     - name: Upload Signed APK
       uses: actions/upload-artifact@v4
       with:
         name: signed-app
-        path: app/build/outputs/apk/foss/release/app-foss-release.apk
+        path: app/build/outputs/apk/release/app-release.apk
