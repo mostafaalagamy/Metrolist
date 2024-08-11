@@ -41,7 +41,6 @@ import com.metrolist.music.ui.component.PreferenceEntry
 import com.metrolist.music.ui.component.PreferenceGroupTitle
 import com.metrolist.music.ui.utils.backToMain
 import com.metrolist.music.ui.utils.formatFileSize
-import com.metrolist.music.utils.TranslationHelper
 import com.metrolist.music.utils.rememberPreference
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -210,15 +209,6 @@ fun StorageSettings(
         if (BuildConfig.FLAVOR != "foss") {
             PreferenceGroupTitle(
                 title = stringResource(R.string.translation_models),
-            )
-
-            PreferenceEntry(
-                title = { Text(stringResource(R.string.clear_translation_models)) },
-                onClick = {
-                    coroutineScope.launch(Dispatchers.IO) {
-                        TranslationHelper.clearModels()
-                    }
-                },
             )
         }
     }
