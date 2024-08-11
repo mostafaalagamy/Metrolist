@@ -205,12 +205,6 @@ fun StorageSettings(
                 }
             },
         )
-
-        if (BuildConfig.FLAVOR != "foss") {
-            PreferenceGroupTitle(
-                title = stringResource(R.string.translation_models),
-            )
-        }
     }
 
     TopAppBar(
