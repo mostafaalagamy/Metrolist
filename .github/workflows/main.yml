@@ -78,22 +78,50 @@ jobs:
         yes | sdkmanager --licenses
         sdkmanager "build-tools;34.0.0"
 
-    - name: Check environment
+    - name: Check environment and permissions
       run: |
         echo "ANDROID_HOME: $ANDROID_HOME"
         ls -l $ANDROID_HOME/build-tools/34.0.0/
         ls -l app/build/outputs/apk/release/
-        which apksigner
+        which jarsigner
+        ls -l my-release-key.jks
 
-    - name: Sign APK with apksigner
+    - name: Verify keystore file
       run: |
-        $ANDROID_HOME/build-tools/34.0.0/apksigner sign \
-          --ks my-release-key.jks \
-          --ks-key-alias "${{ secrets.KEY_ALIAS }}" \
-          --ks-pass "pass:${{ secrets.KEYSTORE_PASSWORD }}" \
-          --key-pass "pass:${{ secrets.KEY_PASSWORD }}" \
-          --out app/build/outputs/apk/release/app-release.apk \
-          app/build/outputs/apk/release/app-release-unsigned.apk
+        if [ ! -f my-release-key.jks ]; then
+          echo "Keystore file not found!"
+          exit 1
+        fi
+        file my-release-key.jks
+
+    - name: Sign APK with jarsigner
+      run: |
+        jarsigner -verbose \
+          -sigalg SHA256withRSA \
+          -digestalg SHA-256 \
+          -keystore my-release-key.jks \
+          -storepass "${{ secrets.KEYSTORE_PASSWORD }}" \
+          -keypass "${{ secrets.KEY_PASSWORD }}" \
+          app/build/outputs/apk/release/app-release-unsigned.apk \
+          "${{ secrets.KEY_ALIAS }}"
+        
+        if [ $? -ne 0 ]; then
+          echo "APK signing with jarsigner failed"
+          exit 1
+        fi
+
+        mv app/build/outputs/apk/release/app-release-unsigned.apk app/build/outputs/apk/release/app-release-signed.apk
+
+    - name: Zipalign APK
+      run: |
+        $ANDROID_HOME/build-tools/34.0.0/zipalign -v 4 \
+          app/build/outputs/apk/release/app-release-signed.apk \
+          app/build/outputs/apk/release/app-release.apk
+        
+        if [ $? -ne 0 ]; then
+          echo "Zipalign failed"
+          exit 1
+        fi
 
     - name: Verify Signed APK
       run: |
