@@ -102,7 +102,7 @@ fun AboutScreen(
             Spacer(Modifier.width(4.dp))
 
             Text(
-                text = BuildConfig.FLAVOR.uppercase(),
+                text = "MUSIC",
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.secondary,
                 modifier =
