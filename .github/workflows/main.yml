@@ -90,7 +90,6 @@ jobs:
           --ks-pass pass:${{ secrets.KEYSTORE_PASSWORD }} \
           --key-pass pass:${{ secrets.KEY_PASSWORD }} \
           --out app/build/outputs/apk/release/app-release.apk \
-          --v4-signing-enabled true \
           app/build/outputs/apk/release/app-release-unsigned.apk
 
     - name: Verify Signed APK
