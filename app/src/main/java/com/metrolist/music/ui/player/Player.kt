@@ -158,7 +158,7 @@ fun BottomSheetPlayer(
         if (useBlackBackground && !state.isCollapsed) {
             Color.Black
         } else {
-            MaterialTheme.colorScheme.surfaceContainer
+            MaterialTheme.colorScheme.surfaceColorAtElevation(NavigationBarDefaults.Elevation)
         }
 
     val playbackState by playerConnection.playbackState.collectAsState()
