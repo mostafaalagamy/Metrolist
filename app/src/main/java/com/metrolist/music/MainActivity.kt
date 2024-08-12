@@ -90,7 +90,7 @@ import com.metrolist.music.ui.screens.search.OnlineSearchScreen
 import com.metrolist.music.ui.screens.settings.*
 import com.metrolist.music.ui.theme.ColorSaver
 import com.metrolist.music.ui.theme.DefaultThemeColor
-import com.metrolist.music.ui.theme.InnerTuneTheme
+import com.metrolist.music.ui.theme.MetrolistTheme
 import com.metrolist.music.ui.theme.extractThemeColor
 import com.metrolist.music.ui.utils.appBarScrollBehavior
 import com.metrolist.music.ui.utils.backToMain
