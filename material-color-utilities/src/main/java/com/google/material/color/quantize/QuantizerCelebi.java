@@ -54,5 +54,5 @@ public final class QuantizerCelebi {
         }
 
         return QuantizerWsmeans.quantize(pixels, wuClusters, maxColors);
-    }
+  }
 }

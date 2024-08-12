@@ -54,5 +54,5 @@ public final class PointProviderLab implements PointProvider {
         double dA = (one[1] - two[1]);
         double dB = (one[2] - two[2]);
         return (dL * dL + dA * dA + dB * dB);
-    }
+  }
 }

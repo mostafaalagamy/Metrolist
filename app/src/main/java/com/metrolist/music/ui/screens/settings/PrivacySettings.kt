@@ -171,7 +171,7 @@ fun PrivacySettings(
         )
 
         ListPreference(
-            title = { Text(stringResource(R.string.set_default_lyrics_provider)) },
+            title = { Text(stringResource(R.string.set_first_lyrics_provider)) },
             selectedValue = preferredProvider,
             values = listOf(PreferredLyricsProvider.KUGOU, PreferredLyricsProvider.LRCLIB),
             valueText = { it.name.toLowerCase(Locale.current).capitalize(Locale.current) },

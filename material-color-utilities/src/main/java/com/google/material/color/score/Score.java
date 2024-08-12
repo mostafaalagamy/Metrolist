@@ -115,17 +115,9 @@ public final class Score {
             colorsToScore.put(color, score);
         }
 
-        // Remove colors that are unsuitable, ex. very dark or unchromatic colors.
-        // Also, remove colors that are very similar in hue.
-        List<Integer> filteredColors = filter(colorsToExcitedProportion, colorsToCam);
-        Map<Integer, Double> filteredColorsToScore = new HashMap<>();
-        for (int color : filteredColors) {
-            filteredColorsToScore.put(color, colorsToScore.get(color));
-        }
-
         // Ensure the list of colors returned is sorted such that the first in the
         // list is the most suitable, and the last is the least suitable.
-        List<Map.Entry<Integer, Double>> entryList = new ArrayList<>(filteredColorsToScore.entrySet());
+        List<Map.Entry<Integer, Double>> entryList = new ArrayList<>(colorsToScore.entrySet());
         Collections.sort(entryList, new ScoredComparator());
         List<Integer> colorsByScoreDescending = new ArrayList<>();
         for (Map.Entry<Integer, Double> entry : entryList) {

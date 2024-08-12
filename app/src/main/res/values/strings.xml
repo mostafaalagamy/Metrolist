@@ -286,8 +286,8 @@
     <string name="clear_search_history_confirm">Are you sure to clear all search history?</string>
     <string name="enable_kugou">Enable KuGou lyrics provider</string>
     <string name="enable_lrclib">Enable LrcLib lyrics provider</string>
-    <string name="set_default_lyrics_provider">Set Default Lyrics Provider</string>
-
+    <string name="set_first_lyrics_provider">Set the first lyrics provider</string>
+    
     <string name="backup_restore">Backup and restore</string>
     <string name="backup">Backup</string>
     <string name="restore">Restore</string>

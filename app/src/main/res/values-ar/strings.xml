@@ -264,7 +264,7 @@
     <string name="clear_search_history_confirm">هل أنت متأكد من أنك تريد مسح جميع سجل البحث؟</string>
     <string name="enable_kugou">تفعيل مزود كلمات الأغاني KuGou</string>
     <string name="enable_lrclib">تفعيل مزود كلمات الأغاني LrcLib</string>
-    <string name="set_default_lyrics_provider">تعيين مزود كلمات الأغاني الافتراضي</string>
+    <string name="set_first_lyrics_provider">تعيين مزود كلمات الأغاني الأول</string>
     
     <string name="backup_restore">النسخ الاحتياطي والاستعادة</string>
     <string name="backup">نسخ احتياطي</string>

@@ -20,9 +20,19 @@ package com.google.material.color.quantize;
  * An interface to allow use of different color spaces by quantizers.
  */
 public interface PointProvider {
-    double[] fromInt(int argb);
+    /**
+     * The four components in the color space of an sRGB color.
+     */
+    public double[] fromInt(int argb);
 
-    int toInt(double[] point);
+    /**
+     * The ARGB (i.e. hex code) representation of this color.
+     */
+    public int toInt(double[] point);
 
-    double distance(double[] a, double[] b);
+    /**
+     * Squared distance between two colors. Distance is defined by scientific color spaces and
+     * referred to as delta E.
+     */
+    public double distance(double[] a, double[] b);
 }
