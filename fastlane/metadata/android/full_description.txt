@@ -1,6 +1,6 @@
 Material 3 YouTube Music client for Android
 
-<br><b>Features:</b>
+Features:
 
 - Play any song or video from YT Music
 - Background playback

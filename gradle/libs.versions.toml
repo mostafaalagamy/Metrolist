@@ -68,8 +68,6 @@ ktor-serialization-json = { group = "io.ktor", name = "ktor-serialization-kotlin
 
 brotli = { group = "org.brotli", name = "dec", version = "0.1.2" }
 
-opencc4j = { group = "com.github.houbb", name = "opencc4j", version = "1.7.2" }
-
 desugaring = { group = "com.android.tools", name = "desugar_jdk_libs", version = "2.0.4" }
 
 junit = { group = "junit", name = "junit", version = "4.13.2" }

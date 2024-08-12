@@ -93,6 +93,7 @@
     <string name="sync">مزامنة</string>
     <string name="advanced">متقدم</string>
     <string name="select">تحديد الكل</string>
+    <string name="remove_from_playlist">إزالة من قائمة التشغيل</string>
     <string name="like_all">الإعجاب بالكل</string>
     <!-- Sort menu -->
     <string name="sort_by_create_date">تاريخ الإضافة</string>
@@ -197,12 +198,14 @@
     <string name="music_player">مشغل الموسيقى</string>
     <!-- الإعدادات -->
     <string name="settings">الإعدادات</string>
+    
     <string name="appearance">المظهر</string>
     <string name="enable_dynamic_theme">تفعيل السمة الديناميكية</string>
     <string name="player_background_style">نمط خلفية المشغل</string>
     <string name="gradient">ألوان متدرجة</string>
     <string name="follow_theme">اتباع السيم</string>
     <string name="enable_squiggly_slider">تمكين الشريط المتعرج</string>
+    <string name="enable_swipe_thumbnail">تمكين التمرير لتغيير الأغنية</string>
     <string name="dark_theme">السمة الداكنة</string>
     <string name="dark_theme_on">تشغيل</string>
     <string name="dark_theme_off">إيقاف</string>
@@ -214,6 +217,7 @@
     <string name="left">يسار</string>
     <string name="center">وسط</string>
     <string name="right">يمين</string>
+    
     <string name="content">المحتوى</string>
     <string name="login">تسجيل الدخول</string>
     <string name="content_language">لغة المحتوى الافتراضية</string>
@@ -227,6 +231,7 @@
     <string name="set_quick_picks">ضبط الاختيارات السريعة</string>
     <string name="last_song_listened">بناءً على آخر أغنية تم الاستماع إليها</string>
     <string name="restart_to_take_effect">أعد التشغيل لتفعيل التغييرات</string>
+    
     <string name="player_and_audio">المشغل والصوت</string>
     <string name="audio_quality">جودة الصوت</string>
     <string name="audio_quality_auto">تلقائي</string>
@@ -236,6 +241,7 @@
     <string name="skip_silence">تخطي الصمت</string>
     <string name="audio_normalization">تطبيع الصوت</string>
     <string name="equalizer">الموازن</string>
+    
     <string name="storage">التخزين</string>
     <string name="cache">التخزين المؤقت</string>
     <string name="image_cache">التخزين المؤقت للصور</string>
@@ -248,6 +254,7 @@
     <string name="max_song_cache_size">الحد الأقصى لحجم التخزين المؤقت للأغاني</string>
     <string name="clear_song_cache">مسح التخزين المؤقت للأغاني</string>
     <string name="size_used">تم استخدام %s</string>
+    
     <string name="privacy">الخصوصية</string>
     <string name="pause_listen_history">إيقاف سجل الاستماع مؤقتاً</string>
     <string name="clear_listen_history">مسح سجل الاستماع</string>
@@ -257,6 +264,8 @@
     <string name="clear_search_history_confirm">هل أنت متأكد من أنك تريد مسح جميع سجل البحث؟</string>
     <string name="enable_kugou">تفعيل مزود كلمات الأغاني KuGou</string>
     <string name="enable_lrclib">تفعيل مزود كلمات الأغاني LrcLib</string>
+    <string name="set_default_lyrics_provider">تعيين مزود كلمات الأغاني الافتراضي</string>
+    
     <string name="backup_restore">النسخ الاحتياطي والاستعادة</string>
     <string name="backup">نسخ احتياطي</string>
     <string name="restore">استعادة</string>
@@ -264,6 +273,7 @@
     <string name="backup_create_success">تم إنشاء النسخ الاحتياطي بنجاح</string>
     <string name="backup_create_failed">تعذر إنشاء النسخ الاحتياطي</string>
     <string name="restore_failed">فشل في استعادة النسخ الاحتياطي</string>
+    
     <string name="about">حول</string>
     <string name="app_version">إصدار التطبيق</string>
     <string name="new_version_available">إصدار جديد متاح</string>
