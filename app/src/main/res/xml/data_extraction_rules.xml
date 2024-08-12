@@ -7,6 +7,9 @@
     <cloud-backup>
         <exclude
             domain="file"
-            path="." />
+            path="./exoplayer" />
+        <exclude
+            domain="file"
+            path="./download" />
     </cloud-backup>
 </data-extraction-rules>
