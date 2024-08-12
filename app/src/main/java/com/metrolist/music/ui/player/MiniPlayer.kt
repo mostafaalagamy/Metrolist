@@ -56,7 +56,6 @@ fun MiniPlayer(
     val isPlaying by playerConnection.isPlaying.collectAsState()
     val playbackState by playerConnection.playbackState.collectAsState()
     val error by playerConnection.error.collectAsState()
-
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
     val canSkipNext by playerConnection.canSkipNext.collectAsState()
 
@@ -190,9 +189,7 @@ fun MiniMediaInfo(
                 fontWeight = FontWeight.Bold,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                modifier =
-                    Modifier
-                        .basicMarquee(),
+                modifier = Modifier.basicMarquee(),
             )
             Text(
                 text = mediaMetadata.artists.joinToString { it.name },
@@ -200,6 +197,7 @@ fun MiniMediaInfo(
                 fontSize = 12.sp,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.basicMarquee(),
             )
         }
     }

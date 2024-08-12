@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.annotation.ExperimentalCoilApi
 import coil.imageLoader
+<<<<<<< HEAD:app/src/main/java/com/metrolist/music/ui/screens/settings/StorageSettings.kt
 import com.metrolist.music.BuildConfig
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.LocalPlayerConnection
@@ -42,6 +43,21 @@ import com.metrolist.music.ui.component.PreferenceGroupTitle
 import com.metrolist.music.ui.utils.backToMain
 import com.metrolist.music.ui.utils.formatFileSize
 import com.metrolist.music.utils.rememberPreference
+=======
+import com.metrolist.music.LocalPlayerAwareWindowInsets
+import com.metrolist.music.LocalPlayerConnection
+import com.metrolist.music.R
+import com.metrolist.music.constants.MaxImageCacheSizeKey
+import com.metrolist.music.constants.MaxSongCacheSizeKey
+import com.metrolist.music.extensions.tryOrNull
+import com.metrolist.music.ui.component.IconButton
+import com.metrolist.music.ui.component.ListPreference
+import com.metrolist.music.ui.component.PreferenceEntry
+import com.metrolist.music.ui.component.PreferenceGroupTitle
+import com.metrolist.music.ui.utils.backToMain
+import com.metrolist.music.ui.utils.formatFileSize
+import com.metrolist.music.utils.rememberPreference
+>>>>>>> 15751252 (feat: start material3 upgrade):app/src/main/java/com/metrolist/music/ui/screens/settings/StorageSettings.kt
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
@@ -130,7 +146,7 @@ fun StorageSettings(
             )
         } else {
             LinearProgressIndicator(
-                progress = (playerCacheSize.toFloat() / (maxSongCacheSize * 1024 * 1024L)).coerceIn(0f, 1f),
+                progress = { (playerCacheSize.toFloat() / (maxSongCacheSize * 1024 * 1024L)).coerceIn(0f, 1f) },
                 modifier =
                     Modifier
                         .fillMaxWidth()
@@ -176,7 +192,7 @@ fun StorageSettings(
         )
 
         LinearProgressIndicator(
-            progress = (imageCacheSize.toFloat() / imageDiskCache.maxSize).coerceIn(0f, 1f),
+            progress = { (imageCacheSize.toFloat() / imageDiskCache.maxSize).coerceIn(0f, 1f) },
             modifier =
                 Modifier
                     .fillMaxWidth()

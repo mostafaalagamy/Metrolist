@@ -18,7 +18,6 @@
 
 package com.google.material.color.hct;
 
-
 import com.google.material.color.utils.ColorUtils;
 import com.google.material.color.utils.MathUtils;
 
@@ -663,14 +662,14 @@ public class HctSolver {
      * Finds an sRGB color with the given hue, chroma, and L*, if possible.
      *
      * @param hueDegrees The desired hue, in degrees.
-     * @param chroma     The desired chroma.
-     * @param lstar      The desired L*.
-     * @return An CAM16 object representing the sRGB color. The color has sufficiently close hue,
-     * chroma, and L* to the desired values, if possible; otherwise, the hue and L* will be
-     * sufficiently close, and chroma will be maximized.
-     */
-    public static Cam16 solveToCam(double hueDegrees, double chroma, double lstar) {
-        return Cam16.fromInt(solveToInt(hueDegrees, chroma, lstar));
-    }
+     * @param chroma The desired chroma.
+     * @param lstar The desired L*.
+     * @return A CAM16 object representing the sRGB color. The color has sufficiently close hue,
+     *     chroma, and L* to the desired values, if possible; otherwise, the hue and L* will be
+     *     sufficiently close, and chroma will be maximized.
+   */
+  public static Cam16 solveToCam(double hueDegrees, double chroma, double lstar) {
+    return Cam16.fromInt(solveToInt(hueDegrees, chroma, lstar));
+  }
 }
 

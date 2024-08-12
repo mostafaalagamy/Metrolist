@@ -13,7 +13,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
-import androidx.compose.animation.core.*
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
@@ -52,14 +53,12 @@ import androidx.lifecycle.lifecycleScope
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.navigation.NavDestination.Companion.hierarchy
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
 import coil.imageLoader
 import coil.request.ImageRequest
+<<<<<<< HEAD:app/src/main/java/com/metrolist/music/MainActivity.kt
 import com.metrolist.innertube.YouTube
 import com.metrolist.innertube.models.SongItem
 import com.metrolist.innertube.models.WatchEndpoint
@@ -101,6 +100,51 @@ import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
 import com.metrolist.music.utils.reportException
 import com.metrolist.music.utils.setupRemoteConfig
+=======
+import com.metrolist.innertube.YouTube
+import com.metrolist.innertube.models.SongItem
+import com.metrolist.innertube.models.WatchEndpoint
+import com.metrolist.music.constants.*
+import com.metrolist.music.constants.DarkModeKey
+import com.metrolist.music.constants.DefaultOpenTabKey
+import com.metrolist.music.constants.DynamicThemeKey
+import com.metrolist.music.constants.PauseSearchHistoryKey
+import com.metrolist.music.constants.PureBlackKey
+import com.metrolist.music.constants.SearchSource
+import com.metrolist.music.constants.SearchSourceKey
+import com.metrolist.music.db.MusicDatabase
+import com.metrolist.music.db.entities.SearchHistory
+import com.metrolist.music.extensions.*
+import com.metrolist.music.models.toMediaMetadata
+import com.metrolist.music.playback.DownloadUtil
+import com.metrolist.music.playback.MusicService
+import com.metrolist.music.playback.MusicService.MusicBinder
+import com.metrolist.music.playback.PlayerConnection
+import com.metrolist.music.playback.queues.YouTubeQueue
+import com.metrolist.music.ui.component.*
+import com.metrolist.music.ui.component.rememberBottomSheetState
+import com.metrolist.music.ui.component.shimmer.ShimmerTheme
+import com.metrolist.music.ui.menu.YouTubeSongMenu
+import com.metrolist.music.ui.player.BottomSheetPlayer
+import com.metrolist.music.ui.screens.*
+import com.metrolist.music.ui.screens.navigationBuilder
+import com.metrolist.music.ui.screens.search.LocalSearchScreen
+import com.metrolist.music.ui.screens.search.OnlineSearchScreen
+import com.metrolist.music.ui.screens.settings.*
+import com.metrolist.music.ui.theme.ColorSaver
+import com.metrolist.music.ui.theme.DefaultThemeColor
+import com.metrolist.music.ui.theme.InnerTuneTheme
+import com.metrolist.music.ui.theme.extractThemeColor
+import com.metrolist.music.ui.utils.appBarScrollBehavior
+import com.metrolist.music.ui.utils.backToMain
+import com.metrolist.music.ui.utils.resetHeightOffset
+import com.metrolist.music.utils.dataStore
+import com.metrolist.music.utils.get
+import com.metrolist.music.utils.rememberEnumPreference
+import com.metrolist.music.utils.rememberPreference
+import com.metrolist.music.utils.reportException
+import com.metrolist.music.utils.setupRemoteConfig
+>>>>>>> 15751252 (feat: start material3 upgrade):app/src/main/java/com/metrolist/music/MainActivity.kt
 import com.valentinilk.shimmer.LocalShimmerTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
@@ -303,7 +347,7 @@ class MainActivity : ComponentActivity() {
                                 .add(WindowInsets(top = AppBarHeight, bottom = bottom))
                         }
 
-                    val scrollBehavior =
+                    val (searchBarScrollBehavior, topAppBarScrollBehavior) =
                         appBarScrollBehavior(
                             canScroll = {
                                 navBackStackEntry?.destination?.route?.startsWith("search/") == false &&
@@ -335,11 +379,11 @@ class MainActivity : ComponentActivity() {
                         } else if (navigationItems.fastAny { it.route == navBackStackEntry?.destination?.route }) {
                             onQueryChange(TextFieldValue())
                         }
-                        scrollBehavior.state.resetHeightOffset()
+                        searchBarScrollBehavior.resetHeightOffset()
                     }
                     LaunchedEffect(active) {
                         if (active) {
-                            scrollBehavior.state.resetHeightOffset()
+                            searchBarScrollBehavior.resetHeightOffset()
                         }
                     }
 
@@ -455,191 +499,15 @@ class MainActivity : ComponentActivity() {
                                     NavigationTab.EXPLORE -> Screens.Explore
                                     NavigationTab.LIBRARY -> Screens.Library
                                 }.route,
-                            modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+                            enterTransition = { fadeIn(animationSpec = tween(200)) },
+                            exitTransition = { fadeOut(animationSpec = tween(200)) },
+                            modifier = Modifier.nestedScroll(searchBarScrollBehavior.nestedScrollConnection),
                         ) {
-                            composable(
-                                Screens.Home.route,
-                            ) {
-                                HomeScreen(navController)
-                            }
-                            composable(
-                                Screens.Library.route,
-                            ) {
-                                LibraryScreen(navController)
-                            }
-                            composable(Screens.Explore.route) {
-                                ExploreScreen(navController)
-                            }
-                            composable("history") {
-                                HistoryScreen(navController)
-                            }
-                            composable("stats") {
-                                StatsScreen(navController)
-                            }
-                            composable("mood_and_genres") {
-                                MoodAndGenresScreen(navController, scrollBehavior)
-                            }
-                            composable("account") {
-                                AccountScreen(navController, scrollBehavior)
-                            }
-                            composable("new_release") {
-                                NewReleaseScreen(navController, scrollBehavior)
-                            }
-                            composable(
-                                route = "search/{query}",
-                                arguments =
-                                    listOf(
-                                        navArgument("query") {
-                                            type = NavType.StringType
-                                        },
-                                    ),
-                            ) {
-                                OnlineSearchResult(navController)
-                            }
-                            composable(
-                                route = "album/{albumId}",
-                                arguments =
-                                    listOf(
-                                        navArgument("albumId") {
-                                            type = NavType.StringType
-                                        },
-                                    ),
-                            ) {
-                                AlbumScreen(navController, scrollBehavior)
-                            }
-                            composable(
-                                route = "artist/{artistId}",
-                                arguments =
-                                    listOf(
-                                        navArgument("artistId") {
-                                            type = NavType.StringType
-                                        },
-                                    ),
-                            ) { backStackEntry ->
-                                val artistId = backStackEntry.arguments?.getString("artistId")!!
-                                if (artistId.startsWith("LA")) {
-                                    ArtistSongsScreen(navController, scrollBehavior)
-                                } else {
-                                    ArtistScreen(navController, scrollBehavior)
-                                }
-                            }
-                            composable(
-                                route = "artist/{artistId}/songs",
-                                arguments =
-                                    listOf(
-                                        navArgument("artistId") {
-                                            type = NavType.StringType
-                                        },
-                                    ),
-                            ) {
-                                ArtistSongsScreen(navController, scrollBehavior)
-                            }
-                            composable(
-                                route = "artist/{artistId}/items?browseId={browseId}?params={params}",
-                                arguments =
-                                    listOf(
-                                        navArgument("artistId") {
-                                            type = NavType.StringType
-                                        },
-                                        navArgument("browseId") {
-                                            type = NavType.StringType
-                                            nullable = true
-                                        },
-                                        navArgument("params") {
-                                            type = NavType.StringType
-                                            nullable = true
-                                        },
-                                    ),
-                            ) {
-                                ArtistItemsScreen(navController, scrollBehavior)
-                            }
-                            composable(
-                                route = "online_playlist/{playlistId}",
-                                arguments =
-                                    listOf(
-                                        navArgument("playlistId") {
-                                            type = NavType.StringType
-                                        },
-                                    ),
-                            ) {
-                                OnlinePlaylistScreen(navController, scrollBehavior)
-                            }
-                            composable(
-                                route = "local_playlist/{playlistId}",
-                                arguments =
-                                    listOf(
-                                        navArgument("playlistId") {
-                                            type = NavType.StringType
-                                        },
-                                    ),
-                            ) {
-                                LocalPlaylistScreen(navController, scrollBehavior)
-                            }
-                            composable(
-                                route = "auto_playlist/{playlist}",
-                                arguments =
-                                    listOf(
-                                        navArgument("playlist") {
-                                            type = NavType.StringType
-                                        },
-                                    ),
-                            ) {
-                                AutoPlaylistScreen(navController, scrollBehavior)
-                            }
-                            composable(
-                                route = "top_playlist/{top}",
-                                arguments =
-                                    listOf(
-                                        navArgument("top") {
-                                            type = NavType.StringType
-                                        },
-                                    ),
-                            ) {
-                                TopPlaylistScreen(navController, scrollBehavior)
-                            }
-                            composable(
-                                route = "youtube_browse/{browseId}?params={params}",
-                                arguments =
-                                    listOf(
-                                        navArgument("browseId") {
-                                            type = NavType.StringType
-                                            nullable = true
-                                        },
-                                        navArgument("params") {
-                                            type = NavType.StringType
-                                            nullable = true
-                                        },
-                                    ),
-                            ) {
-                                YouTubeBrowseScreen(navController, scrollBehavior)
-                            }
-                            composable("settings") {
-                                SettingsScreen(latestVersion, navController, scrollBehavior)
-                            }
-                            composable("settings/appearance") {
-                                AppearanceSettings(navController, scrollBehavior)
-                            }
-                            composable("settings/content") {
-                                ContentSettings(navController, scrollBehavior)
-                            }
-                            composable("settings/player") {
-                                PlayerSettings(navController, scrollBehavior)
-                            }
-                            composable("settings/storage") {
-                                StorageSettings(navController, scrollBehavior)
-                            }
-                            composable("settings/privacy") {
-                                PrivacySettings(navController, scrollBehavior)
-                            }
-                            composable("settings/backup_restore") {
-                                BackupAndRestore(navController, scrollBehavior)
-                            }
-                            composable("settings/about") {
-                                AboutScreen(navController, scrollBehavior)
-                            }
-                            composable("login") {
-                                LoginScreen(navController)
-                            }
+                            navigationBuilder(
+                                navController,
+                                topAppBarScrollBehavior,
+                                latestVersion,
+                            )
                         }
 
                         AnimatedVisibility(
@@ -653,7 +521,7 @@ class MainActivity : ComponentActivity() {
                                 onSearch = onSearch,
                                 active = active,
                                 onActiveChange = onActiveChange,
-                                scrollBehavior = scrollBehavior,
+                                scrollBehavior = searchBarScrollBehavior,
                                 placeholder = {
                                     Text(
                                         text =
@@ -674,8 +542,7 @@ class MainActivity : ComponentActivity() {
                                         onClick = {
                                             when {
                                                 active -> onActiveChange(false)
-                                                navController.canNavigateUp &&
-                                                    !navigationItems.fastAny { it.route == navBackStackEntry?.destination?.route } -> {
+                                                !navigationItems.fastAny { it.route == navBackStackEntry?.destination?.route } -> {
                                                     navController.navigateUp()
                                                 }
 
@@ -685,8 +552,7 @@ class MainActivity : ComponentActivity() {
                                         onLongClick = {
                                             when {
                                                 active -> {}
-                                                navController.canNavigateUp &&
-                                                    !navigationItems.fastAny { it.route == navBackStackEntry?.destination?.route } -> {
+                                                !navigationItems.fastAny { it.route == navBackStackEntry?.destination?.route } -> {
                                                     navController.backToMain()
                                                 }
 
@@ -697,10 +563,7 @@ class MainActivity : ComponentActivity() {
                                         Icon(
                                             painterResource(
                                                 if (active ||
-                                                    (
-                                                        navController.canNavigateUp &&
-                                                            !navigationItems.fastAny { it.route == navBackStackEntry?.destination?.route }
-                                                    )
+                                                    !navigationItems.fastAny { it.route == navBackStackEntry?.destination?.route }
                                                 ) {
                                                     R.drawable.arrow_back
                                                 } else {

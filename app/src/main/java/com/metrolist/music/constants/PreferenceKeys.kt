@@ -225,6 +225,13 @@ val SwipeThumbnailKey = booleanPreferencesKey("swipeThumbnail")
 enum class SearchSource {
     LOCAL,
     ONLINE,
+    ;
+
+    fun toggle() =
+        when (this) {
+            LOCAL -> ONLINE
+            ONLINE -> LOCAL
+        }
 }
 
 val VisitorDataKey = stringPreferencesKey("visitorData")

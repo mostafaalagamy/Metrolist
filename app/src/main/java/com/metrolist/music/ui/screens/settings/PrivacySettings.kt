@@ -171,7 +171,11 @@ fun PrivacySettings(
         )
 
         ListPreference(
+<<<<<<< HEAD:app/src/main/java/com/metrolist/music/ui/screens/settings/PrivacySettings.kt
             title = { Text(stringResource(R.string.set_default_lyrics_provider)) },
+=======
+            title = { Text(stringResource(R.string.set_first_lyrics_provider)) },
+>>>>>>> 15751252 (feat: start material3 upgrade):app/src/main/java/com/metrolist/music/ui/screens/settings/PrivacySettings.kt
             selectedValue = preferredProvider,
             values = listOf(PreferredLyricsProvider.KUGOU, PreferredLyricsProvider.LRCLIB),
             valueText = { it.name.toLowerCase(Locale.current).capitalize(Locale.current) },

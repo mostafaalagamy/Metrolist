@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Google LLC
+ * Copyright 2023 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,20 +22,20 @@ import com.google.material.color.palettes.TonalPalette;
 import com.google.material.color.utils.MathUtils;
 
 /**
- * A calm theme, sedated colors that aren't particularly chromatic.
+ * A playful theme - the source color's hue does not appear in the theme.
  */
-public class SchemeTonalSpot extends DynamicScheme {
-  public SchemeTonalSpot(Hct sourceColorHct, boolean isDark, double contrastLevel) {
-    super(
-            sourceColorHct,
-            Variant.TONAL_SPOT,
-            isDark,
-            contrastLevel,
-            TonalPalette.fromHueAndChroma(sourceColorHct.getHue(), 36.0),
-            TonalPalette.fromHueAndChroma(sourceColorHct.getHue(), 16.0),
-            TonalPalette.fromHueAndChroma(
-                    MathUtils.sanitizeDegreesDouble(sourceColorHct.getHue() + 60.0), 24.0),
-            TonalPalette.fromHueAndChroma(sourceColorHct.getHue(), 6.0),
-            TonalPalette.fromHueAndChroma(sourceColorHct.getHue(), 8.0));
-  }
+public class SchemeRainbow extends DynamicScheme {
+    public SchemeRainbow(Hct sourceColorHct, boolean isDark, double contrastLevel) {
+        super(
+                sourceColorHct,
+                Variant.RAINBOW,
+                isDark,
+                contrastLevel,
+                TonalPalette.fromHueAndChroma(sourceColorHct.getHue(), 48.0),
+                TonalPalette.fromHueAndChroma(sourceColorHct.getHue(), 16.0),
+                TonalPalette.fromHueAndChroma(
+                        MathUtils.sanitizeDegreesDouble(sourceColorHct.getHue() + 60.0), 24.0),
+                TonalPalette.fromHueAndChroma(sourceColorHct.getHue(), 0.0),
+                TonalPalette.fromHueAndChroma(sourceColorHct.getHue(), 0.0));
+    }
 }

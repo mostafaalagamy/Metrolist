@@ -43,12 +43,10 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBarDefaults
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -133,7 +131,7 @@ import me.saket.squiggles.SquigglySlider
 import java.time.LocalDateTime
 import kotlin.math.roundToInt
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun BottomSheetPlayer(
     state: BottomSheetState,
@@ -160,7 +158,7 @@ fun BottomSheetPlayer(
         if (useBlackBackground && !state.isCollapsed) {
             Color.Black
         } else {
-            MaterialTheme.colorScheme.surfaceColorAtElevation(NavigationBarDefaults.Elevation)
+            MaterialTheme.colorScheme.surfaceContainer
         }
 
     val playbackState by playerConnection.playbackState.collectAsState()
