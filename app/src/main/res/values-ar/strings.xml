@@ -93,7 +93,7 @@
     <string name="sync">مزامنة</string>
     <string name="advanced">متقدم</string>
     <string name="select">تحديد الكل</string>
-    <string name="remove_from_playlist">إزالة من قائمة التشغيل</string
+    <string name="remove_from_playlist">إزالة من قائمة التشغيل</string>
     <string name="like_all">الإعجاب بالكل</string>
     <!-- Sort menu -->
     <string name="sort_by_create_date">تاريخ الإضافة</string>
