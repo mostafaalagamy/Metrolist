@@ -209,7 +209,7 @@ fun Queue(
 
     BottomSheet(
         state = state,
-        brushBackgroundColor = Brush.verticalGradient(listOf(backgroundColor, backgroundColor)),
+        brushBackgroundColor = Brush.verticalGradient(listOf(Color.Unspecified, Color.Unspecified)),
         modifier = modifier,
         collapsedContent = {
             Row(
@@ -218,14 +218,7 @@ fun Queue(
                 modifier =
                     Modifier
                         .fillMaxSize()
-                        .background(
-                            Brush.verticalGradient(
-                                listOf(
-                                    Color.White.copy(alpha = 0f),
-                                    Color.White.copy(alpha = 0f),
-                                ),
-                            ),
-                        ).windowInsetsPadding(
+                        .windowInsetsPadding(
                             WindowInsets.systemBars
                                 .only(WindowInsetsSides.Bottom + WindowInsetsSides.Horizontal),
                         ),
@@ -308,6 +301,7 @@ fun Queue(
             modifier =
                 Modifier
                     .reorderable(reorderableState)
+                    .background(backgroundColor)
                     .nestedScroll(state.preUpPostDownNestedScrollConnection),
         ) {
             item {
