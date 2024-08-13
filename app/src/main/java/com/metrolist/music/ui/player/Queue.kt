@@ -207,7 +207,38 @@ fun Queue(
         )
     }
 
-    
+    BottomSheet(
+        state = state,
+        brushBackgroundColor = Brush.verticalGradient(listOf(backgroundColor, backgroundColor)),
+        modifier = modifier,
+        collapsedContent = {
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .background(
+                            Brush.verticalGradient(
+                                listOf(
+                                    Color.White.copy(alpha = 0f),
+                                    Color.White.copy(alpha = 0f),
+                                ),
+                            ),
+                        ).windowInsetsPadding(
+                            WindowInsets.systemBars
+                                .only(WindowInsetsSides.Bottom + WindowInsetsSides.Horizontal),
+                        ),
+            ) {
+                IconButton(onClick = { state.expandSoft() }) {
+                    Icon(
+                        painter = painterResource(R.drawable.expand_less),
+                        contentDescription = null,
+                    )
+                }
+            }
+        },
+    ) {
         val queueTitle by playerConnection.queueTitle.collectAsState()
         val queueWindows by playerConnection.queueWindows.collectAsState()
         val mutableQueueWindows = remember { mutableStateListOf<Timeline.Window>() }
@@ -224,31 +255,7 @@ fun Queue(
                 onMove = { from, to ->
                     if (to.index >= headerItems && from.index >= headerItems) {
                         mutableQueueWindows.move(
-                            from.index - headeBottomSheet(
-        state = state,
-        brushBackgroundColor = Brush.verticalGradient(listOf(Color.Unspecified, Color.Unspecified)),
-        modifier = modifier,
-        collapsedContent = {
-            Row(
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier =
-                    Modifier
-                        .fillMaxSize()
-                        .windowInsetsPadding(
-                            WindowInsets.systemBars
-                                .only(WindowInsetsSides.Bottom + WindowInsetsSides.Horizontal),
-                        ),
-            ) {
-                IconButton(onClick = { state.expandSoft() }) {
-                    Icon(
-                        painter = painterResource(R.drawable.expand_less),
-                        contentDescription = null,
-                    )
-                }
-            }
-        },
-    ) {rItems,
+                            from.index - headerItems,
                             to.index - headerItems,
                         )
                     }
@@ -301,7 +308,6 @@ fun Queue(
             modifier =
                 Modifier
                     .reorderable(reorderableState)
-                    .background(backgroundColor)
                     .nestedScroll(state.preUpPostDownNestedScrollConnection),
         ) {
             item {
