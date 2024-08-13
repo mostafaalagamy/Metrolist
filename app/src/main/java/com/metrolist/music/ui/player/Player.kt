@@ -156,12 +156,15 @@ fun BottomSheetPlayer(
             val useDarkTheme = if (darkTheme == DarkMode.AUTO) isSystemInDarkTheme else darkTheme == DarkMode.ON
             useDarkTheme && pureBlack
         }
+<<<<<<< HEAD:app/src/main/java/com/metrolist/music/ui/player/Player.kt
     val backgroundColor =
         if (useBlackBackground && !state.isCollapsed) {
             Color.Black
         } else {
             MaterialTheme.colorScheme.surfaceColorAtElevation(NavigationBarDefaults.Elevation)
         }
+=======
+>>>>>>> c60ca7f0 (fix: wrong colors):app/src/main/java/com/metrolist/music/ui/player/Player.kt
 
     val playbackState by playerConnection.playbackState.collectAsState()
     val isPlaying by playerConnection.isPlaying.collectAsState()
@@ -195,7 +198,9 @@ fun BottomSheetPlayer(
     }
 
     LaunchedEffect(mediaMetadata, playerBackground) {
-        if (playerBackground == PlayerBackgroundStyle.GRADIENT) {
+        if (useBlackBackground) {
+            gradientColors = listOf(Color.Black, Color.Black)
+        } else if (playerBackground == PlayerBackgroundStyle.GRADIENT) {
             withContext(Dispatchers.IO) {
                 val result =
                     (
@@ -497,8 +502,8 @@ fun BottomSheetPlayer(
             } else {
                 Brush.verticalGradient(
                     listOf(
-                        backgroundColor,
-                        backgroundColor,
+                        MaterialTheme.colorScheme.surfaceContainer,
+                        MaterialTheme.colorScheme.surfaceContainer,
                     ),
                 )
             },
@@ -1024,7 +1029,12 @@ fun BottomSheetPlayer(
             state = queueSheetState,
             playerBottomSheetState = state,
             navController = navController,
-            backgroundColor = backgroundColor,
+            backgroundColor =
+                if (useBlackBackground) {
+                    Color.Black
+                } else {
+                    MaterialTheme.colorScheme.surfaceContainer
+                },
         )
     }
 }

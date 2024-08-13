@@ -43,7 +43,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBarDefaults
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -53,7 +52,6 @@ import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberSwipeToDismissBoxState
-import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -452,7 +450,7 @@ fun Queue(
                 Modifier
                     .background(
                         MaterialTheme.colorScheme
-                            .surfaceColorAtElevation(NavigationBarDefaults.Elevation)
+                            .surfaceContainer
                             .copy(alpha = 0.95f),
                     ).windowInsetsPadding(
                         WindowInsets.systemBars
