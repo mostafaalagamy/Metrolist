@@ -69,7 +69,7 @@ height="80">](https://github.com/mostafaalagamy/Metrolist/releases/latest/downlo
 <div align="center">
 <h1>Special thanks</h1>
 
-[metrolist](https://github.com/metrolist)
+[Malopieds](https://github.com/Malopieds)
 </div>
 
 <div align="center">
