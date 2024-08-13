@@ -43,7 +43,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBarDefaults
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -53,7 +52,6 @@ import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberSwipeToDismissBoxState
-import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -211,7 +209,7 @@ fun Queue(
 
     BottomSheet(
         state = state,
-        brushBackgroundColor = Brush.verticalGradient(listOf(backgroundColor, backgroundColor)),
+        brushBackgroundColor = Brush.verticalGradient(listOf(Color.Unspecified, Color.Unspecified)),
         modifier = modifier,
         collapsedContent = {
             Row(
@@ -220,14 +218,7 @@ fun Queue(
                 modifier =
                     Modifier
                         .fillMaxSize()
-                        .background(
-                            Brush.verticalGradient(
-                                listOf(
-                                    Color.White.copy(alpha = 0f),
-                                    Color.White.copy(alpha = 0f),
-                                ),
-                            ),
-                        ).windowInsetsPadding(
+                        .windowInsetsPadding(
                             WindowInsets.systemBars
                                 .only(WindowInsetsSides.Bottom + WindowInsetsSides.Horizontal),
                         ),
@@ -310,6 +301,7 @@ fun Queue(
             modifier =
                 Modifier
                     .reorderable(reorderableState)
+                    .background(backgroundColor)
                     .nestedScroll(state.preUpPostDownNestedScrollConnection),
         ) {
             item {
@@ -452,7 +444,7 @@ fun Queue(
                 Modifier
                     .background(
                         MaterialTheme.colorScheme
-                            .surfaceColorAtElevation(NavigationBarDefaults.Elevation)
+                            .surfaceContainer
                             .copy(alpha = 0.95f),
                     ).windowInsetsPadding(
                         WindowInsets.systemBars
