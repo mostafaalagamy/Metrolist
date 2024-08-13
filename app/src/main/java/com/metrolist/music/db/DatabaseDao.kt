@@ -82,7 +82,21 @@ interface DatabaseDao {
             songsByRowIdAsc().map { songs ->
                 val collator = Collator.getInstance(Locale.getDefault())
                 collator.strength = Collator.PRIMARY
-                songs.sortedWith(compareBy(collator) { song -> song.artists.joinToString("") { it.name } })
+                songs
+                    .sortedWith(
+                        compareBy(collator) { song ->
+                            song.artists.joinToString(
+                                "",
+                            ) { it.name }
+                        },
+                    ).groupBy { it.album?.title }
+                    .flatMap { (_, songsByAlbum) ->
+                        songsByAlbum.sortedBy { album ->
+                            album.artists.joinToString(
+                                "",
+                            ) { it.name }
+                        }
+                    }
             }
         SongSortType.PLAY_TIME -> songsByPlayTimeAsc()
     }.map { it.reversed(descending) }
@@ -118,7 +132,21 @@ interface DatabaseDao {
             likedSongsByRowIdAsc().map { songs ->
                 val collator = Collator.getInstance(Locale.getDefault())
                 collator.strength = Collator.PRIMARY
-                songs.sortedWith(compareBy(collator) { song -> song.artists.joinToString("") { it.name } })
+                songs
+                    .sortedWith(
+                        compareBy(collator) { song ->
+                            song.artists.joinToString(
+                                "",
+                            ) { it.name }
+                        },
+                    ).groupBy { it.album?.title }
+                    .flatMap { (_, songsByAlbum) ->
+                        songsByAlbum.sortedBy { album ->
+                            album.artists.joinToString(
+                                "",
+                            ) { it.name }
+                        }
+                    }
             }
         SongSortType.PLAY_TIME -> likedSongsByPlayTimeAsc()
     }.map { it.reversed(descending) }

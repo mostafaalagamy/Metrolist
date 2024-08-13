@@ -57,6 +57,7 @@ import androidx.media3.exoplayer.offline.DownloadRequest
 import androidx.media3.exoplayer.offline.DownloadService
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import com.metrolist.innertube.models.WatchEndpoint
 import com.metrolist.music.LocalDatabase
 import com.metrolist.music.LocalDownloadUtil
 import com.metrolist.music.LocalPlayerConnection
@@ -67,6 +68,7 @@ import com.metrolist.music.constants.ThumbnailCornerRadius
 import com.metrolist.music.db.entities.PlaylistSongMap
 import com.metrolist.music.models.MediaMetadata
 import com.metrolist.music.playback.ExoDownloadService
+import com.metrolist.music.playback.queues.YouTubeQueue
 import com.metrolist.music.ui.component.BigSeekBar
 import com.metrolist.music.ui.component.BottomSheetState
 import com.metrolist.music.ui.component.DownloadGridMenu
@@ -264,7 +266,7 @@ fun PlayerMenu(
             icon = R.drawable.radio,
             title = R.string.start_radio,
         ) {
-            playerConnection.service.startRadioSeamlessly()
+            playerConnection.playQueue(YouTubeQueue(WatchEndpoint(videoId = mediaMetadata.id), mediaMetadata))
             onDismiss()
         }
         GridMenuItem(

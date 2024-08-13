@@ -239,6 +239,10 @@
     <string name="left">Left</string>
     <string name="center">Center</string>
     <string name="right">Right</string>
+    <string name="lyrics_click_change">Change lyrics on click</string>
+    <string name="grid_cell_size">Grid cell size</string>
+    <string name="small">Small</string>
+    <string name="big">Big</string>
 
     <string name="content">Content</string>
     <string name="login">Login</string>

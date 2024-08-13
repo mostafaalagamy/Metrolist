@@ -8,7 +8,9 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
@@ -42,8 +44,6 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.surfaceColorAtElevation
-import androidx.compose.material3.NavigationBarDefaults
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
@@ -132,7 +132,7 @@ import me.saket.squiggles.SquigglySlider
 import java.time.LocalDateTime
 import kotlin.math.roundToInt
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BottomSheetPlayer(
     state: BottomSheetState,
@@ -208,7 +208,10 @@ fun BottomSheetPlayer(
                                     .allowHardware(false)
                                     .build(),
                             ).drawable as? BitmapDrawable
-                    )?.bitmap?.extractGradientColors()
+                    )?.bitmap?.extractGradientColors(
+                        darkTheme =
+                            darkTheme == DarkMode.ON || (darkTheme == DarkMode.AUTO && isSystemInDarkTheme),
+                    )
 
                 result?.let {
                     gradientColors = it
@@ -222,16 +225,41 @@ fun BottomSheetPlayer(
     val onBackgroundColor =
         when (playerBackground) {
             PlayerBackgroundStyle.DEFAULT -> MaterialTheme.colorScheme.onBackground
-            else ->
+            else -> {
+                val whiteContrast =
+                    if (gradientColors.size >= 2) {
+                        ColorUtils.calculateContrast(
+                            gradientColors.first().toArgb(),
+                            Color.White.toArgb(),
+                        )
+                    } else {
+                        2.0
+                    }
+                val blackContrast: Double =
+                    if (gradientColors.size >= 2) {
+                        ColorUtils.calculateContrast(
+                            gradientColors.last().toArgb(),
+                            Color.Black.toArgb(),
+                        )
+                    } else {
+                        2.0
+                    }
+                println(whiteContrast)
+                println(blackContrast)
                 if (gradientColors.size >= 2 &&
-                    ColorUtils.calculateContrast(gradientColors.first().toArgb(), Color.White.toArgb()) < 1.5f
+                    whiteContrast < 1.5f &&
+                    blackContrast > 1.5f
                 ) {
                     changeColor = true
                     Color.Black
+                } else if (whiteContrast > 1.5f && blackContrast < 1.5f) {
+                    changeColor = true
+                    Color.White
                 } else {
                     changeColor = false
                     MaterialTheme.colorScheme.onSurface
                 }
+            }
         }
 
     val download by LocalDownloadUtil.current.getDownload(mediaMetadata?.id ?: "").collectAsState(initial = null)
@@ -517,7 +545,7 @@ fun BottomSheetPlayer(
         val controlsContent: @Composable ColumnScope.(MediaMetadata) -> Unit = { mediaMetadata ->
             val playPauseRoundness by animateDpAsState(
                 targetValue = if (isPlaying) 24.dp else 36.dp,
-                animationSpec = tween(durationMillis = 100, easing = LinearEasing),
+                animationSpec = tween(durationMillis = 90, easing = LinearEasing),
                 label = "playPauseRoundness",
             )
 
@@ -528,21 +556,27 @@ fun BottomSheetPlayer(
                         .fillMaxWidth()
                         .padding(horizontal = PlayerHorizontalPadding),
             ) {
-                Text(
-                    text = mediaMetadata.title,
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    color = onBackgroundColor,
-                    modifier =
-                        Modifier
-                            .basicMarquee()
-                            .clickable(enabled = mediaMetadata.album != null) {
-                                navController.navigate("album/${mediaMetadata.album!!.id}")
-                                state.collapseSoft()
-                            },
-                )
+                AnimatedContent(
+                    targetState = mediaMetadata.title,
+                    transitionSpec = { fadeIn() togetherWith fadeOut() },
+                    label = "",
+                ) { title ->
+                    Text(
+                        text = title,
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        color = onBackgroundColor,
+                        modifier =
+                            Modifier
+                                .basicMarquee()
+                                .clickable(enabled = mediaMetadata.album != null) {
+                                    navController.navigate("album/${mediaMetadata.album!!.id}")
+                                    state.collapseSoft()
+                                },
+                    )
+                }
             }
 
             Spacer(Modifier.height(6.dp))
@@ -555,24 +589,36 @@ fun BottomSheetPlayer(
                         .padding(horizontal = PlayerHorizontalPadding),
             ) {
                 mediaMetadata.artists.fastForEachIndexed { index, artist ->
-                    Text(
-                        text = artist.name,
-                        style = MaterialTheme.typography.titleMedium,
-                        color = onBackgroundColor,
-                        maxLines = 1,
-                        modifier =
-                            Modifier.clickable(enabled = artist.id != null) {
-                                navController.navigate("artist/${artist.id}")
-                                state.collapseSoft()
-                            },
-                    )
-
-                    if (index != mediaMetadata.artists.lastIndex) {
+                    AnimatedContent(
+                        targetState = artist.name,
+                        transitionSpec = { fadeIn() togetherWith fadeOut() },
+                        label = "",
+                    ) { name ->
                         Text(
-                            text = ", ",
+                            text = name,
                             style = MaterialTheme.typography.titleMedium,
                             color = onBackgroundColor,
+                            maxLines = 1,
+                            modifier =
+                                Modifier.clickable(enabled = artist.id != null) {
+                                    navController.navigate("artist/${artist.id}")
+                                    state.collapseSoft()
+                                },
                         )
+                    }
+
+                    if (index != mediaMetadata.artists.lastIndex) {
+                        AnimatedContent(
+                            targetState = ", ",
+                            transitionSpec = { fadeIn() togetherWith fadeOut() },
+                            label = "",
+                        ) { comma ->
+                            Text(
+                                text = comma,
+                                style = MaterialTheme.typography.titleMedium,
+                                color = onBackgroundColor,
+                            )
+                        }
                     }
                 }
             }
@@ -807,6 +853,8 @@ fun BottomSheetPlayer(
                 )
             }
 
+            Spacer(Modifier.height(4.dp))
+
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
@@ -1021,6 +1069,7 @@ fun BottomSheetPlayer(
                 } else {
                     MaterialTheme.colorScheme.surfaceContainer
                 },
+            onBackgroundColor = onBackgroundColor,
         )
     }
 }

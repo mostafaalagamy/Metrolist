@@ -38,7 +38,6 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
@@ -107,7 +106,7 @@ import org.burnoutcrew.reorderable.rememberReorderableLazyListState
 import org.burnoutcrew.reorderable.reorderable
 
 @SuppressLint("UnrememberedMutableState")
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun Queue(
     state: BottomSheetState,
@@ -115,6 +114,7 @@ fun Queue(
     navController: NavController,
     modifier: Modifier = Modifier,
     backgroundColor: Color,
+    onBackgroundColor: Color,
 ) {
     val context = LocalContext.current
     val clipboardManager = LocalClipboardManager.current
@@ -209,7 +209,13 @@ fun Queue(
 
     BottomSheet(
         state = state,
-        brushBackgroundColor = Brush.verticalGradient(listOf(Color.Unspecified, Color.Unspecified)),
+        brushBackgroundColor =
+            Brush.verticalGradient(
+                listOf(
+                    if (state.isExpanded) backgroundColor else Color.Unspecified,
+                    if (state.isExpanded) backgroundColor else Color.Unspecified,
+                ),
+            ),
         modifier = modifier,
         collapsedContent = {
             Row(
@@ -226,6 +232,7 @@ fun Queue(
                 IconButton(onClick = { state.expandSoft() }) {
                     Icon(
                         painter = painterResource(R.drawable.expand_less),
+                        tint = onBackgroundColor,
                         contentDescription = null,
                     )
                 }
@@ -254,14 +261,9 @@ fun Queue(
                     }
                 },
                 onDragEnd = { fromIndex, toIndex ->
-                    println(fromIndex)
-                    println(toIndex)
                     val to = if (toIndex == 0) 1 else toIndex
                     if (!playerConnection.player.shuffleModeEnabled) {
                         playerConnection.player.moveMediaItem(fromIndex - headerItems, to - headerItems)
-                        queueWindows.forEach {
-                            println(it.mediaItem.metadata?.title)
-                        }
                     } else {
                         playerConnection.player.setShuffleOrder(
                             DefaultShuffleOrder(

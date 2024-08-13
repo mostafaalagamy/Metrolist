@@ -10,7 +10,29 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.exoplayer.offline.Download
 import com.metrolist.innertube.YouTube
-import com.metrolist.music.constants.*
+import com.metrolist.music.constants.AlbumFilter
+import com.metrolist.music.constants.AlbumFilterKey
+import com.metrolist.music.constants.AlbumSortDescendingKey
+import com.metrolist.music.constants.AlbumSortType
+import com.metrolist.music.constants.AlbumSortTypeKey
+import com.metrolist.music.constants.ArtistFilter
+import com.metrolist.music.constants.ArtistFilterKey
+import com.metrolist.music.constants.ArtistSongSortDescendingKey
+import com.metrolist.music.constants.ArtistSongSortType
+import com.metrolist.music.constants.ArtistSongSortTypeKey
+import com.metrolist.music.constants.ArtistSortDescendingKey
+import com.metrolist.music.constants.ArtistSortType
+import com.metrolist.music.constants.ArtistSortTypeKey
+import com.metrolist.music.constants.LibraryFilter
+import com.metrolist.music.constants.PlaylistSortDescendingKey
+import com.metrolist.music.constants.PlaylistSortType
+import com.metrolist.music.constants.PlaylistSortTypeKey
+import com.metrolist.music.constants.SongFilter
+import com.metrolist.music.constants.SongFilterKey
+import com.metrolist.music.constants.SongSortDescendingKey
+import com.metrolist.music.constants.SongSortType
+import com.metrolist.music.constants.SongSortTypeKey
+import com.metrolist.music.constants.TopSize
 import com.metrolist.music.db.MusicDatabase
 import com.metrolist.music.extensions.reversed
 import com.metrolist.music.extensions.toEnum
@@ -21,10 +43,17 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import java.text.Collator
 import java.time.Duration
 import java.time.LocalDateTime
+import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
@@ -61,10 +90,26 @@ class LibrarySongsViewModel
                                         when (sortType) {
                                             SongSortType.CREATE_DATE -> songs.sortedBy { downloads[it.id]?.updateTimeMs ?: 0L }
                                             SongSortType.NAME -> songs.sortedBy { it.song.title }
-                                            SongSortType.ARTIST ->
-                                                songs.sortedBy { song ->
-                                                    song.artists.joinToString(separator = "") { it.name }
-                                                }
+                                            SongSortType.ARTIST -> {
+                                                val collator =
+                                                    Collator.getInstance(Locale.getDefault())
+                                                collator.strength = Collator.PRIMARY
+                                                songs
+                                                    .sortedWith(
+                                                        compareBy(collator) { song ->
+                                                            song.artists.joinToString(
+                                                                "",
+                                                            ) { it.name }
+                                                        },
+                                                    ).groupBy { it.album?.title }
+                                                    .flatMap { (_, songsByAlbum) ->
+                                                        songsByAlbum.sortedBy { album ->
+                                                            album.artists.joinToString(
+                                                                "",
+                                                            ) { it.name }
+                                                        }
+                                                    }
+                                            }
 
                                             SongSortType.PLAY_TIME -> songs.sortedBy { it.song.totalPlayTime }
                                         }.reversed(descending)
@@ -173,7 +218,6 @@ class LibraryPlaylistsViewModel
         @ApplicationContext context: Context,
         database: MusicDatabase,
     ) : ViewModel() {
-        @OptIn(ExperimentalCoroutinesApi::class)
         val allPlaylists =
             context.dataStore.data
                 .map {
@@ -182,7 +226,6 @@ class LibraryPlaylistsViewModel
                 .flatMapLatest { (sortType, descending) ->
                     database.playlists(sortType, descending)
                 }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
-        val topSongs = database.mostPlayedSongs(0, 100)
         val topValue =
             context.dataStore.data
                 .map { it[TopSize] ?: "50" }
@@ -254,6 +297,25 @@ class LibraryMixViewModel
                                         }
                                     }
                                 }
+                        }
+                }
+            }
+            viewModelScope.launch(Dispatchers.IO) {
+                artists.collect { artists ->
+                    artists
+                        .map { it.artist }
+                        .filter {
+                            it.thumbnailUrl == null ||
+                                Duration.between(
+                                    it.lastUpdateTime,
+                                    LocalDateTime.now(),
+                                ) > Duration.ofDays(10)
+                        }.forEach { artist ->
+                            YouTube.artist(artist.id).onSuccess { artistPage ->
+                                database.query {
+                                    update(artist, artistPage)
+                                }
+                            }
                         }
                 }
             }

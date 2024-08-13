@@ -47,6 +47,8 @@ import com.metrolist.music.constants.ArtistSortTypeKey
 import com.metrolist.music.constants.ArtistViewTypeKey
 import com.metrolist.music.constants.CONTENT_TYPE_ARTIST
 import com.metrolist.music.constants.CONTENT_TYPE_HEADER
+import com.metrolist.music.constants.GridItemSize
+import com.metrolist.music.constants.GridItemsSizeKey
 import com.metrolist.music.constants.GridThumbnailHeight
 import com.metrolist.music.constants.LibraryViewType
 import com.metrolist.music.ui.component.ArtistGridItem
@@ -73,6 +75,7 @@ fun LibraryArtistsScreen(
     var filter by rememberEnumPreference(ArtistFilterKey, ArtistFilter.LIBRARY)
     val (sortType, onSortTypeChange) = rememberEnumPreference(ArtistSortTypeKey, ArtistSortType.CREATE_DATE)
     val (sortDescending, onSortDescendingChange) = rememberPreference(ArtistSortDescendingKey, true)
+    val gridItemSize by rememberEnumPreference(GridItemsSizeKey, GridItemSize.BIG)
 
     val artists by viewModel.allArtists.collectAsState()
     val coroutineScope = rememberCoroutineScope()
@@ -142,8 +145,8 @@ fun LibraryArtistsScreen(
                     painter =
                         painterResource(
                             when (viewType) {
-                                LibraryViewType.LIST -> R.drawable.grid_view
-                                LibraryViewType.GRID -> R.drawable.list
+                                LibraryViewType.LIST -> R.drawable.list
+                                LibraryViewType.GRID -> R.drawable.grid_view
                             },
                         ),
                     contentDescription = null,
@@ -216,14 +219,17 @@ fun LibraryArtistsScreen(
                                                 )
                                             }
                                         },
-                                    ).animateItemPlacement(),
+                                    ).animateItem(),
                         )
                     }
                 }
 
             LibraryViewType.GRID ->
                 LazyVerticalGrid(
-                    columns = GridCells.Adaptive(minSize = GridThumbnailHeight + 24.dp),
+                    columns =
+                        GridCells.Adaptive(
+                            minSize = GridThumbnailHeight + if (gridItemSize == GridItemSize.BIG) 24.dp else (-24).dp,
+                        ),
                     contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues(),
                 ) {
                     item(
@@ -267,7 +273,7 @@ fun LibraryArtistsScreen(
                                                 )
                                             }
                                         },
-                                    ).animateItemPlacement(),
+                                    ).animateItem(),
                         )
                     }
                 }
