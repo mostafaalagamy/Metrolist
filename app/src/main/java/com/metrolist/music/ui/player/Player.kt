@@ -224,7 +224,7 @@ fun BottomSheetPlayer(
                     Color.Black
                 } else {
                     changeColor = false
-                    androidx.compose.material3.surfaceColorAtElevation
+                    MaterialTheme.colorScheme.surfaceColorAtElevation(NavigationBarDefaults.Elevation)
                 }
         }
 
