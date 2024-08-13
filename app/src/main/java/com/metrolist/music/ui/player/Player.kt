@@ -230,7 +230,7 @@ fun BottomSheetPlayer(
                     Color.Black
                 } else {
                     changeColor = false
-                    MaterialTheme.colorScheme.surfaceColorAtElevation(NavigationBarDefaults.Elevation)
+                    MaterialTheme.colorScheme.onSurface
                 }
         }
 
