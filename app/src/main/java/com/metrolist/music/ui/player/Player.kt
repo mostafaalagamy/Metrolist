@@ -156,16 +156,7 @@ fun BottomSheetPlayer(
             val useDarkTheme = if (darkTheme == DarkMode.AUTO) isSystemInDarkTheme else darkTheme == DarkMode.ON
             useDarkTheme && pureBlack
         }
-<<<<<<< HEAD:app/src/main/java/com/metrolist/music/ui/player/Player.kt
-    val backgroundColor =
-        if (useBlackBackground && !state.isCollapsed) {
-            Color.Black
-        } else {
-            MaterialTheme.colorScheme.surfaceColorAtElevation(NavigationBarDefaults.Elevation)
-        }
-=======
->>>>>>> c60ca7f0 (fix: wrong colors):app/src/main/java/com/metrolist/music/ui/player/Player.kt
-
+        
     val playbackState by playerConnection.playbackState.collectAsState()
     val isPlaying by playerConnection.isPlaying.collectAsState()
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
