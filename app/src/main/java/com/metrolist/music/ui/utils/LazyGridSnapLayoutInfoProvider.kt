@@ -21,13 +21,16 @@ fun SnapLayoutInfoProvider(
         private val layoutInfo: LazyGridLayoutInfo
             get() = lazyGridState.layoutInfo
 
-        override fun calculateApproachOffset(initialVelocity: Float): Float = 0f
+        override fun calculateApproachOffset(
+            velocity: Float,
+            decayOffset: Float,
+        ): Float = 0f
 
-        override fun calculateSnappingOffset(currentVelocity: Float): Float {
+        override fun calculateSnapOffset(velocity: Float): Float {
             val bounds = calculateSnappingOffsetBounds()
             return when {
-                currentVelocity < 0 -> bounds.start
-                currentVelocity > 0 -> bounds.endInclusive
+                velocity < 0 -> bounds.start
+                velocity > 0 -> bounds.endInclusive
                 else -> 0f
             }
         }

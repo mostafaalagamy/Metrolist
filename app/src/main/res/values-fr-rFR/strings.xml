@@ -181,6 +181,7 @@
     <plurals name="n_elements">
         <item quantity="one">%d élément</item>
         <item quantity="many">%d éléments</item>
+        <item quantity="other">%d éléments</item>
     </plurals>
 
     <!-- Snackbar -->

@@ -20,11 +20,14 @@ import com.metrolist.music.constants.DarkModeKey
 import com.metrolist.music.constants.DefaultOpenTabKey
 import com.metrolist.music.constants.DynamicThemeKey
 import com.metrolist.music.constants.EnableSquigglySlider
+import com.metrolist.music.constants.GridItemSize
+import com.metrolist.music.constants.GridItemsSizeKey
+import com.metrolist.music.constants.LyricsClickKey
 import com.metrolist.music.constants.LyricsTextPositionKey
 import com.metrolist.music.constants.PlayerBackgroundStyle
 import com.metrolist.music.constants.PlayerBackgroundStyleKey
-import com.metrolist.music.constants.SwipeThumbnailKey
 import com.metrolist.music.constants.PureBlackKey
+import com.metrolist.music.constants.SwipeThumbnailKey
 import com.metrolist.music.ui.component.EnumListPreference
 import com.metrolist.music.ui.component.IconButton
 import com.metrolist.music.ui.component.SwitchPreference
@@ -48,8 +51,10 @@ fun AppearanceSettings(
     val (pureBlack, onPureBlackChange) = rememberPreference(PureBlackKey, defaultValue = false)
     val (defaultOpenTab, onDefaultOpenTabChange) = rememberEnumPreference(DefaultOpenTabKey, defaultValue = NavigationTab.HOME)
     val (lyricsPosition, onLyricsPositionChange) = rememberEnumPreference(LyricsTextPositionKey, defaultValue = LyricsPosition.CENTER)
+    val (lyricsClick, onLyricsClickChange) = rememberPreference(LyricsClickKey, defaultValue = true)
     val (squigglySlider, onSquigglySliderChange) = rememberPreference(EnableSquigglySlider, defaultValue = true)
     val (swipeThumbnail, onSwipeThumbnailChange) = rememberPreference(SwipeThumbnailKey, defaultValue = true)
+    val (gridItemSize, onGridItemSizeChange) = rememberEnumPreference(GridItemsSizeKey, defaultValue = GridItemSize.BIG)
 
     Column(
         Modifier
@@ -102,7 +107,7 @@ fun AppearanceSettings(
             checked = swipeThumbnail,
             onCheckedChange = onSwipeThumbnailChange,
         )
-        
+
         SwitchPreference(
             title = { Text(stringResource(R.string.pure_black)) },
             icon = { Icon(painterResource(R.drawable.contrast), null) },
@@ -132,6 +137,25 @@ fun AppearanceSettings(
                     LyricsPosition.LEFT -> stringResource(R.string.left)
                     LyricsPosition.CENTER -> stringResource(R.string.center)
                     LyricsPosition.RIGHT -> stringResource(R.string.right)
+                }
+            },
+        )
+        SwitchPreference(
+            title = { Text(stringResource(R.string.lyrics_click_change)) },
+            icon = { Icon(painterResource(R.drawable.lyrics), null) },
+            checked = lyricsClick,
+            onCheckedChange = onLyricsClickChange,
+        )
+
+        EnumListPreference(
+            title = { Text(stringResource(R.string.grid_cell_size)) },
+            icon = { Icon(painterResource(R.drawable.grid_view), null) },
+            selectedValue = gridItemSize,
+            onValueSelected = onGridItemSizeChange,
+            valueText = {
+                when (it) {
+                    GridItemSize.SMALL -> stringResource(R.string.small)
+                    GridItemSize.BIG -> stringResource(R.string.big)
                 }
             },
         )

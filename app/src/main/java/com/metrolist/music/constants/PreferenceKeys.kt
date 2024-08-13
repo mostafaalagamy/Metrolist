@@ -11,6 +11,7 @@ val DynamicThemeKey = booleanPreferencesKey("dynamicTheme")
 val DarkModeKey = stringPreferencesKey("darkMode")
 val PureBlackKey = booleanPreferencesKey("pureBlack")
 val DefaultOpenTabKey = stringPreferencesKey("defaultOpenTab")
+val GridItemsSizeKey = stringPreferencesKey("gridItemSize")
 
 const val SYSTEM_DEFAULT = "SYSTEM_DEFAULT"
 val ContentLanguageKey = stringPreferencesKey("contentLanguage")
@@ -156,6 +157,11 @@ enum class MixSortType {
     LAST_UPDATED,
 }
 
+enum class GridItemSize {
+    SMALL,
+    BIG,
+}
+
 enum class MyTopFilter {
     ALL_TIME,
     DAY,
@@ -215,6 +221,8 @@ val TopSize = stringPreferencesKey("topSize")
 val PlayerBackgroundStyleKey = stringPreferencesKey("playerBackgroundStyle")
 val ShowLyricsKey = booleanPreferencesKey("showLyrics")
 val LyricsTextPositionKey = stringPreferencesKey("lyricsTextPosition")
+val LyricsClickKey = booleanPreferencesKey("lyricsClick")
+val TranslateLyricsKey = booleanPreferencesKey("translateLyrics")
 
 val PlayerVolumeKey = floatPreferencesKey("playerVolume")
 val RepeatModeKey = intPreferencesKey("repeatMode")

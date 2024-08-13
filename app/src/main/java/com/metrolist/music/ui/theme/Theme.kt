@@ -64,7 +64,7 @@ fun Bitmap.extractThemeColor(): Color {
 }
 
 // from OuterTune
-fun Bitmap.extractGradientColors(): List<Color> {
+fun Bitmap.extractGradientColors(darkTheme: Boolean): List<Color> {
     val extractedColors =
         Palette
             .from(this)
@@ -74,10 +74,18 @@ fun Bitmap.extractGradientColors(): List<Color> {
             .associate { it.rgb to it.population }
 
     val orderedColors =
-        Score
-            .order(extractedColors)
-            .take(2)
-            .sortedByDescending { Color(it).luminance() }
+        if (darkTheme) {
+            Score
+                .order(extractedColors)
+                .sortedBy { Color(it).luminance() }
+                .take(2)
+                .reversed()
+        } else {
+            Score
+                .order(extractedColors)
+                .sortedByDescending { Color(it).luminance() }
+                .take(2)
+        }
 
     val res = mutableListOf<Color>()
     return if (orderedColors.size >= 2) {

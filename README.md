@@ -69,7 +69,7 @@ height="80">](https://github.com/mostafaalagamy/Metrolist/releases/latest/downlo
 <div align="center">
 <h1>Special thanks</h1>
 
-[InnerTune](https://github.com/Malopieds/InnerTune) , [Malopieds](https://github.com/Malopieds)
+[metrolist](https://github.com/metrolist)
 </div>
 
 <div align="center">
