@@ -6,4 +6,7 @@
     <exclude
         domain="file"
         path="./download" />
+    <exclude
+        domain="database"
+        path="exoplayer_internal.db" />
 </full-backup-content>

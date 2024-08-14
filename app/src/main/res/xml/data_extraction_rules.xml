@@ -11,6 +11,9 @@
         <exclude
             domain="file"
             path="./download" />
+        <exclude
+            domain="database"
+            path="exoplayer_internal.db" />
     </cloud-backup>
     <device-transfer>
         <exclude
@@ -19,5 +22,8 @@
         <exclude
             domain="file"
             path="./download" />
+        <exclude
+            domain="database"
+            path="exoplayer_internal.db" />
     </device-transfer>
 </data-extraction-rules>
