@@ -50,9 +50,11 @@ import androidx.compose.ui.unit.sp
 import com.metrolist.music.BuildConfig
 import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
+import com.metrolist.music.constants.LyricsClickKey
 import com.metrolist.music.constants.LyricsTextPositionKey
 import com.metrolist.music.constants.PlayerBackgroundStyle
 import com.metrolist.music.constants.PlayerBackgroundStyleKey
+import com.metrolist.music.constants.TranslateLyricsKey
 import com.metrolist.music.db.entities.LyricsEntity.Companion.LYRICS_NOT_FOUND
 import com.metrolist.music.lyrics.LyricsEntry
 import com.metrolist.music.lyrics.LyricsEntry.Companion.HEAD_LYRICS_ENTRY
@@ -80,6 +82,8 @@ fun Lyrics(
     val density = LocalDensity.current
 
     val lyricsTextPosition by rememberEnumPreference(LyricsTextPositionKey, LyricsPosition.CENTER)
+    var translationEnabled by rememberPreference(TranslateLyricsKey, false)
+    var changeLyrics by rememberPreference(LyricsClickKey, false)
 
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
     val lyricsEntity by playerConnection.currentLyrics.collectAsState(initial = null)
@@ -265,7 +269,7 @@ fun Lyrics(
                         modifier =
                             Modifier
                                 .fillMaxWidth()
-                                .clickable(enabled = isSynced) {
+                                .clickable(enabled = isSynced && changeLyrics) {
                                     playerConnection.player.seekTo(item.time)
                                     lastPreviewTime = 0L
                                 }.padding(horizontal = 24.dp, vertical = 8.dp)

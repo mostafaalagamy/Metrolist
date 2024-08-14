@@ -6,6 +6,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
@@ -23,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
@@ -87,7 +89,6 @@ fun Thumbnail(
                                     }
                                 },
                                 onDragEnd = {
-                                    println(offsetX)
                                     if (offsetX > 400) {
                                         if (playerConnection.player.previousMediaItemIndex != -1) {
                                             playerConnection.player.seekToPreviousMediaItem()
@@ -105,10 +106,12 @@ fun Thumbnail(
                 AsyncImage(
                     model = mediaMetadata?.thumbnailUrl,
                     contentDescription = null,
+                    contentScale = ContentScale.Crop,
                     modifier =
                         Modifier
                             .offset { IntOffset(offsetX.roundToInt(), 0) }
                             .fillMaxWidth()
+                            .aspectRatio(1f)
                             .clip(RoundedCornerShape(ThumbnailCornerRadius * 2))
                             .pointerInput(Unit) {
                                 detectTapGestures(
