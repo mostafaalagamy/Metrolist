@@ -12,4 +12,12 @@
             domain="file"
             path="./download" />
     </cloud-backup>
+    <device-transfer>
+        <exclude
+            domain="file"
+            path="./exoplayer" />
+        <exclude
+            domain="file"
+            path="./download" />
+    </device-transfer>
 </data-extraction-rules>
