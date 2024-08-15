@@ -448,7 +448,7 @@ fun Queue(
                     .background(MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.8f))
                     ).windowInsetsPadding(
                         WindowInsets.systemBars
-                            .only(WindowInsetsSides.Top + WindowInsetsSides.Horizontal),
+                            .only(WindowInsetsSides.Top + WindowInsetsSides.Horizontal)
                     )
         ) {
             Row(
