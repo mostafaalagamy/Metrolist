@@ -50,6 +50,7 @@ import androidx.compose.material3.SwipeToDismissBox
 import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -446,7 +447,7 @@ fun Queue(
                 Modifier
                     .background(
                         MaterialTheme.colorScheme
-                            .surfaceContainer
+                            .surfaceColorAtElevation
                             .copy(alpha = 0.95f),
                     ).windowInsetsPadding(
                         WindowInsets.systemBars
