@@ -119,7 +119,7 @@ fun ArtistScreen(
 
     val transparentAppBar by remember {
         derivedStateOf {
-            lazyListState.firstVisibleItemIndex <= 1
+            lazyListState.firstVisibleItemIndex == 0
         }
     }
 

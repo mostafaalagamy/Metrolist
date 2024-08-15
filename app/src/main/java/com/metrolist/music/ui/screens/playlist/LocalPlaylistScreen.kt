@@ -605,16 +605,14 @@ fun LocalPlaylistScreen(
                                     )
                                 }
 
-                                if (sortType == PlaylistSongSortType.CUSTOM) {
-                                    IconButton(
-                                        onClick = { locked = !locked },
-                                        modifier = Modifier.padding(horizontal = 6.dp),
-                                    ) {
-                                        Icon(
-                                            painter = painterResource(if (locked) R.drawable.lock else R.drawable.lock_open),
-                                            contentDescription = null,
-                                        )
-                                    }
+                                IconButton(
+                                    onClick = { locked = !locked },
+                                    modifier = Modifier.padding(horizontal = 6.dp),
+                                ) {
+                                    Icon(
+                                        painter = painterResource(if (locked) R.drawable.lock else R.drawable.lock_open),
+                                        contentDescription = null,
+                                    )
                                 }
                             }
                         }
