@@ -445,11 +445,14 @@ fun Queue(
         Column(
             modifier =
                 Modifier
-                    .background(MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.8f))
+                    .background(
+                        MaterialTheme.colorScheme
+                            .secondaryContainer
+                            .copy(alpha = 0.95f),
                     ).windowInsetsPadding(
                         WindowInsets.systemBars
-                            .only(WindowInsetsSides.Top + WindowInsetsSides.Horizontal)
-                    )
+                            .only(WindowInsetsSides.Top + WindowInsetsSides.Horizontal),
+                    ),
         ) {
             Row(
                 horizontalArrangement = Arrangement.spacedBy(6.dp),
