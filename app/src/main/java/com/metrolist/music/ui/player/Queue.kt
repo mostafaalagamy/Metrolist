@@ -445,10 +445,7 @@ fun Queue(
         Column(
             modifier =
                 Modifier
-                    .background(
-                        MaterialTheme.colorScheme
-                            .surfaceColorAtElevation
-                            .copy(alpha = 0.95f),
+                    .background(MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.8f))
                     ).windowInsetsPadding(
                         WindowInsets.systemBars
                             .only(WindowInsetsSides.Top + WindowInsetsSides.Horizontal),
