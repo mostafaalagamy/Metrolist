@@ -254,15 +254,6 @@
     <string name="backup_create_failed">無法建立備份</string>
     <string name="restore_failed">無法還原備份</string>
 
-    <string name="discord_integration">Discord 整合</string>
-    <string name="discord_information">你可以安心的登入，metrolist只會提取你的token，所有東西都存在本機。</string>
-    <string name="dismiss">了解</string>
-    <string name="options">選項</string>
-    <string name="preview">預覽</string>
-    <string name="login_failed">登入失敗</string>
-    <string name="logout">登出</string>
-    <string name="enable_discord_rpc">啟用 Rich Presense</string>
-
     <string name="about">關於</string>
     <string name="app_version">應用程式版本</string>
 
