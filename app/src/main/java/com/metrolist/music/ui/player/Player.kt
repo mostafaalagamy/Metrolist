@@ -42,6 +42,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -495,8 +496,8 @@ fun BottomSheetPlayer(
             } else {
                 Brush.verticalGradient(
                     listOf(
-                        MaterialTheme.colorScheme.surfaceContainer,
-                        MaterialTheme.colorScheme.surfaceContainer,
+                        MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp),
+                        MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp),
                     ),
                 )
             },
@@ -1036,7 +1037,7 @@ fun BottomSheetPlayer(
                 if (useBlackBackground) {
                     Color.Black
                 } else {
-                    MaterialTheme.colorScheme.surfaceContainer
+                    MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp)
                 },
             onBackgroundColor = onBackgroundColor,
         )

@@ -40,7 +40,9 @@ fun MetrolistTheme(
                     dynamicLightColorScheme(context)
                 }
             } else {
-                SchemeTonalSpot(Hct.fromInt(themeColor.toArgb()), darkTheme, 0.0).toColorScheme().pureBlack(pureBlack)
+                SchemeTonalSpot(Hct.fromInt(themeColor.toArgb()), darkTheme, 0.0)
+                .toColorScheme()
+                .pureBlack(darkTheme && pureBlack)
             }
         }
 
