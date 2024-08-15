@@ -41,8 +41,8 @@ fun MetrolistTheme(
                 }
             } else {
                 SchemeTonalSpot(Hct.fromInt(themeColor.toArgb()), darkTheme, 0.0)
-                .toColorScheme()
-                .pureBlack(darkTheme && pureBlack)
+                    .toColorScheme()
+                    .pureBlack(darkTheme && pureBlack)
             }
         }
 
@@ -131,6 +131,31 @@ fun DynamicScheme.toColorScheme() =
         outline = Color(outline),
         outlineVariant = Color(outlineVariant),
         scrim = Color(scrim),
+        surfaceBright = Color(surfaceBright),
+        surfaceDim = Color(surfaceDim),
+        surfaceContainer = Color(surfaceContainer),
+        surfaceContainerHigh = Color(surfaceContainerHigh),
+        surfaceContainerHighest = Color(surfaceContainerHighest),
+        surfaceContainerLow = Color(surfaceContainerLow),
+        surfaceContainerLowest = Color(surfaceContainerLowest),
+    )
+
+fun ColorScheme.pureBlack(apply: Boolean) =
+    if (apply) {
+        copy(
+            surface = Color.Black,
+            background = Color.Black,
+        )
+    } else {
+        this
+    }
+
+val ColorSaver =
+    object : Saver<Color, Int> {
+        override fun restore(value: Int): Color = Color(value)
+
+        override fun SaverScope.save(value: Color): Int = value.toArgb()
+    }
         surfaceBright = Color(surfaceBright),
         surfaceDim = Color(surfaceDim),
         surfaceContainer = Color(surfaceContainer),
