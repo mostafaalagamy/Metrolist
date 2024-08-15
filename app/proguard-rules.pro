@@ -59,3 +59,13 @@
 -dontwarn org.openjsse.javax.net.ssl.SSLSocket
 -dontwarn org.openjsse.net.ssl.OpenJSSE
 -dontwarn org.slf4j.impl.StaticLoggerBinder
+-dontwarn com.google.firebase.perf.network.FirebasePerfOkHttpClient
+-dontwarn com.google.firebase.perf.network.FirebasePerfUrlConnection
+# opencc4j
+-keep class com.github.houbb.opencc4j.** { *; }
+-dontwarn com.huaban.analysis.jieba.JiebaSegmenter
+
+# Keep Data data classes
+-keep class com.my.kizzy.data.remote.** { <fields>; }
+# Keep Gateway data classes
+-keep class com.my.kizzy.gateway.entities.** { <fields>; }

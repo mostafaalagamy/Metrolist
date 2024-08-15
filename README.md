@@ -9,9 +9,53 @@
   <img src="https://github.com/mostafaalagamy/Metrolist/blob/dev/fastlane/metadata/android/images/screenshots/screenshot_2.jpeg" width="30%" />
   <img src="https://github.com/mostafaalagamy/Metrolist/blob/dev/fastlane/metadata/android/images/screenshots/screenshot_3.jpeg" width="30%" />
 
+<<<<<<< HEAD
   <img src="https://github.com/mostafaalagamy/Metrolist/blob/dev/fastlane/metadata/android/images/screenshots/screenshot_4.jpeg" width="30%" />
   <img src="https://github.com/mostafaalagamy/Metrolist/blob/dev/fastlane/metadata/android/images/screenshots/screenshot_5.jpeg" width="30%" />
   <img src="https://github.com/mostafaalagamy/Metrolist/blob/dev/fastlane/metadata/android/images/screenshots/screenshot_6.jpeg" width="30%" />
+=======
+[![Latest release](https://img.shields.io/github/v/release/metrolist/metrolist?include_prereleases)](https://github.com/metrolist/metrolist/releases)
+[![License](https://img.shields.io/github/license/metrolist/metrolist)](https://www.gnu.org/licenses/gpl-3.0)
+[![Downloads](https://img.shields.io/github/downloads/metrolist/metrolist/total)](https://github.com/metrolist/metrolist/releases)
+[![Downloads](https://img.shields.io/endpoint?url=https://apt.izzysoft.de/fdroid/api/v1/shield/com.metrolist.music)](https://apt.izzysoft.de/fdroid/index/apk/com.metrolist.music)
+
+[<img src="https://github.com/machiav3lli/oandbackupx/blob/034b226cea5c1b30eb4f6a6f313e4dadcbb0ece4/badge_github.png" alt="Get it on GitHub" height="80">](https://github.com/metrolist/metrolist/releases/latest)
+[<img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png" height="80">](https://apt.izzysoft.de/fdroid/index/apk/com.metrolist.music)
+
+<!---[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" alt="Get it on F-Droid" height="80">](https://f-droid.org/packages/com.zionhuang.music)
+[Compare versions](https://github.com/metrolist/metrolist/wiki/App-Versions) --->
+
+## Features
+
+- Play songs from YT/YT Music without ads
+- Background playback
+- Search songs, videos, albums, and playlists from YouTube Music
+- Login support
+- Library management
+- Cache and download songs for offline playback
+- Synchronized lyrics
+- Skip silence
+- Audio normalization
+- Adjust tempo/pitch
+- Dynamic theme
+- Localization
+- Android Auto support
+- Personalized quick picks
+- Material 3
+- Discord Rich Presence support
+
+## Screenshots
+
+<p float="left">
+  <img src="https://raw.githubusercontent.com/metrolist/metrolist/dev/fastlane/metadata/android/en-US/images/phoneScreenshots/01.png" width="200" />
+  <img src="https://raw.githubusercontent.com/metrolist/metrolist/dev/fastlane/metadata/android/en-US/images/phoneScreenshots/02.png" width="200" />
+  <img src="https://raw.githubusercontent.com/metrolist/metrolist/dev/fastlane/metadata/android/en-US/images/phoneScreenshots/03.png" width="200" />
+</p>
+<p float="left">
+  <img src="https://raw.githubusercontent.com/metrolist/metrolist/dev/fastlane/metadata/android/en-US/images/phoneScreenshots/04.png" width="200" />
+  <img src="https://raw.githubusercontent.com/metrolist/metrolist/dev/fastlane/metadata/android/en-US/images/phoneScreenshots/05.png" width="200" />
+  <img src="https://raw.githubusercontent.com/metrolist/metrolist/dev/fastlane/metadata/android/en-US/images/phoneScreenshots/06.png" width="200" />
+>>>>>>> 2f06bade (feat: discord RPC, closes #22)
 </p>
 
 [![Latest release](https://img.shields.io/github/v/release/mostafaalagamy/Metrolist?style=for-the-badge)](https://github.com/mostafaalagamy/Metrolist/releases)
@@ -69,7 +113,7 @@ height="80">](https://github.com/mostafaalagamy/Metrolist/releases/latest/downlo
 <div align="center">
 <h1>Special thanks</h1>
 
-[Malopieds](https://github.com/Malopieds)
+[metrolist](https://github.com/metrolist)
 </div>
 
 <div align="center">
