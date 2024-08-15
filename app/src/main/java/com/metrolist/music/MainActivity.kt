@@ -661,6 +661,7 @@ class MainActivity : ComponentActivity() {
                                             )
                                         }
                                     },
+                            containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp) // #Agamy
                         ) {
                             navigationItems.fastForEach { screen ->
                                 NavigationBarItem(
