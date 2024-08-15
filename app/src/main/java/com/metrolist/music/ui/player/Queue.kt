@@ -449,7 +449,7 @@ fun Queue(
                     ).windowInsetsPadding(
                         WindowInsets.systemBars
                             .only(WindowInsetsSides.Top + WindowInsetsSides.Horizontal),
-                    ),
+                    )
         ) {
             Row(
                 horizontalArrangement = Arrangement.spacedBy(6.dp),
