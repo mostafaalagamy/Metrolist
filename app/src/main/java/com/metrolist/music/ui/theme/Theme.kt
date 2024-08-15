@@ -156,28 +156,3 @@ val ColorSaver =
 
         override fun SaverScope.save(value: Color): Int = value.toArgb()
     }
-        surfaceBright = Color(surfaceBright),
-        surfaceDim = Color(surfaceDim),
-        surfaceContainer = Color(surfaceContainer),
-        surfaceContainerHigh = Color(surfaceContainerHigh),
-        surfaceContainerHighest = Color(surfaceContainerHighest),
-        surfaceContainerLow = Color(surfaceContainerLow),
-        surfaceContainerLowest = Color(surfaceContainerLowest),
-    )
-
-fun ColorScheme.pureBlack(apply: Boolean) =
-    if (apply) {
-        copy(
-            surface = Color.Black,
-            background = Color.Black,
-        )
-    } else {
-        this
-    }
-
-val ColorSaver =
-    object : Saver<Color, Int> {
-        override fun restore(value: Int): Color = Color(value)
-
-        override fun SaverScope.save(value: Color): Int = value.toArgb()
-    }
