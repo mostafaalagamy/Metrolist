@@ -24,6 +24,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavController
+<<<<<<< HEAD:app/src/main/java/com/metrolist/music/ui/screens/settings/DiscordLoginScreen.kt
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.R
 import com.metrolist.music.constants.DiscordNameKey
@@ -32,6 +33,16 @@ import com.metrolist.music.constants.DiscordUsernameKey
 import com.metrolist.music.ui.component.IconButton
 import com.metrolist.music.ui.utils.backToMain
 import com.metrolist.music.utils.rememberPreference
+=======
+import com.metrolist.music.LocalPlayerAwareWindowInsets
+import com.metrolist.music.R
+import com.metrolist.music.constants.DiscordTokenKey
+import com.metrolist.music.ui.component.IconButton
+import com.metrolist.music.ui.utils.backToMain
+import com.metrolist.music.utils.rememberPreference
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+>>>>>>> ddf03cd2 (Navigate up when logged into discord):app/src/main/java/com/metrolist/music/ui/screens/settings/DiscordLoginScreen.kt
 
 @SuppressLint("SetJavaScriptEnabled")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -39,8 +50,6 @@ import com.metrolist.music.utils.rememberPreference
 fun DiscordLoginScreen(navController: NavController) {
     val scope = rememberCoroutineScope()
     var discordToken by rememberPreference(DiscordTokenKey, "")
-    var discordUsername by rememberPreference(DiscordUsernameKey, "")
-    var discordName by rememberPreference(DiscordNameKey, "")
 
     var webView: WebView? = null
 
@@ -83,6 +92,7 @@ fun DiscordLoginScreen(navController: NavController) {
                 cookieManager.flush()
 
                 WebStorage.getInstance().deleteAllData()
+<<<<<<< HEAD:app/src/main/java/com/metrolist/music/ui/screens/settings/DiscordLoginScreen.kt
                 addJavascriptInterface(
                     object {
                         @JavascriptInterface
@@ -93,6 +103,17 @@ fun DiscordLoginScreen(navController: NavController) {
                     },
                     "Android",
                 )
+=======
+                addJavascriptInterface(object {
+                    @JavascriptInterface
+                    fun onRetrieveToken(token: String) {
+                        discordToken = token
+                        scope.launch(Dispatchers.Main) {
+                            navController.navigateUp()
+                        }
+                    }
+                }, "Android")
+>>>>>>> ddf03cd2 (Navigate up when logged into discord):app/src/main/java/com/metrolist/music/ui/screens/settings/DiscordLoginScreen.kt
 
                 webView = this
                 loadUrl("https://discord.com/login")
