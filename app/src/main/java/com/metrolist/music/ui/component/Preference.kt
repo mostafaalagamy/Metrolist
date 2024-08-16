@@ -35,7 +35,7 @@ fun PreferenceEntry(
     content: (@Composable () -> Unit)? = null,
     icon: (@Composable () -> Unit)? = null,
     trailingContent: (@Composable () -> Unit)? = null,
-    onClick: () -> Unit,
+    onClick: (() -> Unit)? = null,
     isEnabled: Boolean = true,
 ) {
     Row(
@@ -44,8 +44,8 @@ fun PreferenceEntry(
             modifier
                 .fillMaxWidth()
                 .clickable(
-                    enabled = isEnabled,
-                    onClick = onClick,
+                    enabled = isEnabled && onClick != null,
+                    onClick = onClick ?: {},
                 ).alpha(if (isEnabled) 1f else 0.5f)
                 .padding(horizontal = 16.dp, vertical = 16.dp),
     ) {
