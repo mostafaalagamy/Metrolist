@@ -163,7 +163,9 @@ class MediaLibrarySessionCallback
                                 browsableMediaItem(
                                     "${MusicService.ALBUM}/${album.id}",
                                     album.album.title,
-                                    album.artists.joinToString(),
+                                    album.artists.joinToString {
+                                        it.name
+                                    },
                                     album.album.thumbnailUrl?.toUri(),
                                     MediaMetadata.MEDIA_TYPE_ALBUM,
                                 )

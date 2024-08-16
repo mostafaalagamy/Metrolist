@@ -246,6 +246,7 @@
 
     <string name="content">Content</string>
     <string name="login">Login</string>
+    <string name="not_logged_in">Not logged in</string>
     <string name="content_language">Default content language</string>
     <string name="content_country">Default content country</string>
     <string name="system_default">System default</string>
@@ -299,6 +300,15 @@
     <string name="backup_create_success">Backup created successfully</string>
     <string name="backup_create_failed">Couldn\'t create backup</string>
     <string name="restore_failed">Failed to restore backup</string>
+
+    <string name="discord_integration">Discord Integration</string>
+    <string name="discord_information">You can log in safely. metrolist will only extract your token, and everything else is stored locally.</string>
+    <string name="dismiss">Dismiss</string>
+    <string name="options">Options</string>
+    <string name="preview">Preview</string>
+    <string name="login_failed">Login failed</string>
+    <string name="logout">Logout</string>
+    <string name="enable_discord_rpc">Enable Rich Presense</string>
 
     <string name="about">About</string>
     <string name="app_version">App version</string>
