@@ -82,7 +82,6 @@ fun Lyrics(
     val density = LocalDensity.current
 
     val lyricsTextPosition by rememberEnumPreference(LyricsTextPositionKey, LyricsPosition.CENTER)
-    var translationEnabled by rememberPreference(TranslateLyricsKey, false)
     val changeLyrics by rememberPreference(LyricsClickKey, true)
 
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
