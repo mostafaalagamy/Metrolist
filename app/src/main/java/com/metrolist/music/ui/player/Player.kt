@@ -42,7 +42,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -217,19 +216,44 @@ fun BottomSheetPlayer(
         }
     }
 
+    val changeBound = state.expandedBound / 3
+
     val onBackgroundColor =
         when (playerBackground) {
             PlayerBackgroundStyle.DEFAULT -> MaterialTheme.colorScheme.onBackground
-            else ->
+            else -> {
+                val whiteContrast =
+                    if (gradientColors.size >= 2) {
+                        ColorUtils.calculateContrast(
+                            gradientColors.first().toArgb(),
+                            Color.White.toArgb(),
+                        )
+                    } else {
+                        2.0
+                    }
+                val blackContrast: Double =
+                    if (gradientColors.size >= 2) {
+                        ColorUtils.calculateContrast(
+                            gradientColors.last().toArgb(),
+                            Color.Black.toArgb(),
+                        )
+                    } else {
+                        2.0
+                    }
                 if (gradientColors.size >= 2 &&
-                    ColorUtils.calculateContrast(gradientColors.first().toArgb(), Color.White.toArgb()) < 1.5f
+                    whiteContrast < 2f &&
+                    blackContrast > 2f
                 ) {
                     changeColor = true
                     Color.Black
+                } else if (whiteContrast > 2f && blackContrast < 2f) {
+                    changeColor = true
+                    Color.White
                 } else {
                     changeColor = false
                     MaterialTheme.colorScheme.onSurface
                 }
+            }
         }
 
     val download by LocalDownloadUtil.current.getDownload(mediaMetadata?.id ?: "").collectAsState(initial = null)
@@ -490,14 +514,14 @@ fun BottomSheetPlayer(
         brushBackgroundColor =
             if (gradientColors.size >=
                 2 &&
-                state.value > state.expandedBound / 3
+                state.value > changeBound
             ) {
                 Brush.verticalGradient(gradientColors)
             } else {
                 Brush.verticalGradient(
                     listOf(
-                        MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp),
-                        MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp),
+                        MaterialTheme.colorScheme.surfaceContainer,
+                        MaterialTheme.colorScheme.surfaceContainer,
                     ),
                 )
             },
@@ -955,15 +979,6 @@ fun BottomSheetPlayer(
             }
         }
 
-        if (gradientColors.size >= 2 && state.isExpanded) {
-            Box(
-                modifier =
-                    Modifier
-                        .fillMaxSize()
-                        .background(Brush.verticalGradient(gradientColors)),
-            )
-        }
-
         when (LocalConfiguration.current.orientation) {
             Configuration.ORIENTATION_LANDSCAPE -> {
                 Row(
@@ -980,6 +995,7 @@ fun BottomSheetPlayer(
                             sliderPositionProvider = { sliderPosition },
                             modifier = Modifier.nestedScroll(state.preUpPostDownNestedScrollConnection),
                             changeColor = changeColor,
+                            color = onBackgroundColor,
                         )
                     }
 
@@ -1017,6 +1033,7 @@ fun BottomSheetPlayer(
                             sliderPositionProvider = { sliderPosition },
                             modifier = Modifier.nestedScroll(state.preUpPostDownNestedScrollConnection),
                             changeColor = changeColor,
+                            color = onBackgroundColor,
                         )
                     }
 
@@ -1037,7 +1054,7 @@ fun BottomSheetPlayer(
                 if (useBlackBackground) {
                     Color.Black
                 } else {
-                    MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp)
+                    MaterialTheme.colorScheme.surfaceContainer
                 },
             onBackgroundColor = onBackgroundColor,
         )
