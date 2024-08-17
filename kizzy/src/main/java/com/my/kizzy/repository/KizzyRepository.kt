@@ -10,10 +10,10 @@
  *
  */
 
-package com.my.kizzy.data.repository
+package com.my.kizzy.repository
 
-import com.my.kizzy.data.remote.ApiService
-import com.my.kizzy.data.utils.toImageAsset
+import com.my.kizzy.remote.ApiService
+import com.my.kizzy.utils.toImageAsset
 import java.io.File
 
 /**

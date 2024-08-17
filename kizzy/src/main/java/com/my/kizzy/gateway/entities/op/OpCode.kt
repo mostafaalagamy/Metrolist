@@ -1,4 +1,4 @@
-package com.my.kizzy.data.gateway.entities.op
+package com.my.kizzy.gateway.entities.op
 
 import kotlinx.serialization.Serializable
 

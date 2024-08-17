@@ -9,7 +9,7 @@
  *
  *
  */
-package com.my.kizzy.data.remote
+package com.my.kizzy.remote
 
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.HttpTimeout
@@ -46,12 +46,12 @@ class ApiService {
     }
 
     suspend fun getImage(url: String) = client.get {
-        url("$baseUrl/image")
+        url("$BASE_URL/image")
         parameter("url", url)
     }
 
     suspend fun uploadImage(file: File) = client.post {
-        url("$baseUrl/upload")
+        url("$BASE_URL/upload")
         setBody(MultiPartFormDataContent(
             formData {
                 append("temp", file.readBytes(), Headers.build {
@@ -63,6 +63,6 @@ class ApiService {
     }
 
     companion object {
-        const val baseUrl = "https://kizzyapi-1-z9614716.deta.app"
+        const val BASE_URL = "https://kizzyapi-1-z9614716.deta.app"
     }
 }

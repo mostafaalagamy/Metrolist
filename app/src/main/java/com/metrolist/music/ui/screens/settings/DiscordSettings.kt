@@ -48,6 +48,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+<<<<<<< HEAD:app/src/main/java/com/metrolist/music/ui/screens/settings/DiscordSettings.kt
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
@@ -64,6 +65,24 @@ import com.metrolist.music.ui.component.SwitchPreference
 import com.metrolist.music.ui.utils.backToMain
 import com.metrolist.music.utils.rememberPreference
 import com.my.kizzy.data.rpc.KizzyRPC
+=======
+import com.my.kizzy.rpc.KizzyRPC
+import com.metrolist.music.LocalPlayerAwareWindowInsets
+import com.metrolist.music.LocalPlayerConnection
+import com.metrolist.music.R
+import com.metrolist.music.constants.DiscordInfoDismissedKey
+import com.metrolist.music.constants.DiscordNameKey
+import com.metrolist.music.constants.DiscordTokenKey
+import com.metrolist.music.constants.DiscordUsernameKey
+import com.metrolist.music.constants.EnableDiscordRPCKey
+import com.metrolist.music.db.entities.Song
+import com.metrolist.music.ui.component.IconButton
+import com.metrolist.music.ui.component.PreferenceEntry
+import com.metrolist.music.ui.component.PreferenceGroupTitle
+import com.metrolist.music.ui.component.SwitchPreference
+import com.metrolist.music.ui.utils.backToMain
+import com.metrolist.music.utils.rememberPreference
+>>>>>>> 7cb8e3f4 (Convert kizzy to java library):app/src/main/java/com/metrolist/music/ui/screens/settings/DiscordSettings.kt
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 

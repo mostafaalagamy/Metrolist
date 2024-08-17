@@ -1,6 +1,6 @@
-package com.my.kizzy.data.gateway.entities
+package com.my.kizzy.gateway.entities
 
-import com.my.kizzy.data.gateway.entities.op.OpCode
+import com.my.kizzy.gateway.entities.op.OpCode
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonElement

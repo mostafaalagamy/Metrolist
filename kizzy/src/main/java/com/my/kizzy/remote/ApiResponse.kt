@@ -1,4 +1,4 @@
-package com.my.kizzy.data.remote
+package com.my.kizzy.remote
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
