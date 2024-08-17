@@ -87,7 +87,6 @@ fun Lyrics(
     val changeLyrics by rememberPreference(LyricsClickKey, true)
 
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
-    val translating by playerConnection.translating.collectAsState()
     val lyricsEntity by playerConnection.currentLyrics.collectAsState(initial = null)
     val lyrics =
         remember(lyricsEntity, translating) {
@@ -312,35 +311,21 @@ fun Lyrics(
 
         mediaMetadata?.let { mediaMetadata ->
             Row(
-                modifier =
-                    Modifier
-                        .align(Alignment.BottomEnd)
-                        .padding(end = 12.dp),
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(end = 12.dp)
             ) {
-                if (BuildConfig.FLAVOR != "foss") {
-                    IconButton(
-                        onClick = {
-                            translationEnabled = !translationEnabled
-                        },
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.translate),
-                            contentDescription = null,
-                            tint = LocalContentColor.current.copy(alpha = if (translationEnabled) 1f else 0.3f),
-                        )
-                    }
-                }
-
+                
                 IconButton(
                     onClick = {
                         menuState.show {
                             LyricsMenu(
                                 lyricsProvider = { lyricsEntity },
                                 mediaMetadataProvider = { mediaMetadata },
-                                onDismiss = menuState::dismiss,
+                                onDismiss = menuState::dismiss
                             )
                         }
-                    },
+                    }
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.more_horiz),
