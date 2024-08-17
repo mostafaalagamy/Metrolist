@@ -23,6 +23,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalView
@@ -43,6 +44,7 @@ fun Thumbnail(
     sliderPositionProvider: () -> Long?,
     modifier: Modifier = Modifier,
     changeColor: Boolean = false,
+    color: Color,
 ) {
     val playerConnection = LocalPlayerConnection.current ?: return
     val currentView = LocalView.current
@@ -136,6 +138,7 @@ fun Thumbnail(
             Lyrics(
                 sliderPositionProvider = sliderPositionProvider,
                 changeColor = changeColor,
+                color = color,
             )
         }
 
