@@ -2,7 +2,7 @@ name: Build release APK
 on:
   workflow_dispatch:
   push:
-    branches: [ "dev" ]
+    branches: [ "**" ]
     
 jobs:
   build:
