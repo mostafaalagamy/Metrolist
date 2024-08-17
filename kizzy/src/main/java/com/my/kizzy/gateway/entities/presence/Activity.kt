@@ -1,4 +1,4 @@
-package com.my.kizzy.data.gateway.entities.presence
+package com.my.kizzy.gateway.entities.presence
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

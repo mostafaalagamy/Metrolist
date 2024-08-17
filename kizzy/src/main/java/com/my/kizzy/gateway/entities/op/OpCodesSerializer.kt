@@ -1,4 +1,4 @@
-package com.my.kizzy.data.gateway.entities.op
+package com.my.kizzy.gateway.entities.op
 
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.PrimitiveKind

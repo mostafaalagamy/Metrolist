@@ -10,12 +10,9 @@
  *
  */
 
-package com.my.kizzy.data.rpc
+package com.my.kizzy.rpc
 
-import android.content.Context
-import android.graphics.Bitmap
-import com.my.kizzy.data.repository.KizzyRepository
-import com.my.kizzy.data.utils.toFile
+import com.my.kizzy.repository.KizzyRepository
 
 /**
  * Modified by Zion Huang
@@ -32,17 +29,6 @@ sealed class RpcImage {
     class ExternalImage(val image: String) : RpcImage() {
         override suspend fun resolveImage(repository: KizzyRepository): String? {
             return repository.getImage(image)
-        }
-    }
-
-    class BitmapImage(
-        private val context: Context,
-        val bitmap: Bitmap?,
-        private val packageName: String,
-        val title: String,
-    ) : RpcImage() {
-        override suspend fun resolveImage(repository: KizzyRepository): String? {
-            return repository.uploadImage(bitmap.toFile(this.context, "art"))
         }
     }
 }

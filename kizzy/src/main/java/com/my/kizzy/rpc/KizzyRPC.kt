@@ -10,15 +10,15 @@
  *
  */
 
-package com.my.kizzy.data.rpc
+package com.my.kizzy.rpc
 
-import com.my.kizzy.data.gateway.DiscordWebSocket
-import com.my.kizzy.data.gateway.entities.presence.Activity
-import com.my.kizzy.data.gateway.entities.presence.Assets
-import com.my.kizzy.data.gateway.entities.presence.Metadata
-import com.my.kizzy.data.gateway.entities.presence.Presence
-import com.my.kizzy.data.gateway.entities.presence.Timestamps
-import com.my.kizzy.data.repository.KizzyRepository
+import com.my.kizzy.gateway.DiscordWebSocket
+import com.my.kizzy.gateway.entities.presence.Activity
+import com.my.kizzy.gateway.entities.presence.Assets
+import com.my.kizzy.gateway.entities.presence.Metadata
+import com.my.kizzy.gateway.entities.presence.Presence
+import com.my.kizzy.gateway.entities.presence.Timestamps
+import com.my.kizzy.repository.KizzyRepository
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.request.header
@@ -49,7 +49,8 @@ open class KizzyRPC(token: String) {
         largeText: String? = null,
         smallText: String? = null,
         buttons: List<Pair<String, String>>? = null,
-        timestamps: Timestamps? = null,
+        startTime: Long? = null,
+        endTime: Long? = null,
         type: Type = Type.LISTENING,
         streamUrl: String? = null,
         applicationId: String? = null,
@@ -65,7 +66,7 @@ open class KizzyRPC(token: String) {
                     state = state,
                     details = details,
                     type = type.value,
-                    timestamps = timestamps,
+                    timestamps = Timestamps(startTime, endTime),
                     assets = Assets(
                         largeImage = largeImage?.resolveImage(kizzyRepository),
                         smallImage = smallImage?.resolveImage(kizzyRepository),
@@ -79,7 +80,7 @@ open class KizzyRPC(token: String) {
                 )
             ),
             afk = true,
-            since = timestamps?.start ?: System.currentTimeMillis(),
+            since = startTime ?: System.currentTimeMillis(),
             status = status ?: "online"
         )
         discordWebSocket.sendActivity(presence)

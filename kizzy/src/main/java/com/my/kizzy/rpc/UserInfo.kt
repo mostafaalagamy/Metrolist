@@ -1,4 +1,4 @@
-package com.my.kizzy.data.rpc
+package com.my.kizzy.rpc
 
 /**
  * Created by Zion Huang

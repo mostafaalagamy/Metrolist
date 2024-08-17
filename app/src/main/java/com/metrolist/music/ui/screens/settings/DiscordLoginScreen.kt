@@ -26,12 +26,12 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavController
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.R
-import com.metrolist.music.constants.DiscordNameKey
 import com.metrolist.music.constants.DiscordTokenKey
-import com.metrolist.music.constants.DiscordUsernameKey
 import com.metrolist.music.ui.component.IconButton
 import com.metrolist.music.ui.utils.backToMain
 import com.metrolist.music.utils.rememberPreference
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @SuppressLint("SetJavaScriptEnabled")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -39,8 +39,6 @@ import com.metrolist.music.utils.rememberPreference
 fun DiscordLoginScreen(navController: NavController) {
     val scope = rememberCoroutineScope()
     var discordToken by rememberPreference(DiscordTokenKey, "")
-    var discordUsername by rememberPreference(DiscordUsernameKey, "")
-    var discordName by rememberPreference(DiscordNameKey, "")
 
     var webView: WebView? = null
 
@@ -83,16 +81,15 @@ fun DiscordLoginScreen(navController: NavController) {
                 cookieManager.flush()
 
                 WebStorage.getInstance().deleteAllData()
-                addJavascriptInterface(
-                    object {
-                        @JavascriptInterface
-                        fun onRetrieveToken(token: String) {
-                            discordToken = token
+                addJavascriptInterface(object {
+                    @JavascriptInterface
+                    fun onRetrieveToken(token: String) {
+                        discordToken = token
+                        scope.launch(Dispatchers.Main) {
                             navController.navigateUp()
                         }
-                    },
-                    "Android",
-                )
+                    }
+                }, "Android")
 
                 webView = this
                 loadUrl("https://discord.com/login")

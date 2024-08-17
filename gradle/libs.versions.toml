@@ -1,6 +1,7 @@
 [versions]
 androidGradlePlugin = "8.3.2"
 annotation = "1.8.2"
+json = "20240303"
 kotlin = "2.0.0"
 compose = "1.6.8"
 lifecycle = "2.8.4"
@@ -69,13 +70,15 @@ ktor-client-content-negotiation = { group = "io.ktor", name = "ktor-client-conte
 ktor-client-encoding = { group = "io.ktor", name = "ktor-client-encoding", version.ref = "ktor" }
 ktor-serialization-json = { group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref = "ktor" }
 
+json = { module = "org.json:json", version.ref = "json" }
+
 brotli = { group = "org.brotli", name = "dec", version = "0.1.2" }
 
 desugaring = { group = "com.android.tools", name = "desugar_jdk_libs", version = "2.0.4" }
 
 junit = { group = "junit", name = "junit", version = "4.13.2" }
 
-timber = { group = "com.jakewharton.timber", name = "timber", version = "4.7.1" }
+timber = { group = "com.jakewharton.timber", name = "timber", version = "5.0.1" }
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 
 [plugins]
