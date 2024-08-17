@@ -294,7 +294,7 @@ fun Queue(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(backgroundColor)
+                .background(MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp))
         ) {
         LazyColumn(
             state = reorderableState.listState,
