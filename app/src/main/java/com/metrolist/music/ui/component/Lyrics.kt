@@ -88,14 +88,7 @@ fun Lyrics(
 
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
     val lyricsEntity by playerConnection.currentLyrics.collectAsState(initial = null)
-    val lyrics =
-        remember(lyricsEntity, translating) {
-            if (translating) {
-                null
-            } else {
-                lyricsEntity?.lyrics
-            }
-        }
+    val lyrics = remember(lyricsEntity) { lyricsEntity?.lyrics?.trim() }
 
     val lines =
         remember(lyrics) {
@@ -231,21 +224,19 @@ fun Lyrics(
         ) {
             val displayedCurrentLineIndex = if (isSeeking) deferredCurrentLineIndex else currentLineIndex
 
-            if (lyrics == null || translating) {
+            if (lyrics == null) {
                 item {
                     ShimmerHost {
                         repeat(10) {
                             Box(
-                                contentAlignment =
-                                    when (lyricsTextPosition) {
-                                        LyricsPosition.LEFT -> Alignment.CenterStart
-                                        LyricsPosition.CENTER -> Alignment.Center
-                                        LyricsPosition.RIGHT -> Alignment.CenterEnd
-                                    },
-                                modifier =
-                                    Modifier
-                                        .fillMaxWidth()
-                                        .padding(horizontal = 24.dp, vertical = 4.dp),
+                                contentAlignment = when (lyricsTextPosition) {
+                                    LyricsPosition.LEFT -> Alignment.CenterStart
+                                    LyricsPosition.CENTER -> Alignment.Center
+                                    LyricsPosition.RIGHT -> Alignment.CenterEnd
+                                },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 24.dp, vertical = 4.dp)
                             ) {
                                 TextPlaceholder()
                             }
