@@ -78,23 +78,7 @@ desugaring = { group = "com.android.tools", name = "desugar_jdk_libs", version =
 
 junit = { group = "junit", name = "junit", version = "4.13.2" }
 
-<<<<<<< HEAD
-timber = { group = "com.jakewharton.timber", name = "timber", version = "4.7.1" }
-=======
 timber = { group = "com.jakewharton.timber", name = "timber", version = "5.0.1" }
-
-google-services = { module = "com.google.gms:google-services", version = "4.4.2" }
-firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version = "33.1.2" }
-firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics-ktx" }
-firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics-ktx" }
-firebase-crashlytics-plugin = { module = "com.google.firebase:firebase-crashlytics-gradle", version = "3.0.2" }
-firebase-config = { group = "com.google.firebase", name = "firebase-config-ktx" }
-firebase-perf = { group = "com.google.firebase", name = "firebase-perf-ktx" }
-firebase-perf-plugin = { module = "com.google.firebase:perf-plugin", version = "1.4.2" }
-
-mlkit-language-id = { group = "com.google.mlkit", name = "language-id", version = "17.0.6" }
-mlkit-translate = { group = "com.google.mlkit", name = "translate", version = "17.0.3" }
->>>>>>> 7cb8e3f4 (Convert kizzy to java library)
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 
 [plugins]
