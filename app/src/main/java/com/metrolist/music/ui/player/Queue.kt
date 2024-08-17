@@ -291,6 +291,11 @@ fun Queue(
             reorderableState.listState.scrollToItem(currentWindowIndex)
         }
 
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(backgroundColor)
+        ) {
         LazyColumn(
             state = reorderableState.listState,
             contentPadding =
@@ -303,8 +308,8 @@ fun Queue(
                     ).asPaddingValues(),
             modifier =
                 Modifier
+                    .fillMaxSize()
                     .reorderable(reorderableState)
-                    .background(backgroundColor)
                     .nestedScroll(state.preUpPostDownNestedScrollConnection),
         ) {
             item {
