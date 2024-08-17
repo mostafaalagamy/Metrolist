@@ -54,7 +54,6 @@ import com.metrolist.music.constants.LyricsClickKey
 import com.metrolist.music.constants.LyricsTextPositionKey
 import com.metrolist.music.constants.PlayerBackgroundStyle
 import com.metrolist.music.constants.PlayerBackgroundStyleKey
-import com.metrolist.music.constants.TranslateLyricsKey
 import com.metrolist.music.db.entities.LyricsEntity.Companion.LYRICS_NOT_FOUND
 import com.metrolist.music.lyrics.LyricsEntry
 import com.metrolist.music.lyrics.LyricsEntry.Companion.HEAD_LYRICS_ENTRY
