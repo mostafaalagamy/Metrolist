@@ -15,6 +15,7 @@ data class MediaMetadata(
     val duration: Int,
     val thumbnailUrl: String? = null,
     val album: Album? = null,
+    val explicit: Boolean = false,
 ) : Serializable {
     data class Artist(
         val id: String?,
@@ -84,4 +85,5 @@ fun SongItem.toMediaMetadata() =
                     title = it.name,
                 )
             },
+        explicit = explicit,
     )

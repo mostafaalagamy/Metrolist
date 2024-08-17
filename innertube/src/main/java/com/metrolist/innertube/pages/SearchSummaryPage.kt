@@ -1,5 +1,6 @@
 package com.metrolist.innertube.pages
 
+<<<<<<< HEAD:innertube/src/main/java/com/metrolist/innertube/pages/SearchSummaryPage.kt
 import com.metrolist.innertube.models.Album
 import com.metrolist.innertube.models.AlbumItem
 import com.metrolist.innertube.models.Artist
@@ -16,6 +17,25 @@ import com.metrolist.innertube.models.clean
 import com.metrolist.innertube.models.oddElements
 import com.metrolist.innertube.models.splitBySeparator
 import com.metrolist.innertube.utils.parseTime
+=======
+import com.metrolist.innertube.models.Album
+import com.metrolist.innertube.models.AlbumItem
+import com.metrolist.innertube.models.Artist
+import com.metrolist.innertube.models.ArtistItem
+import com.metrolist.innertube.models.BrowseEndpoint.BrowseEndpointContextSupportedConfigs.BrowseEndpointContextMusicConfig.Companion.MUSIC_PAGE_TYPE_ALBUM
+import com.metrolist.innertube.models.BrowseEndpoint.BrowseEndpointContextSupportedConfigs.BrowseEndpointContextMusicConfig.Companion.MUSIC_PAGE_TYPE_ARTIST
+import com.metrolist.innertube.models.BrowseEndpoint.BrowseEndpointContextSupportedConfigs.BrowseEndpointContextMusicConfig.Companion.MUSIC_PAGE_TYPE_USER_CHANNEL
+import com.metrolist.innertube.models.MusicCardShelfRenderer
+import com.metrolist.innertube.models.MusicResponsiveListItemRenderer
+import com.metrolist.innertube.models.PlaylistItem
+import com.metrolist.innertube.models.SongItem
+import com.metrolist.innertube.models.YTItem
+import com.metrolist.innertube.models.clean
+import com.metrolist.innertube.models.filterExplicit
+import com.metrolist.innertube.models.oddElements
+import com.metrolist.innertube.models.splitBySeparator
+import com.metrolist.innertube.utils.parseTime
+>>>>>>> a3851bbf (feat: option to hide explicit content):innertube/src/main/java/com/metrolist/innertube/pages/SearchSummaryPage.kt
 
 data class SearchSummary(
     val title: String,
@@ -25,6 +45,23 @@ data class SearchSummary(
 data class SearchSummaryPage(
     val summaries: List<SearchSummary>,
 ) {
+    fun filterExplicit(enabled: Boolean) =
+        if (enabled) {
+            SearchSummaryPage(
+                summaries.mapNotNull { s ->
+                    SearchSummary(
+                        title = s.title,
+                        items =
+                            s.items.filterExplicit().ifEmpty {
+                                return@mapNotNull null
+                            },
+                    )
+                },
+            )
+        } else {
+            this
+        }
+
     companion object {
         fun fromMusicCardShelfRenderer(renderer: MusicCardShelfRenderer): YTItem? {
             val subtitle = renderer.subtitle.runs?.splitBySeparator()

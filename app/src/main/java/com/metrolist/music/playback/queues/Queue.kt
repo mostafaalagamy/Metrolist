@@ -1,7 +1,12 @@
 package com.metrolist.music.playback.queues
 
 import androidx.media3.common.MediaItem
+<<<<<<< HEAD:app/src/main/java/com/metrolist/music/playback/queues/Queue.kt
 import com.metrolist.music.models.MediaMetadata
+=======
+import com.metrolist.music.extensions.metadata
+import com.metrolist.music.models.MediaMetadata
+>>>>>>> a3851bbf (feat: option to hide explicit content):app/src/main/java/com/metrolist/music/playback/queues/Queue.kt
 
 interface Queue {
     val preloadItem: MediaMetadata?
@@ -17,5 +22,23 @@ interface Queue {
         val items: List<MediaItem>,
         val mediaItemIndex: Int,
         val position: Long = 0L,
-    )
+    ) {
+        fun filterExplicit(enabled: Boolean = true) =
+            if (enabled) {
+                copy(
+                    items = items.filterExplicit(),
+                )
+            } else {
+                this
+            }
+    }
 }
+
+fun List<MediaItem>.filterExplicit(enabled: Boolean = true) =
+    if (enabled) {
+        filterNot {
+            it.metadata?.explicit == true
+        }
+    } else {
+        this
+    }

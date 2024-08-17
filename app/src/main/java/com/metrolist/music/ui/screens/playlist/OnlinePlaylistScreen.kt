@@ -42,6 +42,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
@@ -58,6 +59,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+<<<<<<< HEAD:app/src/main/java/com/metrolist/music/ui/screens/playlist/OnlinePlaylistScreen.kt
 import com.metrolist.innertube.models.SongItem
 import com.metrolist.innertube.models.WatchEndpoint
 import com.metrolist.music.LocalDatabase
@@ -88,9 +90,43 @@ import com.metrolist.music.ui.menu.YouTubeSongMenu
 import com.metrolist.music.ui.utils.ItemWrapper
 import com.metrolist.music.ui.utils.backToMain
 import com.metrolist.music.viewmodels.OnlinePlaylistViewModel
+=======
+import com.metrolist.innertube.models.SongItem
+import com.metrolist.innertube.models.WatchEndpoint
+import com.metrolist.music.LocalDatabase
+import com.metrolist.music.LocalPlayerAwareWindowInsets
+import com.metrolist.music.LocalPlayerConnection
+import com.metrolist.music.R
+import com.metrolist.music.constants.AlbumThumbnailSize
+import com.metrolist.music.constants.HideExplicitKey
+import com.metrolist.music.constants.ThumbnailCornerRadius
+import com.metrolist.music.db.entities.PlaylistEntity
+import com.metrolist.music.db.entities.PlaylistSongMap
+import com.metrolist.music.extensions.metadata
+import com.metrolist.music.extensions.toMediaItem
+import com.metrolist.music.extensions.togglePlayPause
+import com.metrolist.music.models.toMediaMetadata
+import com.metrolist.music.playback.queues.YouTubeQueue
+import com.metrolist.music.ui.component.AutoResizeText
+import com.metrolist.music.ui.component.FontSizeRange
+import com.metrolist.music.ui.component.IconButton
+import com.metrolist.music.ui.component.LocalMenuState
+import com.metrolist.music.ui.component.YouTubeListItem
+import com.metrolist.music.ui.component.shimmer.ButtonPlaceholder
+import com.metrolist.music.ui.component.shimmer.ListItemPlaceHolder
+import com.metrolist.music.ui.component.shimmer.ShimmerHost
+import com.metrolist.music.ui.component.shimmer.TextPlaceholder
+import com.metrolist.music.ui.menu.SelectionMediaMetadataMenu
+import com.metrolist.music.ui.menu.YouTubePlaylistMenu
+import com.metrolist.music.ui.menu.YouTubeSongMenu
+import com.metrolist.music.ui.utils.ItemWrapper
+import com.metrolist.music.ui.utils.backToMain
+import com.metrolist.music.utils.rememberPreference
+import com.metrolist.music.viewmodels.OnlinePlaylistViewModel
+>>>>>>> a3851bbf (feat: option to hide explicit content):app/src/main/java/com/metrolist/music/ui/screens/playlist/OnlinePlaylistScreen.kt
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun OnlinePlaylistScreen(
     navController: NavController,
@@ -112,6 +148,7 @@ fun OnlinePlaylistScreen(
     var selection by remember {
         mutableStateOf(false)
     }
+    val hideExplicit by rememberPreference(key = HideExplicitKey, defaultValue = false)
 
     val lazyListState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
@@ -387,6 +424,7 @@ fun OnlinePlaylistScreen(
                             modifier =
                                 Modifier
                                     .combinedClickable(
+                                        enabled = !hideExplicit || !song.item.explicit,
                                         onClick = {
                                             if (!selection) {
                                                 if (song.item.id == mediaMetadata?.id) {
@@ -414,7 +452,8 @@ fun OnlinePlaylistScreen(
                                                 )
                                             }
                                         },
-                                    ).animateItemPlacement(),
+                                    ).alpha(if (hideExplicit && song.item.explicit) 0.3f else 1f)
+                                    .animateItem(),
                         )
                     }
                 } else {
