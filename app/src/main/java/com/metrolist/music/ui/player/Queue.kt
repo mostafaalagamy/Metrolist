@@ -446,6 +446,7 @@ fun Queue(
                 }
             }
         }
+    }
 
         Column(
             modifier =
