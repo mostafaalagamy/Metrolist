@@ -75,7 +75,8 @@ import kotlin.time.Duration.Companion.seconds
 fun Lyrics(
     sliderPositionProvider: () -> Long?,
     modifier: Modifier = Modifier,
-    changeColor: Boolean = false,
+    changeColor: Boolean,
+    color: Color,
 ) {
     val playerConnection = LocalPlayerConnection.current ?: return
     val menuState = LocalMenuState.current
@@ -83,11 +84,19 @@ fun Lyrics(
 
     val lyricsTextPosition by rememberEnumPreference(LyricsTextPositionKey, LyricsPosition.CENTER)
     var translationEnabled by rememberPreference(TranslateLyricsKey, false)
-    var changeLyrics by rememberPreference(LyricsClickKey, true)
+    val changeLyrics by rememberPreference(LyricsClickKey, true)
 
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
+    val translating by playerConnection.translating.collectAsState()
     val lyricsEntity by playerConnection.currentLyrics.collectAsState(initial = null)
-    val lyrics = remember(lyricsEntity) { lyricsEntity?.lyrics?.trim() }
+    val lyrics =
+        remember(lyricsEntity, translating) {
+            if (translating) {
+                null
+            } else {
+                lyricsEntity?.lyrics
+            }
+        }
 
     val lines =
         remember(lyrics) {
@@ -105,7 +114,7 @@ fun Lyrics(
         }
 
     var currentLineIndex by remember {
-        mutableStateOf(-1)
+        mutableIntStateOf(-1)
     }
     // Because LaunchedEffect has delay, which leads to inconsistent with current line color and scroll animation,
     // we use deferredCurrentLineIndex when user is scrolling
@@ -164,7 +173,7 @@ fun Lyrics(
             PlayerBackgroundStyle.DEFAULT -> MaterialTheme.colorScheme.primary
             else ->
                 if (changeColor) {
-                    Color.Black
+                    color
                 } else {
                     MaterialTheme.colorScheme.primary
                 }
@@ -175,7 +184,7 @@ fun Lyrics(
             PlayerBackgroundStyle.DEFAULT -> MaterialTheme.colorScheme.secondary
             else ->
                 if (changeColor) {
-                    MaterialTheme.colorScheme.onSecondary
+                    MaterialTheme.colorScheme.onSurface
                 } else {
                     MaterialTheme.colorScheme.secondary
                 }
@@ -223,19 +232,21 @@ fun Lyrics(
         ) {
             val displayedCurrentLineIndex = if (isSeeking) deferredCurrentLineIndex else currentLineIndex
 
-            if (lyrics == null) {
+            if (lyrics == null || translating) {
                 item {
                     ShimmerHost {
                         repeat(10) {
                             Box(
-                                contentAlignment = when (lyricsTextPosition) {
-                                    LyricsPosition.LEFT -> Alignment.CenterStart
-                                    LyricsPosition.CENTER -> Alignment.Center
-                                    LyricsPosition.RIGHT -> Alignment.CenterEnd
-                                },
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(horizontal = 24.dp, vertical = 4.dp)
+                                contentAlignment =
+                                    when (lyricsTextPosition) {
+                                        LyricsPosition.LEFT -> Alignment.CenterStart
+                                        LyricsPosition.CENTER -> Alignment.Center
+                                        LyricsPosition.RIGHT -> Alignment.CenterEnd
+                                    },
+                                modifier =
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 24.dp, vertical = 4.dp),
                             ) {
                                 TextPlaceholder()
                             }
@@ -284,36 +295,52 @@ fun Lyrics(
                 text = stringResource(R.string.lyrics_not_found),
                 fontSize = 20.sp,
                 color = MaterialTheme.colorScheme.secondary,
-                textAlign = when (lyricsTextPosition) {
-                    LyricsPosition.LEFT -> TextAlign.Left
-                    LyricsPosition.CENTER -> TextAlign.Center
-                    LyricsPosition.RIGHT -> TextAlign.Right
-                },
+                textAlign =
+                    when (lyricsTextPosition) {
+                        LyricsPosition.LEFT -> TextAlign.Left
+                        LyricsPosition.CENTER -> TextAlign.Center
+                        LyricsPosition.RIGHT -> TextAlign.Right
+                    },
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 24.dp, vertical = 8.dp)
-                    .alpha(0.5f)
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp, vertical = 8.dp)
+                        .alpha(0.5f),
             )
         }
 
         mediaMetadata?.let { mediaMetadata ->
             Row(
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(end = 12.dp)
+                modifier =
+                    Modifier
+                        .align(Alignment.BottomEnd)
+                        .padding(end = 12.dp),
             ) {
-                
+                if (BuildConfig.FLAVOR != "foss") {
+                    IconButton(
+                        onClick = {
+                            translationEnabled = !translationEnabled
+                        },
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.translate),
+                            contentDescription = null,
+                            tint = LocalContentColor.current.copy(alpha = if (translationEnabled) 1f else 0.3f),
+                        )
+                    }
+                }
+
                 IconButton(
                     onClick = {
                         menuState.show {
                             LyricsMenu(
                                 lyricsProvider = { lyricsEntity },
                                 mediaMetadataProvider = { mediaMetadata },
-                                onDismiss = menuState::dismiss
+                                onDismiss = menuState::dismiss,
                             )
                         }
-                    }
+                    },
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.more_horiz),
