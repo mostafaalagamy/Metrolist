@@ -72,6 +72,7 @@
     <string name="playlist_is_empty">The playlist is empty</string>
     <string name="remove_download_playlist_confirm">Do you really want to remove all \"%s\" playlist songs from the Downloaded Songs storage?</string>
     <string name="delete_playlist_confirm">Do you really want to delete the playlist \"%s\"?</string>
+    <string name="elements_selected">%1$d elements selected</string>
 
     <!-- Button -->
     <string name="retry">Retry</string>
