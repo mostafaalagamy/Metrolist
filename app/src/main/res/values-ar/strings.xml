@@ -217,6 +217,10 @@
     <string name="left">يسار</string>
     <string name="center">وسط</string>
     <string name="right">يمين</string>
+    <string name="lyrics_click_change">تغيير كلمات الأغاني عند النقر عليها</string>
+    <string name="grid_cell_size">حجم قوائم التشغيل</string>
+    <string name="small">صغيرة</string>
+    <string name="big">كبيرة</string>
     
     <string name="content">المحتوى</string>
     <string name="login">تسجيل الدخول</string>
@@ -264,7 +268,7 @@
     <string name="clear_search_history_confirm">هل أنت متأكد من أنك تريد مسح جميع سجل البحث؟</string>
     <string name="enable_kugou">تفعيل مزود كلمات الأغاني KuGou</string>
     <string name="enable_lrclib">تفعيل مزود كلمات الأغاني LrcLib</string>
-    <string name="set_first_lyrics_provider">تعيين مزود كلمات الأغاني الأول</string>
+    <string name="set_first_lyrics_provider">تعيين مزود كلمات الأغاني الإفتراضي</string>
     
     <string name="backup_restore">النسخ الاحتياطي والاستعادة</string>
     <string name="backup">نسخ احتياطي</string>
@@ -273,6 +277,15 @@
     <string name="backup_create_success">تم إنشاء النسخ الاحتياطي بنجاح</string>
     <string name="backup_create_failed">تعذر إنشاء النسخ الاحتياطي</string>
     <string name="restore_failed">فشل في استعادة النسخ الاحتياطي</string>
+
+    <string name="discord_integration">دمج ديسكورد</string>
+    <string name="discord_information">يمكنك تسجيل الدخول بأمان. سيقوم متروليست باستخراج رمز الوصول الخاص بك فقط، وكل شيء آخر يتم تخزينه محليًا.</string>
+    <string name="dismiss">رفض</string>
+    <string name="options">الخيارات</string>
+    <string name="preview">معاينة</string>
+    <string name="login_failed">فشل تسجيل الدخول</string>
+    <string name="logout">تسجيل الخروج</string>
+    <string name="enable_discord_rpc">تمكين التواجد الغني</string>
     
     <string name="about">حول</string>
     <string name="app_version">إصدار التطبيق</string>
