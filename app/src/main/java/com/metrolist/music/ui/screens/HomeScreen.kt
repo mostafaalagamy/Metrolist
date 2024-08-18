@@ -349,47 +349,6 @@ fun HomeScreen(
                                             )
                                         }
 
-                                if (youtubePlaylists?.isNotEmpty() == true) {
-                    NavigationTitle(
-                        title = stringResource(R.string.your_ytb_playlists),
-                        onClick = {
-                            navController.navigate("account")
-                        },
-                    )
-                    LazyRow(
-                        contentPadding =
-                            WindowInsets.systemBars
-                                .only(WindowInsetsSides.Horizontal)
-                                .asPaddingValues(),
-                    ) {
-                        items(
-                            items = youtubePlaylists.orEmpty(),
-                            key = { it.id },
-                        ) { item ->
-                            YouTubeGridItem(
-                                item = item,
-                                modifier =
-                                    Modifier
-                                        .combinedClickable(
-                                            onClick = {
-                                                navController.navigate("online_playlist/${item.id}")
-                                            },
-                                            onLongClick = {
-                                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                                menuState.show {
-                                                    YouTubePlaylistMenu(
-                                                        playlist = item,
-                                                        coroutineScope = coroutineScope,
-                                                        onDismiss = menuState::dismiss,
-                                                    )
-                                                }
-                                            },
-                                        ),
-                            )
-                        }
-                    }
-                }
-                                        
                                     in 5..9 ->
                                         item {
                                             AlbumSmallGridItem(
@@ -450,6 +409,48 @@ fun HomeScreen(
                     }
                 }
 
+                                if (youtubePlaylists?.isNotEmpty() == true) {
+                    NavigationTitle(
+                        title = stringResource(R.string.your_ytb_playlists),
+                        onClick = {
+                            navController.navigate("account")
+                        },
+                    )
+                    LazyRow(
+                        contentPadding =
+                            WindowInsets.systemBars
+                                .only(WindowInsetsSides.Horizontal)
+                                .asPaddingValues(),
+                    ) {
+                        items(
+                            items = youtubePlaylists.orEmpty(),
+                            key = { it.id },
+                        ) { item ->
+                            YouTubeGridItem(
+                                item = item,
+                                modifier =
+                                    Modifier
+                                        .combinedClickable(
+                                            onClick = {
+                                                navController.navigate("online_playlist/${item.id}")
+                                            },
+                                            onLongClick = {
+                                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                                menuState.show {
+                                                    YouTubePlaylistMenu(
+                                                        playlist = item,
+                                                        coroutineScope = coroutineScope,
+                                                        onDismiss = menuState::dismiss,
+                                                    )
+                                                }
+                                            },
+                                        ),
+                            )
+                        }
+                    }
+                }
+
+                                        
                 homeFirstArtistRecommendation?.let { albums ->
                     if (albums.listItem.isNotEmpty()) {
                         NavigationTitle(
