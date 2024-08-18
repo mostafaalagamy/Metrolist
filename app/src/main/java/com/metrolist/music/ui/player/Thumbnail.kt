@@ -27,6 +27,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
@@ -54,6 +56,9 @@ fun Thumbnail(
 
     val showLyrics by rememberPreference(ShowLyricsKey, false)
     val swipeThumbnail by rememberPreference(SwipeThumbnailKey, true)
+
+    val layoutDirection = LocalLayoutDirection.current
+    val isRtl = layoutDirection == LayoutDirection.Rtl
 
     DisposableEffect(showLyrics) {
         currentView.keepScreenOn = showLyrics
@@ -87,7 +92,7 @@ fun Thumbnail(
                                 },
                                 onHorizontalDrag = { _, dragAmount ->
                                     if (swipeThumbnail) {
-                                        offsetX += dragAmount
+                                        offsetX += if (isRtl) -dragAmount else dragAmount
                                     }
                                 },
                                 onDragEnd = {
