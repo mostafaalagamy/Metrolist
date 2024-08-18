@@ -17,6 +17,8 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
+import android.content.Intent
+import android.provider.Settings
 import com.metrolist.music.BuildConfig
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.R
@@ -72,6 +74,16 @@ fun SettingsScreen(
             title = { Text(stringResource(R.string.backup_restore)) },
             icon = { Icon(painterResource(R.drawable.restore), null) },
             onClick = { navController.navigate("settings/backup_restore") }
+        )
+        PreferenceEntry(
+            title = { Text(stringResource(R.string.default_links)) },
+            icon = { Icon(painterResource(R.drawable.link), null) },
+            onClick = {
+                val intent = Intent(Settings.ACTION_APP_OPEN_BY_DEFAULT_SETTINGS).apply {
+                    data = android.net.Uri.parse("package:${BuildConfig.APPLICATION_ID}")
+                }
+                navController.context.startActivity(intent)
+            }
         )
         PreferenceEntry(
             title = { Text(stringResource(R.string.about)) },

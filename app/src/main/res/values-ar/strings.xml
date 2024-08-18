@@ -284,9 +284,11 @@
     <string name="dismiss">إغلاق</string>
     <string name="options">الخيارات</string>
     <string name="preview">معاينة</string>
-  
+
+    <string name="default_links">فتح الروابط المدعومة افتراضيًا</string>
     <string name="about">حول</string>
     <string name="app_version">إصدار التطبيق</string>
+    
     <string name="new_version_available">إصدار جديد متاح</string>
     <string name="translation_models">نماذج الترجمة</string>
     <string name="clear_translation_models">مسح نماذج الترجمة</string>
