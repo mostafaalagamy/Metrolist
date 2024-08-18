@@ -11,18 +11,13 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarScrollBehavior
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.AddLink
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import android.content.Intent
-import android.net.Uri
 import android.provider.Settings
 import com.metrolist.music.BuildConfig
 import com.metrolist.music.LocalPlayerAwareWindowInsets
@@ -80,26 +75,6 @@ fun SettingsScreen(
             icon = { Icon(painterResource(R.drawable.restore), null) },
             onClick = { navController.navigate("settings/backup_restore") }
         )
-        if (isAtLeastAndroid12) {
-            val intent = Intent(
-                Settings.ACTION_APP_OPEN_BY_DEFAULT_SETTINGS,
-                Uri.parse("package:${context.packageName}")
-            )
-
-        PreferenceEntry(
-            title = { Text(stringResource(id = R.string.open_supported_links_by_default)) },
-            description = { Text(stringResource(id = R.string.configure_supported_links)) },
-            icon = { Icon(Icons.Outlined.AddLink, contentDescription = null) },
-            onClick = {
-                try {
-                    context.startActivity(intent)
-                } catch (e: Exception) {
-                        // استخدام وظيفة Toast من compose بدلاً من context.toast
-                    Toast.makeText(context, "Couldn't find supported links settings, please configure them manually", Toast.LENGTH_LONG).show()
-                }
-            }
-        )
-    }
         PreferenceEntry(
             title = { Text(stringResource(R.string.about)) },
             icon = { Icon(painterResource(R.drawable.info), null) },
@@ -125,6 +100,18 @@ fun SettingsScreen(
                 }
             )
         }
+
+        // قسم تكوين الروابط المدعومة
+        PreferenceEntry(
+            title = { Text("Open supported links by default") },
+            icon = { Icon(painterResource(R.drawable.link), null) },
+            onClick = {
+                val intent = Intent(Settings.ACTION_APP_OPEN_BY_DEFAULT_SETTINGS).apply {
+                    data = android.net.Uri.parse("package:${BuildConfig.APPLICATION_ID}")
+                }
+                navController.context.startActivity(intent)
+            }
+        )
     }
 
     TopAppBar(
