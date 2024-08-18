@@ -52,6 +52,7 @@ class AutoPlaylistViewModel
                         }.distinctUntilChanged(),
                 ) { songs, (sortType, sortDescending) ->
                     when (sortType) {
+                            PlaylistSongSortType.CUSTOM -> songs
                             PlaylistSongSortType.CREATE_DATE -> songs.sortedBy { it.id }
                             PlaylistSongSortType.NAME -> songs.sortedBy { it.song.title }
                             PlaylistSongSortType.ARTIST -> {
