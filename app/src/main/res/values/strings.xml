@@ -302,7 +302,7 @@
     <string name="restore_failed">Failed to restore backup</string>
 
     <string name="discord_integration">Discord Integration</string>
-    <string name="discord_information">You can log in safely. metrolist will only extract your token, and everything else is stored locally.</string>
+    <string name="discord_information">You can log in safely. Metrolist will only extract your token, and everything else is stored locally.</string>
     <string name="dismiss">Dismiss</string>
     <string name="options">Options</string>
     <string name="preview">Preview</string>
