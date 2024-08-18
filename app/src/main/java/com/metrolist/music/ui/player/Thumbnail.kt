@@ -87,7 +87,7 @@ fun Thumbnail(
                                 },
                                 onHorizontalDrag = { _, dragAmount ->
                                     if (swipeThumbnail) {
-                                        offsetX += dragAmount
+                                        offsetX += if (isRtl) -dragAmount else dragAmount
                                     }
                                 },
                                 onDragEnd = {
