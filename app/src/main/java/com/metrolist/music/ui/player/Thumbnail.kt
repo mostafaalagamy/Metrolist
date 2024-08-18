@@ -96,11 +96,11 @@ fun Thumbnail(
                                     }
                                 },
                                 onDragEnd = {
-                                    if (offsetX > 400) {
+                                    if (offsetX > 200) {
                                         if (playerConnection.player.previousMediaItemIndex != -1) {
                                             playerConnection.player.seekToPreviousMediaItem()
                                         }
-                                    } else if (offsetX < -400) {
+                                    } else if (offsetX < -200) {
                                         if (playerConnection.player.nextMediaItemIndex != -1) {
                                             playerConnection.player.seekToNext()
                                         }
