@@ -64,9 +64,9 @@ import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
 import com.metrolist.music.constants.AlbumThumbnailSize
-import com.metrolist.music.constants.AutoPlaylistSongSortDescendingKey
-import com.metrolist.music.constants.AutoPlaylistSongSortType
-import com.metrolist.music.constants.AutoPlaylistSongSortTypeKey
+import com.metrolist.music.constants.PlaylistSongSortDescendingKey
+import com.metrolist.music.constants.PlaylistSongSortType
+import com.metrolist.music.constants.PlaylistSongSortTypeKey
 import com.metrolist.music.constants.ThumbnailCornerRadius
 import com.metrolist.music.db.entities.Song
 import com.metrolist.music.extensions.toMediaItem
@@ -120,8 +120,8 @@ fun AutoPlaylistScreen(
         mutableStateOf(false)
     }
 
-    val (sortType, onSortTypeChange) = rememberEnumPreference(AutoPlaylistSongSortTypeKey, AutoPlaylistSongSortType.CREATE_DATE)
-    val (sortDescending, onSortDescendingChange) = rememberPreference(AutoPlaylistSongSortDescendingKey, true)
+    val (sortType, onSortTypeChange) = rememberEnumPreference(PlaylistSongSortTypeKey, PlaylistSongSortType.CUSTOM)
+    val (sortDescending, onSortDescendingChange) = rememberPreference(PlaylistSongSortDescendingKey, true)
 
     val downloadUtil = LocalDownloadUtil.current
     var downloadState by remember {
@@ -446,11 +446,12 @@ fun AutoPlaylistScreen(
                                     onSortTypeChange = onSortTypeChange,
                                     onSortDescendingChange = onSortDescendingChange,
                                     sortTypeText = { sortType ->
-                                        when (sortType) {                               
-                                            AutoPlaylistSongSortType.CREATE_DATE -> R.string.sort_by_create_date
-                                            AutoPlaylistSongSortType.NAME -> R.string.sort_by_name
-                                            AutoPlaylistSongSortType.ARTIST -> R.string.sort_by_artist
-                                            AutoPlaylistSongSortType.PLAY_TIME -> R.string.sort_by_play_time
+                                        when (sortType) { 
+                                                PlaylistSongSortType.CUSTOM -> R.string.sort_by_custom
+                                                PlaylistSongSortType.CREATE_DATE -> R.string.sort_by_create_date
+                                                PlaylistSongSortType.NAME -> R.string.sort_by_name
+                                                PlaylistSongSortType.ARTIST -> R.string.sort_by_artist
+                                                PlaylistSongSortType.PLAY_TIME -> R.string.sort_by_play_time
                                         }
                                     },
                                     modifier = Modifier.weight(1f),

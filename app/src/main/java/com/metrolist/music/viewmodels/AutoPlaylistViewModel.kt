@@ -5,9 +5,9 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.exoplayer.offline.Download
-import com.metrolist.music.constants.AutoPlaylistSongSortDescendingKey
-import com.metrolist.music.constants.AutoPlaylistSongSortType
-import com.metrolist.music.constants.AutoPlaylistSongSortTypeKey
+import com.metrolist.music.constants.PlaylistSongSortDescendingKey
+import com.metrolist.music.constants.PlaylistSongSortType
+import com.metrolist.music.constants.PlaylistSongSortTypeKey
 import com.metrolist.music.constants.SongSortType
 import com.metrolist.music.db.MusicDatabase
 import com.metrolist.music.extensions.reversed
@@ -47,14 +47,15 @@ class AutoPlaylistViewModel
                     database.likedSongs(SongSortType.CREATE_DATE, true),
                     context.dataStore.data
                         .map {
-                            it[AutoPlaylistSongSortTypeKey].toEnum(AutoPlaylistSongSortType.CREATE_DATE) to
-                                (it[AutoPlaylistSongSortDescendingKey] ?: true)
+                            it[PlaylistSongSortTypeKey].toEnum(PlaylistSongSortType.CUSTOM) to
+                                (it[PlaylistSongSortDescendingKey] ?: true)
                         }.distinctUntilChanged(),
                 ) { songs, (sortType, sortDescending) ->
                     when (sortType) {
-                        AutoPlaylistSongSortType.CREATE_DATE -> songs.sortedBy { it.id }
-                        AutoPlaylistSongSortType.NAME -> songs.sortedBy { it.song.title }
-                        AutoPlaylistSongSortType.ARTIST -> {
+                            PlaylistSongSortType.CUSTOM -> songs
+                            PlaylistSongSortType.CREATE_DATE -> songs.sortedBy { it.id }
+                            PlaylistSongSortType.NAME -> songs.sortedBy { it.song.title }
+                            PlaylistSongSortType.ARTIST -> {
                             val collator = Collator.getInstance(Locale.getDefault())
                             collator.strength = Collator.PRIMARY
                             songs
@@ -62,8 +63,8 @@ class AutoPlaylistViewModel
                                 .groupBy { it.album?.title }
                                 .flatMap { (_, songsByAlbum) -> songsByAlbum.sortedBy { it.artists.joinToString("") { it.name } } }
                         }
-                        AutoPlaylistSongSortType.PLAY_TIME -> songs.sortedBy { it.song.totalPlayTime }
-                    }.reversed(sortDescending)
+                        PlaylistSongSortType.PLAY_TIME -> songs.sortedBy { it.song.totalPlayTime }
+                    }.reversed(sortDescending && sortType != PlaylistSongSortType.CUSTOM)
                 }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
                     .stateIn(viewModelScope, SharingStarted.Lazily, null)
             } else {
