@@ -64,6 +64,7 @@
     <string name="playlist_is_empty">قائمة التشغيل فارغة</string>
     <string name="remove_download_playlist_confirm">هل تريد حقًا إزالة جميع أغاني قائمة التشغيل "%s" من مساحة الأغاني المحملة؟</string>
     <string name="delete_playlist_confirm">هل تريد حقًا حذف قائمة التشغيل "%s"؟</string>
+    <string name="elements_selected">%1$d عنصر محدد</string>
     <!-- Button -->
     <string name="retry">إعادة المحاولة</string>
     <string name="radio">راديو</string>
@@ -85,7 +86,7 @@
     <string name="add_to_playlist">إضافة إلى قائمة التشغيل</string>
     <string name="view_artist">عرض الفنان</string>
     <string name="view_album">عرض الألبوم</string>
-    <string name="refetch">إعادة الجلب</string>
+    <string name="refetch">إعادة التحميل</string>
     <string name="share">مشاركة</string>
     <string name="delete">حذف</string>
     <string name="remove_from_history">إزالة من التاريخ</string>
@@ -280,13 +281,10 @@
 
     <string name="discord_integration">دمج ديسكورد</string>
     <string name="discord_information">يمكنك تسجيل الدخول بأمان. سيقوم متروليست باستخراج رمز الوصول الخاص بك فقط، وكل شيء آخر يتم تخزينه محليًا.</string>
-    <string name="dismiss">رفض</string>
+    <string name="dismiss">إغلاق</string>
     <string name="options">الخيارات</string>
     <string name="preview">معاينة</string>
-    <string name="login_failed">فشل تسجيل الدخول</string>
-    <string name="logout">تسجيل الخروج</string>
-    <string name="enable_discord_rpc">تمكين التواجد الغني</string>
-    
+  
     <string name="about">حول</string>
     <string name="app_version">إصدار التطبيق</string>
     <string name="new_version_available">إصدار جديد متاح</string>
