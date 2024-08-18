@@ -281,13 +281,10 @@
 
     <string name="discord_integration">دمج ديسكورد</string>
     <string name="discord_information">يمكنك تسجيل الدخول بأمان. سيقوم متروليست باستخراج رمز الوصول الخاص بك فقط، وكل شيء آخر يتم تخزينه محليًا.</string>
-    <string name="dismiss">رفض</string>
+    <string name="dismiss">إغلاق</string>
     <string name="options">الخيارات</string>
     <string name="preview">معاينة</string>
-    <string name="login_failed">فشل تسجيل الدخول</string>
-    <string name="logout">تسجيل الخروج</string>
-    <string name="enable_discord_rpc">تمكين التواجد الغني</string>
-    
+  
     <string name="about">حول</string>
     <string name="app_version">إصدار التطبيق</string>
     <string name="new_version_available">إصدار جديد متاح</string>
