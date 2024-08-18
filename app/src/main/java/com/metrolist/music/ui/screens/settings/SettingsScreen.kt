@@ -76,6 +76,16 @@ fun SettingsScreen(
             onClick = { navController.navigate("settings/backup_restore") }
         )
         PreferenceEntry(
+            title = { Text(stringResource(R.string.default_links)) },
+            icon = { Icon(painterResource(R.drawable.link), null) },
+            onClick = {
+                val intent = Intent(Settings.ACTION_APP_OPEN_BY_DEFAULT_SETTINGS).apply {
+                    data = android.net.Uri.parse("package:${BuildConfig.APPLICATION_ID}")
+                }
+                navController.context.startActivity(intent)
+            }
+        )
+        PreferenceEntry(
             title = { Text(stringResource(R.string.about)) },
             icon = { Icon(painterResource(R.drawable.info), null) },
             onClick = { navController.navigate("settings/about") }
@@ -100,18 +110,6 @@ fun SettingsScreen(
                 }
             )
         }
-
-        // قسم تكوين الروابط المدعومة
-        PreferenceEntry(
-            title = { Text("Open supported links by default") },
-            icon = { Icon(painterResource(R.drawable.link), null) },
-            onClick = {
-                val intent = Intent(Settings.ACTION_APP_OPEN_BY_DEFAULT_SETTINGS).apply {
-                    data = android.net.Uri.parse("package:${BuildConfig.APPLICATION_ID}")
-                }
-                navController.context.startActivity(intent)
-            }
-        )
     }
 
     TopAppBar(
