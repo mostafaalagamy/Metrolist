@@ -5,9 +5,9 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.exoplayer.offline.Download
-import com.metrolist.music.constants.PlaylistSongSortDescendingKey
-import com.metrolist.music.constants.PlaylistSongSortType
-import com.metrolist.music.constants.PlaylistSongSortTypeKey
+import com.metrolist.music.constants.AutoPlaylistSongSortDescendingKey
+import com.metrolist.music.constants.AutoPlaylistSongSortType
+import com.metrolist.music.constants.AutoPlaylistSongSortTypeKey
 import com.metrolist.music.constants.SongSortType
 import com.metrolist.music.db.MusicDatabase
 import com.metrolist.music.extensions.reversed
