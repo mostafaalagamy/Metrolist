@@ -216,6 +216,7 @@
     <!-- Queue Title -->
     <string name="queue_all_songs">All songs</string>
     <string name="queue_searched_songs">Searched songs</string>
+    <string name="similar_content">Similar content</string>
 
     <!-- Notification name -->
     <string name="music_player">Music Player</string>
@@ -236,7 +237,9 @@
     <string name="pure_black">Pure black</string>
     <string name="default_open_tab">Default open tab</string>
     <string name="customize_navigation_tabs">Customize navigation tabs</string>
+    <string name="player_text_alignment">Player text alignment</string>
     <string name="lyrics_text_position">Lyrics text position</string>
+    <string name="sided">Sided</string>
     <string name="left">Left</string>
     <string name="center">Center</string>
     <string name="right">Right</string>
@@ -311,8 +314,8 @@
     <string name="preview">Preview</string>
     <string name="login_failed">Login failed</string>
     <string name="logout">Logout</string>
-    <string name="enable_discord_rpc">Enable Rich Presense</string>
-    
+
+    <string name="enable_discord_rpc">Enable Rich Presence</string> 
     <string name="default_links">Open supported links by default</string>
     
     <string name="about">About</string>

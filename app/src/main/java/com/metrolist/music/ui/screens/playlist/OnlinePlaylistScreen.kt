@@ -260,6 +260,7 @@ fun OnlinePlaylistScreen(
                             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                                 Button(
                                     onClick = {
+                                        playerConnection.service.getAutomix(playlistId = playlist.id)
                                         playerConnection.playQueue(YouTubeQueue(playlist.shuffleEndpoint))
                                     },
                                     contentPadding = ButtonDefaults.ButtonWithIconContentPadding,
@@ -397,6 +398,7 @@ fun OnlinePlaylistScreen(
                                                 if (song.item.id == mediaMetadata?.id) {
                                                     playerConnection.player.togglePlayPause()
                                                 } else {
+                                                    playerConnection.service.getAutomix(playlistId = playlist.id)
                                                     playerConnection.playQueue(
                                                         YouTubeQueue(
                                                             song.item.endpoint

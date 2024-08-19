@@ -110,6 +110,7 @@ fun AlbumScreen(
     val isPlaying by playerConnection.isPlaying.collectAsState()
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
 
+    val playlistId by viewModel.playlistId.collectAsState()
     val albumWithSongs by viewModel.albumWithSongs.collectAsState()
     val otherVersions by viewModel.otherVersions.collectAsState()
 
@@ -335,6 +336,7 @@ fun AlbumScreen(
                     Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                         Button(
                             onClick = {
+                                playerConnection.service.getAutomix(playlistId)
                                 playerConnection.playQueue(
                                     ListQueue(
                                         title = albumWithSongs.album.title,
@@ -358,6 +360,7 @@ fun AlbumScreen(
 
                         OutlinedButton(
                             onClick = {
+                                playerConnection.service.getAutomix(playlistId)
                                 playerConnection.playQueue(
                                     ListQueue(
                                         title = albumWithSongs.album.title,
@@ -472,6 +475,7 @@ fun AlbumScreen(
                                             if (songWrapper.item.id == mediaMetadata?.id) {
                                                 playerConnection.player.togglePlayPause()
                                             } else {
+                                                playerConnection.service.getAutomix(playlistId)
                                                 playerConnection.playQueue(
                                                     ListQueue(
                                                         title = albumWithSongs.album.title,
@@ -502,7 +506,7 @@ fun AlbumScreen(
             if (otherVersions.isNotEmpty()) {
                 item {
                     NavigationTitle(
-                        title = stringResource(R.string.other_versions)
+                        title = stringResource(R.string.other_versions),
                     )
                 }
                 item {
@@ -530,7 +534,7 @@ fun AlbumScreen(
                                                     )
                                                 }
                                             },
-                                        ).animateItemPlacement(),
+                                        ).animateItem(),
                             )
                         }
                     }
