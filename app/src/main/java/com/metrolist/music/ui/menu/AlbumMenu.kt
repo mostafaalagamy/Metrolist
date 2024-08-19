@@ -2,6 +2,8 @@ package com.metrolist.music.ui.menu
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -25,14 +27,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -49,6 +54,7 @@ import androidx.media3.exoplayer.offline.DownloadRequest
 import androidx.media3.exoplayer.offline.DownloadService
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import com.metrolist.music.YouTube
 import com.metrolist.music.LocalDatabase
 import com.metrolist.music.LocalDownloadUtil
 import com.metrolist.music.LocalPlayerConnection
@@ -67,6 +73,8 @@ import com.metrolist.music.ui.component.GridMenuItem
 import com.metrolist.music.ui.component.ListDialog
 import com.metrolist.music.ui.component.ListItem
 import com.metrolist.music.ui.component.SongListItem
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 
 @SuppressLint("MutableCollectionMutableState")
@@ -75,11 +83,13 @@ fun AlbumMenu(
     originalAlbum: Album,
     navController: NavController,
     onDismiss: () -> Unit,
+    selectAction: () -> Unit = {},
 ) {
     val context = LocalContext.current
     val database = LocalDatabase.current
     val downloadUtil = LocalDownloadUtil.current
     val playerConnection = LocalPlayerConnection.current ?: return
+    val scope = rememberCoroutineScope()
     val libraryAlbum by database.album(originalAlbum.id).collectAsState(initial = originalAlbum)
     val album = libraryAlbum ?: originalAlbum
     var songs by remember {
@@ -114,6 +124,14 @@ fun AlbumMenu(
                 }
         }
     }
+
+    var refetchIconDegree by remember { mutableFloatStateOf(0f) }
+
+    val rotationAnimation by animateFloatAsState(
+        targetValue = refetchIconDegree,
+        animationSpec = tween(durationMillis = 800),
+        label = "",
+    )
 
     var showChoosePlaylistDialog by rememberSaveable {
         mutableStateOf(false)
@@ -331,6 +349,25 @@ fun AlbumMenu(
             }
         }
         GridMenuItem(
+            icon = {
+                Icon(
+                    painter = painterResource(R.drawable.sync),
+                    contentDescription = null,
+                    modifier = Modifier.graphicsLayer(rotationZ = rotationAnimation),
+                )
+            },
+            title = R.string.refetch,
+        ) {
+            refetchIconDegree -= 360
+            scope.launch(Dispatchers.IO) {
+                YouTube.album(album.id).onSuccess {
+                    database.transaction {
+                        update(album.album, it, album.artists)
+                    }
+                }
+            }
+        }
+        GridMenuItem(
             icon = R.drawable.share,
             title = R.string.share,
         ) {
@@ -342,6 +379,15 @@ fun AlbumMenu(
                     putExtra(Intent.EXTRA_TEXT, "https://music.youtube.com/browse/${album.album.id}")
                 }
             context.startActivity(Intent.createChooser(intent, null))
+        }
+        if (selectAction != {}) {
+            GridMenuItem(
+                icon = R.drawable.select_all,
+                title = R.string.select,
+            ) {
+                onDismiss()
+                selectAction()
+            }
         }
     }
 }
