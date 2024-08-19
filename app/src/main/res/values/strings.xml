@@ -293,12 +293,9 @@
     <string name="enable_kugou">Enable KuGou lyrics provider</string>
     <string name="enable_lrclib">Enable LrcLib lyrics provider</string>
     <string name="set_first_lyrics_provider">Set the first lyrics provider</string>
-<<<<<<< HEAD
     
-=======
     <string name="hide_explicit">Hide explicit content</string>
 
->>>>>>> a3851bbf (feat: option to hide explicit content)
     <string name="backup_restore">Backup and restore</string>
     <string name="backup">Backup</string>
     <string name="restore">Restore</string>
