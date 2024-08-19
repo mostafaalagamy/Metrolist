@@ -38,7 +38,6 @@ import com.metrolist.music.ui.component.SwitchPreference
 import com.metrolist.music.ui.utils.backToMain
 import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
->>>>>>> e8d0e4e0 (feat: player text alignment customization):app/src/main/java/com/metrolist/music/ui/screens/settings/AppearanceSettings.kt
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
