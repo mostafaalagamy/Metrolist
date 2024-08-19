@@ -1,4 +1,5 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
+    
     <!-- Bottom navigation -->
     <string name="home">الصفحة الرئيسية</string>
     <string name="songs">الأغاني</string>
@@ -6,6 +7,7 @@
     <string name="albums">الألبومات</string>
     <string name="playlists">قوائم التشغيل</string>
     <string name="explore">الإستكشاف</string>
+    
     <!-- Top bar -->
     <plurals name="n_selected" tools:ignore="MissingQuantity">
         <item quantity="other">%d محددة</item>
@@ -23,15 +25,18 @@
     <string name="similar_to">مشابه لـ</string>
     <string name="keep_listening">استمر في الاستماع</string>
     <string name="your_ytb_playlists">قوائم التشغيل الخاصة بك</string>
+    
     <!-- History -->
     <string name="today">اليوم</string>
     <string name="yesterday">أمس</string>
     <string name="this_week">هذا الأسبوع</string>
     <string name="last_week">الأسبوع الماضي</string>
+    
     <!-- Stats -->
     <string name="most_played_songs">الأغاني الأكثر تشغيلًا</string>
     <string name="most_played_artists">الفنانون الأكثر تشغيلًا</string>
     <string name="most_played_albums">الألبومات الأكثر تشغيلًا</string>
+    
     <!-- Search -->
     <string name="search">بحث</string>
     <string name="search_yt_music">البحث في موسيقى يوتيوب…</string>
@@ -49,8 +54,10 @@
     <string name="filter_featured_playlists">قوائم التشغيل المميزة</string>
     <string name="filter_bookmarked">المفضلة</string>
     <string name="no_results_found">لم يتم العثور على نتائج</string>
+    
     <!-- Artist screen -->
     <string name="from_your_library">من مكتبتك</string>
+    
     <!-- Album screen -->
     <string name="other_versions">إصدارات أخرى</string>
     
@@ -58,6 +65,7 @@
     <string name="liked">الأغاني المفضلة</string>
     <string name="offline">التحميلات</string>
     <string name="my_top">الأعلي إستماع : </string>
+    
     <!-- Playlist -->
     <string name="liked_songs">الأغاني المفضلة</string>
     <string name="downloaded_songs">الأغاني المحمّلة</string>
@@ -65,11 +73,13 @@
     <string name="remove_download_playlist_confirm">هل تريد حقًا إزالة جميع أغاني قائمة التشغيل "%s" من مساحة الأغاني المحملة؟</string>
     <string name="delete_playlist_confirm">هل تريد حقًا حذف قائمة التشغيل "%s"؟</string>
     <string name="elements_selected">%1$d عنصر محدد</string>
+    
     <!-- Button -->
     <string name="retry">إعادة المحاولة</string>
     <string name="radio">راديو</string>
     <string name="shuffle">تشغيل عشوائي</string>
     <string name="reset">إعادة تعيين</string>
+    
     <!-- Menu -->
     <string name="details">التفاصيل</string>
     <string name="edit">تعديل</string>
@@ -96,6 +106,7 @@
     <string name="select">تحديد الكل</string>
     <string name="remove_from_playlist">إزالة من قائمة التشغيل</string>
     <string name="like_all">الإعجاب بالكل</string>
+    
     <!-- Sort menu -->
     <string name="sort_by_create_date">تاريخ الإضافة</string>
     <string name="sort_by_last_updated">تاريخ التحديث</string>
@@ -106,6 +117,7 @@
     <string name="sort_by_length">المدة</string>
     <string name="sort_by_play_time">وقت التشغيل</string>
     <string name="sort_by_custom">ترتيب مخصص</string>
+    
     <!-- Dialog -->
     <string name="media_id">معرف الوسائط</string>
     <string name="mime_type">نوع MIME</string>
@@ -134,6 +146,7 @@
     <string name="edit_artist">تعديل الفنان</string>
     <string name="artist_name">اسم الفنان</string>
     <string name="error_artist_name_empty">لا يمكن أن يكون اسم الفنان فارغًا.</string>
+    
     <!-- Noun -->
     <plurals name="n_song" tools:ignore="MissingQuantity">
         <item quantity="one">%d أغنية</item>
@@ -167,11 +180,13 @@
         <item quantity="one">%d عنصر</item>
         <item quantity="other">%d من العناصر</item>
     </plurals>
+    
     <!-- شريط التنبيه -->
     <string name="playlist_imported">تم استيراد قائمة التشغيل</string>
     <string name="removed_song_from_playlist">تمت إزالة \"%s\" من قائمة التشغيل</string>
     <string name="playlist_synced">تمت مزامنة قائمة التشغيل</string>
     <string name="undo">تراجع</string>
+    
     <!-- المشغل -->
     <string name="lyrics_not_found">لم يتم العثور على كلمات الأغاني</string>
     <string name="sleep_timer">مؤقت النوم</string>
@@ -184,6 +199,7 @@
     <string name="error_no_internet">لا يوجد اتصال بالشبكة</string>
     <string name="error_timeout">انتهاء المهلة</string>
     <string name="error_unknown">خطأ غير معروف</string>
+    
     <!-- إجراءات المشغل -->
     <string name="action_like">إعجاب</string>
     <string name="action_remove_like">إزالة الإعجاب</string>
@@ -192,11 +208,14 @@
     <string name="repeat_mode_off">إيقاف وضع التكرار</string>
     <string name="repeat_mode_one">تكرار الأغنية الحالية</string>
     <string name="repeat_mode_all">تكرار قائمة الانتظار</string>
+    
     <!-- عنوان قائمة الانتظار -->
     <string name="queue_all_songs">جميع الأغاني</string>
     <string name="queue_searched_songs">الأغاني التي تم البحث عنها</string>
+    
     <!-- اسم الإشعار -->
     <string name="music_player">مشغل الموسيقى</string>
+    
     <!-- الإعدادات -->
     <string name="settings">الإعدادات</string>
     
@@ -214,6 +233,7 @@
     <string name="pure_black">أسود نقي</string>
     <string name="default_open_tab">علامة التبويب الافتراضية</string>
     <string name="customize_navigation_tabs">تخصيص علامات التبويب</string>
+    <string name="player_text_alignment">موضع إسم الفنان والأغنية</string>
     <string name="lyrics_text_position">موضع نص كلمات الأغاني</string>
     <string name="left">يسار</string>
     <string name="center">وسط</string>
