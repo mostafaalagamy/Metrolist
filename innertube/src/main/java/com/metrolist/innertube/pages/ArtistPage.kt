@@ -1,21 +1,5 @@
 package com.metrolist.innertube.pages
 
-<<<<<<< HEAD:innertube/src/main/java/com/metrolist/innertube/pages/ArtistPage.kt
-import com.metrolist.innertube.models.Album
-import com.metrolist.innertube.models.AlbumItem
-import com.metrolist.innertube.models.Artist
-import com.metrolist.innertube.models.ArtistItem
-import com.metrolist.innertube.models.BrowseEndpoint
-import com.metrolist.innertube.models.MusicCarouselShelfRenderer
-import com.metrolist.innertube.models.MusicResponsiveListItemRenderer
-import com.metrolist.innertube.models.MusicShelfRenderer
-import com.metrolist.innertube.models.MusicTwoRowItemRenderer
-import com.metrolist.innertube.models.PlaylistItem
-import com.metrolist.innertube.models.SectionListRenderer
-import com.metrolist.innertube.models.SongItem
-import com.metrolist.innertube.models.YTItem
-import com.metrolist.innertube.models.oddElements
-=======
 import com.metrolist.innertube.models.Album
 import com.metrolist.innertube.models.AlbumItem
 import com.metrolist.innertube.models.Artist
@@ -31,7 +15,6 @@ import com.metrolist.innertube.models.SongItem
 import com.metrolist.innertube.models.YTItem
 import com.metrolist.innertube.models.filterExplicit
 import com.metrolist.innertube.models.oddElements
->>>>>>> a3851bbf (feat: option to hide explicit content):innertube/src/main/java/com/metrolist/innertube/pages/ArtistPage.kt
 
 data class ArtistSection(
     val title: String,
