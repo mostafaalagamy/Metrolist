@@ -190,6 +190,8 @@ class MusicService :
 
     private var discordRpc: DiscordRPC? = null
 
+    val automixItems = MutableStateFlow<List<MediaItem>>(emptyList())
+
     override fun onCreate() {
         super.onCreate()
         setMediaNotificationProvider(
@@ -344,6 +346,15 @@ class MusicService :
                         ),
                     playWhenReady = false,
                 )
+            }
+            runCatching {
+                filesDir.resolve(PERSISTENT_AUTOMIX_FILE).inputStream().use { fis ->
+                    ObjectInputStream(fis).use { oos ->
+                        oos.readObject() as PersistQueue
+                    }
+                }
+            }.onSuccess { queue ->
+                automixItems.value = queue.items.map { it.toMediaItem() }
             }
         }
 
@@ -506,6 +517,50 @@ class MusicService :
             player.addMediaItems(initialStatus.items.drop(1))
             currentQueue = radioQueue
         }
+    }
+
+    fun getAutomix(playlistId: String) {
+        scope.launch(SilentHandler) {
+            YouTube
+                .next(WatchEndpoint(playlistId = playlistId))
+                .onSuccess {
+                    YouTube
+                        .next(WatchEndpoint(playlistId = it.endpoint.playlistId))
+                        .onSuccess {
+                            automixItems.value =
+                                it.items.map { song ->
+                                    song.toMediaItem()
+                                }
+                        }
+                }
+        }
+    }
+
+    fun addToQueueAutomix(
+        item: MediaItem,
+        position: Int,
+    ) {
+        automixItems.value =
+            automixItems.value.toMutableList().apply {
+                removeAt(position)
+            }
+        addToQueue(listOf(item))
+    }
+
+    fun playNextAutomix(
+        item: MediaItem,
+        position: Int,
+    ) {
+        automixItems.value =
+            automixItems.value.toMutableList().apply {
+                removeAt(position)
+            }
+        playNext(listOf(item))
+    }
+
+    fun clearAutomix() {
+        filesDir.resolve(PERSISTENT_QUEUE_FILE).delete()
+        automixItems.value = emptyList()
     }
 
     fun playNext(items: List<MediaItem>) {
@@ -790,6 +845,7 @@ class MusicService :
 
     private fun saveQueueToDisk() {
         if (player.playbackState == STATE_IDLE) {
+            filesDir.resolve(PERSISTENT_AUTOMIX_FILE).delete()
             filesDir.resolve(PERSISTENT_QUEUE_FILE).delete()
             return
         }
@@ -800,10 +856,26 @@ class MusicService :
                 mediaItemIndex = player.currentMediaItemIndex,
                 position = player.currentPosition,
             )
+        val persistAutomix =
+            PersistQueue(
+                title = "automix",
+                items = automixItems.value.mapNotNull { it.metadata },
+                mediaItemIndex = 0,
+                position = 0,
+            )
         runCatching {
             filesDir.resolve(PERSISTENT_QUEUE_FILE).outputStream().use { fos ->
                 ObjectOutputStream(fos).use { oos ->
                     oos.writeObject(persistQueue)
+                }
+            }
+        }.onFailure {
+            reportException(it)
+        }
+        runCatching {
+            filesDir.resolve(PERSISTENT_AUTOMIX_FILE).outputStream().use { fos ->
+                ObjectOutputStream(fos).use { oos ->
+                    oos.writeObject(persistAutomix)
                 }
             }
         }.onFailure {
@@ -852,5 +924,6 @@ class MusicService :
         const val ERROR_CODE_NO_STREAM = 1000001
         const val CHUNK_LENGTH = 512 * 1024L
         const val PERSISTENT_QUEUE_FILE = "persistent_queue.data"
+        const val PERSISTENT_AUTOMIX_FILE = "persistent_automix.data"
     }
 }
