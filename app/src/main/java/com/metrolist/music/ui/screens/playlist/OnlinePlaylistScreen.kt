@@ -59,38 +59,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
-<<<<<<< HEAD:app/src/main/java/com/metrolist/music/ui/screens/playlist/OnlinePlaylistScreen.kt
-import com.metrolist.innertube.models.SongItem
-import com.metrolist.innertube.models.WatchEndpoint
-import com.metrolist.music.LocalDatabase
-import com.metrolist.music.LocalPlayerAwareWindowInsets
-import com.metrolist.music.LocalPlayerConnection
-import com.metrolist.music.R
-import com.metrolist.music.constants.AlbumThumbnailSize
-import com.metrolist.music.constants.ThumbnailCornerRadius
-import com.metrolist.music.db.entities.PlaylistEntity
-import com.metrolist.music.db.entities.PlaylistSongMap
-import com.metrolist.music.extensions.metadata
-import com.metrolist.music.extensions.toMediaItem
-import com.metrolist.music.extensions.togglePlayPause
-import com.metrolist.music.models.toMediaMetadata
-import com.metrolist.music.playback.queues.YouTubeQueue
-import com.metrolist.music.ui.component.AutoResizeText
-import com.metrolist.music.ui.component.FontSizeRange
-import com.metrolist.music.ui.component.IconButton
-import com.metrolist.music.ui.component.LocalMenuState
-import com.metrolist.music.ui.component.YouTubeListItem
-import com.metrolist.music.ui.component.shimmer.ButtonPlaceholder
-import com.metrolist.music.ui.component.shimmer.ListItemPlaceHolder
-import com.metrolist.music.ui.component.shimmer.ShimmerHost
-import com.metrolist.music.ui.component.shimmer.TextPlaceholder
-import com.metrolist.music.ui.menu.SelectionMediaMetadataMenu
-import com.metrolist.music.ui.menu.YouTubePlaylistMenu
-import com.metrolist.music.ui.menu.YouTubeSongMenu
-import com.metrolist.music.ui.utils.ItemWrapper
-import com.metrolist.music.ui.utils.backToMain
-import com.metrolist.music.viewmodels.OnlinePlaylistViewModel
-=======
 import com.metrolist.innertube.models.SongItem
 import com.metrolist.innertube.models.WatchEndpoint
 import com.metrolist.music.LocalDatabase
@@ -123,7 +91,6 @@ import com.metrolist.music.ui.utils.ItemWrapper
 import com.metrolist.music.ui.utils.backToMain
 import com.metrolist.music.utils.rememberPreference
 import com.metrolist.music.viewmodels.OnlinePlaylistViewModel
->>>>>>> a3851bbf (feat: option to hide explicit content):app/src/main/java/com/metrolist/music/ui/screens/playlist/OnlinePlaylistScreen.kt
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
