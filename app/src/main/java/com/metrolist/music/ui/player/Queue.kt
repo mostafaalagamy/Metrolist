@@ -482,7 +482,7 @@ fun Queue(
                                     onClick = { playerConnection.service.addToQueueAutomix(item, index) },
                                 ) {
                                     Icon(
-                                        painter = painterResource(R.drawable.shortcut_playlists),
+                                        painter = painterResource(R.drawable.queue_music),
                                         contentDescription = null,
                                     )
                                 }
