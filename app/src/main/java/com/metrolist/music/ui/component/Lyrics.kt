@@ -47,27 +47,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-<<<<<<< HEAD:app/src/main/java/com/metrolist/music/ui/component/Lyrics.kt
-import com.metrolist.music.BuildConfig
-import com.metrolist.music.LocalPlayerConnection
-import com.metrolist.music.R
-import com.metrolist.music.constants.LyricsClickKey
-import com.metrolist.music.constants.LyricsTextPositionKey
-import com.metrolist.music.constants.PlayerBackgroundStyle
-import com.metrolist.music.constants.PlayerBackgroundStyleKey
-import com.metrolist.music.db.entities.LyricsEntity.Companion.LYRICS_NOT_FOUND
-import com.metrolist.music.lyrics.LyricsEntry
-import com.metrolist.music.lyrics.LyricsEntry.Companion.HEAD_LYRICS_ENTRY
-import com.metrolist.music.lyrics.LyricsUtils.findCurrentLineIndex
-import com.metrolist.music.lyrics.LyricsUtils.parseLyrics
-import com.metrolist.music.ui.component.shimmer.ShimmerHost
-import com.metrolist.music.ui.component.shimmer.TextPlaceholder
-import com.metrolist.music.ui.menu.LyricsMenu
-import com.metrolist.music.ui.screens.settings.LyricsPosition
-import com.metrolist.music.ui.utils.fadingEdge
-import com.metrolist.music.utils.rememberEnumPreference
-import com.metrolist.music.utils.rememberPreference
-=======
 import com.metrolist.music.BuildConfig
 import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
@@ -90,7 +69,6 @@ import com.metrolist.music.ui.screens.settings.PlayerTextAlignment
 import com.metrolist.music.ui.utils.fadingEdge
 import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
->>>>>>> e8d0e4e0 (feat: player text alignment customization):app/src/main/java/com/metrolist/music/ui/component/Lyrics.kt
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlin.time.Duration.Companion.seconds
@@ -107,11 +85,7 @@ fun Lyrics(
     val density = LocalDensity.current
 
     val lyricsTextPosition by rememberEnumPreference(LyricsTextPositionKey, LyricsPosition.CENTER)
-<<<<<<< HEAD:app/src/main/java/com/metrolist/music/ui/component/Lyrics.kt
-=======
     val playerTextAlignment by rememberEnumPreference(PlayerTextAlignmentKey, PlayerTextAlignment.SIDED)
-    var translationEnabled by rememberPreference(TranslateLyricsKey, false)
->>>>>>> e8d0e4e0 (feat: player text alignment customization):app/src/main/java/com/metrolist/music/ui/component/Lyrics.kt
     val changeLyrics by rememberPreference(LyricsClickKey, true)
 
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
