@@ -8,12 +8,6 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-<<<<<<< HEAD:app/src/main/java/com/metrolist/music/viewmodels/OnlineSearchViewModel.kt
-import com.metrolist.innertube.YouTube
-import com.metrolist.innertube.pages.SearchSummaryPage
-import com.metrolist.music.models.ItemsPage
-import com.metrolist.music.utils.reportException
-=======
 import com.metrolist.innertube.YouTube
 import com.metrolist.innertube.models.filterExplicit
 import com.metrolist.innertube.pages.SearchSummaryPage
@@ -22,7 +16,6 @@ import com.metrolist.music.models.ItemsPage
 import com.metrolist.music.utils.dataStore
 import com.metrolist.music.utils.get
 import com.metrolist.music.utils.reportException
->>>>>>> a3851bbf (feat: option to hide explicit content):app/src/main/java/com/metrolist/music/viewmodels/OnlineSearchViewModel.kt
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
