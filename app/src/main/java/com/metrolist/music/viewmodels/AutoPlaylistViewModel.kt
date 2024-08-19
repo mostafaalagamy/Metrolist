@@ -47,15 +47,14 @@ class AutoPlaylistViewModel
                     database.likedSongs(SongSortType.CREATE_DATE, true),
                     context.dataStore.data
                         .map {
-                            it[PlaylistSongSortTypeKey].toEnum(PlaylistSongSortType.CUSTOM) to
-                                (it[PlaylistSongSortDescendingKey] ?: true)
+                            it[AutoPlaylistSongSortTypeKey].toEnum(AutoPlaylistSongSortType.CREATE_DATE) to
+                                (it[AutoPlaylistSongSortDescendingKey] ?: true)
                         }.distinctUntilChanged(),
                 ) { songs, (sortType, sortDescending) ->
                     when (sortType) {
-                            PlaylistSongSortType.CUSTOM -> songs
-                            PlaylistSongSortType.CREATE_DATE -> songs.sortedBy { it.id }
-                            PlaylistSongSortType.NAME -> songs.sortedBy { it.song.title }
-                            PlaylistSongSortType.ARTIST -> {
+                        AutoPlaylistSongSortType.CREATE_DATE -> songs.sortedBy { it.song.inLibrary }
+                        AutoPlaylistSongSortType.NAME -> songs.sortedBy { it.song.title }
+                        AutoPlaylistSongSortType.ARTIST -> {
                             val collator = Collator.getInstance(Locale.getDefault())
                             collator.strength = Collator.PRIMARY
                             songs
@@ -63,8 +62,8 @@ class AutoPlaylistViewModel
                                 .groupBy { it.album?.title }
                                 .flatMap { (_, songsByAlbum) -> songsByAlbum.sortedBy { it.artists.joinToString("") { it.name } } }
                         }
-                        PlaylistSongSortType.PLAY_TIME -> songs.sortedBy { it.song.totalPlayTime }
-                    }.reversed(sortDescending && sortType != PlaylistSongSortType.CUSTOM)
+                        AutoPlaylistSongSortType.PLAY_TIME -> songs.sortedBy { it.song.totalPlayTime }
+                    }.reversed(sortDescending)
                 }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
                     .stateIn(viewModelScope, SharingStarted.Lazily, null)
             } else {
