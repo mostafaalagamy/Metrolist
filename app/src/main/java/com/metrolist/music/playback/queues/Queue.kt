@@ -1,12 +1,8 @@
 package com.metrolist.music.playback.queues
 
 import androidx.media3.common.MediaItem
-<<<<<<< HEAD:app/src/main/java/com/metrolist/music/playback/queues/Queue.kt
-import com.metrolist.music.models.MediaMetadata
-=======
 import com.metrolist.music.extensions.metadata
 import com.metrolist.music.models.MediaMetadata
->>>>>>> a3851bbf (feat: option to hide explicit content):app/src/main/java/com/metrolist/music/playback/queues/Queue.kt
 
 interface Queue {
     val preloadItem: MediaMetadata?
