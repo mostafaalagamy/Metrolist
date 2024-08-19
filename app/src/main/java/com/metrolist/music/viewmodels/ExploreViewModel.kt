@@ -3,12 +3,6 @@ package com.metrolist.music.viewmodels
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-<<<<<<< HEAD:app/src/main/java/com/metrolist/music/viewmodels/ExploreViewModel.kt
-import com.metrolist.innertube.YouTube
-import com.metrolist.innertube.pages.ExplorePage
-import com.metrolist.music.db.MusicDatabase
-import com.metrolist.music.utils.reportException
-=======
 import com.metrolist.innertube.YouTube
 import com.metrolist.innertube.models.filterExplicit
 import com.metrolist.innertube.pages.ExplorePage
@@ -17,7 +11,6 @@ import com.metrolist.music.db.MusicDatabase
 import com.metrolist.music.utils.dataStore
 import com.metrolist.music.utils.get
 import com.metrolist.music.utils.reportException
->>>>>>> a3851bbf (feat: option to hide explicit content):app/src/main/java/com/metrolist/music/viewmodels/ExploreViewModel.kt
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
