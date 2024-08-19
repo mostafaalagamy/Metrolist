@@ -143,12 +143,12 @@ fun PrivacySettings(
         )
         PreferenceEntry(
             title = { Text(stringResource(R.string.clear_listen_history)) },
-            icon = { Icon(painterResource(R.drawable.clear_all), null) },
+            icon = { Icon(painterResource(R.drawable.delete_history), null) },
             onClick = { showClearListenHistoryDialog = true },
         )
         SwitchPreference(
             title = { Text(stringResource(R.string.pause_search_history)) },
-            icon = { Icon(painterResource(R.drawable.manage_search), null) },
+            icon = { Icon(painterResource(R.drawable.search_off), null) },
             checked = pauseSearchHistory,
             onCheckedChange = onPauseSearchHistoryChange,
         )

@@ -199,7 +199,9 @@
     <string name="pure_black">純黑</string>
     <string name="default_open_tab">預設啟動標籤</string>
     <string name="customize_navigation_tabs">自訂導覽列</string>
+    <string name="player_text_alignment">播放器文字對齊</string>
     <string name="lyrics_text_position">歌詞文字位置</string>
+    <string name="sided">靠邊</string>
     <string name="left">靠左</string>
     <string name="center">置中</string>
     <string name="right">靠右</string>
