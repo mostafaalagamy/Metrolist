@@ -73,7 +73,7 @@ class StatsViewModel
                                 .album(album.id)
                                 .onSuccess { albumPage ->
                                     database.query {
-                                        update(album.album, albumPage)
+                                        update(album.album, albumPage, album.artists)
                                     }
                                 }.onFailure {
                                     reportException(it)

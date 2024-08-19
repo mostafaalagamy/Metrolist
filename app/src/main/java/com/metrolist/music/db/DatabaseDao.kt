@@ -949,6 +949,7 @@ interface DatabaseDao {
     fun update(
         album: AlbumEntity,
         albumPage: AlbumPage,
+        artists: List<ArtistEntity>? = emptyList(),
     ) {
         update(
             album.copy(
@@ -960,6 +961,9 @@ interface DatabaseDao {
                 duration = albumPage.songs.sumOf { it.duration ?: 0 },
             ),
         )
+        if (artists?.size != albumPage.album.artists?.size) {
+            artists?.forEach(::delete)
+        }
         albumPage.songs
             .map(SongItem::toMediaMetadata)
             .onEach(::insert)
