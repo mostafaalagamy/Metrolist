@@ -312,15 +312,10 @@
     <string name="preview">Preview</string>
     <string name="login_failed">Login failed</string>
     <string name="logout">Logout</string>
-<<<<<<< HEAD
-    <string name="enable_discord_rpc">Enable Rich Presense</string>
-    
+
+    <string name="enable_discord_rpc">Enable Rich Presence</string> 
     <string name="default_links">Open supported links by default</string>
     
-=======
-    <string name="enable_discord_rpc">Enable Rich Presence</string>
-
->>>>>>> 05a31607 (feat: add music recommendation, closes #14)
     <string name="about">About</string>
     <string name="app_version">App version</string>
 
