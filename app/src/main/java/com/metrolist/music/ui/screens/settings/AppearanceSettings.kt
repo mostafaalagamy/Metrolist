@@ -17,28 +17,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
-<<<<<<< HEAD:app/src/main/java/com/metrolist/music/ui/screens/settings/AppearanceSettings.kt
-import com.metrolist.music.LocalPlayerAwareWindowInsets
-import com.metrolist.music.R
-import com.metrolist.music.constants.DarkModeKey
-import com.metrolist.music.constants.DefaultOpenTabKey
-import com.metrolist.music.constants.DynamicThemeKey
-import com.metrolist.music.constants.EnableSquigglySlider
-import com.metrolist.music.constants.GridItemSize
-import com.metrolist.music.constants.GridItemsSizeKey
-import com.metrolist.music.constants.LyricsClickKey
-import com.metrolist.music.constants.LyricsTextPositionKey
-import com.metrolist.music.constants.PlayerBackgroundStyle
-import com.metrolist.music.constants.PlayerBackgroundStyleKey
-import com.metrolist.music.constants.PureBlackKey
-import com.metrolist.music.constants.SwipeThumbnailKey
-import com.metrolist.music.ui.component.EnumListPreference
-import com.metrolist.music.ui.component.IconButton
-import com.metrolist.music.ui.component.SwitchPreference
-import com.metrolist.music.ui.utils.backToMain
-import com.metrolist.music.utils.rememberEnumPreference
-import com.metrolist.music.utils.rememberPreference
-=======
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.R
 import com.metrolist.music.constants.DarkModeKey
@@ -168,15 +146,8 @@ fun AppearanceSettings(
             },
         )
         EnumListPreference(
-<<<<<<< HEAD:app/src/main/java/com/metrolist/music/ui/screens/settings/AppearanceSettings.kt
-<<<<<<< HEAD:app/src/main/java/com/metrolist/music/ui/screens/settings/AppearanceSettings.kt
-=======
             title = { Text(stringResource(R.string.player_text_alignment)) },
             icon = { Icon(painterResource(R.drawable.format_align_left), null) },
-=======
-            title = { Text(stringResource(R.string.player_text_alignment)) },
-            icon = { Icon(painterResource(R.drawable.format_align_center), null) },
->>>>>>> e8d0e4e0 (feat: player text alignment customization):app/src/main/java/com/metrolist/music/ui/screens/settings/AppearanceSettings.kt
             selectedValue = playerTextAlignment,
             onValueSelected = onPlayerTextAlignmentChange,
             valueText = {
@@ -187,10 +158,6 @@ fun AppearanceSettings(
             },
         )
         EnumListPreference(
-<<<<<<< HEAD:app/src/main/java/com/metrolist/music/ui/screens/settings/AppearanceSettings.kt
->>>>>>> 4279d383 (feat: update icons and add animations in settings):app/src/main/java/com/metrolist/music/ui/screens/settings/AppearanceSettings.kt
-=======
->>>>>>> e8d0e4e0 (feat: player text alignment customization):app/src/main/java/com/metrolist/music/ui/screens/settings/AppearanceSettings.kt
             title = { Text(stringResource(R.string.lyrics_text_position)) },
             icon = { Icon(painterResource(R.drawable.lyrics), null) },
             selectedValue = lyricsPosition,
