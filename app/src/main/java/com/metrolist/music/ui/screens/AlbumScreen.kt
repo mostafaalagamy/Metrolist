@@ -360,6 +360,7 @@ fun AlbumScreen(
 
                         OutlinedButton(
                             onClick = {
+                                playerConnection.service.getAutomix(playlistId)
                                 playerConnection.playQueue(
                                     ListQueue(
                                         title = albumWithSongs.album.title,
@@ -474,6 +475,7 @@ fun AlbumScreen(
                                             if (songWrapper.item.id == mediaMetadata?.id) {
                                                 playerConnection.player.togglePlayPause()
                                             } else {
+                                                playerConnection.service.getAutomix(playlistId)
                                                 playerConnection.playQueue(
                                                     ListQueue(
                                                         title = albumWithSongs.album.title,
