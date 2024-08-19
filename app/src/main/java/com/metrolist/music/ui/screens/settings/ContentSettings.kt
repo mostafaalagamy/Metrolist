@@ -1,5 +1,6 @@
 package com.metrolist.music.ui.screens.settings
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
@@ -127,23 +128,26 @@ fun ContentSettings(
 
         SwitchPreference(
             title = { Text(stringResource(R.string.enable_proxy)) },
+            icon = { Icon(painterResource(R.drawable.wifi_proxy), null) },
             checked = proxyEnabled,
             onCheckedChange = onProxyEnabledChange,
         )
 
-        if (proxyEnabled) {
-            ListPreference(
-                title = { Text(stringResource(R.string.proxy_type)) },
-                selectedValue = proxyType,
-                values = listOf(Proxy.Type.HTTP, Proxy.Type.SOCKS),
-                valueText = { it.name },
-                onValueSelected = onProxyTypeChange,
-            )
-            EditTextPreference(
-                title = { Text(stringResource(R.string.proxy_url)) },
-                value = proxyUrl,
-                onValueChange = onProxyUrlChange,
-            )
+        AnimatedVisibility(proxyEnabled) {
+            Column {
+                ListPreference(
+                    title = { Text(stringResource(R.string.proxy_type)) },
+                    selectedValue = proxyType,
+                    values = listOf(Proxy.Type.HTTP, Proxy.Type.SOCKS),
+                    valueText = { it.name },
+                    onValueSelected = onProxyTypeChange,
+                )
+                EditTextPreference(
+                    title = { Text(stringResource(R.string.proxy_url)) },
+                    value = proxyUrl,
+                    onValueChange = onProxyUrlChange,
+                )
+            }
         }
 
         EditTextPreference(

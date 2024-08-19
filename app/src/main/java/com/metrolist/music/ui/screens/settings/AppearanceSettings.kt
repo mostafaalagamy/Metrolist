@@ -1,5 +1,7 @@
 package com.metrolist.music.ui.screens.settings
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
@@ -10,6 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -26,6 +29,7 @@ import com.metrolist.music.constants.LyricsClickKey
 import com.metrolist.music.constants.LyricsTextPositionKey
 import com.metrolist.music.constants.PlayerBackgroundStyle
 import com.metrolist.music.constants.PlayerBackgroundStyleKey
+import com.metrolist.music.constants.PlayerTextAlignmentKey
 import com.metrolist.music.constants.PureBlackKey
 import com.metrolist.music.constants.SwipeThumbnailKey
 import com.metrolist.music.ui.component.EnumListPreference
@@ -51,10 +55,21 @@ fun AppearanceSettings(
     val (pureBlack, onPureBlackChange) = rememberPreference(PureBlackKey, defaultValue = false)
     val (defaultOpenTab, onDefaultOpenTabChange) = rememberEnumPreference(DefaultOpenTabKey, defaultValue = NavigationTab.HOME)
     val (lyricsPosition, onLyricsPositionChange) = rememberEnumPreference(LyricsTextPositionKey, defaultValue = LyricsPosition.CENTER)
+    val (playerTextAlignment, onPlayerTextAlignmentChange) =
+        rememberEnumPreference(
+            PlayerTextAlignmentKey,
+            defaultValue = PlayerTextAlignment.CENTER,
+        )
     val (lyricsClick, onLyricsClickChange) = rememberPreference(LyricsClickKey, defaultValue = true)
     val (squigglySlider, onSquigglySliderChange) = rememberPreference(EnableSquigglySlider, defaultValue = true)
     val (swipeThumbnail, onSwipeThumbnailChange) = rememberPreference(SwipeThumbnailKey, defaultValue = true)
     val (gridItemSize, onGridItemSizeChange) = rememberEnumPreference(GridItemsSizeKey, defaultValue = GridItemSize.BIG)
+
+    val isSystemInDarkTheme = isSystemInDarkTheme()
+    val useDarkTheme =
+        remember(darkMode, isSystemInDarkTheme) {
+            if (darkMode == DarkMode.AUTO) isSystemInDarkTheme else darkMode == DarkMode.ON
+        }
 
     Column(
         Modifier
@@ -108,12 +123,14 @@ fun AppearanceSettings(
             onCheckedChange = onSwipeThumbnailChange,
         )
 
-        SwitchPreference(
-            title = { Text(stringResource(R.string.pure_black)) },
-            icon = { Icon(painterResource(R.drawable.contrast), null) },
-            checked = pureBlack,
-            onCheckedChange = onPureBlackChange,
-        )
+        AnimatedVisibility(useDarkTheme) {
+            SwitchPreference(
+                title = { Text(stringResource(R.string.pure_black)) },
+                icon = { Icon(painterResource(R.drawable.contrast), null) },
+                checked = pureBlack,
+                onCheckedChange = onPureBlackChange,
+            )
+        }
         EnumListPreference(
             title = { Text(stringResource(R.string.default_open_tab)) },
             icon = { Icon(painterResource(R.drawable.tab), null) },
@@ -124,6 +141,18 @@ fun AppearanceSettings(
                     NavigationTab.HOME -> stringResource(R.string.home)
                     NavigationTab.EXPLORE -> stringResource(R.string.explore)
                     NavigationTab.LIBRARY -> stringResource(R.string.filter_library)
+                }
+            },
+        )
+        EnumListPreference(
+            title = { Text(stringResource(R.string.player_text_alignment)) },
+            icon = { Icon(painterResource(R.drawable.format_align_left), null) },
+            selectedValue = playerTextAlignment,
+            onValueSelected = onPlayerTextAlignmentChange,
+            valueText = {
+                when (it) {
+                    PlayerTextAlignment.SIDED -> stringResource(R.string.sided)
+                    PlayerTextAlignment.CENTER -> stringResource(R.string.center)
                 }
             },
         )
@@ -193,4 +222,9 @@ enum class LyricsPosition {
     LEFT,
     CENTER,
     RIGHT,
+}
+
+enum class PlayerTextAlignment {
+    SIDED,
+    CENTER,
 }

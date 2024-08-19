@@ -237,7 +237,9 @@
     <string name="pure_black">Pure black</string>
     <string name="default_open_tab">Default open tab</string>
     <string name="customize_navigation_tabs">Customize navigation tabs</string>
+    <string name="player_text_alignment">Player text alignment</string>
     <string name="lyrics_text_position">Lyrics text position</string>
+    <string name="sided">Sided</string>
     <string name="left">Left</string>
     <string name="center">Center</string>
     <string name="right">Right</string>

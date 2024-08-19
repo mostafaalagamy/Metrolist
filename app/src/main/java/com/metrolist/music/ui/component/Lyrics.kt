@@ -54,6 +54,8 @@ import com.metrolist.music.constants.LyricsClickKey
 import com.metrolist.music.constants.LyricsTextPositionKey
 import com.metrolist.music.constants.PlayerBackgroundStyle
 import com.metrolist.music.constants.PlayerBackgroundStyleKey
+import com.metrolist.music.constants.PlayerTextAlignmentKey
+import com.metrolist.music.constants.TranslateLyricsKey
 import com.metrolist.music.db.entities.LyricsEntity.Companion.LYRICS_NOT_FOUND
 import com.metrolist.music.lyrics.LyricsEntry
 import com.metrolist.music.lyrics.LyricsEntry.Companion.HEAD_LYRICS_ENTRY
@@ -63,6 +65,7 @@ import com.metrolist.music.ui.component.shimmer.ShimmerHost
 import com.metrolist.music.ui.component.shimmer.TextPlaceholder
 import com.metrolist.music.ui.menu.LyricsMenu
 import com.metrolist.music.ui.screens.settings.LyricsPosition
+import com.metrolist.music.ui.screens.settings.PlayerTextAlignment
 import com.metrolist.music.ui.utils.fadingEdge
 import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
@@ -82,6 +85,7 @@ fun Lyrics(
     val density = LocalDensity.current
 
     val lyricsTextPosition by rememberEnumPreference(LyricsTextPositionKey, LyricsPosition.CENTER)
+    val playerTextAlignment by rememberEnumPreference(PlayerTextAlignmentKey, PlayerTextAlignment.SIDED)
     val changeLyrics by rememberPreference(LyricsClickKey, true)
 
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
@@ -253,9 +257,7 @@ fun Lyrics(
                                 displayedCurrentLineIndex
                             ) {
                                 currentLine
-//                                MaterialTheme.colorScheme.primary
                             } else {
-//                                MaterialTheme.colorScheme.secondary
                                 outLines
                             },
                         textAlign =
