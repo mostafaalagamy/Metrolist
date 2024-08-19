@@ -40,7 +40,8 @@ class AlbumViewModel
                             if (album == null) {
                                 insert(it)
                             } else {
-                                update(album.album, it)
+                                println(it.album.artists)
+                                update(album.album, it, album.artists)
                             }
                         }
                     }.onFailure {
