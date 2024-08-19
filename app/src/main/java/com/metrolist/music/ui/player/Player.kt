@@ -41,6 +41,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.AlertDialogDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.material3.Icon
@@ -444,6 +445,7 @@ fun BottomSheetPlayer(
         AlertDialog(
             properties = DialogProperties(usePlatformDefaultWidth = false),
             onDismissRequest = { showDetailsDialog = false },
+            containerColor = if (useBlackBackground) Color.Black else AlertDialogDefaults.containerColor,
             icon = {
                 Icon(
                     painter = painterResource(R.drawable.info),
