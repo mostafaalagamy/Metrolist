@@ -162,6 +162,7 @@ fun BottomSheetPlayer(
     val isPlaying by playerConnection.isPlaying.collectAsState()
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
     val currentSong by playerConnection.currentSong.collectAsState(initial = null)
+    val automix by playerConnection.service.automixItems.collectAsState()
 
     val canSkipPrevious by playerConnection.canSkipPrevious.collectAsState()
     val canSkipNext by playerConnection.canSkipNext.collectAsState()
@@ -187,6 +188,10 @@ fun BottomSheetPlayer(
 
     var changeColor by remember {
         mutableStateOf(false)
+    }
+
+    if (!canSkipNext && automix.isNotEmpty()) {
+        playerConnection.service.addToQueueAutomix(automix[0], 0)
     }
 
     LaunchedEffect(mediaMetadata, playerBackground) {
@@ -529,6 +534,7 @@ fun BottomSheetPlayer(
                 )
             },
         onDismiss = {
+            playerConnection.service.clearAutomix()
             playerConnection.player.stop()
             playerConnection.player.clearMediaItems()
         },

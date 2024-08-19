@@ -90,6 +90,7 @@ class BackupRestoreViewModel
                 }
                 context.stopService(Intent(context, MusicService::class.java))
                 context.filesDir.resolve(PERSISTENT_QUEUE_FILE).delete()
+                context.filesDir.resolve(PERSISTENT_QUEUE_FILE).delete()
                 context.startActivity(Intent(context, MainActivity::class.java))
                 exitProcess(0)
             }.onFailure {

@@ -38,6 +38,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
@@ -242,6 +243,7 @@ fun Queue(
     ) {
         val queueTitle by playerConnection.queueTitle.collectAsState()
         val queueWindows by playerConnection.queueWindows.collectAsState()
+        val automix by playerConnection.service.automixItems.collectAsState()
         val mutableQueueWindows = remember { mutableStateListOf<Timeline.Window>() }
         val queueLength =
             remember(queueWindows) {
@@ -442,6 +444,70 @@ fun Queue(
                         ) {
                             content()
                         }
+                    }
+                }
+            }
+
+            if (automix.isNotEmpty()) {
+                item {
+                    HorizontalDivider(
+                        modifier = Modifier.padding(vertical = 8.dp, horizontal = 4.dp),
+                    )
+
+                    Text(
+                        text = stringResource(R.string.similar_content),
+                        modifier = Modifier.padding(start = 16.dp),
+                    )
+                }
+
+                itemsIndexed(
+                    items = automix,
+                    key = { _, it -> it.mediaId },
+                ) { index, item ->
+                    Row(
+                        horizontalArrangement = Arrangement.Center,
+                    ) {
+                        MediaMetadataListItem(
+                            mediaMetadata = item.metadata!!,
+                            trailingContent = {
+                                IconButton(
+                                    onClick = { playerConnection.service.playNextAutomix(item, index) },
+                                ) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.playlist_play),
+                                        contentDescription = null,
+                                    )
+                                }
+                                IconButton(
+                                    onClick = { playerConnection.service.addToQueueAutomix(item, index) },
+                                ) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.shortcut_playlists),
+                                        contentDescription = null,
+                                    )
+                                }
+                            },
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .combinedClickable(
+                                        onClick = {},
+                                        onLongClick = {
+                                            menuState.show {
+                                                PlayerMenu(
+                                                    mediaMetadata = item.metadata!!,
+                                                    navController = navController,
+                                                    playerBottomSheetState = playerBottomSheetState,
+                                                    isQueueTrigger = true,
+                                                    onShowDetailsDialog = {
+                                                        showDetailsDialog = true
+                                                    },
+                                                    onDismiss = menuState::dismiss,
+                                                )
+                                            }
+                                        },
+                                    ).animateItem(),
+                        )
                     }
                 }
             }
