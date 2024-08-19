@@ -26,6 +26,7 @@ import com.metrolist.music.constants.ChipSortTypeKey
 import com.metrolist.music.constants.ContentCountryKey
 import com.metrolist.music.constants.ContentLanguageKey
 import com.metrolist.music.constants.CountryCodeToName
+import com.metrolist.music.constants.HideExplicitKey
 import com.metrolist.music.constants.InnerTubeCookieKey
 import com.metrolist.music.constants.LanguageCodeToName
 import com.metrolist.music.constants.LibraryFilter
@@ -63,6 +64,7 @@ fun ContentSettings(
         }
     val (contentLanguage, onContentLanguageChange) = rememberPreference(key = ContentLanguageKey, defaultValue = "system")
     val (contentCountry, onContentCountryChange) = rememberPreference(key = ContentCountryKey, defaultValue = "system")
+    val (hideExplicit, onHideExplicitChange) = rememberPreference(key = HideExplicitKey, defaultValue = false)
     val (proxyEnabled, onProxyEnabledChange) = rememberPreference(key = ProxyEnabledKey, defaultValue = false)
     val (proxyType, onProxyTypeChange) = rememberEnumPreference(key = ProxyTypeKey, defaultValue = Proxy.Type.HTTP)
     val (proxyUrl, onProxyUrlChange) = rememberPreference(key = ProxyUrlKey, defaultValue = "host:port")
@@ -110,6 +112,13 @@ fun ContentSettings(
                 }
             },
             onValueSelected = onContentCountryChange,
+        )
+
+        SwitchPreference(
+            title = { Text(stringResource(R.string.hide_explicit)) },
+            icon = { Icon(painterResource(R.drawable.explicit), null) },
+            checked = hideExplicit,
+            onCheckedChange = onHideExplicitChange,
         )
 
         PreferenceGroupTitle(

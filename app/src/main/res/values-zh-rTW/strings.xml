@@ -245,6 +245,7 @@
     <string name="clear_search_history">清除搜尋記錄</string>
     <string name="clear_search_history_confirm">您確定要清除所有搜尋記錄嗎？</string>
     <string name="enable_kugou">使用酷狗音樂提供歌詞</string>
+    <string name="hide_explicit">移除不適當內容</string>
 
     <string name="backup_restore">備份與還原</string>
     <string name="backup">備份</string>

@@ -270,6 +270,8 @@
     <string name="enable_kugou">تفعيل مزود كلمات الأغاني KuGou</string>
     <string name="enable_lrclib">تفعيل مزود كلمات الأغاني LrcLib</string>
     <string name="set_first_lyrics_provider">تعيين مزود كلمات الأغاني الإفتراضي</string>
+
+    <string name="hide_explicit">إخفاء المحتوى الصريح</string>
     
     <string name="backup_restore">النسخ الاحتياطي والاستعادة</string>
     <string name="backup">نسخ احتياطي</string>
