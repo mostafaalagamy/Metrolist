@@ -492,7 +492,7 @@ fun Queue(
                                         },
                                     ) {
                                         Icon(
-                                            painter = painterResource(R.drawable.shortcut_playlists),
+                                            painter = painterResource(R.drawable.queue_music),
                                             contentDescription = null,
                                         )
                                     }
