@@ -107,7 +107,7 @@ fun SettingsScreen(
                     }
                 },
                 onClick = {
-                    uriHandler.openUri("https://github.com/mostafaalagamy/Metrolist/releases/latest")
+                    uriHandler.openUri("https://github.com/mostafaalagamy/Metrolist/releases/latest/download/Metrolist.apk")
                 }
             )
             ReleaseNotesCard()
