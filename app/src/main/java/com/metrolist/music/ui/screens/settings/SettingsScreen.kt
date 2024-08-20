@@ -24,6 +24,7 @@ import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.R
 import com.metrolist.music.ui.component.IconButton
 import com.metrolist.music.ui.component.PreferenceEntry
+import com.metrolist.music.ui.component.ReleaseNotesCard
 import com.metrolist.music.ui.utils.backToMain
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -106,9 +107,10 @@ fun SettingsScreen(
                     }
                 },
                 onClick = {
-                    uriHandler.openUri("https://github.com/mostafaalagamy/Metrolist/releases/latest")
+                    uriHandler.openUri("https://github.com/mostafaalagamy/Metrolist/releases/latest/download/Metrolist.apk")
                 }
             )
+            ReleaseNotesCard()
         }
     }
 
@@ -125,6 +127,5 @@ fun SettingsScreen(
                 )
             }
         },
-        scrollBehavior = scrollBehavior
     )
 }
