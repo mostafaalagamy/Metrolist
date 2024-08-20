@@ -519,6 +519,16 @@ class MusicService :
         }
     }
 
+    fun getAutomixAlbum(albumId: String) {
+        scope.launch(SilentHandler) {
+            YouTube
+                .album(albumId)
+                .onSuccess {
+                    getAutomix(it.album.playlistId)
+                }
+        }
+    }
+
     fun getAutomix(playlistId: String) {
         scope.launch(SilentHandler) {
             YouTube
