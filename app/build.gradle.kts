@@ -68,12 +68,14 @@ android {
         includeInApk = false
         includeInBundle = false
     }
+    dependencies {
+        implementation("org.jsoup:jsoup:1.15.3")
+    }
 }
 
 ksp {
     arg("room.schemaLocation", "$projectDir/schemas")
 }
-
 dependencies {
     implementation(libs.guava)
     implementation(libs.coroutines.guava)
