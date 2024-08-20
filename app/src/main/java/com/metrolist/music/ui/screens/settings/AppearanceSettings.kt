@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
+<<<<<<< HEAD:app/src/main/java/com/metrolist/music/ui/screens/settings/AppearanceSettings.kt
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.R
 import com.metrolist.music.constants.DarkModeKey
@@ -38,6 +39,30 @@ import com.metrolist.music.ui.component.SwitchPreference
 import com.metrolist.music.ui.utils.backToMain
 import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
+=======
+import com.metrolist.music.LocalPlayerAwareWindowInsets
+import com.metrolist.music.R
+import com.metrolist.music.constants.DarkModeKey
+import com.metrolist.music.constants.DefaultOpenTabKey
+import com.metrolist.music.constants.DynamicThemeKey
+import com.metrolist.music.constants.EnableSquigglySlider
+import com.metrolist.music.constants.GridItemSize
+import com.metrolist.music.constants.GridItemsSizeKey
+import com.metrolist.music.constants.LyricsClickKey
+import com.metrolist.music.constants.LyricsTextPositionKey
+import com.metrolist.music.constants.PlayerBackgroundStyle
+import com.metrolist.music.constants.PlayerBackgroundStyleKey
+import com.metrolist.music.constants.PlayerTextAlignmentKey
+import com.metrolist.music.constants.PureBlackKey
+import com.metrolist.music.constants.SwipeThumbnailKey
+import com.metrolist.music.ui.component.EnumListPreference
+import com.metrolist.music.ui.component.IconButton
+import com.metrolist.music.ui.component.PreferenceGroupTitle
+import com.metrolist.music.ui.component.SwitchPreference
+import com.metrolist.music.ui.utils.backToMain
+import com.metrolist.music.utils.rememberEnumPreference
+import com.metrolist.music.utils.rememberPreference
+>>>>>>> df57a8d6 (feat: enhance appearance settings screen):app/src/main/java/com/metrolist/music/ui/screens/settings/AppearanceSettings.kt
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -76,12 +101,17 @@ fun AppearanceSettings(
             .windowInsetsPadding(LocalPlayerAwareWindowInsets.current)
             .verticalScroll(rememberScrollState()),
     ) {
+        PreferenceGroupTitle(
+            title = stringResource(R.string.theme),
+        )
+
         SwitchPreference(
             title = { Text(stringResource(R.string.enable_dynamic_theme)) },
             icon = { Icon(painterResource(R.drawable.palette), null) },
             checked = dynamicTheme,
             onCheckedChange = onDynamicThemeChange,
         )
+
         EnumListPreference(
             title = { Text(stringResource(R.string.dark_theme)) },
             icon = { Icon(painterResource(R.drawable.dark_mode), null) },
@@ -131,22 +161,25 @@ fun AppearanceSettings(
                 onCheckedChange = onPureBlackChange,
             )
         }
-        EnumListPreference(
-            title = { Text(stringResource(R.string.default_open_tab)) },
-            icon = { Icon(painterResource(R.drawable.tab), null) },
-            selectedValue = defaultOpenTab,
-            onValueSelected = onDefaultOpenTabChange,
-            valueText = {
-                when (it) {
-                    NavigationTab.HOME -> stringResource(R.string.home)
-                    NavigationTab.EXPLORE -> stringResource(R.string.explore)
-                    NavigationTab.LIBRARY -> stringResource(R.string.filter_library)
-                }
-            },
+
+        PreferenceGroupTitle(
+            title = stringResource(R.string.player),
         )
+
         EnumListPreference(
             title = { Text(stringResource(R.string.player_text_alignment)) },
-            icon = { Icon(painterResource(R.drawable.format_align_left), null) },
+            icon = {
+                Icon(
+                    painter =
+                        painterResource(
+                            when (playerTextAlignment) {
+                                PlayerTextAlignment.CENTER -> R.drawable.format_align_center
+                                PlayerTextAlignment.SIDED -> R.drawable.format_align_left
+                            },
+                        ),
+                    contentDescription = null,
+                )
+            },
             selectedValue = playerTextAlignment,
             onValueSelected = onPlayerTextAlignmentChange,
             valueText = {
@@ -156,6 +189,7 @@ fun AppearanceSettings(
                 }
             },
         )
+
         EnumListPreference(
             title = { Text(stringResource(R.string.lyrics_text_position)) },
             icon = { Icon(painterResource(R.drawable.lyrics), null) },
@@ -169,11 +203,30 @@ fun AppearanceSettings(
                 }
             },
         )
+
         SwitchPreference(
             title = { Text(stringResource(R.string.lyrics_click_change)) },
             icon = { Icon(painterResource(R.drawable.lyrics), null) },
             checked = lyricsClick,
             onCheckedChange = onLyricsClickChange,
+        )
+
+        PreferenceGroupTitle(
+            title = stringResource(R.string.misc),
+        )
+
+        EnumListPreference(
+            title = { Text(stringResource(R.string.default_open_tab)) },
+            icon = { Icon(painterResource(R.drawable.tab), null) },
+            selectedValue = defaultOpenTab,
+            onValueSelected = onDefaultOpenTabChange,
+            valueText = {
+                when (it) {
+                    NavigationTab.HOME -> stringResource(R.string.home)
+                    NavigationTab.EXPLORE -> stringResource(R.string.explore)
+                    NavigationTab.LIBRARY -> stringResource(R.string.filter_library)
+                }
+            },
         )
 
         EnumListPreference(

@@ -191,20 +191,26 @@
     <!-- Settings -->
     <string name="settings">設定</string>
     <string name="appearance">外觀</string>
+    <string name="theme">主題</string>
     <string name="enable_dynamic_theme">使用動態主題</string>
     <string name="dark_theme">深色主題</string>
     <string name="dark_theme_on">開</string>
     <string name="dark_theme_off">關</string>
     <string name="dark_theme_follow_system">跟隨系統</string>
     <string name="pure_black">純黑</string>
-    <string name="default_open_tab">預設啟動標籤</string>
     <string name="customize_navigation_tabs">自訂導覽列</string>
+    <string name="player">播放器</string>
     <string name="player_text_alignment">播放器文字對齊</string>
     <string name="lyrics_text_position">歌詞文字位置</string>
     <string name="sided">靠邊</string>
     <string name="left">靠左</string>
     <string name="center">置中</string>
     <string name="right">靠右</string>
+    <string name="player_slider_style">播放器滑桿樣式</string>
+    <string name="default_">預設</string>
+    <string name="squiggly">波浪</string>
+    <string name="misc">其他</string>
+    <string name="default_open_tab">預設啟動標籤</string>
 
     <string name="content">內容</string>
     <string name="login">登入</string>
