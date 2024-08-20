@@ -33,8 +33,6 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.surfaceColorAtElevation
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.SearchBarColors
@@ -99,11 +97,8 @@ fun SearchBar(
     placeholder: @Composable (() -> Unit)? = null,
     leadingIcon: @Composable (() -> Unit)? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
-    shape: Shape = SearchBarDefaults.inputFieldShape,    
-    colors: SearchBarColors = 
-            SearchBarDefaults.colors(
-            containerColor = 
-            MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp)),
+    shape: Shape = SearchBarDefaults.inputFieldShape,
+    colors: SearchBarColors = SearchBarDefaults.colors(),
     tonalElevation: Dp = TonalElevation,
     windowInsets: WindowInsets = WindowInsets.systemBars,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
