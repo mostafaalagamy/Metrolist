@@ -314,10 +314,16 @@
     <string name="new_version_available">إصدار جديد متاح</string>
     <string name="translation_models">نماذج الترجمة</string>
     <string name="clear_translation_models">مسح نماذج الترجمة</string>
+    
     <string name="all_time">طوال الوقت</string>
     <string name="past_24_hours">آخر 24 ساعة</string>
     <string name="past_week">الأسبوع الماضي</string>
     <string name="past_month">الشهر الماضي</string>
     <string name="past_year">السنة الماضية</string>
     <string name="top_length">طول قائمة الأغاني المفضلة الخاصة بي</string>
+    <string name="history_duration">مدة التاريخ</string>
+    <plurals name="seconds">
+        <item quantity="one">1 ثانية</item>
+        <item quantity="other">%d من الثواني</item>
+    </plurals>
 </resources>
