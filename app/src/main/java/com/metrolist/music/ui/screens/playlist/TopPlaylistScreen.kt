@@ -24,7 +24,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
-import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
@@ -220,7 +219,7 @@ fun TopPlaylistScreen(
                                        Modifier
                                          .size(AlbumThumbnailSize)
                                          .clip(RoundedCornerShape(ThumbnailCornerRadius))
-                                         .background(MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp))
+                                         .background(MaterialTheme.colorScheme.surfaceContainer)
                         ) { 
                                 Icon(
                                     painter = painterResource(R.drawable.trending_up),
