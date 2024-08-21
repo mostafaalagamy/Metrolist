@@ -265,7 +265,11 @@
     <string name="restore_failed">無法還原備份</string>
 
     <string name="discord_integration">Discord 整合</string>
+<<<<<<< HEAD
     <string name="discord_information">你可以安心的登入，metrolist只會提取你的token，所有東西都存在本機。</string>
+=======
+    <string name="discord_information">Metrolist使用KizzyRPC函式庫來設定您的Discord狀態。這會用到Discord Gateway連線，可能會違反Discord服務條款，但是目前沒有使用者為此被停用帳號。使用此功能需自行承擔此風險。\n\nMetrolist只會提取你的token，所有東西都存在本機。</string>
+>>>>>>> a8eb8ce4 (fix(discord rpc): update disclaimer)
     <string name="dismiss">了解</string>
     <string name="options">選項</string>
     <string name="preview">預覽</string>
