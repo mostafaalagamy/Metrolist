@@ -28,6 +28,7 @@ import com.metrolist.music.constants.ContentCountryKey
 import com.metrolist.music.constants.ContentLanguageKey
 import com.metrolist.music.constants.CountryCodeToName
 import com.metrolist.music.constants.HideExplicitKey
+import com.metrolist.music.constants.HistoryDuration
 import com.metrolist.music.constants.InnerTubeCookieKey
 import com.metrolist.music.constants.LanguageCodeToName
 import com.metrolist.music.constants.LibraryFilter
@@ -43,6 +44,7 @@ import com.metrolist.music.ui.component.IconButton
 import com.metrolist.music.ui.component.ListPreference
 import com.metrolist.music.ui.component.PreferenceEntry
 import com.metrolist.music.ui.component.PreferenceGroupTitle
+import com.metrolist.music.ui.component.SliderPreference
 import com.metrolist.music.ui.component.SwitchPreference
 import com.metrolist.music.ui.utils.backToMain
 import com.metrolist.music.utils.rememberEnumPreference
@@ -70,6 +72,7 @@ fun ContentSettings(
     val (proxyType, onProxyTypeChange) = rememberEnumPreference(key = ProxyTypeKey, defaultValue = Proxy.Type.HTTP)
     val (proxyUrl, onProxyUrlChange) = rememberPreference(key = ProxyUrlKey, defaultValue = "host:port")
     val (lengthTop, onLengthTopChange) = rememberPreference(key = TopSize, defaultValue = "50")
+    val (historyDuration, onHistoryDurationChange) = rememberPreference(key = HistoryDuration, defaultValue = 30f)
     val (defaultChip, onDefaultChipChange) = rememberEnumPreference(key = ChipSortTypeKey, defaultValue = LibraryFilter.LIBRARY)
     val (quickPicks, onQuickPicksChange) = rememberEnumPreference(key = QuickPicksKey, defaultValue = QuickPicks.QUICK_PICKS)
 
@@ -194,6 +197,12 @@ fun ContentSettings(
                 }
             },
             onValueSelected = onQuickPicksChange,
+        )
+
+        SliderPreference(
+            title = { Text(stringResource(R.string.history_duration)) },
+            value = historyDuration,
+            onValueChange = onHistoryDurationChange,
         )
     }
 
