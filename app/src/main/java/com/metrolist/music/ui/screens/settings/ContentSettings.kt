@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
+<<<<<<< HEAD:app/src/main/java/com/metrolist/music/ui/screens/settings/ContentSettings.kt
 import com.metrolist.innertube.utils.parseCookieString
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.R
@@ -47,6 +48,40 @@ import com.metrolist.music.ui.component.SwitchPreference
 import com.metrolist.music.ui.utils.backToMain
 import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
+=======
+import com.metrolist.innertube.utils.parseCookieString
+import com.metrolist.music.LocalPlayerAwareWindowInsets
+import com.metrolist.music.R
+import com.metrolist.music.constants.AccountChannelHandleKey
+import com.metrolist.music.constants.AccountEmailKey
+import com.metrolist.music.constants.AccountNameKey
+import com.metrolist.music.constants.ChipSortTypeKey
+import com.metrolist.music.constants.ContentCountryKey
+import com.metrolist.music.constants.ContentLanguageKey
+import com.metrolist.music.constants.CountryCodeToName
+import com.metrolist.music.constants.HideExplicitKey
+import com.metrolist.music.constants.HistoryDuration
+import com.metrolist.music.constants.InnerTubeCookieKey
+import com.metrolist.music.constants.LanguageCodeToName
+import com.metrolist.music.constants.LibraryFilter
+import com.metrolist.music.constants.ProxyEnabledKey
+import com.metrolist.music.constants.ProxyTypeKey
+import com.metrolist.music.constants.ProxyUrlKey
+import com.metrolist.music.constants.QuickPicks
+import com.metrolist.music.constants.QuickPicksKey
+import com.metrolist.music.constants.SYSTEM_DEFAULT
+import com.metrolist.music.constants.TopSize
+import com.metrolist.music.ui.component.EditTextPreference
+import com.metrolist.music.ui.component.IconButton
+import com.metrolist.music.ui.component.ListPreference
+import com.metrolist.music.ui.component.PreferenceEntry
+import com.metrolist.music.ui.component.PreferenceGroupTitle
+import com.metrolist.music.ui.component.SliderPreference
+import com.metrolist.music.ui.component.SwitchPreference
+import com.metrolist.music.ui.utils.backToMain
+import com.metrolist.music.utils.rememberEnumPreference
+import com.metrolist.music.utils.rememberPreference
+>>>>>>> 5e18ff70 (feat: history change duration, closes #124):app/src/main/java/com/metrolist/music/ui/screens/settings/ContentSettings.kt
 import java.net.Proxy
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -70,6 +105,7 @@ fun ContentSettings(
     val (proxyType, onProxyTypeChange) = rememberEnumPreference(key = ProxyTypeKey, defaultValue = Proxy.Type.HTTP)
     val (proxyUrl, onProxyUrlChange) = rememberPreference(key = ProxyUrlKey, defaultValue = "host:port")
     val (lengthTop, onLengthTopChange) = rememberPreference(key = TopSize, defaultValue = "50")
+    val (historyDuration, onHistoryDurationChange) = rememberPreference(key = HistoryDuration, defaultValue = 30f)
     val (defaultChip, onDefaultChipChange) = rememberEnumPreference(key = ChipSortTypeKey, defaultValue = LibraryFilter.LIBRARY)
     val (quickPicks, onQuickPicksChange) = rememberEnumPreference(key = QuickPicksKey, defaultValue = QuickPicks.QUICK_PICKS)
 
@@ -194,6 +230,12 @@ fun ContentSettings(
                 }
             },
             onValueSelected = onQuickPicksChange,
+        )
+
+        SliderPreference(
+            title = { Text(stringResource(R.string.history_duration)) },
+            value = historyDuration,
+            onValueChange = onHistoryDurationChange,
         )
     }
 

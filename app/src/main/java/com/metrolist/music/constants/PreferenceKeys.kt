@@ -224,6 +224,7 @@ enum class PlayerBackgroundStyle {
 
 val EnableSquigglySlider = booleanPreferencesKey("enableSquigglySlider")
 val TopSize = stringPreferencesKey("topSize")
+val HistoryDuration = floatPreferencesKey("historyDuration")
 
 val PlayerBackgroundStyleKey = stringPreferencesKey("playerBackgroundStyle")
 val ShowLyricsKey = booleanPreferencesKey("showLyrics")

@@ -332,4 +332,9 @@
     <string name="past_month">Past month</string>
     <string name="past_year">Past year</string>
     <string name="top_length">My Top list length</string>
+    <string name="history_duration">History duration</string>
+    <plurals name="seconds">
+        <item quantity="one">1 second</item>
+        <item quantity="other">%d seconds</item>
+    </plurals>
 </resources>
