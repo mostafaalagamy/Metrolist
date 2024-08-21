@@ -1,5 +1,5 @@
 [versions]
-androidGradlePlugin = "8.3.2"
+androidGradlePlugin = "8.6.0-rc01"
 annotation = "1.8.2"
 json = "20240303"
 kotlin = "2.0.0"
@@ -22,7 +22,7 @@ concurrent-futures = { group = "androidx.concurrent", name = "concurrent-futures
 
 gradle = { group = "com.android.tools.build", name = "gradle", version.ref = "androidGradlePlugin" }
 activity = { group = "androidx.activity", name = "activity-compose", version = "1.9.1" }
-navigation = { group = "androidx.navigation", name = "navigation-compose", version = "2.7.7" }
+navigation = { group = "androidx.navigation", name = "navigation-compose", version = "2.8.0-beta07" }
 hilt-navigation = { group = "androidx.hilt", name = "hilt-navigation-compose", version = "1.2.0" }
 datastore = { group = "androidx.datastore", name = "datastore-preferences", version = "1.1.1" }
 

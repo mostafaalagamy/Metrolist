@@ -11,11 +11,11 @@ plugins {
 
 android {
     namespace = "com.metrolist.music"
-    compileSdk = 34
+    compileSdk = 35
     defaultConfig {
         applicationId = "com.metrolist.music"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 80
         versionName = "8.0.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

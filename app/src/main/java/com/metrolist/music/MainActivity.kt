@@ -17,6 +17,8 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -27,10 +29,10 @@ import androidx.compose.material3.AlertDialogDefaults
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -238,7 +240,7 @@ class MainActivity : ComponentActivity() {
                     modifier =
                         Modifier
                             .fillMaxSize()
-                            .background(MaterialTheme.colorScheme.background),
+                            .background(MaterialTheme.colorScheme.surface),
                 ) {
                     val focusManager = LocalFocusManager.current
                     val density = LocalDensity.current
@@ -261,6 +263,14 @@ class MainActivity : ComponentActivity() {
                                 else -> null
                             }
                         }
+
+                    val topLevelScreens =
+                        listOf(
+                            Screens.Home.route,
+                            Screens.Explore.route,
+                            Screens.Library.route,
+                            "settings",
+                        )
 
                     val (query, onQueryChange) =
                         rememberSaveable(stateSaver = TextFieldValue.Saver) {
@@ -480,7 +490,7 @@ class MainActivity : ComponentActivity() {
 
                     CompositionLocalProvider(
                         LocalDatabase provides database,
-                        LocalContentColor provides contentColorFor(MaterialTheme.colorScheme.background),
+                        LocalContentColor provides contentColorFor(MaterialTheme.colorScheme.surface),
                         LocalPlayerConnection provides playerConnection,
                         LocalPlayerAwareWindowInsets provides playerAwareWindowInsets,
                         LocalDownloadUtil provides downloadUtil,
@@ -494,8 +504,44 @@ class MainActivity : ComponentActivity() {
                                     NavigationTab.EXPLORE -> Screens.Explore
                                     NavigationTab.LIBRARY -> Screens.Library
                                 }.route,
-                            enterTransition = { fadeIn(animationSpec = tween(200)) },
-                            exitTransition = { fadeOut(animationSpec = tween(200)) },
+                            enterTransition = {
+                                if (initialState.destination.route in topLevelScreens && targetState.destination.route in topLevelScreens) {
+                                    fadeIn(tween(250))
+                                } else {
+                                    fadeIn(tween(250)) + slideInHorizontally { it / 2 }
+                                }
+                            },
+                            exitTransition = {
+                                if (initialState.destination.route in topLevelScreens && targetState.destination.route in topLevelScreens) {
+                                    fadeOut(tween(200))
+                                } else {
+                                    fadeOut(tween(200)) + slideOutHorizontally { -it / 2 }
+                                }
+                            },
+                            popEnterTransition = {
+                                if ((
+                                        initialState.destination.route in topLevelScreens ||
+                                            initialState.destination.route?.startsWith("search/") == true
+                                    ) &&
+                                    targetState.destination.route in topLevelScreens
+                                ) {
+                                    fadeIn(tween(250))
+                                } else {
+                                    fadeIn(tween(250)) + slideInHorizontally { -it / 2 }
+                                }
+                            },
+                            popExitTransition = {
+                                if ((
+                                        initialState.destination.route in topLevelScreens ||
+                                            initialState.destination.route?.startsWith("search/") == true
+                                    ) &&
+                                    targetState.destination.route in topLevelScreens
+                                ) {
+                                    fadeOut(tween(200))
+                                } else {
+                                    fadeOut(tween(200)) + slideOutHorizontally { it / 2 }
+                                }
+                            },
                             modifier =
                                 Modifier.nestedScroll(
                                     if (navigationItems.fastAny { it.route == navBackStackEntry?.destination?.route } ||
@@ -603,13 +649,7 @@ class MainActivity : ComponentActivity() {
                                                 contentDescription = null,
                                             )
                                         }
-                                    } else if (navBackStackEntry?.destination?.route in
-                                        listOf(
-                                            Screens.Home.route,
-                                            Screens.Explore.route,
-                                            Screens.Library.route,
-                                        )
-                                    ) {
+                                    } else if (navBackStackEntry?.destination?.route in topLevelScreens) {
                                         Box(
                                             contentAlignment = Alignment.Center,
                                             modifier =
