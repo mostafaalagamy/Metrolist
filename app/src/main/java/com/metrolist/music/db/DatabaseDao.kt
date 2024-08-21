@@ -388,6 +388,9 @@ interface DatabaseDao {
     @Query("SELECT * FROM song WHERE id = :songId")
     fun song(songId: String?): Flow<Song?>
 
+    @Query("SELECT * FROM song_artist_map WHERE songId = :songId")
+    fun songArtistMap(songId: String): List<SongArtistMap>
+
     @Transaction
     @Query("SELECT * FROM song")
     fun allSongs(): Flow<List<Song>>
@@ -920,6 +923,39 @@ interface DatabaseDao {
             }?.forEach(::insert)
     }
 
+    @Transaction
+    fun update(
+        song: Song,
+        mediaMetadata: MediaMetadata,
+    ) {
+        update(
+            song.song.copy(
+                title = mediaMetadata.title,
+                duration = mediaMetadata.duration,
+                thumbnailUrl = mediaMetadata.thumbnailUrl,
+                albumId = mediaMetadata.album?.id,
+                albumName = mediaMetadata.album?.title,
+            ),
+        )
+        songArtistMap(song.id).forEach(::delete)
+        mediaMetadata.artists.forEachIndexed { index, artist ->
+            val artistId = artist.id ?: artistByName(artist.name)?.id ?: ArtistEntity.generateArtistId()
+            insert(
+                ArtistEntity(
+                    id = artistId,
+                    name = artist.name,
+                ),
+            )
+            insert(
+                SongArtistMap(
+                    songId = song.id,
+                    artistId = artistId,
+                    position = index,
+                ),
+            )
+        }
+    }
+
     @Update
     fun update(song: SongEntity)
 
@@ -1009,6 +1045,9 @@ interface DatabaseDao {
 
     @Delete
     fun delete(song: SongEntity)
+
+    @Delete
+    fun delete(songArtistMap: SongArtistMap)
 
     @Delete
     fun delete(artist: ArtistEntity)
