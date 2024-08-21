@@ -38,7 +38,7 @@ fun NavigationTile(
                 Modifier
                     .size(56.dp)
                     .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.surfaceContainer)
+                    .background(MaterialTheme.colorScheme.surfaceContainerHigh)
                     .clickable(onClick = onClick),
         ) {
             Icon(
