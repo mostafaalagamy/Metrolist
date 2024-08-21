@@ -1078,7 +1078,7 @@ fun PlaylistGridItem(
                     modifier =
                         Modifier
                             .fillMaxSize()
-                            .background(MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp))
+                            .background(MaterialTheme.colorScheme.surfaceContainer)
                 ) {
                     Icon(
                         painter = painterResource(painter),
