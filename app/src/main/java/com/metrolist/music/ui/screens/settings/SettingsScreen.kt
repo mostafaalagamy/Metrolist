@@ -1,24 +1,19 @@
 package com.metrolist.music.ui.screens.settings
 
+import android.content.Intent
+import android.os.Build
+import android.provider.Settings
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Badge
-import androidx.compose.material3.BadgedBox
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarScrollBehavior
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
-import android.content.Intent
-import android.provider.Settings
 import com.metrolist.music.BuildConfig
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.R
@@ -35,6 +30,7 @@ fun SettingsScreen(
     latestVersionName: String,
 ) {
     val uriHandler = LocalUriHandler.current
+    val isAndroid13OrLater = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
 
     Column(
         modifier = Modifier
@@ -76,16 +72,18 @@ fun SettingsScreen(
             icon = { Icon(painterResource(R.drawable.restore), null) },
             onClick = { navController.navigate("settings/backup_restore") }
         )
-        PreferenceEntry(
-            title = { Text(stringResource(R.string.default_links)) },
-            icon = { Icon(painterResource(R.drawable.link), null) },
-            onClick = {
-                val intent = Intent(Settings.ACTION_APP_OPEN_BY_DEFAULT_SETTINGS).apply {
-                    data = android.net.Uri.parse("package:${BuildConfig.APPLICATION_ID}")
+        if (isAndroid13OrLater) {
+            PreferenceEntry(
+                title = { Text(stringResource(R.string.default_links)) },
+                icon = { Icon(painterResource(R.drawable.link), null) },
+                onClick = {
+                    val intent = Intent(Settings.ACTION_APP_OPEN_BY_DEFAULT_SETTINGS).apply {
+                        data = android.net.Uri.parse("package:${BuildConfig.APPLICATION_ID}")
+                    }
+                    navController.context.startActivity(intent)
                 }
-                navController.context.startActivity(intent)
-            }
-        )
+            )
+        }
         PreferenceEntry(
             title = { Text(stringResource(R.string.about)) },
             icon = { Icon(painterResource(R.drawable.info), null) },
