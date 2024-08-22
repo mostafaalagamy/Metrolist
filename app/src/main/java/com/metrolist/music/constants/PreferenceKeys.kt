@@ -12,6 +12,12 @@ val DarkModeKey = stringPreferencesKey("darkMode")
 val PureBlackKey = booleanPreferencesKey("pureBlack")
 val DefaultOpenTabKey = stringPreferencesKey("defaultOpenTab")
 val GridItemsSizeKey = stringPreferencesKey("gridItemSize")
+val SliderStyleKey = stringPreferencesKey("sliderStyle")
+
+enum class SliderStyle {
+    DEFAULT,
+    SQUIGGLY,
+}
 
 const val SYSTEM_DEFAULT = "SYSTEM_DEFAULT"
 val ContentLanguageKey = stringPreferencesKey("contentLanguage")
@@ -222,7 +228,6 @@ enum class PlayerBackgroundStyle {
     GRADIENT,
 }
 
-val EnableSquigglySlider = booleanPreferencesKey("enableSquigglySlider")
 val TopSize = stringPreferencesKey("topSize")
 val HistoryDuration = floatPreferencesKey("historyDuration")
 
