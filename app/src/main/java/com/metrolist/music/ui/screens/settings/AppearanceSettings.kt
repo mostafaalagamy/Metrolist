@@ -37,54 +37,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-<<<<<<< HEAD:app/src/main/java/com/metrolist/music/ui/screens/settings/AppearanceSettings.kt
-<<<<<<< HEAD:app/src/main/java/com/metrolist/music/ui/screens/settings/AppearanceSettings.kt
-import com.metrolist.music.LocalPlayerAwareWindowInsets
-import com.metrolist.music.R
-import com.metrolist.music.constants.DarkModeKey
-import com.metrolist.music.constants.DefaultOpenTabKey
-import com.metrolist.music.constants.DynamicThemeKey
-import com.metrolist.music.constants.EnableSquigglySlider
-import com.metrolist.music.constants.GridItemSize
-import com.metrolist.music.constants.GridItemsSizeKey
-import com.metrolist.music.constants.LyricsClickKey
-import com.metrolist.music.constants.LyricsTextPositionKey
-import com.metrolist.music.constants.PlayerBackgroundStyle
-import com.metrolist.music.constants.PlayerBackgroundStyleKey
-import com.metrolist.music.constants.PlayerTextAlignmentKey
-import com.metrolist.music.constants.PureBlackKey
-import com.metrolist.music.constants.SwipeThumbnailKey
-import com.metrolist.music.ui.component.EnumListPreference
-import com.metrolist.music.ui.component.IconButton
-import com.metrolist.music.ui.component.SwitchPreference
-import com.metrolist.music.ui.utils.backToMain
-import com.metrolist.music.utils.rememberEnumPreference
-import com.metrolist.music.utils.rememberPreference
-=======
-import com.metrolist.music.LocalPlayerAwareWindowInsets
-import com.metrolist.music.R
-import com.metrolist.music.constants.DarkModeKey
-import com.metrolist.music.constants.DefaultOpenTabKey
-import com.metrolist.music.constants.DynamicThemeKey
-import com.metrolist.music.constants.EnableSquigglySlider
-import com.metrolist.music.constants.GridItemSize
-import com.metrolist.music.constants.GridItemsSizeKey
-import com.metrolist.music.constants.LyricsClickKey
-import com.metrolist.music.constants.LyricsTextPositionKey
-import com.metrolist.music.constants.PlayerBackgroundStyle
-import com.metrolist.music.constants.PlayerBackgroundStyleKey
-import com.metrolist.music.constants.PlayerTextAlignmentKey
-import com.metrolist.music.constants.PureBlackKey
-import com.metrolist.music.constants.SwipeThumbnailKey
-import com.metrolist.music.ui.component.EnumListPreference
-import com.metrolist.music.ui.component.IconButton
-import com.metrolist.music.ui.component.PreferenceGroupTitle
-import com.metrolist.music.ui.component.SwitchPreference
-import com.metrolist.music.ui.utils.backToMain
-import com.metrolist.music.utils.rememberEnumPreference
-import com.metrolist.music.utils.rememberPreference
->>>>>>> df57a8d6 (feat: enhance appearance settings screen):app/src/main/java/com/metrolist/music/ui/screens/settings/AppearanceSettings.kt
-=======
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.R
 import com.metrolist.music.constants.DarkModeKey
@@ -111,7 +63,6 @@ import com.metrolist.music.ui.utils.backToMain
 import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
 import me.saket.squiggles.SquigglySlider
->>>>>>> 36188c60 (feat: squigly slider dialog, closes #339):app/src/main/java/com/metrolist/music/ui/screens/settings/AppearanceSettings.kt
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
