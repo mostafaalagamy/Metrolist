@@ -52,20 +52,11 @@ fun AboutScreen(
     val uriHandler = LocalUriHandler.current
 
     Column(
-<<<<<<< HEAD:app/src/main/java/com/metrolist/music/ui/screens/settings/AboutScreen.kt
-        modifier =
-            Modifier
-                .fillMaxWidth()
-                .windowInsetsPadding(LocalPlayerAwareWindowInsets.current)
-                .verticalScroll(rememberScrollState()),
-        horizontalAlignment = Alignment.CenterHorizontally,
-=======
         modifier = Modifier
             .fillMaxWidth()
             .windowInsetsPadding(LocalPlayerAwareWindowInsets.current.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom))
             .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally
->>>>>>> c4d1566b (fix(settings): top padding):app/src/main/java/com/metrolist/music/ui/screens/settings/AboutScreen.kt
     ) {
         Spacer(Modifier.windowInsetsPadding(LocalPlayerAwareWindowInsets.current.only(WindowInsetsSides.Top)))
 
