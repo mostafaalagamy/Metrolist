@@ -93,6 +93,7 @@ import androidx.navigation.NavController
 import coil.ImageLoader
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+<<<<<<< HEAD:app/src/main/java/com/metrolist/music/ui/player/Player.kt
 import com.metrolist.music.LocalDatabase
 import com.metrolist.music.LocalDownloadUtil
 import com.metrolist.music.LocalPlayerConnection
@@ -128,6 +129,44 @@ import com.metrolist.music.utils.joinByBullet
 import com.metrolist.music.utils.makeTimeString
 import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
+=======
+import com.metrolist.music.LocalDatabase
+import com.metrolist.music.LocalDownloadUtil
+import com.metrolist.music.LocalPlayerConnection
+import com.metrolist.music.R
+import com.metrolist.music.constants.DarkModeKey
+import com.metrolist.music.constants.ListThumbnailSize
+import com.metrolist.music.constants.PlayerBackgroundStyle
+import com.metrolist.music.constants.PlayerBackgroundStyleKey
+import com.metrolist.music.constants.PlayerHorizontalPadding
+import com.metrolist.music.constants.PlayerTextAlignmentKey
+import com.metrolist.music.constants.PureBlackKey
+import com.metrolist.music.constants.QueuePeekHeight
+import com.metrolist.music.constants.ShowLyricsKey
+import com.metrolist.music.constants.SliderStyle
+import com.metrolist.music.constants.SliderStyleKey
+import com.metrolist.music.constants.ThumbnailCornerRadius
+import com.metrolist.music.db.entities.PlaylistSongMap
+import com.metrolist.music.extensions.togglePlayPause
+import com.metrolist.music.models.MediaMetadata
+import com.metrolist.music.playback.ExoDownloadService
+import com.metrolist.music.ui.component.BottomSheet
+import com.metrolist.music.ui.component.BottomSheetState
+import com.metrolist.music.ui.component.ListDialog
+import com.metrolist.music.ui.component.ListItem
+import com.metrolist.music.ui.component.LocalMenuState
+import com.metrolist.music.ui.component.ResizableIconButton
+import com.metrolist.music.ui.component.rememberBottomSheetState
+import com.metrolist.music.ui.menu.AddToPlaylistDialog
+import com.metrolist.music.ui.menu.PlayerMenu
+import com.metrolist.music.ui.screens.settings.DarkMode
+import com.metrolist.music.ui.screens.settings.PlayerTextAlignment
+import com.metrolist.music.ui.theme.extractGradientColors
+import com.metrolist.music.utils.joinByBullet
+import com.metrolist.music.utils.makeTimeString
+import com.metrolist.music.utils.rememberEnumPreference
+import com.metrolist.music.utils.rememberPreference
+>>>>>>> 36188c60 (feat: squigly slider dialog, closes #339):app/src/main/java/com/metrolist/music/ui/player/Player.kt
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
@@ -174,7 +213,7 @@ fun BottomSheetPlayer(
     var showLyrics by rememberPreference(ShowLyricsKey, defaultValue = false)
     val playerBackground by rememberEnumPreference(key = PlayerBackgroundStyleKey, defaultValue = PlayerBackgroundStyle.DEFAULT)
 
-    val enableSquigglySlider by rememberPreference(EnableSquigglySlider, defaultValue = true)
+    val sliderStyle by rememberEnumPreference(SliderStyleKey, SliderStyle.DEFAULT)
 
     var position by rememberSaveable(playbackState) {
         mutableLongStateOf(playerConnection.player.currentPosition)
@@ -829,43 +868,47 @@ fun BottomSheetPlayer(
 
             Spacer(Modifier.height(6.dp))
 
-            if (enableSquigglySlider) {
-                SquigglySlider(
-                    value = (sliderPosition ?: position).toFloat(),
-                    valueRange = 0f..(if (duration == C.TIME_UNSET) 0f else duration.toFloat()),
-                    onValueChange = {
-                        sliderPosition = it.toLong()
-                    },
-                    onValueChangeFinished = {
-                        sliderPosition?.let {
-                            playerConnection.player.seekTo(it)
-                            position = it
-                        }
-                        sliderPosition = null
-                    },
-                    modifier = Modifier.padding(horizontal = PlayerHorizontalPadding),
-                    squigglesSpec =
-                        SquigglySlider.SquigglesSpec(
-                            amplitude = if (isPlaying) (2.dp).coerceAtLeast(2.dp) else 0.dp,
-                            strokeWidth = 3.dp,
-                        ),
-                )
-            } else {
-                Slider(
-                    value = (sliderPosition ?: position).toFloat(),
-                    valueRange = 0f..(if (duration == C.TIME_UNSET) 0f else duration.toFloat()),
-                    onValueChange = {
-                        sliderPosition = it.toLong()
-                    },
-                    onValueChangeFinished = {
-                        sliderPosition?.let {
-                            playerConnection.player.seekTo(it)
-                            position = it
-                        }
-                        sliderPosition = null
-                    },
-                    modifier = Modifier.padding(horizontal = PlayerHorizontalPadding),
-                )
+            when (sliderStyle) {
+                SliderStyle.SQUIGGLY -> {
+                    SquigglySlider(
+                        value = (sliderPosition ?: position).toFloat(),
+                        valueRange = 0f..(if (duration == C.TIME_UNSET) 0f else duration.toFloat()),
+                        onValueChange = {
+                            sliderPosition = it.toLong()
+                        },
+                        onValueChangeFinished = {
+                            sliderPosition?.let {
+                                playerConnection.player.seekTo(it)
+                                position = it
+                            }
+                            sliderPosition = null
+                        },
+                        modifier = Modifier.padding(horizontal = PlayerHorizontalPadding),
+                        squigglesSpec =
+                            SquigglySlider.SquigglesSpec(
+                                amplitude = if (isPlaying) (2.dp).coerceAtLeast(2.dp) else 0.dp,
+                                strokeWidth = 3.dp,
+                            ),
+                    )
+                }
+
+                SliderStyle.DEFAULT -> {
+                    Slider(
+                        value = (sliderPosition ?: position).toFloat(),
+                        valueRange = 0f..(if (duration == C.TIME_UNSET) 0f else duration.toFloat()),
+                        onValueChange = {
+                            sliderPosition = it.toLong()
+                        },
+                        onValueChangeFinished = {
+                            sliderPosition?.let {
+                                playerConnection.player.seekTo(it)
+                                position = it
+                            }
+                            sliderPosition = null
+                        },
+                        modifier = Modifier.padding(horizontal = PlayerHorizontalPadding),
+                    )
+                }
             }
 
             Spacer(Modifier.height(4.dp))
