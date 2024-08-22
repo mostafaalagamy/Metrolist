@@ -53,13 +53,8 @@ fun BackupAndRestore(
 
     Column(
         Modifier
-<<<<<<< HEAD:app/src/main/java/com/metrolist/music/ui/screens/settings/BackupAndRestore.kt
-            .windowInsetsPadding(LocalPlayerAwareWindowInsets.current)
-            .verticalScroll(rememberScrollState()),
-=======
             .windowInsetsPadding(LocalPlayerAwareWindowInsets.current.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom))
             .verticalScroll(rememberScrollState())
->>>>>>> c4d1566b (fix(settings): top padding):app/src/main/java/com/metrolist/music/ui/screens/settings/BackupAndRestore.kt
     ) {
         Spacer(Modifier.windowInsetsPadding(LocalPlayerAwareWindowInsets.current.only(WindowInsetsSides.Top)))
 
