@@ -1,5 +1,6 @@
 package com.metrolist.music.ui.screens.settings
 
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsetsSides
@@ -61,6 +62,8 @@ fun StorageSettings(
     val downloadCache = LocalPlayerConnection.current?.service?.downloadCache ?: return
 
     val coroutineScope = rememberCoroutineScope()
+    val (maxImageCacheSize, onMaxImageCacheSizeChange) = rememberPreference(key = MaxImageCacheSizeKey, defaultValue = 512)
+    val (maxSongCacheSize, onMaxSongCacheSizeChange) = rememberPreference(key = MaxSongCacheSizeKey, defaultValue = 1024)
 
     var imageCacheSize by remember {
         mutableStateOf(imageDiskCache.size)
@@ -71,6 +74,14 @@ fun StorageSettings(
     var downloadCacheSize by remember {
         mutableStateOf(tryOrNull { downloadCache.cacheSpace } ?: 0)
     }
+    val imageCacheProgress by animateFloatAsState(
+        targetValue = (imageCacheSize.toFloat() / imageDiskCache.maxSize).coerceIn(0f, 1f),
+        label = "",
+    )
+    val playerCacheProgress by animateFloatAsState(
+        targetValue = (playerCacheSize.toFloat() / (maxSongCacheSize * 1024 * 1024L)).coerceIn(0f, 1f),
+        label = "",
+    )
 
     LaunchedEffect(imageDiskCache) {
         while (isActive) {
@@ -91,13 +102,10 @@ fun StorageSettings(
         }
     }
 
-    val (maxImageCacheSize, onMaxImageCacheSizeChange) = rememberPreference(key = MaxImageCacheSizeKey, defaultValue = 512)
-    val (maxSongCacheSize, onMaxSongCacheSizeChange) = rememberPreference(key = MaxSongCacheSizeKey, defaultValue = 1024)
-
     Column(
         Modifier
             .windowInsetsPadding(LocalPlayerAwareWindowInsets.current.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom))
-            .verticalScroll(rememberScrollState())
+            .verticalScroll(rememberScrollState()),
     ) {
         Spacer(Modifier.windowInsetsPadding(LocalPlayerAwareWindowInsets.current.only(WindowInsetsSides.Top)))
 
@@ -134,7 +142,7 @@ fun StorageSettings(
             )
         } else {
             LinearProgressIndicator(
-                progress = { (playerCacheSize.toFloat() / (maxSongCacheSize * 1024 * 1024L)).coerceIn(0f, 1f) },
+                progress = { playerCacheProgress },
                 modifier =
                     Modifier
                         .fillMaxWidth()
@@ -180,7 +188,7 @@ fun StorageSettings(
         )
 
         LinearProgressIndicator(
-            progress = { (imageCacheSize.toFloat() / imageDiskCache.maxSize).coerceIn(0f, 1f) },
+            progress = { imageCacheProgress },
             modifier =
                 Modifier
                     .fillMaxWidth()
