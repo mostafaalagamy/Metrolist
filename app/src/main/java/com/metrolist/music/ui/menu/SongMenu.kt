@@ -50,29 +50,6 @@ import androidx.media3.exoplayer.offline.DownloadRequest
 import androidx.media3.exoplayer.offline.DownloadService
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
-<<<<<<< HEAD:app/src/main/java/com/metrolist/music/ui/menu/SongMenu.kt
-import com.metrolist.innertube.models.WatchEndpoint
-import com.metrolist.music.LocalDatabase
-import com.metrolist.music.LocalDownloadUtil
-import com.metrolist.music.LocalPlayerConnection
-import com.metrolist.music.R
-import com.metrolist.music.constants.ListItemHeight
-import com.metrolist.music.constants.ListThumbnailSize
-import com.metrolist.music.db.entities.Event
-import com.metrolist.music.db.entities.PlaylistSongMap
-import com.metrolist.music.db.entities.Song
-import com.metrolist.music.extensions.toMediaItem
-import com.metrolist.music.models.toMediaMetadata
-import com.metrolist.music.playback.ExoDownloadService
-import com.metrolist.music.playback.queues.YouTubeQueue
-import com.metrolist.music.ui.component.DownloadGridMenu
-import com.metrolist.music.ui.component.GridMenu
-import com.metrolist.music.ui.component.GridMenuItem
-import com.metrolist.music.ui.component.ListDialog
-import com.metrolist.music.ui.component.ListItem
-import com.metrolist.music.ui.component.SongListItem
-import com.metrolist.music.ui.component.TextFieldDialog
-=======
 import com.metrolist.innertube.YouTube
 import com.metrolist.innertube.models.WatchEndpoint
 import com.metrolist.music.LocalDatabase
@@ -97,7 +74,6 @@ import com.metrolist.music.ui.component.SongListItem
 import com.metrolist.music.ui.component.TextFieldDialog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
->>>>>>> 346b8834 (feat: refetch song button):app/src/main/java/com/metrolist/music/ui/menu/SongMenu.kt
 import java.time.LocalDateTime
 
 @Composable
