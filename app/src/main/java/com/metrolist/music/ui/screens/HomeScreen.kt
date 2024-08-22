@@ -1191,8 +1191,7 @@ fun HomeScreen(
             }
 
             HideOnScrollFAB(
-                visible =
-                    !quickPicks.isNullOrEmpty() || !forgottenFavorite.isNullOrEmpty() || explorePage?.newReleaseAlbums?.isNotEmpty() == true,
+                visible = !quickPicks.isNullOrEmpty() || explorePage?.newReleaseAlbums?.isNotEmpty() == true,
                 scrollState = scrollState,
                 icon = R.drawable.casino,
                 onClick = {
