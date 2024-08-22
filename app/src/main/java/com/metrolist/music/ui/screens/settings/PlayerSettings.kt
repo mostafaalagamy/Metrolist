@@ -44,13 +44,8 @@ fun PlayerSettings(
 
     Column(
         Modifier
-<<<<<<< HEAD:app/src/main/java/com/metrolist/music/ui/screens/settings/PlayerSettings.kt
-            .windowInsetsPadding(LocalPlayerAwareWindowInsets.current)
-            .verticalScroll(rememberScrollState()),
-=======
             .windowInsetsPadding(LocalPlayerAwareWindowInsets.current.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom))
             .verticalScroll(rememberScrollState())
->>>>>>> c4d1566b (fix(settings): top padding):app/src/main/java/com/metrolist/music/ui/screens/settings/PlayerSettings.kt
     ) {
         Spacer(Modifier.windowInsetsPadding(LocalPlayerAwareWindowInsets.current.only(WindowInsetsSides.Top)))
 
