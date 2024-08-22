@@ -1,8 +1,10 @@
 package com.metrolist.music.ui.screens.settings
 
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.os.Build
 import android.provider.Settings
+import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
@@ -10,6 +12,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -30,7 +33,8 @@ fun SettingsScreen(
     latestVersionName: String,
 ) {
     val uriHandler = LocalUriHandler.current
-    val isAndroid13OrLater = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+    val context = LocalContext.current
+    val isAndroid12OrLater = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
 
     Column(
         modifier = Modifier
@@ -72,15 +76,43 @@ fun SettingsScreen(
             icon = { Icon(painterResource(R.drawable.restore), null) },
             onClick = { navController.navigate("settings/backup_restore") }
         )
-        if (isAndroid13OrLater) {
+        if (isAndroid12OrLater) {
             PreferenceEntry(
                 title = { Text(stringResource(R.string.default_links)) },
                 icon = { Icon(painterResource(R.drawable.link), null) },
                 onClick = {
-                    val intent = Intent(Settings.ACTION_APP_OPEN_BY_DEFAULT_SETTINGS).apply {
-                        data = android.net.Uri.parse("package:${BuildConfig.APPLICATION_ID}")
+                    try {
+                        val intent = Intent(Settings.ACTION_APP_OPEN_BY_DEFAULT_SETTINGS).apply {
+                            data = android.net.Uri.parse("package:${BuildConfig.APPLICATION_ID}")
+                            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        }
+                        context.startActivity(intent)
+                    } catch (e: Exception) {
+                        when (e) {
+                            is ActivityNotFoundException -> {
+                                try {
+                                    val generalSettingsIntent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                                        data = android.net.Uri.parse("package:${BuildConfig.APPLICATION_ID}")
+                                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                    }
+                                    context.startActivity(generalSettingsIntent)
+                                } catch (e2: Exception) {
+                                    Toast.makeText(
+                                        context,
+                                        "Couldn't open app settings",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                            }
+                            else -> {
+                                Toast.makeText(
+                                    context,
+                                    "Couldn't open app settings",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
                     }
-                    navController.context.startActivity(intent)
                 }
             )
         }
