@@ -7,8 +7,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
@@ -50,13 +52,23 @@ fun AboutScreen(
     val uriHandler = LocalUriHandler.current
 
     Column(
+<<<<<<< HEAD:app/src/main/java/com/metrolist/music/ui/screens/settings/AboutScreen.kt
         modifier =
             Modifier
                 .fillMaxWidth()
                 .windowInsetsPadding(LocalPlayerAwareWindowInsets.current)
                 .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
+=======
+        modifier = Modifier
+            .fillMaxWidth()
+            .windowInsetsPadding(LocalPlayerAwareWindowInsets.current.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom))
+            .verticalScroll(rememberScrollState()),
+        horizontalAlignment = Alignment.CenterHorizontally
+>>>>>>> c4d1566b (fix(settings): top padding):app/src/main/java/com/metrolist/music/ui/screens/settings/AboutScreen.kt
     ) {
+        Spacer(Modifier.windowInsetsPadding(LocalPlayerAwareWindowInsets.current.only(WindowInsetsSides.Top)))
+
         Spacer(Modifier.height(4.dp))
 
         Image(

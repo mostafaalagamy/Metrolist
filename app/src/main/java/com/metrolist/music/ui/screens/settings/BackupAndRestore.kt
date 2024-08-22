@@ -3,6 +3,9 @@ package com.metrolist.music.ui.screens.settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -50,9 +53,16 @@ fun BackupAndRestore(
 
     Column(
         Modifier
+<<<<<<< HEAD:app/src/main/java/com/metrolist/music/ui/screens/settings/BackupAndRestore.kt
             .windowInsetsPadding(LocalPlayerAwareWindowInsets.current)
             .verticalScroll(rememberScrollState()),
+=======
+            .windowInsetsPadding(LocalPlayerAwareWindowInsets.current.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom))
+            .verticalScroll(rememberScrollState())
+>>>>>>> c4d1566b (fix(settings): top padding):app/src/main/java/com/metrolist/music/ui/screens/settings/BackupAndRestore.kt
     ) {
+        Spacer(Modifier.windowInsetsPadding(LocalPlayerAwareWindowInsets.current.only(WindowInsetsSides.Top)))
+
         PreferenceEntry(
             title = { Text(stringResource(R.string.backup)) },
             icon = { Icon(painterResource(R.drawable.backup), null) },
