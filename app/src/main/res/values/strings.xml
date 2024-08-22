@@ -106,6 +106,7 @@
     <string name="advanced">Advanced</string>
     <string name="select">Select all</string>
     <string name="like_all">Like all</string>
+    <string name="tempo_and_pitch">Tempo and Pitch</string>
 
     <!-- Sort menu -->
     <string name="sort_by_create_date">Date added</string>

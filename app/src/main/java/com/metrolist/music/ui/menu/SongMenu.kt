@@ -1,6 +1,8 @@
 package com.metrolist.music.ui.menu
 
 import android.content.Intent
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -23,13 +25,17 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -44,6 +50,7 @@ import androidx.media3.exoplayer.offline.DownloadRequest
 import androidx.media3.exoplayer.offline.DownloadService
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import com.metrolist.innertube.YouTube
 import com.metrolist.innertube.models.WatchEndpoint
 import com.metrolist.music.LocalDatabase
 import com.metrolist.music.LocalDownloadUtil
@@ -65,6 +72,8 @@ import com.metrolist.music.ui.component.ListDialog
 import com.metrolist.music.ui.component.ListItem
 import com.metrolist.music.ui.component.SongListItem
 import com.metrolist.music.ui.component.TextFieldDialog
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 
 @Composable
@@ -81,6 +90,15 @@ fun SongMenu(
     val songState = database.song(originalSong.id).collectAsState(initial = originalSong)
     val song = songState.value ?: originalSong
     val download by LocalDownloadUtil.current.getDownload(originalSong.id).collectAsState(initial = null)
+
+    val scope = rememberCoroutineScope()
+    var refetchIconDegree by remember { mutableFloatStateOf(0f) }
+
+    val rotationAnimation by animateFloatAsState(
+        targetValue = refetchIconDegree,
+        animationSpec = tween(durationMillis = 800),
+        label = "",
+    )
 
     var showEditDialog by rememberSaveable {
         mutableStateOf(false)
@@ -336,6 +354,28 @@ fun SongMenu(
                     putExtra(Intent.EXTRA_TEXT, "https://music.youtube.com/watch?v=${song.id}")
                 }
             context.startActivity(Intent.createChooser(intent, null))
+        }
+        GridMenuItem(
+            icon = {
+                Icon(
+                    painter = painterResource(R.drawable.sync),
+                    contentDescription = null,
+                    modifier = Modifier.graphicsLayer(rotationZ = rotationAnimation),
+                )
+            },
+            title = R.string.refetch,
+        ) {
+            refetchIconDegree -= 360
+            scope.launch(Dispatchers.IO) {
+                YouTube.queue(listOf(song.id)).onSuccess {
+                    val newSong = it.firstOrNull()
+                    if (newSong != null) {
+                        database.transaction {
+                            update(song, newSong.toMediaMetadata())
+                        }
+                    }
+                }
+            }
         }
         if (song.song.inLibrary == null) {
             GridMenuItem(

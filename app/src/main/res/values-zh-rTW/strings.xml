@@ -88,6 +88,7 @@
     <string name="search_online">線上搜尋</string>
     <string name="sync">同步</string>
     <string name="advanced">進階</string>
+    <string name="tempo_and_pitch">速度和音調</string>
 
     <!-- Sort menu -->
     <string name="sort_by_create_date">新增時間</string>
