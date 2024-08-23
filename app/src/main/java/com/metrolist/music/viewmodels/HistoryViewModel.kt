@@ -46,32 +46,22 @@ class HistoryViewModel
                                     DateAgo.ThisWeek -> 2L
                                     DateAgo.LastWeek -> 3L
                                     is DateAgo.Other -> ChronoUnit.DAYS.between(dateAgo.date, today)
-                            }
-                          }).mapValues { entry ->
-                // merge neighbor songs with same id
-                             entry.value.mergeNearbyElements(
-                                 key = { it.song.id },
-                                 merge = { first, second ->
-                                     first.copy(
-                                         event = first.event.copy(
-                                             playTime = first.event.playTime + second.event.playTime
-                                         )
-                                     )
-                                 }
-                             )
-                         }
-                     }
-                     .stateIn(viewModelScope, SharingStarted.Lazily, emptyMap())
-}
+                                }
+                            },
+                        ).mapValues { entry ->
+                            entry.value.distinctBy { it.song.id }
+                        }
+                }.stateIn(viewModelScope, SharingStarted.Lazily, emptyMap())
+    }
 
-sealed class DateAgo {
-    object Today : DateAgo()
+    sealed class DateAgo {
+    data object Today : DateAgo()
 
-    object Yesterday : DateAgo()
+    data object Yesterday : DateAgo()
 
-    object ThisWeek : DateAgo()
+    data object ThisWeek : DateAgo()
 
-    object LastWeek : DateAgo()
+    data object LastWeek : DateAgo()
 
     class Other(
         val date: LocalDate,
