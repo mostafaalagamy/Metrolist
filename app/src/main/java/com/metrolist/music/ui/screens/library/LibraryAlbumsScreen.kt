@@ -40,35 +40,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-<<<<<<< HEAD:app/src/main/java/com/metrolist/music/ui/screens/library/LibraryAlbumsScreen.kt
-<<<<<<< HEAD:app/src/main/java/com/metrolist/music/ui/screens/library/LibraryAlbumsScreen.kt
-import com.metrolist.music.LocalPlayerAwareWindowInsets
-import com.metrolist.music.LocalPlayerConnection
-import com.metrolist.music.R
-import com.metrolist.music.constants.AlbumFilter
-import com.metrolist.music.constants.AlbumFilterKey
-import com.metrolist.music.constants.AlbumSortDescendingKey
-import com.metrolist.music.constants.AlbumSortType
-import com.metrolist.music.constants.AlbumSortTypeKey
-import com.metrolist.music.constants.AlbumViewTypeKey
-import com.metrolist.music.constants.CONTENT_TYPE_ALBUM
-import com.metrolist.music.constants.CONTENT_TYPE_HEADER
-import com.metrolist.music.constants.GridItemSize
-import com.metrolist.music.constants.GridItemsSizeKey
-import com.metrolist.music.constants.GridThumbnailHeight
-import com.metrolist.music.constants.LibraryViewType
-import com.metrolist.music.ui.component.AlbumGridItem
-import com.metrolist.music.ui.component.AlbumListItem
-import com.metrolist.music.ui.component.ChipsRow
-import com.metrolist.music.ui.component.LocalMenuState
-import com.metrolist.music.ui.component.SortHeader
-import com.metrolist.music.ui.menu.AlbumMenu
-import com.metrolist.music.utils.rememberEnumPreference
-import com.metrolist.music.utils.rememberPreference
-import com.metrolist.music.viewmodels.LibraryAlbumsViewModel
-=======
-=======
->>>>>>> 28027f7f (feat: click bottom nav item to scroll to top, #134):app/src/main/java/com/metrolist/music/ui/screens/library/LibraryAlbumsScreen.kt
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.LocalPlayerConnection
@@ -94,7 +65,6 @@ import com.metrolist.music.ui.menu.AlbumMenu
 import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
 import com.metrolist.music.viewmodels.LibraryAlbumsViewModel
->>>>>>> 28027f7f (feat: click bottom nav item to scroll to top, #134):app/src/main/java/com/metrolist/music/ui/screens/library/LibraryAlbumsScreen.kt
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
