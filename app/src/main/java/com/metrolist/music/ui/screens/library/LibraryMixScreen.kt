@@ -35,43 +35,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-<<<<<<< HEAD:app/src/main/java/com/metrolist/music/ui/screens/library/LibraryMixScreen.kt
-<<<<<<< HEAD:app/src/main/java/com/metrolist/music/ui/screens/library/LibraryMixScreen.kt
-import com.metrolist.music.LocalPlayerAwareWindowInsets
-import com.metrolist.music.LocalPlayerConnection
-import com.metrolist.music.R
-import com.metrolist.music.constants.AlbumViewTypeKey
-import com.metrolist.music.constants.CONTENT_TYPE_HEADER
-import com.metrolist.music.constants.CONTENT_TYPE_PLAYLIST
-import com.metrolist.music.constants.GridItemSize
-import com.metrolist.music.constants.GridItemsSizeKey
-import com.metrolist.music.constants.GridThumbnailHeight
-import com.metrolist.music.constants.LibraryViewType
-import com.metrolist.music.constants.MixSortDescendingKey
-import com.metrolist.music.constants.MixSortType
-import com.metrolist.music.constants.MixSortTypeKey
-import com.metrolist.music.db.entities.Album
-import com.metrolist.music.db.entities.Artist
-import com.metrolist.music.db.entities.Playlist
-import com.metrolist.music.db.entities.PlaylistEntity
-import com.metrolist.music.extensions.reversed
-import com.metrolist.music.ui.component.AlbumGridItem
-import com.metrolist.music.ui.component.AlbumListItem
-import com.metrolist.music.ui.component.ArtistGridItem
-import com.metrolist.music.ui.component.ArtistListItem
-import com.metrolist.music.ui.component.LocalMenuState
-import com.metrolist.music.ui.component.PlaylistGridItem
-import com.metrolist.music.ui.component.PlaylistListItem
-import com.metrolist.music.ui.component.SortHeader
-import com.metrolist.music.ui.menu.AlbumMenu
-import com.metrolist.music.ui.menu.ArtistMenu
-import com.metrolist.music.ui.menu.PlaylistMenu
-import com.metrolist.music.utils.rememberEnumPreference
-import com.metrolist.music.utils.rememberPreference
-import com.metrolist.music.viewmodels.LibraryMixViewModel
-=======
-=======
->>>>>>> 28027f7f (feat: click bottom nav item to scroll to top, #134):app/src/main/java/com/metrolist/music/ui/screens/library/LibraryMixScreen.kt
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.LocalPlayerConnection
@@ -105,7 +68,6 @@ import com.metrolist.music.ui.menu.PlaylistMenu
 import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
 import com.metrolist.music.viewmodels.LibraryMixViewModel
->>>>>>> 28027f7f (feat: click bottom nav item to scroll to top, #134):app/src/main/java/com/metrolist/music/ui/screens/library/LibraryMixScreen.kt
 import java.text.Collator
 import java.time.LocalDateTime
 import java.util.Locale
