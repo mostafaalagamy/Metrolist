@@ -2,18 +2,11 @@ package com.metrolist.music.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-<<<<<<< HEAD:app/src/main/java/com/metrolist/music/viewmodels/StatsViewModel.kt
-import com.metrolist.innertube.YouTube
-import com.metrolist.music.constants.StatPeriod
-import com.metrolist.music.db.MusicDatabase
-import com.metrolist.music.utils.reportException
-=======
 import com.metrolist.innertube.YouTube
 import com.metrolist.music.constants.statToPeriod
 import com.metrolist.music.db.MusicDatabase
 import com.metrolist.music.ui.screens.OptionStats
 import com.metrolist.music.utils.reportException
->>>>>>> 78e61590 (feat: new stats screen, #21):app/src/main/java/com/metrolist/music/viewmodels/StatsViewModel.kt
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
