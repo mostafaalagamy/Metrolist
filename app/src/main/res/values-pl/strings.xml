@@ -195,7 +195,7 @@
         <item quantity="many">%d lat</item>
         <item quantity="other">%d lat</item>
     </plurals>
-    <plurals name="n_elements">
+    <plurals name="n_element">
         <item quantity="one">%d element</item>
         <item quantity="few">%d elementy</item>
         <item quantity="many">%d elementów</item>

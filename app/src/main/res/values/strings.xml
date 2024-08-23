@@ -35,6 +35,10 @@
     <string name="most_played_songs">Most played songs</string>
     <string name="most_played_artists">Most played artists</string>
     <string name="most_played_albums">Most played albums</string>
+    <string name="weeks">Weeks</string>
+    <string name="months">Months</string>
+    <string name="years">Years</string>
+    <string name="continuous">Continuous</string>
 
     <!-- Search -->
     <string name="search">Search</string>
@@ -181,9 +185,13 @@
         <item quantity="one">%d year</item>
         <item quantity="other">%d years</item>
     </plurals>
-    <plurals name="n_elements">
+    <plurals name="n_element">
         <item quantity="one">%d element</item>
         <item quantity="other">%d elements</item>
+    </plurals>
+    <plurals name="n_time">
+        <item quantity="one">%d time</item>
+        <item quantity="other">%d times</item>
     </plurals>
 
     <!-- Snackbar -->
@@ -269,6 +277,9 @@
     <string name="set_quick_picks">Set Quick Picks</string>
     <string name="last_song_listened">Based on last song listened</string>
     <string name="restart_to_take_effect">Restart to take effect</string>
+    <string name="app_language">App language</string>
+    <string name="configure_app_language">Configure app languages</string>
+    <string name="intent_app_language_not_found">Couldn\'t find app language settings, please configure them manually</string>
 
     <string name="player_and_audio">Player and audio</string>
     <string name="audio_quality">Audio quality</string>

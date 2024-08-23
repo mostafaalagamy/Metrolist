@@ -137,7 +137,7 @@ fun LibrarySongsScreen(
                 ) {
                     if (selection) {
                         val count = wrappedSongs.count { it.isSelected }
-                        Text(text = pluralStringResource(R.plurals.n_elements, count, count), modifier = Modifier.weight(1f))
+                        Text(text = pluralStringResource(R.plurals.n_element, count, count), modifier = Modifier.weight(1f))
                         IconButton(
                             onClick = {
                                 if (count == wrappedSongs.size) {

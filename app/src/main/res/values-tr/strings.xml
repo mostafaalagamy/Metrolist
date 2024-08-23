@@ -179,7 +179,7 @@
         <item quantity="one">%d yıl</item>
         <item quantity="other">%d yıl</item>
     </plurals>
-    <plurals name="n_elements">
+    <plurals name="n_element">
         <item quantity="one">%d öğe</item>
         <item quantity="other">%d öğe</item>
     </plurals>

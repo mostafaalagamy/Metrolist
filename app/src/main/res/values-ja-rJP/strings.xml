@@ -151,6 +151,10 @@
     <plurals name="n_year">
         <item quantity="other">%d年</item>
     </plurals>
+    <plurals name="n_element">
+
+        <item quantity="other">%d 要素</item>
+    </plurals>
 
     <!-- Snackbar -->
     <string name="playlist_imported">プレイリストをインポートしました</string>
