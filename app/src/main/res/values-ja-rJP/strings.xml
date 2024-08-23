@@ -151,13 +151,10 @@
     <plurals name="n_year">
         <item quantity="other">%d年</item>
     </plurals>
-<<<<<<< HEAD
-=======
     <plurals name="n_element">
 
         <item quantity="other">%d 要素</item>
     </plurals>
->>>>>>> 78e61590 (feat: new stats screen, #21)
 
     <!-- Snackbar -->
     <string name="playlist_imported">プレイリストをインポートしました</string>
