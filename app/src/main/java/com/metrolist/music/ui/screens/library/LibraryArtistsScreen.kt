@@ -15,7 +15,9 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
@@ -23,6 +25,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
@@ -37,6 +40,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+<<<<<<< HEAD:app/src/main/java/com/metrolist/music/ui/screens/library/LibraryArtistsScreen.kt
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.R
 import com.metrolist.music.constants.ArtistFilter
@@ -60,6 +64,32 @@ import com.metrolist.music.ui.menu.ArtistMenu
 import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
 import com.metrolist.music.viewmodels.LibraryArtistsViewModel
+=======
+import androidx.navigation.compose.currentBackStackEntryAsState
+import com.malopieds.innertune.LocalPlayerAwareWindowInsets
+import com.malopieds.innertune.R
+import com.malopieds.innertune.constants.ArtistFilter
+import com.malopieds.innertune.constants.ArtistFilterKey
+import com.malopieds.innertune.constants.ArtistSortDescendingKey
+import com.malopieds.innertune.constants.ArtistSortType
+import com.malopieds.innertune.constants.ArtistSortTypeKey
+import com.malopieds.innertune.constants.ArtistViewTypeKey
+import com.malopieds.innertune.constants.CONTENT_TYPE_ARTIST
+import com.malopieds.innertune.constants.CONTENT_TYPE_HEADER
+import com.malopieds.innertune.constants.GridItemSize
+import com.malopieds.innertune.constants.GridItemsSizeKey
+import com.malopieds.innertune.constants.GridThumbnailHeight
+import com.malopieds.innertune.constants.LibraryViewType
+import com.malopieds.innertune.ui.component.ArtistGridItem
+import com.malopieds.innertune.ui.component.ArtistListItem
+import com.malopieds.innertune.ui.component.ChipsRow
+import com.malopieds.innertune.ui.component.LocalMenuState
+import com.malopieds.innertune.ui.component.SortHeader
+import com.malopieds.innertune.ui.menu.ArtistMenu
+import com.malopieds.innertune.utils.rememberEnumPreference
+import com.malopieds.innertune.utils.rememberPreference
+import com.malopieds.innertune.viewmodels.LibraryArtistsViewModel
+>>>>>>> 28027f7f (feat: click bottom nav item to scroll to top, #134):app/src/main/java/com/malopieds/innertune/ui/screens/library/LibraryArtistsScreen.kt
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -79,6 +109,21 @@ fun LibraryArtistsScreen(
 
     val artists by viewModel.allArtists.collectAsState()
     val coroutineScope = rememberCoroutineScope()
+
+    val lazyListState = rememberLazyListState()
+    val lazyGridState = rememberLazyGridState()
+    val backStackEntry by navController.currentBackStackEntryAsState()
+    val scrollToTop = backStackEntry?.savedStateHandle?.getStateFlow("scrollToTop", false)?.collectAsState()
+
+    LaunchedEffect(scrollToTop?.value) {
+        if (scrollToTop?.value == true) {
+            when (viewType) {
+                LibraryViewType.LIST -> lazyListState.animateScrollToItem(0)
+                LibraryViewType.GRID -> lazyGridState.animateScrollToItem(0)
+            }
+            backStackEntry?.savedStateHandle?.set("scrollToTop", false)
+        }
+    }
 
     val filterContent = @Composable {
         Row {
@@ -161,6 +206,7 @@ fun LibraryArtistsScreen(
         when (viewType) {
             LibraryViewType.LIST ->
                 LazyColumn(
+                    state = lazyListState,
                     contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues(),
                 ) {
                     item(
@@ -226,6 +272,7 @@ fun LibraryArtistsScreen(
 
             LibraryViewType.GRID ->
                 LazyVerticalGrid(
+                    state = lazyGridState,
                     columns =
                         GridCells.Adaptive(
                             minSize = GridThumbnailHeight + if (gridItemSize == GridItemSize.BIG) 24.dp else (-24).dp,

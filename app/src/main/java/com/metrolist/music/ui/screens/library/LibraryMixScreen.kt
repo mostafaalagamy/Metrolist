@@ -17,9 +17,11 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
@@ -33,6 +35,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+<<<<<<< HEAD:app/src/main/java/com/metrolist/music/ui/screens/library/LibraryMixScreen.kt
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
@@ -65,6 +68,41 @@ import com.metrolist.music.ui.menu.PlaylistMenu
 import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
 import com.metrolist.music.viewmodels.LibraryMixViewModel
+=======
+import androidx.navigation.compose.currentBackStackEntryAsState
+import com.malopieds.innertune.LocalPlayerAwareWindowInsets
+import com.malopieds.innertune.LocalPlayerConnection
+import com.malopieds.innertune.R
+import com.malopieds.innertune.constants.AlbumViewTypeKey
+import com.malopieds.innertune.constants.CONTENT_TYPE_HEADER
+import com.malopieds.innertune.constants.CONTENT_TYPE_PLAYLIST
+import com.malopieds.innertune.constants.GridItemSize
+import com.malopieds.innertune.constants.GridItemsSizeKey
+import com.malopieds.innertune.constants.GridThumbnailHeight
+import com.malopieds.innertune.constants.LibraryViewType
+import com.malopieds.innertune.constants.MixSortDescendingKey
+import com.malopieds.innertune.constants.MixSortType
+import com.malopieds.innertune.constants.MixSortTypeKey
+import com.malopieds.innertune.db.entities.Album
+import com.malopieds.innertune.db.entities.Artist
+import com.malopieds.innertune.db.entities.Playlist
+import com.malopieds.innertune.db.entities.PlaylistEntity
+import com.malopieds.innertune.extensions.reversed
+import com.malopieds.innertune.ui.component.AlbumGridItem
+import com.malopieds.innertune.ui.component.AlbumListItem
+import com.malopieds.innertune.ui.component.ArtistGridItem
+import com.malopieds.innertune.ui.component.ArtistListItem
+import com.malopieds.innertune.ui.component.LocalMenuState
+import com.malopieds.innertune.ui.component.PlaylistGridItem
+import com.malopieds.innertune.ui.component.PlaylistListItem
+import com.malopieds.innertune.ui.component.SortHeader
+import com.malopieds.innertune.ui.menu.AlbumMenu
+import com.malopieds.innertune.ui.menu.ArtistMenu
+import com.malopieds.innertune.ui.menu.PlaylistMenu
+import com.malopieds.innertune.utils.rememberEnumPreference
+import com.malopieds.innertune.utils.rememberPreference
+import com.malopieds.innertune.viewmodels.LibraryMixViewModel
+>>>>>>> 28027f7f (feat: click bottom nav item to scroll to top, #134):app/src/main/java/com/malopieds/innertune/ui/screens/library/LibraryMixScreen.kt
 import java.text.Collator
 import java.time.LocalDateTime
 import java.util.Locale
@@ -152,7 +190,20 @@ fun LibraryMixScreen(
 
     val coroutineScope = rememberCoroutineScope()
 
+    val lazyListState = rememberLazyListState()
     val lazyGridState = rememberLazyGridState()
+    val backStackEntry by navController.currentBackStackEntryAsState()
+    val scrollToTop = backStackEntry?.savedStateHandle?.getStateFlow("scrollToTop", false)?.collectAsState()
+
+    LaunchedEffect(scrollToTop?.value) {
+        if (scrollToTop?.value == true) {
+            when (viewType) {
+                LibraryViewType.LIST -> lazyListState.animateScrollToItem(0)
+                LibraryViewType.GRID -> lazyGridState.animateScrollToItem(0)
+            }
+            backStackEntry?.savedStateHandle?.set("scrollToTop", false)
+        }
+    }
     val headerContent = @Composable {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -200,6 +251,7 @@ fun LibraryMixScreen(
         when (viewType) {
             LibraryViewType.LIST ->
                 LazyColumn(
+                    state = lazyListState,
                     contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues(),
                 ) {
                     item(
