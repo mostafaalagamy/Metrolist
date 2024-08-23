@@ -15,7 +15,9 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
@@ -23,6 +25,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
@@ -37,6 +40,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
+
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.R
 import com.metrolist.music.constants.ArtistFilter
@@ -79,6 +84,21 @@ fun LibraryArtistsScreen(
 
     val artists by viewModel.allArtists.collectAsState()
     val coroutineScope = rememberCoroutineScope()
+
+    val lazyListState = rememberLazyListState()
+    val lazyGridState = rememberLazyGridState()
+    val backStackEntry by navController.currentBackStackEntryAsState()
+    val scrollToTop = backStackEntry?.savedStateHandle?.getStateFlow("scrollToTop", false)?.collectAsState()
+
+    LaunchedEffect(scrollToTop?.value) {
+        if (scrollToTop?.value == true) {
+            when (viewType) {
+                LibraryViewType.LIST -> lazyListState.animateScrollToItem(0)
+                LibraryViewType.GRID -> lazyGridState.animateScrollToItem(0)
+            }
+            backStackEntry?.savedStateHandle?.set("scrollToTop", false)
+        }
+    }
 
     val filterContent = @Composable {
         Row {
@@ -161,6 +181,7 @@ fun LibraryArtistsScreen(
         when (viewType) {
             LibraryViewType.LIST ->
                 LazyColumn(
+                    state = lazyListState,
                     contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues(),
                 ) {
                     item(
@@ -226,6 +247,7 @@ fun LibraryArtistsScreen(
 
             LibraryViewType.GRID ->
                 LazyVerticalGrid(
+                    state = lazyGridState,
                     columns =
                         GridCells.Adaptive(
                             minSize = GridThumbnailHeight + if (gridItemSize == GridItemSize.BIG) 24.dp else (-24).dp,

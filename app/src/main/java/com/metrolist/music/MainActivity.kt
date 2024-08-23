@@ -765,12 +765,19 @@ class MainActivity : ComponentActivity() {
                                         )
                                     },
                                     onClick = {
-                                        navController.navigate(screen.route) {
-                                            popUpTo(navController.graph.startDestinationId) {
-                                                saveState = true
+                                        if (navBackStackEntry?.destination?.hierarchy?.any { it.route == screen.route } == true) {
+                                            navController.currentBackStackEntry?.savedStateHandle?.set("scrollToTop", true)
+                                            coroutineScope.launch {
+                                                searchBarScrollBehavior.state.resetHeightOffset()
                                             }
-                                            launchSingleTop = true
-                                            restoreState = true
+                                        } else {
+                                            navController.navigate(screen.route) {
+                                                popUpTo(navController.graph.startDestinationId) {
+                                                    saveState = true
+                                                }
+                                                launchSingleTop = true
+                                                restoreState = true
+                                            }
                                         }
                                     },
                                 )
