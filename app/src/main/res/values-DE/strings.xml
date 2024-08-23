@@ -178,7 +178,7 @@
         <item quantity="one">%d Jahr</item>
         <item quantity="other">%d Jahre</item>
     </plurals>
-    <plurals name="n_elements">
+    <plurals name="n_element">
         <item quantity="one">%d Element</item>
         <item quantity="other">%d Elemente</item>
     </plurals>

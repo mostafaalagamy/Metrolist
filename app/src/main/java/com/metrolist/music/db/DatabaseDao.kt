@@ -10,6 +10,7 @@ import androidx.room.Transaction
 import androidx.room.Update
 import androidx.room.Upsert
 import androidx.sqlite.db.SupportSQLiteQuery
+<<<<<<< HEAD:app/src/main/java/com/metrolist/music/db/DatabaseDao.kt
 import com.metrolist.innertube.models.SongItem
 import com.metrolist.innertube.pages.AlbumPage
 import com.metrolist.innertube.pages.ArtistPage
@@ -43,10 +44,47 @@ import com.metrolist.music.extensions.toSQLiteQuery
 import com.metrolist.music.models.MediaMetadata
 import com.metrolist.music.models.toMediaMetadata
 import com.metrolist.music.ui.utils.resize
+=======
+import com.metrolist.innertube.models.SongItem
+import com.metrolist.innertube.pages.AlbumPage
+import com.metrolist.innertube.pages.ArtistPage
+import com.metrolist.music.constants.AlbumSortType
+import com.metrolist.music.constants.ArtistSongSortType
+import com.metrolist.music.constants.ArtistSortType
+import com.metrolist.music.constants.PlaylistSortType
+import com.metrolist.music.constants.SongSortType
+import com.metrolist.music.db.entities.Album
+import com.metrolist.music.db.entities.AlbumArtistMap
+import com.metrolist.music.db.entities.AlbumEntity
+import com.metrolist.music.db.entities.AlbumWithSongs
+import com.metrolist.music.db.entities.Artist
+import com.metrolist.music.db.entities.ArtistEntity
+import com.metrolist.music.db.entities.Event
+import com.metrolist.music.db.entities.EventWithSong
+import com.metrolist.music.db.entities.FormatEntity
+import com.metrolist.music.db.entities.LyricsEntity
+import com.metrolist.music.db.entities.Playlist
+import com.metrolist.music.db.entities.PlaylistEntity
+import com.metrolist.music.db.entities.PlaylistSong
+import com.metrolist.music.db.entities.PlaylistSongMap
+import com.metrolist.music.db.entities.RelatedSongMap
+import com.metrolist.music.db.entities.SearchHistory
+import com.metrolist.music.db.entities.Song
+import com.metrolist.music.db.entities.SongAlbumMap
+import com.metrolist.music.db.entities.SongArtistMap
+import com.metrolist.music.db.entities.SongEntity
+import com.metrolist.music.db.entities.SongWithStats
+import com.metrolist.music.extensions.reversed
+import com.metrolist.music.extensions.toSQLiteQuery
+import com.metrolist.music.models.MediaMetadata
+import com.metrolist.music.models.toMediaMetadata
+import com.metrolist.music.ui.utils.resize
+>>>>>>> 78e61590 (feat: new stats screen, #21):app/src/main/java/com/metrolist/music/db/DatabaseDao.kt
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.text.Collator
 import java.time.LocalDateTime
+import java.time.ZoneOffset
 import java.util.Locale
 
 @Dao
@@ -311,11 +349,52 @@ interface DatabaseDao {
     @Transaction
     @Query(
         """
-        SELECT song.*
+             SELECT song.id, song.title, song.thumbnailUrl,
+               (SELECT COUNT(1)
+                FROM event
+                WHERE songId = song.id
+                  AND timestamp > :fromTimeStamp AND timestamp <= :toTimeStamp) AS songCountListened,
+               (SELECT SUM(event.playTime)
+                FROM event
+                WHERE songId = song.id
+                  AND timestamp > :fromTimeStamp AND timestamp <= :toTimeStamp) AS timeListened
         FROM song
         JOIN (SELECT songId
                      FROM event
                      WHERE timestamp > :fromTimeStamp
+                     AND timestamp <= :toTimeStamp
+                     GROUP BY songId
+                     ORDER BY SUM(playTime) DESC
+                     LIMIT :limit)
+        ON song.id = songId
+        LIMIT :limit
+        OFFSET :offset
+    """,
+    )
+    fun mostPlayedSongsStats(
+        limit: Int = 6,
+        offset: Int = 0,
+        fromTimeStamp: Long,
+        toTimeStamp: Long? = LocalDateTime.now().toInstant(ZoneOffset.UTC).toEpochMilli(),
+    ): Flow<List<SongWithStats>>
+
+    @Transaction
+    @Query(
+        """
+        SELECT song.*,
+               (SELECT COUNT(1)
+                FROM event
+                WHERE songId = song.id
+                  AND timestamp > :fromTimeStamp AND timestamp <= :toTimeStamp) AS songCountListened,
+               (SELECT SUM(event.playTime)
+                FROM event
+                WHERE songId = song.id
+                  AND timestamp > :fromTimeStamp AND timestamp <= :toTimeStamp) AS timeListened
+        FROM song
+        JOIN (SELECT songId
+                     FROM event
+                     WHERE timestamp > :fromTimeStamp
+                     AND timestamp <= :toTimeStamp
                      GROUP BY songId
                      ORDER BY SUM(playTime) DESC
                      LIMIT :limit)
@@ -328,6 +407,7 @@ interface DatabaseDao {
         fromTimeStamp: Long,
         limit: Int = 6,
         offset: Int = 0,
+        toTimeStamp: Long? = LocalDateTime.now().toInstant(ZoneOffset.UTC).toEpochMilli(),
     ): Flow<List<Song>>
 
     @Transaction
@@ -338,13 +418,19 @@ interface DatabaseDao {
                 FROM song_artist_map
                          JOIN event ON song_artist_map.songId = event.songId
                 WHERE artistId = artist.id
-                  AND timestamp > :fromTimeStamp) AS songCount
+                  AND timestamp > :fromTimeStamp AND timestamp <= :toTimeStamp) AS songCount,
+               (SELECT SUM(event.playTime)
+                FROM song_artist_map
+                         JOIN event ON song_artist_map.songId = event.songId
+                WHERE artistId = artist.id
+                  AND timestamp > :fromTimeStamp AND timestamp <= :toTimeStamp) AS timeListened
         FROM artist
                  JOIN(SELECT artistId, SUM(songTotalPlayTime) AS totalPlayTime
                       FROM song_artist_map
                                JOIN (SELECT songId, SUM(playTime) AS songTotalPlayTime
                                      FROM event
                                      WHERE timestamp > :fromTimeStamp
+                                     AND timestamp <= :toTimeStamp
                                      GROUP BY songId) AS e
                                     ON song_artist_map.songId = e.songId
                       GROUP BY artistId
@@ -358,30 +444,42 @@ interface DatabaseDao {
         fromTimeStamp: Long,
         limit: Int = 6,
         offset: Int = 0,
+        toTimeStamp: Long? = LocalDateTime.now().toInstant(ZoneOffset.UTC).toEpochMilli(),
     ): Flow<List<Artist>>
 
     @Transaction
     @Query(
         """
-        SELECT album.*
+        SELECT album.*,
+               (SELECT COUNT(1)
+                FROM song_album_map
+                         JOIN event ON song_album_map.songId = event.songId
+                WHERE albumId = album.id
+                  AND timestamp > :fromTimeStamp AND timestamp <= :toTimeStamp) AS songCountListened,
+               (SELECT SUM(event.playTime)
+                FROM song_album_map
+                         JOIN event ON song_album_map.songId = event.songId
+                WHERE albumId = album.id
+                  AND timestamp > :fromTimeStamp AND timestamp <= :toTimeStamp) AS timeListened
         FROM album
-                 JOIN(SELECT albumId
-                      FROM song
-                               JOIN (SELECT songId, SUM(playTime) AS songTotalPlayTime
-                                     FROM event
-                                     WHERE timestamp > :fromTimeStamp
-                                     GROUP BY songId) AS e
-                                    ON song.id = e.songId
-                      WHERE albumId IS NOT NULL
-                      GROUP BY albumId
-                      ORDER BY SUM(songTotalPlayTime) DESC
-                      LIMIT :limit)
-                     ON album.id = albumId
+                WHERE id IN (SELECT song.albumId
+                     FROM event
+                              JOIN
+                          song
+                          ON event.songId = song.id
+                     WHERE event.timestamp > :fromTimeStamp
+                     AND event.timestamp <= :toTimeStamp
+                     GROUP BY song.albumId
+                     HAVING song.albumId IS NOT NULL)
+                ORDER BY timeListened DESC
+                LIMIT :limit OFFSET :offset
     """,
     )
     fun mostPlayedAlbums(
         fromTimeStamp: Long,
         limit: Int = 6,
+        offset: Int = 0,
+        toTimeStamp: Long? = LocalDateTime.now().toInstant(ZoneOffset.UTC).toEpochMilli(),
     ): Flow<List<Album>>
 
     @Transaction
@@ -772,6 +870,10 @@ interface DatabaseDao {
     @Transaction
     @Query("SELECT * FROM event ORDER BY rowId DESC")
     fun events(): Flow<List<EventWithSong>>
+
+    @Transaction
+    @Query("SELECT * FROM event ORDER BY rowId ASC LIMIT 1")
+    fun firstEvent(): Flow<EventWithSong>
 
     @Query("DELETE FROM event")
     fun clearListenHistory()
