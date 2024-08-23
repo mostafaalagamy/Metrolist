@@ -231,7 +231,6 @@
     <string name="dark_theme_off">إيقاف</string>
     <string name="dark_theme_follow_system">اتباع النظام</string>
     <string name="pure_black">أسود نقي</string>
-    <string name="default_open_tab">علامة التبويب الافتراضية</string>
     <string name="customize_navigation_tabs">تخصيص علامات التبويب</string>
     <string name="player_text_alignment">موضع إسم الفنان والأغنية</string>
     <string name="lyrics_text_position">موضع نص كلمات الأغاني</string>
