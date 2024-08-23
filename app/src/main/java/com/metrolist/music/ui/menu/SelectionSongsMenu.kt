@@ -33,6 +33,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
+import androidx.media3.common.Player
 import androidx.media3.common.Timeline
 import androidx.media3.exoplayer.offline.Download
 import androidx.media3.exoplayer.offline.DownloadRequest
@@ -540,8 +541,9 @@ fun SelectionMediaMetadataMenu(
                 onDismiss()
                 var i = 0
                 currentItems.forEach { cur ->
-                    playerConnection.player.removeMediaItem(cur.firstPeriodIndex - i)
-                    i++
+                    if (playerConnection.player.availableCommands.contains(Player.COMMAND_CHANGE_MEDIA_ITEMS)) {
+                        playerConnection.player.removeMediaItem(cur.firstPeriodIndex - i++)
+                    }
                 }
                 clearAction()
             }
