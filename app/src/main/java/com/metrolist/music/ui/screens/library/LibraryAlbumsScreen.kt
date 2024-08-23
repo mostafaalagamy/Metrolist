@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 <<<<<<< HEAD:app/src/main/java/com/metrolist/music/ui/screens/library/LibraryAlbumsScreen.kt
+<<<<<<< HEAD:app/src/main/java/com/metrolist/music/ui/screens/library/LibraryAlbumsScreen.kt
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
@@ -66,32 +67,34 @@ import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
 import com.metrolist.music.viewmodels.LibraryAlbumsViewModel
 =======
+=======
+>>>>>>> 28027f7f (feat: click bottom nav item to scroll to top, #134):app/src/main/java/com/metrolist/music/ui/screens/library/LibraryAlbumsScreen.kt
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.malopieds.innertune.LocalPlayerAwareWindowInsets
-import com.malopieds.innertune.LocalPlayerConnection
-import com.malopieds.innertune.R
-import com.malopieds.innertune.constants.AlbumFilter
-import com.malopieds.innertune.constants.AlbumFilterKey
-import com.malopieds.innertune.constants.AlbumSortDescendingKey
-import com.malopieds.innertune.constants.AlbumSortType
-import com.malopieds.innertune.constants.AlbumSortTypeKey
-import com.malopieds.innertune.constants.AlbumViewTypeKey
-import com.malopieds.innertune.constants.CONTENT_TYPE_ALBUM
-import com.malopieds.innertune.constants.CONTENT_TYPE_HEADER
-import com.malopieds.innertune.constants.GridItemSize
-import com.malopieds.innertune.constants.GridItemsSizeKey
-import com.malopieds.innertune.constants.GridThumbnailHeight
-import com.malopieds.innertune.constants.LibraryViewType
-import com.malopieds.innertune.ui.component.AlbumGridItem
-import com.malopieds.innertune.ui.component.AlbumListItem
-import com.malopieds.innertune.ui.component.ChipsRow
-import com.malopieds.innertune.ui.component.LocalMenuState
-import com.malopieds.innertune.ui.component.SortHeader
-import com.malopieds.innertune.ui.menu.AlbumMenu
-import com.malopieds.innertune.utils.rememberEnumPreference
-import com.malopieds.innertune.utils.rememberPreference
-import com.malopieds.innertune.viewmodels.LibraryAlbumsViewModel
->>>>>>> 28027f7f (feat: click bottom nav item to scroll to top, #134):app/src/main/java/com/malopieds/innertune/ui/screens/library/LibraryAlbumsScreen.kt
+import com.metrolist.music.LocalPlayerAwareWindowInsets
+import com.metrolist.music.LocalPlayerConnection
+import com.metrolist.music.R
+import com.metrolist.music.constants.AlbumFilter
+import com.metrolist.music.constants.AlbumFilterKey
+import com.metrolist.music.constants.AlbumSortDescendingKey
+import com.metrolist.music.constants.AlbumSortType
+import com.metrolist.music.constants.AlbumSortTypeKey
+import com.metrolist.music.constants.AlbumViewTypeKey
+import com.metrolist.music.constants.CONTENT_TYPE_ALBUM
+import com.metrolist.music.constants.CONTENT_TYPE_HEADER
+import com.metrolist.music.constants.GridItemSize
+import com.metrolist.music.constants.GridItemsSizeKey
+import com.metrolist.music.constants.GridThumbnailHeight
+import com.metrolist.music.constants.LibraryViewType
+import com.metrolist.music.ui.component.AlbumGridItem
+import com.metrolist.music.ui.component.AlbumListItem
+import com.metrolist.music.ui.component.ChipsRow
+import com.metrolist.music.ui.component.LocalMenuState
+import com.metrolist.music.ui.component.SortHeader
+import com.metrolist.music.ui.menu.AlbumMenu
+import com.metrolist.music.utils.rememberEnumPreference
+import com.metrolist.music.utils.rememberPreference
+import com.metrolist.music.viewmodels.LibraryAlbumsViewModel
+>>>>>>> 28027f7f (feat: click bottom nav item to scroll to top, #134):app/src/main/java/com/metrolist/music/ui/screens/library/LibraryAlbumsScreen.kt
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 <<<<<<< HEAD:app/src/main/java/com/metrolist/music/ui/screens/library/LibraryPlaylistsScreen.kt
+<<<<<<< HEAD:app/src/main/java/com/metrolist/music/ui/screens/library/LibraryPlaylistsScreen.kt
 import com.metrolist.music.LocalDatabase
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.R
@@ -67,33 +68,35 @@ import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
 import com.metrolist.music.viewmodels.LibraryPlaylistsViewModel
 =======
+=======
+>>>>>>> 28027f7f (feat: click bottom nav item to scroll to top, #134):app/src/main/java/com/metrolist/music/ui/screens/library/LibraryPlaylistsScreen.kt
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.malopieds.innertune.LocalDatabase
-import com.malopieds.innertune.LocalPlayerAwareWindowInsets
-import com.malopieds.innertune.R
-import com.malopieds.innertune.constants.CONTENT_TYPE_HEADER
-import com.malopieds.innertune.constants.CONTENT_TYPE_PLAYLIST
-import com.malopieds.innertune.constants.GridItemSize
-import com.malopieds.innertune.constants.GridItemsSizeKey
-import com.malopieds.innertune.constants.GridThumbnailHeight
-import com.malopieds.innertune.constants.LibraryViewType
-import com.malopieds.innertune.constants.PlaylistSortDescendingKey
-import com.malopieds.innertune.constants.PlaylistSortType
-import com.malopieds.innertune.constants.PlaylistSortTypeKey
-import com.malopieds.innertune.constants.PlaylistViewTypeKey
-import com.malopieds.innertune.db.entities.Playlist
-import com.malopieds.innertune.db.entities.PlaylistEntity
-import com.malopieds.innertune.ui.component.HideOnScrollFAB
-import com.malopieds.innertune.ui.component.LocalMenuState
-import com.malopieds.innertune.ui.component.PlaylistGridItem
-import com.malopieds.innertune.ui.component.PlaylistListItem
-import com.malopieds.innertune.ui.component.SortHeader
-import com.malopieds.innertune.ui.component.TextFieldDialog
-import com.malopieds.innertune.ui.menu.PlaylistMenu
-import com.malopieds.innertune.utils.rememberEnumPreference
-import com.malopieds.innertune.utils.rememberPreference
-import com.malopieds.innertune.viewmodels.LibraryPlaylistsViewModel
->>>>>>> 28027f7f (feat: click bottom nav item to scroll to top, #134):app/src/main/java/com/malopieds/innertune/ui/screens/library/LibraryPlaylistsScreen.kt
+import com.metrolist.music.LocalDatabase
+import com.metrolist.music.LocalPlayerAwareWindowInsets
+import com.metrolist.music.R
+import com.metrolist.music.constants.CONTENT_TYPE_HEADER
+import com.metrolist.music.constants.CONTENT_TYPE_PLAYLIST
+import com.metrolist.music.constants.GridItemSize
+import com.metrolist.music.constants.GridItemsSizeKey
+import com.metrolist.music.constants.GridThumbnailHeight
+import com.metrolist.music.constants.LibraryViewType
+import com.metrolist.music.constants.PlaylistSortDescendingKey
+import com.metrolist.music.constants.PlaylistSortType
+import com.metrolist.music.constants.PlaylistSortTypeKey
+import com.metrolist.music.constants.PlaylistViewTypeKey
+import com.metrolist.music.db.entities.Playlist
+import com.metrolist.music.db.entities.PlaylistEntity
+import com.metrolist.music.ui.component.HideOnScrollFAB
+import com.metrolist.music.ui.component.LocalMenuState
+import com.metrolist.music.ui.component.PlaylistGridItem
+import com.metrolist.music.ui.component.PlaylistListItem
+import com.metrolist.music.ui.component.SortHeader
+import com.metrolist.music.ui.component.TextFieldDialog
+import com.metrolist.music.ui.menu.PlaylistMenu
+import com.metrolist.music.utils.rememberEnumPreference
+import com.metrolist.music.utils.rememberPreference
+import com.metrolist.music.viewmodels.LibraryPlaylistsViewModel
+>>>>>>> 28027f7f (feat: click bottom nav item to scroll to top, #134):app/src/main/java/com/metrolist/music/ui/screens/library/LibraryPlaylistsScreen.kt
 import java.util.UUID
 
 @OptIn(ExperimentalFoundationApi::class)
