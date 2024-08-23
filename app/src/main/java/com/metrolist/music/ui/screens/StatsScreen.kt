@@ -26,28 +26,6 @@ import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-<<<<<<< HEAD:app/src/main/java/com/metrolist/music/ui/screens/StatsScreen.kt
-import com.metrolist.innertube.models.WatchEndpoint
-import com.metrolist.music.LocalPlayerAwareWindowInsets
-import com.metrolist.music.LocalPlayerConnection
-import com.metrolist.music.R
-import com.metrolist.music.constants.StatPeriod
-import com.metrolist.music.extensions.togglePlayPause
-import com.metrolist.music.models.toMediaMetadata
-import com.metrolist.music.playback.queues.YouTubeQueue
-import com.metrolist.music.ui.component.AlbumGridItem
-import com.metrolist.music.ui.component.ArtistGridItem
-import com.metrolist.music.ui.component.ChipsRow
-import com.metrolist.music.ui.component.IconButton
-import com.metrolist.music.ui.component.LocalMenuState
-import com.metrolist.music.ui.component.NavigationTitle
-import com.metrolist.music.ui.component.SongListItem
-import com.metrolist.music.ui.menu.AlbumMenu
-import com.metrolist.music.ui.menu.ArtistMenu
-import com.metrolist.music.ui.menu.SongMenu
-import com.metrolist.music.ui.utils.backToMain
-import com.metrolist.music.viewmodels.StatsViewModel
-=======
 import com.metrolist.innertube.models.WatchEndpoint
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.LocalPlayerConnection
@@ -70,7 +48,6 @@ import com.metrolist.music.utils.makeTimeString
 import com.metrolist.music.viewmodels.StatsViewModel
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
->>>>>>> 78e61590 (feat: new stats screen, #21):app/src/main/java/com/metrolist/music/ui/screens/StatsScreen.kt
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
