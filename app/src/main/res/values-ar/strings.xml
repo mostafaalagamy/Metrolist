@@ -368,6 +368,9 @@
     <string name="preview">معاينة</string>
 
     <string name="default_links">فتح الروابط المدعومة افتراضيًا</string>
+    <string name="open_app_settings_error">لم يتمكن التطبيق من فتح إعدادات التطبيق</string>
+    
+    
     <string name="about">حول</string>
     <string name="app_version">إصدار التطبيق</string>
     
