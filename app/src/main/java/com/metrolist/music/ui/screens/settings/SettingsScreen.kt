@@ -93,11 +93,10 @@ fun SettingsScreen(
                         )
                     } catch (e: ActivityNotFoundException) {
                         Toast.makeText(context, R.string.open_app_settings_error, Toast.LENGTH_LONG).show()
-                        }
-                    },
-                )
-            }
-        }
+                    }
+                },
+            )
+        }       
         PreferenceEntry(
             title = { Text(stringResource(R.string.about)) },
             icon = { Icon(painterResource(R.drawable.info), null) },
