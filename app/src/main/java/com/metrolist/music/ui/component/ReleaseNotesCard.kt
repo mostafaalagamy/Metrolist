@@ -49,13 +49,15 @@ suspend fun fetchReleaseNotesText(): List<String> {
         try {
             val document = Jsoup.connect("https://github.com/mostafaalagamy/Metrolist/releases/latest").get()
             val changelogElement = document.selectFirst(".markdown-body")
-            val fullText = changelogElement?.text() ?: "No release notes found"
-            
-            // Split the text into lines and clean up
-            fullText.split(".")
+            val htmlContent = changelogElement?.html() ?: "No release notes found"
+
+            val textContent = htmlContent
+                .replace(Regex("<br.*?>|</p>"), "\n")
+                .replace(Regex("<.*?>"), "")
+
+            textContent.split("\n")
                 .map { it.trim() }
                 .filter { it.isNotEmpty() }
-                .map { if (!it.endsWith(".")) "$it." else it }
         } catch (e: Exception) {
             listOf("Error loading release notes")
         }
