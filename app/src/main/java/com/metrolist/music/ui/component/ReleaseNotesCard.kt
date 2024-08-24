@@ -21,7 +21,7 @@ fun ReleaseNotesCard() {
 
     Card(
         modifier = Modifier
-            .padding(8.dp)
+            .padding(horizontal = 16.dp)
             .fillMaxWidth(),
         elevation = CardDefaults.cardElevation(4.dp)
     ) {

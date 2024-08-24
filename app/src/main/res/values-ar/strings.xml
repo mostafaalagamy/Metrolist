@@ -9,10 +9,15 @@
     <string name="explore">الإستكشاف</string>
     
     <!-- Top bar -->
-    <plurals name="n_selected" tools:ignore="MissingQuantity">
-        <item quantity="other">%d محددة</item>
+    <plurals name="n_selected">
+    <item quantity="zero">لا شيء محدد</item>
+    <item quantity="one">عنصر واحد محدد</item>
+    <item quantity="two">عنصران محددان</item>
+    <item quantity="few">%d عناصر محددة</item>
+    <item quantity="many">%d عنصر محدد</item>
+    <item quantity="other">%d عناصر محددة</item>
     </plurals>
-
+    
     <!-- Home -->
     <string name="history">السجل</string>
     <string name="stats">الإحصائيات</string>
@@ -148,37 +153,76 @@
     <string name="error_artist_name_empty">لا يمكن أن يكون اسم الفنان فارغًا.</string>
     
     <!-- Noun -->
-    <plurals name="n_song" tools:ignore="MissingQuantity">
-        <item quantity="one">%d أغنية</item>
-        <item quantity="other">%d من الأغاني</item>
-    </plurals> 
-    <plurals name="n_artist" tools:ignore="MissingQuantity">
-        <item quantity="one">%d فنان</item>
-        <item quantity="other">%d من الفنانين</item>
+    <plurals name="n_song">
+    <item quantity="zero">لا أغانٍ</item>
+    <item quantity="one">%d أغنية</item>
+    <item quantity="two">%d أغنيتان</item>
+    <item quantity="few">%d أغانٍ</item>
+    <item quantity="many">%d أغنية</item>
+    <item quantity="other">%d من الأغاني</item>
     </plurals>
-    <plurals name="n_album" tools:ignore="MissingQuantity">
-        <item quantity="one">%d ألبوم</item>
-        <item quantity="other">%d من الألبومات</item>
+
+    <plurals name="n_artist">
+    <item quantity="zero">لا فنانون</item>
+    <item quantity="one">%d فنان</item>
+    <item quantity="two">%d فنانان</item>
+    <item quantity="few">%d فنانون</item>
+    <item quantity="many">%d فناناً</item>
+    <item quantity="other">%d من الفنانين</item>
     </plurals>
-    <plurals name="n_playlist" tools:ignore="MissingQuantity">
-        <item quantity="one">%d قائمة تشغيل</item>
-        <item quantity="other">%d من قوائم التشغيل</item>
+
+    <plurals name="n_album">
+    <item quantity="zero">لا ألبومات</item>
+    <item quantity="one">%d ألبوم</item>
+    <item quantity="two">%d ألبومان</item>
+    <item quantity="few">%d ألبومات</item>
+    <item quantity="many">%d ألبوم</item>
+    <item quantity="other">%d من الألبومات</item>
     </plurals>
-    <plurals name="n_week" tools:ignore="MissingQuantity">
-        <item quantity="one">%d أسبوع</item>
-        <item quantity="other">%d من الأسابيع</item>
+
+    <plurals name="n_playlist">
+    <item quantity="zero">لا قوائم تشغيل</item>
+    <item quantity="one">%d قائمة تشغيل</item>
+    <item quantity="two">%d قائمتا تشغيل</item>
+    <item quantity="few">%d قوائم تشغيل</item>
+    <item quantity="many">%d قائمة تشغيل</item>
+    <item quantity="other">%d من قوائم التشغيل</item>
     </plurals>
-    <plurals name="n_month" tools:ignore="MissingQuantity">
-        <item quantity="one">%d شهر</item>
-        <item quantity="other">%d من الأشهر</item>
+
+    <plurals name="n_week">
+    <item quantity="zero">لا أسابيع</item>
+    <item quantity="one">%d أسبوع</item>
+    <item quantity="two">%d أسبوعان</item>
+    <item quantity="few">%d أسابيع</item>
+    <item quantity="many">%d أسبوع</item>
+    <item quantity="other">%d من الأسابيع</item>
     </plurals>
-    <plurals name="n_year" tools:ignore="MissingQuantity">
-        <item quantity="one">%d سنة</item>
-        <item quantity="other">%d من السنوات</item>
+
+    <plurals name="n_month">
+    <item quantity="zero">لا أشهر</item>
+    <item quantity="one">%d شهر</item>
+    <item quantity="two">%d شهران</item>
+    <item quantity="few">%d أشهر</item>
+    <item quantity="many">%d شهراً</item>
+    <item quantity="other">%d من الأشهر</item>
     </plurals>
-    <plurals name="n_element" tools:ignore="MissingQuantity">
-        <item quantity="one">%d عنصر</item>
-        <item quantity="other">%d من العناصر</item>
+
+    <plurals name="n_year">
+    <item quantity="zero">لا سنوات</item>
+    <item quantity="one">%d سنة</item>
+    <item quantity="two">%d سنتان</item>
+    <item quantity="few">%d سنوات</item>
+    <item quantity="many">%d سنة</item>
+    <item quantity="other">%d من السنوات</item>
+    </plurals>
+
+    <plurals name="n_element">
+    <item quantity="zero">لا عناصر</item>
+    <item quantity="one">%d عنصر</item>
+    <item quantity="two">%d عنصران</item>
+    <item quantity="few">%d عناصر</item>
+    <item quantity="many">%d عنصراً</item>
+    <item quantity="other">%d من العناصر</item>
     </plurals>
     
     <!-- شريط التنبيه -->
@@ -191,9 +235,13 @@
     <string name="lyrics_not_found">لم يتم العثور على كلمات الأغاني</string>
     <string name="sleep_timer">مؤقت النوم</string>
     <string name="end_of_song">نهاية الأغنية</string>
-    <plurals name="minute" tools:ignore="MissingQuantity">
-        <item quantity="one">%d دقيقة</item>
-        <item quantity="other">%d من الدقائق</item>
+    <plurals name="minute">
+    <item quantity="zero">لا دقائق</item>
+    <item quantity="one">%d دقيقة</item>
+    <item quantity="two">%d دقيقتان</item>
+    <item quantity="few">%d دقائق</item>
+    <item quantity="many">%d دقيقة</item>
+    <item quantity="other">%d من الدقائق</item>
     </plurals>
     <string name="error_no_stream">لا يوجد بث متاح</string>
     <string name="error_no_internet">لا يوجد اتصال بالشبكة</string>
@@ -263,7 +311,10 @@
     <string name="set_quick_picks">ضبط الاختيارات السريعة</string>
     <string name="last_song_listened">بناءً على آخر أغنية تم الاستماع إليها</string>
     <string name="restart_to_take_effect">أعد التشغيل لتفعيل التغييرات</string>
-    
+    <string name="app_language">لغة التطبيق</string>
+    <string name="configure_app_language">تكوين لغة التطبيق</string>
+    <string name="intent_app_language_not_found">لم يتمكن التطبيق من العثور على إعدادات لغة التطبيق، يرجى تكوينها يدويًا</string>
+       
     <string name="player_and_audio">المشغل والصوت</string>
     <string name="audio_quality">جودة الصوت</string>
     <string name="audio_quality_auto">تلقائي</string>
@@ -317,6 +368,9 @@
     <string name="preview">معاينة</string>
 
     <string name="default_links">فتح الروابط المدعومة افتراضيًا</string>
+    <string name="open_app_settings_error">لم يتمكن التطبيق من فتح إعدادات التطبيق</string>
+    
+    
     <string name="about">حول</string>
     <string name="app_version">إصدار التطبيق</string>
     
@@ -332,7 +386,11 @@
     <string name="top_length">طول قائمة الأغاني المفضلة الخاصة بي</string>
     <string name="history_duration">مدة التاريخ</string>
     <plurals name="seconds">
-        <item quantity="one">1 ثانية</item>
-        <item quantity="other">%d من الثواني</item>
+    <item quantity="zero">لا ثوانٍ</item>
+    <item quantity="one">%d ثانية</item>
+    <item quantity="two">%d ثانيتان</item>
+    <item quantity="few">%d ثوانٍ</item>
+    <item quantity="many">%d ثانية</item>
+    <item quantity="other">%d من الثواني</item>
     </plurals>
 </resources>

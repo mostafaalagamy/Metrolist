@@ -2,6 +2,7 @@ package com.metrolist.music.ui.screens.settings
 
 import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 import android.widget.Toast
@@ -87,40 +88,15 @@ fun SettingsScreen(
                 icon = { Icon(painterResource(R.drawable.link), null) },
                 onClick = {
                     try {
-                        val intent = Intent(Settings.ACTION_APP_OPEN_BY_DEFAULT_SETTINGS).apply {
-                            data = android.net.Uri.parse("package:${BuildConfig.APPLICATION_ID}")
-                            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                        }
-                        context.startActivity(intent)
-                    } catch (e: Exception) {
-                        when (e) {
-                            is ActivityNotFoundException -> {
-                                try {
-                                    val generalSettingsIntent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                                        data = android.net.Uri.parse("package:${BuildConfig.APPLICATION_ID}")
-                                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                                    }
-                                    context.startActivity(generalSettingsIntent)
-                                } catch (e2: Exception) {
-                                    Toast.makeText(
-                                        context,
-                                        "Couldn't open app settings",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                }
-                            }
-                            else -> {
-                                Toast.makeText(
-                                    context,
-                                    "Couldn't open app settings",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }
-                        }
+                        context.startActivity(
+                            Intent(Settings.ACTION_APP_OPEN_BY_DEFAULT_SETTINGS, Uri.parse("package:${context.packageName}")),
+                        )
+                    } catch (e: ActivityNotFoundException) {
+                        Toast.makeText(context, R.string.open_app_settings_error, Toast.LENGTH_LONG).show()
                     }
-                }
+                },
             )
-        }
+        }       
         PreferenceEntry(
             title = { Text(stringResource(R.string.about)) },
             icon = { Icon(painterResource(R.drawable.info), null) },
