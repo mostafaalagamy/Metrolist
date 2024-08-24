@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     
-    <!-- Bottom navigation -->
+    <!-- أزرار التنقل -->
     <string name="home">الصفحة الرئيسية</string>
     <string name="songs">الأغاني</string>
     <string name="artists">الفنانون</string>
@@ -8,7 +8,7 @@
     <string name="playlists">قوائم التشغيل</string>
     <string name="explore">الإستكشاف</string>
     
-    <!-- Top bar -->
+    <!-- شريط علوي -->
     <plurals name="n_selected">
     <item quantity="zero">لا شيء محدد</item>
     <item quantity="one">عنصر واحد محدد</item>
@@ -18,7 +18,7 @@
     <item quantity="other">%d عناصر محددة</item>
     </plurals>
     
-    <!-- Home -->
+    <!-- الرئيسية-->
     <string name="history">السجل</string>
     <string name="stats">الإحصائيات</string>
     <string name="mood_and_genres">المزاج والأنواع</string>
@@ -31,18 +31,22 @@
     <string name="keep_listening">استمر في الاستماع</string>
     <string name="your_ytb_playlists">قوائم التشغيل الخاصة بك</string>
     
-    <!-- History -->
+    <!-- التاريخ -->
     <string name="today">اليوم</string>
     <string name="yesterday">أمس</string>
     <string name="this_week">هذا الأسبوع</string>
     <string name="last_week">الأسبوع الماضي</string>
     
-    <!-- Stats -->
+    <!-- الاحصائيات -->
     <string name="most_played_songs">الأغاني الأكثر تشغيلًا</string>
     <string name="most_played_artists">الفنانون الأكثر تشغيلًا</string>
     <string name="most_played_albums">الألبومات الأكثر تشغيلًا</string>
+    <string name="weeks">أسابيع</string>
+    <string name="months">شهور</string>
+    <string name="years">سنين</string>
+    <string name="continuous">مستمر</string>
     
-    <!-- Search -->
+    <!-- البحث -->
     <string name="search">بحث</string>
     <string name="search_yt_music">البحث في موسيقى يوتيوب…</string>
     <string name="search_library">بحث في المكتبة…</string>
@@ -60,18 +64,18 @@
     <string name="filter_bookmarked">المفضلة</string>
     <string name="no_results_found">لم يتم العثور على نتائج</string>
     
-    <!-- Artist screen -->
+    <!-- صفحة الفنان -->
     <string name="from_your_library">من مكتبتك</string>
     
-    <!-- Album screen -->
+    <!-- صفحة الالبومات -->
     <string name="other_versions">إصدارات أخرى</string>
     
-    <!-- Library -->
+    <!-- المكتبة -->
     <string name="liked">الأغاني المفضلة</string>
     <string name="offline">التحميلات</string>
     <string name="my_top">الأعلي إستماع : </string>
     
-    <!-- Playlist -->
+    <!-- قوائم التشغيل -->
     <string name="liked_songs">الأغاني المفضلة</string>
     <string name="downloaded_songs">الأغاني المحمّلة</string>
     <string name="playlist_is_empty">قائمة التشغيل فارغة</string>
@@ -79,13 +83,13 @@
     <string name="delete_playlist_confirm">هل تريد حقًا حذف قائمة التشغيل "%s"؟</string>
     <string name="elements_selected">%1$d عنصر محدد</string>
     
-    <!-- Button -->
+    <!-- الازرار -->
     <string name="retry">إعادة المحاولة</string>
     <string name="radio">راديو</string>
     <string name="shuffle">تشغيل عشوائي</string>
     <string name="reset">إعادة تعيين</string>
     
-    <!-- Menu -->
+    <!-- القائمة -->
     <string name="details">التفاصيل</string>
     <string name="edit">تعديل</string>
     <string name="start_radio">بدء الراديو</string>
@@ -112,7 +116,7 @@
     <string name="remove_from_playlist">إزالة من قائمة التشغيل</string>
     <string name="like_all">الإعجاب بالكل</string>
     
-    <!-- Sort menu -->
+    <!-- قائمة الفرز-->
     <string name="sort_by_create_date">تاريخ الإضافة</string>
     <string name="sort_by_last_updated">تاريخ التحديث</string>
     <string name="sort_by_name">الاسم</string>
@@ -123,7 +127,7 @@
     <string name="sort_by_play_time">وقت التشغيل</string>
     <string name="sort_by_custom">ترتيب مخصص</string>
     
-    <!-- Dialog -->
+    <!-- الحوار -->
     <string name="media_id">معرف الوسائط</string>
     <string name="mime_type">نوع MIME</string>
     <string name="codecs">الترميزات</string>
@@ -152,7 +156,7 @@
     <string name="artist_name">اسم الفنان</string>
     <string name="error_artist_name_empty">لا يمكن أن يكون اسم الفنان فارغًا.</string>
     
-    <!-- Noun -->
+    <!-- اسم -->
     <plurals name="n_song">
     <item quantity="zero">لا أغانٍ</item>
     <item quantity="one">%d أغنية</item>
@@ -323,7 +327,11 @@
     <string name="app_language">لغة التطبيق</string>
     <string name="configure_app_language">تكوين لغة التطبيق</string>
     <string name="intent_app_language_not_found">لم يتمكن التطبيق من العثور على إعدادات لغة التطبيق، يرجى تكوينها يدويًا</string>
-       
+    <string name="open_supported_links">فتح الروابط المدعومة</string>
+    <string name="configure_supported_links">تكوين الروابط المدعومة</string>
+    <string name="intent_supported_links_not_found">لم يتمكن التطبيق من العثور على الإعدادات ، يرجى تكوينها يدويًا</string>
+    
+    
     <string name="player_and_audio">المشغل والصوت</string>
     <string name="audio_quality">جودة الصوت</string>
     <string name="audio_quality_auto">تلقائي</string>
@@ -371,7 +379,7 @@
     <string name="discord_integration">دمج ديسكورد</string>
     <string name="discord_information">متروليست تستخدم مكتبة KizzyRPC لتعيين حالة حسابك على ديسكورد. يتضمن ذلك استخدام اتصال Discord Gateway، والذي قد يعتبر انتهاكًا لشروط الخدمة الخاصة بديسكورد. ومع ذلك، لا توجد حالات معروفة تم فيها تعليق حسابات المستخدمين لهذا السبب. استخدم هذه الخدمة على مسؤوليتك الخاصة.
 
-متروليست ستستخرج فقط رمز التوكن الخاص بك، وكل شيء آخر يتم تخزينه محليًا.</string>
+    متروليست ستستخرج فقط رمز التوكن الخاص بك، وكل شيء آخر يتم تخزينه محليًا.</string>
     <string name="dismiss">إغلاق</string>
     <string name="options">الخيارات</string>
     <string name="preview">معاينة</string>
