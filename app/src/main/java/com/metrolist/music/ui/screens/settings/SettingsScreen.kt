@@ -83,39 +83,20 @@ fun SettingsScreen(
         )
         if (isAndroid12OrLater) {
             PreferenceEntry(
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            PreferenceEntry(
                 title = { Text(stringResource(R.string.default_links)) },
                 icon = { Icon(painterResource(R.drawable.link), null) },
                 onClick = {
                     try {
-                        val intent = Intent(Settings.ACTION_APP_OPEN_BY_DEFAULT_SETTINGS).apply {
-                            data = android.net.Uri.parse("package:${BuildConfig.APPLICATION_ID}")
-                            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                        }
-                        context.startActivity(intent)
-                    } catch (e: Exception) {
-                        when (e) {
-                            is ActivityNotFoundException -> {
-                                try {
-                                    val generalSettingsIntent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                                        data = android.net.Uri.parse("package:${BuildConfig.APPLICATION_ID}")
-                                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                                    }
-                                    context.startActivity(generalSettingsIntent)
-                                } catch (e2: Exception) {
-                                 Toast.makeText(
-                                        context.getString(R.string.open_app_settings_error),
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                }
+                        context.startActivity(
+                            Intent(Settings.ACTION_APP_OPEN_BY_DEFAULT_SETTINGS, Uri.parse("package:${context.packageName}")),
+                        )
+                    } catch (e: ActivityNotFoundException) {
+                        Toast.makeText(context, R.string.open_app_settings_error, Toast.LENGTH_LONG).show()
                             }
-                            else -> {
-                                Toast.makeText(
-                                    context.getString(R.string.open_app_settings_error),
-                                    Toast.LENGTH_SHORT                                
-                                ).show()
-                            }
-                        }
-                    }
+                        },
+                    )
                 }
             )
         }
