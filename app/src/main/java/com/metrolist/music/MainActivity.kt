@@ -570,17 +570,16 @@ class MainActivity : ComponentActivity() {
                                 scrollBehavior = searchBarScrollBehavior,
                                 placeholder = {
                                     Text(
-                                        text =
-                                            stringResource(
-                                                if (!active) {
-                                                    R.string.search
-                                                } else {
-                                                    when (searchSource) {
-                                                        SearchSource.LOCAL -> R.string.search_library
-                                                        SearchSource.ONLINE -> R.string.search_yt_music
-                                                    }
-                                                },
-                                            ),
+                                        text = stringResource(
+                                            if (!active) {
+                                                R.string.search
+                                            } else {
+                                                when (searchSource) {
+                                                    SearchSource.LOCAL -> R.string.search_library
+                                                    SearchSource.ONLINE -> R.string.search_yt_music
+                                                }
+                                            },
+                                        ),
                                     )
                                 },
                                 leadingIcon = {
@@ -591,7 +590,6 @@ class MainActivity : ComponentActivity() {
                                                 !navigationItems.fastAny { it.route == navBackStackEntry?.destination?.route } -> {
                                                     navController.navigateUp()
                                                 }
-
                                                 else -> onActiveChange(true)
                                             }
                                         },
@@ -601,7 +599,6 @@ class MainActivity : ComponentActivity() {
                                                 !navigationItems.fastAny { it.route == navBackStackEntry?.destination?.route } -> {
                                                     navController.backToMain()
                                                 }
-
                                                 else -> {}
                                             }
                                         },
@@ -609,7 +606,7 @@ class MainActivity : ComponentActivity() {
                                         Icon(
                                             painterResource(
                                                 if (active ||
-                                                    !navigationItems.fastAny { it.route == navBackStackEntry?.destination?.route }
+                                                !navigationItems.fastAny { it.route == navBackStackEntry?.destination?.route }
                                                 ) {
                                                     R.drawable.arrow_back
                                                 } else {
@@ -621,56 +618,53 @@ class MainActivity : ComponentActivity() {
                                     }
                                 },
                                 trailingIcon = {
-                                    if (active) {
-                                        if (query.text.isNotEmpty()) {
+                                    Row {
+                                        if (active) {
+                                            if (query.text.isNotEmpty()) {
+                                                IconButton(
+                                                    onClick = { onQueryChange(TextFieldValue("")) },
+                                                ) {
+                                                    Icon(
+                                                        painter = painterResource(R.drawable.close),
+                                                        contentDescription = null,
+                                                    )
+                                                }
+                                            }
                                             IconButton(
-                                                onClick = { onQueryChange(TextFieldValue("")) },
+                                                onClick = {
+                                                    searchSource =
+                                                        if (searchSource == SearchSource.ONLINE) SearchSource.LOCAL else SearchSource.ONLINE
+                                                },
                                             ) {
                                                 Icon(
-                                                    painter = painterResource(R.drawable.close),
-                                                    contentDescription = null,
-                                                )
-                                            }
-                                        }
-                                        IconButton(
-                                            onClick = {
-                                                searchSource =
-                                                    if (searchSource == SearchSource.ONLINE) SearchSource.LOCAL else SearchSource.ONLINE
-                                            },
-                                        ) {
-                                            Icon(
-                                                painter =
-                                                    painterResource(
+                                                    painter = painterResource(
                                                         when (searchSource) {
                                                             SearchSource.LOCAL -> R.drawable.library_music
                                                             SearchSource.ONLINE -> R.drawable.language
                                                         },
                                                     ),
-                                                contentDescription = null,
-                                            )
-                                        }
-                                    } else if (navBackStackEntry?.destination?.route in topLevelScreens) {
-                                        Box(
-                                            contentAlignment = Alignment.Center,
-                                            modifier =
-                                                Modifier
-                                                    .size(48.dp)
-                                                    .clip(CircleShape)
-                                                    .clickable {
-                                                        navController.navigate("settings")
-                                                    },
-                                        ) {
-                                            BadgedBox(
-                                                badge = {
-                                                    if (latestVersionName != BuildConfig.VERSION_NAME) {
-                                                        Badge()
-                                                    }
-                                                },
-                                            ) {
-                                                Icon(
-                                                    painter = painterResource(R.drawable.settings),
                                                     contentDescription = null,
                                                 )
+                                            }
+                                        } else if (navBackStackEntry?.destination?.route in topLevelScreens) {
+                                            IconButton(
+                                                onClick = {
+                                                    navController.navigate("settings")
+                                                },
+                                            ) {
+                                                BadgedBox(
+                                                    badge = {
+                                                        if (latestVersionName != BuildConfig.VERSION_NAME) {
+                                                            Badge()
+                                                        }
+                                                    },
+                                                ) {
+                                                    Icon(
+                                                        painter = painterResource(R.drawable.settings),
+                                                        contentDescription = null,
+                                                        modifier = Modifier.size(24.dp)
+                                                    )
+                                                }
                                             }
                                         }
                                     }
