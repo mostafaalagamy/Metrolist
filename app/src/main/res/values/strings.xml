@@ -334,7 +334,10 @@
     <string name="logout">Logout</string>
 
     <string name="enable_discord_rpc">Enable Rich Presence</string> 
+    
     <string name="default_links">Open supported links</string>
+    <string name="open_app_settings_error">Couldn't open app settings</string>
+    
     <string name="release_notes">Release Notes</string>
     
     <string name="about">About</string>
