@@ -103,15 +103,15 @@ fun SettingsScreen(
                                     context.startActivity(generalSettingsIntent)
                                 } catch (e2: Exception) {
                                  Toast.makeText(
-                                     context,
-                                     context.getString(R.string.open_app_settings_error),
-                                     Toast.LENGTH_SHORT
-                                 ).show()
-                             } else -> {
-                                 Toast.makeText(
-                                     context,
-                                     context.getString(R.string.open_app_settings_error),
-                                     Toast.LENGTH_SHORT                                
+                                        context.getString(R.string.open_app_settings_error),
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                            }
+                            else -> {
+                                Toast.makeText(
+                                    context.getString(R.string.open_app_settings_error),
+                                    Toast.LENGTH_SHORT                                
                                 ).show()
                             }
                         }
