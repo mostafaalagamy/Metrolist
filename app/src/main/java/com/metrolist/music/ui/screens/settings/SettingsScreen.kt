@@ -84,8 +84,6 @@ fun SettingsScreen(
         )
         if (isAndroid12OrLater) {
             PreferenceEntry(
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            PreferenceEntry(
                 title = { Text(stringResource(R.string.default_links)) },
                 icon = { Icon(painterResource(R.drawable.link), null) },
                 onClick = {
