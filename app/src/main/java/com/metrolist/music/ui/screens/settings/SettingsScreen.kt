@@ -88,11 +88,21 @@ fun SettingsScreen(
                 icon = { Icon(painterResource(R.drawable.link), null) },
                 onClick = {
                     try {
-                        context.startActivity(
-                            Intent(Settings.ACTION_APP_OPEN_BY_DEFAULT_SETTINGS, Uri.parse("package:${context.packageName}")),
-                        )
-                    } catch (e: ActivityNotFoundException) {
-                        Toast.makeText(context, R.string.open_app_settings_error, Toast.LENGTH_LONG).show()
+                        val intent = Intent(Settings.ACTION_APP_OPEN_BY_DEFAULT_SETTINGS, Uri.parse("package:${context.packageName}"))
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        context.startActivity(intent)
+                    } catch (e: Exception) {
+                        when (e) {
+                            is ActivityNotFoundException -> {
+                                Toast.makeText(context, R.string.open_app_settings_error, Toast.LENGTH_LONG).show()
+                            }
+                            is SecurityException -> {
+                                Toast.makeText(context, R.string.open_app_settings_error, Toast.LENGTH_LONG).show()
+                            }
+                            else -> {
+                                Toast.makeText(context, R.string.open_app_settings_error, Toast.LENGTH_LONG).show()
+                            }
+                        }
                     }
                 },
             )
