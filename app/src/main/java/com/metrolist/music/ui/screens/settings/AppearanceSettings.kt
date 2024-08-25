@@ -83,7 +83,7 @@ fun AppearanceSettings(
     val (playerTextAlignment, onPlayerTextAlignmentChange) =
         rememberEnumPreference(
             PlayerTextAlignmentKey,
-            defaultValue = PlayerTextAlignment.CENTER,
+            defaultValue = PlayerTextAlignment.SIDED,
         )
     val (lyricsClick, onLyricsClickChange) = rememberPreference(LyricsClickKey, defaultValue = true)
     val (sliderStyle, onSliderStyleChange) = rememberEnumPreference(SliderStyleKey, defaultValue = SliderStyle.DEFAULT)
