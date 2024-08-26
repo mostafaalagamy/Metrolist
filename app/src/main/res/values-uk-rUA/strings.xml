@@ -1,0 +1,288 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Bottom navigation -->
+    <string name="home">Головна</string>
+    <string name="songs">Музика</string>
+    <string name="artists">Виконавці</string>
+    <string name="albums">Альбоми</string>
+    <string name="playlists">Плейлисти</string>
+
+    <!-- Top bar -->
+    <plurals name="n_selected">
+        <item quantity="one">%d вибрано</item>
+        <item quantity="few">%d вибрано</item>
+        <item quantity="many">%d вибрано</item>
+        <item quantity="other">%d вибрано</item>
+    </plurals>
+
+    <!-- Home -->
+    <string name="history">Історія</string>
+    <string name="stats">Статистика</string>
+    <string name="mood_and_genres">Настрій та жанри</string>
+    <string name="account">Акаунт</string>
+    <string name="quick_picks">Швидкий вибір</string>
+    <string name="quick_picks_empty">Послухайте кілька пісень, щоб створити ваш швидкий вибір</string>
+    <string name="new_release_albums">Нові релізи альбомів</string>
+
+    <!-- History -->
+    <string name="today">Сьогодні</string>
+    <string name="yesterday">Вчора</string>
+    <string name="this_week">Цього тижня</string>
+    <string name="last_week">Минулого тижня</string>
+
+    <!-- Stats -->
+    <string name="most_played_songs">Найпопулярніші пісні</string>
+    <string name="most_played_artists">Найпопулярніші виконавці</string>
+    <string name="most_played_albums">Найпопулярніші альбоми</string>
+
+    <!-- Search -->
+    <string name="search">Пошук</string>
+    <string name="search_yt_music">Пошук в YouTube Music…</string>
+    <string name="search_library">Пошук в бібліотеці…</string>
+    <string name="filter_library">Бібліотека</string>
+    <string name="filter_liked">Вподобані</string>
+    <string name="filter_downloaded">Завантажені</string>
+    <string name="filter_all">Всі</string>
+    <string name="filter_songs">Композиції</string>
+    <string name="filter_videos">Відео</string>
+    <string name="filter_albums">Альбоми</string>
+    <string name="filter_artists">Виконавці</string>
+    <string name="filter_playlists">Плейлисти</string>
+    <string name="filter_community_playlists">Плейлисти спільноти</string>
+    <string name="filter_featured_playlists">Обрані плейлисти</string>
+    <string name="filter_bookmarked">Додано в закладки</string>
+    <string name="no_results_found">Результатів не знайдено</string>
+
+    <!-- Artist screen -->
+    <string name="from_your_library">З вашої бібліотеки</string>
+
+    <!-- Playlist -->
+    <string name="liked_songs">Улюблені треки</string>
+    <string name="downloaded_songs">Завантажена музика</string>
+    <string name="playlist_is_empty">Плейлист порожній</string>
+
+    <!-- Button -->
+    <string name="retry">Повторювати</string>
+    <string name="radio">Радіо</string>
+    <string name="shuffle">Перемішати</string>
+    <string name="reset">Скинути</string>
+
+    <!-- Menu -->
+    <string name="details">Детальніше</string>
+    <string name="edit">Редагувати</string>
+    <string name="start_radio">Увімкнути радіо</string>
+    <string name="play">Відтворити</string>
+    <string name="play_next">Відтворити наступним</string>
+    <string name="add_to_queue">Додати в чергу</string>
+    <string name="add_to_library">Додати в бібліотеку</string>
+    <string name="remove_from_library">Видалити з бібліотеки</string>
+    <string name="download">Завантажити</string>
+    <string name="downloading">Завантаження</string>
+    <string name="remove_download">Видалити із завантажених</string>
+    <string name="import_playlist">Імпортувати плейлист</string>
+    <string name="add_to_playlist">Додати в плейлист</string>
+    <string name="view_artist">Перейти до виконавця</string>
+    <string name="view_album">Перейти до альбому</string>
+    <string name="refetch">Оновити</string>
+    <string name="share">Поділитися</string>
+    <string name="delete">Видалити</string>
+    <string name="remove_from_history">Видалити з історії</string>
+    <string name="search_online">Пошук в Інтернеті</string>
+    <string name="sync">Синхронізація</string>
+    <string name="advanced">Контроль аудіо</string>
+
+    <!-- Sort menu -->
+    <string name="sort_by_create_date">Нещодавно додані</string>
+    <string name="sort_by_name">Назва</string>
+    <string name="sort_by_artist">Виконавець</string>
+    <string name="sort_by_year">Рік</string>
+    <string name="sort_by_song_count">Кількість треків</string>
+    <string name="sort_by_length">Тривалість</string>
+    <string name="sort_by_play_time">Кількість відтворень</string>
+    <string name="sort_by_custom">Корист. порядок</string>
+
+    <!-- Dialog -->
+    <string name="media_id">Ідентифікатор медіа</string>
+    <string name="mime_type">Тип MIME</string>
+    <string name="codecs">Кодеки</string>
+    <string name="bitrate">Бітрейт</string>
+    <string name="sample_rate">Частота дискретизації</string>
+    <string name="loudness">Гучність</string>
+    <string name="volume">Рівень гучності</string>
+    <string name="file_size">Розмір файлу</string>
+    <string name="unknown">Невідомо</string>
+    <string name="copied">Скопійовано</string>
+
+    <string name="edit_lyrics">Редагувати текст пісні</string>
+    <string name="search_lyrics">Пошук тексту пісні</string>
+
+    <string name="edit_song">Редагувати композицію</string>
+    <string name="song_title">Назва композиції</string>
+    <string name="song_artists">Виконавці композиції</string>
+    <string name="error_song_title_empty">Вкажіть назву композиції</string>
+    <string name="error_song_artist_empty">Вкажіть виконавців композиції</string>
+    <string name="save">Зберегти</string>
+
+    <string name="choose_playlist">Вибрати плейлист</string>
+    <string name="edit_playlist">Редагувати плейлист</string>
+    <string name="create_playlist">Створити плейлист</string>
+    <string name="playlist_name">Назва плейлиста</string>
+    <string name="error_playlist_name_empty">Вкажіть назву плейлиста</string>
+
+    <string name="edit_artist">Редагувати виконавця</string>
+    <string name="artist_name">Ім\'я виконавця</string>
+    <string name="error_artist_name_empty">Вкажіть ім\'я виконавця</string>
+
+    <!-- Noun -->
+    <plurals name="n_song">
+        <item quantity="one">%d композиція</item>
+        <item quantity="few">%d композиції</item>
+        <item quantity="many">%d композицій</item>
+        <item quantity="other">%d композицій</item>
+    </plurals>
+    <plurals name="n_artist">
+        <item quantity="one">%d виконавець</item>
+        <item quantity="few">%d виконавця</item>
+        <item quantity="many">%d виконавців</item>
+        <item quantity="other">%d виконавців</item>
+    </plurals>
+    <plurals name="n_album">
+        <item quantity="one">%d альбом</item>
+        <item quantity="few">%d альбоми</item>
+        <item quantity="many">%d альбомів</item>
+        <item quantity="other">%d альбомів</item>
+    </plurals>
+    <plurals name="n_playlist">
+        <item quantity="one">%d плейлист</item>
+        <item quantity="few">%d плейлисти</item>
+        <item quantity="many">%d плейлистів</item>
+        <item quantity="other">%d плейлистів</item>
+    </plurals>
+    <plurals name="n_week" tools:ignore="MissingQuantity">
+        <item quantity="one">%d тиждень</item>
+        <item quantity="few">%d тижні</item>
+        <item quantity="many">%d тижнів</item>
+        <item quantity="other">%d тижнів</item>
+    </plurals>
+    <plurals name="n_month" tools:ignore="MissingQuantity">
+        <item quantity="one">%d місяць</item>
+        <item quantity="few">%d місяці</item>
+        <item quantity="many">%d місяців</item>
+        <item quantity="other">%d місяців</item>
+    </plurals>
+    <plurals name="n_year" tools:ignore="MissingQuantity">
+        <item quantity="one">%d рік</item>
+        <item quantity="few">%d роки</item>
+        <item quantity="many">%d років</item>
+        <item quantity="other">%d років</item>
+    </plurals>
+
+    <!-- Snackbar -->
+    <string name="playlist_imported">Плейлист імпортовано</string>
+    <string name="removed_song_from_playlist">«%s» видалено зі списку відтворення</string>
+    <string name="playlist_synced">Плейлист синхронізовано</string>
+    <string name="undo">Скасувати</string>
+
+    <!-- Player -->
+    <string name="lyrics_not_found">Текст пісні не знайдено</string>
+    <string name="sleep_timer">Таймер сну</string>
+    <string name="end_of_song">Кінець пісні</string>
+    <plurals name="minute">
+        <item quantity="one">%d хвилина</item>
+        <item quantity="few">%d хвилини</item>
+        <item quantity="many">%d хвилин</item>
+        <item quantity="other">%d хвилин</item>
+    </plurals>
+    <string name="error_no_stream">Немає доступних потоків</string>
+    <string name="error_no_internet">Відсутнє підключення до мережі</string>
+    <string name="error_timeout">Тайм-аут</string>
+    <string name="error_unknown">Невідома помилка</string>
+
+    <!-- Player action -->
+    <string name="action_like">Поставити «Подобається»</string>
+    <string name="action_remove_like">Прибрати «Подобається»</string>
+    <string name="action_shuffle_on">Увімкнути перемішування</string>
+    <string name="action_shuffle_off">Вимкнути перемішування</string>
+    <string name="repeat_mode_off">Вимкнути повторення</string>
+    <string name="repeat_mode_one">Повторити поточну пісню</string>
+    <string name="repeat_mode_all">Повторити чергу</string>
+
+    <!-- Queue Title -->
+    <string name="queue_all_songs">Всі композиції</string>
+    <string name="queue_searched_songs">Шукані композиції</string>
+
+    <!-- Notification name -->
+    <string name="music_player">Музичний плеєр</string>
+
+    <!-- Settings -->
+    <string name="settings">Параметри</string>
+    <string name="appearance">Зовнішній вигляд</string>
+    <string name="enable_dynamic_theme">Увімкнути динамічну тему</string>
+    <string name="dark_theme">Темна тема</string>
+    <string name="dark_theme_on">Увімк.</string>
+    <string name="dark_theme_off">Вимк.</string>
+    <string name="dark_theme_follow_system">Використовувати налаштування системи</string>
+    <string name="pure_black">Режим чистого чорного кольору</string>
+    <string name="default_open_tab">Вкладка навігації за замовчуванням</string>
+    <string name="customize_navigation_tabs">Налаштування вкладок навігації</string>
+    <string name="lyrics_text_position">Розташування тексту пісні</string>
+    <string name="left">Ліворуч</string>
+    <string name="center">По центру</string>
+    <string name="right">Праворуч</string>
+
+    <string name="content">Контент</string>
+    <string name="login">Логін</string>
+    <string name="content_language">Мова контенту</string>
+    <string name="content_country">Країна контенту</string>
+    <string name="system_default">Використовувати налаштування системи</string>
+    <string name="enable_proxy">Увімкнути проксі</string>
+    <string name="proxy_type">Тип проксі</string>
+    <string name="proxy_url">URL проксі</string>
+    <string name="restart_to_take_effect">Перезапуск програми</string>
+
+    <string name="player_and_audio">Плеєр та аудіо</string>
+    <string name="audio_quality">Якість аудіо</string>
+    <string name="audio_quality_auto">Авто</string>
+    <string name="audio_quality_high">Висока</string>
+    <string name="audio_quality_low">Низька</string>
+    <string name="persistent_queue">Постійна черга</string>
+    <string name="skip_silence">Пропуск тиші в композиціях</string>
+    <string name="audio_normalization">Нормалізація аудіо</string>
+    <string name="equalizer">Еквалайзер</string>
+
+    <string name="storage">Сховище</string>
+    <string name="cache">Кеш</string>
+    <string name="image_cache">Кеш зображень</string>
+    <string name="song_cache">Кеш аудіо</string>
+    <string name="max_cache_size">Максимальний розмір кешу</string>
+    <string name="unlimited">Необмежено</string>
+    <string name="clear_all_downloads">Очистити всі завантаження</string>
+    <string name="max_image_cache_size">Макс. розмір кешу зображень</string>
+    <string name="clear_image_cache">Очистити кеш зображень</string>
+    <string name="max_song_cache_size">Макс. розмір кешу аудіо</string>
+    <string name="clear_song_cache">Очистити кеш аудіо</string>
+    <string name="size_used">%s використано</string>
+
+    <string name="privacy">Конфіденційність</string>
+    <string name="pause_listen_history">Призупинити історію прослуховування</string>
+    <string name="clear_listen_history">Очистити історію прослуховування</string>
+    <string name="clear_listen_history_confirm">Ви впевнені, що хочете очистити всю історію прослуховування?</string>
+    <string name="pause_search_history">Призупинити історію пошуку</string>
+    <string name="clear_search_history">Очистити історію пошуку</string>
+    <string name="clear_search_history_confirm">Ви впевнені, що хочете очистити всю історію пошуку?</string>
+    <string name="enable_kugou">Увімкнути провайдера текстів KuGou</string>
+
+    <string name="backup_restore">Резервне копіювання</string>
+    <string name="backup">Створити резервну копію</string>
+    <string name="restore">Відновити з резервної копії</string>
+    <string name="imported_playlist">Імпортований плейлист</string>
+    <string name="backup_create_success">Резервну копію створено успішно</string>
+    <string name="backup_create_failed">Не вдалося створити резервну копію</string>
+    <string name="restore_failed">Не вдалося відновити з резервної копії</string>
+
+    <string name="about">Про програму</string>
+    <string name="app_version">Версія застосунку</string>
+
+    <string name="new_version_available">Доступна нова версія</string>
+    <string name="translation_models">Моделі перекладу</string>
+    <string name="clear_translation_models">Очистити моделі перекладу</string>
+</resources>

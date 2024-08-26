@@ -1,0 +1,22 @@
+Material 3 YouTube Music client for Android
+
+Features:
+
+- Play any song or video from YT Music
+- Background playback
+- Personalized quick picks
+- Library management
+- Download and cache songs for offline playback
+- Search for songs, albums, artists, videos and playlists
+- Live lyrics
+- Login support
+- Skip silence
+- Import playlists
+- Audio normalization
+- Adjust tempo/pitch
+- Local playlist management
+- Reorder songs in playlist or queue
+- Light - Dark - black - Dynamic theme
+- Sleep timer
+- Material 3
+- etc.
