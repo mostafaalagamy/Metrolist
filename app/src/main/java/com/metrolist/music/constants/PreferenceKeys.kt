@@ -37,6 +37,11 @@ enum class AudioQuality {
 val PersistentQueueKey = booleanPreferencesKey("persistentQueue")
 val SkipSilenceKey = booleanPreferencesKey("skipSilence")
 val AudioNormalizationKey = booleanPreferencesKey("audioNormalization")
+<<<<<<< HEAD:app/src/main/java/com/metrolist/music/constants/PreferenceKeys.kt
+=======
+val AutoSkipNextOnErrorKey = booleanPreferencesKey("autoSkipNextOnError")
+val StopMusicOnTaskClearKey = booleanPreferencesKey("stopMusicOnTaskClear")
+>>>>>>> afebaa28 (feat: auto skip next on error):app/src/main/java/com/metrolist/music/constants/PreferenceKeys.kt
 
 val MaxImageCacheSizeKey = intPreferencesKey("maxImageCacheSize")
 val MaxSongCacheSizeKey = intPreferencesKey("maxSongCacheSize")
