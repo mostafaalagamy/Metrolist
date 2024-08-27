@@ -922,6 +922,7 @@ object YouTube {
                         endpoint.params,
                         continuation,
                     ).body<NextResponse>()
+            val title = response.contents.singleColumnMusicWatchNextResultsRenderer.tabbedRenderer.watchNextTabbedResultsRenderer.tabs[0].tabRenderer.content?.musicQueueRenderer?.header?.musicQueueHeaderRenderer?.subtitle?.runs?.firstOrNull()?.text
             val playlistPanelRenderer =
                 response.continuationContents?.playlistPanelContinuation
                     ?: response.contents.singleColumnMusicWatchNextResultsRenderer.tabbedRenderer.watchNextTabbedResultsRenderer.tabs[0]
@@ -940,7 +941,7 @@ object YouTube {
                 ?.let { watchPlaylistEndpoint ->
                     return@runCatching next(watchPlaylistEndpoint).getOrThrow().let { result ->
                         result.copy(
-                            title = playlistPanelRenderer.title,
+                            title = title,
                             items =
                                 playlistPanelRenderer.contents.mapNotNull {
                                     it.playlistPanelVideoRenderer?.let { renderer ->
