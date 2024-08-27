@@ -11,20 +11,16 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class AccountViewModel
-    @Inject
-    constructor() : ViewModel() {
-        val playlists = MutableStateFlow<List<PlaylistItem>?>(null)
+class AccountViewModel @Inject constructor() : ViewModel() {
+    val playlists = MutableStateFlow<List<PlaylistItem>?>(null)
 
-        init {
-            viewModelScope.launch {
-                YouTube
-                    .likedPlaylists()
-                    .onSuccess {
-                        playlists.value = it
-                    }.onFailure {
-                        reportException(it)
-                    }
+    init {
+        viewModelScope.launch {
+            YouTube.likedPlaylists().onSuccess {
+                playlists.value = it
+            }.onFailure {
+                reportException(it)
             }
         }
     }
+}
