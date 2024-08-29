@@ -22,8 +22,10 @@ import com.metrolist.music.R
 import com.metrolist.music.constants.AudioNormalizationKey
 import com.metrolist.music.constants.AudioQuality
 import com.metrolist.music.constants.AudioQualityKey
+import com.metrolist.music.constants.AutoSkipNextOnErrorKey
 import com.metrolist.music.constants.PersistentQueueKey
 import com.metrolist.music.constants.SkipSilenceKey
+import com.metrolist.music.constants.StopMusicOnTaskClearKey
 import com.metrolist.music.ui.component.EnumListPreference
 import com.metrolist.music.ui.component.IconButton
 import com.metrolist.music.ui.component.SwitchPreference
@@ -37,11 +39,13 @@ fun PlayerSettings(
     navController: NavController,
     scrollBehavior: TopAppBarScrollBehavior,
 ) {
-    val (audioQuality, onAudioQualityChange) = rememberEnumPreference(key = AudioQualityKey, defaultValue = AudioQuality.AUTO)
-    val (persistentQueue, onPersistentQueueChange) = rememberPreference(key = PersistentQueueKey, defaultValue = true)
-    val (skipSilence, onSkipSilenceChange) = rememberPreference(key = SkipSilenceKey, defaultValue = false)
-    val (audioNormalization, onAudioNormalizationChange) = rememberPreference(key = AudioNormalizationKey, defaultValue = true)
-
+    val (audioQuality, onAudioQualityChange) = rememberEnumPreference(AudioQualityKey, defaultValue = AudioQuality.AUTO)
+    val (persistentQueue, onPersistentQueueChange) = rememberPreference(PersistentQueueKey, defaultValue = true)
+    val (skipSilence, onSkipSilenceChange) = rememberPreference(SkipSilenceKey, defaultValue = false)
+    val (audioNormalization, onAudioNormalizationChange) = rememberPreference(AudioNormalizationKey, defaultValue = true)
+    val (autoSkipNextOnError, onAutoSkipNextOnErrorChange) = rememberPreference(AutoSkipNextOnErrorKey, defaultValue = false)
+    val (stopMusicOnTaskClear, onStopMusicOnTaskClearChange) = rememberPreference(StopMusicOnTaskClearKey, defaultValue = false)
+    
     Column(
         Modifier
             .windowInsetsPadding(LocalPlayerAwareWindowInsets.current.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom))
@@ -64,13 +68,14 @@ fun PlayerSettings(
         )
         SwitchPreference(
             title = { Text(stringResource(R.string.persistent_queue)) },
+            description = stringResource(R.string.persistent_queue_desc),
             icon = { Icon(painterResource(R.drawable.queue_music), null) },
             checked = persistentQueue,
             onCheckedChange = onPersistentQueueChange,
         )
         SwitchPreference(
             title = { Text(stringResource(R.string.skip_silence)) },
-            icon = { Icon(painterResource(R.drawable.skip_next), null) },
+            icon = { Icon(painterResource(R.drawable.fast_forward), null) },
             checked = skipSilence,
             onCheckedChange = onSkipSilenceChange,
         )
@@ -79,6 +84,19 @@ fun PlayerSettings(
             icon = { Icon(painterResource(R.drawable.volume_up), null) },
             checked = audioNormalization,
             onCheckedChange = onAudioNormalizationChange,
+        )
+        SwitchPreference(
+            title = { Text(stringResource(R.string.auto_skip_next_on_error)) },
+            description = stringResource(R.string.auto_skip_next_on_error_desc),
+            icon = { Icon(painterResource(R.drawable.skip_next), null) },
+            checked = autoSkipNextOnError,
+            onCheckedChange = onAutoSkipNextOnErrorChange,
+        )
+        SwitchPreference(
+            title = { Text(stringResource(R.string.stop_music_on_task_clear)) },
+            icon = { Icon(painterResource(R.drawable.clear_all), null) },
+            checked = stopMusicOnTaskClear,
+            onCheckedChange = onStopMusicOnTaskClearChange,
         )
     }
 
