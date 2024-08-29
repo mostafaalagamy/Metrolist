@@ -330,7 +330,10 @@
     <string name="open_supported_links">فتح الروابط المدعومة</string>
     <string name="configure_supported_links">تكوين الروابط المدعومة</string>
     <string name="intent_supported_links_not_found">لم يتمكن التطبيق من العثور على الإعدادات ، يرجى تكوينها يدويًا</string>
-    
+    <string name="auto_skip_next_on_error">الانتقال التلقائي إلى الأغنية التالية عند حدوث خطأ</string>
+    <string name="auto_skip_next_on_error_desc">تأكد من تجربة التشغيل المتواصلة</string>
+    <string name="stop_music_on_task_clear">إيقاف الموسيقى عند ايقاف التطبيق إجباري</string>
+
     
     <string name="player_and_audio">المشغل والصوت</string>
     <string name="audio_quality">جودة الصوت</string>

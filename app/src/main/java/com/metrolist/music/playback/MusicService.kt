@@ -59,6 +59,7 @@ import com.metrolist.music.R
 import com.metrolist.music.constants.AudioNormalizationKey
 import com.metrolist.music.constants.AudioQuality
 import com.metrolist.music.constants.AudioQualityKey
+import com.metrolist.music.constants.AutoSkipNextOnErrorKey
 import com.metrolist.music.constants.DiscordTokenKey
 import com.metrolist.music.constants.EnableDiscordRPCKey
 import com.metrolist.music.constants.HideExplicitKey
@@ -155,7 +156,7 @@ class MusicService :
 
     private lateinit var connectivityManager: ConnectivityManager
 
-    private val audioQuality by enumPreference(this, AudioQualityKey, AudioQuality.AUTO)
+    private val audioQuality by enumPreference(this, AudioQualityKey, com.metrolist.music.constants.AudioQuality.AUTO)
 
     private var currentQueue: Queue = EmptyQueue
     var queueTitle: String? = null
@@ -687,6 +688,14 @@ class MusicService :
             dataStore.edit { settings ->
                 settings[RepeatModeKey] = repeatMode
             }
+        }
+    }
+
+    override fun onPlayerError(error: PlaybackException) {
+        if (dataStore.get(AutoSkipNextOnErrorKey, false) && player.hasNextMediaItem()) {
+            player.seekToNext()
+            player.prepare()
+            player.playWhenReady = true
         }
     }
 

@@ -290,8 +290,14 @@
     <string name="audio_quality_high">High</string>
     <string name="audio_quality_low">Low</string>
     <string name="persistent_queue">Persistent queue</string>
+    <string name="persistent_queue_desc">Restore your last queue when the app starts</string>
     <string name="skip_silence">Skip silence</string>
     <string name="audio_normalization">Audio normalization</string>
+
+    <string name="auto_skip_next_on_error">Auto skip to next song when error occurs</string>
+    <string name="auto_skip_next_on_error_desc">Ensure your continuous playback experience</string>
+    <string name="stop_music_on_task_clear">Stop music on task clear</string>
+
     <string name="equalizer">Equalizer</string>
 
     <string name="storage">Storage</string>

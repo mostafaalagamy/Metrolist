@@ -229,8 +229,14 @@
     <string name="audio_quality_high">高</string>
     <string name="audio_quality_low">低</string>
     <string name="persistent_queue">保留播放佇列</string>
+    <string name="persistent_queue_desc">開啟應用程式時還原上次的播放佇列</string>
     <string name="skip_silence">跳過無聲片段</string>
     <string name="audio_normalization">標準化音量</string>
+    
+    <string name="auto_skip_next_on_error">發生錯誤時自動跳到下一首</string>
+    <string name="auto_skip_next_on_error_desc">讓你享受音樂不中斷</string>
+    <string name="stop_music_on_task_clear">將音樂在清除任務時停止</string>
+
     <string name="equalizer">等化器</string>
 
     <string name="storage">儲存</string>
