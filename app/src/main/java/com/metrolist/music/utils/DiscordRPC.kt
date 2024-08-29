@@ -24,6 +24,7 @@ class DiscordRPC(
                 "Visit Metrolist" to "https://github.com/mostafaalagamy/Metrolist"
             ),
             type = Type.LISTENING,
+            since = System.currentTimeMillis(),
             startTime = System.currentTimeMillis(),
             applicationId = APPLICATION_ID
         )
