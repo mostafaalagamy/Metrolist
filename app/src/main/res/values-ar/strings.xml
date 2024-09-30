@@ -330,20 +330,23 @@
     <string name="open_supported_links">فتح الروابط المدعومة</string>
     <string name="configure_supported_links">تكوين الروابط المدعومة</string>
     <string name="intent_supported_links_not_found">لم يتمكن التطبيق من العثور على الإعدادات ، يرجى تكوينها يدويًا</string>
-    <string name="auto_skip_next_on_error">الانتقال التلقائي إلى الأغنية التالية عند حدوث خطأ</string>
-    <string name="auto_skip_next_on_error_desc">تأكد من تجربة التشغيل المتواصلة</string>
-    <string name="stop_music_on_task_clear">إيقاف الموسيقى عند ايقاف التطبيق إجباري</string>
 
-    
     <string name="player_and_audio">المشغل والصوت</string>
     <string name="audio_quality">جودة الصوت</string>
     <string name="audio_quality_auto">تلقائي</string>
-    <string name="audio_quality_high">عالية</string>
+    <string name="audio_quality_high">مرتفعة</string>
     <string name="audio_quality_low">منخفضة</string>
-    <string name="persistent_queue">قائمة انتظار ثابتة</string>
+    <string name="queue">قائمة الإنتظار</string>
+    <string name="persistent_queue">قائمة إنتظار مستمرة</string>
+    <string name="persistent_queue_desc">استعادة قائمة الانتظار الأخيرة عند بدء تشغيل التطبيق</string>
+    <string name="auto_load_more">تحميل المزيد من الأغاني تلقائيًا</string>
+    <string name="auto_load_more_desc">إضافة المزيد من الأغاني تلقائيًا عند الوصول إلى نهاية قائمة الانتظار، إن أمكن</string>
     <string name="skip_silence">تخطي الصمت</string>
-    <string name="audio_normalization">تطبيع الصوت</string>
-    <string name="equalizer">الموازن</string>
+    <string name="audio_normalization">طبيعة الصوت</string>
+    <string name="auto_skip_next_on_error">الانتقال التلقائي إلى الأغنية التالية عند حدوث خطأ</string>
+    <string name="auto_skip_next_on_error_desc">تأكد من تجربة التشغيل المتواصلة</string>
+    <string name="stop_music_on_task_clear">إيقاف الموسيقى عند تنظيف الذاكرة العشوائية</string>
+    <string name="equalizer">مُعادل الصوت</string>
     
     <string name="storage">التخزين</string>
     <string name="cache">التخزين المؤقت</string>
