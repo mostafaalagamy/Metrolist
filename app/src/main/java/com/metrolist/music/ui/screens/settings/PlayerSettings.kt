@@ -22,12 +22,14 @@ import com.metrolist.music.R
 import com.metrolist.music.constants.AudioNormalizationKey
 import com.metrolist.music.constants.AudioQuality
 import com.metrolist.music.constants.AudioQualityKey
+import com.metrolist.music.constants.AutoLoadMoreKey
 import com.metrolist.music.constants.AutoSkipNextOnErrorKey
 import com.metrolist.music.constants.PersistentQueueKey
 import com.metrolist.music.constants.SkipSilenceKey
 import com.metrolist.music.constants.StopMusicOnTaskClearKey
 import com.metrolist.music.ui.component.EnumListPreference
 import com.metrolist.music.ui.component.IconButton
+import com.metrolist.music.ui.component.PreferenceGroupTitle
 import com.metrolist.music.ui.component.SwitchPreference
 import com.metrolist.music.ui.utils.backToMain
 import com.metrolist.music.utils.rememberEnumPreference
@@ -43,15 +45,20 @@ fun PlayerSettings(
     val (persistentQueue, onPersistentQueueChange) = rememberPreference(PersistentQueueKey, defaultValue = true)
     val (skipSilence, onSkipSilenceChange) = rememberPreference(SkipSilenceKey, defaultValue = false)
     val (audioNormalization, onAudioNormalizationChange) = rememberPreference(AudioNormalizationKey, defaultValue = true)
+    val (autoLoadMore, onAutoLoadMoreChange) = rememberPreference(AutoLoadMoreKey, defaultValue = true)
     val (autoSkipNextOnError, onAutoSkipNextOnErrorChange) = rememberPreference(AutoSkipNextOnErrorKey, defaultValue = false)
     val (stopMusicOnTaskClear, onStopMusicOnTaskClearChange) = rememberPreference(StopMusicOnTaskClearKey, defaultValue = false)
-    
+
     Column(
         Modifier
             .windowInsetsPadding(LocalPlayerAwareWindowInsets.current.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom))
             .verticalScroll(rememberScrollState())
     ) {
         Spacer(Modifier.windowInsetsPadding(LocalPlayerAwareWindowInsets.current.only(WindowInsetsSides.Top)))
+
+        PreferenceGroupTitle(
+            title = stringResource(R.string.player)
+        )
 
         EnumListPreference(
             title = { Text(stringResource(R.string.audio_quality)) },
@@ -64,39 +71,60 @@ fun PlayerSettings(
                     AudioQuality.HIGH -> stringResource(R.string.audio_quality_high)
                     AudioQuality.LOW -> stringResource(R.string.audio_quality_low)
                 }
-            },
+            }
         )
+
+        SwitchPreference(
+            title = { Text(stringResource(R.string.skip_silence)) },
+            icon = { Icon(painterResource(R.drawable.fast_forward), null) },
+            checked = skipSilence,
+            onCheckedChange = onSkipSilenceChange
+        )
+
+        SwitchPreference(
+            title = { Text(stringResource(R.string.audio_normalization)) },
+            icon = { Icon(painterResource(R.drawable.volume_up), null) },
+            checked = audioNormalization,
+            onCheckedChange = onAudioNormalizationChange
+        )
+
+        PreferenceGroupTitle(
+            title = stringResource(R.string.queue)
+        )
+
         SwitchPreference(
             title = { Text(stringResource(R.string.persistent_queue)) },
             description = stringResource(R.string.persistent_queue_desc),
             icon = { Icon(painterResource(R.drawable.queue_music), null) },
             checked = persistentQueue,
-            onCheckedChange = onPersistentQueueChange,
+            onCheckedChange = onPersistentQueueChange
         )
+
         SwitchPreference(
-            title = { Text(stringResource(R.string.skip_silence)) },
-            icon = { Icon(painterResource(R.drawable.fast_forward), null) },
-            checked = skipSilence,
-            onCheckedChange = onSkipSilenceChange,
+            title = { Text(stringResource(R.string.auto_load_more)) },
+            description = stringResource(R.string.auto_load_more_desc),
+            icon = { Icon(painterResource(R.drawable.playlist_add), null) },
+            checked = autoLoadMore,
+            onCheckedChange = onAutoLoadMoreChange
         )
-        SwitchPreference(
-            title = { Text(stringResource(R.string.audio_normalization)) },
-            icon = { Icon(painterResource(R.drawable.volume_up), null) },
-            checked = audioNormalization,
-            onCheckedChange = onAudioNormalizationChange,
-        )
+
         SwitchPreference(
             title = { Text(stringResource(R.string.auto_skip_next_on_error)) },
             description = stringResource(R.string.auto_skip_next_on_error_desc),
             icon = { Icon(painterResource(R.drawable.skip_next), null) },
             checked = autoSkipNextOnError,
-            onCheckedChange = onAutoSkipNextOnErrorChange,
+            onCheckedChange = onAutoSkipNextOnErrorChange
         )
+
+        PreferenceGroupTitle(
+            title = stringResource(R.string.misc)
+        )
+
         SwitchPreference(
             title = { Text(stringResource(R.string.stop_music_on_task_clear)) },
             icon = { Icon(painterResource(R.drawable.clear_all), null) },
             checked = stopMusicOnTaskClear,
-            onCheckedChange = onStopMusicOnTaskClearChange,
+            onCheckedChange = onStopMusicOnTaskClearChange
         )
     }
 
@@ -105,13 +133,14 @@ fun PlayerSettings(
         navigationIcon = {
             IconButton(
                 onClick = navController::navigateUp,
-                onLongClick = navController::backToMain,
+                onLongClick = navController::backToMain
             ) {
                 Icon(
                     painterResource(R.drawable.arrow_back),
-                    contentDescription = null,
+                    contentDescription = null
                 )
             }
         },
+        scrollBehavior = scrollBehavior
     )
 }
