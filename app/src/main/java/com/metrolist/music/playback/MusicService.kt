@@ -5,6 +5,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.database.SQLException
+import android.media.audiofx.LoudnessEnhancer
 import android.media.audiofx.AudioEffect
 import android.net.ConnectivityManager
 import android.os.Binder
@@ -134,8 +135,6 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.time.LocalDateTime
 import javax.inject.Inject
-import kotlin.math.min
-import kotlin.math.pow
 import kotlin.time.Duration.Companion.seconds
 
 @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
@@ -174,9 +173,11 @@ class MusicService :
             database.format(mediaMetadata?.id)
         }
 
-    private val normalizeFactor = MutableStateFlow(1f)
+  
     val playerVolume = MutableStateFlow(dataStore.get(PlayerVolumeKey, 1f).coerceIn(0f, 1f))
 
+    private var loudnessEnhancer: LoudnessEnhancer? = null
+        
     lateinit var sleepTimer: SleepTimer
 
     @Inject
@@ -252,9 +253,7 @@ class MusicService :
 
         connectivityManager = getSystemService()!!
 
-        combine(playerVolume, normalizeFactor) { playerVolume, normalizeFactor ->
-            playerVolume * normalizeFactor
-        }.collectLatest(scope) {
+        playerVolume.collectLatest(scope) {
             player.volume = it
         }
 
@@ -307,12 +306,25 @@ class MusicService :
         ) { format, normalizeAudio ->
             format to normalizeAudio
         }.collectLatest(scope) { (format, normalizeAudio) ->
-            normalizeFactor.value =
-                if (normalizeAudio && format?.loudnessDb != null) {
-                    min(10f.pow(-format.loudnessDb.toFloat() / 20), 1f)
+            runCatching {
+                if (!normalizeAudio) {
+                    loudnessEnhancer?.enabled = false
+                    loudnessEnhancer?.release()
+                    loudnessEnhancer = null
                 } else {
-                    1f
+                    if (loudnessEnhancer == null) {
+                        loudnessEnhancer = LoudnessEnhancer(player.audioSessionId)
+                    }
+                    fun Float?.toMb() = ((this ?: 0f) * 100).toInt()
+                    var loudnessMb = format?.loudnessDb?.toFloat().toMb()
+                    if (loudnessMb !in -2000..2000) {
+                        // Extreme loudness value detected, turning off normalization for this song
+                        loudnessMb = 0
+                    }
+                    loudnessEnhancer?.setTargetGain(5f.toMb() - loudnessMb)
+                    loudnessEnhancer?.enabled = true
                 }
+            }
         }
 
         dataStore.data
@@ -937,6 +949,7 @@ class MusicService :
         player.removeListener(this)
         player.removeListener(sleepTimer)
         player.release()
+        loudnessEnhancer?.release()
         super.onDestroy()
     }
 
