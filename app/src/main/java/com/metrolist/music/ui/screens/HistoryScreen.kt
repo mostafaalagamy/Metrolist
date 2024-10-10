@@ -84,10 +84,9 @@ fun HistoryScreen(
     navController: NavController,
     viewModel: HistoryViewModel = hiltViewModel(),
 ) {
-    val context = LocalContext.current
     val menuState = LocalMenuState.current
+    val haptic = LocalHapticFeedback.current
     val playerConnection = LocalPlayerConnection.current ?: return
-
     val isPlaying by playerConnection.isPlaying.collectAsState()
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
 
@@ -108,110 +107,98 @@ fun HistoryScreen(
         }
     }
 
-    val eventsMap by viewModel.events.collectAsState()
-    val filteredEventsMap = remember(eventsMap, query) {
-        if (query.text.isEmpty()) eventsMap
-        else eventsMap
-            .mapValues { (_, songs) ->
-                songs.filter { song ->
-                    song.song.title.contains(query.text, ignoreCase = true) ||
-                            song.song.artists.fastAny { it.name.contains(query.text, ignoreCase = true) }
-                }
+    val events by viewModel.events.collectAsState()
+    val filteredEvents = remember(events, query) {
+        if (query.text.isEmpty()) events
+        else events.mapValues { (_, songs) ->
+            songs.filter { event ->
+                event.song.title.contains(query.text, ignoreCase = true) ||
+                event.song.artists.any { it.name.contains(query.text, ignoreCase = true) }
             }
-            .filterValues { it.isNotEmpty() }
+        }.filterValues { it.isNotEmpty() }
     }
 
-    val lazyListState = rememberLazyListState()
+    LazyColumn(
+        contentPadding = LocalPlayerAwareWindowInsets.current
+            .only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom)
+            .union(WindowInsets.ime)
+            .asPaddingValues(),
+        modifier = Modifier.windowInsetsPadding(LocalPlayerAwareWindowInsets.current.only(WindowInsetsSides.Top)),
+    ) {
+        filteredEvents.forEach { (dateAgo, events) ->
+            stickyHeader {
+                NavigationTitle(
+                    title = when (dateAgo) {
+                        DateAgo.Today -> stringResource(R.string.today)
+                        DateAgo.Yesterday -> stringResource(R.string.yesterday)
+                        DateAgo.ThisWeek -> stringResource(R.string.this_week)
+                        DateAgo.LastWeek -> stringResource(R.string.last_week)
+                        is DateAgo.Other -> dateAgo.date.format(DateTimeFormatter.ofPattern("yyyy/MM"))
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(MaterialTheme.colorScheme.background),
+                )
+            }
 
-    Box(Modifier.fillMaxSize()) {
-        LazyColumn(
-            state = lazyListState,
-            contentPadding = LocalPlayerAwareWindowInsets.current
-                .only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom)
-                .union(WindowInsets.ime)
-                .asPaddingValues(),
-            modifier = Modifier.windowInsetsPadding(
-                LocalPlayerAwareWindowInsets.current
-                    .only(WindowInsetsSides.Top)
-            )
-        ) {
-            filteredEventsMap.forEach { (dateAgo, events) ->
-                stickyHeader {
-                    Text(
-                        text = when (dateAgo) {
-                            DateAgo.Today -> stringResource(R.string.today)
-                            DateAgo.Yesterday -> stringResource(R.string.yesterday)
-                            DateAgo.ThisWeek -> stringResource(R.string.this_week)
-                            DateAgo.LastWeek -> stringResource(R.string.last_week)
-                            is DateAgo.Other -> dateAgo.date.format(DateTimeFormatter.ofPattern("yyyy/MM"))
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(MaterialTheme.colorScheme.background)                            
-                    )
-                }
-
-                items(
-                    items = events,
-                    key = { it.event.id }
-                ) { event ->
-                    SongListItem(
-                        song = event.song,
-                        isActive = event.song.id == mediaMetadata?.id,
-                        isPlaying = isPlaying,
-                        showInLibraryIcon = true,
-                        trailingContent = {
-                            IconButton(
-                                onClick = {
-                                    menuState.show {
-                                        SongMenu(
-                                            originalSong = event.song,
-                                            event = event.event,
-                                            navController = navController,
-                                            onDismiss = menuState::dismiss
-                                        )
-                                    }
+            items(
+                items = events,
+                key = { it.event.id },
+            ) { event ->
+                SongListItem(
+                    song = event.song,
+                    isActive = event.song.id == mediaMetadata?.id,
+                    isPlaying = isPlaying,
+                    showInLibraryIcon = true,
+                    trailingContent = {
+                        IconButton(
+                            onClick = {
+                                menuState.show {
+                                    SongMenu(
+                                        originalSong = event.song,
+                                        event = event.event,
+                                        navController = navController,
+                                        onDismiss = menuState::dismiss,
+                                    )
                                 }
-                            ) {
-                                Icon(
-                                    painter = painterResource(R.drawable.more_vert),
-                                    contentDescription = null
-                                )
-                            }
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable {
+                            },
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.more_vert),
+                                contentDescription = null,
+                            )
+                        }
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .combinedClickable(
+                            onClick = {
                                 if (event.song.id == mediaMetadata?.id) {
                                     playerConnection.player.togglePlayPause()
                                 } else {
                                     playerConnection.playQueue(
                                         YouTubeQueue(
-                                                    endpoint = WatchEndpoint(videoId = event.song.id),
-                                                    preloadItem = event.song.toMediaMetadata(),
+                                            endpoint = WatchEndpoint(videoId = event.song.id),
+                                            preloadItem = event.song.toMediaMetadata(),
                                         ),
                                     )
                                 }
-                            }
-                            .animateItem()
-                    )
-                }
-            }
-        }
-
-        HideOnScrollFAB(
-            visible = filteredEventsMap.isNotEmpty(),
-            lazyListState = lazyListState,
-            icon = R.drawable.shuffle,
-            onClick = {
-                playerConnection.playQueue(
-                    ListQueue(
-                        title = context.getString(R.string.history),
-                        items = filteredEventsMap.values.flatten().map { it.song.toMediaItem() }.shuffled(),
-                    )
+                            },
+                            onLongClick = {
+                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                menuState.show {
+                                    SongMenu(
+                                        originalSong = event.song,
+                                        event = event.event,
+                                        navController = navController,
+                                        onDismiss = menuState::dismiss,
+                                    )
+                                }
+                            },
+                        ).animateItemPlacement(),
                 )
             }
-        )
+        }
     }
 
     TopAppBar(
