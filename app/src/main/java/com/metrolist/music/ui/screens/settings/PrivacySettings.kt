@@ -41,7 +41,7 @@ import com.metrolist.music.ui.component.DefaultDialog
 import com.metrolist.music.ui.component.IconButton
 import com.metrolist.music.ui.component.ListPreference
 import com.metrolist.music.ui.component.PreferenceEntry
-import com.zionhuang.music.ui.component.PreferenceGroupTitle
+import com.metrolist.music.ui.component.PreferenceGroupTitle
 import com.metrolist.music.ui.component.SwitchPreference
 import com.metrolist.music.ui.utils.backToMain
 import com.metrolist.music.utils.rememberEnumPreference
