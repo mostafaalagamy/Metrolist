@@ -174,7 +174,7 @@ fun PrivacySettings(
         )
 
         PreferenceGroupTitle(
-            title = stringResource(R.string.search_lyrics)
+            title = stringResource(R.string.lyrics)
         )
         
         SwitchPreference(
