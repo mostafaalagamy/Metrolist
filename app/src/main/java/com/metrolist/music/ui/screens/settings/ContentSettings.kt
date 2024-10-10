@@ -196,7 +196,7 @@ fun ContentSettings(
 
         ListPreference(
             title = { Text(stringResource(R.string.default_lib_chips)) },
-            icon = { Icon(painterResource(R.drawable.tap), null) },
+            icon = { Icon(painterResource(R.drawable.tab), null) },
             selectedValue = defaultChip,
             values =
                 listOf(
