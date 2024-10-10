@@ -137,6 +137,7 @@
 
     <string name="edit_lyrics">Edit lyrics</string>
     <string name="search_lyrics">Search lyrics</string>
+    <string name="lyrics">Lyrics</string>
 
     <string name="edit_song">Edit song</string>
     <string name="song_title">Song title</string>
