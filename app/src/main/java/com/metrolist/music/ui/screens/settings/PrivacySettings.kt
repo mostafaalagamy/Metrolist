@@ -140,6 +140,10 @@ fun PrivacySettings(
     ) {
         Spacer(Modifier.windowInsetsPadding(LocalPlayerAwareWindowInsets.current.only(WindowInsetsSides.Top)))
 
+        PreferenceGroupTitle(
+            title = stringResource(R.string.listen_history)
+        )
+        
         SwitchPreference(
             title = { Text(stringResource(R.string.pause_listen_history)) },
             icon = { Icon(painterResource(R.drawable.history), null) },
@@ -151,6 +155,11 @@ fun PrivacySettings(
             icon = { Icon(painterResource(R.drawable.delete_history), null) },
             onClick = { showClearListenHistoryDialog = true },
         )
+
+        PreferenceGroupTitle(
+            title = stringResource(R.string.search_history)
+        )
+        
         SwitchPreference(
             title = { Text(stringResource(R.string.pause_search_history)) },
             icon = { Icon(painterResource(R.drawable.search_off), null) },
@@ -162,6 +171,11 @@ fun PrivacySettings(
             icon = { Icon(painterResource(R.drawable.clear_all), null) },
             onClick = { showClearSearchHistoryDialog = true },
         )
+
+        PreferenceGroupTitle(
+            title = stringResource(R.string.search_lyrics)
+        )
+        
         SwitchPreference(
             title = { Text(stringResource(R.string.enable_kugou)) },
             icon = { Icon(painterResource(R.drawable.lyrics), null) },
@@ -177,6 +191,7 @@ fun PrivacySettings(
 
         ListPreference(
             title = { Text(stringResource(R.string.set_first_lyrics_provider)) },
+            icon = { Icon(painterResource(R.drawable.lyrics), null) },
             selectedValue = preferredProvider,
             values = listOf(PreferredLyricsProvider.KUGOU, PreferredLyricsProvider.LRCLIB),
             valueText = { it.name.toLowerCase(Locale.current).capitalize(Locale.current) },
