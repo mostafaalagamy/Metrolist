@@ -55,6 +55,7 @@ import androidx.compose.ui.util.fastAny
 import androidx.compose.ui.util.fastForEachReversed
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.metrolist.innertube.models.WatchEndpoint
 import com.metrolist.music.LocalDatabase
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.LocalPlayerConnection
@@ -146,9 +147,7 @@ fun HistoryScreen(
                         },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(MaterialTheme.colorScheme.surface)
-                            .padding(16.dp),
-                        style = MaterialTheme.typography.titleMedium
+                            .background(MaterialTheme.colorScheme.background)                            
                     )
                 }
 
