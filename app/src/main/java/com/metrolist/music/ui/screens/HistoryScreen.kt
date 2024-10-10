@@ -136,8 +136,8 @@ fun HistoryScreen(
         ) {
             filteredEventsMap.forEach { (dateAgo, events) ->
                 stickyHeader {
-                    NavigationTitle(
-                        title = when (dateAgo) {
+                    Text(
+                        text = when (dateAgo) {
                             DateAgo.Today -> stringResource(R.string.today)
                             DateAgo.Yesterday -> stringResource(R.string.yesterday)
                             DateAgo.ThisWeek -> stringResource(R.string.this_week)
@@ -147,6 +147,8 @@ fun HistoryScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .background(MaterialTheme.colorScheme.surface)
+                            .padding(16.dp),
+                        style = MaterialTheme.typography.titleMedium
                     )
                 }
 
@@ -185,7 +187,10 @@ fun HistoryScreen(
                                     playerConnection.player.togglePlayPause()
                                 } else {
                                     playerConnection.playQueue(
-                                        YouTubeQueue.radio(event.song.toMediaMetadata())
+                                        YouTubeQueue(
+                                                    endpoint = WatchEndpoint(videoId = event.song.id),
+                                                    preloadItem = event.song.toMediaMetadata(),
+                                        ),
                                     )
                                 }
                             }
