@@ -362,12 +362,15 @@
     <string name="size_used">تم استخدام %s</string>
     
     <string name="privacy">الخصوصية</string>
+    <string name="listen_history">سجل الاستماع</string>    
+    <string name="search_history">سجل البحث</string>
     <string name="pause_listen_history">إيقاف سجل الاستماع مؤقتاً</string>
     <string name="clear_listen_history">مسح سجل الاستماع</string>
     <string name="clear_listen_history_confirm">هل أنت متأكد من أنك تريد مسح جميع سجل الاستماع؟</string>
     <string name="pause_search_history">إيقاف سجل البحث مؤقتاً</string>
     <string name="clear_search_history">مسح سجل البحث</string>
     <string name="clear_search_history_confirm">هل أنت متأكد من أنك تريد مسح جميع سجل البحث؟</string>
+    <string name="lyrics">كلمات الأغاني</string>
     <string name="enable_kugou">تفعيل مزود كلمات الأغاني KuGou</string>
     <string name="enable_lrclib">تفعيل مزود كلمات الأغاني LrcLib</string>
     <string name="set_first_lyrics_provider">تعيين مزود كلمات الأغاني الإفتراضي</string>

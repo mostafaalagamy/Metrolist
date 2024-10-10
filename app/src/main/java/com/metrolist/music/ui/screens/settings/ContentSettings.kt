@@ -178,9 +178,14 @@ fun ContentSettings(
                 )
             }
         }
-
+        
+        PreferenceGroupTitle(
+            title = stringResource(R.string.misc)
+        )
+        
         EditTextPreference(
             title = { Text(stringResource(R.string.top_length)) },
+            icon = { Icon(painterResource(R.drawable.trending_up), null) },
             value = lengthTop,
             isInputValid = {
                 val number = it.toIntOrNull()
@@ -191,6 +196,7 @@ fun ContentSettings(
 
         ListPreference(
             title = { Text(stringResource(R.string.default_lib_chips)) },
+            icon = { Icon(painterResource(R.drawable.tab), null) },
             selectedValue = defaultChip,
             values =
                 listOf(
@@ -214,6 +220,7 @@ fun ContentSettings(
 
         ListPreference(
             title = { Text(stringResource(R.string.set_quick_picks)) },
+            icon = { Icon(painterResource(R.drawable.home), null) },
             selectedValue = quickPicks,
             values = listOf(QuickPicks.QUICK_PICKS, QuickPicks.LAST_LISTEN),
             valueText = {
@@ -227,6 +234,7 @@ fun ContentSettings(
 
         SliderPreference(
             title = { Text(stringResource(R.string.history_duration)) },
+            icon = { Icon(painterResource(R.drawable.history), null) },
             value = historyDuration,
             onValueChange = onHistoryDurationChange,
         )
