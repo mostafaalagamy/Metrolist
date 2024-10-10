@@ -72,7 +72,6 @@ import com.metrolist.music.ui.component.LocalMenuState
 import com.metrolist.music.ui.component.NavigationTitle
 import com.metrolist.music.ui.component.SongListItem
 import com.metrolist.music.ui.menu.SongMenu
-import com.metrolist.music.ui.menu.SongSelectionMenu
 import com.metrolist.music.ui.utils.backToMain
 import com.metrolist.music.viewmodels.DateAgo
 import com.metrolist.music.viewmodels.HistoryViewModel
@@ -112,7 +111,7 @@ fun HistoryScreen(
         if (query.text.isEmpty()) events
         else events.mapValues { (_, songs) ->
             songs.filter { event ->
-                event.song.title.contains(query.text, ignoreCase = true) ||
+                event.song.text.contains(query.text, ignoreCase = true) ||
                 event.song.artists.any { it.name.contains(query.text, ignoreCase = true) }
             }
         }.filterValues { it.isNotEmpty() }
