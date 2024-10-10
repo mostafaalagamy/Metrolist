@@ -111,7 +111,7 @@ fun HistoryScreen(
         if (query.text.isEmpty()) events
         else events.mapValues { (_, songs) ->
             songs.filter { event ->
-                event.song.text.contains(query.text, ignoreCase = true) ||
+                event.song.contains(query.text, ignoreCase = true) ||
                 event.song.artists.any { it.name.contains(query.text, ignoreCase = true) }
             }
         }.filterValues { it.isNotEmpty() }
