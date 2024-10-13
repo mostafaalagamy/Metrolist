@@ -327,6 +327,8 @@
     <string name="enable_kugou">Enable KuGou lyrics provider</string>
     <string name="enable_lrclib">Enable LrcLib lyrics provider</string>
     <string name="set_first_lyrics_provider">Set the first lyrics provider</string>
+    <string name="disable_screenshot">Disable screenshot</string>
+    <string name="disable_screenshot_desc">When this option is on, screenshots and the app\'s view in Recents are disabled.</string>
     
     <string name="hide_explicit">Hide explicit content</string>
 
