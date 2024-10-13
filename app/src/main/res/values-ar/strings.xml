@@ -342,7 +342,7 @@
     <string name="auto_load_more">تحميل المزيد من الأغاني تلقائيًا</string>
     <string name="auto_load_more_desc">إضافة المزيد من الأغاني تلقائيًا عند الوصول إلى نهاية قائمة الانتظار، إن أمكن</string>
     <string name="skip_silence">تخطي الصمت</string>
-    <string name="audio_normalization">طبيعة الصوت</string>
+    <string name="audio_normalization">التطبيع الصوتي</string>
     <string name="auto_skip_next_on_error">الانتقال التلقائي إلى الأغنية التالية عند حدوث خطأ</string>
     <string name="auto_skip_next_on_error_desc">تأكد من تجربة التشغيل المتواصلة</string>
     <string name="stop_music_on_task_clear">إيقاف الموسيقى عند تنظيف الذاكرة العشوائية</string>
@@ -374,6 +374,9 @@
     <string name="enable_kugou">تفعيل مزود كلمات الأغاني KuGou</string>
     <string name="enable_lrclib">تفعيل مزود كلمات الأغاني LrcLib</string>
     <string name="set_first_lyrics_provider">تعيين مزود كلمات الأغاني الإفتراضي</string>
+    string>
+    <string name="disable_screenshot">تعطيل لقطة الشاشة</string>
+    <string name="disable_screenshot_desc">عندما يكون هذا الخيار قيد التشغيل، يتم تعطيل لقطات الشاشة وعرض التطبيقات في "التطبيقات قيد التشغيل"</string>
 
     <string name="hide_explicit">إخفاء المحتوى الصريح</string>
     

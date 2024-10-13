@@ -31,6 +31,7 @@ import androidx.navigation.NavController
 import com.metrolist.music.LocalDatabase
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.R
+import com.metrolist.music.constants.DisableScreenshotKey
 import com.metrolist.music.constants.EnableKugouKey
 import com.metrolist.music.constants.EnableLrcLibKey
 import com.metrolist.music.constants.PauseListenHistoryKey
@@ -63,6 +64,7 @@ fun PrivacySettings(
             key = PreferredLyricsProviderKey,
             defaultValue = PreferredLyricsProvider.LRCLIB,
         )
+    val (disableScreenshot, onDisableScreenshotChange) = rememberPreference(key = DisableScreenshotKey, defaultValue = false)
 
     var showClearListenHistoryDialog by remember {
         mutableStateOf(false)
@@ -197,6 +199,17 @@ fun PrivacySettings(
             values = listOf(PreferredLyricsProvider.KUGOU, PreferredLyricsProvider.LRCLIB),
             valueText = { it.name.toLowerCase(Locale.current).capitalize(Locale.current) },
             onValueSelected = onPreferredProviderChange,
+        )
+
+        PreferenceGroupTitle(
+            title = stringResource(R.string.misc),
+        )
+        SwitchPreference(
+            title = { Text(stringResource(R.string.disable_screenshot)) },
+            description = stringResource(R.string.disable_screenshot_desc),
+            icon = { Icon(painterResource(R.drawable.screenshot), null) },
+            checked = disableScreenshot,
+            onCheckedChange = onDisableScreenshotChange,
         )
     }
 
