@@ -1,14 +1,20 @@
 package com.metrolist.music.ui.screens.playlist
 
+import android.app.Activity
+import android.content.Context
+import android.view.inputmethod.InputMethodManager
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -17,6 +23,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -24,13 +33,14 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
-import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarScrollBehavior
+import androidx.compose.runtime.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -42,13 +52,22 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -59,6 +78,7 @@ import androidx.media3.exoplayer.offline.Download
 import androidx.media3.exoplayer.offline.DownloadRequest
 import androidx.media3.exoplayer.offline.DownloadService
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import com.metrolist.music.LocalDownloadUtil
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.LocalPlayerConnection
@@ -113,6 +133,18 @@ fun TopPlaylistScreen(
         }
 
     val wrappedSongs = songs?.map { item -> ItemWrapper(item) }?.toMutableList()
+    
+    var searchQuery by remember {
+        mutableStateOf(TextFieldValue(""))
+    }
+    var isSearching by remember { mutableStateOf(false) }
+    val focusManager = LocalFocusManager.current
+    val focusRequester = remember { FocusRequester() }
+    LaunchedEffect(isSearching) {
+        if (isSearching) {
+            focusRequester.requestFocus()
+        }
+    }
     var selection by remember {
         mutableStateOf(false)
     }
@@ -137,8 +169,8 @@ fun TopPlaylistScreen(
                     Download.STATE_COMPLETED
                 } else if (songs?.all {
                         downloads[it.song.id]?.state == Download.STATE_QUEUED ||
-                            downloads[it.song.id]?.state == Download.STATE_DOWNLOADING ||
-                            downloads[it.song.id]?.state == Download.STATE_COMPLETED
+                                downloads[it.song.id]?.state == Download.STATE_DOWNLOADING ||
+                                downloads[it.song.id]?.state == Download.STATE_COMPLETED
                     } == true
                 ) {
                     Download.STATE_DOWNLOADING
@@ -213,26 +245,17 @@ fun TopPlaylistScreen(
                         ) {
                             Row(
                                 horizontalArrangement = Arrangement.spacedBy(12.dp),
-                                verticalAlignment = Alignment.CenterVertically,                             
-                        ) {
-                                Box(
-                                   modifier =
-                                       Modifier
-                                         .size(AlbumThumbnailSize)
-                                         .clip(RoundedCornerShape(ThumbnailCornerRadius))
-                                         .background(MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp))
-                        ) { 
-                                Icon(
-                                    painter = painterResource(R.drawable.trending_up),
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                AsyncImage(
+                                    model = songs!![0].song.thumbnailUrl,
                                     contentDescription = null,
-                                    tint = LocalContentColor.current.copy(alpha = 0.8f),
+                                    contentScale = ContentScale.Crop,
                                     modifier =
-                                        Modifier
-                                            .size(AlbumThumbnailSize / 2)
-                                            .align(Alignment.Center)
-                                            .clip(RoundedCornerShape(ThumbnailCornerRadius)),
+                                    Modifier
+                                        .size(AlbumThumbnailSize)
+                                        .clip(RoundedCornerShape(ThumbnailCornerRadius)),
                                 )
-                              }
 
                                 Column(
                                     verticalArrangement = Arrangement.Center,
@@ -247,11 +270,11 @@ fun TopPlaylistScreen(
 
                                     Text(
                                         text =
-                                            pluralStringResource(
-                                                R.plurals.n_song,
-                                                songs!!.size,
-                                                songs!!.size,
-                                            ),
+                                        pluralStringResource(
+                                            R.plurals.n_song,
+                                            songs!!.size,
+                                            songs!!.size,
+                                        ),
                                         style = MaterialTheme.typography.titleMedium,
                                         fontWeight = FontWeight.Normal,
                                     )
@@ -395,28 +418,28 @@ fun TopPlaylistScreen(
                         modifier = Modifier.padding(start = 16.dp),
                     ) {
                         if (selection) {
-                            val count = wrappedSongs?.count { it.isSelected } ?: 0
-                            Text(text = pluralStringResource(R.plurals.n_element, count, count), modifier = Modifier.weight(1f))
+                            val count = wrappedSongs?.count { it.isSelected }
+                            Text(text = "$count elements selected", modifier = Modifier.weight(1f))
                             IconButton(
                                 onClick = {
                                     if (count == wrappedSongs?.size) {
-                                        wrappedSongs.forEach { it.isSelected = false }
-                                    } else {
+                                        wrappedSongs?.forEach { it.isSelected = false }
+                                    }else {
                                         wrappedSongs?.forEach { it.isSelected = true }
                                     }
                                 },
-                            ) {
+                            ){
                                 Icon(
                                     painter =
-                                        painterResource(
-                                            if (count ==
-                                                wrappedSongs?.size
-                                            ) {
-                                                R.drawable.deselect
-                                            } else {
-                                                R.drawable.select_all
-                                            },
-                                        ),
+                                    painterResource(
+                                        if (count ==
+                                            wrappedSongs?.size
+                                        ) {
+                                            R.drawable.deselect
+                                        } else {
+                                            R.drawable.select_all
+                                        },
+                                    ),
                                     contentDescription = null,
                                 )
                             }
@@ -479,10 +502,19 @@ fun TopPlaylistScreen(
                         }
                     }
                 }
+                val searchQueryStr = (searchQuery.text.trim())
+                val filteredSongs = if (searchQueryStr.isEmpty())
+                { wrappedSongs }
+                else{
+                    wrappedSongs?.filter {
+                        (it.item.song.title).contains(searchQueryStr, ignoreCase = true) or
+                                (it.item.artists.joinToString("").trim()).contains(searchQueryStr, ignoreCase = true)
+                    }
+                }
 
-                if (wrappedSongs != null) {
+                if (filteredSongs != null) {
                     itemsIndexed(
-                        items = wrappedSongs,
+                        items = filteredSongs,
                         key = { _, song -> song.item.id },
                     ) { index, songWrapper ->
                         SongListItem(
@@ -511,37 +543,37 @@ fun TopPlaylistScreen(
                             },
                             isSelected = songWrapper.isSelected && selection,
                             modifier =
-                                Modifier
-                                    .fillMaxWidth()
-                                    .combinedClickable(
-                                        onClick = {
-                                            if (!selection) {
-                                                if (songWrapper.item.song.id == mediaMetadata?.id) {
-                                                    playerConnection.player.togglePlayPause()
-                                                } else {
-                                                    playerConnection.playQueue(
-                                                        ListQueue(
-                                                            title = name,
-                                                            items = songs!!.map { it.toMediaItem() },
-                                                            startIndex = index,
-                                                        ),
-                                                    )
-                                                }
+                            Modifier
+                                .fillMaxWidth()
+                                .combinedClickable(
+                                    onClick = {
+                                        if (!selection) {
+                                            if (songWrapper.item.song.id == mediaMetadata?.id) {
+                                                playerConnection.player.togglePlayPause()
                                             } else {
-                                                songWrapper.isSelected = !songWrapper.isSelected
-                                            }
-                                        },
-                                        onLongClick = {
-                                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                            menuState.show {
-                                                SongMenu(
-                                                    originalSong = songWrapper.item,
-                                                    navController = navController,
-                                                    onDismiss = menuState::dismiss,
+                                                playerConnection.playQueue(
+                                                    ListQueue(
+                                                        title = name,
+                                                        items = filteredSongs.map { it.item.toMediaItem() },
+                                                        startIndex = index,
+                                                    ),
                                                 )
                                             }
-                                        },
-                                    ),
+                                        } else {
+                                            songWrapper.isSelected = !songWrapper.isSelected
+                                        }
+                                    },
+                                    onLongClick = {
+                                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                        menuState.show {
+                                            SongMenu(
+                                                originalSong = songWrapper.item,
+                                                navController = navController,
+                                                onDismiss = menuState::dismiss,
+                                            )
+                                        }
+                                    },
+                                ),
                         )
                     }
                 }
@@ -549,18 +581,67 @@ fun TopPlaylistScreen(
         }
 
         TopAppBar(
-            title = { "My Top" },
-            navigationIcon = {
+        title = {
+            if (isSearching) {
+                TextField(
+                    value = searchQuery,
+                    onValueChange =  { searchQuery = it },
+                    placeholder = {
+                        Text(
+                            text = stringResource(R.string.search),
+                            style = MaterialTheme.typography.titleLarge
+                        )
+                    },
+                    singleLine = true,
+                    textStyle = MaterialTheme.typography.titleLarge,
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = Color.Transparent,
+                        unfocusedContainerColor = Color.Transparent,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        disabledIndicatorColor = Color.Transparent,
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .focusRequester(focusRequester)
+                )
+            } 
+        },
+        navigationIcon = {
+            IconButton(
+                onClick = {
+                    if (isSearching) {
+                        isSearching = false
+                        searchQuery = TextFieldValue("")
+                    } else {
+                        navController.navigateUp()
+                    }
+                },
+                onLongClick = {
+                    if (!isSearching) {
+                        navController.backToMain()
+                    }
+                }
+            ) {
+                Icon(
+                    painterResource(R.drawable.arrow_back),
+                    contentDescription = null
+                )
+            }
+        },
+        actions = {
+            if (!isSearching) {
                 IconButton(
-                    onClick = navController::navigateUp,
-                    onLongClick = navController::backToMain,
+                    onClick = { isSearching = true }
                 ) {
                     Icon(
-                        painterResource(R.drawable.arrow_back),
-                        contentDescription = null,
-                    )
-                }
-            },
-        )
+                        painterResource(R.drawable.search),
+                        contentDescription = null
+                      )
+                  }
+              }
+          }
+      )
     }
 }
