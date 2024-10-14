@@ -1,7 +1,6 @@
 package com.metrolist.music.ui.player
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
@@ -13,7 +12,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.graphics.Color
@@ -27,7 +28,6 @@ import com.metrolist.music.ui.component.Lyrics
 import com.metrolist.music.utils.rememberPreference
 import kotlin.math.roundToInt
 import kotlin.math.absoluteValue
-import androidx.compose.foundation.layout.offset
 
 @Composable
 fun Thumbnail(
@@ -56,7 +56,8 @@ fun Thumbnail(
     var isPreviewingNextSong by remember { mutableStateOf(false) }
     var previewImage by remember { mutableStateOf<String?>(null) }
 
-    // تحديث الصورة التي يتم عرضها بناءً على سحب المستخدم
+    val layoutDirection = LocalLayoutDirection.current
+
     fun updateImagePreview(offsetX: Float) {
         val threshold = 100f
         when {
@@ -105,12 +106,12 @@ fun Thumbnail(
                             },
                             onHorizontalDrag = { _, dragAmount ->
                                 if (swipeThumbnail) {
-                                    offsetX += dragAmount
+                                    val adjustedDragAmount = if (layoutDirection == LayoutDirection.Rtl) -dragAmount else dragAmount
+                                    offsetX += adjustedDragAmount
                                     updateImagePreview(offsetX)
                                 }
                             },
-                            onDragEnd = {
-                                // تحديد العتبة بناءً على نسبة الشاشة (مثلا 75%)
+                            onDragEnd = {                    
                                 val threshold = 0.25f * currentView.width
 
                                 if (offsetX.absoluteValue > threshold) {
@@ -127,35 +128,32 @@ fun Thumbnail(
                         )
                     },
             ) {
-                // صورة الأغنية الحالية تتحرك بشكل طبيعي حتى تظهر بالكامل
                 AsyncImage(
                     model = mediaMetadata?.thumbnailUrl,
                     contentDescription = null,
                     modifier = Modifier
-                        .offset { IntOffset(offsetX.roundToInt(), 0) } // تحريك الصورة الحالية
+                        .offset { IntOffset(offsetX.roundToInt(), 0) }
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(ThumbnailCornerRadius * 2))
                         .pointerInput(Unit) {
                             detectTapGestures(
                                 onDoubleTap = { offset ->
                                     if (offset.x < size.width / 2) {
-                                        playerConnection.player.seekBack()  // تأخير الأغنية
+                                        playerConnection.player.seekBack()
                                     } else {
-                                        playerConnection.player.seekForward()  // تقديم الأغنية
+                                        playerConnection.player.seekForward()
                                     }
                                 }
                             )
                         }
                 )
 
-                // صورة الأغنية التالية أو السابقة تتحرك بالتوازي مع السحب وتظهر بشكل تدريجي
                 previewImage?.let {
                     AsyncImage(
                         model = it,
                         contentDescription = null,
                         modifier = Modifier
-                            .offset {
-                                // تعويض موقع الصورة بناءً على اتجاه السحب (يمين/يسار)
+                            .offset {                              
                                 IntOffset(
                                     if (offsetX > 0) (offsetX - currentView.width).roundToInt()
                                     else (offsetX + currentView.width).roundToInt(), 0
@@ -196,4 +194,4 @@ fun Thumbnail(
             }
         }
     }
-}
+} 
