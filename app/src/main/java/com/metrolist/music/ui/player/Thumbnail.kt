@@ -1,36 +1,22 @@
 package com.metrolist.music.ui.player
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalView
-import androidx.compose.ui.platform.LocalLayoutDirection
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.graphics.Color
 import coil.compose.AsyncImage
 import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.constants.PlayerHorizontalPadding
@@ -40,6 +26,8 @@ import com.metrolist.music.constants.ThumbnailCornerRadius
 import com.metrolist.music.ui.component.Lyrics
 import com.metrolist.music.utils.rememberPreference
 import kotlin.math.roundToInt
+import kotlin.math.absoluteValue
+import androidx.compose.foundation.layout.offset
 
 @Composable
 fun Thumbnail(
@@ -57,9 +45,6 @@ fun Thumbnail(
     val showLyrics by rememberPreference(ShowLyricsKey, false)
     val swipeThumbnail by rememberPreference(SwipeThumbnailKey, true)
 
-    val layoutDirection = LocalLayoutDirection.current
-    val isRtl = layoutDirection == LayoutDirection.Rtl
-
     DisposableEffect(showLyrics) {
         currentView.keepScreenOn = showLyrics
         onDispose {
@@ -68,70 +53,118 @@ fun Thumbnail(
     }
 
     var offsetX by remember { mutableFloatStateOf(0f) }
+    var isPreviewingNextSong by remember { mutableStateOf(false) }
+    var previewImage by remember { mutableStateOf<String?>(null) }
+
+    // تحديث الصورة التي يتم عرضها بناءً على سحب المستخدم
+    fun updateImagePreview(offsetX: Float) {
+        val threshold = 100f
+        when {
+            offsetX > threshold -> {
+                isPreviewingNextSong = true
+                previewImage = playerConnection.player.previousMediaItemIndex.takeIf { it != -1 }?.let {
+                    playerConnection.player.getMediaItemAt(it)?.mediaMetadata?.artworkUri?.toString()
+                }
+            }
+            offsetX < -threshold -> {
+                isPreviewingNextSong = true
+                previewImage = playerConnection.player.nextMediaItemIndex.takeIf { it != -1 }?.let {
+                    playerConnection.player.getMediaItemAt(it)?.mediaMetadata?.artworkUri?.toString()
+                }
+            }
+            else -> {
+                isPreviewingNextSong = false
+                previewImage = null
+            }
+        }
+    }
 
     Box(modifier = modifier) {
         AnimatedVisibility(
             visible = !showLyrics && error == null,
             enter = fadeIn(),
             exit = fadeOut(),
-            modifier =
-                Modifier
-                    .fillMaxSize()
-                    .statusBarsPadding(),
+            modifier = Modifier
+                .fillMaxSize()
+                .statusBarsPadding(),
         ) {
             Box(
                 contentAlignment = Alignment.Center,
-                modifier =
-                    Modifier
-                        .fillMaxSize()
-                        .padding(horizontal = PlayerHorizontalPadding)
-                        .pointerInput(Unit) {
-                            detectHorizontalDragGestures(
-                                onDragCancel = {
-                                    offsetX = 0f
-                                },
-                                onHorizontalDrag = { _, dragAmount ->
-                                    if (swipeThumbnail) {
-                                        offsetX += if (isRtl) -dragAmount else dragAmount
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = PlayerHorizontalPadding)
+                    .pointerInput(Unit) {
+                        detectHorizontalDragGestures(
+                            onDragStart = {
+                                isPreviewingNextSong = true
+                            },
+                            onDragCancel = {
+                                offsetX = 0f
+                                isPreviewingNextSong = false
+                                previewImage = null
+                            },
+                            onHorizontalDrag = { _, dragAmount ->
+                                if (swipeThumbnail) {
+                                    offsetX += dragAmount
+                                    updateImagePreview(offsetX)
+                                }
+                            },
+                            onDragEnd = {
+                                // تحديد العتبة بناءً على نسبة الشاشة (مثلا 75%)
+                                val threshold = 0.25f * currentView.width
+
+                                if (offsetX.absoluteValue > threshold) {
+                                    if (offsetX > 0 && playerConnection.player.previousMediaItemIndex != -1) {
+                                        playerConnection.player.seekToPreviousMediaItem()
+                                    } else if (offsetX < 0 && playerConnection.player.nextMediaItemIndex != -1) {
+                                        playerConnection.player.seekToNext()
                                     }
-                                },
-                                onDragEnd = {
-                                    if (offsetX > 200) {
-                                        if (playerConnection.player.previousMediaItemIndex != -1) {
-                                            playerConnection.player.seekToPreviousMediaItem()
-                                        }
-                                    } else if (offsetX < -200) {
-                                        if (playerConnection.player.nextMediaItemIndex != -1) {
-                                            playerConnection.player.seekToNext()
-                                        }
-                                    }
-                                    offsetX = 0f
-                                },
-                            )
-                        },
+                                }
+                                offsetX = 0f
+                                isPreviewingNextSong = false
+                                previewImage = null
+                            },
+                        )
+                    },
             ) {
+                // صورة الأغنية الحالية تتحرك بشكل طبيعي حتى تظهر بالكامل
                 AsyncImage(
                     model = mediaMetadata?.thumbnailUrl,
                     contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier =
-                        Modifier
-                            .offset { IntOffset(offsetX.roundToInt(), 0) }
-                            .fillMaxWidth()
-                            .aspectRatio(1f)
-                            .clip(RoundedCornerShape(ThumbnailCornerRadius * 2))
-                            .pointerInput(Unit) {
-                                detectTapGestures(
-                                    onDoubleTap = { offset ->
-                                        if (offset.x < size.width / 2) {
-                                            playerConnection.player.seekBack()
-                                        } else {
-                                            playerConnection.player.seekForward()
-                                        }
-                                    },
-                                )
-                            },
+                    modifier = Modifier
+                        .offset { IntOffset(offsetX.roundToInt(), 0) } // تحريك الصورة الحالية
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(ThumbnailCornerRadius * 2))
+                        .pointerInput(Unit) {
+                            detectTapGestures(
+                                onDoubleTap = { offset ->
+                                    if (offset.x < size.width / 2) {
+                                        playerConnection.player.seekBack()  // تأخير الأغنية
+                                    } else {
+                                        playerConnection.player.seekForward()  // تقديم الأغنية
+                                    }
+                                }
+                            )
+                        }
                 )
+
+                // صورة الأغنية التالية أو السابقة تتحرك بالتوازي مع السحب وتظهر بشكل تدريجي
+                previewImage?.let {
+                    AsyncImage(
+                        model = it,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .offset {
+                                // تعويض موقع الصورة بناءً على اتجاه السحب (يمين/يسار)
+                                IntOffset(
+                                    if (offsetX > 0) (offsetX - currentView.width).roundToInt()
+                                    else (offsetX + currentView.width).roundToInt(), 0
+                                )
+                            }
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(ThumbnailCornerRadius * 2))
+                    )
+                }
             }
         }
 
@@ -151,10 +184,9 @@ fun Thumbnail(
             visible = error != null,
             enter = fadeIn(),
             exit = fadeOut(),
-            modifier =
-                Modifier
-                    .padding(32.dp)
-                    .align(Alignment.Center),
+            modifier = Modifier
+                .padding(32.dp)
+                .align(Alignment.Center),
         ) {
             error?.let { error ->
                 PlaybackError(
