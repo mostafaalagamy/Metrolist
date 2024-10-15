@@ -257,36 +257,14 @@ fun BottomSheetPlayer(
 
     val changeBound = state.expandedBound / 3
 
-    val onBackgroundColor =
-        when (playerBackground) {
-            PlayerBackgroundStyle.DEFAULT -> MaterialTheme.colorScheme.onBackground
-            else ->
-                if (gradientColors.size >= 2 &&
-                    ColorUtils.calculateContrast(gradientColors.first().toArgb(), Color.White.toArgb()) < 1.5f
-                ) {
-                    changeColor = true
-                    Color.Black
-                } else {
-                    changeColor = false
-                    MaterialTheme.colorScheme.onSurface
-                }
-        }
-
-    when (playerBackground) {
-        PlayerBackgroundStyle.BLUR -> MaterialTheme.colorScheme.onBackground
+    val onBackgroundColor = when (playerBackground) {
+        PlayerBackgroundStyle.DEFAULT -> MaterialTheme.colorScheme.secondary
         else ->
-            if (gradientColors.size >= 3 &&
-                ColorUtils.calculateContrast(gradientColors.first().toArgb(), Color.White.toArgb()) < 1.5f
-            ) {
-                changeColor = true
-                Color.Black
-            } else {
-                changeColor = false
+            if (useDarkTheme)
                 MaterialTheme.colorScheme.onSurface
-            }
+            else
+                MaterialTheme.colorScheme.onPrimary
     }
-
-
 
 
     val download by LocalDownloadUtil.current.getDownload(mediaMetadata?.id ?: "").collectAsState(initial = null)
