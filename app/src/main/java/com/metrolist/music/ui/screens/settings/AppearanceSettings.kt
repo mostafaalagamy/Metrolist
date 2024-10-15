@@ -64,6 +64,9 @@ import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
 import me.saket.squiggles.SquigglySlider
 
+import android.os.Build
+import androidx.compose.material.icons.rounded.BlurOn
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppearanceSettings(
@@ -89,6 +92,10 @@ fun AppearanceSettings(
     val (sliderStyle, onSliderStyleChange) = rememberEnumPreference(SliderStyleKey, defaultValue = SliderStyle.DEFAULT)
     val (swipeThumbnail, onSwipeThumbnailChange) = rememberPreference(SwipeThumbnailKey, defaultValue = true)
     val (gridItemSize, onGridItemSizeChange) = rememberEnumPreference(GridItemsSizeKey, defaultValue = GridItemSize.BIG)
+
+    val availableBackgroundStyles = PlayerBackgroundStyle.entries.filter {
+        it != PlayerBackgroundStyle.BLUR || Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+    }
 
     val isSystemInDarkTheme = isSystemInDarkTheme()
     val useDarkTheme =
@@ -259,6 +266,7 @@ fun AppearanceSettings(
                 when (it) {
                     PlayerBackgroundStyle.DEFAULT -> stringResource(R.string.follow_theme)
                     PlayerBackgroundStyle.GRADIENT -> stringResource(R.string.gradient)
+                    PlayerBackgroundStyle.BLUR -> stringResource(R.string.player_background_blur)
                 }
             },
         )
@@ -397,4 +405,10 @@ enum class LyricsPosition {
 enum class PlayerTextAlignment {
     SIDED,
     CENTER,
+}
+
+enum class PlayerBackgroundStyle {
+    DEFAULT,
+    GRADIENT,
+    BLUR,
 }
