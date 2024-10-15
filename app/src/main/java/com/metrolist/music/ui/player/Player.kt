@@ -288,15 +288,12 @@ fun BottomSheetPlayer(
                 } else if (whiteContrast > 2f && blackContrast < 2f) {
                     changeColor = true
                     Color.White
-                } else -> {
+                } else {
                     changeColor = false
                     MaterialTheme.colorScheme.onSurface
                 }
             }
         }
-        useBlackBackground -> Color.White
-        else -> MaterialTheme.colorScheme.onBackground
-    }
 
     when (playerBackground) {
         PlayerBackgroundStyle.BLUR -> MaterialTheme.colorScheme.onBackground
