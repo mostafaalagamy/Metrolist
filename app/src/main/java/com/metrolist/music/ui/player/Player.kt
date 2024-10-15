@@ -260,70 +260,48 @@ fun BottomSheetPlayer(
     val onBackgroundColor = when (playerBackground) {
     PlayerBackgroundStyle.DEFAULT -> MaterialTheme.colorScheme.onBackground
     PlayerBackgroundStyle.BLUR -> {
-        val whiteContrast =
-            if (gradientColors.size >= 2) {
-                ColorUtils.calculateContrast(
-                    gradientColors.first().toArgb(),
-                    Color.White.toArgb(),
-                )
-            } else {
-                2.0
-            }
+        if (gradientColors.size >= 2) {
+            val whiteContrast = ColorUtils.calculateContrast(
+                gradientColors.first().toArgb(), Color.White.toArgb()
+            )
+            val blackContrast = ColorUtils.calculateContrast(
+                gradientColors.first().toArgb(), Color.Black.toArgb()
+            )
 
-        val blackContrast: Double =
-            if (gradientColors.size >= 2) {
-                ColorUtils.calculateContrast(
-                    gradientColors.last().toArgb(),
-                    Color.Black.toArgb(),
-                )
+            if (whiteContrast < 3.0f && blackContrast > 3.0f) {
+                changeColor = true
+                Color.Black // لون داكن إذا كانت الخلفية فاتحة
+            } else if (blackContrast < 3.0f && whiteContrast > 3.0f) {
+                changeColor = true
+                Color.White // لون فاتح إذا كانت الخلفية داكنة
             } else {
-                2.0
+                changeColor = false
+                MaterialTheme.colorScheme.onSurface // اللون الافتراضي
             }
-
-        if (gradientColors.size >= 2 &&
-            whiteContrast < 2f &&
-            blackContrast > 2f
-        ) {
-            changeColor = true
-            Color.Black
-        } else if (whiteContrast > 2f && blackContrast < 2f) {
-            changeColor = true
-            Color.White
         } else {
             changeColor = false
             MaterialTheme.colorScheme.onSurface
         }
     }
     else -> {
-        val whiteContrast =
-            if (gradientColors.size >= 2) {
-                ColorUtils.calculateContrast(
-                    gradientColors.first().toArgb(),
-                    Color.White.toArgb(),
-                )
-            } else {
-                2.0
-            }
+        if (gradientColors.size >= 2) {
+            val whiteContrast = ColorUtils.calculateContrast(
+                gradientColors.first().toArgb(), Color.White.toArgb()
+            )
+            val blackContrast = ColorUtils.calculateContrast(
+                gradientColors.first().toArgb(), Color.Black.toArgb()
+            )
 
-        val blackContrast: Double =
-            if (gradientColors.size >= 2) {
-                ColorUtils.calculateContrast(
-                    gradientColors.last().toArgb(),
-                    Color.Black.toArgb(),
-                )
+            if (whiteContrast < 1.5f && blackContrast > 1.5f) {
+                changeColor = true
+                Color.Black
+            } else if (blackContrast < 1.5f && whiteContrast > 1.5f) {
+                changeColor = true
+                Color.White
             } else {
-                2.0
+                changeColor = false
+                MaterialTheme.colorScheme.onSurface
             }
-
-        if (gradientColors.size >= 2 &&
-            whiteContrast < 2f &&
-            blackContrast > 2f
-        ) {
-            changeColor = true
-            Color.Black
-        } else if (whiteContrast > 2f && blackContrast < 2f) {
-            changeColor = true
-            Color.White
         } else {
             changeColor = false
             MaterialTheme.colorScheme.onSurface
