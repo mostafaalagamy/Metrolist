@@ -257,18 +257,32 @@ fun BottomSheetPlayer(
 
     val changeBound = state.expandedBound / 3
 
-    val onBackgroundColor = when {
-        playerBackground == PlayerBackgroundStyle.GRADIENT && gradientColors.size >= 2 -> {
-            val whiteContrast = ColorUtils.calculateContrast(
-                gradientColors.first().toArgb(),
-                Color.White.toArgb()
-            )
-            val blackContrast = ColorUtils.calculateContrast(
-                gradientColors.last().toArgb(),
-                Color.Black.toArgb()
-            )
-            when {
-                whiteContrast < 2f && blackContrast > 2f -> {
+    val onBackgroundColor =
+        when (playerBackground) {
+            PlayerBackgroundStyle.DEFAULT -> MaterialTheme.colorScheme.onBackground
+            else -> {
+                val whiteContrast =
+                    if (gradientColors.size >= 2) {
+                        ColorUtils.calculateContrast(
+                            gradientColors.first().toArgb(),
+                            Color.White.toArgb(),
+                        )
+                    } else {
+                        2.0
+                    }
+                val blackContrast: Double =
+                    if (gradientColors.size >= 2) {
+                        ColorUtils.calculateContrast(
+                            gradientColors.last().toArgb(),
+                            Color.Black.toArgb(),
+                        )
+                    } else {
+                        2.0
+                    }
+                if (gradientColors.size >= 2 &&
+                    whiteContrast < 2f &&
+                    blackContrast > 2f
+                ) {
                     changeColor = true
                     Color.Black
                 }
