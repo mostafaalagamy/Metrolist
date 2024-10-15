@@ -260,6 +260,8 @@
     <string name="error_no_internet">لا يوجد اتصال بالشبكة</string>
     <string name="error_timeout">انتهاء المهلة</string>
     <string name="error_unknown">خطأ غير معروف</string>
+    <string name="seek_backward">للخلف 5 ثواني</string>
+    <string name="seek_forward">للأمام 5 ثواني</string>
     
     <!-- إجراءات المشغل -->
     <string name="action_like">إعجاب</string>
