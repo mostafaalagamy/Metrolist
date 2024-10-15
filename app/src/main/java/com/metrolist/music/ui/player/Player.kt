@@ -325,6 +325,11 @@ fun BottomSheetPlayer(
             changeColor = true
             Color.White
         } else {
+            changeColor = false
+            MaterialTheme.colorScheme.onSurface
+        }
+    }
+}
     
     val download by LocalDownloadUtil.current.getDownload(mediaMetadata?.id ?: "").collectAsState(initial = null)
 
