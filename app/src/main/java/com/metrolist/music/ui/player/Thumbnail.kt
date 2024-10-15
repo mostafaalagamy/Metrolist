@@ -22,6 +22,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.*
 import coil.compose.AsyncImage
+import com.metrolist.music.R
 import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.constants.PlayerHorizontalPadding
 import com.metrolist.music.constants.ShowLyricsKey
