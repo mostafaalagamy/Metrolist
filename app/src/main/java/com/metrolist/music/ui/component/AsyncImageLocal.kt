@@ -3,8 +3,6 @@ package com.metrolist.music.ui.component
 import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.MusicNote
 import androidx.compose.material3.Icon
@@ -17,19 +15,18 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.newFixedThreadPoolContext
 
-const val MAX_IMAGE_JOBS = 8
-@OptIn(ExperimentalCoroutinesApi::class)
-val imageSession = Dispatchers.IO.limitedParallelism(MAX_IMAGE_JOBS)
+const val MAX_IMAGE_JOBS = 4
+@OptIn(DelicateCoroutinesApi::class)
+val imageSession = newFixedThreadPoolContext(MAX_IMAGE_JOBS , "ImageExtractor")
 
 /**
  * Non-blocking image
@@ -62,14 +59,13 @@ fun AsyncLocalImage(
                 tint = MaterialTheme.colorScheme.secondary,
                 modifier = modifier
                     .background(MaterialTheme.colorScheme.surfaceColorAtElevation(16.dp))
-                    .aspectRatio(ratio = 1f)
             )
         } else {
             Image(
                 bitmap = imageBitmap,
                 contentDescription = contentDescription,
                 contentScale = contentScale,
-                modifier = modifier.aspectRatio(ratio = 1f),
+                modifier = modifier,
             )
         }
     }
