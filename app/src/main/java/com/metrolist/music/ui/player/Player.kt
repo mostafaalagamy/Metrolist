@@ -154,146 +154,155 @@ import java.time.LocalDateTime
 import kotlin.math.roundToInt
 import kotlin.random.Random
 
-@OptIn(ExperimentalMaterial3Api::class)
+ @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BottomSheetPlayer(
     state: BottomSheetState,
     navController: NavController,
     modifier: Modifier = Modifier,
 ) {
-    val context = LocalContext.current
-    val database = LocalDatabase.current
-    val menuState = LocalMenuState.current
+    // فرض الوضع الليلي دائمًا
+    val configuration = LocalConfiguration.current
+    val newConfig = configuration.copy(uiMode = Configuration.UI_MODE_NIGHT_YES)
+    CompositionLocalProvider(LocalConfiguration provides newConfig) {
+        val context = LocalContext.current
+        val database = LocalDatabase.current
+        val menuState = LocalMenuState.current
 
-    val clipboardManager = LocalClipboardManager.current
+        val clipboardManager = LocalClipboardManager.current
+        val playerConnection = LocalPlayerConnection.current ?: return
 
-    val playerConnection = LocalPlayerConnection.current ?: return
-
-    // تثبيت الوضع الليلي للمشغل فقط
-    val darkTheme = true // الوضع الليلي دائمًا
-    val pureBlack by rememberPreference(PureBlackKey, defaultValue = false)
-    val useBlackBackground = remember(darkTheme, pureBlack) {
-        darkTheme && pureBlack
-    }
-
-    val playerTextAlignment by rememberEnumPreference(PlayerTextAlignmentKey, PlayerTextAlignment.SIDED)
-
-    val playbackState by playerConnection.playbackState.collectAsState()
-    val isPlaying by playerConnection.isPlaying.collectAsState()
-    val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
-    val currentSong by playerConnection.currentSong.collectAsState(initial = null)
-    val automix by playerConnection.service.automixItems.collectAsState()
-
-    val canSkipPrevious by playerConnection.canSkipPrevious.collectAsState()
-    val canSkipNext by playerConnection.canSkipNext.collectAsState()
-
-    var showLyrics by rememberPreference(ShowLyricsKey, defaultValue = false)
-    val playerBackground by rememberEnumPreference(key = PlayerBackgroundStyleKey, defaultValue = PlayerBackgroundStyle.DEFAULT)
-
-    val sliderStyle by rememberEnumPreference(SliderStyleKey, SliderStyle.DEFAULT)
-
-    var position by rememberSaveable(playbackState) {
-        mutableLongStateOf(playerConnection.player.currentPosition)
-    }
-    var duration by rememberSaveable(playbackState) {
-        mutableLongStateOf(playerConnection.player.duration)
-    }
-    var sliderPosition by remember {
-        mutableStateOf<Long?>(null)
-    }
-
-    var gradientColors by remember {
-        mutableStateOf<List<Color>>(emptyList())
-    }
-
-    var changeColor by remember {
-        mutableStateOf(false)
-    }
-
-    if (!canSkipNext && automix.isNotEmpty()) {
-        playerConnection.service.addToQueueAutomix(automix[0], 0)
-    }
-
-    LaunchedEffect(mediaMetadata, playerBackground) {
-        if (useBlackBackground && playerBackground != PlayerBackgroundStyle.BLUR) {
-            gradientColors = listOf(Color.Black, Color.Black)
-        } else if (playerBackground == PlayerBackgroundStyle.GRADIENT) {
-            withContext(Dispatchers.IO) {
-                val result =
-                    (ImageLoader(context)
-                        .execute(
-                            ImageRequest
-                                .Builder(context)
-                                .data(mediaMetadata?.thumbnailUrl)
-                                .allowHardware(false)
-                                .build()
-                        ).drawable as? BitmapDrawable)?.bitmap?.extractGradientColors(
-                        darkTheme = true, // الوضع الداكن دائمًا
-                    )
-
-                result?.let {
-                    gradientColors = it
-                }
+        val isSystemInDarkTheme = isSystemInDarkTheme()
+        val darkTheme by rememberEnumPreference(DarkModeKey, defaultValue = DarkMode.AUTO)
+        val pureBlack by rememberPreference(PureBlackKey, defaultValue = false)
+        val useBlackBackground =
+            remember(isSystemInDarkTheme, darkTheme, pureBlack) {
+                val useDarkTheme = if (darkTheme == DarkMode.AUTO) isSystemInDarkTheme else darkTheme == DarkMode.ON
+                useDarkTheme && pureBlack
             }
-        } else {
-            gradientColors = emptyList()
+
+        val playerTextAlignment by rememberEnumPreference(PlayerTextAlignmentKey, PlayerTextAlignment.SIDED)
+
+        val playbackState by playerConnection.playbackState.collectAsState()
+        val isPlaying by playerConnection.isPlaying.collectAsState()
+        val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
+        val currentSong by playerConnection.currentSong.collectAsState(initial = null)
+        val automix by playerConnection.service.automixItems.collectAsState()
+
+        val canSkipPrevious by playerConnection.canSkipPrevious.collectAsState()
+        val canSkipNext by playerConnection.canSkipNext.collectAsState()
+
+        var showLyrics by rememberPreference(ShowLyricsKey, defaultValue = false)
+        val playerBackground by rememberEnumPreference(key = PlayerBackgroundStyleKey, defaultValue = PlayerBackgroundStyle.DEFAULT)
+
+        val sliderStyle by rememberEnumPreference(SliderStyleKey, SliderStyle.DEFAULT)
+
+        var position by rememberSaveable(playbackState) {
+            mutableLongStateOf(playerConnection.player.currentPosition)
         }
-    }
+        var duration by rememberSaveable(playbackState) {
+            mutableLongStateOf(playerConnection.player.duration)
+        }
+        var sliderPosition by remember {
+            mutableStateOf<Long?>(null)
+        }
 
-    val changeBound = state.expandedBound / 3
+        var gradientColors by remember {
+            mutableStateOf<List<Color>>(emptyList())
+        }
 
-    val onBackgroundColor = when (playerBackground) {
-        PlayerBackgroundStyle.DEFAULT -> MaterialTheme.colorScheme.onBackground
-        PlayerBackgroundStyle.BLUR -> {
-            if (gradientColors.size >= 2) {
-                val whiteContrast = ColorUtils.calculateContrast(
-                    gradientColors.first().toArgb(), Color.White.toArgb()
-                )
-                val blackContrast = ColorUtils.calculateContrast(
-                    gradientColors.first().toArgb(), Color.Black.toArgb()
-                )
+        var changeColor by remember {
+            mutableStateOf(false)
+        }
 
-                if (whiteContrast < 3.0f && blackContrast > 3.0f) {
-                    changeColor = true
-                    Color.Black // لون داكن إذا كانت الخلفية فاتحة
-                } else if (blackContrast < 3.0f && whiteContrast > 3.0f) {
-                    changeColor = true
-                    Color.White // لون فاتح إذا كانت الخلفية داكنة
-                } else {
-                    changeColor = false
-                    MaterialTheme.colorScheme.onSurface // اللون الافتراضي
+        if (!canSkipNext && automix.isNotEmpty()) {
+            playerConnection.service.addToQueueAutomix(automix[0], 0)
+        }
+
+        LaunchedEffect(mediaMetadata, playerBackground) {
+
+            if (useBlackBackground && playerBackground != PlayerBackgroundStyle.BLUR) {
+                gradientColors = listOf(Color.Black, Color.Black)
+            } else if (playerBackground == PlayerBackgroundStyle.GRADIENT) {
+                withContext(Dispatchers.IO) {
+                    val result =
+                        (
+                                ImageLoader(context)
+                                    .execute(
+                                        ImageRequest
+                                            .Builder(context)
+                                            .data(mediaMetadata?.thumbnailUrl)
+                                            .allowHardware(false)
+                                            .build(),
+                                    ).drawable as? BitmapDrawable
+                                )?.bitmap?.extractGradientColors(
+                                darkTheme = darkTheme == DarkMode.ON || (darkTheme == DarkMode.AUTO && isSystemInDarkTheme),
+                            )
+
+                    result?.let {
+                        gradientColors = it
+                    }
                 }
             } else {
-                changeColor = false
-                MaterialTheme.colorScheme.onSurface
+                gradientColors = emptyList()
             }
-        }
-        else -> {
-            if (gradientColors.size >= 2) {
-                val whiteContrast = ColorUtils.calculateContrast(
-                    gradientColors.first().toArgb(), Color.White.toArgb()
-                )
-                val blackContrast = ColorUtils.calculateContrast(
-                    gradientColors.first().toArgb(), Color.Black.toArgb()
-                )
 
-                if (whiteContrast < 1.5f && blackContrast > 1.5f) {
-                    changeColor = true
-                    Color.Black
-                } else if (blackContrast < 1.5f && whiteContrast > 1.5f) {
-                    changeColor = true
-                    Color.White
+        }
+
+        val changeBound = state.expandedBound / 3
+
+        val onBackgroundColor = when (playerBackground) {
+            PlayerBackgroundStyle.DEFAULT -> MaterialTheme.colorScheme.onBackground
+            PlayerBackgroundStyle.BLUR -> {
+                if (gradientColors.size >= 2) {
+                    val whiteContrast = ColorUtils.calculateContrast(
+                        gradientColors.first().toArgb(), Color.White.toArgb()
+                    )
+                    val blackContrast = ColorUtils.calculateContrast(
+                        gradientColors.first().toArgb(), Color.Black.toArgb()
+                    )
+
+                    if (whiteContrast < 3.0f && blackContrast > 3.0f) {
+                        changeColor = true
+                        Color.Black // لون داكن إذا كانت الخلفية فاتحة
+                    } else if (blackContrast < 3.0f && whiteContrast > 3.0f) {
+                        changeColor = true
+                        Color.White // لون فاتح إذا كانت الخلفية داكنة
+                    } else {
+                        changeColor = false
+                        MaterialTheme.colorScheme.onSurface // اللون الافتراضي
+                    }
                 } else {
                     changeColor = false
                     MaterialTheme.colorScheme.onSurface
                 }
-            } else {
-                changeColor = false
-                MaterialTheme.colorScheme.onSurface
+            }
+            else -> {
+                if (gradientColors.size >= 2) {
+                    val whiteContrast = ColorUtils.calculateContrast(
+                        gradientColors.first().toArgb(), Color.White.toArgb()
+                    )
+                    val blackContrast = ColorUtils.calculateContrast(
+                        gradientColors.first().toArgb(), Color.Black.toArgb()
+                    )
+
+                    if (whiteContrast < 1.5f && blackContrast > 1.5f) {
+                        changeColor = true
+                        Color.Black
+                    } else if (blackContrast < 1.5f && whiteContrast > 1.5f) {
+                        changeColor = true
+                        Color.White
+                    } else {
+                        changeColor = false
+                        MaterialTheme.colorScheme.onSurface
+                    }
+                } else {
+                    changeColor = false
+                    MaterialTheme.colorScheme.onSurface
+                }
             }
         }
-    }
-
+    
     val download by LocalDownloadUtil.current.getDownload(mediaMetadata?.id ?: "").collectAsState(initial = null)
 
     val sleepTimerEnabled =
@@ -1143,6 +1152,7 @@ fun BottomSheetPlayer(
                     MaterialTheme.colorScheme.surfaceContainer
                 },
             onBackgroundColor = onBackgroundColor,
-        )
-    }
+         )
+      }
+   }
 }
