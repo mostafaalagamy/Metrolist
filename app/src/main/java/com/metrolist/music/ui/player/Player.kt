@@ -295,7 +295,6 @@ fun BottomSheetPlayer(
             }
         }
     }
-}
 
     val download by LocalDownloadUtil.current.getDownload(mediaMetadata?.id ?: "").collectAsState(initial = null)
 
