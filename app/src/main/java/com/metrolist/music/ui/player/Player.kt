@@ -257,32 +257,43 @@ fun BottomSheetPlayer(
 
     val changeBound = state.expandedBound / 3
 
-    val onBackgroundColor = when (playerBackground) {
-    PlayerBackgroundStyle.DEFAULT -> MaterialTheme.colorScheme.onBackground
-    PlayerBackgroundStyle.BLUR -> {
-        // تعيين لون مخصص للنص عند تفعيل الـ blur مع نسبة تباين مختلفة
-        if (gradientColors.size >= 2 &&
-            ColorUtils.calculateContrast(gradientColors.first().toArgb(), Color.White.toArgb()) < 3.0f // زيادة التباين في وضع blur
-        ) {
-            changeColor = true
-            Color.Black // يمكنك استخدام لون مخصص هنا
-        } else {
-            changeColor = false
-            Color.White // يمكنك استخدام لون مختلف ليكون أوضح مع الخلفية
+    val onBackgroundColor =
+        when (playerBackground) {
+            PlayerBackgroundStyle.DEFAULT -> MaterialTheme.colorScheme.onBackground
+            else -> {
+                val whiteContrast =
+                    if (gradientColors.size >= 2) {
+                        ColorUtils.calculateContrast(
+                            gradientColors.first().toArgb(),
+                            Color.White.toArgb(),
+                        )
+                    } else {
+                        2.0
+                    }
+                val blackContrast: Double =
+                    if (gradientColors.size >= 2) {
+                        ColorUtils.calculateContrast(
+                            gradientColors.last().toArgb(),
+                            Color.Black.toArgb(),
+                        )
+                    } else {
+                        2.0
+                    }
+                if (gradientColors.size >= 2 &&
+                    whiteContrast < 2f &&
+                    blackContrast > 2f
+                ) {
+                    changeColor = true
+                    Color.Black
+                } else if (whiteContrast > 2f && blackContrast < 2f) {
+                    changeColor = true
+                    Color.White
+                } else {
+                    changeColor = false
+                    MaterialTheme.colorScheme.onSurface
+                }
+            }
         }
-    }
-    else -> {
-        if (gradientColors.size >= 2 &&
-            ColorUtils.calculateContrast(gradientColors.first().toArgb(), Color.White.toArgb()) < 1.5f
-        ) {
-            changeColor = true
-            Color.Black
-        } else {
-            changeColor = false
-            MaterialTheme.colorScheme.onSurface
-        }
-    }
-}
 
     val download by LocalDownloadUtil.current.getDownload(mediaMetadata?.id ?: "").collectAsState(initial = null)
 
