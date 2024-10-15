@@ -154,6 +154,7 @@ import java.time.LocalDateTime
 import kotlin.math.roundToInt
 import kotlin.random.Random
 
+import com.metrolist.music.ui.utils.getLocalThumbnail
 
 @OptIn(ExperimentalMaterial3Api::class)
 
@@ -172,16 +173,14 @@ fun BottomSheetPlayer(
 
     val playerConnection = LocalPlayerConnection.current ?: return
 
-    val isSystemInDarkTheme = isSystemInDarkTheme()
     val darkTheme by rememberEnumPreference(DarkModeKey, defaultValue = DarkMode.AUTO)
     val pureBlack by rememberPreference(PureBlackKey, defaultValue = false)
-    val useBlackBackground =
-        remember(isSystemInDarkTheme, darkTheme, pureBlack) {
-            val useDarkTheme = if (darkTheme == DarkMode.AUTO) isSystemInDarkTheme else darkTheme == DarkMode.ON
-            useDarkTheme && pureBlack
-        }
+    val isSystemInDarkTheme = isSystemInDarkTheme()
+    val useDarkTheme = remember(darkTheme, isSystemInDarkTheme) {
+        if (darkTheme == DarkMode.AUTO) isSystemInDarkTheme else darkTheme == DarkMode.ON
+    }
 
-        val onBackgroundColor = when (playerBackground) {
+    val onBackgroundColor = when (playerBackground) {
         PlayerBackgroundStyle.DEFAULT -> MaterialTheme.colorScheme.secondary
         else ->
             if (useDarkTheme)
@@ -229,6 +228,8 @@ fun BottomSheetPlayer(
     if (!canSkipNext && automix.isNotEmpty()) {
         playerConnection.service.addToQueueAutomix(automix[0], 0)
     }
+
+    val powerManager = context.getSystemService(Context.POWER_SERVICE) as PowerManager
 
     // gradient colours
     LaunchedEffect(mediaMetadata) {
