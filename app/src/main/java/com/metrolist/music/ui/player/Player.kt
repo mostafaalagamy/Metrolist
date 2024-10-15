@@ -257,37 +257,32 @@ fun BottomSheetPlayer(
 
     val changeBound = state.expandedBound / 3
 
-    val onBackgroundColor =
-        when (playerBackground) {
-            PlayerBackgroundStyle.DEFAULT -> MaterialTheme.colorScheme.onBackground
-            else ->
-                if (gradientColors.size >= 2 &&
-                    ColorUtils.calculateContrast(gradientColors.first().toArgb(), Color.White.toArgb()) < 1.5f
-                ) {
-                    changeColor = true
-                    Color.Black
-                } else {
-                    changeColor = false
-                    MaterialTheme.colorScheme.onSurface
-                }
+    val onBackgroundColor = when (playerBackground) {
+    PlayerBackgroundStyle.DEFAULT -> MaterialTheme.colorScheme.onBackground
+    PlayerBackgroundStyle.BLUR -> {
+        // تعيين لون مخصص للنص عند تفعيل الـ blur مع نسبة تباين مختلفة
+        if (gradientColors.size >= 2 &&
+            ColorUtils.calculateContrast(gradientColors.first().toArgb(), Color.White.toArgb()) < 3.0f // زيادة التباين في وضع blur
+        ) {
+            changeColor = true
+            Color.Black // يمكنك استخدام لون مخصص هنا
+        } else {
+            changeColor = false
+            Color.White // يمكنك استخدام لون مختلف ليكون أوضح مع الخلفية
         }
-
-    when (playerBackground) {
-        PlayerBackgroundStyle.BLUR -> MaterialTheme.colorScheme.onBackground
-        else ->
-            if (gradientColors.size >= 3 &&
-                ColorUtils.calculateContrast(gradientColors.first().toArgb(), Color.White.toArgb()) < 1.5f
-            ) {
-                changeColor = true
-                Color.Black
-            } else {
-                changeColor = false
-                MaterialTheme.colorScheme.onSurface
-            }
     }
-
-
-
+    else -> {
+        if (gradientColors.size >= 2 &&
+            ColorUtils.calculateContrast(gradientColors.first().toArgb(), Color.White.toArgb()) < 1.5f
+        ) {
+            changeColor = true
+            Color.Black
+        } else {
+            changeColor = false
+            MaterialTheme.colorScheme.onSurface
+        }
+    }
+}
 
     val download by LocalDownloadUtil.current.getDownload(mediaMetadata?.id ?: "").collectAsState(initial = null)
 
