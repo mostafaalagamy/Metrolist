@@ -257,57 +257,74 @@ fun BottomSheetPlayer(
 
     val changeBound = state.expandedBound / 3
 
-    val onBackgroundColor =
-        when (playerBackground) {
-            PlayerBackgroundStyle.DEFAULT -> MaterialTheme.colorScheme.onBackground
-            else -> {
-                val whiteContrast =
-                    if (gradientColors.size >= 2) {
-                        ColorUtils.calculateContrast(
-                            gradientColors.first().toArgb(),
-                            Color.White.toArgb(),
-                        )
-                    } else {
-                        2.0
-                    }
-                val blackContrast: Double =
-                    if (gradientColors.size >= 2) {
-                        ColorUtils.calculateContrast(
-                            gradientColors.last().toArgb(),
-                            Color.Black.toArgb(),
-                        )
-                    } else {
-                        2.0
-                    }
-                if (gradientColors.size >= 2 &&
-                    whiteContrast < 2f &&
-                    blackContrast > 2f
-                ) {
-                    changeColor = true
-                    Color.Black
-                } else if (whiteContrast > 2f && blackContrast < 2f) {
-                    changeColor = true
-                    Color.White
-                } else {
-                    changeColor = false
-                    MaterialTheme.colorScheme.onSurface
-                }
-            }
-        }
-
-        when (playerBackground) {
-        PlayerBackgroundStyle.BLUR -> MaterialTheme.colorScheme.onBackground
-        else ->
-            if (gradientColors.size >= 3 &&
-                ColorUtils.calculateContrast(gradientColors.first().toArgb(), Color.White.toArgb()) < 1.5f
-            ) {
-                changeColor = true
-                Color.Black
+    val onBackgroundColor = when (playerBackground) {
+    PlayerBackgroundStyle.DEFAULT -> MaterialTheme.colorScheme.onBackground
+    PlayerBackgroundStyle.BLUR -> {
+        val whiteContrast =
+            if (gradientColors.size >= 2) {
+                ColorUtils.calculateContrast(
+                    gradientColors.first().toArgb(),
+                    Color.White.toArgb(),
+                )
             } else {
-                changeColor = false
-                MaterialTheme.colorScheme.onSurface
+                2.0
             }
+
+        val blackContrast: Double =
+            if (gradientColors.size >= 2) {
+                ColorUtils.calculateContrast(
+                    gradientColors.last().toArgb(),
+                    Color.Black.toArgb(),
+                )
+            } else {
+                2.0
+            }
+
+        if (gradientColors.size >= 2 &&
+            whiteContrast < 2f &&
+            blackContrast > 2f
+        ) {
+            changeColor = true
+            Color.Black
+        } else if (whiteContrast > 2f && blackContrast < 2f) {
+            changeColor = true
+            Color.White
+        } else {
+            changeColor = false
+            MaterialTheme.colorScheme.onSurface
+        }
     }
+    else -> {
+        val whiteContrast =
+            if (gradientColors.size >= 2) {
+                ColorUtils.calculateContrast(
+                    gradientColors.first().toArgb(),
+                    Color.White.toArgb(),
+                )
+            } else {
+                2.0
+            }
+
+        val blackContrast: Double =
+            if (gradientColors.size >= 2) {
+                ColorUtils.calculateContrast(
+                    gradientColors.last().toArgb(),
+                    Color.Black.toArgb(),
+                )
+            } else {
+                2.0
+            }
+
+        if (gradientColors.size >= 2 &&
+            whiteContrast < 2f &&
+            blackContrast > 2f
+        ) {
+            changeColor = true
+            Color.Black
+        } else if (whiteContrast > 2f && blackContrast < 2f) {
+            changeColor = true
+            Color.White
+        } else {
     
     val download by LocalDownloadUtil.current.getDownload(mediaMetadata?.id ?: "").collectAsState(initial = null)
 
