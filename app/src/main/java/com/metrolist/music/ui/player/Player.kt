@@ -1027,21 +1027,17 @@ fun BottomSheetPlayer(
                     )
                 }
 
-                val repeatMode by playerConnection.repeatMode.collectAsState()
                 Box(modifier = Modifier.weight(1f)) {
                     ResizableIconButton(
-                        icon = when (repeatMode) {
-                            Player.REPEAT_MODE_OFF, Player.REPEAT_MODE_ALL -> R.drawable.repeat
-                            Player.REPEAT_MODE_ONE -> R.drawable.repeat_one
-                            else -> throw IllegalStateException()
-                        },
-                        modifier = Modifier
-                            .size(32.dp)
-                            .padding(4.dp)
-                            .align(Alignment.Center)
-                            .alpha(if (repeatMode == Player.REPEAT_MODE_OFF) 0.5f else 1f),
-                        onClick = playerConnection.player::toggleRepeatMode,
+                        icon = R.drawable.lyrics,
                         color = onBackgroundColor,
+                        modifier =
+                            Modifier
+                                .size(32.dp)
+                                .padding(4.dp)
+                                .align(Alignment.Center)
+                                .alpha(if (showLyrics) 1f else 0.5f),
+                        onClick = { showLyrics = !showLyrics },
                     )
                 }
             }
