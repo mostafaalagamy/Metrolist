@@ -84,6 +84,7 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.core.graphics.ColorUtils
 import androidx.core.net.toUri
 import androidx.media3.common.C
+import androidx.media3.common.Player
 import androidx.media3.common.Player.STATE_ENDED
 import androidx.media3.common.Player.STATE_READY
 import androidx.media3.exoplayer.offline.Download
@@ -111,6 +112,7 @@ import com.metrolist.music.constants.SliderStyleKey
 import com.metrolist.music.constants.ThumbnailCornerRadius
 import com.metrolist.music.db.entities.PlaylistSongMap
 import com.metrolist.music.extensions.togglePlayPause
+import com.metrolist.music.extensions.toggleRepeatMode
 import com.metrolist.music.models.MediaMetadata
 import com.metrolist.music.playback.ExoDownloadService
 import com.metrolist.music.ui.component.BottomSheet
@@ -137,6 +139,13 @@ import me.saket.squiggles.SquigglySlider
 import java.time.LocalDateTime
 import kotlin.math.roundToInt
 
+
+import com.metrolist.music.ui.screens.settings.PlayerBackgroundStyle
+import com.metrolist.music.ui.utils.getLocalThumbnail
+import com.metrolist.music.ui.component.AsyncLocalImage
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.draw.blur
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BottomSheetPlayer(
@@ -151,6 +160,8 @@ fun BottomSheetPlayer(
     val clipboardManager = LocalClipboardManager.current
 
     val playerConnection = LocalPlayerConnection.current ?: return
+
+    val playerBackground by rememberEnumPreference(key = PlayerBackgroundStyleKey, defaultValue = PlayerBackgroundStyle.DEFAULT)
 
     val isSystemInDarkTheme = isSystemInDarkTheme()
     val darkTheme by rememberEnumPreference(DarkModeKey, defaultValue = DarkMode.AUTO)
@@ -200,32 +211,36 @@ fun BottomSheetPlayer(
     }
 
     LaunchedEffect(mediaMetadata, playerBackground) {
-        if (useBlackBackground) {
+
+        if (useBlackBackground && playerBackground != PlayerBackgroundStyle.BLUR ) {
             gradientColors = listOf(Color.Black, Color.Black)
-        } else if (playerBackground == PlayerBackgroundStyle.GRADIENT) {
+        }        
+        else if (playerBackground == PlayerBackgroundStyle.GRADIENT) {
             withContext(Dispatchers.IO) {
                 val result =
                     (
-                        ImageLoader(context)
-                            .execute(
-                                ImageRequest
-                                    .Builder(context)
-                                    .data(mediaMetadata?.thumbnailUrl)
-                                    .allowHardware(false)
-                                    .build(),
-                            ).drawable as? BitmapDrawable
-                    )?.bitmap?.extractGradientColors(
-                        darkTheme =
+                            ImageLoader(context)
+                                .execute(
+                                    ImageRequest
+                                        .Builder(context)
+                                        .data(mediaMetadata?.thumbnailUrl)
+                                        .allowHardware(false)
+                                        .build(),
+                                ).drawable as? BitmapDrawable
+                            )?.bitmap?.extractGradientColors(
+                            darkTheme =
                             darkTheme == DarkMode.ON || (darkTheme == DarkMode.AUTO && isSystemInDarkTheme),
-                    )
+                        )
 
                 result?.let {
                     gradientColors = it
                 }
             }
-        } else {
+        }
+        else {
             gradientColors = emptyList()
         }
+
     }
 
     val changeBound = state.expandedBound / 3
@@ -267,6 +282,20 @@ fun BottomSheetPlayer(
                 }
             }
         }
+
+        when (playerBackground) {
+        PlayerBackgroundStyle.BLUR -> MaterialTheme.colorScheme.onBackground
+        else ->
+            if (gradientColors.size >= 3 &&
+                ColorUtils.calculateContrast(gradientColors.first().toArgb(), Color.White.toArgb()) < 1.5f
+            ) {
+                changeColor = true
+                Color.Black
+            } else {
+                changeColor = false
+                MaterialTheme.colorScheme.onSurface
+            }
+    }
 
     val download by LocalDownloadUtil.current.getDownload(mediaMetadata?.id ?: "").collectAsState(initial = null)
 
@@ -1003,6 +1032,42 @@ fun BottomSheetPlayer(
                     )
                 }
             }
+        }
+
+        if (playerBackground == PlayerBackgroundStyle.BLUR) {
+            if (mediaMetadata?.isLocal == true) {
+                mediaMetadata?.let {
+                    AsyncLocalImage(
+                        image = { getLocalThumbnail(it.localPath) },
+                        contentDescription = null,
+                        contentScale = ContentScale.FillBounds,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .blur(200.dp)
+                    )
+                }
+            } else {
+                AsyncImage(
+                    model = mediaMetadata?.thumbnailUrl,
+                    contentDescription = null,
+                    contentScale = ContentScale.FillBounds,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .blur(200.dp)
+                )
+            }
+            
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.3f))
+            )
+        } else if (playerBackground == PlayerBackgroundStyle.GRADIENT && gradientColors.size >= 2) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Brush.verticalGradient(gradientColors))
+            )
         }
 
         when (LocalConfiguration.current.orientation) {
