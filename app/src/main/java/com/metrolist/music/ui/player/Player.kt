@@ -169,14 +169,12 @@ fun BottomSheetPlayer(
 
     val playerConnection = LocalPlayerConnection.current ?: return
 
-    val isSystemInDarkTheme = true // قمنا بتثبيت الوضع الداكن دائمًا
-    val darkTheme by rememberEnumPreference(DarkModeKey, defaultValue = DarkMode.ON) // وضع ثابت على الوضع الداكن
+    // تثبيت الوضع الليلي للمشغل فقط
+    val darkTheme = true // الوضع الليلي دائمًا
     val pureBlack by rememberPreference(PureBlackKey, defaultValue = false)
-    val useBlackBackground =
-        remember(isSystemInDarkTheme, darkTheme, pureBlack) {
-            val useDarkTheme = true // دائمًا في الوضع الداكن
-            useDarkTheme && pureBlack
-        }
+    val useBlackBackground = remember(darkTheme, pureBlack) {
+        darkTheme && pureBlack
+    }
 
     val playerTextAlignment by rememberEnumPreference(PlayerTextAlignmentKey, PlayerTextAlignment.SIDED)
 
