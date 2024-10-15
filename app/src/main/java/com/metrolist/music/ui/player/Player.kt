@@ -154,7 +154,6 @@ import java.time.LocalDateTime
 import kotlin.math.roundToInt
 import kotlin.random.Random
 
-import com.metrolist.music.ui.utils.getLocalThumbnail
 
 @OptIn(ExperimentalMaterial3Api::class)
 
@@ -173,23 +172,14 @@ fun BottomSheetPlayer(
 
     val playerConnection = LocalPlayerConnection.current ?: return
 
-    val playerBackground by rememberEnumPreference(key = PlayerBackgroundStyleKey, defaultValue = PlayerBackgroundStyle.DEFAULT)
-
+    val isSystemInDarkTheme = isSystemInDarkTheme()
     val darkTheme by rememberEnumPreference(DarkModeKey, defaultValue = DarkMode.AUTO)
     val pureBlack by rememberPreference(PureBlackKey, defaultValue = false)
-    val isSystemInDarkTheme = isSystemInDarkTheme()
-    val useDarkTheme = remember(darkTheme, isSystemInDarkTheme) {
-        if (darkTheme == DarkMode.AUTO) isSystemInDarkTheme else darkTheme == DarkMode.ON
-    }
-
-    val onBackgroundColor = when (playerBackground) {
-        PlayerBackgroundStyle.DEFAULT -> MaterialTheme.colorScheme.secondary
-        else ->
-            if (useDarkTheme)
-                MaterialTheme.colorScheme.onSurface
-            else
-                MaterialTheme.colorScheme.onPrimary
-    }
+    val useBlackBackground =
+        remember(isSystemInDarkTheme, darkTheme, pureBlack) {
+            val useDarkTheme = if (darkTheme == DarkMode.AUTO) isSystemInDarkTheme else darkTheme == DarkMode.ON
+            useDarkTheme && pureBlack
+        }
 
     val playerTextAlignment by rememberEnumPreference(PlayerTextAlignmentKey, PlayerTextAlignment.SIDED)
 
@@ -231,34 +221,73 @@ fun BottomSheetPlayer(
         playerConnection.service.addToQueueAutomix(automix[0], 0)
     }
 
-    val powerManager = context.getSystemService(Context.POWER_SERVICE) as PowerManager
+    LaunchedEffect(mediaMetadata, playerBackground) {
 
-    // gradient colours
-    LaunchedEffect(mediaMetadata) {
-        if (playerBackground != PlayerBackgroundStyle.GRADIENT || powerManager.isPowerSaveMode) return@LaunchedEffect
-
-        withContext(Dispatchers.IO) {
-            if (mediaMetadata?.isLocal == true) {
-                getLocalThumbnail(mediaMetadata?.localPath)?.extractGradientColors()?.let {
-                    gradientColors = it
-                }
-            } else {
-                val result = (ImageLoader(context).execute(
-                    ImageRequest.Builder(context)
-                        .data(mediaMetadata?.thumbnailUrl)
-                        .allowHardware(false)
-                        .build()
-                ).drawable as? BitmapDrawable)?.bitmap?.extractGradientColors()
+        if (useBlackBackground && playerBackground != PlayerBackgroundStyle.BLUR ) {
+            gradientColors = listOf(Color.Black, Color.Black)
+        }
+        else if (playerBackground == PlayerBackgroundStyle.GRADIENT) {
+            withContext(Dispatchers.IO) {
+                val result =
+                    (
+                            ImageLoader(context)
+                                .execute(
+                                    ImageRequest
+                                        .Builder(context)
+                                        .data(mediaMetadata?.thumbnailUrl)
+                                        .allowHardware(false)
+                                        .build(),
+                                ).drawable as? BitmapDrawable
+                            )?.bitmap?.extractGradientColors(
+                            darkTheme =
+                            darkTheme == DarkMode.ON || (darkTheme == DarkMode.AUTO && isSystemInDarkTheme),
+                        )
 
                 result?.let {
                     gradientColors = it
                 }
             }
         }
+        else {
+            gradientColors = emptyList()
+        }
+
     }
 
 
     val changeBound = state.expandedBound / 3
+
+    val onBackgroundColor =
+        when (playerBackground) {
+            PlayerBackgroundStyle.DEFAULT -> MaterialTheme.colorScheme.onBackground
+            else ->
+                if (gradientColors.size >= 2 &&
+                    ColorUtils.calculateContrast(gradientColors.first().toArgb(), Color.White.toArgb()) < 1.5f
+                ) {
+                    changeColor = true
+                    Color.Black
+                } else {
+                    changeColor = false
+                    MaterialTheme.colorScheme.onSurface
+                }
+        }
+
+    when (playerBackground) {
+        PlayerBackgroundStyle.BLUR -> MaterialTheme.colorScheme.onBackground
+        else ->
+            if (gradientColors.size >= 3 &&
+                ColorUtils.calculateContrast(gradientColors.first().toArgb(), Color.White.toArgb()) < 1.5f
+            ) {
+                changeColor = true
+                Color.Black
+            } else {
+                changeColor = false
+                MaterialTheme.colorScheme.onSurface
+            }
+    }
+
+
+
 
     val download by LocalDownloadUtil.current.getDownload(mediaMetadata?.id ?: "").collectAsState(initial = null)
 
