@@ -173,6 +173,12 @@ fun BottomSheetPlayer(
 
     val isSystemInDarkTheme = true
     val darkTheme = DarkMode.ON
+    val pureBlack by rememberPreference(PureBlackKey, defaultValue = false)
+    val useBlackBackground =
+        remember(isSystemInDarkTheme, darkTheme, pureBlack) {
+            val useDarkTheme = if (darkTheme == DarkMode.AUTO) isSystemInDarkTheme else darkTheme == DarkMode.ON
+            useDarkTheme && pureBlack
+        }
 
     val playerTextAlignment by rememberEnumPreference(PlayerTextAlignmentKey, PlayerTextAlignment.SIDED)
 
