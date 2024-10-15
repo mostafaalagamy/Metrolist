@@ -305,7 +305,7 @@ fun BottomSheetPlayer(
             MaterialTheme.colorScheme.onSurface
         }
     }
-    }ن
+}
     
     val download by LocalDownloadUtil.current.getDownload(mediaMetadata?.id ?: "").collectAsState(initial = null)
 
