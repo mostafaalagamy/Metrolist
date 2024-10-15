@@ -308,20 +308,7 @@ fun BottomSheetPlayer(
                 MaterialTheme.colorScheme.onSurface
             }
     }
-    when (playerBackground) {
-        PlayerBackgroundStyle.BLURMOV -> MaterialTheme.colorScheme.onBackground
-        else ->
-        if (gradientColors.size >= 3 &&
-            ColorUtils.calculateContrast(gradientColors.first().toArgb(), Color.White.toArgb()) < 1.5f
-        ) {
-            changeColor = true
-            Color.Black
-        } else {
-            changeColor = false
-            MaterialTheme.colorScheme.onSurface
-        }
-    }
-
+    
     val download by LocalDownloadUtil.current.getDownload(mediaMetadata?.id ?: "").collectAsState(initial = null)
 
     val sleepTimerEnabled =
