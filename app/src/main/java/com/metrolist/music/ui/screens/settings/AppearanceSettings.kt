@@ -1,5 +1,6 @@
 package com.metrolist.music.ui.screens.settings
 
+import android.os.Build
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -63,9 +64,6 @@ import com.metrolist.music.ui.utils.backToMain
 import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
 import me.saket.squiggles.SquigglySlider
-
-import android.os.Build
-import androidx.compose.material.icons.rounded.BlurOn
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -405,10 +403,4 @@ enum class LyricsPosition {
 enum class PlayerTextAlignment {
     SIDED,
     CENTER,
-}
-
-enum class PlayerBackgroundStyle {
-    DEFAULT,
-    GRADIENT,
-    BLUR,
 }
