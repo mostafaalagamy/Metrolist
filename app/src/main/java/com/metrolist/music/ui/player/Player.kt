@@ -154,11 +154,8 @@ import java.time.LocalDateTime
 import kotlin.math.roundToInt
 import kotlin.random.Random
 
-
 @OptIn(ExperimentalMaterial3Api::class)
-
 @Composable
-
 fun BottomSheetPlayer(
     state: BottomSheetState,
     navController: NavController,
@@ -172,12 +169,12 @@ fun BottomSheetPlayer(
 
     val playerConnection = LocalPlayerConnection.current ?: return
 
-    val isSystemInDarkTheme = isSystemInDarkTheme()
-    val darkTheme by rememberEnumPreference(DarkModeKey, defaultValue = DarkMode.AUTO)
+    val isSystemInDarkTheme = true // قمنا بتثبيت الوضع الداكن دائمًا
+    val darkTheme by rememberEnumPreference(DarkModeKey, defaultValue = DarkMode.ON) // وضع ثابت على الوضع الداكن
     val pureBlack by rememberPreference(PureBlackKey, defaultValue = false)
     val useBlackBackground =
         remember(isSystemInDarkTheme, darkTheme, pureBlack) {
-            val useDarkTheme = if (darkTheme == DarkMode.AUTO) isSystemInDarkTheme else darkTheme == DarkMode.ON
+            val useDarkTheme = true // دائمًا في الوضع الداكن
             useDarkTheme && pureBlack
         }
 
@@ -207,8 +204,6 @@ fun BottomSheetPlayer(
         mutableStateOf<Long?>(null)
     }
 
-
-
     var gradientColors by remember {
         mutableStateOf<List<Color>>(emptyList())
     }
@@ -222,93 +217,86 @@ fun BottomSheetPlayer(
     }
 
     LaunchedEffect(mediaMetadata, playerBackground) {
-
-        if (useBlackBackground && playerBackground != PlayerBackgroundStyle.BLUR ) {
+        if (useBlackBackground && playerBackground != PlayerBackgroundStyle.BLUR) {
             gradientColors = listOf(Color.Black, Color.Black)
-        }
-        else if (playerBackground == PlayerBackgroundStyle.GRADIENT) {
+        } else if (playerBackground == PlayerBackgroundStyle.GRADIENT) {
             withContext(Dispatchers.IO) {
                 val result =
-                    (
-                            ImageLoader(context)
-                                .execute(
-                                    ImageRequest
-                                        .Builder(context)
-                                        .data(mediaMetadata?.thumbnailUrl)
-                                        .allowHardware(false)
-                                        .build(),
-                                ).drawable as? BitmapDrawable
-                            )?.bitmap?.extractGradientColors(
-                            darkTheme =
-                            darkTheme == DarkMode.ON || (darkTheme == DarkMode.AUTO && isSystemInDarkTheme),
-                        )
+                    (ImageLoader(context)
+                        .execute(
+                            ImageRequest
+                                .Builder(context)
+                                .data(mediaMetadata?.thumbnailUrl)
+                                .allowHardware(false)
+                                .build()
+                        ).drawable as? BitmapDrawable)?.bitmap?.extractGradientColors(
+                        darkTheme = true, // الوضع الداكن دائمًا
+                    )
 
                 result?.let {
                     gradientColors = it
                 }
             }
-        }
-        else {
+        } else {
             gradientColors = emptyList()
         }
-
     }
-
 
     val changeBound = state.expandedBound / 3
 
     val onBackgroundColor = when (playerBackground) {
-    PlayerBackgroundStyle.DEFAULT -> MaterialTheme.colorScheme.onBackground
-    PlayerBackgroundStyle.BLUR -> {
-        if (gradientColors.size >= 2) {
-            val whiteContrast = ColorUtils.calculateContrast(
-                gradientColors.first().toArgb(), Color.White.toArgb()
-            )
-            val blackContrast = ColorUtils.calculateContrast(
-                gradientColors.first().toArgb(), Color.Black.toArgb()
-            )
+        PlayerBackgroundStyle.DEFAULT -> MaterialTheme.colorScheme.onBackground
+        PlayerBackgroundStyle.BLUR -> {
+            if (gradientColors.size >= 2) {
+                val whiteContrast = ColorUtils.calculateContrast(
+                    gradientColors.first().toArgb(), Color.White.toArgb()
+                )
+                val blackContrast = ColorUtils.calculateContrast(
+                    gradientColors.first().toArgb(), Color.Black.toArgb()
+                )
 
-            if (whiteContrast < 3.0f && blackContrast > 3.0f) {
-                changeColor = true
-                Color.Black // لون داكن إذا كانت الخلفية فاتحة
-            } else if (blackContrast < 3.0f && whiteContrast > 3.0f) {
-                changeColor = true
-                Color.White // لون فاتح إذا كانت الخلفية داكنة
-            } else {
-                changeColor = false
-                MaterialTheme.colorScheme.onSurface // اللون الافتراضي
-            }
-        } else {
-            changeColor = false
-            MaterialTheme.colorScheme.onSurface
-        }
-    }
-    else -> {
-        if (gradientColors.size >= 2) {
-            val whiteContrast = ColorUtils.calculateContrast(
-                gradientColors.first().toArgb(), Color.White.toArgb()
-            )
-            val blackContrast = ColorUtils.calculateContrast(
-                gradientColors.first().toArgb(), Color.Black.toArgb()
-            )
-
-            if (whiteContrast < 1.5f && blackContrast > 1.5f) {
-                changeColor = true
-                Color.Black
-            } else if (blackContrast < 1.5f && whiteContrast > 1.5f) {
-                changeColor = true
-                Color.White
+                if (whiteContrast < 3.0f && blackContrast > 3.0f) {
+                    changeColor = true
+                    Color.Black // لون داكن إذا كانت الخلفية فاتحة
+                } else if (blackContrast < 3.0f && whiteContrast > 3.0f) {
+                    changeColor = true
+                    Color.White // لون فاتح إذا كانت الخلفية داكنة
+                } else {
+                    changeColor = false
+                    MaterialTheme.colorScheme.onSurface // اللون الافتراضي
+                }
             } else {
                 changeColor = false
                 MaterialTheme.colorScheme.onSurface
             }
-        } else {
-            changeColor = false
-            MaterialTheme.colorScheme.onSurface
+        }
+        else -> {
+            if (gradientColors.size >= 2) {
+                val whiteContrast = ColorUtils.calculateContrast(
+                    gradientColors.first().toArgb(), Color.White.toArgb()
+                )
+                val blackContrast = ColorUtils.calculateContrast(
+                    gradientColors.first().toArgb(), Color.Black.toArgb()
+                )
+
+                if (whiteContrast < 1.5f && blackContrast > 1.5f) {
+                    changeColor = true
+                    Color.Black
+                } else if (blackContrast < 1.5f && whiteContrast > 1.5f) {
+                    changeColor = true
+                    Color.White
+                } else {
+                    changeColor = false
+                    MaterialTheme.colorScheme.onSurface
+                }
+            } else {
+                changeColor = false
+                MaterialTheme.colorScheme.onSurface
+            }
         }
     }
 }
-    
+
     val download by LocalDownloadUtil.current.getDownload(mediaMetadata?.id ?: "").collectAsState(initial = null)
 
     val sleepTimerEnabled =
