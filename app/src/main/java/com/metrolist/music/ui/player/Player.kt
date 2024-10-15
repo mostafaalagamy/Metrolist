@@ -1,3 +1,4 @@
+
 package com.metrolist.music.ui.player
 
 import android.content.res.Configuration
@@ -5,12 +6,22 @@ import android.graphics.drawable.BitmapDrawable
 import android.text.format.Formatter
 import android.widget.Toast
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
@@ -43,7 +54,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.AlertDialogDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -56,19 +66,26 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -78,6 +95,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEachIndexed
 import androidx.compose.ui.window.DialogProperties
@@ -91,6 +110,7 @@ import androidx.media3.exoplayer.offline.Download
 import androidx.media3.exoplayer.offline.DownloadRequest
 import androidx.media3.exoplayer.offline.DownloadService
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import coil.ImageLoader
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -138,16 +158,13 @@ import kotlinx.coroutines.withContext
 import me.saket.squiggles.SquigglySlider
 import java.time.LocalDateTime
 import kotlin.math.roundToInt
+import kotlin.random.Random
 
-
-import com.metrolist.music.ui.screens.settings.PlayerBackgroundStyle
-import com.metrolist.music.ui.utils.getLocalThumbnail
-import com.metrolist.music.ui.component.AsyncLocalImage
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.draw.blur
 
 @OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
+
 fun BottomSheetPlayer(
     state: BottomSheetState,
     navController: NavController,
@@ -160,8 +177,6 @@ fun BottomSheetPlayer(
     val clipboardManager = LocalClipboardManager.current
 
     val playerConnection = LocalPlayerConnection.current ?: return
-
-    val playerBackground by rememberEnumPreference(key = PlayerBackgroundStyleKey, defaultValue = PlayerBackgroundStyle.DEFAULT)
 
     val isSystemInDarkTheme = isSystemInDarkTheme()
     val darkTheme by rememberEnumPreference(DarkModeKey, defaultValue = DarkMode.AUTO)
@@ -198,6 +213,8 @@ fun BottomSheetPlayer(
         mutableStateOf<Long?>(null)
     }
 
+
+
     var gradientColors by remember {
         mutableStateOf<List<Color>>(emptyList())
     }
@@ -214,7 +231,10 @@ fun BottomSheetPlayer(
 
         if (useBlackBackground && playerBackground != PlayerBackgroundStyle.BLUR ) {
             gradientColors = listOf(Color.Black, Color.Black)
-        }        
+        }
+        if (useBlackBackground && playerBackground != PlayerBackgroundStyle.BLURMOV ) {
+            gradientColors = listOf(Color.Black, Color.Black)
+        }
         else if (playerBackground == PlayerBackgroundStyle.GRADIENT) {
             withContext(Dispatchers.IO) {
                 val result =
@@ -243,47 +263,42 @@ fun BottomSheetPlayer(
 
     }
 
+
     val changeBound = state.expandedBound / 3
 
-    val onBackgroundColor =
-        when (playerBackground) {
-            PlayerBackgroundStyle.DEFAULT -> MaterialTheme.colorScheme.onBackground
-            else -> {
-                val whiteContrast =
-                    if (gradientColors.size >= 2) {
-                        ColorUtils.calculateContrast(
-                            gradientColors.first().toArgb(),
-                            Color.White.toArgb(),
-                        )
-                    } else {
-                        2.0
-                    }
-                val blackContrast: Double =
-                    if (gradientColors.size >= 2) {
-                        ColorUtils.calculateContrast(
-                            gradientColors.last().toArgb(),
-                            Color.Black.toArgb(),
-                        )
-                    } else {
-                        2.0
-                    }
-                if (gradientColors.size >= 2 &&
-                    whiteContrast < 2f &&
-                    blackContrast > 2f
-                ) {
+    val onBackgroundColor = when {
+        playerBackground == PlayerBackgroundStyle.GRADIENT && gradientColors.size >= 2 -> {
+            val whiteContrast = ColorUtils.calculateContrast(
+                gradientColors.first().toArgb(),
+                Color.White.toArgb()
+            )
+            val blackContrast = ColorUtils.calculateContrast(
+                gradientColors.last().toArgb(),
+                Color.Black.toArgb()
+            )
+            when {
+                whiteContrast < 2f && blackContrast > 2f -> {
                     changeColor = true
                     Color.Black
-                } else if (whiteContrast > 2f && blackContrast < 2f) {
+                }
+                whiteContrast > 2f && blackContrast < 2f -> {
                     changeColor = true
                     Color.White
-                } else {
+                }
+                else -> {
                     changeColor = false
                     MaterialTheme.colorScheme.onSurface
                 }
             }
         }
+        useBlackBackground -> Color.White
+        else -> MaterialTheme.colorScheme.onBackground
+    }
 
-        when (playerBackground) {
+
+
+
+    when (playerBackground) {
         PlayerBackgroundStyle.BLUR -> MaterialTheme.colorScheme.onBackground
         else ->
             if (gradientColors.size >= 3 &&
@@ -296,6 +311,22 @@ fun BottomSheetPlayer(
                 MaterialTheme.colorScheme.onSurface
             }
     }
+    when (playerBackground) {
+        PlayerBackgroundStyle.BLURMOV -> MaterialTheme.colorScheme.onBackground
+        else ->
+        if (gradientColors.size >= 3 &&
+            ColorUtils.calculateContrast(gradientColors.first().toArgb(), Color.White.toArgb()) < 1.5f
+        ) {
+            changeColor = true
+            Color.Black
+        } else {
+            changeColor = false
+            MaterialTheme.colorScheme.onSurface
+        }
+    }
+
+
+
 
     val download by LocalDownloadUtil.current.getDownload(mediaMetadata?.id ?: "").collectAsState(initial = null)
 
@@ -442,6 +473,7 @@ fun BottomSheetPlayer(
                     thumbnailContent = {
                         Box(
                             contentAlignment = Alignment.Center,
+
                             modifier = Modifier.size(ListThumbnailSize),
                         ) {
                             AsyncImage(
@@ -562,8 +594,8 @@ fun BottomSheetPlayer(
             } else {
                 Brush.verticalGradient(
                     listOf(
-                        MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp),
-                        MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp),
+                        MaterialTheme.colorScheme.surfaceContainer,
+                        MaterialTheme.colorScheme.surfaceContainer,
                     ),
                 )
             },
@@ -938,16 +970,24 @@ fun BottomSheetPlayer(
                         .fillMaxWidth()
                         .padding(horizontal = PlayerHorizontalPadding),
             ) {
+//                Box(modifier = Modifier.weight(1f)) {
+//                    ResizableIconButton(
+//                        icon = if (currentSong?.song?.liked == true) R.drawable.favorite else R.drawable.favorite_border,
+//                        color = if (currentSong?.song?.liked == true) MaterialTheme.colorScheme.error else onBackgroundColor,
+//                        modifier =
+//                            Modifier
+//                                .size(32.dp)
+//                                .padding(4.dp)
+//                                .align(Alignment.Center),
+//                        onClick = playerConnection::toggleLike,
+//                    )
+//                }
+                // button to toggle like
                 Box(modifier = Modifier.weight(1f)) {
-                    ResizableIconButton(
-                        icon = if (currentSong?.song?.liked == true) R.drawable.favorite else R.drawable.favorite_border,
-                        color = if (currentSong?.song?.liked == true) MaterialTheme.colorScheme.error else onBackgroundColor,
-                        modifier =
-                            Modifier
-                                .size(32.dp)
-                                .padding(4.dp)
-                                .align(Alignment.Center),
-                        onClick = playerConnection::toggleLike,
+                    LikeButton(
+                        isLiked = currentSong?.song?.liked == true,
+                        onLikeClick = playerConnection::toggleLike,
+                        color = if (currentSong?.song?.liked == true) MaterialTheme.colorScheme.error else onBackgroundColor
                     )
                 }
 
@@ -1018,35 +1058,40 @@ fun BottomSheetPlayer(
                     )
                 }
 
+                val repeatMode by playerConnection.repeatMode.collectAsState()
                 Box(modifier = Modifier.weight(1f)) {
                     ResizableIconButton(
-                        icon = R.drawable.lyrics,
+                        icon = when (repeatMode) {
+                            Player.REPEAT_MODE_OFF, Player.REPEAT_MODE_ALL -> R.drawable.repeat
+                            Player.REPEAT_MODE_ONE -> R.drawable.repeat_one
+                            else -> throw IllegalStateException()
+                        },
+                        modifier = Modifier
+                            .size(32.dp)
+                            .padding(4.dp)
+                            .align(Alignment.Center)
+                            .alpha(if (repeatMode == Player.REPEAT_MODE_OFF) 0.5f else 1f),
+                        onClick = playerConnection.player::toggleRepeatMode,
                         color = onBackgroundColor,
-                        modifier =
-                            Modifier
-                                .size(32.dp)
-                                .padding(4.dp)
-                                .align(Alignment.Center)
-                                .alpha(if (showLyrics) 1f else 0.5f),
-                        onClick = { showLyrics = !showLyrics },
                     )
                 }
             }
         }
 
-        if (playerBackground == PlayerBackgroundStyle.BLUR) {
-            if (mediaMetadata?.isLocal == true) {
-                mediaMetadata?.let {
-                    AsyncLocalImage(
-                        image = { getLocalThumbnail(it.localPath) },
-                        contentDescription = null,
-                        contentScale = ContentScale.FillBounds,
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .blur(200.dp)
-                    )
-                }
-            } else {
+
+
+        AnimatedVisibility(
+            visible = state.isExpanded,
+            enter = fadeIn(tween(900)),
+            exit = fadeOut()
+        ) {
+            if (gradientColors.size >= 2) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Brush.verticalGradient(gradientColors)),
+                )
+            } else if (playerBackground == PlayerBackgroundStyle.BLUR) {
                 AsyncImage(
                     model = mediaMetadata?.thumbnailUrl,
                     contentDescription = null,
@@ -1054,22 +1099,49 @@ fun BottomSheetPlayer(
                     modifier = Modifier
                         .fillMaxSize()
                         .blur(200.dp)
+                        .alpha(0.8f)
+                        .background(if (useBlackBackground) Color.Black.copy(alpha = 0.5f) else Color.Transparent)
+
                 )
             }
-            
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.Black.copy(alpha = 0.3f))
-            )
-        } else if (playerBackground == PlayerBackgroundStyle.GRADIENT && gradientColors.size >= 2) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Brush.verticalGradient(gradientColors))
-            )
-        }
+            else if (playerBackground == PlayerBackgroundStyle.BLURMOV) {
+                val infiniteTransition = rememberInfiniteTransition(label = "")
 
+
+                val rotation by infiniteTransition.animateFloat(
+                    initialValue = 0f,
+                    targetValue = 360f,
+                    animationSpec = infiniteRepeatable(
+                        animation = tween(
+                            durationMillis = 100000,
+                            easing = FastOutSlowInEasing // Easing suave
+                        ),
+                        repeatMode = RepeatMode.Restart
+                    ), label = ""
+                )
+                AsyncImage(
+                    model = mediaMetadata?.thumbnailUrl,
+                    contentDescription = null,
+                    contentScale = ContentScale.FillBounds,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .blur(200.dp)
+                        .alpha(0.8f)
+                        .background(if (useBlackBackground) Color.Black.copy(alpha = 0.5f) else Color.Transparent)
+                        .rotate(rotation)
+
+                )
+            }
+
+            else if (useBlackBackground && playerBackground == PlayerBackgroundStyle.DEFAULT) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Black)
+                )
+            }
+        }
+//
         when (LocalConfiguration.current.orientation) {
             Configuration.ORIENTATION_LANDSCAPE -> {
                 Row(
@@ -1132,7 +1204,7 @@ fun BottomSheetPlayer(
                         controlsContent(it)
                     }
 
-                    Spacer(Modifier.height(24.dp))
+                    Spacer(Modifier.height(32.dp))
                 }
             }
         }
@@ -1150,4 +1222,34 @@ fun BottomSheetPlayer(
             onBackgroundColor = onBackgroundColor,
         )
     }
+}
+
+
+@Composable
+fun LikeButton(
+    isLiked: Boolean,
+    onLikeClick: () -> Unit,
+    color: Color
+) {
+    var isLikedState by remember { mutableStateOf(isLiked) }
+    val scale by animateFloatAsState(
+        targetValue = if (isLikedState) 1.2f else 1f,
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessLow
+        ), label = ""
+    )
+
+    ResizableIconButton(
+        icon = if (isLikedState) R.drawable.favorite else R.drawable.favorite_border,
+        color = color,
+        modifier = Modifier
+            .size(32.dp)
+            .padding(4.dp)
+            .scale(scale),
+        onClick = {
+            isLikedState = !isLikedState
+            onLikeClick()
+        },
+    )
 }
