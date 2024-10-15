@@ -230,37 +230,28 @@ fun BottomSheetPlayer(
         playerConnection.service.addToQueueAutomix(automix[0], 0)
     }
 
-    LaunchedEffect(mediaMetadata, playerBackground) {
+    // gradient colours
+    LaunchedEffect(mediaMetadata) {
+        if (playerBackground != PlayerBackgroundStyle.GRADIENT || powerManager.isPowerSaveMode) return@LaunchedEffect
 
-        if (useBlackBackground && playerBackground != PlayerBackgroundStyle.BLUR ) {
-            gradientColors = listOf(Color.Black, Color.Black)
-        }
-        else if (playerBackground == PlayerBackgroundStyle.GRADIENT) {
-            withContext(Dispatchers.IO) {
-                val result =
-                    (
-                            ImageLoader(context)
-                                .execute(
-                                    ImageRequest
-                                        .Builder(context)
-                                        .data(mediaMetadata?.thumbnailUrl)
-                                        .allowHardware(false)
-                                        .build(),
-                                ).drawable as? BitmapDrawable
-                            )?.bitmap?.extractGradientColors(
-                            darkTheme =
-                            darkTheme == DarkMode.ON || (darkTheme == DarkMode.AUTO && isSystemInDarkTheme),
-                        )
+        withContext(Dispatchers.IO) {
+            if (mediaMetadata?.isLocal == true) {
+                getLocalThumbnail(mediaMetadata?.localPath)?.extractGradientColors()?.let {
+                    gradientColors = it
+                }
+            } else {
+                val result = (ImageLoader(context).execute(
+                    ImageRequest.Builder(context)
+                        .data(mediaMetadata?.thumbnailUrl)
+                        .allowHardware(false)
+                        .build()
+                ).drawable as? BitmapDrawable)?.bitmap?.extractGradientColors()
 
                 result?.let {
                     gradientColors = it
                 }
             }
         }
-        else {
-            gradientColors = emptyList()
-        }
-
     }
 
 
