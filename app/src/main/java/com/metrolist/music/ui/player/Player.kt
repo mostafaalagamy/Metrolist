@@ -252,7 +252,7 @@ fun BottomSheetPlayer(
 
     val onBackgroundColor = when (playerBackground) {
     PlayerBackgroundStyle.DEFAULT -> MaterialTheme.colorScheme.secondary
-    else -> {
+    else {
         if (useDarkTheme) {
             MaterialTheme.colorScheme.onSurface
         } else {
