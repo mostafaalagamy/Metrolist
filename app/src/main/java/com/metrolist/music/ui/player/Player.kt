@@ -168,7 +168,7 @@ fun BottomSheetPlayer(
     val clipboardManager = LocalClipboardManager.current
 
     val playerConnection = LocalPlayerConnection.current ?: return
-    
+
     val playerBackground by rememberEnumPreference(key = PlayerBackgroundStyleKey, defaultValue = PlayerBackgroundStyle.DEFAULT) 
     
     val isSystemInDarkTheme = isSystemInDarkTheme()
@@ -189,7 +189,7 @@ fun BottomSheetPlayer(
         remember(isSystemInDarkTheme, darkTheme, pureBlack) {
             val useDarkTheme = if (darkTheme == DarkMode.AUTO) isSystemInDarkTheme else darkTheme == DarkMode.ON
             useDarkTheme && pureBlack
-        }
+    }
 
     val playerTextAlignment by rememberEnumPreference(PlayerTextAlignmentKey, PlayerTextAlignment.SIDED)
 
@@ -203,7 +203,7 @@ fun BottomSheetPlayer(
     val canSkipNext by playerConnection.canSkipNext.collectAsState()
 
     var showLyrics by rememberPreference(ShowLyricsKey, defaultValue = false)
- 
+
     val sliderStyle by rememberEnumPreference(SliderStyleKey, SliderStyle.DEFAULT)
 
     var position by rememberSaveable(playbackState) {
@@ -221,32 +221,46 @@ fun BottomSheetPlayer(
     var gradientColors by remember {
         mutableStateOf<List<Color>>(emptyList())
     }
-
+    
     if (!canSkipNext && automix.isNotEmpty()) {
         playerConnection.service.addToQueueAutomix(automix[0], 0)
     }
     
-    LaunchedEffect(mediaMetadata) {
-        if (playerBackground != PlayerBackgroundStyle.GRADIENT) return@LaunchedEffect
-
-        withContext(Dispatchers.IO) {
-                val result = (ImageLoader(context).execute(
-                    ImageRequest.Builder(context)
-                        .data(mediaMetadata?.thumbnailUrl)
-                        .allowHardware(false)
-                        .build()
-                ).drawable as? BitmapDrawable)?.bitmap?.extractGradientColors(
-                    darkTheme =
+  LaunchedEffect(mediaMetadata, playerBackground) {
+        if (useBlackBackground && playerBackground != PlayerBackgroundStyle.BLUR ) {
+            gradientColors = listOf(Color.Black, Color.Black)
+        }
+        if (useBlackBackground && playerBackground != PlayerBackgroundStyle.GRADIENT ) {
+            gradientColors = listOf(Color.Black, Color.Black)
+        }
+        else if (playerBackground == PlayerBackgroundStyle.GRADIENT) {
+            withContext(Dispatchers.IO) {
+                val result =
+                    (
+                            ImageLoader(context)
+                                .execute(
+                                    ImageRequest
+                                        .Builder(context)
+                                        .data(mediaMetadata?.thumbnailUrl)
+                                        .allowHardware(false)
+                                        .build(),
+                                ).drawable as? BitmapDrawable
+                            )?.bitmap?.extractGradientColors(
+                            darkTheme =
                             darkTheme == DarkMode.ON || (darkTheme == DarkMode.AUTO && isSystemInDarkTheme),
-                )
-
+                        )
                 result?.let {
                     gradientColors = it
                 }
             }
         }
+        else {
+            gradientColors = emptyList()
+        }
+  }
+
     val changeBound = state.expandedBound / 3
-    
+
     val download by LocalDownloadUtil.current.getDownload(mediaMetadata?.id ?: "").collectAsState(initial = null)
 
     val sleepTimerEnabled =
@@ -985,39 +999,35 @@ fun BottomSheetPlayer(
             }
         }
 
-         AnimatedVisibility(
+
+
+        AnimatedVisibility(
             visible = state.isExpanded,
             enter = fadeIn(tween(900)),
             exit = fadeOut()
         ) {
-            if (playerBackground == PlayerBackgroundStyle.BLUR) {
-                    AsyncImage(
-                        model = mediaMetadata?.thumbnailUrl,
-                        contentDescription = null,
-                        contentScale = ContentScale.FillBounds,
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .blur(200.dp)
-                    )
-
+            if (gradientColors.size >= 2) {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(Color.Black.copy(alpha = 0.3f))
+                        .background(Brush.verticalGradient(gradientColors)),
                 )
-            } else if (playerBackground == PlayerBackgroundStyle.GRADIENT && gradientColors.size >= 2) {
-                Box(
+            } else if (playerBackground == PlayerBackgroundStyle.BLUR) {
+                AsyncImage(
+                    model = mediaMetadata?.thumbnailUrl,
+                    contentDescription = null,
+                    contentScale = ContentScale.FillBounds,
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(Brush.verticalGradient(gradientColors))
+                        .blur(200.dp)
+                        .alpha(0.8f)
+                        .background(if (useBlackBackground) Color.Black.copy(alpha = 0.5f) else Color.Transparent)
                 )
-            }
-
-            if (playerBackground != PlayerBackgroundStyle.DEFAULT && showLyrics) {
+            } else if (useBlackBackground && playerBackground == PlayerBackgroundStyle.DEFAULT) {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(Color.Black.copy(alpha = 0.3f))
+                        .background(Color.Black)
                 )
             }
         }
@@ -1036,7 +1046,7 @@ fun BottomSheetPlayer(
                     ) {
                         Thumbnail(
                             sliderPositionProvider = { sliderPosition },
-                            modifier = Modifier.nestedScroll(state.preUpPostDownNestedScrollConnection),
+                            modifier = Modifier.nestedScroll(state.preUpPostDownNestedScrollConnection),                            
                         )
                     }
 
