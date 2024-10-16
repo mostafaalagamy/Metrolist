@@ -222,10 +222,10 @@ fun BottomSheetPlayer(
 
     LaunchedEffect(mediaMetadata, playerBackground) {
 
-        if (useBlackBackground && playerBackground != PlayerBackgroundStyle.BLUR ) {
+        if (useBlackBackground && playerBackground != PlayerBackgroundStyle.GRADIENT) {
             gradientColors = listOf(Color.Black, Color.Black)
         }
-        else if (playerBackground == PlayerBackgroundStyle.GRADIENT) {
+        else if (playerBackground == PlayerBackgroundStyle.BLUR) {
             withContext(Dispatchers.IO) {
                 val result =
                     (
