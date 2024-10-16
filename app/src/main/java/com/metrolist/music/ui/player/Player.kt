@@ -175,10 +175,9 @@ fun BottomSheetPlayer(
     val darkTheme by rememberEnumPreference(DarkModeKey, defaultValue = DarkMode.AUTO)
     val pureBlack by rememberPreference(PureBlackKey, defaultValue = false)
     val useBlackBackground = remember(isSystemInDarkTheme, darkTheme, pureBlack) {
-    val useDarkTheme = if (darkTheme == DarkMode.AUTO) isSystemInDarkTheme else darkTheme == DarkMode.ON
-                useDarkTheme && pureBlack
-            }
-
+    val useDarkTheme = remember(isSystemInDarkTheme, darkTheme) {
+    if (darkTheme == DarkMode.AUTO) isSystemInDarkTheme else darkTheme == DarkMode.ON
+}
 
     val playerTextAlignment by rememberEnumPreference(PlayerTextAlignmentKey, PlayerTextAlignment.SIDED)
 
@@ -252,13 +251,15 @@ fun BottomSheetPlayer(
     val changeBound = state.expandedBound / 3
 
     val onBackgroundColor = when (playerBackground) {
-        PlayerBackgroundStyle.DEFAULT -> MaterialTheme.colorScheme.secondary
-        else ->
-            if
-                MaterialTheme.colorScheme.onSurface
-            else
-                MaterialTheme.colorScheme.onPrimary
+    PlayerBackgroundStyle.DEFAULT -> MaterialTheme.colorScheme.secondary
+    else -> {
+        if (useDarkTheme) {
+            MaterialTheme.colorScheme.onSurface
+        } else {
+            MaterialTheme.colorScheme.onPrimary
+        }
     }
+}
     
     val download by LocalDownloadUtil.current.getDownload(mediaMetadata?.id ?: "").collectAsState(initial = null)
 
