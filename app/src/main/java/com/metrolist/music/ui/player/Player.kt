@@ -226,7 +226,7 @@ fun BottomSheetPlayer(
         playerConnection.service.addToQueueAutomix(automix[0], 0)
     }
     
-  LaunchedEffect(mediaMetadata, playerBackground) {
+    LaunchedEffect(mediaMetadata, playerBackground) {
         if (useBlackBackground && playerBackground != PlayerBackgroundStyle.BLUR ) {
             gradientColors = listOf(Color.Black, Color.Black)
         }
@@ -1003,31 +1003,37 @@ fun BottomSheetPlayer(
 
         AnimatedVisibility(
             visible = state.isExpanded,
-            enter = fadeIn(tween(900)),
+            enter = fadeIn(tween(1000)),
             exit = fadeOut()
         ) {
-            if (gradientColors.size >= 2) {
+            if (playerBackground == PlayerBackgroundStyle.BLUR) {
+                    AsyncImage(
+                        model = mediaMetadata?.thumbnailUrl,
+                        contentDescription = null,
+                        contentScale = ContentScale.FillBounds,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .blur(200.dp)
+                    )
+
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(Brush.verticalGradient(gradientColors)),
+                        .background(Color.Black.copy(alpha = 0.3f))
                 )
-            } else if (playerBackground == PlayerBackgroundStyle.BLUR) {
-                AsyncImage(
-                    model = mediaMetadata?.thumbnailUrl,
-                    contentDescription = null,
-                    contentScale = ContentScale.FillBounds,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .blur(200.dp)
-                        .alpha(0.8f)
-                        .background(if (useBlackBackground) Color.Black.copy(alpha = 0.5f) else Color.Transparent)
-                )
-            } else if (useBlackBackground && playerBackground == PlayerBackgroundStyle.DEFAULT) {
+            } else if (playerBackground == PlayerBackgroundStyle.GRADIENT && gradientColors.size >= 2) {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(Color.Black)
+                        .background(Brush.verticalGradient(gradientColors))
+                )
+            }
+
+            if (playerBackground != PlayerBackgroundStyle.DEFAULT && showLyrics) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Black.copy(alpha = 0.3f))
                 )
             }
         }
