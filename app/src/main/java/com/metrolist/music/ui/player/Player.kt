@@ -5,12 +5,18 @@ import android.graphics.drawable.BitmapDrawable
 import android.text.format.Formatter
 import android.widget.Toast
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
@@ -56,19 +62,24 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -78,18 +89,22 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEachIndexed
 import androidx.compose.ui.window.DialogProperties
 import androidx.core.graphics.ColorUtils
 import androidx.core.net.toUri
 import androidx.media3.common.C
+import androidx.media3.common.Player
 import androidx.media3.common.Player.STATE_ENDED
 import androidx.media3.common.Player.STATE_READY
 import androidx.media3.exoplayer.offline.Download
 import androidx.media3.exoplayer.offline.DownloadRequest
 import androidx.media3.exoplayer.offline.DownloadService
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import coil.ImageLoader
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -111,6 +126,7 @@ import com.metrolist.music.constants.SliderStyleKey
 import com.metrolist.music.constants.ThumbnailCornerRadius
 import com.metrolist.music.db.entities.PlaylistSongMap
 import com.metrolist.music.extensions.togglePlayPause
+import com.metrolist.music.extensions.toggleRepeatMode
 import com.metrolist.music.models.MediaMetadata
 import com.metrolist.music.playback.ExoDownloadService
 import com.metrolist.music.ui.component.BottomSheet
@@ -136,6 +152,7 @@ import kotlinx.coroutines.withContext
 import me.saket.squiggles.SquigglySlider
 import java.time.LocalDateTime
 import kotlin.math.roundToInt
+import kotlin.random.Random
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -187,6 +204,8 @@ fun BottomSheetPlayer(
         mutableStateOf<Long?>(null)
     }
 
+
+
     var gradientColors by remember {
         mutableStateOf<List<Color>>(emptyList())
     }
@@ -198,35 +217,39 @@ fun BottomSheetPlayer(
     if (!canSkipNext && automix.isNotEmpty()) {
         playerConnection.service.addToQueueAutomix(automix[0], 0)
     }
-
-    LaunchedEffect(mediaMetadata, playerBackground) {
-        if (useBlackBackground) {
+    
+  LaunchedEffect(mediaMetadata, playerBackground) {
+        if (useBlackBackground && playerBackground != PlayerBackgroundStyle.BLUR ) {
             gradientColors = listOf(Color.Black, Color.Black)
-        } else if (playerBackground == PlayerBackgroundStyle.GRADIENT) {
+        }
+        if (useBlackBackground && playerBackground != PlayerBackgroundStyle.GRADIENT ) {
+            gradientColors = listOf(Color.Black, Color.Black)
+        }
+        else if (playerBackground == PlayerBackgroundStyle.GRADIENT) {
             withContext(Dispatchers.IO) {
                 val result =
                     (
-                        ImageLoader(context)
-                            .execute(
-                                ImageRequest
-                                    .Builder(context)
-                                    .data(mediaMetadata?.thumbnailUrl)
-                                    .allowHardware(false)
-                                    .build(),
-                            ).drawable as? BitmapDrawable
-                    )?.bitmap?.extractGradientColors(
-                        darkTheme =
+                            ImageLoader(context)
+                                .execute(
+                                    ImageRequest
+                                        .Builder(context)
+                                        .data(mediaMetadata?.thumbnailUrl)
+                                        .allowHardware(false)
+                                        .build(),
+                                ).drawable as? BitmapDrawable
+                            )?.bitmap?.extractGradientColors(
+                            darkTheme =
                             darkTheme == DarkMode.ON || (darkTheme == DarkMode.AUTO && isSystemInDarkTheme),
-                    )
-
+                        )
                 result?.let {
                     gradientColors = it
                 }
             }
-        } else {
+        }
+        else {
             gradientColors = emptyList()
         }
-    }
+  }
 
     val changeBound = state.expandedBound / 3
 
@@ -267,7 +290,7 @@ fun BottomSheetPlayer(
                 }
             }
         }
-
+    
     val download by LocalDownloadUtil.current.getDownload(mediaMetadata?.id ?: "").collectAsState(initial = null)
 
     val sleepTimerEnabled =
@@ -413,6 +436,7 @@ fun BottomSheetPlayer(
                     thumbnailContent = {
                         Box(
                             contentAlignment = Alignment.Center,
+
                             modifier = Modifier.size(ListThumbnailSize),
                         ) {
                             AsyncImage(
@@ -1005,6 +1029,39 @@ fun BottomSheetPlayer(
             }
         }
 
+
+
+        AnimatedVisibility(
+            visible = state.isExpanded,
+            enter = fadeIn(tween(900)),
+            exit = fadeOut()
+        ) {
+            if (gradientColors.size >= 2) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Brush.verticalGradient(gradientColors)),
+                )
+            } else if (playerBackground == PlayerBackgroundStyle.BLUR) {
+                AsyncImage(
+                    model = mediaMetadata?.thumbnailUrl,
+                    contentDescription = null,
+                    contentScale = ContentScale.FillBounds,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .blur(200.dp)
+                        .alpha(0.8f)
+                        .background(if (useBlackBackground) Color.Black.copy(alpha = 0.5f) else Color.Transparent)
+                )
+            } else if (useBlackBackground && playerBackground == PlayerBackgroundStyle.DEFAULT) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Black)
+                )
+            }
+        }
+//
         when (LocalConfiguration.current.orientation) {
             Configuration.ORIENTATION_LANDSCAPE -> {
                 Row(
