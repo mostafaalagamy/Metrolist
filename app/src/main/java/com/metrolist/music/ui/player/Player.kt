@@ -171,24 +171,6 @@ fun BottomSheetPlayer(
 
     val playerConnection = LocalPlayerConnection.current ?: return
 
-    val isSystemInDarkTheme = isSystemInDarkTheme()
-    val darkTheme by rememberEnumPreference(DarkModeKey, defaultValue = DarkMode.AUTO)
-    val pureBlack by rememberPreference(PureBlackKey, defaultValue = false)
-    val useBlackBackground =
-        remember(isSystemInDarkTheme, darkTheme, pureBlack) {
-    val useDarkTheme = remember(darkTheme, isSystemInDarkTheme) {
-        if (darkTheme == DarkMode.AUTO) isSystemInDarkTheme else darkTheme == DarkMode.ON
-    }
-
-    val onBackgroundColor = when (playerBackground) {
-        PlayerBackgroundStyle.DEFAULT -> MaterialTheme.colorScheme.secondary
-        else ->
-            if (useDarkTheme)
-                MaterialTheme.colorScheme.onSurface
-            else
-                MaterialTheme.colorScheme.onPrimary
-    }
-
     val playerTextAlignment by rememberEnumPreference(PlayerTextAlignmentKey, PlayerTextAlignment.SIDED)
 
     val playbackState by playerConnection.playbackState.collectAsState()
@@ -224,6 +206,25 @@ fun BottomSheetPlayer(
     var changeColor by remember {
         mutableStateOf(false)
     }
+
+    val isSystemInDarkTheme = isSystemInDarkTheme()
+    val darkTheme by rememberEnumPreference(DarkModeKey, defaultValue = DarkMode.AUTO)
+    val pureBlack by rememberPreference(PureBlackKey, defaultValue = false)
+    val useBlackBackground =
+        remember(isSystemInDarkTheme, darkTheme, pureBlack) {
+    val useDarkTheme = remember(darkTheme, isSystemInDarkTheme) {
+        if (darkTheme == DarkMode.AUTO) isSystemInDarkTheme else darkTheme == DarkMode.ON
+    }
+
+    val onBackgroundColor = when (playerBackground) {
+        PlayerBackgroundStyle.DEFAULT -> MaterialTheme.colorScheme.secondary
+        else ->
+            if (useDarkTheme)
+                MaterialTheme.colorScheme.onSurface
+            else
+                MaterialTheme.colorScheme.onPrimary
+    }
+ }
 
     if (!canSkipNext && automix.isNotEmpty()) {
         playerConnection.service.addToQueueAutomix(automix[0], 0)
@@ -1115,5 +1116,4 @@ fun BottomSheetPlayer(
             onBackgroundColor = onBackgroundColor,
         )
     }
-}
 }
