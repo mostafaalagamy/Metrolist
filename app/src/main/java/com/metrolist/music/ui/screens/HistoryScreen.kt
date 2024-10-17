@@ -56,7 +56,6 @@ import androidx.compose.ui.util.fastAny
 import androidx.compose.ui.util.fastForEachReversed
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.metrolist.innertube.models.WatchEndpoint
 import com.metrolist.music.LocalDatabase
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.LocalPlayerConnection
@@ -115,7 +114,6 @@ fun HistoryScreen(
     } else {
         events.mapValues { (_, songs) ->
             songs.filter { event ->
-                // البحث باستخدام اسم الأغنية أو اسم الفنان
                 event.song.song.title.contains(query.text, ignoreCase = true) ||
                 event.song.artists.any { it.name.contains(query.text, ignoreCase = true) }
             }
@@ -181,10 +179,7 @@ fun HistoryScreen(
                                     playerConnection.player.togglePlayPause()
                                 } else {
                                     playerConnection.playQueue(
-                                        YouTubeQueue(
-                                            endpoint = WatchEndpoint(videoId = event.song.id),
-                                            preloadItem = event.song.toMediaMetadata(),
-                                        ),
+                                        YouTubeQueue.radio(event.song.toMediaMetadata())
                                     )
                                 }
                             },
