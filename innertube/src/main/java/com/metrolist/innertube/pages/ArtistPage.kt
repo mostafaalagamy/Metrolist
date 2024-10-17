@@ -64,7 +64,7 @@ data class ArtistPage(
                 items =
                     renderer.contents?.mapNotNull {
                         fromMusicResponsiveListItemRenderer(it.musicResponsiveListItemRenderer)
-                    } ?: return null,
+                    }?.ifEmpty { null } ?: return null,
                 moreEndpoint =
                     renderer.title.runs
                         .firstOrNull()
@@ -87,7 +87,7 @@ data class ArtistPage(
                         it.musicTwoRowItemRenderer?.let { renderer ->
                             fromMusicTwoRowItemRenderer(renderer)
                         }
-                    },
+                    }.ifEmpty { null } ?: return null,
                 moreEndpoint =
                     renderer.header.musicCarouselShelfBasicHeaderRenderer.moreContentButton
                         ?.buttonRenderer
