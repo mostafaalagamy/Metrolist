@@ -265,7 +265,7 @@ fun Lyrics(
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clickable(enabled = isSynced) {
+                            .clickable(enabled = isSynced && changeLyrics) {
                                 playerConnection.player.seekTo(item.time)
                                 lastPreviewTime = 0L
                             }
