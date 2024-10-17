@@ -61,7 +61,6 @@ import com.metrolist.innertube.models.AlbumItem
 import com.metrolist.innertube.models.ArtistItem
 import com.metrolist.innertube.models.PlaylistItem
 import com.metrolist.innertube.models.SongItem
-import com.metrolist.innertube.models.WatchEndpoint
 import com.metrolist.music.LocalDatabase
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.LocalPlayerConnection
@@ -258,14 +257,7 @@ fun ArtistScreen(
                                             if (song.id == mediaMetadata?.id) {
                                                 playerConnection.player.togglePlayPause()
                                             } else {
-                                                playerConnection.playQueue(
-                                                    YouTubeQueue(
-                                                        WatchEndpoint(
-                                                            videoId = song.id,
-                                                        ),
-                                                        song.toMediaMetadata(),
-                                                    ),
-                                                )
+                                                playerConnection.playQueue(YouTubeQueue.radio(song.toMediaMetadata()))
                                             }
                                         },
                                         onLongClick = {
@@ -332,9 +324,7 @@ fun ArtistScreen(
                                                 if (song.id == mediaMetadata?.id) {
                                                     playerConnection.player.togglePlayPause()
                                                 } else {
-                                                    playerConnection.playQueue(
-                                                        YouTubeQueue(WatchEndpoint(videoId = song.id), song.toMediaMetadata()),
-                                                    )
+                                                    playerConnection.playQueue(YouTubeQueue.radio(song.toMediaMetadata()))
                                                 }
                                             },
                                             onLongClick = {
@@ -373,9 +363,7 @@ fun ArtistScreen(
                                                     onClick = {
                                                         when (item) {
                                                             is SongItem ->
-                                                                playerConnection.playQueue(
-                                                                    YouTubeQueue(WatchEndpoint(videoId = item.id), item.toMediaMetadata()),
-                                                                )
+                                                                playerConnection.playQueue(YouTubeQueue.radio(song.toMediaMetadata()))
                                                             is AlbumItem -> navController.navigate("album/${item.id}")
                                                             is ArtistItem -> navController.navigate("artist/${item.id}")
                                                             is PlaylistItem -> navController.navigate("online_playlist/${item.id}")
