@@ -44,7 +44,6 @@ import com.metrolist.innertube.models.AlbumItem
 import com.metrolist.innertube.models.ArtistItem
 import com.metrolist.innertube.models.PlaylistItem
 import com.metrolist.innertube.models.SongItem
-import com.metrolist.innertube.models.WatchEndpoint
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
@@ -166,14 +165,7 @@ fun YouTubeBrowseScreen(
                                                         if (song.id == mediaMetadata?.id) {
                                                             playerConnection.player.togglePlayPause()
                                                         } else {
-                                                            playerConnection.playQueue(
-                                                                YouTubeQueue(
-                                                                    WatchEndpoint(
-                                                                        videoId = song.id,
-                                                                    ),
-                                                                    song.toMediaMetadata(),
-                                                                ),
-                                                            )
+                                                            playerConnection.playQueue(YouTubeQueue.radio(item.toMediaMetadata()))
                                                         }
                                                     }.animateItemPlacement(),
                                         )
@@ -203,12 +195,7 @@ fun YouTubeBrowseScreen(
                                                     onClick = {
                                                         when (item) {
                                                             is SongItem ->
-                                                                playerConnection.playQueue(
-                                                                    YouTubeQueue(
-                                                                        WatchEndpoint(videoId = item.id),
-                                                                        item.toMediaMetadata(),
-                                                                    ),
-                                                                )
+                                                                playerConnection.playQueue(YouTubeQueue.radio(item.toMediaMetadata()))
 
                                                             is AlbumItem -> navController.navigate("album/${item.id}")
                                                             is ArtistItem -> navController.navigate("artist/${item.id}")
