@@ -944,6 +944,15 @@ object YouTube {
                         ?.musicQueueRenderer
                         ?.content
                         ?.playlistPanelRenderer!!
+            
+            val items = playlistPanelRenderer.contents.mapNotNull { content ->
+            content.playlistPanelVideoRenderer
+                ?.let(NextPage::fromPlaylistPanelVideoRenderer)
+                ?.let { it to content.playlistPanelVideoRenderer.selected }
+            }
+            val songs = items.map { it.first }
+            val currentIndex = items.indexOfFirst { it.second }.takeIf { it != -1 }
+            
             // load automix items
             playlistPanelRenderer.contents
                 .lastOrNull()
@@ -956,12 +965,7 @@ object YouTube {
                     return@runCatching next(watchPlaylistEndpoint).getOrThrow().let { result ->
                         result.copy(
                             title = title,
-                            items =
-                                playlistPanelRenderer.contents.mapNotNull {
-                                    it.playlistPanelVideoRenderer?.let { renderer ->
-                                        NextPage.fromPlaylistPanelVideoRenderer(renderer)
-                                    }
-                                } + result.items,
+                            items = songs + result.items,
                             lyricsEndpoint =
                                 response.contents
                                     .singleColumnMusicWatchNextResultsRenderer
@@ -984,18 +988,15 @@ object YouTube {
                                     )?.tabRenderer
                                     ?.endpoint
                                     ?.browseEndpoint,
-                            currentIndex = playlistPanelRenderer.currentIndex,
+                            currentIndex = currentIndex,
                             endpoint = watchPlaylistEndpoint,
                         )
                     }
                 }
             NextResult(
                 title = playlistPanelRenderer.title,
-                items =
-                    playlistPanelRenderer.contents.mapNotNull {
-                        it.playlistPanelVideoRenderer?.let(NextPage::fromPlaylistPanelVideoRenderer)
-                    },
-                currentIndex = playlistPanelRenderer.currentIndex,
+                items = songs,
+            currentIndex = currentIndex,
                 lyricsEndpoint =
                     response.contents.singleColumnMusicWatchNextResultsRenderer.tabbedRenderer.watchNextTabbedResultsRenderer.tabs
                         .getOrNull(
