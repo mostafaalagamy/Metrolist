@@ -26,4 +26,8 @@ data class Album(
 ) : LocalItem() {
     override val id: String
         get() = album.id
+    override val title: String
+        get() = album.title
+    override val thumbnailUrl: String?
+        get() = album.thumbnailUrl
 }
