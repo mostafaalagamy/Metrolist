@@ -36,6 +36,7 @@ import com.metrolist.innertube.pages.ArtistItemsPage
 import com.metrolist.innertube.pages.ArtistPage
 import com.metrolist.innertube.pages.BrowseResult
 import com.metrolist.innertube.pages.ExplorePage
+import com.metrolist.innertube.pages.HomePage
 import com.metrolist.innertube.pages.HomeAlbumRecommendation
 import com.metrolist.innertube.pages.HomePlayList
 import com.metrolist.innertube.pages.MoodAndGenres
@@ -606,26 +607,42 @@ object YouTube {
             )
         }
 
-    suspend fun playlistContinuation(continuation: String) =
-        runCatching {
-            val response =
-                innerTube
-                    .browse(
-                        client = WEB_REMIX,
-                        continuation = continuation,
-                        setLogin = true,
-                    ).body<BrowseResponse>()
-            PlaylistContinuationPage(
-                songs =
-                    response.continuationContents?.musicPlaylistShelfContinuation?.contents?.mapNotNull {
-                        PlaylistPage.fromMusicResponsiveListItemRenderer(it.musicResponsiveListItemRenderer)
-                    }!!,
-                continuation =
-                    response.continuationContents.musicPlaylistShelfContinuation.continuations
-                        ?.getContinuation(),
-            )
-        }
+    suspend fun playlistContinuation(continuation: String) = runCatching {
+        val response = innerTube.browse(
+            client = WEB_REMIX,
+            continuation = continuation,
+            setLogin = true
+        ).body<BrowseResponse>()
+        PlaylistContinuationPage(
+            songs = response.continuationContents?.musicPlaylistShelfContinuation?.contents?.mapNotNull {
+                PlaylistPage.fromMusicResponsiveListItemRenderer(it.musicResponsiveListItemRenderer)
+            }!!,
+            continuation = response.continuationContents.musicPlaylistShelfContinuation.continuations?.getContinuation()
+        )
+    }
 
+    suspend fun home(): Result<HomePage> = runCatching {
+        var response = innerTube.browse(WEB_REMIX, browseId = "FEmusic_home").body<BrowseResponse>()
+        var continuation = response.contents?.singleColumnBrowseResultsRenderer?.tabs?.firstOrNull()
+            ?.tabRenderer?.content?.sectionListRenderer?.continuations?.getContinuation()
+        val sections = response.contents?.singleColumnBrowseResultsRenderer?.tabs?.firstOrNull()
+            ?.tabRenderer?.content?.sectionListRenderer?.contents!!
+            .mapNotNull { it.musicCarouselShelfRenderer }
+            .mapNotNull {
+                HomePage.Section.fromMusicCarouselShelfRenderer(it)
+            }.toMutableList()
+        while (continuation != null) {
+            response = innerTube.browse(WEB_REMIX, continuation = continuation).body<BrowseResponse>()
+            continuation = response.continuationContents?.sectionListContinuation?.continuations?.getContinuation()
+            sections += response.continuationContents?.sectionListContinuation?.contents
+                ?.mapNotNull { it.musicCarouselShelfRenderer }
+                ?.mapNotNull {
+                    HomePage.Section.fromMusicCarouselShelfRenderer(it)
+                }.orEmpty()
+        }
+        HomePage(sections)
+    }
+    
     suspend fun explore(): Result<ExplorePage> =
         runCatching {
             val response = innerTube.browse(WEB_REMIX, browseId = "FEmusic_explore").body<BrowseResponse>()
@@ -1030,7 +1047,7 @@ object YouTube {
                 ?.text
         }
 
-    suspend fun related(endpoint: BrowseEndpoint) =
+    suspend fun related(endpoint: BrowseEndpoint): Result<RelatedPage> = 
         runCatching {
             val response = innerTube.browse(WEB_REMIX, endpoint.browseId).body<BrowseResponse>()
             val songs = mutableListOf<SongItem>()
