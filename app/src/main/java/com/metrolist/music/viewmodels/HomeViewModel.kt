@@ -4,314 +4,156 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.metrolist.innertube.YouTube
-import com.metrolist.innertube.models.PlaylistItem
 import com.metrolist.innertube.models.WatchEndpoint
 import com.metrolist.innertube.models.YTItem
-import com.metrolist.innertube.pages.AlbumUtils
+import com.metrolist.innertube.models.filterExplicit
 import com.metrolist.innertube.pages.ExplorePage
-import com.metrolist.innertube.pages.HomeAlbumRecommendation
-import com.metrolist.innertube.pages.HomeArtistRecommendation
-import com.metrolist.innertube.pages.HomePlayList
-import com.metrolist.music.constants.QuickPicks
-import com.metrolist.music.constants.QuickPicksKey
+import com.metrolist.innertube.pages.HomePage
+import com.metrolist.music.constants.HideExplicitKey
 import com.metrolist.music.db.MusicDatabase
+import com.metrolist.music.db.entities.Album
 import com.metrolist.music.db.entities.Artist
+import com.metrolist.music.db.entities.LocalItem
 import com.metrolist.music.db.entities.Song
-import com.metrolist.music.extensions.toEnum
+import com.metrolist.music.models.SimilarRecommendation
 import com.metrolist.music.utils.dataStore
+import com.metrolist.music.utils.get
 import com.metrolist.music.utils.reportException
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel
-    @Inject
-    constructor(
-        @ApplicationContext context: Context,
-        val database: MusicDatabase,
-    ) : ViewModel() {
-        val isRefreshing = MutableStateFlow(false)
-        private val quickPicksEnum =
-            context.dataStore.data
-                .map {
-                    it[QuickPicksKey].toEnum(QuickPicks.QUICK_PICKS)
-                }.distinctUntilChanged()
+class HomeViewModel @Inject constructor(
+    @ApplicationContext val context: Context,
+    val database: MusicDatabase,
+) : ViewModel() {
+    val isRefreshing = MutableStateFlow(false)
+    val isLoading = MutableStateFlow(false)
 
-        val quickPicks = MutableStateFlow<List<Song>?>(null)
-        val explorePage = MutableStateFlow<ExplorePage?>(null)
+    val quickPicks = MutableStateFlow<List<Song>?>(null)
+    val forgottenFavorites = MutableStateFlow<List<Song>?>(null)
+    val keepListening = MutableStateFlow<List<LocalItem>?>(null)
+    val similarRecommendations = MutableStateFlow<List<SimilarRecommendation>?>(null)
+    val homePage = MutableStateFlow<HomePage?>(null)
+    val explorePage = MutableStateFlow<ExplorePage?>(null)
 
-        val forgottenFavorite = MutableStateFlow<List<Song>?>(null)
-        val home = MutableStateFlow<List<HomePlayList>?>(null)
-        val keepListeningSongs = MutableStateFlow<List<Song>?>(null)
-        val keepListeningAlbums = MutableStateFlow<List<Song>?>(null)
-        val keepListeningArtists = MutableStateFlow<List<Artist>?>(null)
+    val allLocalItems = MutableStateFlow<List<LocalItem>>(emptyList())
+    val allYtItems = MutableStateFlow<List<YTItem>>(emptyList())
 
-        val keepListening = MutableStateFlow<List<Int>?>(null)
+    private suspend fun load() {
+        isLoading.value = true
 
-        private val continuation = MutableStateFlow<String?>(null)
-        val homeFirstContinuation = MutableStateFlow<List<HomePlayList>?>(null)
-        val homeSecondContinuation = MutableStateFlow<List<HomePlayList>?>(null)
-        val homeThirdContinuation = MutableStateFlow<List<HomePlayList>?>(null)
+        val hideExplicit = context.dataStore.get(HideExplicitKey, false)
 
-        private val songsAlbumRecommendation = MutableStateFlow<List<Song>?>(null)
-        val homeFirstAlbumRecommendation = MutableStateFlow<HomeAlbumRecommendation?>(null)
-        val homeSecondAlbumRecommendation = MutableStateFlow<HomeAlbumRecommendation?>(null)
+        quickPicks.value = database.quickPicks()
+            .first().shuffled().take(20)
 
-        private val artistRecommendation = MutableStateFlow<List<Artist>?>(null)
-        val homeFirstArtistRecommendation = MutableStateFlow<HomeArtistRecommendation?>(null)
-        val homeSecondArtistRecommendation = MutableStateFlow<HomeArtistRecommendation?>(null)
-        val homeThirdArtistRecommendation = MutableStateFlow<HomeArtistRecommendation?>(null)
+        forgottenFavorites.value = database.forgottenFavorites()
+            .first().shuffled().take(20)
 
-        val youtubePlaylists = MutableStateFlow<List<PlaylistItem>?>(null)
+        val fromTimeStamp = System.currentTimeMillis() - 86400000 * 7 * 2
+        val keepListeningSongs = database.mostPlayedSongs(fromTimeStamp, limit = 15, offset = 5)
+            .first().shuffled().take(10)
+        val keepListeningAlbums = database.mostPlayedAlbums(fromTimeStamp, limit = 8, offset = 2)
+            .first().filter { it.album.thumbnailUrl != null }.shuffled().take(5)
+        val keepListeningArtists = database.mostPlayedArtists(fromTimeStamp)
+            .first().filter { it.artist.isYouTubeArtist && it.artist.thumbnailUrl != null }.shuffled().take(5)
+        keepListening.value = (keepListeningSongs + keepListeningAlbums + keepListeningArtists).shuffled()
 
-        private suspend fun getQuickPicks() {
-            when (quickPicksEnum.first()) {
-                QuickPicks.QUICK_PICKS ->
-                    quickPicks.value =
-                        database
-                            .quickPicks()
-                            .first()
+        allLocalItems.value = (quickPicks.value.orEmpty() + forgottenFavorites.value.orEmpty() + keepListening.value.orEmpty())
+            .filter { it is Song || it is Album }
+
+        // Similar to artists
+        val artistRecommendations =
+            database.mostPlayedArtists(fromTimeStamp, limit = 10).first()
+                .filter { it.artist.isYouTubeArtist }
+                .shuffled().take(3)
+                .mapNotNull {
+                    val items = mutableListOf<YTItem>()
+                    YouTube.artist(it.id).onSuccess { page ->
+                        items += page.sections.getOrNull(page.sections.size - 2)?.items.orEmpty()
+                        items += page.sections.lastOrNull()?.items.orEmpty()
+                    }
+                    SimilarRecommendation(
+                        title = it,
+                        items = items
+                            .filterExplicit(hideExplicit)
                             .shuffled()
-                            .take(20)
-                QuickPicks.LAST_LISTEN -> songLoad()
-            }
-        }
-
-        private suspend fun load() {
-            getQuickPicks()
-            val artists =
-                database
-                    .mostPlayedArtists(System.currentTimeMillis() - 86400000 * 7 * 2)
-                    .first()
-                    .shuffled()
-                    .take(5)
-            val filteredArtists = mutableListOf<Artist>()
-            artists.forEach {
-                if (it.artist.isYouTubeArtist) {
-                    filteredArtists.add(it)
-                }
-            }
-            keepListeningArtists.value = filteredArtists
-            keepListeningAlbums.value =
-                database
-                    .getRecommendationAlbum(limit = 8, offset = 2)
-                    .first()
-                    .shuffled()
-                    .take(5)
-            keepListeningSongs.value =
-                database
-                    .mostPlayedSongs(System.currentTimeMillis() - 86400000 * 7 * 2, limit = 15, offset = 5)
-                    .first()
-                    .shuffled()
-                    .take(10)
-            val listenAgainBuilder = mutableListOf<Int>()
-            var index = 0
-            keepListeningArtists.value?.forEach { _ ->
-                listenAgainBuilder.add(index)
-                index += 1
-            }
-            index = 5
-            keepListeningAlbums.value?.forEach { _ ->
-                listenAgainBuilder.add(index)
-                index += 1
-            }
-            index = 10
-            keepListeningSongs.value?.forEach { _ ->
-                listenAgainBuilder.add(index)
-                index += 1
-            }
-            keepListening.value = listenAgainBuilder.shuffled()
-            songsAlbumRecommendation.value =
-                database
-                    .getRecommendationAlbum(limit = 10)
-                    .first()
-                    .shuffled()
-                    .take(2)
-
-            artistRecommendation.value =
-                database
-                    .mostPlayedArtists(System.currentTimeMillis() - 86400000 * 7, limit = 10)
-                    .first()
-                    .shuffled()
-                    .take(3)
-
-            viewModelScope.launch {
-                YouTube
-                    .likedPlaylists()
-                    .onSuccess {
-                        youtubePlaylists.value = it
-                    }.onFailure {
-                        reportException(it)
-                    }
-            }
-        }
-
-        private suspend fun homeLoad() {
-            YouTube
-                .home()
-                .onSuccess { res ->
-                    res.getOrNull(1)?.continuation?.let {
-                        continuation.value = it
-                    }
-                    home.value = res
-                }.onFailure {
-                    reportException(it)
-                }
-            continuationsLoad()
-        }
-
-        private suspend fun continuation(
-            continuationVal: String?,
-            next: MutableStateFlow<List<HomePlayList>?>,
-        ) {
-            continuationVal?.run {
-                YouTube
-                    .browseContinuation(this)
-                    .onSuccess { res ->
-                        res.firstOrNull()?.continuation?.let {
-                            continuation.value = it
-                        }
-                        next.value = res
-                    }.onFailure {
-                        reportException(it)
-                    }
-            }
-        }
-
-        private suspend fun continuationsLoad() {
-            artistLoad(artistRecommendation.value?.getOrNull(0), homeFirstArtistRecommendation)
-            forgottenFavorite.value =
-                database
-                    .forgottenFavorites()
-                    .first()
-                    .shuffled()
-                    .take(20)
-            continuation.value?.run {
-                continuation(this, homeFirstContinuation)
-            }
-            albumLoad(songsAlbumRecommendation.value?.getOrNull(0), homeFirstAlbumRecommendation)
-
-            continuation.value?.run {
-                continuation(this, homeSecondContinuation)
-            }
-            artistLoad(artistRecommendation.value?.getOrNull(1), homeSecondArtistRecommendation)
-
-            continuation.value?.run {
-                continuation(this, homeThirdContinuation)
-            }
-            albumLoad(songsAlbumRecommendation.value?.getOrNull(1), homeSecondAlbumRecommendation)
-
-            artistLoad(artistRecommendation.value?.getOrNull(2), homeThirdArtistRecommendation)
-        }
-
-        private suspend fun songLoad() {
-            val song =
-                database
-                    .events()
-                    .first()
-                    .firstOrNull()
-                    ?.song
-            if (song != null) {
-                if (database.hasRelatedSongs(song.id)) {
-                    val relatedSongs =
-                        database
-                            .getRelatedSongs(song.id)
-                            .first()
-                            .shuffled()
-                            .take(20)
-                    quickPicks.value = relatedSongs
-                }
-            }
-        }
-
-        private suspend fun albumLoad(
-            song: Song?,
-            next: MutableStateFlow<HomeAlbumRecommendation?>,
-        ) {
-            val albumUtils = AlbumUtils(song?.song?.albumName, song?.song?.thumbnailUrl)
-            YouTube.next(WatchEndpoint(videoId = song?.id)).onSuccess { res ->
-                YouTube
-                    .recommendAlbum(res.relatedEndpoint!!.browseId, albumUtils)
-                    .onSuccess { page ->
-                        next.value =
-                            page.copy(
-                                albums = page.albums,
-                            )
-                    }.onFailure {
-                        reportException(it)
-                    }
-            }
-        }
-
-        private suspend fun artistLoad(
-            artist: Artist?,
-            next: MutableStateFlow<HomeArtistRecommendation?>,
-        ) {
-            val listItem = mutableListOf<YTItem>()
-            artist?.id?.let {
-                YouTube.artist(it).onSuccess { res ->
-                    res.sections.getOrNull(res.sections.size - 2)?.items?.forEach { item ->
-                        listItem.add(item)
-                    }
-                    res.sections.lastOrNull()?.items?.forEach { item ->
-                        listItem.add(item)
-                    }
-                }
-            }
-            if (artist != null) {
-                next.value =
-                    HomeArtistRecommendation(
-                        listItem = listItem.shuffled().take(9),
-                        artistName = artist.artist.name,
+                            .ifEmpty { return@mapNotNull null }
                     )
-            }
-        }
-
-        fun refresh() {
-            if (isRefreshing.value) return
-            viewModelScope.launch(Dispatchers.IO) {
-                isRefreshing.value = true
-                load()
-                isRefreshing.value = false
-            }
-            viewModelScope.launch(Dispatchers.IO) {
-                homeLoad()
-            }
-        }
-
-        init {
-            viewModelScope.launch(Dispatchers.IO) {
-                val mostPlayedArtists = database.mostPlayedArtists(System.currentTimeMillis() - 86400000 * 7 * 2)
-                viewModelScope.launch {
-                    mostPlayedArtists.collect { artists ->
-                        artists
-                            .map { it.artist }
-                            .filter {
-                                it.thumbnailUrl == null
-                            }.forEach { artist ->
-                                YouTube.artist(artist.id).onSuccess { artistPage ->
-                                    database.query {
-                                        update(artist, artistPage)
-                                    }
-                                }
-                            }
-                    }
                 }
+        // Similar to songs
+        val songRecommendations =
+            database.mostPlayedSongs(fromTimeStamp, limit = 10)
+                .first().filter { it.album != null }.shuffled().take(2)
+                .mapNotNull {
+                    val endpoint = YouTube.next(WatchEndpoint(videoId = it.id)).getOrNull()?.relatedEndpoint ?: return@mapNotNull null
+                    val page = YouTube.related(endpoint).getOrNull() ?: return@mapNotNull null
+                    SimilarRecommendation(
+                        title = it,
+                        items = (page.albums.shuffled().take(4) +
+                                page.artists.shuffled().take(4) +
+                                page.playlists.shuffled().take(4))
+                            .filterExplicit(hideExplicit)
+                            .shuffled()
+                            .ifEmpty { return@mapNotNull null }
+                    )
+                }
+        similarRecommendations.value = artistRecommendations + songRecommendations
+
+        YouTube.home().onSuccess { page ->
+            homePage.value = page.filterExplicit(hideExplicit)
+        }.onFailure {
+            reportException(it)
+        }
+
+        YouTube.explore().onSuccess { page ->
+            val artists: Set<String>
+            val favouriteArtists: Set<String>
+            database.artistsByCreateDateAsc().first().let { list ->
+                artists = list.map(Artist::id).toHashSet()
+                favouriteArtists = list
+                    .filter { it.artist.bookmarkedAt != null }
+                    .map { it.id }
+                    .toHashSet()
             }
-            viewModelScope.launch(Dispatchers.IO) {
-                isRefreshing.value = true
-                load()
-                isRefreshing.value = false
-            }
-            viewModelScope.launch(Dispatchers.IO) {
-                homeLoad()
-            }
+            explorePage.value = page.copy(
+                newReleaseAlbums = page.newReleaseAlbums
+                    .sortedBy { album ->
+                        if (album.artists.orEmpty().any { it.id in favouriteArtists }) 0
+                        else if (album.artists.orEmpty().any { it.id in artists }) 1
+                        else 2
+                    }
+                    .filterExplicit(hideExplicit)
+            )
+        }.onFailure {
+            reportException(it)
+        }
+
+        allYtItems.value = similarRecommendations.value?.flatMap { it.items }.orEmpty() +
+                homePage.value?.sections?.flatMap { it.items }.orEmpty() +
+                explorePage.value?.newReleaseAlbums.orEmpty()
+
+        isLoading.value = false
+    }
+
+    fun refresh() {
+        if (isRefreshing.value) return
+        viewModelScope.launch(Dispatchers.IO) {
+            isRefreshing.value = true
+            load()
+            isRefreshing.value = false
         }
     }
+
+    init {
+        viewModelScope.launch(Dispatchers.IO) {
+            load()
+        }
+    }
+}
