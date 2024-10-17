@@ -757,36 +757,7 @@ object YouTube {
                     ),
             )
         }
-
-    suspend fun home(): Result<List<HomePlayList>> =
-        runCatching {
-            val response = innerTube.browse(WEB_REMIX, browseId = "FEmusic_home").body<BrowseResponse>()
-            val continuation =
-                response.contents
-                    ?.singleColumnBrowseResultsRenderer
-                    ?.tabs
-                    ?.firstOrNull()
-                    ?.tabRenderer
-                    ?.content
-                    ?.sectionListRenderer
-                    ?.continuations
-                    ?.firstOrNull()
-                    ?.nextContinuationData
-                    ?.continuation
-            response.contents
-                ?.singleColumnBrowseResultsRenderer
-                ?.tabs
-                ?.firstOrNull()
-                ?.tabRenderer
-                ?.content
-                ?.sectionListRenderer
-                ?.contents!!
-                .mapNotNull { it.musicCarouselShelfRenderer }
-                .map {
-                    HomePlayList.fromMusicCarouselShelfRenderer(it, continuation)
-                }
-        }
-
+    
     suspend fun browse(
         browseId: String,
         params: String?,
