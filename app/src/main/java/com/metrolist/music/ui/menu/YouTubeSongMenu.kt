@@ -46,7 +46,6 @@ import androidx.media3.exoplayer.offline.DownloadService
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.metrolist.innertube.models.SongItem
-import com.metrolist.innertube.models.WatchEndpoint
 import com.metrolist.music.LocalDatabase
 import com.metrolist.music.LocalDownloadUtil
 import com.metrolist.music.LocalPlayerConnection
@@ -279,7 +278,7 @@ fun YouTubeSongMenu(
             icon = R.drawable.radio,
             title = R.string.start_radio,
         ) {
-            playerConnection.playQueue(YouTubeQueue(WatchEndpoint(videoId = song.id), song.toMediaMetadata()))
+            playerConnection.playQueue(YouTubeQueue.radio(song.toMediaMetadata()))
             onDismiss()
         }
         GridMenuItem(
