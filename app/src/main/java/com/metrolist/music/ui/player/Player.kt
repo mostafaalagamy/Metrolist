@@ -648,7 +648,7 @@ fun BottomSheetPlayer(
                         Modifier
                             .size(42.dp)
                             .clip(RoundedCornerShape(24.dp))
-                            .background(MaterialTheme.colorScheme.secondaryContainer)
+                            .background(MaterialTheme.colorScheme.primary)
                             .clickable {
                                 playerConnection.service.startRadioSeamlessly()
                             },
@@ -656,7 +656,7 @@ fun BottomSheetPlayer(
                     Image(
                         painter = painterResource(R.drawable.radio),
                         contentDescription = null,
-                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSecondaryContainer),
+                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary),
                         modifier =
                             Modifier
                                 .align(Alignment.Center)
@@ -671,7 +671,7 @@ fun BottomSheetPlayer(
                         Modifier
                             .size(42.dp)
                             .clip(RoundedCornerShape(24.dp))
-                            .background(MaterialTheme.colorScheme.secondaryContainer)
+                            .background(MaterialTheme.colorScheme.primary)
                             .clickable {
                                 if (download?.state == Download.STATE_COMPLETED) {
                                     DownloadService.sendRemoveDownload(
@@ -711,7 +711,7 @@ fun BottomSheetPlayer(
                                 },
                             ),
                         contentDescription = null,
-                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSecondaryContainer),
+                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary),
                         modifier =
                             Modifier
                                 .align(Alignment.Center)
@@ -726,7 +726,7 @@ fun BottomSheetPlayer(
                         Modifier
                             .size(42.dp)
                             .clip(RoundedCornerShape(24.dp))
-                            .background(MaterialTheme.colorScheme.secondaryContainer)
+                            .background(MaterialTheme.colorScheme.primary)
                             .clickable {
                                 showChoosePlaylistDialog = true
                             },
@@ -734,7 +734,7 @@ fun BottomSheetPlayer(
                     Image(
                         painter = painterResource(R.drawable.playlist_add),
                         contentDescription = null,
-                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSecondaryContainer),
+                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary),
                         modifier =
                             Modifier
                                 .align(Alignment.Center)
@@ -750,7 +750,7 @@ fun BottomSheetPlayer(
                         Modifier
                             .size(42.dp)
                             .clip(RoundedCornerShape(24.dp))
-                            .background(MaterialTheme.colorScheme.secondaryContainer),
+                            .background(MaterialTheme.colorScheme.primary),
                 ) {
                     AnimatedContent(
                         label = "sleepTimer",
@@ -774,14 +774,14 @@ fun BottomSheetPlayer(
                                     Modifier
                                         .size(42.dp)
                                         .clip(RoundedCornerShape(24.dp))
-                                        .background(MaterialTheme.colorScheme.secondaryContainer)
+                                        .background(MaterialTheme.colorScheme.primary)
                                         .clickable {
                                             showSleepTimerDialog = true
                                         },
                             ) {
                                 Image(
                                     painter = painterResource(R.drawable.bedtime),
-                                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSecondaryContainer),
+                                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary),
                                     contentDescription = null,
                                     modifier =
                                         Modifier
@@ -801,7 +801,7 @@ fun BottomSheetPlayer(
                         Modifier
                             .size(42.dp)
                             .clip(RoundedCornerShape(24.dp))
-                            .background(MaterialTheme.colorScheme.secondaryContainer)
+                            .background(MaterialTheme.colorScheme.primary)
                             .clickable {
                                 menuState.show {
                                     PlayerMenu(
@@ -817,7 +817,7 @@ fun BottomSheetPlayer(
                     Image(
                         painter = painterResource(R.drawable.more_horiz),
                         contentDescription = null,
-                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSecondaryContainer),
+                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary),
                     )
                 }
             }
@@ -936,7 +936,7 @@ fun BottomSheetPlayer(
                         Modifier
                             .size(72.dp)
                             .clip(RoundedCornerShape(playPauseRoundness))
-                            .background(MaterialTheme.colorScheme.secondaryContainer)
+                            .background(MaterialTheme.colorScheme.primary)
                             .clickable {
                                 if (playbackState == STATE_ENDED) {
                                     playerConnection.player.seekTo(0, 0)
@@ -960,7 +960,7 @@ fun BottomSheetPlayer(
                                 },
                             ),
                         contentDescription = null,
-                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSecondaryContainer),
+                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary),
                         modifier =
                             Modifier
                                 .align(Alignment.Center)
