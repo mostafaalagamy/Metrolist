@@ -75,6 +75,9 @@ fun OnlineSearchScreen(
     val keyboardController = LocalSoftwareKeyboardController.current
     val menuState = LocalMenuState.current
     val playerConnection = LocalPlayerConnection.current ?: return
+
+    val scope = rememberCoroutineScope()
+    
     val haptic = LocalHapticFeedback.current
     val isPlaying by playerConnection.isPlaying.collectAsState()
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
@@ -173,6 +176,44 @@ fun OnlineSearchScreen(
                         else -> false
                     },
                 isPlaying = isPlaying,
+                trailingContent = {
+                    IconButton(
+                        onClick = {
+                            menuState.show {
+                                when (item) {
+                                    is SongItem ->
+                                        YouTubeSongMenu(
+                                            song = item,
+                                            navController = navController,
+                                            onDismiss = menuState::dismiss,
+                                        )
+                                    is AlbumItem ->
+                                        YouTubeAlbumMenu(
+                                            albumItem = item,
+                                            navController = navController,
+                                            onDismiss = menuState::dismiss,
+                                        )
+                                    is ArtistItem ->
+                                        YouTubeArtistMenu(
+                                            artist = item,
+                                            onDismiss = menuState::dismiss,
+                                        )
+                                    is PlaylistItem ->
+                                        YouTubePlaylistMenu(
+                                            playlist = item,
+                                            coroutineScope = scope,
+                                            onDismiss = menuState::dismiss,
+                                        )
+                                }
+                            }
+                        }
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.more_vert),
+                            contentDescription = null
+                        )
+                    }
+                },
                 modifier =
                     Modifier
                         .combinedClickable(
