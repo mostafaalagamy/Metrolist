@@ -699,53 +699,138 @@ fun HomeScreen(
                     }
                 }
 
-                homeFirstAlbumRecommendation?.albums?.let { albums ->
-                    if (albums.recommendationAlbum.isNotEmpty()) {
-                        NavigationTitle(
-                            title = stringResource(R.string.similar_to) + " " + albums.recommendedAlbum.name,
-                        )
+                homeFirstArtistRecommendation?.let { albums ->
+    if (albums.listItem.isNotEmpty()) {
+        Box(
+            contentAlignment = Alignment.Center, // محاذاة المحتويات داخل الـ Box
+            modifier = Modifier.padding(horizontal = 16.dp)
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                // عرض كلمة "Similar to" في سطر
+                Text(
+                    text = stringResource(R.string.similar_to),
+                    style = MaterialTheme.typography.h6,
+                    modifier = Modifier.align(Alignment.Start) // لجعل النص يبدأ من اليسار
+                )
 
-                        LazyRow(
-                            contentPadding =
-                                WindowInsets.systemBars
-                                    .only(WindowInsetsSides.Horizontal)
-                                    .asPaddingValues(),
-                        ) {
-                            items(
-                                items = albums.recommendationAlbum,
-                                key = { it.id },
-                            ) { album ->
-                                if (!album.title.contains("Presenting")) {
-                                    YouTubeGridItem(
-                                        item = album,
-                                        isActive = mediaMetadata?.album?.id == album.id,
-                                        isPlaying = isPlaying,
-                                        coroutineScope = coroutineScope,
-                                        modifier =
-                                            Modifier
-                                                .combinedClickable(
-                                                    onClick = {
-                                                        navController.navigate("online_playlist/${album.id}")
-                                                    },
-                                                    onLongClick = {
-                                                        haptic.performHapticFeedback(
-                                                            HapticFeedbackType.LongPress,
-                                                        )
-                                                        menuState.show {
-                                                            YouTubePlaylistMenu(
-                                                                playlist = album,
-                                                                coroutineScope = coroutineScope,
-                                                                onDismiss = menuState::dismiss,
-                                                            )
-                                                        }
-                                                    },
-                                                ).animateItemPlacement(),
-                                    )
-                                }
-                            }
-                        }
-                    }
+                // إضافة فراغ بين النص الأول والثاني لترك مكان للصورة
+                Spacer(modifier = Modifier.height(20.dp))
+
+                // عرض اسم الفنان بلون الـ primary
+                Text(
+                    text = albums.artistName,
+                    color = MaterialTheme.colors.primary, // استخدام اللون الأساسي من الثيم
+                    style = MaterialTheme.typography.subtitle1,
+                    modifier = Modifier.align(Alignment.Start) // لجعل النص يبدأ من اليسار
+                )
+            }
+
+            // صورة الفنان في منتصف السطرين
+            Image(
+                painter = rememberImagePainter(data = albums.artistImageUrl),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(60.dp) // حجم الصورة 60dp
+                    .clip(CircleShape) // شكل دائري للصورة
+                    .align(Alignment.Center) // محاذاة في المنتصف
+                    .offset(y = (-10).dp) // لتحريك الصورة إلى المنتصف بين السطرين
+            )
+        }
+
+        LazyRow(
+            contentPadding =
+                WindowInsets.systemBars
+                    .only(WindowInsetsSides.Horizontal)
+                    .asPaddingValues(),
+        ) {
+            items(
+                items = albums.listItem,
+                key = { it.id },
+            ) { item ->
+                if (!item.title.contains("Presenting")) {
+                    YouTubeSmallGridItem(
+                        item = item,
+                        isActive = mediaMetadata?.album?.id == item.id,
+                        isPlaying = isPlaying,
+                        coroutineScope = coroutineScope,
+                        modifier =
+                            Modifier
+                                .combinedClickable(
+                                    onClick = {
+                                        when (item) {
+                                            is PlaylistItem ->
+                                                navController.navigate(
+                                                    "online_playlist/${item.id}",
+                                                )
+
+                                            is SongItem -> {
+                                                if (item.id == mediaMetadata?.id) {
+                                                    playerConnection.player.togglePlayPause()
+                                                } else {
+                                                    playerConnection.playQueue(
+                                                        YouTubeQueue(
+                                                            WatchEndpoint(videoId = item.id),
+                                                            item.toMediaMetadata(),
+                                                        ),
+                                                    )
+                                                }
+                                            }
+
+                                            is AlbumItem -> navController.navigate("album/${item.id}")
+
+                                            else -> navController.navigate("artist/${item.id}")
+                                        }
+                                    },
+                                    onLongClick = {
+                                        haptic.performHapticFeedback(
+                                            HapticFeedbackType.LongPress,
+                                        )
+                                        menuState.show {
+                                            when (item) {
+                                                is PlaylistItem ->
+                                                    YouTubePlaylistMenu(
+                                                        playlist = item,
+                                                        coroutineScope = coroutineScope,
+                                                        onDismiss = menuState::dismiss,
+                                                    )
+
+                                                is ArtistItem -> {
+                                                    YouTubeArtistMenu(
+                                                        artist = item,
+                                                        onDismiss = menuState::dismiss,
+                                                    )
+                                                }
+
+                                                is SongItem -> {
+                                                    YouTubeSongMenu(
+                                                        song = item,
+                                                        navController = navController,
+                                                        onDismiss = menuState::dismiss,
+                                                    )
+                                                }
+
+                                                is AlbumItem -> {
+                                                    YouTubeAlbumMenu(
+                                                        albumItem = item,
+                                                        navController = navController,
+                                                        onDismiss = menuState::dismiss,
+                                                    )
+                                                }
+
+                                                else -> {
+                                                }
+                                            }
+                                        }
+                                    },
+                                ).animateItemPlacement(),
+                    )
                 }
+            }
+        }
+    }
+}
 
                 homeFirstContinuation?.forEach { homePlaylists ->
                     if (homePlaylists.playlists.isNotEmpty()) {
