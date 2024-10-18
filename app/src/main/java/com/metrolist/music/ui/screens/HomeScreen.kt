@@ -1163,25 +1163,28 @@ fun HomeScreen(
                 }
 
                 if (isLoading) {
-                item {
-                    ShimmerHost(
-                        modifier = Modifier.animateItem()
-                    ) {
-                        TextPlaceholder(
-                            height = 36.dp,
-                            modifier = Modifier
-                                .padding(12.dp)
+                ShimmerHost {
+                    TextPlaceholder(
+                        height = 36.dp,
+                        modifier =
+                            Modifier
+                                .padding(vertical = 12.dp, horizontal = 12.dp)
                                 .width(250.dp),
-                        )
-                        LazyRow {
-                            items(4) {
-                                GridItemPlaceHolder()
-                            }
+                    )
+                    Row {
+                        repeat(2) {
+                            GridItemPlaceHolder()
                         }
                     }
+                    TextPlaceholder(
+                        height = 36.dp,
+                        modifier =
+                            Modifier
+                                .padding(vertical = 12.dp, horizontal = 12.dp)
+                                .width(250.dp),
+                    )                  
                 }
             }
-        }
 
                 explorePage?.newReleaseAlbums?.let { newReleaseAlbums ->
                     NavigationTitle(
@@ -1237,3 +1240,4 @@ fun HomeScreen(
             }
         }
     }
+}
