@@ -1161,8 +1161,8 @@ fun HomeScreen(
                         }
                     }
                 }
-
-                if (isLoading) {
+            } else {
+                item(key = "shimmer") {
                 ShimmerHost {
                     TextPlaceholder(
                         height = 36.dp,
@@ -1185,6 +1185,7 @@ fun HomeScreen(
                     )                  
                 }
             }
+        }
 
                 explorePage?.newReleaseAlbums?.let { newReleaseAlbums ->
                     NavigationTitle(
