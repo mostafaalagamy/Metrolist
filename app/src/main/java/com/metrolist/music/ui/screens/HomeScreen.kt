@@ -567,7 +567,7 @@ fun HomeScreen(
                                                             }
                                                         }
                                                     },
-                                                ).animateItemPlacementPlacement(),
+                                                ).animateItemPlacement(),
                                     )
                                 }
                             }
@@ -704,7 +704,7 @@ fun HomeScreen(
                                                             )
                                                         }
                                                     },
-                                                ).animateItemPlacementPlacement(),
+                                                ).animateItemPlacement(),
                                     )
                                 }
                             }
@@ -752,7 +752,7 @@ fun HomeScreen(
                                                             )
                                                         }
                                                     },
-                                                ).animateItemPlacementPlacement(),
+                                                ).animateItemPlacement(),
                                     )
                                 }
                             }
@@ -804,7 +804,7 @@ fun HomeScreen(
                                                             )
                                                         }
                                                     },
-                                                ).animateItemPlacementPlacement(),
+                                                ).animateItemPlacement(),
                                     )
                                 }
                             }
@@ -903,7 +903,7 @@ fun HomeScreen(
                                                             }
                                                         }
                                                     },
-                                                ).animateItemPlacementPlacement(),
+                                                ).animateItemPlacement(),
                                     )
                                 }
                             }
@@ -955,7 +955,7 @@ fun HomeScreen(
                                                             )
                                                         }
                                                     },
-                                                ).animateItemPlacementPlacement(),
+                                                ).animateItemPlacement(),
                                     )
                                 }
                             }
@@ -1003,7 +1003,7 @@ fun HomeScreen(
                                                             )
                                                         }
                                                     },
-                                                ).animateItemPlacementPlacement(),
+                                                ).animateItemPlacement(),
                                     )
                                 }
                             }
@@ -1055,7 +1055,7 @@ fun HomeScreen(
                                                             )
                                                         }
                                                     },
-                                                ).animateItemPlacementPlacement(),
+                                                ).animateItemPlacement(),
                                     )
                                 }
                             }
@@ -1154,7 +1154,7 @@ fun HomeScreen(
                                                             }
                                                         }
                                                     },
-                                                ).animateItemPlacementPlacement(),
+                                                ).animateItemPlacement(),
                                     )
                                 }
                             }
@@ -1165,7 +1165,7 @@ fun HomeScreen(
                 if (isLoading) {
                 item {
                     ShimmerHost(
-                        modifier = Modifier.animateItemPlacement()
+                        modifier = Modifier.animateItem()
                     ) {
                         TextPlaceholder(
                             height = 36.dp,
@@ -1181,6 +1181,7 @@ fun HomeScreen(
                     }
                 }
             }
+        }
 
                 explorePage?.newReleaseAlbums?.let { newReleaseAlbums ->
                     NavigationTitle(
@@ -1221,7 +1222,7 @@ fun HomeScreen(
                                                     )
                                                 }
                                             },
-                                        ).animateItemPlacementPlacement(),
+                                        ).animateItemPlacement(),
                             )
                         }
                     }
@@ -1236,4 +1237,3 @@ fun HomeScreen(
             }
         }
     }
-}
