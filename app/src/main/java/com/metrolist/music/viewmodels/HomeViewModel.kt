@@ -38,6 +38,7 @@ class HomeViewModel
         val database: MusicDatabase,
     ) : ViewModel() {
         val isRefreshing = MutableStateFlow(false)
+        val isLoading = MutableStateFlow(false)
         private val quickPicksEnum =
             context.dataStore.data
                 .map {
@@ -85,6 +86,8 @@ class HomeViewModel
         }
 
         private suspend fun load() {
+            isLoading.value = true
+            
             getQuickPicks()
             val artists =
                 database
