@@ -1161,8 +1161,8 @@ fun HomeScreen(
                         }
                     }
                 }
-            } else {
-                item(key = "shimmer") {
+                
+            if (home == null) {
                 ShimmerHost {
                     TextPlaceholder(
                         height = 36.dp,
@@ -1241,3 +1241,4 @@ fun HomeScreen(
             }
         }
     }
+}
