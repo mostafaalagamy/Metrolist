@@ -1157,6 +1157,27 @@ fun HomeScreen(
                     }
                 }
 
+                if (isLoading) {
+                item {
+                    ShimmerHost(
+                        modifier = Modifier.animateItem()
+                    ) {
+                        TextPlaceholder(
+                            height = 36.dp,
+                            modifier = Modifier
+                                .padding(12.dp)
+                                .width(250.dp),
+                        )
+                        LazyRow {
+                            items(4) {
+                                GridItemPlaceHolder()
+                            }
+                        }
+                    }
+                }
+            }
+       }
+
                 explorePage?.newReleaseAlbums?.let { newReleaseAlbums ->
                     NavigationTitle(
                         title = stringResource(R.string.new_release_albums),
@@ -1200,29 +1221,7 @@ fun HomeScreen(
                             )
                         }
                     }
-                }
-
-                if (isLoading) {
-                item {
-                    ShimmerHost(
-                        modifier = Modifier.animateItem()
-                    ) {
-                        TextPlaceholder(
-                            height = 36.dp,
-                            modifier = Modifier
-                                .padding(12.dp)
-                                .width(250.dp),
-                        )
-                        LazyRow {
-                            items(4) {
-                                GridItemPlaceHolder()
-                            }
-                        }
-                    }
-                }
-            }
-        }
-                
+                }                                
                 Spacer(
                     Modifier.height(
                         LocalPlayerAwareWindowInsets.current
