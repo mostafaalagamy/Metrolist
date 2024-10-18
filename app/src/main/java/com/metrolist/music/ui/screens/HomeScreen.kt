@@ -1220,7 +1220,8 @@ fun HomeScreen(
                         }
                     }
                 }
-           }
+            }
+        }
                 
                 Spacer(
                     Modifier.height(
