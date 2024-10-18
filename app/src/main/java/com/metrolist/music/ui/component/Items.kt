@@ -514,7 +514,6 @@ fun AlbumListItem(
                    }
                 }
             }
-        }
 
         if (showLikedIcon && album.album.bookmarkedAt != null) {
             Icon.Favorite()
@@ -577,7 +576,6 @@ fun AlbumGridItem(
                     songs.all { downloads[it.id]?.state in listOf(STATE_QUEUED, STATE_DOWNLOADING, STATE_COMPLETED) } -> STATE_DOWNLOADING
                     else -> Download.STATE_STOPPED
                 }
-                    }
             }
         }
 
