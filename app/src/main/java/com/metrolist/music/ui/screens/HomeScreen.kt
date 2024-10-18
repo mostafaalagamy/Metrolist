@@ -89,6 +89,8 @@ import com.metrolist.music.ui.utils.SnapLayoutInfoProvider
 import com.metrolist.music.utils.rememberPreference
 import com.metrolist.music.viewmodels.HomeViewModel
 import kotlin.random.Random
+import androidx.compose.ui.layout.offset
+import coil.compose.rememberImagePainter
 
 @SuppressLint("UnrememberedMutableState")
 @Suppress("DEPRECATION")
