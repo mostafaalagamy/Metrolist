@@ -3,7 +3,6 @@
 package com.metrolist.music.ui.component
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandIn
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -14,6 +13,7 @@ import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.BoxWithConstraintsScope
 import androidx.compose.foundation.layout.Column
@@ -42,34 +42,29 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.fastForEachIndexed
 import androidx.compose.ui.zIndex
-import androidx.core.graphics.drawable.toBitmapOrNull
 import androidx.media3.exoplayer.offline.Download
 import androidx.media3.exoplayer.offline.Download.STATE_COMPLETED
 import androidx.media3.exoplayer.offline.Download.STATE_DOWNLOADING
 import androidx.media3.exoplayer.offline.Download.STATE_QUEUED
 import coil.compose.AsyncImage
-import coil.compose.AsyncImagePainter
-import coil.request.ImageRequest
 import com.metrolist.innertube.YouTube
 import com.metrolist.innertube.models.AlbumItem
 import com.metrolist.innertube.models.ArtistItem
@@ -92,7 +87,6 @@ import com.metrolist.music.db.entities.Song
 import com.metrolist.music.extensions.toMediaItem
 import com.metrolist.music.models.MediaMetadata
 import com.metrolist.music.playback.queues.ListQueue
-import com.metrolist.music.ui.theme.extractThemeColor
 import com.metrolist.music.utils.joinByBullet
 import com.metrolist.music.utils.makeTimeString
 import com.metrolist.music.utils.reportException
@@ -194,11 +188,10 @@ fun ListItem(
 @Composable
 fun GridItem(
     modifier: Modifier = Modifier,
-    title: String,
-    subtitle: String,
+    title: @Composable () -> Unit,
+    subtitle: @Composable () -> Unit,
     badges: @Composable RowScope.() -> Unit = {},
     thumbnailContent: @Composable BoxWithConstraintsScope.() -> Unit,
-    thumbnailShape: Shape,
     thumbnailRatio: Float = 1f,
     fillMaxWidth: Boolean = false,
 ) {
@@ -221,13 +214,31 @@ fun GridItem(
                 } else {
                     Modifier.height(GridThumbnailHeight)
                 }.aspectRatio(thumbnailRatio)
-                    .clip(thumbnailShape),
         ) {
             thumbnailContent()
         }
 
         Spacer(modifier = Modifier.height(6.dp))
 
+        title()
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            badges()
+            subtitle()
+        }
+    }
+}
+@Composable
+fun GridItem(
+    modifier: Modifier = Modifier,
+    title: String,
+    subtitle: String,
+    badges: @Composable RowScope.() -> Unit = {},
+    thumbnailContent: @Composable BoxWithConstraintsScope.() -> Unit,
+    thumbnailRatio: Float = 1f,
+    fillMaxWidth: Boolean = false,
+) = GridItem(
+    modifier = modifier,
+    title = {
         Text(
             text = title,
             style = MaterialTheme.typography.bodyLarge,
@@ -241,19 +252,20 @@ fun GridItem(
                     .fillMaxWidth(),
         )
 
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            badges()
-
-            Text(
-                text = subtitle,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.secondary,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
-        }
-    }
-}
+        },
+    subtitle = {
+        Text(
+            text = subtitle,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.secondary,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis,
+        )
+    },
+    thumbnailContent = thumbnailContent,
+    thumbnailRatio = thumbnailRatio,
+    fillMaxWidth = fillMaxWidth
+)
 
 @Composable
 fun SmallGridItem(
@@ -317,50 +329,14 @@ fun SongListItem(
     isSelected: Boolean = false,
     badges: @Composable RowScope.() -> Unit = {
         if (showLikedIcon && song.song.liked) {
-            Icon(
-                painter = painterResource(R.drawable.favorite),
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.error,
-                modifier =
-                    Modifier
-                        .size(18.dp)
-                        .padding(end = 2.dp),
-            )
+            Icon.Favorite()
         }
         if (showInLibraryIcon && song.song.inLibrary != null) {
-            Icon(
-                painter = painterResource(R.drawable.library_add_check),
-                contentDescription = null,
-                modifier =
-                    Modifier
-                        .size(18.dp)
-                        .padding(end = 2.dp),
-            )
+            Icon.Library()
         }
         if (showDownloadIcon) {
             val download by LocalDownloadUtil.current.getDownload(song.id).collectAsState(initial = null)
-            when (download?.state) {
-                STATE_COMPLETED ->
-                    Icon(
-                        painter = painterResource(R.drawable.offline),
-                        contentDescription = null,
-                        modifier =
-                            Modifier
-                                .size(18.dp)
-                                .padding(end = 2.dp),
-                    )
-
-                STATE_QUEUED, STATE_DOWNLOADING ->
-                    CircularProgressIndicator(
-                        strokeWidth = 2.dp,
-                        modifier =
-                            Modifier
-                                .size(16.dp)
-                                .padding(end = 2.dp),
-                    )
-
-                else -> {}
-            }
+            Icon.Download(download?.state)
         }
     },
     isActive: Boolean = false,
