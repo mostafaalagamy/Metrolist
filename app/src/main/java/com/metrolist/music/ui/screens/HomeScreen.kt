@@ -1176,7 +1176,6 @@ fun HomeScreen(
                     }
                 }
             }
-       }
 
                 explorePage?.newReleaseAlbums?.let { newReleaseAlbums ->
                     NavigationTitle(
