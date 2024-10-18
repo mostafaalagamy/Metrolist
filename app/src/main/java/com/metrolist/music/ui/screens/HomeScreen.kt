@@ -1241,4 +1241,3 @@ fun HomeScreen(
             }
         }
     }
-}
