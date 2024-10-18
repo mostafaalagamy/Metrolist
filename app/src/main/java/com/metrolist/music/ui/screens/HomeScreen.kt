@@ -88,6 +88,13 @@ import com.metrolist.music.utils.rememberPreference
 import com.metrolist.music.viewmodels.HomeViewModel
 import kotlin.random.Random
 
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.*
+import com.metrolist.music.ui.component.shimmer.TextPlaceholder
+import com.metrolist.music.ui.component.shimmer.ShimmerHost
+import com.metrolist.music.ui.component.shimmer.GridItemPlaceHolder
+
+
 @SuppressLint("UnrememberedMutableState")
 @Suppress("DEPRECATION")
 @OptIn(ExperimentalFoundationApi::class)
@@ -126,6 +133,7 @@ fun HomeScreen(
 
     val youtubePlaylists by viewModel.youtubePlaylists.collectAsState()
 
+    val isLoading by viewModel.isLoading.collectAsState()
     val isRefreshing by viewModel.isRefreshing.collectAsState()
     val mostPlayedLazyGridState = rememberLazyGridState()
 
@@ -1193,6 +1201,27 @@ fun HomeScreen(
                         }
                     }
                 }
+
+                if (isLoading) {
+                item {
+                    ShimmerHost(
+                        modifier = Modifier.animateItem()
+                    ) {
+                        TextPlaceholder(
+                            height = 36.dp,
+                            modifier = Modifier
+                                .padding(12.dp)
+                                .width(250.dp),
+                        )
+                        LazyRow {
+                            items(4) {
+                                GridItemPlaceHolder()
+                            }
+                        }
+                    }
+                }
+           }
+                
                 Spacer(
                     Modifier.height(
                         LocalPlayerAwareWindowInsets.current
