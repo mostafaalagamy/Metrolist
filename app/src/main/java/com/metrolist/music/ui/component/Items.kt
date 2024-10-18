@@ -351,76 +351,14 @@ fun SongListItem(
         ),
     badges = badges,
     thumbnailContent = {
-        Box(
-            contentAlignment = Alignment.Center,
+        ItemThumbnail(
+            thumbnailUrl = song.song.thumbnailUrl,
+            albumIndex = albumIndex,
+            isActive = isActive,
+            isPlaying = isPlaying,
+            shape = RoundedCornerShape(ThumbnailCornerRadius),
             modifier = Modifier.size(ListThumbnailSize),
-        ) {
-            if (albumIndex != null) {
-                AnimatedVisibility(
-                    visible = !isActive,
-                    enter = fadeIn() + expandIn(expandFrom = Alignment.Center),
-                    exit = shrinkOut(shrinkTowards = Alignment.Center) + fadeOut(),
-                ) {
-                    if (isSelected) {
-                        Icon(
-                            painter = painterResource(R.drawable.done),
-                            modifier = Modifier.align(Alignment.Center),
-                            contentDescription = null,
-                        )
-                    } else {
-                        Text(
-                            text = albumIndex.toString(),
-                            style = MaterialTheme.typography.labelLarge,
-                        )
-                    }
-                }
-            } else {
-                if (isSelected) {
-                    Box(
-                        modifier =
-                            Modifier
-                                .fillMaxSize()
-                                .zIndex(1000f)
-                                .clip(RoundedCornerShape(ThumbnailCornerRadius))
-                                .background(Color.Black.copy(alpha = 0.5f)),
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.done),
-                            modifier = Modifier.align(Alignment.Center),
-                            contentDescription = null,
-                        )
-                    }
-                }
-                AsyncImage(
-                    model = song.song.thumbnailUrl,
-                    contentDescription = null,
-                    modifier =
-                        Modifier
-                            .fillMaxSize()
-                            .clip(RoundedCornerShape(ThumbnailCornerRadius)),
-                )
-            }
-
-            PlayingIndicatorBox(
-                isActive = isActive,
-                playWhenReady = isPlaying,
-                color = if (albumIndex != null) MaterialTheme.colorScheme.onBackground else Color.White,
-                modifier =
-                    Modifier
-                        .fillMaxSize()
-                        .background(
-                            color =
-                                if (albumIndex != null) {
-                                    Color.Transparent
-                                } else {
-                                    Color.Black.copy(
-                                        alpha = 0.4f,
-                                    )
-                                },
-                            shape = RoundedCornerShape(ThumbnailCornerRadius),
-                        ),
-            )
-        }
+        )            
     },
     trailingContent = trailingContent,
     modifier = modifier,
@@ -436,42 +374,14 @@ fun SongGridItem(
     showDownloadIcon: Boolean = true,
     badges: @Composable RowScope.() -> Unit = {
         if (showLikedIcon && song.song.liked) {
-            Icon(
-                painter = painterResource(R.drawable.favorite),
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.error,
-                modifier = Modifier
-                    .size(18.dp)
-                    .padding(end = 2.dp)
-            )
+            Icon.Favorite()
         }
         if (showInLibraryIcon && song.song.inLibrary != null) {
-            Icon(
-                painter = painterResource(R.drawable.library_add_check),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(18.dp)
-                    .padding(end = 2.dp)
-            )
+            Icon.Library()
         }
         if (showDownloadIcon) {
             val download by LocalDownloadUtil.current.getDownload(song.id).collectAsState(initial = null)
-            when (download?.state) {
-                STATE_COMPLETED -> Icon(
-                    painter = painterResource(R.drawable.offline),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(18.dp)
-                        .padding(end = 2.dp)
-                )
-                STATE_QUEUED, STATE_DOWNLOADING -> CircularProgressIndicator(
-                    strokeWidth = 2.dp,
-                    modifier = Modifier
-                        .size(16.dp)
-                        .padding(end = 2.dp)
-                )
-                else -> {}
-            }
+            Icon.Download(download?.state)
         }
     },
     isActive: Boolean = false,
@@ -485,31 +395,14 @@ fun SongGridItem(
     ),
     badges = badges,
     thumbnailContent = {
-        Box(
-            contentAlignment = Alignment.Center,
+        ItemThumbnail(
+            thumbnailUrl = song.song.thumbnailUrl,
+            isActive = isActive,
+            isPlaying = isPlaying,
+            shape = RoundedCornerShape(ThumbnailCornerRadius),
             modifier = Modifier.size(GridThumbnailHeight)
-        ) {
-            AsyncImage(
-                model = song.song.thumbnailUrl,
-                contentDescription = null,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .clip(RoundedCornerShape(ThumbnailCornerRadius))
-            )
-            PlayingIndicatorBox(
-                isActive = isActive,
-                playWhenReady = isPlaying,
-                color = Color.White,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(
-                        color = Color.Black.copy(alpha = ActiveBoxAlpha),
-                        shape = RoundedCornerShape(ThumbnailCornerRadius)
-                    )
-            )
-        }
+        )
     },
-    thumbnailShape = RoundedCornerShape(ThumbnailCornerRadius),
     fillMaxWidth = fillMaxWidth,
     modifier = modifier
 )
@@ -520,15 +413,7 @@ fun ArtistListItem(
     modifier: Modifier = Modifier,
     badges: @Composable RowScope.() -> Unit = {
         if (artist.artist.bookmarkedAt != null) {
-            Icon(
-                painter = painterResource(R.drawable.favorite),
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.error,
-                modifier =
-                    Modifier
-                        .size(18.dp)
-                        .padding(end = 2.dp),
-            )
+            Icon.Favorite()
         }
     },
     trailingContent: @Composable RowScope.() -> Unit = {},
@@ -556,15 +441,7 @@ fun ArtistGridItem(
     modifier: Modifier = Modifier,
     badges: @Composable RowScope.() -> Unit = {
         if (artist.artist.bookmarkedAt != null) {
-            Icon(
-                painter = painterResource(R.drawable.favorite),
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.error,
-                modifier =
-                    Modifier
-                        .size(18.dp)
-                        .padding(end = 2.dp),
-            )
+            Icon.Favorite()
         }
     },
     fillMaxWidth: Boolean = false,
@@ -577,10 +454,11 @@ fun ArtistGridItem(
             model = artist.artist.thumbnailUrl,
             contentDescription = null,
             contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .clip(CircleShape)
         )
     },
-    thumbnailShape = CircleShape,
     fillMaxWidth = fillMaxWidth,
     modifier = modifier,
 )
@@ -629,56 +507,20 @@ fun AlbumListItem(
         LaunchedEffect(songs) {
             if (songs.isEmpty()) return@LaunchedEffect
             downloadUtil.downloads.collect { downloads ->
-                downloadState =
-                    if (songs.all { downloads[it.id]?.state == STATE_COMPLETED }) {
-                        STATE_COMPLETED
-                    } else if (songs.all {
-                            downloads[it.id]?.state == STATE_QUEUED ||
-                                downloads[it.id]?.state == STATE_DOWNLOADING ||
-                                downloads[it.id]?.state == STATE_COMPLETED
-                        }
-                    ) {
-                        STATE_DOWNLOADING
-                    } else {
-                        Download.STATE_STOPPED
-                    }
+                downloadState = when {
+                    songs.all { downloads[it.id]?.state == STATE_COMPLETED } -> STATE_COMPLETED
+                    songs.all { downloads[it.id]?.state in listOf(STATE_QUEUED, STATE_DOWNLOADING, STATE_COMPLETED) } -> STATE_DOWNLOADING
+                    else -> Download.STATE_STOPPED
+                   }
+                }
             }
         }
 
         if (showLikedIcon && album.album.bookmarkedAt != null) {
-            Icon(
-                painter = painterResource(R.drawable.favorite),
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.error,
-                modifier =
-                    Modifier
-                        .size(18.dp)
-                        .padding(end = 2.dp),
-            )
+            Icon.Favorite()
         }
 
-        when (downloadState) {
-            STATE_COMPLETED ->
-                Icon(
-                    painter = painterResource(R.drawable.offline),
-                    contentDescription = null,
-                    modifier =
-                        Modifier
-                            .size(18.dp)
-                            .padding(end = 2.dp),
-                )
-
-            STATE_DOWNLOADING ->
-                CircularProgressIndicator(
-                    strokeWidth = 2.dp,
-                    modifier =
-                        Modifier
-                            .size(16.dp)
-                            .padding(end = 2.dp),
-                )
-
-            else -> {}
-        }
+        Icon.Download(downloadState)
     },
     isActive: Boolean = false,
     isPlaying: Boolean = false,
@@ -693,44 +535,12 @@ fun AlbumListItem(
         ),
     badges = badges,
     thumbnailContent = {
-        val database = LocalDatabase.current
-        val coroutineScope = rememberCoroutineScope()
-
-        AsyncImage(
-            model =
-                ImageRequest
-                    .Builder(LocalContext.current)
-                    .data(album.album.thumbnailUrl)
-                    .allowHardware(false)
-                    .build(),
-            contentDescription = null,
-            onState = { state ->
-                if (album.album.themeColor == null && state is AsyncImagePainter.State.Success) {
-                    coroutineScope.launch(Dispatchers.IO) {
-                        state.result.drawable.toBitmapOrNull()?.extractThemeColor()?.toArgb()?.let { color ->
-                            database.query {
-                                update(album.album.copy(themeColor = color))
-                            }
-                        }
-                    }
-                }
-            },
-            modifier =
-                Modifier
-                    .size(ListThumbnailSize)
-                    .clip(RoundedCornerShape(ThumbnailCornerRadius)),
-        )
-
-        PlayingIndicatorBox(
+        ItemThumbnail(
+            thumbnailUrl = album.album.thumbnailUrl,
             isActive = isActive,
-            playWhenReady = isPlaying,
-            modifier =
-                Modifier
-                    .size(ListThumbnailSize)
-                    .background(
-                        color = Color.Black.copy(alpha = 0.4f),
-                        shape = RoundedCornerShape(ThumbnailCornerRadius),
-                    ),
+            isPlaying = isPlaying,
+            shape = RoundedCornerShape(ThumbnailCornerRadius),
+            modifier = Modifier.size(ListThumbnailSize)
         )
     },
     trailingContent = trailingContent,
@@ -762,56 +572,20 @@ fun AlbumGridItem(
         LaunchedEffect(songs) {
             if (songs.isEmpty()) return@LaunchedEffect
             downloadUtil.downloads.collect { downloads ->
-                downloadState =
-                    if (songs.all { downloads[it.id]?.state == STATE_COMPLETED }) {
-                        STATE_COMPLETED
-                    } else if (songs.all {
-                            downloads[it.id]?.state == STATE_QUEUED ||
-                                downloads[it.id]?.state == STATE_DOWNLOADING ||
-                                downloads[it.id]?.state == STATE_COMPLETED
-                        }
-                    ) {
-                        STATE_DOWNLOADING
-                    } else {
-                        Download.STATE_STOPPED
+                downloadState = when {
+                    songs.all { downloads[it.id]?.state == STATE_COMPLETED } -> STATE_COMPLETED
+                    songs.all { downloads[it.id]?.state in listOf(STATE_QUEUED, STATE_DOWNLOADING, STATE_COMPLETED) } -> STATE_DOWNLOADING
+                    else -> Download.STATE_STOPPED
+                }
                     }
             }
         }
 
         if (album.album.bookmarkedAt != null) {
-            Icon(
-                painter = painterResource(R.drawable.favorite),
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.error,
-                modifier =
-                    Modifier
-                        .size(18.dp)
-                        .padding(end = 2.dp),
-            )
+            Icon.Favorite()
         }
 
-        when (downloadState) {
-            STATE_COMPLETED ->
-                Icon(
-                    painter = painterResource(R.drawable.offline),
-                    contentDescription = null,
-                    modifier =
-                        Modifier
-                            .size(18.dp)
-                            .padding(end = 2.dp),
-                )
-
-            STATE_DOWNLOADING ->
-                CircularProgressIndicator(
-                    strokeWidth = 2.dp,
-                    modifier =
-                        Modifier
-                            .size(16.dp)
-                            .padding(end = 2.dp),
-                )
-
-            else -> {}
-        }
+        Icon.Download(downloadState)
     },
     isActive: Boolean = false,
     isPlaying: Boolean = false,
@@ -821,90 +595,34 @@ fun AlbumGridItem(
     subtitle = album.artists.joinToString { it.name },
     badges = badges,
     thumbnailContent = {
-        AsyncImage(
-            model = album.album.thumbnailUrl,
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxSize(),
+        val database = LocalDatabase.current
+        val playerConnection = LocalPlayerConnection.current ?: return@GridItem
+
+        ItemThumbnail(
+            thumbnailUrl = album.album.thumbnailUrl,
+            isActive = isActive,
+            isPlaying = isPlaying,
+            shape = RoundedCornerShape(ThumbnailCornerRadius),
         )
 
-        AnimatedVisibility(
-            visible = isActive,
-            enter = fadeIn(tween(500)),
-            exit = fadeOut(tween(500)),
-        ) {
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier =
-                    Modifier
-                        .fillMaxSize()
-                        .background(
-                            color = Color.Black.copy(alpha = 0.4f),
-                            shape = RoundedCornerShape(ThumbnailCornerRadius),
-                        ),
-            ) {
-                if (isPlaying) {
-                    PlayingIndicator(
-                        color = Color.White,
-                        modifier = Modifier.height(24.dp),
-                    )
-                } else {
-                    Icon(
-                        painter = painterResource(R.drawable.play),
-                        contentDescription = null,
-                        tint = Color.White,
-                    )
-                }
-            }
-        }
-
-        AnimatedVisibility(
+        AlbumPlayButton(
             visible = !isActive,
-            enter = fadeIn(),
-            exit = fadeOut(),
-            modifier =
-                Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(8.dp),
-        ) {
-            val database = LocalDatabase.current
-            val playerConnection = LocalPlayerConnection.current ?: return@AnimatedVisibility
-
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier =
-                    Modifier
-                        .size(36.dp)
-                        .clip(CircleShape)
-                        .background(Color.Black.copy(alpha = 0.4f))
-                        .clickable {
-                            coroutineScope.launch {
-                                database
-                                    .albumWithSongs(album.id)
-                                    .first()
-                                    ?.songs
-                                    ?.map { it.toMediaItem() }
-                                    ?.let {
-                                        playerConnection.service.getAutomixAlbum(albumId = album.id)
-                                        playerConnection.playQueue(
-                                            ListQueue(
-                                                title = album.album.title,
-                                                items = it,
-                                            ),
-                                        )
-                                    }
-                            }
-                        },
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.play),
-                    contentDescription = null,
-                    tint = Color.White,
-                )
+            onClick = {
+                coroutineScope.launch {
+                    database.albumWithSongs(album.id).first()?.songs
+                        ?.map { it.toMediaItem() }
+                        ?.let {
+                            playerConnection.playQueue(
+                                ListQueue(
+                                    title = album.album.title,
+                                    items = it
+                                )
+                            )
+                        }
+                   }
             }
-        }
+        )
     },
-    thumbnailShape = RoundedCornerShape(ThumbnailCornerRadius),
     fillMaxWidth = fillMaxWidth,
     modifier = modifier,
 )
@@ -983,63 +701,21 @@ fun PlaylistListItem(
                     }
                 }
             }
-        when (playlist.thumbnails.size) {
-            0 ->
-            Box(
-                    modifier =
-                        Modifier
-                            .size(ListThumbnailSize)
-                            .clip(RoundedCornerShape(ThumbnailCornerRadius))
-                            .background(MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp))
-            ) {
+     PlaylistThumbnail(
+            thumbnails = playlist.thumbnails,
+            size = ListThumbnailSize,
+            placeHolder = {
                 Icon(
-                    painter = painterResource(painter), 
-                     contentDescription = null, 
-                     modifier = Modifier
-                         .size(ListThumbnailSize / 2)
-                         .align(Alignment.Center)
-              ) 
-                }
-
-            1 ->
-                AsyncImage(
-                    model = playlist.thumbnails[0],
+                    painter = painterResource(R.drawable.queue_music),
                     contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier =
-                        Modifier
-                            .size(ListThumbnailSize)
-                            .clip(RoundedCornerShape(ThumbnailCornerRadius)),
+                    modifier = Modifier.size(ListThumbnailSize)
                 )
-
-            else ->
-                Box(
-                    modifier =
-                        Modifier
-                            .size(ListThumbnailSize)
-                            .clip(RoundedCornerShape(ThumbnailCornerRadius)),
-                ) {
-                    listOf(
-                        Alignment.TopStart,
-                        Alignment.TopEnd,
-                        Alignment.BottomStart,
-                        Alignment.BottomEnd,
-                    ).fastForEachIndexed { index, alignment ->
-                        AsyncImage(
-                            model = playlist.thumbnails.getOrNull(index),
-                            contentDescription = null,
-                            contentScale = ContentScale.Crop,
-                            modifier =
-                                Modifier
-                                    .align(alignment)
-                                    .size(ListThumbnailSize / 2),
-                        )
-                    }
-                }
-        }
+            },
+            shape = RoundedCornerShape(ThumbnailCornerRadius)
+        )
     },
     trailingContent = trailingContent,
-    modifier = modifier,
+    modifier = modifier
 )
 
 @Composable
@@ -1067,63 +743,22 @@ fun PlaylistGridItem(
                 }
             }
         val width = maxWidth
-        when (playlist.thumbnails.size) {
-            0 ->
-                Box(
-                    modifier =
-                        Modifier
-                            .fillMaxSize()
-                            .background(MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp))
-                ) {
-                    Icon(
-                        painter = painterResource(painter),
-                        contentDescription = null,
-                        tint = LocalContentColor.current.copy(alpha = 0.8f),
-                        modifier =
-                            Modifier
-                                .size(width / 2)
-                                .align(Alignment.Center),
-                    )
-                }
-
-            1 ->
-                AsyncImage(
-                    model = playlist.thumbnails[0],
+        PlaylistThumbnail(
+            thumbnails = playlist.thumbnails,
+            size = width,
+            placeHolder = {
+                Icon(
+                    painter = painterResource(R.drawable.queue_music),
                     contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier =
-                        Modifier
-                            .size(width)
-                            .clip(RoundedCornerShape(ThumbnailCornerRadius)),
+                    tint = LocalContentColor.current.copy(alpha = 0.8f),
+                    modifier = Modifier
+                        .size(width / 2)
+                        .align(Alignment.Center)
                 )
-
-            else ->
-                Box(
-                    modifier =
-                        Modifier
-                            .size(width)
-                            .clip(RoundedCornerShape(ThumbnailCornerRadius)),
-                ) {
-                    listOf(
-                        Alignment.TopStart,
-                        Alignment.TopEnd,
-                        Alignment.BottomStart,
-                        Alignment.BottomEnd,
-                    ).fastForEachIndexed { index, alignment ->
-                        AsyncImage(
-                            model = playlist.thumbnails.getOrNull(index),
-                            contentDescription = null,
-                            contentScale = ContentScale.Crop,
-                            modifier =
-                                Modifier
-                                    .align(alignment)
-                                    .size(width / 2),
-                        )
-                    }
-                }
-        }
+            },
+            shape = RoundedCornerShape(ThumbnailCornerRadius)
+        )
     },
-    thumbnailShape = RoundedCornerShape(ThumbnailCornerRadius),
     fillMaxWidth = fillMaxWidth,
     modifier = modifier,
 )
@@ -1144,8 +779,8 @@ fun MediaMetadataListItem(
             makeTimeString(mediaMetadata.duration * 1000L),
         ),
     thumbnailContent = {
-        Box(
-            contentAlignment = Alignment.Center,
+        ItemThumbnail(
+            thumbnailUrl = mediaMetadata.thumbnailUrl,
             modifier = Modifier.size(ListThumbnailSize),
         ) {
             if (isSelected) {
@@ -1176,15 +811,9 @@ fun MediaMetadataListItem(
 
             PlayingIndicatorBox(
                 isActive = isActive,
-                playWhenReady = isPlaying,
-                color = Color.White,
-                modifier =
-                    Modifier
-                        .fillMaxSize()
-                        .background(
-                            color = Color.Black.copy(alpha = 0.4f),
-                            shape = RoundedCornerShape(ThumbnailCornerRadius),
-                        ),
+                isPlaying = isPlaying,
+            shape = RoundedCornerShape(ThumbnailCornerRadius),
+            modifier = Modifier.size(ListThumbnailSize)
             )
         }
     },
@@ -1209,60 +838,17 @@ fun YouTubeListItem(
             item is AlbumItem &&
             album?.album?.bookmarkedAt != null
         ) {
-            Icon(
-                painter = painterResource(R.drawable.favorite),
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.error,
-                modifier =
-                    Modifier
-                        .size(18.dp)
-                        .padding(end = 2.dp),
-            )
+            Icon.Favorite()
         }
         if (item.explicit) {
-            Icon(
-                painter = painterResource(R.drawable.explicit),
-                contentDescription = null,
-                modifier =
-                    Modifier
-                        .size(18.dp)
-                        .padding(end = 2.dp),
-            )
+            Icon.Explicit()
         }
         if (item is SongItem && song?.song?.inLibrary != null) {
-            Icon(
-                painter = painterResource(R.drawable.library_add_check),
-                contentDescription = null,
-                modifier =
-                    Modifier
-                        .size(18.dp)
-                        .padding(end = 2.dp),
-            )
+            Icon.Library()
         }
         if (item is SongItem) {
             val downloads by LocalDownloadUtil.current.downloads.collectAsState()
-            when (downloads[item.id]?.state) {
-                STATE_COMPLETED ->
-                    Icon(
-                        painter = painterResource(R.drawable.offline),
-                        contentDescription = null,
-                        modifier =
-                            Modifier
-                                .size(18.dp)
-                                .padding(end = 2.dp),
-                    )
-
-                STATE_QUEUED, STATE_DOWNLOADING ->
-                    CircularProgressIndicator(
-                        strokeWidth = 2.dp,
-                        modifier =
-                            Modifier
-                                .size(16.dp)
-                                .padding(end = 2.dp),
-                    )
-
-                else -> {}
-            }
+            Icon.Download(downloads[item.id]?.state)
         }
     },
     isActive: Boolean = false,
@@ -1279,77 +865,14 @@ fun YouTubeListItem(
         },
     badges = badges,
     thumbnailContent = {
-        Box(
-            contentAlignment = Alignment.Center,
+        ItemThumbnail(
+            thumbnailUrl = item.thumbnail,
+            albumIndex = albumIndex,
+            isActive = isActive,
+            isPlaying = isPlaying,
+            shape = if (item is ArtistItem) CircleShape else RoundedCornerShape(ThumbnailCornerRadius),
             modifier = Modifier.size(ListThumbnailSize),
-        ) {
-            val thumbnailShape = if (item is ArtistItem) CircleShape else RoundedCornerShape(ThumbnailCornerRadius)
-            if (albumIndex != null) {
-                AnimatedVisibility(
-                    visible = !isActive,
-                    enter = fadeIn() + expandIn(expandFrom = Alignment.Center),
-                    exit = shrinkOut(shrinkTowards = Alignment.Center) + fadeOut(),
-                ) {
-                    if (isSelected) {
-                        Icon(
-                            painter = painterResource(R.drawable.done),
-                            modifier = Modifier.align(Alignment.Center),
-                            contentDescription = null,
-                        )
-                    } else {
-                        Text(
-                            text = albumIndex.toString(),
-                            style = MaterialTheme.typography.labelLarge,
-                        )
-                    }
-                }
-            } else {
-                if (isSelected) {
-                    Box(
-                        modifier =
-                            Modifier
-                                .fillMaxSize()
-                                .zIndex(1000f)
-                                .clip(RoundedCornerShape(ThumbnailCornerRadius))
-                                .background(Color.Black.copy(alpha = 0.5f)),
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.done),
-                            modifier = Modifier.align(Alignment.Center),
-                            contentDescription = null,
-                        )
-                    }
-                }
-                AsyncImage(
-                    model = item.thumbnail,
-                    contentDescription = null,
-                    modifier =
-                        Modifier
-                            .fillMaxSize()
-                            .clip(thumbnailShape),
-                )
-            }
-
-            PlayingIndicatorBox(
-                isActive = isActive,
-                playWhenReady = isPlaying,
-                color = if (albumIndex != null) MaterialTheme.colorScheme.onBackground else Color.White,
-                modifier =
-                    Modifier
-                        .fillMaxSize()
-                        .background(
-                            color =
-                                if (albumIndex != null) {
-                                    Color.Transparent
-                                } else {
-                                    Color.Black.copy(
-                                        alpha = 0.4f,
-                                    )
-                                },
-                            shape = thumbnailShape,
-                        ),
-            )
-        }
+        )
     },
     trailingContent = trailingContent,
     modifier = modifier,
@@ -1371,227 +894,276 @@ fun YouTubeGridItem(
             item is AlbumItem &&
             album?.album?.bookmarkedAt != null
         ) {
-            Icon(
-                painter = painterResource(R.drawable.favorite),
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.error,
-                modifier =
-                    Modifier
-                        .size(18.dp)
-                        .padding(end = 2.dp),
-            )
+            Icon.Favorite()
         }
         if (item is SongItem && song?.song?.inLibrary != null) {
-            Icon(
-                painter = painterResource(R.drawable.library_add_check),
-                contentDescription = null,
-                modifier =
-                    Modifier
-                        .size(18.dp)
-                        .padding(end = 2.dp),
-            )
+            Icon.Library()
         }
         if (item.explicit) {
-            Icon(
-                painter = painterResource(R.drawable.explicit),
-                contentDescription = null,
-                modifier =
-                    Modifier
-                        .size(18.dp)
-                        .padding(end = 2.dp),
-            )
+            Icon.Explicit()
         }
         if (item is SongItem) {
             val downloads by LocalDownloadUtil.current.downloads.collectAsState()
-            when (downloads[item.id]?.state) {
-                STATE_COMPLETED ->
-                    Icon(
-                        painter = painterResource(R.drawable.offline),
-                        contentDescription = null,
-                        modifier =
-                            Modifier
-                                .size(18.dp)
-                                .padding(end = 2.dp),
-                    )
-
-                STATE_DOWNLOADING ->
-                    CircularProgressIndicator(
-                        strokeWidth = 2.dp,
-                        modifier =
-                            Modifier
-                                .size(16.dp)
-                                .padding(end = 2.dp),
-                    )
-
-                else -> {}
-            }
+            Icon.Download(downloads[item.id]?.state)
         }
     },
     isActive: Boolean = false,
     isPlaying: Boolean = false,
     fillMaxWidth: Boolean = false,
-) {
-    val thumbnailShape = if (item is ArtistItem) CircleShape else RoundedCornerShape(ThumbnailCornerRadius)
-    val thumbnailRatio = if (item is SongItem) 16f / 9 else 1f
-
-    Column(
-        modifier =
-            if (fillMaxWidth) {
-                modifier
-                    .padding(12.dp)
-                    .fillMaxWidth()
-            } else {
-                modifier
-                    .padding(12.dp)
-                    .width(GridThumbnailHeight * thumbnailRatio)
-            },
-    ) {
-        Box(
-            modifier =
-                if (fillMaxWidth) {
-                    Modifier.fillMaxWidth()
-                } else {
-                    Modifier.height(GridThumbnailHeight)
-                }.aspectRatio(thumbnailRatio)
-                    .clip(thumbnailShape),
-        ) {
-            AsyncImage(
-                model = item.thumbnail,
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize(),
-            )
-
-            androidx.compose.animation.AnimatedVisibility(
-                visible = isActive,
-                enter = fadeIn(tween(500)),
-                exit = fadeOut(tween(500)),
-            ) {
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier =
-                        Modifier
-                            .fillMaxSize()
-                            .background(
-                                color = Color.Black.copy(alpha = 0.4f),
-                                shape = thumbnailShape,
-                            ),
-                ) {
-                    if (isPlaying) {
-                        PlayingIndicator(
-                            color = Color.White,
-                            modifier = Modifier.height(24.dp),
-                        )
-                    } else {
-                        Icon(
-                            painter = painterResource(R.drawable.play),
-                            contentDescription = null,
-                            tint = Color.White,
-                        )
-                    }
-                }
-            }
-
-            androidx.compose.animation.AnimatedVisibility(
-                visible = item is AlbumItem && !isActive,
-                enter = fadeIn(),
-                exit = fadeOut(),
-                modifier =
-                    Modifier
-                        .align(Alignment.BottomEnd)
-                        .padding(8.dp),
-            ) {
-                val database = LocalDatabase.current
-                val playerConnection = LocalPlayerConnection.current ?: return@AnimatedVisibility
-
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier =
-                        Modifier
-                            .size(36.dp)
-                            .clip(CircleShape)
-                            .background(Color.Black.copy(alpha = 0.4f))
-                            .clickable {
-                                var playlistId = ""
-                                coroutineScope?.launch(Dispatchers.IO) {
-                                    var songs =
-                                        database
-                                            .albumWithSongs(item.id)
-                                            .first()
-                                            ?.songs
-                                            ?.map { it.toMediaItem() }
-                                    if (songs == null) {
-                                        YouTube
-                                            .album(item.id)
-                                            .onSuccess { albumPage ->
-                                                playlistId = albumPage.album.playlistId
-                                                database.transaction {
-                                                    insert(albumPage)
-                                                }
-                                                songs = albumPage.songs.map { it.toMediaItem() }
-                                            }.onFailure {
-                                                reportException(it)
-                                            }
-                                    }
-                                    songs?.let {
-                                        withContext(Dispatchers.Main) {
-                                            playerConnection.service.getAutomix(playlistId)
-                                            playerConnection.playQueue(
-                                                ListQueue(
-                                                    title = item.title,
-                                                    items = it,
-                                                ),
-                                            )
-                                        }
-                                    }
-                                }
-                            },
-                ) {
-                    Icon(
-                        painter = painterResource(R.drawable.play),
-                        contentDescription = null,
-                        tint = Color.White,
-                    )
-                }
-            }
-        }
-
-        Spacer(modifier = Modifier.height(6.dp))
-
+) = GridItem(
+    title = {
         Text(
             text = item.title,
             style = MaterialTheme.typography.bodyLarge,
             fontWeight = FontWeight.Bold,
-            maxLines = 1,
+            maxLines = 2,
             overflow = TextOverflow.Ellipsis,
             textAlign = if (item is ArtistItem) TextAlign.Center else TextAlign.Start,
-            modifier =
-                Modifier
-                    .basicMarquee(iterations = 3)
-                    .fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth()
         )
-
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            badges()
-
-            val subtitle =
-                when (item) {
-                    is SongItem -> joinByBullet(item.artists.joinToString { it.name }, makeTimeString(item.duration?.times(1000L)))
-                    is AlbumItem -> joinByBullet(item.artists?.joinToString { it.name }, item.year?.toString())
-                    is ArtistItem -> null
-                    is PlaylistItem -> joinByBullet(item.author?.name, item.songCountText)
+    },
+    subtitle = {
+        val subtitle = when (item) {
+            is SongItem -> joinByBullet(item.artists.joinToString { it.name }, makeTimeString(item.duration?.times(1000L)))
+            is AlbumItem -> joinByBullet(item.artists?.joinToString { it.name }, item.year?.toString())
+            is ArtistItem -> null
+            is PlaylistItem -> joinByBullet(item.author?.name, item.songCountText)
+        }
+    if (subtitle != null) {
+            Text(
+                text = subtitle,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.secondary,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+            )
+        }
+    },
+    badges = badges,
+    thumbnailContent = {
+        val database = LocalDatabase.current
+        val playerConnection = LocalPlayerConnection.current ?: return@GridItem
+        ItemThumbnail(
+            thumbnailUrl = item.thumbnail,
+            isActive = isActive,
+            isPlaying = isPlaying,
+            shape = if (item is ArtistItem) CircleShape else RoundedCornerShape(ThumbnailCornerRadius),
+        )
+        AlbumPlayButton(
+            visible = item is AlbumItem && !isActive,
+            onClick = {
+                coroutineScope?.launch(Dispatchers.IO) {
+                    var songs = database
+                        .albumWithSongs(item.id)
+                        .first()?.songs?.map { it.toMediaItem() }
+                    if (songs == null) {
+                        YouTube.album(item.id).onSuccess { albumPage ->
+                            database.transaction {
+                                insert(albumPage)
+                            }
+                            songs = albumPage.songs.map { it.toMediaItem() }
+                        }.onFailure {
+                            reportException(it)
+                        }
+                    }
+                    songs?.let {
+                        withContext(Dispatchers.Main) {
+                            playerConnection.playQueue(
+                                ListQueue(
+                                    title = item.title,
+                                    items = it
+                                )
+                            )
+                        }
+                    }
                 }
-
-            if (subtitle != null) {
+            }
+        )
+    },
+    thumbnailRatio = if (item is SongItem) 16f / 9 else 1f,
+    fillMaxWidth = fillMaxWidth,
+    modifier = modifier
+)
+@Composable
+fun ItemThumbnail(
+    thumbnailUrl: String?,
+    isActive: Boolean,
+    isPlaying: Boolean,
+    shape: Shape,
+    modifier: Modifier = Modifier,
+    albumIndex: Int? = null,
+) {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = modifier
+    ) {
+        if (albumIndex != null) {
+            AnimatedVisibility(
+                visible = !isActive,
+                enter = fadeIn() + expandIn(expandFrom = Alignment.Center),
+                exit = shrinkOut(shrinkTowards = Alignment.Center) + fadeOut()
+            ) {
                 Text(
-                    text = subtitle,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.secondary,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
+                    text = albumIndex.toString(),
+                    style = MaterialTheme.typography.labelLarge
                 )
             }
+        } else {
+            AsyncImage(
+                model = thumbnailUrl,
+                contentDescription = null,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clip(shape)
+            )
         }
+
+            PlayingIndicatorBox(
+            isActive = isActive,
+            playWhenReady = isPlaying,
+            color = if (albumIndex != null) MaterialTheme.colorScheme.onBackground else Color.White,
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    color = if (albumIndex != null) Color.Transparent else Color.Black.copy(alpha = ActiveBoxAlpha),
+                    shape = shape
+                )
+        )
+    }
+}
+@Composable
+fun PlaylistThumbnail(
+    thumbnails: List<String>,
+    size: Dp,
+    placeHolder: @Composable () -> Unit,
+    shape: Shape,
+) {
+    when (thumbnails.size) {
+        0 -> placeHolder()
+
+            1 -> AsyncImage(
+            model = thumbnails[0],
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .size(size)
+                .clip(shape)
+        )
+        else -> Box(
+            modifier = Modifier
+                .size(size)
+                .clip(shape)
+        ) {
+            Box(
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .clip(shape)
+            ) {
+                listOf(
+                    Alignment.TopStart,
+                    Alignment.TopEnd,
+                    Alignment.BottomStart,
+                    Alignment.BottomEnd
+                ).fastForEachIndexed { index, alignment ->
+                    AsyncImage(
+                        model = thumbnails.getOrNull(index),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .align(alignment)
+                            .size(size / 2)
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun BoxScope.AlbumPlayButton(
+    visible: Boolean,
+    onClick: () -> Unit,
+) {
+    AnimatedVisibility(
+        visible = visible,
+        enter = fadeIn(),
+        exit = fadeOut(),
+        modifier = Modifier
+            .align(Alignment.BottomEnd)
+            .padding(8.dp)
+    ) {
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .size(36.dp)
+                .clip(CircleShape)
+                .background(Color.Black.copy(alpha = ActiveBoxAlpha))
+                .clickable(onClick = onClick)
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.play),
+                contentDescription = null,
+                tint = Color.White
+            )
+        }
+    }
+}
+
+private object Icon {
+    @Composable
+    fun Favorite() {
+        Icon(
+            painter = painterResource(R.drawable.favorite),
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.error,
+            modifier = Modifier
+                .size(18.dp)
+                .padding(end = 2.dp)
+        )
+    }
+
+    @Composable
+    fun Library() {
+        Icon(
+            painter = painterResource(R.drawable.library_add_check),
+            contentDescription = null,
+            modifier = Modifier
+                .size(18.dp)
+                .padding(end = 2.dp)
+        )
+    }
+
+    @Composable
+    fun Download(state: Int?) {
+        when (state) {
+            STATE_COMPLETED -> Icon(
+                painter = painterResource(R.drawable.offline),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(18.dp)
+                    .padding(end = 2.dp)
+            )
+
+            STATE_QUEUED, STATE_DOWNLOADING -> CircularProgressIndicator(
+                strokeWidth = 2.dp,
+                modifier = Modifier
+                    .size(16.dp)
+                    .padding(end = 2.dp)
+            )
+            else -> {}
+        }
+    }
+
+    @Composable
+    fun Explicit() {
+        Icon(
+            painter = painterResource(R.drawable.explicit),
+            contentDescription = null,
+            modifier = Modifier
+                .size(18.dp)
+                .padding(end = 2.dp)
+        )
     }
 }
 
