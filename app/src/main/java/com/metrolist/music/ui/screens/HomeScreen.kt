@@ -1213,9 +1213,7 @@ fun HomeScreen(
                             .calculateBottomPadding(),
                                    ),
                                )
-                           }
-                       }
-                  } else {
+                           } else {
                     item {
                 ShimmerHost {
                     TextPlaceholder(
@@ -1235,7 +1233,9 @@ fun HomeScreen(
                         modifier =
                             Modifier
                                 .padding(vertical = 12.dp, horizontal = 12.dp)
-                                .width(250.dp),
+                                .width(250.dp),                              
+                            }
+                        }
                     )                  
                 }
             }
