@@ -123,7 +123,6 @@ fun HomeScreen(
     val quickPicks by viewModel.quickPicks.collectAsState()
     val explorePage by viewModel.explorePage.collectAsState()
 
-    val homePage by viewModel.homePage.collectAsState()
     val forgottenFavorite by viewModel.forgottenFavorite.collectAsState()
     val homeFirstAlbumRecommendation by viewModel.homeFirstAlbumRecommendation.collectAsState()
     val homeSecondAlbumRecommendation by viewModel.homeSecondAlbumRecommendation.collectAsState()
@@ -487,6 +486,7 @@ fun HomeScreen(
             // Отображение заголовка навигации
             NavigationTitle(
                 label = stringResource(R.string.similar_to),
+                title = it.title.title,
                 thumbnail = it.title.thumbnailUrl?.let { thumbnailUrl -> {
                     AsyncImage(
                         model = thumbnailUrl,
