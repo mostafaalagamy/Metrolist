@@ -276,6 +276,7 @@ class HomeViewModel
                         artistName = artist.artist.name,
                     )
             }
+        }
 
         fun refresh() {
             if (isRefreshing.value) return
