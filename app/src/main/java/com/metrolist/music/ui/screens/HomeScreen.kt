@@ -92,6 +92,7 @@ import com.metrolist.music.ui.menu.YouTubeSongMenu
 import com.metrolist.music.ui.utils.SnapLayoutInfoProvider
 import com.metrolist.music.utils.rememberPreference
 import com.metrolist.music.viewmodels.HomeViewModel
+import com.metrolist.music.viewmodels.ArtistViewModel
 import coil.compose.AsyncImage
 import kotlinx.coroutines.CoroutineScope
 import kotlin.random.Random
