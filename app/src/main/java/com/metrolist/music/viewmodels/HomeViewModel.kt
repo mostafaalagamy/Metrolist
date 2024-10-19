@@ -154,7 +154,6 @@ class HomeViewModel
                         reportException(it)
                     }
             }
-        }
 
         private suspend fun homeLoad() {
             YouTube
@@ -276,6 +275,8 @@ class HomeViewModel
                     )
             }
         }
+            isLoading.value = true  
+    }
 
         fun refresh() {
             if (isRefreshing.value) return
