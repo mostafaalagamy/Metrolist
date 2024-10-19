@@ -487,7 +487,7 @@ fun HomeScreen(
             NavigationTitle(
                 label = stringResource(R.string.similar_to),
                 title = albums.artistName,
-                thumbnail = albums.artistName.thumbnailUrl?.let { thumbnailUrl -> {
+                thumbnail = albums.artistName?.let { thumbnailUrl -> {
                     AsyncImage(
                         model = thumbnailUrl,
                         contentDescription = null,
