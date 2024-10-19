@@ -92,7 +92,6 @@ import com.metrolist.music.ui.menu.YouTubeSongMenu
 import com.metrolist.music.ui.utils.SnapLayoutInfoProvider
 import com.metrolist.music.utils.rememberPreference
 import com.metrolist.music.viewmodels.HomeViewModel
-import com.metrolist.music.viewmodels.ArtistViewModel
 import coil.compose.AsyncImage
 import kotlinx.coroutines.CoroutineScope
 import kotlin.random.Random
@@ -123,7 +122,6 @@ fun HomeScreen(
 
     val quickPicks by viewModel.quickPicks.collectAsState()
     val explorePage by viewModel.explorePage.collectAsState()
-    val artistPage = viewModel.artistPage
 
     val forgottenFavorite by viewModel.forgottenFavorite.collectAsState()
     val homeFirstAlbumRecommendation by viewModel.homeFirstAlbumRecommendation.collectAsState()
@@ -489,7 +487,7 @@ fun HomeScreen(
             NavigationTitle(
                 label = stringResource(R.string.similar_to),
                 title = albums.artistName,
-                thumbnail = albums.artistThumbnail?.let { thumbnailUrl -> {
+                thumbnail = albums.artistName.thumbnailUrl?.let { thumbnailUrl -> {
                     AsyncImage(
                         model = thumbnailUrl,
                         contentDescription = null,
