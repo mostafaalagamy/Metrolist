@@ -154,10 +154,11 @@ class HomeViewModel
                         reportException(it)
                     }
             }
-            isLoading.value = true  
         }
     
         private suspend fun homeLoad() {
+            isLoading.value = true
+            
             YouTube
                 .home()
                 .onSuccess { res ->
@@ -175,6 +176,8 @@ class HomeViewModel
             continuationVal: String?,
             next: MutableStateFlow<List<HomePlayList>?>,
         ) {
+            isLoading.value = true
+            
             continuationVal?.run {
                 YouTube
                     .browseContinuation(this)
@@ -190,6 +193,8 @@ class HomeViewModel
         }
 
         private suspend fun continuationsLoad() {
+            isLoading.value = true
+            
             artistLoad(artistRecommendation.value?.getOrNull(0), homeFirstArtistRecommendation)
             forgottenFavorite.value =
                 database
@@ -216,6 +221,8 @@ class HomeViewModel
         }
 
         private suspend fun songLoad() {
+            isLoading.value = true
+            
             val song =
                 database
                     .events()
@@ -239,6 +246,8 @@ class HomeViewModel
             song: Song?,
             next: MutableStateFlow<HomeAlbumRecommendation?>,
         ) {
+            isLoading.value = true
+            
             val albumUtils = AlbumUtils(song?.song?.albumName, song?.song?.thumbnailUrl)
             YouTube.next(WatchEndpoint(videoId = song?.id)).onSuccess { res ->
                 YouTube
@@ -258,6 +267,8 @@ class HomeViewModel
             artist: Artist?,
             next: MutableStateFlow<HomeArtistRecommendation?>,
         ) {
+            isLoading.value = true
+            
             val listItem = mutableListOf<YTItem>()
             artist?.id?.let {
                 YouTube.artist(it).onSuccess { res ->
