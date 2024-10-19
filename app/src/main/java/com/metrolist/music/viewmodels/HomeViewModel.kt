@@ -154,7 +154,10 @@ class HomeViewModel
                         reportException(it)
                     }
             }
-
+        }
+            isLoading.value = true  
+        }
+    
         private suspend fun homeLoad() {
             YouTube
                 .home()
@@ -274,9 +277,6 @@ class HomeViewModel
                         artistName = artist.artist.name,
                     )
             }
-        }
-            isLoading.value = true  
-    }
 
         fun refresh() {
             if (isRefreshing.value) return
