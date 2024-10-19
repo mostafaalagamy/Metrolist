@@ -487,8 +487,8 @@ fun HomeScreen(
             NavigationTitle(
                 label = stringResource(R.string.similar_to),
                 title = albums.artistName,
-            }
-       )
+            )
+        }
 
             // Горизонтальный список элементов
             LazyRow(
@@ -570,8 +570,7 @@ fun HomeScreen(
                     }
                 }
             }
-        }
-    }
+       }
 
                 forgottenFavorite?.let { forgottenFavorite ->
                     if (forgottenFavorite.isNotEmpty() && forgottenFavorite.size > 5) {
