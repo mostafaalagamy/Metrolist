@@ -495,7 +495,8 @@ fun HomeScreen(
                             .clip(CircleShape)
                     )
                 }
-            )
+            }
+       )
 
             // Горизонтальный список элементов
             LazyRow(
