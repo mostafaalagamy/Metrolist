@@ -434,7 +434,7 @@ fun HomeScreen(
                     }
                 }
 
-                                if (youtubePlaylists?.isNotEmpty() == true) {
+                if (youtubePlaylists?.isNotEmpty() == true) {
                     NavigationTitle(
                         title = stringResource(R.string.your_ytb_playlists),
                         onClick = {
@@ -573,6 +573,30 @@ fun HomeScreen(
                             }
                         }
                     }
+                } else {
+                    if (homeFirstArtistRecommendation == null) {
+                    ShimmerHost {
+                    TextPlaceholder(
+                        height = 36.dp,
+                        modifier =
+                            Modifier
+                                .padding(vertical = 12.dp, horizontal = 12.dp)
+                                .width(250.dp),
+                    )
+                    Row {
+                        repeat(2) {
+                            GridItemPlaceHolder()
+                        }
+                    }
+                    TextPlaceholder(
+                        height = 36.dp,
+                        modifier =
+                            Modifier
+                                .padding(vertical = 12.dp, horizontal = 12.dp)
+                                .width(250.dp),                              
+                            )
+                        }
+                    }                  
                 }
 
                 forgottenFavorite?.let { forgottenFavorite ->
@@ -658,8 +682,8 @@ fun HomeScreen(
                             }
                         }
                     }
-                }
-
+                } 
+                
                 home?.forEach { homePlaylists ->
                     if (homePlaylists.playlists.isNotEmpty()) {
                         homePlaylists.let { playlists ->
@@ -710,6 +734,30 @@ fun HomeScreen(
                             }
                         }
                     }
+                } else {
+                    if (home == null) {
+                    ShimmerHost {
+                    TextPlaceholder(
+                        height = 36.dp,
+                        modifier =
+                            Modifier
+                                .padding(vertical = 12.dp, horizontal = 12.dp)
+                                .width(250.dp),
+                    )
+                    Row {
+                        repeat(2) {
+                            GridItemPlaceHolder()
+                        }
+                    }
+                    TextPlaceholder(
+                        height = 36.dp,
+                        modifier =
+                            Modifier
+                                .padding(vertical = 12.dp, horizontal = 12.dp)
+                                .width(250.dp),                              
+                            )
+                        }
+                    }                  
                 }
 
                 homeFirstAlbumRecommendation?.albums?.let { albums ->
@@ -758,6 +806,30 @@ fun HomeScreen(
                             }
                         }
                     }
+                } else {
+                    if (homeFirstAlbumRecommendation == null) {
+                    ShimmerHost {
+                    TextPlaceholder(
+                        height = 36.dp,
+                        modifier =
+                            Modifier
+                                .padding(vertical = 12.dp, horizontal = 12.dp)
+                                .width(250.dp),
+                    )
+                    Row {
+                        repeat(2) {
+                            GridItemPlaceHolder()
+                        }
+                    }
+                    TextPlaceholder(
+                        height = 36.dp,
+                        modifier =
+                            Modifier
+                                .padding(vertical = 12.dp, horizontal = 12.dp)
+                                .width(250.dp),                              
+                            )
+                        }
+                    }                  
                 }
 
                 homeFirstContinuation?.forEach { homePlaylists ->
@@ -810,6 +882,30 @@ fun HomeScreen(
                             }
                         }
                     }
+                } else {
+                    if (homeFirstContinuation == null) {
+                    ShimmerHost {
+                    TextPlaceholder(
+                        height = 36.dp,
+                        modifier =
+                            Modifier
+                                .padding(vertical = 12.dp, horizontal = 12.dp)
+                                .width(250.dp),
+                    )
+                    Row {
+                        repeat(2) {
+                            GridItemPlaceHolder()
+                        }
+                    }
+                    TextPlaceholder(
+                        height = 36.dp,
+                        modifier =
+                            Modifier
+                                .padding(vertical = 12.dp, horizontal = 12.dp)
+                                .width(250.dp),                              
+                            )
+                        }
+                    }                  
                 }
 
                 homeSecondArtistRecommendation?.let { albums ->
@@ -909,6 +1005,30 @@ fun HomeScreen(
                             }
                         }
                     }
+                } else {
+                    if (homeSecondArtistRecommendation == null) {
+                    ShimmerHost {
+                    TextPlaceholder(
+                        height = 36.dp,
+                        modifier =
+                            Modifier
+                                .padding(vertical = 12.dp, horizontal = 12.dp)
+                                .width(250.dp),
+                    )
+                    Row {
+                        repeat(2) {
+                            GridItemPlaceHolder()
+                        }
+                    }
+                    TextPlaceholder(
+                        height = 36.dp,
+                        modifier =
+                            Modifier
+                                .padding(vertical = 12.dp, horizontal = 12.dp)
+                                .width(250.dp),                              
+                            )
+                        }
+                    }                  
                 }
 
                 homeSecondContinuation?.forEach { homePlaylists ->
@@ -961,6 +1081,30 @@ fun HomeScreen(
                             }
                         }
                     }
+                } else {
+                    if (homeSecondContinuation == null) {
+                    ShimmerHost {
+                    TextPlaceholder(
+                        height = 36.dp,
+                        modifier =
+                            Modifier
+                                .padding(vertical = 12.dp, horizontal = 12.dp)
+                                .width(250.dp),
+                    )
+                    Row {
+                        repeat(2) {
+                            GridItemPlaceHolder()
+                        }
+                    }
+                    TextPlaceholder(
+                        height = 36.dp,
+                        modifier =
+                            Modifier
+                                .padding(vertical = 12.dp, horizontal = 12.dp)
+                                .width(250.dp),                              
+                            )
+                        }
+                    }                  
                 }
 
                 homeSecondAlbumRecommendation?.albums?.let { albums ->
@@ -1009,6 +1153,30 @@ fun HomeScreen(
                             }
                         }
                     }
+                } else {
+                    if (homeSecondAlbumRecommendation == null) {
+                    ShimmerHost {
+                    TextPlaceholder(
+                        height = 36.dp,
+                        modifier =
+                            Modifier
+                                .padding(vertical = 12.dp, horizontal = 12.dp)
+                                .width(250.dp),
+                    )
+                    Row {
+                        repeat(2) {
+                            GridItemPlaceHolder()
+                        }
+                    }
+                    TextPlaceholder(
+                        height = 36.dp,
+                        modifier =
+                            Modifier
+                                .padding(vertical = 12.dp, horizontal = 12.dp)
+                                .width(250.dp),                              
+                            )
+                        }
+                    }                  
                 }
 
                 homeThirdContinuation?.forEach { homePlaylists ->
@@ -1061,6 +1229,30 @@ fun HomeScreen(
                             }
                         }
                     }
+                } else {
+                    if (homeThirdContinuation == null) {
+                    ShimmerHost {
+                    TextPlaceholder(
+                        height = 36.dp,
+                        modifier =
+                            Modifier
+                                .padding(vertical = 12.dp, horizontal = 12.dp)
+                                .width(250.dp),
+                    )
+                    Row {
+                        repeat(2) {
+                            GridItemPlaceHolder()
+                        }
+                    }
+                    TextPlaceholder(
+                        height = 36.dp,
+                        modifier =
+                            Modifier
+                                .padding(vertical = 12.dp, horizontal = 12.dp)
+                                .width(250.dp),                              
+                            )
+                        }
+                    }                  
                 }
 
                 homeThirdArtistRecommendation?.let { albums ->
@@ -1160,10 +1352,9 @@ fun HomeScreen(
                             }
                         }
                     }
-                }
-           } else {
-               item {
-                 ShimmerHost {
+                } else {
+                    if (homeThirdArtistRecommendation == null) {
+                    ShimmerHost {
                     TextPlaceholder(
                         height = 36.dp,
                         modifier =
@@ -1182,9 +1373,9 @@ fun HomeScreen(
                             Modifier
                                 .padding(vertical = 12.dp, horizontal = 12.dp)
                                 .width(250.dp),                              
-                            }
+                            )
                         }
-                    )                  
+                    }                  
                 }
 
                 explorePage?.newReleaseAlbums?.let { newReleaseAlbums ->
@@ -1241,3 +1432,4 @@ fun HomeScreen(
             }
         }
     }
+}
