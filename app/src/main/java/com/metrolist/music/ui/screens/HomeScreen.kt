@@ -1161,8 +1161,8 @@ fun HomeScreen(
                         }
                     }
                 }
-                
-            if (home == null && homeFirstAlbumRecommendation == null && homeSecondAlbumRecommendation == null && homeFirstArtistRecommendation == null && homeSecondArtistRecommendation == null && homeThirdArtistRecommendation == null && homeFirstContinuation == null && homeSecondContinuation == null && homeThirdContinuation == null && youtubePlaylists == null) {
+
+                if (isLoading) {
                 ShimmerHost {
                     TextPlaceholder(
                         height = 36.dp,
