@@ -487,8 +487,17 @@ fun HomeScreen(
             NavigationTitle(
                 label = stringResource(R.string.similar_to),
                 title = albums.artistName,
-            )
-        }
+                thumbnail = artistName.thumbnailUrl?.let { thumbnailUrl -> {
+                    AsyncImage(
+                        model = thumbnailUrl,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(ListThumbnailSize)
+                            .clip(CircleShape)
+                    )
+                }
+            }
+       )
 
             // Горизонтальный список элементов
             LazyRow(
@@ -571,6 +580,7 @@ fun HomeScreen(
                 }
             }
        }
+  }
 
                 forgottenFavorite?.let { forgottenFavorite ->
                     if (forgottenFavorite.isNotEmpty() && forgottenFavorite.size > 5) {
