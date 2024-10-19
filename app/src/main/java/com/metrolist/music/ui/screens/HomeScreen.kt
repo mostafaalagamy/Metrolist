@@ -96,6 +96,22 @@ import coil.compose.AsyncImage
 import kotlinx.coroutines.CoroutineScope
 import kotlin.random.Random
 
+import com.metrolist.music.constants.ListThumbnailSize
+import com.metrolist.music.constants.ThumbnailCornerRadius
+import com.metrolist.music.db.entities.Album
+import com.metrolist.music.db.entities.Artist
+import com.metrolist.music.db.entities.LocalItem
+import com.metrolist.music.db.entities.Playlist
+import com.metrolist.music.db.entities.Song
+import com.metrolist.music.extensions.toMediaItem
+import com.metrolist.innertube.models.AlbumItem
+import com.metrolist.innertube.models.ArtistItem
+import com.metrolist.innertube.models.PlaylistItem
+import com.metrolist.innertube.models.SongItem
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+
 @SuppressLint("UnrememberedMutableState")
 @Suppress("DEPRECATION")
 @OptIn(ExperimentalFoundationApi::class)
@@ -114,6 +130,7 @@ fun HomeScreen(
     val quickPicks by viewModel.quickPicks.collectAsState()
     val explorePage by viewModel.explorePage.collectAsState()
 
+    val homePage by viewModel.homePage.collectAsState()
     val forgottenFavorite by viewModel.forgottenFavorite.collectAsState()
     val homeFirstAlbumRecommendation by viewModel.homeFirstAlbumRecommendation.collectAsState()
     val homeSecondAlbumRecommendation by viewModel.homeSecondAlbumRecommendation.collectAsState()
