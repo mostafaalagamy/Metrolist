@@ -573,7 +573,7 @@ fun HomeScreen(
                             }
                         }
                     }
-                } else {
+                
                     if (homeFirstArtistRecommendation == null) {
                     ShimmerHost {
                     TextPlaceholder(
@@ -598,7 +598,7 @@ fun HomeScreen(
                         }
                     }                  
                 }
-
+                
                 forgottenFavorite?.let { forgottenFavorite ->
                     if (forgottenFavorite.isNotEmpty() && forgottenFavorite.size > 5) {
                         NavigationTitle(
@@ -733,8 +733,8 @@ fun HomeScreen(
                                 }
                             }
                         }
-                    }
-                } else {
+                    } 
+                    
                     if (home == null) {
                     ShimmerHost {
                     TextPlaceholder(
@@ -806,7 +806,7 @@ fun HomeScreen(
                             }
                         }
                     }
-                } else {
+                
                     if (homeFirstAlbumRecommendation == null) {
                     ShimmerHost {
                     TextPlaceholder(
@@ -882,7 +882,7 @@ fun HomeScreen(
                             }
                         }
                     }
-                } else {
+                
                     if (homeFirstContinuation == null) {
                     ShimmerHost {
                     TextPlaceholder(
@@ -1005,7 +1005,7 @@ fun HomeScreen(
                             }
                         }
                     }
-                } else {
+                
                     if (homeSecondArtistRecommendation == null) {
                     ShimmerHost {
                     TextPlaceholder(
@@ -1081,7 +1081,7 @@ fun HomeScreen(
                             }
                         }
                     }
-                } else {
+                
                     if (homeSecondContinuation == null) {
                     ShimmerHost {
                     TextPlaceholder(
@@ -1153,7 +1153,7 @@ fun HomeScreen(
                             }
                         }
                     }
-                } else {
+                
                     if (homeSecondAlbumRecommendation == null) {
                     ShimmerHost {
                     TextPlaceholder(
@@ -1229,7 +1229,7 @@ fun HomeScreen(
                             }
                         }
                     }
-                } else {
+                
                     if (homeThirdContinuation == null) {
                     ShimmerHost {
                     TextPlaceholder(
@@ -1352,7 +1352,7 @@ fun HomeScreen(
                             }
                         }
                     }
-                } else {
+                
                     if (homeThirdArtistRecommendation == null) {
                     ShimmerHost {
                     TextPlaceholder(
