@@ -170,6 +170,90 @@ fun HomeScreen(
         }
     }
 
+    val localGridItem: @Composable (LocalItem) -> Unit = {
+        when (it) {
+            is Song -> SongGridItem(
+                song = it,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .combinedClickable(
+                        onClick = {
+                            if (it.id == mediaMetadata?.id) {
+                                playerConnection.player.togglePlayPause()
+                            } else {
+                                playerConnection.playQueue(
+                                    YouTubeQueue.radio(it.toMediaMetadata()),
+                                )
+                            }
+                        },
+                        onLongClick = {
+                            haptic.performHapticFeedback(
+                                HapticFeedbackType.LongPress,
+                            )
+                            menuState.show {
+                                SongMenu(
+                                    originalSong = it,
+                                    navController = navController,
+                                    onDismiss = menuState::dismiss,
+                                )
+                            }
+                        },
+                    ),
+                isActive = it.id == mediaMetadata?.id,
+                isPlaying = isPlaying,
+            )
+
+            is Album -> AlbumGridItem(
+                album = it,
+                isActive = it.id == mediaMetadata?.album?.id,
+                isPlaying = isPlaying,
+                coroutineScope = scope,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .combinedClickable(
+                        onClick = {
+                            navController.navigate("album/${it.id}")
+                        },
+                        onLongClick = {
+                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                            menuState.show {
+                                AlbumMenu(
+                                    originalAlbum = it,
+                                    navController = navController,
+                                    onDismiss = menuState::dismiss
+                                )
+                            }
+                        }
+                    )
+            )
+
+            is Artist -> ArtistGridItem(
+                artist = it,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .combinedClickable(
+                        onClick = {
+                            navController.navigate("artist/${it.id}")
+                        },
+                        onLongClick = {
+                            haptic.performHapticFeedback(
+                                HapticFeedbackType.LongPress,
+                            )
+                            menuState.show {
+                                ArtistMenu(
+                                    originalArtist = it,
+                                    coroutineScope = scope,
+                                    onDismiss = menuState::dismiss,
+                                )
+                            }
+                        },
+                    ),
+            )
+
+            is Playlist -> {}
+        }
+    }
+
     SwipeRefresh(
         state = rememberSwipeRefreshState(isRefreshing),
         onRefresh = viewModel::refresh,
