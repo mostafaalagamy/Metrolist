@@ -154,7 +154,6 @@ class HomeViewModel
                         reportException(it)
                     }
             }
-        }
             isLoading.value = true  
         }
     
