@@ -322,7 +322,7 @@ fun HomeScreen(
                     }
                 }
 
-                                if (keepListening?.isNotEmpty() == true) {
+                if (keepListening?.isNotEmpty() == true) {
                     keepListening?.let {
                         NavigationTitle(
                             title = stringResource(R.string.keep_listening),
@@ -425,7 +425,7 @@ fun HomeScreen(
                     }
                 }
 
-                                if (youtubePlaylists?.isNotEmpty() == true) {
+                if (youtubePlaylists?.isNotEmpty() == true) {
                     NavigationTitle(
                         title = stringResource(R.string.your_ytb_playlists),
                         onClick = {
@@ -1153,7 +1153,7 @@ fun HomeScreen(
                     }
                 }
 
-                if (isLoading) {
+            if (isLoading) {
                 ShimmerHost {
                     TextPlaceholder(
                         height = 36.dp,
@@ -1167,13 +1167,6 @@ fun HomeScreen(
                             GridItemPlaceHolder()
                         }
                     }
-                    TextPlaceholder(
-                        height = 36.dp,
-                        modifier =
-                            Modifier
-                                .padding(vertical = 12.dp, horizontal = 12.dp)
-                                .width(250.dp),
-                    )                  
                 }
             }
 
