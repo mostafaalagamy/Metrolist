@@ -1215,8 +1215,7 @@ fun HomeScreen(
                                )
                            }
                        }
-                   }
-                } else {
+                  } else {
                     item {
                 ShimmerHost {
                     TextPlaceholder(
@@ -1240,3 +1239,5 @@ fun HomeScreen(
                     )                  
                 }
             }
+        }
+    }
