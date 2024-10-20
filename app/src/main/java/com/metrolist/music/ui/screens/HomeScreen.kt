@@ -443,9 +443,7 @@ fun HomeScreen(
                                 Icon(
                                      painter = painterResource(id = R.drawable.person),
                                      contentDescription = null,
-                                     modifier = Modifier
-                                                .size(ListThumbnailSize)
-                                                .clip(CircleShape)
+                                     modifier = Modifier.size(24.dp)
                                 )
                             },
                             onClick = {
@@ -496,9 +494,7 @@ fun HomeScreen(
                                        Icon(
                                             painter = painterResource(id = R.drawable.person),
                                             contentDescription = null,
-                                            modifier = Modifier
-                                                .size(ListThumbnailSize)
-                                                .clip(CircleShape)
+                                            modifier = Modifier.size(24.dp)
                                )
                             }
                         )
@@ -742,9 +738,7 @@ fun HomeScreen(
                                        Icon(
                                             painter = painterResource(id = R.drawable.album),
                                             contentDescription = null,
-                                            modifier = Modifier
-                                                .size(ListThumbnailSize)
-                                                .clip(CircleShape)
+                                            modifier = Modifier.size(24.dp)
                                )
                             }
                         )
@@ -852,9 +846,7 @@ fun HomeScreen(
                                        Icon(
                                             painter = painterResource(id = R.drawable.person),
                                             contentDescription = null,
-                                            modifier = Modifier
-                                                .size(ListThumbnailSize)
-                                                .clip(CircleShape)
+                                            modifier = Modifier.size(24.dp)
                                )
                             }
                         )
@@ -1013,9 +1005,7 @@ fun HomeScreen(
                                        Icon(
                                             painter = painterResource(id = R.drawable.album),
                                             contentDescription = null,
-                                            modifier = Modifier
-                                                .size(ListThumbnailSize)
-                                                .clip(CircleShape)
+                                            modifier = Modifier.size(24.dp)
                                )
                             }
                         )
@@ -1123,9 +1113,7 @@ fun HomeScreen(
                                        Icon(
                                             painter = painterResource(id = R.drawable.person),
                                             contentDescription = null,
-                                            modifier = Modifier
-                                                .size(ListThumbnailSize)
-                                                .clip(CircleShape)
+                                            modifier = Modifier.size(24.dp)
                                )
                             }
                         )
