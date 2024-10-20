@@ -485,44 +485,13 @@ fun HomeScreen(
                                         
                 homeFirstArtistRecommendation?.let { albums ->
     if (albums.listItem.isNotEmpty()) {
-        val artistName = albums.artistName ?: ""
-        
-        // عرض عنوان التنقل مع الصورة المصغرة للفنان
+        // Display the navigation title with artist name and thumbnail
         NavigationTitle(
-            label = stringResource(id = R.string.similar_to),
-            title = artistName,
-            thumbnail = {
-                // محاولة الحصول على الصورة المصغرة من العنصر الأول في القائمة
-                val thumbnailUrl = albums.listItem.firstOrNull()?.let { item ->
-                    when (item) {
-                        is ArtistItem -> item.thumbnailUrl
-                        is AlbumItem -> item.thumbnailUrl
-                        is SongItem -> item.thumbnailUrl
-                        else -> null
-                    }
-                }
-
-                if (thumbnailUrl != null) {
-                    AsyncImage(
-                        model = thumbnailUrl,
-                        contentDescription = "صورة $artistName",
-                        modifier = Modifier
-                            .size(ListThumbnailSize)
-                            .clip(CircleShape)
-                    )
-                } else {
-                    // إذا لم تكن هناك صورة متاحة، نعرض أيقونة افتراضية
-                    Icon(
-                        imageVector = Icons.Default.Person,
-                        contentDescription = "صورة افتراضية للفنان",
-                        modifier = Modifier
-                            .size(ListThumbnailSize)
-                            .clip(CircleShape)
-                    )
-                }
-            }
+            label = stringResource(R.string.similar_to),
+            title = "${albums.artistName} (${albums.artistThumbnailUrl ?: ""})", // Here we add the artist's thumbnail URL
         )
     }
+
             // Горизонтальный список элементов
             LazyRow(
                 contentPadding = WindowInsets.systemBars
