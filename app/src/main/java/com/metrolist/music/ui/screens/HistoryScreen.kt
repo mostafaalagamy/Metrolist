@@ -84,6 +84,8 @@ fun HistoryScreen(
     navController: NavController,
     viewModel: HistoryViewModel = hiltViewModel(),
 ) {
+    val context = LocalContext.current
+    val database = LocalDatabase.current
     val menuState = LocalMenuState.current
     val haptic = LocalHapticFeedback.current
     val playerConnection = LocalPlayerConnection.current ?: return
@@ -109,22 +111,31 @@ fun HistoryScreen(
 
     val events by viewModel.events.collectAsState()
 
-        val filteredEvents = remember(events, query) {
-    if (query.text.isEmpty()) {
-        events
-    } else {
-        events.mapValues { (_, songs) ->
-            songs.filter { event ->
-                // البحث باستخدام اسم الأغنية أو اسم الفنان
-                event.song.song.title.contains(query.text, ignoreCase = true) ||
-                event.song.artists.any { it.name.contains(query.text, ignoreCase = true) }
-            }
-        }.filterValues { it.isNotEmpty() }
+    val filteredEvents = remember(events, query) {
+        if (query.text.isEmpty()) {
+            events
+        } else {
+            events.mapValues { (_, songs) ->
+                songs.filter { event ->
+                    event.song.song.title.contains(query.text, ignoreCase = true) ||
+                    event.song.artists.any { it.name.contains(query.text, ignoreCase = true) }
+                }
+            }.filterValues { it.isNotEmpty() }
+        }
     }
-}
 
+    val filteredEventIndex: Map<Long, EventWithSong> by remember(filteredEvents) {
+        derivedStateOf {
+            filteredEvents.flatMap { it.value }.associateBy { it.event.id }
+        }
+    }
+
+    val lazyListState = rememberLazyListState()
+
+Box(Modifier.fillMaxSize()) {
     LazyColumn(
-        contentPadding = LocalPlayerAwareWindowInsets.current
+    state = lazyListState,
+    contentPadding = LocalPlayerAwareWindowInsets.current
             .only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom)
             .asPaddingValues(),
         modifier = Modifier.windowInsetsPadding(LocalPlayerAwareWindowInsets.current.only(WindowInsetsSides.Top)),
@@ -204,6 +215,20 @@ fun HistoryScreen(
             }
         }
     }
+    HideOnScrollFAB(
+        visible = filteredEvents.isNotEmpty(),
+        lazyListState = lazyListState,
+        icon = R.drawable.shuffle,
+        onClick = {
+            playerConnection.playQueue(
+                ListQueue(
+                    title = context.getString(R.string.history),
+                    items = filteredEventIndex.values.map { it.song.toMediaItem() }.shuffled(),
+                )
+            )
+        }
+    )
+}
 
     TopAppBar(
         title = {
@@ -252,7 +277,7 @@ fun HistoryScreen(
                 }
             ) {
                 Icon(
-                    painterResource(R.drawable.arrow_back),
+                    painter = painterResource(R.drawable.arrow_back),
                     contentDescription = null
                 )
             }
@@ -263,7 +288,7 @@ fun HistoryScreen(
                     onClick = { isSearching = true }
                 ) {
                     Icon(
-                        painterResource(R.drawable.search),
+                        painter = painterResource(R.drawable.search),
                         contentDescription = null
                     )
                 }
