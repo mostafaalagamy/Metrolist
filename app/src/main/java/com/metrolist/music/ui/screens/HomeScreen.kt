@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -19,6 +20,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
@@ -27,6 +30,7 @@ import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -41,9 +45,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.draw.clip
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -60,6 +66,11 @@ import com.metrolist.music.LocalDatabase
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
+import com.metrolist.music.constants.AccountChannelHandleKey
+import com.metrolist.music.constants.AccountEmailKey
+import com.metrolist.music.constants.AccountNameKey
+import com.metrolist.music.constants.ListThumbnailSize
+import com.metrolist.music.constants.ThumbnailCornerRadius
 import com.metrolist.music.constants.GridThumbnailHeight
 import com.metrolist.music.constants.InnerTubeCookieKey
 import com.metrolist.music.constants.ListItemHeight
@@ -107,7 +118,6 @@ fun HomeScreen(
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
 
     val quickPicks by viewModel.quickPicks.collectAsState()
-    val explorePage by viewModel.explorePage.collectAsState()
 
     val forgottenFavorite by viewModel.forgottenFavorite.collectAsState()
     val homeFirstAlbumRecommendation by viewModel.homeFirstAlbumRecommendation.collectAsState()
@@ -137,6 +147,10 @@ fun HomeScreen(
 
     val listenAgainLazyGridState = rememberLazyGridState()
 
+    val context = LocalContext.current
+    val accountName by rememberPreference(AccountNameKey, "")
+    val accountEmail by rememberPreference(AccountEmailKey, "")
+    val accountChannelHandle by rememberPreference(AccountChannelHandleKey, "")
     val innerTubeCookie by rememberPreference(InnerTubeCookieKey, "")
     val isLoggedIn =
         remember(innerTubeCookie) {
@@ -427,9 +441,17 @@ fun HomeScreen(
 
                 if (youtubePlaylists?.isNotEmpty() == true) {
                     NavigationTitle(
-                        title = stringResource(R.string.your_ytb_playlists),
-                        onClick = {
-                            navController.navigate("account")
+                            label = stringResource(R.string.your_ytb_playlists),
+                            title = if (isLoggedIn) accountName else stringResource(R.string.your_ytb_playlists),
+                            thumbnail = {
+                                Icon(
+                                     painter = painterResource(id = R.drawable.person),
+                                     contentDescription = null,
+                                     modifier = Modifier.size(24.dp)
+                                )
+                            },
+                            onClick = {
+                                navController.navigate("account")
                         },
                     )
                     LazyRow(
@@ -469,8 +491,16 @@ fun HomeScreen(
                                         
                 homeFirstArtistRecommendation?.let { albums ->
                     if (albums.listItem.isNotEmpty()) {
-                        NavigationTitle(
-                            title = stringResource(R.string.similar_to) + " " + albums.artistName,
+                        NavigationTitle(    
+                                  label = stringResource(R.string.similar_to),
+                                  title = albums.artistName,
+                                  thumbnail = {
+                                       Icon(
+                                            painter = painterResource(id = R.drawable.person),
+                                            contentDescription = null,
+                                            modifier = Modifier.size(24.dp)
+                               )
+                            }
                         )
 
                         LazyRow(
@@ -705,8 +735,16 @@ fun HomeScreen(
 
                 homeFirstAlbumRecommendation?.albums?.let { albums ->
                     if (albums.recommendationAlbum.isNotEmpty()) {
-                        NavigationTitle(
-                            title = stringResource(R.string.similar_to) + " " + albums.recommendedAlbum.name,
+                        NavigationTitle(    
+                                  label = stringResource(R.string.similar_to),
+                                  title = albums.recommendedAlbum.name ?: stringResource(R.string.filter_albums),
+                                  thumbnail = {
+                                       Icon(
+                                            painter = painterResource(id = R.drawable.album),
+                                            contentDescription = null,
+                                            modifier = Modifier.size(24.dp)
+                               )
+                            }
                         )
 
                         LazyRow(
@@ -805,8 +843,16 @@ fun HomeScreen(
 
                 homeSecondArtistRecommendation?.let { albums ->
                     if (albums.listItem.isNotEmpty()) {
-                        NavigationTitle(
-                            title = stringResource(R.string.similar_to) + " " + albums.artistName,
+                        NavigationTitle(    
+                                  label = stringResource(R.string.similar_to),
+                                  title = albums.artistName,
+                                  thumbnail = {
+                                       Icon(
+                                            painter = painterResource(id = R.drawable.person),
+                                            contentDescription = null,
+                                            modifier = Modifier.size(24.dp)
+                               )
+                            }
                         )
 
                         LazyRow(
@@ -956,8 +1002,16 @@ fun HomeScreen(
 
                 homeSecondAlbumRecommendation?.albums?.let { albums ->
                     if (albums.recommendationAlbum.isNotEmpty()) {
-                        NavigationTitle(
-                            title = stringResource(R.string.similar_to) + " " + albums.recommendedAlbum.name,
+                        NavigationTitle(    
+                                  label = stringResource(R.string.similar_to),
+                                  title = albums.recommendedAlbum.name ?: stringResource(R.string.filter_albums),
+                                  thumbnail = {
+                                       Icon(
+                                            painter = painterResource(id = R.drawable.album),
+                                            contentDescription = null,
+                                            modifier = Modifier.size(24.dp)
+                               )
+                            }
                         )
 
                         LazyRow(
@@ -1056,8 +1110,16 @@ fun HomeScreen(
 
                 homeThirdArtistRecommendation?.let { albums ->
                     if (albums.listItem.isNotEmpty()) {
-                        NavigationTitle(
-                            title = stringResource(R.string.similar_to) + " " + albums.artistName,
+                        NavigationTitle(    
+                                  label = stringResource(R.string.similar_to),
+                                  title = albums.artistName,
+                                  thumbnail = {
+                                       Icon(
+                                            painter = painterResource(id = R.drawable.person),
+                                            contentDescription = null,
+                                            modifier = Modifier.size(24.dp)
+                               )
+                            }
                         )
 
                         LazyRow(
@@ -1153,6 +1215,7 @@ fun HomeScreen(
                     }
                 }
 
+
             if (isLoading) {
                 ShimmerHost {
                     TextPlaceholder(
@@ -1170,50 +1233,7 @@ fun HomeScreen(
                 }
             }
 
-                explorePage?.newReleaseAlbums?.let { newReleaseAlbums ->
-                    NavigationTitle(
-                        title = stringResource(R.string.new_release_albums),
-                        onClick = {
-                            navController.navigate("new_release")
-                        },
-                    )
-
-                    LazyRow(
-                        contentPadding =
-                            WindowInsets.systemBars
-                                .only(WindowInsetsSides.Horizontal)
-                                .asPaddingValues(),
-                    ) {
-                        items(
-                            items = newReleaseAlbums,
-                            key = { it.id },
-                        ) { album ->
-                            YouTubeGridItem(
-                                item = album,
-                                isActive = mediaMetadata?.album?.id == album.id,
-                                isPlaying = isPlaying,
-                                coroutineScope = coroutineScope,
-                                modifier =
-                                    Modifier
-                                        .combinedClickable(
-                                            onClick = {
-                                                navController.navigate("album/${album.id}")
-                                            },
-                                            onLongClick = {
-                                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                                menuState.show {
-                                                    YouTubeAlbumMenu(
-                                                        albumItem = album,
-                                                        navController = navController,
-                                                        onDismiss = menuState::dismiss,
-                                                    )
-                                                }
-                                            },
-                                        ).animateItemPlacement(),
-                            )
-                        }
-                    }
-                }                                
+     
                 Spacer(
                     Modifier.height(
                         LocalPlayerAwareWindowInsets.current
