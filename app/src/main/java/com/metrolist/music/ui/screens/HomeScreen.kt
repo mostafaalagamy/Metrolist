@@ -444,7 +444,7 @@ fun HomeScreen(
                 if (youtubePlaylists?.isNotEmpty() == true) {
                     NavigationTitle(
                         label = stringResource(R.string.your_ytb_playlists),
-                        title = title = { Text(if (isLoggedIn) accountName else stringResource(R.string.login)) },,
+                        title = { Text(if (isLoggedIn) accountName else stringResource(R.string.login)) },
                         onClick = {
                             navController.navigate("account")
                         },
