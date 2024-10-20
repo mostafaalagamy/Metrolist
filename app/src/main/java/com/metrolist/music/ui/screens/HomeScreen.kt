@@ -489,7 +489,6 @@ fun HomeScreen(
         NavigationTitle(
     label = stringResource(R.string.similar_to),
     title = albums.artistName,
-    thumbnail = {
         icon(
             painter = painterResource(id = R.drawable.person),
             contentDescription = null,
@@ -497,7 +496,6 @@ fun HomeScreen(
                 .size(ListThumbnailSize)
                 .clip(CircleShape)
         )
-    }
 )
 
             // Горизонтальный список элементов
