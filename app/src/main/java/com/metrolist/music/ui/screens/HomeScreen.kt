@@ -486,10 +486,10 @@ fun HomeScreen(
             // Отображение заголовка навигации
             NavigationTitle(
                         label = stringResource(R.string.similar_to),
-                        title = item.title.title,
-                        thumbnail = item.title.thumbnailUrl?.let { thumbnailUrl ->
+                        title = albums.artistName,
+                        thumbnail = albums.artistName.thumbnailUrl?.let { thumbnailUrl ->
                             {
-                                val shape = if (item.title is Artist) CircleShape else RoundedCornerShape(ThumbnailCornerRadius)
+                                val shape = if (Artist) CircleShape else RoundedCornerShape(ThumbnailCornerRadius)
                                 AsyncImage(
                                     model = thumbnailUrl,
                                     contentDescription = null,
