@@ -64,6 +64,7 @@ import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
 import com.metrolist.music.constants.GridThumbnailHeight
+import com.metrolist.music.constants.AccountNameKey
 import com.metrolist.music.constants.InnerTubeCookieKey
 import com.metrolist.music.constants.ListItemHeight
 import com.metrolist.music.extensions.togglePlayPause
@@ -151,6 +152,7 @@ fun HomeScreen(
 
     val listenAgainLazyGridState = rememberLazyGridState()
 
+    val accountName by rememberPreference(AccountNameKey, "")
     val innerTubeCookie by rememberPreference(InnerTubeCookieKey, "")
     val isLoggedIn =
         remember(innerTubeCookie) {
@@ -441,7 +443,8 @@ fun HomeScreen(
 
                 if (youtubePlaylists?.isNotEmpty() == true) {
                     NavigationTitle(
-                        title = stringResource(R.string.your_ytb_playlists),
+                        label = stringResource(R.string.your_ytb_playlists),
+                        title = title = { Text(if (isLoggedIn) accountName else stringResource(R.string.login)) },,
                         onClick = {
                             navController.navigate("account")
                         },
