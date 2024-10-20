@@ -119,7 +119,6 @@ fun HomeScreen(
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
 
     val quickPicks by viewModel.quickPicks.collectAsState()
-    val explorePage by viewModel.explorePage.collectAsState()
 
     val forgottenFavorite by viewModel.forgottenFavorite.collectAsState()
     val homeFirstAlbumRecommendation by viewModel.homeFirstAlbumRecommendation.collectAsState()
@@ -481,7 +480,6 @@ fun HomeScreen(
                                         
                 homeFirstArtistRecommendation?.let { albums ->
     if (albums.listItem.isNotEmpty()) {
-        // Display the navigation title with artist name and thumbnail
         NavigationTitle(    
             label = stringResource(R.string.similar_to),
             title = albums.artistName,
@@ -489,14 +487,11 @@ fun HomeScreen(
             Icon(
                  painter = painterResource(id = R.drawable.person),
                  contentDescription = null,
-                 modifier = Modifier
-                     .size(ListThumbnailSize)
-                     .clip(CircleShape)
+                 modifier = Modifier.size(24.dp)
                 )
             }
        )
-
-            // Горизонтальный список элементов
+        
             LazyRow(
                 contentPadding = WindowInsets.systemBars
                     .only(WindowInsetsSides.Horizontal)
@@ -565,7 +560,6 @@ fun HomeScreen(
                                                     )
                                                 }
                                                 else -> {
-                                                    // Handle other item types if necessary
                                                 }
                                             }
                                         }
@@ -720,7 +714,7 @@ fun HomeScreen(
     if (albums.recommendationAlbum.isNotEmpty()) {
         NavigationTitle(
             label = stringResource(R.string.similar_to),
-            title = albums.recommendedAlbum.name ?: stringResource(R.string.filter_albums), // تعامل مع القيمة الفارغة
+            title = albums.recommendedAlbum.name ?: stringResource(R.string.filter_albums),
             thumbnail = {
                 Icon(
                     painter = painterResource(id = R.drawable.album),
@@ -830,9 +824,7 @@ fun HomeScreen(
             Icon(
                  painter = painterResource(id = R.drawable.person),
                  contentDescription = null,
-                 modifier = Modifier
-                     .size(ListThumbnailSize)
-                     .clip(CircleShape)
+                 modifier = Modifier.size(24.dp)
                 )
             }
        )
@@ -985,8 +977,16 @@ fun HomeScreen(
                 homeSecondAlbumRecommendation?.albums?.let { albums ->
                     if (albums.recommendationAlbum.isNotEmpty()) {
                         NavigationTitle(
-                            title = stringResource(R.string.similar_to) + " " + albums.recommendedAlbum.name,
-                        )
+            label = stringResource(R.string.similar_to),
+            title = albums.recommendedAlbum.name ?: stringResource(R.string.filter_albums),
+            thumbnail = {
+                Icon(
+                    painter = painterResource(id = R.drawable.album),
+                    contentDescription = null,
+                    modifier = Modifier.size(24.dp)
+                )
+            }
+        )
 
                         LazyRow(
                             contentPadding =
@@ -1091,9 +1091,7 @@ fun HomeScreen(
             Icon(
                  painter = painterResource(id = R.drawable.person),
                  contentDescription = null,
-                 modifier = Modifier
-                     .size(ListThumbnailSize)
-                     .clip(CircleShape)
+                 modifier = Modifier.size(24.dp)
                 )
             }
        )
@@ -1207,51 +1205,6 @@ fun HomeScreen(
                     }
                 }
             }
-
-                explorePage?.newReleaseAlbums?.let { newReleaseAlbums ->
-                    NavigationTitle(
-                        title = stringResource(R.string.new_release_albums),
-                        onClick = {
-                            navController.navigate("new_release")
-                        },
-                    )
-
-                    LazyRow(
-                        contentPadding =
-                            WindowInsets.systemBars
-                                .only(WindowInsetsSides.Horizontal)
-                                .asPaddingValues(),
-                    ) {
-                        items(
-                            items = newReleaseAlbums,
-                            key = { it.id },
-                        ) { album ->
-                            YouTubeGridItem(
-                                item = album,
-                                isActive = mediaMetadata?.album?.id == album.id,
-                                isPlaying = isPlaying,
-                                coroutineScope = coroutineScope,
-                                modifier =
-                                    Modifier
-                                        .combinedClickable(
-                                            onClick = {
-                                                navController.navigate("album/${album.id}")
-                                            },
-                                            onLongClick = {
-                                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                                menuState.show {
-                                                    YouTubeAlbumMenu(
-                                                        albumItem = album,
-                                                        navController = navController,
-                                                        onDismiss = menuState::dismiss,
-                                                    )
-                                                }
-                                            },
-                                        ).animateItemPlacement(),
-                            )
-                        }
-                    }
-                }                                
                 Spacer(
                     Modifier.height(
                         LocalPlayerAwareWindowInsets.current
