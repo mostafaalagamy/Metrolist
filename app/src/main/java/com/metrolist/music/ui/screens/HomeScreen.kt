@@ -581,6 +581,7 @@ fun HomeScreen(
                 }
             }
        }
+   }
 
                 forgottenFavorite?.let { forgottenFavorite ->
                     if (forgottenFavorite.isNotEmpty() && forgottenFavorite.size > 5) {
