@@ -169,6 +169,56 @@ fun HomeScreen(
             backStackEntry?.savedStateHandle?.set("scrollToTop", false)
         }
     }
+
+    val localGridItem: @Composable (LocalItem) -> Unit = {
+        when (it) {
+            is Song -> SongGridItem(
+                song = it,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .combinedClickable(
+                        onClick = {
+                            if (it.id == mediaMetadata?.id) {
+                                playerConnection.player.togglePlayPause()
+                            } else {
+                                playerConnection.playQueue(
+                                    YouTubeQueue.radio(it.toMediaMetadata()),
+                                )
+                            }
+                        },
+                    ),
+                isActive = it.id == mediaMetadata?.id,
+                isPlaying = isPlaying,
+            )
+
+            is Album -> AlbumGridItem(
+                album = it,
+                isActive = it.id == mediaMetadata?.album?.id,
+                isPlaying = isPlaying,
+                coroutineScope = scope,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .combinedClickable(
+                        onClick = {
+                            navController.navigate("album/${it.id}")
+                        },
+                    )
+            )
+
+            is Artist -> ArtistGridItem(
+                artist = it,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .combinedClickable(
+                        onClick = {
+                            navController.navigate("artist/${it.id}")
+                        },
+                    ),
+            )
+
+            is Playlist -> {}
+        }
+    }
     
     SwipeRefresh(
         state = rememberSwipeRefreshState(isRefreshing),
@@ -485,19 +535,31 @@ fun HomeScreen(
         if (albums.listItem.isNotEmpty()) {
             // Отображение заголовка навигации
             NavigationTitle(
-                label = stringResource(R.string.similar_to),
-                title = albums.artistName,
-                thumbnail = albums.artistName?.let { thumbnailUrl -> {
-                    AsyncImage(
-                        model = thumbnailUrl,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(ListThumbnailSize)
-                            .clip(CircleShape)
+                        label = stringResource(R.string.similar_to),
+                        title = it.title.title,
+                        thumbnail = it.title.thumbnailUrl?.let { thumbnailUrl ->
+                            {
+                                val shape = if (it.title is Artist) CircleShape else RoundedCornerShape(ThumbnailCornerRadius)
+                                AsyncImage(
+                                    model = thumbnailUrl,
+                                    contentDescription = null,
+                                    modifier = Modifier
+                                        .size(ListThumbnailSize)
+                                        .clip(shape)
+                                )
+                            }
+                        },
+                        onClick = {
+                            when (it.title) {
+                                is Song -> navController.navigate("album/${it.title.album!!.id}")
+                                is Album -> navController.navigate("album/${it.title.id}")
+                                is Artist -> navController.navigate("artist/${it.title.id}")
+                                is Playlist -> {}
+                            }
+                        },
+                        modifier = Modifier.animateItem()
                     )
                 }
-            }
-       )
 
             // Горизонтальный список элементов
             LazyRow(
