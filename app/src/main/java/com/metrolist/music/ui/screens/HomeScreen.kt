@@ -65,6 +65,7 @@ import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
 import com.metrolist.music.constants.GridThumbnailHeight
 import com.metrolist.music.constants.AccountNameKey
+import com.metrolist.music.constants.AccountChannelHandleKey
 import com.metrolist.music.constants.InnerTubeCookieKey
 import com.metrolist.music.constants.ListItemHeight
 import com.metrolist.music.extensions.togglePlayPause
@@ -152,6 +153,7 @@ fun HomeScreen(
 
     val listenAgainLazyGridState = rememberLazyGridState()
 
+    val accountChannelHandle by rememberPreference(AccountChannelHandleKey, "")
     val accountName by rememberPreference(AccountNameKey, "")
     val innerTubeCookie by rememberPreference(InnerTubeCookieKey, "")
     val isLoggedIn =
