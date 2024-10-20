@@ -65,6 +65,10 @@ import com.metrolist.music.LocalDatabase
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import com.metrolist.music.constants.ListThumbnailSize
+import com.metrolist.music.constants.ThumbnailCornerRadius
 import com.metrolist.music.constants.GridThumbnailHeight
 import com.metrolist.music.constants.InnerTubeCookieKey
 import com.metrolist.music.constants.ListItemHeight
@@ -98,12 +102,6 @@ import coil.compose.AsyncImage
 import kotlinx.coroutines.CoroutineScope
 import kotlin.random.Random
 
-import com.metrolist.music.constants.ListThumbnailSize
-import com.metrolist.music.constants.ThumbnailCornerRadius
-
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 
 @SuppressLint("UnrememberedMutableState")
 @Suppress("DEPRECATION")
@@ -720,10 +718,19 @@ fun HomeScreen(
 
                 homeFirstAlbumRecommendation?.albums?.let { albums ->
                     if (albums.recommendationAlbum.isNotEmpty()) {
-                        NavigationTitle(
-                            title = stringResource(R.string.similar_to) + " " + albums.recommendedAlbum.name,
-                        )
-
+                        NavigationTitle(    
+            label = stringResource(R.string.similar_to),
+            title = albums.recommendedAlbum.name,
+        thumbnail = {
+            Icon(
+                 painter = painterResource(id = R.drawable.album),
+                 contentDescription = null,
+                 modifier = Modifier
+                     .size(ListThumbnailSize)
+                     .clip(CircleShape)
+                )
+            }
+       )
                         LazyRow(
                             contentPadding =
                                 WindowInsets.systemBars
@@ -820,9 +827,19 @@ fun HomeScreen(
 
                 homeSecondArtistRecommendation?.let { albums ->
                     if (albums.listItem.isNotEmpty()) {
-                        NavigationTitle(
-                            title = stringResource(R.string.similar_to) + " " + albums.artistName,
-                        )
+                        NavigationTitle(    
+            label = stringResource(R.string.similar_to),
+            title = albums.artistName,
+        thumbnail = {
+            Icon(
+                 painter = painterResource(id = R.drawable.person),
+                 contentDescription = null,
+                 modifier = Modifier
+                     .size(ListThumbnailSize)
+                     .clip(CircleShape)
+                )
+            }
+       )
 
                         LazyRow(
                             contentPadding =
@@ -971,9 +988,19 @@ fun HomeScreen(
 
                 homeSecondAlbumRecommendation?.albums?.let { albums ->
                     if (albums.recommendationAlbum.isNotEmpty()) {
-                        NavigationTitle(
-                            title = stringResource(R.string.similar_to) + " " + albums.recommendedAlbum.name,
-                        )
+                        NavigationTitle(    
+            label = stringResource(R.string.similar_to),
+            title = albums.recommendedAlbum.name,
+        thumbnail = {
+            Icon(
+                 painter = painterResource(id = R.drawable.album),
+                 contentDescription = null,
+                 modifier = Modifier
+                     .size(ListThumbnailSize)
+                     .clip(CircleShape)
+                )
+            }
+       )
 
                         LazyRow(
                             contentPadding =
@@ -1071,9 +1098,19 @@ fun HomeScreen(
 
                 homeThirdArtistRecommendation?.let { albums ->
                     if (albums.listItem.isNotEmpty()) {
-                        NavigationTitle(
-                            title = stringResource(R.string.similar_to) + " " + albums.artistName,
-                        )
+                        NavigationTitle(    
+            label = stringResource(R.string.similar_to),
+            title = albums.artistName,
+        thumbnail = {
+            Icon(
+                 painter = painterResource(id = R.drawable.person),
+                 contentDescription = null,
+                 modifier = Modifier
+                     .size(ListThumbnailSize)
+                     .clip(CircleShape)
+                )
+            }
+       )
 
                         LazyRow(
                             contentPadding =
