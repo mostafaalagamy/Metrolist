@@ -718,17 +718,14 @@ fun HomeScreen(
 
                 homeFirstAlbumRecommendation?.albums?.let { albums ->
     if (albums.recommendationAlbum.isNotEmpty()) {
-        // Display the navigation title with album name and thumbnail
-        NavigationTitle(    
+        NavigationTitle(
             label = stringResource(R.string.similar_to),
-            title = albums.recommendedAlbum.name,
+            title = albums.recommendedAlbum.name ?: stringResource(R.string.unknown_album), // تعامل مع القيمة الفارغة
             thumbnail = {
                 Icon(
-                    painter = painterResource(id = R.drawable.album), // تأكد من استخدام الأيقونة المناسبة للألبوم
+                    painter = painterResource(id = R.drawable.album),
                     contentDescription = null,
-                    modifier = Modifier
-                        .size(ListThumbnailSize)
-                        .clip(CircleShape)
+                    modifier = Modifier.size(24.dp)
                 )
             }
         )
