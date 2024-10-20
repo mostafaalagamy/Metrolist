@@ -23,7 +23,6 @@ data class HomeArtistRecommendation(
 //    var playlists: RecommendationAlbumBundle,
 //    var artists: List<ArtistItem>,
     val artistName: String,
-    val artistthumbnail : thumbnailUrl,
 )
 
 data class HomePlayList(
