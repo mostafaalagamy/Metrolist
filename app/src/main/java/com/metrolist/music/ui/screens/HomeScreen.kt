@@ -45,6 +45,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -65,6 +66,9 @@ import com.metrolist.music.LocalDatabase
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
+import com.metrolist.music.constants.AccountChannelHandleKey
+import com.metrolist.music.constants.AccountEmailKey
+import com.metrolist.music.constants.AccountNameKey
 import com.metrolist.music.constants.ListThumbnailSize
 import com.metrolist.music.constants.ThumbnailCornerRadius
 import com.metrolist.music.constants.GridThumbnailHeight
@@ -139,6 +143,10 @@ fun HomeScreen(
 
     val listenAgainLazyGridState = rememberLazyGridState()
 
+    val context = LocalContext.current
+    val accountName by rememberPreference(AccountNameKey, "")
+    val accountEmail by rememberPreference(AccountEmailKey, "")
+    val accountChannelHandle by rememberPreference(AccountChannelHandleKey, "")
     val innerTubeCookie by rememberPreference(InnerTubeCookieKey, "")
     val isLoggedIn =
         remember(innerTubeCookie) {
@@ -429,9 +437,17 @@ fun HomeScreen(
 
                 if (youtubePlaylists?.isNotEmpty() == true) {
                     NavigationTitle(
-                        title = stringResource(R.string.your_ytb_playlists),
-                        onClick = {
-                            navController.navigate("account")
+                            label = stringResource(R.string.your_ytb_playlists),
+                            title = if (isLoggedIn) accountName else stringResource(R.string.your_ytb_playlists),
+                            thumbnail = {
+                                Icon(
+                                     painter = painterResource(id = R.drawable.person),
+                                     contentDescription = null,
+                                     modifier = Modifier.size(24.dp)
+                                )
+                            },
+                            onClick = {
+                                navController.navigate("account")
                         },
                     )
                     LazyRow(
