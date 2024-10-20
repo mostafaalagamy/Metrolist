@@ -29,6 +29,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -490,11 +492,19 @@ fun HomeScreen(
             label = stringResource(id = R.string.similar_to),
             title = artistName,
             thumbnail = {
-                // نفترض وجود دالة getArtistImageUrl لجلب URL صورة الفنان
-                val imageUrl = getArtistImageUrl(artistName)
-                if (imageUrl != null) {
+                // محاولة الحصول على الصورة المصغرة من العنصر الأول في القائمة
+                val thumbnailUrl = albums.listItem.firstOrNull()?.let { item ->
+                    when (item) {
+                        is ArtistItem -> item.thumbnailUrl
+                        is AlbumItem -> item.thumbnailUrl
+                        is SongItem -> item.thumbnailUrl
+                        else -> null
+                    }
+                }
+
+                if (thumbnailUrl != null) {
                     AsyncImage(
-                        model = imageUrl,
+                        model = thumbnailUrl,
                         contentDescription = "صورة $artistName",
                         modifier = Modifier
                             .size(ListThumbnailSize)
@@ -503,7 +513,7 @@ fun HomeScreen(
                 } else {
                     // إذا لم تكن هناك صورة متاحة، نعرض أيقونة افتراضية
                     Icon(
-                        icon = R.drawable.Person,
+                        imageVector = Icons.Default.Person,
                         contentDescription = "صورة افتراضية للفنان",
                         modifier = Modifier
                             .size(ListThumbnailSize)
