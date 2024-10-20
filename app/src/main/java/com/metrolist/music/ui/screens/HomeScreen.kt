@@ -485,10 +485,10 @@ fun HomeScreen(
         if (albums.listItem.isNotEmpty()) {
             // Отображение заголовка навигации
             NavigationTitle(
-            label = stringResource(R.string.similar_to),
-            title = albums.artistName,
-            thumbnail = albums.artistThumbnailUrl?.let { thumbnailUrl ->
-                {
+            label = stringResource(id = R.string.similar_to),
+            title = albums.artistName ?: "",
+            thumbnail = {
+                albums.artistThumbnailUrl?.let { thumbnailUrl ->
                     AsyncImage(
                         model = thumbnailUrl,
                         contentDescription = null,
@@ -500,7 +500,6 @@ fun HomeScreen(
             }
         )
     }
-
             // Горизонтальный список элементов
             LazyRow(
                 contentPadding = WindowInsets.systemBars
