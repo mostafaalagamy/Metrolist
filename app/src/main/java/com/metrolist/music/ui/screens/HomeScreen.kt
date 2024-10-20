@@ -490,7 +490,7 @@ fun HomeScreen(
     label = stringResource(R.string.similar_to),
     title = albums.artistName,
     thumbnail = {
-        Image(
+        icon(
             painter = painterResource(id = R.drawable.person),
             contentDescription = null,
             modifier = Modifier
