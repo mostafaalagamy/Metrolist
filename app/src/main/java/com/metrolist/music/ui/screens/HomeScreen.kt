@@ -485,19 +485,21 @@ fun HomeScreen(
         if (albums.listItem.isNotEmpty()) {
             // Отображение заголовка навигации
             NavigationTitle(
-                label = stringResource(R.string.similar_to),
-                title = albums.artistName,
-                thumbnail = artist.thumbnailUrl?.let { thumbnailUrl -> {
-                    AsyncImage(
-                        model = thumbnailUrl,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(ListThumbnailSize)
-                            .clip(CircleShape)
+                        label = stringResource(R.string.similar_to),
+                        title = item.title.title,
+                        thumbnail = item.title.thumbnailUrl?.let { thumbnailUrl ->
+                            {
+                                val shape = if (item.title is Artist) CircleShape else RoundedCornerShape(ThumbnailCornerRadius)
+                                AsyncImage(
+                                    model = thumbnailUrl,
+                                    contentDescription = null,
+                                    modifier = Modifier
+                                        .size(ListThumbnailSize)
+                                        .clip(shape)
+                                )
+                            }
+                        }
                     )
-                }
-            }
-       )
                 
             // Горизонтальный список элементов
             LazyRow(
