@@ -445,7 +445,7 @@ fun HomeScreen(
 
                 if (youtubePlaylists?.isNotEmpty() == true) {
                     NavigationTitle(
-                        title = { Text(if (isLoggedIn) accountName else stringResource(R.string.login)) },
+                        title = Text((isLoggedIn) accountName ),
                         onClick = {
                             navController.navigate("account")
                         },
