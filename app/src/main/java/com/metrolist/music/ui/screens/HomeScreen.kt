@@ -487,7 +487,7 @@ fun HomeScreen(
             NavigationTitle(
                         label = stringResource(R.string.similar_to),
                         title = albums.artistName,
-                        thumbnail = albums.artistthumbnail.thumbnailUrl?.let { thumbnailUrl ->
+                        thumbnail = albums.thumbnailUrl?.let { thumbnailUrl ->
                             {
                                 val shape = if (Artist) CircleShape else RoundedCornerShape(ThumbnailCornerRadius)
                                 AsyncImage(
