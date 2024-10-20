@@ -487,10 +487,18 @@ fun HomeScreen(
     if (albums.listItem.isNotEmpty()) {
         // Display the navigation title with artist name and thumbnail
         NavigationTitle(
-            label = stringResource(R.string.similar_to),
-            title = "${albums.artistName} (${albums.artistThumbnailUrl ?: ""})", // Here we add the artist's thumbnail URL
+    label = stringResource(R.string.similar_to),
+    title = albums.artistName,
+    thumbnail = {
+        Image(
+            painter = painterResource(id = R.drawable.person),
+            contentDescription = null,
+            modifier = Modifier
+                .size(ListThumbnailSize)
+                .clip(CircleShape)
         )
     }
+)
 
             // Горизонтальный список элементов
             LazyRow(
