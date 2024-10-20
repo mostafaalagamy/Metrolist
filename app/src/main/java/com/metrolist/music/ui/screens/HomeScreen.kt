@@ -717,52 +717,60 @@ fun HomeScreen(
                 }
 
                 homeFirstAlbumRecommendation?.albums?.let { albums ->
-                    if (albums.recommendationAlbum.isNotEmpty()) {
-                        NavigationTitle(
-                            title = stringResource(R.string.similar_to) + " " + albums.recommendedAlbum.name,
-                        )
+    if (albums.recommendationAlbum.isNotEmpty()) {
+        // Display the navigation title with album name and thumbnail
+        NavigationTitle(    
+            label = stringResource(R.string.similar_to),
+            title = albums.recommendedAlbum.name,
+            thumbnail = {
+                Icon(
+                    painter = painterResource(id = R.drawable.album), // تأكد من استخدام الأيقونة المناسبة للألبوم
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(ListThumbnailSize)
+                        .clip(CircleShape)
+                )
+            }
+        )
 
-                        LazyRow(
-                            contentPadding =
-                                WindowInsets.systemBars
-                                    .only(WindowInsetsSides.Horizontal)
-                                    .asPaddingValues(),
-                        ) {
-                            items(
-                                items = albums.recommendationAlbum,
-                                key = { it.id },
-                            ) { album ->
-                                if (!album.title.contains("Presenting")) {
-                                    YouTubeGridItem(
-                                        item = album,
-                                        isActive = mediaMetadata?.album?.id == album.id,
-                                        isPlaying = isPlaying,
-                                        coroutineScope = coroutineScope,
-                                        modifier =
-                                            Modifier
-                                                .combinedClickable(
-                                                    onClick = {
-                                                        navController.navigate("online_playlist/${album.id}")
-                                                    },
-                                                    onLongClick = {
-                                                        haptic.performHapticFeedback(
-                                                            HapticFeedbackType.LongPress,
-                                                        )
-                                                        menuState.show {
-                                                            YouTubePlaylistMenu(
-                                                                playlist = album,
-                                                                coroutineScope = coroutineScope,
-                                                                onDismiss = menuState::dismiss,
-                                                            )
-                                                        }
-                                                    },
-                                                ).animateItemPlacement(),
-                                    )
+        LazyRow(
+            contentPadding = WindowInsets.systemBars
+                .only(WindowInsetsSides.Horizontal)
+                .asPaddingValues()
+        ) {
+            items(
+                items = albums.recommendationAlbum,
+                key = { it.id }
+            ) { album ->
+                if (!album.title.contains("Presenting")) {
+                    YouTubeGridItem(
+                        item = album,
+                        isActive = mediaMetadata?.album?.id == album.id,
+                        isPlaying = isPlaying,
+                        coroutineScope = coroutineScope,
+                        modifier = Modifier
+                            .combinedClickable(
+                                onClick = {
+                                    navController.navigate("online_playlist/${album.id}")
+                                },
+                                onLongClick = {
+                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                    menuState.show {
+                                        YouTubePlaylistMenu(
+                                            playlist = album,
+                                            coroutineScope = coroutineScope,
+                                            onDismiss = menuState::dismiss
+                                        )
+                                    }
                                 }
-                            }
-                        }
-                    }
+                            )
+                            .animateItemPlacement()
+                    )
                 }
+            }
+        }
+    }
+}
                 
                 homeFirstContinuation?.forEach { homePlaylists ->
                     if (homePlaylists.playlists.isNotEmpty()) {
