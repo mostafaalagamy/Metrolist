@@ -443,7 +443,9 @@ fun HomeScreen(
                                 Icon(
                                      painter = painterResource(id = R.drawable.person),
                                      contentDescription = null,
-                                     modifier = Modifier.size(24.dp)
+                                     modifier = Modifier
+                                                .size(ListThumbnailSize)
+                                                .clip(CircleShape)
                                 )
                             },
                             onClick = {
