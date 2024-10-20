@@ -559,8 +559,7 @@ fun HomeScreen(
                         },
                         modifier = Modifier.animateItem()
                     )
-                }
-
+                
             // Горизонтальный список элементов
             LazyRow(
                 contentPadding = WindowInsets.systemBars
