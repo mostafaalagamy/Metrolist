@@ -482,17 +482,29 @@ fun HomeScreen(
 
                                         
                 homeFirstArtistRecommendation?.let { albums ->
-        if (albums.listItem.isNotEmpty()) {
-            // Отображение заголовка навигации
-            NavigationTitle(
+    if (albums.listItem.isNotEmpty()) {
+        val artistName = albums.artistName ?: ""
+        
+        // عرض عنوان التنقل مع الصورة المصغرة للفنان
+        NavigationTitle(
             label = stringResource(id = R.string.similar_to),
-            title = albums.artistName ?: "",
+            title = artistName,
             thumbnail = {
-                val thumbnailUrl = albums.artistName
-                if (thumbnailUrl != null) {
+                // نفترض وجود دالة getArtistImageUrl لجلب URL صورة الفنان
+                val imageUrl = getArtistImageUrl(artistName)
+                if (imageUrl != null) {
                     AsyncImage(
-                        model = thumbnailUrl,
-                        contentDescription = null,
+                        model = imageUrl,
+                        contentDescription = "صورة $artistName",
+                        modifier = Modifier
+                            .size(ListThumbnailSize)
+                            .clip(CircleShape)
+                    )
+                } else {
+                    // إذا لم تكن هناك صورة متاحة، نعرض أيقونة افتراضية
+                    Icon(
+                        icon = R.drawable.Person,
+                        contentDescription = "صورة افتراضية للفنان",
                         modifier = Modifier
                             .size(ListThumbnailSize)
                             .clip(CircleShape)
