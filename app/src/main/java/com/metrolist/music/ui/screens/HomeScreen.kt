@@ -88,6 +88,9 @@ import com.metrolist.music.ui.component.SongListItem
 import com.metrolist.music.ui.component.SongSmallGridItem
 import com.metrolist.music.ui.component.YouTubeGridItem
 import com.metrolist.music.ui.component.YouTubeSmallGridItem
+import com.metrolist.music.ui.component.shimmer.TextPlaceholder
+import com.metrolist.music.ui.component.shimmer.ShimmerHost
+import com.metrolist.music.ui.component.shimmer.GridItemPlaceHolder
 import com.metrolist.music.ui.menu.ArtistMenu
 import com.metrolist.music.ui.menu.SongMenu
 import com.metrolist.music.ui.menu.YouTubeAlbumMenu
@@ -136,6 +139,7 @@ fun HomeScreen(
 
     val youtubePlaylists by viewModel.youtubePlaylists.collectAsState()
 
+    val isLoading by viewModel.isLoading.collectAsState()
     val isRefreshing by viewModel.isRefreshing.collectAsState()
     val mostPlayedLazyGridState = rememberLazyGridState()
 
@@ -1210,6 +1214,26 @@ fun HomeScreen(
                         }
                     }
                 }
+
+
+            if (isLoading) {
+                ShimmerHost {
+                    TextPlaceholder(
+                        height = 36.dp,
+                        modifier =
+                            Modifier
+                                .padding(vertical = 12.dp, horizontal = 12.dp)
+                                .width(250.dp),
+                    )
+                    Row {
+                        repeat(2) {
+                            GridItemPlaceHolder()
+                        }
+                    }
+                }
+            }
+
+     
                 Spacer(
                     Modifier.height(
                         LocalPlayerAwareWindowInsets.current

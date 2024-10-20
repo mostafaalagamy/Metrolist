@@ -32,46 +32,49 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel
-    @Inject
-    constructor(
-        @ApplicationContext context: Context,
-        val database: MusicDatabase,
-    ) : ViewModel() {
-        val isRefreshing = MutableStateFlow(false)
-        private val quickPicksEnum =
-            context.dataStore.data
-                .map {
-                    it[QuickPicksKey].toEnum(QuickPicks.QUICK_PICKS)
-                }.distinctUntilChanged()
+@Inject
+constructor(
+    @ApplicationContext context: Context,
+    val database: MusicDatabase,
+) : ViewModel() {
+    val isRefreshing = MutableStateFlow(false)
+    val isLoading = MutableStateFlow(false)
+    private val quickPicksEnum =
+        context.dataStore.data
+            .map {
+                it[QuickPicksKey].toEnum(QuickPicks.QUICK_PICKS)
+            }.distinctUntilChanged()
 
-        val quickPicks = MutableStateFlow<List<Song>?>(null)
-        val explorePage = MutableStateFlow<ExplorePage?>(null)
+    val quickPicks = MutableStateFlow<List<Song>?>(null)
+    val explorePage = MutableStateFlow<ExplorePage?>(null)
 
-        val forgottenFavorite = MutableStateFlow<List<Song>?>(null)
-        val home = MutableStateFlow<List<HomePlayList>?>(null)
-        val keepListeningSongs = MutableStateFlow<List<Song>?>(null)
-        val keepListeningAlbums = MutableStateFlow<List<Song>?>(null)
-        val keepListeningArtists = MutableStateFlow<List<Artist>?>(null)
+    val forgottenFavorite = MutableStateFlow<List<Song>?>(null)
+    val home = MutableStateFlow<List<HomePlayList>?>(null)
+    val keepListeningSongs = MutableStateFlow<List<Song>?>(null)
+    val keepListeningAlbums = MutableStateFlow<List<Song>?>(null)
+    val keepListeningArtists = MutableStateFlow<List<Artist>?>(null)
 
-        val keepListening = MutableStateFlow<List<Int>?>(null)
+    val keepListening = MutableStateFlow<List<Int>?>(null)
 
-        private val continuation = MutableStateFlow<String?>(null)
-        val homeFirstContinuation = MutableStateFlow<List<HomePlayList>?>(null)
-        val homeSecondContinuation = MutableStateFlow<List<HomePlayList>?>(null)
-        val homeThirdContinuation = MutableStateFlow<List<HomePlayList>?>(null)
+    private val continuation = MutableStateFlow<String?>(null)
+    val homeFirstContinuation = MutableStateFlow<List<HomePlayList>?>(null)
+    val homeSecondContinuation = MutableStateFlow<List<HomePlayList>?>(null)
+    val homeThirdContinuation = MutableStateFlow<List<HomePlayList>?>(null)
 
-        private val songsAlbumRecommendation = MutableStateFlow<List<Song>?>(null)
-        val homeFirstAlbumRecommendation = MutableStateFlow<HomeAlbumRecommendation?>(null)
-        val homeSecondAlbumRecommendation = MutableStateFlow<HomeAlbumRecommendation?>(null)
+    private val songsAlbumRecommendation = MutableStateFlow<List<Song>?>(null)
+    val homeFirstAlbumRecommendation = MutableStateFlow<HomeAlbumRecommendation?>(null)
+    val homeSecondAlbumRecommendation = MutableStateFlow<HomeAlbumRecommendation?>(null)
 
-        private val artistRecommendation = MutableStateFlow<List<Artist>?>(null)
-        val homeFirstArtistRecommendation = MutableStateFlow<HomeArtistRecommendation?>(null)
-        val homeSecondArtistRecommendation = MutableStateFlow<HomeArtistRecommendation?>(null)
-        val homeThirdArtistRecommendation = MutableStateFlow<HomeArtistRecommendation?>(null)
+    private val artistRecommendation = MutableStateFlow<List<Artist>?>(null)
+    val homeFirstArtistRecommendation = MutableStateFlow<HomeArtistRecommendation?>(null)
+    val homeSecondArtistRecommendation = MutableStateFlow<HomeArtistRecommendation?>(null)
+    val homeThirdArtistRecommendation = MutableStateFlow<HomeArtistRecommendation?>(null)
 
-        val youtubePlaylists = MutableStateFlow<List<PlaylistItem>?>(null)
+    val youtubePlaylists = MutableStateFlow<List<PlaylistItem>?>(null)
 
-        private suspend fun getQuickPicks() {
+    private suspend fun getQuickPicks() {
+        isLoading.value = true
+        try {
             when (quickPicksEnum.first()) {
                 QuickPicks.QUICK_PICKS ->
                     quickPicks.value =
@@ -82,9 +85,14 @@ class HomeViewModel
                             .take(20)
                 QuickPicks.LAST_LISTEN -> songLoad()
             }
+        } finally {
+            isLoading.value = false
         }
+    }
 
-        private suspend fun load() {
+    private suspend fun load() {
+        isLoading.value = true
+        try {
             getQuickPicks()
             val artists =
                 database
@@ -151,9 +159,14 @@ class HomeViewModel
                         reportException(it)
                     }
             }
+        } finally {
+            isLoading.value = false
         }
+    }
 
-        private suspend fun homeLoad() {
+    private suspend fun homeLoad() {
+        isLoading.value = true
+        try {
             YouTube
                 .home()
                 .onSuccess { res ->
@@ -165,12 +178,17 @@ class HomeViewModel
                     reportException(it)
                 }
             continuationsLoad()
+        } finally {
+            isLoading.value = false
         }
+    }
 
-        private suspend fun continuation(
-            continuationVal: String?,
-            next: MutableStateFlow<List<HomePlayList>?>,
-        ) {
+    private suspend fun continuation(
+        continuationVal: String?,
+        next: MutableStateFlow<List<HomePlayList>?>,
+    ) {
+        isLoading.value = true
+        try {
             continuationVal?.run {
                 YouTube
                     .browseContinuation(this)
@@ -183,9 +201,14 @@ class HomeViewModel
                         reportException(it)
                     }
             }
+        } finally {
+            isLoading.value = false
         }
+    }
 
-        private suspend fun continuationsLoad() {
+    private suspend fun continuationsLoad() {
+        isLoading.value = true
+        try {
             artistLoad(artistRecommendation.value?.getOrNull(0), homeFirstArtistRecommendation)
             forgottenFavorite.value =
                 database
@@ -209,9 +232,14 @@ class HomeViewModel
             albumLoad(songsAlbumRecommendation.value?.getOrNull(1), homeSecondAlbumRecommendation)
 
             artistLoad(artistRecommendation.value?.getOrNull(2), homeThirdArtistRecommendation)
+        } finally {
+            isLoading.value = false
         }
+    }
 
-        private suspend fun songLoad() {
+    private suspend fun songLoad() {
+        isLoading.value = true
+        try {
             val song =
                 database
                     .events()
@@ -229,12 +257,17 @@ class HomeViewModel
                     quickPicks.value = relatedSongs
                 }
             }
+        } finally {
+            isLoading.value = false
         }
+    }
 
-        private suspend fun albumLoad(
-            song: Song?,
-            next: MutableStateFlow<HomeAlbumRecommendation?>,
-        ) {
+    private suspend fun albumLoad(
+        song: Song?,
+        next: MutableStateFlow<HomeAlbumRecommendation?>,
+    ) {
+        isLoading.value = true
+        try {
             val albumUtils = AlbumUtils(song?.song?.albumName, song?.song?.thumbnailUrl)
             YouTube.next(WatchEndpoint(videoId = song?.id)).onSuccess { res ->
                 YouTube
@@ -248,12 +281,17 @@ class HomeViewModel
                         reportException(it)
                     }
             }
+        } finally {
+            isLoading.value = false
         }
+    }
 
-        private suspend fun artistLoad(
-            artist: Artist?,
-            next: MutableStateFlow<HomeArtistRecommendation?>,
-        ) {
+    private suspend fun artistLoad(
+        artist: Artist?,
+        next: MutableStateFlow<HomeArtistRecommendation?>,
+    ) {
+        isLoading.value = true
+        try {
             val listItem = mutableListOf<YTItem>()
             artist?.id?.let {
                 YouTube.artist(it).onSuccess { res ->
@@ -272,46 +310,55 @@ class HomeViewModel
                         artistName = artist.artist.name,
                     )
             }
-        }
-
-        fun refresh() {
-            if (isRefreshing.value) return
-            viewModelScope.launch(Dispatchers.IO) {
-                isRefreshing.value = true
-                load()
-                isRefreshing.value = false
-            }
-            viewModelScope.launch(Dispatchers.IO) {
-                homeLoad()
-            }
-        }
-
-        init {
-            viewModelScope.launch(Dispatchers.IO) {
-                val mostPlayedArtists = database.mostPlayedArtists(System.currentTimeMillis() - 86400000 * 7 * 2)
-                viewModelScope.launch {
-                    mostPlayedArtists.collect { artists ->
-                        artists
-                            .map { it.artist }
-                            .filter {
-                                it.thumbnailUrl == null
-                            }.forEach { artist ->
-                                YouTube.artist(artist.id).onSuccess { artistPage ->
-                                    database.query {
-                                        update(artist, artistPage)
-                                    }
-                                }
-                            }
-                    }
-                }
-            }
-            viewModelScope.launch(Dispatchers.IO) {
-                isRefreshing.value = true
-                load()
-                isRefreshing.value = false
-            }
-            viewModelScope.launch(Dispatchers.IO) {
-                homeLoad()
-            }
+        } finally {
+            isLoading.value = false
         }
     }
+
+    fun refresh() {
+        if (isRefreshing.value) return
+        viewModelScope.launch(Dispatchers.IO) {
+            isRefreshing.value = true
+            try {
+                load()
+            } finally {
+                isRefreshing.value = false
+            }
+        }
+        viewModelScope.launch(Dispatchers.IO) {
+            homeLoad()
+        }
+    }
+
+    init {
+        viewModelScope.launch(Dispatchers.IO) {
+            val mostPlayedArtists = database.mostPlayedArtists(System.currentTimeMillis() - 86400000 * 7 * 2)
+            viewModelScope.launch {
+                mostPlayedArtists.collect { artists ->
+                    artists
+                        .map { it.artist }
+                        .filter {
+                            it.thumbnailUrl == null
+                        }.forEach { artist ->
+                            YouTube.artist(artist.id).onSuccess { artistPage ->
+                                database.query {
+                                    update(artist, artistPage)
+                                }
+                            }
+                        }
+                }
+            }
+        }
+        viewModelScope.launch(Dispatchers.IO) {
+            isRefreshing.value = true
+            try {
+                load()
+            } finally {
+                isRefreshing.value = false
+            }
+        }
+        viewModelScope.launch(Dispatchers.IO) {
+            homeLoad()
+        }
+    }
+}
