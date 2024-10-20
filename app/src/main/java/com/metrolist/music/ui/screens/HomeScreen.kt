@@ -64,8 +64,6 @@ import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
 import com.metrolist.music.constants.GridThumbnailHeight
-import com.metrolist.music.constants.AccountNameKey
-import com.metrolist.music.constants.AccountChannelHandleKey
 import com.metrolist.music.constants.InnerTubeCookieKey
 import com.metrolist.music.constants.ListItemHeight
 import com.metrolist.music.extensions.togglePlayPause
@@ -152,9 +150,7 @@ fun HomeScreen(
     val forgottenFavoritesLazyGridState = rememberLazyGridState()
 
     val listenAgainLazyGridState = rememberLazyGridState()
-
-    val accountChannelHandle by rememberPreference(AccountChannelHandleKey, "")
-    val accountName by rememberPreference(AccountNameKey, "")
+    
     val innerTubeCookie by rememberPreference(InnerTubeCookieKey, "")
     val isLoggedIn =
         remember(innerTubeCookie) {
@@ -445,7 +441,7 @@ fun HomeScreen(
 
                 if (youtubePlaylists?.isNotEmpty() == true) {
                     NavigationTitle(
-                        title = Text((isLoggedIn) accountName ),
+                        title = stringResource(R.string.your_ytb_playlists),
                         onClick = {
                             navController.navigate("account")
                         },
@@ -489,10 +485,21 @@ fun HomeScreen(
         if (albums.listItem.isNotEmpty()) {
             // Отображение заголовка навигации
             NavigationTitle(
-                label = stringResource(R.string.similar_to),
-                title = albums.artistName,
-            )
-        }
+            label = stringResource(R.string.similar_to),
+            title = albums.artistName,
+            thumbnail = albums.artistThumbnailUrl?.let { thumbnailUrl ->
+                {
+                    AsyncImage(
+                        model = thumbnailUrl,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(ListThumbnailSize)
+                            .clip(CircleShape)
+                    )
+                }
+            }
+        )
+    }
 
             // Горизонтальный список элементов
             LazyRow(
