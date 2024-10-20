@@ -720,7 +720,7 @@ fun HomeScreen(
     if (albums.recommendationAlbum.isNotEmpty()) {
         NavigationTitle(
             label = stringResource(R.string.similar_to),
-            title = albums.recommendedAlbum.name ?: stringResource(R.string.unknown_album), // تعامل مع القيمة الفارغة
+            title = albums.recommendedAlbum.name ?: stringResource(R.string.filter_albums), // تعامل مع القيمة الفارغة
             thumbnail = {
                 Icon(
                     painter = painterResource(id = R.drawable.album),
