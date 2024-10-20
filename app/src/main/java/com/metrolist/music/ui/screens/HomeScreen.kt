@@ -486,17 +486,19 @@ fun HomeScreen(
                 homeFirstArtistRecommendation?.let { albums ->
     if (albums.listItem.isNotEmpty()) {
         // Display the navigation title with artist name and thumbnail
-        NavigationTitle(
-    label = stringResource(R.string.similar_to),
-    title = albums.artistName,
-        icon(
-            painter = painterResource(id = R.drawable.person),
-            contentDescription = null,
-            modifier = Modifier
-                .size(ListThumbnailSize)
-                .clip(CircleShape)
-        )
-)
+        NavigationTitle(    
+            label = stringResource(R.string.similar_to),
+            title = albums.artistName,
+        thumbnail = {
+            Icon(
+                 painter = painterResource(id = R.drawable.person),
+                 contentDescription = null,
+                 modifier = Modifier
+                     .size(ListThumbnailSize)
+                     .clip(CircleShape)
+                )
+            }
+       )
 
             // Горизонтальный список элементов
             LazyRow(
