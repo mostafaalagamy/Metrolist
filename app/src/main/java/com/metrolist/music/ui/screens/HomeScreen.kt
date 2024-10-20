@@ -488,7 +488,8 @@ fun HomeScreen(
             label = stringResource(id = R.string.similar_to),
             title = albums.artistName ?: "",
             thumbnail = {
-                albums.artistThumbnailUrl?.let { thumbnailUrl ->
+                val thumbnailUrl = albums.artistThumbnailUrl
+                if (thumbnailUrl != null) {
                     AsyncImage(
                         model = thumbnailUrl,
                         contentDescription = null,
