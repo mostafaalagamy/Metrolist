@@ -77,6 +77,9 @@ import com.metrolist.music.ui.component.SongListItem
 import com.metrolist.music.ui.component.SongSmallGridItem
 import com.metrolist.music.ui.component.YouTubeGridItem
 import com.metrolist.music.ui.component.YouTubeSmallGridItem
+import com.metrolist.music.ui.component.shimmer.TextPlaceholder
+import com.metrolist.music.ui.component.shimmer.ShimmerHost
+import com.metrolist.music.ui.component.shimmer.GridItemPlaceHolder
 import com.metrolist.music.ui.menu.ArtistMenu
 import com.metrolist.music.ui.menu.SongMenu
 import com.metrolist.music.ui.menu.YouTubeAlbumMenu
@@ -126,6 +129,7 @@ fun HomeScreen(
 
     val youtubePlaylists by viewModel.youtubePlaylists.collectAsState()
 
+    val isLoading by viewModel.isLoading.collectAsState()
     val isRefreshing by viewModel.isRefreshing.collectAsState()
     val mostPlayedLazyGridState = rememberLazyGridState()
 
@@ -318,7 +322,7 @@ fun HomeScreen(
                     }
                 }
 
-                                if (keepListening?.isNotEmpty() == true) {
+                if (keepListening?.isNotEmpty() == true) {
                     keepListening?.let {
                         NavigationTitle(
                             title = stringResource(R.string.keep_listening),
@@ -421,7 +425,7 @@ fun HomeScreen(
                     }
                 }
 
-                                if (youtubePlaylists?.isNotEmpty() == true) {
+                if (youtubePlaylists?.isNotEmpty() == true) {
                     NavigationTitle(
                         title = stringResource(R.string.your_ytb_playlists),
                         onClick = {
@@ -1149,6 +1153,23 @@ fun HomeScreen(
                     }
                 }
 
+            if (isLoading) {
+                ShimmerHost {
+                    TextPlaceholder(
+                        height = 36.dp,
+                        modifier =
+                            Modifier
+                                .padding(vertical = 12.dp, horizontal = 12.dp)
+                                .width(250.dp),
+                    )
+                    Row {
+                        repeat(2) {
+                            GridItemPlaceHolder()
+                        }
+                    }
+                }
+            }
+
                 explorePage?.newReleaseAlbums?.let { newReleaseAlbums ->
                     NavigationTitle(
                         title = stringResource(R.string.new_release_albums),
@@ -1192,7 +1213,7 @@ fun HomeScreen(
                             )
                         }
                     }
-                }
+                }                                
                 Spacer(
                     Modifier.height(
                         LocalPlayerAwareWindowInsets.current
