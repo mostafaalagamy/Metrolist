@@ -12,4 +12,8 @@ data class Artist(
 ) : LocalItem() {
     override val id: String
         get() = artist.id
+    override val title: String
+        get() = artist.name
+    override val thumbnailUrl: String?
+        get() = artist.thumbnailUrl
 }
