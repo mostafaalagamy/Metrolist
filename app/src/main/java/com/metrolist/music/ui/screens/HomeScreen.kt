@@ -485,22 +485,11 @@ fun HomeScreen(
         if (albums.listItem.isNotEmpty()) {
             // Отображение заголовка навигации
             NavigationTitle(
-                        label = stringResource(R.string.similar_to),
-                        title = albums.artistName,
-                        thumbnail = thumbnailUrl?.let { thumbnailUrl ->
-                            {
-                                val shape = if (Artist) CircleShape else RoundedCornerShape(ThumbnailCornerRadius)
-                                AsyncImage(
-                                    model = thumbnailUrl,
-                                    contentDescription = null,
-                                    modifier = Modifier
-                                        .size(ListThumbnailSize)
-                                        .clip(shape)
-                                )
-                            }
-                        }
-                    )
-                
+                label = stringResource(R.string.similar_to),
+                title = albums.artistName,
+            )
+        }
+
             // Горизонтальный список элементов
             LazyRow(
                 contentPadding = WindowInsets.systemBars
@@ -582,7 +571,6 @@ fun HomeScreen(
                 }
             }
        }
-  }
 
                 forgottenFavorite?.let { forgottenFavorite ->
                     if (forgottenFavorite.isNotEmpty() && forgottenFavorite.size > 5) {
