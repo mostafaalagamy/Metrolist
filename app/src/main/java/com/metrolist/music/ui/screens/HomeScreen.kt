@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.only
@@ -33,7 +34,11 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
+import androidx.compose.material3.pulltorefresh.pullToRefresh
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -53,8 +58,6 @@ import androidx.compose.ui.draw.clip
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.google.accompanist.swiperefresh.SwipeRefresh
-import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.metrolist.innertube.models.AlbumItem
 import com.metrolist.innertube.models.Artist
 import com.metrolist.innertube.models.ArtistItem
@@ -103,8 +106,7 @@ import com.metrolist.music.viewmodels.HomeViewModel
 import kotlin.random.Random
 
 @SuppressLint("UnrememberedMutableState")
-@Suppress("DEPRECATION")
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     navController: NavController,
@@ -142,6 +144,7 @@ fun HomeScreen(
     val isLoading by viewModel.isLoading.collectAsState()
     val isRefreshing by viewModel.isRefreshing.collectAsState()
     val mostPlayedLazyGridState = rememberLazyGridState()
+    val pullRefreshState = rememberPullToRefreshState()
 
     val forgottenFavoritesLazyGridState = rememberLazyGridState()
 
@@ -170,14 +173,16 @@ fun HomeScreen(
         }
     }
 
-    SwipeRefresh(
-        state = rememberSwipeRefreshState(isRefreshing),
-        onRefresh = viewModel::refresh,
-        indicatorPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues(),
+    BoxWithConstraints(
+        modifier = Modifier
+            .fillMaxSize()
+            .pullToRefresh(
+                state = pullRefreshState,
+                isRefreshing = isRefreshing,
+                onRefresh = viewModel::refresh
+            ),
+        contentAlignment = Alignment.TopStart
     ) {
-        BoxWithConstraints(
-            modifier = Modifier.fillMaxWidth(),
-        ) {
             val horizontalLazyGridItemWidthFactor = if (maxWidth * 0.475f >= 320.dp) 0.475f else 0.9f
             val horizontalLazyGridItemWidth = maxWidth * horizontalLazyGridItemWidthFactor
             val snapLayoutInfoProviderQuickPicks =
@@ -594,92 +599,7 @@ fun HomeScreen(
                             }
                         }
                     }
-                }
-
-                forgottenFavorite?.let { forgottenFavorite ->
-                    if (forgottenFavorite.isNotEmpty() && forgottenFavorite.size > 5) {
-                        NavigationTitle(
-                            title = stringResource(R.string.forgotten_favorites),
-                        )
-
-                        LazyHorizontalGrid(
-                            state = forgottenFavoritesLazyGridState,
-                            rows = GridCells.Fixed(4),
-                            flingBehavior =
-                                rememberSnapFlingBehavior(
-                                    snapLayoutInfoProviderForgottenFavorite,
-                                ),
-                            contentPadding =
-                                WindowInsets.systemBars
-                                    .only(WindowInsetsSides.Horizontal)
-                                    .asPaddingValues(),
-                            modifier =
-                                Modifier
-                                    .fillMaxWidth()
-                                    .height(ListItemHeight * 4),
-                        ) {
-                            items(
-                                items = forgottenFavorite,
-                                key = { it.id },
-                            ) { originalSong ->
-                                val song by database
-                                    .song(originalSong.id)
-                                    .collectAsState(initial = originalSong)
-                                SongListItem(
-                                    song = song!!,
-                                    showInLibraryIcon = true,
-                                    isActive = song!!.id == mediaMetadata?.id,
-                                    isPlaying = isPlaying,
-                                    trailingContent = {
-                                        IconButton(
-                                            onClick = {
-                                                menuState.show {
-                                                    SongMenu(
-                                                        originalSong = song!!,
-                                                        navController = navController,
-                                                        onDismiss = menuState::dismiss,
-                                                    )
-                                                }
-                                            },
-                                        ) {
-                                            Icon(
-                                                painter = painterResource(R.drawable.more_vert),
-                                                contentDescription = null,
-                                            )
-                                        }
-                                    },
-                                    modifier =
-                                        Modifier
-                                            .width(horizontalLazyGridItemWidth)
-                                            .combinedClickable(
-                                                onClick = {
-                                                    if (song!!.id == mediaMetadata?.id) {
-                                                        playerConnection.player.togglePlayPause()
-                                                    } else {
-                                                        playerConnection.playQueue(
-                                                            YouTubeQueue(
-                                                                WatchEndpoint(videoId = song!!.id),
-                                                                song!!.toMediaMetadata(),
-                                                            ),
-                                                        )
-                                                    }
-                                                },
-                                                onLongClick = {
-                                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                                    menuState.show {
-                                                        SongMenu(
-                                                            originalSong = song!!,
-                                                            navController = navController,
-                                                            onDismiss = menuState::dismiss,
-                                                        )
-                                                    }
-                                                },
-                                            ),
-                                )
-                            }
-                        }
-                    }
-                }
+                }                
 
                 home?.forEach { homePlaylists ->
                     if (homePlaylists.playlists.isNotEmpty()) {
@@ -1215,6 +1135,90 @@ fun HomeScreen(
                     }
                 }
 
+                forgottenFavorite?.let { forgottenFavorite ->
+                    if (forgottenFavorite.isNotEmpty() && forgottenFavorite.size > 5) {
+                        NavigationTitle(
+                            title = stringResource(R.string.forgotten_favorites),
+                        )
+
+                        LazyHorizontalGrid(
+                            state = forgottenFavoritesLazyGridState,
+                            rows = GridCells.Fixed(4),
+                            flingBehavior =
+                                rememberSnapFlingBehavior(
+                                    snapLayoutInfoProviderForgottenFavorite,
+                                ),
+                            contentPadding =
+                                WindowInsets.systemBars
+                                    .only(WindowInsetsSides.Horizontal)
+                                    .asPaddingValues(),
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .height(ListItemHeight * 4),
+                        ) {
+                            items(
+                                items = forgottenFavorite,
+                                key = { it.id },
+                            ) { originalSong ->
+                                val song by database
+                                    .song(originalSong.id)
+                                    .collectAsState(initial = originalSong)
+                                SongListItem(
+                                    song = song!!,
+                                    showInLibraryIcon = true,
+                                    isActive = song!!.id == mediaMetadata?.id,
+                                    isPlaying = isPlaying,
+                                    trailingContent = {
+                                        IconButton(
+                                            onClick = {
+                                                menuState.show {
+                                                    SongMenu(
+                                                        originalSong = song!!,
+                                                        navController = navController,
+                                                        onDismiss = menuState::dismiss,
+                                                    )
+                                                }
+                                            },
+                                        ) {
+                                            Icon(
+                                                painter = painterResource(R.drawable.more_vert),
+                                                contentDescription = null,
+                                            )
+                                        }
+                                    },
+                                    modifier =
+                                        Modifier
+                                            .width(horizontalLazyGridItemWidth)
+                                            .combinedClickable(
+                                                onClick = {
+                                                    if (song!!.id == mediaMetadata?.id) {
+                                                        playerConnection.player.togglePlayPause()
+                                                    } else {
+                                                        playerConnection.playQueue(
+                                                            YouTubeQueue(
+                                                                WatchEndpoint(videoId = song!!.id),
+                                                                song!!.toMediaMetadata(),
+                                                            ),
+                                                        )
+                                                    }
+                                                },
+                                                onLongClick = {
+                                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                                    menuState.show {
+                                                        SongMenu(
+                                                            originalSong = song!!,
+                                                            navController = navController,
+                                                            onDismiss = menuState::dismiss,
+                                                        )
+                                                    }
+                                                },
+                                            ),
+                                )
+                            }
+                        }
+                    }
+               }
 
             if (isLoading) {
                 ShimmerHost {
@@ -1232,8 +1236,7 @@ fun HomeScreen(
                     }
                 }
             }
-
-     
+            
                 Spacer(
                     Modifier.height(
                         LocalPlayerAwareWindowInsets.current
@@ -1242,6 +1245,12 @@ fun HomeScreen(
                     ),
                 )
             }
+                Indicator(
+                    isRefreshing = isRefreshing,
+                    state = pullRefreshState,
+                    modifier = Modifier
+                        .align(Alignment.TopCenter)
+                        .padding(LocalPlayerAwareWindowInsets.current.asPaddingValues()),
+            )
         }
     }
-}
