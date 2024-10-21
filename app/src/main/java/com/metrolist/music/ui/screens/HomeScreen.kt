@@ -95,7 +95,6 @@ import com.metrolist.music.ui.component.shimmer.TextPlaceholder
 import com.metrolist.music.ui.component.shimmer.ShimmerHost
 import com.metrolist.music.ui.component.shimmer.GridItemPlaceHolder
 import com.metrolist.music.ui.menu.ArtistMenu
-import com.metrolist.music.ui.menu.AlbumMenu
 import com.metrolist.music.ui.menu.SongMenu
 import com.metrolist.music.ui.menu.YouTubeAlbumMenu
 import com.metrolist.music.ui.menu.YouTubeArtistMenu
@@ -1136,6 +1135,23 @@ fun HomeScreen(
                     }
                 }
 
+                if (isLoading) {
+                ShimmerHost {
+                    TextPlaceholder(
+                        height = 36.dp,
+                        modifier =
+                            Modifier
+                                .padding(vertical = 12.dp, horizontal = 12.dp)
+                                .width(250.dp),
+                    )
+                    Row {
+                        repeat(2) {
+                            GridItemPlaceHolder()
+                        }
+                    }
+                }
+            }
+
                 forgottenFavorite?.let { forgottenFavorite ->
                     if (forgottenFavorite.isNotEmpty() && forgottenFavorite.size > 5) {
                         NavigationTitle(
@@ -1219,24 +1235,7 @@ fun HomeScreen(
                             }
                         }
                     }
-               }
-
-            if (isLoading) {
-                ShimmerHost {
-                    TextPlaceholder(
-                        height = 36.dp,
-                        modifier =
-                            Modifier
-                                .padding(vertical = 12.dp, horizontal = 12.dp)
-                                .width(250.dp),
-                    )
-                    Row {
-                        repeat(2) {
-                            GridItemPlaceHolder()
-                        }
-                    }
-                }
-            }
+                }            
             
                 Spacer(
                     Modifier.height(
