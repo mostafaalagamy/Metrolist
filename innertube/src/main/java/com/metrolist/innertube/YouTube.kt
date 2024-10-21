@@ -864,22 +864,19 @@ object YouTube {
                 }
         }
 
-    suspend fun likedPlaylists(): Result<List<PlaylistItem>> =
-        runCatching {
-            var response =
-                innerTube
-                    .browse(
-                        client = WEB_REMIX,
-                        browseId = "FEmusic_liked_playlists",
-                        setLogin = true,
-                    ).body<BrowseResponse>()
-            val gridRenderer = response.contents?.singleColumnBrowseResultsRenderer?.tabs?.firstOrNull()?.tabRenderer?.content?.sectionListRenderer?.contents?.firstOrNull()?.gridRenderer
-            val playlists = gridRenderer?.items!!
-                .drop(1) // the first item is "create new playlist"
-                .mapNotNull(GridRenderer.Item::musicTwoRowItemRenderer)
-                .mapNotNull {
-                    ArtistItemsPage.fromMusicTwoRowItemRenderer(it) as? PlaylistItem
-                }.toMutableList()
+    suspend fun likedPlaylists(): Result<List<PlaylistItem>> = runCatching {
+        var response = innerTube.browse(
+            client = WEB_REMIX,
+            browseId = "FEmusic_liked_playlists",
+            setLogin = true
+        ).body<BrowseResponse>()
+        val gridRenderer = response.contents?.singleColumnBrowseResultsRenderer?.tabs?.firstOrNull()?.tabRenderer?.content?.sectionListRenderer?.contents?.firstOrNull()?.gridRenderer
+        val playlists = gridRenderer?.items!!
+            .drop(1) // the first item is "create new playlist"
+            .mapNotNull(GridRenderer.Item::musicTwoRowItemRenderer)
+            .mapNotNull {
+                ArtistItemsPage.fromMusicTwoRowItemRenderer(it) as? PlaylistItem
+            }.toMutableList()
         var continuation = gridRenderer?.continuations?.getContinuation()
         while (continuation != null) {
             response = innerTube.browse(
