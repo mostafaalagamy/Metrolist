@@ -864,37 +864,32 @@ object YouTube {
                 }
         }
 
-    suspend fun likedPlaylists(): Result<List<PlaylistItem>> = runCatching {
-        var response = innerTube.browse(
-            client = WEB_REMIX,
-            browseId = "FEmusic_liked_playlists",
-            setLogin = true
-        ).body<BrowseResponse>()
-        val gridRenderer = response.contents?.singleColumnBrowseResultsRenderer?.tabs?.firstOrNull()?.tabRenderer?.content?.sectionListRenderer?.contents?.firstOrNull()?.gridRenderer
-        val playlists = gridRenderer?.items!!
-            .drop(1) // the first item is "create new playlist"
-            .mapNotNull(GridRenderer.Item::musicTwoRowItemRenderer)
-            .mapNotNull {
-                ArtistItemsPage.fromMusicTwoRowItemRenderer(it) as? PlaylistItem
-            }.toMutableList()
-        var continuation = gridRenderer?.continuations?.getContinuation()
-        while (continuation != null) {
-            response = innerTube.browse(
-                client = WEB_REMIX,
-                continuation = continuation,
-                setLogin = true
-            ).body<BrowseResponse>()
-            val gridContinuation = response.continuationContents?.gridContinuation
-            playlists += gridContinuation?.items!!
+    suspend fun likedPlaylists(): Result<List<PlaylistItem>> =
+        runCatching {
+            val response =
+                innerTube
+                    .browse(
+                        client = WEB_REMIX,
+                        browseId = "FEmusic_liked_playlists",
+                        setLogin = true,
+                    ).body<BrowseResponse>()
+            response.contents
+                ?.singleColumnBrowseResultsRenderer
+                ?.tabs
+                ?.firstOrNull()
+                ?.tabRenderer
+                ?.content
+                ?.sectionListRenderer
+                ?.contents
+                ?.firstOrNull()
+                ?.gridRenderer
+                ?.items!!
                 .drop(1) // the first item is "create new playlist"
                 .mapNotNull(GridRenderer.Item::musicTwoRowItemRenderer)
                 .mapNotNull {
                     ArtistItemsPage.fromMusicTwoRowItemRenderer(it) as? PlaylistItem
                 }
-            continuation = gridContinuation?.continuations?.getContinuation()
         }
-        playlists
-    }
 
     suspend fun player(
         videoId: String,
