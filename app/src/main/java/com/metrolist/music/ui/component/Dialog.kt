@@ -145,6 +145,7 @@ fun TextFieldDialog(
     initialTextFieldValue: TextFieldValue = TextFieldValue(),
     placeholder: @Composable (() -> Unit)? = null,
     singleLine: Boolean = true,
+    autoFocus: Boolean = true,
     maxLines: Int = if (singleLine) 1 else 10,
     isInputValid: (String) -> Boolean = { it.isNotEmpty() },
     onDone: (String) -> Unit,
@@ -161,8 +162,10 @@ fun TextFieldDialog(
         }
 
     LaunchedEffect(Unit) {
-        delay(300)
-        focusRequester.requestFocus()
+        if (autoFocus){
+            delay(300)
+            focusRequester.requestFocus()
+        }
     }
 
     DefaultDialog(
