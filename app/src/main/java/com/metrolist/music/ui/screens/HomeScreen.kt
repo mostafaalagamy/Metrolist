@@ -95,6 +95,7 @@ import com.metrolist.music.ui.component.shimmer.TextPlaceholder
 import com.metrolist.music.ui.component.shimmer.ShimmerHost
 import com.metrolist.music.ui.component.shimmer.GridItemPlaceHolder
 import com.metrolist.music.ui.menu.ArtistMenu
+import com.metrolist.music.ui.menu.AlbumMenu
 import com.metrolist.music.ui.menu.SongMenu
 import com.metrolist.music.ui.menu.YouTubeAlbumMenu
 import com.metrolist.music.ui.menu.YouTubeArtistMenu
