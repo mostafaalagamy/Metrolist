@@ -30,6 +30,7 @@ import com.metrolist.music.ui.component.IconButton
 import com.metrolist.music.ui.component.LocalMenuState
 import com.metrolist.music.ui.component.YouTubeGridItem
 import com.metrolist.music.ui.component.shimmer.GridItemPlaceHolder
+import com.metrolist.music.ui.menu.YouTubeArtistMenu
 import com.metrolist.music.ui.component.shimmer.ShimmerHost
 import com.metrolist.music.ui.menu.YouTubeAlbumMenu
 import com.metrolist.music.ui.menu.YouTubePlaylistMenu
@@ -51,6 +52,8 @@ fun AccountScreen(
     val playlists by viewModel.playlists.collectAsState()
     
     val albums by viewModel.albums.collectAsState()
+
+    val artists by viewModel.artists.collectAsState()
 
     LazyVerticalGrid(
         columns = GridCells.Adaptive(minSize = GridThumbnailHeight + 24.dp),
@@ -100,6 +103,30 @@ fun AccountScreen(
                                 YouTubeAlbumMenu(
                                     albumItem = item,
                                     navController = navController,
+                                    onDismiss = menuState::dismiss
+                                )
+                            }
+                        }
+                    )
+            )
+        }
+
+        items(
+            items = artists.orEmpty(),
+            key = { it.id }
+        ) { item ->
+            YouTubeGridItem(
+                item = item,
+                fillMaxWidth = true,
+                modifier = Modifier
+                    .combinedClickable(
+                        onClick = {
+                            navController.navigate("artist/${item.id}")
+                        },
+                        onLongClick = {
+                            menuState.show {
+                                YouTubeArtistMenu(
+                                    artist = item,
                                     onDismiss = menuState::dismiss
                                 )
                             }
