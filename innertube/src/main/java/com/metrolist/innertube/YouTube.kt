@@ -864,16 +864,49 @@ object YouTube {
                 }
         }
 
-    suspend fun libraryAlbums(): Result<List<AlbumItem>> = runCatching {
-        val response = innerTube.browse(
-            client = WEB_REMIX,
-            browseId = "FEmusic_liked_albums",
-            setLogin = true
-        ).body<BrowseResponse>()
-        response.contents?.singleColumnBrowseResultsRenderer?.tabs?.firstOrNull()?.tabRenderer?.content?.sectionListRenderer?.contents?.firstOrNull()?.gridRenderer?.items!!
+    suspend fun libraryAlbums(): Result<List<AlbumItem>> =
+        runCatching {
+            val response = innerTube.browse(
+                client = WEB_REMIX,
+                browseId = "FEmusic_liked_albums",
+                setLogin = true
+            ).body<BrowseResponse>()
+        response.contents
+            ?.singleColumnBrowseResultsRenderer
+            ?.tabs
+            ?.firstOrNull()
+            ?.tabRenderer
+            ?.content
+            ?.sectionListRenderer
+            ?.contents
+            ?.firstOrNull()
+            ?.gridRenderer
+            ?.items!!
             .mapNotNull(GridRenderer.Item::musicTwoRowItemRenderer)
             .mapNotNull {
                 ArtistItemsPage.fromMusicTwoRowItemRenderer(it) as? AlbumItem
+            }
+    }
+
+    suspend fun libraryArtistsSubscriptions(): Result<List<ArtistItem>> =
+        runCatching {
+            val response = innerTube.browse(
+                client = WEB_REMIX,
+                browseId = "FEmusic_library_corpus_artists",
+                setLogin = true
+            ).body<BrowseResponse>()
+        response.contents
+            ?.singleColumnBrowseResultsRenderer
+            ?.tabs?.firstOrNull()
+            ?.tabRenderer
+            ?.content
+            ?.sectionListRenderer
+            ?.contents?.firstOrNull()
+            ?.musicShelfRenderer
+            ?.contents!!
+            .mapNotNull(MusicShelfRenderer.Content::musicResponsiveListItemRenderer)
+            .mapNotNull {
+                SearchSuggestionPage.fromMusicResponsiveListItemRenderer(it) as? ArtistItem
             }
     }
 
