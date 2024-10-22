@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.metrolist.innertube.YouTube
+import com.metrolist.innertube.models.ArtistItem
+import com.metrolist.innertube.models.AlbumItem
 import com.metrolist.innertube.models.PlaylistItem
 import com.metrolist.innertube.models.WatchEndpoint
 import com.metrolist.innertube.models.YTItem
@@ -71,6 +73,8 @@ constructor(
     val homeThirdArtistRecommendation = MutableStateFlow<HomeArtistRecommendation?>(null)
 
     val youtubePlaylists = MutableStateFlow<List<PlaylistItem>?>(null)
+    val youtubeAlbums = MutableStateFlow<List<AlbumItem>?>(null)
+    val youtubeArtists = MutableStateFlow<List<ArtistItem>?>(null)
 
     private suspend fun getQuickPicks() {
         isLoading.value = true
@@ -157,6 +161,20 @@ constructor(
                         youtubePlaylists.value = it
                     }.onFailure {
                         reportException(it)
+                    }
+                YouTube
+                    .libraryAlbums()
+                    .onSuccess {
+                        youtubeAlbums.value = it
+                    }.onFailure {
+                        reportException(it)
+                    }
+                YouTube
+                    .libraryArtistsSubscriptions()
+                    .onSuccess {
+                        youtubeArtists.value = it
+                    }.onFailure {
+                         reportException(it)
                     }
             }
         } finally {

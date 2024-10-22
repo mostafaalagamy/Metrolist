@@ -23,7 +23,7 @@
     <string name="forgotten_favorites">Forgotten favorites</string>
     <string name="similar_to">Similar to</string>
     <string name="keep_listening">Keep listening</string>
-    <string name="your_ytb_playlists">Your YouTube playlists</string>
+    <string name="your_ytb_playlists">Your youtube account</string>
 
     <!-- History -->
     <string name="today">Today</string>
@@ -245,6 +245,7 @@
     <string name="player_background_style">Player background style</string>
     <string name="follow_theme">Follow theme</string>
     <string name="gradient">Gradient</string>
+    <string name="player_background_blur">Blur</string>
     <string name="enable_squiggly_slider">Enable squiggly slider</string>
     <string name="enable_swipe_thumbnail">Enable swipe to change song</string>
     <string name="pure_black">Pure black</string>
@@ -265,7 +266,6 @@
     <string name="squiggly">Squiggly</string>
     <string name="misc">Misc</string>
     <string name="default_open_tab">Default open tab</string>
-    <string name="player_background_blur">Blur</string>
 
     <string name="content">Content</string>
     <string name="login">Login</string>
