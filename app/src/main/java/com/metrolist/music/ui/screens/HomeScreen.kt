@@ -140,7 +140,6 @@ fun HomeScreen(
     val homeThirdContinuation by viewModel.homeThirdContinuation.collectAsState()
 
     val youtubePlaylists by viewModel.youtubePlaylists.collectAsState()
-    
     val youtubeAlbums by viewModel.youtubeAlbums.collectAsState()
     val youtubeArtists by viewModel.youtubeArtists.collectAsState()
 
