@@ -29,7 +29,7 @@
     <string name="forgotten_favorites">الإستماع مجدداً</string>
     <string name="similar_to">مشابه لـ</string>
     <string name="keep_listening">استمر في الاستماع</string>
-    <string name="your_ytb_playlists">قوائم التشغيل الخاصة بك</string>
+    <string name="your_ytb_playlists">حسابك</string>
     
     <!-- التاريخ -->
     <string name="today">اليوم</string>
@@ -286,6 +286,7 @@
     <string name="enable_dynamic_theme">تفعيل السمة الديناميكية</string>
     <string name="player_background_style">نمط خلفية المشغل</string>
     <string name="gradient">ألوان متدرجة</string>
+    <string name="player_background_blur">ضبابي</string>
     <string name="follow_theme">اتباع السيم</string>
     <string name="enable_squiggly_slider">تمكين الشريط المتعرج</string>
     <string name="enable_swipe_thumbnail">تمكين التمرير لتغيير الأغنية</string>
