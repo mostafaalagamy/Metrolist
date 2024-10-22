@@ -530,71 +530,70 @@ fun OnlinePlaylistScreen(
         }
 
         TopAppBar(
-            title = {
-                if (isSearching) {
-                    TextField(
-                        value = query,
-                        onValueChange = { query = it },
-                        placeholder = {
-                            Text(
-                                text = stringResource(R.string.search),
-                                style = MaterialTheme.typography.titleLarge
-                            )
-                        },
-                        singleLine = true,
-                        textStyle = MaterialTheme.typography.titleLarge,
-                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-                        colors = TextFieldDefaults.colors(
-                            focusedContainerColor = Color.Transparent,
-                            unfocusedContainerColor = Color.Transparent,
-                            focusedIndicatorColor = Color.Transparent,
-                            unfocusedIndicatorColor = Color.Transparent,
-                            disabledIndicatorColor = Color.Transparent,
-                        ),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .focusRequester(focusRequester)
-                            )
-                        } else if (showTopBarTitle) {
-                            Text(playlist?.title.orEmpty())
-                            }
-                        },
-                        navigationIcon = {
-                            IconButton(
-                                onClick = {
-                                    if (isSearching) {
-                                        isSearching = false
-                                        query = TextFieldValue()
-                                    } else {
-                                        navController.navigateUp()
-                                    }
-                                },
-                                onLongClick = {
-                                    if (!isSearching) {
-                                            navController.backToMain()
-                                    }
-                                }
-                            ) {
-                                Icon(
-                                    painterResource(R.drawable.arrow_back),
-                                    contentDescription = null
-                                )
-                            }
-                        },
-                        actions = {
-                            if (!isSearching) {
-                                IconButton(
-                            onClick = { isSearching = true }
-                                ) {
-                                    Icon(
-                                        painterResource(R.drawable.search),
-                                        contentDescription = null
-                                    )
-                                }
-                            }
-                        },
-                        scrollBehavior = scrollBehavior
-                  )
+               title = {
+                   if (isSearching) {
+                       TextField(
+                           value = query,
+                           onValueChange = { query = it },
+                           placeholder = {
+                               Text(
+                                   text = stringResource(R.string.search),
+                                   style = MaterialTheme.typography.titleLarge
+                               )
+                           },
+                           singleLine = true,
+                           textStyle = MaterialTheme.typography.titleLarge,
+                           keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+                           colors = TextFieldDefaults.colors(
+                               focusedContainerColor = Color.Transparent,
+                               unfocusedContainerColor = Color.Transparent,
+                               focusedIndicatorColor = Color.Transparent,
+                               unfocusedIndicatorColor = Color.Transparent,
+                               disabledIndicatorColor = Color.Transparent,
+                           ),
+                           modifier = Modifier
+                               .fillMaxWidth()
+                               .focusRequester(focusRequester)
+                       )
+                   } else if (showTopBarTitle) {
+                       Text(playlist?.title.orEmpty())
+                       }
+                   },
+               navigationIcon = {
+                   IconButton(
+                       onClick = {
+                           if (isSearching) {
+                               isSearching = false
+                               query = TextFieldValue()
+                           } else {
+                               navController.navigateUp()
+                           }
+                       },
+                       onLongClick = {
+                           if (!isSearching) {
+                               navController.backToMain()
+                           }
+                       }
+                   ) {
+                       Icon(
+                           painter = painterResource(R.drawable.arrow_back),
+                           contentDescription = null
+                       )
+                   }
+               },
+               actions = {
+                   if (!isSearching) {
+                       IconButton(
+                           onClick = { isSearching = true }
+                       ) {
+                           Icon(
+                               painter = painterResource(R.drawable.search),
+                               contentDescription = null
+                       )
+                    }
+                 }
+              }
+           )
         
         SnackbarHost(
             hostState = snackbarHostState,

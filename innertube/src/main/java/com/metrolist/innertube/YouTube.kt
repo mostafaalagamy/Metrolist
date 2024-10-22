@@ -7,6 +7,7 @@ import com.metrolist.innertube.models.ArtistItem
 import com.metrolist.innertube.models.BrowseEndpoint
 import com.metrolist.innertube.models.GridRenderer
 import com.metrolist.innertube.models.MusicResponsiveListItemRenderer
+import com.metrolist.innertube.models.MusicShelfRenderer
 import com.metrolist.innertube.models.MusicTwoRowItemRenderer
 import com.metrolist.innertube.models.PlaylistItem
 import com.metrolist.innertube.models.SearchSuggestions
@@ -864,6 +865,7 @@ object YouTube {
                 }
         }
 
+
     suspend fun likedPlaylists(): Result<List<PlaylistItem>> = runCatching {
         var response = innerTube.browse(
             client = WEB_REMIX,
@@ -886,6 +888,7 @@ object YouTube {
             ).body<BrowseResponse>()
             val gridContinuation = response.continuationContents?.gridContinuation
             playlists += gridContinuation?.items!!
+
                 .drop(1) // the first item is "create new playlist"
                 .mapNotNull(GridRenderer.Item::musicTwoRowItemRenderer)
                 .mapNotNull {

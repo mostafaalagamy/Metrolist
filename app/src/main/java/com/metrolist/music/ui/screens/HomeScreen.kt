@@ -140,6 +140,8 @@ fun HomeScreen(
     val homeThirdContinuation by viewModel.homeThirdContinuation.collectAsState()
 
     val youtubePlaylists by viewModel.youtubePlaylists.collectAsState()
+    val youtubeAlbums by viewModel.youtubeAlbums.collectAsState()
+    val youtubeArtists by viewModel.youtubeArtists.collectAsState()
 
     val isLoading by viewModel.isLoading.collectAsState()
     val isRefreshing by viewModel.isRefreshing.collectAsState()
@@ -490,8 +492,57 @@ fun HomeScreen(
                                         ),
                             )
                         }
-                    }
-                }
+                        items(
+                            items = youtubeAlbums.orEmpty(),
+                            key = { it.id }
+                        ) { item ->
+                            YouTubeGridItem(
+                                item = item,
+                                modifier = 
+                                    Modifier
+                                        .combinedClickable(
+                                            onClick = {
+                                                navController.navigate("album/${item.id}")
+                                            },
+                                            onLongClick = {
+                                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                                menuState.show {
+                                                    YouTubeAlbumMenu(
+                                                        albumItem = item,
+                                                        navController = navController,
+                                                        onDismiss = menuState::dismiss
+                                                    )
+                                                }
+                                            }
+                                        )
+                                   )
+                              }
+                        items(
+                            items = youtubeArtists.orEmpty(),
+                            key = { it.id }
+                        ) { item ->
+                            YouTubeGridItem(
+                                item = item,
+                                modifier = 
+                                    Modifier
+                                        .combinedClickable(
+                                            onClick = {
+                                                navController.navigate("artist/${item.id}")
+                                            },
+                                            onLongClick = {
+                                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                                menuState.show {
+                                                    YouTubeArtistMenu(
+                                                        artist = item,
+                                                        onDismiss = menuState::dismiss
+                                                    )
+                                                }
+                                            }
+                                        )
+                                   )
+                               }
+                          }
+                     }
 
                                         
                 homeFirstArtistRecommendation?.let { albums ->
@@ -1135,6 +1186,23 @@ fun HomeScreen(
                     }
                 }
 
+                if (isLoading) {
+                ShimmerHost {
+                    TextPlaceholder(
+                        height = 36.dp,
+                        modifier =
+                            Modifier
+                                .padding(vertical = 12.dp, horizontal = 12.dp)
+                                .width(250.dp),
+                    )
+                    Row {
+                        repeat(2) {
+                            GridItemPlaceHolder()
+                        }
+                    }
+                }
+            }
+
                 forgottenFavorite?.let { forgottenFavorite ->
                     if (forgottenFavorite.isNotEmpty() && forgottenFavorite.size > 5) {
                         NavigationTitle(
@@ -1218,24 +1286,7 @@ fun HomeScreen(
                             }
                         }
                     }
-               }
-
-            if (isLoading) {
-                ShimmerHost {
-                    TextPlaceholder(
-                        height = 36.dp,
-                        modifier =
-                            Modifier
-                                .padding(vertical = 12.dp, horizontal = 12.dp)
-                                .width(250.dp),
-                    )
-                    Row {
-                        repeat(2) {
-                            GridItemPlaceHolder()
-                        }
-                    }
-                }
-            }
+                }            
             
                 Spacer(
                     Modifier.height(
