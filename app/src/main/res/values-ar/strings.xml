@@ -317,8 +317,8 @@
     <string name="default_open_tab">الصفحة الافتراضية</string>
     
     <string name="content">المحتوى</string>
-    <string name="login">تسجيل الدخول</string>
-        <string name="not_logged_in">لم يتم تسجيل الدخول</string>
+    <string name="login">تسجيل الدخول إلى جوجل</string>
+    <string name="not_logged_in">لم يتم تسجيل الدخول</string>
     <string name="general">عام</string>
     <string name="content_language">لغة المحتوى الافتراضية</string>
     <string name="content_country">بلد المحتوى الافتراضي</string>
