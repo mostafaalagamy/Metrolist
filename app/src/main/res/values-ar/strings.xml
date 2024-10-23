@@ -281,6 +281,8 @@
     
     <!-- الإعدادات -->
     <string name="settings">الإعدادات</string>
+    <string name="login_settings">إعدادات تسجيل الدخول</string>
+    <string name="general_settings">الإعدادات العامة</string>
     
     <string name="appearance">المظهر</string>
     <string name="enable_dynamic_theme">تفعيل السمة الديناميكية</string>
@@ -315,7 +317,9 @@
     <string name="default_open_tab">الصفحة الافتراضية</string>
     
     <string name="content">المحتوى</string>
-    <string name="login">تسجيل الدخول</string>
+    <string name="login">تسجيل الدخول إلى جوجل</string>
+    <string name="not_logged_in">لم يتم تسجيل الدخول</string>
+    <string name="general">عام</string>
     <string name="content_language">لغة المحتوى الافتراضية</string>
     <string name="content_country">بلد المحتوى الافتراضي</string>
     <string name="system_default">إعدادات النظام الافتراضية</string>
