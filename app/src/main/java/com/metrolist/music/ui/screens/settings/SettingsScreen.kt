@@ -73,7 +73,7 @@ fun SettingsScreen(
                 } else {
                     null
                 },
-            icon = { Icon(painterResource(R.drawable.person), null) },
+            icon = { Icon(painterResource(R.drawable.login), null) },
             onClick = { navController.navigate("login") },
         )
         PreferenceEntry(
