@@ -74,6 +74,10 @@ fun ContentSettings(
             .windowInsetsPadding(LocalPlayerAwareWindowInsets.current)
             .verticalScroll(rememberScrollState()),
     ) {
+        PreferenceGroupTitle(
+            title = stringResource(R.string.general)
+        )
+        
         ListPreference(
             title = { Text(stringResource(R.string.content_language)) },
             icon = { Icon(painterResource(R.drawable.language), null) },
