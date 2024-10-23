@@ -7,6 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.metrolist.music.R
+import com.metrolist.music.LocalPlayerAwareWindowInsets
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
@@ -23,7 +24,10 @@ fun ReleaseNotesCard() {
         modifier = Modifier
             .padding(horizontal = 16.dp)
             .fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(4.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp)
+        )
     ) {
         Column(
             modifier = Modifier.padding(16.dp)
@@ -42,6 +46,7 @@ fun ReleaseNotesCard() {
             }
         }
     }
+    Spacer(modifier = Modifier.height(16.dp))
 }
 
 suspend fun fetchReleaseNotesText(): List<String> {
