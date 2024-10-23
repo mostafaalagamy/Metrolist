@@ -39,12 +39,15 @@ fun SettingsScreen(
     scrollBehavior: TopAppBarScrollBehavior,
     latestVersionName: String,
 ) {
+    val context = LocalContext.current
     val accountName by rememberPreference(AccountNameKey, "")
     val accountEmail by rememberPreference(AccountEmailKey, "")
+    val accountChannelHandle by rememberPreference(AccountChannelHandleKey, "")
     val innerTubeCookie by rememberPreference(InnerTubeCookieKey, "")
-    val isLoggedIn = remember(innerTubeCookie) {
-        "SAPISID" in parseCookieString(innerTubeCookie)
-    }
+    val isLoggedIn =
+        remember(innerTubeCookie) {
+            "SAPISID" in parseCookieString(innerTubeCookie)
+        }
     val uriHandler = LocalUriHandler.current
     val context = LocalContext.current
     val isAndroid12OrLater = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
@@ -57,10 +60,16 @@ fun SettingsScreen(
         Spacer(Modifier.windowInsetsPadding(LocalPlayerAwareWindowInsets.current.only(WindowInsetsSides.Top)))
 
         PreferenceEntry(
-            title = if (isLoggedIn) accountName else stringResource(R.string.login),
-            description = if (isLoggedIn) accountEmail else null,
-            icon = R.drawable.person,
-            onClick = { navController.navigate("login") }
+            title = { Text(if (isLoggedIn) accountName else stringResource(R.string.login)) },
+            description =
+                if (isLoggedIn) {
+                    accountEmail.takeIf { it.isNotEmpty() }
+                        ?: accountChannelHandle.takeIf { it.isNotEmpty() }
+                } else {
+                    null
+                },
+            icon = { Icon(painterResource(R.drawable.person), null) },
+            onClick = { navController.navigate("login") },
         )
         PreferenceEntry(
             title = { Text(stringResource(R.string.appearance)) },
