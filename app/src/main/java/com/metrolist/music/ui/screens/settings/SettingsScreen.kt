@@ -33,6 +33,7 @@ import com.metrolist.music.constants.AccountNameKey
 import com.metrolist.music.constants.InnerTubeCookieKey
 import com.metrolist.music.ui.component.IconButton
 import com.metrolist.music.ui.component.PreferenceEntry
+import com.metrolist.music.ui.component.PreferenceGroupTitle
 import com.metrolist.music.ui.component.ReleaseNotesCard
 import com.metrolist.music.ui.utils.backToMain
 import com.metrolist.music.utils.rememberEnumPreference
@@ -64,6 +65,10 @@ fun SettingsScreen(
     ) {
         Spacer(Modifier.windowInsetsPadding(LocalPlayerAwareWindowInsets.current.only(WindowInsetsSides.Top)))
 
+        PreferenceGroupTitle(
+            title = stringResource(R.string.login_settings)
+        )
+        
         PreferenceEntry(
             title = { Text(if (isLoggedIn) accountName else stringResource(R.string.login)) },
             description =
@@ -76,6 +81,11 @@ fun SettingsScreen(
             icon = { Icon(painterResource(R.drawable.login), null) },
             onClick = { navController.navigate("login") },
         )
+        
+        PreferenceGroupTitle(
+            title = stringResource(R.string.general_settings)
+        )
+        
         PreferenceEntry(
             title = { Text(stringResource(R.string.appearance)) },
             icon = { Icon(painterResource(R.drawable.palette), null) },
