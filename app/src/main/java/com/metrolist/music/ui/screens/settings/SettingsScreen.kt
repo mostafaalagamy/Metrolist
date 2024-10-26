@@ -23,6 +23,7 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
+import com.metrolist.innertube.YouTube
 import com.metrolist.innertube.utils.parseCookieString
 import com.metrolist.music.BuildConfig
 import com.metrolist.music.LocalPlayerAwareWindowInsets
@@ -31,9 +32,11 @@ import com.metrolist.music.constants.AccountChannelHandleKey
 import com.metrolist.music.constants.AccountEmailKey
 import com.metrolist.music.constants.AccountNameKey
 import com.metrolist.music.constants.InnerTubeCookieKey
+import com.metrolist.music.constants.UseLoginForBrowse
 import com.metrolist.music.ui.component.IconButton
 import com.metrolist.music.ui.component.PreferenceEntry
 import com.metrolist.music.ui.component.PreferenceGroupTitle
+import com.metrolist.music.ui.component.SwitchPreference
 import com.metrolist.music.ui.component.ReleaseNotesCard
 import com.metrolist.music.ui.utils.backToMain
 import com.metrolist.music.utils.rememberEnumPreference
@@ -54,6 +57,7 @@ fun SettingsScreen(
         remember(innerTubeCookie) {
             "SAPISID" in parseCookieString(innerTubeCookie)
         }
+    val (useLoginForBrowse, onUseLoginForBrowseChange) = rememberPreference(key = UseLoginForBrowse, defaultValue = false)
     val uriHandler = LocalUriHandler.current
     val context = LocalContext.current
     val isAndroid12OrLater = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
@@ -80,6 +84,17 @@ fun SettingsScreen(
                 },
             icon = { Icon(painterResource(R.drawable.login), null) },
             onClick = { navController.navigate("login") },
+        )
+
+        SwitchPreference(
+            title = { Text(stringResource(R.string.use_login_for_browse)) },
+            description = stringResource(R.string.use_login_for_browse_desc),
+            icon = { Icon(painterResource(R.drawable.person), null) },
+            checked = useLoginForBrowse,
+            onCheckedChange = {
+                YouTube.useLoginForBrowse = it
+                onUseLoginForBrowseChange(it)
+            }
         )
         
         PreferenceGroupTitle(
