@@ -236,6 +236,8 @@
     <!-- Settings -->
     <string name="settings">Settings</string>
     <string name="login_settings">Login settings</string>
+    <string name="use_login_for_browse">Use login for browsing content</string>
+    <string name="use_login_for_browse_desc">This can influence what content you see and for example shows premium-only albums if you are logged in with a Premium account</string>
     <string name="general_settings">General settings</string>
     
     <string name="appearance">Appearance</string>
