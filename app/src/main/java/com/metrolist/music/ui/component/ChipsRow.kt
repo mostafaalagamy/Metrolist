@@ -49,7 +49,7 @@ fun <E> ChipsRow(
     currentValue: E,
     onValueUpdate: (E) -> Unit,
     modifier: Modifier = Modifier,
-    containerColor: Color = MaterialTheme.colorScheme.surface,
+    containerColor: Color = MaterialTheme.colorScheme.surfaceContainer,
 ) {
     Row(
         modifier =
@@ -63,7 +63,7 @@ fun <E> ChipsRow(
             FilterChip(
                 label = { Text(label) },
                 selected = currentValue == value,
-                colors = FilterChipDefaults.filterChipColors(containerColor = MaterialTheme.colorScheme.surface),
+                colors = FilterChipDefaults.filterChipColors(containerColor = containerColor),
                 onClick = { onValueUpdate(value) },
             )
 
@@ -82,7 +82,7 @@ fun <Int> ChoiceChipsRow(
     currentValue: Int,
     onValueUpdate: (Int) -> Unit,
     modifier: Modifier = Modifier,
-    containerColor: Color = MaterialTheme.colorScheme.surface,
+    containerColor: Color = MaterialTheme.colorScheme.surfaceContainer,
 ) {
     var expandIconDegree by remember { mutableFloatStateOf(0f) }
     val rotationAnimation by animateFloatAsState(
@@ -171,7 +171,7 @@ fun <Int> ChoiceChipsRow(
                     FilterChip(
                         label = { Text(label) },
                         selected = currentValue == value,
-                        colors = FilterChipDefaults.filterChipColors(containerColor = MaterialTheme.colorScheme.surface),
+                        colors = FilterChipDefaults.filterChipColors(containerColor = containerColor),
                         onClick = { onValueUpdate(value) },
                     )
                 }
