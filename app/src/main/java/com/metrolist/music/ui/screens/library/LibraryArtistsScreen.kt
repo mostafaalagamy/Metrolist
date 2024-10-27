@@ -41,7 +41,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
-
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.R
 import com.metrolist.music.constants.ArtistFilter
@@ -152,7 +151,7 @@ fun LibraryArtistsScreen(
             Text(
                 text = pluralStringResource(R.plurals.n_artist, artists.size, artists.size),
                 style = MaterialTheme.typography.titleSmall,
-                color = MaterialTheme.colorScheme.surfaceContainer,
+                color = MaterialTheme.colorScheme.secondary,
             )
 
             IconButton(
