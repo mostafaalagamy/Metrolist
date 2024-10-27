@@ -65,17 +65,33 @@ class AutoPlaylistViewModel
                         AutoPlaylistSongSortType.PLAY_TIME -> songs.sortedBy { it.song.totalPlayTime }
                     }.reversed(sortDescending)
                 }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
-                    .stateIn(viewModelScope, SharingStarted.Lazily, null)
             } else {
-                downloadUtil.downloads.flatMapLatest { downloads ->
-                    database
-                        .allSongs()
-                        .flowOn(Dispatchers.IO)
-                        .map { songs ->
-                            songs.filter {
-                                downloads[it.id]?.state == Download.STATE_COMPLETED
-                            }
+                context.dataStore.data
+                    .map {
+                        it[AutoPlaylistSongSortTypeKey].toEnum(AutoPlaylistSongSortType.CREATE_DATE) to
+                                (it[AutoPlaylistSongSortDescendingKey] ?: true)
+                    }.distinctUntilChanged()
+                    .flatMapLatest { (sortType, sortDescending) ->
+                        downloadUtil.downloads.flatMapLatest { downloads ->
+                            database
+                                .allSongs()
+                                .flowOn(Dispatchers.IO)
+                                .map { songs ->
+                                    val filteredSongs = songs.filter {
+                                        downloads[it.id]?.state == Download.STATE_COMPLETED
+                                    }
+                                    when (sortType) {
+                                        AutoPlaylistSongSortType.CREATE_DATE -> filteredSongs.sortedBy { it.song.inLibrary }
+                                        AutoPlaylistSongSortType.NAME -> filteredSongs.sortedBy { it.song.title }
+                                        AutoPlaylistSongSortType.ARTIST -> {
+                                            val collator = Collator.getInstance(Locale.getDefault())
+                                            collator.strength = Collator.PRIMARY
+                                            filteredSongs.sortedWith(compareBy(collator) { song -> song.artists.joinToString("") { it.name } })
+                                        }
+                                        AutoPlaylistSongSortType.PLAY_TIME -> filteredSongs.sortedBy { it.song.totalPlayTime }
+                                    }.reversed(sortDescending)
+                                }
                         }
-                }
+                    }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
             }
     }
