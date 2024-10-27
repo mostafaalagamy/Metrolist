@@ -152,7 +152,7 @@ Box(Modifier.fillMaxSize()) {
                     },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(MaterialTheme.colorScheme.background),
+                        .background(MaterialTheme.colorScheme.surface),
                 )
             }
 
