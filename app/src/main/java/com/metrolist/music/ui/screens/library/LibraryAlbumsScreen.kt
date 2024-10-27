@@ -110,7 +110,7 @@ fun LibraryAlbumsScreen(
             FilterChip(
                 label = { Text(stringResource(R.string.albums)) },
                 selected = true,
-                colors = FilterChipDefaults.filterChipColors(containerColor = MaterialTheme.colorScheme.background),
+                colors = FilterChipDefaults.filterChipColors(containerColor = MaterialTheme.colorScheme.surface),
                 onClick = onDeselect,
                 leadingIcon = {
                     Icon(painter = painterResource(R.drawable.close), contentDescription = "")
