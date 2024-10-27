@@ -529,8 +529,8 @@ fun Queue(
                 Modifier
                     .background(
                         MaterialTheme.colorScheme
-                            .surfaceContainer
-                            .copy(alpha = 0.95f),
+                            .secondaryContainer
+                            .copy(alpha = 0.90f),
                     ).windowInsetsPadding(
                         WindowInsets.systemBars
                             .only(WindowInsetsSides.Top + WindowInsetsSides.Horizontal),
