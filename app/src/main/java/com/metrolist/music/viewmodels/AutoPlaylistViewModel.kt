@@ -26,6 +26,8 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import java.text.Collator
+import java.time.Duration
+import java.time.LocalDateTime
 import java.util.Locale
 import javax.inject.Inject
 
@@ -81,7 +83,7 @@ class AutoPlaylistViewModel
                                         downloads[it.id]?.state == Download.STATE_COMPLETED
                                     }
                                     when (sortType) {
-                                        AutoPlaylistSongSortType.CREATE_DATE -> filteredSongs.sortedBy { it.song.inLibrary }
+                                        AutoPlaylistSongSortType.CREATE_DATE -> filteredSongs.sortedBy { downloads[it.id]?.updateTimeMs ?: 0L }
                                         AutoPlaylistSongSortType.NAME -> filteredSongs.sortedBy { it.song.title }
                                         AutoPlaylistSongSortType.ARTIST -> {
                                             val collator = Collator.getInstance(Locale.getDefault())
