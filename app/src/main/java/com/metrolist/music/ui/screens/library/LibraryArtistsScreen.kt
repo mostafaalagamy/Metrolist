@@ -106,7 +106,7 @@ fun LibraryArtistsScreen(
             FilterChip(
                 label = { Text(stringResource(R.string.artists)) },
                 selected = true,
-                colors = FilterChipDefaults.filterChipColors(containerColor = MaterialTheme.colorScheme.background),
+                colors = FilterChipDefaults.filterChipColors(containerColor = MaterialTheme.colorScheme.surface),
                 onClick = onDeselect,
                 leadingIcon = {
                     Icon(painter = painterResource(R.drawable.close), contentDescription = "")
@@ -152,7 +152,7 @@ fun LibraryArtistsScreen(
             Text(
                 text = pluralStringResource(R.plurals.n_artist, artists.size, artists.size),
                 style = MaterialTheme.typography.titleSmall,
-                color = MaterialTheme.colorScheme.secondary,
+                color = MaterialTheme.colorScheme.surfaceContainer,
             )
 
             IconButton(
