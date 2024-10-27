@@ -102,7 +102,7 @@ fun SearchBar(
     colors: SearchBarColors = 
             SearchBarDefaults.colors(
             containerColor = 
-            MaterialTheme.colorScheme.surfaceContainer,
+            MaterialTheme.colorScheme.surfaceContainer
     tonalElevation: Dp = TonalElevation,
     windowInsets: WindowInsets = WindowInsets.systemBars,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
