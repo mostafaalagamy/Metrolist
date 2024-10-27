@@ -15,29 +15,20 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
-import com.metrolist.innertube.utils.parseCookieString
 import com.metrolist.music.BuildConfig
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.R
-import com.metrolist.music.constants.AccountChannelHandleKey
-import com.metrolist.music.constants.AccountEmailKey
-import com.metrolist.music.constants.AccountNameKey
-import com.metrolist.music.constants.InnerTubeCookieKey
 import com.metrolist.music.ui.component.IconButton
 import com.metrolist.music.ui.component.PreferenceEntry
-import com.metrolist.music.ui.component.PreferenceGroupTitle
+import com.metrolist.music.ui.component.SwitchPreference
 import com.metrolist.music.ui.component.ReleaseNotesCard
 import com.metrolist.music.ui.utils.backToMain
-import com.metrolist.music.utils.rememberEnumPreference
-import com.metrolist.music.utils.rememberPreference
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -46,14 +37,6 @@ fun SettingsScreen(
     scrollBehavior: TopAppBarScrollBehavior,
     latestVersionName: String,
 ) {
-    val accountName by rememberPreference(AccountNameKey, "")
-    val accountEmail by rememberPreference(AccountEmailKey, "")
-    val accountChannelHandle by rememberPreference(AccountChannelHandleKey, "")
-    val innerTubeCookie by rememberPreference(InnerTubeCookieKey, "")
-    val isLoggedIn =
-        remember(innerTubeCookie) {
-            "SAPISID" in parseCookieString(innerTubeCookie)
-        }
     val uriHandler = LocalUriHandler.current
     val context = LocalContext.current
     val isAndroid12OrLater = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
@@ -64,32 +47,21 @@ fun SettingsScreen(
             .verticalScroll(rememberScrollState())
     ) {
         Spacer(Modifier.windowInsetsPadding(LocalPlayerAwareWindowInsets.current.only(WindowInsetsSides.Top)))
-
-        PreferenceGroupTitle(
-            title = stringResource(R.string.login_settings)
-        )
-        
-        PreferenceEntry(
-            title = { Text(if (isLoggedIn) accountName else stringResource(R.string.login)) },
-            description =
-                if (isLoggedIn) {
-                    accountEmail.takeIf { it.isNotEmpty() }
-                        ?: accountChannelHandle.takeIf { it.isNotEmpty() }
-                } else {
-                    null
-                },
-            icon = { Icon(painterResource(R.drawable.login), null) },
-            onClick = { navController.navigate("login") },
-        )
-        
-        PreferenceGroupTitle(
-            title = stringResource(R.string.general_settings)
-        )
         
         PreferenceEntry(
             title = { Text(stringResource(R.string.appearance)) },
             icon = { Icon(painterResource(R.drawable.palette), null) },
             onClick = { navController.navigate("settings/appearance") }
+        )
+        PreferenceEntry(
+            title = { Text(stringResource(R.string.account)) },
+            icon = { Icon(painterResource(R.drawable.account), null) },
+            onClick = { navController.navigate("settings/account") }
+        )
+        PreferenceEntry(
+            title = { Text(stringResource(R.string.privacy)) },
+            icon = { Icon(painterResource(R.drawable.security), null) },
+            onClick = { navController.navigate("settings/privacy") }
         )
         PreferenceEntry(
             title = { Text(stringResource(R.string.content)) },
@@ -105,11 +77,6 @@ fun SettingsScreen(
             title = { Text(stringResource(R.string.storage)) },
             icon = { Icon(painterResource(R.drawable.storage), null) },
             onClick = { navController.navigate("settings/storage") }
-        )
-        PreferenceEntry(
-            title = { Text(stringResource(R.string.privacy)) },
-            icon = { Icon(painterResource(R.drawable.security), null) },
-            onClick = { navController.navigate("settings/privacy") }
         )
         PreferenceEntry(
             title = { Text(stringResource(R.string.discord_integration)) },

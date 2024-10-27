@@ -282,6 +282,10 @@
     <!-- الإعدادات -->
     <string name="settings">الإعدادات</string>
     <string name="login_settings">إعدادات تسجيل الدخول</string>
+    <string name="use_login_for_browse">استخدم تسجيل الدخول لتصفح المحتوى</string>
+    <string name="use_login_for_browse_desc">يمكن أن يؤثر ذلك على المحتوى الذي تراه، على سبيل المثال، يعرض الألبومات الخاصة بالمشتركين في الحسابات المميزة فقط إذا كنت مسجلًا بحساب مميز
+
+    </string>
     <string name="general_settings">الإعدادات العامة</string>
     
     <string name="appearance">المظهر</string>
