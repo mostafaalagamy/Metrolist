@@ -23,6 +23,7 @@ import com.metrolist.music.ui.screens.playlist.TopPlaylistScreen
 import com.metrolist.music.ui.screens.search.OnlineSearchResult
 import com.metrolist.music.ui.screens.settings.AboutScreen
 import com.metrolist.music.ui.screens.settings.AppearanceSettings
+import com.metrolist.music.ui.screens.settings.AccountSettings
 import com.metrolist.music.ui.screens.settings.BackupAndRestore
 import com.metrolist.music.ui.screens.settings.ContentSettings
 import com.metrolist.music.ui.screens.settings.DiscordLoginScreen
@@ -217,6 +218,9 @@ fun NavGraphBuilder.navigationBuilder(
     }
     composable("settings/appearance") {
         AppearanceSettings(navController, scrollBehavior)
+    }
+    composable("settings/account") {
+        AccountSettings(navController, scrollBehavior)
     }
     composable("settings/content") {
         ContentSettings(navController, scrollBehavior)
