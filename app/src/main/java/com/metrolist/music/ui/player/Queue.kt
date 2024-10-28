@@ -610,8 +610,9 @@ fun Queue(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     val count = selectedSongs.size
-                    text = stringResource(R.string.elements_selected, count),
-                    modifier = Modifier.weight(1f))
+                    Text(
+                         text = stringResource(R.string.elements_selected, count),
+                         modifier = Modifier.weight(1f))
                     IconButton(
                         onClick = {
                             if (count == mutableQueueWindows.size) {
