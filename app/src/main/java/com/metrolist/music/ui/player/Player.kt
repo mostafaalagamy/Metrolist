@@ -76,6 +76,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
@@ -188,7 +189,12 @@ fun BottomSheetPlayer(
         remember(isSystemInDarkTheme, darkTheme, pureBlack) {
             val useDarkTheme = if (darkTheme == DarkMode.AUTO) isSystemInDarkTheme else darkTheme == DarkMode.ON
             useDarkTheme && pureBlack
-    }
+        } 
+    val backgroundColor = if (useBlackBackground && state.value > state.collapsedBound) {
+        lerp(MaterialTheme.colorScheme.surfaceContainer, Color.Black, state.progress)
+    } else {
+        MaterialTheme.colorScheme.surfaceContainer
+        }
 
     val playerTextAlignment by rememberEnumPreference(PlayerTextAlignmentKey, PlayerTextAlignment.SIDED)
 
@@ -513,36 +519,51 @@ fun BottomSheetPlayer(
             dismissedBound = QueuePeekHeight + WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
             expandedBound = state.expandedBound,
         )
-
-    BottomSheet(
-        state = state,
-        modifier = modifier,
-        brushBackgroundColor =
-            if (gradientColors.size >=
-                2 &&
-                state.value > changeBound
-            ) {
-                Brush.verticalGradient(gradientColors)
-            } else {
-                Brush.verticalGradient(
-                    listOf(
-                        MaterialTheme.colorScheme.surfaceContainer,
-                        MaterialTheme.colorScheme.surfaceContainer,
-                    ),
-                )
-            },
-        onDismiss = {
-            playerConnection.service.clearAutomix()
-            playerConnection.player.stop()
-            playerConnection.player.clearMediaItems()
-        },
-        collapsedContent = {
-            MiniPlayer(
-                position = position,
-                duration = duration,
-            )
-        },
-    ) {
+    
+     BottomSheet(
+         state = state,
+         modifier = modifier,
+         brushBackgroundColor = if (useBlackBackground) {
+             Brush.verticalGradient(
+                 colors = listOf(
+                     backgroundColor,
+                     backgroundColor,
+                 )
+             )
+         } else {
+             if (state.value > changeBound) {
+                 Brush.verticalGradient(
+                     listOf(
+                         MaterialTheme.colorScheme.surfaceContainer,
+                         backgroundColor
+                     )
+                 )
+             } else if (gradientColors.size >=
+                     2 &&
+                     state.value > changeBound
+                 ) {
+                 Brush.verticalGradient(gradientColors)
+             } else {
+                 Brush.verticalGradient(
+                     listOf(
+                         MaterialTheme.colorScheme.surfaceContainer,
+                         MaterialTheme.colorScheme.surfaceContainer,
+                     )
+                 )
+             }
+         },
+         onDismiss = {
+             playerConnection.service.clearAutomix()
+             playerConnection.player.stop()
+             playerConnection.player.clearMediaItems()
+         },
+         collapsedContent = {
+             MiniPlayer(
+                 position = position,
+                 duration = duration,
+             )
+         },
+     ) {
         val controlsContent: @Composable ColumnScope.(MediaMetadata) -> Unit = { mediaMetadata ->
             val playPauseRoundness by animateDpAsState(
                 targetValue = if (isPlaying) 24.dp else 36.dp,
@@ -997,9 +1018,7 @@ fun BottomSheetPlayer(
                 }
             }
         }
-
-
-
+        
         AnimatedVisibility(
             visible = state.isExpanded,
             enter = fadeIn(tween(1000)),
@@ -1012,7 +1031,7 @@ fun BottomSheetPlayer(
                         contentScale = ContentScale.FillBounds,
                         modifier = Modifier
                             .fillMaxSize()
-                            .blur(200.dp)
+                            .blur(100.dp)
                     )
 
                 Box(
