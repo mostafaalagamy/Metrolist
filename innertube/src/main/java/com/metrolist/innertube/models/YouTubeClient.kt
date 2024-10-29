@@ -6,9 +6,9 @@ import kotlinx.serialization.Serializable
 data class YouTubeClient(
     val clientName: String,
     val clientVersion: String,
+    val osVersion: String? = null,
     val api_key: String,
     val userAgent: String,
-    val osVersion: String? = null,
     val referer: String? = null,
 ) {
     fun toContext(
@@ -31,12 +31,12 @@ data class YouTubeClient(
 
         private const val USER_AGENT_WEB = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.157 Safari/537.36"
         private const val USER_AGENT_ANDROID = "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Mobile Safari/537.36"
-        private const val USER_AGENT_IOS = "com.google.ios.youtube/19.29.1 (iPhone16,2; U; CPU iOS 17_5_1 like Mac OS X;)"
+        const val USER_AGENT_IOS = "com.google.ios.youtube/19.29.1 (iPhone16,2; U; CPU iOS 17_5_1 like Mac OS X;)"
         
         val ANDROID_MUSIC =
             YouTubeClient(
                 clientName = "ANDROID_MUSIC",
-                clientVersion = "5.01",
+                clientVersion = "5.54.52",
                 api_key = "AIzaSyAOghZGza2MQSZkY_zfZ370N-PUdXEo8AI",
                 userAgent = USER_AGENT_ANDROID,
             )
@@ -48,14 +48,15 @@ data class YouTubeClient(
                 api_key = "AIzaSyA8eiZmM1FaDVjRy-df2KTyQ_vz_yYM39w",
                 userAgent = USER_AGENT_ANDROID,
             )
-
-        val IOS = YouTubeClient(
-            clientName = "IOS",
-            clientVersion = "19.29.1",
-            api_key = "AIzaSyB-63vPrdThhKuerbB2N_l7Kwwcxj6yUAc",
-            userAgent = USER_AGENT_IOS,
-            osVersion = "17.5.1.21F90",
-        )
+            
+        val IOS =
+            YouTubeClient(
+                clientName = "IOS",
+                clientVersion = "19.29.1",
+                osVersion = "17.5.1.21F90",
+                api_key = "AIzaSyB-63vPrdThhKuerbB2N_l7Kwwcxj6yUAc",
+                userAgent = USER_AGENT_IOS,
+            )
 
         val WEB =
             YouTubeClient(
@@ -68,7 +69,7 @@ data class YouTubeClient(
         val WEB_REMIX =
             YouTubeClient(
                 clientName = "WEB_REMIX",
-                clientVersion = "1.20220606.03.00",
+                clientVersion = "1.20241023.01.00",
                 api_key = "AIzaSyC9XL3ZjWddXya6X74dJoCTL-WEYFDNX30",
                 userAgent = USER_AGENT_WEB,
                 referer = REFERER_YOUTUBE_MUSIC,
