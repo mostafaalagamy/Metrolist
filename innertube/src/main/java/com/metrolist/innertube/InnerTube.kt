@@ -285,7 +285,6 @@ class InnerTube {
         url.parameters["n"] = nSigDecode(n.toString())
         url.parameters[signatureParam] = sigDecode(signature)
         url.parameters["c"] = "ANDROID_MUSIC"
-        println("url = $url")
         return url.toString()
         }
 }
