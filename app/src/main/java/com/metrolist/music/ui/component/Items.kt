@@ -1739,3 +1739,62 @@ fun LocalItemsGrid(
     fillMaxWidth = fillMaxWidth,
     modifier = modifier,
 )
+
+@Composable
+fun CircularItemsGrid(
+    title: String,
+    subtitle: String,
+    badges:
+        @Composable()
+        (RowScope.() -> Unit) = {},
+    thumbnailUrl: String?,
+    isActive: Boolean = false,
+    isPlaying: Boolean = false,
+    fillMaxWidth: Boolean = false,
+    modifier: Modifier,
+) = GridItem(
+    title = title,
+    subtitle = subtitle,
+    badges = badges,
+    thumbnailContent = {
+        AsyncImage(
+            model = thumbnailUrl,
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxSize(),
+        )
+
+        AnimatedVisibility(
+            visible = isActive,
+            enter = fadeIn(tween(500)),
+            exit = fadeOut(tween(500)),
+        ) {
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .background(
+                            color = Color.Black.copy(alpha = 0.4f),
+                            shape = CircleShape,
+                        ),
+            ) {
+                if (isPlaying) {
+                    PlayingIndicator(
+                        color = Color.White,
+                        modifier = Modifier.height(24.dp),
+                    )
+                } else {
+                    Icon(
+                        painter = painterResource(R.drawable.play),
+                        contentDescription = null,
+                        tint = Color.White,
+                    )
+                }
+            }
+        }
+    },
+    thumbnailShape = CircleShape,
+    fillMaxWidth = fillMaxWidth,
+    modifier = modifier,
+)
