@@ -71,6 +71,7 @@ fun ArtistItemsScreen(
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
 
     val lazyListState = rememberLazyListState()
+    val lazyGridState = rememberLazyGridState()
     val coroutineScope = rememberCoroutineScope()
 
     val title by viewModel.title.collectAsState()
