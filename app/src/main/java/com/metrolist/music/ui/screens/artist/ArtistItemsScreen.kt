@@ -261,11 +261,11 @@ fun ArtistItemsScreen(
                                                     coroutineScope = coroutineScope,
                                                     onDismiss = menuState::dismiss,
                                                 )
-                                         }
                                             if (itemsPage?.continuation != null) {
                                                 item(key = "loading") {
                                                      ShimmerHost(Modifier.animateItem()) {
                                                          GridItemPlaceHolder(fillMaxWidth = true)
+                                                    }
                                                 }
                                             }
                                         }
