@@ -2,6 +2,8 @@ package com.metrolist.innertube.utils
 
 import com.metrolist.innertube.YouTube
 import com.metrolist.innertube.pages.PlaylistPage
+import io.ktor.http.URLBuilder
+import io.ktor.http.parseQueryString
 import java.security.MessageDigest
 
 suspend fun Result<PlaylistPage>.completed() =
