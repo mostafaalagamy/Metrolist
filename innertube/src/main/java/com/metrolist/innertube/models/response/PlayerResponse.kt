@@ -1,6 +1,5 @@
 package com.metrolist.innertube.models.response
 
-import com.metrolist.innertube.InnerTube
 import com.metrolist.innertube.models.ResponseContext
 import com.metrolist.innertube.models.Thumbnails
 import kotlinx.serialization.Serializable
@@ -58,12 +57,9 @@ data class PlayerResponse(
             val audioChannels: Int?,
             val loudnessDb: Double?,
             val lastModified: Long?,
-            val signatureCipher: String?,
         ) {
             val isAudio: Boolean
                 get() = width == null
-
-            fun findUrl() = url ?: signatureCipher?.let { InnerTube().decodeCipher(it) }!!
         }
     }
 
