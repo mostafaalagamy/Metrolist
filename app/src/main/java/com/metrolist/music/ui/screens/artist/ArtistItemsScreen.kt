@@ -200,79 +200,72 @@ fun ArtistItemsScreen(
         LazyVerticalGrid(
             state = lazyGridState,
             columns = GridCells.Adaptive(minSize = GridThumbnailHeight + 24.dp),
-            contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues(),
+            contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues()
         ) {
             items(
                 items = itemsPage?.items.orEmpty(),
-                key = { it.id },
+                key = { it.id }
             ) { item ->
                 YouTubeGridItem(
                     item = item,
-                    isActive =
-                        when (item) {
-                            is SongItem -> mediaMetadata?.id == item.id
-                            is AlbumItem -> mediaMetadata?.album?.id == item.id
-                            else -> false
-                        },
+                    isActive = when (item) {
+                        is SongItem -> mediaMetadata?.id == item.id
+                        is AlbumItem -> mediaMetadata?.album?.id == item.id
+                        else -> false
+                    },
                     isPlaying = isPlaying,
                     fillMaxWidth = true,
                     coroutineScope = coroutineScope,
-                    modifier =
-                        Modifier
-                            .combinedClickable(
-                                onClick = {
+                    modifier = Modifier
+                        .combinedClickable(
+                            onClick = {
+                                when (item) {
+                                    is SongItem -> playerConnection.playQueue(YouTubeQueue(item.endpoint ?: WatchEndpoint(videoId = item.id), item.toMediaMetadata()))
+                                    is AlbumItem -> navController.navigate("album/${item.id}")
+                                    is ArtistItem -> navController.navigate("artist/${item.id}")
+                                    is PlaylistItem -> navController.navigate("online_playlist/${item.id}")
+                                }
+                            },
+                            onLongClick = {
+                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                menuState.show {
                                     when (item) {
-                                        is SongItem ->
-                                            playerConnection.playQueue(
-                                                YouTubeQueue(item.endpoint ?: WatchEndpoint(videoId = item.id), item.toMediaMetadata()),
-                                            )
-                                        is AlbumItem -> navController.navigate("album/${item.id}")
-                                        is ArtistItem -> navController.navigate("artist/${item.id}")
-                                        is PlaylistItem -> navController.navigate("online_playlist/${item.id}")
+                                        is SongItem -> YouTubeSongMenu(
+                                            song = item,
+                                            navController = navController,
+                                            onDismiss = menuState::dismiss
+                                        )
+
+                                        is AlbumItem -> YouTubeAlbumMenu(
+                                            albumItem = item,
+                                            navController = navController,
+                                            onDismiss = menuState::dismiss
+                                        )
+
+                                        is ArtistItem -> YouTubeArtistMenu(
+                                            artist = item,
+                                            onDismiss = menuState::dismiss
+                                        )
+
+                                        is PlaylistItem -> YouTubePlaylistMenu(
+                                            playlist = item,
+                                            coroutineScope = coroutineScope,
+                                            onDismiss = menuState::dismiss
+                                        )
                                     }
-                                },
-                                onLongClick = {
-                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                    menuState.show {
-                                        when (item) {
-                                            is SongItem ->
-                                                YouTubeSongMenu(
-                                                    song = item,
-                                                    navController = navController,
-                                                    onDismiss = menuState::dismiss,
-                                                )
-
-                                            is AlbumItem ->
-                                                YouTubeAlbumMenu(
-                                                    albumItem = item,
-                                                    navController = navController,
-                                                    onDismiss = menuState::dismiss,
-                                                )
-
-                                            is ArtistItem ->
-                                                YouTubeArtistMenu(
-                                                    artist = item,
-                                                    onDismiss = menuState::dismiss,
-                                                )
-
-                                            is PlaylistItem ->
-                                                YouTubePlaylistMenu(
-                                                    playlist = item,
-                                                    coroutineScope = coroutineScope,
-                                                    onDismiss = menuState::dismiss,
-                                                )
-                                            if (itemsPage?.continuation != null) {
-                                                item(key = "loading") {
-                                                     ShimmerHost(Modifier.animateItem()) {
-                                                         GridItemPlaceHolder(fillMaxWidth = true)
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                },
-                            ),
+                                }
+                            }
+                        )
+                        .animateItem()
                 )
+            }
+
+            if (itemsPage?.continuation != null) {
+                item(key = "loading") {
+                    ShimmerHost(Modifier.animateItem()) {
+                        GridItemPlaceHolder(fillMaxWidth = true)
+                    }
+                }
             }
         }
     }
