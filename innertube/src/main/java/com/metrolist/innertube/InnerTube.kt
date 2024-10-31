@@ -12,8 +12,6 @@ import com.metrolist.innertube.models.body.GetTranscriptBody
 import com.metrolist.innertube.models.body.NextBody
 import com.metrolist.innertube.models.body.PlayerBody
 import com.metrolist.innertube.models.body.SearchBody
-import com.metrolist.innertube.utils.nSigDecode
-import com.metrolist.innertube.utils.sigDecode
 import com.metrolist.innertube.utils.parseCookieString
 import com.metrolist.innertube.utils.sha1
 import io.ktor.client.HttpClient
@@ -275,16 +273,4 @@ class InnerTube {
             ytClient(client, setLogin = true)
             setBody(AccountMenuBody(client.toContext(locale, visitorData)))
         }
-
-        fun decodeCipher(cipher: String): String? {
-        val params = parseQueryString(cipher)
-        val signature = params["s"] ?: return null
-        val signatureParam = params["sp"] ?: return null
-        val url = params["url"]?.let { URLBuilder(it) } ?: return null
-        val n = url.parameters["n"]
-        url.parameters["n"] = nSigDecode(n.toString())
-        url.parameters[signatureParam] = sigDecode(signature)
-        url.parameters["c"] = "ANDROID_MUSIC"
-        return url.toString()
-        }
-}
+    }
