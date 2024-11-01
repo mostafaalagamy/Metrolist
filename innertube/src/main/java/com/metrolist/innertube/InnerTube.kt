@@ -12,6 +12,8 @@ import com.metrolist.innertube.models.body.GetTranscriptBody
 import com.metrolist.innertube.models.body.NextBody
 import com.metrolist.innertube.models.body.PlayerBody
 import com.metrolist.innertube.models.body.SearchBody
+import com.metrolist.innertube.utils.nSigDecode
+import com.metrolist.innertube.utils.sigDecode
 import com.metrolist.innertube.utils.parseCookieString
 import com.metrolist.innertube.utils.sha1
 import io.ktor.client.HttpClient
