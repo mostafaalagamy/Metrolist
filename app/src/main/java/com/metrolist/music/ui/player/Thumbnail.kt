@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.LocalView
@@ -137,9 +138,11 @@ fun Thumbnail(
                 AsyncImage(
                     model = mediaMetadata?.thumbnailUrl,
                     contentDescription = null,
+                    contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .offset { IntOffset(offsetX.roundToInt(), 0) }
                         .fillMaxWidth()
+                        .aspectRatio(1f)
                         .clip(RoundedCornerShape(ThumbnailCornerRadius * 2))
                         .pointerInput(Unit) {
                             detectTapGestures(
