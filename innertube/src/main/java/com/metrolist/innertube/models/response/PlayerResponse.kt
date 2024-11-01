@@ -3,6 +3,7 @@ package com.metrolist.innertube.models.response
 import com.metrolist.innertube.models.ResponseContext
 import com.metrolist.innertube.models.Thumbnails
 import com.metrolist.innertube.utils.decodeCipher
+import com.metrolist.innertube.utils.createUrl
 import kotlinx.serialization.Serializable
 
 /**
@@ -63,7 +64,7 @@ data class PlayerResponse(
             val isAudio: Boolean
                 get() = width == null
 
-            fun findUrl() = url ?: signatureCipher?.let { decodeCipher(it) }!!
+            fun findUrl() = url?.let { createUrl(url = it) } ?: signatureCipher?.let { createUrl(cipher = it) }!!
         }
     }
 
