@@ -196,6 +196,45 @@ fun BottomSheetPlayer(
     } else {
         MaterialTheme.colorScheme.surfaceContainer
         }
+    val changeBound = state.expandedBound / 3
+
+    val TextBackgroundColor =
+        when (playerBackground) {
+            PlayerBackgroundStyle.DEFAULT -> MaterialTheme.colorScheme.onBackground
+            else -> {
+                val whiteContrast =
+                    if (gradientColors.size >= 2) {
+                        ColorUtils.calculateContrast(
+                            gradientColors.first().toArgb(),
+                            Color.White.toArgb(),
+                        )
+                    } else {
+                        2.0
+                    }
+                val blackContrast: Double =
+                    if (gradientColors.size >= 2) {
+                        ColorUtils.calculateContrast(
+                            gradientColors.last().toArgb(),
+                            Color.Black.toArgb(),
+                        )
+                    } else {
+                        2.0
+                    }
+                if (gradientColors.size >= 2 &&
+                    whiteContrast < 2f &&
+                    blackContrast > 2f
+                ) {
+                    changeColor = true
+                    Color.Black
+                } else if (whiteContrast > 2f && blackContrast < 2f) {
+                    changeColor = true
+                    Color.White
+                } else {
+                    changeColor = false
+                    MaterialTheme.colorScheme.onSurface
+                }
+            }
+        }
 
     val playerTextAlignment by rememberEnumPreference(PlayerTextAlignmentKey, PlayerTextAlignment.SIDED)
 
@@ -592,7 +631,7 @@ fun BottomSheetPlayer(
                         fontWeight = FontWeight.Bold,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
-                        color = onBackgroundColor,
+                        color = TextBackgroundColor,
                         modifier =
                             Modifier
                                 .basicMarquee()
@@ -626,7 +665,7 @@ fun BottomSheetPlayer(
                         Text(
                             text = name,
                             style = MaterialTheme.typography.titleMedium,
-                            color = onBackgroundColor,
+                            color = TextBackgroundColor,
                             maxLines = 1,
                             modifier =
                                 Modifier.clickable(enabled = artist.id != null) {
@@ -645,7 +684,7 @@ fun BottomSheetPlayer(
                             Text(
                                 text = comma,
                                 style = MaterialTheme.typography.titleMedium,
-                                color = onBackgroundColor,
+                                color = TextBackgroundColor,
                             )
                         }
                     }
@@ -792,7 +831,7 @@ fun BottomSheetPlayer(
                             Text(
                                 text = makeTimeString(sleepTimerTimeLeft),
                                 style = MaterialTheme.typography.labelLarge,
-                                color = onBackgroundColor,
+                                color = TextBackgroundColor,
                                 maxLines = 1,
                                 modifier =
                                     Modifier
@@ -912,7 +951,7 @@ fun BottomSheetPlayer(
                 Text(
                     text = makeTimeString(sliderPosition ?: position),
                     style = MaterialTheme.typography.labelMedium,
-                    color = onBackgroundColor,
+                    color = TextBackgroundColor,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )
@@ -920,7 +959,7 @@ fun BottomSheetPlayer(
                 Text(
                     text = if (duration != C.TIME_UNSET) makeTimeString(duration) else "",
                     style = MaterialTheme.typography.labelMedium,
-                    color = onBackgroundColor,
+                    color = TextBackgroundColor,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )
@@ -938,7 +977,7 @@ fun BottomSheetPlayer(
                 Box(modifier = Modifier.weight(1f)) {
                     ResizableIconButton(
                         icon = if (currentSong?.song?.liked == true) R.drawable.favorite else R.drawable.favorite_border,
-                        color = if (currentSong?.song?.liked == true) MaterialTheme.colorScheme.error else onBackgroundColor,
+                        color = if (currentSong?.song?.liked == true) MaterialTheme.colorScheme.error else TextBackgroundColor,
                         modifier =
                             Modifier
                                 .size(32.dp)
@@ -952,7 +991,7 @@ fun BottomSheetPlayer(
                     ResizableIconButton(
                         icon = R.drawable.skip_previous,
                         enabled = canSkipPrevious,
-                        color = onBackgroundColor,
+                        color = TextBackgroundColor,
                         modifier =
                             Modifier
                                 .size(32.dp)
@@ -1006,7 +1045,7 @@ fun BottomSheetPlayer(
                     ResizableIconButton(
                         icon = R.drawable.skip_next,
                         enabled = canSkipNext,
-                        color = onBackgroundColor,
+                        color = TextBackgroundColor,
                         modifier =
                             Modifier
                                 .size(32.dp)
@@ -1018,7 +1057,7 @@ fun BottomSheetPlayer(
                 Box(modifier = Modifier.weight(1f)) {
                     ResizableIconButton(
                         icon = R.drawable.lyrics,
-                        color = onBackgroundColor,
+                        color = TextBackgroundColor,
                         modifier =
                             Modifier
                                 .size(32.dp)
