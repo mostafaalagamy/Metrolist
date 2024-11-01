@@ -191,6 +191,7 @@ fun Thumbnail(
                     AsyncImage(
                         model = it,
                         contentDescription = null,
+                        contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .offset {                              
                                 IntOffset(
@@ -199,6 +200,7 @@ fun Thumbnail(
                                 )
                             }
                             .fillMaxWidth()
+                            .aspectRatio(1f)
                             .clip(RoundedCornerShape(ThumbnailCornerRadius * 2))
                     )
                 }
