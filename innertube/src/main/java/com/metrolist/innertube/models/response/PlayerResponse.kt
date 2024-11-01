@@ -2,7 +2,6 @@ package com.metrolist.innertube.models.response
 
 import com.metrolist.innertube.models.ResponseContext
 import com.metrolist.innertube.models.Thumbnails
-import com.metrolist.innertube.utils.decodeCipher
 import com.metrolist.innertube.utils.createUrl
 import kotlinx.serialization.Serializable
 
