@@ -1184,6 +1184,7 @@ fun BottomSheetPlayer(
                     MaterialTheme.colorScheme.surfaceContainer
                 },
             onBackgroundColor = onBackgroundColor,
+            TextBackgroundColor = TextBackgroundColor,
         )
     }
 }
