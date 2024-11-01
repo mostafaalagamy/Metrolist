@@ -824,19 +824,8 @@ class MusicService :
                 )
             }
             scope.launch(Dispatchers.IO) { recoverSong(mediaId, playerResponse) }
-            val url =
-                run {
-                    runBlocking(Dispatchers.IO) {
-                        format.findUrl()
-                    }
-                }
-
-            songUrlCache[mediaId] = url to (
-                playerResponse.streamingData?.expiresInSeconds?.times(
-                    1000L,
-                ) ?: 0
-            )
-            dataSpec.withUri(url.toUri()).subrange(dataSpec.uriPositionOffset, CHUNK_LENGTH)
+            songUrlCache[mediaId] = format.findUrl() to playerResponse.streamingData!!.expiresInSeconds * 1000L
+            dataSpec.withUri(format.findUrl().toUri()).subrange(dataSpec.uriPositionOffset, CHUNK_LENGTH)
         }
     }
 
