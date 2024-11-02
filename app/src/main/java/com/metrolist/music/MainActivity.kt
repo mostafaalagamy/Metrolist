@@ -515,8 +515,7 @@ class MainActivity : ComponentActivity() {
                         LocalDownloadUtil provides downloadUtil,
                         LocalShimmerTheme provides ShimmerTheme,
                     ) {
-			    
-                        NavHost(
+	                NavHost(
                             navController = navController,
                             startDestination = when (tabOpenedFromShortcut ?: defaultOpenTab) {
                                 NavigationTab.HOME -> Screens.Home
@@ -528,6 +527,8 @@ class MainActivity : ComponentActivity() {
                                 val targetTab = targetState.destination.route
         
                                 val direction = when {
+                                    targetTab == "settings" -> AnimatedContentTransitionScope.SlideDirection.Left
+            
                                     currentTab in topLevelScreens && targetTab in topLevelScreens -> {
                                         val currentIndex = navigationItems.indexOfFirst { it.route == currentTab }
                                         val targetIndex = navigationItems.indexOfFirst { it.route == targetTab }
@@ -535,7 +536,7 @@ class MainActivity : ComponentActivity() {
                                             AnimatedContentTransitionScope.SlideDirection.Left
                                         else 
                                             AnimatedContentTransitionScope.SlideDirection.Right
-				    }
+                                    }
                                     else -> AnimatedContentTransitionScope.SlideDirection.Left
                                 }
         
@@ -549,6 +550,8 @@ class MainActivity : ComponentActivity() {
                                 val targetTab = targetState.destination.route
         
                                 val direction = when {
+                                    targetTab == "settings" -> AnimatedContentTransitionScope.SlideDirection.Left
+            
                                     currentTab in topLevelScreens && targetTab in topLevelScreens -> {
                                         val currentIndex = navigationItems.indexOfFirst { it.route == currentTab }
                                         val targetIndex = navigationItems.indexOfFirst { it.route == targetTab }
@@ -566,16 +569,34 @@ class MainActivity : ComponentActivity() {
                                 )
                             },
                             popEnterTransition = {
-                                slideIntoContainer(
-                                    towards = AnimatedContentTransitionScope.SlideDirection.Right,
-                                    animationSpec = tween(200)
-                                )
+                                val currentTab = initialState.destination.route
+        
+                                if (currentTab == "settings") {
+                                    slideIntoContainer(
+                                        towards = AnimatedContentTransitionScope.SlideDirection.Right,
+                                        animationSpec = tween(200)
+                                    )
+                                } else {
+                                    slideIntoContainer(
+                                        towards = AnimatedContentTransitionScope.SlideDirection.Right,
+                                        animationSpec = tween(200)
+                                    )
+                                }
                             },
                             popExitTransition = {
-                                slideOutOfContainer(
-                                    towards = AnimatedContentTransitionScope.SlideDirection.Right,
-                                    animationSpec = tween(200)
-                                )
+                                val currentTab = initialState.destination.route
+        
+                                if (currentTab == "settings") {
+                                    slideOutOfContainer(
+                                        towards = AnimatedContentTransitionScope.SlideDirection.Right,
+                                        animationSpec = tween(200)
+                                    )
+                                } else {
+                                    slideOutOfContainer(
+                                        towards = AnimatedContentTransitionScope.SlideDirection.Right,
+                                        animationSpec = tween(200)
+                                    )
+                                }
                             },
                             modifier = Modifier.nestedScroll(
                                 if (navigationItems.fastAny { it.route == navBackStackEntry?.destination?.route } ||
@@ -588,8 +609,8 @@ class MainActivity : ComponentActivity() {
                             )
                         ) {
                             navigationBuilder(navController, topAppBarScrollBehavior, latestVersionName)
-			}
-			
+			    }
+                        			
                         AnimatedVisibility(
                             visible = shouldShowSearchBar,
                             enter = fadeIn(),
