@@ -12,6 +12,7 @@ import android.os.IBinder
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.animateDpAsState
@@ -514,66 +515,81 @@ class MainActivity : ComponentActivity() {
                         LocalDownloadUtil provides downloadUtil,
                         LocalShimmerTheme provides ShimmerTheme,
                     ) {
+			    
                         NavHost(
                             navController = navController,
-                            startDestination =
-                                when (tabOpenedFromShortcut ?: defaultOpenTab) {
-                                    NavigationTab.HOME -> Screens.Home
-                                    NavigationTab.EXPLORE -> Screens.Explore
-                                    NavigationTab.LIBRARY -> Screens.Library
-                                }.route,
+                            startDestination = when (tabOpenedFromShortcut ?: defaultOpenTab) {
+                                NavigationTab.HOME -> Screens.Home
+                                NavigationTab.EXPLORE -> Screens.Explore
+                                NavigationTab.LIBRARY -> Screens.Library
+                            }.route,
                             enterTransition = {
-                                if (initialState.destination.route in topLevelScreens && targetState.destination.route in topLevelScreens) {
-                                    fadeIn(tween(250))
-                                } else {
-                                    fadeIn(tween(250)) + slideInHorizontally { it / 2 }
+                                val currentTab = initialState.destination.route
+                                val targetTab = targetState.destination.route
+        
+                                val direction = when {
+                                    currentTab in topLevelScreens && targetTab in topLevelScreens -> {
+                                        val currentIndex = navigationItems.indexOfFirst { it.route == currentTab }
+                                        val targetIndex = navigationItems.indexOfFirst { it.route == targetTab }
+                                        if (targetIndex > currentIndex) 
+                                            AnimatedContentTransitionScope.SlideDirection.Left
+                                        else 
+                                            AnimatedContentTransitionScope.SlideDirection.Right
+				    }
+                                    else -> AnimatedContentTransitionScope.SlideDirection.Left
                                 }
+        
+                                slideIntoContainer(
+                                    towards = direction,
+                                    animationSpec = tween(200)
+                                )
                             },
                             exitTransition = {
-                                if (initialState.destination.route in topLevelScreens && targetState.destination.route in topLevelScreens) {
-                                    fadeOut(tween(200))
-                                } else {
-                                    fadeOut(tween(200)) + slideOutHorizontally { -it / 2 }
+                                val currentTab = initialState.destination.route
+                                val targetTab = targetState.destination.route
+        
+                                val direction = when {
+                                    currentTab in topLevelScreens && targetTab in topLevelScreens -> {
+                                        val currentIndex = navigationItems.indexOfFirst { it.route == currentTab }
+                                        val targetIndex = navigationItems.indexOfFirst { it.route == targetTab }
+                                        if (targetIndex > currentIndex) 
+                                            AnimatedContentTransitionScope.SlideDirection.Left
+                                        else 
+                                            AnimatedContentTransitionScope.SlideDirection.Right
+                                    }
+                                    else -> AnimatedContentTransitionScope.SlideDirection.Left
                                 }
+        
+                                slideOutOfContainer(
+                                    towards = direction,
+                                    animationSpec = tween(200)
+                                )
                             },
                             popEnterTransition = {
-                                if ((
-                                        initialState.destination.route in topLevelScreens ||
-                                            initialState.destination.route?.startsWith("search/") == true
-                                    ) &&
-                                    targetState.destination.route in topLevelScreens
-                                ) {
-                                    fadeIn(tween(250))
-                                } else {
-                                    fadeIn(tween(250)) + slideInHorizontally { -it / 2 }
-                                }
+                                slideIntoContainer(
+                                    towards = AnimatedContentTransitionScope.SlideDirection.Right,
+                                    animationSpec = tween(200)
+                                )
                             },
                             popExitTransition = {
-                                if ((
-                                        initialState.destination.route in topLevelScreens ||
-                                            initialState.destination.route?.startsWith("search/") == true
-                                    ) &&
-                                    targetState.destination.route in topLevelScreens
-                                ) {
-                                    fadeOut(tween(200))
-                                } else {
-                                    fadeOut(tween(200)) + slideOutHorizontally { it / 2 }
-                                }
+                                slideOutOfContainer(
+                                    towards = AnimatedContentTransitionScope.SlideDirection.Right,
+                                    animationSpec = tween(200)
+                                )
                             },
-                            modifier =
-                                Modifier.nestedScroll(
-                                    if (navigationItems.fastAny { it.route == navBackStackEntry?.destination?.route } ||
-                                        navBackStackEntry?.destination?.route?.startsWith("search/") == true
-                                    ) {
-                                        searchBarScrollBehavior.nestedScrollConnection
-                                    } else {
-                                        topAppBarScrollBehavior.nestedScrollConnection
-                                    },
-                                ),
+                            modifier = Modifier.nestedScroll(
+                                if (navigationItems.fastAny { it.route == navBackStackEntry?.destination?.route } ||
+                                    navBackStackEntry?.destination?.route?.startsWith("search/") == true
+                                ) {
+                                    searchBarScrollBehavior.nestedScrollConnection
+                                } else {
+                                    topAppBarScrollBehavior.nestedScrollConnection
+                                }
+                            )
                         ) {
                             navigationBuilder(navController, topAppBarScrollBehavior, latestVersionName)
-                        }
-
+			}
+			
                         AnimatedVisibility(
                             visible = shouldShowSearchBar,
                             enter = fadeIn(),
