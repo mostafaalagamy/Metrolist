@@ -275,6 +275,7 @@ fun BottomSheetPlayer(
     val TextBackgroundColor =
         when (playerBackground) {
             PlayerBackgroundStyle.DEFAULT -> MaterialTheme.colorScheme.onBackground
+            PlayerBackgroundStyle.BLUR -> Color.White
             else -> {
                 val whiteContrast =
                     if (gradientColors.size >= 2) {
