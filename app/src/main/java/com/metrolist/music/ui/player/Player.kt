@@ -797,7 +797,6 @@ fun BottomSheetPlayer(
                                          putExtra(Intent.EXTRA_TEXT, "https://music.youtube.com/watch?v=${mediaMetadata.id}")
                                  }
                                          context.startActivity(Intent.createChooser(intent, null))
-                                         onDismiss()
                                  },
                 ) {
                     Image(
