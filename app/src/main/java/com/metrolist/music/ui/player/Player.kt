@@ -789,11 +789,18 @@ fun BottomSheetPlayer(
                             .clip(RoundedCornerShape(24.dp))
                             .background(MaterialTheme.colorScheme.primary)
                             .clickable {
-                                showChoosePlaylistDialog = true
-                            },
+                                 val intent =
+                                     Intent().apply {
+                                         action = Intent.ACTION_SEND
+                                         type = "text/plain"
+                                         putExtra(Intent.EXTRA_TEXT, "https://music.youtube.com/watch?v=${mediaMetadata.id}")
+                                 }
+                                         context.startActivity(Intent.createChooser(intent, null))
+                                         onDismiss()
+                                 },
                 ) {
                     Image(
-                        painter = painterResource(R.drawable.playlist_add),
+                        painter = painterResource(R.drawable.share),
                         contentDescription = null,
                         colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary),
                         modifier =
