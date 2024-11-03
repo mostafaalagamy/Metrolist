@@ -1,5 +1,6 @@
 package com.metrolist.music.ui.player
 
+import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.drawable.BitmapDrawable
 import android.text.format.Formatter
@@ -732,6 +733,86 @@ fun BottomSheetPlayer(
                 Spacer(modifier = Modifier.size(12.dp))
 
                 Box(
+                    contentAlignment = Alignment.Center,
+                    modifier =
+                        Modifier
+                            .size(42.dp)
+                            .clip(RoundedCornerShape(24.dp))
+                            .background(MaterialTheme.colorScheme.primary),
+                ) {
+                    AnimatedContent(
+                        label = "sleepTimer",
+                        targetState = sleepTimerEnabled,
+                    ) { sleepTimerEnabled ->
+                        if (sleepTimerEnabled) {
+                            Text(
+                                text = makeTimeString(sleepTimerTimeLeft),
+                                style = MaterialTheme.typography.labelLarge,
+                                color = TextBackgroundColor,
+                                maxLines = 1,
+                                modifier =
+                                    Modifier
+                                        .clip(RoundedCornerShape(50))
+                                        .clickable(onClick = playerConnection.service.sleepTimer::clear)
+                                        .basicMarquee(),
+                            )
+                        } else {
+                            Box(
+                                modifier =
+                                    Modifier
+                                        .size(42.dp)
+                                        .clip(RoundedCornerShape(24.dp))
+                                        .background(MaterialTheme.colorScheme.primary)
+                                        .clickable {
+                                            showSleepTimerDialog = true
+                                        },
+                            ) {
+                                Image(
+                                    painter = painterResource(R.drawable.bedtime),
+                                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary),
+                                    contentDescription = null,
+                                    modifier =
+                                        Modifier
+                                            .align(Alignment.Center)
+                                            .size(24.dp),
+                                )
+                            }
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.size(12.dp))
+
+                Box(
+                    modifier =
+                        Modifier
+                            .size(42.dp)
+                            .clip(RoundedCornerShape(24.dp))
+                            .background(MaterialTheme.colorScheme.primary)
+                            .clickable {
+                                 val intent =
+                                     Intent().apply {
+                                         action = Intent.ACTION_SEND
+                                         type = "text/plain"
+                                         putExtra(Intent.EXTRA_TEXT, "https://music.youtube.com/watch?v=${mediaMetadata.id}")
+                                 }
+                                         context.startActivity(Intent.createChooser(intent, null))
+                                 },
+                ) {
+                    Image(
+                        painter = painterResource(R.drawable.share),
+                        contentDescription = null,
+                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary),
+                        modifier =
+                            Modifier
+                                .align(Alignment.Center)
+                                .size(24.dp),
+                    )
+                }
+
+                Spacer(modifier = Modifier.size(12.dp))
+
+                Box(
                     modifier = Modifier
                         .size(42.dp)
                         .clip(RoundedCornerShape(24.dp))
@@ -805,80 +886,6 @@ fun BottomSheetPlayer(
                                     .align(Alignment.Center)
                                     .size(24.dp),
                             )
-                        }
-                    }
-                }
-
-                Spacer(modifier = Modifier.size(12.dp))
-
-                Box(
-                    modifier =
-                        Modifier
-                            .size(42.dp)
-                            .clip(RoundedCornerShape(24.dp))
-                            .background(MaterialTheme.colorScheme.primary)
-                            .clickable {
-                                showChoosePlaylistDialog = true
-                            },
-                ) {
-                    Image(
-                        painter = painterResource(R.drawable.playlist_add),
-                        contentDescription = null,
-                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary),
-                        modifier =
-                            Modifier
-                                .align(Alignment.Center)
-                                .size(24.dp),
-                    )
-                }
-
-                Spacer(modifier = Modifier.size(12.dp))
-
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier =
-                        Modifier
-                            .size(42.dp)
-                            .clip(RoundedCornerShape(24.dp))
-                            .background(MaterialTheme.colorScheme.primary),
-                ) {
-                    AnimatedContent(
-                        label = "sleepTimer",
-                        targetState = sleepTimerEnabled,
-                    ) { sleepTimerEnabled ->
-                        if (sleepTimerEnabled) {
-                            Text(
-                                text = makeTimeString(sleepTimerTimeLeft),
-                                style = MaterialTheme.typography.labelLarge,
-                                color = TextBackgroundColor,
-                                maxLines = 1,
-                                modifier =
-                                    Modifier
-                                        .clip(RoundedCornerShape(50))
-                                        .clickable(onClick = playerConnection.service.sleepTimer::clear)
-                                        .basicMarquee(),
-                            )
-                        } else {
-                            Box(
-                                modifier =
-                                    Modifier
-                                        .size(42.dp)
-                                        .clip(RoundedCornerShape(24.dp))
-                                        .background(MaterialTheme.colorScheme.primary)
-                                        .clickable {
-                                            showSleepTimerDialog = true
-                                        },
-                            ) {
-                                Image(
-                                    painter = painterResource(R.drawable.bedtime),
-                                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary),
-                                    contentDescription = null,
-                                    modifier =
-                                        Modifier
-                                            .align(Alignment.Center)
-                                            .size(24.dp),
-                                )
-                            }
                         }
                     }
                 }
