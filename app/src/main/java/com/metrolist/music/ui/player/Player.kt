@@ -1,5 +1,6 @@
 package com.metrolist.music.ui.player
 
+import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.drawable.BitmapDrawable
 import android.text.format.Formatter
