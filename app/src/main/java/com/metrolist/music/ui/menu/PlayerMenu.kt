@@ -353,17 +353,10 @@ fun PlayerMenu(
             }
         }
         GridMenuItem(
-            icon = R.drawable.share,
-            title = R.string.share,
+            icon = R.drawable.playlist_add,
+            title = R.string.add_to_playlist,
         ) {
-            val intent =
-                Intent().apply {
-                    action = Intent.ACTION_SEND
-                    type = "text/plain"
-                    putExtra(Intent.EXTRA_TEXT, "https://music.youtube.com/watch?v=${mediaMetadata.id}")
-                }
-            context.startActivity(Intent.createChooser(intent, null))
-            onDismiss()
+            showChoosePlaylistDialog = true
         }
         if (isQueueTrigger != true) {
             GridMenuItem(
