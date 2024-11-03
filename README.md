@@ -16,8 +16,6 @@
 
 [![Latest release](https://img.shields.io/github/v/release/mostafaalagamy/Metrolist?style=for-the-badge)](https://github.com/mostafaalagamy/Metrolist/releases)
 [![GitHub license](https://img.shields.io/github/license/mostafaalagamy/metrolist?style=for-the-badge)](https://github.com/mostafaalagamy/Metrolist/blob/dev/LICENSE)
-[![Downloads](https://img.shields.io/github/downloads/mostafaalagamy/Metrolist/total?style=for-the-badge)](https://github.com/mostafaalagamy/Metrolist/releases)
-
 </div>
 
 <div align="center">
@@ -67,15 +65,9 @@ height="80">](https://github.com/mostafaalagamy/Metrolist/releases/latest/downlo
 3. Enable "Unknown sources"
 
 <div align="center">
-<h1>Special thanks</h1>
-
-[Malopieds](https://github.com/Malopieds)
-</div>
-
-<div align="center">
 <h1>Disclaimer</h1>
 </div>
 
-This project and its contents are not affiliated with, funded, authorized, endorsed by, or in any way associated with YouTube, Google LLC or any of its affiliates and subsidiaries.
+This project and its contents are not affiliated with, funded, authorized, endorsed by, or in any way associated with YouTube, Google LLC, Metrolist Group LLC or any of its affiliates and subsidiaries.
 
 Any trademark, service mark, trade name, or other intellectual property rights used in this project are owned by the respective owners.
