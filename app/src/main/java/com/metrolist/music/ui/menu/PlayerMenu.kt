@@ -274,11 +274,55 @@ fun PlayerMenu(
             playerConnection.playQueue(YouTubeQueue(WatchEndpoint(videoId = mediaMetadata.id), mediaMetadata))
             onDismiss()
         }
+        if (librarySong?.song?.inLibrary != null) {
+            GridMenuItem(
+                icon = R.drawable.library_add_check,
+                title = R.string.remove_from_library,
+            ) {
+                database.query {
+                    inLibrary(mediaMetadata.id, null)
+                }
+            }
+        } else {
+            GridMenuItem(
+                icon = R.drawable.library_add,
+                title = R.string.add_to_library,
+            ) {
+                database.transaction {
+                    insert(mediaMetadata)
+                    inLibrary(mediaMetadata.id, LocalDateTime.now())
+                }
+            }
+        }
         GridMenuItem(
             icon = R.drawable.playlist_add,
             title = R.string.add_to_playlist,
         ) {
             showChoosePlaylistDialog = true
+        }
+        if (artists.isNotEmpty()) {
+            GridMenuItem(
+                icon = R.drawable.artist,
+                title = R.string.view_artist,
+            ) {
+                if (mediaMetadata.artists.size == 1) {
+                    navController.navigate("artist/${mediaMetadata.artists[0].id}")
+                    playerBottomSheetState.collapseSoft()
+                    onDismiss()
+                } else {
+                    showSelectArtistDialog = true
+                }
+            }
+        }
+        if (mediaMetadata.album != null) {
+            GridMenuItem(
+                icon = R.drawable.album,
+                title = R.string.view_album,
+            ) {
+                navController.navigate("album/${mediaMetadata.album.id}")
+                playerBottomSheetState.collapseSoft()
+                onDismiss()
+            }
         }
         DownloadGridMenu(
             state = download?.state,
@@ -308,63 +352,6 @@ fun PlayerMenu(
                 )
             },
         )
-        if (librarySong?.song?.inLibrary != null) {
-            GridMenuItem(
-                icon = R.drawable.library_add_check,
-                title = R.string.remove_from_library,
-            ) {
-                database.query {
-                    inLibrary(mediaMetadata.id, null)
-                }
-            }
-        } else {
-            GridMenuItem(
-                icon = R.drawable.library_add,
-                title = R.string.add_to_library,
-            ) {
-                database.transaction {
-                    insert(mediaMetadata)
-                    inLibrary(mediaMetadata.id, LocalDateTime.now())
-                }
-            }
-        }
-        if (artists.isNotEmpty()) {
-            GridMenuItem(
-                icon = R.drawable.artist,
-                title = R.string.view_artist,
-            ) {
-                if (mediaMetadata.artists.size == 1) {
-                    navController.navigate("artist/${mediaMetadata.artists[0].id}")
-                    playerBottomSheetState.collapseSoft()
-                    onDismiss()
-                } else {
-                    showSelectArtistDialog = true
-                }
-            }
-        }
-        if (mediaMetadata.album != null) {
-            GridMenuItem(
-                icon = R.drawable.album,
-                title = R.string.view_album,
-            ) {
-                navController.navigate("album/${mediaMetadata.album.id}")
-                playerBottomSheetState.collapseSoft()
-                onDismiss()
-            }
-        }
-        GridMenuItem(
-            icon = R.drawable.share,
-            title = R.string.share,
-        ) {
-            val intent =
-                Intent().apply {
-                    action = Intent.ACTION_SEND
-                    type = "text/plain"
-                    putExtra(Intent.EXTRA_TEXT, "https://music.youtube.com/watch?v=${mediaMetadata.id}")
-                }
-            context.startActivity(Intent.createChooser(intent, null))
-            onDismiss()
-        }
         if (isQueueTrigger != true) {
             GridMenuItem(
                 icon = R.drawable.info,
