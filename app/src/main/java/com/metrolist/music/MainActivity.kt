@@ -775,6 +775,7 @@ class MainActivity : ComponentActivity() {
                             modifier =
                                 Modifier
                                     .align(Alignment.BottomCenter)
+				    .height(48.dp)
                                     .offset {
                                         if (navigationBarHeight == 0.dp) {
                                             IntOffset(
@@ -805,6 +806,7 @@ class MainActivity : ComponentActivity() {
                                         Icon(
                                             painter = painterResource(screen.iconId),
                                             contentDescription = null,
+				            modifier = Modifier.size(20.dp)
                                         )
                                     },
                                     label = {
