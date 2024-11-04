@@ -818,7 +818,6 @@ class MainActivity : ComponentActivity() {
                                         Icon(
                                             painter = painterResource(screen.iconId),
                                             contentDescription = null,
-				            modifier = Modifier.size(20.dp)
                                         )
                                     },
                                     label = {
