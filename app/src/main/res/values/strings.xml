@@ -271,6 +271,7 @@
     <string name="squiggly">Squiggly</string>
     <string name="misc">Misc</string>
     <string name="default_open_tab">Default open tab</string>
+    <string name="slim_navbar">Hide bottom navigation bar labels</string>
 
     <string name="content">Content</string>
     <string name="login">Google login</string>
