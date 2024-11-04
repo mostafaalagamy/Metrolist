@@ -67,6 +67,7 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastAny
 import androidx.compose.ui.util.fastForEach
@@ -95,6 +96,7 @@ import com.metrolist.music.constants.PauseSearchHistoryKey
 import com.metrolist.music.constants.PureBlackKey
 import com.metrolist.music.constants.SearchSource
 import com.metrolist.music.constants.SearchSourceKey
+import com.metrolist.music.constants.SlimNavBarKey
 import com.metrolist.music.db.MusicDatabase
 import com.metrolist.music.db.entities.SearchHistory
 import com.metrolist.music.extensions.*
@@ -272,6 +274,7 @@ class MainActivity : ComponentActivity() {
                     val navBackStackEntry by navController.currentBackStackEntryAsState()
 
                     val navigationItems = remember { Screens.MainScreens }
+		    val (slimNav) = rememberPreference(SlimNavBarKey, defaultValue = false)
                     val defaultOpenTab =
                         remember {
                             dataStore[DefaultOpenTabKey].toEnum(defaultValue = NavigationTab.HOME)
@@ -341,6 +344,15 @@ class MainActivity : ComponentActivity() {
                                 navigationItems.fastAny { it.route == navBackStackEntry?.destination?.route } &&
                                 !active
                         }
+
+			fun getNavPadding(): Dp {
+                        return if (shouldShowNavigationBar) {
+                            if (slimNav) 48.dp else 64.dp
+                        } else {
+                            0.dp
+                        }
+			}
+			
                     val navigationBarHeight by animateDpAsState(
                         targetValue = if (shouldShowNavigationBar) NavigationBarHeight else 0.dp,
                         animationSpec = NavigationBarAnimationSpec,
@@ -350,7 +362,7 @@ class MainActivity : ComponentActivity() {
                     val playerBottomSheetState =
                         rememberBottomSheetState(
                             dismissedBound = 0.dp,
-                            collapsedBound = bottomInset + (if (shouldShowNavigationBar) NavigationBarHeight else 0.dp) + MiniPlayerHeight,
+                            collapsedBound = bottomInset + getNavPadding() + MiniPlayerHeight + 4.dp,
                             expandedBound = maxHeight,
                         )
 
@@ -775,7 +787,7 @@ class MainActivity : ComponentActivity() {
                             modifier =
                                 Modifier
                                     .align(Alignment.BottomCenter)
-				    .height(48.dp)
+				    .height(bottomInset + getNavPadding())
                                     .offset {
                                         if (navigationBarHeight == 0.dp) {
                                             IntOffset(
@@ -810,11 +822,13 @@ class MainActivity : ComponentActivity() {
                                         )
                                     },
                                     label = {
-                                        Text(
-                                            text = stringResource(screen.titleId),
-                                            maxLines = 1,
-                                            overflow = TextOverflow.Ellipsis,
-                                        )
+                                        if (!slimNav) {
+                                            Text(
+                                                text = stringResource(screen.titleId),
+                                                maxLines = 1,
+                                                overflow = TextOverflow.Ellipsis
+                                            )
+                                        }
                                     },
                                     onClick = {
                                         if (navBackStackEntry?.destination?.hierarchy?.any { it.route == screen.route } == true) {
