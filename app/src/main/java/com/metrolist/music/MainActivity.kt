@@ -67,6 +67,7 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastAny
 import androidx.compose.ui.util.fastForEach
@@ -95,6 +96,7 @@ import com.metrolist.music.constants.PauseSearchHistoryKey
 import com.metrolist.music.constants.PureBlackKey
 import com.metrolist.music.constants.SearchSource
 import com.metrolist.music.constants.SearchSourceKey
+import com.metrolist.music.constants.SlimNavBarKey
 import com.metrolist.music.db.MusicDatabase
 import com.metrolist.music.db.entities.SearchHistory
 import com.metrolist.music.extensions.*
@@ -272,6 +274,7 @@ class MainActivity : ComponentActivity() {
                     val navBackStackEntry by navController.currentBackStackEntryAsState()
 
                     val navigationItems = remember { Screens.MainScreens }
+		    val (slimNav) = rememberPreference(SlimNavBarKey, defaultValue = false)
                     val defaultOpenTab =
                         remember {
                             dataStore[DefaultOpenTabKey].toEnum(defaultValue = NavigationTab.HOME)
@@ -340,7 +343,8 @@ class MainActivity : ComponentActivity() {
                             navBackStackEntry?.destination?.route == null ||
                                 navigationItems.fastAny { it.route == navBackStackEntry?.destination?.route } &&
                                 !active
-                        }
+			}
+			
                     val navigationBarHeight by animateDpAsState(
                         targetValue = if (shouldShowNavigationBar) NavigationBarHeight else 0.dp,
                         animationSpec = NavigationBarAnimationSpec,
@@ -808,11 +812,13 @@ class MainActivity : ComponentActivity() {
                                         )
                                     },
                                     label = {
-                                        Text(
-                                            text = stringResource(screen.titleId),
-                                            maxLines = 1,
-                                            overflow = TextOverflow.Ellipsis,
-                                        )
+                                        if (!slimNav) {
+                                            Text(
+                                                text = stringResource(screen.titleId),
+                                                maxLines = 1,
+                                                overflow = TextOverflow.Ellipsis
+                                            )
+                                        }
                                     },
                                     onClick = {
                                         if (navBackStackEntry?.destination?.hierarchy?.any { it.route == screen.route } == true) {
