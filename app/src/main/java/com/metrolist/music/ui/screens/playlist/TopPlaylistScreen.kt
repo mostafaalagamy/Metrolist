@@ -294,7 +294,7 @@ fun TopPlaylistScreen(
                                                     },
                                                 ) {
                                                     Icon(
-                                                        painter = painterResource(R.drawable.offline_pin),
+                                                        painter = painterResource(R.drawable.offline),
                                                         contentDescription = null,
                                                     )
                                                 }
