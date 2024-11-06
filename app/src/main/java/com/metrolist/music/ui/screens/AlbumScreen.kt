@@ -258,7 +258,7 @@ fun AlbumScreen(
                                             },
                                         ) {
                                             Icon(
-                                                painter = painterResource(R.drawable.offline),
+                                                painter = painterResource(R.drawable.offline_pin),
                                                 contentDescription = null,
                                             )
                                         }
