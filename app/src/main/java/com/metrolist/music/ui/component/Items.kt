@@ -341,7 +341,7 @@ fun SongListItem(
             when (download?.state) {
                 STATE_COMPLETED ->
                     Icon(
-                        painter = painterResource(R.drawable.offline_pin),
+                        painter = painterResource(R.drawable.offline),
                         contentDescription = null,
                         modifier =
                             Modifier
@@ -665,7 +665,7 @@ fun AlbumListItem(
         when (downloadState) {
             STATE_COMPLETED ->
                 Icon(
-                    painter = painterResource(R.drawable.offline_pin),
+                    painter = painterResource(R.drawable.offline),
                     contentDescription = null,
                     modifier =
                         Modifier
