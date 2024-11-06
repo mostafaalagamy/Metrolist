@@ -12,5 +12,5 @@
         android:pathData="M12,3c4.96,0 9,4.04 9,9s-4.04,9 -9,9s-9,-4.04 -9,-9S7.04,3 12,3M12,2C6.48,2 2,6.48 2,12s4.48,10 10,10s10,-4.48 10,-10S17.52,2 12,2L12,2z"
         android:strokeColor="#FFFFFF"
         android:strokeWidth="1.0"
-        android:strokeLineCap="0" />
+        android:strokeLineCap="butt" />
 </vector>
