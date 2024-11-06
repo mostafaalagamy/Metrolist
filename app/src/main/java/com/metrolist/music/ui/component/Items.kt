@@ -978,7 +978,7 @@ fun PlaylistListItem(
     thumbnailContent = {
         val painter =
             when (playlist.playlist.name) {
-                stringResource(R.string.liked) -> R.drawable.favorite
+                stringResource(R.string.liked) -> R.drawable.favorite_border
                 stringResource(R.string.offline) -> R.drawable.offline
                 else -> {
                     if (autoPlaylist) {
@@ -1061,7 +1061,7 @@ fun PlaylistGridItem(
     thumbnailContent = {
         val painter =
             when (playlist.playlist.name) {
-                stringResource(R.string.liked) -> R.drawable.favorite
+                stringResource(R.string.liked) -> R.drawable.favorite_border
                 stringResource(R.string.offline) -> R.drawable.offline
                 else -> {
                     if (autoPlaylist) {
