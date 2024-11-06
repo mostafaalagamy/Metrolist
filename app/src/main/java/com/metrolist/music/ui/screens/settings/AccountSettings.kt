@@ -103,6 +103,11 @@ fun AccountSettings(
                     }
                 )
             }
+            PreferenceEntry(
+                title = { Text(stringResource(R.string.discord_integration)) },
+                icon = { Icon(painterResource(R.drawable.discord), null) },
+                onClick = { navController.navigate("settings/discord") }
+            )
         }
     }
 }
