@@ -860,7 +860,7 @@ fun BottomSheetPlayer(
                     when (download?.state) {
                         Download.STATE_COMPLETED -> {
                             Image(
-                                painter = painterResource(R.drawable.offline),
+                                painter = painterResource(R.drawable.offline_pin),
                                 contentDescription = "Downloaded",
                                 colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary),
                                 modifier = Modifier
