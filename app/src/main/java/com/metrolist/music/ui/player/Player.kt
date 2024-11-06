@@ -1002,7 +1002,7 @@ fun BottomSheetPlayer(
             ) {
                 Box(modifier = Modifier.weight(1f)) {
                     ResizableIconButton(
-                        icon = if (currentSong?.song?.liked == true) R.drawable.liked else R.drawable.favorite_border,
+                        icon = if (currentSong?.song?.liked == true) R.drawable.favorite else R.drawable.favorite_border,
                         color = if (currentSong?.song?.liked == true) MaterialTheme.colorScheme.error else TextBackgroundColor,
                         modifier =
                             Modifier
