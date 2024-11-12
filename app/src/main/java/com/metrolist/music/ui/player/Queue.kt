@@ -141,7 +141,7 @@ fun Queue(
         mutableStateOf(false)
     }
 
-    var locked by rememberPreference(QueueEditLockKey, defaultValue = false)
+    var locked by rememberPreference(QueueEditLockKey, defaultValue = true)
 
     val snackbarHostState = remember { SnackbarHostState() }
     var dismissJob: Job? by remember { mutableStateOf(null) }
