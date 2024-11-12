@@ -160,7 +160,7 @@ fun LocalPlaylistScreen(
         }
     val (sortType, onSortTypeChange) = rememberEnumPreference(PlaylistSongSortTypeKey, PlaylistSongSortType.CUSTOM)
     val (sortDescending, onSortDescendingChange) = rememberPreference(PlaylistSongSortDescendingKey, true)
-    var locked by rememberPreference(PlaylistEditLockKey, defaultValue = false)
+    var locked by rememberPreference(PlaylistEditLockKey, defaultValue = true)
 
     val coroutineScope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -459,7 +459,7 @@ fun LocalPlaylistScreen(
                 }
             }
 
-            if(!selection) {
+            if (!selection) {
                 itemsIndexed(
                     items = if (isSearching) filteredSongs else mutableSongs,
                     key = { _, song -> song.map.id },
@@ -649,7 +649,7 @@ fun LocalPlaylistScreen(
                                 },
                             )
 
-                            val content: @Composable () -> Unit = {
+                        val content: @Composable () -> Unit = {
                             SongListItem(
                                 song = songWrapper.item.song,
                                 isActive = songWrapper.item.song.id == mediaMetadata?.id,
@@ -719,6 +719,7 @@ fun LocalPlaylistScreen(
                                         ),
                             )
                         }
+
                         if (locked) {
                             content()
                         } else {
@@ -733,7 +734,7 @@ fun LocalPlaylistScreen(
                 }
             }
         }
-                
+
         TopAppBar(
                title = {
                    if (isSearching) {
