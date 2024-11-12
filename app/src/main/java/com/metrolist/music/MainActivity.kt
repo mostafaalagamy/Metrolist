@@ -776,38 +776,40 @@ class MainActivity : ComponentActivity() {
                         )
 
                         NavigationBar(
-                            modifier =
-                                Modifier
-                                    .align(Alignment.BottomCenter)
-                                    .offset {
-                                        if (navigationBarHeight == 0.dp) {
-                                            IntOffset(
-                                                x = 0,
-                                                y = (bottomInset + NavigationBarHeight).roundToPx(),
-                                            )
-                                        } else {
-                                            val slideOffset =
-                                                (bottomInset + NavigationBarHeight) *
-                                                    playerBottomSheetState.progress.coerceIn(
-                                                        0f,
-                                                        1f,
-                                                    )
-                                            val hideOffset =
-                                                (bottomInset + NavigationBarHeight) * (1 - navigationBarHeight / NavigationBarHeight)
-                                            IntOffset(
-                                                x = 0,
-                                                y = (slideOffset + hideOffset).roundToPx(),
-                                            )
-                                        }
-                                    },
-                             // #Agamy
+                            modifier = Modifier
+                                .align(Alignment.BottomCenter)
+                                .offset {
+                                    if (navigationBarHeight == 0.dp) {
+                                        IntOffset(
+                                            x = 0,
+                                            y = (bottomInset + NavigationBarHeight).roundToPx(),
+                                        )
+                                    } else {
+                                        val slideOffset =
+                                            (bottomInset + NavigationBarHeight) *
+                                                playerBottomSheetState.progress.coerceIn(
+                                                    0f,
+                                                    1f,
+                                                )
+                                        val hideOffset =
+                                            (bottomInset + NavigationBarHeight) * (1 - navigationBarHeight / NavigationBarHeight)
+                                        IntOffset(
+                                            x = 0,
+                                            y = (slideOffset + hideOffset).roundToPx(),
+                                        )
+                                    }
+                                },
                         ) {
                             navigationItems.fastForEach { screen ->
+                                val isSelected = navBackStackEntry?.destination?.hierarchy?.any { it.route == screen.route } == true
+
                                 NavigationBarItem(
-                                    selected = navBackStackEntry?.destination?.hierarchy?.any { it.route == screen.route } == true,
+                                    selected = isSelected,
                                     icon = {
                                         Icon(
-                                            painter = painterResource(screen.iconId),
+                                            painter = painterResource(
+                                                id = if (isSelected) screen.iconIdActive else screen.iconIdInactive
+                                            ),
                                             contentDescription = null,
                                         )
                                     },
@@ -821,7 +823,7 @@ class MainActivity : ComponentActivity() {
                                         }
                                     },
                                     onClick = {
-                                        if (navBackStackEntry?.destination?.hierarchy?.any { it.route == screen.route } == true) {
+                                        if (isSelected) {
                                             navController.currentBackStackEntry?.savedStateHandle?.set("scrollToTop", true)
                                             coroutineScope.launch {
                                                 searchBarScrollBehavior.state.resetHeightOffset()

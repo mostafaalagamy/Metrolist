@@ -196,7 +196,7 @@ fun ContentSettings(
 
         ListPreference(
             title = { Text(stringResource(R.string.set_quick_picks)) },
-            icon = { Icon(painterResource(R.drawable.home), null) },
+            icon = { Icon(painterResource(R.drawable.home_outlined), null) },
             selectedValue = quickPicks,
             values = listOf(QuickPicks.QUICK_PICKS, QuickPicks.LAST_LISTEN),
             valueText = {
