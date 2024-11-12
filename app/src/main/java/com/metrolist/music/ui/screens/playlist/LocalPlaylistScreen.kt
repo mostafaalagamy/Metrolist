@@ -459,7 +459,7 @@ fun LocalPlaylistScreen(
                 }
             }
 
-            if (!selection) {
+            if(!selection) {
                 itemsIndexed(
                     items = if (isSearching) filteredSongs else mutableSongs,
                     key = { _, song -> song.map.id },
@@ -539,7 +539,7 @@ fun LocalPlaylistScreen(
                                         )
                                     }
 
-                                    if (sortType == PlaylistSongSortType.CUSTOM && !locked && isSearching) {
+                                    if (sortType == PlaylistSongSortType.CUSTOM && !locked && !selection && !isSearching) {
                                         IconButton(
                                             onClick = { },
                                             modifier = Modifier.detectReorder(reorderableState),
@@ -581,7 +581,7 @@ fun LocalPlaylistScreen(
                             )
                         }
 
-                        if (locked) {
+                        if (locked || selection) {
                             content()
                         } else {
                             SwipeToDismissBox(
@@ -649,7 +649,7 @@ fun LocalPlaylistScreen(
                                 },
                             )
 
-                        val content: @Composable () -> Unit = {
+                            val content: @Composable () -> Unit = {
                             SongListItem(
                                 song = songWrapper.item.song,
                                 isActive = songWrapper.item.song.id == mediaMetadata?.id,
@@ -672,8 +672,7 @@ fun LocalPlaylistScreen(
                                             contentDescription = null,
                                         )
                                     }
-
-                                    if (sortType == PlaylistSongSortType.CUSTOM && !locked) {
+                                    if (sortType == PlaylistSongSortType.CUSTOM && !locked && !selection && !isSearching) {
                                         IconButton(
                                             onClick = { },
                                             modifier = Modifier.detectReorder(reorderableState),
@@ -720,7 +719,6 @@ fun LocalPlaylistScreen(
                                         ),
                             )
                         }
-
                         if (locked) {
                             content()
                         } else {
@@ -735,7 +733,7 @@ fun LocalPlaylistScreen(
                 }
             }
         }
-
+                
         TopAppBar(
                title = {
                    if (isSearching) {
