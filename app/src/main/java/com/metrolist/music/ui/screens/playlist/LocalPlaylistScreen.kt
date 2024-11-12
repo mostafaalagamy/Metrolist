@@ -459,7 +459,7 @@ fun LocalPlaylistScreen(
                 }
             }
 
-            if(!selection) {
+            if (!selection) {
                 itemsIndexed(
                     items = if (isSearching) filteredSongs else mutableSongs,
                     key = { _, song -> song.map.id },
@@ -649,7 +649,7 @@ fun LocalPlaylistScreen(
                                 },
                             )
 
-                            val content: @Composable () -> Unit = {
+                        val content: @Composable () -> Unit = {
                             SongListItem(
                                 song = songWrapper.item.song,
                                 isActive = songWrapper.item.song.id == mediaMetadata?.id,
@@ -719,6 +719,7 @@ fun LocalPlaylistScreen(
                                         ),
                             )
                         }
+
                         if (locked) {
                             content()
                         } else {
@@ -733,7 +734,7 @@ fun LocalPlaylistScreen(
                 }
             }
         }
-                
+
         TopAppBar(
                title = {
                    if (isSearching) {
