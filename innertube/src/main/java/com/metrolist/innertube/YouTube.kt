@@ -14,8 +14,8 @@ import com.metrolist.innertube.models.SearchSuggestions
 import com.metrolist.innertube.models.SongItem
 import com.metrolist.innertube.models.WatchEndpoint
 import com.metrolist.innertube.models.WatchEndpoint.WatchEndpointMusicSupportedConfigs.WatchEndpointMusicConfig.Companion.MUSIC_VIDEO_TYPE_ATV
-import com.metrolist.innertube.models.YouTubeClient.Companion.ANDROID_MUSIC
 import com.metrolist.innertube.models.YouTubeClient.Companion.IOS
+import com.metrolist.innertube.models.YouTubeClient.Companion.TVHTML5
 import com.metrolist.innertube.models.YouTubeClient.Companion.WEB
 import com.metrolist.innertube.models.YouTubeClient.Companion.WEB_REMIX
 import com.metrolist.innertube.models.YouTubeLocale
@@ -950,30 +950,19 @@ object YouTube {
                     ArtistItemsPage.fromMusicTwoRowItemRenderer(it) as? PlaylistItem
                 }
         }
-        
-    private val PlayerResponse.isValid
-        get() =
-            playabilityStatus.status == "OK" &&
-                streamingData?.adaptiveFormats?.any { it.url != null || it.signatureCipher != null } == true
 
     suspend fun player(
         videoId: String,
         playlistId: String? = null,
     ): Result<PlayerResponse> =
         runCatching {
-            val safePlayerResponse = innerTube.player(WEB_REMIX, videoId, playlistId).body<PlayerResponse>()
-            if (safePlayerResponse.isValid) {
-                return@runCatching safePlayerResponse
-            }
-            val playerResponse =
-                innerTube.player(IOS, videoId, playlistId).body<PlayerResponse>()
-            if (playerResponse.isValid) {
+            val playerResponse = innerTube.player(IOS, videoId, playlistId).body<PlayerResponse>()
+            if (playerResponse.playabilityStatus.status == "OK") {
                 return@runCatching playerResponse
             }
-            val androidPlayerResponse =
-                innerTube.player(ANDROID_MUSIC, videoId, playlistId).body<PlayerResponse>()
-            if (androidPlayerResponse.playabilityStatus.status == "OK") {
-                return@runCatching androidPlayerResponse
+            val safePlayerResponse = innerTube.player(TVHTML5, videoId, playlistId).body<PlayerResponse>()
+            if (safePlayerResponse.playabilityStatus.status != "OK") {
+                return@runCatching playerResponse
             }
             val audioStreams = innerTube.pipedStreams(videoId).body<PipedResponse>().audioStreams
             safePlayerResponse.copy(
