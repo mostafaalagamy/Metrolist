@@ -274,7 +274,7 @@
     <string name="slim_navbar">Hide bottom navigation bar labels</string>
 
     <string name="content">Content</string>
-    <string name="login">Google login</string>
+    <string name="login">Login</string>
     <string name="not_logged_in">Not logged in</string>
     <string name="general">General</string>
     <string name="content_language">Default content language</string>
