@@ -423,7 +423,9 @@ fun AutoPlaylistScreen(
                         ) {
                             if (selection) {
                                 val count = wrappedSongs?.count { it.isSelected }
-                                Text(text = "$count elements selected", modifier = Modifier.weight(1f))
+                                Text(
+                                    text = stringResource(R.string.elements_selected, count ?: 0),
+                                    modifier = Modifier.weight(1f))
                                 IconButton(
                                     onClick = {
                                         if (count == wrappedSongs?.size) {
