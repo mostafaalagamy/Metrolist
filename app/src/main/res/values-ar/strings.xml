@@ -1,7 +1,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     
     <!-- أزرار التنقل -->
-    <string name="home">الصفحة الرئيسية</string>
+    <string name="home">الرئيسية</string>
     <string name="songs">الأغاني</string>
     <string name="artists">الفنانون</string>
     <string name="albums">الألبومات</string>
