@@ -25,7 +25,6 @@ class DiscordRPC(
             ),
             type = Type.LISTENING,
             since = System.currentTimeMillis(),
-            startTime = System.currentTimeMillis(),
             applicationId = APPLICATION_ID
         )
     }
