@@ -10,14 +10,14 @@
         android:strokeColor="#ffffff"
         android:strokeWidth="1.5"
         android:strokeLineCap="butt"
-        android:strokeLineJoin="butt" />
+        android:strokeLineJoin="miter" />
     
     <path
         android:pathData="M17.5008,16.75 C17.5008,16.75 15.2057,18.25 12.0008,18.25 C8.79587,18.25 6.50079,16.75 6.50079,16.75"
         android:strokeColor="#ffffff"
         android:strokeWidth="1.5"
         android:strokeLineCap="butt"
-        android:strokeLineJoin="butt" />
+        android:strokeLineJoin="miter" />
     
     <path
         android:pathData="M17.2508,12.25 C17.2508,13.3546 16.4673,14.25 15.5008,14.25 C14.5343,14.25 13.7508,13.3546 13.7508,12.25 C13.7508,11.1454 14.5343,10.25 15.5008,10.25 C16.4673,10.25 17.2508,11.1454 17.2508,12.25Z"
