@@ -1,7 +1,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     
     <!-- أزرار التنقل -->
-    <string name="home">الصفحة الرئيسية</string>
+    <string name="home">الرئيسية</string>
     <string name="songs">الأغاني</string>
     <string name="artists">الفنانون</string>
     <string name="albums">الألبومات</string>
@@ -15,7 +15,7 @@
     <item quantity="two">عنصران محددان</item>
     <item quantity="few">%d عناصر محددة</item>
     <item quantity="many">%d عنصر محدد</item>
-    <item quantity="other">%d عناصر محددة</item>
+    <item quantity="other">%d عنصر محدد</item>
     </plurals>
     
     <!-- الرئيسية-->
@@ -163,7 +163,7 @@
     <item quantity="two">%d أغنيتان</item>
     <item quantity="few">%d أغانٍ</item>
     <item quantity="many">%d أغنية</item>
-    <item quantity="other">%d من الأغاني</item>
+    <item quantity="other">%d أغنية</item>
     </plurals>
 
     <plurals name="n_artist">
@@ -172,7 +172,7 @@
     <item quantity="two">%d فنانان</item>
     <item quantity="few">%d فنانون</item>
     <item quantity="many">%d فناناً</item>
-    <item quantity="other">%d من الفنانين</item>
+    <item quantity="other">%d فناناً</item>
     </plurals>
 
     <plurals name="n_album">
@@ -181,7 +181,7 @@
     <item quantity="two">%d ألبومان</item>
     <item quantity="few">%d ألبومات</item>
     <item quantity="many">%d ألبوم</item>
-    <item quantity="other">%d من الألبومات</item>
+    <item quantity="other">%d ألبوم</item>
     </plurals>
 
     <plurals name="n_playlist">
@@ -190,7 +190,7 @@
     <item quantity="two">%d قائمتا تشغيل</item>
     <item quantity="few">%d قوائم تشغيل</item>
     <item quantity="many">%d قائمة تشغيل</item>
-    <item quantity="other">%d من قوائم التشغيل</item>
+    <item quantity="other">%d قائمة التشغيل</item>
     </plurals>
 
     <plurals name="n_week">
@@ -199,7 +199,7 @@
     <item quantity="two">%d أسبوعان</item>
     <item quantity="few">%d أسابيع</item>
     <item quantity="many">%d أسبوع</item>
-    <item quantity="other">%d من الأسابيع</item>
+    <item quantity="other">%d أسبوع</item>
     </plurals>
 
     <plurals name="n_month">
@@ -208,7 +208,7 @@
     <item quantity="two">%d شهران</item>
     <item quantity="few">%d أشهر</item>
     <item quantity="many">%d شهراً</item>
-    <item quantity="other">%d من الأشهر</item>
+    <item quantity="other">%d شهراً</item>
     </plurals>
 
     <plurals name="n_year">
@@ -217,7 +217,7 @@
     <item quantity="two">%d سنتان</item>
     <item quantity="few">%d سنوات</item>
     <item quantity="many">%d سنة</item>
-    <item quantity="other">%d من السنوات</item>
+    <item quantity="other">%d سنة</item>
     </plurals>
 
     <plurals name="n_element">
@@ -226,7 +226,7 @@
     <item quantity="two">%d عنصران</item>
     <item quantity="few">%d عناصر</item>
     <item quantity="many">%d عنصراً</item>
-    <item quantity="other">%d من العناصر</item>
+    <item quantity="other">%d عنصراً</item>
     </plurals>
 
     <plurals name="n_time">
@@ -235,7 +235,25 @@
     <item quantity="two">%d مرتان</item>
     <item quantity="few">%d مرات</item>
     <item quantity="many">%d مرة</item>
-    <item quantity="other">%d من المرات</item>
+    <item quantity="other">%d مرة</item>
+    </plurals>
+
+    <plurals name="minute">
+    <item quantity="zero">لا دقائق</item>
+    <item quantity="one">%d دقيقة</item>
+    <item quantity="two">%d دقيقتان</item>
+    <item quantity="few">%d دقائق</item>
+    <item quantity="many">%d دقيقة</item>
+    <item quantity="other">%d دقيقة</item>
+    </plurals>
+
+    <plurals name="seconds">
+    <item quantity="zero">لا ثوانٍ</item>
+    <item quantity="one">%d ثانية</item>
+    <item quantity="two">%d ثانيتان</item>
+    <item quantity="few">%d ثوانٍ</item>
+    <item quantity="many">%d ثانية</item>
+    <item quantity="other">%d ثانية</item>
     </plurals>
     
     <!-- شريط التنبيه -->
@@ -248,14 +266,7 @@
     <string name="lyrics_not_found">لم يتم العثور على كلمات الأغاني</string>
     <string name="sleep_timer">مؤقت النوم</string>
     <string name="end_of_song">نهاية الأغنية</string>
-    <plurals name="minute">
-    <item quantity="zero">لا دقائق</item>
-    <item quantity="one">%d دقيقة</item>
-    <item quantity="two">%d دقيقتان</item>
-    <item quantity="few">%d دقائق</item>
-    <item quantity="many">%d دقيقة</item>
-    <item quantity="other">%d من الدقائق</item>
-    </plurals>
+    
     <string name="error_no_stream">لا يوجد بث متاح</string>
     <string name="error_no_internet">لا يوجد اتصال بالشبكة</string>
     <string name="error_timeout">انتهاء المهلة</string>
@@ -282,8 +293,8 @@
     <!-- الإعدادات -->
     <string name="settings">الإعدادات</string>
     <string name="login_settings">إعدادات تسجيل الدخول</string>
-    <string name="use_login_for_browse">استخدم تسجيل الدخول لتصفح المحتوى</string>
-    <string name="use_login_for_browse_desc">يمكن أن يؤثر ذلك على المحتوى الذي تراه، على سبيل المثال، يعرض الألبومات الخاصة بالمشتركين في الحسابات المميزة فقط إذا كنت مسجلًا بحساب مميز
+    <string name="use_login_for_browse">استخدم تسجيل الدخول لتصفح المحتوي المميز</string>
+    <string name="use_login_for_browse_desc">يمكن أن يعرض الألبومات الخاصة بالمشتركين في الحسابات المميزة فقط إذا كنت مسجلًا بحساب مميز
 
     </string>
     <string name="general_settings">الإعدادات العامة</string>
@@ -426,12 +437,4 @@
     <string name="past_year">السنة الماضية</string>
     <string name="top_length">طول قائمة الأغاني المفضلة الخاصة بي</string>
     <string name="history_duration">مدة التاريخ</string>
-    <plurals name="seconds">
-    <item quantity="zero">لا ثوانٍ</item>
-    <item quantity="one">%d ثانية</item>
-    <item quantity="two">%d ثانيتان</item>
-    <item quantity="few">%d ثوانٍ</item>
-    <item quantity="many">%d ثانية</item>
-    <item quantity="other">%d من الثواني</item>
-    </plurals>
 </resources>

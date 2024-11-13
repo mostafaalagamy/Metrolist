@@ -236,8 +236,8 @@
     <!-- Settings -->
     <string name="settings">Settings</string>
     <string name="login_settings">Login settings</string>
-    <string name="use_login_for_browse">Use login for browsing content</string>
-    <string name="use_login_for_browse_desc">This can influence what content you see and for example shows premium-only albums if you are logged in with a Premium account</string>
+    <string name="use_login_for_browse">Use login for browsing premium content</string>
+    <string name="use_login_for_browse_desc">This can shows premium-only albums if you are logged in with a Premium account</string>
     <string name="general_settings">General settings</string>
     
     <string name="appearance">Appearance</string>
@@ -274,7 +274,7 @@
     <string name="slim_navbar">Hide bottom navigation bar labels</string>
 
     <string name="content">Content</string>
-    <string name="login">Google login</string>
+    <string name="login">Login</string>
     <string name="not_logged_in">Not logged in</string>
     <string name="general">General</string>
     <string name="content_language">Default content language</string>
