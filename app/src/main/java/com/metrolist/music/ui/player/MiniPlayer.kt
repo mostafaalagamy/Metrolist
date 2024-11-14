@@ -159,10 +159,10 @@ fun MiniMediaInfo(
                     .fillMaxSize()
                     .graphicsLayer(
                         renderEffect = BlurEffect(
-                            radiusX = 25f,
-                            radiusY = 25f
+                            radiusX = 75f,
+                            radiusY = 75f
                         ),
-                        alpha = 1.5f
+                        alpha = 0.5f
                     )
             )
             
