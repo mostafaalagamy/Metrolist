@@ -1457,7 +1457,7 @@ fun YouTubeGridItem(
                     Modifier.fillMaxWidth()
                 } else {
                     Modifier.height(GridThumbnailHeight)
-                }.clip(RoundedCornerShape(ThumbnailCornerRadius)),
+                }.clip(RoundedCornerShape(ThumbnailCornerRadius))
         ) {
             AsyncImage(
                 model = item.thumbnail,
@@ -1549,12 +1549,13 @@ fun YouTubeGridItem(
                                     }
                                 }
                             },
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.play),
-                    contentDescription = null,
-                    tint = Color.White,
-                )
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.play),
+                        contentDescription = null,
+                        tint = Color.White,
+                    )
+                }
             }
         }
 
