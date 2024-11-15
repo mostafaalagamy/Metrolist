@@ -462,8 +462,10 @@ fun SongSmallGridItem(
         AsyncImage(
             model = song.song.thumbnailUrl,
             contentDescription = null,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxSize(),
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .clip(RoundedCornerShape(ThumbnailCornerRadius)),
         )
 
         AnimatedVisibility(
@@ -1457,13 +1459,11 @@ fun YouTubeGridItem(
                     Modifier.fillMaxWidth()
                 } else {
                     Modifier.height(GridThumbnailHeight)
-                }.aspectRatio(thumbnailRatio)
-                    .clip(thumbnailShape),
+                }.clip(thumbnailShape),
         ) {
             AsyncImage(
                 model = item.thumbnail,
                 contentDescription = null,
-                contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize(),
             )
 

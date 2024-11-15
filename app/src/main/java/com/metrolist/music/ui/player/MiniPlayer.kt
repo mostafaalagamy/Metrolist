@@ -33,6 +33,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.RenderEffect
+import androidx.compose.ui.graphics.BlurEffect
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -107,9 +110,7 @@ fun MiniPlayer(
                 Icon(
                     painter =
                         painterResource(
-                            if (playbackState ==
-                                Player.STATE_ENDED
-                            ) {
+                            if (playbackState == Player.STATE_ENDED) {
                                 R.drawable.replay
                             } else if (isPlaying) {
                                 R.drawable.pause
@@ -144,17 +145,37 @@ fun MiniMediaInfo(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier,
     ) {
-        Box(modifier = Modifier.padding(6.dp)) {
+        Box(
+            modifier = Modifier
+                .size(48.dp)
+                .clip(RoundedCornerShape(ThumbnailCornerRadius))
+        ) {
+            // Blurred background for thumbnail
             AsyncImage(
                 model = mediaMetadata.thumbnailUrl,
                 contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier =
-                    Modifier
-                        .size(48.dp)
-                        .aspectRatio(1f)
-                        .clip(RoundedCornerShape(ThumbnailCornerRadius)),
+                contentScale = ContentScale.FillBounds,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .graphicsLayer(
+                        renderEffect = BlurEffect(
+                            radiusX = 75f,
+                            radiusY = 75f
+                        ),
+                        alpha = 0.5f
+                    )
             )
+            
+            // Main thumbnail
+            AsyncImage(
+                model = mediaMetadata.thumbnailUrl,
+                contentDescription = null,
+                contentScale = ContentScale.Fit,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clip(RoundedCornerShape(ThumbnailCornerRadius)),
+            )
+            
             androidx.compose.animation.AnimatedVisibility(
                 visible = error != null,
                 enter = fadeIn(),
@@ -162,7 +183,7 @@ fun MiniMediaInfo(
             ) {
                 Box(
                     Modifier
-                        .size(48.dp)
+                        .fillMaxSize()
                         .background(
                             color = Color.Black.copy(alpha = 0.6f),
                             shape = RoundedCornerShape(ThumbnailCornerRadius),
