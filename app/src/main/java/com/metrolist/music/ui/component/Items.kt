@@ -1451,13 +1451,18 @@ fun YouTubeGridItem(
                     .width(GridThumbnailHeight * thumbnailRatio)
             },
     ) {
+        Box(
+            modifier =
+                if (fillMaxWidth) {
+                    Modifier.fillMaxWidth()
+                } else {
+                    Modifier.height(GridThumbnailHeight)
+                }.clip(RoundedCornerShape(ThumbnailCornerRadius)),
+        ) {
             AsyncImage(
                 model = item.thumbnail,
                 contentDescription = null,
-                modifier =
-                    Modifier
-                        .fillMaxSize()
-                        .clip(RoundedCornerShape(ThumbnailCornerRadius)),
+                modifier = Modifier.fillMaxSize(),
             )
 
             androidx.compose.animation.AnimatedVisibility(
