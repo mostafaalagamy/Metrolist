@@ -147,6 +147,7 @@ fun MiniMediaInfo(
     ) {
         Box(
             modifier = Modifier
+                .padding(6.dp)
                 .size(48.dp)
                 .clip(RoundedCornerShape(ThumbnailCornerRadius))
         ) {
