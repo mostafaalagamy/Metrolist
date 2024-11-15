@@ -462,8 +462,10 @@ fun SongSmallGridItem(
         AsyncImage(
             model = song.song.thumbnailUrl,
             contentDescription = null,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxSize(),
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .clip(RoundedCornerShape(ThumbnailCornerRadius)),
         )
 
         AnimatedVisibility(
