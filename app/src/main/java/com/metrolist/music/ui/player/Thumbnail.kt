@@ -8,12 +8,15 @@ import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.RenderEffect
+import androidx.compose.ui.graphics.BlurEffect
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -118,7 +121,7 @@ fun Thumbnail(
                                     updateImagePreview(offsetX)
                                 }
                             },
-                            onDragEnd = {                    
+                            onDragEnd = {
                                 val threshold = 0.10f * currentView.width
 
                                 if (offsetX.absoluteValue > threshold) {
@@ -135,32 +138,54 @@ fun Thumbnail(
                         )
                     },
             ) {
-                AsyncImage(
-                    model = mediaMetadata?.thumbnailUrl,
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
+                Box(
                     modifier = Modifier
                         .offset { IntOffset(offsetX.roundToInt(), 0) }
                         .fillMaxWidth()
                         .aspectRatio(1f)
                         .clip(RoundedCornerShape(ThumbnailCornerRadius * 2))
-                        .pointerInput(Unit) {
-                            detectTapGestures(
-                                onDoubleTap = { offset ->
-                                    val currentPosition = playerConnection.player.currentPosition
-                                    if ((layoutDirection == LayoutDirection.Ltr && offset.x < size.width / 2) ||
-                                        (layoutDirection == LayoutDirection.Rtl && offset.x > size.width / 2)) {
-                                        playerConnection.player.seekTo((currentPosition - 5000).coerceAtLeast(0)) 
-                                        seekDirection = context.getString(R.string.seek_backward)
-                                    } else {
-                                        playerConnection.player.seekTo((currentPosition + 5000).coerceAtMost(playerConnection.player.duration))
-                                        seekDirection = context.getString(R.string.seek_forward)
-                                    }
-                                    showSeekEffect = true
-                                }
+                ) {
+                    // Blurred background layer
+                    AsyncImage(
+                        model = mediaMetadata?.thumbnailUrl,
+                        contentDescription = null,
+                        contentScale = ContentScale.FillBounds,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .graphicsLayer(
+                                renderEffect = BlurEffect(
+                                    radiusX = 75f,
+                                    radiusY = 75f
+                                ),
+                                alpha = 0.5f
                             )
-                        }
-                )
+                    )
+                    
+                    // Main thumbnail image
+                    AsyncImage(
+                        model = mediaMetadata?.thumbnailUrl,
+                        contentDescription = null,
+                        contentScale = ContentScale.Fit,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .pointerInput(Unit) {
+                                detectTapGestures(
+                                    onDoubleTap = { offset ->
+                                        val currentPosition = playerConnection.player.currentPosition
+                                        if ((layoutDirection == LayoutDirection.Ltr && offset.x < size.width / 2) ||
+                                            (layoutDirection == LayoutDirection.Rtl && offset.x > size.width / 2)) {
+                                            playerConnection.player.seekTo((currentPosition - 5000).coerceAtLeast(0))
+                                            seekDirection = context.getString(R.string.seek_backward)
+                                        } else {
+                                            playerConnection.player.seekTo((currentPosition + 5000).coerceAtMost(playerConnection.player.duration))
+                                            seekDirection = context.getString(R.string.seek_forward)
+                                        }
+                                        showSeekEffect = true
+                                    }
+                                )
+                            }
+                    )
+                }
 
                 LaunchedEffect(showSeekEffect) {
                     if (showSeekEffect) {
@@ -188,12 +213,9 @@ fun Thumbnail(
                 }
 
                 previewImage?.let {
-                    AsyncImage(
-                        model = it,
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
+                    Box(
                         modifier = Modifier
-                            .offset {                              
+                            .offset {
                                 IntOffset(
                                     if (offsetX > 0) (offsetX - currentView.width).roundToInt()
                                     else (offsetX + currentView.width).roundToInt(), 0
@@ -202,7 +224,31 @@ fun Thumbnail(
                             .fillMaxWidth()
                             .aspectRatio(1f)
                             .clip(RoundedCornerShape(ThumbnailCornerRadius * 2))
-                    )
+                    ) {
+                        // Blurred background for preview image
+                        AsyncImage(
+                            model = it,
+                            contentDescription = null,
+                            contentScale = ContentScale.FillBounds,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .graphicsLayer(
+                                    renderEffect = BlurEffect(
+                                        radiusX = 75f,
+                                        radiusY = 75f
+                                    ),
+                                    alpha = 0.5f
+                                )
+                        )
+                        
+                        // Preview image
+                        AsyncImage(
+                            model = it,
+                            contentDescription = null,
+                            contentScale = ContentScale.Fit,
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    }
                 }
             }
         }
