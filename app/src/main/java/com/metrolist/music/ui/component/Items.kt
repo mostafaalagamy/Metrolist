@@ -1457,7 +1457,7 @@ fun YouTubeGridItem(
                     Modifier.fillMaxWidth()
                 } else {
                     Modifier.height(GridThumbnailHeight)
-                }.clip(RoundedCornerShape(ThumbnailCornerRadius))
+                }.clip(thumbnailShape),
         ) {
             AsyncImage(
                 model = item.thumbnail,
