@@ -6,12 +6,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -19,6 +14,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
@@ -61,6 +57,7 @@ import com.metrolist.music.ui.component.IconButton
 import com.metrolist.music.ui.component.PreferenceEntry
 import com.metrolist.music.ui.component.PreferenceGroupTitle
 import com.metrolist.music.ui.component.SwitchPreference
+import com.metrolist.music.ui.component.PlayerSliderTrack
 import com.metrolist.music.ui.utils.backToMain
 import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
@@ -112,40 +109,35 @@ fun AppearanceSettings(
         DefaultDialog(
             buttons = {
                 TextButton(
-                    onClick = { showSliderOptionDialog = false },
+                    onClick = { showSliderOptionDialog = false }
                 ) {
                     Text(text = stringResource(android.R.string.cancel))
                 }
             },
             onDismiss = {
                 showSliderOptionDialog = false
-            },
+            }
         ) {
             Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(4.dp),
-                    modifier =
-                        Modifier
-                            .aspectRatio(1f)
-                            .weight(1f)
-                            .clip(RoundedCornerShape(16.dp))
-                            .border(
-                                1.dp,
-                                if (sliderStyle ==
-                                    SliderStyle.DEFAULT
-                                ) {
-                                    MaterialTheme.colorScheme.primary
-                                } else {
-                                    MaterialTheme.colorScheme.outlineVariant
-                                },
-                                RoundedCornerShape(16.dp),
-                            ).clickable {
-                                onSliderStyleChange(SliderStyle.DEFAULT)
-                                showSliderOptionDialog = false
-                            }.padding(16.dp),
+                    modifier = Modifier
+                        .aspectRatio(1f)
+                        .weight(1f)
+                        .clip(RoundedCornerShape(16.dp))
+                        .border(
+                            1.dp,
+                            if (sliderStyle == SliderStyle.DEFAULT) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outlineVariant,
+                            RoundedCornerShape(16.dp)
+                        )
+                        .clickable {
+                            onSliderStyleChange(SliderStyle.DEFAULT)
+                            showSliderOptionDialog = false
+                        }
+                        .padding(16.dp)
                 ) {
                     var sliderValue by remember {
                         mutableFloatStateOf(0.5f)
@@ -156,43 +148,30 @@ fun AppearanceSettings(
                         onValueChange = {
                             sliderValue = it
                         },
-                        modifier =
-                            Modifier
-                                .weight(1f)
-                                .pointerInput(Unit) {
-                                    detectTapGestures(
-                                        onPress = {},
-                                    )
-                                },
+                        modifier = Modifier.weight(1f)
                     )
-
                     Text(
                         text = stringResource(R.string.default_),
-                        style = MaterialTheme.typography.labelLarge,
+                        style = MaterialTheme.typography.labelLarge
                     )
                 }
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(4.dp),
-                    modifier =
-                        Modifier
-                            .aspectRatio(1f)
-                            .weight(1f)
-                            .clip(RoundedCornerShape(16.dp))
-                            .border(
-                                1.dp,
-                                if (sliderStyle ==
-                                    SliderStyle.SQUIGGLY
-                                ) {
-                                    MaterialTheme.colorScheme.primary
-                                } else {
-                                    MaterialTheme.colorScheme.outlineVariant
-                                },
-                                RoundedCornerShape(16.dp),
-                            ).clickable {
-                                onSliderStyleChange(SliderStyle.SQUIGGLY)
-                                showSliderOptionDialog = false
-                            }.padding(16.dp),
+                    modifier = Modifier
+                        .aspectRatio(1f)
+                        .weight(1f)
+                        .clip(RoundedCornerShape(16.dp))
+                        .border(
+                            1.dp,
+                            if (sliderStyle == SliderStyle.SQUIGGLY) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outlineVariant,
+                            RoundedCornerShape(16.dp)
+                        )
+                        .clickable {
+                            onSliderStyleChange(SliderStyle.SQUIGGLY)
+                            showSliderOptionDialog = false
+                        }
+                        .padding(16.dp)
                 ) {
                     var sliderValue by remember {
                         mutableFloatStateOf(0.5f)
@@ -203,12 +182,59 @@ fun AppearanceSettings(
                         onValueChange = {
                             sliderValue = it
                         },
-                        modifier = Modifier.weight(1f),
+                        modifier = Modifier.weight(1f)
                     )
-
                     Text(
                         text = stringResource(R.string.squiggly),
-                        style = MaterialTheme.typography.labelLarge,
+                        style = MaterialTheme.typography.labelLarge
+                    )
+                }
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                    modifier = Modifier
+                        .aspectRatio(1f)
+                        .weight(1f)
+                        .clip(RoundedCornerShape(16.dp))
+                        .border(
+                            1.dp,
+                            if (sliderStyle == SliderStyle.SLIM) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outlineVariant,
+                            RoundedCornerShape(16.dp)
+                        )
+                        .clickable {
+                            onSliderStyleChange(SliderStyle.SLIM)
+                            showSliderOptionDialog = false
+                        }
+                        .padding(16.dp)
+                ) {
+                    var sliderValue by remember {
+                        mutableFloatStateOf(0.5f)
+                    }
+                    Slider(
+                        value = sliderValue,
+                        valueRange = 0f..1f,
+                        onValueChange = {
+                            sliderValue = it
+                        },
+                        thumb = { Spacer(modifier = Modifier.size(0.dp)) },
+                        track = { sliderState ->
+                            PlayerSliderTrack(
+                                sliderState = sliderState,
+                                colors = SliderDefaults.colors()
+                            )
+                        },
+                        modifier = Modifier
+                            .weight(1f)
+                            .pointerInput(Unit) {
+                                detectTapGestures(
+                                    onPress = {}
+                                )
+                            }
+                    )
+                    
+                    Text(
+                        text = stringResource(R.string.slim),
+                        style = MaterialTheme.typography.labelLarge
                     )
                 }
             }
@@ -278,6 +304,7 @@ fun AppearanceSettings(
                 when (sliderStyle) {
                     SliderStyle.DEFAULT -> stringResource(R.string.default_)
                     SliderStyle.SQUIGGLY -> stringResource(R.string.squiggly)
+                    SliderStyle.SLIM -> stringResource(R.string.slim)
                 },
             icon = { Icon(painterResource(R.drawable.sliders), null) },
             onClick = {

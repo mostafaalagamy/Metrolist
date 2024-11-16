@@ -66,12 +66,14 @@ fun Bitmap.extractThemeColor(): Color {
 }
 
 fun Bitmap.extractGradientColors(darkTheme: Boolean = false): List<Color> {
-    val extractedColors = Palette.from(this)
-        .maximumColorCount(16)
-        .generate()
-        .swatches
-        .associate { it.rgb to it.population }
-
+    val extractedColors =
+        Palette
+            .from(this)
+            .maximumColorCount(16)
+            .generate()
+            .swatches
+            .associate { it.rgb to it.population }
+            
     val orderedColors = if (darkTheme) {
         Score.order(extractedColors)
             .sortedBy { Color(it).luminance() }
@@ -83,10 +85,15 @@ fun Bitmap.extractGradientColors(darkTheme: Boolean = false): List<Color> {
             .sortedByDescending { Color(it).luminance() }
     }
 
-    return if (orderedColors.size >= 2)
-        listOf(Color(orderedColors[0]), Color(orderedColors[1]))
-    else
-        listOf(Color(0xFF595959), Color(0xFF0D0D0D))
+    val res = mutableListOf<Color>()
+    return if (orderedColors.size >= 2) {
+        orderedColors.forEach {
+            res.add(Color(it))
+        }
+        res
+    } else {
+        emptyList()
+    }
 }
 
 fun DynamicScheme.toColorScheme() =
