@@ -139,6 +139,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.net.URLDecoder
 import java.net.URLEncoder
+import java.util.Locale
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.days
 
@@ -203,6 +204,11 @@ class MainActivity : ComponentActivity() {
                     }
                 }
 	}
+
+	    val sharedPreferences = getSharedPreferences("app_settings", Context.MODE_PRIVATE)
+            val savedLanguage = sharedPreferences.getString("app_language", Locale.getDefault().language) ?: "en"
+                updateLanguage(this, savedLanguage)
+    
 
         setContent {
             LaunchedEffect(Unit) {
