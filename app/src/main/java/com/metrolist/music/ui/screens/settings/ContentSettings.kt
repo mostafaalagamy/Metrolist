@@ -144,20 +144,19 @@ fun ContentSettings(
         
         // lyrics settings
         PreferenceGroupTitle(title = stringResource(R.string.lyrics))
-
-        SwitchPreference(
-            title = { Text(stringResource(R.string.enable_kugou)) },
-            icon = { Icon(painterResource(R.drawable.lyrics), null) },
-            checked = enableKugou,
-            onCheckedChange = onEnableKugouChange,
-        )
+        
         SwitchPreference(
             title = { Text(stringResource(R.string.enable_lrclib)) },
             icon = { Icon(painterResource(R.drawable.lyrics), null) },
             checked = enableLrclib,
             onCheckedChange = onEnableLrclibChange,
         )
-
+        SwitchPreference(
+            title = { Text(stringResource(R.string.enable_kugou)) },
+            icon = { Icon(painterResource(R.drawable.lyrics), null) },
+            checked = enableKugou,
+            onCheckedChange = onEnableKugouChange,
+        )
         ListPreference(
             title = { Text(stringResource(R.string.set_first_lyrics_provider)) },
             icon = { Icon(painterResource(R.drawable.lyrics), null) },
