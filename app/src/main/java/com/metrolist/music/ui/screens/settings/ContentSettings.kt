@@ -22,6 +22,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.capitalize
+import androidx.compose.ui.text.intl.Locale
+import androidx.compose.ui.text.toLowerCase
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.unit.dp
@@ -55,9 +58,11 @@ fun ContentSettings(
     val (historyDuration, onHistoryDurationChange) = rememberPreference(key = HistoryDuration, defaultValue = 30f)
     val (defaultChip, onDefaultChipChange) = rememberEnumPreference(key = ChipSortTypeKey, defaultValue = LibraryFilter.LIBRARY)
     val (quickPicks, onQuickPicksChange) = rememberEnumPreference(key = QuickPicksKey, defaultValue = QuickPicks.QUICK_PICKS)
+    val (enableKugou, onEnableKugouChange) = rememberPreference(key = EnableKugouKey, defaultValue = true)
+    val (enableLrclib, onEnableLrclibChange) = rememberPreference(key = EnableLrcLibKey, defaultValue = true)
+    val (preferredProvider, onPreferredProviderChange) = rememberEnumPreference(key = PreferredLyricsProviderKey, defaultValue = PreferredLyricsProvider.LRCLIB)
     val sharedPreferences = context.getSharedPreferences("app_settings", Context.MODE_PRIVATE)
     val savedLanguage = sharedPreferences.getString("app_language", "en") ?: "en"
-
     var selectedLanguage by remember { mutableStateOf(savedLanguage) }
     var showLanguageDialog by remember { mutableStateOf(false) }
 
@@ -136,6 +141,31 @@ fun ContentSettings(
                 )
             }
         }
+        
+        // lyrics settings
+        PreferenceGroupTitle(title = stringResource(R.string.lyrics))
+
+        SwitchPreference(
+            title = { Text(stringResource(R.string.enable_kugou)) },
+            icon = { Icon(painterResource(R.drawable.lyrics), null) },
+            checked = enableKugou,
+            onCheckedChange = onEnableKugouChange,
+        )
+        SwitchPreference(
+            title = { Text(stringResource(R.string.enable_lrclib)) },
+            icon = { Icon(painterResource(R.drawable.lyrics), null) },
+            checked = enableLrclib,
+            onCheckedChange = onEnableLrclibChange,
+        )
+
+        ListPreference(
+            title = { Text(stringResource(R.string.set_first_lyrics_provider)) },
+            icon = { Icon(painterResource(R.drawable.lyrics), null) },
+            selectedValue = preferredProvider,
+            values = listOf(PreferredLyricsProvider.KUGOU, PreferredLyricsProvider.LRCLIB),
+            valueText = { it.name.toLowerCase(Locale.current).capitalize(Locale.current) },
+            onValueSelected = onPreferredProviderChange,
+        )
 
         // Misc settings
         PreferenceGroupTitle(title = stringResource(R.string.misc))
