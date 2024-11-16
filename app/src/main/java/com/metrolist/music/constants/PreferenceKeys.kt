@@ -18,6 +18,7 @@ val SliderStyleKey = stringPreferencesKey("sliderStyle")
 enum class SliderStyle {
     DEFAULT,
     SQUIGGLY,
+    SLIM,
 }
 
 const val SYSTEM_DEFAULT = "SYSTEM_DEFAULT"

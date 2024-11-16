@@ -328,6 +328,7 @@
     <string name="player_slider_style">نمط شريط تمرير مشغل الوسائط</string>
     <string name="default_">الإفتراضي</string>
     <string name="squiggly">متعرج</string>
+    <string name="slim">نحيل</string>
     <string name="misc">متفرقات</string>
     <string name="default_open_tab">الصفحة الافتراضية</string>
     <string name="slim_navbar">إخفاء أسماء علامات شريط التنقل السفلي</string>
