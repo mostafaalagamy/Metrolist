@@ -23,21 +23,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.capitalize
-import androidx.compose.ui.text.intl.Locale
-import androidx.compose.ui.text.toLowerCase
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.metrolist.music.LocalDatabase
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.R
 import com.metrolist.music.constants.DisableScreenshotKey
-import com.metrolist.music.constants.EnableKugouKey
-import com.metrolist.music.constants.EnableLrcLibKey
 import com.metrolist.music.constants.PauseListenHistoryKey
 import com.metrolist.music.constants.PauseSearchHistoryKey
-import com.metrolist.music.constants.PreferredLyricsProvider
-import com.metrolist.music.constants.PreferredLyricsProviderKey
 import com.metrolist.music.ui.component.DefaultDialog
 import com.metrolist.music.ui.component.IconButton
 import com.metrolist.music.ui.component.ListPreference
@@ -56,14 +49,7 @@ fun PrivacySettings(
 ) {
     val database = LocalDatabase.current
     val (pauseListenHistory, onPauseListenHistoryChange) = rememberPreference(key = PauseListenHistoryKey, defaultValue = false)
-    val (pauseSearchHistory, onPauseSearchHistoryChange) = rememberPreference(key = PauseSearchHistoryKey, defaultValue = false)
-    val (enableKugou, onEnableKugouChange) = rememberPreference(key = EnableKugouKey, defaultValue = true)
-    val (enableLrclib, onEnableLrclibChange) = rememberPreference(key = EnableLrcLibKey, defaultValue = true)
-    val (preferredProvider, onPreferredProviderChange) =
-        rememberEnumPreference(
-            key = PreferredLyricsProviderKey,
-            defaultValue = PreferredLyricsProvider.LRCLIB,
-        )
+    val (pauseSearchHistory, onPauseSearchHistoryChange) = rememberPreference(key = PauseSearchHistoryKey, defaultValue = false)    
     val (disableScreenshot, onDisableScreenshotChange) = rememberPreference(key = DisableScreenshotKey, defaultValue = false)
 
     var showClearListenHistoryDialog by remember {
@@ -174,36 +160,11 @@ fun PrivacySettings(
             icon = { Icon(painterResource(R.drawable.clear_all), null) },
             onClick = { showClearSearchHistoryDialog = true },
         )
-
-        PreferenceGroupTitle(
-            title = stringResource(R.string.lyrics)
-        )
         
-        SwitchPreference(
-            title = { Text(stringResource(R.string.enable_kugou)) },
-            icon = { Icon(painterResource(R.drawable.lyrics), null) },
-            checked = enableKugou,
-            onCheckedChange = onEnableKugouChange,
-        )
-        SwitchPreference(
-            title = { Text(stringResource(R.string.enable_lrclib)) },
-            icon = { Icon(painterResource(R.drawable.lyrics), null) },
-            checked = enableLrclib,
-            onCheckedChange = onEnableLrclibChange,
-        )
-
-        ListPreference(
-            title = { Text(stringResource(R.string.set_first_lyrics_provider)) },
-            icon = { Icon(painterResource(R.drawable.lyrics), null) },
-            selectedValue = preferredProvider,
-            values = listOf(PreferredLyricsProvider.KUGOU, PreferredLyricsProvider.LRCLIB),
-            valueText = { it.name.toLowerCase(Locale.current).capitalize(Locale.current) },
-            onValueSelected = onPreferredProviderChange,
-        )
-
         PreferenceGroupTitle(
             title = stringResource(R.string.misc),
         )
+        
         SwitchPreference(
             title = { Text(stringResource(R.string.disable_screenshot)) },
             description = stringResource(R.string.disable_screenshot_desc),
