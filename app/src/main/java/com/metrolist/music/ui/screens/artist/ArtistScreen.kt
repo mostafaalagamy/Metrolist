@@ -284,18 +284,20 @@ fun ArtistScreen(
                 }
 
                 artistPage.sections.fastForEach { section ->
-                    item {
-                        NavigationTitle(
-                            title = section.title,
-                            onClick =
-                                section.moreEndpoint?.let {
-                                    {
-                                        navController.navigate(
-                                            "artist/${viewModel.artistId}/items?browseId=${it.browseId}?params=${it.params}",
-                                        )
-                                    }
-                                },
-                        )
+                    if (section.items.isNotEmpty()) {
+                        item {
+                            NavigationTitle(
+                                title = section.title,
+                                onClick =
+                                    section.moreEndpoint?.let {
+                                        {
+                                            navController.navigate(
+                                                "artist/${viewModel.artistId}/items?browseId=${it.browseId}?params=${it.params}",
+                                            )
+                                        }
+                                    },
+                            )
+                        }
                     }
 
                     if ((section.items.firstOrNull() as? SongItem)?.album != null) {
