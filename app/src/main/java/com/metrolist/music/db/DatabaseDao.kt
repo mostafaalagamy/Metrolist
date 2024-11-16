@@ -1007,12 +1007,7 @@ interface DatabaseDao {
                     name = artist.name,
                 )
             }?.onEach(::insert)
-            .onEach {
-                val existingSong = getSongById(it.id)
-                if (existingSong != null) {
-                    update(existingSong, it)
-                }
-            }.mapIndexed { index, song ->
+            ?.mapIndexed { index, artist ->
                 AlbumArtistMap(
                     albumId = albumPage.album.browseId,
                     artistId = artist.id,
@@ -1104,7 +1099,12 @@ interface DatabaseDao {
         albumPage.songs
             .map(SongItem::toMediaMetadata)
             .onEach(::insert)
-            .mapIndexed { index, song ->
+            .onEach {
+                val existingSong = getSongById(it.id)
+                if (existingSong != null) {
+                    update(existingSong, it)
+                }
+            }.mapIndexed { index, song ->
                 SongAlbumMap(
                     songId = song.id,
                     albumId = albumPage.album.browseId,
