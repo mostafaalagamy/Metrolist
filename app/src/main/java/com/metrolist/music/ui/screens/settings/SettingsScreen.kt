@@ -59,14 +59,14 @@ fun SettingsScreen(
             onClick = { navController.navigate("settings/account") }
         )
         PreferenceEntry(
-            title = { Text(stringResource(R.string.privacy)) },
-            icon = { Icon(painterResource(R.drawable.security), null) },
-            onClick = { navController.navigate("settings/privacy") }
-        )
-        PreferenceEntry(
             title = { Text(stringResource(R.string.content)) },
             icon = { Icon(painterResource(R.drawable.language), null) },
             onClick = { navController.navigate("settings/content") }
+        )
+        PreferenceEntry(
+            title = { Text(stringResource(R.string.privacy)) },
+            icon = { Icon(painterResource(R.drawable.security), null) },
+            onClick = { navController.navigate("settings/privacy") }
         )
         PreferenceEntry(
             title = { Text(stringResource(R.string.player_and_audio)) },

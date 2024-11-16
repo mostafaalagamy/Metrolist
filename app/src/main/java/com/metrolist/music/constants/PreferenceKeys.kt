@@ -224,8 +224,8 @@ enum class QuickPicks {
 }
 
 enum class PreferredLyricsProvider {
-    KUGOU,
     LRCLIB,
+    KUGOU,
 }
 
 enum class PlayerBackgroundStyle {
