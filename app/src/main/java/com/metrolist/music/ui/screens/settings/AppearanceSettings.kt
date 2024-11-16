@@ -166,6 +166,11 @@ fun AppearanceSettings(
                                 )
                             }
                     )
+                    
+                    Text(
+                        text = stringResource(R.string.default_),
+                        style = MaterialTheme.typography.labelLarge
+                    )
                 }
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -196,6 +201,10 @@ fun AppearanceSettings(
                         },
                         modifier = Modifier.weight(1f)
                     )
+                    Text(
+                        text = stringResource(R.string.squiggly),
+                        style = MaterialTheme.typography.labelLarge
+                    )
                 }
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -225,6 +234,10 @@ fun AppearanceSettings(
                             sliderValue = it
                         },
                         modifier = Modifier.weight(1f)
+                    )
+                    Text(
+                        text = stringResource(R.string.slim),
+                        style = MaterialTheme.typography.labelLarge
                     )
                 }
             }
@@ -294,6 +307,7 @@ fun AppearanceSettings(
                 when (sliderStyle) {
                     SliderStyle.DEFAULT -> stringResource(R.string.default_)
                     SliderStyle.SQUIGGLY -> stringResource(R.string.squiggly)
+                    SliderStyle.SLIM -> stringResource(R.string.slim)
                 },
             icon = { Icon(painterResource(R.drawable.sliders), null) },
             onClick = {
