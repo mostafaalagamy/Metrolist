@@ -285,7 +285,7 @@
     <string name="proxy_type">Proxy type</string>
     <string name="proxy_url">Proxy URL</string>
     <string name="default_lib_chips">Change default library chip</string>
-    <string name="set_quick_picks">Set Quick Picks</string>
+    <string name="set_quick_picks">Set quick picks</string>
     <string name="last_song_listened">Based on last song listened</string>
     <string name="restart_to_take_effect">Restart to take effect</string>
     <string name="app_language">App language</string>
@@ -294,7 +294,10 @@
     <string name="open_supported_links">Open supported link by default</string>
     <string name="configure_supported_links">Configure supported links</string>
     <string name="intent_supported_links_not_found">Couldn\'t find supported links settings, please configure them manually</string>
-   
+    <string name="enable_kugou">Enable KuGou lyrics provider</string>
+    <string name="enable_lrclib">Enable LrcLib lyrics provider</string>
+    <string name="set_first_lyrics_provider">Preferred lyrics provider</string>
+    
     <string name="player_and_audio">Player and audio</string>
     <string name="audio_quality">Audio quality</string>
     <string name="audio_quality_auto">Auto</string>
@@ -334,9 +337,6 @@
     <string name="pause_search_history">Pause search history</string>
     <string name="clear_search_history">Clear search history</string>
     <string name="clear_search_history_confirm">Are you sure you want to clear all search history?</string>
-    <string name="enable_kugou">Enable KuGou lyrics provider</string>
-    <string name="enable_lrclib">Enable LrcLib lyrics provider</string>
-    <string name="set_first_lyrics_provider">Set the first lyrics provider</string>
     <string name="disable_screenshot">Disable screenshot</string>
     <string name="disable_screenshot_desc">When this option is on, screenshots and the app\'s view in Recents are disabled.</string>
     
