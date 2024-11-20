@@ -116,8 +116,19 @@ fun SearchBar(
     scrollBehavior: TopAppBarScrollBehavior,
     navController: NavController,
     modifier: Modifier = Modifier,
+    enabled: Boolean = true,
     placeholder: @Composable (() -> Unit)? = null,
-    latestVersionName: String,
+    leadingIcon: @Composable (() -> Unit)? = null,
+    trailingIcon: @Composable (() -> Unit)? = null,
+    shape: Shape = RoundedCornerShape(4.dp), // تقليل الحواف الدائرية
+    colors: SearchBarColors = SearchBarDefaults.colors(
+        containerColor = MaterialTheme.colorScheme.surfaceContainer
+    ),
+    tonalElevation: Dp = 0.dp, // إزالة الظل لجعلها شفافة
+    windowInsets: WindowInsets = WindowInsets.systemBars,
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    focusRequester: FocusRequester = remember { FocusRequester() },
+    content: @Composable ColumnScope.() -> Unit,
 ) {
     if (!active) {
         // عرض الشريط العلوي عند عدم النشاط
