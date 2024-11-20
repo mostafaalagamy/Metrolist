@@ -3,6 +3,8 @@
 package com.metrolist.music.ui.component
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.core.*
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.gestures.awaitEachGesture
@@ -32,8 +34,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.*
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.LocalTextStyle
@@ -43,8 +45,12 @@ import androidx.compose.material3.SearchBarDefaults.TonalElevation
 import androidx.compose.material3.Surface
 import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.contentColorFor
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
 import androidx.compose.material3.internal.Strings
 import androidx.compose.material3.internal.getString
 import androidx.compose.material3.tokens.MotionTokens
@@ -72,7 +78,10 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
@@ -80,8 +89,15 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
-import androidx.compose.ui.util.lerp
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.sp
+import com.metrolist.music.R
+import com.metrolist.music.ui.component.*
+import com.metrolist.music.ui.screens.*
+import com.metrolist.music.ui.screens.navigationBuilder
+import com.metrolist.music.ui.screens.settings.*
 import com.metrolist.music.constants.AppBarHeight
+import com.metrolist.music.ui.utils.appBarScrollBehavior
 import kotlin.math.max
 import kotlin.math.roundToInt
 
