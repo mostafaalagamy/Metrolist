@@ -713,27 +713,7 @@ class MainActivity : ComponentActivity() {
                                                     contentDescription = null,
                                                 )
                                             }
-                                        } else if (navBackStackEntry?.destination?.route in topLevelScreens) {
-                                            IconButton(
-                                                onClick = {
-                                                    navController.navigate("settings")
-                                                },
-                                            ) {
-                                                BadgedBox(
-                                                    badge = {
-                                                        if (latestVersionName != BuildConfig.VERSION_NAME) {
-                                                            Badge()
-                                                        }
-                                                    },
-                                                ) {
-                                                    Icon(
-                                                        painter = painterResource(R.drawable.settings),
-                                                        contentDescription = null,
-                                                        modifier = Modifier.size(24.dp)
-                                                    )
-                                                }
-                                            }
-                                        }
+                                        } 
                                     }
                                 },
                                 focusRequester = searchBarFocusRequester,
