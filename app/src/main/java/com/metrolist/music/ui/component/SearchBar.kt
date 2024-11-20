@@ -114,7 +114,6 @@ fun SearchBar(
     active: Boolean,
     onActiveChange: (Boolean) -> Unit,
     scrollBehavior: TopAppBarScrollBehavior,
-    navController: NavController,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     placeholder: @Composable (() -> Unit)? = null,
