@@ -167,60 +167,48 @@ fun SearchBar(
         )
     } else {
         // عرض شريط البحث عند النشاط
-        Surface(
+        BoxWithConstraints(
             modifier = modifier
-                .statusBarsPadding()
+                .statusBarsPadding() // إضافة مسافة تحت شريط الحالة
                 .offset {
                     IntOffset(x = 0, y = scrollBehavior.state.heightOffset.roundToInt())
-                }
-                .fillMaxWidth()
-                .padding(horizontal = 8.dp),
-            shape = RoundedCornerShape(8.dp),
-            color = MaterialTheme.colorScheme.surfaceContainer,
-            tonalElevation = 4.dp
+                },
+            propagateMinConstraints = true,
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.height(48.dp)
+            Surface(
+                shape = shape,
+                tonalElevation = tonalElevation,
+                color = colors.containerColor,
+                contentColor = contentColorFor(colors.containerColor),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp) // تقليل المسافة الجانبية
             ) {
-                // أيقونة الرجوع
-                IconButton(onClick = { onActiveChange(false) }) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.arrow_back),
-                        contentDescription = null
+                Column {
+                    SearchBarInputField(
+                        query = query,
+                        onQueryChange = onQueryChange,
+                        onSearch = onSearch,
+                        active = active,
+                        onActiveChange = onActiveChange,
+                        modifier = Modifier.fillMaxWidth(),
+                        enabled = enabled,
+                        placeholder = placeholder,
+                        leadingIcon = leadingIcon,
+                        trailingIcon = trailingIcon,
+                        colors = colors.inputFieldColors,
+                        interactionSource = interactionSource,
+                        focusRequester = focusRequester,
                     )
-                }
-
-                // حقل الإدخال للبحث
-                BasicTextField(
-                    value = query,
-                    onValueChange = onQueryChange,
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(horizontal = 8.dp),
-                    textStyle = MaterialTheme.typography.bodyLarge.copy(color = LocalContentColor.current),
-                    singleLine = true,
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-                    keyboardActions = KeyboardActions(onSearch = { onSearch(query.text) }),
-                    decorationBox = { innerTextField ->
-                        if (query.text.isEmpty()) {
-                            placeholder?.invoke()
-                        }
-                        innerTextField()
-                    }
-                )
-
-                // أيقونة إلغاء البحث
-                if (query.text.isNotEmpty()) {
-                    IconButton(onClick = { onQueryChange(TextFieldValue("")) }) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.close),
-                            contentDescription = stringResource(R.string.clear)
-                        )
+                    if (active) {
+                        content()
                     }
                 }
             }
         }
+    }
+    BackHandler(enabled = active) {
+        onActiveChange(false)
     }
 }
 
