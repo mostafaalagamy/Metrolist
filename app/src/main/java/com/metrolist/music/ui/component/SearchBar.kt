@@ -107,7 +107,7 @@ import kotlin.math.roundToInt
 
 @ExperimentalMaterial3Api
 @Composable
-fun EnhancedSearchBar(
+fun SearchBar(
     query: TextFieldValue,
     onQueryChange: (TextFieldValue) -> Unit,
     onSearch: (String) -> Unit,
@@ -135,26 +135,18 @@ fun EnhancedSearchBar(
                 IconButton(onClick = { onActiveChange(true) }) {
                     Icon(
                         painter = painterResource(id = R.drawable.search),
-                        contentDescription = stringResource(R.string.search)
+                        contentDescription = null
                     )
                 }
                 // أيقونة الإعدادات مع التحديثات
                 IconButton(
                     onClick = { navController.navigate("settings") },
                 ) {
-                    BadgedBox(
-                        badge = {
-                            if (latestVersionName != BuildConfig.VERSION_NAME) {
-                                Badge()
-                            }
-                        },
-                    ) {
                         Icon(
                             painter = painterResource(R.drawable.settings),
-                            contentDescription = stringResource(R.string.settings),
+                            contentDescription = null,
                             modifier = Modifier.size(24.dp)
-                        )
-                    }
+                    )
                 }
             },
             scrollBehavior = scrollBehavior,
@@ -184,7 +176,7 @@ fun EnhancedSearchBar(
                 IconButton(onClick = { onActiveChange(false) }) {
                     Icon(
                         painter = painterResource(id = R.drawable.arrow_back),
-                        contentDescription = stringResource(R.string.back)
+                        contentDescription = null
                     )
                 }
 
