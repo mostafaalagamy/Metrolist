@@ -123,8 +123,8 @@ fun SearchBar(
             actions = {
                 IconButton(onClick = { onActiveChange(true) }) {
                     Icon(
-                        painter = painterResource(id = R.drawable.ic_search), // استبدل بـ اسم ملف الصورة
-                        contentDescription = "Search Icon"
+                        painter = painterResource(id = R.drawable.search), // استبدل بـ اسم ملف الصورة
+                        contentDescription = null
                     )
                 }
             },
