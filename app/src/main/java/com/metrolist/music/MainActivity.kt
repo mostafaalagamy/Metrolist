@@ -635,6 +635,7 @@ class MainActivity : ComponentActivity() {
                                 active = active,
                                 onActiveChange = onActiveChange,
                                 scrollBehavior = searchBarScrollBehavior,
+			        navController: NavController,
                                 placeholder = {
                                     Text(
                                         text = stringResource(
