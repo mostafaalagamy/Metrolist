@@ -215,9 +215,8 @@ fun SearchBar(
         }
     }
 
-    BackHandler(enabled = active) {
-        onActiveChange(false)
-    }
+BackHandler(enabled = active) {
+    onActiveChange(false)
 }
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
