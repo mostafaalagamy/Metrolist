@@ -93,11 +93,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.metrolist.music.R
 import com.metrolist.music.ui.component.*
 import com.metrolist.music.ui.screens.*
 import com.metrolist.music.ui.screens.navigationBuilder
 import com.metrolist.music.ui.screens.settings.*
+import com.metrolist.music.utils.Updater
 import com.metrolist.music.constants.AppBarHeight
 import com.metrolist.music.ui.utils.appBarScrollBehavior
 import kotlin.math.max
@@ -105,30 +107,20 @@ import kotlin.math.roundToInt
 
 @ExperimentalMaterial3Api
 @Composable
-fun SearchBar(
+fun EnhancedSearchBar(
     query: TextFieldValue,
     onQueryChange: (TextFieldValue) -> Unit,
     onSearch: (String) -> Unit,
     active: Boolean,
     onActiveChange: (Boolean) -> Unit,
     scrollBehavior: TopAppBarScrollBehavior,
+    navController: NavController,
     modifier: Modifier = Modifier,
-    enabled: Boolean = true,
     placeholder: @Composable (() -> Unit)? = null,
-    leadingIcon: @Composable (() -> Unit)? = null,
-    trailingIcon: @Composable (() -> Unit)? = null,
-    shape: Shape = RoundedCornerShape(4.dp), // تقليل الحواف الدائرية
-    colors: SearchBarColors = SearchBarDefaults.colors(
-        containerColor = MaterialTheme.colorScheme.surfaceContainer
-    ),
-    tonalElevation: Dp = 0.dp, // إزالة الظل لجعلها شفافة
-    windowInsets: WindowInsets = WindowInsets.systemBars,
-    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    focusRequester: FocusRequester = remember { FocusRequester() },
-    content: @Composable ColumnScope.() -> Unit,
+    latestVersionName: String,
 ) {
     if (!active) {
-        // عرض الشريط العلوي مع اسم التطبيق وأيقونة البحث عند عدم النشاط
+        // عرض الشريط العلوي عند عدم النشاط
         TopAppBar(
             title = {
                 Text(
@@ -139,62 +131,93 @@ fun SearchBar(
                 )
             },
             actions = {
+                // أيقونة البحث
                 IconButton(onClick = { onActiveChange(true) }) {
                     Icon(
                         painter = painterResource(id = R.drawable.search),
-                        contentDescription = null
+                        contentDescription = stringResource(R.string.search)
                     )
+                }
+                // أيقونة الإعدادات مع التحديثات
+                IconButton(
+                    onClick = { navController.navigate("settings") },
+                ) {
+                    BadgedBox(
+                        badge = {
+                            if (latestVersionName != BuildConfig.VERSION_NAME) {
+                                Badge()
+                            }
+                        },
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.settings),
+                            contentDescription = stringResource(R.string.settings),
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
                 }
             },
             scrollBehavior = scrollBehavior,
             colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                containerColor = Color.Transparent // جعل الشريط العلوي شفافًا
+                containerColor = Color.Transparent
             )
         )
     } else {
         // عرض شريط البحث عند النشاط
-        BoxWithConstraints(
+        Surface(
             modifier = modifier
-                .statusBarsPadding() // إضافة مسافة تحت شريط الحالة
+                .statusBarsPadding()
                 .offset {
                     IntOffset(x = 0, y = scrollBehavior.state.heightOffset.roundToInt())
-                },
-            propagateMinConstraints = true,
+                }
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp),
+            shape = RoundedCornerShape(8.dp),
+            color = MaterialTheme.colorScheme.surfaceContainer,
+            tonalElevation = 4.dp
         ) {
-            Surface(
-                shape = shape,
-                tonalElevation = tonalElevation,
-                color = colors.containerColor,
-                contentColor = contentColorFor(colors.containerColor),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 8.dp) // تقليل المسافة الجانبية
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.height(48.dp)
             ) {
-                Column {
-                    SearchBarInputField(
-                        query = query,
-                        onQueryChange = onQueryChange,
-                        onSearch = onSearch,
-                        active = active,
-                        onActiveChange = onActiveChange,
-                        modifier = Modifier.fillMaxWidth(),
-                        enabled = enabled,
-                        placeholder = placeholder,
-                        leadingIcon = leadingIcon,
-                        trailingIcon = trailingIcon,
-                        colors = colors.inputFieldColors,
-                        interactionSource = interactionSource,
-                        focusRequester = focusRequester,
+                // أيقونة الرجوع
+                IconButton(onClick = { onActiveChange(false) }) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.arrow_back),
+                        contentDescription = stringResource(R.string.back)
                     )
-                    if (active) {
-                        content()
+                }
+
+                // حقل الإدخال للبحث
+                BasicTextField(
+                    value = query,
+                    onValueChange = onQueryChange,
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(horizontal = 8.dp),
+                    textStyle = MaterialTheme.typography.bodyLarge.copy(color = LocalContentColor.current),
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+                    keyboardActions = KeyboardActions(onSearch = { onSearch(query.text) }),
+                    decorationBox = { innerTextField ->
+                        if (query.text.isEmpty()) {
+                            placeholder?.invoke()
+                        }
+                        innerTextField()
+                    }
+                )
+
+                // أيقونة إلغاء البحث
+                if (query.text.isNotEmpty()) {
+                    IconButton(onClick = { onQueryChange(TextFieldValue("")) }) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.close),
+                            contentDescription = stringResource(R.string.clear)
+                        )
                     }
                 }
             }
         }
-    }
-    BackHandler(enabled = active) {
-        onActiveChange(false)
     }
 }
 
