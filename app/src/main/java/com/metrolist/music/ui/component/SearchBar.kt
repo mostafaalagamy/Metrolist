@@ -1,390 +1,320 @@
+@file:Suppress("INVISIBLE_MEMBER", "INVISIBLE_REFERENCE")
+
 package com.metrolist.music.ui.component
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.animation.*
 import androidx.compose.animation.core.*
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.focusable
-import androidx.compose.foundation.layout.*
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.gestures.waitForUpOrCancellation
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.SearchBarColors
+import androidx.compose.material3.SearchBarDefaults
+import androidx.compose.material3.SearchBarDefaults.TonalElevation
+import androidx.compose.material3.Surface
+import androidx.compose.material3.TextFieldColors
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarScrollBehavior
+import androidx.compose.material3.contentColorFor
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
+import androidx.compose.material3.internal.Strings
+import androidx.compose.material3.internal.getString
+import androidx.compose.material3.tokens.MotionTokens
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
-import androidx.compose.ui.input.nestedscroll.NestedScrollSource
+import androidx.compose.ui.graphics.takeOrElse
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.onKeyEvent
+import androidx.compose.ui.input.pointer.PointerEventPass
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.lerp
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.currentBackStackEntryAsState
 import com.metrolist.music.R
-import com.metrolist.music.constants.*
-import com.metrolist.music.ui.utils.canNavigateUp
-import com.metrolist.music.utils.rememberEnumPreference
+import com.metrolist.music.ui.component.*
+import com.metrolist.music.ui.screens.*
+import com.metrolist.music.ui.screens.navigationBuilder
+import com.metrolist.music.ui.screens.settings.*
+import com.metrolist.music.utils.Updater
+import com.metrolist.music.constants.AppBarHeight
+import com.metrolist.music.ui.utils.appBarScrollBehavior
+import kotlin.math.max
 import kotlin.math.roundToInt
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun AppBar(
-    appBarConfig: AppBarConfig,
-    textFieldValue: TextFieldValue,
-    onTextFieldValueChange: (TextFieldValue) -> Unit,
-    isSearchExpanded: Boolean = false,
-    onSearchExpandedChange: (Boolean) -> Unit,
-    scrollBehavior: TopAppBarScrollBehavior,
-    background: Color = MaterialTheme.colorScheme.background,
-    searchBarBackground: Color = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp),
-    navController: NavController,
-    localSearchScreen: @Composable (query: String, onDismiss: () -> Unit) -> Unit,
-    onlineSearchScreen: @Composable (query: String, onDismiss: () -> Unit) -> Unit,
-    onSearchOnline: (String) -> Unit,
-) {
-    val density = LocalDensity.current
-    val topInset = with(density) { WindowInsets.systemBars.getTop(density).toDp() }
-    val heightOffsetLimit = with(density) { -(AppBarHeight + topInset).toPx() }
-    SideEffect {
-        if (scrollBehavior.state.heightOffsetLimit != heightOffsetLimit) {
-            scrollBehavior.state.heightOffsetLimit = heightOffsetLimit
-        }
-    }
-
-    var searchSource by rememberEnumPreference(SearchSourceKey, SearchSource.ONLINE)
-
-    val expandTransition = updateTransition(targetState = isSearchExpanded || !appBarConfig.searchable, "searchExpanded")
-    val searchTransitionProgress by expandTransition.animateFloat(label = "") { if (it) 1f else 0f }
-    val horizontalPadding by expandTransition.animateDp(label = "") { if (it) 0.dp else 12.dp }
-    val verticalPadding by expandTransition.animateDp(label = "") { if (it) 0.dp else 8.dp }
-    val cornerShapePercent by expandTransition.animateInt(label = "") { if (it) 0 else 50 }
-
-    val barBackground by animateColorAsState(when {
-        appBarConfig.searchable -> searchBarBackground
-        appBarConfig.transparentBackground -> Color.Transparent
-        else -> MaterialTheme.colorScheme.background
-    })
-
-    val focusRequester = remember {
-        FocusRequester()
-    }
-
-    val backStateEntry by navController.currentBackStackEntryAsState()
-    val canNavigateUp = remember(backStateEntry) {
-        navController.canNavigateUp
-    }
-
-    LaunchedEffect(isSearchExpanded) {
-        if (isSearchExpanded) {
-            focusRequester.requestFocus()
-        }
-        val heightOffset = scrollBehavior.state.heightOffset
-        animate(
-            initialValue = heightOffset,
-            targetValue = 0f
-        ) { value, _ ->
-            scrollBehavior.state.heightOffset = value
-        }
-    }
-
-    AnimatedVisibility(
-        visible = isSearchExpanded,
-        enter = fadeIn(tween(easing = LinearOutSlowInEasing)) + slideInVertically(tween()) {
-            with(density) { -AppBarHeight.toPx().roundToInt() }
-        },
-        exit = fadeOut()
-    ) {
-        BackHandler {
-            onSearchExpandedChange(false)
-        }
-
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background)
-                .windowInsetsPadding(
-                    WindowInsets.systemBars
-                        .only(WindowInsetsSides.Top + WindowInsetsSides.Horizontal)
-                )
-                .padding(top = AppBarHeight)
-                .navigationBarsPadding()
-                .imePadding()
-        ) {
-            Crossfade(
-                targetState = searchSource
-            ) { searchSource ->
-                when (searchSource) {
-                    SearchSource.LOCAL -> localSearchScreen(
-                        query = textFieldValue.text,
-                        onDismiss = { onSearchExpandedChange(false) }
-                    )
-                    SearchSource.ONLINE -> onlineSearchScreen(
-                        query = textFieldValue.text,
-                        onDismiss = { onSearchExpandedChange(false) }
-                    )
-                }
-            }
-        }
-    }
-
-    Box(
-        modifier = Modifier.offset {
-            IntOffset(x = 0, y = scrollBehavior.state.heightOffset.roundToInt())
-        }
-    ) {
-        AnimatedVisibility(
-            visible = !appBarConfig.transparentBackground,
-            enter = fadeIn(),
-            exit = fadeOut()
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(topInset)
-                    .drawBehind {
-                        drawRect(if (appBarConfig.searchable && isSearchExpanded) {
-                            searchBarBackground.copy(alpha = searchTransitionProgress)
-                        } else {
-                            background
-                        })
-                    }
-            )
-        }
-
-        Box(
-            modifier = Modifier
-                .windowInsetsPadding(
-                    WindowInsets.systemBars
-                        .only(WindowInsetsSides.Top + WindowInsetsSides.Horizontal)
-                )
-                .fillMaxWidth()
-                .height(AppBarHeight)
-                .padding(horizontal = horizontalPadding, vertical = verticalPadding)
-                .graphicsLayer {
-                    clip = true
-                    shape = RoundedCornerShape(cornerShapePercent)
-                }
-                .drawBehind {
-                    drawRect(barBackground)
-                }
-        ) {
-            AnimatedVisibility(
-                visible = appBarConfig.searchable,
-                enter = fadeIn(),
-                exit = fadeOut()
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .clickable(enabled = appBarConfig.searchable && !isSearchExpanded) {
-                            onSearchExpandedChange(true)
-                        }
-                        .focusable()
-                ) {
-                    IconButton(
-                        modifier = Modifier.padding(horizontal = 4.dp),
-                        onClick = {
-                            when {
-                                isSearchExpanded -> onSearchExpandedChange(false)
-                                !appBarConfig.isRootDestination && canNavigateUp -> navController.navigateUp()
-                                else -> onSearchExpandedChange(true)
-                            }
-                        }
-                    ) {
-                        Icon(
-                            painter = painterResource(
-                                if (isSearchExpanded || (!appBarConfig.isRootDestination && canNavigateUp)) {
-                                    R.drawable.ic_arrow_back
-                                } else {
-                                    R.drawable.ic_search
-                                }
-                            ),
-                            contentDescription = null
-                        )
-                    }
-
-                    if (isSearchExpanded) {
-                        BasicTextField(
-                            value = textFieldValue,
-                            onValueChange = onTextFieldValueChange,
-                            textStyle = MaterialTheme.typography.bodyLarge,
-                            singleLine = true,
-                            maxLines = 1,
-                            cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Search),
-                            keyboardActions = KeyboardActions(
-                                onSearch = {
-                                    onSearchExpandedChange(false)
-                                    onSearchOnline(textFieldValue.text)
-                                }
-                            ),
-                            decorationBox = { innerTextField ->
-                                Box(
-                                    modifier = Modifier.fillMaxHeight(),
-                                    contentAlignment = Alignment.CenterStart
-                                ) {
-                                    if (textFieldValue.text.isEmpty()) {
-                                        Text(
-                                            text = stringResource(when (searchSource) {
-                                                SearchSource.LOCAL -> R.string.search_library
-                                                SearchSource.ONLINE -> R.string.search_yt_music
-                                            }),
-                                            style = MaterialTheme.typography.bodyLarge,
-                                            maxLines = 1,
-                                            overflow = TextOverflow.Ellipsis,
-                                            modifier = Modifier
-                                                .alpha(0.6f)
-                                        )
-                                    }
-                                    innerTextField()
-                                }
-                            },
-                            modifier = Modifier
-                                .weight(1f)
-                                .focusRequester(focusRequester)
-                        )
-                    } else {
-                        appBarConfig.title(this)
-                    }
-
-                    if (isSearchExpanded) {
-                        if (textFieldValue.text.isNotEmpty()) {
-                            IconButton(
-                                onClick = {
-                                    onTextFieldValueChange(TextFieldValue(""))
-                                }
-                            ) {
-                                Icon(
-                                    painter = painterResource(R.drawable.ic_close),
-                                    contentDescription = null
-                                )
-                            }
-                        }
-
-                        IconButton(
-                            onClick = {
-                                searchSource = if (searchSource == SearchSource.ONLINE) SearchSource.LOCAL else SearchSource.ONLINE
-                            }
-                        ) {
-                            Icon(
-                                painter = painterResource(when (searchSource) {
-                                    SearchSource.LOCAL -> R.drawable.ic_library_music
-                                    SearchSource.ONLINE -> R.drawable.ic_language
-                                }),
-                                contentDescription = null
-                            )
-                        }
-                    }
-                }
-            }
-
-            AnimatedVisibility(
-                visible = !appBarConfig.searchable,
-                enter = fadeIn(),
-                exit = fadeOut()
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    IconButton(
-                        modifier = Modifier.padding(horizontal = 4.dp),
-                        onClick = {
-                            when {
-                                isSearchExpanded -> onSearchExpandedChange(false)
-                                !appBarConfig.isRootDestination && canNavigateUp -> navController.navigateUp()
-                                else -> onSearchExpandedChange(true)
-                            }
-                        }
-                    ) {
-                        Icon(
-                            painter = painterResource(
-                                if (isSearchExpanded || !appBarConfig.isRootDestination && canNavigateUp) {
-                                    R.drawable.ic_arrow_back
-                                } else {
-                                    R.drawable.ic_search
-                                }
-                            ),
-                            contentDescription = null
-                        )
-                    }
-
-                    appBarConfig.title(this)
-
-                    appBarConfig.actions(this)
-                }
-            }
-        }
-    }
-}
-
-@Stable
-class AppBarConfig(
-    val isRootDestination: Boolean = false,
-    title: @Composable RowScope.() -> Unit = {},
-    searchable: Boolean = true,
-    actions: @Composable RowScope.() -> Unit = {},
-    transparentBackground: Boolean = false,
-) {
-    var title by mutableStateOf(title)
-    var searchable by mutableStateOf(searchable)
-    var actions by mutableStateOf(actions)
-    var transparentBackground by mutableStateOf(transparentBackground)
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun appBarScrollBehavior(
-    state: TopAppBarState = rememberTopAppBarState(),
-    canScroll: () -> Boolean = { true },
-    snapAnimationSpec: AnimationSpec<Float>? = spring(stiffness = Spring.StiffnessMediumLow),
-    flingAnimationSpec: DecayAnimationSpec<Float>? = rememberSplineBasedDecay(),
-): TopAppBarScrollBehavior =
-    AppBarScrollBehavior(
-        state = state,
-        snapAnimationSpec = snapAnimationSpec,
-        flingAnimationSpec = flingAnimationSpec,
-        canScroll = canScroll
-    )
-
 @ExperimentalMaterial3Api
-class AppBarScrollBehavior constructor(
-    override val state: TopAppBarState,
-    override val snapAnimationSpec: AnimationSpec<Float>?,
-    override val flingAnimationSpec: DecayAnimationSpec<Float>?,
-    val canScroll: () -> Boolean = { true },
-) : TopAppBarScrollBehavior {
-    override val isPinned: Boolean = false
-    override var nestedScrollConnection = object : NestedScrollConnection {
-        override fun onPostScroll(consumed: Offset, available: Offset, source: NestedScrollSource): Offset {
-            if (!canScroll()) return Offset.Zero
-            state.contentOffset += consumed.y
-            if (state.heightOffset == 0f || state.heightOffset == state.heightOffsetLimit) {
-                if (consumed.y == 0f && available.y > 0f) {
-                    // Reset the total content offset to zero when scrolling all the way down.
-                    // This will eliminate some float precision inaccuracies.
-                    state.contentOffset = 0f
+@Composable
+fun EnhancedSearchBar(
+    query: TextFieldValue,
+    onQueryChange: (TextFieldValue) -> Unit,
+    onSearch: (String) -> Unit,
+    active: Boolean,
+    onActiveChange: (Boolean) -> Unit,
+    scrollBehavior: TopAppBarScrollBehavior,
+    navController: NavController,
+    modifier: Modifier = Modifier,
+    placeholder: @Composable (() -> Unit)? = null,
+    latestVersionName: String,
+) {
+    if (!active) {
+        // عرض الشريط العلوي عند عدم النشاط
+        TopAppBar(
+            title = {
+                Text(
+                    text = "Metrolist",
+                    style = MaterialTheme.typography.titleLarge,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center
+                )
+            },
+            actions = {
+                // أيقونة البحث
+                IconButton(onClick = { onActiveChange(true) }) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.search),
+                        contentDescription = stringResource(R.string.search)
+                    )
+                }
+                // أيقونة الإعدادات مع التحديثات
+                IconButton(
+                    onClick = { navController.navigate("settings") },
+                ) {
+                    BadgedBox(
+                        badge = {
+                            if (latestVersionName != BuildConfig.VERSION_NAME) {
+                                Badge()
+                            }
+                        },
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.settings),
+                            contentDescription = stringResource(R.string.settings),
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
+                }
+            },
+            scrollBehavior = scrollBehavior,
+            colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                containerColor = Color.Transparent
+            )
+        )
+    } else {
+        // عرض شريط البحث عند النشاط
+        Surface(
+            modifier = modifier
+                .statusBarsPadding()
+                .offset {
+                    IntOffset(x = 0, y = scrollBehavior.state.heightOffset.roundToInt())
+                }
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp),
+            shape = RoundedCornerShape(8.dp),
+            color = MaterialTheme.colorScheme.surfaceContainer,
+            tonalElevation = 4.dp
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.height(48.dp)
+            ) {
+                // أيقونة الرجوع
+                IconButton(onClick = { onActiveChange(false) }) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.arrow_back),
+                        contentDescription = stringResource(R.string.back)
+                    )
+                }
+
+                // حقل الإدخال للبحث
+                BasicTextField(
+                    value = query,
+                    onValueChange = onQueryChange,
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(horizontal = 8.dp),
+                    textStyle = MaterialTheme.typography.bodyLarge.copy(color = LocalContentColor.current),
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+                    keyboardActions = KeyboardActions(onSearch = { onSearch(query.text) }),
+                    decorationBox = { innerTextField ->
+                        if (query.text.isEmpty()) {
+                            placeholder?.invoke()
+                        }
+                        innerTextField()
+                    }
+                )
+
+                // أيقونة إلغاء البحث
+                if (query.text.isNotEmpty()) {
+                    IconButton(onClick = { onQueryChange(TextFieldValue("")) }) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.close),
+                            contentDescription = stringResource(R.string.clear)
+                        )
+                    }
                 }
             }
-            state.heightOffset += consumed.y
-            return Offset.Zero
         }
     }
 }
+
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
+@Composable
+private fun SearchBarInputField(
+    query: TextFieldValue,
+    onQueryChange: (TextFieldValue) -> Unit,
+    onSearch: (String) -> Unit,
+    active: Boolean,
+    onActiveChange: (Boolean) -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    placeholder: @Composable (() -> Unit)? = null,
+    leadingIcon: @Composable (() -> Unit)? = null,
+    trailingIcon: @Composable (() -> Unit)? = null,
+    colors: TextFieldColors = SearchBarDefaults.inputFieldColors(),
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    focusRequester: FocusRequester = remember { FocusRequester() },
+) {
+    val focused = interactionSource.collectIsFocusedAsState().value
+
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier =
+        modifier
+            .fillMaxWidth()
+            .height(InputFieldHeight),
+    ) {
+        if (leadingIcon != null) {
+            Spacer(Modifier.width(SearchBarIconOffsetX))
+            leadingIcon()
+        }
+
+        BasicTextField(
+            value = query,
+            onValueChange = onQueryChange,
+            modifier =
+            Modifier
+                .weight(1f)
+                .focusRequester(focusRequester)
+                .pointerInput(Unit) {
+                    awaitEachGesture {
+                        awaitFirstDown(pass = PointerEventPass.Initial)
+                        val upEvent = waitForUpOrCancellation(pass = PointerEventPass.Initial)
+                        if (upEvent != null) {
+                            onActiveChange(true)
+                        }
+                    }
+                }.onKeyEvent {
+                    if (it.key == Key.Enter) {
+                        onSearch(query.text)
+                        return@onKeyEvent true
+                    }
+                    false
+                },
+            enabled = enabled,
+            singleLine = true,
+            textStyle = LocalTextStyle.current.merge(TextStyle(color = LocalTextStyle.current.color)),
+            cursorBrush = SolidColor(colors.cursorColor(isError = false)),
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+            keyboardActions = KeyboardActions(onSearch = { onSearch(query.text) }),
+            interactionSource = interactionSource,
+            decorationBox = @Composable { innerTextField ->
+                TextFieldDefaults.DecorationBox(
+                    value = query.text,
+                    innerTextField = innerTextField,
+                    enabled = enabled,
+                    singleLine = true,
+                    visualTransformation = VisualTransformation.None,
+                    interactionSource = interactionSource,
+                    placeholder = placeholder,
+                    shape = SearchBarDefaults.inputFieldShape,
+                    colors = colors,
+                    contentPadding = PaddingValues(),
+                    container = {},
+                )
+            },
+        )
+
+        if (trailingIcon != null) {
+            trailingIcon()
+            Spacer(Modifier.width(SearchBarIconOffsetX))
+        }
+    }
+}
+
+// Measurement specs
+val InputFieldHeight = 48.dp
+private val SearchBarCornerRadius: Dp = InputFieldHeight / 2
+internal val SearchBarMinWidth: Dp = 360.dp
+private val SearchBarMaxWidth: Dp = 720.dp
+internal val SearchBarVerticalPadding: Dp = 8.dp
+internal val SearchBarHorizontalPadding: Dp = 12.dp
+
+// Search bar has 16dp padding between icons and start/end, while by default text field has 12dp.
+val SearchBarIconOffsetX: Dp = 4.dp
+
+// Animation specs
+private const val AnimationDurationMillis: Int = MotionTokens.DurationMedium2.toInt()
