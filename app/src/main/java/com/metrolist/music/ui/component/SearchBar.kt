@@ -277,7 +277,6 @@ private fun SearchBarInputField(
 
 // Measurement specs
 val InputFieldHeight = 48.dp
-val SearchBarIconOffsetX: Dp = 4.dp
 private val SearchBarCornerRadius: Dp = InputFieldHeight / 2
 internal val SearchBarMinWidth: Dp = 360.dp
 private val SearchBarMaxWidth: Dp = 720.dp
