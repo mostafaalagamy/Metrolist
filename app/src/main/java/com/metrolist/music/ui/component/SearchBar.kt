@@ -115,11 +115,11 @@ fun SearchBar(
     placeholder: @Composable (() -> Unit)? = null,
     leadingIcon: @Composable (() -> Unit)? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
-    shape: Shape = SearchBarDefaults.inputFieldShape,
+    shape: Shape = RoundedCornerShape(4.dp), // تقليل الحواف الدائرية
     colors: SearchBarColors = SearchBarDefaults.colors(
         containerColor = MaterialTheme.colorScheme.surfaceContainer
     ),
-    tonalElevation: Dp = TonalElevation,
+    tonalElevation: Dp = 0.dp, // إزالة الظل لجعلها شفافة
     windowInsets: WindowInsets = WindowInsets.systemBars,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     focusRequester: FocusRequester = remember { FocusRequester() },
@@ -139,84 +139,61 @@ fun SearchBar(
             actions = {
                 IconButton(onClick = { onActiveChange(true) }) {
                     Icon(
-                        painter = painterResource(id = R.drawable.search), // استبدل بـ اسم ملف الصورة
+                        painter = painterResource(id = R.drawable.search),
                         contentDescription = null
                     )
                 }
             },
-            scrollBehavior = scrollBehavior
+            scrollBehavior = scrollBehavior,
+            colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                containerColor = Color.Transparent // جعل الشريط العلوي شفافًا
+            )
         )
     } else {
         // عرض شريط البحث عند النشاط
         BoxWithConstraints(
-        modifier =
-            modifier
+            modifier = modifier
+                .statusBarsPadding() // إضافة مسافة تحت شريط الحالة
                 .offset {
                     IntOffset(x = 0, y = scrollBehavior.state.heightOffset.roundToInt())
                 },
-        propagateMinConstraints = true,
-    ) {
-        val height: Dp
-        val width: Dp
-        val startPadding: Dp
-        val endPadding: Dp
-        with(LocalDensity.current) {
-            val startWidth = constraints.maxWidth.toFloat()
-            val startHeight =
-                max(constraints.minHeight, InputFieldHeight.roundToPx())
-                    .coerceAtMost(constraints.maxHeight)
-                    .toFloat()
-            val endWidth = constraints.maxWidth.toFloat()
-            val endHeight = constraints.maxHeight.toFloat()
-
-            height = lerp(startHeight, endHeight, animationProgress).toDp()
-            width = lerp(startWidth, endWidth, animationProgress).toDp()
-            startPadding = lerp((SearchBarHorizontalPadding + startInset).roundToPx().toFloat(), 0f, animationProgress).toDp()
-            endPadding = lerp((SearchBarHorizontalPadding + endInset).roundToPx().toFloat(), 0f, animationProgress).toDp()
-        }
-
-        Surface(
-            shape = animatedShape,
-            color = colors.containerColor,
-            contentColor = contentColorFor(colors.containerColor),
-            tonalElevation = tonalElevation,
-            modifier =
-                Modifier
-                    .padding(
-                        top = animatedSurfaceTopPadding,
-                        start = startPadding,
-                        end = endPadding,
-                    ).size(width = width, height = height),
+            propagateMinConstraints = true,
         ) {
-            Column {
-                SearchBarInputField(
-                    query = query,
-                    onQueryChange = onQueryChange,
-                    onSearch = onSearch,
-                    active = active,
-                    onActiveChange = onActiveChange,
-                    modifier = Modifier.padding(animatedInputFieldPadding),
-                    enabled = enabled,
-                    placeholder = placeholder,
-                    leadingIcon = leadingIcon,
-                    trailingIcon = trailingIcon,
-                    colors = colors.inputFieldColors,
-                    interactionSource = interactionSource,
-                    focusRequester = focusRequester,
-                )
-
-                if (animationProgress > 0) {
-                    Column(Modifier.alpha(animationProgress)) {
-                        HorizontalDivider(color = colors.dividerColor)
+            Surface(
+                shape = shape,
+                tonalElevation = tonalElevation,
+                color = colors.containerColor,
+                contentColor = contentColorFor(colors.containerColor),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp) // تقليل المسافة الجانبية
+            ) {
+                Column {
+                    SearchBarInputField(
+                        query = query,
+                        onQueryChange = onQueryChange,
+                        onSearch = onSearch,
+                        active = active,
+                        onActiveChange = onActiveChange,
+                        modifier = Modifier.fillMaxWidth(),
+                        enabled = enabled,
+                        placeholder = placeholder,
+                        leadingIcon = leadingIcon,
+                        trailingIcon = trailingIcon,
+                        colors = colors.inputFieldColors,
+                        interactionSource = interactionSource,
+                        focusRequester = focusRequester,
+                    )
+                    if (active) {
                         content()
                     }
                 }
             }
         }
     }
-
-BackHandler(enabled = active) {
-    onActiveChange(false)
+    BackHandler(enabled = active) {
+        onActiveChange(false)
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
