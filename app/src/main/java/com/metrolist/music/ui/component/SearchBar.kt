@@ -124,11 +124,11 @@ fun SearchBar(
     placeholder: @Composable (() -> Unit)? = null,
     leadingIcon: @Composable (() -> Unit)? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
-    shape: Shape = RoundedCornerShape(0.dp), // بدون حواف دائرية
+    shape: Shape = RoundedCornerShape(0.dp),
     colors: SearchBarColors = SearchBarDefaults.colors(
         containerColor = MaterialTheme.colorScheme.surface
     ),
-    tonalElevation: Dp = 4.dp, 
+    tonalElevation: Dp = 4.dp,
     windowInsets: WindowInsets = WindowInsets.systemBars,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     focusRequester: FocusRequester = remember { FocusRequester() },
@@ -161,15 +161,20 @@ fun SearchBar(
             },
             scrollBehavior = scrollBehavior,
             colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer
+                containerColor = MaterialTheme.colorScheme.surfaceContainer
             )
         )
     } else {
+        LaunchedEffect(Unit) {
+            focusRequester.requestFocus()
+        }
+
         Column(
             modifier = modifier
                 .statusBarsPadding()
+                .padding(top = 8.dp)
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.surface) // تطبيق الخلفية بشكل صحيح
+                .background(MaterialTheme.colorScheme.surface)
         ) {
             Box(
                 modifier = Modifier
@@ -192,8 +197,8 @@ fun SearchBar(
                         interactionSource = interactionSource,
                         focusRequester = focusRequester,
                     )
-                    Divider() // خط يفصل البحث عن المحتوى
-                    content() // محتوى الشاشة
+                    Divider()
+                    content()
                 }
             }
         }
@@ -228,7 +233,8 @@ private fun SearchBarInputField(
         modifier =
         modifier
             .fillMaxWidth()
-            .height(InputFieldHeight),
+            .height(InputFieldHeight)
+            .padding(top = 8.dp),
     ) {
         if (leadingIcon != null) {
             Spacer(Modifier.width(SearchBarIconOffsetX))
@@ -241,22 +247,7 @@ private fun SearchBarInputField(
             modifier =
             Modifier
                 .weight(1f)
-                .focusRequester(focusRequester)
-                .pointerInput(Unit) {
-                    awaitEachGesture {
-                        awaitFirstDown(pass = PointerEventPass.Initial)
-                        val upEvent = waitForUpOrCancellation(pass = PointerEventPass.Initial)
-                        if (upEvent != null) {
-                            onActiveChange(true)
-                        }
-                    }
-                }.onKeyEvent {
-                    if (it.key == Key.Enter) {
-                        onSearch(query.text)
-                        return@onKeyEvent true
-                    }
-                    false
-                },
+                .focusRequester(focusRequester),
             enabled = enabled,
             singleLine = true,
             textStyle = LocalTextStyle.current.merge(TextStyle(color = LocalTextStyle.current.color)),
@@ -289,7 +280,7 @@ private fun SearchBarInputField(
 }
 
 // Measurement specs
-val InputFieldHeight = 48.dp
+val InputFieldHeight = 64.dp
 private val SearchBarCornerRadius: Dp = InputFieldHeight / 2
 internal val SearchBarMinWidth: Dp = 360.dp
 private val SearchBarMaxWidth: Dp = 720.dp
