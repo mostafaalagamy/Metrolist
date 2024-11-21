@@ -154,6 +154,20 @@ fun SearchBar(
                 )
             },
             actions = {
+                IconButton(onClick = { navController.navigate("history") }) {
+                    Icon(
+                        painter = painterResource(R.drawable.history),
+                        contentDescription = null,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+                IconButton(onClick = { navController.navigate("stats") }) {
+                    Icon(
+                        painter = painterResource(R.drawable.trending_up),
+                        contentDescription = null,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
                 if (isLoggedIn) {
                         IconButton(onClick = { navController.navigate("account") }) {
                            Icon(
@@ -167,6 +181,7 @@ fun SearchBar(
                     Icon(
                         painter = painterResource(id = R.drawable.search),
                         contentDescription = null
+                        modifier = Modifier.size(24.dp)
                     )
                 }
                 IconButton(onClick = { navController.navigate("settings") }) {
@@ -252,10 +267,7 @@ private fun SearchBarInputField(
         modifier = modifier
             .fillMaxWidth()
             .height(InputFieldHeight)
-            .padding(
-                horizontal = SearchBarHorizontalPadding,
-                vertical = SearchBarVerticalPadding,
-            ),
+            .padding(top = 4.dp),
     ) {
         if (leadingIcon != null) {
             Spacer(Modifier.width(SearchBarIconOffsetX))
