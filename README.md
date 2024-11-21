@@ -1,12 +1,17 @@
 <div align="center">
   <div style="display: inline-block; width: 160px; height: 160px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
-    <div style="position: relative; width: 100%; height: 100%; background-color: #FFC107; border-radius: 10px 10px 0 0;">
-      <div style="position: absolute; top: 20px; left: 20px; font-size: 24px; font-family: 'Open Sans', sans-serif; color: #FFFFFF;"></div>
-      <div style="position: absolute; bottom: 20px; right: 20px; font-size: 24px; font-family: 'Open Sans', sans-serif; color: #FFFFFF;">MangaMixtape</div>
-    </div>
-    <div style="position: relative; width: 100%; height: 50%; background-color: #2196F3; border-radius: 0 0 10px 10px;">
-      <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 48px; font-family: 'Open Sans', sans-serif; color: #FF69B4;"></div>
-    </div>
+    <svg width="100%" height="100%" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="80" cy="40" r="30" fill="#FFC107" />
+      <circle cx="80" cy="120" r="30" fill="#2196F3" />
+      <path d="M 60 60 L 100 60 L 80 100 Z" fill="#FF69B4" />
+      <path d="M 50 50 L 110 50 L 80 90 Z" fill="#FF69B4" />
+      <path d="M 70 70 L 90 70 L 80 110 Z" fill="#FF69B4" />
+      <circle cx="80" cy="80" r="10" fill="#FFFFFF" />
+      <path d="M 75 85 L 85 85" stroke="#FFFFFF" stroke-width="2" />
+      <path d="M 80 75 L 80 95" stroke="#FFFFFF" stroke-width="2" />
+    </svg>
+    <div style="position: absolute; top: 10px; left: 10px; font-size: 24px; font-family: 'Open Sans', sans-serif; color: #FFFFFF;">Mix</div>
+    <div style="position: absolute; bottom: 10px; right: 10px; font-size: 24px; font-family: 'Open Sans', sans-serif; color: #FFFFFF;">Tape</div>
   </div>
   <h1 style="font-family: 'Open Sans', sans-serif; font-size: 24px; color: #FFFFFF;">Manga Mixtape</h1>
   <p style="font-family: 'Open Sans', sans-serif; font-size: 18px; color: #FFFFFF;">Material 3 Music client for Android</p>
