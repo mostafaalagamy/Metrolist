@@ -160,8 +160,7 @@ fun SearchBar(
                                 painter = painterResource(R.drawable.person),
                                 contentDescription = null,
                                 modifier = Modifier.size(24.dp)     
-                           )
-                        }
+                        )
                     }
                 },
                 IconButton(onClick = { onActiveChange(true) }) {
