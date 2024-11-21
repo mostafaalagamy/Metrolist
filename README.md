@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://via.placeholder.com/160x160" width="160" height="160" style="display: block; margin: 0 auto; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+  <img src="https://pin.it/5i6OyXsiW/160x160" width="160" height="160" style="display: block; margin: 0 auto; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
   <h1>Manga Mixtape</h1>
   <p>Material 3 YouTube Music client for Android</p>
 </div>
