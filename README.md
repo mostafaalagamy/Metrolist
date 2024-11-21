@@ -1,11 +1,11 @@
 <div align="center">
   <div style="display: inline-block; width: 160px; height: 160px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
     <div style="position: relative; width: 100%; height: 100%; background-color: #FFC107; border-radius: 10px 10px 0 0;">
-      <div style="position: absolute; top: 20px; left: 20px; font-size: 24px; font-family: 'Open Sans', sans-serif; color: #FFFFFF;">M</div>
-      <div style="position: absolute; bottom: 20px; right: 20px; font-size: 24px; font-family: 'Open Sans', sans-serif; color: #FFFFFF;">MT</div>
+      <div style="position: absolute; top: 20px; left: 20px; font-size: 24px; font-family: 'Open Sans', sans-serif; color: #FFFFFF;"></div>
+      <div style="position: absolute; bottom: 20px; right: 20px; font-size: 24px; font-family: 'Open Sans', sans-serif; color: #FFFFFF;">MangaMixtape</div>
     </div>
     <div style="position: relative; width: 100%; height: 50%; background-color: #2196F3; border-radius: 0 0 10px 10px;">
-      <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 48px; font-family: 'Open Sans', sans-serif; color: #FF69B4;">♀</div>
+      <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 48px; font-family: 'Open Sans', sans-serif; color: #FF69B4;"></div>
     </div>
   </div>
   <h1 style="font-family: 'Open Sans', sans-serif; font-size: 24px; color: #FFFFFF;">Manga Mixtape</h1>
