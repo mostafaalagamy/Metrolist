@@ -1,8 +1,8 @@
 <div align="center">
   <div style="display: inline-block; width: 160px; height: 160px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
     <svg width="100%" height="100%" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="80" cy="40" r="30" fill="#FFC107" />
-      <circle cx="80" cy="120" r="30" fill="#2196F3" />
+      <circle cx="80" cy="40" r="30" fill="#FF0000" />
+      <circle cx="80" cy="120" r="30" fill="#FFC400" />
       <path d="M 60 60 L 100 60 L 80 100 Z" fill="#FF69B4" />
       <path d="M 50 50 L 110 50 L 80 90 Z" fill="#FF69B4" />
       <path d="M 70 70 L 90 70 L 80 110 Z" fill="#FF69B4" />
@@ -13,8 +13,8 @@
     <div style="position: absolute; top: 10px; left: 10px; font-size: 24px; font-family: 'Open Sans', sans-serif; color: #FFFFFF;">Mix</div>
     <div style="position: absolute; bottom: 10px; right: 10px; font-size: 24px; font-family: 'Open Sans', sans-serif; color: #FFFFFF;">Tape</div>
   </div>
-  <h1 style="font-family: 'Open Sans', sans-serif; font-size: 24px; color: #FFFFFF;">Manga Mixtape</h1>
-  <p style="font-family: 'Open Sans', sans-serif; font-size: 18px; color: #FFFFFF;">Material 3 Music client for Android</p>
+  <h1 style="font-family: 'Open Sans', sans-serif; font-size: 24px; color: #FF0000;">Manga Mixtape</h1>
+  <p style="font-family: 'Open Sans', sans-serif; font-size: 18px; color: #FFC400;">Material 3 Music client for YouTube</p>
 </div>
 
 <h1>Screenshots</h1>
@@ -82,6 +82,28 @@ height="80">](https://github.com/mostafaalagamy/Metrolist/releases/latest/downlo
 <h1>Disclaimer</h1>
 </div>
 
-This project and its contents are not affiliated with, funded, authorized, endorsed by, or in any way associated with YouTube, Google LLC, Metrolist Group LLC or any of its affiliates and subsidiaries.
+**Manga Mixtape License**
 
-Any trademark, service mark, trade name, or other intellectual property rights used in this project are owned by the respective owners.
+Copyright (c) 2025 Manga Mixtape
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+**Attribution**
+
+Manga Mixtape is a third-party client of YouTube Music, and is not affiliated with or endorsed by YouTube or Google.
