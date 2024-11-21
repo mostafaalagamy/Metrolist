@@ -1,7 +1,15 @@
 <div align="center">
-  <img src="https://i.pinimg.com/originals/5i/6O/Xs/W5i6OXsiW.jpg" width="160" height="160" style="display: block; margin: 0 auto; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
-  <h1>Manga Mixtape</h1>
-  <p>Material 3 YouTube Music client for Android</p>
+  <div style="display: inline-block; width: 160px; height: 160px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+    <div style="position: relative; width: 100%; height: 100%; background-color: #FFC107; border-radius: 10px 10px 0 0;">
+      <div style="position: absolute; top: 20px; left: 20px; font-size: 24px; font-family: 'Open Sans', sans-serif; color: #FFFFFF;">M</div>
+      <div style="position: absolute; bottom: 20px; right: 20px; font-size: 24px; font-family: 'Open Sans', sans-serif; color: #FFFFFF;">MT</div>
+    </div>
+    <div style="position: relative; width: 100%; height: 50%; background-color: #2196F3; border-radius: 0 0 10px 10px;">
+      <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 48px; font-family: 'Open Sans', sans-serif; color: #FF69B4;">♀</div>
+    </div>
+  </div>
+  <h1 style="font-family: 'Open Sans', sans-serif; font-size: 24px; color: #FFFFFF;">Manga Mixtape</h1>
+  <p style="font-family: 'Open Sans', sans-serif; font-size: 18px; color: #FFFFFF;">Material 3 Music client for Android</p>
 </div>
 
 <h1>Screenshots</h1>
