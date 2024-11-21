@@ -1,7 +1,8 @@
 <div align="center">
-<img src="https://github.com/mostafaalagamy/Metrolist/blob/dev/fastlane/metadata/android/ic_launcher_github.webp" width="160" height="160" style="display: block; margin: 0 auto"/>
-<h1>Metrolist</h1>
-<p>YouTube Music client for Android</p>
+  <img src="https://via.placeholder.com/160x160" width="160" height="160" style="display: block; margin: 0 auto; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+  <h1>Manga Mixtape</h1>
+  <p>Material 3 YouTube Music client for Android</p>
+</div>
 
 <h1>Screenshots</h1>
 
@@ -56,7 +57,7 @@ height="80">](https://github.com/mostafaalagamy/Metrolist/releases/latest/downlo
 ***unless*** you have a proxy or VPN to connect to a YTM supported region.
 
 <div align="center">
-<h1> Q: Why Metrolist isn't showing in Android Auto? </h1>
+<h1> Q: Why Manga Mixtape isn't showing in Android Auto? </h1>
 </div>
 
 1. Go to Android Auto's settings and tap multiple times on the version in the bottom to enable
