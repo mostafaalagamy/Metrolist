@@ -33,7 +33,6 @@ import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.shape.CornerSize
-import androidx.compose.foundation.shape.RectangleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
@@ -124,11 +123,11 @@ fun SearchBar(
     placeholder: @Composable (() -> Unit)? = null,
     leadingIcon: @Composable (() -> Unit)? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
-    shape: Shape = RectangleShape, // بدون حواف دائرية
+    shape: Shape = RoundedCornerShape(0.dp), // بدون حواف دائرية
     colors: SearchBarColors = SearchBarDefaults.colors(
-        containerColor = MaterialTheme.colorScheme.surface // اللون الطبيعي
+        containerColor = MaterialTheme.colorScheme.surface
     ),
-    tonalElevation: Dp = 4.dp, // الظل الطبيعي
+    tonalElevation: Dp = 4.dp, 
     windowInsets: WindowInsets = WindowInsets.systemBars,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     focusRequester: FocusRequester = remember { FocusRequester() },
@@ -141,7 +140,7 @@ fun SearchBar(
                     text = "Metrolist",
                     style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
                     modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Start // النص على اليسار
+                    textAlign = TextAlign.Start
                 )
             },
             actions = {
@@ -168,8 +167,8 @@ fun SearchBar(
         Column(
             modifier = modifier
                 .statusBarsPadding()
-                .fillMaxSize() // تمدد لملء الشاشة
-                .background(MaterialTheme.colorScheme.surface) // اللون الطبيعي للخلفية
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.surface) // تطبيق الخلفية بشكل صحيح
         ) {
             Box(
                 modifier = Modifier
