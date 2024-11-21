@@ -201,6 +201,11 @@ fun HomeScreen(
                     )
                 }
 
+                Column(
+                modifier = Modifier.verticalScroll(rememberScrollState())
+            ) {
+                Spacer(Modifier.height(LocalPlayerAwareWindowInsets.current.asPaddingValues().calculateTopPadding()))
+
                 NavigationTitle(
                     title = stringResource(R.string.quick_picks),
                 )
