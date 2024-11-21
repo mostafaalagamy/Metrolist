@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
@@ -201,35 +202,27 @@ fun HomeScreen(
                 }
 
             Column(
-                modifier = Modifier.verticalScroll(scrollState),
+                modifier = Modifier.verticalScroll(rememberScrollState())
             ) {
-                Spacer(
-                    Modifier.height(
-                        LocalPlayerAwareWindowInsets.current
-                            .asPaddingValues()
-                            .calculateTopPadding(),
-                    ),
-                )
+                Spacer(Modifier.height(LocalPlayerAwareWindowInsets.current.asPaddingValues().calculateTopPadding()))
 
                 Row(
-                    modifier =
-                        Modifier
-                            .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Horizontal))
-                            .padding(horizontal = 12.dp, vertical = 6.dp)
-                            .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    modifier = Modifier
+                        .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Horizontal))
+                        .padding(horizontal = 12.dp, vertical = 6.dp)
                 ) {
                     NavigationTile(
                         title = stringResource(R.string.history),
                         icon = R.drawable.history,
                         onClick = { navController.navigate("history") },
-                        modifier = Modifier.weight(1f),
+                        modifier = Modifier.weight(1f)
                     )
-
                     NavigationTile(
                         title = stringResource(R.string.stats),
                         icon = R.drawable.trending_up,
                         onClick = { navController.navigate("stats") },
-                        modifier = Modifier.weight(1f),
+                        modifier = Modifier.weight(1f)
                     )
                 }
 
