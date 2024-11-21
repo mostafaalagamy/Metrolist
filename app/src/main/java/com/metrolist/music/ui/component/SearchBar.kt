@@ -162,7 +162,7 @@ fun SearchBar(
                                 modifier = Modifier.size(24.dp)     
                         )
                     }
-                },
+                }
                 IconButton(onClick = { onActiveChange(true) }) {
                     Icon(
                         painter = painterResource(id = R.drawable.search),
