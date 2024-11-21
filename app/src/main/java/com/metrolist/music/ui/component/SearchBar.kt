@@ -179,7 +179,7 @@ fun SearchBar(
             },
             scrollBehavior = scrollBehavior,
             colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                containerColor = MaterialTheme.colorScheme.surfaceContainer
+                containerColor = MaterialTheme.colorScheme.surface
             )
         )
     } else {
@@ -245,14 +245,17 @@ private fun SearchBarInputField(
     focusRequester: FocusRequester = remember { FocusRequester() },
 ) {
     val focused = interactionSource.collectIsFocusedAsState().value
+    val textColor = MaterialTheme.colorScheme.onSurface
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier =
-        modifier
+        modifier = modifier
             .fillMaxWidth()
             .height(InputFieldHeight)
-            .padding(top = 8.dp),
+            .padding(
+                horizontal = SearchBarHorizontalPadding,
+                vertical = SearchBarVerticalPadding,
+            ),
     ) {
         if (leadingIcon != null) {
             Spacer(Modifier.width(SearchBarIconOffsetX))
@@ -262,13 +265,14 @@ private fun SearchBarInputField(
         BasicTextField(
             value = query,
             onValueChange = onQueryChange,
-            modifier =
-            Modifier
+            modifier = Modifier
                 .weight(1f)
                 .focusRequester(focusRequester),
             enabled = enabled,
             singleLine = true,
-            textStyle = LocalTextStyle.current.merge(TextStyle(color = LocalTextStyle.current.color)),
+            textStyle = LocalTextStyle.current.merge(
+                TextStyle(color = textColor)
+            ),
             cursorBrush = SolidColor(colors.cursorColor(isError = false)),
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
             keyboardActions = KeyboardActions(onSearch = { onSearch(query.text) }),
@@ -284,7 +288,7 @@ private fun SearchBarInputField(
                     placeholder = placeholder,
                     shape = SearchBarDefaults.inputFieldShape,
                     colors = colors,
-                    contentPadding = PaddingValues(),
+                    contentPadding = PaddingValues(0.dp),
                     container = {},
                 )
             },
