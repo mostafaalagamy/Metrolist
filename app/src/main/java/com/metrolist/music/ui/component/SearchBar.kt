@@ -58,6 +58,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.internal.Strings
 import androidx.compose.material3.internal.getString
 import androidx.compose.material3.tokens.MotionTokens
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.derivedStateOf
@@ -98,13 +99,16 @@ import androidx.compose.ui.unit.lerp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.metrolist.innertube.utils.parseCookieString
 import com.metrolist.music.R
 import com.metrolist.music.ui.component.*
 import com.metrolist.music.ui.screens.*
 import com.metrolist.music.ui.screens.navigationBuilder
 import com.metrolist.music.ui.screens.settings.*
+import com.metrolist.music.constants.InnerTubeCookieKey
 import com.metrolist.music.utils.Updater
 import com.metrolist.music.constants.AppBarHeight
+import com.metrolist.music.utils.rememberPreference
 import com.metrolist.music.ui.utils.appBarScrollBehavior
 import kotlin.math.max
 import kotlin.math.roundToInt
@@ -134,6 +138,11 @@ fun SearchBar(
     focusRequester: FocusRequester = remember { FocusRequester() },
     content: @Composable ColumnScope.() -> Unit,
 ) {
+    val innerTubeCookie by rememberPreference(InnerTubeCookieKey, "")
+    val isLoggedIn = remember(innerTubeCookie) {
+        "SAPISID" in parseCookieString(innerTubeCookie)
+    }
+    
     if (!active) {
         TopAppBar(
             title = {
@@ -145,6 +154,16 @@ fun SearchBar(
                 )
             },
             actions = {
+                if (isLoggedIn) {
+                        IconButton(onClick = { navController.navigate("account") }) {
+                           Icon(
+                                painter = painterResource(R.drawable.person),
+                                contentDescription = null,
+                                modifier = Modifier.size(24.dp)     
+                           )
+                        }
+                    }
+                },
                 IconButton(onClick = { onActiveChange(true) }) {
                     Icon(
                         painter = painterResource(id = R.drawable.search),
@@ -166,7 +185,7 @@ fun SearchBar(
         )
     } else {
         LaunchedEffect(Unit) {
-            focusRequester.requestFocus()
+           focusRequester.requestFocus()
         }
 
         Column(
