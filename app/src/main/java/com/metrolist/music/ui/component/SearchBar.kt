@@ -120,69 +120,57 @@ fun SearchBar(
     placeholder: @Composable (() -> Unit)? = null,
     leadingIcon: @Composable (() -> Unit)? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
-    shape: Shape = RoundedCornerShape(4.dp), // تقليل الحواف الدائرية
+    shape: Shape = RectangleShape, // بدون حواف دائرية
     colors: SearchBarColors = SearchBarDefaults.colors(
-        containerColor = MaterialTheme.colorScheme.surfaceContainer
+        containerColor = MaterialTheme.colorScheme.surface // اللون الطبيعي
     ),
-    tonalElevation: Dp = 0.dp, // إزالة الظل لجعلها شفافة
+    tonalElevation: Dp = 4.dp, // الظل الطبيعي
     windowInsets: WindowInsets = WindowInsets.systemBars,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     focusRequester: FocusRequester = remember { FocusRequester() },
     content: @Composable ColumnScope.() -> Unit,
 ) {
     if (!active) {
-        // عرض الشريط العلوي عند عدم النشاط
         TopAppBar(
             title = {
                 Text(
                     text = "Metrolist",
-                    style = MaterialTheme.typography.titleLarge,
+                    style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
                     modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Start // النص على اليسار
                 )
             },
             actions = {
-                // أيقونة البحث
                 IconButton(onClick = { onActiveChange(true) }) {
                     Icon(
                         painter = painterResource(id = R.drawable.search),
                         contentDescription = null
                     )
                 }
-                // أيقونة الإعدادات مع التحديثات
-                IconButton(
-                    onClick = { navController.navigate("settings") },
-                ) {
-                        Icon(
-                            painter = painterResource(R.drawable.settings),
-                            contentDescription = null,
-                            modifier = Modifier.size(24.dp)
+                IconButton(onClick = { navController.navigate("settings") }) {
+                    Icon(
+                        painter = painterResource(R.drawable.settings),
+                        contentDescription = null,
+                        modifier = Modifier.size(24.dp)
                     )
                 }
             },
             scrollBehavior = scrollBehavior,
             colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                containerColor = Color.Transparent
+                containerColor = MaterialTheme.colorScheme.primaryContainer
             )
         )
     } else {
-        // عرض شريط البحث عند النشاط
-        BoxWithConstraints(
+        Column(
             modifier = modifier
-                .statusBarsPadding() // إضافة مسافة تحت شريط الحالة
-                .offset {
-                    IntOffset(x = 0, y = scrollBehavior.state.heightOffset.roundToInt())
-                },
-            propagateMinConstraints = true,
+                .statusBarsPadding()
+                .fillMaxSize() // تمدد لملء الشاشة
+                .background(MaterialTheme.colorScheme.surface) // اللون الطبيعي للخلفية
         ) {
-            Surface(
-                shape = shape,
-                tonalElevation = tonalElevation,
-                color = colors.containerColor,
-                contentColor = contentColorFor(colors.containerColor),
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 8.dp) // تقليل المسافة الجانبية
+                    .padding(horizontal = 8.dp)
             ) {
                 Column {
                     SearchBarInputField(
@@ -200,13 +188,13 @@ fun SearchBar(
                         interactionSource = interactionSource,
                         focusRequester = focusRequester,
                     )
-                    if (active) {
-                        content()
-                    }
+                    Divider() // خط يفصل البحث عن المحتوى
+                    content() // محتوى الشاشة
                 }
             }
         }
     }
+
     BackHandler(enabled = active) {
         onActiveChange(false)
     }
