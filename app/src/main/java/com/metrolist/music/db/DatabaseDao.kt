@@ -361,10 +361,9 @@ interface DatabaseDao {
                      AND timestamp <= :toTimeStamp
                      GROUP BY songId
                      ORDER BY SUM(playTime) DESC
-                     LIMIT :limit)
-        ON song.id = songId
-        LIMIT :limit
-        OFFSET :offset
+                     LIMIT :limit
+                     OFFSET :offset)
+                     ON song.id = songId
     """,
     )
     fun mostPlayedSongs(
@@ -399,10 +398,9 @@ interface DatabaseDao {
                                     ON song_artist_map.songId = e.songId
                       GROUP BY artistId
                       ORDER BY totalPlayTime DESC
-                      LIMIT :limit)
-        ON artist.id = artistId
-        LIMIT :limit
-        OFFSET :offset
+                      LIMIT :limit
+                      OFFSET :offset)
+                      ON artist.id = artistId
     """,
     )
     fun mostPlayedArtists(
