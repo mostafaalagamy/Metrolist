@@ -336,8 +336,6 @@ interface DatabaseDao {
     """,
     )
     fun mostPlayedSongsStats(
-        limit: Int = 6,
-        offset: Int = 0,
         fromTimeStamp: Long,
         toTimeStamp: Long? = LocalDateTime.now().toInstant(ZoneOffset.UTC).toEpochMilli(),
     ): Flow<List<SongWithStats>>
@@ -360,16 +358,12 @@ interface DatabaseDao {
                      WHERE timestamp > :fromTimeStamp
                      AND timestamp <= :toTimeStamp
                      GROUP BY songId
-                     ORDER BY SUM(playTime) DESC
-                     LIMIT :limit
-                     OFFSET :offset)
+                     ORDER BY SUM(playTime) DESC)
                      ON song.id = songId
     """,
     )
     fun mostPlayedSongs(
         fromTimeStamp: Long,
-        limit: Int = 6,
-        offset: Int = 0,
         toTimeStamp: Long? = LocalDateTime.now().toInstant(ZoneOffset.UTC).toEpochMilli(),
     ): Flow<List<Song>>
 
@@ -397,9 +391,7 @@ interface DatabaseDao {
                                      GROUP BY songId) AS e
                                     ON song_artist_map.songId = e.songId
                       GROUP BY artistId
-                      ORDER BY totalPlayTime DESC
-                      LIMIT :limit
-                      OFFSET :offset)
+                      ORDER BY totalPlayTime DESC)
                       ON artist.id = artistId
     """,
     )
