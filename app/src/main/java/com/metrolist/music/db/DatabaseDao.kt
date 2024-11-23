@@ -399,9 +399,10 @@ interface DatabaseDao {
                                     ON song_artist_map.songId = e.songId
                       GROUP BY artistId
                       ORDER BY totalPlayTime DESC
-                      LIMIT :limit
-                      OFFSET :offset)
-                     ON artist.id = artistId
+                      LIMIT :limit)
+        ON song.id = songId
+        LIMIT :limit
+        OFFSET :offset
     """,
     )
     fun mostPlayedArtists(
