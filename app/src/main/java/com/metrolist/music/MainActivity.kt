@@ -628,7 +628,7 @@ class MainActivity : ComponentActivity() {
                             enter = fadeIn(),
                             exit = fadeOut(),
                         ) {
-                            SearchBar(
+                            TopSearchBar(
                                 query = query,
                                 onQueryChange = onQueryChange,
                                 onSearch = onSearch,
