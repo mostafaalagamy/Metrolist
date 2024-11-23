@@ -400,7 +400,7 @@ interface DatabaseDao {
                       GROUP BY artistId
                       ORDER BY totalPlayTime DESC
                       LIMIT :limit)
-        ON song.id = songId
+        ON artist.id = artistId
         LIMIT :limit
         OFFSET :offset
     """,
