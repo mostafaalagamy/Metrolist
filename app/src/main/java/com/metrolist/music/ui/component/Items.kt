@@ -1702,7 +1702,6 @@ fun LocalItemsGrid(
         AsyncImage(
             model = thumbnailUrl,
             contentDescription = null,
-            contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize(),
         )
 
@@ -1761,7 +1760,6 @@ fun CircularItemsGrid(
         AsyncImage(
             model = thumbnailUrl,
             contentDescription = null,
-            contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize(),
         )
 
