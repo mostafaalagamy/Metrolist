@@ -336,9 +336,9 @@ interface DatabaseDao {
     """,
     )
     fun mostPlayedSongsStats(
+        fromTimeStamp: Long,
         limit: Int = 6,
         offset: Int = 0,
-        fromTimeStamp: Long,
         toTimeStamp: Long? = LocalDateTime.now().toInstant(ZoneOffset.UTC).toEpochMilli(),
     ): Flow<List<SongWithStats>>
 
