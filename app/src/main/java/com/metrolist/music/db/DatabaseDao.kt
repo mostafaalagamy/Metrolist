@@ -161,6 +161,10 @@ interface DatabaseDao {
     fun albumSongs(albumId: String): Flow<List<Song>>
 
     @Transaction
+    @Query("SELECT song.* FROM song JOIN playlist_song_map ON song.id = playlist_song_map.songId WHERE playlist_song_map.playlistId = :playlistId")
+    fun playlistSongsList(playlistId: String): Flow<List<Song>>
+
+    @Transaction
     @Query("SELECT * FROM playlist_song_map WHERE playlistId = :playlistId ORDER BY position")
     fun playlistSongs(playlistId: String): Flow<List<PlaylistSong>>
 
