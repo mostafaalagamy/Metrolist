@@ -62,7 +62,8 @@ class StatsViewModel
                 .flatMapLatest { (selection, t) ->
                     database
                         .mostPlayedSongs(
-                            statToPeriod(selection, t),
+                            fromTimeStamp = statToPeriod(selection, t),
+                            limit = -1,
                             toTimeStamp =
                                 if (selection == OptionStats.CONTINUOUS || t == 0) {
                                     LocalDateTime
