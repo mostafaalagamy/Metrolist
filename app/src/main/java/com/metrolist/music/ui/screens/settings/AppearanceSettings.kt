@@ -51,6 +51,8 @@ import com.metrolist.music.constants.SliderStyle
 import com.metrolist.music.constants.SliderStyleKey
 import com.metrolist.music.constants.SwipeThumbnailKey
 import com.metrolist.music.constants.SlimNavBarKey
+import com.metrolist.music.constants.ChipSortTypeKey
+import com.metrolist.music.constants.LibraryFilter
 import com.metrolist.music.ui.component.DefaultDialog
 import com.metrolist.music.ui.component.EnumListPreference
 import com.metrolist.music.ui.component.IconButton
@@ -100,6 +102,8 @@ fun AppearanceSettings(
         remember(darkMode, isSystemInDarkTheme) {
             if (darkMode == DarkMode.AUTO) isSystemInDarkTheme else darkMode == DarkMode.ON
         }
+
+    val (defaultChip, onDefaultChipChange) = rememberEnumPreference(key = ChipSortTypeKey, defaultValue = LibraryFilter.LIBRARY)
 
     var showSliderOptionDialog by rememberSaveable {
         mutableStateOf(false)
@@ -380,6 +384,14 @@ fun AppearanceSettings(
                     NavigationTab.LIBRARY -> stringResource(R.string.filter_library)
                 }
             },
+        )
+
+        ListPreference(
+            title = { Text("Change default chip") },
+            selectedValue = defaultChip,
+            values = listOf(LibraryFilter.LIBRARY, LibraryFilter.PLAYLISTS, LibraryFilter.SONGS, LibraryFilter.ALBUMS, LibraryFilter.ARTISTS),
+            valueText = { it.name },
+            onValueSelected = onDefaultChipChange
         )
 
         SwitchPreference(
