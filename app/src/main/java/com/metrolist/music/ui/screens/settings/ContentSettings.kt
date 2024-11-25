@@ -55,7 +55,6 @@ fun ContentSettings(
     val (proxyUrl, onProxyUrlChange) = rememberPreference(key = ProxyUrlKey, defaultValue = "host:port")
     val (lengthTop, onLengthTopChange) = rememberPreference(key = TopSize, defaultValue = "50")
     val (historyDuration, onHistoryDurationChange) = rememberPreference(key = HistoryDuration, defaultValue = 30f)
-    val (defaultChip, onDefaultChipChange) = rememberEnumPreference(key = ChipSortTypeKey, defaultValue = LibraryFilter.LIBRARY)
     val (quickPicks, onQuickPicksChange) = rememberEnumPreference(key = QuickPicksKey, defaultValue = QuickPicks.QUICK_PICKS)
     val (enableKugou, onEnableKugouChange) = rememberPreference(key = EnableKugouKey, defaultValue = true)
     val (enableLrclib, onEnableLrclibChange) = rememberPreference(key = EnableLrcLibKey, defaultValue = true)
@@ -176,25 +175,6 @@ fun ContentSettings(
             onValueChange = onLengthTopChange,
         )
         ListPreference(
-            title = { Text(stringResource(R.string.default_lib_chips)) },
-            icon = { Icon(painterResource(R.drawable.tab), null) },
-            selectedValue = defaultChip,
-            values = listOf(
-                LibraryFilter.LIBRARY, LibraryFilter.PLAYLISTS, LibraryFilter.SONGS,
-                LibraryFilter.ALBUMS, LibraryFilter.ARTISTS
-            ),
-            valueText = {
-                when (it) {
-                    LibraryFilter.SONGS -> stringResource(R.string.songs)
-                    LibraryFilter.ARTISTS -> stringResource(R.string.artists)
-                    LibraryFilter.ALBUMS -> stringResource(R.string.albums)
-                    LibraryFilter.PLAYLISTS -> stringResource(R.string.playlists)
-                    LibraryFilter.LIBRARY -> stringResource(R.string.filter_library)
-                }
-            },
-            onValueSelected = onDefaultChipChange,
-        )
-        ListPreference(
             title = { Text(stringResource(R.string.set_quick_picks)) },
             icon = { Icon(painterResource(R.drawable.home_outlined), null) },
             selectedValue = quickPicks,
@@ -244,7 +224,7 @@ fun saveLanguagePreference(context: Context, languageCode: String) {
 }
 
 val LanguageCodeToName = mapOf(
-    "ar" to "Arabic",
+    "ar" to "العربية",
     "en" to "English",
     "fr" to "French",
     "be" to "Belarusian",
