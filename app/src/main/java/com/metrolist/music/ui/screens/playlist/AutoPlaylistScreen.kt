@@ -243,128 +243,129 @@ fun AutoPlaylistScreen(
                         )
                     }
                 } else {
-                    item {
-                        Column(
-                            verticalArrangement = Arrangement.spacedBy(12.dp),
-                            modifier = Modifier.padding(12.dp),
-                        ) {
-                            Row(
-                                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                                verticalAlignment = Alignment.CenterVertically,
+                    if (!isSearching) {
+                        item {
+                            Column(
+                                verticalArrangement = Arrangement.spacedBy(12.dp),
+                                modifier = Modifier.padding(12.dp),
                             ) {
-                                AsyncImage(
-                                    model = songs!![0].song.thumbnailUrl,
-                                    contentDescription = null,
-                                    contentScale = ContentScale.Crop,
-                                    modifier =
-                                    Modifier
-                                        .size(AlbumThumbnailSize)
-                                        .clip(RoundedCornerShape(ThumbnailCornerRadius)),
-                                )
-
-                                Column(
-                                    verticalArrangement = Arrangement.Center,
+                                Row(
+                                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                                    verticalAlignment = Alignment.CenterVertically,
                                 ) {
-                                    AutoResizeText(
-                                        text = playlist,
-                                        fontWeight = FontWeight.Bold,
-                                        maxLines = 2,
-                                        overflow = TextOverflow.Ellipsis,
-                                        fontSizeRange = FontSizeRange(16.sp, 22.sp),
+                                    AsyncImage(
+                                        model = songs!![0].song.thumbnailUrl,
+                                        contentDescription = null,
+                                        modifier =
+                                        Modifier
+                                            .size(AlbumThumbnailSize)
+                                            .clip(RoundedCornerShape(ThumbnailCornerRadius)),
                                     )
 
-                                    Text(
-                                        text =
-                                        pluralStringResource(
-                                            R.plurals.n_song,
-                                            songs!!.size,
-                                            songs!!.size,
-                                        ),
-                                        style = MaterialTheme.typography.titleMedium,
-                                        fontWeight = FontWeight.Normal,
-                                    )
+                                    Column(
+                                        verticalArrangement = Arrangement.Center,
+                                    ) {
+                                        AutoResizeText(
+                                            text = playlist,
+                                            fontWeight = FontWeight.Bold,
+                                            maxLines = 2,
+                                            overflow = TextOverflow.Ellipsis,
+                                            fontSizeRange = FontSizeRange(16.sp, 22.sp),
+                                        )
 
-                                    Text(
-                                        text = makeTimeString(likeLength * 1000L),
-                                        style = MaterialTheme.typography.titleMedium,
-                                        fontWeight = FontWeight.Normal,
-                                    )
+                                        Text(
+                                            text =
+                                                pluralStringResource(
+                                                R.plurals.n_song,
+                                                songs!!.size,
+                                                songs!!.size,
+                                            ),
+                                            style = MaterialTheme.typography.titleMedium,
+                                            fontWeight = FontWeight.Normal,
+                                        )
 
-                                    Row {
-                                        when (downloadState) {
-                                            Download.STATE_COMPLETED -> {
-                                                IconButton(
-                                                    onClick = {
-                                                        showRemoveDownloadDialog = true
-                                                    },
-                                                ) {
-                                                    Icon(
-                                                        painter = painterResource(R.drawable.offline),
-                                                        contentDescription = null,
-                                                    )
+                                        Text(
+                                            text = makeTimeString(likeLength * 1000L),
+                                            style = MaterialTheme.typography.titleMedium,
+                                            fontWeight = FontWeight.Normal,
+                                        )
+
+                                        Row {
+                                            when (downloadState) {
+                                                Download.STATE_COMPLETED -> {
+                                                    IconButton(
+                                                        onClick = {
+                                                            showRemoveDownloadDialog = true
+                                                        },
+                                                    ) {
+                                                        Icon(
+                                                            painter = painterResource(R.drawable.offline),
+                                                            contentDescription = null,
+                                                        )
+                                                    }
+                                                }
+
+                                                Download.STATE_DOWNLOADING -> {
+                                                    IconButton(
+                                                        onClick = {
+                                                            songs!!.forEach { song ->
+                                                                DownloadService.sendRemoveDownload(
+                                                                    context,
+                                                                    ExoDownloadService::class.java,
+                                                                    song.song.id,
+                                                                    false,
+                                                                )
+                                                            }
+                                                        },
+                                                    ) {
+                                                        CircularProgressIndicator(
+                                                            strokeWidth = 2.dp,
+                                                            modifier = Modifier.size(24.dp),
+                                                        )
+                                                    }
+                                                }
+
+                                                else -> {
+                                                    IconButton(
+                                                        onClick = {
+                                                            songs!!.forEach { song ->
+                                                                val downloadRequest =
+                                                                    DownloadRequest
+                                                                        .Builder(
+                                                                            song.song.id,
+                                                                            song.song.id.toUri(),
+                                                                        ).setCustomCacheKey(song.song.id)
+                                                                        .setData(song.song.title.toByteArray())
+                                                                        .build()
+                                                                DownloadService.sendAddDownload(
+                                                                    context,
+                                                                    ExoDownloadService::class.java,
+                                                                    downloadRequest,
+                                                                    false,
+                                                                )
+                                                            }
+                                                        },
+                                                    ) {
+                                                        Icon(
+                                                            painter = painterResource(R.drawable.download),
+                                                            contentDescription = null,
+                                                        )
+                                                    }
                                                 }
                                             }
 
-                                            Download.STATE_DOWNLOADING -> {
-                                                IconButton(
-                                                    onClick = {
-                                                        songs!!.forEach { song ->
-                                                            DownloadService.sendRemoveDownload(
-                                                                context,
-                                                                ExoDownloadService::class.java,
-                                                                song.song.id,
-                                                                false,
-                                                            )
-                                                        }
-                                                    },
-                                                ) {
-                                                    CircularProgressIndicator(
-                                                        strokeWidth = 2.dp,
-                                                        modifier = Modifier.size(24.dp),
+                                            IconButton(
+                                                onClick = {
+                                                    playerConnection.addToQueue(
+                                                        items = songs!!.map { it.toMediaItem() },
                                                     )
-                                                }
-                                            }
-
-                                            else -> {
-                                                IconButton(
-                                                    onClick = {
-                                                        songs!!.forEach { song ->
-                                                            val downloadRequest =
-                                                                DownloadRequest
-                                                                    .Builder(
-                                                                        song.song.id,
-                                                                        song.song.id.toUri(),
-                                                                    ).setCustomCacheKey(song.song.id)
-                                                                    .setData(song.song.title.toByteArray())
-                                                                    .build()
-                                                            DownloadService.sendAddDownload(
-                                                                context,
-                                                                ExoDownloadService::class.java,
-                                                                downloadRequest,
-                                                                false,
-                                                            )
-                                                        }
-                                                    },
-                                                ) {
-                                                    Icon(
-                                                        painter = painterResource(R.drawable.download),
-                                                        contentDescription = null,
-                                                    )
-                                                }
-                                            }
-                                        }
-
-                                        IconButton(
-                                            onClick = {
-                                                playerConnection.addToQueue(
-                                                    items = songs!!.map { it.toMediaItem() },
+                                                },
+                                            ) {
+                                                Icon(
+                                                    painter = painterResource(R.drawable.queue_music),
+                                                    contentDescription = null,
                                                 )
-                                            },
-                                        ) {
-                                            Icon(
-                                                painter = painterResource(R.drawable.queue_music),
-                                                contentDescription = null,
-                                            )
+                                            }
                                         }
                                     }
                                 }
