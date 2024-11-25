@@ -25,6 +25,7 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
+import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -35,11 +36,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.shape.RoundedCornerShape
 import com.metrolist.music.R
 import com.metrolist.music.ui.screens.OptionStats
 
@@ -49,7 +52,7 @@ fun <E> ChipsRow(
     currentValue: E,
     onValueUpdate: (E) -> Unit,
     modifier: Modifier = Modifier,
-    containerColor: Color = MaterialTheme.colorScheme.surface,
+    containerColor: Color = MaterialTheme.colorScheme.surfaceContainer,
 ) {
     Row(
         modifier =
@@ -63,8 +66,12 @@ fun <E> ChipsRow(
             FilterChip(
                 label = { Text(label) },
                 selected = currentValue == value,
-                colors = FilterChipDefaults.filterChipColors(containerColor = containerColor),
+                colors = FilterChipDefaults.filterChipColors(
+                    containerColor = containerColor,
+                ),
                 onClick = { onValueUpdate(value) },
+                shape = RoundedCornerShape(16.dp),
+                border = null
             )
 
             Spacer(Modifier.width(8.dp))
@@ -82,7 +89,7 @@ fun <Int> ChoiceChipsRow(
     currentValue: Int,
     onValueUpdate: (Int) -> Unit,
     modifier: Modifier = Modifier,
-    containerColor: Color = MaterialTheme.colorScheme.surface,
+    containerColor: Color = MaterialTheme.colorScheme.surfaceContainer,
 ) {
     var expandIconDegree by remember { mutableFloatStateOf(0f) }
     val rotationAnimation by animateFloatAsState(
@@ -123,6 +130,12 @@ fun <Int> ChoiceChipsRow(
                         modifier = Modifier.graphicsLayer(rotationZ = rotationAnimation),
                     )
                 },
+                shape = RoundedCornerShape(16.dp),
+                border = null,
+                colors = AssistChipDefaults.assistChipColors(
+                    containerColor = containerColor,
+                    labelColor = MaterialTheme.colorScheme.onSurface
+                )
             )
 
             AnimatedVisibility(
@@ -131,9 +144,7 @@ fun <Int> ChoiceChipsRow(
                 exit = shrinkOut() + fadeOut(),
             ) {
                 DropdownMenu(
-                    modifier =
-                        Modifier
-                            .padding(start = 12.dp),
+                    modifier = Modifier.padding(start = 12.dp),
                     expanded = expanded,
                     onDismissRequest = {
                         expanded = false
@@ -171,8 +182,12 @@ fun <Int> ChoiceChipsRow(
                     FilterChip(
                         label = { Text(label) },
                         selected = currentValue == value,
-                        colors = FilterChipDefaults.filterChipColors(containerColor = containerColor),
+                        colors = FilterChipDefaults.filterChipColors(
+                            containerColor = containerColor,
+                        ),
                         onClick = { onValueUpdate(value) },
+                        shape = RoundedCornerShape(16.dp),
+                        border = null
                     )
                 }
             }
