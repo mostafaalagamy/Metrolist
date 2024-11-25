@@ -375,7 +375,7 @@ fun AppearanceSettings(
 
         EnumListPreference(
             title = { Text(stringResource(R.string.default_open_tab)) },
-            icon = { Icon(painterResource(R.drawable.tab), null) },
+            icon = { Icon(painterResource(R.drawable.nav_bar), null) },
             selectedValue = defaultOpenTab,
             onValueSelected = onDefaultOpenTabChange,
             valueText = {
