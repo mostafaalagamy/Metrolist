@@ -81,6 +81,7 @@ import com.metrolist.music.extensions.togglePlayPause
 import com.metrolist.music.models.toMediaMetadata
 import com.metrolist.music.playback.queues.YouTubeAlbumRadio
 import com.metrolist.music.playback.queues.YouTubeQueue
+import com.metrolist.music.ui.component.ChipsRow
 import com.metrolist.music.ui.component.AlbumSmallGridItem
 import com.metrolist.music.ui.component.ArtistSmallGridItem
 import com.metrolist.music.ui.component.HideOnScrollFAB
@@ -211,39 +212,31 @@ fun HomeScreen(
                     ),
                 )
 
-                Row(
-                    modifier =
-                        Modifier
-                            .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Horizontal))
-                            .padding(horizontal = 12.dp, vertical = 6.dp)
-                            .fillMaxWidth(),
-                ) {
-                    NavigationTile(
-                        title = stringResource(R.string.history),
-                        icon = R.drawable.history,
-                        onClick = { navController.navigate("history") },
-                        modifier = Modifier.weight(1f),
-                    )
-
-                    NavigationTile(
-                        title = stringResource(R.string.stats),
-                        icon = R.drawable.trending_up,
-                        onClick = { navController.navigate("stats") },
-                        modifier = Modifier.weight(1f),
-                    )
-
-                    if (isLoggedIn) {
-                        NavigationTile(
-                            title = stringResource(R.string.account),
-                            icon = R.drawable.person,
-                            onClick = {
-                                navController.navigate("account")
-                            },
-                            modifier = Modifier.weight(1f),
-                        )
-                    }
-                }
-
+                ChipsRow(
+                    chips = listOfNotNull(
+                        Pair("history", stringResource(R.string.history)),
+                        Pair("stats", stringResource(R.string.stats)),
+                        Pair("liked", stringResource(R.string.liked)),
+                        Pair("downloads", stringResource(R.string.offline)),
+                        if (isLoggedIn) Pair("account", stringResource(R.string.account)) else null
+                    ),
+                    currentValue = "",
+                    onValueUpdate = { value ->
+                        when (value) {
+                            "history" -> navController.navigate("history")
+                            "stats" -> navController.navigate("stats")
+                            "liked" -> navController.navigate("auto_playlist/liked")
+                            "downloads" -> navController.navigate("auto_playlist/downloads")
+                            "account" -> if (isLoggedIn) navController.navigate("account")
+                        }
+                    },
+                    modifier = Modifier
+                        .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Horizontal))
+                        .padding(horizontal = 12.dp, vertical = 6.dp)
+                        .fillMaxWidth(),
+                    containerColor = MaterialTheme.colorScheme.surfaceContainer
+                )
+                
                 NavigationTitle(
                     title = stringResource(R.string.quick_picks),
                 )
