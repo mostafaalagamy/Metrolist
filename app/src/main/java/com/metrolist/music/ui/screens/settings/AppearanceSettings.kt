@@ -51,8 +51,11 @@ import com.metrolist.music.constants.SliderStyle
 import com.metrolist.music.constants.SliderStyleKey
 import com.metrolist.music.constants.SwipeThumbnailKey
 import com.metrolist.music.constants.SlimNavBarKey
+import com.metrolist.music.constants.ChipSortTypeKey
+import com.metrolist.music.constants.LibraryFilter
 import com.metrolist.music.ui.component.DefaultDialog
 import com.metrolist.music.ui.component.EnumListPreference
+import com.metrolist.music.ui.component.ListPreference
 import com.metrolist.music.ui.component.IconButton
 import com.metrolist.music.ui.component.PreferenceEntry
 import com.metrolist.music.ui.component.PreferenceGroupTitle
@@ -100,6 +103,8 @@ fun AppearanceSettings(
         remember(darkMode, isSystemInDarkTheme) {
             if (darkMode == DarkMode.AUTO) isSystemInDarkTheme else darkMode == DarkMode.ON
         }
+
+    val (defaultChip, onDefaultChipChange) = rememberEnumPreference(key = ChipSortTypeKey, defaultValue = LibraryFilter.LIBRARY)
 
     var showSliderOptionDialog by rememberSaveable {
         mutableStateOf(false)
@@ -370,7 +375,7 @@ fun AppearanceSettings(
 
         EnumListPreference(
             title = { Text(stringResource(R.string.default_open_tab)) },
-            icon = { Icon(painterResource(R.drawable.tab), null) },
+            icon = { Icon(painterResource(R.drawable.nav_bar), null) },
             selectedValue = defaultOpenTab,
             onValueSelected = onDefaultOpenTabChange,
             valueText = {
@@ -380,6 +385,26 @@ fun AppearanceSettings(
                     NavigationTab.LIBRARY -> stringResource(R.string.filter_library)
                 }
             },
+        )
+
+        ListPreference(
+            title = { Text(stringResource(R.string.default_lib_chips)) },
+            icon = { Icon(painterResource(R.drawable.tab), null) },
+            selectedValue = defaultChip,
+            values = listOf(
+                LibraryFilter.LIBRARY, LibraryFilter.PLAYLISTS, LibraryFilter.SONGS,
+                LibraryFilter.ALBUMS, LibraryFilter.ARTISTS
+            ),
+            valueText = {
+                when (it) {
+                    LibraryFilter.SONGS -> stringResource(R.string.songs)
+                    LibraryFilter.ARTISTS -> stringResource(R.string.artists)
+                    LibraryFilter.ALBUMS -> stringResource(R.string.albums)
+                    LibraryFilter.PLAYLISTS -> stringResource(R.string.playlists)
+                    LibraryFilter.LIBRARY -> stringResource(R.string.filter_library)
+                }
+            },
+            onValueSelected = onDefaultChipChange,
         )
 
         SwitchPreference(

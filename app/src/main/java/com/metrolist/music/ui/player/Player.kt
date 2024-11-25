@@ -921,7 +921,7 @@ fun BottomSheetPlayer(
                 }
             }
 
-            Spacer(Modifier.height(6.dp))
+            Spacer(Modifier.height(12.dp))
 
             when (sliderStyle) {
                 SliderStyle.DEFAULT -> {
