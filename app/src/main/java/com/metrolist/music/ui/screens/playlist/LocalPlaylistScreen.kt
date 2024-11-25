@@ -471,6 +471,27 @@ fun LocalPlaylistScreen(
                         key = song.map.id,
                     ) {
                         val currentItem by rememberUpdatedState(song)
+
+                        fun deleteFromPlaylist() {
+                        database.transaction {
+                            move(currentItem.map.playlistId, currentItem.map.position, Int.MAX_VALUE)
+                            delete(currentItem.map.copy(position = Int.MAX_VALUE))
+                        }
+                        dismissJob?.cancel()
+                        dismissJob = coroutineScope.launch {
+                            val snackbarResult = snackbarHostState.showSnackbar(
+                                message = context.getString(R.string.removed_song_from_playlist, currentItem.song.song.title),
+                                actionLabel = context.getString(R.string.undo),
+                                duration = SnackbarDuration.Short
+                            )
+                            if (snackbarResult == SnackbarResult.ActionPerformed) {
+                                database.transaction {
+                                    insert(currentItem.map.copy(position = playlistLength))
+                                    move(currentItem.map.playlistId, playlistLength, currentItem.map.position)}
+                                }
+                             }
+                        }
+                        
                         val dismissBoxState =
                             rememberSwipeToDismissBoxState(
                                 positionalThreshold = { totalDistance ->
@@ -480,38 +501,7 @@ fun LocalPlaylistScreen(
                                     if (dismissValue == SwipeToDismissBoxValue.StartToEnd ||
                                         dismissValue == SwipeToDismissBoxValue.EndToStart
                                     ) {
-                                        database.transaction {
-                                            move(
-                                                currentItem.map.playlistId,
-                                                currentItem.map.position,
-                                                Int.MAX_VALUE,
-                                            )
-                                            delete(currentItem.map.copy(position = Int.MAX_VALUE))
-                                        }
-                                        dismissJob?.cancel()
-                                        dismissJob =
-                                            coroutineScope.launch {
-                                                val snackbarResult =
-                                                    snackbarHostState.showSnackbar(
-                                                        message =
-                                                            context.getString(
-                                                                R.string.removed_song_from_playlist,
-                                                                currentItem.song.song.title,
-                                                            ),
-                                                        actionLabel = context.getString(R.string.undo),
-                                                        duration = SnackbarDuration.Short,
-                                                    )
-                                                if (snackbarResult == SnackbarResult.ActionPerformed) {
-                                                    database.transaction {
-                                                        insert(currentItem.map.copy(position = playlistLength))
-                                                        move(
-                                                            currentItem.map.playlistId,
-                                                            playlistLength,
-                                                            currentItem.map.position,
-                                                        )
-                                                    }
-                                                }
-                                            }
+                                       deleteFromPlaylist() 
                                     }
                                     true
                                 },
@@ -531,6 +521,7 @@ fun LocalPlaylistScreen(
                                                     originalSong = song.song,
                                                     navController = navController,
                                                     onDismiss = menuState::dismiss,
+                                                    onDeleteFromPlaylist = ::deleteFromPlaylist
                                                 )
                                             }
                                         },
@@ -576,6 +567,7 @@ fun LocalPlaylistScreen(
                                                         originalSong = song.song,
                                                         navController = navController,
                                                         onDismiss = menuState::dismiss,
+                                                        onDeleteFromPlaylist = ::deleteFromPlaylist
                                                     )
                                                 }
                                             },
@@ -605,6 +597,27 @@ fun LocalPlaylistScreen(
                         key = songWrapper.item.map.id,
                     ) {
                         val currentItem by rememberUpdatedState(songWrapper.item)
+
+                        fun deleteFromPlaylist() {
+                        database.transaction {
+                            move(currentItem.map.playlistId, currentItem.map.position, Int.MAX_VALUE)
+                            delete(currentItem.map.copy(position = Int.MAX_VALUE))
+                        }
+                        dismissJob?.cancel()
+                        dismissJob = coroutineScope.launch {
+                            val snackbarResult = snackbarHostState.showSnackbar(
+                                message = context.getString(R.string.removed_song_from_playlist, currentItem.song.song.title),
+                                actionLabel = context.getString(R.string.undo),
+                                duration = SnackbarDuration.Short
+                            )
+                            if (snackbarResult == SnackbarResult.ActionPerformed) {
+                                database.transaction {
+                                    insert(currentItem.map.copy(position = playlistLength))
+                                    move(currentItem.map.playlistId, playlistLength, currentItem.map.position)}
+                                }
+                            }
+                        }
+                        
                         val dismissBoxState =
                             rememberSwipeToDismissBoxState(
                                 positionalThreshold = { totalDistance ->
@@ -614,38 +627,7 @@ fun LocalPlaylistScreen(
                                     if (dismissValue == SwipeToDismissBoxValue.StartToEnd ||
                                         dismissValue == SwipeToDismissBoxValue.EndToStart
                                     ) {
-                                        database.transaction {
-                                            move(
-                                                currentItem.map.playlistId,
-                                                currentItem.map.position,
-                                                Int.MAX_VALUE,
-                                            )
-                                            delete(currentItem.map.copy(position = Int.MAX_VALUE))
-                                        }
-                                        dismissJob?.cancel()
-                                        dismissJob =
-                                            coroutineScope.launch {
-                                                val snackbarResult =
-                                                    snackbarHostState.showSnackbar(
-                                                        message =
-                                                            context.getString(
-                                                                R.string.removed_song_from_playlist,
-                                                                currentItem.song.song.title,
-                                                            ),
-                                                        actionLabel = context.getString(R.string.undo),
-                                                        duration = SnackbarDuration.Short,
-                                                    )
-                                                if (snackbarResult == SnackbarResult.ActionPerformed) {
-                                                    database.transaction {
-                                                        insert(currentItem.map.copy(position = playlistLength))
-                                                        move(
-                                                            currentItem.map.playlistId,
-                                                            playlistLength,
-                                                            currentItem.map.position,
-                                                        )
-                                                    }
-                                                }
-                                            }
+                                        deleteFromPlaylist()
                                     }
                                     true
                                 },
@@ -665,6 +647,7 @@ fun LocalPlaylistScreen(
                                                     originalSong = songWrapper.item.song,
                                                     navController = navController,
                                                     onDismiss = menuState::dismiss,
+                                                    onDeleteFromPlaylist = ::deleteFromPlaylist
                                                 )
                                             }
                                         },
@@ -715,6 +698,7 @@ fun LocalPlaylistScreen(
                                                         originalSong = songWrapper.item.song,
                                                         navController = navController,
                                                         onDismiss = menuState::dismiss,
+                                                        onDeleteFromPlaylist = ::deleteFromPlaylist
                                                     )
                                                 }
                                             },
