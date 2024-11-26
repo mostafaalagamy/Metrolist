@@ -31,6 +31,11 @@ data class SongEntity(
     val inLibrary: LocalDateTime? = null,
     val dateDownload: LocalDateTime? = null, // doubles as "isDownloaded"
 ) {
+    fun localToggleLike() = copy(
+        liked = !liked,
+        likedDate = if (!liked) LocalDateTime.now() else null,
+    )
+    
     fun toggleLike() = copy(
         liked = !liked,
         likedDate = if (!liked) LocalDateTime.now() else null,
