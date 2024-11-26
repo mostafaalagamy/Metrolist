@@ -2,7 +2,14 @@ name: Build release APK
 on:
   workflow_dispatch:
   push:
-    branches: [ "**" ]
+    branches:
+      - '**'
+    paths-ignore:
+      - 'README.md'
+      - 'fastlane/**'
+      - '.github/**/*.md'
+      - '.github/FUNDING.yml'
+      - '.github/ISSUE_TEMPLATE/**'
     
 jobs:
   build:
