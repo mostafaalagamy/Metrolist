@@ -84,9 +84,9 @@ import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
 import com.metrolist.music.constants.AlbumThumbnailSize
-import com.metrolist.music.constants.AutoPlaylistSongSortDescendingKey
-import com.metrolist.music.constants.AutoPlaylistSongSortType
-import com.metrolist.music.constants.AutoPlaylistSongSortTypeKey
+import com.metrolist.music.constants.SongSortDescendingKey
+import com.metrolist.music.constants.SongSortType
+import com.metrolist.music.constants.SongSortTypeKey
 import com.metrolist.music.constants.ThumbnailCornerRadius
 import com.metrolist.music.db.entities.Song
 import com.metrolist.music.extensions.toMediaItem
@@ -154,9 +154,9 @@ fun AutoPlaylistScreen(
         mutableStateOf(false)
     }
 
-    val (sortType, onSortTypeChange) = rememberEnumPreference(AutoPlaylistSongSortTypeKey, AutoPlaylistSongSortType.CREATE_DATE)
-    val (sortDescending, onSortDescendingChange) = rememberPreference(AutoPlaylistSongSortDescendingKey, true)
-
+    val (sortType, onSortTypeChange) = rememberEnumPreference(SongSortTypeKey, SongSortType.CREATE_DATE)
+    val (sortDescending, onSortDescendingChange) = rememberPreference(SongSortDescendingKey, true)
+    
     val downloadUtil = LocalDownloadUtil.current
     var downloadState by remember {
         mutableIntStateOf(Download.STATE_STOPPED)
@@ -484,10 +484,10 @@ fun AutoPlaylistScreen(
                                     onSortDescendingChange = onSortDescendingChange,
                                     sortTypeText = { sortType ->
                                         when (sortType) {
-                                            AutoPlaylistSongSortType.CREATE_DATE -> R.string.sort_by_create_date
-                                            AutoPlaylistSongSortType.NAME -> R.string.sort_by_name
-                                            AutoPlaylistSongSortType.ARTIST -> R.string.sort_by_artist
-                                            AutoPlaylistSongSortType.PLAY_TIME -> R.string.sort_by_play_time
+                                            SongSortType.CREATE_DATE -> R.string.sort_by_create_date
+                                            SongSortType.NAME -> R.string.sort_by_name
+                                            SongSortType.ARTIST -> R.string.sort_by_artist
+                                            SongSortType.PLAY_TIME -> R.string.sort_by_play_time
                                         }
                                     },
                                     modifier = Modifier.weight(1f),
