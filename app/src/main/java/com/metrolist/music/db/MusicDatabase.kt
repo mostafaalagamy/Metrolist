@@ -62,7 +62,7 @@ class MusicDatabase(
         SortedSongAlbumMap::class,
         PlaylistSongMapPreview::class,
     ],
-    version = 14,
+    version = 15,
     exportSchema = true,
     autoMigrations = [
         AutoMigration(from = 2, to = 3),
@@ -77,6 +77,7 @@ class MusicDatabase(
         AutoMigration(from = 11, to = 12, spec = Migration11To12::class),
         AutoMigration(from = 12, to = 13, spec = Migration12To13::class),
         AutoMigration(from = 13, to = 14, spec = Migration13To14::class),
+        AutoMigration(from = 14, to = 15, spec = Migration13To14::class),
     ],
 )
 @TypeConverters(Converters::class)
@@ -393,7 +394,7 @@ class Migration12To13 : AutoMigrationSpec {
     }
 }
 
-class Migration13To14 : AutoMigrationSpec {
+class Migration14To15 : AutoMigrationSpec {
     @SuppressLint("Range")
     override fun onPostMigrate(db: SupportSQLiteDatabase) {
         db.execSQL("UPDATE playlist SET createdAt = '${Converters().dateToTimestamp(LocalDateTime.now())}'")
