@@ -394,10 +394,16 @@ class Migration12To13 : AutoMigrationSpec {
     }
 }
 
-class Migration14To15 : AutoMigrationSpec {
+class Migration13To14 : AutoMigrationSpec {
     @SuppressLint("Range")
     override fun onPostMigrate(db: SupportSQLiteDatabase) {
         db.execSQL("UPDATE playlist SET createdAt = '${Converters().dateToTimestamp(LocalDateTime.now())}'")
         db.execSQL("UPDATE playlist SET lastUpdateTime = '${Converters().dateToTimestamp(LocalDateTime.now())}'")
+    }
+}
+
+class Migration14To15 : AutoMigrationSpec {
+    override fun onPostMigrate(db: SupportSQLiteDatabase) {
+        db.execSQL("UPDATE song SET likedDate = 0 WHERE likedDate IS NULL")
     }
 }
