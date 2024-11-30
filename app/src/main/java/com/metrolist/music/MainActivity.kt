@@ -497,23 +497,18 @@ class MainActivity : ComponentActivity() {
                                             uri.host == "youtu.be" -> path
                                             else -> null
                                         }?.let { videoId ->
-                                            coroutineScope.launch {
-                                                withContext(Dispatchers.IO) {
-                                                    YouTube.queue(listOf(videoId))
-                                                }.onSuccess {
-                                                    playerConnection?.playQueue(
-                                                        YouTubeQueue(
-                                                            WatchEndpoint(videoId = it.firstOrNull()?.id),
-                                                            it.firstOrNull()?.toMediaMetadata(),
-                                                        ),
-                                                    )
-                                                }.onFailure {
-                                                    reportException(it)
-                                                }
-                                            }
+                                    coroutineScope.launch {
+                                        withContext(Dispatchers.IO) {
+                                            YouTube.queue(listOf(videoId))
+                                        }.onSuccess {
+                                            playerConnection?.playQueue(YouTubeQueue(WatchEndpoint(videoId = it.firstOrNull()?.id), it.firstOrNull()?.toMediaMetadata()))
+                                        }.onFailure {
+                                            reportException(it)
                                         }
+                                    }
                                 }
                             }
+                        }
 
                         addOnNewIntentListener(listener)
                         onDispose { removeOnNewIntentListener(listener) }
