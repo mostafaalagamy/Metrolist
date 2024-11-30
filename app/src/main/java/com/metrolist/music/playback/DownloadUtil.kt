@@ -98,7 +98,8 @@ class DownloadUtil
                             }
                     }!!.let {
                         // Specify range to avoid YouTube's throttling
-                        it.copy(url = "${it.url}&range=0-${it.contentLength ?: 10000000}")
+                        val url = if (it.url != null) it.url else it.findUrl()
+                        it.copy(url = "${url}&range=0-${it.contentLength ?: 10000000}")
                     }
 
                 database.query {
