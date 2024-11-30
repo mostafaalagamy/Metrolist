@@ -961,26 +961,33 @@ object YouTube {
         playlistId: String? = null,
     ): Result<PlayerResponse> =
         runCatching {
-            val safePlayerResponse = innerTube.player(WEB_REMIX, videoId, playlistId).body<PlayerResponse>()
-            if (safePlayerResponse.isValid) {
-                return@runCatching safePlayerResponse
+             var playerResponse: PlayerResponse
+            if (this.cookie != null) { // if logged in: try ANDROID_MUSIC client first because IOS client does not play age restricted songs
+                playerResponse = innerTube.player(ANDROID_MUSIC, videoId, playlistId).body<PlayerResponse>()
+                if (playerResponse.playabilityStatus.status == "OK") {
+                    println("there")
+                    return@runCatching playerResponse
+                }
             }
-            val playerResponse =
+            try {
+                val safePlayerResponse = innerTube.player(WEB_REMIX, videoId, playlistId).body<PlayerResponse>()
+                if (safePlayerResponse.isValid) {
+                    return@runCatching safePlayerResponse
+                }
+            } catch (e: Exception) {
+                error(e)
+            }
+            playerResponse =
                 innerTube.player(IOS, videoId, playlistId).body<PlayerResponse>()
-            if (playerResponse.isValid) {
+            if (playerResponse.playabilityStatus.status == "OK") {
                 return@runCatching playerResponse
             }
-            val androidPlayerResponse =
-                innerTube.player(ANDROID_MUSIC, videoId, playlistId).body<PlayerResponse>()
-            if (androidPlayerResponse.playabilityStatus.status == "OK") {
-                return@runCatching androidPlayerResponse
-            }
             val audioStreams = innerTube.pipedStreams(videoId).body<PipedResponse>().audioStreams
-            safePlayerResponse.copy(
+            playerResponse.copy(
                 streamingData =
-                    safePlayerResponse.streamingData?.copy(
+                    playerResponse.streamingData?.copy(
                         adaptiveFormats =
-                            safePlayerResponse.streamingData.adaptiveFormats.mapNotNull { adaptiveFormat ->
+                            playerResponse.streamingData!!.adaptiveFormats.mapNotNull { adaptiveFormat ->
                                 audioStreams.find { it.bitrate == adaptiveFormat.bitrate }?.let {
                                     adaptiveFormat.copy(
                                         url = it.url,
