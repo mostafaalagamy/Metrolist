@@ -77,7 +77,7 @@ class MusicDatabase(
         AutoMigration(from = 11, to = 12, spec = Migration11To12::class),
         AutoMigration(from = 12, to = 13, spec = Migration12To13::class),
         AutoMigration(from = 13, to = 14, spec = Migration13To14::class),
-        AutoMigration(from = 14, to = 15, spec = Migration13To14::class),
+        AutoMigration(from = 14, to = 15),
     ],
 )
 @TypeConverters(Converters::class)
@@ -384,13 +384,8 @@ class Migration11To12 : AutoMigrationSpec {
     }
 }
 
-// @DeleteColumn.Entries(
-//    DeleteColumn(tableName = "song", columnName = "inLibrary"),
-// )
 class Migration12To13 : AutoMigrationSpec {
     override fun onPostMigrate(db: SupportSQLiteDatabase) {
-//        db.execSQL("UPDATE song SET liked = 1 WHERE inLibrary IS NOT NULL")
-        // commented because rolled back on this decision
     }
 }
 
@@ -399,11 +394,5 @@ class Migration13To14 : AutoMigrationSpec {
     override fun onPostMigrate(db: SupportSQLiteDatabase) {
         db.execSQL("UPDATE playlist SET createdAt = '${Converters().dateToTimestamp(LocalDateTime.now())}'")
         db.execSQL("UPDATE playlist SET lastUpdateTime = '${Converters().dateToTimestamp(LocalDateTime.now())}'")
-    }
-}
-
-class Migration14To15 : AutoMigrationSpec {
-    override fun onPostMigrate(db: SupportSQLiteDatabase) {
-        db.execSQL("UPDATE song SET likedDate = 0 WHERE likedDate IS NULL")
     }
 }
