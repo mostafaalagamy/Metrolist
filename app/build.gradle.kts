@@ -16,8 +16,8 @@ android {
         applicationId = "com.metrolist.music"
         minSdk = 24
         targetSdk = 35
-        versionCode = 102
-        versionName = "10.2.0"
+        versionCode = 103
+        versionName = "10.3.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
