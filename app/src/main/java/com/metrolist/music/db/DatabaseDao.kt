@@ -108,7 +108,7 @@ interface DatabaseDao {
     fun likedSongsByRowIdAsc(): Flow<List<Song>>
 
     @Transaction
-    @Query("SELECT * FROM song WHERE liked ORDER BY inLibrary")
+    @Query("SELECT * FROM song WHERE liked ORDER BY likedDate")
     fun likedSongsByCreateDateAsc(): Flow<List<Song>>
 
     @Transaction
