@@ -52,61 +52,78 @@ fun String.parseTime(): Int? {
     return null
 }
 
-fun nSigDecode(n: String): String {
-    val step1 =
-        buildString {
-            append(n[8])
-            append(n.substring(2, 8))
-            append(n[1])
-            append(n.substring(9))
-        }
-    val step2 =
-        buildString {
-            append(step1.substring(7))
-            append((step1[0] + step1.substring(1, 3).reversed() + step1[3]).reversed())
-            append(step1.substring(4, 7))
-        }
-    val step3 = step2.substring(7) + step2.substring(0, 7)
-    val step4 =
-        buildString {
-            append(step3[step3.length - 4])
-            append(step3.substring(3, 7))
-            append(step3[2])
-            append(step3.substring(8, 11))
-            append(step3[7])
-            append(step3.takeLast(3))
-            append(step3[1])
-        }
-    val step5 = (step4.substring(0, 2) + step4.last() + step4.substring(3, step4.length - 1) + step4[2]).reversed()
-    val keyString = "cbrrC5"
-    val charset = ('A'..'Z') + ('a'..'z') + ('0'..'9') + listOf('-', '_')
-    val mutableKeyList = keyString.toMutableList()
-    val transformedChars = CharArray(step5.length)
-    for (index in step5.indices) {
-        val currentChar = step5[index]
-        val indexInCharset =
-            (charset.indexOf(currentChar) - charset.indexOf(mutableKeyList[index % mutableKeyList.size]) + index + charset.size - index) %
-                    charset.size
-        transformedChars[index] = charset[indexInCharset]
-        mutableKeyList[index % mutableKeyList.size] = transformedChars[index]
-    }
-    val step6 = String(transformedChars)
-    return step6.dropLast(3).reversed() + step6.takeLast(3)
+fun String.swap(index1: Int, index2: Int): String {
+    val chars = toCharArray()
+    val temp = chars[index1]
+    chars[index1] = chars[index2]
+    chars[index2] = temp
+    return String(chars)
 }
-fun sigDecode(input: String): String {
-    val middleSection = input.substring(3, input.length - 3)
-    val rearranged = (middleSection.take(35) + input[0] + middleSection.drop(36)).reversed()
-    val result =
-        buildString {
-            append("A")
-            append(rearranged.substring(0, 15))
-            append(input[input.length - 2])
-            append(rearranged.substring(16, 34))
-            append(input[input.length - 3])
-            append(rearranged.substring(35))
-            append(input[38])
+
+fun String.rotateLeft(n: Int): String = substring(n) + substring(0, n)
+
+fun String.rotateRight(n: Int): String = takeLast(n) + dropLast(n)
+
+fun String.removeIndex(index: Int): String = removeRange(index, index + 1)
+
+fun transform(input: String, key: String, charset: List<Char>): String {
+    val keyList = key.toMutableList()
+    val keyLength = key.length
+    return buildString {
+        input.forEachIndexed { idx, char ->
+            val transformedChar = charset[
+                (charset.indexOf(char) - charset.indexOf(keyList[idx % keyLength]) + idx + charset.size - idx) % charset.size
+            ]
+            append(transformedChar)
+            keyList[idx % keyLength] = transformedChar
         }
-    return result
+    }
+}
+
+fun String.sliceSegment(start: Int, end: Int): String = substring(start, end)
+
+fun String.sliceFrom(start: Int): String = substring(start)
+
+
+fun nSigDecode(n: String): String {
+    val step1 = n.swap(0, 3)
+    val step2 = step1.swap(0, 14)
+    val step3 = step2.reversed()
+    val step4 = step3.swap(0, 17)
+    val step5 = step4.rotateRight(3)
+    val step6 = step5.reversed()
+    val step7 = step6.swap(0, 12)
+    val step8 = step7.reversed()
+    val step9 = step8.removeIndex(0).removeIndex(0)
+
+    val cipherKey = "pdENIJ6"
+    val charset = listOf(
+        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f',
+        'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
+        'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
+        'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '-', '_'
+    )
+
+    val transformed = transform(step9, cipherKey, charset)
+
+    val result = transformed
+        .rotateLeft(10)
+        .rotateLeft(8)
+        .rotateLeft(8)
+        .removeIndex(8)
+        .reversed()
+        .rotateLeft(8)
+        .removeIndex(6)
+    return result.dropLast(2) + result.last()
+}
+
+fun sigDecode(input: String): String {
+    val result = input.sliceSegment(6, 11) +
+            input[65] +
+            input.sliceSegment(12, 65) +
+            input[0] +
+            input.sliceFrom(66)
+    return result.removeIndex(result.length - 1)
 }
 
 fun createUrl(
@@ -130,5 +147,8 @@ fun createUrl(
         resUrl.parameters[signatureParam] = sigDecode(signature)
     }
     resUrl.parameters["c"] = "ANDROID_MUSIC"
+    println(signature)
+    println(n)
+    println(resUrl)
     return resUrl.toString()
 }
