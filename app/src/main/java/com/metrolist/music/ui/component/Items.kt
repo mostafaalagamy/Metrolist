@@ -745,7 +745,6 @@ fun AlbumListItem(
 @Composable
 fun AlbumGridItem(
     album: Album,
-    song: Song,
     modifier: Modifier = Modifier,
     coroutineScope: CoroutineScope,
     badges: @Composable RowScope.() -> Unit = {
@@ -1359,7 +1358,6 @@ fun YouTubeListItem(
 @Composable
 fun YouTubeGridItem(
     item: YTItem,
-    song: Song,
     modifier: Modifier = Modifier,
     coroutineScope: CoroutineScope? = null,
     badges: @Composable RowScope.() -> Unit = {
