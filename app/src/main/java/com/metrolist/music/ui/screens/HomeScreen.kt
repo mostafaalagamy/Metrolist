@@ -563,7 +563,7 @@ fun HomeScreen(
                                 key = { it.id },
                             ) { item ->
                                 if (!item.title.contains("Presenting")) {
-                                    YouTubeSmallGridItem(
+                                    YouTubeGridItem(
                                         item = item,
                                         isActive = mediaMetadata?.album?.id == item.id,
                                         isPlaying = isPlaying,
@@ -830,7 +830,7 @@ fun HomeScreen(
                                 key = { it.id },
                             ) { item ->
                                 if (!item.title.contains("Presenting")) {
-                                    YouTubeSmallGridItem(
+                                    YouTubeGridItem(
                                         item = item,
                                         isActive = mediaMetadata?.album?.id == item.id,
                                         isPlaying = isPlaying,
@@ -1097,7 +1097,7 @@ fun HomeScreen(
                                 key = { it.id },
                             ) { item ->
                                 if (!item.title.contains("Presenting")) {
-                                    YouTubeSmallGridItem(
+                                    YouTubeGridItem(
                                         item = item,
                                         isActive = mediaMetadata?.album?.id == item.id,
                                         isPlaying = isPlaying,
