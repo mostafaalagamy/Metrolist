@@ -19,8 +19,4 @@ data class NavigationEndpoint(
                 ?: searchEndpoint
                 ?: queueAddEndpoint
                 ?: shareEntityEndpoint
-    
-    val anyWatchEndpoint: WatchEndpoint?
-        get() = watchEndpoint
-            ?: watchPlaylistEndpoint
 }
