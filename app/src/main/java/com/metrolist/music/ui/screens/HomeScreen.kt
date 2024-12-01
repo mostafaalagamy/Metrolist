@@ -226,7 +226,7 @@ fun HomeScreen(
                             "history" -> navController.navigate("history")
                             "stats" -> navController.navigate("stats")
                             "liked" -> navController.navigate("auto_playlist/liked")
-                            "downloads" -> navController.navigate("auto_playlist/downloads")
+                            "downloads" -> navController.navigate("auto_playlist/downloaded")
                             "account" -> if (isLoggedIn) navController.navigate("account")
                         }
                     },
