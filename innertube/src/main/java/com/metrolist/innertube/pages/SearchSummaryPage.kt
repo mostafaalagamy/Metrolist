@@ -113,7 +113,7 @@ data class SearchSummaryPage(
                                 .firstOrNull()
                                 ?.buttonRenderer
                                 ?.command
-                                ?.watchPlaylistEndpoint
+                                ?.anyWatchEndpoint
                                 ?.playlistId ?: return null,
                         title =
                             renderer.title.runs
