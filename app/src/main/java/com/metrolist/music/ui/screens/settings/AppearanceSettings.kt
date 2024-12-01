@@ -6,12 +6,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -19,6 +14,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
@@ -54,12 +50,17 @@ import com.metrolist.music.constants.PureBlackKey
 import com.metrolist.music.constants.SliderStyle
 import com.metrolist.music.constants.SliderStyleKey
 import com.metrolist.music.constants.SwipeThumbnailKey
+import com.metrolist.music.constants.SlimNavBarKey
+import com.metrolist.music.constants.ChipSortTypeKey
+import com.metrolist.music.constants.LibraryFilter
 import com.metrolist.music.ui.component.DefaultDialog
 import com.metrolist.music.ui.component.EnumListPreference
+import com.metrolist.music.ui.component.ListPreference
 import com.metrolist.music.ui.component.IconButton
 import com.metrolist.music.ui.component.PreferenceEntry
 import com.metrolist.music.ui.component.PreferenceGroupTitle
 import com.metrolist.music.ui.component.SwitchPreference
+import com.metrolist.music.ui.component.PlayerSliderTrack
 import com.metrolist.music.ui.utils.backToMain
 import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
@@ -91,6 +92,8 @@ fun AppearanceSettings(
     val (swipeThumbnail, onSwipeThumbnailChange) = rememberPreference(SwipeThumbnailKey, defaultValue = true)
     val (gridItemSize, onGridItemSizeChange) = rememberEnumPreference(GridItemsSizeKey, defaultValue = GridItemSize.BIG)
 
+    val (slimNav, onSlimNavChange) = rememberPreference(SlimNavBarKey, defaultValue = false)
+    
     val availableBackgroundStyles = PlayerBackgroundStyle.entries.filter {
         it != PlayerBackgroundStyle.BLUR || Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
     }
@@ -101,6 +104,8 @@ fun AppearanceSettings(
             if (darkMode == DarkMode.AUTO) isSystemInDarkTheme else darkMode == DarkMode.ON
         }
 
+    val (defaultChip, onDefaultChipChange) = rememberEnumPreference(key = ChipSortTypeKey, defaultValue = LibraryFilter.LIBRARY)
+
     var showSliderOptionDialog by rememberSaveable {
         mutableStateOf(false)
     }
@@ -109,40 +114,35 @@ fun AppearanceSettings(
         DefaultDialog(
             buttons = {
                 TextButton(
-                    onClick = { showSliderOptionDialog = false },
+                    onClick = { showSliderOptionDialog = false }
                 ) {
                     Text(text = stringResource(android.R.string.cancel))
                 }
             },
             onDismiss = {
                 showSliderOptionDialog = false
-            },
+            }
         ) {
             Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(4.dp),
-                    modifier =
-                        Modifier
-                            .aspectRatio(1f)
-                            .weight(1f)
-                            .clip(RoundedCornerShape(16.dp))
-                            .border(
-                                1.dp,
-                                if (sliderStyle ==
-                                    SliderStyle.DEFAULT
-                                ) {
-                                    MaterialTheme.colorScheme.primary
-                                } else {
-                                    MaterialTheme.colorScheme.outlineVariant
-                                },
-                                RoundedCornerShape(16.dp),
-                            ).clickable {
-                                onSliderStyleChange(SliderStyle.DEFAULT)
-                                showSliderOptionDialog = false
-                            }.padding(16.dp),
+                    modifier = Modifier
+                        .aspectRatio(1f)
+                        .weight(1f)
+                        .clip(RoundedCornerShape(16.dp))
+                        .border(
+                            1.dp,
+                            if (sliderStyle == SliderStyle.DEFAULT) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outlineVariant,
+                            RoundedCornerShape(16.dp)
+                        )
+                        .clickable {
+                            onSliderStyleChange(SliderStyle.DEFAULT)
+                            showSliderOptionDialog = false
+                        }
+                        .padding(16.dp)
                 ) {
                     var sliderValue by remember {
                         mutableFloatStateOf(0.5f)
@@ -153,43 +153,30 @@ fun AppearanceSettings(
                         onValueChange = {
                             sliderValue = it
                         },
-                        modifier =
-                            Modifier
-                                .weight(1f)
-                                .pointerInput(Unit) {
-                                    detectTapGestures(
-                                        onPress = {},
-                                    )
-                                },
+                        modifier = Modifier.weight(1f)
                     )
-
                     Text(
                         text = stringResource(R.string.default_),
-                        style = MaterialTheme.typography.labelLarge,
+                        style = MaterialTheme.typography.labelLarge
                     )
                 }
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(4.dp),
-                    modifier =
-                        Modifier
-                            .aspectRatio(1f)
-                            .weight(1f)
-                            .clip(RoundedCornerShape(16.dp))
-                            .border(
-                                1.dp,
-                                if (sliderStyle ==
-                                    SliderStyle.SQUIGGLY
-                                ) {
-                                    MaterialTheme.colorScheme.primary
-                                } else {
-                                    MaterialTheme.colorScheme.outlineVariant
-                                },
-                                RoundedCornerShape(16.dp),
-                            ).clickable {
-                                onSliderStyleChange(SliderStyle.SQUIGGLY)
-                                showSliderOptionDialog = false
-                            }.padding(16.dp),
+                    modifier = Modifier
+                        .aspectRatio(1f)
+                        .weight(1f)
+                        .clip(RoundedCornerShape(16.dp))
+                        .border(
+                            1.dp,
+                            if (sliderStyle == SliderStyle.SQUIGGLY) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outlineVariant,
+                            RoundedCornerShape(16.dp)
+                        )
+                        .clickable {
+                            onSliderStyleChange(SliderStyle.SQUIGGLY)
+                            showSliderOptionDialog = false
+                        }
+                        .padding(16.dp)
                 ) {
                     var sliderValue by remember {
                         mutableFloatStateOf(0.5f)
@@ -200,12 +187,59 @@ fun AppearanceSettings(
                         onValueChange = {
                             sliderValue = it
                         },
-                        modifier = Modifier.weight(1f),
+                        modifier = Modifier.weight(1f)
                     )
-
                     Text(
                         text = stringResource(R.string.squiggly),
-                        style = MaterialTheme.typography.labelLarge,
+                        style = MaterialTheme.typography.labelLarge
+                    )
+                }
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                    modifier = Modifier
+                        .aspectRatio(1f)
+                        .weight(1f)
+                        .clip(RoundedCornerShape(16.dp))
+                        .border(
+                            1.dp,
+                            if (sliderStyle == SliderStyle.SLIM) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outlineVariant,
+                            RoundedCornerShape(16.dp)
+                        )
+                        .clickable {
+                            onSliderStyleChange(SliderStyle.SLIM)
+                            showSliderOptionDialog = false
+                        }
+                        .padding(16.dp)
+                ) {
+                    var sliderValue by remember {
+                        mutableFloatStateOf(0.5f)
+                    }
+                    Slider(
+                        value = sliderValue,
+                        valueRange = 0f..1f,
+                        onValueChange = {
+                            sliderValue = it
+                        },
+                        thumb = { Spacer(modifier = Modifier.size(0.dp)) },
+                        track = { sliderState ->
+                            PlayerSliderTrack(
+                                sliderState = sliderState,
+                                colors = SliderDefaults.colors()
+                            )
+                        },
+                        modifier = Modifier
+                            .weight(1f)
+                            .pointerInput(Unit) {
+                                detectTapGestures(
+                                    onPress = {}
+                                )
+                            }
+                    )
+                    
+                    Text(
+                        text = stringResource(R.string.slim),
+                        style = MaterialTheme.typography.labelLarge
                     )
                 }
             }
@@ -275,6 +309,7 @@ fun AppearanceSettings(
                 when (sliderStyle) {
                     SliderStyle.DEFAULT -> stringResource(R.string.default_)
                     SliderStyle.SQUIGGLY -> stringResource(R.string.squiggly)
+                    SliderStyle.SLIM -> stringResource(R.string.slim)
                 },
             icon = { Icon(painterResource(R.drawable.sliders), null) },
             onClick = {
@@ -340,7 +375,7 @@ fun AppearanceSettings(
 
         EnumListPreference(
             title = { Text(stringResource(R.string.default_open_tab)) },
-            icon = { Icon(painterResource(R.drawable.tab), null) },
+            icon = { Icon(painterResource(R.drawable.nav_bar), null) },
             selectedValue = defaultOpenTab,
             onValueSelected = onDefaultOpenTabChange,
             valueText = {
@@ -350,6 +385,33 @@ fun AppearanceSettings(
                     NavigationTab.LIBRARY -> stringResource(R.string.filter_library)
                 }
             },
+        )
+
+        ListPreference(
+            title = { Text(stringResource(R.string.default_lib_chips)) },
+            icon = { Icon(painterResource(R.drawable.tab), null) },
+            selectedValue = defaultChip,
+            values = listOf(
+                LibraryFilter.LIBRARY, LibraryFilter.PLAYLISTS, LibraryFilter.SONGS,
+                LibraryFilter.ALBUMS, LibraryFilter.ARTISTS
+            ),
+            valueText = {
+                when (it) {
+                    LibraryFilter.SONGS -> stringResource(R.string.songs)
+                    LibraryFilter.ARTISTS -> stringResource(R.string.artists)
+                    LibraryFilter.ALBUMS -> stringResource(R.string.albums)
+                    LibraryFilter.PLAYLISTS -> stringResource(R.string.playlists)
+                    LibraryFilter.LIBRARY -> stringResource(R.string.filter_library)
+                }
+            },
+            onValueSelected = onDefaultChipChange,
+        )
+
+        SwitchPreference(
+            title = { Text(stringResource(R.string.slim_navbar)) },
+            icon = { Icon(painterResource(R.drawable.nav_bar), null) },
+            checked = slimNav,
+            onCheckedChange = onSlimNavChange
         )
 
         EnumListPreference(

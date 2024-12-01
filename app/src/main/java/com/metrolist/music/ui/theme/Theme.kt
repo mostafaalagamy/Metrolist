@@ -65,39 +65,28 @@ fun Bitmap.extractThemeColor(): Color {
     return Color(rankedColors.first())
 }
 
-// from OuterTune
-fun Bitmap.extractGradientColors(darkTheme: Boolean): List<Color> {
-    val extractedColors =
-        Palette
-            .from(this)
-            .maximumColorCount(16)
-            .generate()
-            .swatches
-            .associate { it.rgb to it.population }
+fun Bitmap.extractGradientColors(darkTheme: Boolean = false): List<Color> {
+    val extractedColors = Palette.from(this)
+        .maximumColorCount(16)
+        .generate()
+        .swatches
+        .associate { it.rgb to it.population }
 
-    val orderedColors =
-        if (darkTheme) {
-            Score
-                .order(extractedColors)
-                .sortedBy { Color(it).luminance() }
-                .take(2)
-                .reversed()
-        } else {
-            Score
-                .order(extractedColors)
-                .sortedByDescending { Color(it).luminance() }
-                .take(2)
-        }
-
-    val res = mutableListOf<Color>()
-    return if (orderedColors.size >= 2) {
-        orderedColors.forEach {
-            res.add(Color(it))
-        }
-        res
+    val orderedColors = if (darkTheme) {
+        Score.order(extractedColors)
+            .sortedBy { Color(it).luminance() }
+            .take(2)
+            .reversed()
     } else {
-        emptyList()
+        Score.order(extractedColors)
+            .take(2)
+            .sortedByDescending { Color(it).luminance() }
     }
+
+    return if (orderedColors.size >= 2)
+        listOf(Color(orderedColors[0]), Color(orderedColors[1]))
+    else
+        listOf(Color(0xFF595959), Color(0xFF0D0D0D))
 }
 
 fun DynamicScheme.toColorScheme() =

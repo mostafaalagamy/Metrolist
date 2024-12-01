@@ -238,270 +238,273 @@ fun TopPlaylistScreen(
                         )
                     }
                 } else {
-                    item {
-                        Column(
-                            verticalArrangement = Arrangement.spacedBy(12.dp),
-                            modifier = Modifier.padding(12.dp),
-                        ) {
-                            Row(
-                                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                                verticalAlignment = Alignment.CenterVertically,
+                    if (!isSearching) {
+                        item {
+                            Column(
+                                verticalArrangement = Arrangement.spacedBy(12.dp),
+                                modifier = Modifier.padding(12.dp),
                             ) {
-                                AsyncImage(
-                                    model = songs!![0].song.thumbnailUrl,
-                                    contentDescription = null,
-                                    contentScale = ContentScale.Crop,
-                                    modifier =
-                                    Modifier
-                                        .size(AlbumThumbnailSize)
-                                        .clip(RoundedCornerShape(ThumbnailCornerRadius)),
-                                )
-
-                                Column(
-                                    verticalArrangement = Arrangement.Center,
+                                Row(
+                                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                                    verticalAlignment = Alignment.CenterVertically,
                                 ) {
-                                    AutoResizeText(
-                                        text = name,
-                                        fontWeight = FontWeight.Bold,
-                                        maxLines = 2,
-                                        overflow = TextOverflow.Ellipsis,
-                                        fontSizeRange = FontSizeRange(16.sp, 22.sp),
+                                    AsyncImage(
+                                        model = songs!![0].song.thumbnailUrl,
+                                        contentDescription = null,
+                                        modifier =
+                                            Modifier
+                                                .size(AlbumThumbnailSize)
+                                                .clip(RoundedCornerShape(ThumbnailCornerRadius)),
                                     )
 
-                                    Text(
-                                        text =
-                                        pluralStringResource(
-                                            R.plurals.n_song,
-                                            songs!!.size,
-                                            songs!!.size,
-                                        ),
-                                        style = MaterialTheme.typography.titleMedium,
-                                        fontWeight = FontWeight.Normal,
-                                    )
+                                    Column(
+                                        verticalArrangement = Arrangement.Center,
+                                    ) {
+                                        AutoResizeText(
+                                            text = name,
+                                            fontWeight = FontWeight.Bold,
+                                            maxLines = 2,
+                                            overflow = TextOverflow.Ellipsis,
+                                            fontSizeRange = FontSizeRange(16.sp, 22.sp),
+                                        )
 
-                                    Text(
-                                        text = makeTimeString(likeLength * 1000L),
-                                        style = MaterialTheme.typography.titleMedium,
-                                        fontWeight = FontWeight.Normal,
-                                    )
+                                        Text(
+                                            text =
+                                            pluralStringResource(
+                                                R.plurals.n_song,
+                                                songs!!.size,
+                                                songs!!.size,
+                                            ),
+                                            style = MaterialTheme.typography.titleMedium,
+                                            fontWeight = FontWeight.Normal,
+                                        )
 
-                                    Row {
-                                        when (downloadState) {
-                                            Download.STATE_COMPLETED -> {
-                                                IconButton(
-                                                    onClick = {
-                                                        showRemoveDownloadDialog = true
-                                                    },
-                                                ) {
-                                                    Icon(
-                                                        painter = painterResource(R.drawable.offline),
-                                                        contentDescription = null,
-                                                    )
+                                        Text(
+                                            text = makeTimeString(likeLength * 1000L),
+                                            style = MaterialTheme.typography.titleMedium,
+                                            fontWeight = FontWeight.Normal,
+                                        )
+
+                                        Row {
+                                            when (downloadState) {
+                                                Download.STATE_COMPLETED -> {
+                                                    IconButton(
+                                                        onClick = {
+                                                            showRemoveDownloadDialog = true
+                                                        },
+                                                    ) {
+                                                        Icon(
+                                                            painter = painterResource(R.drawable.offline),
+                                                            contentDescription = null,
+                                                        )
+                                                    }
+                                                }
+
+                                                Download.STATE_DOWNLOADING -> {
+                                                    IconButton(
+                                                        onClick = {
+                                                            songs!!.forEach { song ->
+                                                                DownloadService.sendRemoveDownload(
+                                                                    context,
+                                                                    ExoDownloadService::class.java,
+                                                                    song.song.id,
+                                                                    false,
+                                                                )
+                                                            }
+                                                        },
+                                                    ) {
+                                                        CircularProgressIndicator(
+                                                            strokeWidth = 2.dp,
+                                                            modifier = Modifier.size(24.dp),
+                                                        )
+                                                    }
+                                                }
+
+                                                else -> {
+                                                    IconButton(
+                                                        onClick = {
+                                                            songs!!.forEach { song ->
+                                                                val downloadRequest =
+                                                                    DownloadRequest
+                                                                        .Builder(
+                                                                            song.song.id,
+                                                                            song.song.id.toUri(),
+                                                                        ).setCustomCacheKey(song.song.id)
+                                                                        .setData(song.song.title.toByteArray())
+                                                                        .build()
+                                                                DownloadService.sendAddDownload(
+                                                                    context,
+                                                                    ExoDownloadService::class.java,
+                                                                    downloadRequest,
+                                                                    false,
+                                                                )
+                                                            }
+                                                        },
+                                                    ) {
+                                                        Icon(
+                                                            painter = painterResource(R.drawable.download),
+                                                            contentDescription = null,
+                                                        )
+                                                    }
                                                 }
                                             }
 
-                                            Download.STATE_DOWNLOADING -> {
-                                                IconButton(
-                                                    onClick = {
-                                                        songs!!.forEach { song ->
-                                                            DownloadService.sendRemoveDownload(
-                                                                context,
-                                                                ExoDownloadService::class.java,
-                                                                song.song.id,
-                                                                false,
-                                                            )
-                                                        }
-                                                    },
-                                                ) {
-                                                    CircularProgressIndicator(
-                                                        strokeWidth = 2.dp,
-                                                        modifier = Modifier.size(24.dp),
+                                            IconButton(
+                                                onClick = {
+                                                    playerConnection.addToQueue(
+                                                        items = songs!!.map { it.toMediaItem() },
                                                     )
-                                                }
-                                            }
-
-                                            else -> {
-                                                IconButton(
-                                                    onClick = {
-                                                        songs!!.forEach { song ->
-                                                            val downloadRequest =
-                                                                DownloadRequest
-                                                                    .Builder(
-                                                                        song.song.id,
-                                                                        song.song.id.toUri(),
-                                                                    ).setCustomCacheKey(song.song.id)
-                                                                    .setData(song.song.title.toByteArray())
-                                                                    .build()
-                                                            DownloadService.sendAddDownload(
-                                                                context,
-                                                                ExoDownloadService::class.java,
-                                                                downloadRequest,
-                                                                false,
-                                                            )
-                                                        }
-                                                    },
-                                                ) {
-                                                    Icon(
-                                                        painter = painterResource(R.drawable.download),
-                                                        contentDescription = null,
-                                                    )
-                                                }
-                                            }
-                                        }
-
-                                        IconButton(
-                                            onClick = {
-                                                playerConnection.addToQueue(
-                                                    items = songs!!.map { it.toMediaItem() },
+                                                },
+                                            ) {
+                                                Icon(
+                                                    painter = painterResource(R.drawable.queue_music),
+                                                    contentDescription = null,
                                                 )
-                                            },
-                                        ) {
-                                            Icon(
-                                                painter = painterResource(R.drawable.queue_music),
-                                                contentDescription = null,
-                                            )
+                                            }
                                         }
                                     }
                                 }
-                            }
 
-                            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                                Button(
-                                    onClick = {
-                                        playerConnection.playQueue(
-                                            ListQueue(
-                                                title = "Auto Playlist",
-                                                items = songs!!.map { it.toMediaItem() },
-                                            ),
+                                Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                                    Button(
+                                        onClick = {
+                                            playerConnection.playQueue(
+                                                ListQueue(
+                                                    title = "Auto Playlist",
+                                                    items = songs!!.map { it.toMediaItem() },
+                                                ),
+                                            )
+                                        },
+                                        contentPadding = ButtonDefaults.ButtonWithIconContentPadding,
+                                        modifier = Modifier.weight(1f),
+                                    ) {
+                                        Icon(
+                                            painter = painterResource(R.drawable.play),
+                                            contentDescription = null,
+                                            modifier = Modifier.size(ButtonDefaults.IconSize),
                                         )
-                                    },
-                                    contentPadding = ButtonDefaults.ButtonWithIconContentPadding,
-                                    modifier = Modifier.weight(1f),
-                                ) {
-                                    Icon(
-                                        painter = painterResource(R.drawable.play),
-                                        contentDescription = null,
-                                        modifier = Modifier.size(ButtonDefaults.IconSize),
-                                    )
-                                    Spacer(Modifier.size(ButtonDefaults.IconSpacing))
-                                    Text(stringResource(R.string.play))
-                                }
+                                        Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+                                        Text(stringResource(R.string.play))
+                                    }
 
-                                OutlinedButton(
-                                    onClick = {
-                                        playerConnection.playQueue(
-                                            ListQueue(
-                                                title = name,
-                                                items = songs!!.shuffled().map { it.toMediaItem() },
-                                            ),
+                                    OutlinedButton(
+                                        onClick = {
+                                            playerConnection.playQueue(
+                                                ListQueue(
+                                                    title = name,
+                                                    items = songs!!.shuffled().map { it.toMediaItem() },
+                                                ),
+                                            )
+                                        },
+                                        contentPadding = ButtonDefaults.ButtonWithIconContentPadding,
+                                        modifier = Modifier.weight(1f),
+                                    ) {
+                                        Icon(
+                                            painter = painterResource(R.drawable.shuffle),
+                                            contentDescription = null,
+                                            modifier = Modifier.size(ButtonDefaults.IconSize),
                                         )
-                                    },
-                                    contentPadding = ButtonDefaults.ButtonWithIconContentPadding,
-                                    modifier = Modifier.weight(1f),
-                                ) {
-                                    Icon(
-                                        painter = painterResource(R.drawable.shuffle),
-                                        contentDescription = null,
-                                        modifier = Modifier.size(ButtonDefaults.IconSize),
-                                    )
-                                    Spacer(Modifier.size(ButtonDefaults.IconSpacing))
-                                    Text(stringResource(R.string.shuffle))
+                                        Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+                                        Text(stringResource(R.string.shuffle))
+                                    }
                                 }
                             }
                         }
                     }
 
-                item {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.padding(start = 16.dp),
-                    ) {
-                        if (selection) {
-                            val count = wrappedSongs?.count { it.isSelected }
-                            Text(text = "$count elements selected", modifier = Modifier.weight(1f))
-                            IconButton(
-                                onClick = {
-                                    if (count == wrappedSongs?.size) {
-                                        wrappedSongs?.forEach { it.isSelected = false }
-                                    }else {
-                                        wrappedSongs?.forEach { it.isSelected = true }
-                                    }
-                                },
-                            ){
-                                Icon(
-                                    painter =
-                                    painterResource(
-                                        if (count ==
-                                            wrappedSongs?.size
-                                        ) {
-                                            R.drawable.deselect
-                                        } else {
-                                            R.drawable.select_all
-                                        },
-                                    ),
-                                    contentDescription = null,
-                                )
-                            }
+                    item {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.padding(start = 16.dp),
+                        ) {
+                            if (selection) {
+                                val count = wrappedSongs?.count { it.isSelected }
+                                Text(
+                                    text = stringResource(R.string.elements_selected, count ?: 0),
+                                    modifier = Modifier.weight(1f))
+                                IconButton(
+                                    onClick = {
+                                        if (count == wrappedSongs?.size) {
+                                            wrappedSongs?.forEach { it.isSelected = false }
+                                        }else {
+                                            wrappedSongs?.forEach { it.isSelected = true }
+                                        }
+                                    },
+                                ){
+                                    Icon(
+                                        painter =
+                                        painterResource(
+                                            if (count ==
+                                                wrappedSongs?.size
+                                            ) {
+                                                R.drawable.deselect
+                                            } else {
+                                                R.drawable.select_all
+                                            },
+                                        ),
+                                        contentDescription = null,
+                                    )
+                                }
 
-                            IconButton(
-                                onClick = {
-                                    menuState.show {
-                                        SelectionSongMenu(
-                                            songSelection = wrappedSongs?.filter { it.isSelected }!!.map { it.item },
-                                            onDismiss = menuState::dismiss,
-                                            clearAction = { selection = false },
-                                        )
-                                    }
-                                },
-                            ) {
-                                Icon(
-                                    painter = painterResource(R.drawable.more_vert),
-                                    contentDescription = null,
-                                )
-                            }
+                                IconButton(
+                                    onClick = {
+                                        menuState.show {
+                                            SelectionSongMenu(
+                                                songSelection = wrappedSongs?.filter { it.isSelected }!!.map { it.item },
+                                                onDismiss = menuState::dismiss,
+                                                clearAction = { selection = false },
+                                            )
+                                        }
+                                    },
+                                ) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.more_vert),
+                                        contentDescription = null,
+                                    )
+                                }
 
-                            IconButton(
-                                onClick = { selection = false },
-                            ) {
-                                Icon(
-                                    painter = painterResource(R.drawable.close),
-                                    contentDescription = null,
+                                IconButton(
+                                    onClick = { selection = false },
+                                ) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.close),
+                                        contentDescription = null,
+                                    )
+                                }
+                            } else {
+                                SortHeader(
+                                    sortType = sortType,
+                                    sortDescending = false,
+                                    onSortTypeChange = {
+                                        viewModel.topPeriod.value = it
+                                    },
+                                    onSortDescendingChange = {},
+                                    sortTypeText = { sortType ->
+                                        when (sortType) {
+                                            MyTopFilter.ALL_TIME -> R.string.all_time
+                                            MyTopFilter.DAY -> R.string.past_24_hours
+                                            MyTopFilter.WEEK -> R.string.past_week
+                                            MyTopFilter.MONTH -> R.string.past_month
+                                            MyTopFilter.YEAR -> R.string.past_year
+                                        }
+                                    },
+                                    modifier = Modifier.weight(1f),
+                                    showDescending = false,
                                 )
-                            }
-                        } else {
-                            SortHeader(
-                                sortType = sortType,
-                                sortDescending = false,
-                                onSortTypeChange = {
-                                    viewModel.topPeriod.value = it
-                                },
-                                onSortDescendingChange = {},
-                                sortTypeText = { sortType ->
-                                    when (sortType) {
-                                        MyTopFilter.ALL_TIME -> R.string.all_time
-                                        MyTopFilter.DAY -> R.string.past_24_hours
-                                        MyTopFilter.WEEK -> R.string.past_week
-                                        MyTopFilter.MONTH -> R.string.past_month
-                                        MyTopFilter.YEAR -> R.string.past_year
-                                    }
-                                },
-                                modifier = Modifier.weight(1f),
-                                showDescending = false,
-                            )
 
-                            IconButton(
-                                onClick = { selection = !selection },
-                                modifier = Modifier.padding(horizontal = 6.dp),
-                            ) {
-                                Icon(
-                                    painter = painterResource(if (selection) R.drawable.deselect else R.drawable.select_all),
-                                    contentDescription = null,
-                                )
+                                IconButton(
+                                    onClick = { selection = !selection },
+                                    modifier = Modifier.padding(horizontal = 6.dp),
+                                ) {
+                                    Icon(
+                                        painter = painterResource(if (selection) R.drawable.deselect else R.drawable.select_all),
+                                        contentDescription = null,
+                                    )
+                                }
                             }
                         }
                     }
                 }
-            }
             
                 val searchQueryStr = (searchQuery.text.trim())
                 val filteredSongs = if (searchQueryStr.isEmpty())

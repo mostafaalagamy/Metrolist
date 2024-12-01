@@ -99,6 +99,7 @@ fun AccountScreen(
                             navController.navigate("album/${item.id}")
                         },
                         onLongClick = {
+                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                             menuState.show {
                                 YouTubeAlbumMenu(
                                     albumItem = item,
@@ -124,6 +125,7 @@ fun AccountScreen(
                             navController.navigate("artist/${item.id}")
                         },
                         onLongClick = {
+                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                             menuState.show {
                                 YouTubeArtistMenu(
                                     artist = item,

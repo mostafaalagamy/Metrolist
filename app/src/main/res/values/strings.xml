@@ -236,8 +236,9 @@
     <!-- Settings -->
     <string name="settings">Settings</string>
     <string name="login_settings">Login settings</string>
-    <string name="use_login_for_browse">Use login for browsing content</string>
-    <string name="use_login_for_browse_desc">This can influence what content you see and for example shows premium-only albums if you are logged in with a Premium account</string>
+    <string name="use_login_for_browse">Use login for browsing premium content</string>
+    <string name="use_login_for_browse_desc">This can shows premium-only albums if you are logged in with a Premium account</string>
+
     <string name="general_settings">General settings</string>
     
     <string name="appearance">Appearance</string>
@@ -269,11 +270,13 @@
     <string name="player_slider_style">Player slider style</string>
     <string name="default_">Default</string>
     <string name="squiggly">Squiggly</string>
+    <string name="slim">Slim</string>
     <string name="misc">Misc</string>
     <string name="default_open_tab">Default open tab</string>
+    <string name="slim_navbar">Hide bottom navigation bar labels</string>
 
     <string name="content">Content</string>
-    <string name="login">Google login</string>
+    <string name="login">Login</string>
     <string name="not_logged_in">Not logged in</string>
     <string name="general">General</string>
     <string name="content_language">Default content language</string>
@@ -284,7 +287,7 @@
     <string name="proxy_type">Proxy type</string>
     <string name="proxy_url">Proxy URL</string>
     <string name="default_lib_chips">Change default library chip</string>
-    <string name="set_quick_picks">Set Quick Picks</string>
+    <string name="set_quick_picks">Set quick picks</string>
     <string name="last_song_listened">Based on last song listened</string>
     <string name="restart_to_take_effect">Restart to take effect</string>
     <string name="app_language">App language</string>
@@ -293,7 +296,10 @@
     <string name="open_supported_links">Open supported link by default</string>
     <string name="configure_supported_links">Configure supported links</string>
     <string name="intent_supported_links_not_found">Couldn\'t find supported links settings, please configure them manually</string>
-   
+    <string name="enable_kugou">Enable KuGou lyrics provider</string>
+    <string name="enable_lrclib">Enable LrcLib lyrics provider</string>
+    <string name="set_first_lyrics_provider">Preferred lyrics provider</string>
+    
     <string name="player_and_audio">Player and audio</string>
     <string name="audio_quality">Audio quality</string>
     <string name="audio_quality_auto">Auto</string>
@@ -333,9 +339,6 @@
     <string name="pause_search_history">Pause search history</string>
     <string name="clear_search_history">Clear search history</string>
     <string name="clear_search_history_confirm">Are you sure you want to clear all search history?</string>
-    <string name="enable_kugou">Enable KuGou lyrics provider</string>
-    <string name="enable_lrclib">Enable LrcLib lyrics provider</string>
-    <string name="set_first_lyrics_provider">Set the first lyrics provider</string>
     <string name="disable_screenshot">Disable screenshot</string>
     <string name="disable_screenshot_desc">When this option is on, screenshots and the app\'s view in Recents are disabled.</string>
     

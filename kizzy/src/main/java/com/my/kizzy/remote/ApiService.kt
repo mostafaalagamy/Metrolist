@@ -63,6 +63,6 @@ class ApiService {
     }
 
     companion object {
-        const val BASE_URL = "https://kizzyapi-1-z9614716.deta.app"
+        const val BASE_URL = "https://kizzy-api.cjjdxhdjd.workers.dev"
     }
 }

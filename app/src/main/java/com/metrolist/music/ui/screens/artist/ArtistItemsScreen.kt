@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -46,6 +47,7 @@ import com.metrolist.music.ui.component.IconButton
 import com.metrolist.music.ui.component.LocalMenuState
 import com.metrolist.music.ui.component.YouTubeGridItem
 import com.metrolist.music.ui.component.YouTubeListItem
+import com.metrolist.music.ui.component.shimmer.GridItemPlaceHolder
 import com.metrolist.music.ui.component.shimmer.ListItemPlaceHolder
 import com.metrolist.music.ui.component.shimmer.ShimmerHost
 import com.metrolist.music.ui.menu.YouTubeAlbumMenu
@@ -69,6 +71,7 @@ fun ArtistItemsScreen(
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
 
     val lazyListState = rememberLazyListState()
+    val lazyGridState = rememberLazyGridState()
     val coroutineScope = rememberCoroutineScope()
 
     val title by viewModel.title.collectAsState()
@@ -77,6 +80,15 @@ fun ArtistItemsScreen(
     LaunchedEffect(lazyListState) {
         snapshotFlow {
             lazyListState.layoutInfo.visibleItemsInfo.any { it.key == "loading" }
+        }.collect { shouldLoadMore ->
+            if (!shouldLoadMore) return@collect
+            viewModel.loadMore()
+        }
+    }
+
+    LaunchedEffect(lazyGridState) {
+        snapshotFlow {
+            lazyGridState.layoutInfo.visibleItemsInfo.any { it.key == "loading" }
         }.collect { shouldLoadMore ->
             if (!shouldLoadMore) return@collect
             viewModel.loadMore()
@@ -186,73 +198,74 @@ fun ArtistItemsScreen(
         }
     } else {
         LazyVerticalGrid(
+            state = lazyGridState,
             columns = GridCells.Adaptive(minSize = GridThumbnailHeight + 24.dp),
-            contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues(),
+            contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues()
         ) {
             items(
                 items = itemsPage?.items.orEmpty(),
-                key = { it.id },
+                key = { it.id }
             ) { item ->
                 YouTubeGridItem(
                     item = item,
-                    isActive =
-                        when (item) {
-                            is SongItem -> mediaMetadata?.id == item.id
-                            is AlbumItem -> mediaMetadata?.album?.id == item.id
-                            else -> false
-                        },
+                    isActive = when (item) {
+                        is SongItem -> mediaMetadata?.id == item.id
+                        is AlbumItem -> mediaMetadata?.album?.id == item.id
+                        else -> false
+                    },
                     isPlaying = isPlaying,
                     fillMaxWidth = true,
                     coroutineScope = coroutineScope,
-                    modifier =
-                        Modifier
-                            .combinedClickable(
-                                onClick = {
+                    modifier = Modifier
+                        .combinedClickable(
+                            onClick = {
+                                when (item) {
+                                    is SongItem -> playerConnection.playQueue(YouTubeQueue(item.endpoint ?: WatchEndpoint(videoId = item.id), item.toMediaMetadata()))
+                                    is AlbumItem -> navController.navigate("album/${item.id}")
+                                    is ArtistItem -> navController.navigate("artist/${item.id}")
+                                    is PlaylistItem -> navController.navigate("online_playlist/${item.id}")
+                                }
+                            },
+                            onLongClick = {
+                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                menuState.show {
                                     when (item) {
-                                        is SongItem ->
-                                            playerConnection.playQueue(
-                                                YouTubeQueue(item.endpoint ?: WatchEndpoint(videoId = item.id), item.toMediaMetadata()),
-                                            )
-                                        is AlbumItem -> navController.navigate("album/${item.id}")
-                                        is ArtistItem -> navController.navigate("artist/${item.id}")
-                                        is PlaylistItem -> navController.navigate("online_playlist/${item.id}")
+                                        is SongItem -> YouTubeSongMenu(
+                                            song = item,
+                                            navController = navController,
+                                            onDismiss = menuState::dismiss
+                                        )
+
+                                        is AlbumItem -> YouTubeAlbumMenu(
+                                            albumItem = item,
+                                            navController = navController,
+                                            onDismiss = menuState::dismiss
+                                        )
+
+                                        is ArtistItem -> YouTubeArtistMenu(
+                                            artist = item,
+                                            onDismiss = menuState::dismiss
+                                        )
+
+                                        is PlaylistItem -> YouTubePlaylistMenu(
+                                            playlist = item,
+                                            coroutineScope = coroutineScope,
+                                            onDismiss = menuState::dismiss
+                                        )
                                     }
-                                },
-                                onLongClick = {
-                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                    menuState.show {
-                                        when (item) {
-                                            is SongItem ->
-                                                YouTubeSongMenu(
-                                                    song = item,
-                                                    navController = navController,
-                                                    onDismiss = menuState::dismiss,
-                                                )
-
-                                            is AlbumItem ->
-                                                YouTubeAlbumMenu(
-                                                    albumItem = item,
-                                                    navController = navController,
-                                                    onDismiss = menuState::dismiss,
-                                                )
-
-                                            is ArtistItem ->
-                                                YouTubeArtistMenu(
-                                                    artist = item,
-                                                    onDismiss = menuState::dismiss,
-                                                )
-
-                                            is PlaylistItem ->
-                                                YouTubePlaylistMenu(
-                                                    playlist = item,
-                                                    coroutineScope = coroutineScope,
-                                                    onDismiss = menuState::dismiss,
-                                                )
-                                        }
-                                    }
-                                },
-                            ),
+                                }
+                            }
+                        )
+                        .animateItem()
                 )
+            }
+
+            if (itemsPage?.continuation != null) {
+                item(key = "loading") {
+                    ShimmerHost(Modifier.animateItem()) {
+                        GridItemPlaceHolder(fillMaxWidth = true)
+                    }
+                }
             }
         }
     }

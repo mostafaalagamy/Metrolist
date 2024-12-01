@@ -14,8 +14,8 @@ import com.metrolist.innertube.models.SearchSuggestions
 import com.metrolist.innertube.models.SongItem
 import com.metrolist.innertube.models.WatchEndpoint
 import com.metrolist.innertube.models.WatchEndpoint.WatchEndpointMusicSupportedConfigs.WatchEndpointMusicConfig.Companion.MUSIC_VIDEO_TYPE_ATV
+import com.metrolist.innertube.models.YouTubeClient.Companion.ANDROID_MUSIC
 import com.metrolist.innertube.models.YouTubeClient.Companion.IOS
-import com.metrolist.innertube.models.YouTubeClient.Companion.TVHTML5
 import com.metrolist.innertube.models.YouTubeClient.Companion.WEB
 import com.metrolist.innertube.models.YouTubeClient.Companion.WEB_REMIX
 import com.metrolist.innertube.models.YouTubeLocale
@@ -458,7 +458,7 @@ object YouTube {
                                 ArtistItemsPage.fromMusicTwoRowItemRenderer(renderer)
                             }
                         },
-                    continuation = null,
+                    continuation = gridRenderer.continuations?.getContinuation()
                 )
             } else {
                 ArtistItemsPage(
@@ -502,15 +502,24 @@ object YouTube {
     suspend fun artistItemsContinuation(continuation: String): Result<ArtistItemsContinuationPage> =
         runCatching {
             val response = innerTube.browse(WEB_REMIX, continuation = continuation).body<BrowseResponse>()
+            val gridContinuation = response.continuationContents?.gridContinuation
+        if (gridContinuation != null) {
             ArtistItemsContinuationPage(
-                items =
-                    response.continuationContents?.musicPlaylistShelfContinuation?.contents?.mapNotNull {
-                        ArtistItemsContinuationPage.fromMusicResponsiveListItemRenderer(it.musicResponsiveListItemRenderer)
-                    }!!,
-                continuation =
-                    response.continuationContents.musicPlaylistShelfContinuation.continuations
-                        ?.getContinuation(),
+                items = gridContinuation.items.mapNotNull {
+                    it.musicTwoRowItemRenderer?.let { renderer ->
+                        ArtistItemsPage.fromMusicTwoRowItemRenderer(renderer)
+                    }
+                },
+                continuation = gridContinuation.continuations?.getContinuation()
             )
+        } else {
+            ArtistItemsContinuationPage(
+                items = response.continuationContents?.musicPlaylistShelfContinuation?.contents?.mapNotNull {
+                    ArtistItemsPage.fromMusicResponsiveListItemRenderer(it.musicResponsiveListItemRenderer)
+                }!!,
+                continuation = response.continuationContents.musicPlaylistShelfContinuation.continuations?.getContinuation()
+                )
+            }
         }
 
     suspend fun playlist(playlistId: String): Result<PlaylistPage> =
@@ -941,26 +950,44 @@ object YouTube {
                     ArtistItemsPage.fromMusicTwoRowItemRenderer(it) as? PlaylistItem
                 }
         }
+        
+    private val PlayerResponse.isValid
+        get() =
+            playabilityStatus.status == "OK" &&
+                streamingData?.adaptiveFormats?.any { it.url != null || it.signatureCipher != null } == true
 
     suspend fun player(
         videoId: String,
         playlistId: String? = null,
     ): Result<PlayerResponse> =
         runCatching {
-            val playerResponse = innerTube.player(IOS, videoId, playlistId).body<PlayerResponse>()
+             var playerResponse: PlayerResponse
+            if (this.cookie != null) { // if logged in: try ANDROID_MUSIC client first because IOS client does not play age restricted songs
+                playerResponse = innerTube.player(ANDROID_MUSIC, videoId, playlistId).body<PlayerResponse>()
+                if (playerResponse.playabilityStatus.status == "OK") {
+                    println("there")
+                    return@runCatching playerResponse
+                }
+            }
+            try {
+                val safePlayerResponse = innerTube.player(WEB_REMIX, videoId, playlistId).body<PlayerResponse>()
+                if (safePlayerResponse.isValid) {
+                    return@runCatching safePlayerResponse
+                }
+            } catch (e: Exception) {
+                error(e)
+            }
+            playerResponse =
+                innerTube.player(IOS, videoId, playlistId).body<PlayerResponse>()
             if (playerResponse.playabilityStatus.status == "OK") {
                 return@runCatching playerResponse
             }
-            val safePlayerResponse = innerTube.player(TVHTML5, videoId, playlistId).body<PlayerResponse>()
-            if (safePlayerResponse.playabilityStatus.status != "OK") {
-                return@runCatching playerResponse
-            }
             val audioStreams = innerTube.pipedStreams(videoId).body<PipedResponse>().audioStreams
-            safePlayerResponse.copy(
+            playerResponse.copy(
                 streamingData =
-                    safePlayerResponse.streamingData?.copy(
+                    playerResponse.streamingData?.copy(
                         adaptiveFormats =
-                            safePlayerResponse.streamingData.adaptiveFormats.mapNotNull { adaptiveFormat ->
+                            playerResponse.streamingData!!.adaptiveFormats.mapNotNull { adaptiveFormat ->
                                 audioStreams.find { it.bitrate == adaptiveFormat.bitrate }?.let {
                                     adaptiveFormat.copy(
                                         url = it.url,

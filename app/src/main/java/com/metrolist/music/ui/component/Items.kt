@@ -33,7 +33,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
-import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -463,8 +462,10 @@ fun SongSmallGridItem(
         AsyncImage(
             model = song.song.thumbnailUrl,
             contentDescription = null,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxSize(),
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .clip(RoundedCornerShape(ThumbnailCornerRadius)),
         )
 
         AnimatedVisibility(
@@ -979,7 +980,7 @@ fun PlaylistListItem(
     thumbnailContent = {
         val painter =
             when (playlist.playlist.name) {
-                stringResource(R.string.liked) -> R.drawable.favorite
+                stringResource(R.string.liked) -> R.drawable.favorite_border
                 stringResource(R.string.offline) -> R.drawable.offline
                 else -> {
                     if (autoPlaylist) {
@@ -996,7 +997,7 @@ fun PlaylistListItem(
                         Modifier
                             .size(ListThumbnailSize)
                             .clip(RoundedCornerShape(ThumbnailCornerRadius))
-                            .background(MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp))
+                            .background(MaterialTheme.colorScheme.surfaceContainer)
             ) {
                 Icon(
                     painter = painterResource(painter), 
@@ -1062,7 +1063,7 @@ fun PlaylistGridItem(
     thumbnailContent = {
         val painter =
             when (playlist.playlist.name) {
-                stringResource(R.string.liked) -> R.drawable.favorite
+                stringResource(R.string.liked) -> R.drawable.favorite_border
                 stringResource(R.string.offline) -> R.drawable.offline
                 else -> {
                     if (autoPlaylist) {
@@ -1079,7 +1080,7 @@ fun PlaylistGridItem(
                     modifier =
                         Modifier
                             .fillMaxSize()
-                            .background(MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp))
+                            .background(MaterialTheme.colorScheme.surfaceContainer)
                 ) {
                     Icon(
                         painter = painterResource(painter),
@@ -1459,12 +1460,11 @@ fun YouTubeGridItem(
                 } else {
                     Modifier.height(GridThumbnailHeight)
                 }.aspectRatio(thumbnailRatio)
-                    .clip(thumbnailShape),
+                 .clip(thumbnailShape),
         ) {
             AsyncImage(
                 model = item.thumbnail,
                 contentDescription = null,
-                contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize(),
             )
 
@@ -1702,7 +1702,6 @@ fun LocalItemsGrid(
         AsyncImage(
             model = thumbnailUrl,
             contentDescription = null,
-            contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize(),
         )
 
@@ -1737,6 +1736,64 @@ fun LocalItemsGrid(
         }
     },
     thumbnailShape = RoundedCornerShape(ThumbnailCornerRadius),
+    fillMaxWidth = fillMaxWidth,
+    modifier = modifier,
+)
+
+@Composable
+fun CircularItemsGrid(
+    title: String,
+    subtitle: String,
+    badges:
+        @Composable()
+        (RowScope.() -> Unit) = {},
+    thumbnailUrl: String?,
+    isActive: Boolean = false,
+    isPlaying: Boolean = false,
+    fillMaxWidth: Boolean = false,
+    modifier: Modifier,
+) = GridItem(
+    title = title,
+    subtitle = subtitle,
+    badges = badges,
+    thumbnailContent = {
+        AsyncImage(
+            model = thumbnailUrl,
+            contentDescription = null,
+            modifier = Modifier.fillMaxSize(),
+        )
+
+        AnimatedVisibility(
+            visible = isActive,
+            enter = fadeIn(tween(500)),
+            exit = fadeOut(tween(500)),
+        ) {
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .background(
+                            color = Color.Black.copy(alpha = 0.4f),
+                            shape = CircleShape,
+                        ),
+            ) {
+                if (isPlaying) {
+                    PlayingIndicator(
+                        color = Color.White,
+                        modifier = Modifier.height(24.dp),
+                    )
+                } else {
+                    Icon(
+                        painter = painterResource(R.drawable.play),
+                        contentDescription = null,
+                        tint = Color.White,
+                    )
+                }
+            }
+        }
+    },
+    thumbnailShape = CircleShape,
     fillMaxWidth = fillMaxWidth,
     modifier = modifier,
 )

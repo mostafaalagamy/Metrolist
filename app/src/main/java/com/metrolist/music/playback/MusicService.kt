@@ -5,7 +5,6 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.database.SQLException
-import android.media.audiofx.LoudnessEnhancer
 import android.media.audiofx.AudioEffect
 import android.net.ConnectivityManager
 import android.os.Binder
@@ -135,6 +134,8 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.time.LocalDateTime
 import javax.inject.Inject
+import kotlin.math.min
+import kotlin.math.pow
 import kotlin.time.Duration.Companion.seconds
 
 @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
@@ -173,11 +174,9 @@ class MusicService :
             database.format(mediaMetadata?.id)
         }
 
-  
+    private val normalizeFactor = MutableStateFlow(1f)
     val playerVolume = MutableStateFlow(dataStore.get(PlayerVolumeKey, 1f).coerceIn(0f, 1f))
 
-    private var loudnessEnhancer: LoudnessEnhancer? = null
-        
     lateinit var sleepTimer: SleepTimer
 
     @Inject
@@ -253,7 +252,9 @@ class MusicService :
 
         connectivityManager = getSystemService()!!
 
-        playerVolume.collectLatest(scope) {
+        combine(playerVolume, normalizeFactor) { playerVolume, normalizeFactor ->
+            playerVolume * normalizeFactor
+        }.collectLatest(scope) {
             player.volume = it
         }
 
@@ -306,25 +307,12 @@ class MusicService :
         ) { format, normalizeAudio ->
             format to normalizeAudio
         }.collectLatest(scope) { (format, normalizeAudio) ->
-            runCatching {
-                if (!normalizeAudio) {
-                    loudnessEnhancer?.enabled = false
-                    loudnessEnhancer?.release()
-                    loudnessEnhancer = null
+            normalizeFactor.value =
+                if (normalizeAudio && format?.loudnessDb != null) {
+                    min(10f.pow(-format.loudnessDb.toFloat() / 20), 1f)
                 } else {
-                    if (loudnessEnhancer == null) {
-                        loudnessEnhancer = LoudnessEnhancer(player.audioSessionId)
-                    }
-                    fun Float?.toMb() = ((this ?: 0f) * 100).toInt()
-                    var loudnessMb = format?.loudnessDb?.toFloat().toMb()
-                    if (loudnessMb !in -2000..2000) {
-                        // Extreme loudness value detected, turning off normalization for this song
-                        loudnessMb = 0
-                    }
-                    loudnessEnhancer?.setTargetGain(5f.toMb() - loudnessMb)
-                    loudnessEnhancer?.enabled = true
+                    1f
                 }
-            }
         }
 
         dataStore.data
@@ -837,8 +825,13 @@ class MusicService :
             }
             scope.launch(Dispatchers.IO) { recoverSong(mediaId, playerResponse) }
 
-            songUrlCache[mediaId] = format.url!! to playerResponse.streamingData!!.expiresInSeconds * 1000L
-            dataSpec.withUri(format.url!!.toUri()).subrange(dataSpec.uriPositionOffset, CHUNK_LENGTH)
+            if (format.url != null) {
+                songUrlCache[mediaId] = format.url!! to playerResponse.streamingData!!.expiresInSeconds * 1000L
+                dataSpec.withUri(format.url!!.toUri()).subrange(dataSpec.uriPositionOffset, CHUNK_LENGTH)
+            } else {
+                songUrlCache[mediaId] = format.findUrl() to playerResponse.streamingData!!.expiresInSeconds * 1000L
+                dataSpec.withUri(format.findUrl().toUri()).subrange(dataSpec.uriPositionOffset, CHUNK_LENGTH)
+            }
         }
     }
 
@@ -949,7 +942,6 @@ class MusicService :
         player.removeListener(this)
         player.removeListener(sleepTimer)
         player.release()
-        loudnessEnhancer?.release()
         super.onDestroy()
     }
 

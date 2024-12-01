@@ -34,6 +34,7 @@ import com.metrolist.music.constants.StatPeriod
 import com.metrolist.music.extensions.togglePlayPause
 import com.metrolist.music.models.toMediaMetadata
 import com.metrolist.music.playback.queues.YouTubeQueue
+import com.metrolist.music.ui.component.CircularItemsGrid
 import com.metrolist.music.ui.component.ChoiceChipsRow
 import com.metrolist.music.ui.component.IconButton
 import com.metrolist.music.ui.component.LocalItemsGrid
@@ -66,7 +67,6 @@ fun StatsScreen(
     val mostPlayedSongsStats by viewModel.mostPlayedSongsStats.collectAsState()
     val mostPlayedArtists by viewModel.mostPlayedArtists.collectAsState()
     val mostPlayedAlbums by viewModel.mostPlayedAlbums.collectAsState()
-    println("sui $mostPlayedAlbums")
     val firstEvent by viewModel.firstEvent.collectAsState()
     val currentDate = LocalDateTime.now()
 
@@ -263,7 +263,7 @@ fun StatsScreen(
                     items = mostPlayedArtists,
                     key = { _, artist -> artist.id },
                 ) { index, artist ->
-                    LocalItemsGrid(
+                    CircularItemsGrid(
                         title = "${index + 1}. ${artist.artist.name}",
                         subtitle =
                             joinByBullet(
@@ -273,7 +273,6 @@ fun StatsScreen(
                         thumbnailUrl = artist.artist.thumbnailUrl,
                         modifier =
                             Modifier
-                                .fillMaxWidth()
                                 .combinedClickable(
                                     onClick = {
                                         navController.navigate("artist/${artist.id}")

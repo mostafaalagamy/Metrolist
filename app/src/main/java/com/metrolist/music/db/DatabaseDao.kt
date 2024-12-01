@@ -108,7 +108,7 @@ interface DatabaseDao {
     fun likedSongsByRowIdAsc(): Flow<List<Song>>
 
     @Transaction
-    @Query("SELECT * FROM song WHERE liked ORDER BY inLibrary")
+    @Query("SELECT * FROM song WHERE liked ORDER BY likedDate")
     fun likedSongsByCreateDateAsc(): Flow<List<Song>>
 
     @Transaction
@@ -336,9 +336,9 @@ interface DatabaseDao {
     """,
     )
     fun mostPlayedSongsStats(
+        fromTimeStamp: Long,
         limit: Int = 6,
         offset: Int = 0,
-        fromTimeStamp: Long,
         toTimeStamp: Long? = LocalDateTime.now().toInstant(ZoneOffset.UTC).toEpochMilli(),
     ): Flow<List<SongWithStats>>
 
@@ -449,6 +449,9 @@ interface DatabaseDao {
     @Transaction
     @Query("SELECT * FROM song WHERE id = :songId")
     fun song(songId: String?): Flow<Song?>
+
+    @Query("SELECT * FROM Song WHERE id = :songId LIMIT 1")
+    fun getSongById(songId: String): Song?
 
     @Query("SELECT * FROM song_artist_map WHERE songId = :songId")
     fun songArtistMap(songId: String): List<SongArtistMap>
@@ -985,7 +988,12 @@ interface DatabaseDao {
         albumPage.songs
             .map(SongItem::toMediaMetadata)
             .onEach(::insert)
-            .mapIndexed { index, song ->
+            .onEach {
+                val existingSong = getSongById(it.id)
+                if (existingSong != null) {
+                    update(existingSong, it)
+                }
+            }.mapIndexed { index, song ->
                 SongAlbumMap(
                     songId = song.id,
                     albumId = albumPage.album.browseId,
@@ -1091,7 +1099,12 @@ interface DatabaseDao {
         albumPage.songs
             .map(SongItem::toMediaMetadata)
             .onEach(::insert)
-            .mapIndexed { index, song ->
+            .onEach {
+                val existingSong = getSongById(it.id)
+                if (existingSong != null) {
+                    update(existingSong, it)
+                }
+            }.mapIndexed { index, song ->
                 SongAlbumMap(
                     songId = song.id,
                     albumId = albumPage.album.browseId,

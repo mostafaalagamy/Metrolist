@@ -11,12 +11,14 @@ val DynamicThemeKey = booleanPreferencesKey("dynamicTheme")
 val DarkModeKey = stringPreferencesKey("darkMode")
 val PureBlackKey = booleanPreferencesKey("pureBlack")
 val DefaultOpenTabKey = stringPreferencesKey("defaultOpenTab")
+val SlimNavBarKey = booleanPreferencesKey("slimNavBar")
 val GridItemsSizeKey = stringPreferencesKey("gridItemSize")
 val SliderStyleKey = stringPreferencesKey("sliderStyle")
 
 enum class SliderStyle {
     DEFAULT,
     SQUIGGLY,
+    SLIM,
 }
 
 const val SYSTEM_DEFAULT = "SYSTEM_DEFAULT"
@@ -223,8 +225,8 @@ enum class QuickPicks {
 }
 
 enum class PreferredLyricsProvider {
-    KUGOU,
     LRCLIB,
+    KUGOU,
 }
 
 enum class PlayerBackgroundStyle {
