@@ -2,7 +2,6 @@ package com.metrolist.innertube.models.response
 
 import com.metrolist.innertube.models.Button
 import com.metrolist.innertube.models.Continuation
-import com.metrolist.innertube.models.GridRenderer
 import com.metrolist.innertube.models.Menu
 import com.metrolist.innertube.models.MusicShelfRenderer
 import com.metrolist.innertube.models.ResponseContext
@@ -50,7 +49,6 @@ data class BrowseResponse(
     data class ContinuationContents(
         val sectionListContinuation: SectionListContinuation?,
         val musicPlaylistShelfContinuation: MusicPlaylistShelfContinuation?,
-        val gridContinuation: GridContinuation?,
     ) {
         @Serializable
         data class SectionListContinuation(
@@ -61,11 +59,6 @@ data class BrowseResponse(
         @Serializable
         data class MusicPlaylistShelfContinuation(
             val contents: List<MusicShelfRenderer.Content>,
-            val continuations: List<Continuation>?,
-        )
-        @Serializable
-        data class GridContinuation(
-            val items: List<GridRenderer.Item>,
             val continuations: List<Continuation>?,
         )
     }
