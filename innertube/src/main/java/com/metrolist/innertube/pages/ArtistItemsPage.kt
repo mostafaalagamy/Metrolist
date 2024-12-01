@@ -78,7 +78,7 @@ data class ArtistItemsPage(
                                 ?.content
                                 ?.musicPlayButtonRenderer
                                 ?.playNavigationEndpoint
-                                ?.watchPlaylistEndpoint
+                                ?.anyWatchEndpoint
                                 ?.playlistId ?: return null,
                         title =
                             renderer.title.runs

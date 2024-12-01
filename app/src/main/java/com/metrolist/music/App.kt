@@ -21,6 +21,7 @@ import com.metrolist.music.constants.ProxyEnabledKey
 import com.metrolist.music.constants.ProxyTypeKey
 import com.metrolist.music.constants.ProxyUrlKey
 import com.metrolist.music.constants.SYSTEM_DEFAULT
+import com.metrolist.music.constants.UseLoginForBrowse
 import com.metrolist.music.constants.VisitorDataKey
 import com.metrolist.music.extensions.toEnum
 import com.metrolist.music.extensions.toInetSocketAddress
@@ -73,6 +74,10 @@ class App :
                 Toast.makeText(this, "Failed to parse proxy url.", LENGTH_SHORT).show()
                 reportException(e)
             }
+        }
+
+        if (dataStore[UseLoginForBrowse] == true) {
+            YouTube.useLoginForBrowse = true
         }
 
         GlobalScope.launch {
