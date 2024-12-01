@@ -89,9 +89,9 @@ import com.metrolist.music.ui.component.LocalMenuState
 import com.metrolist.music.ui.component.NavigationTile
 import com.metrolist.music.ui.component.NavigationTitle
 import com.metrolist.music.ui.component.SongListItem
-import com.metrolist.music.ui.component.ArtistGridItem
+import com.metrolist.music.ui.component.SongSmallGridItem
 import com.metrolist.music.ui.component.YouTubeGridItem
-import com.metrolist.music.ui.component.AlbumGridItem
+import com.metrolist.music.ui.component.YouTubeSmallGridItem
 import com.metrolist.music.ui.component.shimmer.TextPlaceholder
 import com.metrolist.music.ui.component.shimmer.ShimmerHost
 import com.metrolist.music.ui.component.shimmer.GridItemPlaceHolder
@@ -354,7 +354,7 @@ fun HomeScreen(
                                 when (it) {
                                     in 0..4 ->
                                         item {
-                                            ArtistGridItem(
+                                            ArtistSmallGridItem(
                                                 artist = keepListeningArtists!![it],
                                                 modifier =
                                                     Modifier
@@ -381,7 +381,7 @@ fun HomeScreen(
 
                                     in 5..9 ->
                                         item {
-                                            AlbumGridItem(
+                                            AlbumSmallGridItem(
                                                 song = keepListeningAlbums!![it - 5],
                                                 modifier =
                                                     Modifier
@@ -398,7 +398,7 @@ fun HomeScreen(
 
                                     in 10..19 ->
                                         item {
-                                            YouTubeGridItem(
+                                            SongSmallGridItem(
                                                 song = keepListeningSongs!![it - 10],
                                                 modifier =
                                                     Modifier
