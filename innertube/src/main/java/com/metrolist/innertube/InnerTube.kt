@@ -63,8 +63,6 @@ class InnerTube {
             httpClient = createClient()
         }
 
-    var useLoginForBrowse: Boolean = false
-
     @OptIn(ExperimentalSerializationApi::class)
     private fun createClient() =
         HttpClient(OkHttp) {
@@ -131,7 +129,7 @@ class InnerTube {
         params: String? = null,
         continuation: String? = null,
     ) = httpClient.post("search") {
-        ytClient(client, setLogin = useLoginForBrowse)
+        ytClient(client)
         setBody(
             SearchBody(
                 context = client.toContext(locale, visitorData),
@@ -182,7 +180,7 @@ class InnerTube {
         continuation: String? = null,
         setLogin: Boolean = false,
     ) = httpClient.post("browse") {
-        ytClient(client, setLogin = setLogin || useLoginForBrowse)
+        ytClient(client, setLogin)
         setBody(
             BrowseBody(
                 context = client.toContext(locale, visitorData),
