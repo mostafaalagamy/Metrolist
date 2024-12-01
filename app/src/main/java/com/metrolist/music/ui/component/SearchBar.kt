@@ -59,6 +59,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -114,16 +115,15 @@ fun TopSearchBar(
     content: @Composable ColumnScope.() -> Unit,
 ) {
     Box(modifier = modifier.fillMaxWidth()) {
-        // Fixed Surface background
         Surface(
             color = MaterialTheme.colorScheme.surface,
             tonalElevation = tonalElevation,
             modifier = Modifier
+                .clip(RoundedCornerShape(20.dp))
                 .fillMaxWidth()
-                .height(100.dp)
+                .height(90.dp)
         ) {}
 
-        // Fixed SearchBar
         SearchBar(
             query = query,
             onQueryChange = onQueryChange,
