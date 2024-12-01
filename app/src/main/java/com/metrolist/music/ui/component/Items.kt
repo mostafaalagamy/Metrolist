@@ -583,7 +583,6 @@ fun ArtistGridItem(
         AsyncImage(
             model = artist.artist.thumbnailUrl,
             contentDescription = null,
-            contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize(),
         )
     },
@@ -831,7 +830,6 @@ fun AlbumGridItem(
         AsyncImage(
             model = album.album.thumbnailUrl,
             contentDescription = null,
-            contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize(),
         )
 
@@ -929,7 +927,6 @@ fun AlbumSmallGridItem(
             AsyncImage(
                 model = song.song.thumbnailUrl,
                 contentDescription = null,
-                contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize(),
             )
 
@@ -1012,7 +1009,6 @@ fun PlaylistListItem(
                 AsyncImage(
                     model = playlist.thumbnails[0],
                     contentDescription = null,
-                    contentScale = ContentScale.Crop,
                     modifier =
                         Modifier
                             .size(ListThumbnailSize)
@@ -1097,7 +1093,6 @@ fun PlaylistGridItem(
                 AsyncImage(
                     model = playlist.thumbnails[0],
                     contentDescription = null,
-                    contentScale = ContentScale.Crop,
                     modifier =
                         Modifier
                             .size(width)
@@ -1615,7 +1610,6 @@ fun YouTubeSmallGridItem(
         AsyncImage(
             model = item.thumbnail,
             contentDescription = null,
-            contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxWidth(),
         )
         if (item is SongItem) {
