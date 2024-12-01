@@ -1607,7 +1607,7 @@ fun YouTubeSmallGridItem(
         AsyncImage(
             model = item.thumbnail,
             contentDescription = null,
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxSize(),
         )
         if (item is SongItem) {
             AnimatedVisibility(
