@@ -89,9 +89,9 @@ import com.metrolist.music.ui.component.LocalMenuState
 import com.metrolist.music.ui.component.NavigationTile
 import com.metrolist.music.ui.component.NavigationTitle
 import com.metrolist.music.ui.component.SongListItem
-import com.metrolist.music.ui.component.SongSmallGridItem
+import com.metrolist.music.ui.component.ArtistGridItem
 import com.metrolist.music.ui.component.YouTubeGridItem
-import com.metrolist.music.ui.component.YouTubeSmallGridItem
+import com.metrolist.music.ui.component.AlbumGridItem
 import com.metrolist.music.ui.component.shimmer.TextPlaceholder
 import com.metrolist.music.ui.component.shimmer.ShimmerHost
 import com.metrolist.music.ui.component.shimmer.GridItemPlaceHolder
