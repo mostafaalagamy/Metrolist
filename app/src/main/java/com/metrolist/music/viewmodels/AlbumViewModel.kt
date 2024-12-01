@@ -37,7 +37,7 @@ class AlbumViewModel
                     .album(albumId)
                     .onSuccess {
                         playlistId.value = it.album.playlistId
-                        otherVersions.value = it.album.otherVersions
+                        otherVersions.value = it.otherVersions
                         database.transaction {
                             if (album == null) {
                                 insert(it)
