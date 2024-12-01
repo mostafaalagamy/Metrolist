@@ -121,7 +121,7 @@ fun TopSearchBar(
             modifier = Modifier
                 .clip(RoundedCornerShape(20.dp))
                 .fillMaxWidth()
-                .height(90.dp)
+                .height(96.dp)
         ) {}
 
         SearchBar(
