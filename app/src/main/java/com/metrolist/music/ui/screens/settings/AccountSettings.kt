@@ -24,6 +24,7 @@ import com.metrolist.music.constants.AccountChannelHandleKey
 import com.metrolist.music.constants.AccountEmailKey
 import com.metrolist.music.constants.AccountNameKey
 import com.metrolist.music.constants.InnerTubeCookieKey
+import com.metrolist.music.constants.UseLoginForBrowse
 import com.metrolist.music.ui.component.IconButton
 import com.metrolist.music.ui.component.SwitchPreference
 import com.metrolist.music.ui.component.PreferenceEntry
@@ -37,7 +38,6 @@ fun AccountSettings(
     navController: NavController,
     scrollBehavior: TopAppBarScrollBehavior,
 ) {
-    val context = LocalContext.current
     val accountName by rememberPreference(AccountNameKey, "")
     val accountEmail by rememberPreference(AccountEmailKey, "")
     val accountChannelHandle by rememberPreference(AccountChannelHandleKey, "")
@@ -45,6 +45,8 @@ fun AccountSettings(
     val isLoggedIn = remember(innerTubeCookie) {
         "SAPISID" in parseCookieString(innerTubeCookie)
     }
+    val (useLoginForBrowse, onUseLoginForBrowseChange) = rememberPreference(key = UseLoginForBrowse, defaultValue = false)
+    val context = LocalContext.current
 
     Scaffold(
         topBar = {
@@ -87,6 +89,20 @@ fun AccountSettings(
                 icon = { Icon(painterResource(R.drawable.login), null) },
                 onClick = { navController.navigate("login") },
             )
+
+            // Only show the SwitchPreference when user is logged in
+            if (isLoggedIn) {
+                SwitchPreference(
+                    title = { Text(stringResource(R.string.use_login_for_browse)) },
+                    description = stringResource(R.string.use_login_for_browse_desc),
+                    icon = { Icon(painterResource(R.drawable.person), null) },
+                    checked = useLoginForBrowse,
+                    onCheckedChange = {
+                        YouTube.useLoginForBrowse = it
+                        onUseLoginForBrowseChange(it)
+                    }
+                )
+            }
             PreferenceEntry(
                 title = { Text(stringResource(R.string.discord_integration)) },
                 icon = { Icon(painterResource(R.drawable.discord), null) },

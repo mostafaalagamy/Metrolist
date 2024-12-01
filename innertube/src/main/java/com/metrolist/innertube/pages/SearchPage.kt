@@ -104,7 +104,7 @@ object SearchPage {
                             ?.content
                             ?.musicPlayButtonRenderer
                             ?.playNavigationEndpoint
-                            ?.watchPlaylistEndpoint
+                            ?.anyWatchEndpoint
                             ?.playlistId
                             ?: return null,
                     title =
