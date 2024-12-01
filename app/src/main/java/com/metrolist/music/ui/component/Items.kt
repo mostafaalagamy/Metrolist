@@ -601,7 +601,6 @@ fun ArtistSmallGridItem(
         AsyncImage(
             model = artist.artist.thumbnailUrl,
             contentDescription = null,
-            contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize(),
         )
     },
@@ -1031,7 +1030,6 @@ fun PlaylistListItem(
                         AsyncImage(
                             model = playlist.thumbnails.getOrNull(index),
                             contentDescription = null,
-                            contentScale = ContentScale.Crop,
                             modifier =
                                 Modifier
                                     .align(alignment)
@@ -1115,7 +1113,6 @@ fun PlaylistGridItem(
                         AsyncImage(
                             model = playlist.thumbnails.getOrNull(index),
                             contentDescription = null,
-                            contentScale = ContentScale.Crop,
                             modifier =
                                 Modifier
                                     .align(alignment)
