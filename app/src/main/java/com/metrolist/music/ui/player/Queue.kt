@@ -258,7 +258,7 @@ fun Queue(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 24.dp)
+                        .padding(horizontal = 30.dp)
                         .windowInsetsPadding(
                             WindowInsets.systemBars
                                 .only(WindowInsetsSides.Bottom + WindowInsetsSides.Horizontal),
