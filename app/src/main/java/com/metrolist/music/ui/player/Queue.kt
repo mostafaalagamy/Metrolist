@@ -156,25 +156,25 @@ fun Queue(
     val snackbarHostState = remember { SnackbarHostState() }
     var dismissJob: Job? by remember { mutableStateOf(null) }
 
-var showSleepTimerDialog by remember { mutableStateOf(false) }
-var sleepTimerValue by remember { mutableStateOf(30f) }
-val sleepTimerEnabled = remember(playerConnection.service.sleepTimer.triggerTime, playerConnection.service.sleepTimer.pauseWhenSongEnd) {
-    playerConnection.service.sleepTimer.isActive
-}
-var sleepTimerTimeLeft by remember { mutableStateOf(0L) }
+    var showSleepTimerDialog by remember { mutableStateOf(false) }
+    var sleepTimerValue by remember { mutableStateOf(30f) }
+    val sleepTimerEnabled = remember(playerConnection.service.sleepTimer.triggerTime, playerConnection.service.sleepTimer.pauseWhenSongEnd) {
+        playerConnection.service.sleepTimer.isActive
+    }
+    var sleepTimerTimeLeft by remember { mutableStateOf(0L) }
 
-LaunchedEffect(sleepTimerEnabled) {
-    if (sleepTimerEnabled) {
-        while (isActive) {
-            sleepTimerTimeLeft = if (playerConnection.service.sleepTimer.pauseWhenSongEnd) {
-                playerConnection.player.duration - playerConnection.player.currentPosition
-            } else {
-                playerConnection.service.sleepTimer.triggerTime - System.currentTimeMillis()
+    LaunchedEffect(sleepTimerEnabled) {
+        if (sleepTimerEnabled) {
+            while (isActive) {
+                sleepTimerTimeLeft = if (playerConnection.service.sleepTimer.pauseWhenSongEnd) {
+                    playerConnection.player.duration - playerConnection.player.currentPosition
+                } else {
+                    playerConnection.service.sleepTimer.triggerTime - System.currentTimeMillis()
+                }
+                delay(1000L)
             }
-            delay(1000L)
         }
     }
-}
 
     if (showDetailsDialog) {
         AlertDialog(
@@ -262,53 +262,53 @@ LaunchedEffect(sleepTimerEnabled) {
                     ),
             ) {
                 if (showSleepTimerDialog) {
-    AlertDialog(
-        properties = DialogProperties(usePlatformDefaultWidth = false),
-        onDismissRequest = { showSleepTimerDialog = false },
-        icon = { Icon(painter = painterResource(R.drawable.bedtime), contentDescription = null) },
-        title = { Text(stringResource(R.string.sleep_timer)) },
-        confirmButton = {
-            TextButton(
-                onClick = {
-                    showSleepTimerDialog = false
-                    playerConnection.service.sleepTimer.start(sleepTimerValue.roundToInt())
-                }
-            ) {
-                Text(stringResource(android.R.string.ok))
-            }
-        },
-        dismissButton = {
-            TextButton(
-                onClick = { showSleepTimerDialog = false }
-            ) {
-                Text(stringResource(android.R.string.cancel))
-            }
-        },
-        text = {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(
-                    text = pluralStringResource(R.plurals.minute, sleepTimerValue.roundToInt(), sleepTimerValue.roundToInt()),
-                    style = MaterialTheme.typography.bodyLarge
-                )
+                    AlertDialog(
+                        properties = DialogProperties(usePlatformDefaultWidth = false),
+                        onDismissRequest = { showSleepTimerDialog = false },
+                        icon = { Icon(painter = painterResource(R.drawable.bedtime), contentDescription = null) },
+                        title = { Text(stringResource(R.string.sleep_timer)) },
+                        confirmButton = {
+                            TextButton(
+                                onClick = {
+                                    showSleepTimerDialog = false
+                                    playerConnection.service.sleepTimer.start(sleepTimerValue.roundToInt())
+                                }
+                            ) {
+                                Text(stringResource(android.R.string.ok))
+                            }
+                        },
+                        dismissButton = {
+                            TextButton(
+                                onClick = { showSleepTimerDialog = false }
+                            ) {
+                                Text(stringResource(android.R.string.cancel))
+                            }
+                        },
+                        text = {
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                Text(
+                                    text = pluralStringResource(R.plurals.minute, sleepTimerValue.roundToInt(), sleepTimerValue.roundToInt()),
+                                    style = MaterialTheme.typography.bodyLarge
+                                )
 
-                Slider(
-                    value = sleepTimerValue,
-                    onValueChange = { sleepTimerValue = it },
-                    valueRange = 5f..120f,
-                    steps = (120 - 5) / 5 - 1
-                )
+                                Slider(
+                                    value = sleepTimerValue,
+                                    onValueChange = { sleepTimerValue = it },
+                                    valueRange = 5f..120f,
+                                    steps = (120 - 5) / 5 - 1
+                                )
 
-                OutlinedButton(
-                    onClick = {
-                        showSleepTimerDialog = false
-                        playerConnection.service.sleepTimer.start(-1)
-                    }
-                ) {
-                    Text(stringResource(R.string.end_of_song))
-                }
-            }
-        }
-    )
+                                OutlinedButton(
+                                    onClick = {
+                                        showSleepTimerDialog = false
+                                        playerConnection.service.sleepTimer.start(-1)
+                                    }
+                                ) {
+                                    Text(stringResource(R.string.end_of_song))
+                                }
+                            }
+                        }
+                    )
                 }
                 
                 TextButton(onClick = { state.expandSoft() }) {
@@ -354,22 +354,22 @@ LaunchedEffect(sleepTimerEnabled) {
                 Spacer(modifier = Modifier.width(32.dp))
 
                 TextButton(onClick = { showSleepTimerDialog = true }) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
-    ) {
-        Icon(
-            painter = painterResource(id = R.drawable.bedtime),
-            contentDescription = stringResource(R.string.sleep_timer),
-            modifier = Modifier.size(20.dp),
-            tint = TextBackgroundColor
-        )
-        Spacer(modifier = Modifier.width(4.dp))
-        Text(
-            text = stringResource(id = R.string.sleep_timer),
-            color = TextBackgroundColor
-        )
-    }
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.bedtime),
+                            contentDescription = null,
+                            modifier = Modifier.size(20.dp),
+                            tint = TextBackgroundColor
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(
+                            text = stringResource(id = R.string.sleep_timer),
+                            color = TextBackgroundColor
+                        )
+                    }
                 }
             }
         },
