@@ -106,6 +106,7 @@ import androidx.media3.common.Player.STATE_READY
 import androidx.media3.exoplayer.offline.Download
 import androidx.media3.exoplayer.offline.DownloadRequest
 import androidx.media3.exoplayer.offline.DownloadService
+import androidx.media3.exoplayer.source.ShuffleOrder.DefaultShuffleOrder
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.ImageLoader
@@ -128,6 +129,7 @@ import com.metrolist.music.constants.SliderStyle
 import com.metrolist.music.constants.SliderStyleKey
 import com.metrolist.music.constants.ThumbnailCornerRadius
 import com.metrolist.music.db.entities.PlaylistSongMap
+import com.metrolist.music.extensions.toggleRepeatMode
 import com.metrolist.music.extensions.togglePlayPause
 import com.metrolist.music.extensions.toggleRepeatMode
 import com.metrolist.music.models.MediaMetadata
@@ -207,6 +209,7 @@ fun BottomSheetPlayer(
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
     val currentSong by playerConnection.currentSong.collectAsState(initial = null)
     val automix by playerConnection.service.automixItems.collectAsState()
+    val repeatMode by playerConnection.repeatMode.collectAsState()
 
     val canSkipPrevious by playerConnection.canSkipPrevious.collectAsState()
     val canSkipNext by playerConnection.canSkipNext.collectAsState()
@@ -224,8 +227,6 @@ fun BottomSheetPlayer(
     var sliderPosition by remember {
         mutableStateOf<Long?>(null)
     }
-
-
 
     var gradientColors by remember {
         mutableStateOf<List<Color>>(emptyList())
@@ -620,186 +621,96 @@ fun BottomSheetPlayer(
             )
 
             Row(
-                horizontalArrangement =
-                    when (playerTextAlignment) {
-                        PlayerTextAlignment.SIDED -> Arrangement.Start
-                        PlayerTextAlignment.CENTER -> Arrangement.Center
-                    },
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = PlayerHorizontalPadding),
-            ) {
-                AnimatedContent(
-                    targetState = mediaMetadata.title,
-                    transitionSpec = { fadeIn() togetherWith fadeOut() },
-                    label = "",
-                ) { title ->
-                    Text(
-                        text = title,
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        color = TextBackgroundColor,
-                        modifier =
-                            Modifier
-                                .basicMarquee()
-                                .clickable(enabled = mediaMetadata.album != null) {
-                                    navController.navigate("album/${mediaMetadata.album!!.id}")
-                                    state.collapseSoft()
-                                },
-                    )
-                }
-            }
-
-            Spacer(Modifier.height(6.dp))
-
-            Row(
-                horizontalArrangement =
-                    when (playerTextAlignment) {
-                        PlayerTextAlignment.SIDED -> Arrangement.Start
-                        PlayerTextAlignment.CENTER -> Arrangement.Center
-                    },
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = PlayerHorizontalPadding),
-            ) {
-                mediaMetadata.artists.fastForEachIndexed { index, artist ->
-                    AnimatedContent(
-                        targetState = artist.name,
-                        transitionSpec = { fadeIn() togetherWith fadeOut() },
-                        label = "",
-                    ) { name ->
-                        Text(
-                            text = name,
-                            style = MaterialTheme.typography.titleMedium,
-                            color = TextBackgroundColor,
-                            maxLines = 1,
-                            modifier =
-                                Modifier.clickable(enabled = artist.id != null) {
-                                    navController.navigate("artist/${artist.id}")
-                                    state.collapseSoft()
-                                },
-                        )
-                    }
-
-                    if (index != mediaMetadata.artists.lastIndex) {
-                        AnimatedContent(
-                            targetState = ", ",
-                            transitionSpec = { fadeIn() togetherWith fadeOut() },
-                            label = "",
-                        ) { comma ->
-                            Text(
-                                text = comma,
-                                style = MaterialTheme.typography.titleMedium,
-                                color = TextBackgroundColor,
-                            )
-                        }
-                    }
-                }
-            }
-
-            Spacer(Modifier.height(12.dp))
-
-            Row(
-                horizontalArrangement = Arrangement.Start,
+                horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
                 modifier =
                     Modifier
                         .fillMaxWidth()
                         .padding(horizontal = PlayerHorizontalPadding),
             ) {
-                Box(
-                    modifier =
-                        Modifier
-                            .size(42.dp)
-                            .clip(RoundedCornerShape(24.dp))
-                            .background(MaterialTheme.colorScheme.primary)
-                            .clickable {
-                                playerConnection.service.startRadioSeamlessly()
-                            },
-                ) {
-                    Image(
-                        painter = painterResource(R.drawable.radio),
-                        contentDescription = null,
-                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary),
-                        modifier =
-                            Modifier
-                                .align(Alignment.Center)
-                                .size(24.dp),
-                    )
-                }
-
-                Spacer(modifier = Modifier.size(12.dp))
-
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier =
-                        Modifier
-                            .size(42.dp)
-                            .clip(RoundedCornerShape(24.dp))
-                            .background(MaterialTheme.colorScheme.primary),
+                Column(
+                    modifier = Modifier.weight(1f)
                 ) {
                     AnimatedContent(
-                        label = "sleepTimer",
-                        targetState = sleepTimerEnabled,
-                    ) { sleepTimerEnabled ->
-                        if (sleepTimerEnabled) {
-                            Text(
-                                text = makeTimeString(sleepTimerTimeLeft),
-                                style = MaterialTheme.typography.labelLarge,
-                                color = TextBackgroundColor,
-                                maxLines = 1,
-                                modifier =
-                                    Modifier
-                                        .clip(RoundedCornerShape(50))
-                                        .clickable(onClick = playerConnection.service.sleepTimer::clear)
-                                        .basicMarquee(),
-                            )
-                        } else {
-                            Box(
-                                modifier =
-                                    Modifier
-                                        .size(42.dp)
-                                        .clip(RoundedCornerShape(24.dp))
-                                        .background(MaterialTheme.colorScheme.primary)
-                                        .clickable {
-                                            showSleepTimerDialog = true
-                                        },
-                            ) {
-                                Image(
-                                    painter = painterResource(R.drawable.bedtime),
-                                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary),
-                                    contentDescription = null,
+                        targetState = mediaMetadata.title,
+                        transitionSpec = { fadeIn() togetherWith fadeOut() },
+                        label = "",
+                    ) { title ->
+                        Text(
+                            text = title,
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.Bold,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            color = TextBackgroundColor,
+                            modifier =
+                                Modifier
+                                    .basicMarquee()
+                                    .clickable(enabled = mediaMetadata.album != null) {
+                                        navController.navigate("album/${mediaMetadata.album!!.id}")
+                                        state.collapseSoft()
+                                    },
+                        )
+                    }
+
+                    Spacer(Modifier.height(6.dp))
+
+                    Row(
+                        horizontalArrangement = Arrangement.Start,
+                    ) {
+                        mediaMetadata.artists.fastForEachIndexed { index, artist ->
+                            AnimatedContent(
+                                targetState = artist.name,
+                                transitionSpec = { fadeIn() togetherWith fadeOut() },
+                                label = "",
+                            ) { name ->
+                                Text(
+                                    text = name,
+                                    style = MaterialTheme.typography.titleMedium,
+                                    color = TextBackgroundColor,
+                                    maxLines = 1,
                                     modifier =
-                                        Modifier
-                                            .align(Alignment.Center)
-                                            .size(24.dp),
+                                        Modifier.clickable(enabled = artist.id != null) {
+                                            navController.navigate("artist/${artist.id}")
+                                            state.collapseSoft()
+                                        },
                                 )
+                            }
+
+                            if (index != mediaMetadata.artists.lastIndex) {
+                                AnimatedContent(
+                                    targetState = ", ",
+                                    transitionSpec = { fadeIn() togetherWith fadeOut() },
+                                    label = "",
+                                ) { comma ->
+                                    Text(
+                                        text = comma,
+                                        style = MaterialTheme.typography.titleMedium,
+                                        color = TextBackgroundColor,
+                                    )
+                                }
                             }
                         }
                     }
                 }
-
-                Spacer(modifier = Modifier.size(12.dp))
+    
+                Spacer(modifier = Modifier.width(12.dp))
 
                 Box(
                     modifier =
                         Modifier
-                            .size(42.dp)
+                            .size(40.dp)
                             .clip(RoundedCornerShape(24.dp))
                             .background(MaterialTheme.colorScheme.primary)
                             .clickable {
-                                 val intent =
-                                     Intent().apply {
-                                         action = Intent.ACTION_SEND
-                                         type = "text/plain"
-                                         putExtra(Intent.EXTRA_TEXT, "https://music.youtube.com/watch?v=${mediaMetadata.id}")
-                                 }
-                                         context.startActivity(Intent.createChooser(intent, null))
-                                 },
+                                val intent =
+                                    Intent().apply {
+                                        action = Intent.ACTION_SEND
+                                        type = "text/plain"
+                                        putExtra(Intent.EXTRA_TEXT, "https://music.youtube.com/watch?v=${mediaMetadata.id}")
+                                    }
+                                context.startActivity(Intent.createChooser(intent, null))
+                            },
                 ) {
                     Image(
                         painter = painterResource(R.drawable.share),
@@ -815,90 +726,10 @@ fun BottomSheetPlayer(
                 Spacer(modifier = Modifier.size(12.dp))
 
                 Box(
-                    modifier = Modifier
-                        .size(42.dp)
-                        .clip(RoundedCornerShape(24.dp))
-                        .background(MaterialTheme.colorScheme.primary)
-                        .clickable {
-                            when (download?.state) {
-                                Download.STATE_COMPLETED -> {
-                                    DownloadService.sendRemoveDownload(
-                                        context,
-                                        ExoDownloadService::class.java,
-                                        mediaMetadata.id,
-                                        false,
-                                    )
-                                }
-                                Download.STATE_DOWNLOADING -> {
-                                 // Cancel download when pressed during download process
-                                    DownloadService.sendRemoveDownload(
-                                        context,
-                                        ExoDownloadService::class.java,
-                                        mediaMetadata.id,
-                                        false,
-                                    )
-                                }
-                                else -> {
-                                    database.transaction {
-                                        insert(mediaMetadata)
-                                    }
-                                    val downloadRequest =
-                                        DownloadRequest
-                                            .Builder(mediaMetadata.id, mediaMetadata.id.toUri())
-                                            .setCustomCacheKey(mediaMetadata.id)
-                                            .setData(mediaMetadata.title.toByteArray())
-                                            .build()
-                                    DownloadService.sendAddDownload(
-                                        context,
-                                        ExoDownloadService::class.java,
-                                        downloadRequest,
-                                        false,
-                                    )
-                                }
-                            }
-                        },
-                ) {
-                 // Handle different download states
-                    when (download?.state) {
-                        Download.STATE_COMPLETED -> {
-                            Image(
-                                painter = painterResource(R.drawable.offline),
-                                contentDescription = "Downloaded",
-                                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary),
-                                modifier = Modifier
-                                    .align(Alignment.Center)
-                                    .size(24.dp),
-                            )
-                        }
-                        Download.STATE_DOWNLOADING -> {
-                            CircularProgressIndicator(
-                                modifier = Modifier
-                                    .align(Alignment.Center)
-                                    .size(24.dp),
-                                color = MaterialTheme.colorScheme.onPrimary,
-                                strokeWidth = 3.dp
-                            )
-                        }
-                        else -> {
-                            Image(
-                                painter = painterResource(R.drawable.download),
-                                contentDescription = "Download",
-                                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary),
-                                modifier = Modifier
-                                    .align(Alignment.Center)
-                                    .size(24.dp),
-                            )
-                        }
-                    }
-                }
-
-                Spacer(modifier = Modifier.weight(1f))
-
-                Box(
                     contentAlignment = Alignment.Center,
                     modifier =
                         Modifier
-                            .size(42.dp)
+                            .size(40.dp)
                             .clip(RoundedCornerShape(24.dp))
                             .background(MaterialTheme.colorScheme.primary)
                             .clickable {
@@ -1029,14 +860,20 @@ fun BottomSheetPlayer(
             ) {
                 Box(modifier = Modifier.weight(1f)) {
                     ResizableIconButton(
-                        icon = if (currentSong?.song?.liked == true) R.drawable.favorite else R.drawable.favorite_border,
-                        color = if (currentSong?.song?.liked == true) MaterialTheme.colorScheme.error else TextBackgroundColor,
-                        modifier =
-                            Modifier
-                                .size(32.dp)
-                                .padding(4.dp)
-                                .align(Alignment.Center),
-                        onClick = playerConnection::toggleLike,
+                        icon = when (repeatMode) {
+                            Player.REPEAT_MODE_OFF, Player.REPEAT_MODE_ALL -> R.drawable.repeat
+                            Player.REPEAT_MODE_ONE -> R.drawable.repeat_one
+                            else -> throw IllegalStateException()
+                        },
+                        color = TextBackgroundColor,
+                        modifier = Modifier
+                            .size(32.dp)
+                            .padding(4.dp)
+                            .align(Alignment.Center)
+                            .alpha(if (repeatMode == Player.REPEAT_MODE_OFF) 0.5f else 1f),
+                        onClick = { 
+                            playerConnection.player.toggleRepeatMode()
+                        },
                     )
                 }
 
@@ -1109,15 +946,14 @@ fun BottomSheetPlayer(
 
                 Box(modifier = Modifier.weight(1f)) {
                     ResizableIconButton(
-                        icon = R.drawable.lyrics,
-                        color = TextBackgroundColor,
+                        icon = if (currentSong?.song?.liked == true) R.drawable.favorite else R.drawable.favorite_border,
+                        color = if (currentSong?.song?.liked == true) MaterialTheme.colorScheme.error else TextBackgroundColor,
                         modifier =
                             Modifier
                                 .size(32.dp)
                                 .padding(4.dp)
-                                .align(Alignment.Center)
-                                .alpha(if (showLyrics) 1f else 0.5f),
-                        onClick = { showLyrics = !showLyrics },
+                                .align(Alignment.Center),
+                        onClick = playerConnection::toggleLike,
                     )
                 }
             }
