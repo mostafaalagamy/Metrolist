@@ -39,6 +39,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.*
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -54,6 +55,7 @@ import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberSwipeToDismissBoxState
+import androidx.compose.runtime.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -104,6 +106,9 @@ import com.metrolist.music.utils.makeTimeString
 import com.metrolist.music.utils.rememberPreference
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import kotlin.math.roundToInt
 import org.burnoutcrew.reorderable.ReorderableItem
 import org.burnoutcrew.reorderable.detectReorder
 import org.burnoutcrew.reorderable.rememberReorderableLazyListState
@@ -150,6 +155,26 @@ fun Queue(
 
     val snackbarHostState = remember { SnackbarHostState() }
     var dismissJob: Job? by remember { mutableStateOf(null) }
+
+var showSleepTimerDialog by remember { mutableStateOf(false) }
+var sleepTimerValue by remember { mutableStateOf(30f) }
+val sleepTimerEnabled = remember(playerConnection.service.sleepTimer.triggerTime, playerConnection.service.sleepTimer.pauseWhenSongEnd) {
+    playerConnection.service.sleepTimer.isActive
+}
+var sleepTimerTimeLeft by remember { mutableStateOf(0L) }
+
+LaunchedEffect(sleepTimerEnabled) {
+    if (sleepTimerEnabled) {
+        while (isActive) {
+            sleepTimerTimeLeft = if (playerConnection.service.sleepTimer.pauseWhenSongEnd) {
+                playerConnection.player.duration - playerConnection.player.currentPosition
+            } else {
+                playerConnection.service.sleepTimer.triggerTime - System.currentTimeMillis()
+            }
+            delay(1000L)
+        }
+    }
+}
 
     if (showDetailsDialog) {
         AlertDialog(
@@ -236,6 +261,56 @@ fun Queue(
                             .only(WindowInsetsSides.Bottom + WindowInsetsSides.Horizontal),
                     ),
             ) {
+                if (showSleepTimerDialog) {
+    AlertDialog(
+        properties = DialogProperties(usePlatformDefaultWidth = false),
+        onDismissRequest = { showSleepTimerDialog = false },
+        icon = { Icon(painter = painterResource(R.drawable.bedtime), contentDescription = null) },
+        title = { Text(stringResource(R.string.sleep_timer)) },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    showSleepTimerDialog = false
+                    playerConnection.service.sleepTimer.start(sleepTimerValue.roundToInt())
+                }
+            ) {
+                Text(stringResource(android.R.string.ok))
+            }
+        },
+        dismissButton = {
+            TextButton(
+                onClick = { showSleepTimerDialog = false }
+            ) {
+                Text(stringResource(android.R.string.cancel))
+            }
+        },
+        text = {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(
+                    text = pluralStringResource(R.plurals.minute, sleepTimerValue.roundToInt(), sleepTimerValue.roundToInt()),
+                    style = MaterialTheme.typography.bodyLarge
+                )
+
+                Slider(
+                    value = sleepTimerValue,
+                    onValueChange = { sleepTimerValue = it },
+                    valueRange = 5f..120f,
+                    steps = (120 - 5) / 5 - 1
+                )
+
+                OutlinedButton(
+                    onClick = {
+                        showSleepTimerDialog = false
+                        playerConnection.service.sleepTimer.start(-1)
+                    }
+                ) {
+                    Text(stringResource(R.string.end_of_song))
+                }
+            }
+        }
+    )
+                }
+                
                 TextButton(onClick = { state.expandSoft() }) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
@@ -274,6 +349,27 @@ fun Queue(
                             color = TextBackgroundColor
                         )
                     }
+                }
+
+                Spacer(modifier = Modifier.width(32.dp))
+
+                TextButton(onClick = { showSleepTimerDialog = true }) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
+    ) {
+        Icon(
+            painter = painterResource(id = R.drawable.bedtime),
+            contentDescription = stringResource(R.string.sleep_timer),
+            modifier = Modifier.size(20.dp),
+            tint = TextBackgroundColor
+        )
+        Spacer(modifier = Modifier.width(4.dp))
+        Text(
+            text = stringResource(id = R.string.sleep_timer),
+            color = TextBackgroundColor
+        )
+    }
                 }
             }
         },
