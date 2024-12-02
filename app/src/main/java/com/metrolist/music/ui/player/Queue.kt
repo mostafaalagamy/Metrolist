@@ -330,7 +330,7 @@ fun Queue(
                     }
                 }
 
-                Spacer(modifier = Modifier.width(32.dp))
+                Spacer(modifier = Modifier.width(24.dp))
 
                 TextButton(onClick = { showLyrics = !showLyrics }) {
                     Row(
@@ -351,7 +351,7 @@ fun Queue(
                     }
                 }
 
-                Spacer(modifier = Modifier.width(32.dp))
+                Spacer(modifier = Modifier.width(24.dp))
 
                 TextButton(onClick = { showSleepTimerDialog = true }) {
                     Row(
