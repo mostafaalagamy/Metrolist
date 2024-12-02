@@ -33,6 +33,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -277,25 +278,10 @@ fun Queue(
                         Text(
                             text = stringResource(id = R.string.queue),
                             color = TextBackgroundColor
-                        )
-                    }
-                }
-
-                TextButton(onClick = { showLyrics = !showLyrics }) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.lyrics),
-                            contentDescription = null,
-                            modifier = Modifier.size(20.dp),
-                            tint = TextBackgroundColor
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text(
-                            text = stringResource(id = R.string.lyrics),
-                            color = TextBackgroundColor
+                            maxLines = 1,
+                            modifier =
+                                Modifier
+                                    .basicMarquee()
                         )
                     }
                 }
@@ -315,6 +301,34 @@ fun Queue(
                         Text(
                             text = stringResource(id = R.string.sleep_timer),
                             color = TextBackgroundColor
+                            maxLines = 1,
+                            modifier =
+                                Modifier
+                                    .basicMarquee()
+                            
+                        )
+                    }
+                }
+                
+                TextButton(onClick = { showLyrics = !showLyrics }) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.lyrics),
+                            contentDescription = null,
+                            modifier = Modifier.size(20.dp),
+                            tint = TextBackgroundColor
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(
+                            text = stringResource(id = R.string.lyrics),
+                            color = TextBackgroundColor
+                            maxLines = 1,
+                            modifier =
+                                Modifier
+                                    .basicMarquee()
                         )
                     }
                 }
