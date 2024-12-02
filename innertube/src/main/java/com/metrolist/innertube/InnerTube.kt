@@ -1,6 +1,5 @@
 package com.metrolist.innertube
 
-import com.metrolist.innertube.encoder.brotli
 import com.metrolist.innertube.models.Context
 import com.metrolist.innertube.models.YouTubeClient
 import com.metrolist.innertube.models.YouTubeLocale
@@ -14,21 +13,14 @@ import com.metrolist.innertube.models.body.PlayerBody
 import com.metrolist.innertube.models.body.SearchBody
 import com.metrolist.innertube.utils.parseCookieString
 import com.metrolist.innertube.utils.sha1
-import io.ktor.client.HttpClient
-import io.ktor.client.engine.okhttp.OkHttp
-import io.ktor.client.plugins.compression.ContentEncoding
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.plugins.defaultRequest
-import io.ktor.client.request.HttpRequestBuilder
-import io.ktor.client.request.get
-import io.ktor.client.request.headers
-import io.ktor.client.request.parameter
-import io.ktor.client.request.post
-import io.ktor.client.request.setBody
-import io.ktor.http.ContentType
-import io.ktor.http.contentType
-import io.ktor.http.userAgent
-import io.ktor.serialization.kotlinx.json.json
+import io.ktor.client.*
+import io.ktor.client.engine.okhttp.*
+import io.ktor.client.plugins.*
+import io.ktor.client.plugins.compression.*
+import io.ktor.client.plugins.contentnegotiation.*
+import io.ktor.client.request.*
+import io.ktor.http.*
+import io.ktor.serialization.kotlinx.json.*
 import io.ktor.util.encodeBase64
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
@@ -71,20 +63,18 @@ class InnerTube {
             expectSuccess = true
 
             install(ContentNegotiation) {
-                json(
-                    Json {
-                        ignoreUnknownKeys = true
-                        explicitNulls = false
-                        encodeDefaults = true
-                    },
-                )
-            }
+            json(Json {
+                ignoreUnknownKeys = true
+                explicitNulls = false
+                encodeDefaults = true
+                }
+            )
+        }
 
-            install(ContentEncoding) {
-                brotli(1.0F)
-                gzip(0.9F)
-                deflate(0.8F)
-            }
+        install(ContentEncoding) {
+            gzip(0.9F)
+            deflate(0.8F)
+        }
 
             if (proxy != null) {
                 engine {
