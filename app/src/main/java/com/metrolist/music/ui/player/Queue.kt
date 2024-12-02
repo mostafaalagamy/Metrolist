@@ -278,12 +278,6 @@ fun Queue(
                         Text(
                             text = stringResource(id = R.string.queue),
                             color = TextBackgroundColor,
-                            maxLines = 1,
-                            modifier = Modifier
-                                .basicMarquee(
-                                    iterations = Int.MAX_VALUE,
-                                    animationMode = MarqueeAnimationMode.Immediately,
-                                )
                         )
                     }
                 }
@@ -303,12 +297,6 @@ fun Queue(
                         Text(
                             text = stringResource(id = R.string.sleep_timer),
                             color = TextBackgroundColor,
-                            maxLines = 1,
-                            modifier = Modifier
-                                .basicMarquee(
-                                    iterations = Int.MAX_VALUE,
-                                    animationMode = MarqueeAnimationMode.Immediately,
-                                )
                         )
                     }
                 }
@@ -328,12 +316,6 @@ fun Queue(
                         Text(
                             text = stringResource(id = R.string.lyrics),
                             color = TextBackgroundColor,
-                            maxLines = 1,
-                            modifier = Modifier
-                                .basicMarquee(
-                                    iterations = Int.MAX_VALUE,
-                                    animationMode = MarqueeAnimationMode.Immediately,
-                                )
                         )
                     }
                 }
