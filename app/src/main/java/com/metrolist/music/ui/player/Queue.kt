@@ -257,7 +257,7 @@ fun Queue(
                 modifier =
                 Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
+                    .padding(horizontal = 8.dp)
                     .windowInsetsPadding(
                         WindowInsets.systemBars
                             .only(WindowInsetsSides.Bottom + WindowInsetsSides.Horizontal),
@@ -278,7 +278,7 @@ fun Queue(
                         Text(
                             text = stringResource(id = R.string.queue),
                             color = TextBackgroundColor
-                            maxLines = 1,
+                            maxLines = 1
                             modifier =
                                 Modifier
                                     .basicMarquee()
@@ -301,7 +301,7 @@ fun Queue(
                         Text(
                             text = stringResource(id = R.string.sleep_timer),
                             color = TextBackgroundColor
-                            maxLines = 1,
+                            maxLines = 1
                             modifier =
                                 Modifier
                                     .basicMarquee()
@@ -325,7 +325,7 @@ fun Queue(
                         Text(
                             text = stringResource(id = R.string.lyrics),
                             color = TextBackgroundColor
-                            maxLines = 1,
+                            maxLines = 1
                             modifier =
                                 Modifier
                                     .basicMarquee()
