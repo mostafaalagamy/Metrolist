@@ -34,6 +34,7 @@ import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.basicMarquee
+import androidx.compose.foundation.MarqueeAnimationMode
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -71,6 +72,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -278,7 +280,11 @@ fun Queue(
                             text = stringResource(id = R.string.queue),
                             color = TextBackgroundColor,
                             maxLines = 1,
-                            modifier = Modifier.basicMarquee()
+                            modifier = Modifier
+                                .basicMarquee(
+                                    iterations = Int.MAX_VALUE,
+                                    animationMode = MarqueeAnimationMode.Immediately,
+                                    clip = false
                         )
                     }
                 }
@@ -299,7 +305,11 @@ fun Queue(
                             text = stringResource(id = R.string.sleep_timer),
                             color = TextBackgroundColor,
                             maxLines = 1,
-                            modifier = Modifier.basicMarquee()
+                            modifier = Modifier
+                                .basicMarquee(
+                                    iterations = Int.MAX_VALUE,
+                                    animationMode = MarqueeAnimationMode.Immediately,
+                                    clip = false
                             
                         )
                     }
@@ -321,7 +331,11 @@ fun Queue(
                             text = stringResource(id = R.string.lyrics),
                             color = TextBackgroundColor,
                             maxLines = 1,
-                            modifier = Modifier.basicMarquee()
+                            modifier = Modifier
+                                .basicMarquee(
+                                    iterations = Int.MAX_VALUE,
+                                    animationMode = MarqueeAnimationMode.Immediately,
+                                    clip = false
                         )
                     }
                 }
