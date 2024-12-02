@@ -285,6 +285,7 @@ fun Queue(
                                     iterations = Int.MAX_VALUE,
                                     animationMode = MarqueeAnimationMode.Immediately,
                                     clip = false
+                                )
                         )
                     }
                 }
@@ -310,7 +311,7 @@ fun Queue(
                                     iterations = Int.MAX_VALUE,
                                     animationMode = MarqueeAnimationMode.Immediately,
                                     clip = false
-                            
+                                )
                         )
                     }
                 }
@@ -336,6 +337,7 @@ fun Queue(
                                     iterations = Int.MAX_VALUE,
                                     animationMode = MarqueeAnimationMode.Immediately,
                                     clip = false
+                                )
                         )
                     }
                 }
