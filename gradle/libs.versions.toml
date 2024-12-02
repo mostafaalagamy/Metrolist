@@ -9,9 +9,8 @@ material3 = "1.3.1"
 media3 = "1.5.0"
 room = "2.6.1"
 hilt = "2.52"
-ktor = "2.3.12"
+ktor = "3.0.1"
 ksp = "2.0.20-1.0.24"
-squigglyslider = "1.0.0"
 
 [libraries]
 annotation = { module = "androidx.annotation:annotation", version.ref = "annotation" }
@@ -35,7 +34,7 @@ compose-animation-graphics = { group = "androidx.compose.animation", name = "ani
 compose-reorderable = { group = "org.burnoutcrew.composereorderable", name = "reorderable", version = "0.9.6" }
 
 
-squigglyslider = { module = "me.saket.squigglyslider:squigglyslider", version.ref = "squigglyslider" }
+squigglyslider = { module = "me.saket.squigglyslider:squigglyslider", version.ref = "1.0.0" }
 viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycle" }
 viewmodel-compose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "lifecycle" }
 
