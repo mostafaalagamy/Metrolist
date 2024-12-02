@@ -1,27 +1,27 @@
 [versions]
-androidGradlePlugin = "8.6.0"
-annotation = "1.8.2"
+androidGradlePlugin = "8.6.1"
+annotation = "1.9.1"
 json = "20240303"
-kotlin = "2.0.10"
+kotlin = "2.0.20"
 compose = "1.7.5"
-lifecycle = "2.8.4"
+lifecycle = "2.8.7"
 material3 = "1.3.1"
-media3 = "1.4.1"
+media3 = "1.5.0"
 room = "2.6.1"
-hilt = "2.51.1"
+hilt = "2.52"
 ktor = "2.3.12"
-ksp = "2.0.10-1.0.24"
+ksp = "2.0.20-1.0.24"
 squigglyslider = "1.0.0"
 
 [libraries]
 annotation = { module = "androidx.annotation:annotation", version.ref = "annotation" }
-guava = { group = "com.google.guava", name = "guava", version = "33.0.0-android" }
-coroutines-guava = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-guava", version = "1.7.3" }
+guava = { group = "com.google.guava", name = "guava", version = "33.3.1-android" }
+coroutines-guava = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-guava", version = "1.9.0" }
 concurrent-futures = { group = "androidx.concurrent", name = "concurrent-futures-ktx", version = "1.2.0" }
 
 gradle = { group = "com.android.tools.build", name = "gradle", version.ref = "androidGradlePlugin" }
-activity = { group = "androidx.activity", name = "activity-compose", version = "1.9.1" }
-navigation = { group = "androidx.navigation", name = "navigation-compose", version = "2.8.0-rc01" }
+activity = { group = "androidx.activity", name = "activity-compose", version = "1.9.3" }
+navigation = { group = "androidx.navigation", name = "navigation-compose", version = "2.8.4" }
 hilt-navigation = { group = "androidx.hilt", name = "hilt-navigation-compose", version = "1.2.0" }
 datastore = { group = "androidx.datastore", name = "datastore-preferences", version = "1.1.1" }
 
@@ -41,11 +41,9 @@ viewmodel-compose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-
 
 material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
 
-accompanist-swiperefresh = { group = "com.google.accompanist", name = "accompanist-swiperefresh", version = "0.36.0" }
+coil = { group = "io.coil-kt", name = "coil-compose", version = "2.7.0" }
 
-coil = { group = "io.coil-kt", name = "coil-compose", version = "2.6.0" }
-
-shimmer = { group = "com.valentinilk.shimmer", name = "compose-shimmer", version = "1.3.0" }
+shimmer = { group = "com.valentinilk.shimmer", name = "compose-shimmer", version = "1.3.1" }
 
 palette = { group = "androidx.palette", name = "palette", version = "1.0.0" }
 
@@ -57,7 +55,7 @@ room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 
-apache-lang3 = { group = "org.apache.commons", name = "commons-lang3", version = "3.14.0" }
+apache-lang3 = { group = "org.apache.commons", name = "commons-lang3", version = "3.17.0" }
 
 hilt = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
@@ -73,7 +71,7 @@ json = { module = "org.json:json", version.ref = "json" }
 
 brotli = { group = "org.brotli", name = "dec", version = "0.1.2" }
 
-desugaring = { group = "com.android.tools", name = "desugar_jdk_libs", version = "2.0.4" }
+desugaring = { group = "com.android.tools", name = "desugar_jdk_libs", version = "2.1.3" }
 
 junit = { group = "junit", name = "junit", version = "4.13.2" }
 
