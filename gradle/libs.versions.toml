@@ -34,7 +34,8 @@ compose-animation-graphics = { group = "androidx.compose.animation", name = "ani
 compose-reorderable = { group = "org.burnoutcrew.composereorderable", name = "reorderable", version = "0.9.6" }
 
 
-squigglyslider = { module = "me.saket.squigglyslider:squigglyslider", version.ref = "1.0.0" }
+squigglyslider = { group = "me.saket.squigglyslider", name = "squigglyslider", version = "1.0.0" }
+
 viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycle" }
 viewmodel-compose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "lifecycle" }
 
