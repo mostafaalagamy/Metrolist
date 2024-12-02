@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 plugins {
     alias(libs.plugins.hilt) apply(false)
     alias(libs.plugins.kotlin.ksp) apply(false)
