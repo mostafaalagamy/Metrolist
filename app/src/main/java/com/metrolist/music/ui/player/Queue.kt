@@ -251,66 +251,17 @@ fun Queue(
         modifier = modifier,
         collapsedContent = {
             Row(
-                horizontalArrangement = Arrangement.Center,
+                horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
                 modifier =
                 Modifier
-                    .fillMaxSize()
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
                     .windowInsetsPadding(
                         WindowInsets.systemBars
                             .only(WindowInsetsSides.Bottom + WindowInsetsSides.Horizontal),
                     ),
             ) {
-                if (showSleepTimerDialog) {
-                    AlertDialog(
-                        properties = DialogProperties(usePlatformDefaultWidth = false),
-                        onDismissRequest = { showSleepTimerDialog = false },
-                        icon = { Icon(painter = painterResource(R.drawable.bedtime), contentDescription = null) },
-                        title = { Text(stringResource(R.string.sleep_timer)) },
-                        confirmButton = {
-                            TextButton(
-                                onClick = {
-                                    showSleepTimerDialog = false
-                                    playerConnection.service.sleepTimer.start(sleepTimerValue.roundToInt())
-                                }
-                            ) {
-                                Text(stringResource(android.R.string.ok))
-                            }
-                        },
-                        dismissButton = {
-                            TextButton(
-                                onClick = { showSleepTimerDialog = false }
-                            ) {
-                                Text(stringResource(android.R.string.cancel))
-                            }
-                        },
-                        text = {
-                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                Text(
-                                    text = pluralStringResource(R.plurals.minute, sleepTimerValue.roundToInt(), sleepTimerValue.roundToInt()),
-                                    style = MaterialTheme.typography.bodyLarge
-                                )
-
-                                Slider(
-                                    value = sleepTimerValue,
-                                    onValueChange = { sleepTimerValue = it },
-                                    valueRange = 5f..120f,
-                                    steps = (120 - 5) / 5 - 1
-                                )
-
-                                OutlinedButton(
-                                    onClick = {
-                                        showSleepTimerDialog = false
-                                        playerConnection.service.sleepTimer.start(-1)
-                                    }
-                                ) {
-                                    Text(stringResource(R.string.end_of_song))
-                                }
-                            }
-                        }
-                    )
-                }
-                
                 TextButton(onClick = { state.expandSoft() }) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
@@ -329,8 +280,6 @@ fun Queue(
                         )
                     }
                 }
-
-                Spacer(modifier = Modifier.width(24.dp))
 
                 TextButton(onClick = { showLyrics = !showLyrics }) {
                     Row(
@@ -351,8 +300,6 @@ fun Queue(
                     }
                 }
 
-                Spacer(modifier = Modifier.width(24.dp))
-
                 TextButton(onClick = { showSleepTimerDialog = true }) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
@@ -371,6 +318,56 @@ fun Queue(
                         )
                     }
                 }
+            }
+
+            if (showSleepTimerDialog) {
+                AlertDialog(
+                    properties = DialogProperties(usePlatformDefaultWidth = false),
+                    onDismissRequest = { showSleepTimerDialog = false },
+                    icon = { Icon(painter = painterResource(R.drawable.bedtime), contentDescription = null) },
+                    title = { Text(stringResource(R.string.sleep_timer)) },
+                    confirmButton = {
+                        TextButton(
+                            onClick = {
+                                showSleepTimerDialog = false
+                                playerConnection.service.sleepTimer.start(sleepTimerValue.roundToInt())
+                            }
+                        ) {
+                            Text(stringResource(android.R.string.ok))
+                        }
+                    },
+                    dismissButton = {
+                        TextButton(
+                            onClick = { showSleepTimerDialog = false }
+                        ) {
+                            Text(stringResource(android.R.string.cancel))
+                        }
+                    },
+                        text = {
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Text(
+                                text = pluralStringResource(R.plurals.minute, sleepTimerValue.roundToInt(), sleepTimerValue.roundToInt()),
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+
+                            Slider(
+                                value = sleepTimerValue,
+                                onValueChange = { sleepTimerValue = it },
+                                valueRange = 5f..120f,
+                                steps = (120 - 5) / 5 - 1
+                            )
+
+                            OutlinedButton(
+                                onClick = {
+                                    showSleepTimerDialog = false
+                                    playerConnection.service.sleepTimer.start(-1)
+                                }
+                            ) {
+                                Text(stringResource(R.string.end_of_song))
+                            }
+                        }
+                    }
+                )
             }
         },
     ) {
