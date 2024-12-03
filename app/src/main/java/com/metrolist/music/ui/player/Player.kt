@@ -1011,7 +1011,6 @@ fun BottomSheetPlayer(
                             sliderPositionProvider = { sliderPosition },
                             modifier =
                                 modifier = Modifier.size(thumbnailSize)
-)
                         )
                     }
                     Column(
