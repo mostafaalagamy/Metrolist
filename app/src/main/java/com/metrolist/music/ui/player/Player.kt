@@ -89,6 +89,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.configuration
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -1004,15 +1005,15 @@ fun BottomSheetPlayer(
                         contentAlignment = Alignment.Center,
                         modifier = Modifier.weight(1f),
                     ) {
+                    val screenWidth = LocalConfiguration.current.screenWidthDp
+                    val thumbnailSize = (screenWidth * 0.4).dp
                         Thumbnail(
                             sliderPositionProvider = { sliderPosition },
                             modifier =
-                                Modifier
-                                    .nestedScroll(state.preUpPostDownNestedScrollConnection)
-                                    .size(120.dp)
+                                modifier = Modifier.size(thumbnailSize)
+)
                         )
                     }
-
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         modifier =
