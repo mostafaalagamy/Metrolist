@@ -263,7 +263,7 @@
     <string name="undo">تراجع</string>
     
     <!-- المشغل -->
-    <string name="lyrics_not_found">لم يتم العثور على كلمات الأغاني</string>
+    <string name="lyrics_not_found">لم يتم العثور على كلمات الأغنية</string>
     <string name="sleep_timer">مؤقت النوم</string>
     <string name="end_of_song">نهاية الأغنية</string>
     
@@ -321,7 +321,7 @@
     <string name="left">يسار</string>
     <string name="center">وسط</string>
     <string name="right">يمين</string>
-    <string name="lyrics_click_change">تغيير كلمات الأغاني عند النقر عليها</string>
+    <string name="lyrics_click_change">تغيير كلمات الأغنية عند النقر عليها</string>
     <string name="grid_cell_size">حجم قوائم التشغيل</string>
     <string name="small">صغيرة</string>
     <string name="big">كبيرة</string>
@@ -394,7 +394,7 @@
     <string name="pause_search_history">إيقاف سجل البحث مؤقتاً</string>
     <string name="clear_search_history">مسح سجل البحث</string>
     <string name="clear_search_history_confirm">هل أنت متأكد من أنك تريد مسح جميع سجل البحث؟</string>
-    <string name="lyrics">كلمات الأغاني</string>
+    <string name="lyrics">الكلمات</string>
     <string name="enable_kugou">تفعيل مزود كلمات الأغاني KuGou</string>
     <string name="enable_lrclib">تفعيل مزود كلمات الأغاني LrcLib</string>
     <string name="set_first_lyrics_provider">تعيين مزود كلمات الأغاني الإفتراضي</string>
