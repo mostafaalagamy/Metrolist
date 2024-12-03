@@ -121,7 +121,6 @@ import com.metrolist.music.constants.ListThumbnailSize
 import com.metrolist.music.constants.PlayerBackgroundStyle
 import com.metrolist.music.constants.PlayerBackgroundStyleKey
 import com.metrolist.music.constants.PlayerHorizontalPadding
-import com.metrolist.music.constants.PlayerTextAlignmentKey
 import com.metrolist.music.constants.PureBlackKey
 import com.metrolist.music.constants.QueuePeekHeight
 import com.metrolist.music.constants.ShowLyricsKey
@@ -145,7 +144,6 @@ import com.metrolist.music.ui.component.rememberBottomSheetState
 import com.metrolist.music.ui.menu.AddToPlaylistDialog
 import com.metrolist.music.ui.menu.PlayerMenu
 import com.metrolist.music.ui.screens.settings.DarkMode
-import com.metrolist.music.ui.screens.settings.PlayerTextAlignment
 import com.metrolist.music.ui.theme.extractGradientColors
 import com.metrolist.music.utils.joinByBullet
 import com.metrolist.music.utils.makeTimeString
@@ -201,8 +199,6 @@ fun BottomSheetPlayer(
     } else {
         MaterialTheme.colorScheme.surfaceContainer
         }
-   
-    val playerTextAlignment by rememberEnumPreference(PlayerTextAlignmentKey, PlayerTextAlignment.SIDED)
 
     val playbackState by playerConnection.playbackState.collectAsState()
     val isPlaying by playerConnection.isPlaying.collectAsState()
