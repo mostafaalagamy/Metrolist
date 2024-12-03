@@ -998,7 +998,7 @@ fun BottomSheetPlayer(
                     modifier =
                         Modifier
                             .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Horizontal))
-                            .padding(bottom = queueSheetState.collapsedBound),
+                            .padding(bottom = queueSheetState.collapsedBound + 48.dp),
                 ) {
                     Box(
                         contentAlignment = Alignment.Center,
@@ -1016,6 +1016,7 @@ fun BottomSheetPlayer(
                             Modifier
                                 .weight(1f)
                                 .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Top)),
+                                .size(100.dp)
                     ) {
                         Spacer(Modifier.weight(1f))
 
@@ -1050,7 +1051,7 @@ fun BottomSheetPlayer(
                         controlsContent(it)
                     }
 
-                    Spacer(Modifier.height(48.dp))
+                    Spacer(Modifier.height(24.dp))
                 }
             }
         }
