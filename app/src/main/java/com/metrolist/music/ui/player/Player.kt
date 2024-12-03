@@ -1015,7 +1015,7 @@ fun BottomSheetPlayer(
                         modifier =
                             Modifier
                                 .weight(1f)
-                                .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Top)),
+                                .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Top))
                                 .size(100.dp)
                     ) {
                         Spacer(Modifier.weight(1f))
