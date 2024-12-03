@@ -278,7 +278,7 @@ fun Queue(
                             color = TextBackgroundColor,
                             maxLines = 2,
                             overflow = TextOverflow.Ellipsis,
-                            modifier = Modifier.sizeIn(maxWidth = 48.dp)
+                            modifier = Modifier.sizeIn(maxWidth = 60.dp)
                         )
                     }
                 }
@@ -300,7 +300,7 @@ fun Queue(
                             color = TextBackgroundColor,
                             maxLines = 2,
                             overflow = TextOverflow.Ellipsis,
-                            modifier = Modifier.sizeIn(maxWidth = 48.dp)
+                            modifier = Modifier.sizeIn(maxWidth = 60.dp)
                         )
                     }
                 }
@@ -322,7 +322,7 @@ fun Queue(
                             color = TextBackgroundColor,
                             maxLines = 2,
                             overflow = TextOverflow.Ellipsis,
-                            modifier = Modifier.sizeIn(maxWidth = 48.dp)
+                            modifier = Modifier.sizeIn(maxWidth = 60.dp)
                         )
                     }
                 }
