@@ -277,6 +277,8 @@ fun Queue(
                             text = stringResource(id = R.string.queue),
                             color = TextBackgroundColor,
                             maxLines = 2,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.widthIn(max = 100.dp)
                         )
                     }
                 }
@@ -297,6 +299,8 @@ fun Queue(
                             text = stringResource(id = R.string.sleep_timer),
                             color = TextBackgroundColor,
                             maxLines = 2,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.widthIn(max = 100.dp)
                         )
                     }
                 }
@@ -317,6 +321,8 @@ fun Queue(
                             text = stringResource(id = R.string.lyrics),
                             color = TextBackgroundColor,
                             maxLines = 2,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.widthIn(max = 100.dp)
                         )
                     }
                 }
