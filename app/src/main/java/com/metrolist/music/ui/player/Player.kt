@@ -1006,7 +1006,10 @@ fun BottomSheetPlayer(
                     ) {
                         Thumbnail(
                             sliderPositionProvider = { sliderPosition },
-                            modifier = Modifier.nestedScroll(state.preUpPostDownNestedScrollConnection),                            
+                            modifier =
+                                Modifier
+                                    .nestedScroll(state.preUpPostDownNestedScrollConnection)
+                                    .size(120.dp)
                         )
                     }
 
@@ -1015,8 +1018,7 @@ fun BottomSheetPlayer(
                         modifier =
                             Modifier
                                 .weight(1f)
-                                .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Top))
-                                .size(100.dp)
+                                .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Top)),
                     ) {
                         Spacer(Modifier.weight(1f))
 
