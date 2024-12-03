@@ -45,7 +45,6 @@ import com.metrolist.music.constants.LyricsClickKey
 import com.metrolist.music.constants.LyricsTextPositionKey
 import com.metrolist.music.constants.PlayerBackgroundStyle
 import com.metrolist.music.constants.PlayerBackgroundStyleKey
-import com.metrolist.music.constants.PlayerTextAlignmentKey
 import com.metrolist.music.constants.PureBlackKey
 import com.metrolist.music.constants.SliderStyle
 import com.metrolist.music.constants.SliderStyleKey
@@ -82,11 +81,6 @@ fun AppearanceSettings(
     val (pureBlack, onPureBlackChange) = rememberPreference(PureBlackKey, defaultValue = false)
     val (defaultOpenTab, onDefaultOpenTabChange) = rememberEnumPreference(DefaultOpenTabKey, defaultValue = NavigationTab.HOME)
     val (lyricsPosition, onLyricsPositionChange) = rememberEnumPreference(LyricsTextPositionKey, defaultValue = LyricsPosition.CENTER)
-    val (playerTextAlignment, onPlayerTextAlignmentChange) =
-        rememberEnumPreference(
-            PlayerTextAlignmentKey,
-            defaultValue = PlayerTextAlignment.SIDED,
-        )
     val (lyricsClick, onLyricsClickChange) = rememberPreference(LyricsClickKey, defaultValue = true)
     val (sliderStyle, onSliderStyleChange) = rememberEnumPreference(SliderStyleKey, defaultValue = SliderStyle.DEFAULT)
     val (swipeThumbnail, onSwipeThumbnailChange) = rememberPreference(SwipeThumbnailKey, defaultValue = true)
@@ -322,30 +316,6 @@ fun AppearanceSettings(
             icon = { Icon(painterResource(R.drawable.swipe), null) },
             checked = swipeThumbnail,
             onCheckedChange = onSwipeThumbnailChange,
-        )
-
-        EnumListPreference(
-            title = { Text(stringResource(R.string.player_text_alignment)) },
-            icon = {
-                Icon(
-                    painter =
-                        painterResource(
-                            when (playerTextAlignment) {
-                                PlayerTextAlignment.CENTER -> R.drawable.format_align_center
-                                PlayerTextAlignment.SIDED -> R.drawable.format_align_left
-                            },
-                        ),
-                    contentDescription = null,
-                )
-            },
-            selectedValue = playerTextAlignment,
-            onValueSelected = onPlayerTextAlignmentChange,
-            valueText = {
-                when (it) {
-                    PlayerTextAlignment.SIDED -> stringResource(R.string.sided)
-                    PlayerTextAlignment.CENTER -> stringResource(R.string.center)
-                }
-            },
         )
 
         EnumListPreference(
