@@ -810,9 +810,9 @@ fun BottomSheetPlayer(
                         },
                         colors = SliderDefaults.colors(
                             activeTrackColor = TextBackgroundColor,
-                            inactiveTrackColor = icBackgroundColor,
+                            inactiveTrackColor = Color.Gray,
                             activeTickColor = TextBackgroundColor,
-                            inactiveTickColor = icBackgroundColor,
+                            inactiveTickColor = Color.Gray,
                             thumbColor = TextBackgroundColor
                         ),
                         modifier = Modifier.padding(horizontal = PlayerHorizontalPadding),
@@ -835,9 +835,9 @@ fun BottomSheetPlayer(
                         },
                         colors = SliderDefaults.colors(
                             activeTrackColor = TextBackgroundColor,
-                            inactiveTrackColor = icBackgroundColor,
+                            inactiveTrackColor = Color.Gray,
                             activeTickColor = TextBackgroundColor,
-                            inactiveTickColor = icBackgroundColor,
+                            inactiveTickColor = Color.Gray,
                             thumbColor = TextBackgroundColor
                         ),
                         modifier = Modifier.padding(horizontal = PlayerHorizontalPadding),
@@ -869,9 +869,9 @@ fun BottomSheetPlayer(
                                 sliderState = sliderState,
                                 colors = SliderDefaults.colors(
                                     activeTrackColor = TextBackgroundColor,
-                                    inactiveTrackColor = icBackgroundColor,
+                                    inactiveTrackColor = Color.Gray,
                                     activeTickColor = TextBackgroundColor,
-                                    inactiveTickColor = icBackgroundColor
+                                    inactiveTickColor = Color.Gray
                                 )
                             )
                         },
