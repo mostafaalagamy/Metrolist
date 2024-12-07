@@ -79,6 +79,7 @@ import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
+import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -137,6 +138,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.CoroutineScope
 import java.net.URLDecoder
 import java.net.URLEncoder
 import java.util.Locale
@@ -205,10 +207,11 @@ class MainActivity : ComponentActivity() {
                 }
 	}
 
-	    val sharedPreferences = getSharedPreferences("app_settings", Context.MODE_PRIVATE)
+	        val sharedPreferences = getSharedPreferences("app_settings", Context.MODE_PRIVATE)
             val savedLanguage = sharedPreferences.getString("app_language", Locale.getDefault().language) ?: "en"
                 updateLanguage(this, savedLanguage)
-    
+
+        intent?.let { handlevideoIdIntent(it) }
 
         setContent {
             LaunchedEffect(Unit) {
@@ -217,7 +220,7 @@ class MainActivity : ComponentActivity() {
                         latestVersionName = it
                     }
                 }
-            }
+	    }
 
             val enableDynamicTheme by rememberPreference(DynamicThemeKey, defaultValue = true)
             val darkTheme by rememberEnumPreference(DarkModeKey, defaultValue = DarkMode.AUTO)
@@ -280,7 +283,7 @@ class MainActivity : ComponentActivity() {
                     val navBackStackEntry by navController.currentBackStackEntryAsState()
 
                     val navigationItems = remember { Screens.MainScreens }
-		    val (slimNav) = rememberPreference(SlimNavBarKey, defaultValue = false)
+		            val (slimNav) = rememberPreference(SlimNavBarKey, defaultValue = false)
                     val defaultOpenTab =
                         remember {
                             dataStore[DefaultOpenTabKey].toEnum(defaultValue = NavigationTab.HOME)
@@ -463,49 +466,30 @@ class MainActivity : ComponentActivity() {
                         mutableStateOf(null)
                     }
                     DisposableEffect(Unit) {
-                        val listener =
-                            Consumer<Intent> { intent ->
-                                val uri = intent.data ?: intent.extras?.getString(Intent.EXTRA_TEXT)?.toUri() ?: return@Consumer
-                                when (val path = uri.pathSegments.firstOrNull()) {
-                                    "playlist" ->
-                                        uri.getQueryParameter("list")?.let { playlistId ->
-                                            if (playlistId.startsWith("OLAK5uy_")) {
-                                                coroutineScope.launch {
-                                                    YouTube
-                                                        .albumSongs(playlistId)
-                                                        .onSuccess { songs ->
-                                                            songs.firstOrNull()?.album?.id?.let { browseId ->
-                                                                navController.navigate("album/$browseId")
-                                                            }
-                                                        }.onFailure {
-                                                            reportException(it)
-                                                        }
+                        val listener = Consumer<Intent> { intent ->
+                            val uri = intent.data ?: intent.extras?.getString(Intent.EXTRA_TEXT)?.toUri() ?: return@Consumer
+                            when (val path = uri.pathSegments.firstOrNull()) {
+                                "playlist" -> uri.getQueryParameter("list")?.let { playlistId ->
+                                    if (playlistId.startsWith("OLAK5uy_")) {
+                                        coroutineScope.launch {
+                                            YouTube.albumSongs(playlistId)
+                                                .onSuccess { songs ->
+                                                    songs.firstOrNull()?.album?.id?.let { browseId ->
+                                                        navController.navigate("album/$browseId")
+                                                    }
+                                                }.onFailure {
+                                                    reportException(it)
                                                 }
-                                            } else {
-                                                navController.navigate("online_playlist/$playlistId")
-                                            }
                                         }
-
-                                    "channel", "c" ->
-                                        uri.lastPathSegment?.let { artistId ->
-                                            navController.navigate("artist/$artistId")
-                                        }
-
-                                    else ->
-                                        when {
-                                            path == "watch" -> uri.getQueryParameter("v")
-                                            uri.host == "youtu.be" -> path
-                                            else -> null
-                                        }?.let { videoId ->
-                                    coroutineScope.launch {
-                                        withContext(Dispatchers.IO) {
-                                            YouTube.queue(listOf(videoId))
-                                        }.onSuccess {
-                                            playerConnection?.playQueue(YouTubeQueue(WatchEndpoint(videoId = it.firstOrNull()?.id), it.firstOrNull()?.toMediaMetadata()))
-                                        }.onFailure {
-                                            reportException(it)
-                                        }
+                                    } else {
+                                        navController.navigate("online_playlist/$playlistId")
                                     }
+                                }
+                                "browse" -> uri.lastPathSegment?.let { browseId ->
+                                    navController.navigate("album/$browseId")
+                                }
+                                "channel", "c" -> uri.lastPathSegment?.let { artistId ->
+                                    navController.navigate("artist/$artistId")
                                 }
                             }
                         }
@@ -513,7 +497,7 @@ class MainActivity : ComponentActivity() {
                         addOnNewIntentListener(listener)
                         onDispose { removeOnNewIntentListener(listener) }
                     }
-
+		    
                     CompositionLocalProvider(
                         LocalDatabase provides database,
                         LocalContentColor provides contentColorFor(MaterialTheme.colorScheme.surface),
@@ -778,7 +762,7 @@ class MainActivity : ComponentActivity() {
 
                         NavigationBar(
                             modifier = Modifier
-				.clip(RoundedCornerShape(20.dp))
+		                		.clip(RoundedCornerShape(20.dp))
                                 .align(Alignment.BottomCenter)
                                 .offset {
                                     if (navigationBarHeight == 0.dp) {
@@ -888,6 +872,34 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    private fun handlevideoIdIntent(intent: Intent) {
+        val uri = intent.data ?: intent.extras?.getString(Intent.EXTRA_TEXT)?.toUri() ?: return
+        when {
+            uri.pathSegments.firstOrNull() == "watch" -> uri.getQueryParameter("v")
+            uri.host == "youtu.be" -> uri.pathSegments.firstOrNull()
+            else -> null
+        }?.let { videoId ->
+            lifecycleScope.launch {
+                withContext(Dispatchers.IO) {
+                    YouTube.queue(listOf(videoId))
+                }.onSuccess {
+                    playerConnection?.playQueue(
+                        YouTubeQueue(
+                            WatchEndpoint(videoId = it.firstOrNull()?.id),
+                            it.firstOrNull()?.toMediaMetadata()
+                        )
+                    )
+                }.onFailure {
+                    reportException(it)
+                }
+            }
+        }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+    }
+    
     @SuppressLint("ObsoleteSdkInt")
     private fun setSystemBarAppearance(isDark: Boolean) {
         WindowCompat.getInsetsController(window, window.decorView.rootView).apply {
