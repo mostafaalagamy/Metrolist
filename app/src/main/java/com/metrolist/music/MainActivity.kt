@@ -464,37 +464,61 @@ class MainActivity : ComponentActivity() {
                         mutableStateOf(null)
                     }
                     DisposableEffect(Unit) {
-                        val listener = Consumer<Intent> { intent ->
-                            val uri = intent.data ?: intent.extras?.getString(Intent.EXTRA_TEXT)?.toUri() ?: return@Consumer
-                            when (val path = uri.pathSegments.firstOrNull()) {
-                                "playlist" -> uri.getQueryParameter("list")?.let { playlistId ->
-                                    if (playlistId.startsWith("OLAK5uy_")) {
-                                        coroutineScope.launch {
-                                            YouTube.albumSongs(playlistId)
-                                                .onSuccess { songs ->
-                                                    songs.firstOrNull()?.album?.id?.let { browseId ->
-                                                        navController.navigate("album/$browseId")
-                                                    }
-                                                }.onFailure {
-                                                    reportException(it)
+                        val listener =
+                            Consumer<Intent> { intent ->
+                                val uri = intent.data ?: intent.extras?.getString(Intent.EXTRA_TEXT)?.toUri() ?: return@Consumer
+                                when (val path = uri.pathSegments.firstOrNull()) {
+                                    "playlist" ->
+                                        uri.getQueryParameter("list")?.let { playlistId ->
+                                            if (playlistId.startsWith("OLAK5uy_")) {
+                                                coroutineScope.launch {
+                                                    YouTube
+                                                        .albumSongs(playlistId)
+                                                        .onSuccess { songs ->
+                                                            songs.firstOrNull()?.album?.id?.let { browseId ->
+                                                                navController.navigate("album/$browseId")
+                                                            }
+                                                        }.onFailure {
+                                                            reportException(it)
+                                                        }
                                                 }
+                                            } else {
+                                                navController.navigate("online_playlist/$playlistId")
+                                            }
                                         }
-                                    } else {
-                                        navController.navigate("online_playlist/$playlistId")
+
+				    "browse" ->
+					uri.lastPathSegment?.let { browseId ->
+                                            navController.navigate("album/$browseId")
+					}
+
+                                    "channel", "c" ->
+                                        uri.lastPathSegment?.let { artistId ->
+                                            navController.navigate("artist/$artistId")
+                                        }
+
+                                    else ->
+                                        when {
+                                            path == "watch" -> uri.getQueryParameter("v")
+                                            uri.host == "youtu.be" -> path
+                                            else -> null
+                                        }?.let { videoId ->
+                                    coroutineScope.launch {
+                                        withContext(Dispatchers.IO) {
+                                            YouTube.queue(listOf(videoId))
+                                        }.onSuccess {
+                                            playerConnection?.playQueue(YouTubeQueue(WatchEndpoint(videoId = it.firstOrNull()?.id), it.firstOrNull()?.toMediaMetadata()))
+                                        }.onFailure {
+                                            reportException(it)
+                                        }
                                     }
-                                }
-                                "browse" -> uri.lastPathSegment?.let { browseId ->
-                                    navController.navigate("album/$browseId")
-                                }
-                                "channel", "c" -> uri.lastPathSegment?.let { artistId ->
-                                    navController.navigate("artist/$artistId")
                                 }
                             }
                         }
 
                         addOnNewIntentListener(listener)
                         onDispose { removeOnNewIntentListener(listener) }
-		    }
+                    }
 
 		    CompositionLocalProvider(
                         LocalDatabase provides database,
