@@ -208,7 +208,8 @@ class MainActivity : ComponentActivity() {
 	    val sharedPreferences = getSharedPreferences("app_settings", Context.MODE_PRIVATE)
             val savedLanguage = sharedPreferences.getString("app_language", Locale.getDefault().language) ?: "en"
                 updateLanguage(this, savedLanguage)
-    
+
+        intent?.let { handlevideoIdIntent(it) }
 
         setContent {
             LaunchedEffect(Unit) {
@@ -217,7 +218,7 @@ class MainActivity : ComponentActivity() {
                         latestVersionName = it
                     }
                 }
-            }
+	    }
 
             val enableDynamicTheme by rememberPreference(DynamicThemeKey, defaultValue = true)
             val darkTheme by rememberEnumPreference(DarkModeKey, defaultValue = DarkMode.AUTO)
@@ -486,6 +487,11 @@ class MainActivity : ComponentActivity() {
                                             }
                                         }
 
+				    "browse" ->
+					uri.lastPathSegment?.let { browseId ->
+                                            navController.navigate("album/$browseId")
+					}
+
                                     "channel", "c" ->
                                         uri.lastPathSegment?.let { artistId ->
                                             navController.navigate("artist/$artistId")
@@ -514,7 +520,7 @@ class MainActivity : ComponentActivity() {
                         onDispose { removeOnNewIntentListener(listener) }
                     }
 
-                    CompositionLocalProvider(
+		    CompositionLocalProvider(
                         LocalDatabase provides database,
                         LocalContentColor provides contentColorFor(MaterialTheme.colorScheme.surface),
                         LocalPlayerConnection provides playerConnection,
@@ -778,7 +784,7 @@ class MainActivity : ComponentActivity() {
 
                         NavigationBar(
                             modifier = Modifier
-				.clip(RoundedCornerShape(20.dp))
+		                .clip(RoundedCornerShape(20.dp))
                                 .align(Alignment.BottomCenter)
                                 .offset {
                                     if (navigationBarHeight == 0.dp) {
@@ -888,6 +894,34 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    private fun handlevideoIdIntent(intent: Intent) {
+        val uri = intent.data ?: intent.extras?.getString(Intent.EXTRA_TEXT)?.toUri() ?: return
+        when {
+            uri.pathSegments.firstOrNull() == "watch" -> uri.getQueryParameter("v")
+            uri.host == "youtu.be" -> uri.pathSegments.firstOrNull()
+            else -> null
+        }?.let { videoId ->
+            lifecycleScope.launch {
+                withContext(Dispatchers.IO) {
+                    YouTube.queue(listOf(videoId))
+                }.onSuccess {
+                    playerConnection?.playQueue(
+                        YouTubeQueue(
+                            WatchEndpoint(videoId = it.firstOrNull()?.id),
+                            it.firstOrNull()?.toMediaMetadata()
+                        )
+                    )
+                }.onFailure {
+                    reportException(it)
+                }
+            }
+        }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+    }
+    
     @SuppressLint("ObsoleteSdkInt")
     private fun setSystemBarAppearance(isDark: Boolean) {
         WindowCompat.getInsetsController(window, window.decorView.rootView).apply {
