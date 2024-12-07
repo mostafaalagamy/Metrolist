@@ -79,7 +79,6 @@ import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
-import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -138,7 +137,6 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlinx.coroutines.CoroutineScope
 import java.net.URLDecoder
 import java.net.URLEncoder
 import java.util.Locale
@@ -207,7 +205,7 @@ class MainActivity : ComponentActivity() {
                 }
 	}
 
-	        val sharedPreferences = getSharedPreferences("app_settings", Context.MODE_PRIVATE)
+	    val sharedPreferences = getSharedPreferences("app_settings", Context.MODE_PRIVATE)
             val savedLanguage = sharedPreferences.getString("app_language", Locale.getDefault().language) ?: "en"
                 updateLanguage(this, savedLanguage)
 
@@ -283,7 +281,7 @@ class MainActivity : ComponentActivity() {
                     val navBackStackEntry by navController.currentBackStackEntryAsState()
 
                     val navigationItems = remember { Screens.MainScreens }
-		            val (slimNav) = rememberPreference(SlimNavBarKey, defaultValue = false)
+		    val (slimNav) = rememberPreference(SlimNavBarKey, defaultValue = false)
                     val defaultOpenTab =
                         remember {
                             dataStore[DefaultOpenTabKey].toEnum(defaultValue = NavigationTab.HOME)
@@ -496,9 +494,9 @@ class MainActivity : ComponentActivity() {
 
                         addOnNewIntentListener(listener)
                         onDispose { removeOnNewIntentListener(listener) }
-                    }
-		    
-                    CompositionLocalProvider(
+		    }
+
+		    CompositionLocalProvider(
                         LocalDatabase provides database,
                         LocalContentColor provides contentColorFor(MaterialTheme.colorScheme.surface),
                         LocalPlayerConnection provides playerConnection,
@@ -762,7 +760,7 @@ class MainActivity : ComponentActivity() {
 
                         NavigationBar(
                             modifier = Modifier
-		                		.clip(RoundedCornerShape(20.dp))
+		                .clip(RoundedCornerShape(20.dp))
                                 .align(Alignment.BottomCenter)
                                 .offset {
                                     if (navigationBarHeight == 0.dp) {
