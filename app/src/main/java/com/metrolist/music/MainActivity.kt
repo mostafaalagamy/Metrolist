@@ -528,6 +528,61 @@ class MainActivity : ComponentActivity() {
                         LocalDownloadUtil provides downloadUtil,
                         LocalShimmerTheme provides ShimmerTheme,
                     ) {
+			Scaffold(
+        topBar = {
+            if (navigationItems.fastAny { it.route == navBackStackEntry?.destination?.route } ||
+                navBackStackEntry?.destination?.route?.startsWith("search/") == true
+            ) {
+                TopAppBar(
+                    title = {
+                        Text(
+                            text = stringResource(R.string.app_name), 
+                            style = MaterialTheme.typography.titleLarge
+                        )
+                    },
+                    actions = {
+                        IconButton(
+                            onClick = { 
+                                onActiveChange(true) 
+                            }
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.search),
+                                contentDescription = stringResource(R.string.search)
+                            )
+                        }
+                        IconButton(
+                            onClick = { 
+                                navController.navigate("settings") 
+                            }
+                        ) {
+                            BadgedBox(
+                                badge = {
+                                    if (latestVersionName != BuildConfig.VERSION_NAME) {
+                                        Badge()
+                                    }
+                                }
+                            ) {
+                                Icon(
+                                    painter = painterResource(R.drawable.settings),
+                                    contentDescription = stringResource(R.string.settings),
+                                    modifier = Modifier.size(24.dp)
+                                )
+                            }
+                        }
+                    },
+                    scrollBehavior = topAppBarScrollBehavior
+                )
+            }
+        }
+    ) { paddingValues ->
+        // استبدل الـ Box الموجود بهذا
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.surface)
+                .padding(paddingValues)
+        ) {
 	                NavHost(
                             navController = navController,
                             startDestination = when (tabOpenedFromShortcut ?: defaultOpenTab) {
@@ -776,6 +831,8 @@ class MainActivity : ComponentActivity() {
                                 }
                             }
                         }
+	}
+			}
 
                         BottomSheetPlayer(
                             state = playerBottomSheetState,
