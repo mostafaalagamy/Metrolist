@@ -577,7 +577,14 @@ class MainActivity : ComponentActivity() {
                 )
             }
         }
-    )
+    ) { paddingValues ->
+        // استبدل الـ Box الموجود بهذا
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.surface)
+                .padding(0.dp)
+        ) {
 	                NavHost(
                             navController = navController,
                             startDestination = when (tabOpenedFromShortcut ?: defaultOpenTab) {
@@ -826,6 +833,8 @@ class MainActivity : ComponentActivity() {
                                 }
                             }
                         }
+	}
+			}
 
                         BottomSheetPlayer(
                             state = playerBottomSheetState,
