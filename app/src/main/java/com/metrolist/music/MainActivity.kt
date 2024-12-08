@@ -699,7 +699,7 @@ class MainActivity : ComponentActivity() {
                         IconButton(onClick = { onActiveChange(false) }) {
                             Icon(
                                 painter = painterResource(R.drawable.arrow_back),
-                                contentDescription = stringResource(R.string.close_search)
+                                contentDescription = null
                             )
                         }
                     },
@@ -708,7 +708,7 @@ class MainActivity : ComponentActivity() {
                             IconButton(onClick = { onQueryChange(TextFieldValue("")) }) {
                                 Icon(
                                     painter = painterResource(R.drawable.close),
-                                    contentDescription = stringResource(R.string.clear_search)
+                                    contentDescription = null
                                 )
                             }
                         }
