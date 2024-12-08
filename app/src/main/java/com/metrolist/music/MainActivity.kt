@@ -532,29 +532,32 @@ class MainActivity : ComponentActivity() {
                     ) {
     Scaffold(
         topBar = {
-            AnimatedVisibility(
-                visible = !active.value, // عرض TopAppBar فقط إذا لم يكن البحث نشطًا
-                enter = fadeIn(),
-                exit = fadeOut(),
+            if (navigationItems.fastAny { it.route == navBackStackEntry?.destination?.route } ||
+                navBackStackEntry?.destination?.route?.startsWith("search/") == true
             ) {
                 TopAppBar(
                     title = {
                         Text(
-                            text = stringResource(R.string.app_name),
+                            text = stringResource(R.string.app_name), 
                             style = MaterialTheme.typography.titleLarge
                         )
                     },
                     actions = {
-                        // زر البحث
-                        IconButton(onClick = { active.value = true }) {
+                        IconButton(
+                            onClick = { 
+                                onActiveChange(true) 
+                            }
+                        ) {
                             Icon(
                                 painter = painterResource(R.drawable.search),
                                 contentDescription = stringResource(R.string.search)
                             )
                         }
-
-                        // زر الإعدادات
-                        IconButton(onClick = { navController.navigate("settings") }) {
+                        IconButton(
+                            onClick = { 
+                                navController.navigate("settings") 
+                            }
+                        ) {
                             BadgedBox(
                                 badge = {
                                     if (latestVersionName != BuildConfig.VERSION_NAME) {
@@ -569,86 +572,17 @@ class MainActivity : ComponentActivity() {
                                 )
                             }
                         }
-                    }
-                )
-            }
-
-            // شريط البحث
-            AnimatedVisibility(
-                visible = active.value, // عرض شريط البحث إذا كان البحث نشطًا
-                enter = fadeIn(),
-                exit = fadeOut(),
-            ) {
-                TopSearchBar(
-                    query = query.value,
-                    onQueryChange = { query.value = it },
-                    onSearch = { searchText ->
-                        active.value = false
-                        navController.navigate("search/${URLEncoder.encode(searchText, "UTF-8")}")
                     },
-                    active = active.value,
-                    onActiveChange = { isActive -> active.value = isActive },
-                    placeholder = {
-                        Text(
-                            text = stringResource(
-                                id = if (searchSource.value == SearchSource.LOCAL)
-                                    R.string.search_library
-                                else
-                                    R.string.search_yt_music
-                            )
-                        )
-                    },
-                    leadingIcon = {
-                        // زر الرجوع لإغلاق شريط البحث
-                        IconButton(onClick = { active.value = false }) {
-                            Icon(
-                                painter = painterResource(R.drawable.arrow_back),
-                                contentDescription = null
-                            )
-                        }
-                    },
-                    trailingIcon = {
-                        Row {
-                            if (query.value.text.isNotEmpty()) {
-                                IconButton(onClick = { query.value = TextFieldValue("") }) {
-                                    Icon(
-                                        painter = painterResource(R.drawable.close),
-                                        contentDescription = null
-                                    )
-                                }
-                            }
-
-                            // زر تبديل مصدر البحث (محلي/أونلاين)
-                            IconButton(
-                                onClick = {
-                                    searchSource.value =
-                                        if (searchSource.value == SearchSource.ONLINE) {
-                                            SearchSource.LOCAL
-                                        } else {
-                                            SearchSource.ONLINE
-                                        }
-                                }
-                            ) {
-                                Icon(
-                                    painter = painterResource(
-                                        when (searchSource.value) {
-                                            SearchSource.LOCAL -> R.drawable.library_music
-                                            SearchSource.ONLINE -> R.drawable.language
-                                        }
-                                    ),
-                                    contentDescription = null
-                                )
-                            }
-                        }
-                    },
-                    scrollBehavior = searchBarScrollBehavior
+                    scrollBehavior = topAppBarScrollBehavior
                 )
             }
         }
     ) { paddingValues ->
+        // استبدل الـ Box الموجود بهذا
         Box(
             modifier = Modifier
                 .fillMaxSize()
+                .background(MaterialTheme.colorScheme.surface)
                 .padding(paddingValues)
         ) {
 	                NavHost(
@@ -747,6 +681,141 @@ class MainActivity : ComponentActivity() {
                             navigationBuilder(navController, topAppBarScrollBehavior, latestVersionName)}                        			
 	                    }
 			}
+
+                        AnimatedVisibility(
+                            visible = active,
+                            enter = fadeIn(),
+                            exit = fadeOut(),
+                        ) {
+                            TopSearchBar(
+                                query = query,
+                                onQueryChange = onQueryChange,
+                                onSearch = onSearch,
+                                active = active,
+                                onActiveChange = onActiveChange,
+                                scrollBehavior = searchBarScrollBehavior,
+                                placeholder = {
+                                    Text(
+                                        text = stringResource(
+                                            if (!active) {
+                                                R.string.search
+                                            } else {
+                                                when (searchSource) {
+                                                    SearchSource.LOCAL -> R.string.search_library
+                                                    SearchSource.ONLINE -> R.string.search_yt_music
+                                                }
+                                            },
+                                        ),
+                                    )
+                                },
+                                leadingIcon = {
+                                    IconButton(
+                                        onClick = {
+                                            when {
+                                                active -> onActiveChange(false)
+                                                !navigationItems.fastAny { it.route == navBackStackEntry?.destination?.route } -> {
+                                                    navController.navigateUp()
+                                                }
+                                                else -> onActiveChange(true)
+                                            }
+                                        },
+                                        onLongClick = {
+                                            when {
+                                                active -> {}
+                                                !navigationItems.fastAny { it.route == navBackStackEntry?.destination?.route } -> {
+                                                    navController.backToMain()
+                                                }
+                                                else -> {}
+                                            }
+                                        },
+                                    ) {
+                                        Icon(
+                                            painterResource(
+                                                if (active ||
+                                                !navigationItems.fastAny { it.route == navBackStackEntry?.destination?.route }
+                                                ) {
+                                                    R.drawable.arrow_back
+                                                } else {
+                                                    R.drawable.search
+                                                },
+                                            ),
+                                            contentDescription = null,
+                                        )
+                                    }
+                                },
+                                trailingIcon = {
+                                    Row {
+                                        if (active) {
+                                            if (query.text.isNotEmpty()) {
+                                                IconButton(
+                                                    onClick = { onQueryChange(TextFieldValue("")) },
+                                                ) {
+                                                    Icon(
+                                                        painter = painterResource(R.drawable.close),
+                                                        contentDescription = null,
+                                                    )
+                                                }
+                                            }
+                                            IconButton(
+                                                onClick = {
+                                                    searchSource =
+                                                        if (searchSource == SearchSource.ONLINE) SearchSource.LOCAL else SearchSource.ONLINE
+                                                },
+                                            ) {
+                                                Icon(
+                                                    painter = painterResource(
+                                                        when (searchSource) {
+                                                            SearchSource.LOCAL -> R.drawable.library_music
+                                                            SearchSource.ONLINE -> R.drawable.language
+                                                        },
+                                                    ),
+                                                    contentDescription = null,
+                                                )
+                                            }
+                                        } 
+                                    }
+                                },
+                                focusRequester = searchBarFocusRequester,
+                                modifier = Modifier.align(Alignment.TopCenter),
+                            ) {
+                                Crossfade(
+                                    targetState = searchSource,
+                                    label = "",
+                                    modifier =
+                                        Modifier
+                                            .fillMaxSize()
+                                            .padding(bottom = if (!playerBottomSheetState.isDismissed) MiniPlayerHeight else 0.dp)
+                                            .navigationBarsPadding(),
+                                ) { searchSource ->
+                                    when (searchSource) {
+                                        SearchSource.LOCAL ->
+                                            LocalSearchScreen(
+                                                query = query.text,
+                                                navController = navController,
+                                                onDismiss = { onActiveChange(false) },
+                                            )
+
+                                        SearchSource.ONLINE ->
+                                            OnlineSearchScreen(
+                                                query = query.text,
+                                                onQueryChange = onQueryChange,
+                                                navController = navController,
+                                                onSearch = {
+                                                    navController.navigate("search/${URLEncoder.encode(it, "UTF-8")}")
+                                                    if (dataStore[PauseSearchHistoryKey] != true) {
+                                                        database.query {
+                                                            insert(SearchHistory(query = it))
+                                                        }
+                                                    }
+                                                },
+                                                onDismiss = { onActiveChange(false) },
+                                            )
+                                    }
+                                }
+                            }
+                        }
+	}
+		}
 
                         BottomSheetPlayer(
                             state = playerBottomSheetState,
