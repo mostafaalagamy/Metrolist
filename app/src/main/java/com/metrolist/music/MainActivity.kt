@@ -678,10 +678,9 @@ class MainActivity : ComponentActivity() {
                                 }
                             )
                         ) {
-                            navigationBuilder(navController, topAppBarScrollBehavior, latestVersionName)}                        			
-	                    }
+                            navigationBuilder(navController, topAppBarScrollBehavior, latestVersionName)
 			}
-
+			
                         AnimatedVisibility(
                             visible = active,
                             enter = fadeIn(),
