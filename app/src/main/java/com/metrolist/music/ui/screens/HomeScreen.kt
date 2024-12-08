@@ -230,10 +230,7 @@ fun HomeScreen(
                             "account" -> if (isLoggedIn) navController.navigate("account")
                         }
                     },
-                    modifier = Modifier
-                        .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Horizontal))
-                        .padding(horizontal = 12.dp, vertical = 6.dp)
-                        .fillMaxWidth(),
+                    modifier = Modifier.weight(1f),
                     containerColor = MaterialTheme.colorScheme.surfaceContainer
                 )
                 
