@@ -530,117 +530,127 @@ class MainActivity : ComponentActivity() {
                         LocalDownloadUtil provides downloadUtil,
                         LocalShimmerTheme provides ShimmerTheme,
                     ) {
-Scaffold(
-    topBar = {
-        AnimatedVisibility(
-            visible = !active, // عرض TopAppBar فقط إذا لم يكن البحث نشطًا
-            enter = fadeIn(),
-            exit = fadeOut(),
-        ) {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = stringResource(R.string.app_name),
-                        style = MaterialTheme.typography.titleLarge
-                    )
-                },
-                actions = {
-                    // زر البحث
-                    IconButton(onClick = { onActiveChange(true) }) {
-                        Icon(
-                            painter = painterResource(R.drawable.search),
-                            contentDescription = stringResource(R.string.search)
+    Scaffold(
+        topBar = {
+            AnimatedVisibility(
+                visible = !active.value, // عرض TopAppBar فقط إذا لم يكن البحث نشطًا
+                enter = fadeIn(),
+                exit = fadeOut(),
+            ) {
+                TopAppBar(
+                    title = {
+                        Text(
+                            text = stringResource(R.string.app_name),
+                            style = MaterialTheme.typography.titleLarge
                         )
-                    }
-
-                    // زر الإعدادات
-                    IconButton(onClick = { navController.navigate("settings") }) {
-                        BadgedBox(
-                            badge = {
-                                if (latestVersionName != BuildConfig.VERSION_NAME) {
-                                    Badge()
-                                }
-                            }
-                        ) {
+                    },
+                    actions = {
+                        // زر البحث
+                        IconButton(onClick = { active.value = true }) {
                             Icon(
-                                painter = painterResource(R.drawable.settings),
-                                contentDescription = stringResource(R.string.settings),
-                                modifier = Modifier.size(24.dp)
+                                painter = painterResource(R.drawable.search),
+                                contentDescription = stringResource(R.string.search)
                             )
                         }
-                    }
-                }
-            )
-        }
 
-        // شريط البحث
-        AnimatedVisibility(
-            visible = active, // عرض شريط البحث إذا كان البحث نشطًا
-            enter = fadeIn(),
-            exit = fadeOut(),
-        ) {
-            TopSearchBar(
-                query = query,
-                onQueryChange = onQueryChange,
-                onSearch = onSearch,
-                active = active,
-                onActiveChange = onActiveChange,
-                placeholder = {
-                    Text(text = stringResource(R.string.search_placeholder))
-                },
-                leadingIcon = {
-                    // زر الرجوع لإغلاق شريط البحث
-                    IconButton(onClick = { onActiveChange(false) }) {
-                        Icon(
-                            painter = painterResource(R.drawable.arrow_back),
-                            contentDescription = null
-                        )
-                    }
-                },
-                trailingIcon = {
-                    Row {
-                        if (query.text.isNotEmpty()) {
-                            IconButton(onClick = { onQueryChange(TextFieldValue("")) }) {
+                        // زر الإعدادات
+                        IconButton(onClick = { navController.navigate("settings") }) {
+                            BadgedBox(
+                                badge = {
+                                    if (latestVersionName != BuildConfig.VERSION_NAME) {
+                                        Badge()
+                                    }
+                                }
+                            ) {
                                 Icon(
-                                    painter = painterResource(R.drawable.close),
+                                    painter = painterResource(R.drawable.settings),
+                                    contentDescription = stringResource(R.string.settings),
+                                    modifier = Modifier.size(24.dp)
+                                )
+                            }
+                        }
+                    }
+                )
+            }
+
+            // شريط البحث
+            AnimatedVisibility(
+                visible = active.value, // عرض شريط البحث إذا كان البحث نشطًا
+                enter = fadeIn(),
+                exit = fadeOut(),
+            ) {
+                TopSearchBar(
+                    query = query.value,
+                    onQueryChange = { query.value = it },
+                    onSearch = { searchText ->
+                        active.value = false
+                        navController.navigate("search/${URLEncoder.encode(searchText, "UTF-8")}")
+                    },
+                    active = active.value,
+                    onActiveChange = { isActive -> active.value = isActive },
+                    placeholder = {
+                        Text(
+                            text = stringResource(
+                                id = if (searchSource.value == SearchSource.LOCAL)
+                                    R.string.search_library
+                                else
+                                    R.string.search_yt_music
+                            )
+                        )
+                    },
+                    leadingIcon = {
+                        // زر الرجوع لإغلاق شريط البحث
+                        IconButton(onClick = { active.value = false }) {
+                            Icon(
+                                painter = painterResource(R.drawable.arrow_back),
+                                contentDescription = null
+                            )
+                        }
+                    },
+                    trailingIcon = {
+                        Row {
+                            if (query.value.text.isNotEmpty()) {
+                                IconButton(onClick = { query.value = TextFieldValue("") }) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.close),
+                                        contentDescription = null
+                                    )
+                                }
+                            }
+
+                            // زر تبديل مصدر البحث (محلي/أونلاين)
+                            IconButton(
+                                onClick = {
+                                    searchSource.value =
+                                        if (searchSource.value == SearchSource.ONLINE) {
+                                            SearchSource.LOCAL
+                                        } else {
+                                            SearchSource.ONLINE
+                                        }
+                                }
+                            ) {
+                                Icon(
+                                    painter = painterResource(
+                                        when (searchSource.value) {
+                                            SearchSource.LOCAL -> R.drawable.library_music
+                                            SearchSource.ONLINE -> R.drawable.language
+                                        }
+                                    ),
                                     contentDescription = null
                                 )
                             }
                         }
-
-                        // زر تبديل مصدر البحث (محلي/أونلاين)
-                        IconButton(
-                            onClick = {
-                                searchSource = if (searchSource == SearchSource.ONLINE) {
-                                    SearchSource.LOCAL
-                                } else {
-                                    SearchSource.ONLINE
-                                }
-                            }
-                        ) {
-                            Icon(
-                                painter = painterResource(
-                                    when (searchSource) {
-                                        SearchSource.LOCAL -> R.drawable.library_music
-                                        SearchSource.ONLINE -> R.drawable.language
-                                    }
-                                ),
-                                contentDescription = null
-                            )
-                        }
-                    }
-                },
-                focusRequester = searchBarFocusRequester,
-                modifier = Modifier.align(Alignment.TopCenter)
-            )
+                    },
+                    scrollBehavior = searchBarScrollBehavior
+                )
+            }
         }
-    }
-) { paddingValues ->
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(paddingValues)
-    ) {
+    ) { paddingValues ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+        ) {
 	                NavHost(
                             navController = navController,
                             startDestination = when (tabOpenedFromShortcut ?: defaultOpenTab) {
