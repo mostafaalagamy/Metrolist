@@ -565,13 +565,7 @@ class MainActivity : ComponentActivity() {
                 scrollBehavior = topAppBarScrollBehavior
             )
         }
-    ) { paddingValues ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.surface)
-                .padding(paddingValues)
-        ) {
+    ) 
 	                NavHost(
                             navController = navController,
                             startDestination = when (tabOpenedFromShortcut ?: defaultOpenTab) {
@@ -762,11 +756,7 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             }
-			}
-    }
-		    
-
-                        BottomSheetPlayer(
+			BottomSheetPlayer(
                             state = playerBottomSheetState,
                             navController = navController,
                         )
