@@ -1,37 +1,3 @@
-@Composable
-fun MainActivityContent() {
-    // State to control the active state of the search bar
-    var isSearchBarActive by remember { mutableStateOf(false) }
-    var query by remember { mutableStateOf(TextFieldValue("")) }
-
-    // TopAppBar or other UI components
-    TopAppBar(
-        title = { Text("Your App Title") },
-        actions = {
-            IconButton(onClick = { isSearchBarActive = !isSearchBarActive }) {
-                Icon(Icons.Default.Search, contentDescription = "Search")
-            }
-        }
-    )
-
-    // Conditionally render the SearchBar
-    if (isSearchBarActive) {
-        SearchBar(
-            query = query,
-            onQueryChange = { query = it },
-            onSearch = { /* Handle search action */ },
-            active = isSearchBarActive,
-            onActiveChange = { isSearchBarActive = it },
-            scrollBehavior = TopAppBarScrollBehavior(), // Pass your scroll behavior here
-            modifier = Modifier.fillMaxWidth(),
-            // Other parameters as needed
-        )
-    }
-
-    // Other content of your main activity
-    // ...
-}
-
 package com.metrolist.music
 
 import android.annotation.SuppressLint
