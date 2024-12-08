@@ -47,7 +47,7 @@ import androidx.compose.ui.unit.lerp
 import kotlin.math.max
 import kotlin.math.roundToInt
 
-@ExperimentalMaterial3Api
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopSearchBar(
     query: TextFieldValue,
@@ -62,68 +62,51 @@ fun TopSearchBar(
     leadingIcon: @Composable (() -> Unit)? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
     shape: Shape = SearchBarDefaults.inputFieldShape,
-    colors: SearchBarColors =
-        SearchBarDefaults.colors(
-            containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp)
-        ),
+    colors: SearchBarColors = SearchBarDefaults.colors(),
     tonalElevation: Dp = SearchBarDefaults.TonalElevation,
     windowInsets: WindowInsets = WindowInsets.systemBars,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     focusRequester: FocusRequester = remember { FocusRequester() },
     content: @Composable ColumnScope.() -> Unit,
 ) {
+    val density = LocalDensity.current
     val heightOffsetLimit =
-        with(LocalDensity.current) {
-            -(48.dp.toPx() + WindowInsets.systemBars.getTop(this))
-        }
+        with(density) { -(48.dp.toPx() + WindowInsets.systemBars.getTop(density)) }
+
     SideEffect {
         if (scrollBehavior.state.heightOffsetLimit != heightOffsetLimit) {
             scrollBehavior.state.heightOffsetLimit = heightOffsetLimit
         }
     }
 
-    val animationProgress: Float by animateFloatAsState(
+    val animationProgress by animateFloatAsState(
         targetValue = if (active) 1f else 0f,
-        animationSpec = tween(durationMillis = 300),
-        label = "",
+        animationSpec = tween(300)
     )
 
     val animatedShape by remember {
         derivedStateOf {
             if (shape == SearchBarDefaults.inputFieldShape) {
-                val animatedRadius = 24.dp * (1 - animationProgress)
-                RoundedCornerShape(CornerSize(animatedRadius))
+                RoundedCornerShape(CornerSize(24.dp * (1 - animationProgress)))
             } else shape
         }
     }
 
-    val animatedInputFieldPadding by remember {
-        derivedStateOf {
-            PaddingValues(
-                start = 16.dp * animationProgress,
-                top = 8.dp * animationProgress,
-                end = 16.dp * animationProgress,
-                bottom = 8.dp * animationProgress,
-            )
-        }
-    }
-
     BoxWithConstraints(
-        modifier =
-            modifier
-                .offset { IntOffset(0, scrollBehavior.state.heightOffset.roundToInt()) },
-        propagateMinConstraints = true,
+        modifier = modifier.offset {
+            IntOffset(0, scrollBehavior.state.heightOffset.roundToInt())
+        }
     ) {
-        val height by animateDpAsState(
-            targetValue = if (active) constraints.maxHeight.toDp() else 48.dp,
-            animationSpec = tween(durationMillis = 300)
-        )
+        val height = animateDpAsState(
+            targetValue = if (active) with(density) { constraints.maxHeight.toDp() } else 48.dp,
+            animationSpec = tween(300)
+        ).value
 
         Surface(
             shape = animatedShape,
             color = colors.containerColor,
             tonalElevation = tonalElevation,
-            modifier = Modifier.size(width = constraints.maxWidth.toDp(), height = height),
+            modifier = Modifier.size(constraints.maxWidth.toDp(density), height)
         ) {
             Column {
                 SearchBarInputField(
@@ -132,16 +115,15 @@ fun TopSearchBar(
                     onSearch = onSearch,
                     active = active,
                     onActiveChange = onActiveChange,
-                    modifier = Modifier.padding(animatedInputFieldPadding),
+                    modifier = Modifier.padding(16.dp * animationProgress),
                     enabled = enabled,
                     placeholder = placeholder,
                     leadingIcon = leadingIcon,
                     trailingIcon = trailingIcon,
                     colors = colors.inputFieldColors,
                     interactionSource = interactionSource,
-                    focusRequester = focusRequester,
+                    focusRequester = focusRequester
                 )
-
                 if (animationProgress > 0) {
                     content()
                 }
