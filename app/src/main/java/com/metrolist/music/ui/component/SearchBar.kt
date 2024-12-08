@@ -194,47 +194,6 @@ fun TopSearchBar(
             endPadding = lerp((SearchBarHorizontalPadding + endInset).roundToPx().toFloat(), 0f, animationProgress).toDp()
         }
 
-    Surface(
-        shape = animatedShape,
-        color = colors.containerColor,
-        contentColor = contentColorFor(colors.containerColor),
-        tonalElevation = tonalElevation,
-        modifier =
-            Modifier
-                .padding(
-                    top = animatedSurfaceTopPadding,
-                    start = startPadding,
-                    end = endPadding,
-                )
-                .size(width = width, height = height),
-    ) {
-        Column {
-            SearchBarInputField(
-                query = query,
-                onQueryChange = onQueryChange,
-                onSearch = onSearch,
-                active = active,
-                onActiveChange = onActiveChange,
-                modifier = Modifier.padding(animatedInputFieldPadding),
-                enabled = enabled,
-                placeholder = placeholder,
-                leadingIcon = leadingIcon,
-                trailingIcon = trailingIcon,
-                colors = colors.inputFieldColors,
-                interactionSource = interactionSource,
-                focusRequester = focusRequester,
-            )
-
-            if (animationProgress > 0) {
-                Column(Modifier.alpha(animationProgress)) {
-                    HorizontalDivider(color = colors.dividerColor)
-                    content()
-                }
-            }
-        }
-    }
-}
-
         Surface(
             shape = animatedShape,
             color = colors.containerColor,
