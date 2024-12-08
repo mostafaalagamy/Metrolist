@@ -165,29 +165,34 @@ fun TopSearchBar(
     }
 
     BoxWithConstraints(
-    modifier =
-        modifier
-            .offset {
-                IntOffset(x = 0, y = scrollBehavior.state.heightOffset.roundToInt())
-            },
-    propagateMinConstraints = true,
-) {
-    val width: Dp
-    val startPadding: Dp
-    val endPadding: Dp
-    val height: Dp by animateDpAsState(
-        targetValue = if (active) constraints.maxHeight.toDp() else InputFieldHeight,
-        animationSpec = tween(durationMillis = AnimationDurationMillis)
-    )
+        modifier =
+            modifier
+                .offset {
+                    IntOffset(x = 0, y = scrollBehavior.state.heightOffset.roundToInt())
+                },
+        propagateMinConstraints = true,
+    ) {
+        val height: Dp by animateDpAsState(
+            targetValue = if (active) constraints.maxHeight.toDp() else 0.dp,
+            animationSpec = tween(durationMillis = AnimationDurationMillis)
+        )
+        val width: Dp
+        val startPadding: Dp
+        val endPadding: Dp
+        with(LocalDensity.current) {
+            val startWidth = constraints.maxWidth.toFloat()
+            val startHeight =
+                max(constraints.minHeight, InputFieldHeight.roundToPx())
+                    .coerceAtMost(constraints.maxHeight)
+                    .toFloat()
+            val endWidth = constraints.maxWidth.toFloat()
+            val endHeight = constraints.maxHeight.toFloat()
 
-    with(LocalDensity.current) {
-        val startWidth = constraints.maxWidth.toFloat()
-        val endWidth = constraints.maxWidth.toFloat()
-
-        width = lerp(startWidth, endWidth, animationProgress).toDp()
-        startPadding = lerp((SearchBarHorizontalPadding + startInset).roundToPx().toFloat(), 0f, animationProgress).toDp()
-        endPadding = lerp((SearchBarHorizontalPadding + endInset).roundToPx().toFloat(), 0f, animationProgress).toDp()
-    }
+            height = lerp(startHeight, endHeight, animationProgress).toDp()
+            width = lerp(startWidth, endWidth, animationProgress).toDp()
+            startPadding = lerp((SearchBarHorizontalPadding + startInset).roundToPx().toFloat(), 0f, animationProgress).toDp()
+            endPadding = lerp((SearchBarHorizontalPadding + endInset).roundToPx().toFloat(), 0f, animationProgress).toDp()
+        }
 
     Surface(
         shape = animatedShape,
