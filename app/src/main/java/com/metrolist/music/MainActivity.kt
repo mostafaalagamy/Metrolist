@@ -28,6 +28,8 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.focusable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.material3.*
 import androidx.compose.material3.AlertDialogDefaults
 import androidx.compose.material3.Badge
@@ -57,6 +59,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -67,7 +70,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -308,11 +310,13 @@ class MainActivity : ComponentActivity() {
                     val (query, onQueryChange) =
                         rememberSaveable(stateSaver = TextFieldValue.Saver) {
                             mutableStateOf(TextFieldValue())
-                        }
+			}
+
                     var active by rememberSaveable {
                         mutableStateOf(false)
-                    }
-                    val onActiveChange: (Boolean) -> Unit = { newActive ->
+		    }
+
+		    val onActiveChange: (Boolean) -> Unit = { newActive ->
                         active = newActive
                         if (!newActive) {
                             focusManager.clearFocus()
@@ -321,6 +325,7 @@ class MainActivity : ComponentActivity() {
                             }
                         }
                     }
+
                     var searchSource by rememberEnumPreference(SearchSourceKey, SearchSource.ONLINE)
 
                     val searchBarFocusRequester = remember { FocusRequester() }
@@ -339,15 +344,16 @@ class MainActivity : ComponentActivity() {
 
                     var openSearchImmediately: Boolean by remember {
                         mutableStateOf(intent?.action == ACTION_SEARCH)
-                    }
+		    }
 
-                    val shouldShowSearchBar =
+		    val shouldShowSearchBar =
                         remember(active, navBackStackEntry) {
                             active ||
                                 navigationItems.fastAny { it.route == navBackStackEntry?.destination?.route } ||
                                 navBackStackEntry?.destination?.route?.startsWith("search/") == true
-                        }
-                    val shouldShowNavigationBar =
+			}
+
+		    val shouldShowNavigationBar =
                         remember(navBackStackEntry, active) {
                             navBackStackEntry?.destination?.route == null ||
                                 navigationItems.fastAny { it.route == navBackStackEntry?.destination?.route } &&
@@ -423,6 +429,7 @@ class MainActivity : ComponentActivity() {
                         if (active) {
                             searchBarScrollBehavior.state.resetHeightOffset()
                             topAppBarScrollBehavior.state.resetHeightOffset()
+			    searchBarFocusRequester.requestFocus()
                         }
                     }
 
@@ -624,7 +631,16 @@ class MainActivity : ComponentActivity() {
                             )
                         ) {
                             navigationBuilder(navController, topAppBarScrollBehavior, latestVersionName)
-			    }
+		   	    }
+
+			val currentTitle = remember(navBackStackEntry) {
+  			    when (navBackStackEntry?.destination?.route) {
+    			        Screens.Home.route -> R.string.home
+     			        Screens.Explore.route -> R.string.explore
+    			        Screens.Library.route -> R.string.filter_library
+      		                else -> R.string.app_name
+ 			   }
+			}
 
                         AnimatedVisibility(
                             visible = shouldShowSearchBar,
@@ -635,9 +651,8 @@ class MainActivity : ComponentActivity() {
                                 TopAppBar(
                                     title = { 
                                         Text(
-                                            text = stringResource(R.string.app_name),
+                                            text = stringResource(currentTitle),
                                             style = MaterialTheme.typography.titleLarge,
-					    fontWeight = FontWeight.Bold
                                         ) 
                                     },
                                     actions = {
