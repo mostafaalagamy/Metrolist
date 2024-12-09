@@ -28,6 +28,9 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.focusable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.material3.*
 import androidx.compose.material3.AlertDialogDefaults
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
@@ -56,6 +59,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -306,11 +310,13 @@ class MainActivity : ComponentActivity() {
                     val (query, onQueryChange) =
                         rememberSaveable(stateSaver = TextFieldValue.Saver) {
                             mutableStateOf(TextFieldValue())
-                        }
+			}
+
                     var active by rememberSaveable {
                         mutableStateOf(false)
-                    }
-                    val onActiveChange: (Boolean) -> Unit = { newActive ->
+		    }
+
+		    val onActiveChange: (Boolean) -> Unit = { newActive ->
                         active = newActive
                         if (!newActive) {
                             focusManager.clearFocus()
@@ -319,6 +325,7 @@ class MainActivity : ComponentActivity() {
                             }
                         }
                     }
+
                     var searchSource by rememberEnumPreference(SearchSourceKey, SearchSource.ONLINE)
 
                     val searchBarFocusRequester = remember { FocusRequester() }
@@ -337,15 +344,16 @@ class MainActivity : ComponentActivity() {
 
                     var openSearchImmediately: Boolean by remember {
                         mutableStateOf(intent?.action == ACTION_SEARCH)
-                    }
+		    }
 
-                    val shouldShowSearchBar =
+		    val shouldShowSearchBar =
                         remember(active, navBackStackEntry) {
                             active ||
                                 navigationItems.fastAny { it.route == navBackStackEntry?.destination?.route } ||
                                 navBackStackEntry?.destination?.route?.startsWith("search/") == true
-                        }
-                    val shouldShowNavigationBar =
+			}
+
+		    val shouldShowNavigationBar =
                         remember(navBackStackEntry, active) {
                             navBackStackEntry?.destination?.route == null ||
                                 navigationItems.fastAny { it.route == navBackStackEntry?.destination?.route } &&
@@ -421,6 +429,7 @@ class MainActivity : ComponentActivity() {
                         if (active) {
                             searchBarScrollBehavior.state.resetHeightOffset()
                             topAppBarScrollBehavior.state.resetHeightOffset()
+			    searchBarFocusRequester.requestFocus()
                         }
                     }
 
@@ -622,156 +631,166 @@ class MainActivity : ComponentActivity() {
                             )
                         ) {
                             navigationBuilder(navController, topAppBarScrollBehavior, latestVersionName)
-			    }
-                        			
+		   	    }
+
+			val currentTitle = remember(navBackStackEntry) {
+  			    when (navBackStackEntry?.destination?.route) {
+    			        Screens.Home.route -> R.string.home
+     			        Screens.Explore.route -> R.string.explore
+    			        Screens.Library.route -> R.string.filter_library
+      		                else -> R.string.app_name
+ 			   }
+			}
+
                         AnimatedVisibility(
                             visible = shouldShowSearchBar,
                             enter = fadeIn(),
                             exit = fadeOut(),
                         ) {
-                            TopSearchBar(
-                                query = query,
-                                onQueryChange = onQueryChange,
-                                onSearch = onSearch,
-                                active = active,
-                                onActiveChange = onActiveChange,
-                                scrollBehavior = searchBarScrollBehavior,
-                                placeholder = {
-                                    Text(
-                                        text = stringResource(
-                                            if (!active) {
-                                                R.string.search
-                                            } else {
+                            if (!active) {
+                                TopAppBar(
+                                    title = { 
+                                        Text(
+                                            text = stringResource(currentTitle),
+                                            style = MaterialTheme.typography.titleLarge,
+                                        ) 
+                                    },
+                                    actions = {
+                                        IconButton(
+                                            onClick = { 
+                                                onActiveChange(true)
+                                            }
+                                        ) {
+                                            Icon(
+                                                painter = painterResource(R.drawable.search),
+                                                contentDescription = stringResource(R.string.search)
+                                            )
+                                        }
+
+                                        IconButton(
+                                            onClick = { 
+                                                navController.navigate("settings") 
+                                            }
+                                        ) {
+                                            BadgedBox(
+                                                badge = {
+                                                    if (latestVersionName != BuildConfig.VERSION_NAME) {
+                                                        Badge()
+                                                    }
+                                                }
+                                            ) {
+                                                Icon(
+                                                    painter = painterResource(R.drawable.settings),
+                                                    contentDescription = stringResource(R.string.settings),
+                                                    modifier = Modifier.size(24.dp)
+                                                )
+                                            }
+                                        }
+                                    },
+                                    scrollBehavior = searchBarScrollBehavior
+                                )
+                            } else {
+                                TopSearchBar(
+                                    query = query,
+                                    onQueryChange = onQueryChange,
+                                    onSearch = onSearch,
+                                    active = active,
+                                    onActiveChange = onActiveChange,
+                                    scrollBehavior = searchBarScrollBehavior,
+                                    placeholder = {
+                                        Text(
+                                            text = stringResource(
                                                 when (searchSource) {
                                                     SearchSource.LOCAL -> R.string.search_library
                                                     SearchSource.ONLINE -> R.string.search_yt_music
                                                 }
-                                            },
-                                        ),
-                                    )
-                                },
-                                leadingIcon = {
-                                    IconButton(
-                                        onClick = {
-                                            when {
-                                                active -> onActiveChange(false)
-                                                !navigationItems.fastAny { it.route == navBackStackEntry?.destination?.route } -> {
-                                                    navController.navigateUp()
-                                                }
-                                                else -> onActiveChange(true)
-                                            }
-                                        },
-                                        onLongClick = {
-                                            when {
-                                                active -> {}
-                                                !navigationItems.fastAny { it.route == navBackStackEntry?.destination?.route } -> {
-                                                    navController.backToMain()
-                                                }
-                                                else -> {}
-                                            }
-                                        },
-                                    ) {
-                                        Icon(
-                                            painterResource(
-                                                if (active ||
-                                                !navigationItems.fastAny { it.route == navBackStackEntry?.destination?.route }
-                                                ) {
-                                                    R.drawable.arrow_back
-                                                } else {
-                                                    R.drawable.search
-                                                },
-                                            ),
-                                            contentDescription = null,
+                                            )
                                         )
-                                    }
-                                },
-                                trailingIcon = {
-                                    Row {
-                                        if (active) {
+                                    },
+                                    leadingIcon = {
+                                        IconButton(
+                                            onClick = { 
+                                                onActiveChange(false)
+                                            }
+                                        ) {
+                                            Icon(
+                                                painterResource(R.drawable.arrow_back),
+                                                contentDescription = null
+                                            )
+                                        }
+                                    },
+                                    trailingIcon = {
+                                        Row {
                                             if (query.text.isNotEmpty()) {
                                                 IconButton(
-                                                    onClick = { onQueryChange(TextFieldValue("")) },
+                                                    onClick = { 
+                                                        onQueryChange(TextFieldValue(""))
+                                                    }
                                                 ) {
                                                     Icon(
                                                         painter = painterResource(R.drawable.close),
-                                                        contentDescription = null,
+                                                        contentDescription = null
                                                     )
                                                 }
                                             }
                                             IconButton(
                                                 onClick = {
-                                                    searchSource =
-                                                        if (searchSource == SearchSource.ONLINE) SearchSource.LOCAL else SearchSource.ONLINE
-                                                },
+                                                    searchSource = if (searchSource == SearchSource.ONLINE) 
+                                                        SearchSource.LOCAL 
+                                                    else 
+                                                        SearchSource.ONLINE
+                                                }
                                             ) {
                                                 Icon(
                                                     painter = painterResource(
                                                         when (searchSource) {
                                                             SearchSource.LOCAL -> R.drawable.library_music
                                                             SearchSource.ONLINE -> R.drawable.language
-                                                        },
+                                                        }
                                                     ),
-                                                    contentDescription = null,
+                                                    contentDescription = null
                                                 )
                                             }
-                                        } else if (navBackStackEntry?.destination?.route in topLevelScreens) {
-                                            IconButton(
-                                                onClick = {
-                                                    navController.navigate("settings")
-                                                },
-                                            ) {
-                                                BadgedBox(
-                                                    badge = {
-                                                        if (latestVersionName != BuildConfig.VERSION_NAME) {
-                                                            Badge()
-                                                        }
-                                                    },
-                                                ) {
-                                                    Icon(
-                                                        painter = painterResource(R.drawable.settings),
-                                                        contentDescription = null,
-                                                        modifier = Modifier.size(24.dp)
-                                                    )
-                                                }
-                                            }
                                         }
-                                    }
-                                },
-                                focusRequester = searchBarFocusRequester,
-                                modifier = Modifier.align(Alignment.TopCenter),
-                            ) {
-                                Crossfade(
-                                    targetState = searchSource,
-                                    label = "",
-                                    modifier =
-                                        Modifier
+                                    },
+                                    focusRequester = searchBarFocusRequester,
+                                    modifier = Modifier.align(Alignment.TopCenter),
+                                ) {
+                                    Crossfade(
+                                        targetState = searchSource,
+                                        label = "",
+                                        modifier = Modifier
                                             .fillMaxSize()
                                             .padding(bottom = if (!playerBottomSheetState.isDismissed) MiniPlayerHeight else 0.dp)
-                                            .navigationBarsPadding(),
-                                ) { searchSource ->
-                                    when (searchSource) {
-                                        SearchSource.LOCAL ->
-                                            LocalSearchScreen(
-                                                query = query.text,
-                                                navController = navController,
-                                                onDismiss = { onActiveChange(false) },
-                                            )
-
-                                        SearchSource.ONLINE ->
-                                            OnlineSearchScreen(
-                                                query = query.text,
-                                                onQueryChange = onQueryChange,
-                                                navController = navController,
-                                                onSearch = {
-                                                    navController.navigate("search/${URLEncoder.encode(it, "UTF-8")}")
-                                                    if (dataStore[PauseSearchHistoryKey] != true) {
-                                                        database.query {
-                                                            insert(SearchHistory(query = it))
-                                                        }
+                                            .navigationBarsPadding()
+                                    ) { searchSource ->
+                                        when (searchSource) {
+                                            SearchSource.LOCAL -> 
+                                                LocalSearchScreen(
+                                                    query = query.text,
+                                                    navController = navController,
+                                                    onDismiss = { 
+                                                        onActiveChange(false)
                                                     }
-                                                },
-                                                onDismiss = { onActiveChange(false) },
-                                            )
+                                                )
+                                            SearchSource.ONLINE -> 
+                                                OnlineSearchScreen(
+                                                    query = query.text,
+                                                    onQueryChange = onQueryChange,
+                                                    navController = navController,
+                                                    onSearch = { 
+                                                        navController.navigate("search/${URLEncoder.encode(it, "UTF-8")}")
+                                                        if (dataStore[PauseSearchHistoryKey] != true) {
+                                                            database.query {
+                                                                insert(SearchHistory(query = it))
+                                                            }
+							}
+                                                    },
+                                                    onDismiss = {
+                                                        onActiveChange(false)
+                                                    }
+                                                )
+                                        }
                                     }
                                 }
                             }
@@ -784,7 +803,6 @@ class MainActivity : ComponentActivity() {
 
                         NavigationBar(
                             modifier = Modifier
-		                .clip(RoundedCornerShape(20.dp))
                                 .align(Alignment.BottomCenter)
                                 .offset {
                                     if (navigationBarHeight == 0.dp) {
