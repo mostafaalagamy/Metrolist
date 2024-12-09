@@ -232,7 +232,6 @@ fun HomeScreen(
                     },
                     modifier = Modifier
                         .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Horizontal))
-                        .padding(horizontal = 12.dp, vertical = 6.dp)
                         .fillMaxWidth(),
                     containerColor = MaterialTheme.colorScheme.surfaceContainer
                 )
