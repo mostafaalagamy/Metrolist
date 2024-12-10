@@ -634,12 +634,12 @@ class MainActivity : ComponentActivity() {
 		   	    }
 
 			val currentTitle = remember(navBackStackEntry) {
-  			    when (navBackStackEntry?.destination?.route) {
-    			        Screens.Home.route -> R.string.home
-     			        Screens.Explore.route -> R.string.explore
-    			        Screens.Library.route -> R.string.filter_library
-      		                else -> R.string.app_name
- 			   }
+ 			    when (navBackStackEntry?.destination?.route) {
+        			Screens.Home.route -> R.string.home
+        			Screens.Explore.route -> R.string.explore
+        			Screens.Library.route -> R.string.filter_library
+        			else -> null
+    			    }
 			}
 
                         AnimatedVisibility(
@@ -647,11 +647,11 @@ class MainActivity : ComponentActivity() {
                             enter = fadeIn(),
                             exit = fadeOut(),
                         ) {
-                            if (!active) {
+                            if (!active && navBackStackEntry?.destination?.route in topLevelScreens) {
                                 TopAppBar(
                                     title = { 
                                         Text(
-                                            text = stringResource(currentTitle),
+                                            text = currentTitle?.let { stringResource(it) } ?: "",
                                             style = MaterialTheme.typography.titleLarge,
                                         ) 
                                     },
@@ -666,7 +666,6 @@ class MainActivity : ComponentActivity() {
                                                 contentDescription = stringResource(R.string.search)
                                             )
                                         }
-
                                         IconButton(
                                             onClick = { 
                                                 navController.navigate("settings") 
@@ -690,7 +689,7 @@ class MainActivity : ComponentActivity() {
                                     scrollBehavior = searchBarScrollBehavior
                                 )
                             } else {
-                                TopSearchBar(
+                                TopSearch(
                                     query = query,
                                     onQueryChange = onQueryChange,
                                     onSearch = onSearch,
@@ -704,52 +703,73 @@ class MainActivity : ComponentActivity() {
                                                     SearchSource.LOCAL -> R.string.search_library
                                                     SearchSource.ONLINE -> R.string.search_yt_music
                                                 }
-                                            )
+                                            ),
                                         )
                                     },
                                     leadingIcon = {
                                         IconButton(
-                                            onClick = { 
-                                                onActiveChange(false)
-                                            }
+                                            onClick = {
+                                                when {
+                                                    active -> onActiveChange(false)
+                                                    !navigationItems.fastAny { it.route == navBackStackEntry?.destination?.route } -> {
+                                                        navController.navigateUp()
+                                                    }
+                                                    else -> onActiveChange(true)
+                                                }
+                                            },
+                                            onLongClick = {
+                                                when {
+                                                    active -> {}
+                                                    !navigationItems.fastAny { it.route == navBackStackEntry?.destination?.route } -> {
+                                                        navController.backToMain()
+                                                    }
+                                                    else -> {}
+                                                }
+                                            },
                                         ) {
                                             Icon(
-                                                painterResource(R.drawable.arrow_back),
-                                                contentDescription = null
+                                                painterResource(
+                                                    if (active ||
+                                                    !navigationItems.fastAny { it.route == navBackStackEntry?.destination?.route }
+                                                    ) {
+                                                        R.drawable.arrow_back
+                                                    } else {
+                                                        R.drawable.search
+                                                    },
+                                                ),
+                                                contentDescription = null,
                                             )
                                         }
                                     },
                                     trailingIcon = {
                                         Row {
-                                            if (query.text.isNotEmpty()) {
-                                                IconButton(
-                                                    onClick = { 
-                                                        onQueryChange(TextFieldValue(""))
+                                            if (active) {
+                                                if (query.text.isNotEmpty()) {
+                                                    IconButton(
+                                                        onClick = { onQueryChange(TextFieldValue("")) },
+                                                    ) {
+                                                        Icon(
+                                                            painter = painterResource(R.drawable.close),
+                                                            contentDescription = null,
+                                                        )
                                                     }
+                                                }
+                                                IconButton(
+                                                    onClick = {
+                                                        searchSource =
+                                                            if (searchSource == SearchSource.ONLINE) SearchSource.LOCAL else SearchSource.ONLINE
+                                                    },
                                                 ) {
                                                     Icon(
-                                                        painter = painterResource(R.drawable.close),
-                                                        contentDescription = null
+                                                        painter = painterResource(
+                                                            when (searchSource) {
+                                                                SearchSource.LOCAL -> R.drawable.library_music
+                                                                SearchSource.ONLINE -> R.drawable.language
+                                                            },
+                                                        ),
+                                                        contentDescription = null,
                                                     )
                                                 }
-                                            }
-                                            IconButton(
-                                                onClick = {
-                                                    searchSource = if (searchSource == SearchSource.ONLINE) 
-                                                        SearchSource.LOCAL 
-                                                    else 
-                                                        SearchSource.ONLINE
-                                                }
-                                            ) {
-                                                Icon(
-                                                    painter = painterResource(
-                                                        when (searchSource) {
-                                                            SearchSource.LOCAL -> R.drawable.library_music
-                                                            SearchSource.ONLINE -> R.drawable.language
-                                                        }
-                                                    ),
-                                                    contentDescription = null
-                                                )
                                             }
                                         }
                                     },
@@ -759,36 +779,34 @@ class MainActivity : ComponentActivity() {
                                     Crossfade(
                                         targetState = searchSource,
                                         label = "",
-                                        modifier = Modifier
-                                            .fillMaxSize()
-                                            .padding(bottom = if (!playerBottomSheetState.isDismissed) MiniPlayerHeight else 0.dp)
-                                            .navigationBarsPadding()
+                                        modifier =
+                                            Modifier
+                                                .fillMaxSize()
+                                                .padding(bottom = if (!playerBottomSheetState.isDismissed) MiniPlayerHeight else 0.dp)
+                                                .navigationBarsPadding(),
                                     ) { searchSource ->
                                         when (searchSource) {
-                                            SearchSource.LOCAL -> 
+                                            SearchSource.LOCAL ->
                                                 LocalSearchScreen(
                                                     query = query.text,
                                                     navController = navController,
-                                                    onDismiss = { 
-                                                        onActiveChange(false)
-                                                    }
+                                                    onDismiss = { onActiveChange(false) },
                                                 )
-                                            SearchSource.ONLINE -> 
+
+                                            SearchSource.ONLINE ->
                                                 OnlineSearchScreen(
                                                     query = query.text,
                                                     onQueryChange = onQueryChange,
                                                     navController = navController,
-                                                    onSearch = { 
+                                                    onSearch = {
                                                         navController.navigate("search/${URLEncoder.encode(it, "UTF-8")}")
                                                         if (dataStore[PauseSearchHistoryKey] != true) {
                                                             database.query {
                                                                 insert(SearchHistory(query = it))
                                                             }
-							}
+                                                        }
                                                     },
-                                                    onDismiss = {
-                                                        onActiveChange(false)
-                                                    }
+                                                    onDismiss = { onActiveChange(false) },
                                                 )
                                         }
                                     }
