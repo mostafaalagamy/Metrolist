@@ -437,15 +437,9 @@ fun AutoPlaylistScreen(
                                     },
                                 ) {
                                     Icon(
-                                        painter = runCatching {
-                                            if (selection) {
-                                                painterResource(R.drawable.deselect)
-                                            } else {
-                                                Spacer(modifier = Modifier.size(24.dp))
-                                            }
-                                        }.getOrNull(),
-                                        contentDescription = null,
-                                    )
+    painter = painterResource(id = if (count == wrappedSongs?.size) R.drawable.deselect else 0),
+    contentDescription = null,
+)
                                 }
 
                                 IconButton(
@@ -495,15 +489,9 @@ fun AutoPlaylistScreen(
                                     modifier = Modifier.padding(horizontal = 6.dp),
                                 ) {
                                     Icon(
-                                        painter = runCatching {
-                                            if (selection) {
-                                                painterResource(R.drawable.deselect)
-                                            } else {
-                                                Spacer(modifier = Modifier.size(24.dp))
-                                            }
-                                        }.getOrNull(),
-                                        contentDescription = null,
-                                    )
+    painter = painterResource(id = if (count == wrappedSongs?.size) R.drawable.deselect else 0),
+    contentDescription = null,
+)
                                 }
                             }
                         }
