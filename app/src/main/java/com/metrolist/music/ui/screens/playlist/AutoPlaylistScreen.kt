@@ -441,7 +441,7 @@ fun AutoPlaylistScreen(
                                             if (selection) {
                                                 painterResource(R.drawable.deselect)
                                             } else {
-                                                null
+                                                Spacer(modifier = Modifier.size(24.dp))
                                             }
                                         }.getOrNull(),
                                         contentDescription = null,
@@ -499,7 +499,7 @@ fun AutoPlaylistScreen(
                                             if (selection) {
                                                 painterResource(R.drawable.deselect)
                                             } else {
-                                                null
+                                                Spacer(modifier = Modifier.size(24.dp))
                                             }
                                         }.getOrNull(),
                                         contentDescription = null,
