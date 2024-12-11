@@ -443,9 +443,7 @@ fun AutoPlaylistScreen(
                                                 wrappedSongs?.size
                                             ) {
                                                 R.drawable.deselect
-                                            } else {
-                                                R.drawable.select_all
-                                            },
+                                            } else -> null
                                         ),
                                         contentDescription = null,
                                     )
@@ -568,13 +566,10 @@ fun AutoPlaylistScreen(
                                     },
                                     onLongClick = {
                                         haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                        menuState.show {
-                                            SongMenu(
-                                                originalSong = songWrapper.item,
-                                                navController = navController,
-                                                onDismiss = menuState::dismiss,
-                                            )
+                                        if (!selection) {
+                                            selection = true
                                         }
+                                        songWrapper.isSelected = true
                                     },
                                 ),
                         )
