@@ -437,16 +437,13 @@ fun AutoPlaylistScreen(
                                     },
                                 ) {
                                     Icon(
-                                        painter =
-                                        painterResource(
-                                            if (count ==
-                                                wrappedSongs?.size
-                                            ) {
-                                                R.drawable.deselect
+                                        painter = runCatching {
+                                            if (selection) {
+                                                painterResource(R.drawable.deselect)
                                             } else {
                                                 null
-                                            },
-                                        ),
+                                            }
+                                        }.getOrNull(),
                                         contentDescription = null,
                                     )
                                 }
