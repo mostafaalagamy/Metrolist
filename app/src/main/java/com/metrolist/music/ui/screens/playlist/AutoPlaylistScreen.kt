@@ -498,16 +498,7 @@ fun AutoPlaylistScreen(
                                     modifier = Modifier.padding(horizontal = 6.dp),
                                 ) {
                                     Icon(
-                                        painter =
-                                        painterResource(
-                                            if (count ==
-                                                wrappedSongs?.size
-                                            ) {
-                                                R.drawable.deselect
-                                            } else {
-                                                R.drawable.select_all
-                                            },
-                                        ),
+                                        painter = painterResource(if (selection) R.drawable.deselect else R.drawable.select_all),
                                         contentDescription = null,
                                     )
                                 }
