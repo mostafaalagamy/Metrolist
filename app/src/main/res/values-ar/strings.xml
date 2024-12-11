@@ -358,6 +358,7 @@
     <string name="player_and_audio">المشغل والصوت</string>
     <string name="audio_quality">جودة الصوت</string>
     <string name="audio_quality_auto">تلقائي</string>
+    <string name="audio_quality_max">أعلي إرتفاع (تجريبي)</string>
     <string name="audio_quality_high">مرتفعة</string>
     <string name="audio_quality_low">منخفضة</string>
     <string name="queue">قائمة الإنتظار</string>
