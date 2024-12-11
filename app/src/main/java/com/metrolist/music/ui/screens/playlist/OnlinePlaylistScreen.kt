@@ -351,10 +351,17 @@ fun OnlinePlaylistScreen(
                     item {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.padding(start = 16.dp),
                         ) {
                             if (selection) {
                                 val count = wrappedSongs.count { it.isSelected }
+                                IconButton(
+                                    onClick = { selection = false },
+                                ) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.close),
+                                        contentDescription = null,
+                                    )
+                                }
                                 Text(text = pluralStringResource(R.plurals.n_song, count, count), modifier = Modifier.weight(1f))
                                 IconButton(
                                     onClick = {
@@ -403,15 +410,6 @@ fun OnlinePlaylistScreen(
                                 ) {
                                     Icon(
                                         painter = painterResource(R.drawable.more_vert),
-                                        contentDescription = null,
-                                    )
-                                }
-
-                                IconButton(
-                                    onClick = { selection = false },
-                                ) {
-                                    Icon(
-                                        painter = painterResource(R.drawable.close),
                                         contentDescription = null,
                                     )
                                 }
@@ -473,13 +471,11 @@ fun OnlinePlaylistScreen(
                                         },
                                         onLongClick = {
                                             haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                            menuState.show {
-                                                YouTubeSongMenu(
-                                                    song = song.item.second,
-                                                    navController = navController,
-                                                    onDismiss = menuState::dismiss,
-                                                )
+                                            if (!selection) {
+                                                selection = true
                                             }
+                                            wrappedSongs.forEach { it.isSelected = false }
+                                            song.isSelected = true
                                         },
                                     ).alpha(if (hideExplicit && song.item.second.explicit) 0.3f else 1f)
                                     .animateItem(),

@@ -346,10 +346,17 @@ fun LocalPlaylistScreen(
                     item {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.padding(start = 16.dp),
                         ) {
                             if (selection) {
                                 val count = wrappedSongs.count { it.isSelected }
+                                IconButton(
+                                    onClick = { selection = false },
+                                ) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.close),
+                                        contentDescription = null,
+                                    )
+                                }
                                 Text(
                                     text = stringResource(R.string.elements_selected, count),
                                     modifier = Modifier.weight(1f))
@@ -397,15 +404,7 @@ fun LocalPlaylistScreen(
                                         contentDescription = null,
                                     )
                                 }
-
-                                IconButton(
-                                    onClick = { selection = false },
-                                ) {
-                                    Icon(
-                                        painter = painterResource(R.drawable.close),
-                                        contentDescription = null,
-                                    )
-                                }
+  
                             } else {
                                 SortHeader(
                                     sortType = sortType,
@@ -423,16 +422,6 @@ fun LocalPlaylistScreen(
                                     },
                                     modifier = Modifier.weight(1f),
                                 )
-
-                                IconButton(
-                                    onClick = { selection = !selection },
-                                    modifier = Modifier.padding(horizontal = 6.dp),
-                                ) {
-                                    Icon(
-                                        painter = painterResource(if (selection) R.drawable.deselect else R.drawable.select_all),
-                                        contentDescription = null,
-                                    )
-                                }
 
                                 if (!selection) {
                                     IconButton(
@@ -562,16 +551,14 @@ fun LocalPlaylistScreen(
                                                 }
                                             },
                                             onLongClick = {
-                                                menuState.show {
-                                                    SongMenu(
-                                                        originalSong = song.song,
-                                                        navController = navController,
-                                                        onDismiss = menuState::dismiss,
-                                                        onDeleteFromPlaylist = ::deleteFromPlaylist
-                                                    )
-                                                }
-                                            },
-                                        ),
+                                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                                    if (!selection) {
+                                                        selection = true
+                                            }
+                                            wrappedSongs.forEach { it.isSelected = false }
+                                            wrappedSongs.find { it.item.map.id == song.map.id }?.isSelected = true
+                                        },
+                                    )
                             )
                         }
 
@@ -693,16 +680,13 @@ fun LocalPlaylistScreen(
                                             },
                                             onLongClick = {
                                                 haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                                menuState.show {
-                                                    SongMenu(
-                                                        originalSong = songWrapper.item.song,
-                                                        navController = navController,
-                                                        onDismiss = menuState::dismiss,
-                                                        onDeleteFromPlaylist = ::deleteFromPlaylist
-                                                    )
-                                                }
-                                            },
-                                        ),
+                                                    if (!selection) {
+                                                        selection = true
+                                                    }
+                                                    wrappedSongs?.forEach { it.isSelected = false }
+                                                    songWrapper.isSelected = true
+                                                },
+                                            ),
                             )
                         }
 

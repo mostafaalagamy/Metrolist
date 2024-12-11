@@ -420,10 +420,17 @@ fun AutoPlaylistScreen(
                     item {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.padding(start = 16.dp),
                         ) {
                             if (selection) {
                                 val count = wrappedSongs?.count { it.isSelected }
+                                IconButton(
+                                    onClick = { selection = false },
+                                ) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.close),
+                                        contentDescription = null,
+                                    )
+                                }
                                 Text(
                                     text = stringResource(R.string.elements_selected, count ?: 0),
                                     modifier = Modifier.weight(1f))
@@ -467,15 +474,6 @@ fun AutoPlaylistScreen(
                                         contentDescription = null,
                                     )
                                 }
-
-                                IconButton(
-                                    onClick = { selection = false },
-                                ) {
-                                    Icon(
-                                        painter = painterResource(R.drawable.close),
-                                        contentDescription = null,
-                                    )
-                                }
                             } else {
                                 SortHeader(
                                     sortType = sortType,
@@ -492,16 +490,6 @@ fun AutoPlaylistScreen(
                                     },
                                     modifier = Modifier.weight(1f),
                                 )
-
-                                IconButton(
-                                    onClick = { selection = !selection },
-                                    modifier = Modifier.padding(horizontal = 6.dp),
-                                ) {
-                                    Icon(
-                                        painter = painterResource(if (selection) R.drawable.deselect else R.drawable.select_all),
-                                        contentDescription = null,
-                                    )
-                                }
                             }
                         }
                     }
@@ -568,15 +556,13 @@ fun AutoPlaylistScreen(
                                     },
                                     onLongClick = {
                                         haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                        menuState.show {
-                                            SongMenu(
-                                                originalSong = songWrapper.item,
-                                                navController = navController,
-                                                onDismiss = menuState::dismiss,
-                                            )
-                                        }
-                                    },
-                                ),
+                                            if (!selection) {
+                                                selection = true
+                                            }
+                                            wrappedSongs?.forEach { it.isSelected = false }
+                                            songWrapper.isSelected = true
+                                       },
+                                    )
                         )
                     }
                 }
