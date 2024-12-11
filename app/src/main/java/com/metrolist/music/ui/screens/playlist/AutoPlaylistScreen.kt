@@ -436,12 +436,19 @@ fun AutoPlaylistScreen(
                                         }
                                     },
                                 ) {
-                                    if (count != wrappedSongs?.size) {
-    Icon(
-        painter = painterResource(R.drawable.deselect),
-        contentDescription = null
-    )
-}
+                                    Icon(
+                                        painter =
+                                        painterResource(
+                                            if (count ==
+                                                wrappedSongs?.size
+                                            ) {
+                                                R.drawable.deselect
+                                            } else {
+                                                R.drawable.select_all
+                                            },
+                                        ),
+                                        contentDescription = null,
+                                    )
                                 }
 
                                 IconButton(
@@ -490,12 +497,19 @@ fun AutoPlaylistScreen(
                                     onClick = { selection = !selection },
                                     modifier = Modifier.padding(horizontal = 6.dp),
                                 ) {
-                                    if (count != wrappedSongs?.size) {
-    Icon(
-        painter = painterResource(R.drawable.deselect),
-        contentDescription = null
-    )
-}
+                                    Icon(
+                                        painter =
+                                        painterResource(
+                                            if (count ==
+                                                wrappedSongs?.size
+                                            ) {
+                                                R.drawable.deselect
+                                            } else {
+                                                R.drawable.select_all
+                                            },
+                                        ),
+                                        contentDescription = null,
+                                    )
                                 }
                             }
                         }
