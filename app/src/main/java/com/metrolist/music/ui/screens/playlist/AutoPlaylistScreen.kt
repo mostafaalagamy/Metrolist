@@ -436,14 +436,12 @@ fun AutoPlaylistScreen(
                                         }
                                     },
                                 ) {
-                                    Icon(
-    painter = painterResource(R.drawable.deselect),
-    contentDescription = null,
-    modifier = Modifier.visibility(
-        if (count == wrappedSongs?.size) Visibility.Visible 
-        else Visibility.Gone
+                                    if (count != wrappedSongs?.size) {
+    Icon(
+        painter = painterResource(R.drawable.deselect),
+        contentDescription = null
     )
-)
+}
                                 }
 
                                 IconButton(
@@ -492,14 +490,12 @@ fun AutoPlaylistScreen(
                                     onClick = { selection = !selection },
                                     modifier = Modifier.padding(horizontal = 6.dp),
                                 ) {
-                                    Icon(
-    painter = painterResource(R.drawable.deselect),
-    contentDescription = null,
-    modifier = Modifier.visibility(
-        if (count == wrappedSongs?.size) Visibility.Visible 
-        else Visibility.Gone
+                                    if (count != wrappedSongs?.size) {
+    Icon(
+        painter = painterResource(R.drawable.deselect),
+        contentDescription = null
     )
-)
+}
                                 }
                             }
                         }
