@@ -418,93 +418,27 @@ fun AutoPlaylistScreen(
                     }
 
                     item {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.padding(start = 16.dp),
-                        ) {
-                            if (selection) {
-                                val count = wrappedSongs?.count { it.isSelected }
-                                Text(
-                                    text = stringResource(R.string.elements_selected, count ?: 0),
-                                    modifier = Modifier.weight(1f))
-                                IconButton(
-                                    onClick = {
-                                        if (count == wrappedSongs?.size) {
-                                            wrappedSongs?.forEach { it.isSelected = false }
-                                        }else {
-                                            wrappedSongs?.forEach { it.isSelected = true }
-                                        }
-                                    },
-                                ) {
-                                    Icon(
-                                        painter =
-                                        painterResource(
-                                            if (count ==
-                                                wrappedSongs?.size
-                                            ) {
-                                                R.drawable.deselect
-                                            } else {
-                                                R.drawable.select_all
-                                            },
-                                        ),
-                                        contentDescription = null,
-                                    )
-                                }
-
-                                IconButton(
-                                    onClick = {
-                                        menuState.show {
-                                            SelectionSongMenu(
-                                                songSelection = wrappedSongs?.filter { it.isSelected }!!.map { it.item },
-                                                onDismiss = menuState::dismiss,
-                                                clearAction = { selection = false },
-                                            )
-                                        }
-                                    },
-                                ) {
-                                    Icon(
-                                        painter = painterResource(R.drawable.more_vert),
-                                        contentDescription = null,
-                                    )
-                                }
-
-                                IconButton(
-                                    onClick = { selection = false },
-                                ) {
-                                    Icon(
-                                        painter = painterResource(R.drawable.close),
-                                        contentDescription = null,
-                                    )
-                                }
-                            } else {
-                                SortHeader(
-                                    sortType = sortType,
-                                    sortDescending = sortDescending,
-                                    onSortTypeChange = onSortTypeChange,
-                                    onSortDescendingChange = onSortDescendingChange,
-                                    sortTypeText = { sortType ->
-                                        when (sortType) {
-                                            SongSortType.CREATE_DATE -> R.string.sort_by_create_date
-                                            SongSortType.NAME -> R.string.sort_by_name
-                                            SongSortType.ARTIST -> R.string.sort_by_artist
-                                            SongSortType.PLAY_TIME -> R.string.sort_by_play_time
-                                        }
-                                    },
-                                    modifier = Modifier.weight(1f),
-                                )
-
-                                IconButton(
-                                    onClick = { selection = !selection },
-                                    modifier = Modifier.padding(horizontal = 6.dp),
-                                ) {
-                                    Icon(
-                                        painter = painterResource(if (selection) R.drawable.deselect else R.drawable.select_all),
-                                        contentDescription = null,
-                                    )
-                                }
-                            }
-                        }
-                    }
+                          Row(
+                              verticalAlignment = Alignment.CenterVertically,
+                              modifier = Modifier.padding(start = 16.dp),
+                          ) {
+                              SortHeader(
+                                  sortType = sortType,
+                                  sortDescending = sortDescending,
+                                  onSortTypeChange = onSortTypeChange,
+                                  onSortDescendingChange = onSortDescendingChange,
+                                  sortTypeText = { sortType ->
+                                      when (sortType) {
+                                          SongSortType.CREATE_DATE -> R.string.sort_by_create_date
+                                          SongSortType.NAME -> R.string.sort_by_name
+                                          SongSortType.ARTIST -> R.string.sort_by_artist
+                                          SongSortType.PLAY_TIME -> R.string.sort_by_play_time
+                                     }
+                                  },
+                                  modifier = Modifier.weight(1f),
+                              )
+                         }
+                     }
                 }
 
                 val searchQueryStr = (searchQuery.text.trim())
@@ -568,15 +502,13 @@ fun AutoPlaylistScreen(
                                     },
                                     onLongClick = {
                                         haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                        menuState.show {
-                                            SongMenu(
-                                                originalSong = songWrapper.item,
-                                                navController = navController,
-                                                onDismiss = menuState::dismiss,
-                                            )
-                                        }
-                                    },
-                                ),
+                                            if (!selection) {
+                                                selection = true
+                                            }
+                                            wrappedSongs?.forEach { it.isSelected = false }
+                                            songWrapper.isSelected = true
+                                       },
+                                    )
                         )
                     }
                 }
@@ -584,71 +516,117 @@ fun AutoPlaylistScreen(
         }
 
         TopAppBar(
-               title = {
-                   if (isSearching) {
-                       TextField(
-                           value = searchQuery,
-                           onValueChange = { searchQuery = it },
-                           placeholder = {
-                               Text(
-                                   text = stringResource(R.string.search),
-                                   style = MaterialTheme.typography.titleLarge
-                               )
-                           },
-                           singleLine = true,
-                           textStyle = MaterialTheme.typography.titleLarge,
-                           keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-                           colors = TextFieldDefaults.colors(
-                               focusedContainerColor = Color.Transparent,
-                               unfocusedContainerColor = Color.Transparent,
-                               focusedIndicatorColor = Color.Transparent,
-                               unfocusedIndicatorColor = Color.Transparent,
-                               disabledIndicatorColor = Color.Transparent,
-                           ),
-                           modifier = Modifier
-                               .fillMaxWidth()
-                               .focusRequester(focusRequester)
-                       )
-                   } else {
-                       Text(
-                           text = playlist ?: "",
-                           )
-                       }
-                   },
-               navigationIcon = {
-                   IconButton(
-                       onClick = {
-                           if (isSearching) {
-                               isSearching = false
-                               searchQuery = TextFieldValue()
-                           } else {
-                               navController.navigateUp()
-                           }
-                       },
-                       onLongClick = {
-                           if (!isSearching) {
-                               navController.backToMain()
-                           }
-                       }
-                   ) {
-                       Icon(
-                           painter = painterResource(R.drawable.arrow_back),
-                           contentDescription = null
-                       )
-                   }
-               },
-               actions = {
-                   if (!isSearching) {
-                       IconButton(
-                           onClick = { isSearching = true }
-                       ) {
-                           Icon(
-                               painter = painterResource(R.drawable.search),
-                               contentDescription = null
-                       )
+            title = {
+                if (selection) {
+                    val count = wrappedSongs?.count { it.isSelected } ?: 0
+                    Text(
+                        text = pluralStringResource(R.plurals.n_song, count, count),
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                } else if (isSearching) {
+                    TextField(
+                        value = searchQuery,
+                        onValueChange = { searchQuery = it },
+                        placeholder = {
+                            Text(
+                                text = stringResource(R.string.search),
+                                style = MaterialTheme.typography.titleLarge
+                            )
+                        },
+                        singleLine = true,
+                        textStyle = MaterialTheme.typography.titleLarge,
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+                        colors = TextFieldDefaults.colors(
+                            focusedContainerColor = Color.Transparent,
+                            unfocusedContainerColor = Color.Transparent,
+                            focusedIndicatorColor = Color.Transparent,
+                            unfocusedIndicatorColor = Color.Transparent,
+                            disabledIndicatorColor = Color.Transparent,
+                        ),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .focusRequester(focusRequester)
+                    )
+                } else {
+                    Text(
+                        text = playlist ?: "",
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                }
+            },
+            navigationIcon = {
+                IconButton(
+                    onClick = {
+                        if (isSearching) {
+                            isSearching = false
+                            searchQuery = TextFieldValue()
+                        } else if (selection) {
+                            selection = false
+                        } else {
+                            navController.navigateUp()
+                        }
+                    },
+                    onLongClick = {
+                        if (!isSearching) {
+                            navController.backToMain()
+                        }
                     }
-                 }
-              }
-           )
-        }
+                ) {
+                    Icon(
+                        painter = painterResource(
+                            if (selection) R.drawable.close else R.drawable.arrow_back
+                        ),
+                        contentDescription = null
+                    )
+                }
+            },
+            actions = {
+                if (selection) {
+                    val count = wrappedSongs?.count { it.isSelected } ?: 0
+                    IconButton(
+                        onClick = {
+                            if (count == wrappedSongs?.size) {
+                                wrappedSongs?.forEach { it.isSelected = false }
+                            } else {
+                                wrappedSongs?.forEach { it.isSelected = true }
+                            }
+                        },
+                    ) {
+                        Icon(
+                            painter = painterResource(
+                                if (count == wrappedSongs?.size) R.drawable.deselect else R.drawable.select_all
+                            ),
+                            contentDescription = null
+                        )
+                    }
+
+                    IconButton(
+                        onClick = {
+                            menuState.show {
+                                SelectionSongMenu(
+                                    songSelection = wrappedSongs?.filter { it.isSelected }!!.map { it.item },
+                                    onDismiss = menuState::dismiss,
+                                    clearAction = { selection = false },
+                                )
+                            }
+                        },
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.more_vert),
+                            contentDescription = null
+                        )
+                    }
+                } else if (!isSearching) {
+                    IconButton(
+                        onClick = { isSearching = true }
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.search),
+                            contentDescription = null
+                        )
+                    }
+                }
+            }
+        )
     }
+}
