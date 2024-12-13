@@ -536,7 +536,7 @@ fun AlbumScreen(
             if (selection) {
                 val count = wrappedSongs?.count { it.isSelected } ?: 0
                 Text(
-                    text = stringResource(R.string.elements_selected, count),
+                    text = pluralStringResource(R.plurals.n_song, count, count),
                     style = MaterialTheme.typography.titleLarge
                 )
             } else {
