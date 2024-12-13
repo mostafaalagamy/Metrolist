@@ -158,7 +158,7 @@ fun LibrarySongsScreen(
                                 contentDescription = null,
                             )
                         }
-                        Text(text = pluralStringResource(R.plurals.n_element, count, count), modifier = Modifier.weight(1f))
+                        Text(text = pluralStringResource(R.plurals.n_song, count, count), modifier = Modifier.weight(1f))
                         IconButton(
                             onClick = {
                                 if (count == wrappedSongs.size) {
