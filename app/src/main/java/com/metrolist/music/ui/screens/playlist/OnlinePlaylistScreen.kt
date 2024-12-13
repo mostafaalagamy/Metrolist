@@ -348,76 +348,6 @@ fun OnlinePlaylistScreen(
                             }
                         }
                     }
-                    item {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.padding(start = 16.dp),
-                        ) {
-                            if (selection) {
-                                val count = wrappedSongs.count { it.isSelected }
-                                Text(text = pluralStringResource(R.plurals.n_song, count, count), modifier = Modifier.weight(1f))
-                                IconButton(
-                                    onClick = {
-                                        if (count == wrappedSongs.size) {
-                                            wrappedSongs.forEach { it.isSelected = false }
-                                        } else {
-                                            wrappedSongs.forEach { it.isSelected = true }
-                                        }
-                                    },
-                                ) {
-                                    Icon(
-                                        painter =
-                                            painterResource(
-                                                if (count ==
-                                                    wrappedSongs.size
-                                                ) {
-                                                    R.drawable.deselect
-                                                } else {
-                                                    R.drawable.select_all
-                                                },
-                                            ),
-                                        contentDescription = null,
-                                    )
-                                }
-
-                                IconButton(
-                                    onClick = {
-                                        wrappedSongs[0].item.second.toMediaItem()
-                                        menuState.show {
-                                            wrappedSongs
-                                                .filter { it.isSelected }
-                                                .map {
-                                                    it.item.second
-                                                        .toMediaItem()
-                                                        .metadata!!
-                                                }.let {
-                                                    SelectionMediaMetadataMenu(
-                                                        songSelection = it,
-                                                        onDismiss = menuState::dismiss,
-                                                        clearAction = { selection = false },
-                                                        currentItems = emptyList(),
-                                                    )
-                                                }
-                                        }
-                                    },
-                                ) {
-                                    Icon(
-                                        painter = painterResource(R.drawable.more_vert),
-                                        contentDescription = null,
-                                    )
-                                }
-
-                                IconButton(
-                                    onClick = { selection = false },
-                                ) {
-                                    Icon(
-                                        painter = painterResource(R.drawable.close),
-                                        contentDescription = null,
-                                    )
-                                }
-                            }
-                        }
-                    }
 
                     items(
                         items = wrappedSongs,
@@ -473,13 +403,11 @@ fun OnlinePlaylistScreen(
                                         },
                                         onLongClick = {
                                             haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                            menuState.show {
-                                                YouTubeSongMenu(
-                                                    song = song.item.second,
-                                                    navController = navController,
-                                                    onDismiss = menuState::dismiss,
-                                                )
+                                            if (!selection) {
+                                                selection = true
                                             }
+                                            wrappedSongs.forEach { it.isSelected = false }
+                                            song.isSelected = true
                                         },
                                     ).alpha(if (hideExplicit && song.item.second.explicit) 0.3f else 1f)
                                     .animateItem(),
@@ -530,70 +458,113 @@ fun OnlinePlaylistScreen(
         }
 
         TopAppBar(
-               title = {
-                   if (isSearching) {
-                       TextField(
-                           value = query,
-                           onValueChange = { query = it },
-                           placeholder = {
-                               Text(
-                                   text = stringResource(R.string.search),
-                                   style = MaterialTheme.typography.titleLarge
-                               )
-                           },
-                           singleLine = true,
-                           textStyle = MaterialTheme.typography.titleLarge,
-                           keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-                           colors = TextFieldDefaults.colors(
-                               focusedContainerColor = Color.Transparent,
-                               unfocusedContainerColor = Color.Transparent,
-                               focusedIndicatorColor = Color.Transparent,
-                               unfocusedIndicatorColor = Color.Transparent,
-                               disabledIndicatorColor = Color.Transparent,
-                           ),
-                           modifier = Modifier
-                               .fillMaxWidth()
-                               .focusRequester(focusRequester)
-                       )
-                   } else if (showTopBarTitle) {
-                       Text(playlist?.title.orEmpty())
-                       }
-                   },
-               navigationIcon = {
-                   IconButton(
-                       onClick = {
-                           if (isSearching) {
-                               isSearching = false
-                               query = TextFieldValue()
-                           } else {
-                               navController.navigateUp()
-                           }
-                       },
-                       onLongClick = {
-                           if (!isSearching) {
-                               navController.backToMain()
-                           }
-                       }
-                   ) {
-                       Icon(
-                           painter = painterResource(R.drawable.arrow_back),
-                           contentDescription = null
-                       )
-                   }
-               },
-               actions = {
-                   if (!isSearching) {
-                       IconButton(
-                           onClick = { isSearching = true }
-                       ) {
-                           Icon(
-                               painter = painterResource(R.drawable.search),
-                               contentDescription = null
-                       )
+            title = {
+                if (selection) {
+                    val count = wrappedSongs.count { it.isSelected }
+                    Text(
+                        text = pluralStringResource(R.plurals.n_song, count, count),
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                } else if (isSearching) {
+                    TextField(
+                        value = query,
+                        onValueChange = { query = it },
+                        placeholder = {
+                            Text(
+                                text = stringResource(R.string.search),
+                                style = MaterialTheme.typography.titleLarge
+                            )
+                        },
+                        singleLine = true,
+                        textStyle = MaterialTheme.typography.titleLarge,
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+                        colors = TextFieldDefaults.colors(
+                            focusedContainerColor = Color.Transparent,
+                            unfocusedContainerColor = Color.Transparent,
+                            focusedIndicatorColor = Color.Transparent,
+                            unfocusedIndicatorColor = Color.Transparent,
+                            disabledIndicatorColor = Color.Transparent,
+                        ),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .focusRequester(focusRequester)
+                    )
+                } else if (showTopBarTitle) {
+                    Text(playlist?.title.orEmpty())
+                }
+            },
+            navigationIcon = {
+                IconButton(
+                    onClick = {
+                        if (isSearching) {
+                            isSearching = false
+                            query = TextFieldValue()
+                        } else if (selection) {
+                            selection = false
+                        } else {
+                            navController.navigateUp()
+                        }
+                    },
+                ) {
+                    Icon(
+                        painter = painterResource(
+                            if (selection) R.drawable.close else R.drawable.arrow_back
+                        ),
+                        contentDescription = null
+                    )
+                }
+            },
+            actions = {
+                if (selection) {
+                    val count = wrappedSongs.count { it.isSelected }
+                    IconButton(
+                        onClick = {
+                            if (count == wrappedSongs.size) {
+                                wrappedSongs.forEach { it.isSelected = false }
+                            } else {
+                                wrappedSongs.forEach { it.isSelected = true }
+                            }
+                        },
+                    ) {
+                        Icon(
+                            painter = painterResource(
+                                if (count == wrappedSongs.size) R.drawable.deselect else R.drawable.select_all
+                            ),
+                            contentDescription = null
+                        )
                     }
-                 }
-              }
-           )
+                    IconButton(
+                        onClick = {
+                            menuState.show {
+                                SelectionMediaMetadataMenu(
+                                    songSelection = wrappedSongs.filter { it.isSelected }
+                                        .map { it.item.second.toMediaItem().metadata!! },
+                                    onDismiss = menuState::dismiss,
+                                    clearAction = { selection = false },
+                                    currentItems = emptyList()
+                                )
+                            }
+                        },
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.more_vert),
+                            contentDescription = null
+                        )
+                    }
+                } else {
+                    if (!isSearching) {
+                        IconButton(
+                            onClick = { isSearching = true }
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.search),
+                                contentDescription = null
+                            )
+                        }
+                    }
+                }
+            }
+        )
         
         SnackbarHost(
             hostState = snackbarHostState,

@@ -76,6 +76,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
@@ -128,6 +131,7 @@ fun Queue(
     TextBackgroundColor: Color,
 ) {
     val context = LocalContext.current
+    val haptic = LocalHapticFeedback.current
     val clipboardManager = LocalClipboardManager.current
     val menuState = LocalMenuState.current
 
@@ -537,6 +541,25 @@ fun Queue(
                                                 )
                                             }
                                         }
+                                        IconButton(
+                                            onClick = {
+                                                menuState.show {
+                                                    PlayerMenu(
+                                                        mediaMetadata = window.mediaItem.metadata!!,
+                                                        navController = navController,
+                                                        playerBottomSheetState = playerBottomSheetState,
+                                                        isQueueTrigger = true,
+                                                        onShowDetailsDialog = { showDetailsDialog = true },
+                                                        onDismiss = menuState::dismiss,
+                                                    )
+                                                }
+                                            },
+                                        ) {
+                                            Icon(
+                                                painter = painterResource(R.drawable.more_vert),
+                                                contentDescription = null,
+                                            )
+                                        }
                                     },
                                     modifier =
                                         Modifier
@@ -563,18 +586,12 @@ fun Queue(
                                                     }
                                                 },
                                                 onLongClick = {
-                                                    menuState.show {
-                                                        PlayerMenu(
-                                                            mediaMetadata = window.mediaItem.metadata!!,
-                                                            navController = navController,
-                                                            playerBottomSheetState = playerBottomSheetState,
-                                                            isQueueTrigger = true,
-                                                            onShowDetailsDialog = {
-                                                                showDetailsDialog = true
-                                                            },
-                                                            onDismiss = menuState::dismiss,
-                                                        )
+                                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                                    if (!selection) {
+                                                        selection = true
                                                     }
+                                                    selectedSongs.clear() // Clear all selections
+                                                    selectedSongs.add(window.mediaItem.metadata!!) // Select current item
                                                 },
                                             ),
                                 )
@@ -705,17 +722,6 @@ fun Queue(
                 ) {
                     Row {
                         IconButton(
-                            onClick = {
-                                selection = true
-                            },
-                        ) {
-                            Icon(
-                                painter = painterResource(R.drawable.select),
-                                contentDescription = null,
-                            )
-                        }
-
-                        IconButton(
                             onClick = { locked = !locked },
                             modifier = Modifier.padding(horizontal = 6.dp),
                         ) {
@@ -751,11 +757,20 @@ fun Queue(
                 Row(
                     modifier =
                         Modifier
-                            .height(48.dp)
-                            .padding(start = 16.dp),
+                            .height(48.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     val count = selectedSongs.size
+                    IconButton(
+                        onClick = {
+                            selection = false
+                        },
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.close),
+                            contentDescription = null,
+                        )
+                    }
                     Text(
                          text = stringResource(R.string.elements_selected, count),
                          modifier = Modifier.weight(1f))
@@ -806,17 +821,6 @@ fun Queue(
                             painter = painterResource(R.drawable.more_vert),
                             contentDescription = null,
                             tint = LocalContentColor.current,
-                        )
-                    }
-
-                    IconButton(
-                        onClick = {
-                            selection = false
-                        },
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.close),
-                            contentDescription = null,
                         )
                     }
                 }

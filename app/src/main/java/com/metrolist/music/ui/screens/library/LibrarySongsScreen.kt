@@ -147,11 +147,18 @@ fun LibrarySongsScreen(
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(horizontal = 16.dp),
                 ) {
                     if (selection) {
                         val count = wrappedSongs.count { it.isSelected }
-                        Text(text = pluralStringResource(R.plurals.n_element, count, count), modifier = Modifier.weight(1f))
+                        IconButton(
+                            onClick = { selection = false },
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.close),
+                                contentDescription = null,
+                            )
+                        }
+                        Text(text = pluralStringResource(R.plurals.n_song, count, count), modifier = Modifier.weight(1f))
                         IconButton(
                             onClick = {
                                 if (count == wrappedSongs.size) {
@@ -183,48 +190,34 @@ fun LibrarySongsScreen(
                                 contentDescription = null,
                             )
                         }
-
-                        IconButton(
-                            onClick = { selection = false },
-                        ) {
-                            Icon(
-                                painter = painterResource(R.drawable.close),
-                                contentDescription = null,
-                            )
-                        }
                     } else {
-                        SortHeader(
-                            sortType = sortType,
-                            sortDescending = sortDescending,
-                            onSortTypeChange = onSortTypeChange,
-                            onSortDescendingChange = onSortDescendingChange,
-                            sortTypeText = { sortType ->
-                                when (sortType) {
-                                    SongSortType.CREATE_DATE -> R.string.sort_by_create_date
-                                    SongSortType.NAME -> R.string.sort_by_name
-                                    SongSortType.ARTIST -> R.string.sort_by_artist
-                                    SongSortType.PLAY_TIME -> R.string.sort_by_play_time
-                                }
-                            },
-                        )
-
-                        Spacer(Modifier.weight(1f))
-
-                        IconButton(
-                            onClick = { selection = !selection },
-                            modifier = Modifier.padding(horizontal = 6.dp),
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.padding(horizontal = 16.dp),
                         ) {
-                            Icon(
-                                painter = painterResource(if (selection) R.drawable.deselect else R.drawable.select_all),
-                                contentDescription = null,
-                            )
-                        }
+                           SortHeader(
+                               sortType = sortType,
+                               sortDescending = sortDescending,
+                                    onSortTypeChange = onSortTypeChange,
+                               onSortDescendingChange = onSortDescendingChange,
+                               sortTypeText = { sortType ->
+                                   when (sortType) {
+                                       SongSortType.CREATE_DATE -> R.string.sort_by_create_date
+                                       SongSortType.NAME -> R.string.sort_by_name
+                                       SongSortType.ARTIST -> R.string.sort_by_artist
+                                       SongSortType.PLAY_TIME -> R.string.sort_by_play_time
+                                   }
+                               },
+                           )
 
-                        Text(
-                            text = pluralStringResource(R.plurals.n_song, songs.size, songs.size),
-                            style = MaterialTheme.typography.titleSmall,
-                            color = MaterialTheme.colorScheme.secondary,
-                        )
+                           Spacer(Modifier.weight(1f))
+
+                           Text(
+                               text = pluralStringResource(R.plurals.n_song, songs.size, songs.size),
+                               style = MaterialTheme.typography.titleSmall,
+                               color = MaterialTheme.colorScheme.secondary,
+                           )
+                       }
                     }
                 }
             }
@@ -280,18 +273,16 @@ fun LibrarySongsScreen(
                                 },
                                 onLongClick = {
                                     haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                    menuState.show {
-                                        SongMenu(
-                                            originalSong = songWrapper.item,
-                                            navController = navController,
-                                            onDismiss = menuState::dismiss,
-                                        )
+                                    if (!selection) {
+                                        selection = true
                                     }
+                                    wrappedSongs.forEach { it.isSelected = false } // Clear previous selections
+                                    songWrapper.isSelected = true // Select current item
                                 },
                             ).animateItemPlacement(),
-                )
+                    )
+                }
             }
-        }
 
         HideOnScrollFAB(
             visible = songs.isNotEmpty(),
