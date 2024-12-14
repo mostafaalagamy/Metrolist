@@ -366,6 +366,8 @@
     <string name="persistent_queue_desc">استعادة قائمة الانتظار الأخيرة عند بدء تشغيل التطبيق</string>
     <string name="auto_load_more">تحميل المزيد من الأغاني تلقائيًا</string>
     <string name="auto_load_more_desc">إضافة المزيد من الأغاني تلقائيًا عند الوصول إلى نهاية قائمة الانتظار، إن أمكن</string>
+    <string name="enable_similar_content">تمكين المحتوى المشابه</string>
+    <string name="similar_content_desc">إضافة المزيد من الأغاني المشابهة تلقائيًا عند الوصول إلى نهاية قائمة الانتظار</string>
     <string name="skip_silence">تخطي الصمت</string>
     <string name="audio_normalization">التطبيع الصوتي</string>
     <string name="auto_skip_next_on_error">الانتقال التلقائي إلى الأغنية التالية عند حدوث خطأ</string>
