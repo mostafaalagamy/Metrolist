@@ -62,7 +62,7 @@
     <string name="from_your_library">From your library</string>
 
     <!-- Album screen -->
-    <string name="other_versions">Other Versions</string>
+    <string name="other_versions">Other versions</string>
 
     <!-- Library -->
     <string name="liked">Liked</string>
@@ -197,6 +197,7 @@
 
     <!-- Snackbar -->
     <string name="playlist_imported">Playlist imported</string>
+    <string name="imported_playlist">Imported playlist</string>
     <string name="removed_song_from_playlist">Removed \"%s\" from playlist</string>
     <string name="playlist_synced">Playlist synced</string>
     <string name="undo">Undo</string>
@@ -312,7 +313,7 @@
     <string name="auto_load_more">Auto load more songs</string>
     <string name="auto_load_more_desc">Automatically add more songs when the end of the queue is reached, if possible</string>
     <string name="enable_similar_content">Enable Similar Content</string>
-    <string name="similar_content_desc">Automatically add more similar songs when the end of the queue is reache</string>
+    <string name="similar_content_desc">Automatically add more similar songs when the end of the queue is reached</string>
     <string name="skip_silence">Skip silence</string>
     <string name="audio_normalization">Audio normalization</string>
     <string name="auto_skip_next_on_error">Auto skip to next song when error occurs</string>
@@ -350,7 +351,6 @@
     <string name="backup_restore">Backup and restore</string>
     <string name="backup">Backup</string>
     <string name="restore">Restore</string>
-    <string name="imported_playlist">Imported playlist</string>
     <string name="backup_create_success">Backup created successfully</string>
     <string name="backup_create_failed">Couldn\'t create backup</string>
     <string name="restore_failed">Failed to restore backup</string>
