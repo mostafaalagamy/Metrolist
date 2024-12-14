@@ -60,6 +60,7 @@ import com.metrolist.music.constants.AudioNormalizationKey
 import com.metrolist.music.constants.AudioQuality
 import com.metrolist.music.constants.AudioQualityKey
 import com.metrolist.music.constants.AutoLoadMoreKey
+import com.metrolist.music.constants.SimilarContent
 import com.metrolist.music.constants.AutoSkipNextOnErrorKey
 import com.metrolist.music.constants.DiscordTokenKey
 import com.metrolist.music.constants.EnableDiscordRPCKey
@@ -534,19 +535,21 @@ class MusicService :
     }
 
     fun getAutomix(playlistId: String) {
-        scope.launch(SilentHandler) {
-            YouTube
-                .next(WatchEndpoint(playlistId = playlistId))
-                .onSuccess {
-                    YouTube
-                        .next(WatchEndpoint(playlistId = it.endpoint.playlistId))
-                        .onSuccess {
-                            automixItems.value =
-                                it.items.map { song ->
-                                    song.toMediaItem()
-                                }
-                        }
-                }
+        if (dataStore[SimilarContent] == true) {
+            scope.launch(SilentHandler) {
+                YouTube
+                    .next(WatchEndpoint(playlistId = playlistId))
+                    .onSuccess {
+                        YouTube
+                            .next(WatchEndpoint(playlistId = it.endpoint.playlistId))
+                            .onSuccess {
+                                automixItems.value =
+                                    it.items.map { song ->
+                                        song.toMediaItem()
+                                    }
+                            }
+                    }
+            }
         }
     }
 
