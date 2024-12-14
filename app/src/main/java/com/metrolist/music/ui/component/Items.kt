@@ -90,7 +90,7 @@ import com.metrolist.music.db.entities.Playlist
 import com.metrolist.music.db.entities.Song
 import com.metrolist.music.extensions.toMediaItem
 import com.metrolist.music.models.MediaMetadata
-import com.metrolist.music.playback.queues.ListQueue
+import com.metrolist.music.playback.queues.LocalAlbumRadio
 import com.metrolist.music.ui.theme.extractThemeColor
 import com.metrolist.music.utils.joinByBullet
 import com.metrolist.music.utils.makeTimeString
@@ -883,20 +883,11 @@ fun AlbumGridItem(
                         .background(Color.Black.copy(alpha = 0.4f))
                         .clickable {
                             coroutineScope.launch {
-                                database
-                                    .albumWithSongs(album.id)
-                                    .first()
-                                    ?.songs
-                                    ?.map { it.toMediaItem() }
-                                    ?.let {
-                                        playerConnection.service.getAutomixAlbum(albumId = album.id)
-                                        playerConnection.playQueue(
-                                            ListQueue(
-                                                title = album.album.title,
-                                                items = it,
-                                            ),
-                                        )
-                                    }
+                                database.albumWithSongs(album.id).first()?.let { albumWithSongs ->
+                                    playerConnection.playQueue(
+                                        LocalAlbumRadio(albumWithSongs)
+                                    )
+                                }
                             }
                         },
             ) {
@@ -1512,13 +1503,8 @@ fun YouTubeGridItem(
                             .clickable {
                                 var playlistId = ""
                                 coroutineScope?.launch(Dispatchers.IO) {
-                                    var songs =
-                                        database
-                                            .albumWithSongs(item.id)
-                                            .first()
-                                            ?.songs
-                                            ?.map { it.toMediaItem() }
-                                    if (songs == null) {
+                                var albumWithSongs = database.albumWithSongs(item.id).first()
+                                    if (albumWithSongs?.songs.isNullOrEmpty()) {
                                         YouTube
                                             .album(item.id)
                                             .onSuccess { albumPage ->
@@ -1526,19 +1512,16 @@ fun YouTubeGridItem(
                                                 database.transaction {
                                                     insert(albumPage)
                                                 }
-                                                songs = albumPage.songs.map { it.toMediaItem() }
+                                                albumWithSongs = database.albumWithSongs(item.id).first()
                                             }.onFailure {
                                                 reportException(it)
                                             }
                                     }
-                                    songs?.let {
+                                    albumWithSongs?.let {
                                         withContext(Dispatchers.Main) {
                                             playerConnection.service.getAutomix(playlistId)
                                             playerConnection.playQueue(
-                                                ListQueue(
-                                                    title = item.title,
-                                                    items = it,
-                                                ),
+                                                LocalAlbumRadio(it),
                                             )
                                         }
                                     }
