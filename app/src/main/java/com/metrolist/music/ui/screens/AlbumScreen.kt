@@ -74,7 +74,7 @@ import com.metrolist.music.db.entities.Song
 import com.metrolist.music.extensions.toMediaItem
 import com.metrolist.music.extensions.togglePlayPause
 import com.metrolist.music.playback.ExoDownloadService
-import com.metrolist.music.playback.queues.ListQueue
+import com.metrolist.music.playback.queues.LocalAlbumRadio
 import com.metrolist.music.ui.component.AutoResizeText
 import com.metrolist.music.ui.component.FontSizeRange
 import com.metrolist.music.ui.component.IconButton
@@ -341,10 +341,7 @@ fun AlbumScreen(
                             onClick = {
                                 playerConnection.service.getAutomix(playlistId)
                                 playerConnection.playQueue(
-                                    ListQueue(
-                                        title = albumWithSongs.album.title,
-                                        items = albumWithSongs.songs.map(Song::toMediaItem),
-                                    ),
+                                    LocalAlbumRadio(albumWithSongs),
                                 )
                             },
                             contentPadding = ButtonDefaults.ButtonWithIconContentPadding,
@@ -365,10 +362,7 @@ fun AlbumScreen(
                             onClick = {
                                 playerConnection.service.getAutomix(playlistId)
                                 playerConnection.playQueue(
-                                    ListQueue(
-                                        title = albumWithSongs.album.title,
-                                        items = albumWithSongs.songs.shuffled().map(Song::toMediaItem),
-                                    ),
+                                    LocalAlbumRadio(albumWithSongs.copy(songs = albumWithSongs.songs.shuffled())),
                                 )
                             },
                             contentPadding = ButtonDefaults.ButtonWithIconContentPadding,
@@ -427,11 +421,7 @@ fun AlbumScreen(
                                             } else {
                                                 playerConnection.service.getAutomix(playlistId)
                                                 playerConnection.playQueue(
-                                                    ListQueue(
-                                                        title = albumWithSongs.album.title,
-                                                        items = albumWithSongs.songs.map { it.toMediaItem() },
-                                                        startIndex = index,
-                                                    ),
+                                                    LocalAlbumRadio(albumWithSongs, startIndex = index),
                                                 )
                                             }
                                         } else {
