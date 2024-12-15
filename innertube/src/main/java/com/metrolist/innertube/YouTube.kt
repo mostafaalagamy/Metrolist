@@ -18,6 +18,7 @@ import com.metrolist.innertube.models.YouTubeClient.Companion.ANDROID_MUSIC
 import com.metrolist.innertube.models.YouTubeClient.Companion.IOS
 import com.metrolist.innertube.models.YouTubeClient.Companion.WEB
 import com.metrolist.innertube.models.YouTubeClient.Companion.WEB_REMIX
+import com.metrolist.innertube.models.YouTubeClient.Companion.TVHTML5
 import com.metrolist.innertube.models.YouTubeLocale
 import com.metrolist.innertube.models.getContinuation
 import com.metrolist.innertube.models.oddElements
@@ -961,33 +962,28 @@ object YouTube {
         playlistId: String? = null,
     ): Result<PlayerResponse> =
         runCatching {
-             var playerResponse: PlayerResponse
+            var playerResponse: PlayerResponse
             if (this.cookie != null) { // if logged in: try ANDROID_MUSIC client first because IOS client does not play age restricted songs
                 playerResponse = innerTube.player(ANDROID_MUSIC, videoId, playlistId).body<PlayerResponse>()
                 if (playerResponse.playabilityStatus.status == "OK") {
-                    println("there")
                     return@runCatching playerResponse
                 }
             }
-            try {
-                val safePlayerResponse = innerTube.player(WEB_REMIX, videoId, playlistId).body<PlayerResponse>()
-                if (safePlayerResponse.isValid) {
-                    return@runCatching safePlayerResponse
-                }
-            } catch (e: Exception) {
-                error(e)
-            }
-            playerResponse =
-                innerTube.player(IOS, videoId, playlistId).body<PlayerResponse>()
+
+            playerResponse = innerTube.player(IOS, videoId, playlistId).body<PlayerResponse>()
             if (playerResponse.playabilityStatus.status == "OK") {
                 return@runCatching playerResponse
             }
+            val safePlayerResponse = innerTube.player(TVHTML5, videoId, playlistId).body<PlayerResponse>()
+            if (safePlayerResponse.playabilityStatus.status != "OK") {
+                return@runCatching playerResponse
+            }
             val audioStreams = innerTube.pipedStreams(videoId).body<PipedResponse>().audioStreams
-            playerResponse.copy(
+            safePlayerResponse.copy(
                 streamingData =
-                    playerResponse.streamingData?.copy(
+                    safePlayerResponse.streamingData?.copy(
                         adaptiveFormats =
-                            playerResponse.streamingData!!.adaptiveFormats.mapNotNull { adaptiveFormat ->
+                            safePlayerResponse.streamingData.adaptiveFormats.mapNotNull { adaptiveFormat ->
                                 audioStreams.find { it.bitrate == adaptiveFormat.bitrate }?.let {
                                     adaptiveFormat.copy(
                                         url = it.url,
