@@ -683,7 +683,7 @@ class MainActivity : ComponentActivity() {
                                 },
                                 scrollBehavior = searchBarScrollBehavior
                             )
-                        } else if (active || query.text.isNotEmpty()) {
+                        } else if (active || navBackStackEntry?.destination?.route?.startsWith("search/") == true) {
                             TopSearch(
                                 query = query,
                                 onQueryChange = onQueryChange,
