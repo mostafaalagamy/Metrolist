@@ -41,7 +41,7 @@ fun AccountSettings(
     val accountName by rememberPreference(AccountNameKey, "")
     val accountEmail by rememberPreference(AccountEmailKey, "")
     val accountChannelHandle by rememberPreference(AccountChannelHandleKey, "")
-    val innerTubeCookie by rememberPreference(InnerTubeCookieKey, "")
+    val (innerTubeCookie, onInnerTubeCookieChange) = rememberPreference(InnerTubeCookieKey, "")
     val isLoggedIn = remember(innerTubeCookie) {
         "SAPISID" in parseCookieString(innerTubeCookie)
     }
@@ -103,6 +103,17 @@ fun AccountSettings(
                     }
                 )
             }
+
+            if (isLoggedIn) {
+                PreferenceEntry(
+                    title = { Text(stringResource(R.string.logout)) },
+                    icon = { Icon(painterResource(R.drawable.login), null) },
+                    onClick = {
+                        onInnerTubeCookieChange("")
+                    }
+                )
+            }
+            
             PreferenceEntry(
                 title = { Text(stringResource(R.string.discord_integration)) },
                 icon = { Icon(painterResource(R.drawable.discord), null) },
