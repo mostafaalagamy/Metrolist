@@ -77,6 +77,10 @@ fun AccountSettings(
                 )
                 .verticalScroll(rememberScrollState())
         ) {
+
+            PreferenceGroupTitle(
+                title = stringResource(R.string.google),
+            )
             
             PreferenceEntry(
                 title = { Text(if (isLoggedIn) accountName else stringResource(R.string.login)) },
@@ -113,6 +117,10 @@ fun AccountSettings(
                     }
                 )
             }
+
+            PreferenceGroupTitle(
+                title = stringResource(R.string.discord),
+            )
             
             PreferenceEntry(
                 title = { Text(stringResource(R.string.discord_integration)) },
