@@ -28,6 +28,7 @@ import com.metrolist.music.constants.UseLoginForBrowse
 import com.metrolist.music.ui.component.IconButton
 import com.metrolist.music.ui.component.SwitchPreference
 import com.metrolist.music.ui.component.PreferenceEntry
+import com.metrolist.music.ui.component.PreferenceGroupTitle
 import com.metrolist.music.ui.utils.backToMain
 import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
@@ -41,7 +42,7 @@ fun AccountSettings(
     val accountName by rememberPreference(AccountNameKey, "")
     val accountEmail by rememberPreference(AccountEmailKey, "")
     val accountChannelHandle by rememberPreference(AccountChannelHandleKey, "")
-    val innerTubeCookie by rememberPreference(InnerTubeCookieKey, "")
+    val (innerTubeCookie, onInnerTubeCookieChange) = rememberPreference(InnerTubeCookieKey, "")
     val isLoggedIn = remember(innerTubeCookie) {
         "SAPISID" in parseCookieString(innerTubeCookie)
     }
@@ -77,6 +78,10 @@ fun AccountSettings(
                 )
                 .verticalScroll(rememberScrollState())
         ) {
+
+            PreferenceGroupTitle(
+                title = stringResource(R.string.google),
+            )
             
             PreferenceEntry(
                 title = { Text(if (isLoggedIn) accountName else stringResource(R.string.login)) },
@@ -103,6 +108,21 @@ fun AccountSettings(
                     }
                 )
             }
+
+            if (isLoggedIn) {
+                PreferenceEntry(
+                    title = { Text(stringResource(R.string.logout)) },
+                    icon = { Icon(painterResource(R.drawable.logout), null) },
+                    onClick = {
+                        onInnerTubeCookieChange("")
+                    }
+                )
+            }
+
+            PreferenceGroupTitle(
+                title = stringResource(R.string.discord),
+            )
+            
             PreferenceEntry(
                 title = { Text(stringResource(R.string.discord_integration)) },
                 icon = { Icon(painterResource(R.drawable.discord), null) },
