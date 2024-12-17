@@ -277,7 +277,10 @@
     <string name="slim_navbar">Hide bottom navigation bar labels</string>
 
     <string name="content">Content</string>
+    <string name="google">Google</string>
+    <string name="discord">Discord</string>
     <string name="login">Login</string>
+    <string name="logout">Logout</string>
     <string name="not_logged_in">Not logged in</string>
     <string name="general">General</string>
     <string name="content_language">Default content language</string>
@@ -361,7 +364,6 @@
     <string name="options">Options</string>
     <string name="preview">Preview</string>
     <string name="login_failed">Login failed</string>
-    <string name="logout">Logout</string>
 
     <string name="enable_discord_rpc">Enable Rich Presence</string> 
     
