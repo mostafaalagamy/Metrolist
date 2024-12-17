@@ -107,7 +107,7 @@ fun AccountSettings(
             if (isLoggedIn) {
                 PreferenceEntry(
                     title = { Text(stringResource(R.string.logout)) },
-                    icon = { Icon(painterResource(R.drawable.login), null) },
+                    icon = { Icon(painterResource(R.drawable.logout), null) },
                     onClick = {
                         onInnerTubeCookieChange("")
                     }
