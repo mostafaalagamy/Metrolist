@@ -75,12 +75,14 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.fastAny
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.lifecycle.viewModelScope
 import coil.compose.AsyncImage
 import com.metrolist.innertube.models.SongItem
 import com.metrolist.innertube.models.WatchEndpoint
 import com.metrolist.music.LocalDatabase
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.LocalPlayerConnection
+import com.metrolist.music.LocalSyncUtils
 import com.metrolist.music.R
 import com.metrolist.music.constants.AlbumThumbnailSize
 import com.metrolist.music.constants.HideExplicitKey
@@ -108,6 +110,7 @@ import com.metrolist.music.ui.utils.ItemWrapper
 import com.metrolist.music.ui.utils.backToMain
 import com.metrolist.music.utils.rememberPreference
 import com.metrolist.music.viewmodels.OnlinePlaylistViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
@@ -119,6 +122,7 @@ fun OnlinePlaylistScreen(
 ) {
     val context = LocalContext.current
     val menuState = LocalMenuState.current
+    val syncUtils = LocalSyncUtils.current
     val database = LocalDatabase.current
     val haptic = LocalHapticFeedback.current
     val playerConnection = LocalPlayerConnection.current ?: return
@@ -256,24 +260,34 @@ fun OnlinePlaylistScreen(
                                             IconButton(
                                                 onClick = {
                                                     database.transaction {
-                                                        val playlistEntity =
-                                                            PlaylistEntity(
+                                                        if (playlist.id == "LM") {
+                                                            viewModel.viewModelScope.launch(
+                                                                Dispatchers.IO) {
+                                                                syncUtils.syncLikedSongs()
+                                                            }
+                                                        } else {
+                                                            val playlistEntity = PlaylistEntity(
                                                                 name = playlist.title,
-                                                                browseId = playlist.id,
+                                                                browseId = playlist.id
                                                             )
-                                                        insert(playlistEntity)
-                                                        songs
-                                                            .map(SongItem::toMediaMetadata)
-                                                            .onEach(::insert)
-                                                            .mapIndexed { index, song ->
-                                                                PlaylistSongMap(
-                                                                    songId = song.id,
-                                                                    playlistId = playlistEntity.id,
-                                                                    position = index,
-                                                                )
-                                                            }.forEach(::insert)
+                                                            insert(playlistEntity)
+                                                            songs.map(SongItem::toMediaMetadata)
+                                                                .onEach(::insert)
+                                                                .mapIndexed { index, song ->
+                                                                    PlaylistSongMap(
+                                                                        songId = song.id,
+                                                                        playlistId = playlistEntity.id,
+                                                                        position = index
+                                                                    )
+                                                                }
+                                                                .forEach(::insert)
+                                                        }
                                                         coroutineScope.launch {
-                                                            snackbarHostState.showSnackbar(context.getString(R.string.playlist_imported))
+                                                            snackbarHostState.showSnackbar(
+                                                                context.getString(
+                                                                    R.string.playlist_imported
+                                                                )
+                                                            )
                                                         }
                                                     }
                                                 },
