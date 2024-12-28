@@ -1,6 +1,7 @@
 package com.metrolist.music.db.entities
 
 import androidx.compose.runtime.Immutable
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
@@ -40,7 +41,12 @@ data class SongEntity(
     fun localToggleLike() = copy(
         liked = !liked,
         likedDate = if (!liked) LocalDateTime.now() else null,
-    )
+    ).also {
+        CoroutineScope(Dispatchers.IO).launch() {
+            YouTube.likeVideo(id, !liked)
+            this.cancel()
+        }
+    }
 
     fun toggleLike() = copy(
         liked = !liked,
