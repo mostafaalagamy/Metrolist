@@ -115,6 +115,31 @@ class InnerTube {
         parameter("prettyPrint", false)
     }
 
+    suspend fun likeVideo(
+        client: YouTubeClient,
+        videoId: String,
+    ) = httpClient.post("like/like") {
+        ytClient(client, setLogin = true)
+        setBody(
+            LikeBody(
+                context = client.toContext(locale, visitorData),
+                target = LikeBody.Target(videoId)
+            )
+        )
+    }
+    suspend fun unlikeVideo(
+        client: YouTubeClient,
+        videoId: String,
+    ) = httpClient.post("like/removelike") {
+        ytClient(client, setLogin = true)
+        setBody(
+            LikeBody(
+                context = client.toContext(locale, visitorData),
+                target = LikeBody.Target(videoId)
+            )
+        )
+    }
+
     suspend fun search(
         client: YouTubeClient,
         query: String? = null,
