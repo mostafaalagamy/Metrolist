@@ -951,6 +951,13 @@ object YouTube {
                     ArtistItemsPage.fromMusicTwoRowItemRenderer(it) as? PlaylistItem
                 }
         }
+
+     suspend fun likeVideo(videoId: String, like: Boolean) = runCatching {
+        if (like)
+            innerTube.likeVideo(WEB_REMIX, videoId)
+        else
+            innerTube.unlikeVideo(WEB_REMIX, videoId)
+    }
         
     private val PlayerResponse.isValid
         get() =
