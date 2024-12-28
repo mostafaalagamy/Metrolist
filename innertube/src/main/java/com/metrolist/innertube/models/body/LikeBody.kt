@@ -9,7 +9,10 @@ data class LikeBody(
     val target: Target,
 ) {
     @Serializable
-    data class Target(
-        val videoId: String
-    )
+    sealed class Target {
+        @Serializable
+        data class VideoTarget(val videoId: String) : Target()
+        @Serializable
+        data class PlaylistTarget(val playlistId: String) : Target()
+    }
 }
