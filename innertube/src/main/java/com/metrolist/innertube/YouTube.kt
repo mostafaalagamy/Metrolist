@@ -964,6 +964,13 @@ object YouTube {
             playabilityStatus.status == "OK" &&
                 streamingData?.adaptiveFormats?.any { it.url != null || it.signatureCipher != null } == true
 
+    suspend fun likePlaylist(playlistId: String, like: Boolean) = runCatching {
+        if (like)
+            innerTube.likePlaylist(WEB_REMIX, playlistId)
+        else
+            innerTube.unlikePlaylist(WEB_REMIX, playlistId)
+    }
+
     suspend fun player(
         videoId: String,
         playlistId: String? = null,
