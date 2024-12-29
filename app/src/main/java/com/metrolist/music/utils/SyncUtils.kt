@@ -1,16 +1,20 @@
 package com.metrolist.music.utils
 
 import com.metrolist.innertube.YouTube
-import com.metrolist.innertube.models.SongItem
 import com.metrolist.innertube.models.AlbumItem
+import com.metrolist.innertube.models.ArtistItem
+import com.metrolist.innertube.models.SongItem
 import com.metrolist.innertube.utils.completed
 import com.metrolist.music.db.MusicDatabase
+import com.metrolist.music.db.entities.ArtistEntity
 import com.metrolist.music.db.entities.SongEntity
 import com.metrolist.music.models.toMediaMetadata
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
+import java.time.LocalDateTime
 import javax.inject.Inject
 import javax.inject.Singleton
+
 @Singleton
 class SyncUtils @Inject constructor(
     val database: MusicDatabase,
