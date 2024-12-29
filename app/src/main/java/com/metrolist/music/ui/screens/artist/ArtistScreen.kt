@@ -501,7 +501,8 @@ fun ArtistScreen(
                                         name = it.title,
                                         channelId = it.channelId,
                                         thumbnailUrl = it.thumbnail,
-                                ).toggleLike()
+                                    ).toggleLike()
+                                )
                             }
                         }
                     }
