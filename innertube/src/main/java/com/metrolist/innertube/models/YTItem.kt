@@ -66,6 +66,7 @@ data class ArtistItem(
     override val id: String,
     override val title: String,
     override val thumbnail: String,
+    val channelId: String? = null,
     val shuffleEndpoint: WatchEndpoint?,
     val radioEndpoint: WatchEndpoint?,
 ) : YTItem() {
