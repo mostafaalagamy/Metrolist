@@ -39,11 +39,13 @@ import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.metrolist.music.LocalDatabase
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.LocalSyncUtils
+import com.metrolist.innertube.YouTube
 import com.metrolist.music.R
 import com.metrolist.music.constants.CONTENT_TYPE_HEADER
 import com.metrolist.music.constants.CONTENT_TYPE_PLAYLIST
@@ -147,12 +149,16 @@ fun LibraryPlaylistsScreen(
             title = { Text(text = stringResource(R.string.create_playlist)) },
             onDismiss = { showAddPlaylistDialog = false },
             onDone = { playlistName ->
-                database.query {
-                    insert(
-                        PlaylistEntity(
-                            name = playlistName,
-                        ),
-                    )
+                viewModel.viewModelScope.launch(Dispatchers.IO) {
+                    val browseId = YouTube.createPlaylist(playlistName).getOrNull()
+                    database.query {
+                        insert(
+                            PlaylistEntity(
+                                name = playlistName,
+                                browseId = browseId,
+                            )
+                        )
+                    }
                 }
             },
         )
