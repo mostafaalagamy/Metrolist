@@ -394,6 +394,12 @@ object YouTube {
                                     ?.foregroundThumbnail
                                     ?.musicThumbnailRenderer
                                     ?.getThumbnailUrl()!!,
+                        channelId = 
+                            response.header
+                                ?.musicImmersiveHeaderRenderer
+                                ?.subscriptionButton
+                                ?.subscribeButtonRenderer
+                                ?.channelId!!,
                         shuffleEndpoint =
                             response.header
                                 ?.musicImmersiveHeaderRenderer
@@ -952,7 +958,20 @@ object YouTube {
                 }
         }
 
-     suspend fun likeVideo(videoId: String, like: Boolean) = runCatching {
+    suspend fun subscribeChannel(channelId: String, subscribe: Boolean) = runCatching {
+        if (subscribe)
+            innerTube.subscribeChannel(WEB_REMIX, channelId)
+        else
+            innerTube.unsubscribeChannel(WEB_REMIX, channelId)
+    }
+    suspend fun getChannelId(browseId: String): String {
+        YouTube.artist(browseId).onSuccess {
+            return it.artist.channelId!!
+        }
+        return ""
+    }
+    
+    suspend fun likeVideo(videoId: String, like: Boolean) = runCatching {
         if (like)
             innerTube.likeVideo(WEB_REMIX, videoId)
         else
