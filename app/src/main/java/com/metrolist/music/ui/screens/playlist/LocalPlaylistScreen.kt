@@ -147,7 +147,6 @@ fun LocalPlaylistScreen(
     val context = LocalContext.current
     val menuState = LocalMenuState.current
     val database = LocalDatabase.current
-    val syncUtils = LocalSyncUtils.current
     val haptic = LocalHapticFeedback.current
     val playerConnection = LocalPlayerConnection.current ?: return
     val isPlaying by playerConnection.isPlaying.collectAsState()
@@ -774,6 +773,7 @@ fun LocalPlaylistHeader(
     val playerConnection = LocalPlayerConnection.current ?: return
     val context = LocalContext.current
     val database = LocalDatabase.current
+    val syncUtils = LocalSyncUtils.current
     val scope = rememberCoroutineScope()
 
     val playlistLength =
