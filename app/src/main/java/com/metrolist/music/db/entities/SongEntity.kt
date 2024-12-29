@@ -48,6 +48,10 @@ data class SongEntity(
         }
     }
 
+    fun setLiked() = copy(
+        liked = true,
+    )
+    
     fun toggleLike() = copy(
         liked = !liked,
         likedDate = if (!liked) LocalDateTime.now() else null,
