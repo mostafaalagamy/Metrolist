@@ -32,6 +32,7 @@ import com.metrolist.innertube.models.response.NextResponse
 import com.metrolist.innertube.models.response.PipedResponse
 import com.metrolist.innertube.models.response.PlayerResponse
 import com.metrolist.innertube.models.response.SearchResponse
+import com.metrolist.innertube.models.response.AddItemYouTubePlaylistResponse
 import com.metrolist.innertube.pages.AlbumPage
 import com.metrolist.innertube.pages.AlbumUtils
 import com.metrolist.innertube.pages.ArtistItemsContinuationPage
@@ -1291,6 +1292,15 @@ object YouTube {
                 ?.activeAccountHeaderRenderer
                 ?.toAccountInfo()!!
         }
+
+        suspend fun addToPlaylist(playlistId: String, videoId: String) = runCatching {
+        innerTube.addToPlaylist(WEB_REMIX, playlistId, videoId).body<AddItemYouTubePlaylistResponse>()
+    }
+    suspend fun removeFromPlaylist(playlistId: String, videoId: String, setVideoId: String?): Result<Any> = runCatching {
+        if (setVideoId != null) {
+            innerTube.removeFromPlaylist(WEB_REMIX, playlistId, videoId, setVideoId)
+        }
+    }
 
     @JvmInline
     value class SearchFilter(
