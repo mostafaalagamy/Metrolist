@@ -56,4 +56,32 @@ class SyncUtils @Inject constructor(
             }
         }
     }
+    suspend fun syncArtistsSubscriptions() {
+        YouTube.libraryArtistsSubscriptions().onSuccess { ytArtists ->
+            val artists: List<ArtistItem> = ytArtists
+            database.artistsBookmarkedByNameAsc().first()
+                .filterNot { it.id in artists.map(ArtistItem::id) }
+                .forEach { database.update(it.artist.localToggleLike()) }
+            artists.forEach { artist ->
+                val dbArtist = database.artist(artist.id).firstOrNull()
+                database.transaction {
+                    when (dbArtist) {
+                        null -> {
+                            insert(
+                                ArtistEntity(
+                                    id = artist.id,
+                                    name = artist.title,
+                                    thumbnailUrl = artist.thumbnail,
+                                    channelId = artist.channelId,
+                                    bookmarkedAt = LocalDateTime.now()
+                                )
+                            )
+                        }
+                        else -> if (dbArtist.artist.bookmarkedAt == null)
+                            update(dbArtist.artist.localToggleLike())
+                    }
+                }
+            }
+        }
+    }
 }
