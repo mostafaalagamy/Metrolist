@@ -45,7 +45,6 @@ import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
 import com.metrolist.music.constants.ListThumbnailSize
 import com.metrolist.music.constants.ThumbnailCornerRadius
-import com.metrolist.music.db.entities.PlaylistSongMap
 import com.metrolist.music.db.entities.Song
 import com.metrolist.music.extensions.toMediaItem
 import com.metrolist.music.models.MediaMetadata
@@ -121,59 +120,9 @@ fun SelectionSongMenu(
 
     AddToPlaylistDialog(
         isVisible = showChoosePlaylistDialog,
-        onAdd = { playlist ->
-            var position = playlist.songCount
-            database.query {
-                songSelection.forEach { song ->
-                    if (checkInPlaylist(playlist.id, song.id) == 0) {
-                        insert(
-                            PlaylistSongMap(
-                                songId = song.id,
-                                playlistId = playlist.id,
-                                position = position++,
-                            ),
-                        )
-                        update(playlist.playlist.copy(lastUpdateTime = LocalDateTime.now()))
-                        onDismiss()
-                    } else {
-                        notAddedList.add(song)
-                        showErrorPlaylistAddDialog = true
-                    }
-                }
-            }
-        },
+        onGetSong = { selection.map { it.song.id } },
         onDismiss = { showChoosePlaylistDialog = false },
     )
-
-    if (showErrorPlaylistAddDialog) {
-        ListDialog(
-            onDismiss = {
-                showErrorPlaylistAddDialog = false
-                onDismiss()
-            },
-        ) {
-            item {
-                ListItem(
-                    title = "Not added:",
-                    thumbnailContent = {
-                        Image(
-                            painter = painterResource(R.drawable.close),
-                            contentDescription = null,
-                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
-                            modifier = Modifier.size(ListThumbnailSize),
-                        )
-                    },
-                    modifier =
-                        Modifier
-                            .clickable { showErrorPlaylistAddDialog = false },
-                )
-            }
-
-            items(notAddedList) { song ->
-                SongListItem(song = song)
-            }
-        }
-    }
 
     var showRemoveDownloadDialog by remember {
         mutableStateOf(false)
