@@ -39,6 +39,7 @@ import com.metrolist.music.db.entities.SongAlbumMap
 import com.metrolist.music.db.entities.SongArtistMap
 import com.metrolist.music.db.entities.SongEntity
 import com.metrolist.music.db.entities.SongWithStats
+import com.metrolist.music.db.entities.SetVideoIdEntity
 import com.metrolist.music.extensions.reversed
 import com.metrolist.music.extensions.toSQLiteQuery
 import com.metrolist.music.models.MediaMetadata
@@ -488,6 +489,11 @@ interface DatabaseDao {
     """,
     )
     fun allArtistsByPlayTime(): Flow<List<Artist>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertSetVideoId(setVideoIdEntity: SetVideoIdEntity)
+    @Query("SELECT * FROM set_video_id WHERE videoId = :videoId")
+    suspend fun getSetVideoId(videoId: String): SetVideoIdEntity?
 
     @Query("SELECT * FROM format WHERE id = :id")
     fun format(id: String?): Flow<FormatEntity?>
