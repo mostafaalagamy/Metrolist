@@ -29,6 +29,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
@@ -873,6 +874,20 @@ fun LocalPlaylistHeader(
                 )
 
                 Row {
+                    IconButton(
+                        onClick = {
+                            database.transaction {
+                                update(playlist.playlist.toggleLike())
+                            }
+                        }
+                    ) {
+                        val liked = playlist?.playlist?.bookmarkedAt != null
+                        Icon(
+                                painter = painterResource(if (liked) R.drawable.favorite else R.drawable.favorite_border),
+                                contentDescription = null,
+                                tint = if (liked) MaterialTheme.colorScheme.error else LocalContentColor.current
+                        )
+                    }
                     IconButton(
                         onClick = onShowEditDialog,
                     ) {
