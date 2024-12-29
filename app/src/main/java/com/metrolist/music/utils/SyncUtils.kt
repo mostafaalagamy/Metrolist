@@ -7,6 +7,8 @@ import com.metrolist.innertube.models.SongItem
 import com.metrolist.innertube.utils.completed
 import com.metrolist.music.db.MusicDatabase
 import com.metrolist.music.db.entities.ArtistEntity
+import com.metrolist.music.db.entities.PlaylistEntity
+import com.metrolist.music.db.entities.PlaylistSongMap
 import com.metrolist.music.db.entities.SongEntity
 import com.metrolist.music.models.toMediaMetadata
 import kotlinx.coroutines.flow.first
@@ -82,6 +84,36 @@ class SyncUtils @Inject constructor(
                     }
                 }
             }
+        }
+    }
+    suspend fun syncSavedPlaylists() {
+        YouTube.likedPlaylists().onSuccess { playlistList ->
+            val dbPlaylists = database.playlistsByNameAsc().first()
+            playlistList.drop(1).forEach { playlist ->
+                var playlistEntity = dbPlaylists.find { playlist.id == it.playlist.browseId }?.playlist
+                if (playlistEntity == null) {
+                    playlistEntity = PlaylistEntity(name = playlist.title, browseId = playlist.id)
+                    database.insert(playlistEntity)
+                }
+                syncPlaylist(playlist.id, playlistEntity.id)
+            }
+        }
+    }
+    suspend fun syncPlaylist(browseId: String, playlistId: String) {
+        val playlistPage = YouTube.playlist(browseId).completed().getOrNull() ?: return
+        database.transaction {
+            clearPlaylist(playlistId)
+            playlistPage.songs
+                .map(SongItem::toMediaMetadata)
+                .onEach(::insert)
+                .mapIndexed { position, song ->
+                    PlaylistSongMap(
+                        songId = song.id,
+                        playlistId = playlistId,
+                        position = position
+                    )
+                }
+                .forEach(::insert)
         }
     }
 }
