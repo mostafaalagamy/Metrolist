@@ -13,6 +13,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -21,6 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
@@ -35,6 +37,7 @@ import com.metrolist.music.R
 import com.metrolist.music.constants.ListThumbnailSize
 import com.metrolist.music.db.entities.Playlist
 import com.metrolist.music.db.entities.PlaylistEntity
+import com.zionhuang.music.ui.component.DefaultDialog
 import com.metrolist.music.ui.component.ListDialog
 import com.metrolist.music.ui.component.ListItem
 import com.metrolist.music.ui.component.PlaylistListItem
@@ -48,7 +51,7 @@ fun AddToPlaylistDialog(
     isVisible: Boolean,
     noSyncing: Boolean = false,
     initialTextFieldValue: String? = null,
-    onAdd: suspend (Playlist) -> List<String>, // list of song ids. Songs should be inserted to database in this function.
+    onGetSong: suspend () -> List<String>, // list of song ids. Songs should be inserted to database in this function.
     onDismiss: () -> Unit,
 ) {
     val database = LocalDatabase.current
@@ -61,6 +64,19 @@ fun AddToPlaylistDialog(
         mutableStateOf(false)
     }
 
+    var showDuplicateDialog by remember {
+        mutableStateOf(false)
+    }
+    var selectedPlaylist by remember {
+        mutableStateOf<Playlist?>(null)
+    }
+    var songIds by remember {
+        mutableStateOf<List<String>?>(null) // list is not saveable
+    }
+    var duplicates by remember {
+        mutableStateOf(emptyList<String>())
+    }
+    
     var syncedPlaylist: Boolean by remember {
         mutableStateOf(false)
     }
@@ -100,7 +116,7 @@ fun AddToPlaylistDialog(
                         selectedPlaylist = playlist
                         coroutineScope.launch(Dispatchers.IO) {
                             if (songIds == null) {
-                                songIds = onAdd(playlist)
+                                songIds = onGetSong(playlist)
                             }
                             duplicates = database.playlistDuplicates(playlist.id, songIds!!)
                             if (duplicates.isNotEmpty()) {
