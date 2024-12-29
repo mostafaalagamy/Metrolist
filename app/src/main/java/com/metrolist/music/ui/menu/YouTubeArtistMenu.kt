@@ -51,9 +51,9 @@ fun YouTubeArtistMenu(
                                 ArtistEntity(
                                     id = artist.id,
                                     name = artist.title,
+                                    channelId = artist.channelId,
                                     thumbnailUrl = artist.thumbnail,
-                                    bookmarkedAt = LocalDateTime.now(),
-                                ),
+                                ).toggleLike()
                             )
                         }
                     }
