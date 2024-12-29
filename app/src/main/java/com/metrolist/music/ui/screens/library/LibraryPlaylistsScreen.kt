@@ -143,24 +143,57 @@ fun LibraryPlaylistsScreen(
         mutableStateOf(false)
     }
 
-    if (showAddPlaylistDialog) {
         TextFieldDialog(
             icon = { Icon(painter = painterResource(R.drawable.add), contentDescription = null) },
             title = { Text(text = stringResource(R.string.create_playlist)) },
             onDismiss = { showAddPlaylistDialog = false },
             onDone = { playlistName ->
                 viewModel.viewModelScope.launch(Dispatchers.IO) {
-                    val browseId = YouTube.createPlaylist(playlistName).getOrNull()
+                    val browseId = if (syncedPlaylist)
+                        YouTube.createPlaylist(playlistName).getOrNull()
+                    else null
+
                     database.query {
                         insert(
                             PlaylistEntity(
                                 name = playlistName,
                                 browseId = browseId,
+                                bookmarkedAt = LocalDateTime.now()
                             )
                         )
                     }
                 }
             },
+            extraContent = {
+                // synced/unsynced toggle
+                Row(
+                    modifier = Modifier.padding(vertical = 16.dp, horizontal = 40.dp)
+                ) {
+                    Column() {
+                        Text(
+                            text = "Sync Playlist",
+                            style = MaterialTheme.typography.titleLarge,
+                        )
+                        Text(
+                            text = "Note: This allows for syncing with YouTube Music. This is NOT changeable later. You cannot add local songs to synced playlists.",
+                            style = MaterialTheme.typography.bodySmall,
+                            modifier = Modifier.fillMaxWidth(0.7f)
+                        )
+                    }
+                    Row(
+                        modifier = Modifier.weight(1f),
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        Switch(
+                            checked = syncedPlaylist,
+                            onCheckedChange = {
+                                syncedPlaylist = !syncedPlaylist
+                            },
+                        )
+                    }
+                }
+
+            }
         )
     }
 
