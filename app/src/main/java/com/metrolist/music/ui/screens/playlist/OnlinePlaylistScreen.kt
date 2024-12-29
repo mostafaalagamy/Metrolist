@@ -31,6 +31,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -122,9 +123,7 @@ fun OnlinePlaylistScreen(
     scrollBehavior: TopAppBarScrollBehavior,
     viewModel: OnlinePlaylistViewModel = hiltViewModel(),
 ) {
-    val context = LocalContext.current
     val menuState = LocalMenuState.current
-    val syncUtils = LocalSyncUtils.current
     val database = LocalDatabase.current
     val haptic = LocalHapticFeedback.current
     val playerConnection = LocalPlayerConnection.current ?: return
@@ -133,6 +132,7 @@ fun OnlinePlaylistScreen(
 
     val playlist by viewModel.playlist.collectAsState()
     val songs by viewModel.playlistSongs.collectAsState()
+    val dbPlaylist by viewModel.dbPlaylist.collectAsState()
 
     var selection by remember {
         mutableStateOf(false)
@@ -259,30 +259,16 @@ fun OnlinePlaylistScreen(
                                         }
 
                                         Row {
-                                            IconButton(
-                                                onClick = {
-                                                    database.transaction {
-                                                        if (playlist.id == "LM") {
-                                                            viewModel.viewModelScope.launch(
-                                                                Dispatchers.IO) {
-                                                                syncUtils.syncLikedSongs()
-                                                            }
-                                                        } else {
-                                                            if (playlist.id == "LM") {
-                                                                for (song in songs) {
-                                                                    viewModel.viewModelScope.launch(Dispatchers.IO) {
-                                                                        val dbSong = database.song(song.id).firstOrNull()
-                                                                        if (dbSong == null)
-                                                                            insert(song.toMediaMetadata(), SongEntity::toggleLike)
-                                                                        else
-                                                                            update(dbSong.song.setLiked())
-                                                                    }
-                                                                }
-                                                            } else {
+                                            if (playlist.id != "LM") {
+                                                IconButton(
+                                                    onClick = {
+                                                        if (dbPlaylist?.playlist == null) {
+                                                            database.transaction {
                                                                 val playlistEntity = PlaylistEntity(
                                                                     name = playlist.title,
-                                                                    browseId = playlist.id
-                                                                )
+                                                                    browseId = playlist.id,
+                                                                    isEditable = playlist.isEditable,
+                                                                ).toggleLike()
                                                                 insert(playlistEntity)
                                                                 songs.map(SongItem::toMediaMetadata)
                                                                     .onEach(::insert)
@@ -295,22 +281,21 @@ fun OnlinePlaylistScreen(
                                                                     }
                                                                     .forEach(::insert)
                                                             }
-                                                        }
-
-                                                        coroutineScope.launch {
-                                                            snackbarHostState.showSnackbar(
-                                                                context.getString(
-                                                                    R.string.playlist_imported
-                                                                )
-                                                            )
+                                                            } else {
+                                                                database.transaction {
+                                                                    update(dbPlaylist!!.playlist.toggleLike())
+                                                                }
                                                         }
                                                     }
+                                                        ) {
+                                                        Icon(
+                                                            painter = painterResource(
+                                                                if (dbPlaylist?.playlist?.bookmarkedAt != null) R.drawable.favorite else R.drawable.favorite_border
+                                                            ),
+                                                            contentDescription = null,
+                                                            tint = if (dbPlaylist?.playlist?.bookmarkedAt != null) MaterialTheme.colorScheme.error else LocalContentColor.current
+                                                        )
                                                 }
-                                            ) {
-                                                Icon(
-                                                    painter = painterResource(R.drawable.input),
-                                                    contentDescription = null
-                                                )
                                             }
 
                                             IconButton(
