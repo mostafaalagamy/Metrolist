@@ -65,7 +65,6 @@ import com.metrolist.music.R
 import com.metrolist.music.constants.ListItemHeight
 import com.metrolist.music.constants.ListThumbnailSize
 import com.metrolist.music.constants.ThumbnailCornerRadius
-import com.metrolist.music.db.entities.PlaylistSongMap
 import com.metrolist.music.models.MediaMetadata
 import com.metrolist.music.playback.ExoDownloadService
 import com.metrolist.music.playback.queues.YouTubeQueue
@@ -117,17 +116,11 @@ fun PlayerMenu(
 
     AddToPlaylistDialog(
         isVisible = showChoosePlaylistDialog,
-        onAdd = { playlist ->
+        onGetSong = { ->
             database.transaction {
                 insert(mediaMetadata)
                 if (checkInPlaylist(playlist.id, mediaMetadata.id) == 0) {
-                    insert(
-                        PlaylistSongMap(
-                            songId = mediaMetadata.id,
-                            playlistId = playlist.id,
-                            position = playlist.songCount,
-                        ),
-                    )
+                    listOf(mediaMetadata.id)
                     update(playlist.playlist.copy(lastUpdateTime = LocalDateTime.now()))
                 } else {
                     showErrorPlaylistAddDialog = true
