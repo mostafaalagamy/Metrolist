@@ -110,7 +110,8 @@ class SyncUtils @Inject constructor(
                     PlaylistSongMap(
                         songId = song.id,
                         playlistId = playlistId,
-                        position = position
+                        position = position,
+                        setVideoId = song.setVideoId
                     )
                 }
                 .forEach(::insert)
