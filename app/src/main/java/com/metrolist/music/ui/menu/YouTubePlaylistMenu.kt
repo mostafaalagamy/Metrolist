@@ -51,7 +51,6 @@ import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.LocalDownloadUtil
 import com.metrolist.music.R
 import com.metrolist.music.db.entities.PlaylistEntity
-import com.metrolist.music.db.entities.PlaylistSongMap
 import com.metrolist.music.constants.ListThumbnailSize
 import com.metrolist.music.constants.ThumbnailCornerRadius
 import com.metrolist.music.extensions.toMediaItem
@@ -103,43 +102,17 @@ fun YouTubePlaylistMenu(
 
     AddToPlaylistDialog(
         isVisible = showChoosePlaylistDialog,
-        onAdd = { targetPlaylist ->
-            coroutineScope.launch(Dispatchers.IO) {
-                var position = targetPlaylist.songCount
-                songs
-                    .ifEmpty {
-                        withContext(Dispatchers.IO) {
-                            YouTube
-                                .playlist(playlist.id)
-                                .completed()
-                                .getOrNull()
-                                ?.songs
-                                .orEmpty()
-                        }
-                    }.let { songs ->
-                        database.transaction {
-                            songs
-                                .map { it.toMediaMetadata() }
-                                .onEach(::insert)
-                                .forEach { song ->
-                                    if (checkInPlaylist(playlist.id, song.id) == 0) {
-                                        insert(
-                                            PlaylistSongMap(
-                                                songId = song.id,
-                                                playlistId = targetPlaylist.id,
-                                                position = position++,
-                                            ),
-                                        )
-                                        update(targetPlaylist.playlist.copy(lastUpdateTime = LocalDateTime.now()))
-                                        onDismiss()
-                                    } else {
-                                        notAddedList.add(song)
-                                        showErrorPlaylistAddDialog = true
-                                    }
-                                }
-                        }
-                    }
+        onGetSong = {
+            val allSongs = songs
+                .ifEmpty {
+                    YouTube.playlist(playlist.id).completed().getOrNull()?.songs.orEmpty()
+                }.map {
+                    it.toMediaMetadata()
+                }
+            database.transaction {
+                allSongs.forEach(::insert)
             }
+            allSongs.map { it.id }
         },
         onDismiss = { showChoosePlaylistDialog = false },
     )
