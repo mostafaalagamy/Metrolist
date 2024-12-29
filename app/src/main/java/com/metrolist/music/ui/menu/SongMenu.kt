@@ -59,7 +59,6 @@ import com.metrolist.music.R
 import com.metrolist.music.constants.ListItemHeight
 import com.metrolist.music.constants.ListThumbnailSize
 import com.metrolist.music.db.entities.Event
-import com.metrolist.music.db.entities.PlaylistSongMap
 import com.metrolist.music.db.entities.Song
 import com.metrolist.music.extensions.toMediaItem
 import com.metrolist.music.models.toMediaMetadata
@@ -129,23 +128,7 @@ fun SongMenu(
 
     AddToPlaylistDialog(
         isVisible = showChoosePlaylistDialog,
-        onAdd = { playlist ->
-            database.query {
-                if (checkInPlaylist(playlist.id, song.id) == 0) {
-                    insert(
-                        PlaylistSongMap(
-                            songId = song.id,
-                            playlistId = playlist.id,
-                            position = playlist.songCount,
-                        ),
-                    )
-                    update(playlist.playlist.copy(lastUpdateTime = LocalDateTime.now()))
-                    onDismiss()
-                } else {
-                    showErrorPlaylistAddDialog = true
-                }
-            }
-        },
+        onGetSong = { listOf(song.id) },
         onDismiss = {
             showChoosePlaylistDialog = false
         },
