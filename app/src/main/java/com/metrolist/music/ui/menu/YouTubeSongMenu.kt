@@ -54,7 +54,6 @@ import com.metrolist.music.R
 import com.metrolist.music.constants.ListItemHeight
 import com.metrolist.music.constants.ListThumbnailSize
 import com.metrolist.music.constants.ThumbnailCornerRadius
-import com.metrolist.music.db.entities.PlaylistSongMap
 import com.metrolist.music.db.entities.SongEntity
 import com.metrolist.music.extensions.toMediaItem
 import com.metrolist.music.models.MediaMetadata
@@ -105,79 +104,21 @@ fun YouTubeSongMenu(
 
     AddToPlaylistDialog(
         isVisible = showChoosePlaylistDialog,
-        onAdd = { playlist ->
+        onGetSong = { playlist ->
             database.transaction {
                 insert(song.toMediaMetadata())
-                if (checkInPlaylist(playlist.id, song.id) == 0) {
-                    insert(
-                        PlaylistSongMap(
-                            songId = song.id,
-                            playlistId = playlist.id,
-                            position = playlist.songCount,
-                        ),
-                    )
-                    update(playlist.playlist.copy(lastUpdateTime = LocalDateTime.now()))
-                    onDismiss()
-                } else {
-                    notAddedList.add(song.toMediaMetadata())
-                    showErrorPlaylistAddDialog = true
+            }
+
+            coroutineScope.launch(Dispatchers.IO) {
+                playlist.playlist.browseId?.let { browseId ->
+                    YouTube.addToPlaylist(browseId, song.id)
                 }
             }
+
+            listOf(song.id)
         },
-        onDismiss = { showChoosePlaylistDialog = false },
+        onDismiss = { showChoosePlaylistDialog = false }
     )
-
-    if (showErrorPlaylistAddDialog) {
-        ListDialog(
-            onDismiss = {
-                showErrorPlaylistAddDialog = false
-                onDismiss()
-            },
-        ) {
-            item {
-                ListItem(
-                    title = stringResource(R.string.already_in_playlist),
-                    thumbnailContent = {
-                        Image(
-                            painter = painterResource(R.drawable.close),
-                            contentDescription = null,
-                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
-                            modifier = Modifier.size(ListThumbnailSize),
-                        )
-                    },
-                    modifier =
-                        Modifier
-                            .clickable { showErrorPlaylistAddDialog = false },
-                )
-            }
-
-            items(notAddedList) { song ->
-                ListItem(
-                    title = song.title,
-                    thumbnailContent = {
-                        Box(
-                            contentAlignment = Alignment.Center,
-                            modifier = Modifier.size(ListThumbnailSize),
-                        ) {
-                            AsyncImage(
-                                model = song.thumbnailUrl,
-                                contentDescription = null,
-                                modifier =
-                                    Modifier
-                                        .fillMaxSize()
-                                        .clip(RoundedCornerShape(ThumbnailCornerRadius)),
-                            )
-                        }
-                    },
-                    subtitle =
-                        joinByBullet(
-                            song.artists.joinToString { it.name },
-                            makeTimeString(song.duration * 1000L),
-                        ),
-                )
-            }
-        }
-    }
 
     var showSelectArtistDialog by rememberSaveable {
         mutableStateOf(false)
