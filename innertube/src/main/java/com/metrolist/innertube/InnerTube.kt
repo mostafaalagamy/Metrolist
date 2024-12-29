@@ -157,6 +157,31 @@ class InnerTube {
         )
     }
 
+    suspend fun subscribeChannel(
+        client: YouTubeClient,
+        channelId: String,
+    ) = httpClient.post("subscription/subscribe") {
+        ytClient(client, setLogin = true)
+        setBody(
+            SubscribeBody(
+                context = client.toContext(locale, visitorData),
+                channelIds = listOf(channelId)
+            )
+        )
+    }
+    suspend fun unsubscribeChannel(
+        client: YouTubeClient,
+        channelId: String,
+    ) = httpClient.post("subscription/unsubscribe") {
+        ytClient(client, setLogin = true)
+        setBody(
+            SubscribeBody(
+                context = client.toContext(locale, visitorData),
+                channelIds = listOf(channelId)
+            )
+        )
+    }
+    
     suspend fun search(
         client: YouTubeClient,
         query: String? = null,
