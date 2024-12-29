@@ -12,12 +12,14 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import com.metrolist.innertube.YouTube
 import com.metrolist.music.LocalDatabase
 import com.metrolist.music.R
 import com.metrolist.music.constants.ListThumbnailSize
@@ -27,6 +29,9 @@ import com.metrolist.music.ui.component.ListDialog
 import com.metrolist.music.ui.component.ListItem
 import com.metrolist.music.ui.component.PlaylistListItem
 import com.metrolist.music.ui.component.TextFieldDialog
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.time.LocalDateTime
 
 @Composable
 fun AddToPlaylistDialog(
@@ -35,6 +40,8 @@ fun AddToPlaylistDialog(
     onDismiss: () -> Unit,
 ) {
     val database = LocalDatabase.current
+    val coroutineScope = rememberCoroutineScope()
+
     var playlists by remember {
         mutableStateOf(emptyList<Playlist>())
     }
@@ -89,15 +96,19 @@ fun AddToPlaylistDialog(
             title = { Text(text = stringResource(R.string.create_playlist)) },
             onDismiss = { showCreatePlaylistDialog = false },
             onDone = { playlistName ->
-                database.query {
-                    insert(
-                        PlaylistEntity(
-                            name = playlistName,
-                            bookmarkedAt = LocalDateTime.now()
-                        ),
-                    )
+                coroutineScope.launch(Dispatchers.IO) {
+                    val browseId = YouTube.createPlaylist(playlistName).getOrNull()
+                    database.query {
+                        insert(
+                            PlaylistEntity(
+                                name = playlistName,
+                                browseId = browseId,
+                                bookmarkedAt = LocalDateTime.now()
+                            )
+                        )
+                    }
                 }
-            },
+            }
         )
     }
 }
