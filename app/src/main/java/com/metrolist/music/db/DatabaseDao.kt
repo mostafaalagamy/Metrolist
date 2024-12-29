@@ -802,25 +802,6 @@ interface DatabaseDao {
     @Query("SELECT *, (SELECT COUNT(*) FROM playlist_song_map WHERE playlistId = playlist.id) AS songCount FROM playlist WHERE browseId = :browseId")
     fun playlistByBrowseId(browseId: String): Flow<Playlist?>
     
-    @Query("SELECT songId from playlist_song_map WHERE playlistId = :playlistId AND songId IN (:songIds)")
-    fun playlistDuplicates(
-        playlistId: String,
-        songIds: List<String>,
-    ): List<String>
-    @Transaction
-    fun addSongToPlaylist(playlist: Playlist, songIds: List<String>) {
-        var position = playlist.songCount
-        songIds.forEach { id ->
-            insert(
-                PlaylistSongMap(
-                    songId = id,
-                    playlistId = playlist.id,
-                    position = position++
-                )
-            )
-        }
-    }
-    
     @Query("SELECT COUNT(*) from playlist_song_map WHERE playlistId = :playlistId AND songId = :songId LIMIT 1")
     fun checkInPlaylist(
         playlistId: String,
