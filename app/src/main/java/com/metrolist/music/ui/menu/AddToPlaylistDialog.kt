@@ -93,6 +93,7 @@ fun AddToPlaylistDialog(
                     insert(
                         PlaylistEntity(
                             name = playlistName,
+                            bookmarkedAt = LocalDateTime.now()
                         ),
                     )
                 }
