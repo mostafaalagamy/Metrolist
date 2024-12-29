@@ -36,6 +36,7 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -57,6 +58,7 @@ import androidx.media3.exoplayer.offline.DownloadRequest
 import androidx.media3.exoplayer.offline.DownloadService
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import com.metrolist.innertube.YouTube
 import com.metrolist.innertube.models.WatchEndpoint
 import com.metrolist.music.LocalDatabase
 import com.metrolist.music.LocalDownloadUtil
@@ -77,6 +79,8 @@ import com.metrolist.music.ui.component.ListDialog
 import com.metrolist.music.ui.component.ListItem
 import com.metrolist.music.utils.joinByBullet
 import com.metrolist.music.utils.makeTimeString
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import kotlin.math.log2
 import kotlin.math.pow
@@ -98,6 +102,7 @@ fun PlayerMenu(
     val playerVolume = playerConnection.service.playerVolume.collectAsState()
     val activityResultLauncher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { }
     val librarySong by database.song(mediaMetadata.id).collectAsState(initial = null)
+    val coroutineScope = rememberCoroutineScope()
 
     val download by LocalDownloadUtil.current.getDownload(mediaMetadata.id).collectAsState(initial = null)
 
@@ -116,73 +121,19 @@ fun PlayerMenu(
 
     AddToPlaylistDialog(
         isVisible = showChoosePlaylistDialog,
-        onGetSong = { ->
+        onGetSong = { playlist ->
             database.transaction {
                 insert(mediaMetadata)
-                if (checkInPlaylist(playlist.id, mediaMetadata.id) == 0) {
-                    listOf(mediaMetadata.id)
-                    update(playlist.playlist.copy(lastUpdateTime = LocalDateTime.now()))
-                } else {
-                    showErrorPlaylistAddDialog = true
-                }
             }
+            coroutineScope.launch(Dispatchers.IO) {
+                playlist.playlist.browseId?.let { YouTube.addToPlaylist(it, mediaMetadata.id) }
+            }
+            listOf(mediaMetadata.id)
         },
         onDismiss = {
             showChoosePlaylistDialog = false
-        },
-    )
-
-    if (showErrorPlaylistAddDialog) {
-        ListDialog(
-            onDismiss = {
-                showErrorPlaylistAddDialog = false
-                onDismiss()
-            },
-        ) {
-            item {
-                ListItem(
-                    title = stringResource(R.string.already_in_playlist),
-                    thumbnailContent = {
-                        Image(
-                            painter = painterResource(R.drawable.close),
-                            contentDescription = null,
-                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
-                            modifier = Modifier.size(ListThumbnailSize),
-                        )
-                    },
-                    modifier =
-                        Modifier
-                            .clickable { showErrorPlaylistAddDialog = false },
-                )
-            }
-
-            item {
-                ListItem(
-                    title = mediaMetadata.title,
-                    thumbnailContent = {
-                        Box(
-                            contentAlignment = Alignment.Center,
-                            modifier = Modifier.size(ListThumbnailSize),
-                        ) {
-                            AsyncImage(
-                                model = mediaMetadata.thumbnailUrl,
-                                contentDescription = null,
-                                modifier =
-                                    Modifier
-                                        .fillMaxSize()
-                                        .clip(RoundedCornerShape(ThumbnailCornerRadius)),
-                            )
-                        }
-                    },
-                    subtitle =
-                        joinByBullet(
-                            mediaMetadata.artists.joinToString { it.name },
-                            makeTimeString(mediaMetadata.duration * 1000L),
-                        ),
-                )
-            }
         }
-    }
+    )
 
     var showSelectArtistDialog by rememberSaveable {
         mutableStateOf(false)
