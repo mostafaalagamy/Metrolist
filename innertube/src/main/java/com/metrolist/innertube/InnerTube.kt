@@ -120,6 +120,7 @@ class InnerTube {
             )
         )
     }
+
     suspend fun unlikeVideo(
         client: YouTubeClient,
         videoId: String,
@@ -132,6 +133,7 @@ class InnerTube {
             )
         )
     }
+
     suspend fun likePlaylist(
         client: YouTubeClient,
         playlistId: String,
@@ -144,6 +146,7 @@ class InnerTube {
             )
         )
     }
+
     suspend fun unlikePlaylist(
         client: YouTubeClient,
         playlistId: String,
@@ -153,6 +156,19 @@ class InnerTube {
             LikeBody(
                 context = client.toContext(locale, visitorData),
                 target = LikeBody.Target.PlaylistTarget(playlistId)
+            )
+        )
+    }
+
+    suspend fun createPlaylist(
+        client: YouTubeClient,
+        title: String,
+    ) = httpClient.post("playlist/create") {
+        ytClient(client, true)
+        setBody(
+            CreatePlaylistBody(
+                context = client.toContext(locale, visitorData),
+                title = title
             )
         )
     }
@@ -169,6 +185,7 @@ class InnerTube {
             )
         )
     }
+
     suspend fun unsubscribeChannel(
         client: YouTubeClient,
         channelId: String,
