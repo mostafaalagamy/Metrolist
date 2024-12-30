@@ -357,8 +357,15 @@ fun SelectionMediaMetadataMenu(
 
     AddToPlaylistDialog(
         isVisible = showChoosePlaylistDialog,
-        onGetSong = { songSelection.map { it.song.id } },
-        onDismiss = { showChoosePlaylistDialog = false },
+        onGetSong = {
+            database.transaction {
+                insert(mediaMetadata)
+            }
+            listOf(mediaMetadata.id)
+        },
+        onDismiss = {
+            showChoosePlaylistDialog = false
+        }
     )
 
     var showRemoveDownloadDialog by remember {
