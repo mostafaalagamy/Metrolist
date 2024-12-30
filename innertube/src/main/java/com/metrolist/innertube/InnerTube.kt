@@ -394,6 +394,20 @@ class InnerTube {
         )
     }
 
+    suspend fun deletePlaylist(
+        client: YouTubeClient,
+        playlistId: String,
+    ) = httpClient.post("playlist/delete") {
+        println("deleting $playlistId")
+        ytClient(client, setLogin = true)
+        setBody(
+            PlaylistDeleteBody(
+                context = client.toContext(locale, visitorData),
+                playlistId = playlistId
+            )
+        )
+    }
+
     suspend fun getSwJsData() = httpClient.get("https://music.youtube.com/sw.js_data")
 
     suspend fun accountMenu(client: YouTubeClient) =
