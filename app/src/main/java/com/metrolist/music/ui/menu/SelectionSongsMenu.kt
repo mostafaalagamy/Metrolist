@@ -88,17 +88,22 @@ fun SelectionSongMenu(
         mutableIntStateOf(Download.STATE_STOPPED)
     }
 
-    LaunchedEffect(selection) {
-        if (selection.isEmpty()) {
-            onDismiss()
-        } else {
-            downloadUtil.downloads.collect { downloads ->
-                downloadState = when {
-                    selection.all { downloads[it.id]?.state == STATE_COMPLETED } -> STATE_COMPLETED
-                    selection.all { downloads[it.id]?.state in listOf(STATE_QUEUED, STATE_DOWNLOADING, STATE_COMPLETED) } -> STATE_DOWNLOADING
-                    else -> Download.STATE_STOPPED
+    LaunchedEffect(songSelection) {
+        if (songSelection.isEmpty()) return@LaunchedEffect
+        downloadUtil.downloads.collect { downloads ->
+            downloadState =
+                if (songSelection.all { downloads[it.id]?.state == Download.STATE_COMPLETED }) {
+                    Download.STATE_COMPLETED
+                } else if (songSelection.all {
+                        downloads[it.id]?.state == Download.STATE_QUEUED ||
+                            downloads[it.id]?.state == Download.STATE_DOWNLOADING ||
+                            downloads[it.id]?.state == Download.STATE_COMPLETED
+                    }
+                ) {
+                    Download.STATE_DOWNLOADING
+                } else {
+                    Download.STATE_STOPPED
                 }
-            }
         }
     }
 
@@ -116,7 +121,7 @@ fun SelectionSongMenu(
 
     AddToPlaylistDialog(
         isVisible = showChoosePlaylistDialog,
-        onGetSong = { selection.map { it.song.id } },
+        onGetSong = { songSelection.map { it.song.id } },
         onDismiss = { showChoosePlaylistDialog = false },
     )
 
@@ -304,7 +309,7 @@ fun SelectionSongMenu(
 @SuppressLint("MutableCollectionMutableState")
 @Composable
 fun SelectionMediaMetadataMenu(
-    songSelection: List<Song>,
+    songSelection: List<MediaMetadata>,
     currentItems: List<Timeline.Window>,
     onDismiss: () -> Unit,
     clearAction: () -> Unit,
@@ -318,19 +323,25 @@ fun SelectionMediaMetadataMenu(
         mutableIntStateOf(Download.STATE_STOPPED)
     }
 
-    LaunchedEffect(selection) {
-        if (selection.isEmpty()) {
-            onDismiss()
-        } else {
-            downloadUtil.downloads.collect { downloads ->
-                downloadState = when {
-                    selection.all { downloads[it.id]?.state == STATE_COMPLETED } -> STATE_COMPLETED
-                    selection.all { downloads[it.id]?.state in listOf(STATE_QUEUED, STATE_DOWNLOADING, STATE_COMPLETED) } -> STATE_DOWNLOADING
-                    else -> Download.STATE_STOPPED
+    LaunchedEffect(songSelection) {
+        if (songSelection.isEmpty()) return@LaunchedEffect
+        downloadUtil.downloads.collect { downloads ->
+            downloadState =
+                if (songSelection.all { downloads[it.id]?.state == Download.STATE_COMPLETED }) {
+                    Download.STATE_COMPLETED
+                } else if (songSelection.all {
+                        downloads[it.id]?.state == Download.STATE_QUEUED ||
+                            downloads[it.id]?.state == Download.STATE_DOWNLOADING ||
+                            downloads[it.id]?.state == Download.STATE_COMPLETED
+                    }
+                ) {
+                    Download.STATE_DOWNLOADING
+                } else {
+                    Download.STATE_STOPPED
                 }
-            }
         }
     }
+    
 
     var showChoosePlaylistDialog by rememberSaveable {
         mutableStateOf(false)
@@ -346,7 +357,7 @@ fun SelectionMediaMetadataMenu(
 
     AddToPlaylistDialog(
         isVisible = showChoosePlaylistDialog,
-        onGetSong = { selection.map { it.song.id } },
+        onGetSong = { songSelection.map { it.song.id } },
         onDismiss = { showChoosePlaylistDialog = false },
     )
 
