@@ -28,10 +28,10 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
-import com.metrolist.innertube.YouTube
 import com.metrolist.music.LocalDatabase
 import com.metrolist.music.R
 import com.metrolist.music.constants.ListThumbnailSize
@@ -42,6 +42,7 @@ import com.metrolist.music.ui.component.ListDialog
 import com.metrolist.music.ui.component.ListItem
 import com.metrolist.music.ui.component.PlaylistListItem
 import com.metrolist.music.ui.component.TextFieldDialog
+import com.metrolist.innertube.YouTube
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
@@ -51,16 +52,19 @@ fun AddToPlaylistDialog(
     isVisible: Boolean,
     noSyncing: Boolean = false,
     initialTextFieldValue: String? = null,
-    onGetSong: suspend () -> List<String>, // list of song ids. Songs should be inserted to database in this function.
+    onGetSong: suspend (Playlist) -> List<String>, // list of song ids. Songs should be inserted to database in this function.
     onDismiss: () -> Unit,
 ) {
     val database = LocalDatabase.current
     val coroutineScope = rememberCoroutineScope()
-
     var playlists by remember {
         mutableStateOf(emptyList<Playlist>())
     }
     var showCreatePlaylistDialog by rememberSaveable {
+        mutableStateOf(false)
+    }
+
+    var syncedPlaylist: Boolean by remember {
         mutableStateOf(false)
     }
 
@@ -76,10 +80,6 @@ fun AddToPlaylistDialog(
     var duplicates by remember {
         mutableStateOf(emptyList<String>())
     }
-    
-    var syncedPlaylist: Boolean by remember {
-        mutableStateOf(false)
-    }
 
     LaunchedEffect(Unit) {
         database.editablePlaylistsByCreateDateAsc().collect {
@@ -89,7 +89,7 @@ fun AddToPlaylistDialog(
 
     if (isVisible) {
         ListDialog(
-            onDismiss = onDismiss,
+            onDismiss = onDismiss
         ) {
             item {
                 ListItem(
@@ -99,13 +99,12 @@ fun AddToPlaylistDialog(
                             painter = painterResource(R.drawable.add),
                             contentDescription = null,
                             colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
-                            modifier = Modifier.size(ListThumbnailSize),
+                            modifier = Modifier.size(ListThumbnailSize)
                         )
                     },
-                    modifier =
-                        Modifier.clickable {
-                            showCreatePlaylistDialog = true
-                        },
+                    modifier = Modifier.clickable {
+                        showCreatePlaylistDialog = true
+                    }
                 )
             }
 
@@ -129,14 +128,6 @@ fun AddToPlaylistDialog(
                     }
                 )
             }
-
-            item {
-                Text(
-                    text = "Note: Adding local songs to synced/remote playlists is unsupported. Any other combination is valid.",
-                    fontSize = TextUnit(12F, TextUnitType.Sp),
-                    modifier = Modifier.padding(horizontal = 20.dp)
-                )
-            }
         }
     }
 
@@ -151,6 +142,7 @@ fun AddToPlaylistDialog(
                     val browseId = if (syncedPlaylist)
                         YouTube.createPlaylist(playlistName).getOrNull()
                     else null
+
                     database.query {
                         insert(
                             PlaylistEntity(
@@ -158,38 +150,7 @@ fun AddToPlaylistDialog(
                                 browseId = browseId,
                                 bookmarkedAt = LocalDateTime.now(),
                                 isEditable = !syncedPlaylist,
-                                isLocal = !syncedPlaylist // && check that all songs are non-local
                             )
-                        )
-                    }
-                }
-            },
-            extraContent = {
-                // synced/unsynced toggle
-                Row(
-                    modifier = Modifier.padding(vertical = 16.dp, horizontal = 40.dp)
-                ) {
-                    Column() {
-                        Text(
-                            text = "Sync Playlist",
-                            style = MaterialTheme.typography.titleLarge,
-                        )
-                        Text(
-                            text = "Note: This allows for syncing with YouTube Music. This is NOT changeable later. You cannot add local songs to synced playlists.",
-                            style = MaterialTheme.typography.bodySmall,
-                            modifier = Modifier.fillMaxWidth(0.7f)
-                        )
-                    }
-                    Row(
-                        modifier = Modifier.weight(1f),
-                        horizontalArrangement = Arrangement.End
-                    ) {
-                        Switch(
-                            enabled = !noSyncing,
-                            checked = syncedPlaylist,
-                            onCheckedChange = {
-                                syncedPlaylist = !syncedPlaylist
-                            },
                         )
                     }
                 }
@@ -197,6 +158,7 @@ fun AddToPlaylistDialog(
         )
     }
 
+    // duplicate songs warning
     if (showDuplicateDialog) {
         DefaultDialog(
             title = { Text(stringResource(R.string.duplicates)) },
