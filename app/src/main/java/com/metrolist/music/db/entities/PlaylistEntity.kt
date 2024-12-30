@@ -18,13 +18,13 @@ data class PlaylistEntity(
     @PrimaryKey val id: String = generatePlaylistId(),
     val name: String,
     val browseId: String? = null,
+    val createdAt: LocalDateTime? = LocalDateTime.now(),
+    val lastUpdateTime: LocalDateTime? = LocalDateTime.now(),
     @ColumnInfo(name = "isEditable", defaultValue = true.toString())
     val isEditable: Boolean = true,
     @ColumnInfo(name = "isLocal", defaultValue = false.toString())
     val isLocal: Boolean = false,
     val bookmarkedAt: LocalDateTime? = null,
-    val createdAt: LocalDateTime? = LocalDateTime.now(),
-    val lastUpdateTime: LocalDateTime? = LocalDateTime.now(),
 ) {
     companion object {
         const val LIKED_PLAYLIST_ID = "LP_LIKED"

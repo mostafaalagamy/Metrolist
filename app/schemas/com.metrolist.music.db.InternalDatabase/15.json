@@ -245,6 +245,18 @@
             "columnName": "browseId",
             "affinity": "TEXT",
             "notNull": false
+          },
+          {
+            "fieldPath": "createdAt",
+            "columnName": "createdAt",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "lastUpdateTime",
+            "columnName": "lastUpdateTime",
+            "affinity": "INTEGER",
+            "notNull": false
           }
         ],
         "primaryKey": {

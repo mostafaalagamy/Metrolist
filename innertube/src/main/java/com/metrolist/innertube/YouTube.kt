@@ -1214,6 +1214,10 @@ object YouTube {
         innerTube.renamePlaylist(WEB_REMIX, playlistId, name)
     }
 
+    suspend fun deletePlaylist(playlistId: String) = runCatching {
+        innerTube.deletePlaylist(WEB_REMIX, playlistId)
+    }
+
     suspend fun transcript(videoId: String): Result<String> =
         runCatching {
             val response = innerTube.getTranscript(WEB, videoId).body<GetTranscriptResponse>()
