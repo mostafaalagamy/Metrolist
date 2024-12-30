@@ -51,7 +51,7 @@ import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.LocalDownloadUtil
 import com.metrolist.music.R
 import com.metrolist.music.db.entities.PlaylistEntity
-import com.metrolist.music.db.entities.PlaylistSong
+import com.metrolist.music.db.entities.PlaylistSongMap
 import com.metrolist.music.constants.ListThumbnailSize
 import com.metrolist.music.constants.ThumbnailCornerRadius
 import com.metrolist.music.extensions.toMediaItem
