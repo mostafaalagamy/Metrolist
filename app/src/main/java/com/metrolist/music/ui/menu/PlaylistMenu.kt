@@ -218,6 +218,9 @@ fun PlaylistMenu(
                 ) {
                     Text(text = stringResource(android.R.string.ok))
                 }
+                coroutineScope.launch(Dispatchers.IO) {
+                    playlist.playlist.browseId?.let { YouTube.deletePlaylist(it) }
+                }
             },
         )
     }
