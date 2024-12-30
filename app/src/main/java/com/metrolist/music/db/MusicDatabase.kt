@@ -379,48 +379,10 @@ class Migration13To14 : AutoMigrationSpec {
     }
 }
 
-DeleteColumn.Entries(
-    // these fields were removed back in migration 5_6, but never deleted
-    // https://github.com/z-huang/InnerTune/commit/a7116ac7e510667b06d51c7c4ff61b8b2ecec02b
-    DeleteColumn(tableName = "playlist", columnName = "lastUpdateTime"),
-    DeleteColumn(tableName = "playlist", columnName = "createdAt")
-)
 class Migration15To16 : AutoMigrationSpec {
+    @SuppressLint("Range")
     override fun onPostMigrate(db: SupportSQLiteDatabase) {
-        // playlists
-        db.execSQL("UPDATE playlist SET isLocal = 1 WHERE browseId IS NULL")
-        db.execSQL("UPDATE playlist SET isEditable = 1 WHERE browseId IS NOT NULL")
-
-        // play counts
-        db.query("SELECT * FROM event").use { cursor ->
-            val songIdColIndex = cursor.getColumnIndex("songId")
-            val timestampColIndex = cursor.getColumnIndex("timestamp")
-
-            while (cursor.moveToNext()) {
-                val song = cursor.getString(songIdColIndex)
-                val timestamp = Instant.ofEpochMilli(cursor.getLong(timestampColIndex)).atZone(ZoneOffset.UTC).toLocalDateTime()
-                val year = timestamp.year
-                val month = timestamp.monthValue
-
-                // Check if the entry exists in playCounts
-                val checkCursor = db.query(
-                    "SELECT * FROM playCount WHERE song = ? AND year = ? AND month = ?",
-                    arrayOf(song, year, month)
-                )
-                if (checkCursor.moveToFirst()) { // If it exists, update the count
-                    db.execSQL(
-                        "UPDATE playCount SET count = count + 1 WHERE song = ? AND year = ? AND month = ?",
-                        arrayOf(song, year, month)
-                    )
-                } else { // If it doesn't exist, insert a new row
-                    db.execSQL(
-                        "INSERT INTO playCount (song, year, month, count) VALUES (?, ?, ?, ?)",
-                        arrayOf(song, year, month, 1)
-                    )
-                }
-                checkCursor.close()
-            }
-        }
-
+        db.execSQL("UPDATE playlist SET createdAt = '${Converters().dateToTimestamp(LocalDateTime.now())}'")
+        db.execSQL("UPDATE playlist SET lastUpdateTime = '${Converters().dateToTimestamp(LocalDateTime.now())}'")
     }
 }
