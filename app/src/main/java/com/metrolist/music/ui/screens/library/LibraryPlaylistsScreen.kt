@@ -140,6 +140,10 @@ fun LibraryPlaylistsScreen(
         mutableStateOf(false)
     }
 
+    var syncedPlaylist: Boolean by remember {
+        mutableStateOf(false)
+    }
+    
     if (showAddPlaylistDialog) {
         TextFieldDialog(
             icon = { Icon(painter = painterResource(R.drawable.add), contentDescription = null) },
@@ -150,7 +154,6 @@ fun LibraryPlaylistsScreen(
                     val browseId = if (syncedPlaylist)
                         YouTube.createPlaylist(playlistName).getOrNull()
                     else null
-
                     database.query {
                         insert(
                             PlaylistEntity(
