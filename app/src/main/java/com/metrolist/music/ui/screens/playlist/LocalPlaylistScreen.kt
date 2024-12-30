@@ -523,12 +523,12 @@ fun LocalPlaylistScreen(
                 itemsIndexed(
                     items = wrappedSongs,
                     key = { _, song -> song.item.map.id },
-                ) { index, songWrapper ->
+                ) { index, song ->
                     ReorderableItem(
                         reorderableState = reorderableState,
-                        key = songWrapper.item.map.id,
+                        key = song.map.id,
                     ) {
-                        val currentItem by rememberUpdatedState(songWrapper.item)
+                        val currentItem by rememberUpdatedState(song)
 
                         fun deleteFromPlaylist() {
                         database.transaction {
@@ -567,8 +567,8 @@ fun LocalPlaylistScreen(
 
                         val content: @Composable () -> Unit = {
                             SongListItem(
-                                song = songWrapper.item.song,
-                                isActive = songWrapper.item.song.id == mediaMetadata?.id,
+                                song = song.song,
+                                isActive = song.song.id == mediaMetadata?.id,
                                 isPlaying = isPlaying,
                                 showInLibraryIcon = true,
                                 trailingContent = {
@@ -576,8 +576,8 @@ fun LocalPlaylistScreen(
                                         onClick = {
                                             menuState.show {
                                                 SongMenu(
-                                                    originalSong = songWrapper.item.song,
-                                                    playlistSong = songWrapper.item.song,
+                                                    originalSong = song.song,
+                                                    playlistSong = song,
                                                     playlistBrowseId = playlist?.playlist?.browseId,
                                                     navController = navController,
                                                     onDismiss = menuState::dismiss,
@@ -602,14 +602,14 @@ fun LocalPlaylistScreen(
                                         }
                                     }
                                 },
-                                isSelected = songWrapper.isSelected && selection,
+                                isSelected = song.isSelected && selection,
                                 modifier =
                                     Modifier
                                         .fillMaxWidth()
                                         .combinedClickable(
                                             onClick = {
                                                 if (!selection) {
-                                                    if (songWrapper.item.song.id == mediaMetadata?.id) {
+                                                    if (song.song.id == mediaMetadata?.id) {
                                                         playerConnection.player.togglePlayPause()
                                                     } else {
                                                         playerConnection.playQueue(
@@ -621,7 +621,7 @@ fun LocalPlaylistScreen(
                                                         )
                                                     }
                                                 } else {
-                                                    songWrapper.isSelected = !songWrapper.isSelected
+                                                    song.isSelected = !song.isSelected
                                                 }
                                             },
                                             onLongClick = {
@@ -630,7 +630,7 @@ fun LocalPlaylistScreen(
                                                         selection = true
                                                     }
                                                     wrappedSongs?.forEach { it.isSelected = false }
-                                                    songWrapper.isSelected = true
+                                                    song.isSelected = true
                                                 },
                                             ),
                             )
