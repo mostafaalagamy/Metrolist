@@ -576,7 +576,7 @@ fun LocalPlaylistScreen(
                                         onClick = {
                                             menuState.show {
                                                 SongMenu(
-                                                    originalSong = songWrapper.item.song,,
+                                                    originalSong = songWrapper.item.song,
                                                     playlistBrowseId = playlist?.playlist?.browseId,
                                                     navController = navController,
                                                     onDismiss = menuState::dismiss,
