@@ -347,27 +347,6 @@ fun SelectionMediaMetadataMenu(
         mutableStateOf(false)
     }
 
-    var showErrorPlaylistAddDialog by rememberSaveable {
-        mutableStateOf(false)
-    }
-
-    val notAddedList by remember {
-        mutableStateOf(mutableListOf<MediaMetadata>())
-    }
-
-    AddToPlaylistDialog(
-        isVisible = showChoosePlaylistDialog,
-        onGetSong = {
-            database.transaction {
-                insert(mediaMetadata)
-            }
-            listOf(mediaMetadata.id)
-        },
-        onDismiss = {
-            showChoosePlaylistDialog = false
-        }
-    )
-
     var showRemoveDownloadDialog by remember {
         mutableStateOf(false)
     }
@@ -470,13 +449,6 @@ fun SelectionMediaMetadataMenu(
             onDismiss()
             playerConnection.addToQueue(songSelection.map { it.toMediaItem() })
             clearAction()
-        }
-
-        GridMenuItem(
-            icon = R.drawable.playlist_add,
-            title = R.string.add_to_playlist,
-        ) {
-            showChoosePlaylistDialog = true
         }
 
         DownloadGridMenu(
