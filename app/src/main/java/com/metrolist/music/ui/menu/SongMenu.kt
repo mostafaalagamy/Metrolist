@@ -59,7 +59,7 @@ import com.metrolist.music.R
 import com.metrolist.music.constants.ListItemHeight
 import com.metrolist.music.constants.ListThumbnailSize
 import com.metrolist.music.db.entities.Event
-import com.metrolist.music.entities.PlaylistSong
+import com.metrolist.music.db.entities.PlaylistSong
 import com.metrolist.music.db.entities.Song
 import com.metrolist.music.extensions.toMediaItem
 import com.metrolist.music.models.toMediaMetadata
@@ -402,7 +402,7 @@ fun SongMenu(
         }
         if (playlistSong != null) {
             GridMenuItem(
-                icon = R.drawable.playlist_remove,
+                icon = R.drawable.delete,
                 title = R.string.remove_from_playlist
             ) {
                 database.transaction {
