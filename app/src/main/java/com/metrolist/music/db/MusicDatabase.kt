@@ -79,7 +79,7 @@ class MusicDatabase(
         AutoMigration(from = 12, to = 13, spec = Migration12To13::class),
         AutoMigration(from = 13, to = 14, spec = Migration13To14::class),
         AutoMigration(from = 14, to = 15),
-        AutoMigration(from = 15, to = 16),
+        AutoMigration(from = 15, to = 16, spec = Migration15To16::class),
     ],
 )
 @TypeConverters(Converters::class)
@@ -398,3 +398,8 @@ class Migration13To14 : AutoMigrationSpec {
         db.execSQL("UPDATE playlist SET lastUpdateTime = '${Converters().dateToTimestamp(LocalDateTime.now())}'")
     }
 }
+
+@RenameColumn.Entries(
+    RenameColumn(tableName = "playlist", fromColumnName = "createdAt", toColumnName = "bookmarkedAt")
+)
+class Migration15To16 : AutoMigrationSpec
