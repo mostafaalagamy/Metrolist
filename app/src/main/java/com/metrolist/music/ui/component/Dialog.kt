@@ -150,6 +150,7 @@ fun TextFieldDialog(
     isInputValid: (String) -> Boolean = { it.isNotEmpty() },
     onDone: (String) -> Unit,
     onDismiss: () -> Unit,
+    extraContent: (@Composable () -> Unit)? = null,
 ) {
     val (textFieldValue, onTextFieldValueChange) =
         remember {
@@ -210,5 +211,6 @@ fun TextFieldDialog(
                     .weight(weight = 1f, fill = false)
                     .focusRequester(focusRequester),
         )
+        extraContent?.invoke()
     }
 }
