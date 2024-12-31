@@ -15,6 +15,7 @@ data class Menu(
         data class Item(
             val menuNavigationItemRenderer: MenuNavigationItemRenderer?,
             val menuServiceItemRenderer: MenuServiceItemRenderer?,
+            val toggleMenuServiceItemRenderer: ToggleMenuServiceRenderer?,
         ) {
             @Serializable
             data class MenuNavigationItemRenderer(
@@ -28,6 +29,11 @@ data class Menu(
                 val text: Runs,
                 val icon: Icon,
                 val serviceEndpoint: NavigationEndpoint,
+            )
+            @Serializable
+            data class ToggleMenuServiceRenderer(
+                val defaultIcon: Icon,
+                val defaultServiceEndpoint: DefaultServiceEndpoint,
             )
         }
 

@@ -92,3 +92,14 @@ data class QueueAddEndpoint(
 data class ShareEntityEndpoint(
     val serializedShareEntity: String,
 ) : Endpoint()
+
+@Serializable
+data class DefaultServiceEndpoint(
+    var subscribeEndpoint: SubscribeEndpoint?
+) : Endpoint() {
+    @Serializable
+    data class SubscribeEndpoint(
+        val channelIds: List<String>,
+        val params: String? = null,
+    ) : Endpoint()
+}

@@ -244,6 +244,9 @@ data class ArtistPage(
                                 ?.lastOrNull()
                                 ?.text ?: return null,
                         thumbnail = renderer.thumbnailRenderer.musicThumbnailRenderer?.getThumbnailUrl() ?: return null,
+                        channelId = renderer.menu?.menuRenderer?.items?.find {
+                            it.toggleMenuServiceItemRenderer?.defaultIcon?.iconType == "SUBSCRIBE"
+                        }?.toggleMenuServiceItemRenderer?.defaultServiceEndpoint?.subscribeEndpoint?.channelIds?.firstOrNull() ?: return null,
                         shuffleEndpoint =
                             renderer.menu
                                 ?.menuRenderer

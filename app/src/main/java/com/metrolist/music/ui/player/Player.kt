@@ -127,7 +127,6 @@ import com.metrolist.music.constants.ShowLyricsKey
 import com.metrolist.music.constants.SliderStyle
 import com.metrolist.music.constants.SliderStyleKey
 import com.metrolist.music.constants.ThumbnailCornerRadius
-import com.metrolist.music.db.entities.PlaylistSongMap
 import com.metrolist.music.extensions.toggleRepeatMode
 import com.metrolist.music.extensions.togglePlayPause
 import com.metrolist.music.extensions.toggleRepeatMode
@@ -141,7 +140,6 @@ import com.metrolist.music.ui.component.ListItem
 import com.metrolist.music.ui.component.LocalMenuState
 import com.metrolist.music.ui.component.ResizableIconButton
 import com.metrolist.music.ui.component.rememberBottomSheetState
-import com.metrolist.music.ui.menu.AddToPlaylistDialog
 import com.metrolist.music.ui.menu.PlayerMenu
 import com.metrolist.music.ui.screens.settings.DarkMode
 import com.metrolist.music.ui.theme.extractGradientColors
@@ -434,88 +432,6 @@ fun BottomSheetPlayer(
 
     var showChoosePlaylistDialog by rememberSaveable {
         mutableStateOf(false)
-    }
-
-    var showErrorPlaylistAddDialog by rememberSaveable {
-        mutableStateOf(false)
-    }
-
-    AddToPlaylistDialog(
-        isVisible = showChoosePlaylistDialog,
-        onAdd = { playlist ->
-            database.transaction {
-                mediaMetadata?.let {
-                    insert(it)
-                    if (checkInPlaylist(playlist.id, it.id) == 0) {
-                        insert(
-                            PlaylistSongMap(
-                                songId = it.id,
-                                playlistId = playlist.id,
-                                position = playlist.songCount,
-                            ),
-                        )
-                        update(playlist.playlist.copy(lastUpdateTime = LocalDateTime.now()))
-                    } else {
-                        showErrorPlaylistAddDialog = true
-                    }
-                }
-            }
-        },
-        onDismiss = {
-            showChoosePlaylistDialog = false
-        },
-    )
-
-    if (showErrorPlaylistAddDialog && mediaMetadata != null) {
-        ListDialog(
-            onDismiss = {
-                showErrorPlaylistAddDialog = false
-            },
-        ) {
-            item {
-                ListItem(
-                    title = stringResource(R.string.already_in_playlist),
-                    thumbnailContent = {
-                        Image(
-                            painter = painterResource(R.drawable.close),
-                            contentDescription = null,
-                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
-                            modifier = Modifier.size(ListThumbnailSize),
-                        )
-                    },
-                    modifier =
-                        Modifier
-                            .clickable { showErrorPlaylistAddDialog = false },
-                )
-            }
-
-            items(listOf(mediaMetadata)) { song ->
-                ListItem(
-                    title = song!!.title,
-                    thumbnailContent = {
-                        Box(
-                            contentAlignment = Alignment.Center,
-
-                            modifier = Modifier.size(ListThumbnailSize),
-                        ) {
-                            AsyncImage(
-                                model = song.thumbnailUrl,
-                                contentDescription = null,
-                                modifier =
-                                    Modifier
-                                        .fillMaxSize()
-                                        .clip(RoundedCornerShape(ThumbnailCornerRadius)),
-                            )
-                        }
-                    },
-                    subtitle =
-                        joinByBullet(
-                            song.artists.joinToString { it.name },
-                            makeTimeString(song.duration * 1000L),
-                        ),
-                )
-            }
-        }
     }
 
     LaunchedEffect(playbackState) {

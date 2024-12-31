@@ -82,6 +82,8 @@ fun LibraryArtistsScreen(
     val (sortDescending, onSortDescendingChange) = rememberPreference(ArtistSortDescendingKey, true)
     val gridItemSize by rememberEnumPreference(GridItemsSizeKey, GridItemSize.BIG)
 
+    LaunchedEffect(Unit) { viewModel.sync() }
+
     val artists by viewModel.allArtists.collectAsState()
     val coroutineScope = rememberCoroutineScope()
 

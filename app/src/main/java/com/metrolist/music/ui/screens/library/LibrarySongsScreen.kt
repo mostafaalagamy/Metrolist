@@ -63,6 +63,8 @@ import com.metrolist.music.ui.utils.ItemWrapper
 import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
 import com.metrolist.music.viewmodels.LibrarySongsViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -77,18 +79,25 @@ fun LibrarySongsScreen(
     val playerConnection = LocalPlayerConnection.current ?: return
     val isPlaying by playerConnection.isPlaying.collectAsState()
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
-
+    
     val (sortType, onSortTypeChange) = rememberEnumPreference(SongSortTypeKey, SongSortType.CREATE_DATE)
     val (sortDescending, onSortDescendingChange) = rememberPreference(SongSortDescendingKey, true)
 
     val songs by viewModel.allSongs.collectAsState()
 
+    var filter by rememberEnumPreference(SongFilterKey, SongFilter.LIBRARY)
+
+    LaunchedEffect(Unit) {
+        when (filter) {
+            SongFilter.LIKED -> viewModel.syncLikedSongs()
+            else -> return@LaunchedEffect
+        }
+    }
+
     val wrappedSongs = songs.map { item -> ItemWrapper(item) }.toMutableList()
     var selection by remember {
         mutableStateOf(false)
     }
-
-    var filter by rememberEnumPreference(SongFilterKey, SongFilter.LIBRARY)
 
     val lazyListState = rememberLazyListState()
 

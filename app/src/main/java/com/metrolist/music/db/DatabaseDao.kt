@@ -39,6 +39,7 @@ import com.metrolist.music.db.entities.SongAlbumMap
 import com.metrolist.music.db.entities.SongArtistMap
 import com.metrolist.music.db.entities.SongEntity
 import com.metrolist.music.db.entities.SongWithStats
+import com.metrolist.music.db.entities.SetVideoIdEntity
 import com.metrolist.music.extensions.reversed
 import com.metrolist.music.extensions.toSQLiteQuery
 import com.metrolist.music.models.MediaMetadata
@@ -489,6 +490,11 @@ interface DatabaseDao {
     )
     fun allArtistsByPlayTime(): Flow<List<Artist>>
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertSetVideoId(setVideoIdEntity: SetVideoIdEntity)
+    @Query("SELECT * FROM set_video_id WHERE videoId = :videoId")
+    suspend fun getSetVideoId(videoId: String): SetVideoIdEntity?
+
     @Query("SELECT * FROM format WHERE id = :id")
     fun format(id: String?): Flow<FormatEntity?>
 
@@ -768,9 +774,7 @@ interface DatabaseDao {
     fun playlistsByNameAsc(): Flow<List<Playlist>>
 
     @Transaction
-    @Query(
-        "SELECT *, (SELECT COUNT(*) FROM playlist_song_map WHERE playlistId = playlist.id) AS songCount FROM playlist ORDER BY songCount",
-    )
+    @Query("SELECT *, (SELECT COUNT(*) FROM playlist_song_map WHERE playlistId = playlist.id) AS songCount FROM playlist ORDER BY songCount")
     fun playlistsBySongCountAsc(): Flow<List<Playlist>>
 
     fun playlists(
@@ -793,7 +797,17 @@ interface DatabaseDao {
         "SELECT *, (SELECT COUNT(*) FROM playlist_song_map WHERE playlistId = playlist.id) AS songCount FROM playlist WHERE id = :playlistId",
     )
     fun playlist(playlistId: String): Flow<Playlist?>
+
+    @Transaction
+    @Query("SELECT *, (SELECT COUNT(*) FROM playlist_song_map WHERE playlistId = playlist.id) AS songCount FROM playlist WHERE browseId = :browseId")
+    fun playlistByBrowseId(browseId: String): Flow<Playlist?>
     
+    @Query("SELECT COUNT(*) from playlist_song_map WHERE playlistId = :playlistId AND songId = :songId LIMIT 1")
+    fun checkInPlaylist(
+        playlistId: String,
+        songId: String,
+    ): Int
+
     @Query("SELECT songId from playlist_song_map WHERE playlistId = :playlistId AND songId IN (:songIds)")
     fun playlistDuplicates(
         playlistId: String,
@@ -813,12 +827,6 @@ interface DatabaseDao {
         }
     }
     
-    @Query("SELECT COUNT(*) from playlist_song_map WHERE playlistId = :playlistId AND songId = :songId LIMIT 1")
-    fun checkInPlaylist(
-        playlistId: String,
-        songId: String,
-    ): Int
-
     @Transaction
     @Query("SELECT * FROM song WHERE title LIKE '%' || :query || '%' AND inLibrary IS NOT NULL LIMIT :previewSize")
     fun searchSongs(
@@ -884,6 +892,10 @@ interface DatabaseDao {
 
     @Query("SELECT COUNT(1) FROM related_song_map WHERE songId = :songId LIMIT 1")
     fun hasRelatedSongs(songId: String): Boolean
+
+    @Transaction
+    @Query("SELECT *, (SELECT COUNT(*) FROM playlist_song_map WHERE playlistId = playlist.id) AS songCount FROM playlist WHERE isEditable AND bookmarkedAt IS NOT NULL ORDER BY rowId")
+    fun editablePlaylistsByCreateDateAsc(): Flow<List<Playlist>>
 
     @Query(
         "SELECT song.* FROM (SELECT * from related_song_map GROUP BY relatedSongId) map JOIN song ON song.id = map.relatedSongId where songId = :songId",
@@ -975,6 +987,7 @@ interface DatabaseDao {
         if (insert(
                 AlbumEntity(
                     id = albumPage.album.browseId,
+                    playlistId = albumPage.album.playlistId,
                     title = albumPage.album.title,
                     year = albumPage.album.year,
                     thumbnailUrl = albumPage.album.thumbnail,
@@ -1086,6 +1099,7 @@ interface DatabaseDao {
         update(
             album.copy(
                 id = albumPage.album.browseId,
+                playlistId = albumPage.album.playlistId,
                 title = albumPage.album.title,
                 year = albumPage.album.year,
                 thumbnailUrl = albumPage.album.thumbnail,

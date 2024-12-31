@@ -8,6 +8,7 @@ import com.metrolist.innertube.models.MusicShelfRenderer
 import com.metrolist.innertube.models.ResponseContext
 import com.metrolist.innertube.models.Runs
 import com.metrolist.innertube.models.SectionListRenderer
+import com.metrolist.innertube.models.SubscriptionButton
 import com.metrolist.innertube.models.Tabs
 import com.metrolist.innertube.models.ThumbnailRenderer
 import com.metrolist.innertube.models.Thumbnails
@@ -85,6 +86,7 @@ data class BrowseResponse(
             val thumbnail: ThumbnailRenderer?,
             val playButton: Button?,
             val startRadioButton: Button?,
+            val subscriptionButton: SubscriptionButton?,
             val menu: Menu,
         )
 

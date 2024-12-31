@@ -86,6 +86,8 @@ fun LibraryAlbumsScreen(
     val (sortDescending, onSortDescendingChange) = rememberPreference(AlbumSortDescendingKey, true)
     val gridItemSize by rememberEnumPreference(GridItemsSizeKey, GridItemSize.BIG)
 
+    LaunchedEffect(Unit) { viewModel.sync() }
+    
     val albums by viewModel.allAlbums.collectAsState()
 
     val coroutineScope = rememberCoroutineScope()
