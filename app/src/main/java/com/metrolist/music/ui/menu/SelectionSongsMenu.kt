@@ -111,69 +111,15 @@ fun SelectionSongMenu(
         mutableStateOf(false)
     }
 
-    var showErrorPlaylistAddDialog by rememberSaveable {
-        mutableStateOf(false)
-    }
-
     val notAddedList by remember {
         mutableStateOf(mutableListOf<Song>())
     }
 
     AddToPlaylistDialog(
         isVisible = showChoosePlaylistDialog,
-        onAdd = { playlist ->
-            var position = playlist.songCount
-            database.query {
-                songSelection.forEach { song ->
-                    if (checkInPlaylist(playlist.id, song.id) == 0) {
-                        insert(
-                            PlaylistSongMap(
-                                songId = song.id,
-                                playlistId = playlist.id,
-                                position = position++,
-                            ),
-                        )
-                        update(playlist.playlist.copy(lastUpdateTime = LocalDateTime.now()))
-                        onDismiss()
-                    } else {
-                        notAddedList.add(song)
-                        showErrorPlaylistAddDialog = true
-                    }
-                }
-            }
-        },
+        onGetSong = { songSelection.map { it.song.id } },
         onDismiss = { showChoosePlaylistDialog = false },
     )
-
-    if (showErrorPlaylistAddDialog) {
-        ListDialog(
-            onDismiss = {
-                showErrorPlaylistAddDialog = false
-                onDismiss()
-            },
-        ) {
-            item {
-                ListItem(
-                    title = "Not added:",
-                    thumbnailContent = {
-                        Image(
-                            painter = painterResource(R.drawable.close),
-                            contentDescription = null,
-                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
-                            modifier = Modifier.size(ListThumbnailSize),
-                        )
-                    },
-                    modifier =
-                        Modifier
-                            .clickable { showErrorPlaylistAddDialog = false },
-                )
-            }
-
-            items(notAddedList) { song ->
-                SongListItem(song = song)
-            }
-        }
-    }
 
     var showRemoveDownloadDialog by remember {
         mutableStateOf(false)
@@ -391,95 +337,10 @@ fun SelectionMediaMetadataMenu(
                 }
         }
     }
+    
 
     var showChoosePlaylistDialog by rememberSaveable {
         mutableStateOf(false)
-    }
-
-    var showErrorPlaylistAddDialog by rememberSaveable {
-        mutableStateOf(false)
-    }
-
-    val notAddedList by remember {
-        mutableStateOf(mutableListOf<MediaMetadata>())
-    }
-
-    AddToPlaylistDialog(
-        isVisible = showChoosePlaylistDialog,
-        onAdd = { playlist ->
-            database.query {
-                var position = playlist.songCount
-                songSelection.forEach { song ->
-                    insert(song)
-                    if (checkInPlaylist(playlist.id, song.id) == 0) {
-                        insert(
-                            PlaylistSongMap(
-                                songId = song.id,
-                                playlistId = playlist.id,
-                                position = position++,
-                            ),
-                        )
-                        update(playlist.playlist.copy(lastUpdateTime = LocalDateTime.now()))
-                        onDismiss()
-                    } else {
-                        notAddedList.add(song)
-                        showErrorPlaylistAddDialog = true
-                    }
-                }
-            }
-        },
-        onDismiss = { showChoosePlaylistDialog = false },
-    )
-    if (showErrorPlaylistAddDialog) {
-        ListDialog(
-            onDismiss = {
-                showErrorPlaylistAddDialog = false
-                onDismiss()
-            },
-        ) {
-            item {
-                ListItem(
-                    title = stringResource(R.string.already_in_playlist),
-                    thumbnailContent = {
-                        Image(
-                            painter = painterResource(R.drawable.close),
-                            contentDescription = null,
-                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
-                            modifier = Modifier.size(ListThumbnailSize),
-                        )
-                    },
-                    modifier =
-                        Modifier
-                            .clickable { showErrorPlaylistAddDialog = false },
-                )
-            }
-
-            items(notAddedList) { song ->
-                ListItem(
-                    title = song.title,
-                    thumbnailContent = {
-                        Box(
-                            contentAlignment = Alignment.Center,
-                            modifier = Modifier.size(ListThumbnailSize),
-                        ) {
-                            AsyncImage(
-                                model = song.thumbnailUrl,
-                                contentDescription = null,
-                                modifier =
-                                    Modifier
-                                        .fillMaxSize()
-                                        .clip(RoundedCornerShape(ThumbnailCornerRadius)),
-                            )
-                        }
-                    },
-                    subtitle =
-                        joinByBullet(
-                            song.artists.joinToString { it.name },
-                            makeTimeString(song.duration * 1000L),
-                        ),
-                )
-            }
-        }
     }
 
     var showRemoveDownloadDialog by remember {
@@ -584,13 +445,6 @@ fun SelectionMediaMetadataMenu(
             onDismiss()
             playerConnection.addToQueue(songSelection.map { it.toMediaItem() })
             clearAction()
-        }
-
-        GridMenuItem(
-            icon = R.drawable.playlist_add,
-            title = R.string.add_to_playlist,
-        ) {
-            showChoosePlaylistDialog = true
         }
 
         DownloadGridMenu(

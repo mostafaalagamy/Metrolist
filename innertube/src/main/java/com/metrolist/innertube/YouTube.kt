@@ -24,6 +24,7 @@ import com.metrolist.innertube.models.getContinuation
 import com.metrolist.innertube.models.oddElements
 import com.metrolist.innertube.models.response.AccountMenuResponse
 import com.metrolist.innertube.models.response.BrowseResponse
+import com.metrolist.innertube.models.response.CreatePlaylistResponse
 import com.metrolist.innertube.models.response.GetQueueResponse
 import com.metrolist.innertube.models.response.GetSearchSuggestionsResponse
 import com.metrolist.innertube.models.response.GetTranscriptResponse
@@ -31,6 +32,7 @@ import com.metrolist.innertube.models.response.NextResponse
 import com.metrolist.innertube.models.response.PipedResponse
 import com.metrolist.innertube.models.response.PlayerResponse
 import com.metrolist.innertube.models.response.SearchResponse
+import com.metrolist.innertube.models.response.AddItemYouTubePlaylistResponse
 import com.metrolist.innertube.pages.AlbumPage
 import com.metrolist.innertube.pages.AlbumUtils
 import com.metrolist.innertube.pages.ArtistItemsContinuationPage
@@ -394,6 +396,12 @@ object YouTube {
                                     ?.foregroundThumbnail
                                     ?.musicThumbnailRenderer
                                     ?.getThumbnailUrl()!!,
+                        channelId = 
+                            response.header
+                                ?.musicImmersiveHeaderRenderer
+                                ?.subscriptionButton
+                                ?.subscribeButtonRenderer
+                                ?.channelId!!,
                         shuffleEndpoint =
                             response.header
                                 ?.musicImmersiveHeaderRenderer
@@ -951,11 +959,42 @@ object YouTube {
                     ArtistItemsPage.fromMusicTwoRowItemRenderer(it) as? PlaylistItem
                 }
         }
+
+    suspend fun subscribeChannel(channelId: String, subscribe: Boolean) = runCatching {
+        if (subscribe)
+            innerTube.subscribeChannel(WEB_REMIX, channelId)
+        else
+            innerTube.unsubscribeChannel(WEB_REMIX, channelId)
+    }
+    suspend fun getChannelId(browseId: String): String {
+        YouTube.artist(browseId).onSuccess {
+            return it.artist.channelId!!
+        }
+        return ""
+    }
+
+    suspend fun createPlaylist(title: String) = runCatching {
+        innerTube.createPlaylist(WEB_REMIX, title).body<CreatePlaylistResponse>().playlistId
+    }
+
+    suspend fun likeVideo(videoId: String, like: Boolean) = runCatching {
+        if (like)
+            innerTube.likeVideo(WEB_REMIX, videoId)
+        else
+            innerTube.unlikeVideo(WEB_REMIX, videoId)
+    }
         
     private val PlayerResponse.isValid
         get() =
             playabilityStatus.status == "OK" &&
                 streamingData?.adaptiveFormats?.any { it.url != null || it.signatureCipher != null } == true
+
+    suspend fun likePlaylist(playlistId: String, like: Boolean) = runCatching {
+        if (like)
+            innerTube.likePlaylist(WEB_REMIX, playlistId)
+        else
+            innerTube.unlikePlaylist(WEB_REMIX, playlistId)
+    }
 
     suspend fun player(
         videoId: String,
@@ -1171,6 +1210,14 @@ object YouTube {
                 }
         }
 
+    suspend fun renamePlaylist(playlistId: String, name: String) = runCatching {
+        innerTube.renamePlaylist(WEB_REMIX, playlistId, name)
+    }
+
+    suspend fun deletePlaylist(playlistId: String) = runCatching {
+        innerTube.deletePlaylist(WEB_REMIX, playlistId)
+    }
+
     suspend fun transcript(videoId: String): Result<String> =
         runCatching {
             val response = innerTube.getTranscript(WEB, videoId).body<GetTranscriptResponse>()
@@ -1197,6 +1244,40 @@ object YouTube {
                 }!!
         }
 
+    suspend fun newLibraryAlbums(endpoint: BrowseEndpoint): Result<ArtistItemsPage> = runCatching {
+        val response = innerTube.browse(
+            client = WEB_REMIX,
+            browseId = "FEmusic_liked_albums",
+            setLogin = true
+        ).body<BrowseResponse>()
+        val gridRenderer = response.contents?.singleColumnBrowseResultsRenderer?.tabs?.firstOrNull()
+            ?.tabRenderer?.content?.sectionListRenderer?.contents?.firstOrNull()
+            ?.gridRenderer
+        if (gridRenderer != null) {
+            ArtistItemsPage(
+                title = gridRenderer.header?.gridHeaderRenderer?.title?.runs?.firstOrNull()?.text.orEmpty(),
+                items = gridRenderer.items.mapNotNull {
+                    it.musicTwoRowItemRenderer?.let { renderer ->
+                        ArtistItemsPage.fromMusicTwoRowItemRenderer(renderer)
+                    }
+                },
+                continuation = null
+            )
+        } else {
+            ArtistItemsPage(
+                title = response.header?.musicHeaderRenderer?.title?.runs?.firstOrNull()?.text!!,
+                items = response.contents?.singleColumnBrowseResultsRenderer?.tabs?.firstOrNull()
+                    ?.tabRenderer?.content?.sectionListRenderer?.contents?.firstOrNull()
+                    ?.musicPlaylistShelfRenderer?.contents?.mapNotNull {
+                        ArtistItemsPage.fromMusicResponsiveListItemRenderer(it.musicResponsiveListItemRenderer)
+                    }!!,
+                continuation = response.contents.singleColumnBrowseResultsRenderer.tabs.firstOrNull()
+                    ?.tabRenderer?.content?.sectionListRenderer?.contents?.firstOrNull()
+                    ?.musicPlaylistShelfRenderer?.continuations?.getContinuation()
+            )
+        }
+    }
+
     suspend fun visitorData(): Result<String> =
         runCatching {
             Json
@@ -1219,6 +1300,15 @@ object YouTube {
                 ?.activeAccountHeaderRenderer
                 ?.toAccountInfo()!!
         }
+
+        suspend fun addToPlaylist(playlistId: String, videoId: String) = runCatching {
+        innerTube.addToPlaylist(WEB_REMIX, playlistId, videoId).body<AddItemYouTubePlaylistResponse>()
+    }
+    suspend fun removeFromPlaylist(playlistId: String, videoId: String, setVideoId: String?): Result<Any> = runCatching {
+        if (setVideoId != null) {
+            innerTube.removeFromPlaylist(WEB_REMIX, playlistId, videoId, setVideoId)
+        }
+    }
 
     @JvmInline
     value class SearchFilter(

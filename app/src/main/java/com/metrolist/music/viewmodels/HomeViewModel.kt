@@ -20,6 +20,7 @@ import com.metrolist.music.db.MusicDatabase
 import com.metrolist.music.db.entities.Artist
 import com.metrolist.music.db.entities.Song
 import com.metrolist.music.extensions.toEnum
+import com.metrolist.music.utils.SyncUtils
 import com.metrolist.music.utils.dataStore
 import com.metrolist.music.utils.reportException
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -37,6 +38,7 @@ class HomeViewModel
 @Inject
 constructor(
     @ApplicationContext context: Context,
+    val syncUtils: SyncUtils,
     val database: MusicDatabase,
 ) : ViewModel() {
     val isRefreshing = MutableStateFlow(false)
@@ -378,5 +380,9 @@ constructor(
         viewModelScope.launch(Dispatchers.IO) {
             homeLoad()
         }
+        viewModelScope.launch(Dispatchers.IO) { syncUtils.syncLikedSongs() }
+        viewModelScope.launch(Dispatchers.IO) { syncUtils.syncSavedPlaylists() }
+        viewModelScope.launch(Dispatchers.IO) { syncUtils.syncLikedAlbums() }
+        viewModelScope.launch(Dispatchers.IO) { syncUtils.syncArtistsSubscriptions() }
     }
 }

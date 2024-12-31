@@ -37,6 +37,7 @@ import com.metrolist.music.db.MusicDatabase
 import com.metrolist.music.extensions.reversed
 import com.metrolist.music.extensions.toEnum
 import com.metrolist.music.playback.DownloadUtil
+import com.metrolist.music.utils.SyncUtils
 import com.metrolist.music.utils.dataStore
 import com.metrolist.music.utils.reportException
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -63,6 +64,7 @@ class LibrarySongsViewModel
         @ApplicationContext context: Context,
         database: MusicDatabase,
         downloadUtil: DownloadUtil,
+        private val syncUtils: SyncUtils,
     ) : ViewModel() {
         val allSongs =
             context.dataStore.data
@@ -117,7 +119,11 @@ class LibrarySongsViewModel
                             }
                     }
                 }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
-    }
+
+             fun syncLikedSongs() {
+                 viewModelScope.launch(Dispatchers.IO) { syncUtils.syncLikedSongs() }
+             }
+         }
 
 @HiltViewModel
 class LibraryArtistsViewModel
@@ -125,6 +131,7 @@ class LibraryArtistsViewModel
     constructor(
         @ApplicationContext context: Context,
         database: MusicDatabase,
+        private val syncUtils: SyncUtils,
     ) : ViewModel() {
         val allArtists =
             context.dataStore.data
@@ -141,6 +148,8 @@ class LibraryArtistsViewModel
                         ArtistFilter.LIKED -> database.artistsBookmarked(sortType, descending)
                     }
                 }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
+
+        fun sync() { viewModelScope.launch(Dispatchers.IO) { syncUtils.syncArtistsSubscriptions() } }
 
         init {
             viewModelScope.launch(Dispatchers.IO) {
@@ -167,6 +176,7 @@ class LibraryAlbumsViewModel
     constructor(
         @ApplicationContext context: Context,
         database: MusicDatabase,
+        private val syncUtils: SyncUtils,
     ) : ViewModel() {
         val allAlbums =
             context.dataStore.data
@@ -183,6 +193,8 @@ class LibraryAlbumsViewModel
                         AlbumFilter.LIKED -> database.albumsLiked(sortType, descending)
                     }
                 }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
+
+        fun sync() { viewModelScope.launch(Dispatchers.IO) { syncUtils.syncLikedAlbums() } }
 
         init {
             viewModelScope.launch(Dispatchers.IO) {
@@ -217,6 +229,7 @@ class LibraryPlaylistsViewModel
     constructor(
         @ApplicationContext context: Context,
         database: MusicDatabase,
+        private val syncUtils: SyncUtils,
     ) : ViewModel() {
         val allPlaylists =
             context.dataStore.data
@@ -226,6 +239,9 @@ class LibraryPlaylistsViewModel
                 .flatMapLatest { (sortType, descending) ->
                     database.playlists(sortType, descending)
                 }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
+
+        fun sync() { viewModelScope.launch(Dispatchers.IO) { syncUtils.syncSavedPlaylists() } }
+
         val topValue =
             context.dataStore.data
                 .map { it[TopSize] ?: "50" }

@@ -155,6 +155,12 @@
     <string name="edit_artist">تعديل الفنان</string>
     <string name="artist_name">اسم الفنان</string>
     <string name="error_artist_name_empty">لا يمكن أن يكون اسم الفنان فارغًا.</string>
+
+    <string name="duplicates">مكرر</string>
+    <string name="skip_duplicates">تخطي المكرر</string>
+    <string name="add_anyway">أضف على أية حال</string>
+    <string name="duplicates_description_single">الأغنية موجودة بالفعل في قائمة التشغيل الخاصة بك</string>
+    <string name="duplicates_description_multiple">توجد %d أغنية بالفعل في قائمة التشغيل الخاصة بك</string>
     
     <!-- اسم -->
     <plurals name="n_song">

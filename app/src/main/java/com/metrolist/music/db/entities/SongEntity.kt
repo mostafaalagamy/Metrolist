@@ -1,9 +1,16 @@
 package com.metrolist.music.db.entities
 
 import androidx.compose.runtime.Immutable
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.metrolist.innertube.YouTube
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.GlobalScope
 import java.time.LocalDateTime
 
 @Immutable
@@ -34,13 +41,27 @@ data class SongEntity(
     fun localToggleLike() = copy(
         liked = !liked,
         likedDate = if (!liked) LocalDateTime.now() else null,
+    ).also {
+        CoroutineScope(Dispatchers.IO).launch() {
+            YouTube.likeVideo(id, !liked)
+            this.cancel()
+        }
+    }
+
+    fun setLiked() = copy(
+        liked = true,
     )
     
     fun toggleLike() = copy(
         liked = !liked,
         likedDate = if (!liked) LocalDateTime.now() else null,
         inLibrary = if (!liked) inLibrary ?: LocalDateTime.now() else inLibrary
-    )
+    ).also {
+        CoroutineScope(Dispatchers.IO).launch {
+            YouTube.likeVideo(id, !liked)
+            this.cancel()
+        }
+    }
 
     fun toggleLibrary() = copy(
         inLibrary = if (inLibrary == null) LocalDateTime.now() else null,

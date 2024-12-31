@@ -29,6 +29,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
@@ -81,6 +82,7 @@ import androidx.compose.ui.util.fastForEachIndexed
 import androidx.compose.ui.util.fastSumBy
 import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.media3.exoplayer.offline.Download
 import androidx.media3.exoplayer.offline.DownloadRequest
 import androidx.media3.exoplayer.offline.DownloadService
@@ -93,6 +95,7 @@ import com.metrolist.music.LocalDatabase
 import com.metrolist.music.LocalDownloadUtil
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.LocalPlayerConnection
+import com.metrolist.music.LocalSyncUtils
 import com.metrolist.music.R
 import com.metrolist.music.constants.AlbumThumbnailSize
 import com.metrolist.music.constants.PlaylistEditLockKey
@@ -243,6 +246,9 @@ fun LocalPlaylistScreen(
                     database.query {
                         update(playlistEntity.copy(name = name, lastUpdateTime = LocalDateTime.now()))
                     }
+                    viewModel.viewModelScope.launch(Dispatchers.IO) {
+                        playlistEntity.browseId?.let { YouTube.renamePlaylist(it, name) }
+                    }
                 },
             )
         }
@@ -285,6 +291,45 @@ fun LocalPlaylistScreen(
                     Text(text = stringResource(android.R.string.ok))
                 }
             },
+        )
+    }
+
+    var showDeletePlaylistDialog by remember {
+        mutableStateOf(false)
+    }
+    if (showDeletePlaylistDialog) {
+        DefaultDialog(
+            onDismiss = { showDeletePlaylistDialog = false },
+            content = {
+                Text(
+                    text = stringResource(R.string.delete_playlist_confirm, playlist?.playlist!!.name),
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier.padding(horizontal = 18.dp)
+                )
+            },
+            buttons = {
+                TextButton(
+                    onClick = {
+                        showDeletePlaylistDialog = false
+                    }
+                ) {
+                    Text(text = stringResource(android.R.string.cancel))
+                }
+                TextButton(
+                    onClick = {
+                        showDeletePlaylistDialog = false
+                        database.query {
+                            playlist?.let { delete(it.playlist) }
+                        }
+                        viewModel.viewModelScope.launch(Dispatchers.IO) {
+                            playlist?.playlist?.browseId?.let { YouTube.deletePlaylist(it) }
+                        }
+                        navController.popBackStack()
+                    }
+                ) {
+                    Text(text = stringResource(android.R.string.ok))
+                }
+            }
         )
     }
 
@@ -391,6 +436,16 @@ fun LocalPlaylistScreen(
 
                         fun deleteFromPlaylist() {
                         database.transaction {
+                            coroutineScope.launch {
+                                playlist?.playlist?.browseId?.let { it1 ->
+                                    var setVideoId = getSetVideoId(currentItem.map.songId)
+                                    if (setVideoId?.setVideoId != null) {
+                                        YouTube.removeFromPlaylist(
+                                            it1, currentItem.map.songId, setVideoId.setVideoId!!
+                                        )
+                                    }
+                                }
+                            }
                             move(currentItem.map.playlistId, currentItem.map.position, Int.MAX_VALUE)
                             delete(currentItem.map.copy(position = Int.MAX_VALUE))
                         }
@@ -436,9 +491,10 @@ fun LocalPlaylistScreen(
                                             menuState.show {
                                                 SongMenu(
                                                     originalSong = song.song,
+                                                    playlistSong = song,
+                                                    playlistBrowseId = playlist?.playlist?.browseId,
                                                     navController = navController,
                                                     onDismiss = menuState::dismiss,
-                                                    onDeleteFromPlaylist = ::deleteFromPlaylist
                                                 )
                                             }
                                         },
@@ -560,9 +616,9 @@ fun LocalPlaylistScreen(
                                             menuState.show {
                                                 SongMenu(
                                                     originalSong = songWrapper.item.song,
+                                                    playlistBrowseId = playlist?.playlist?.browseId,
                                                     navController = navController,
                                                     onDismiss = menuState::dismiss,
-                                                    onDeleteFromPlaylist = ::deleteFromPlaylist
                                                 )
                                             }
                                         },
@@ -772,6 +828,7 @@ fun LocalPlaylistHeader(
     val playerConnection = LocalPlayerConnection.current ?: return
     val context = LocalContext.current
     val database = LocalDatabase.current
+    val syncUtils = LocalSyncUtils.current
     val scope = rememberCoroutineScope()
 
     val playlistLength =
@@ -872,6 +929,20 @@ fun LocalPlaylistHeader(
 
                 Row {
                     IconButton(
+                        onClick = {
+                            database.transaction {
+                                update(playlist.playlist.toggleLike())
+                            }
+                        }
+                    ) {
+                        val liked = playlist?.playlist?.bookmarkedAt != null
+                        Icon(
+                                painter = painterResource(if (liked) R.drawable.favorite else R.drawable.favorite_border),
+                                contentDescription = null,
+                                tint = if (liked) MaterialTheme.colorScheme.error else LocalContentColor.current
+                        )
+                    }
+                    IconButton(
                         onClick = onShowEditDialog,
                     ) {
                         Icon(
@@ -884,20 +955,7 @@ fun LocalPlaylistHeader(
                         IconButton(
                             onClick = {
                                 scope.launch(Dispatchers.IO) {
-                                    val playlistPage = YouTube.playlist(playlist.playlist.browseId).completed().getOrNull() ?: return@launch
-                                    database.transaction {
-                                        clearPlaylist(playlist.id)
-                                        playlistPage.songs
-                                            .map(SongItem::toMediaMetadata)
-                                            .onEach(::insert)
-                                            .mapIndexed { position, song ->
-                                                PlaylistSongMap(
-                                                    songId = song.id,
-                                                    playlistId = playlist.id,
-                                                    position = position,
-                                                )
-                                            }.forEach(::insert)
-                                    }
+                                    syncUtils.syncPlaylist(playlist.playlist.browseId, playlist.id)
                                     snackbarHostState.showSnackbar(context.getString(R.string.playlist_synced))
                                 }
                             },

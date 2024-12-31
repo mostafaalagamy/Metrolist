@@ -3,14 +3,7 @@ package com.metrolist.innertube
 import com.metrolist.innertube.models.Context
 import com.metrolist.innertube.models.YouTubeClient
 import com.metrolist.innertube.models.YouTubeLocale
-import com.metrolist.innertube.models.body.AccountMenuBody
-import com.metrolist.innertube.models.body.BrowseBody
-import com.metrolist.innertube.models.body.GetQueueBody
-import com.metrolist.innertube.models.body.GetSearchSuggestionsBody
-import com.metrolist.innertube.models.body.GetTranscriptBody
-import com.metrolist.innertube.models.body.NextBody
-import com.metrolist.innertube.models.body.PlayerBody
-import com.metrolist.innertube.models.body.SearchBody
+import com.metrolist.innertube.models.body.*
 import com.metrolist.innertube.utils.parseCookieString
 import com.metrolist.innertube.utils.sha1
 import io.ktor.client.*
@@ -115,6 +108,97 @@ class InnerTube {
         parameter("prettyPrint", false)
     }
 
+    suspend fun likeVideo(
+        client: YouTubeClient,
+        videoId: String,
+    ) = httpClient.post("like/like") {
+        ytClient(client, setLogin = true)
+        setBody(
+            LikeBody(
+                context = client.toContext(locale, visitorData),
+                target = LikeBody.Target.VideoTarget(videoId)
+            )
+        )
+    }
+
+    suspend fun unlikeVideo(
+        client: YouTubeClient,
+        videoId: String,
+    ) = httpClient.post("like/removelike") {
+        ytClient(client, setLogin = true)
+        setBody(
+            LikeBody(
+                context = client.toContext(locale, visitorData),
+                target = LikeBody.Target.VideoTarget(videoId)
+            )
+        )
+    }
+
+    suspend fun likePlaylist(
+        client: YouTubeClient,
+        playlistId: String,
+    ) = httpClient.post("like/like") {
+        ytClient(client, setLogin = true)
+        setBody(
+            LikeBody(
+                context = client.toContext(locale, visitorData),
+                target = LikeBody.Target.PlaylistTarget(playlistId)
+            )
+        )
+    }
+
+    suspend fun unlikePlaylist(
+        client: YouTubeClient,
+        playlistId: String,
+    ) = httpClient.post("like/removelike") {
+        ytClient(client, setLogin = true)
+        setBody(
+            LikeBody(
+                context = client.toContext(locale, visitorData),
+                target = LikeBody.Target.PlaylistTarget(playlistId)
+            )
+        )
+    }
+
+    suspend fun createPlaylist(
+        client: YouTubeClient,
+        title: String,
+    ) = httpClient.post("playlist/create") {
+        ytClient(client, true)
+        setBody(
+            CreatePlaylistBody(
+                context = client.toContext(locale, visitorData),
+                title = title
+            )
+        )
+    }
+
+    suspend fun subscribeChannel(
+        client: YouTubeClient,
+        channelId: String,
+    ) = httpClient.post("subscription/subscribe") {
+        ytClient(client, setLogin = true)
+        setBody(
+            SubscribeBody(
+                context = client.toContext(locale, visitorData),
+                channelIds = listOf(channelId)
+            )
+        )
+    }
+
+    suspend fun unsubscribeChannel(
+        client: YouTubeClient,
+        channelId: String,
+    ) = httpClient.post("subscription/unsubscribe") {
+        ytClient(client, setLogin = true)
+        setBody(
+            SubscribeBody(
+                context = client.toContext(locale, visitorData),
+                channelIds = listOf(channelId)
+            )
+        )
+    }
+    
     suspend fun search(
         client: YouTubeClient,
         query: String? = null,
@@ -251,6 +335,76 @@ class InnerTube {
                 context = client.toContext(locale, null),
                 params = "\n${11.toChar()}$videoId".encodeBase64(),
             ),
+        )
+    }
+
+    suspend fun renamePlaylist(
+        client: YouTubeClient,
+        playlistId: String,
+        name: String,
+    ) = httpClient.post("browse/edit_playlist") {
+        ytClient(client, setLogin = true)
+        setBody(
+            EditPlaylistBody(
+                context = client.toContext(locale, visitorData),
+                playlistId = playlistId,
+                actions = listOf(
+                    Action.RenamePlaylistAction(
+                        playlistName = name
+                    )
+                )
+            )
+        )
+    }
+
+    suspend fun addToPlaylist(
+        client: YouTubeClient,
+        playlistId: String,
+        videoId: String,
+    ) = httpClient.post("browse/edit_playlist") {
+        ytClient(client, setLogin = true)
+        setBody(
+            EditPlaylistBody(
+                context = client.toContext(locale, visitorData),
+                playlistId = playlistId.removePrefix("VL"),
+                actions = listOf(
+                    Action.AddVideoAction(addedVideoId = videoId)
+                )
+            )
+        )
+    }
+    suspend fun removeFromPlaylist(
+        client: YouTubeClient,
+        playlistId: String,
+        videoId: String,
+        setVideoId: String,
+    ) = httpClient.post("browse/edit_playlist") {
+        ytClient(client, setLogin = true)
+        setBody(
+            EditPlaylistBody(
+                context = client.toContext(locale, visitorData),
+                playlistId = playlistId.removePrefix("VL"),
+                actions = listOf(
+                    Action.RemoveVideoAction(
+                        removedVideoId = videoId,
+                        setVideoId = setVideoId,
+                    )
+                )
+            )
+        )
+    }
+
+    suspend fun deletePlaylist(
+        client: YouTubeClient,
+        playlistId: String,
+    ) = httpClient.post("playlist/delete") {
+        println("deleting $playlistId")
+        ytClient(client, setLogin = true)
+        setBody(
+            PlaylistDeleteBody(
+                context = client.toContext(locale, visitorData),
+                playlistId = playlistId
+            )
         )
     }
 
