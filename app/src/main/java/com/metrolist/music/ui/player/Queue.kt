@@ -3,6 +3,7 @@ package com.metrolist.music.ui.player
 import android.annotation.SuppressLint
 import android.text.format.Formatter
 import android.widget.Toast
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.expandVertically
@@ -290,7 +291,15 @@ fun Queue(
                     }
                 }
 
-                TextButton(onClick = { showSleepTimerDialog = true }) {
+                TextButton(
+                    onClick = { 
+                        if (sleepTimerEnabled) {
+                            playerConnection.service.sleepTimer.clear()
+                        } else {
+                            showSleepTimerDialog = true 
+                        }
+                    }
+                ) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Center
@@ -302,15 +311,33 @@ fun Queue(
                             tint = TextBackgroundColor
                         )
                         Spacer(modifier = Modifier.width(4.dp))
-                        Text(
-                            text = stringResource(id = R.string.sleep_timer),
-                            color = TextBackgroundColor,
-                            maxLines = 2,
-                            overflow = TextOverflow.Ellipsis,
-                            modifier = Modifier
-                                .sizeIn(maxWidth = 80.dp)
-                                .basicMarquee()
-                        )
+        
+                        AnimatedContent(
+                            label = "sleepTimer",
+                            targetState = sleepTimerEnabled,
+                        ) { enabled ->
+                            if (enabled) {
+                                Text(
+                                    text = makeTimeString(sleepTimerTimeLeft),
+                                    color = TextBackgroundColor,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                    modifier = Modifier
+                                        .sizeIn(maxWidth = 80.dp)
+                                        .basicMarquee()
+                                )
+                            } else {
+                                Text(
+                                    text = stringResource(id = R.string.sleep_timer),
+                                    color = TextBackgroundColor,
+                                    maxLines = 2,
+                                    overflow = TextOverflow.Ellipsis,
+                                    modifier = Modifier
+                                        .sizeIn(maxWidth = 80.dp)
+                                        .basicMarquee()
+                                )
+                            }
+                        }
                     }
                 }
                 
