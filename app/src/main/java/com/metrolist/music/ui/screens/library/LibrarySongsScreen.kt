@@ -41,7 +41,6 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.LocalPlayerConnection
-import com.metrolist.music.LocalSyncUtils
 import com.metrolist.music.R
 import com.metrolist.music.constants.CONTENT_TYPE_HEADER
 import com.metrolist.music.constants.CONTENT_TYPE_SONG
@@ -76,7 +75,6 @@ fun LibrarySongsScreen(
 ) {
     val context = LocalContext.current
     val menuState = LocalMenuState.current
-    val syncUtils = LocalSyncUtils.current
     val haptic = LocalHapticFeedback.current
     val playerConnection = LocalPlayerConnection.current ?: return
     val isPlaying by playerConnection.isPlaying.collectAsState()
@@ -85,13 +83,15 @@ fun LibrarySongsScreen(
     val (sortType, onSortTypeChange) = rememberEnumPreference(SongSortTypeKey, SongSortType.CREATE_DATE)
     val (sortDescending, onSortDescendingChange) = rememberPreference(SongSortDescendingKey, true)
 
+    val songs by viewModel.allSongs.collectAsState()
+
     LaunchedEffect(Unit) {
-        withContext(Dispatchers.IO) {
-            syncUtils.syncLikedSongs()
+        when (filter) {
+            SongFilter.LIKED -> viewModel.syncLikedSongs()
+            SongFilter.LIBRARY -> viewModel.syncLibrarySongs()
+            else -> return@LaunchedEffect
         }
     }
-
-    val songs by viewModel.allSongs.collectAsState()
 
     val wrappedSongs = songs.map { item -> ItemWrapper(item) }.toMutableList()
     var selection by remember {
