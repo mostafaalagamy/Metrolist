@@ -82,7 +82,7 @@ fun AccountSettings(
             PreferenceGroupTitle(
                 title = stringResource(R.string.google),
             )
-            
+
             PreferenceEntry(
                 title = { Text(if (isLoggedIn) accountName else stringResource(R.string.login)) },
                 description = if (isLoggedIn) {
@@ -92,10 +92,16 @@ fun AccountSettings(
                     null
                 },
                 icon = { Icon(painterResource(R.drawable.login), null) },
-                onClick = { navController.navigate("login") },
+                trailingContent = {
+                    if (isLoggedIn) {
+                        OutlinedButton(onClick = { onInnerTubeCookieChange("") }) {
+                            Text(stringResource(R.string.logout))
+                        }
+                    }
+                },
+                onClick = { if (!isLoggedIn) navController.navigate("login") }
             )
 
-            // Only show the SwitchPreference when user is logged in
             if (isLoggedIn) {
                 SwitchPreference(
                     title = { Text(stringResource(R.string.use_login_for_browse)) },
@@ -109,20 +115,10 @@ fun AccountSettings(
                 )
             }
 
-            if (isLoggedIn) {
-                PreferenceEntry(
-                    title = { Text(stringResource(R.string.logout)) },
-                    icon = { Icon(painterResource(R.drawable.logout), null) },
-                    onClick = {
-                        onInnerTubeCookieChange("")
-                    }
-                )
-            }
-
             PreferenceGroupTitle(
                 title = stringResource(R.string.discord),
             )
-            
+
             PreferenceEntry(
                 title = { Text(stringResource(R.string.discord_integration)) },
                 icon = { Icon(painterResource(R.drawable.discord), null) },
