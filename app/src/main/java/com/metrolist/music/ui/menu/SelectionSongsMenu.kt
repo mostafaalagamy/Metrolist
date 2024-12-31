@@ -111,10 +111,6 @@ fun SelectionSongMenu(
         mutableStateOf(false)
     }
 
-    var showErrorPlaylistAddDialog by rememberSaveable {
-        mutableStateOf(false)
-    }
-
     val notAddedList by remember {
         mutableStateOf(mutableListOf<Song>())
     }
