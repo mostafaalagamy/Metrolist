@@ -38,7 +38,7 @@ class HomeViewModel
 @Inject
 constructor(
     @ApplicationContext context: Context,
-    val syncUtils: SyncUtils
+    val syncUtils: SyncUtils,
     val database: MusicDatabase,
 ) : ViewModel() {
     val isRefreshing = MutableStateFlow(false)
