@@ -115,10 +115,6 @@ fun PlayerMenu(
         mutableStateOf(false)
     }
 
-    var showErrorPlaylistAddDialog by rememberSaveable {
-        mutableStateOf(false)
-    }
-
     AddToPlaylistDialog(
         isVisible = showChoosePlaylistDialog,
         onGetSong = { playlist ->
