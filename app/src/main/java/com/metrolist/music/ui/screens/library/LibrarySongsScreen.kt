@@ -81,7 +81,6 @@ fun LibrarySongsScreen(
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
 
     var filter by rememberEnumPreference(SongFilterKey, SongFilter.LIKED)
-    libraryFilterContent?.let { filter = SongFilter.LIBRARY }
     
     val (sortType, onSortTypeChange) = rememberEnumPreference(SongSortTypeKey, SongSortType.CREATE_DATE)
     val (sortDescending, onSortDescendingChange) = rememberPreference(SongSortDescendingKey, true)
@@ -91,7 +90,6 @@ fun LibrarySongsScreen(
     LaunchedEffect(Unit) {
         when (filter) {
             SongFilter.LIKED -> viewModel.syncLikedSongs()
-            SongFilter.LIBRARY -> viewModel.syncLibrarySongs()
             else -> return@LaunchedEffect
         }
     }
