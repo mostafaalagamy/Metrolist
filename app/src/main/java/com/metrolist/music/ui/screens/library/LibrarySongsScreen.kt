@@ -85,6 +85,8 @@ fun LibrarySongsScreen(
 
     val songs by viewModel.allSongs.collectAsState()
 
+    var filter by rememberEnumPreference(SongFilterKey, SongFilter.LIBRARY)
+
     LaunchedEffect(Unit) {
         when (filter) {
             SongFilter.LIKED -> viewModel.syncLikedSongs()
@@ -96,8 +98,6 @@ fun LibrarySongsScreen(
     var selection by remember {
         mutableStateOf(false)
     }
-
-    var filter by rememberEnumPreference(SongFilterKey, SongFilter.LIBRARY)
 
     val lazyListState = rememberLazyListState()
 
