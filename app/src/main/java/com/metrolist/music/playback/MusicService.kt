@@ -230,7 +230,6 @@ class MusicService :
                 }
         mediaLibrarySessionCallback.apply {
             toggleLike = ::toggleLike
-            toggleLibrary = ::toggleLibrary
         }
         mediaSession =
             MediaLibrarySession
@@ -588,14 +587,6 @@ class MusicService :
     fun addToQueue(items: List<MediaItem>) {
         player.addMediaItems(items)
         player.prepare()
-    }
-
-    private fun toggleLibrary() {
-        database.query {
-            currentSong.value?.let {
-                update(it.song.toggleLibrary())
-            }
-        }
     }
 
     fun toggleLike() {
