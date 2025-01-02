@@ -18,9 +18,9 @@ import java.time.LocalDateTime
     tableName = "song",
     indices = [
         Index(
-            value = ["albumId"],
-        ),
-    ],
+            value = ["albumId"]
+        )
+    ]
 )
 data class SongEntity(
     @PrimaryKey val id: String,
@@ -29,43 +29,18 @@ data class SongEntity(
     val thumbnailUrl: String? = null,
     val albumId: String? = null,
     val albumName: String? = null,
-    val year: Int? = null,
-    val date: LocalDateTime? = null, // ID3 tag property
-    val dateModified: LocalDateTime? = null, // file property
     val liked: Boolean = false,
-    val likedDate: LocalDateTime? = null,
     val totalPlayTime: Long = 0, // in milliseconds
     val inLibrary: LocalDateTime? = null,
-    val dateDownload: LocalDateTime? = null, // doubles as "isDownloaded"
 ) {
     fun localToggleLike() = copy(
-        liked = !liked,
-        likedDate = if (!liked) LocalDateTime.now() else null,
-    ).also {
+        liked = !liked
+    )
+
+    fun toggleLike() = localToggleLike().also {
         CoroutineScope(Dispatchers.IO).launch() {
             YouTube.likeVideo(id, !liked)
             this.cancel()
         }
     }
-
-    fun setLiked() = copy(
-        liked = true,
-    )
-    
-    fun toggleLike() = copy(
-        liked = !liked,
-        likedDate = if (!liked) LocalDateTime.now() else null,
-        inLibrary = if (!liked) inLibrary ?: LocalDateTime.now() else inLibrary
-    ).also {
-        CoroutineScope(Dispatchers.IO).launch {
-            YouTube.likeVideo(id, !liked)
-            this.cancel()
-        }
-    }
-
-    fun toggleLibrary() = copy(
-        inLibrary = if (inLibrary == null) LocalDateTime.now() else null,
-        liked = if (inLibrary == null) liked else false,
-        likedDate = if (inLibrary == null) likedDate else null
-    )
 }
