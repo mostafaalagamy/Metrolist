@@ -80,7 +80,7 @@ class MusicDatabase(
         AutoMigration(from = 13, to = 14, spec = Migration13To14::class),
         AutoMigration(from = 14, to = 15),
         AutoMigration(from = 15, to = 16, spec = Migration15To16::class),
-        AutoMigration(from = 16, to = 17),
+        AutoMigration(from = 16, to = 17, spec = Migration16To17::class),
     ],
 )
 @TypeConverters(Converters::class)
@@ -410,3 +410,14 @@ class Migration13To14 : AutoMigrationSpec {
     DeleteColumn(tableName = "song", columnName = "dateDownload"),
 )
 class Migration15To16 : AutoMigrationSpec
+
+DeleteColumn.Entries(
+    DeleteColumn(tableName = "song", columnName = "isLocal"),
+    DeleteColumn(tableName = "song", columnName = "localPath"),
+    DeleteColumn(tableName = "song", columnName = "year"),
+    DeleteColumn(tableName = "song", columnName = "date"),
+    DeleteColumn(tableName = "song", columnName = "dateModified"),
+    DeleteColumn(tableName = "song", columnName = "likedDate"),
+    DeleteColumn(tableName = "song", columnName = "dateDownload"),
+)
+class Migration16To17 : AutoMigrationSpec
