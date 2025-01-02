@@ -411,7 +411,7 @@ class Migration13To14 : AutoMigrationSpec {
 )
 class Migration15To16 : AutoMigrationSpec
 
-DeleteColumn.Entries(
+@DeleteColumn.Entries(
     DeleteColumn(tableName = "song", columnName = "year"),
 )
 class Migration16To17 : AutoMigrationSpec
