@@ -29,9 +29,14 @@ data class SongEntity(
     val thumbnailUrl: String? = null,
     val albumId: String? = null,
     val albumName: String? = null,
+    val year: Int? = null,
+    val date: LocalDateTime? = null, // ID3 tag property
+    val dateModified: LocalDateTime? = null, // file property
     val liked: Boolean = false,
+    val likedDate: LocalDateTime? = null,
     val totalPlayTime: Long = 0, // in milliseconds
     val inLibrary: LocalDateTime? = null,
+    val dateDownload: LocalDateTime? = null, // doubles as "isDownloaded"
 ) {
     fun localToggleLike() = copy(
         liked = !liked
