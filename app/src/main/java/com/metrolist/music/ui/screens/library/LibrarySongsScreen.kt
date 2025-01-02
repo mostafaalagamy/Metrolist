@@ -85,12 +85,11 @@ fun LibrarySongsScreen(
 
     val songs by viewModel.allSongs.collectAsState()
 
-    var filter by rememberEnumPreference(SongFilterKey, SongFilter.LIBRARY)
+    var filter by rememberEnumPreference(SongFilterKey, SongFilter.SONGS)
 
     LaunchedEffect(Unit) {
-        when (filter) {
-            SongFilter.LIKED -> viewModel.syncLikedSongs()
-            else -> return@LaunchedEffect
+        withContext(Dispatchers.IO) {
+            viewModel.syncLikedSongs()
         }
     }
 
@@ -137,8 +136,7 @@ fun LibrarySongsScreen(
                     ChipsRow(
                         chips =
                             listOf(
-                                SongFilter.LIBRARY to stringResource(R.string.filter_library),
-                                SongFilter.LIKED to stringResource(R.string.filter_liked),
+                                SongFilter.SONGS to stringResource(R.string.songs),
                                 SongFilter.DOWNLOADED to stringResource(R.string.filter_downloaded),
                             ),
                         currentValue = filter,

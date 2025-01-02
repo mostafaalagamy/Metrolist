@@ -200,31 +200,6 @@ fun SelectionSongMenu(
             clearAction()
         }
 
-        if (allInLibrary) {
-            GridMenuItem(
-                icon = R.drawable.library_add_check,
-                title = R.string.remove_from_library,
-            ) {
-                database.query {
-                    songSelection.forEach { song ->
-                        inLibrary(song.id, null)
-                    }
-                }
-            }
-        } else {
-            GridMenuItem(
-                icon = R.drawable.library_add,
-                title = R.string.add_to_library,
-            ) {
-                database.transaction {
-                    songSelection.forEach { song ->
-                        insert(song.toMediaMetadata())
-                        inLibrary(song.id, LocalDateTime.now())
-                    }
-                }
-            }
-        }
-
         GridMenuItem(
             icon = R.drawable.queue_music,
             title = R.string.add_to_queue,
