@@ -412,12 +412,6 @@ class Migration13To14 : AutoMigrationSpec {
 class Migration15To16 : AutoMigrationSpec
 
 DeleteColumn.Entries(
-    DeleteColumn(tableName = "song", columnName = "isLocal"),
-    DeleteColumn(tableName = "song", columnName = "localPath"),
     DeleteColumn(tableName = "song", columnName = "year"),
-    DeleteColumn(tableName = "song", columnName = "date"),
-    DeleteColumn(tableName = "song", columnName = "dateModified"),
-    DeleteColumn(tableName = "song", columnName = "likedDate"),
-    DeleteColumn(tableName = "song", columnName = "dateDownload"),
 )
 class Migration16To17 : AutoMigrationSpec
