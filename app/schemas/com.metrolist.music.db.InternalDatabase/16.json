@@ -6,7 +6,7 @@
     "entities": [
       {
         "tableName": "song",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `title` TEXT NOT NULL, `duration` INTEGER NOT NULL, `thumbnailUrl` TEXT, `albumId` TEXT, `albumName` TEXT, `year` INTEGER, `date` INTEGER, `dateModified` INTEGER, `liked` INTEGER NOT NULL, `likedDate` INTEGER, `totalPlayTime` INTEGER NOT NULL, `inLibrary` INTEGER, `isLocal` INTEGER NOT NULL DEFAULT false, `localPath` TEXT, `dateDownload` INTEGER, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `title` TEXT NOT NULL, `duration` INTEGER NOT NULL, `thumbnailUrl` TEXT, `albumId` TEXT, `albumName` TEXT, `liked` INTEGER NOT NULL, `totalPlayTime` INTEGER NOT NULL, `inLibrary` INTEGER, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -45,34 +45,10 @@
             "notNull": false
           },
           {
-            "fieldPath": "year",
-            "columnName": "year",
-            "affinity": "INTEGER",
-            "notNull": false
-          },
-          {
-            "fieldPath": "date",
-            "columnName": "date",
-            "affinity": "INTEGER",
-            "notNull": false
-          },
-          {
-            "fieldPath": "dateModified",
-            "columnName": "dateModified",
-            "affinity": "INTEGER",
-            "notNull": false
-          },
-          {
             "fieldPath": "liked",
             "columnName": "liked",
             "affinity": "INTEGER",
             "notNull": true
-          },
-          {
-            "fieldPath": "likedDate",
-            "columnName": "likedDate",
-            "affinity": "INTEGER",
-            "notNull": false
           },
           {
             "fieldPath": "totalPlayTime",
@@ -83,25 +59,6 @@
           {
             "fieldPath": "inLibrary",
             "columnName": "inLibrary",
-            "affinity": "INTEGER",
-            "notNull": false
-          },
-          {
-            "fieldPath": "isLocal",
-            "columnName": "isLocal",
-            "affinity": "INTEGER",
-            "notNull": true,
-            "defaultValue": "false"
-          },
-          {
-            "fieldPath": "localPath",
-            "columnName": "localPath",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "dateDownload",
-            "columnName": "dateDownload",
             "affinity": "INTEGER",
             "notNull": false
           }
@@ -127,7 +84,7 @@
       },
       {
         "tableName": "artist",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `name` TEXT NOT NULL, `thumbnailUrl` TEXT, `channelId` TEXT, `lastUpdateTime` INTEGER NOT NULL, `bookmarkedAt` INTEGER, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `name` TEXT NOT NULL, `thumbnailUrl` TEXT, `channelId` TEXT, `lastUpdateTime` INTEGER NOT NULL, `bookmarkedAt` INTEGER, `likedDate` INTEGER, `inLibrary` INTEGER, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -164,6 +121,18 @@
             "columnName": "bookmarkedAt",
             "affinity": "INTEGER",
             "notNull": false
+          },
+          {
+            "fieldPath": "likedDate",
+            "columnName": "likedDate",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "inLibrary",
+            "columnName": "inLibrary",
+            "affinity": "INTEGER",
+            "notNull": false
           }
         ],
         "primaryKey": {
@@ -177,7 +146,7 @@
       },
       {
         "tableName": "album",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `playlistId` TEXT, `title` TEXT NOT NULL, `year` INTEGER, `thumbnailUrl` TEXT, `themeColor` INTEGER, `songCount` INTEGER NOT NULL, `duration` INTEGER NOT NULL, `lastUpdateTime` INTEGER NOT NULL, `bookmarkedAt` INTEGER, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `playlistId` TEXT, `title` TEXT NOT NULL, `year` INTEGER, `thumbnailUrl` TEXT, `themeColor` INTEGER, `songCount` INTEGER NOT NULL, `duration` INTEGER NOT NULL, `lastUpdateTime` INTEGER NOT NULL, `bookmarkedAt` INTEGER, `likedDate` INTEGER, `inLibrary` INTEGER, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -236,6 +205,18 @@
           {
             "fieldPath": "bookmarkedAt",
             "columnName": "bookmarkedAt",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "likedDate",
+            "columnName": "likedDate",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "inLibrary",
+            "columnName": "inLibrary",
             "affinity": "INTEGER",
             "notNull": false
           }
