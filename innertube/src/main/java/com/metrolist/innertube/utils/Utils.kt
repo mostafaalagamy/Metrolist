@@ -1,6 +1,11 @@
 package com.metrolist.innertube.utils
 
 import com.metrolist.innertube.YouTube
+import com.metrolist.innertube.models.AlbumItem
+import com.metrolist.innertube.models.ArtistItem
+import com.metrolist.innertube.models.PlaylistItem
+import com.metrolist.innertube.pages.LibraryContinuationPage
+import com.metrolist.innertube.pages.LibraryPage
 import com.metrolist.innertube.pages.PlaylistPage
 import io.ktor.http.URLBuilder
 import io.ktor.http.parseQueryString
@@ -23,6 +28,35 @@ suspend fun Result<PlaylistPage>.completed() =
             continuation = page.continuation,
         )
     }
+
+suspend fun Result<LibraryPage>.completedLibraryPage(): Result<LibraryPage>? = runCatching {
+    val page = getOrThrow()
+    val items = page.items.toMutableList()
+    var continuation = page.continuation
+    while (continuation != null) {
+        val continuationPage: LibraryContinuationPage = when (items.first()) {
+            is AlbumItem -> {
+                YouTube.libraryAlbumsContinuation(continuation).getOrNull() ?: break
+            }
+
+            is ArtistItem -> {
+                YouTube.libraryArtistsSubscriptionsContinuation(continuation).getOrNull() ?: break
+            }
+
+            is PlaylistItem -> {
+                YouTube.likedPlaylistsContinuation(continuation).getOrNull() ?: break
+            }
+
+            else -> return null
+        }
+        items += continuationPage.items
+        continuation = continuationPage.continuation
+    }
+    LibraryPage(
+        items = items,
+        continuation = page.continuation
+    )
+ }
 
 fun ByteArray.toHex(): String = joinToString(separator = "") { eachByte -> "%02x".format(eachByte) }
 

@@ -7,6 +7,7 @@ import com.metrolist.innertube.models.ArtistItem
 import com.metrolist.innertube.models.AlbumItem
 import com.metrolist.innertube.models.PlaylistItem
 import com.metrolist.music.utils.reportException
+import com.metrolist.innertube.utils.completedLibraryPage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -20,19 +21,19 @@ class AccountViewModel @Inject constructor() : ViewModel() {
 
     init {
         viewModelScope.launch {
-            YouTube.likedPlaylists().onSuccess {
-                playlists.value = it
-            }.onFailure {
-                reportException(it)
+            YouTube.likedPlaylists().completedLibraryPage()?.onSuccess {
+                playlists.value = it.items.filterIsInstance<PlaylistItem>()
+            }?.onFailure {
+                 reportException(it)
             }
-             YouTube.libraryAlbums().onSuccess {
-                albums.value = it
-            }.onFailure {
-                reportException(it)
-            }
-             YouTube.libraryArtistsSubscriptions().onSuccess {
-                artists.value = it
-            }.onFailure {
+             YouTube.libraryAlbums().completedLibraryPage()?.onSuccess {
+                albums.value = it.items.filterIsInstance<AlbumItem>()
+            }?.onFailure {
+                 reportException(it)
+             }
+             YouTube.libraryArtistsSubscriptions().completedLibraryPage()?.onSuccess {
+                artists.value = it.items.filterIsInstance<ArtistItem>()
+            }?.onFailure {
                 reportException(it)
              }
         }

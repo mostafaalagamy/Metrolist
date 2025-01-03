@@ -14,6 +14,7 @@ import com.metrolist.innertube.pages.ExplorePage
 import com.metrolist.innertube.pages.HomeAlbumRecommendation
 import com.metrolist.innertube.pages.HomeArtistRecommendation
 import com.metrolist.innertube.pages.HomePlayList
+import com.metrolist.innertube.utils.completedLibraryPage
 import com.metrolist.music.constants.QuickPicks
 import com.metrolist.music.constants.QuickPicksKey
 import com.metrolist.music.db.MusicDatabase
@@ -157,27 +158,22 @@ constructor(
                     .take(3)
 
             viewModelScope.launch {
-                YouTube
-                    .likedPlaylists()
-                    .onSuccess {
-                        youtubePlaylists.value = it
-                    }.onFailure {
-                        reportException(it)
-                    }
-                YouTube
-                    .libraryAlbums()
-                    .onSuccess {
-                        youtubeAlbums.value = it
-                    }.onFailure {
-                        reportException(it)
-                    }
-                YouTube
-                    .libraryArtistsSubscriptions()
-                    .onSuccess {
-                        youtubeArtists.value = it
-                    }.onFailure {
-                         reportException(it)
-                    }
+
+                YouTube.likedPlaylists().completedLibraryPage()?.onSuccess {
+                    youtubePlaylists.value = it.items.filterIsInstance<PlaylistItem>()
+                }?.onFailure {
+                    reportException(it)
+                }
+                YouTube.libraryAlbums().completedLibraryPage()?.onSuccess {
+                    youtubeAlbums.value = it.items.filterIsInstance<AlbumItem>()
+                }?.onFailure {
+                    reportException(it)
+                }
+                YouTube.libraryArtistsSubscriptions().completedLibraryPage()?.onSuccess {
+                    youtubeArtists.value = it.items.filterIsInstance<ArtistItem>()
+                }?.onFailure {
+                    reportException(it)
+                }
             }
         } finally {
             isLoading.value = false
