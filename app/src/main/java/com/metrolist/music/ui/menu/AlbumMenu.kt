@@ -94,6 +94,8 @@ fun AlbumMenu(
         mutableStateOf(emptyList<Song>())
     }
 
+    val coroutineScope = rememberCoroutineScope()
+
     LaunchedEffect(Unit) {
         database.albumSongs(album.id).collect {
             songs = it
