@@ -140,7 +140,9 @@ fun YouTubeAlbumMenu(
                     }
                 }
             }
-        onDismiss = { showChoosePlaylistDialog = false },
+            album?.songs?.map { it.id }.orEmpty()
+        },
+        onDismiss = { showChoosePlaylistDialog = false }
     )
 
     if (showErrorPlaylistAddDialog) {
