@@ -25,6 +25,7 @@ import com.metrolist.music.constants.AccountEmailKey
 import com.metrolist.music.constants.AccountNameKey
 import com.metrolist.music.constants.InnerTubeCookieKey
 import com.metrolist.music.constants.UseLoginForBrowse
+import com.metrolist.music.constants.YtmSyncKey
 import com.metrolist.music.ui.component.IconButton
 import com.metrolist.music.ui.component.SwitchPreference
 import com.metrolist.music.ui.component.PreferenceEntry
@@ -47,6 +48,7 @@ fun AccountSettings(
         "SAPISID" in parseCookieString(innerTubeCookie)
     }
     val (useLoginForBrowse, onUseLoginForBrowseChange) = rememberPreference(key = UseLoginForBrowse, defaultValue = false)
+    val (ytmSync, onYtmSyncChange) = rememberPreference(YtmSyncKey, defaultValue = true)
     val context = LocalContext.current
 
     Scaffold(
@@ -112,6 +114,16 @@ fun AccountSettings(
                         YouTube.useLoginForBrowse = it
                         onUseLoginForBrowseChange(it)
                     }
+                )
+            }
+
+            if (isLoggedIn) {
+                SwitchPreference(
+                    title = { Text(stringResource(R.string.ytm_sync)) },
+                    icon = { Icon(painterResource(R.drawable.cached), null) },
+                    checked = ytmSync,
+                    onCheckedChange = onYtmSyncChange,
+                    isEnabled = isLoggedIn
                 )
             }
 
