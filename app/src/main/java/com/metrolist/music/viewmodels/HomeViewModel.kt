@@ -17,6 +17,7 @@ import com.metrolist.innertube.pages.HomePlayList
 import com.metrolist.innertube.utils.completedLibraryPage
 import com.metrolist.music.constants.QuickPicks
 import com.metrolist.music.constants.QuickPicksKey
+import com.metrolist.music.constants.YtmSyncKey
 import com.metrolist.music.db.MusicDatabase
 import com.metrolist.music.db.entities.Artist
 import com.metrolist.music.db.entities.Song
@@ -375,10 +376,18 @@ constructor(
         }
         viewModelScope.launch(Dispatchers.IO) {
             homeLoad()
+            val syncYtm = context.dataStore.data
+                .map {
+                    it[YtmSyncKey]
+                }
+                .distinctUntilChanged()
+
+            if (syncYtm.first() != false) { // defaults to true
+                viewModelScope.launch(Dispatchers.IO) { syncUtils.syncLikedSongs() }
+                viewModelScope.launch(Dispatchers.IO) { syncUtils.syncSavedPlaylists() }
+                viewModelScope.launch(Dispatchers.IO) { syncUtils.syncLikedAlbums() }
+                viewModelScope.launch(Dispatchers.IO) { syncUtils.syncArtistsSubscriptions() }
+            }
         }
-        viewModelScope.launch(Dispatchers.IO) { syncUtils.syncLikedSongs() }
-        viewModelScope.launch(Dispatchers.IO) { syncUtils.syncSavedPlaylists() }
-        viewModelScope.launch(Dispatchers.IO) { syncUtils.syncLikedAlbums() }
-        viewModelScope.launch(Dispatchers.IO) { syncUtils.syncArtistsSubscriptions() }
     }
 }
