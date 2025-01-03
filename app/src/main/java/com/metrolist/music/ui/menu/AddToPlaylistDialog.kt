@@ -89,7 +89,7 @@ fun AddToPlaylistDialog(
 
     if (isVisible) {
         ListDialog(
-            onDismiss = onDismiss
+            onDismiss = onDismiss,
         ) {
             item {
                 ListItem(
@@ -126,6 +126,14 @@ fun AddToPlaylistDialog(
                             }
                         }
                     }
+                )
+            }
+
+            item {
+                Text(
+                    text = "Note: Adding local songs to synced/remote playlists is unsupported. Any other combination is valid.",
+                    fontSize = TextUnit(12F, TextUnitType.Sp),
+                    modifier = Modifier.padding(horizontal = 20.dp)
                 )
             }
         }
@@ -166,6 +174,7 @@ fun AddToPlaylistDialog(
                             text = "Sync Playlist",
                             style = MaterialTheme.typography.titleLarge,
                         )
+
                         Text(
                             text = "Note: This allows for syncing with YouTube Music. This is NOT changeable later. You cannot add local songs to synced playlists.",
                             style = MaterialTheme.typography.bodySmall,
@@ -185,6 +194,7 @@ fun AddToPlaylistDialog(
                         )
                     }
                 }
+
             }
         )
     }
