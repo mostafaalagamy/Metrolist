@@ -148,7 +148,7 @@ fun LibraryPlaylistsScreen(
     
     if (showAddPlaylistDialog) {
         TextFieldDialog(
-            icon = { Icon(painter = painterResource(R.drawable.add), contentDescription = null) },
+            icon = { Icon(imageVector = Icons.Rounded.Add, contentDescription = null) },
             title = { Text(text = stringResource(R.string.create_playlist)) },
             onDismiss = { showAddPlaylistDialog = false },
             onDone = { playlistName ->
@@ -156,6 +156,7 @@ fun LibraryPlaylistsScreen(
                     val browseId = if (syncedPlaylist)
                         YouTube.createPlaylist(playlistName).getOrNull()
                     else null
+
                     database.query {
                         insert(
                             PlaylistEntity(
@@ -177,6 +178,7 @@ fun LibraryPlaylistsScreen(
                             text = "Sync Playlist",
                             style = MaterialTheme.typography.titleLarge,
                         )
+
                         Text(
                             text = "Note: This allows for syncing with YouTube Music. This is NOT changeable later. You cannot add local songs to synced playlists.",
                             style = MaterialTheme.typography.bodySmall,
