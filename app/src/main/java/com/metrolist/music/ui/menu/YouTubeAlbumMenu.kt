@@ -78,6 +78,7 @@ fun YouTubeAlbumMenu(
     val downloadUtil = LocalDownloadUtil.current
     val playerConnection = LocalPlayerConnection.current ?: return
     val album by database.albumWithSongs(albumItem.id).collectAsState(initial = null)
+    val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
         database.album(albumItem.id).collect { album ->
