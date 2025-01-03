@@ -1333,6 +1333,11 @@ object YouTube {
     suspend fun addToPlaylist(playlistId: String, videoId: String) = runCatching {
         innerTube.addToPlaylist(WEB_REMIX, playlistId, videoId).body<AddItemYouTubePlaylistResponse>()
     }
+
+    suspend fun addPlaylistToPlaylist(playlistId: String, addPlaylistId: String) = runCatching {
+        innerTube.addPlaylistToPlaylist(WEB_REMIX, playlistId, addPlaylistId)
+    }
+    
     suspend fun removeFromPlaylist(playlistId: String, videoId: String, setVideoId: String?): Result<Any> = runCatching {
         if (setVideoId != null) {
             innerTube.removeFromPlaylist(WEB_REMIX, playlistId, videoId, setVideoId)
