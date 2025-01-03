@@ -70,15 +70,14 @@ class LibrarySongsViewModel
             context.dataStore.data
                 .map {
                     Triple(
-                        it[SongFilterKey].toEnum(SongFilter.LIBRARY),
+                        it[SongFilterKey].toEnum(SongFilter.SONGS),
                         it[SongSortTypeKey].toEnum(SongSortType.CREATE_DATE),
                         (it[SongSortDescendingKey] ?: true),
                     )
                 }.distinctUntilChanged()
                 .flatMapLatest { (filter, sortType, descending) ->
                     when (filter) {
-                        SongFilter.LIBRARY -> database.songs(sortType, descending)
-                        SongFilter.LIKED -> database.likedSongs(sortType, descending)
+                        SongFilter.SONGS -> database.likedSongs(sortType, descending)
                         SongFilter.DOWNLOADED ->
                             downloadUtil.downloads.flatMapLatest { downloads ->
                                 database
@@ -137,15 +136,14 @@ class LibraryArtistsViewModel
             context.dataStore.data
                 .map {
                     Triple(
-                        it[ArtistFilterKey].toEnum(ArtistFilter.LIBRARY),
+                        it[ArtistFilterKey].toEnum(ArtistFilter.ARTISTS),
                         it[ArtistSortTypeKey].toEnum(ArtistSortType.CREATE_DATE),
                         it[ArtistSortDescendingKey] ?: true,
                     )
                 }.distinctUntilChanged()
                 .flatMapLatest { (filter, sortType, descending) ->
                     when (filter) {
-                        ArtistFilter.LIBRARY -> database.artists(sortType, descending)
-                        ArtistFilter.LIKED -> database.artistsBookmarked(sortType, descending)
+                        ArtistFilter.ARTISTS -> database.artistsBookmarked(sortType, descending)
                     }
                 }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
@@ -182,15 +180,14 @@ class LibraryAlbumsViewModel
             context.dataStore.data
                 .map {
                     Triple(
-                        it[AlbumFilterKey].toEnum(AlbumFilter.LIBRARY),
+                        it[AlbumFilterKey].toEnum(AlbumFilter.ALBUMS),
                         it[AlbumSortTypeKey].toEnum(AlbumSortType.CREATE_DATE),
                         it[AlbumSortDescendingKey] ?: true,
                     )
                 }.distinctUntilChanged()
                 .flatMapLatest { (filter, sortType, descending) ->
                     when (filter) {
-                        AlbumFilter.LIBRARY -> database.albums(sortType, descending)
-                        AlbumFilter.LIKED -> database.albumsLiked(sortType, descending)
+                        AlbumFilter.ALBUMS -> database.albumsLiked(sortType, descending)
                     }
                 }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
