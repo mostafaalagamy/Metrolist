@@ -25,12 +25,6 @@ sealed class Action {
     ) : Action()
 
     @Serializable
-    data class AddPlaylistAction(
-        val action: String = "ACTION_ADD_PLAYLIST",
-        val addedFullListId: String
-    ) : Action()
-
-    @Serializable
     data class MoveVideoAction(
         val action: String = "ACTION_MOVE_VIDEO_BEFORE",
         val setVideoId: String,
