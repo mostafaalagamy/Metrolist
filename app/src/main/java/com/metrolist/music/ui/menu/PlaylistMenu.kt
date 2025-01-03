@@ -43,7 +43,6 @@ import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
 import com.metrolist.music.db.entities.Playlist
 import com.metrolist.music.db.entities.PlaylistSong
-import com.metrolist.music.db.entities.PlaylistSongMap
 import com.metrolist.music.db.entities.Song
 import com.metrolist.music.extensions.toMediaItem
 import com.metrolist.music.models.toMediaMetadata
@@ -153,6 +152,48 @@ fun PlaylistMenu(
                 Text(
                     text = stringResource(R.string.remove_download_playlist_confirm, playlist.playlist.name),
                     style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier.padding(horizontal = 18.dp)
+                )
+            },
+            buttons = {
+                TextButton(
+                    onClick = {
+                        showRemoveDownloadDialog = false
+                    }
+                ) {
+                    Text(text = stringResource(android.R.string.cancel))
+                }
+
+                TextButton(
+                    onClick = {
+                        showRemoveDownloadDialog = false
+                        songs.forEach { song ->
+                            DownloadService.sendRemoveDownload(
+                                context,
+                                ExoDownloadService::class.java,
+                                song.song.id,
+                                false
+                            )
+                        }
+                    }
+                ) {
+                    Text(text = stringResource(android.R.string.ok))
+                }
+            }
+        )
+    }
+
+    var showRemoveDownloadDialog by remember {
+        mutableStateOf(false)
+    }
+
+    if (showRemoveDownloadDialog) {
+        DefaultDialog(
+            onDismiss = { showRemoveDownloadDialog = false },
+            content = {
+                Text(
+                    text = stringResource(R.string.remove_download_playlist_confirm, playlist.playlist.name),
+                    style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.padding(horizontal = 18.dp),
                 )
             },
@@ -224,6 +265,22 @@ fun PlaylistMenu(
             },
         )
     }
+
+    AddToPlaylistDialog(
+        isVisible = showChoosePlaylistDialog,
+        onGetSong = {
+            coroutineScope.launch(Dispatchers.IO) {
+                // add songs to playlist and push to ytm
+                songs.let { playlist.playlist.browseId?.let { YouTube.addPlaylistToPlaylist(it, playlist.id) } }
+
+                playlist.playlist.browseId?.let { playlistId ->
+                    YouTube.addPlaylistToPlaylist(playlistId, playlist.id)
+                }
+            }
+            songs.map { it.id }
+        },
+        onDismiss = { showChoosePlaylistDialog = false }
+    )
 
     PlaylistListItem(
         playlist = playlist,
@@ -298,6 +355,13 @@ fun PlaylistMenu(
             ) {
                 showEditDialog = true
             }
+        }
+
+        GridMenuItem(
+            icon = R.drawable.playlist_add,
+            title = R.string.add_to_playlist
+        ) {
+            showChoosePlaylistDialog = true
         }
 
         if (downloadPlaylist != true) {
