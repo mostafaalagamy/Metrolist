@@ -4,6 +4,7 @@ import com.metrolist.innertube.models.Button
 import com.metrolist.innertube.models.Continuation
 import com.metrolist.innertube.models.GridRenderer
 import com.metrolist.innertube.models.Menu
+import com.metrolist.innertube.models.MusicResponsiveListItemRenderer
 import com.metrolist.innertube.models.MusicShelfRenderer
 import com.metrolist.innertube.models.ResponseContext
 import com.metrolist.innertube.models.Runs
@@ -12,6 +13,7 @@ import com.metrolist.innertube.models.SubscriptionButton
 import com.metrolist.innertube.models.Tabs
 import com.metrolist.innertube.models.ThumbnailRenderer
 import com.metrolist.innertube.models.Thumbnails
+import com.metrolist.innertube.pages.LibraryContinuationPage
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -52,6 +54,7 @@ data class BrowseResponse(
         val sectionListContinuation: SectionListContinuation?,
         val musicPlaylistShelfContinuation: MusicPlaylistShelfContinuation?,
         val gridContinuation: GridContinuation?,
+        val musicShelfContinuation: MusicShelfRenderer?,
     ) {
         @Serializable
         data class SectionListContinuation(
