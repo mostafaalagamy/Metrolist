@@ -955,7 +955,8 @@ fun LocalPlaylistHeader(
                                 painter = painterResource(if (liked) R.drawable.favorite else R.drawable.favorite_border),
                                 contentDescription = null,
                                 tint = if (liked) MaterialTheme.colorScheme.error else LocalContentColor.current
-                        )
+                            )
+                        }
                     }
                     if (editable) {
                         IconButton(
