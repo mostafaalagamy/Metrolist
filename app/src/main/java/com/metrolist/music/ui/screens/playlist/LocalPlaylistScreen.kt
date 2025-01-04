@@ -820,7 +820,7 @@ fun LocalPlaylistScreen(
         
 @Composable
 fun LocalPlaylistHeader(
-    navController: NavController,
+    navController: navController,
     viewModel: LocalPlaylistViewModel = hiltViewModel(),
     playlist: Playlist,
     songs: List<PlaylistSong>,
