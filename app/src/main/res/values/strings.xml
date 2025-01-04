@@ -288,6 +288,7 @@
     <string name="login">Login</string>
     <string name="logout">Logout</string>
     <string name="not_logged_in">Not logged in</string>
+    <string name="ytm_sync">Automatically sync with your YouTube Music account</string>
     <string name="general">General</string>
     <string name="content_language">Default content language</string>
     <string name="content_country">Default content country</string>

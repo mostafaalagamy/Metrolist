@@ -49,6 +49,7 @@ import com.metrolist.music.constants.SongFilterKey
 import com.metrolist.music.constants.SongSortDescendingKey
 import com.metrolist.music.constants.SongSortType
 import com.metrolist.music.constants.SongSortTypeKey
+import com.metrolist.music.constants.YtmSyncKey
 import com.metrolist.music.extensions.toMediaItem
 import com.metrolist.music.extensions.togglePlayPause
 import com.metrolist.music.playback.queues.ListQueue
@@ -83,13 +84,17 @@ fun LibrarySongsScreen(
     val (sortType, onSortTypeChange) = rememberEnumPreference(SongSortTypeKey, SongSortType.CREATE_DATE)
     val (sortDescending, onSortDescendingChange) = rememberPreference(SongSortDescendingKey, true)
 
+    val (ytmSync) = rememberPreference(YtmSyncKey, true)
+
     val songs by viewModel.allSongs.collectAsState()
 
     var filter by rememberEnumPreference(SongFilterKey, SongFilter.SONGS)
 
     LaunchedEffect(Unit) {
-        withContext(Dispatchers.IO) {
-            viewModel.syncLikedSongs()
+        if (ytmSync) {
+            withContext(Dispatchers.IO) {
+                viewModel.syncLikedSongs()
+            }
         }
     }
 
