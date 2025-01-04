@@ -50,6 +50,7 @@ import java.time.LocalDateTime
 @Composable
 fun AddToPlaylistDialog(
     isVisible: Boolean,
+    noSyncing: Boolean = false,
     initialTextFieldValue: String? = null,
     onGetSong: suspend (Playlist) -> List<String>, // list of song ids. Songs should be inserted to database in this function.
     onDismiss: () -> Unit,
