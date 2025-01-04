@@ -555,6 +555,8 @@ object YouTube {
             val base =
                 tabsStart?.musicResponsiveHeaderRenderer
                     ?: tabsStart?.musicEditablePlaylistDetailHeaderRenderer?.header?.musicResponsiveHeaderRenderer
+            val editable = 
+                response.header?.musicEditablePlaylistDetailHeaderRenderer != null
             PlaylistPage(
                 playlist =
                     PlaylistItem(
@@ -604,6 +606,7 @@ object YouTube {
                                 }?.menuNavigationItemRenderer
                                 ?.navigationEndpoint
                                 ?.watchPlaylistEndpoint!!,
+                                isEditable = editable
                     ),
                 songs =
                     response.contents
