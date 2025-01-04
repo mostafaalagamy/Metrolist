@@ -111,7 +111,6 @@ fun AddToPlaylistDialog(
             items(playlists) { playlist ->
                 PlaylistListItem(
                     playlist = playlist,
-                    modifier =
                         modifier = Modifier.clickable {
                         selectedPlaylist = playlist
                         coroutineScope.launch(Dispatchers.IO) {
