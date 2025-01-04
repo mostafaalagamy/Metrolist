@@ -932,15 +932,26 @@ fun LocalPlaylistHeader(
                 )
 
                 Row {
-                    IconButton(
-                        onClick = {
-                            database.transaction {
-                                update(playlist.playlist.toggleLike())
+                    if (editable) {
+                        IconButton(
+                            onClick = {
+                               showDeletePlaylistDialog = true
                             }
+                        ) {
+                            Icon(
+                                 painter = painterResource(R.drawable.Delete),
+                                 contentDescription = null,
+                            )
                         }
-                    ) {
-                        val liked = playlist?.playlist?.bookmarkedAt != null
-                        Icon(
+                    } else {
+                        IconButton(
+                            onClick = {
+                                database.transaction {
+                                    update(playlist.playlist.toggleLike())
+                                }
+                            }
+                        ) {
+                            Icon(
                                 painter = painterResource(if (liked) R.drawable.favorite else R.drawable.favorite_border),
                                 contentDescription = null,
                                 tint = if (liked) MaterialTheme.colorScheme.error else LocalContentColor.current
