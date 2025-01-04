@@ -50,7 +50,6 @@ import java.time.LocalDateTime
 @Composable
 fun AddToPlaylistDialog(
     isVisible: Boolean,
-    noSyncing: Boolean = false,
     initialTextFieldValue: String? = null,
     onGetSong: suspend (Playlist) -> List<String>, // list of song ids. Songs should be inserted to database in this function.
     onDismiss: () -> Unit,
@@ -128,14 +127,6 @@ fun AddToPlaylistDialog(
                     }
                 )
             }
-
-            item {
-                Text(
-                    text = "Note: Adding local songs to synced/remote playlists is unsupported. Any other combination is valid.",
-                    fontSize = TextUnit(12F, TextUnitType.Sp),
-                    modifier = Modifier.padding(horizontal = 20.dp)
-                )
-            }
         }
     }
 
@@ -158,7 +149,6 @@ fun AddToPlaylistDialog(
                                 browseId = if (syncedPlaylist) browseId else null,
                                 bookmarkedAt = LocalDateTime.now(),
                                 isEditable = !syncedPlaylist,
-                                isLocal = !syncedPlaylist // && check that all songs are non-local
                             )
                         )
                     }
@@ -176,7 +166,7 @@ fun AddToPlaylistDialog(
                         )
 
                         Text(
-                            text = "Note: This allows for syncing with YouTube Music. This is NOT changeable later. You cannot add local songs to synced playlists.",
+                            text = "Note: This allows for syncing with YouTube Music. This is NOT changeable later.",
                             style = MaterialTheme.typography.bodySmall,
                             modifier = Modifier.fillMaxWidth(0.7f)
                         )
