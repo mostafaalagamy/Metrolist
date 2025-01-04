@@ -384,6 +384,7 @@ fun LocalPlaylistScreen(
                                 songs = songs,
                                 onShowEditDialog = { showEditDialog = true },
                                 onShowRemoveDownloadDialog = { showRemoveDownloadDialog = true },
+                                onshowDeletePlaylistDialog= { showDeletePlaylistDialog = true },
                                 snackbarHostState = snackbarHostState,
                                 modifier = Modifier.animateItem(),
                             )
