@@ -936,9 +936,7 @@ fun LocalPlaylistHeader(
                 Row {
                     if (editable) {
                         IconButton(
-                            onClick = {
                                onClick = onshowDeletePlaylistDialog,
-                            }
                         ) {
                             Icon(
                                  painter = painterResource(R.drawable.delete),
