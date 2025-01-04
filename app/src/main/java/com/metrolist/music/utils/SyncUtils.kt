@@ -96,7 +96,11 @@ class SyncUtils @Inject constructor(
             playlistList.drop(1).forEach { playlist ->
                 var playlistEntity = dbPlaylists.find { playlist.id == it.playlist.browseId }?.playlist
                 if (playlistEntity == null) {
-                    playlistEntity = PlaylistEntity(name = playlist.title, browseId = playlist.id)
+                    playlistEntity = PlaylistEntity(
+                        name = playlist.title,
+                        browseId = playlist.id,
+                        isEditable = playlist.isEditable
+                    )
                     database.insert(playlistEntity)
                 }
                 syncPlaylist(playlist.id, playlistEntity.id)
