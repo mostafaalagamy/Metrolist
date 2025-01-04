@@ -52,6 +52,7 @@ fun AddToPlaylistDialog(
     isVisible: Boolean,
     noSyncing: Boolean = false,
     initialTextFieldValue: String? = null,
+    onAdd: (Playlist) -> Unit,
     onGetSong: suspend (Playlist) -> List<String>, // list of song ids. Songs should be inserted to database in this function.
     onDismiss: () -> Unit,
 ) {
@@ -111,21 +112,11 @@ fun AddToPlaylistDialog(
             items(playlists) { playlist ->
                 PlaylistListItem(
                     playlist = playlist,
-                    modifier = Modifier.clickable {
-                        selectedPlaylist = playlist
-                        coroutineScope.launch(Dispatchers.IO) {
-                            if (songIds == null) {
-                                songIds = onGetSong(playlist)
-                            }
-                            duplicates = database.playlistDuplicates(playlist.id, songIds!!)
-                            if (duplicates.isNotEmpty()) {
-                                showDuplicateDialog = true
-                            } else {
-                                onDismiss()
-                                database.addSongToPlaylist(playlist, songIds!!)
-                            }
-                        }
-                    }
+                    modifier =
+                        Modifier.clickable {
+                            onAdd(playlist)
+                            onDismiss()
+                        },
                 )
             }
 
