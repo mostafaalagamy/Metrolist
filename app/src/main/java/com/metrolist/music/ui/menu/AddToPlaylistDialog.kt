@@ -112,10 +112,21 @@ fun AddToPlaylistDialog(
                 PlaylistListItem(
                     playlist = playlist,
                     modifier =
-                        Modifier.clickable {
-                            onGetSong(playlist)
-                            onDismiss()
-                        },
+                        modifier = Modifier.clickable {
+                        selectedPlaylist = playlist
+                        coroutineScope.launch(Dispatchers.IO) {
+                            if (songIds == null) {
+                                songIds = onGetSong(playlist)
+                            }
+                            duplicates = database.playlistDuplicates(playlist.id, songIds!!)
+                            if (duplicates.isNotEmpty()) {
+                                showDuplicateDialog = true
+                            } else {
+                                onDismiss()
+                                database.addSongToPlaylist(playlist, songIds!!)
+                            }
+                        }
+                    }
                 )
             }
 
