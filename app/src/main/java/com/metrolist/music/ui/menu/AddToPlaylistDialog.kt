@@ -52,7 +52,6 @@ fun AddToPlaylistDialog(
     isVisible: Boolean,
     noSyncing: Boolean = false,
     initialTextFieldValue: String? = null,
-    onAdd: (Playlist) -> Unit,
     onGetSong: suspend (Playlist) -> List<String>, // list of song ids. Songs should be inserted to database in this function.
     onDismiss: () -> Unit,
 ) {
@@ -114,7 +113,7 @@ fun AddToPlaylistDialog(
                     playlist = playlist,
                     modifier =
                         Modifier.clickable {
-                            onAdd(playlist)
+                            onGetSong(playlist)
                             onDismiss()
                         },
                 )
