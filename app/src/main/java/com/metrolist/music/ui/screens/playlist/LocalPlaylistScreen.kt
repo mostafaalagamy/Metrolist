@@ -208,6 +208,8 @@ fun LocalPlaylistScreen(
         mutableStateOf(Download.STATE_STOPPED)
     }
 
+    val editable: Boolean = playlist?.playlist?.isEditable == true
+
     LaunchedEffect(songs) {
         mutableSongs.apply {
             clear()
@@ -382,6 +384,7 @@ fun LocalPlaylistScreen(
                                 songs = songs,
                                 onShowEditDialog = { showEditDialog = true },
                                 onShowRemoveDownloadDialog = { showRemoveDownloadDialog = true },
+                                onshowDeletePlaylistDialog= { showDeletePlaylistDialog = true },
                                 snackbarHostState = snackbarHostState,
                                 modifier = Modifier.animateItem(),
                             )
@@ -409,18 +412,20 @@ fun LocalPlaylistScreen(
                                   },
                                   modifier = Modifier.weight(1f),
                               )
-                              IconButton(
-                                  onClick = { locked = !locked },
-                                  modifier = Modifier.padding(horizontal = 6.dp),
-                              ) {
-                                  Icon(
-                                      painter = painterResource(if (locked) R.drawable.lock else R.drawable.lock_open),
-                                      contentDescription = null,
-                                  )
+                              if (editable) {
+                                  IconButton(
+                                      onClick = { locked = !locked },
+                                      modifier = Modifier.padding(horizontal = 6.dp),
+                                  ) {
+                                      Icon(
+                                          painter = painterResource(if (locked) R.drawable.lock else R.drawable.lock_open),
+                                          contentDescription = null,
+                                      )
+                                  }
                               }
-                          }
+                         }
                      }
-                 }
+                }
             }
 
             if (!selection) {
@@ -672,7 +677,7 @@ fun LocalPlaylistScreen(
                             )
                         }
 
-                        if (locked) {
+                        if (locked || !editable) {
                             content()
                         } else {
                             SwipeToDismissBox(
@@ -820,6 +825,7 @@ fun LocalPlaylistHeader(
     songs: List<PlaylistSong>,
     onShowEditDialog: () -> Unit,
     onShowRemoveDownloadDialog: () -> Unit,
+    onshowDeletePlaylistDialog: () -> Unit,
     snackbarHostState: SnackbarHostState,
     modifier: Modifier,
 ) {
@@ -838,6 +844,8 @@ fun LocalPlaylistHeader(
     var downloadState by remember {
         mutableIntStateOf(Download.STATE_STOPPED)
     }
+
+    val editable: Boolean = playlist?.playlist?.isEditable == true
 
     LaunchedEffect(songs) {
         if (songs.isEmpty()) return@LaunchedEffect
@@ -926,27 +934,40 @@ fun LocalPlaylistHeader(
                 )
 
                 Row {
-                    IconButton(
-                        onClick = {
-                            database.transaction {
-                                update(playlist.playlist.toggleLike())
-                            }
+                    if (editable) {
+                        IconButton(
+                               onClick = onshowDeletePlaylistDialog,
+                        ) {
+                            Icon(
+                                 painter = painterResource(R.drawable.delete),
+                                 contentDescription = null,
+                            )
                         }
-                    ) {
-                        val liked = playlist?.playlist?.bookmarkedAt != null
-                        Icon(
+                    } else {
+                        IconButton(
+                            onClick = {
+                                database.transaction {
+                                    update(playlist.playlist.toggleLike())
+                                }
+                            }
+                        ) {
+                            val liked = playlist?.playlist?.bookmarkedAt != null
+                            Icon(
                                 painter = painterResource(if (liked) R.drawable.favorite else R.drawable.favorite_border),
                                 contentDescription = null,
                                 tint = if (liked) MaterialTheme.colorScheme.error else LocalContentColor.current
-                        )
+                            )
+                        }
                     }
-                    IconButton(
-                        onClick = onShowEditDialog,
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.edit),
-                            contentDescription = null,
-                        )
+                    if (editable) {
+                        IconButton(
+                            onClick = onShowEditDialog,
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.edit),
+                                contentDescription = null,
+                            )
+                        }
                     }
 
                     if (playlist.playlist.browseId != null) {

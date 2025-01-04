@@ -18,6 +18,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -95,6 +96,8 @@ fun PlaylistMenu(
         mutableIntStateOf(Download.STATE_STOPPED)
     }
 
+    val editable: Boolean = playlist.playlist.isEditable == true
+
     LaunchedEffect(songs) {
         if (songs.isEmpty()) return@LaunchedEffect
         downloadUtil.downloads.collect { downloads ->
@@ -113,8 +116,6 @@ fun PlaylistMenu(
                 }
         }
     }
-
-    val editable: Boolean = playlist.playlist.isEditable == true
 
     var showEditDialog by remember {
         mutableStateOf(false)
@@ -195,14 +196,14 @@ fun PlaylistMenu(
                 Text(
                     text = stringResource(R.string.delete_playlist_confirm, playlist.playlist.name),
                     style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.padding(horizontal = 18.dp),
+                    modifier = Modifier.padding(horizontal = 18.dp)
                 )
             },
             buttons = {
                 TextButton(
                     onClick = {
                         showDeletePlaylistDialog = false
-                    },
+                    }
                 ) {
                     Text(text = stringResource(android.R.string.cancel))
                 }
@@ -214,16 +215,37 @@ fun PlaylistMenu(
                         database.query {
                             delete(playlist.playlist)
                         }
-                    },
+
+                        coroutineScope.launch(Dispatchers.IO) {
+                            playlist.playlist.browseId?.let { YouTube.deletePlaylist(it) }
+                        }
+                    }
                 ) {
                     Text(text = stringResource(android.R.string.ok))
                 }
-                coroutineScope.launch(Dispatchers.IO) {
-                    playlist.playlist.browseId?.let { YouTube.deletePlaylist(it) }
-                }
-            },
+            }
         )
     }
+
+    var showChoosePlaylistDialog by rememberSaveable {
+        mutableStateOf(false)
+    }
+
+    AddToPlaylistDialog(
+        isVisible = showChoosePlaylistDialog,
+        onGetSong = {
+            coroutineScope.launch(Dispatchers.IO) {
+                // add songs to playlist and push to ytm
+                songs.let { playlist.playlist.browseId?.let { YouTube.addPlaylistToPlaylist(it, playlist.id) } }
+
+                playlist.playlist.browseId?.let { playlistId ->
+                    YouTube.addPlaylistToPlaylist(playlistId, playlist.id)
+                }
+            }
+            songs.map { it.id }
+        },
+        onDismiss = { showChoosePlaylistDialog = false }
+    )
 
     PlaylistListItem(
         playlist = playlist,
@@ -291,13 +313,20 @@ fun PlaylistMenu(
             playerConnection.addToQueue(songs.map { it.toMediaItem() })
         }
 
-        if (autoPlaylist != true) {
+        if (editable && autoPlaylist != true) {
             GridMenuItem(
                 icon = R.drawable.edit,
-                title = R.string.edit,
+                title = R.string.edit
             ) {
                 showEditDialog = true
             }
+        }
+
+        GridMenuItem(
+            icon = R.drawable.playlist_add,
+            title = R.string.add_to_playlist
+        ) {
+            showChoosePlaylistDialog = true
         }
 
         if (downloadPlaylist != true) {

@@ -89,7 +89,7 @@ fun AddToPlaylistDialog(
 
     if (isVisible) {
         ListDialog(
-            onDismiss = onDismiss
+            onDismiss = onDismiss,
         ) {
             item {
                 ListItem(
@@ -111,7 +111,7 @@ fun AddToPlaylistDialog(
             items(playlists) { playlist ->
                 PlaylistListItem(
                     playlist = playlist,
-                    modifier = Modifier.clickable {
+                        modifier = Modifier.clickable {
                         selectedPlaylist = playlist
                         coroutineScope.launch(Dispatchers.IO) {
                             if (songIds == null) {
@@ -147,13 +147,45 @@ fun AddToPlaylistDialog(
                         insert(
                             PlaylistEntity(
                                 name = playlistName,
-                                browseId = browseId,
+                                browseId = if (syncedPlaylist) browseId else null,
                                 bookmarkedAt = LocalDateTime.now(),
                                 isEditable = !syncedPlaylist,
                             )
                         )
                     }
                 }
+            },
+            extraContent = {
+                // synced/unsynced toggle
+                Row(
+                    modifier = Modifier.padding(vertical = 16.dp, horizontal = 40.dp)
+                ) {
+                    Column() {
+                        Text(
+                            text = "Sync Playlist",
+                            style = MaterialTheme.typography.titleLarge,
+                        )
+
+                        Text(
+                            text = "Note: This allows for syncing with YouTube Music. This is NOT changeable later.",
+                            style = MaterialTheme.typography.bodySmall,
+                            modifier = Modifier.fillMaxWidth(0.7f)
+                        )
+                    }
+                    Row(
+                        modifier = Modifier.weight(1f),
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        Switch(
+                            enabled = !noSyncing,
+                            checked = syncedPlaylist,
+                            onCheckedChange = {
+                                syncedPlaylist = !syncedPlaylist
+                            },
+                        )
+                    }
+                }
+
             }
         )
     }
