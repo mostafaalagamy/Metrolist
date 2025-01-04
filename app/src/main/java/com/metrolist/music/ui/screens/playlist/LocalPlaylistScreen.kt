@@ -208,6 +208,8 @@ fun LocalPlaylistScreen(
         mutableStateOf(Download.STATE_STOPPED)
     }
 
+    val editable: Boolean = playlist?.playlist?.isEditable == true
+
     LaunchedEffect(songs) {
         mutableSongs.apply {
             clear()
@@ -409,18 +411,20 @@ fun LocalPlaylistScreen(
                                   },
                                   modifier = Modifier.weight(1f),
                               )
-                              IconButton(
-                                  onClick = { locked = !locked },
-                                  modifier = Modifier.padding(horizontal = 6.dp),
-                              ) {
-                                  Icon(
-                                      painter = painterResource(if (locked) R.drawable.lock else R.drawable.lock_open),
-                                      contentDescription = null,
-                                  )
+                              if (editable) {
+                                  IconButton(
+                                      onClick = { locked = !locked },
+                                      modifier = Modifier.padding(horizontal = 6.dp),
+                                  ) {
+                                      Icon(
+                                          painter = painterResource(if (locked) R.drawable.lock else R.drawable.lock_open),
+                                          contentDescription = null,
+                                      )
+                                  }
                               }
-                          }
+                         }
                      }
-                 }
+                }
             }
 
             if (!selection) {
@@ -940,13 +944,15 @@ fun LocalPlaylistHeader(
                                 tint = if (liked) MaterialTheme.colorScheme.error else LocalContentColor.current
                         )
                     }
-                    IconButton(
-                        onClick = onShowEditDialog,
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.edit),
-                            contentDescription = null,
-                        )
+                    if (editable) {
+                        IconButton(
+                            onClick = onShowEditDialog,
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.edit),
+                                contentDescription = null,
+                            )
+                        }
                     }
 
                     if (playlist.playlist.browseId != null) {
