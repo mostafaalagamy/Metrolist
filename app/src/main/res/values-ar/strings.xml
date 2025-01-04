@@ -345,6 +345,7 @@
     <string name="login">تسجيل الدخول</string>
     <string name="logout">تسجيل الخروج</string>
     <string name="not_logged_in">لم يتم تسجيل الدخول</string>
+    <string name="ytm_sync">مزامنة تلقائية مع حساب YouTube Music الخاص بك</string>
     <string name="general">عام</string>
     <string name="content_language">لغة المحتوى الافتراضية</string>
     <string name="content_country">بلد المحتوى الافتراضي</string>
