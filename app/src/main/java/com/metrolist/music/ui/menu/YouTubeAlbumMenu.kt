@@ -27,6 +27,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -64,6 +65,8 @@ import com.metrolist.music.ui.component.ListItem
 import com.metrolist.music.ui.component.SongListItem
 import com.metrolist.music.ui.component.YouTubeListItem
 import com.metrolist.music.utils.reportException
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 
 @SuppressLint("MutableCollectionMutableState")
@@ -78,6 +81,7 @@ fun YouTubeAlbumMenu(
     val downloadUtil = LocalDownloadUtil.current
     val playerConnection = LocalPlayerConnection.current ?: return
     val album by database.albumWithSongs(albumItem.id).collectAsState(initial = null)
+    val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
         database.album(albumItem.id).collect { album ->
@@ -132,10 +136,17 @@ fun YouTubeAlbumMenu(
 
     AddToPlaylistDialog(
         isVisible = showChoosePlaylistDialog,
-        onGetSong = {
+        onGetSong = { playlist ->
+            coroutineScope.launch(Dispatchers.IO) {
+                playlist.playlist.browseId?.let { playlistId ->
+                    album?.album?.playlistId?.let { addPlaylistId ->
+                        YouTube.addPlaylistToPlaylist(playlistId, addPlaylistId)
+                    }
+                }
+            }
             album?.songs?.map { it.id }.orEmpty()
         },
-        onDismiss = { showChoosePlaylistDialog = false },
+        onDismiss = { showChoosePlaylistDialog = false }
     )
 
     if (showErrorPlaylistAddDialog) {

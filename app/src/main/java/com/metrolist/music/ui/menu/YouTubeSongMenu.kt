@@ -109,13 +109,11 @@ fun YouTubeSongMenu(
             database.transaction {
                 insert(song.toMediaMetadata())
             }
-
             coroutineScope.launch(Dispatchers.IO) {
                 playlist.playlist.browseId?.let { browseId ->
                     YouTube.addToPlaylist(browseId, song.id)
                 }
             }
-
             listOf(song.id)
         },
         onDismiss = { showChoosePlaylistDialog = false }
