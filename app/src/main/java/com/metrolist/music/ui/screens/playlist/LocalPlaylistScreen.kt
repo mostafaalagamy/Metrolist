@@ -937,7 +937,7 @@ fun LocalPlaylistHeader(
                     if (editable) {
                         IconButton(
                             onClick = {
-                               showDeletePlaylistDialog = true
+                               onClick = onshowDeletePlaylistDialog,
                             }
                         ) {
                             Icon(
