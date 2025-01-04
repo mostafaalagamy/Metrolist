@@ -820,12 +820,11 @@ fun LocalPlaylistScreen(
         
 @Composable
 fun LocalPlaylistHeader(
-    navController: navController,
-    viewModel: LocalPlaylistViewModel = hiltViewModel(),
     playlist: Playlist,
     songs: List<PlaylistSong>,
     onShowEditDialog: () -> Unit,
     onShowRemoveDownloadDialog: () -> Unit,
+    onshowDeletePlaylistDialog: () -> Unit,
     snackbarHostState: SnackbarHostState,
     modifier: Modifier,
 ) {
@@ -864,45 +863,6 @@ fun LocalPlaylistHeader(
                     Download.STATE_STOPPED
                 }
         }
-    }
-
-    var showDeletePlaylistDialog by remember {
-        mutableStateOf(false)
-    }
-    if (showDeletePlaylistDialog) {
-        DefaultDialog(
-            onDismiss = { showDeletePlaylistDialog = false },
-            content = {
-                Text(
-                    text = stringResource(R.string.delete_playlist_confirm, playlist?.playlist!!.name),
-                    style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.padding(horizontal = 18.dp)
-                )
-            },
-            buttons = {
-                TextButton(
-                    onClick = {
-                        showDeletePlaylistDialog = false
-                    }
-                ) {
-                    Text(text = stringResource(android.R.string.cancel))
-                }
-                TextButton(
-                    onClick = {
-                        showDeletePlaylistDialog = false
-                        database.query {
-                            playlist?.let { delete(it.playlist) }
-                        }
-                        viewModel.viewModelScope.launch(Dispatchers.IO) {
-                            playlist?.playlist?.browseId?.let { YouTube.deletePlaylist(it) }
-                        }
-                        navController.popBackStack()
-                    }
-                ) {
-                    Text(text = stringResource(android.R.string.ok))
-                }
-            }
-        )
     }
 
     Column(
