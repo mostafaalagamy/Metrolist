@@ -196,14 +196,14 @@ fun PlaylistMenu(
                 Text(
                     text = stringResource(R.string.delete_playlist_confirm, playlist.playlist.name),
                     style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.padding(horizontal = 18.dp),
+                    modifier = Modifier.padding(horizontal = 18.dp)
                 )
             },
             buttons = {
                 TextButton(
                     onClick = {
                         showDeletePlaylistDialog = false
-                    },
+                    }
                 ) {
                     Text(text = stringResource(android.R.string.cancel))
                 }
@@ -215,14 +215,15 @@ fun PlaylistMenu(
                         database.query {
                             delete(playlist.playlist)
                         }
-                    },
+
+                        coroutineScope.launch(Dispatchers.IO) {
+                            playlist.playlist.browseId?.let { YouTube.deletePlaylist(it) }
+                        }
+                    }
                 ) {
                     Text(text = stringResource(android.R.string.ok))
                 }
-                coroutineScope.launch(Dispatchers.IO) {
-                    playlist.playlist.browseId?.let { YouTube.deletePlaylist(it) }
-                }
-            },
+            }
         )
     }
 
