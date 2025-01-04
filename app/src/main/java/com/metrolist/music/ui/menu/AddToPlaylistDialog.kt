@@ -89,7 +89,7 @@ fun AddToPlaylistDialog(
 
     if (isVisible) {
         ListDialog(
-            onDismiss = onDismiss,
+            onDismiss = onDismiss
         ) {
             item {
                 ListItem(
@@ -128,14 +128,6 @@ fun AddToPlaylistDialog(
                     }
                 )
             }
-
-            item {
-                Text(
-                    text = "Note: Adding local songs to synced/remote playlists is unsupported. Any other combination is valid.",
-                    fontSize = TextUnit(12F, TextUnitType.Sp),
-                    modifier = Modifier.padding(horizontal = 20.dp)
-                )
-            }
         }
     }
 
@@ -158,43 +150,10 @@ fun AddToPlaylistDialog(
                                 browseId = browseId,
                                 bookmarkedAt = LocalDateTime.now(),
                                 isEditable = !syncedPlaylist,
-                                isLocal = !syncedPlaylist // && check that all songs are non-local
                             )
                         )
                     }
                 }
-            },
-            extraContent = {
-                // synced/unsynced toggle
-                Row(
-                    modifier = Modifier.padding(vertical = 16.dp, horizontal = 40.dp)
-                ) {
-                    Column() {
-                        Text(
-                            text = "Sync Playlist",
-                            style = MaterialTheme.typography.titleLarge,
-                        )
-
-                        Text(
-                            text = "Note: This allows for syncing with YouTube Music. This is NOT changeable later. You cannot add local songs to synced playlists.",
-                            style = MaterialTheme.typography.bodySmall,
-                            modifier = Modifier.fillMaxWidth(0.7f)
-                        )
-                    }
-                    Row(
-                        modifier = Modifier.weight(1f),
-                        horizontalArrangement = Arrangement.End
-                    ) {
-                        Switch(
-                            enabled = !noSyncing,
-                            checked = syncedPlaylist,
-                            onCheckedChange = {
-                                syncedPlaylist = !syncedPlaylist
-                            },
-                        )
-                    }
-                }
-
             }
         )
     }
