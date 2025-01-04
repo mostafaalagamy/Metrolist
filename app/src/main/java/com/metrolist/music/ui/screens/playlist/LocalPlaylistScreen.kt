@@ -820,6 +820,8 @@ fun LocalPlaylistScreen(
         
 @Composable
 fun LocalPlaylistHeader(
+    navController: NavController,
+    viewModel: LocalPlaylistViewModel = hiltViewModel(),
     playlist: Playlist,
     songs: List<PlaylistSong>,
     onShowEditDialog: () -> Unit,
