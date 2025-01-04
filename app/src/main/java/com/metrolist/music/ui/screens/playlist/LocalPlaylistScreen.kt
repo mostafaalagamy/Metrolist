@@ -676,7 +676,7 @@ fun LocalPlaylistScreen(
                             )
                         }
 
-                        if (locked) {
+                        if (locked || !editable) {
                             content()
                         } else {
                             SwipeToDismissBox(
