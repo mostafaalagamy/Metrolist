@@ -939,7 +939,7 @@ fun LocalPlaylistHeader(
                             }
                         ) {
                             Icon(
-                                 painter = painterResource(R.drawable.Delete),
+                                 painter = painterResource(R.drawable.delete),
                                  contentDescription = null,
                             )
                         }
@@ -951,6 +951,7 @@ fun LocalPlaylistHeader(
                                 }
                             }
                         ) {
+                            val liked = playlist?.playlist?.bookmarkedAt != null
                             Icon(
                                 painter = painterResource(if (liked) R.drawable.favorite else R.drawable.favorite_border),
                                 contentDescription = null,
