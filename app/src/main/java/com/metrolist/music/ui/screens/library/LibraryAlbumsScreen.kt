@@ -45,6 +45,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
+import com.metrolist.music.constants.SongFilter
 import com.metrolist.music.constants.AlbumFilter
 import com.metrolist.music.constants.AlbumFilterKey
 import com.metrolist.music.constants.AlbumSortDescendingKey
@@ -66,6 +67,8 @@ import com.metrolist.music.ui.menu.AlbumMenu
 import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
 import com.metrolist.music.viewmodels.LibraryAlbumsViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -86,7 +89,13 @@ fun LibraryAlbumsScreen(
     val (sortDescending, onSortDescendingChange) = rememberPreference(AlbumSortDescendingKey, true)
     val gridItemSize by rememberEnumPreference(GridItemsSizeKey, GridItemSize.BIG)
 
-    LaunchedEffect(Unit) { viewModel.sync() }
+    LaunchedEffect(filter) {
+        if (filter == AlbumFilter.LIKED) {
+            withContext(Dispatchers.IO) {
+                viewModel.sync()
+            }
+        }
+    }
     
     val albums by viewModel.allAlbums.collectAsState()
 
