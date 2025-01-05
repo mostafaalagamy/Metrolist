@@ -65,6 +65,8 @@ import com.metrolist.music.ui.menu.ArtistMenu
 import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
 import com.metrolist.music.viewmodels.LibraryArtistsViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -82,7 +84,13 @@ fun LibraryArtistsScreen(
     val (sortDescending, onSortDescendingChange) = rememberPreference(ArtistSortDescendingKey, true)
     val gridItemSize by rememberEnumPreference(GridItemsSizeKey, GridItemSize.BIG)
 
-    LaunchedEffect(Unit) { viewModel.sync() }
+    LaunchedEffect(filter) {
+        if (filter == ArtistFilter.LIKED) {
+            withContext(Dispatchers.IO) {
+                viewModel.sync()
+            }
+        }
+    }
 
     val artists by viewModel.allArtists.collectAsState()
     val coroutineScope = rememberCoroutineScope()
