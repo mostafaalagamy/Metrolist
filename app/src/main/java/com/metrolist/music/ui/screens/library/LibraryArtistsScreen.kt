@@ -85,7 +85,7 @@ fun LibraryArtistsScreen(
     val gridItemSize by rememberEnumPreference(GridItemsSizeKey, GridItemSize.BIG)
 
     LaunchedEffect(filter) {
-        if (filter == ArtistFilter.LIKED) {
+        if (filter == ArtistFilter.ARTISTS) {
             withContext(Dispatchers.IO) {
                 viewModel.sync()
             }
