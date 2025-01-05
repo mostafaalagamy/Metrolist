@@ -87,14 +87,6 @@ fun LibraryAlbumsScreen(
     val (sortType, onSortTypeChange) = rememberEnumPreference(AlbumSortTypeKey, AlbumSortType.CREATE_DATE)
     val (sortDescending, onSortDescendingChange) = rememberPreference(AlbumSortDescendingKey, true)
     val gridItemSize by rememberEnumPreference(GridItemsSizeKey, GridItemSize.BIG)
-
-    LaunchedEffect(filter) {
-        if (filter == AlbumFilter.ALBUMS) {
-            withContext(Dispatchers.IO) {
-                viewModel.sync()
-            }
-        }
-    }
     
     val albums by viewModel.allAlbums.collectAsState()
 
@@ -128,6 +120,14 @@ fun LibraryAlbumsScreen(
                     Icon(painter = painterResource(R.drawable.close), contentDescription = "")
                 },
             )
+        }
+    }
+
+    LaunchedEffect(filter) {
+        if (filter == AlbumFilter.ALBUMS) {
+            withContext(Dispatchers.IO) {
+                viewModel.sync()
+            }
         }
     }
 
