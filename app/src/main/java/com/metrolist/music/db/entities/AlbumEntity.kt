@@ -9,6 +9,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
+import org.apache.commons.lang3.RandomStringUtils
 import java.time.LocalDateTime
 
 @Immutable
@@ -26,15 +27,25 @@ data class AlbumEntity(
     val bookmarkedAt: LocalDateTime? = null,
     val likedDate: LocalDateTime? = null,
     val inLibrary: LocalDateTime? = null,
+    @ColumnInfo(name = "isLocal", defaultValue = false.toString())
+    val isLocal: Boolean = false
 ) {
+    val isLocalAlbum: Boolean
+        get() = id.startsWith("LA")
+
     fun localToggleLike() = copy(
         bookmarkedAt = if (bookmarkedAt != null) null else LocalDateTime.now()
     )
+
     fun toggleLike() = localToggleLike().also {
         CoroutineScope(Dispatchers.IO).launch {
             if (playlistId != null)
                 YouTube.likePlaylist(playlistId, bookmarkedAt == null)
             this.cancel()
         }
+    }
+
+    companion object {
+        fun generateAlbumId() = "LA" + RandomStringUtils.random(8, true, false)
     }
 }
