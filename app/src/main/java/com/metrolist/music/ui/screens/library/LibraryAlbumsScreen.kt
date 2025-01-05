@@ -87,25 +87,6 @@ fun LibraryAlbumsScreen(
     val (sortType, onSortTypeChange) = rememberEnumPreference(AlbumSortTypeKey, AlbumSortType.CREATE_DATE)
     val (sortDescending, onSortDescendingChange) = rememberPreference(AlbumSortDescendingKey, true)
     val gridItemSize by rememberEnumPreference(GridItemsSizeKey, GridItemSize.BIG)
-    
-    val albums by viewModel.allAlbums.collectAsState()
-
-    val coroutineScope = rememberCoroutineScope()
-
-    val lazyListState = rememberLazyListState()
-    val lazyGridState = rememberLazyGridState()
-    val backStackEntry by navController.currentBackStackEntryAsState()
-    val scrollToTop = backStackEntry?.savedStateHandle?.getStateFlow("scrollToTop", false)?.collectAsState()
-
-    LaunchedEffect(scrollToTop?.value) {
-        if (scrollToTop?.value == true) {
-            when (viewType) {
-                LibraryViewType.LIST -> lazyListState.animateScrollToItem(0)
-                LibraryViewType.GRID -> lazyGridState.animateScrollToItem(0)
-            }
-            backStackEntry?.savedStateHandle?.set("scrollToTop", false)
-        }
-    }
 
     val filterContent = @Composable {
         Row {
@@ -128,6 +109,25 @@ fun LibraryAlbumsScreen(
             withContext(Dispatchers.IO) {
                 viewModel.sync()
             }
+        }
+    }
+
+    val albums by viewModel.allAlbums.collectAsState()
+
+    val coroutineScope = rememberCoroutineScope()
+
+    val lazyListState = rememberLazyListState()
+    val lazyGridState = rememberLazyGridState()
+    val backStackEntry by navController.currentBackStackEntryAsState()
+    val scrollToTop = backStackEntry?.savedStateHandle?.getStateFlow("scrollToTop", false)?.collectAsState()
+
+    LaunchedEffect(scrollToTop?.value) {
+        if (scrollToTop?.value == true) {
+            when (viewType) {
+                LibraryViewType.LIST -> lazyListState.animateScrollToItem(0)
+                LibraryViewType.GRID -> lazyGridState.animateScrollToItem(0)
+            }
+            backStackEntry?.savedStateHandle?.set("scrollToTop", false)
         }
     }
 
