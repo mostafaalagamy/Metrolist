@@ -199,6 +199,16 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    override fun attachBaseContext(newBase: Context) {
+        val sharedPreferences = newBase.getSharedPreferences("app_settings", Context.MODE_PRIVATE)
+        val savedLanguage = sharedPreferences.getString("app_language", Locale.getDefault().language) ?: "en"
+        
+        val localeManager = LocaleManager(newBase)
+        localeManager.updateLocale(savedLanguage)
+        
+        super.attachBaseContext(newBase)
+    }
+
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -221,10 +231,6 @@ class MainActivity : ComponentActivity() {
                     }
                 }
 	}
-
-	    val sharedPreferences = getSharedPreferences("app_settings", Context.MODE_PRIVATE)
-            val savedLanguage = sharedPreferences.getString("app_language", Locale.getDefault().language) ?: "en"
-                updateLanguage(this, savedLanguage)
 
         intent?.let { handlevideoIdIntent(it) }
 
