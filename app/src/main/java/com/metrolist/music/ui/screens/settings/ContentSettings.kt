@@ -67,19 +67,59 @@ fun ContentSettings(
 ) {
     val context = LocalContext.current
     val localeManager = remember { LocaleManager(context) }
-    val (contentLanguage, onContentLanguageChange) = rememberPreference(key = ContentLanguageKey, defaultValue = "system")
-    val (contentCountry, onContentCountryChange) = rememberPreference(key = ContentCountryKey, defaultValue = "system")
-    val (hideExplicit, onHideExplicitChange) = rememberPreference(key = HideExplicitKey, defaultValue = false)
-    val (proxyEnabled, onProxyEnabledChange) = rememberPreference(key = ProxyEnabledKey, defaultValue = false)
-    val (proxyType, onProxyTypeChange) = rememberEnumPreference(key = ProxyTypeKey, defaultValue = Proxy.Type.HTTP)
-    val (proxyUrl, onProxyUrlChange) = rememberPreference(key = ProxyUrlKey, defaultValue = "host:port")
-    val (lengthTop, onLengthTopChange) = rememberPreference(key = TopSize, defaultValue = "50")
-    val (historyDuration, onHistoryDurationChange) = rememberPreference(key = HistoryDuration, defaultValue = 30f)
-    val (quickPicks, onQuickPicksChange) = rememberEnumPreference(key = QuickPicksKey, defaultValue = QuickPicks.QUICK_PICKS)
-    val (enableKugou, onEnableKugouChange) = rememberPreference(key = EnableKugouKey, defaultValue = true)
-    val (enableLrclib, onEnableLrclibChange) = rememberPreference(key = EnableLrcLibKey, defaultValue = true)
-    val (preferredProvider, onPreferredProviderChange) = rememberEnumPreference(key = PreferredLyricsProviderKey, defaultValue = PreferredLyricsProvider.LRCLIB)
-    val (selectedLanguage, setSelectedLanguage) = rememberPreference(key = "app_language", defaultValue = "en")
+    
+    val (contentLanguage, onContentLanguageChange) = rememberPreference(
+        key = PreferenceKeys.ContentLanguageKey,
+        defaultValue = "system"
+    )
+    val (contentCountry, onContentCountryChange) = rememberPreference(
+        key = PreferenceKeys.ContentCountryKey,
+        defaultValue = "system"
+    )
+    val (hideExplicit, onHideExplicitChange) = rememberPreference(
+        key = PreferenceKeys.HideExplicitKey,
+        defaultValue = false
+    )
+    val (proxyEnabled, onProxyEnabledChange) = rememberPreference(
+        key = PreferenceKeys.ProxyEnabledKey,
+        defaultValue = false
+    )
+    val (proxyType, onProxyTypeChange) = rememberEnumPreference(
+        key = PreferenceKeys.ProxyTypeKey,
+        defaultValue = Proxy.Type.HTTP
+    )
+    val (proxyUrl, onProxyUrlChange) = rememberPreference(
+        key = PreferenceKeys.ProxyUrlKey,
+        defaultValue = "host:port"
+    )
+    val (lengthTop, onLengthTopChange) = rememberPreference(
+        key = PreferenceKeys.TopSizeKey,
+        defaultValue = "50"
+    )
+    val (historyDuration, onHistoryDurationChange) = rememberPreference(
+        key = PreferenceKeys.HistoryDurationKey,
+        defaultValue = 30f
+    )
+    val (quickPicks, onQuickPicksChange) = rememberEnumPreference(
+        key = PreferenceKeys.QuickPicksKey,
+        defaultValue = QuickPicks.QUICK_PICKS
+    )
+    val (enableKugou, onEnableKugouChange) = rememberPreference(
+        key = PreferenceKeys.EnableKugouKey,
+        defaultValue = true
+    )
+    val (enableLrclib, onEnableLrclibChange) = rememberPreference(
+        key = PreferenceKeys.EnableLrcLibKey,
+        defaultValue = true
+    )
+    val (preferredProvider, onPreferredProviderChange) = rememberEnumPreference(
+        key = PreferenceKeys.PreferredLyricsProviderKey,
+        defaultValue = PreferredLyricsProvider.LRCLIB
+    )
+    val (selectedLanguage, setSelectedLanguage) = rememberPreference(
+        key = PreferenceKeys.AppLanguageKey,
+        defaultValue = "en"
+    )
 
     Column(
         Modifier
