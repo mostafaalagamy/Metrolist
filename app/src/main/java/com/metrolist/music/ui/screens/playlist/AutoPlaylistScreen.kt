@@ -88,6 +88,7 @@ import com.metrolist.music.constants.SongSortDescendingKey
 import com.metrolist.music.constants.SongSortType
 import com.metrolist.music.constants.SongSortTypeKey
 import com.metrolist.music.constants.ThumbnailCornerRadius
+import com.metrolist.music.constants.YtmSyncKey
 import com.metrolist.music.db.entities.Song
 import com.metrolist.music.extensions.toMediaItem
 import com.metrolist.music.extensions.togglePlayPause
@@ -131,6 +132,7 @@ fun AutoPlaylistScreen(
         remember {
             mutableStateListOf<Song>()
         }
+
     var searchQuery by remember {
         mutableStateOf(TextFieldValue(""))
     }
@@ -138,11 +140,14 @@ fun AutoPlaylistScreen(
     var isSearching by remember { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
     val focusRequester = remember { FocusRequester() }
+
     LaunchedEffect(isSearching) {
         if (isSearching) {
             focusRequester.requestFocus()
         }
     }
+
+    val (ytmSync) = rememberPreference(YtmSyncKey, true)
     
     val likeLength =
         remember(songs) {
@@ -160,6 +165,14 @@ fun AutoPlaylistScreen(
     val downloadUtil = LocalDownloadUtil.current
     var downloadState by remember {
         mutableIntStateOf(Download.STATE_STOPPED)
+    }
+
+    LaunchedEffect(Unit) {
+        if (ytmSync) {
+            withContext(Dispatchers.IO) {
+                if (playlistType == PlaylistType.LIKE) viewModel.syncLikedSongs()
+            }
+        }
     }
 
     LaunchedEffect(songs) {
