@@ -57,6 +57,7 @@ import com.metrolist.music.constants.GridItemSize
 import com.metrolist.music.constants.GridItemsSizeKey
 import com.metrolist.music.constants.GridThumbnailHeight
 import com.metrolist.music.constants.LibraryViewType
+import com.metrolist.music.constants.YtmSyncKey
 import com.metrolist.music.ui.component.AlbumGridItem
 import com.metrolist.music.ui.component.AlbumListItem
 import com.metrolist.music.ui.component.ChipsRow
@@ -88,6 +89,8 @@ fun LibraryAlbumsScreen(
     val (sortDescending, onSortDescendingChange) = rememberPreference(AlbumSortDescendingKey, true)
     val gridItemSize by rememberEnumPreference(GridItemsSizeKey, GridItemSize.BIG)
 
+    val (ytmSync) = rememberPreference(YtmSyncKey, true)
+
     val filterContent = @Composable {
         Row {
             Spacer(Modifier.width(12.dp))
@@ -105,7 +108,7 @@ fun LibraryAlbumsScreen(
     }
 
     LaunchedEffect(filter) {
-        if (filter == AlbumFilter.ALBUMS) {
+        if (ytmSync && filter == AlbumFilter.ALBUMS) {
             withContext(Dispatchers.IO) {
                 viewModel.sync()
             }
