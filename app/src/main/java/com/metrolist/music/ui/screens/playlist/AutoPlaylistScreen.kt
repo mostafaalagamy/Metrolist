@@ -110,6 +110,8 @@ import com.metrolist.music.utils.makeTimeString
 import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
 import com.metrolist.music.viewmodels.AutoPlaylistViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -153,6 +155,13 @@ fun AutoPlaylistScreen(
         remember(songs) {
             songs?.fastSumBy { it.song.duration } ?: 0
         }
+
+    val playlistId = viewModel.playlist
+    val playlistType = when (playlistId) {
+        "liked" -> PlaylistType.LIKE
+        "downloaded" -> PlaylistType.DOWNLOAD
+        else -> PlaylistType.OTHER
+    }
 
     val wrappedSongs = songs?.map { item -> ItemWrapper(item) }?.toMutableList()
     var selection by remember {
@@ -641,4 +650,8 @@ fun AutoPlaylistScreen(
             }
         )
     }
+}
+
+enum class PlaylistType {
+    LIKE, DOWNLOAD, OTHER
 }
