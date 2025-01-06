@@ -57,6 +57,7 @@ import com.metrolist.music.constants.GridItemSize
 import com.metrolist.music.constants.GridItemsSizeKey
 import com.metrolist.music.constants.GridThumbnailHeight
 import com.metrolist.music.constants.LibraryViewType
+import com.metrolist.music.constants.YtmSyncKey
 import com.metrolist.music.ui.component.AlbumGridItem
 import com.metrolist.music.ui.component.AlbumListItem
 import com.metrolist.music.ui.component.ChipsRow
@@ -66,6 +67,8 @@ import com.metrolist.music.ui.menu.AlbumMenu
 import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
 import com.metrolist.music.viewmodels.LibraryAlbumsViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -86,8 +89,32 @@ fun LibraryAlbumsScreen(
     val (sortDescending, onSortDescendingChange) = rememberPreference(AlbumSortDescendingKey, true)
     val gridItemSize by rememberEnumPreference(GridItemsSizeKey, GridItemSize.BIG)
 
-    LaunchedEffect(Unit) { viewModel.sync() }
-    
+    val (ytmSync) = rememberPreference(YtmSyncKey, true)
+
+    val filterContent = @Composable {
+        Row {
+            Spacer(Modifier.width(12.dp))
+            FilterChip(
+                label = { Text(stringResource(R.string.albums)) },
+                selected = true,
+                colors = FilterChipDefaults.filterChipColors(containerColor = MaterialTheme.colorScheme.surface),
+                onClick = onDeselect,
+                shape = RoundedCornerShape(16.dp),
+                leadingIcon = {
+                    Icon(painter = painterResource(R.drawable.close), contentDescription = "")
+                },
+            )
+        }
+    }
+
+    LaunchedEffect(filter) {
+        if (ytmSync && filter == AlbumFilter.ALBUMS) {
+            withContext(Dispatchers.IO) {
+                viewModel.sync()
+            }
+        }
+    }
+
     val albums by viewModel.allAlbums.collectAsState()
 
     val coroutineScope = rememberCoroutineScope()
@@ -104,22 +131,6 @@ fun LibraryAlbumsScreen(
                 LibraryViewType.GRID -> lazyGridState.animateScrollToItem(0)
             }
             backStackEntry?.savedStateHandle?.set("scrollToTop", false)
-        }
-    }
-
-    val filterContent = @Composable {
-        Row {
-            Spacer(Modifier.width(12.dp))
-            FilterChip(
-                label = { Text(stringResource(R.string.albums)) },
-                selected = true,
-                colors = FilterChipDefaults.filterChipColors(containerColor = MaterialTheme.colorScheme.surface),
-                onClick = onDeselect,
-                shape = RoundedCornerShape(16.dp),
-                leadingIcon = {
-                    Icon(painter = painterResource(R.drawable.close), contentDescription = "")
-                },
-            )
         }
     }
 

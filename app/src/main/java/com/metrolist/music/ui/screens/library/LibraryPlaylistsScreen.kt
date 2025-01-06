@@ -60,6 +60,7 @@ import com.metrolist.music.constants.PlaylistSortDescendingKey
 import com.metrolist.music.constants.PlaylistSortType
 import com.metrolist.music.constants.PlaylistSortTypeKey
 import com.metrolist.music.constants.PlaylistViewTypeKey
+import com.metrolist.music.constants.YtmSyncKey
 import com.metrolist.music.db.entities.Playlist
 import com.metrolist.music.db.entities.PlaylistEntity
 import com.metrolist.music.ui.component.HideOnScrollFAB
@@ -95,7 +96,9 @@ fun LibraryPlaylistsScreen(
     val (sortDescending, onSortDescendingChange) = rememberPreference(PlaylistSortDescendingKey, true)
     val gridItemSize by rememberEnumPreference(GridItemsSizeKey, GridItemSize.BIG)
 
-    LaunchedEffect(Unit) { viewModel.sync() }
+    val (ytmSync) = rememberPreference(YtmSyncKey, true)
+    
+    LaunchedEffect(Unit){ if (ytmSync){ viewModel.sync() }}
     
     val playlists by viewModel.allPlaylists.collectAsState()
 
