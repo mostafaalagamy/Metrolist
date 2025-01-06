@@ -10,7 +10,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.GlobalScope
 import java.time.LocalDateTime
 
 @Immutable
