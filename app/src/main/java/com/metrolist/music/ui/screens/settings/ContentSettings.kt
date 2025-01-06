@@ -280,7 +280,7 @@ fun ContentSettings(
     )
 }
 
-// LocaleManager class implementation
+// LocaleManager
 class LocaleManager(private val context: Context) {
     companion object {
         private val COMPLEX_SCRIPT_LANGUAGES = setOf(
@@ -288,23 +288,12 @@ class LocaleManager(private val context: Context) {
             "si", "th", "lo", "my", "ka", "am", "km",
             "zh-CN", "zh-TW", "zh-HK", "ja", "ko"
         )
-
-        private val FONT_SCALE_FACTORS = mapOf(
-            "ta" to 1.1f,
-            "ml" to 1.1f,
-            "my" to 1.2f,
-            "km" to 1.2f
-        )
     }
 
     fun updateLocale(languageCode: String): Boolean {
         try {
             val locale = createLocaleFromCode(languageCode)
             val config = context.resources.configuration
-            
-            FONT_SCALE_FACTORS[languageCode]?.let { scale ->
-                config.fontScale = scale
-            }
 
             Locale.setDefault(locale)
             
