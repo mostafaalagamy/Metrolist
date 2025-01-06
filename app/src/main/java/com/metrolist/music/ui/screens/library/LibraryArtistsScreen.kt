@@ -56,6 +56,7 @@ import com.metrolist.music.constants.GridItemSize
 import com.metrolist.music.constants.GridItemsSizeKey
 import com.metrolist.music.constants.GridThumbnailHeight
 import com.metrolist.music.constants.LibraryViewType
+import com.metrolist.music.constants.YtmSyncKey
 import com.metrolist.music.ui.component.ArtistGridItem
 import com.metrolist.music.ui.component.ArtistListItem
 import com.metrolist.music.ui.component.ChipsRow
@@ -84,8 +85,10 @@ fun LibraryArtistsScreen(
     val (sortDescending, onSortDescendingChange) = rememberPreference(ArtistSortDescendingKey, true)
     val gridItemSize by rememberEnumPreference(GridItemsSizeKey, GridItemSize.BIG)
 
+    val (ytmSync) = rememberPreference(YtmSyncKey, true)
+
     LaunchedEffect(filter) {
-        if (filter == ArtistFilter.ARTISTS) {
+        if (ytmSync && filter == ArtistFilter.ARTISTS) {
             withContext(Dispatchers.IO) {
                 viewModel.sync()
             }
