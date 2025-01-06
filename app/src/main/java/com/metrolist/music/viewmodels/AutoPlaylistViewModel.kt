@@ -13,6 +13,7 @@ import com.metrolist.music.extensions.reversed
 import com.metrolist.music.extensions.toEnum
 import com.metrolist.music.playback.DownloadUtil
 import com.metrolist.music.utils.dataStore
+import com.metrolist.music.utils.SyncUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -25,6 +26,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import java.text.Collator
 import java.time.Duration
 import java.time.LocalDateTime
@@ -40,6 +42,7 @@ class AutoPlaylistViewModel
         database: MusicDatabase,
         downloadUtil: DownloadUtil,
         savedStateHandle: SavedStateHandle,
+        private val syncUtils: SyncUtils,
     ) : ViewModel() {
         val playlist = savedStateHandle.get<String>("playlist")!!
 
@@ -81,4 +84,7 @@ class AutoPlaylistViewModel
                     else -> MutableStateFlow(emptyList())
                 }
             }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
+            fun syncLikedSongs() {
+                viewModelScope.launch(Dispatchers.IO) { syncUtils.syncLikedSongs() }
+            }
     }
