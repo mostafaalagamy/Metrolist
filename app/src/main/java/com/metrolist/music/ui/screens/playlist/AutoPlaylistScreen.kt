@@ -88,6 +88,7 @@ import com.metrolist.music.constants.SongSortDescendingKey
 import com.metrolist.music.constants.SongSortType
 import com.metrolist.music.constants.SongSortTypeKey
 import com.metrolist.music.constants.ThumbnailCornerRadius
+import com.metrolist.music.constants.YtmSyncKey
 import com.metrolist.music.db.entities.Song
 import com.metrolist.music.extensions.toMediaItem
 import com.metrolist.music.extensions.togglePlayPause
@@ -109,6 +110,8 @@ import com.metrolist.music.utils.makeTimeString
 import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
 import com.metrolist.music.viewmodels.AutoPlaylistViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -131,6 +134,7 @@ fun AutoPlaylistScreen(
         remember {
             mutableStateListOf<Song>()
         }
+
     var searchQuery by remember {
         mutableStateOf(TextFieldValue(""))
     }
@@ -138,16 +142,26 @@ fun AutoPlaylistScreen(
     var isSearching by remember { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
     val focusRequester = remember { FocusRequester() }
+
     LaunchedEffect(isSearching) {
         if (isSearching) {
             focusRequester.requestFocus()
         }
     }
+
+    val (ytmSync) = rememberPreference(YtmSyncKey, true)
     
     val likeLength =
         remember(songs) {
             songs?.fastSumBy { it.song.duration } ?: 0
         }
+
+    val playlistId = viewModel.playlist
+    val playlistType = when (playlistId) {
+        "liked" -> PlaylistType.LIKE
+        "downloaded" -> PlaylistType.DOWNLOAD
+        else -> PlaylistType.OTHER
+    }
 
     val wrappedSongs = songs?.map { item -> ItemWrapper(item) }?.toMutableList()
     var selection by remember {
@@ -160,6 +174,14 @@ fun AutoPlaylistScreen(
     val downloadUtil = LocalDownloadUtil.current
     var downloadState by remember {
         mutableIntStateOf(Download.STATE_STOPPED)
+    }
+
+    LaunchedEffect(Unit) {
+        if (ytmSync) {
+            withContext(Dispatchers.IO) {
+                if (playlistType == PlaylistType.LIKE) viewModel.syncLikedSongs()
+            }
+        }
     }
 
     LaunchedEffect(songs) {
@@ -628,4 +650,8 @@ fun AutoPlaylistScreen(
             }
         )
     }
+}
+
+enum class PlaylistType {
+    LIKE, DOWNLOAD, OTHER
 }

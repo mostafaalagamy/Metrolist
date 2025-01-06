@@ -56,6 +56,7 @@ import com.metrolist.music.constants.GridItemSize
 import com.metrolist.music.constants.GridItemsSizeKey
 import com.metrolist.music.constants.GridThumbnailHeight
 import com.metrolist.music.constants.LibraryViewType
+import com.metrolist.music.constants.YtmSyncKey
 import com.metrolist.music.ui.component.ArtistGridItem
 import com.metrolist.music.ui.component.ArtistListItem
 import com.metrolist.music.ui.component.ChipsRow
@@ -65,6 +66,8 @@ import com.metrolist.music.ui.menu.ArtistMenu
 import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
 import com.metrolist.music.viewmodels.LibraryArtistsViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -82,7 +85,15 @@ fun LibraryArtistsScreen(
     val (sortDescending, onSortDescendingChange) = rememberPreference(ArtistSortDescendingKey, true)
     val gridItemSize by rememberEnumPreference(GridItemsSizeKey, GridItemSize.BIG)
 
-    LaunchedEffect(Unit) { viewModel.sync() }
+    val (ytmSync) = rememberPreference(YtmSyncKey, true)
+
+    LaunchedEffect(filter) {
+        if (ytmSync && filter == ArtistFilter.ARTISTS) {
+            withContext(Dispatchers.IO) {
+                viewModel.sync()
+            }
+        }
+    }
 
     val artists by viewModel.allArtists.collectAsState()
     val coroutineScope = rememberCoroutineScope()
