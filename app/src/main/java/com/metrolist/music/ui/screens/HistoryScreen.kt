@@ -272,32 +272,35 @@ Box(Modifier.fillMaxSize()) {
                                 )
                             }
                         },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .combinedClickable {
-                                if (event.song.id == mediaMetadata?.id) {
-                                    playerConnection.player.togglePlayPause()
-                                } else {
-                                    playerConnection.playQueue(
-                                        YouTubeQueue(
-                                            endpoint = WatchEndpoint(videoId = event.song.id),
-                                            preloadItem = event.song.toMediaMetadata(),
-                                        ),
-                                    )
-                                }
-                            },
-                            onLongClick = {
-                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                menuState.show {
-                                    SongMenu(
-                                        originalSong = event.song,
-                                        event = event.event,
-                                        navController = navController,
-                                        onDismiss = menuState::dismiss,
-                                    )
-                                }
-                            },
-                    ).animateItemPlacement(),
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .combinedClickable(
+                                    onClick = {
+                                        if (song.id == mediaMetadata?.id) {
+                                            playerConnection.player.togglePlayPause()
+                                        } else {
+                                            playerConnection.playQueue(
+                                                ListQueue(
+                                                    title = albumWithSongsLocal.album.title,
+                                                    items = albumWithSongsLocal.songs.map { it.toMediaItem() },
+                                                    startIndex = index,
+                                                    playlistId = albumWithSongsLocal.album.playlistId
+                                                )
+                                            )
+                                        }
+                                    },
+                                    onLongClick = {
+                                        menuState.show {
+                                            SongMenu(
+                                                originalSong = song,
+                                                navController = navController,
+                                                onDismiss = menuState::dismiss
+                                            )
+                                        }
+                                    },
+                               )
+                .animateItemPlacement(),
                 }
             }
         }
