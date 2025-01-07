@@ -57,6 +57,7 @@ import com.metrolist.innertube.pages.SearchSummary
 import com.metrolist.innertube.pages.SearchSummaryPage
 import com.metrolist.innertube.pages.LibraryContinuationPage
 import com.metrolist.innertube.pages.LibraryPage
+import com.metrolist.innertube.pages.HistoryPage
 import io.ktor.client.call.body
 import io.ktor.client.statement.bodyAsText
 import kotlinx.serialization.json.Json
@@ -1007,6 +1008,22 @@ object YouTube {
 
     suspend fun createPlaylist(title: String) = runCatching {
         innerTube.createPlaylist(WEB_REMIX, title).body<CreatePlaylistResponse>().playlistId
+    }
+
+    suspend fun musicHistory() = runCatching {
+        val response = innerTube.browse(
+            client = WEB_REMIX,
+            browseId = "FEmusic_history",
+            setLogin = true
+        ).body<BrowseResponse>()
+        HistoryPage(
+            sections = response.contents?.singleColumnBrowseResultsRenderer?.tabs?.firstOrNull()
+                ?.tabRenderer?.content?.sectionListRenderer?.contents
+                ?.mapNotNull { it.musicShelfRenderer?.let { musicShelfRenderer ->
+                    HistoryPage.fromMusicShelfRenderer(musicShelfRenderer)
+                }
+            }
+        )
     }
 
     suspend fun likeVideo(videoId: String, like: Boolean) = runCatching {
