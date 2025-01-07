@@ -43,7 +43,7 @@ class SyncUtils @Inject constructor(
     suspend fun syncLikedAlbums() {
         YouTube.libraryAlbums().completedLibraryPage()?.onSuccess { page ->
             val albums = page.items.filterIsInstance<AlbumItem>()
-            database.albumsByNameAsc().first()
+            database.albumsLikedByNameAsc().first()
                 .filterNot { it.id in albums.map(AlbumItem::id) }
                 .forEach { database.update(it.album.localToggleLike()) }
             albums.forEach { album ->
@@ -93,6 +93,10 @@ class SyncUtils @Inject constructor(
         YouTube.likedPlaylists().completedLibraryPage()?.onSuccess { page ->
             val playlistList = page.items.filterIsInstance<PlaylistItem>()
             val dbPlaylists = database.playlistsByNameAsc().first()
+
+            dbPlaylists.filterNot { it.playlist.browseId in playlistList.map(PlaylistItem::id) }
+                .forEach { database.update(it.playlist.localToggleLike()) }
+
             playlistList.drop(1).forEach { playlist ->
                 var playlistEntity = dbPlaylists.find { playlist.id == it.playlist.browseId }?.playlist
                 if (playlistEntity == null) {
