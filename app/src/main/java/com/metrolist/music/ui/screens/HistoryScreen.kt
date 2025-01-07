@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.union
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.KeyboardActions
@@ -42,6 +43,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
@@ -71,6 +73,7 @@ import com.metrolist.music.models.toMediaMetadata
 import com.metrolist.music.playback.queues.ListQueue
 import com.metrolist.music.playback.queues.YouTubeQueue
 import com.metrolist.music.ui.component.HideOnScrollFAB
+import com.metrolist.music.ui.component.ChipsRow
 import com.metrolist.music.ui.component.IconButton
 import com.metrolist.music.ui.component.LocalMenuState
 import com.metrolist.music.ui.component.NavigationTitle
@@ -122,6 +125,16 @@ fun HistoryScreen(
         "SAPISID" in parseCookieString(innerTubeCookie)
     }
 
+    fun dateAgoToString(dateAgo: DateAgo): String {
+        return when (dateAgo) {
+            DateAgo.Today -> context.getString(R.string.today)
+            DateAgo.Yesterday -> context.getString(R.string.yesterday)
+            DateAgo.ThisWeek -> context.getString(R.string.this_week)
+            DateAgo.LastWeek -> context.getString(R.string.last_week)
+            is DateAgo.Other -> dateAgo.date.format(DateTimeFormatter.ofPattern("yyyy/MM"))
+        }
+    }
+
     val filteredEvents = remember(events, query) {
         if (query.text.isEmpty()) {
             events
@@ -148,21 +161,31 @@ Box(Modifier.fillMaxSize()) {
         contentPadding = LocalPlayerAwareWindowInsets.current.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom).asPaddingValues(),
         modifier = Modifier.windowInsetsPadding(LocalPlayerAwareWindowInsets.current.only(WindowInsetsSides.Top))
     ) {
-        if (isLoggedIn) {
+        item {
+            ChipsRow(
+                chips = if (isLoggedIn) listOf(
+                    HistorySource.LOCAL to stringResource(R.string.local_history),
+                    HistorySource.REMOTE to stringResource(R.string.remote_history),
+                ) else {
+                    listOf(HistorySource.LOCAL to stringResource(R.string.local_history))
+                },
+                currentValue = historySource,
+                onValueUpdate = { viewModel.historySource.value = it }
+            )
+        }
+        if (historySource == HistorySource.REMOTE && isLoggedIn) {
             historyPage?.sections?.forEach { section ->
                 stickyHeader {
                     NavigationTitle(
-                        title = section.title,
+                        title = dateAgoToString(dateAgo),
                         modifier = Modifier
                             .fillMaxWidth()
                             .background(MaterialTheme.colorScheme.background)
                     )
                 }
 
-                items(
-                    items = section.songs,
-                    key = { it.id }
-                ) { song ->
+                itemsIndexed(
+                    ) { index, event ->
                     YouTubeListItem(
                         item = song,
                         isActive = song.id == mediaMetadata?.id,
@@ -192,9 +215,10 @@ Box(Modifier.fillMaxSize()) {
                                     playerConnection.player.togglePlayPause()
                                 } else {
                                     playerConnection.playQueue(
-                                        YouTubeQueue(
-                                            endpoint = WatchEndpoint(videoId = song.id),
-                                            preloadItem = song.toMediaMetadata()
+                                        ListQueue(
+                                            title = dateAgoToString(dateAgo),
+                                            items = events.map { it.song.toMediaMetadata() },
+                                            startIndex = index
                                         )
                                     )
                                 }
