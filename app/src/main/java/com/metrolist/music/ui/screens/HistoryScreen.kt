@@ -173,19 +173,22 @@ Box(Modifier.fillMaxSize()) {
                 onValueUpdate = { viewModel.historySource.value = it }
             )
         }
+
         if (historySource == HistorySource.REMOTE && isLoggedIn) {
             historyPage?.sections?.forEach { section ->
                 stickyHeader {
                     NavigationTitle(
-                        title = dateAgoToString(dateAgo),
+                        title = section.title,
                         modifier = Modifier
                             .fillMaxWidth()
                             .background(MaterialTheme.colorScheme.background)
                     )
                 }
 
-                itemsIndexed(
-                    ) { index, event ->
+                items(
+                    items = section.songs,
+                    key = { it.id }
+                ) { song ->
                     YouTubeListItem(
                         item = song,
                         isActive = song.id == mediaMetadata?.id,
@@ -210,19 +213,36 @@ Box(Modifier.fillMaxSize()) {
                         },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .combinedClickable {
-                                if (song.id == mediaMetadata?.id) {
-                                    playerConnection.player.togglePlayPause()
-                                } else {
-                                    playerConnection.playQueue(
-                                        ListQueue(
-                                            title = dateAgoToString(dateAgo),
-                                            items = events.map { it.song.toMediaMetadata() },
-                                            startIndex = index
+                            .combinedClickable(
+                                onClick = {
+                                    if (song.id == mediaMetadata?.id) {
+                                        playerConnection.player.togglePlayPause()
+                                    } else if (song.id.startsWith("LA")) {
+                                        playerConnection.playQueue(
+                                            ListQueue(
+                                                title = "History",
+                                                items =  section.songs.map { it.toMediaMetadata() }
+                                            )
                                         )
-                                    )
+                                    } else {
+                                        playerConnection.playQueue(
+                                            YouTubeQueue(
+                                                endpoint = WatchEndpoint(videoId = song.id),
+                                                preloadItem = song.toMediaMetadata()
+                                            )
+                                        )
+                                    }
+                                },
+                                onLongClick = {
+                                    menuState.show {
+                                        YouTubeSongMenu(
+                                            song = song,
+                                            navController = navController,
+                                            onDismiss = menuState::dismiss
+                                        )
+                                    }
                                 }
-                            }
+                            )
                             .animateItemPlacement()
                     )
                 }
@@ -231,23 +251,16 @@ Box(Modifier.fillMaxSize()) {
             events.forEach { (dateAgo, events) ->
                 stickyHeader {
                     NavigationTitle(
-                        title = when (dateAgo) {
-                            DateAgo.Today -> stringResource(R.string.today)
-                            DateAgo.Yesterday -> stringResource(R.string.yesterday)
-                            DateAgo.ThisWeek -> stringResource(R.string.this_week)
-                            DateAgo.LastWeek -> stringResource(R.string.last_week)
-                            is DateAgo.Other -> dateAgo.date.format(DateTimeFormatter.ofPattern("yyyy/MM"))
-                        },
+                        title = dateAgoToString(dateAgo),
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(MaterialTheme.colorScheme.background)
+                            .background(MaterialTheme.colorScheme.surface)
                     )
                 }
 
-                items(
+                itemsIndexed(
                     items = events,
-                    key = { it.event.id }
-                ) { event ->
+                ) { index, event ->
                     SongListItem(
                         song = event.song,
                         isActive = event.song.id == mediaMetadata?.id,
@@ -272,35 +285,35 @@ Box(Modifier.fillMaxSize()) {
                                 )
                             }
                         },
-                        modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .combinedClickable(
-                                    onClick = {
-                                        if (song.id == mediaMetadata?.id) {
-                                            playerConnection.player.togglePlayPause()
-                                        } else {
-                                            playerConnection.playQueue(
-                                                ListQueue(
-                                                    title = albumWithSongsLocal.album.title,
-                                                    items = albumWithSongsLocal.songs.map { it.toMediaItem() },
-                                                    startIndex = index,
-                                                    playlistId = albumWithSongsLocal.album.playlistId
-                                                )
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .combinedClickable(
+                                onClick = {
+                                    if (event.song.id == mediaMetadata?.id) {
+                                        playerConnection.player.togglePlayPause()
+                                    } else {
+                                        playerConnection.playQueue(
+                                            ListQueue(
+                                                title = dateAgoToString(dateAgo),
+                                                items = events.map { it.song.toMediaMetadata() },
+                                                startIndex = index
                                             )
-                                        }
-                                    },
-                                    onLongClick = {
-                                        menuState.show {
-                                            SongMenu(
-                                                originalSong = song,
-                                                navController = navController,
-                                                onDismiss = menuState::dismiss
-                                            )
-                                        }
-                                    },
-                               )
-                .animateItemPlacement(),
+                                        )
+                                    }
+                                },
+                                onLongClick = {
+                                    menuState.show {
+                                        SongMenu(
+                                            originalSong = event.song,
+                                            event = event.event,
+                                            navController = navController,
+                                            onDismiss = menuState::dismiss
+                                        )
+                                    }
+                                }
+                            )
+                            .animateItemPlacement()
+                    )
                 }
             }
         }
