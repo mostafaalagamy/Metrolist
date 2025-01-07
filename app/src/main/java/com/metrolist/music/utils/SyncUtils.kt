@@ -102,7 +102,7 @@ class SyncUtils @Inject constructor(
             playlistList.onEach { playlist ->
                 var playlistEntity = dbPlaylists.find { playlist.id == it.playlist.browseId }?.playlist
                 if (playlistEntity == null) {
-                    playlistEntity = PlaylistEntity(name = playlist.title, browseId = playlist.id, bookmarkedAt = LocalDateTime.now())
+                    playlistEntity = PlaylistEntity(name = playlist.title, browseId = playlist.id)
                     database.insert(playlistEntity)
                 } else database.update(playlistEntity, playlist)
             }.forEach { playlist ->
