@@ -220,13 +220,6 @@ Box(Modifier.fillMaxSize()) {
                                 onClick = {
                                     if (song.id == mediaMetadata?.id) {
                                         playerConnection.player.togglePlayPause()
-                                    } else if (song.id.startsWith("LA")) {
-                                        playerConnection.playQueue(
-                                            ListQueue(
-                                                title = "History",
-                                                items =  section.songs.map { it.toMediaMetadata() }
-                                            )
-                                        )
                                     } else {
                                         playerConnection.playQueue(
                                             YouTubeQueue(
@@ -295,10 +288,9 @@ Box(Modifier.fillMaxSize()) {
                                         playerConnection.player.togglePlayPause()
                                     } else {
                                         playerConnection.playQueue(
-                                            ListQueue(
-                                                title = dateAgoToString(dateAgo),
-                                                items = events.map { it.song.toMediaMetadata() },
-                                                startIndex = index
+                                            YouTubeQueue(
+                                                endpoint = WatchEndpoint(videoId = song.id),
+                                                preloadItem = song.toMediaMetadata()
                                             )
                                         )
                                     }
