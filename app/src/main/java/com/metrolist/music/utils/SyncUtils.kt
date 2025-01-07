@@ -51,7 +51,7 @@ class SyncUtils @Inject constructor(
                 YouTube.album(album.browseId).onSuccess { albumPage ->
                     when (dbAlbum) {
                         null -> {
-                        database.insert(album)
+                        database.insert(albumPage)
                         database.album(album.id).firstOrNull()?.let {
                             database.update(it.album.localToggleLike())
                         }
