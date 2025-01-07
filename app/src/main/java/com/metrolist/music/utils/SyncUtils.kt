@@ -42,7 +42,7 @@ class SyncUtils @Inject constructor(
     }
     suspend fun syncLikedAlbums() {
         YouTube.libraryAlbums().completedLibraryPage()?.onSuccess { page ->
-            val albums = page.items.filterIsInstance<AlbumItem>()
+            val albums = page.items.filterIsInstance<AlbumItem>().reversed()
             database.albumsLikedByNameAsc().first()
                 .filterNot { it.id in albums.map(AlbumItem::id) }
                 .forEach { database.update(it.album.localToggleLike()) }
@@ -51,11 +51,13 @@ class SyncUtils @Inject constructor(
                 YouTube.album(album.browseId).onSuccess { albumPage ->
                     when (dbAlbum) {
                         null -> {
-                            database.insert(albumPage)
-                            database.album(album.id).firstOrNull()?.let { database.update(it.album) }
+                        database.insert(album)
+                        database.album(album.id).firstOrNull()?.let {
+                            database.update(it.album.localToggleLike())
                         }
-                        else -> if (dbAlbum.album.bookmarkedAt == null)
-                            database.update(dbAlbum.album.localToggleLike())
+                    }
+                    else -> if (dbAlbum.album.bookmarkedAt == null)
+                        database.update(dbAlbum.album.localToggleLike())
                     }
                 }
             }
@@ -91,13 +93,14 @@ class SyncUtils @Inject constructor(
     }
     suspend fun syncSavedPlaylists() {
         YouTube.likedPlaylists().completedLibraryPage()?.onSuccess { page ->
-            val playlistList = page.items.filterIsInstance<PlaylistItem>()
+            val playlistList = page.items.filterIsInstance<PlaylistItem>().drop(1).reversed()
+                .filterNot { it.id == "SE" }
             val dbPlaylists = database.playlistsByNameAsc().first()
 
             dbPlaylists.filterNot { it.playlist.browseId in playlistList.map(PlaylistItem::id) }
                 .forEach { database.update(it.playlist.localToggleLike()) }
 
-            playlistList.drop(1).forEach { playlist ->
+            playlistList.onEach { playlist ->
                 var playlistEntity = dbPlaylists.find { playlist.id == it.playlist.browseId }?.playlist
                 if (playlistEntity == null) {
                     playlistEntity = PlaylistEntity(
@@ -106,9 +109,15 @@ class SyncUtils @Inject constructor(
                         isEditable = playlist.isEditable,
                         bookmarkedAt = LocalDateTime.now()
                     )
+                    
                     database.insert(playlistEntity)
-                }
-                syncPlaylist(playlist.id, playlistEntity.id)
+                } else database.update(playlistEntity, playlist)
+            }.forEach { playlist ->
+                val dbPlaylist = database.playlistByBrowseId(playlist.id).first()!!
+                val playlistSongMaps = database.playlistSongMaps(dbPlaylist.id)
+
+                if (dbPlaylist.playlist.isEditable == true || playlistSongMaps.isNotEmpty())
+                    syncPlaylist(playlist.id, dbPlaylist.id)
             }
         }
     }
