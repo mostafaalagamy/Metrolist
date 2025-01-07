@@ -155,7 +155,6 @@ fun LocalPlaylistScreen(
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
 
     val playlist by viewModel.playlist.collectAsState()
-    val liked = playlist?.playlist?.bookmarkedAt != null
     val songs by viewModel.playlistSongs.collectAsState()
     val mutableSongs = remember { mutableStateListOf<PlaylistSong>() }
     val playlistLength =
@@ -846,6 +845,7 @@ fun LocalPlaylistHeader(
         mutableIntStateOf(Download.STATE_STOPPED)
     }
 
+    val liked = playlist?.playlist?.bookmarkedAt != null
     val editable: Boolean = playlist?.playlist?.isEditable == true
 
     LaunchedEffect(songs) {
