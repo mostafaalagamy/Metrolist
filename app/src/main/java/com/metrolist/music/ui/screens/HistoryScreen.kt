@@ -39,6 +39,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -57,11 +58,13 @@ import androidx.compose.ui.util.fastForEachReversed
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.metrolist.innertube.models.WatchEndpoint
+import com.metrolist.innertube.utils.parseCookieString
 import com.metrolist.music.LocalDatabase
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
 import com.metrolist.music.db.entities.EventWithSong
+import com.metrolist.music.constants.InnerTubeCookieKey
 import com.metrolist.music.extensions.toMediaItem
 import com.metrolist.music.extensions.togglePlayPause
 import com.metrolist.music.models.toMediaMetadata
@@ -72,8 +75,11 @@ import com.metrolist.music.ui.component.IconButton
 import com.metrolist.music.ui.component.LocalMenuState
 import com.metrolist.music.ui.component.NavigationTitle
 import com.metrolist.music.ui.component.SongListItem
+import com.metrolist.music.ui.component.YouTubeListItem
 import com.metrolist.music.ui.menu.SongMenu
+import com.metrolist.music.ui.menu.YouTubeSongMenu
 import com.metrolist.music.ui.utils.backToMain
+import com.metrolist.music.utils.rememberPreference
 import com.metrolist.music.viewmodels.DateAgo
 import com.metrolist.music.viewmodels.HistoryViewModel
 import java.time.format.DateTimeFormatter
@@ -110,6 +116,11 @@ fun HistoryScreen(
     }
 
     val events by viewModel.events.collectAsState()
+    val historyPage by viewModel.historyPage
+    val innerTubeCookie by rememberPreference(InnerTubeCookieKey, "")
+    val isLoggedIn = remember(innerTubeCookie) {
+        "SAPISID" in parseCookieString(innerTubeCookie)
+    }
 
     val filteredEvents = remember(events, query) {
         if (query.text.isEmpty()) {
@@ -134,59 +145,112 @@ fun HistoryScreen(
 
 Box(Modifier.fillMaxSize()) {
     LazyColumn(
-    state = lazyListState,
-    contentPadding = LocalPlayerAwareWindowInsets.current
-            .only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom)
-            .asPaddingValues(),
-        modifier = Modifier.windowInsetsPadding(LocalPlayerAwareWindowInsets.current.only(WindowInsetsSides.Top)),
+        contentPadding = LocalPlayerAwareWindowInsets.current.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom).asPaddingValues(),
+        modifier = Modifier.windowInsetsPadding(LocalPlayerAwareWindowInsets.current.only(WindowInsetsSides.Top))
     ) {
-        filteredEvents.forEach { (dateAgo, events) ->
-            stickyHeader {
-                NavigationTitle(
-                    title = when (dateAgo) {
-                        DateAgo.Today -> stringResource(R.string.today)
-                        DateAgo.Yesterday -> stringResource(R.string.yesterday)
-                        DateAgo.ThisWeek -> stringResource(R.string.this_week)
-                        DateAgo.LastWeek -> stringResource(R.string.last_week)
-                        is DateAgo.Other -> dateAgo.date.format(DateTimeFormatter.ofPattern("yyyy/MM"))
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(MaterialTheme.colorScheme.surface),
-                )
-            }
+        if (isLoggedIn) {
+            historyPage?.sections?.forEach { section ->
+                stickyHeader {
+                    NavigationTitle(
+                        title = section.title,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(MaterialTheme.colorScheme.background)
+                    )
+                }
 
-            items(
-                items = events,
-                key = { it.event.id },
-            ) { event ->
-                SongListItem(
-                    song = event.song,
-                    isActive = event.song.id == mediaMetadata?.id,
-                    isPlaying = isPlaying,
-                    trailingContent = {
-                        IconButton(
-                            onClick = {
-                                menuState.show {
-                                    SongMenu(
-                                        originalSong = event.song,
-                                        event = event.event,
-                                        navController = navController,
-                                        onDismiss = menuState::dismiss,
+                items(
+                    items = section.songs,
+                    key = { it.id }
+                ) { song ->
+                    YouTubeListItem(
+                        item = song,
+                        isActive = song.id == mediaMetadata?.id,
+                        isPlaying = isPlaying,
+                        trailingContent = {
+                            IconButton(
+                                onClick = {
+                                    menuState.show {
+                                        YouTubeSongMenu(
+                                            song = song,
+                                            navController = navController,
+                                            onDismiss = menuState::dismiss
+                                        )
+                                    }
+                                }
+                            ) {
+                                Icon(
+                                    painter = painterResource(R.drawable.more_vert),
+                                    contentDescription = null
+                                )
+                            }
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .combinedClickable {
+                                if (song.id == mediaMetadata?.id) {
+                                    playerConnection.player.togglePlayPause()
+                                } else {
+                                    playerConnection.playQueue(
+                                        YouTubeQueue(
+                                            endpoint = WatchEndpoint(videoId = song.id),
+                                            preloadItem = song.toMediaMetadata()
+                                        )
                                     )
                                 }
-                            },
-                        ) {
-                            Icon(
-                                painter = painterResource(R.drawable.more_vert),
-                                contentDescription = null,
-                            )
-                        }
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .combinedClickable(
-                            onClick = {
+                            }
+                            .animateItemPlacement()
+                    )
+                }
+            }
+        } else {
+            events.forEach { (dateAgo, events) ->
+                stickyHeader {
+                    NavigationTitle(
+                        title = when (dateAgo) {
+                            DateAgo.Today -> stringResource(R.string.today)
+                            DateAgo.Yesterday -> stringResource(R.string.yesterday)
+                            DateAgo.ThisWeek -> stringResource(R.string.this_week)
+                            DateAgo.LastWeek -> stringResource(R.string.last_week)
+                            is DateAgo.Other -> dateAgo.date.format(DateTimeFormatter.ofPattern("yyyy/MM"))
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(MaterialTheme.colorScheme.background)
+                    )
+                }
+
+                items(
+                    items = events,
+                    key = { it.event.id }
+                ) { event ->
+                    SongListItem(
+                        song = event.song,
+                        isActive = event.song.id == mediaMetadata?.id,
+                        isPlaying = isPlaying,
+                        showInLibraryIcon = true,
+                        trailingContent = {
+                            IconButton(
+                                onClick = {
+                                    menuState.show {
+                                        SongMenu(
+                                            originalSong = event.song,
+                                            event = event.event,
+                                            navController = navController,
+                                            onDismiss = menuState::dismiss
+                                        )
+                                    }
+                                }
+                            ) {
+                                Icon(
+                                    painter = painterResource(R.drawable.more_vert),
+                                    contentDescription = null
+                                )
+                            }
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .combinedClickable {
                                 if (event.song.id == mediaMetadata?.id) {
                                     playerConnection.player.togglePlayPause()
                                 } else {
@@ -209,8 +273,8 @@ Box(Modifier.fillMaxSize()) {
                                     )
                                 }
                             },
-                        ).animateItemPlacement(),
-                )
+                    ).animateItemPlacement(),
+                }
             }
         }
     }
