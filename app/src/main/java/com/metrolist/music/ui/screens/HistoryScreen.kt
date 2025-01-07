@@ -383,3 +383,7 @@ Box(Modifier.fillMaxSize()) {
         }
     )
 }
+
+enum class HistorySource {
+    LOCAL, REMOTE
+}
