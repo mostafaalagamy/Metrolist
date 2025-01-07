@@ -119,8 +119,10 @@ fun HistoryScreen(
         }
     }
 
+    val historySource by viewModel.historySource.collectAsState()
     val events by viewModel.events.collectAsState()
     val historyPage by viewModel.historyPage
+    
     val innerTubeCookie by rememberPreference(InnerTubeCookieKey, "")
     val isLoggedIn = remember(innerTubeCookie) {
         "SAPISID" in parseCookieString(innerTubeCookie)
@@ -266,7 +268,6 @@ Box(Modifier.fillMaxSize()) {
                         song = event.song,
                         isActive = event.song.id == mediaMetadata?.id,
                         isPlaying = isPlaying,
-                        showInLibraryIcon = true,
                         trailingContent = {
                             IconButton(
                                 onClick = {
