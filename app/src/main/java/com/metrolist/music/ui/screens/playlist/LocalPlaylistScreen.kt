@@ -155,6 +155,7 @@ fun LocalPlaylistScreen(
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
 
     val playlist by viewModel.playlist.collectAsState()
+    val liked = playlist?.playlist?.bookmarkedAt != null
     val songs by viewModel.playlistSongs.collectAsState()
     val mutableSongs = remember { mutableStateListOf<PlaylistSong>() }
     val playlistLength =
@@ -951,7 +952,6 @@ fun LocalPlaylistHeader(
                                 }
                             }
                         ) {
-                            val liked = playlist?.playlist?.bookmarkedAt != null
                             Icon(
                                 painter = painterResource(if (liked) R.drawable.favorite else R.drawable.favorite_border),
                                 contentDescription = null,
