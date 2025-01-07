@@ -30,6 +30,8 @@
     <string name="yesterday">Yesterday</string>
     <string name="this_week">This week</string>
     <string name="last_week">Last week</string>
+    <string name="local_history">Local</string>
+    <string name="remote_history">Remote</string>
 
     <!-- Stats -->
     <string name="most_played_songs">Most played songs</string>

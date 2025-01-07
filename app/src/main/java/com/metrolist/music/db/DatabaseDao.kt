@@ -624,40 +624,27 @@ interface DatabaseDao {
             .reversed(descending)
     }
 
-    @Transaction
-    @Query(
-        "SELECT *, (SELECT COUNT(1) FROM song_artist_map JOIN song ON song_artist_map.songId = song.id WHERE artistId = artist.id AND song.inLibrary IS NOT NULL) AS songCount FROM artist WHERE id = :id",
-    )
+    @Query("SELECT *, (SELECT COUNT(1) FROM song_artist_map JOIN song ON song_artist_map.songId = song.id WHERE artistId = artist.id AND song.inLibrary IS NOT NULL) AS songCount FROM artist WHERE id = :id")
     fun artist(id: String): Flow<Artist?>
 
     @Transaction
-    @Query(
-        "SELECT * FROM album WHERE EXISTS(SELECT * FROM song WHERE song.albumId = album.id AND song.inLibrary IS NOT NULL) ORDER BY rowId",
-    )
+    @Query("SELECT * FROM album WHERE EXISTS(SELECT * FROM song WHERE song.albumId = album.id AND song.inLibrary IS NOT NULL) ORDER BY rowId")
     fun albumsByCreateDateAsc(): Flow<List<Album>>
 
     @Transaction
-    @Query(
-        "SELECT * FROM album WHERE EXISTS(SELECT * FROM song WHERE song.albumId = album.id AND song.inLibrary IS NOT NULL) ORDER BY title",
-    )
+    @Query("SELECT * FROM album WHERE EXISTS(SELECT * FROM song WHERE song.albumId = album.id AND song.inLibrary IS NOT NULL) ORDER BY title")
     fun albumsByNameAsc(): Flow<List<Album>>
 
     @Transaction
-    @Query(
-        "SELECT * FROM album WHERE EXISTS(SELECT * FROM song WHERE song.albumId = album.id AND song.inLibrary IS NOT NULL) ORDER BY year",
-    )
+    @Query("SELECT * FROM album WHERE EXISTS(SELECT * FROM song WHERE song.albumId = album.id AND song.inLibrary IS NOT NULL) ORDER BY year")
     fun albumsByYearAsc(): Flow<List<Album>>
 
     @Transaction
-    @Query(
-        "SELECT * FROM album WHERE EXISTS(SELECT * FROM song WHERE song.albumId = album.id AND song.inLibrary IS NOT NULL) ORDER BY songCount",
-    )
+    @Query("SELECT * FROM album WHERE EXISTS(SELECT * FROM song WHERE song.albumId = album.id AND song.inLibrary IS NOT NULL) ORDER BY songCount")
     fun albumsBySongCountAsc(): Flow<List<Album>>
 
     @Transaction
-    @Query(
-        "SELECT * FROM album WHERE EXISTS(SELECT * FROM song WHERE song.albumId = album.id AND song.inLibrary IS NOT NULL) ORDER BY duration",
-    )
+    @Query("SELECT * FROM album WHERE EXISTS(SELECT * FROM song WHERE song.albumId = album.id AND song.inLibrary IS NOT NULL) ORDER BY duration")
     fun albumsByLengthAsc(): Flow<List<Album>>
 
     @Transaction
@@ -704,7 +691,7 @@ interface DatabaseDao {
         WHERE bookmarkedAt IS NOT NULL
         GROUP BY album.id
         ORDER BY SUM(song.totalPlayTime)
-    """,
+    """
     )
     fun albumsLikedByPlayTimeAsc(): Flow<List<Album>>
 
@@ -767,7 +754,7 @@ interface DatabaseDao {
     fun albumArtistMaps(albumId: String): List<AlbumArtistMap>
 
     @Transaction
-    @Query("SELECT *, (SELECT COUNT(*) FROM playlist_song_map WHERE playlistId = playlist.id) AS songCount FROM playlist ORDER BY rowId")
+    @Query("SELECT *, (SELECT COUNT(*) FROM playlist_song_map WHERE playlistId = playlist.id) AS songCount FROM playlist WHERE bookmarkedAt IS NOT NULL ORDER BY rowId")
     fun playlistsByCreateDateAsc(): Flow<List<Playlist>>
 
     @Transaction
@@ -777,11 +764,11 @@ interface DatabaseDao {
     fun playlistsByUpdatedDateAsc(): Flow<List<Playlist>>
 
     @Transaction
-    @Query("SELECT *, (SELECT COUNT(*) FROM playlist_song_map WHERE playlistId = playlist.id) AS songCount FROM playlist ORDER BY name")
+    @Query("SELECT *, (SELECT COUNT(*) FROM playlist_song_map WHERE playlistId = playlist.id) AS songCount FROM playlist WHERE bookmarkedAt IS NOT NULL ORDER BY name")
     fun playlistsByNameAsc(): Flow<List<Playlist>>
 
     @Transaction
-    @Query("SELECT *, (SELECT COUNT(*) FROM playlist_song_map WHERE playlistId = playlist.id) AS songCount FROM playlist ORDER BY songCount")
+    @Query("SELECT *, (SELECT COUNT(*) FROM playlist_song_map WHERE playlistId = playlist.id) AS songCount FROM playlist WHERE bookmarkedAt IS NOT NULL ORDER BY songCount")
     fun playlistsBySongCountAsc(): Flow<List<Playlist>>
 
     fun playlists(
