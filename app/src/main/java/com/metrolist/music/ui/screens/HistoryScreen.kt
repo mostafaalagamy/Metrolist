@@ -151,6 +151,21 @@ fun HistoryScreen(
         }
     }
 
+    val filteredRemoteContent = remember(historyPage, query) {
+        if (query.text.isEmpty()) {
+            historyPage?.sections
+        } else {
+            historyPage?.sections?.map { section ->
+                section.copy(
+                    songs = section.songs.filter { song ->
+                        song.title.contains(query.text, ignoreCase = true) ||
+                        song.artists.any { it.name.contains(query.text, ignoreCase = true) }
+                    }
+                )
+            }?.filter { it.songs.isNotEmpty() }
+        }
+    }
+
     val filteredEventIndex: Map<Long, EventWithSong> by remember(filteredEvents) {
         derivedStateOf {
             filteredEvents.flatMap { it.value }.associateBy { it.event.id }
@@ -178,7 +193,7 @@ fun HistoryScreen(
             }
 
             if (historySource == HistorySource.REMOTE && isLoggedIn) {
-                historyPage?.sections?.forEach { section ->
+                filteredRemoteContent?.forEach { section ->
                     stickyHeader {
                         NavigationTitle(
                             title = section.title,
@@ -302,7 +317,7 @@ fun HistoryScreen(
                                                 originalSong = event.song,
                                                 event = event.event,
                                                 navController = navController,
-                                                onDismiss = menuState::dismiss,
+                                                onDismiss = menuState::dismiss
                                             )
                                         }
                                     }
@@ -315,16 +330,32 @@ fun HistoryScreen(
         }
 
         HideOnScrollFAB(
-            visible = filteredEvents.isNotEmpty(),
+            visible = if (historySource == HistorySource.REMOTE) {
+                filteredRemoteContent?.any { it.songs.isNotEmpty() } == true
+            } else {
+                filteredEvents.isNotEmpty()
+            },
             lazyListState = lazyListState,
             icon = R.drawable.shuffle,
             onClick = {
-                playerConnection.playQueue(
-                    ListQueue(
-                        title = context.getString(R.string.history),
-                        items = filteredEventIndex.values.map { it.song.toMediaItem() }.shuffled(),
+                if (historySource == HistorySource.REMOTE && historyPage != null) {
+                    val songs = filteredRemoteContent?.flatMap { it.songs } ?: emptyList()
+                    if (songs.isNotEmpty()) {
+                        playerConnection.playQueue(
+                            ListQueue(
+                                title = context.getString(R.string.history),
+                                items = songs.map { it.toMediaItem() }.shuffled()
+                            )
+                        )
+                    }
+                } else {
+                    playerConnection.playQueue(
+                        ListQueue(
+                            title = context.getString(R.string.history),
+                            items = filteredEventIndex.values.map { it.song.toMediaItem() }.shuffled()
+                        )
                     )
-                )
+                }
             }
         )
     }
