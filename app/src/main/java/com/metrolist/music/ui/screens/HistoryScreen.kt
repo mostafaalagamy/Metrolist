@@ -223,8 +223,8 @@ Box(Modifier.fillMaxSize()) {
                                     } else {
                                         playerConnection.playQueue(
                                             YouTubeQueue(
-                                                endpoint = WatchEndpoint(videoId = song.id),
-                                                preloadItem = song.toMediaMetadata()
+                                                WatchEndpoint(videoId = song!!.id),
+                                                song!!.toMediaMetadata()
                                             )
                                         )
                                     }
