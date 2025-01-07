@@ -286,11 +286,11 @@ Box(Modifier.fillMaxSize()) {
                                 onClick = {
                                     if (event.song.id == mediaMetadata?.id) {
                                         playerConnection.player.togglePlayPause()
-                                    } else {
+                                } else {
                                         playerConnection.playQueue(
                                             YouTubeQueue(
-                                                WatchEndpoint(videoId = song!!.id),
-                                                song!!.toMediaMetadata()
+                                                endpoint = WatchEndpoint(videoId = event.song.id),
+                                                preloadItem = event.song.toMediaMetadata(),
                                             )
                                         )
                                     }
