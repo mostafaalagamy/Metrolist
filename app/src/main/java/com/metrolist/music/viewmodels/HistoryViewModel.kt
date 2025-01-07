@@ -1,13 +1,20 @@
 package com.metrolist.music.viewmodels
 
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.metrolist.innertube.YouTube
+import com.metrolist.innertube.pages.HistoryPage
 import com.metrolist.music.db.MusicDatabase
+import com.metrolist.music.constants.HistorySource
 import com.metrolist.music.extensions.mergeNearbyElements
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
@@ -22,6 +29,9 @@ class HistoryViewModel
         private val today = LocalDate.now()
         private val thisMonday = today.with(DayOfWeek.MONDAY)
         private val lastMonday = thisMonday.minusDays(7)
+
+        val historyPage = mutableStateOf<HistoryPage?>(null)
+        var historySource = MutableStateFlow(HistorySource.LOCAL)
 
         val events =
             database
@@ -52,6 +62,12 @@ class HistoryViewModel
                             entry.value.distinctBy { it.song.id }
                         }
                 }.stateIn(viewModelScope, SharingStarted.Lazily, emptyMap())
+
+        init {
+            viewModelScope.launch(Dispatchers.IO) {
+                historyPage.value = YouTube.musicHistory().getOrNull()
+            }
+        }
     }
 
     sealed class DateAgo {
