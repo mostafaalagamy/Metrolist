@@ -9,10 +9,11 @@ import com.metrolist.music.db.MusicDatabase
 import com.metrolist.music.constants.HistorySource
 import com.metrolist.music.extensions.mergeNearbyElements
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import java.time.DayOfWeek
 import java.time.LocalDate
