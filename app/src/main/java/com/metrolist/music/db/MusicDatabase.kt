@@ -63,7 +63,7 @@ class MusicDatabase(
         SortedSongAlbumMap::class,
         PlaylistSongMapPreview::class,
     ],
-    version = 16,
+    version = 17,
     exportSchema = true,
     autoMigrations = [
         AutoMigration(from = 2, to = 3),
@@ -80,6 +80,7 @@ class MusicDatabase(
         AutoMigration(from = 13, to = 14, spec = Migration13To14::class),
         AutoMigration(from = 14, to = 15),
         AutoMigration(from = 15, to = 16),
+        AutoMigration(from = 16, to = 17, spec = Migration16To17::class),
     ],
 )
 @TypeConverters(Converters::class)
@@ -398,3 +399,11 @@ class Migration13To14 : AutoMigrationSpec {
         db.execSQL("UPDATE playlist SET lastUpdateTime = '${Converters().dateToTimestamp(LocalDateTime.now())}'")
     }
 }
+
+@DeleteColumn.Entries(
+    DeleteColumn(tableName = "song", columnName = "isLocal"),
+    DeleteColumn(tableName = "song", columnName = "localPath"),
+    DeleteColumn(tableName = "artist", columnName = "isLocal"),
+    DeleteColumn(tableName = "playlist", columnName = "isLocal"),
+)
+class Migration10To11 : AutoMigrationSpec
