@@ -237,8 +237,6 @@ class LibraryPlaylistsViewModel
                     database.playlists(sortType, descending)
                 }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
-        fun sync() { viewModelScope.launch(Dispatchers.IO) { syncUtils.syncSavedPlaylists() } }
-
         val topValue =
             context.dataStore.data
                 .map { it[TopSize] ?: "50" }
