@@ -95,10 +95,6 @@ fun LibraryPlaylistsScreen(
     val (sortType, onSortTypeChange) = rememberEnumPreference(PlaylistSortTypeKey, PlaylistSortType.CREATE_DATE)
     val (sortDescending, onSortDescendingChange) = rememberPreference(PlaylistSortDescendingKey, true)
     val gridItemSize by rememberEnumPreference(GridItemsSizeKey, GridItemSize.BIG)
-
-    val (ytmSync) = rememberPreference(YtmSyncKey, true)
-    
-    LaunchedEffect(Unit){ if (ytmSync){ viewModel.sync() }}
     
     val playlists by viewModel.allPlaylists.collectAsState()
 
