@@ -403,6 +403,7 @@ class Migration13To14 : AutoMigrationSpec {
 @DeleteColumn.Entries(
     DeleteColumn(tableName = "song", columnName = "isLocal"),
     DeleteColumn(tableName = "song", columnName = "localPath"),
+    DeleteColumn(tableName = "song", columnName = "downloadState"),
     DeleteColumn(tableName = "artist", columnName = "isLocal"),
     DeleteColumn(tableName = "playlist", columnName = "isLocal"),
 )
