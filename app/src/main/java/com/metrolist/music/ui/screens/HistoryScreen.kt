@@ -68,6 +68,7 @@ import com.metrolist.music.R
 import com.metrolist.music.db.entities.EventWithSong
 import com.metrolist.music.constants.InnerTubeCookieKey
 import com.metrolist.music.constants.HistorySource
+import com.metrolist.music.extensions.metadata
 import com.metrolist.music.extensions.toMediaItem
 import com.metrolist.music.extensions.togglePlayPause
 import com.metrolist.music.models.toMediaMetadata
@@ -82,6 +83,7 @@ import com.metrolist.music.ui.component.SongListItem
 import com.metrolist.music.ui.component.YouTubeListItem
 import com.metrolist.music.ui.menu.SongMenu
 import com.metrolist.music.ui.menu.YouTubeSongMenu
+import com.metrolist.music.ui.menu.SelectionMediaMetadataMenu
 import com.metrolist.music.ui.utils.backToMain
 import com.metrolist.music.utils.rememberPreference
 import com.metrolist.music.viewmodels.DateAgo
@@ -102,6 +104,10 @@ fun HistoryScreen(
     val isPlaying by playerConnection.isPlaying.collectAsState()
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
 
+    var selection by remember {
+        mutableStateOf(false)
+    }
+
     var isSearching by rememberSaveable { mutableStateOf(false) }
     var query by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(TextFieldValue())
@@ -116,6 +122,10 @@ fun HistoryScreen(
         BackHandler {
             isSearching = false
             query = TextFieldValue()
+        }
+    } else if (selection) {
+        BackHandler {
+            selection = false
         }
     }
 
@@ -136,6 +146,10 @@ fun HistoryScreen(
             DateAgo.LastWeek -> context.getString(R.string.last_week)
             is DateAgo.Other -> dateAgo.date.format(DateTimeFormatter.ofPattern("yyyy/MM"))
         }
+    }
+
+    class WrappedHistoryItem(val item: EventWithSong) {
+        var isSelected by mutableStateOf(false)
     }
 
     val filteredEvents = remember(events, query) {
@@ -166,16 +180,15 @@ fun HistoryScreen(
         }
     }
 
-    val filteredEventIndex: Map<Long, EventWithSong> by remember(filteredEvents) {
-        derivedStateOf {
-            filteredEvents.flatMap { it.value }.associateBy { it.event.id }
-        }
-    }
+    val wrappedItems = remember(filteredEvents) {
+        filteredEvents.flatMap { it.value }.map { WrappedHistoryItem(it) }
+    }.toMutableStateList()
 
     val lazyListState = rememberLazyListState()
 
     Box(Modifier.fillMaxSize()) {
         LazyColumn(
+            state = lazyListState,
             contentPadding = LocalPlayerAwareWindowInsets.current.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom).asPaddingValues(),
             modifier = Modifier.windowInsetsPadding(LocalPlayerAwareWindowInsets.current.only(WindowInsetsSides.Top))
         ) {
@@ -269,23 +282,28 @@ fun HistoryScreen(
                         )
                     }
 
-                    itemsIndexed(
-                        items = events,
-                    ) { index, event ->
+                    items(
+                        items = wrappedItems,
+                        key = { it.item.event.id }
+                    ) { wrappedItem ->
+                        val event = wrappedItem.item
                         SongListItem(
                             song = event.song,
                             isActive = event.song.id == mediaMetadata?.id,
                             isPlaying = isPlaying,
+                            isSelected = wrappedItem.isSelected && selection,
                             trailingContent = {
                                 IconButton(
                                     onClick = {
-                                        menuState.show {
-                                            SongMenu(
-                                                originalSong = event.song,
-                                                event = event.event,
-                                                navController = navController,
-                                                onDismiss = menuState::dismiss
-                                            )
+                                        if (!selection) {
+                                            menuState.show {
+                                                SongMenu(
+                                                    originalSong = event.song,
+                                                    event = event.event,
+                                                    navController = navController,
+                                                    onDismiss = menuState::dismiss
+                                                )
+                                            }
                                         }
                                     }
                                 ) {
@@ -299,26 +317,27 @@ fun HistoryScreen(
                                 .fillMaxWidth()
                                 .combinedClickable(
                                     onClick = {
-                                        if (event.song.id == mediaMetadata?.id) {
-                                            playerConnection.player.togglePlayPause()
-                                        } else {
-                                            playerConnection.playQueue(
-                                                YouTubeQueue(
-                                                    endpoint = WatchEndpoint(videoId = event.song.id),
-                                                    preloadItem = event.song.toMediaMetadata(),
+                                        if (!selection) {
+                                            if (event.song.id == mediaMetadata?.id) {
+                                                playerConnection.player.togglePlayPause()
+                                            } else {
+                                                playerConnection.playQueue(
+                                                    YouTubeQueue(
+                                                        endpoint = WatchEndpoint(videoId = event.song.id),
+                                                        preloadItem = event.song.toMediaMetadata(),
+                                                    )
                                                 )
-                                            )
+                                            }
+                                        } else {
+                                            wrappedItem.isSelected = !wrappedItem.isSelected
                                         }
                                     },
                                     onLongClick = {
                                         haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                        menuState.show {
-                                            SongMenu(
-                                                originalSong = event.song,
-                                                event = event.event,
-                                                navController = navController,
-                                                onDismiss = menuState::dismiss
-                                            )
+                                        if (!selection) {
+                                            selection = true
+                                            wrappedItems.forEach { it.isSelected = false }
+                                            wrappedItem.isSelected = true
                                         }
                                     }
                                 )
@@ -333,7 +352,7 @@ fun HistoryScreen(
             visible = if (historySource == HistorySource.REMOTE) {
                 filteredRemoteContent?.any { it.songs.isNotEmpty() } == true
             } else {
-                filteredEvents.isNotEmpty()
+                wrappedItems.isNotEmpty()
             },
             lazyListState = lazyListState,
             icon = R.drawable.shuffle,
@@ -352,7 +371,7 @@ fun HistoryScreen(
                     playerConnection.playQueue(
                         ListQueue(
                             title = context.getString(R.string.history),
-                            items = filteredEventIndex.values.map { it.song.toMediaItem() }.shuffled()
+                            items = wrappedItems.map { it.item.song.toMediaItem() }.shuffled()
                         )
                     )
                 }
@@ -362,7 +381,13 @@ fun HistoryScreen(
 
     TopAppBar(
         title = {
-            if (isSearching) {
+            if (selection) {
+                val count = wrappedItems.count { it.isSelected }
+                Text(
+                    text = pluralStringResource(R.plurals.n_song, count, count),
+                    style = MaterialTheme.typography.titleLarge
+                )
+            } else if (isSearching) {
                 TextField(
                     value = query,
                     onValueChange = { query = it },
@@ -393,27 +418,72 @@ fun HistoryScreen(
         navigationIcon = {
             IconButton(
                 onClick = {
-                    if (isSearching) {
-                        isSearching = false
-                        query = TextFieldValue()
-                    } else {
-                        navController.navigateUp()
+                    when {
+                        isSearching -> {
+                            isSearching = false
+                            query = TextFieldValue()
+                        }
+                        selection -> {
+                            selection = false
+                        }
+                        else -> {
+                            navController.navigateUp()
+                        }
                     }
                 },
                 onLongClick = {
-                    if (!isSearching) {
+                    if (!isSearching && !selection) {
                         navController.backToMain()
                     }
                 }
             ) {
                 Icon(
-                    painter = painterResource(R.drawable.arrow_back),
+                    painter = painterResource(
+                        if (selection) R.drawable.close else R.drawable.arrow_back
+                    ),
                     contentDescription = null
                 )
             }
         },
         actions = {
-            if (!isSearching) {
+            if (selection) {
+                val count = wrappedItems.count { it.isSelected }
+                IconButton(
+                    onClick = {
+                        if (count == wrappedItems.size) {
+                            wrappedItems.forEach { it.isSelected = false }
+                        } else {
+                            wrappedItems.forEach { it.isSelected = true }
+                        }
+                    }
+                ) {
+                    Icon(
+                        painter = painterResource(
+                            if (count == wrappedItems.size) R.drawable.deselect else R.drawable.select_all
+                        ),
+                        contentDescription = null
+                    )
+                }
+                IconButton(
+                    onClick = {
+                        menuState.show {
+                            SelectionMediaMetadataMenu(
+                                songSelection = wrappedItems
+                                    .filter { it.isSelected }
+                                    .map { it.item.song.toMediaItem().metadata!! },
+                                onDismiss = menuState::dismiss,
+                                clearAction = { selection = false },
+                                currentItems = emptyList()
+                            )
+                        }
+                    }
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.more_vert),
+                        contentDescription = null
+                    )
+                }
+            } else if (!isSearching) {
                 IconButton(
                     onClick = { isSearching = true }
                 ) {
