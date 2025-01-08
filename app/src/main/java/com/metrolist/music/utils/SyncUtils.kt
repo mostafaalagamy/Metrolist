@@ -92,11 +92,13 @@ class SyncUtils @Inject constructor(
         }
     }
     suspend fun syncSavedPlaylists() {
-        YouTube.likedPlaylists().completedLibraryPage()?.onSuccess { page ->
+        YouTube.library("FEmusic_liked_playlists").completedLibraryPage().onSuccess { page ->
             val playlistList = page.items.filterIsInstance<PlaylistItem>().drop(1).reversed()
+                .filterNot { it.id == "SE" }
             val dbPlaylists = database.playlistsByNameAsc().first()
 
             dbPlaylists.filterNot { it.playlist.browseId in playlistList.map(PlaylistItem::id) }
+                .filterNot { it.playlist.browseId == null }
                 .forEach { database.update(it.playlist.localToggleLike()) }
 
             playlistList.onEach { playlist ->
@@ -106,11 +108,22 @@ class SyncUtils @Inject constructor(
                         name = playlist.title,
                         browseId = playlist.id,
                         isEditable = playlist.isEditable,
-                        bookmarkedAt = LocalDateTime.now()
+                        bookmarkedAt = LocalDateTime.now(),
+                        thumbnailUrl = playlist.thumbnail,
+                        remoteSongCount = playlist.songCountText?.let { Regex("""\d+""").find(it)?.value?.toIntOrNull() },
+                        playEndpointParams = playlist.playEndpoint?.params,
+                        shuffleEndpointParams = playlist.shuffleEndpoint?.params,
+                        radioEndpointParams = playlist.radioEndpoint?.params
                     )
+
                     database.insert(playlistEntity)
-                }
-                syncPlaylist(playlist.id, playlistEntity.id)
+                } else database.update(playlistEntity, playlist)
+            }.forEach { playlist ->
+                val dbPlaylist = database.playlistByBrowseId(playlist.id).first()!!
+                val playlistSongMaps = database.playlistSongMaps(dbPlaylist.id)
+
+                if (dbPlaylist.playlist.isEditable || playlistSongMaps.isNotEmpty())
+                    syncPlaylist(playlist.id, dbPlaylist.id)
             }
         }
     }
