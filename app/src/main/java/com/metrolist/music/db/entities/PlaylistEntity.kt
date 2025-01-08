@@ -25,6 +25,11 @@ data class PlaylistEntity(
     @ColumnInfo(name = "isLocal", defaultValue = false.toString())
     val isLocal: Boolean = false,
     val bookmarkedAt: LocalDateTime? = null,
+    val thumbnailUrl: String? = null,
+    val remoteSongCount: Int? = null,
+    val playEndpointParams: String? = null,
+    val shuffleEndpointParams: String? = null,
+    val radioEndpointParams: String? = null,
 ) {
     companion object {
         const val LIKED_PLAYLIST_ID = "LP_LIKED"
