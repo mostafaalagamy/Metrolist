@@ -11,6 +11,7 @@ import androidx.room.Update
 import androidx.room.Upsert
 import androidx.sqlite.db.SupportSQLiteQuery
 import com.metrolist.innertube.models.SongItem
+import com.metrolist.innertube.models.PlaylistItem
 import com.metrolist.innertube.pages.AlbumPage
 import com.metrolist.innertube.pages.ArtistPage
 import com.metrolist.music.constants.AlbumSortType
@@ -793,7 +794,7 @@ interface DatabaseDao {
     fun playlist(playlistId: String): Flow<Playlist?>
 
     @Transaction
-    @Query("SELECT *, (SELECT COUNT(*) FROM playlist_song_map WHERE playlistId = playlist.id) AS songCount FROM playlist WHERE isEditable ORDER BY rowId")
+    @Query("SELECT *, (SELECT COUNT(*) FROM playlist_song_map WHERE playlistId = playlist.id) AS songCount FROM playlist WHERE isEditable AND bookmarkedAt IS NOT NULL ORDER BY rowId")
     fun editablePlaylistsByCreateDateAsc(): Flow<List<Playlist>>
 
     @Transaction
@@ -1153,6 +1154,17 @@ interface DatabaseDao {
                     )
                 }.forEach(::insert)
         }
+    }
+
+    @Update
+    fun update(playlistEntity: PlaylistEntity, playlistItem: PlaylistItem) {
+        update(
+            playlistEntity.copy(
+                name = playlistItem.title,
+                browseId = playlistItem.id,
+                isEditable = playlistItem.isEditable,
+            )
+        )
     }
 
     @Upsert

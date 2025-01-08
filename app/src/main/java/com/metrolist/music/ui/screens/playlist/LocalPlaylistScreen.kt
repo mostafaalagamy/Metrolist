@@ -845,6 +845,7 @@ fun LocalPlaylistHeader(
         mutableIntStateOf(Download.STATE_STOPPED)
     }
 
+    val liked = playlist?.playlist?.bookmarkedAt != null
     val editable: Boolean = playlist?.playlist?.isEditable == true
 
     LaunchedEffect(songs) {
@@ -951,7 +952,6 @@ fun LocalPlaylistHeader(
                                 }
                             }
                         ) {
-                            val liked = playlist?.playlist?.bookmarkedAt != null
                             Icon(
                                 painter = painterResource(if (liked) R.drawable.favorite else R.drawable.favorite_border),
                                 contentDescription = null,
