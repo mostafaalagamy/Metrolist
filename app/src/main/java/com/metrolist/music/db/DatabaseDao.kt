@@ -828,10 +828,6 @@ interface DatabaseDao {
     }
 
     @Transaction
-    @Query("UPDATE playlist SET isLocal = true WHERE id = :playlistId")
-    fun playlistDesync(playlistId: String): Unit
-
-    @Transaction
     @Query("SELECT * FROM song WHERE title LIKE '%' || :query || '%' AND inLibrary IS NOT NULL LIMIT :previewSize")
     fun searchSongs(
         query: String,
