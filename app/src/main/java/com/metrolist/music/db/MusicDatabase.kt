@@ -404,6 +404,10 @@ class Migration13To14 : AutoMigrationSpec {
     DeleteColumn(tableName = "song", columnName = "isLocal"),
     DeleteColumn(tableName = "song", columnName = "localPath"),
     DeleteColumn(tableName = "song", columnName = "downloadState"),
+    DeleteColumn(tableName = "song", columnName = "downloadState"),
+    DeleteColumn(tableName = "artist", columnName = "bannerUrl"),
+    DeleteColumn(tableName = "artist", columnName = "description"),
+    DeleteColumn(tableName = "artist", columnName = "createDate"),
     DeleteColumn(tableName = "artist", columnName = "isLocal"),
     DeleteColumn(tableName = "playlist", columnName = "isLocal"),
 )
