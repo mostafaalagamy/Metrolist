@@ -119,13 +119,8 @@ class SyncUtils @Inject constructor(
                     )
 
                     database.insert(playlistEntity)
-                } else database.update(playlistEntity, playlist)
-            }.forEach { playlist ->
-                val dbPlaylist = database.playlistByBrowseId(playlist.id).first()!!
-                val playlistSongMaps = database.playlistSongMaps(dbPlaylist.id)
-
-                if (dbPlaylist.playlist.isEditable || playlistSongMaps.isNotEmpty())
-                    syncPlaylist(playlist.id, dbPlaylist.id)
+                }
+                syncPlaylist(playlist.id, playlistEntity.id)
             }
         }
     }
