@@ -228,7 +228,6 @@ class LibraryPlaylistsViewModel
         database: MusicDatabase,
         private val syncUtils: SyncUtils,
     ) : ViewModel() {
-        fun sync() { viewModelScope.launch(Dispatchers.IO) { syncUtils.syncSavedPlaylists() } }
         val allPlaylists =
             context.dataStore.data
                 .map {
@@ -242,6 +241,8 @@ class LibraryPlaylistsViewModel
             context.dataStore.data
                 .map { it[TopSize] ?: "50" }
                 .distinctUntilChanged()
+
+        fun sync() { viewModelScope.launch(Dispatchers.IO) { syncUtils.syncSavedPlaylists() } }
     }
 
 @HiltViewModel
