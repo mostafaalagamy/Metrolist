@@ -149,8 +149,8 @@ fun AddToPlaylistDialog(
                             PlaylistEntity(
                                 name = playlistName,
                                 browseId = browseId,
-                                bookmarkedAt = LocalDateTime.now()
-                                isEditable = !syncedPlaylist,
+                                bookmarkedAt = LocalDateTime.now(),
+                                isEditable = !syncedPlaylist
                             )
                         )
                     }
