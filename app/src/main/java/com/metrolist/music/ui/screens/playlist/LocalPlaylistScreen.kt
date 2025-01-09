@@ -91,7 +91,6 @@ import coil.compose.AsyncImage
 import com.metrolist.innertube.YouTube
 import com.metrolist.innertube.models.SongItem
 import com.metrolist.innertube.utils.completed
-import com.metrolist.music.LocalDatabase
 import com.metrolist.music.LocalDownloadUtil
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.LocalPlayerConnection
@@ -131,6 +130,7 @@ import com.metrolist.music.utils.rememberPreference
 import com.metrolist.music.viewmodels.LocalPlaylistViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import org.burnoutcrew.reorderable.ReorderableItem
 import org.burnoutcrew.reorderable.detectReorder
@@ -336,21 +336,59 @@ fun LocalPlaylistScreen(
     }
 
     val headerItems = 2
-    val reorderableState =
-        rememberReorderableLazyListState(
-            onMove = { from, to ->
-                if (to.index >= headerItems && from.index >= headerItems) {
-                    mutableSongs.move(from.index - headerItems, to.index - headerItems)
+    val lazyListState = rememberLazyListState()
+    val reorderableState = rememberReorderableLazyListState(
+        onMove = { from, to ->
+            if (to.index >= headerItems && from.index >= headerItems) {
+                mutableSongs.move(from.index - headerItems, to.index - headerItems)
+            }
+        },
+        onDragEnd = { initialFromIndex, initialToIndex ->
+            if (initialFromIndex < 0 || initialToIndex < 0) {
+                return@rememberReorderableLazyListState
+            }
+            viewModel.viewModelScope.launch(Dispatchers.IO) {
+                val playlistSongMap = database.playlistSongMaps(viewModel.playlistId, 0)
+
+                var fromIndex = initialFromIndex - headerItems
+                val toIndex = initialToIndex - headerItems
+
+                var successorIndex = if (fromIndex > toIndex) toIndex else toIndex + 1
+
+                /*
+                * Because of how YouTube Music handles playlist changes, you necessarily need to
+                * have the SetVideoId of the successor when trying to move a song inside of a
+                * playlist.
+                * For this reason, if we are trying to move a song to the last element of a playlist,
+                * we need to first move it as penultimate and then move the last element before it.
+                */
+                if (successorIndex >= playlistSongMap.size) {
+                    playlistSongMap[fromIndex].setVideoId?.let { setVideoId ->
+                        playlistSongMap[toIndex].setVideoId?.let { successorSetVideoId ->
+                            viewModel.playlist.first()?.playlist?.browseId?.let { browseId ->
+                                YouTube.moveSongPlaylist(browseId, setVideoId, successorSetVideoId)
+                            }
+                        }
+                    }
+
+                    successorIndex = fromIndex
+                    fromIndex = toIndex
                 }
-            },
-            onDragEnd = { fromIndex, toIndex ->
-                val from = if (fromIndex < 2) 2 else fromIndex
-                val to = if (toIndex < 2) 2 else toIndex
+
+                playlistSongMap[fromIndex].setVideoId?.let { setVideoId ->
+                    playlistSongMap[successorIndex].setVideoId?.let { successorSetVideoId ->
+                        viewModel.playlist.first()?.playlist?.browseId?.let { browseId ->
+                            YouTube.moveSongPlaylist(browseId, setVideoId, successorSetVideoId)
+                        }
+                    }
+                }
+
                 database.transaction {
-                    move(viewModel.playlistId, from - headerItems, to - headerItems)
+                    move(viewModel.playlistId, initialFromIndex - headerItems, initialToIndex - headerItems)
                 }
-            },
-        )
+            }
+        }
+    )
 
     val showTopBarTitle by remember {
         derivedStateOf {
@@ -365,8 +403,8 @@ fun LocalPlaylistScreen(
     ) {
         LazyColumn(
             state = reorderableState.listState,
-            contentPadding = LocalPlayerAwareWindowInsets.current.union(WindowInsets.ime).asPaddingValues(),
-            modifier = Modifier.reorderable(reorderableState),
+            contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues(),
+            modifier = Modifier.reorderable(reorderableState)
         ) {
             playlist?.let { playlist ->
                 if (playlist.songCount == 0) {
@@ -512,7 +550,7 @@ fun LocalPlaylistScreen(
                                     if (sortType == PlaylistSongSortType.CUSTOM && !locked && !selection && !isSearching) {
                                         IconButton(
                                             onClick = { },
-                                            modifier = Modifier.detectReorder(reorderableState),
+                                            modifier = Modifier.detectReorder(reorderableState)
                                         ) {
                                             Icon(
                                                 painter = painterResource(R.drawable.drag_handle),
