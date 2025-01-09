@@ -91,8 +91,9 @@ class SyncUtils @Inject constructor(
     }
     suspend fun syncSavedPlaylists() {
         YouTube.library("FEmusic_liked_playlists").completedLibraryPage()?.onSuccess { page ->
-            val playlistList = page.items.filterIsInstance<PlaylistItem>().drop(1).reversed()
-                .filterNot { it.id == "SE" }
+            val playlistList = page.items.filterIsInstance<PlaylistItem>()
+                    .filterNot { it.id == "LM" ||  it.id == "SE" }
+                    .reversed()
             val dbPlaylists = database.playlistsByNameAsc().first()
             dbPlaylists
                 .filterNot { it.playlist.browseId in playlistList.map(PlaylistItem::id) }
@@ -116,14 +117,19 @@ class SyncUtils @Inject constructor(
                     database.insert(playlistEntity)
                 } else database.update(playlistEntity, playlist)
             }.forEach { playlist ->
-                val dbPlaylist = database.playlistByBrowseId(playlist.id).first()!!
-                val playlistSongMaps = database.playlistSongMaps(dbPlaylist.id)
-
-                if (dbPlaylist.playlist.isEditable || playlistSongMaps.isNotEmpty())
-                    syncPlaylist(playlist.id, dbPlaylist.id)
+                val updatedPlaylist =
+                    database.playlistByBrowseId(Playlist.id).firstOrNull()
+                        updatedPlaylist?.let {
+                val playlistSongMaps = database.songMapsToPlaylist(updatedPlaylist.id)
+                if (updatedPlaylist.playlist.isEditable || playlistSongMaps.isNotEmpty()) {
+                    syncPlaylist(Playlist.id, updatedPlaylist.id)
             }
         }
     }
+
+                                
+
+                                    
     suspend fun syncPlaylist(browseId: String, playlistId: String) {
         val playlistPage = YouTube.playlist(browseId).completed().getOrNull() ?: return
         database.transaction {
