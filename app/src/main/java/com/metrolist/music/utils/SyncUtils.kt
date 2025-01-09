@@ -6,13 +6,14 @@ import com.metrolist.innertube.models.ArtistItem
 import com.metrolist.innertube.models.PlaylistItem
 import com.metrolist.innertube.models.SongItem
 import com.metrolist.innertube.utils.completed
+import com.metrolist.innertube.utils.completedLibraryPage
 import com.metrolist.music.db.MusicDatabase
 import com.metrolist.music.db.entities.ArtistEntity
 import com.metrolist.music.db.entities.PlaylistEntity
 import com.metrolist.music.db.entities.PlaylistSongMap
 import com.metrolist.music.db.entities.SongEntity
 import com.metrolist.music.models.toMediaMetadata
-import com.metrolist.innertube.utils.completedLibraryPage
+import com.metrolist.music.playback.DownloadUtil
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import java.time.LocalDateTime
@@ -22,6 +23,7 @@ import javax.inject.Singleton
 @Singleton
 class SyncUtils @Inject constructor(
     val database: MusicDatabase,
+    private val downloadUtil: DownloadUtil
 ) {
     suspend fun syncLikedSongs() {
         YouTube.playlist("LM").completed().onSuccess { page ->
@@ -37,11 +39,13 @@ class SyncUtils @Inject constructor(
                         else -> if (!dbSong.song.liked) update(dbSong.song.localToggleLike())
                     }
                 }
+                val songs = database.likedSongsNotDownloaded().first().map { it.song }
+                downloadUtil.autoDownloadIfLiked(songs)
             }
         }
     }
     suspend fun syncLikedAlbums() {
-        YouTube.libraryAlbums().completedLibraryPage()?.onSuccess { page ->
+        YouTube.libraryAlbums().completedLibraryPage().onSuccess { page ->
             val albums = page.items.filterIsInstance<AlbumItem>().reversed()
             database.albumsLikedByNameAsc().first()
                 .filterNot { it.id in albums.map(AlbumItem::id) }
@@ -51,20 +55,18 @@ class SyncUtils @Inject constructor(
                 YouTube.album(album.browseId).onSuccess { albumPage ->
                     when (dbAlbum) {
                         null -> {
-                        database.insert(albumPage)
-                        database.album(album.id).firstOrNull()?.let {
-                            database.update(it.album.localToggleLike())
+                            database.insert(albumPage)
+                            database.album(album.id).firstOrNull()?.let { database.update(it.album) }
                         }
-                    }
-                    else -> if (dbAlbum.album.bookmarkedAt == null)
-                        database.update(dbAlbum.album.localToggleLike())
+                        else -> if (dbAlbum.album.bookmarkedAt == null)
+                            database.update(dbAlbum.album.localToggleLike())
                     }
                 }
             }
         }
     }
     suspend fun syncArtistsSubscriptions() {
-        YouTube.libraryArtistsSubscriptions().completedLibraryPage()?.onSuccess { page ->
+        YouTube.libraryArtistsSubscriptions().completedLibraryPage().onSuccess { page ->
             val artists = page.items.filterIsInstance<ArtistItem>()
             database.artistsBookmarkedByNameAsc().first()
                 .filterNot { it.id in artists.map(ArtistItem::id) }
@@ -96,7 +98,8 @@ class SyncUtils @Inject constructor(
             val playlistList = page.items.filterIsInstance<PlaylistItem>().drop(1).reversed()
                 .filterNot { it.id == "SE" }
             val dbPlaylists = database.playlistsByNameAsc().first()
-            dbPlaylists.filterNot { it.playlist.browseId in playlistList.map(PlaylistItem::id) }
+            dbPlaylists
+                .filterNot { it.playlist.browseId in playlistList.map(PlaylistItem::id) }
                 .filterNot { it.playlist.browseId == null }
                 .forEach { database.update(it.playlist.localToggleLike()) }
             playlistList.onEach { playlist ->
