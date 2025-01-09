@@ -122,12 +122,14 @@ fun LibraryMixScreen(
     collator.strength = Collator.PRIMARY
     allItems =
         when (sortType) {
-            MixSortType.CREATE_DATE ->
+            MixSortType.CREATE_DATE -> 
                 allItems.sortedBy { item ->
                     when (item) {
                         is Album -> item.album.bookmarkedAt
                         is Artist -> item.artist.bookmarkedAt
-                        is Playlist -> item.playlist.bookmarkedAt
+                        is Playlist -> {
+                            item.playlist.createdAt ?: item.playlist.bookmarkedAt
+                        }
                         else -> LocalDateTime.now()
                     }
                 }
