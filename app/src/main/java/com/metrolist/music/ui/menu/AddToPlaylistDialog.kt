@@ -150,6 +150,7 @@ fun AddToPlaylistDialog(
                                 name = playlistName,
                                 browseId = browseId,
                                 bookmarkedAt = LocalDateTime.now()
+                                isEditable = !syncedPlaylist,
                             )
                         )
                     }
@@ -177,6 +178,7 @@ fun AddToPlaylistDialog(
                         horizontalArrangement = Arrangement.End
                     ) {
                         Switch(
+                            enabled = !noSyncing,
                             checked = syncedPlaylist,
                             onCheckedChange = {
                                 syncedPlaylist = !syncedPlaylist
