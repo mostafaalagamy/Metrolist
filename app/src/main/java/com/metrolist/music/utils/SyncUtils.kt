@@ -13,7 +13,6 @@ import com.metrolist.music.db.entities.PlaylistEntity
 import com.metrolist.music.db.entities.PlaylistSongMap
 import com.metrolist.music.db.entities.SongEntity
 import com.metrolist.music.models.toMediaMetadata
-import com.metrolist.music.playback.DownloadUtil
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import java.time.LocalDateTime
@@ -23,7 +22,6 @@ import javax.inject.Singleton
 @Singleton
 class SyncUtils @Inject constructor(
     val database: MusicDatabase,
-    private val downloadUtil: DownloadUtil
 ) {
     suspend fun syncLikedSongs() {
         YouTube.playlist("LM").completed().onSuccess { page ->
@@ -39,8 +37,6 @@ class SyncUtils @Inject constructor(
                         else -> if (!dbSong.song.liked) update(dbSong.song.localToggleLike())
                     }
                 }
-                val songs = database.likedSongsNotDownloaded().first().map { it.song }
-                downloadUtil.autoDownloadIfLiked(songs)
             }
         }
     }
