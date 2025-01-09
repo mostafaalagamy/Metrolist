@@ -90,7 +90,7 @@ class SyncUtils @Inject constructor(
         }
     }
     suspend fun syncSavedPlaylists() {
-        YouTube.library("FEmusic_liked_playlists").completedLibraryPage()?.onSuccess { page ->
+        YouTube.likedPlaylists().completedLibraryPage()?.onSuccess { page ->
             val playlistList = page.items.filterIsInstance<PlaylistItem>()
                     .filterNot { it.id == "LM" ||  it.id == "SE" }
                     .reversed()
