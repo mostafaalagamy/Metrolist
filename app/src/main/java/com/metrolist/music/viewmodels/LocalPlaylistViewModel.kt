@@ -15,7 +15,6 @@ import com.metrolist.music.utils.dataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
@@ -39,7 +38,7 @@ class LocalPlaylistViewModel
             database
                 .playlist(playlistId)
                 .stateIn(viewModelScope, SharingStarted.Lazily, null)
-        val playlistSongs: StateFlow<List<PlaylistSong>> =
+        val playlistSongs = combine(
             combine(
                 database.playlistSongs(playlistId),
                 context.dataStore.data
@@ -50,12 +49,12 @@ class LocalPlaylistViewModel
                 when (sortType) {
                     PlaylistSongSortType.CUSTOM -> songs
                     PlaylistSongSortType.CREATE_DATE -> songs.sortedBy { it.map.id }
-                    PlaylistSongSortType.NAME -> songs.sortedBy { it.song.song.title }
+                    PlaylistSongSortType.NAME -> songs.sortedBy { it.song.song.title.lowercase() }
                     PlaylistSongSortType.ARTIST -> {
                         val collator = Collator.getInstance(Locale.getDefault())
                         collator.strength = Collator.PRIMARY
                         songs
-                            .sortedWith(compareBy(collator) { song -> song.song.artists.joinToString("") { it.name } })
+                            .sortedWith(compareBy(collator) { song -> song.song.artists.joinToString("") { it.name }.lowercase() })
                             .groupBy { it.song.album?.title }
                             .flatMap { (_, songsByAlbum) -> songsByAlbum.sortedBy { it.song.artists.joinToString("") { it.name } } }
                     }
