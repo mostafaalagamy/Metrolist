@@ -127,9 +127,7 @@ fun LibraryMixScreen(
                     when (item) {
                         is Album -> item.album.bookmarkedAt
                         is Artist -> item.artist.bookmarkedAt
-                        is Playlist -> {
-                            item.playlist.createdAt ?: item.playlist.bookmarkedAt
-                        }
+                        is Playlist -> item.playlist.bookmarkedAt
                         else -> LocalDateTime.now()
                     }
                 }
