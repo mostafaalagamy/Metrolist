@@ -116,7 +116,7 @@ class SyncUtils @Inject constructor(
 
                     database.insert(playlistEntity)
                 } else database.update(playlistEntity, playlist)
-            }.forEach { playlist ->
+            }.forEach {
                 syncPlaylist(playlist.id, playlistEntity.id)
             }
         }
