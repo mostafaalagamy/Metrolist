@@ -94,7 +94,7 @@ class SyncUtils @Inject constructor(
             val playlistList = page.items.filterIsInstance<PlaylistItem>()
                     .filterNot { it.id == "LM" ||  it.id == "SE" }
                     .reversed()
-            val dbPlaylists = database.playlistsByNameAsc().first()
+            val dbPlaylists = database.playlistInLibraryAsc().first()
             dbPlaylists
                 .filterNot { it.playlist.browseId in playlistList.map(PlaylistItem::id) }
                 .filterNot { it.playlist.browseId == null }
@@ -117,20 +117,21 @@ class SyncUtils @Inject constructor(
                     database.insert(playlistEntity)
                 } else database.update(playlistEntity, playlist)
             }.forEach { playlist ->
-                val updatedPlaylist =
+                val dbPlaylists =
                     database.playlistByBrowseId(Playlist.id).firstOrNull()
-                        updatedPlaylist?.let {
-                val playlistSongMaps = database.songMapsToPlaylist(updatedPlaylist.id)
-                    if (updatedPlaylist.playlist.isEditable || playlistSongMaps.isNotEmpty()) {
-                        syncPlaylist(Playlist.id, updatedPlaylist.id)
+                        dbPlaylists?.let {
+                val playlistSongMaps = database.playlistSongMaps(dbPlaylists.id)
+                    if (dbPlaylists.playlist.isEditable || playlistSongMaps.isNotEmpty()) {
+                        syncPlaylist(
+                            Playlist.id,
+                            playlistEntity.id,
+                            dbPlaylists.id
+                        )
                     }
                 }
             }
         }
     }
-
-                                
-
                                     
     suspend fun syncPlaylist(browseId: String, playlistId: String) {
         val playlistPage = YouTube.playlist(browseId).completed().getOrNull() ?: return
