@@ -38,7 +38,7 @@ class LocalPlaylistViewModel
             database
                 .playlist(playlistId)
                 .stateIn(viewModelScope, SharingStarted.Lazily, null)
-        val playlistSongs = combine(
+        val playlistSongs =
             combine(
                 database.playlistSongs(playlistId),
                 context.dataStore.data
