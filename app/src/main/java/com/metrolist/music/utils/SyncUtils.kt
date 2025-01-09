@@ -98,10 +98,9 @@ class SyncUtils @Inject constructor(
                 .reversed()
                 .filterNot { it.id == "SE" }
             val dbPlaylists = database.playlistsByNameAsc().first()
-
             dbPlaylists.filterNot { it.playlist.browseId in playlistList.map(PlaylistItem::id) }
+                .filterNot { it.playlist.browseId == null }
                 .forEach { database.update(it.playlist.localToggleLike()) }
-
             playlistList.onEach { playlist ->
                 var playlistEntity = dbPlaylists.find { playlist.id == it.playlist.browseId }?.playlist
                 if (playlistEntity == null) {
