@@ -755,53 +755,74 @@ interface DatabaseDao {
     fun albumArtistMaps(albumId: String): List<AlbumArtistMap>
 
     @Transaction
-    @Query(
-    "SELECT *, (SELECT COUNT(*) FROM playlist_song_map WHERE playlistId = playlist.id) AS songCount " +
-    "FROM playlist " +
-    "ORDER BY CASE WHEN bookmarkedAt IS NOT NULL THEN 0 ELSE 1 END, rowId"
+@Query(
+    """SELECT *, 
+        (SELECT COUNT(*) FROM playlist_song_map WHERE playlistId = playlist.id) AS songCount 
+    FROM playlist 
+    WHERE bookmarkedAt IS NOT NULL OR id IN (
+        SELECT id FROM playlist WHERE bookmarkedAt IS NULL
     )
-    fun playlistsByCreateDateAsc(): Flow<List<Playlist>>
+    ORDER BY 
+        CASE WHEN bookmarkedAt IS NOT NULL THEN 0 ELSE 1 END,
+        id ASC"""
+)
+fun playlistsByCreateDateAsc(): Flow<List<Playlist>>
 
-    @Transaction
-    @Query(
-    "SELECT *, (SELECT COUNT(*) FROM playlist_song_map WHERE playlistId = playlist.id) AS songCount " +
-    "FROM playlist " +
-    "ORDER BY CASE WHEN bookmarkedAt IS NOT NULL THEN 0 ELSE 1 END, lastUpdateTime",
+@Transaction
+@Query(
+    """SELECT *, 
+        (SELECT COUNT(*) FROM playlist_song_map WHERE playlistId = playlist.id) AS songCount 
+    FROM playlist 
+    WHERE bookmarkedAt IS NOT NULL OR id IN (
+        SELECT id FROM playlist WHERE bookmarkedAt IS NULL
     )
-    fun playlistsByUpdatedDateAsc(): Flow<List<Playlist>>
+    ORDER BY 
+        CASE WHEN bookmarkedAt IS NOT NULL THEN 0 ELSE 1 END,
+        lastUpdateTime ASC"""
+)
+fun playlistsByUpdatedDateAsc(): Flow<List<Playlist>>
 
-    @Transaction
-    @Query(
-    "SELECT *, (SELECT COUNT(*) FROM playlist_song_map WHERE playlistId = playlist.id) AS songCount " +
-    "FROM playlist " +
-    "ORDER BY CASE WHEN bookmarkedAt IS NOT NULL THEN 0 ELSE 1 END, name")
-    fun playlistsByNameAsc(): Flow<List<Playlist>>
+@Transaction
+@Query(
+    """SELECT *, 
+        (SELECT COUNT(*) FROM playlist_song_map WHERE playlistId = playlist.id) AS songCount 
+    FROM playlist 
+    WHERE bookmarkedAt IS NOT NULL OR id IN (
+        SELECT id FROM playlist WHERE bookmarkedAt IS NULL
+    )
+    ORDER BY 
+        CASE WHEN bookmarkedAt IS NOT NULL THEN 0 ELSE 1 END,
+        name COLLATE NOCASE ASC"""
+)
+fun playlistsByNameAsc(): Flow<List<Playlist>>
 
-    @Transaction
-    @Query(
-    "SELECT *, (SELECT COUNT(*) FROM playlist_song_map WHERE playlistId = playlist.id) AS songCount " +
-    "FROM playlist " +
-    "ORDER BY CASE WHEN bookmarkedAt IS NOT NULL THEN 0 ELSE 1 END, songCount")
-    fun playlistsBySongCountAsc(): Flow<List<Playlist>>
+@Transaction
+@Query(
+    """SELECT *, 
+        (SELECT COUNT(*) FROM playlist_song_map WHERE playlistId = playlist.id) AS songCount 
+    FROM playlist 
+    WHERE bookmarkedAt IS NOT NULL OR id IN (
+        SELECT id FROM playlist WHERE bookmarkedAt IS NULL
+    )
+    ORDER BY 
+        CASE WHEN bookmarkedAt IS NOT NULL THEN 0 ELSE 1 END,
+        songCount ASC"""
+)
+fun playlistsBySongCountAsc(): Flow<List<Playlist>>
 
-    fun playlists(
+fun playlists(
     sortType: PlaylistSortType,
     descending: Boolean,
 ) = when (sortType) {
-    PlaylistSortType.CREATE_DATE -> playlistsByCreateDateAsc().map { playlists ->
-        playlists.sortedWith(compareBy { it.playlist.id })
-    }
-    PlaylistSortType.NAME -> playlistsByNameAsc().map { playlists ->
-        val collator = Collator.getInstance(Locale.getDefault())
-        collator.strength = Collator.PRIMARY
-        playlists.sortedWith(compareBy(collator) { it.playlist.name })
-    }
-    PlaylistSortType.SONG_COUNT -> playlistsBySongCountAsc().map { playlists ->
-        playlists.sortedWith(compareBy { it.songCount })
-    }
-    PlaylistSortType.LAST_UPDATED -> playlistsByUpdatedDateAsc().map { playlists ->
-        playlists.sortedWith(compareBy { it.playlist.lastUpdateTime })
-    }
+    PlaylistSortType.CREATE_DATE -> playlistsByCreateDateAsc()
+    PlaylistSortType.NAME -> 
+        playlistsByNameAsc().map { playlists ->
+            val collator = Collator.getInstance(Locale.getDefault())
+            collator.strength = Collator.PRIMARY
+            playlists.sortedWith(compareBy(collator) { it.playlist.name })
+        }
+    PlaylistSortType.SONG_COUNT -> playlistsBySongCountAsc()
+    PlaylistSortType.LAST_UPDATED -> playlistsByUpdatedDateAsc()
 }.map { if (descending) it.reversed() else it }
 
     @Transaction
