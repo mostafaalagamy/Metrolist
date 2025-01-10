@@ -281,6 +281,7 @@ fun HomeScreen(
 
                                 SongListItem(
                                     song = song!!,
+                                    showInLibraryIcon = true,
                                     isActive = song!!.id == mediaMetadata?.id,
                                     isPlaying = isPlaying,
                                     trailingContent = {
@@ -1225,6 +1226,7 @@ fun HomeScreen(
                                     .collectAsState(initial = originalSong)
                                 SongListItem(
                                     song = song!!,
+                                    showInLibraryIcon = true,
                                     isActive = song!!.id == mediaMetadata?.id,
                                     isPlaying = isPlaying,
                                     trailingContent = {
