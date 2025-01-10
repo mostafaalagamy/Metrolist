@@ -80,7 +80,7 @@ fun LibraryArtistsScreen(
     val haptic = LocalHapticFeedback.current
     var viewType by rememberEnumPreference(ArtistViewTypeKey, LibraryViewType.GRID)
 
-    var filter by rememberEnumPreference(ArtistFilterKey, ArtistFilter.LIBRARY)
+    var filter by rememberEnumPreference(ArtistFilterKey, ArtistFilter.LIKED)
     val (sortType, onSortTypeChange) = rememberEnumPreference(ArtistSortTypeKey, ArtistSortType.CREATE_DATE)
     val (sortDescending, onSortDescendingChange) = rememberPreference(ArtistSortDescendingKey, true)
     val gridItemSize by rememberEnumPreference(GridItemsSizeKey, GridItemSize.BIG)
@@ -103,8 +103,8 @@ fun LibraryArtistsScreen(
             ChipsRow(
                 chips =
                     listOf(
-                        ArtistFilter.LIBRARY to stringResource(R.string.filter_library),
                         ArtistFilter.LIKED to stringResource(R.string.filter_liked),
+                        ArtistFilter.LIBRARY to stringResource(R.string.filter_library)
                     ),
                 currentValue = filter,
                 onValueUpdate = {
