@@ -80,15 +80,43 @@ fun LibraryArtistsScreen(
     val haptic = LocalHapticFeedback.current
     var viewType by rememberEnumPreference(ArtistViewTypeKey, LibraryViewType.GRID)
 
-    var filter by rememberEnumPreference(ArtistFilterKey, ArtistFilter.ARTISTS)
+    var filter by rememberEnumPreference(ArtistFilterKey, ArtistFilter.LIBRARY)
     val (sortType, onSortTypeChange) = rememberEnumPreference(ArtistSortTypeKey, ArtistSortType.CREATE_DATE)
     val (sortDescending, onSortDescendingChange) = rememberPreference(ArtistSortDescendingKey, true)
     val gridItemSize by rememberEnumPreference(GridItemsSizeKey, GridItemSize.BIG)
 
     val (ytmSync) = rememberPreference(YtmSyncKey, true)
 
+    val filterContent = @Composable {
+        Row {
+            Spacer(Modifier.width(12.dp))
+            FilterChip(
+                label = { Text(stringResource(R.string.artists)) },
+                selected = true,
+                colors = FilterChipDefaults.filterChipColors(containerColor = MaterialTheme.colorScheme.surface),
+                onClick = onDeselect,
+                shape = RoundedCornerShape(16.dp),
+                leadingIcon = {
+                    Icon(painter = painterResource(R.drawable.close), contentDescription = "")
+                },
+            )
+            ChipsRow(
+                chips =
+                    listOf(
+                        ArtistFilter.LIBRARY to stringResource(R.string.filter_library),
+                        ArtistFilter.LIKED to stringResource(R.string.filter_liked),
+                    ),
+                currentValue = filter,
+                onValueUpdate = {
+                    filter = it
+                },
+                modifier = Modifier.weight(1f),
+            )
+        }
+    }
+
     LaunchedEffect(filter) {
-        if (ytmSync && filter == ArtistFilter.ARTISTS) {
+        if (ytmSync && filter == ArtistFilter.LIKED) {
             withContext(Dispatchers.IO) {
                 viewModel.sync()
             }
@@ -110,22 +138,6 @@ fun LibraryArtistsScreen(
                 LibraryViewType.GRID -> lazyGridState.animateScrollToItem(0)
             }
             backStackEntry?.savedStateHandle?.set("scrollToTop", false)
-        }
-    }
-
-    val filterContent = @Composable {
-        Row {
-            Spacer(Modifier.width(12.dp))
-            FilterChip(
-                label = { Text(stringResource(R.string.artists)) },
-                selected = true,
-                colors = FilterChipDefaults.filterChipColors(containerColor = MaterialTheme.colorScheme.surface),
-                onClick = onDeselect,
-                shape = RoundedCornerShape(16.dp),
-                leadingIcon = {
-                    Icon(painter = painterResource(R.drawable.close), contentDescription = "")
-                },
-            )
         }
     }
 
