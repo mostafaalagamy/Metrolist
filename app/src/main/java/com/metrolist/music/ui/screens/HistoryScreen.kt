@@ -224,6 +224,7 @@ fun HistoryScreen(
                             item = song,
                             isActive = song.id == mediaMetadata?.id,
                             isPlaying = isPlaying,
+                            showInLibraryIcon = true,
                             trailingContent = {
                                 IconButton(
                                     onClick = {
@@ -292,6 +293,7 @@ fun HistoryScreen(
                             isActive = event.song.id == mediaMetadata?.id,
                             isPlaying = isPlaying,
                             isSelected = wrappedItem.isSelected && selection,
+                            showInLibraryIcon = true,
                             trailingContent = {
                                 IconButton(
                                     onClick = {
