@@ -785,19 +785,24 @@ interface DatabaseDao {
     fun playlistsBySongCountAsc(): Flow<List<Playlist>>
 
     fun playlists(
-        sortType: PlaylistSortType,
-        descending: Boolean,
-    ) = when (sortType) {
-        PlaylistSortType.CREATE_DATE -> playlistsByCreateDateAsc()
-        PlaylistSortType.NAME ->
-            playlistsByNameAsc().map { playlists ->
-                val collator = Collator.getInstance(Locale.getDefault())
-                collator.strength = Collator.PRIMARY
-                playlists.sortedWith(compareBy(collator) { it.playlist.name })
-            }
-        PlaylistSortType.SONG_COUNT -> playlistsBySongCountAsc()
-        PlaylistSortType.LAST_UPDATED -> playlistsByUpdatedDateAsc()
-    }.map { it.reversed(descending) }
+    sortType: PlaylistSortType,
+    descending: Boolean,
+) = when (sortType) {
+    PlaylistSortType.CREATE_DATE -> playlistsByCreateDateAsc().map { playlists ->
+        playlists.sortedWith(compareBy { it.playlist.rowId })
+    }
+    PlaylistSortType.NAME -> playlistsByNameAsc().map { playlists ->
+        val collator = Collator.getInstance(Locale.getDefault())
+        collator.strength = Collator.PRIMARY
+        playlists.sortedWith(compareBy(collator) { it.playlist.name })
+    }
+    PlaylistSortType.SONG_COUNT -> playlistsBySongCountAsc().map { playlists ->
+        playlists.sortedWith(compareBy { it.songCount })
+    }
+    PlaylistSortType.LAST_UPDATED -> playlistsByUpdatedDateAsc().map { playlists ->
+        playlists.sortedWith(compareBy { it.playlist.lastUpdateTime })
+    }
+}.map { if (descending) it.reversed() else it }
 
     @Transaction
     @Query(
