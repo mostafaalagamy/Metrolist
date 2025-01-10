@@ -88,7 +88,7 @@ fun LibrarySongsScreen(
 
     val songs by viewModel.allSongs.collectAsState()
 
-    var filter by rememberEnumPreference(SongFilterKey, SongFilter.LIBRARY)
+    var filter by rememberEnumPreference(SongFilterKey, SongFilter.LIKED)
 
     LaunchedEffect(filter) {
         if (ytmSync) {
@@ -143,8 +143,8 @@ fun LibrarySongsScreen(
                     ChipsRow(
                         chips =
                             listOf(
-                                SongFilter.LIBRARY to stringResource(R.string.filter_library),
                                 SongFilter.LIKED to stringResource(R.string.filter_liked),
+                                SongFilter.LIBRARY to stringResource(R.string.filter_library),
                                 SongFilter.DOWNLOADED to stringResource(R.string.filter_downloaded),
                             ),
                         currentValue = filter,
