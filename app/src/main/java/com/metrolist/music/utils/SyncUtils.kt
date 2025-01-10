@@ -94,7 +94,7 @@ class SyncUtils @Inject constructor(
             val playlistList = page.items.filterIsInstance<PlaylistItem>()
                     .filterNot { it.id == "LM" ||  it.id == "SE" }
                     .reversed()
-            val dbPlaylists = database.playlistsByNameAsc().first()
+            val dbPlaylists = database.playlistsByCreateDateAsc().first()
             dbPlaylists
                 .filterNot { it.playlist.browseId in playlistList.map(PlaylistItem::id) }
                 .filterNot { it.playlist.browseId == null }
