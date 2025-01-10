@@ -755,63 +755,38 @@ interface DatabaseDao {
     fun albumArtistMaps(albumId: String): List<AlbumArtistMap>
 
 @Transaction
-@Query("""
-    SELECT 
-        p.*, 
-        COUNT(psm.playlistId) AS songCount,
-        SUM(CASE WHEN s.dateDownload IS NOT NULL THEN 1 ELSE 0 END) AS downloadCount
-    FROM playlist p
-        LEFT JOIN playlist_song_map psm ON p.id = psm.playlistId
-        LEFT JOIN song s ON psm.songId = s.id
-    WHERE p.bookmarkedAt IS NOT NULL OR p.isLocal = 1
-    GROUP BY p.id
-    ORDER BY CASE WHEN p.bookmarkedAt IS NOT NULL THEN 0 ELSE 1 END, rowId ASC
-""")
+@Query(
+    "SELECT *, (SELECT COUNT(*) FROM playlist_song_map WHERE playlistId = playlist.id) AS songCount " +
+    "FROM playlist " +
+    "WHERE bookmarkedAt IS NOT NULL OR bookmarkedAt IS NULL " +
+    "ORDER BY rowId"
+)
 fun playlistsByCreateDateAsc(): Flow<List<Playlist>>
 
 @Transaction
-@Query("""
-    SELECT 
-        p.*, 
-        COUNT(psm.playlistId) AS songCount,
-        SUM(CASE WHEN s.dateDownload IS NOT NULL THEN 1 ELSE 0 END) AS downloadCount
-    FROM playlist p
-        LEFT JOIN playlist_song_map psm ON p.id = psm.playlistId
-        LEFT JOIN song s ON psm.songId = s.id
-    WHERE p.bookmarkedAt IS NOT NULL OR p.isLocal = 1
-    GROUP BY p.id
-    ORDER BY CASE WHEN p.bookmarkedAt IS NOT NULL THEN 0 ELSE 1 END, lastUpdateTime, rowId ASC
-""")
+@Query(
+    "SELECT *, (SELECT COUNT(*) FROM playlist_song_map WHERE playlistId = playlist.id) AS songCount " +
+    "FROM playlist " +
+    "ORDER BY lastUpdateTime"
+)
 fun playlistsByUpdatedDateAsc(): Flow<List<Playlist>>
 
 @Transaction
-@Query("""
-    SELECT 
-        p.*, 
-        COUNT(psm.playlistId) AS songCount,
-        SUM(CASE WHEN s.dateDownload IS NOT NULL THEN 1 ELSE 0 END) AS downloadCount
-    FROM playlist p
-        LEFT JOIN playlist_song_map psm ON p.id = psm.playlistId
-        LEFT JOIN song s ON psm.songId = s.id
-    WHERE p.bookmarkedAt IS NOT NULL OR p.isLocal = 1
-    GROUP BY p.id
-    ORDER BY CASE WHEN p.bookmarkedAt IS NOT NULL THEN 0 ELSE 1 END, name, rowId ASC
-""")
+@Query(
+    "SELECT *, (SELECT COUNT(*) FROM playlist_song_map WHERE playlistId = playlist.id) AS songCount " +
+    "FROM playlist " +
+    "WHERE bookmarkedAt IS NOT NULL OR bookmarkedAt IS NULL " +
+    "ORDER BY name"
+)
 fun playlistsByNameAsc(): Flow<List<Playlist>>
 
 @Transaction
-@Query("""
-    SELECT 
-        p.*, 
-        COUNT(psm.playlistId) AS songCount,
-        SUM(CASE WHEN s.dateDownload IS NOT NULL THEN 1 ELSE 0 END) AS downloadCount
-    FROM playlist p
-        LEFT JOIN playlist_song_map psm ON p.id = psm.playlistId
-        LEFT JOIN song s ON psm.songId = s.id
-    WHERE p.bookmarkedAt IS NOT NULL OR p.isLocal = 1
-    GROUP BY p.id
-    ORDER BY CASE WHEN p.bookmarkedAt IS NOT NULL THEN 0 ELSE 1 END, songCount, rowId ASC
-""")
+@Query(
+    "SELECT *, (SELECT COUNT(*) FROM playlist_song_map WHERE playlistId = playlist.id) AS songCount " +
+    "FROM playlist " +
+    "WHERE bookmarkedAt IS NOT NULL OR bookmarkedAt IS NULL " +
+    "ORDER BY songCount"
+)
 fun playlistsBySongCountAsc(): Flow<List<Playlist>>
 
 fun playlists(
