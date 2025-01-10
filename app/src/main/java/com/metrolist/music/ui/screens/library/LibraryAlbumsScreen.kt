@@ -84,7 +84,7 @@ fun LibraryAlbumsScreen(
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
 
     var viewType by rememberEnumPreference(AlbumViewTypeKey, LibraryViewType.GRID)
-    var filter by rememberEnumPreference(AlbumFilterKey, AlbumFilter.ALBUMS)
+    var filter by rememberEnumPreference(AlbumFilterKey, AlbumFilter.LIBRARY)
     val (sortType, onSortTypeChange) = rememberEnumPreference(AlbumSortTypeKey, AlbumSortType.CREATE_DATE)
     val (sortDescending, onSortDescendingChange) = rememberPreference(AlbumSortDescendingKey, true)
     val gridItemSize by rememberEnumPreference(GridItemsSizeKey, GridItemSize.BIG)
@@ -104,11 +104,23 @@ fun LibraryAlbumsScreen(
                     Icon(painter = painterResource(R.drawable.close), contentDescription = "")
                 },
             )
+            ChipsRow(
+                chips =
+                    listOf(
+                        AlbumFilter.LIBRARY to stringResource(R.string.filter_library),
+                        AlbumFilter.LIKED to stringResource(R.string.filter_liked),
+                    ),
+                currentValue = filter,
+                onValueUpdate = {
+                    filter = it
+                },
+                modifier = Modifier.weight(1f),
+            )
         }
     }
 
     LaunchedEffect(filter) {
-        if (ytmSync && filter == AlbumFilter.ALBUMS) {
+        if (ytmSync && filter == AlbumFilter.LIKED) {
             withContext(Dispatchers.IO) {
                 viewModel.sync()
             }
