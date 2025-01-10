@@ -789,7 +789,7 @@ interface DatabaseDao {
     descending: Boolean,
 ) = when (sortType) {
     PlaylistSortType.CREATE_DATE -> playlistsByCreateDateAsc().map { playlists ->
-        playlists.sortedWith(compareBy { it.playlist.rowId })
+        playlists.sortedWith(compareBy { it.playlist.id })
     }
     PlaylistSortType.NAME -> playlistsByNameAsc().map { playlists ->
         val collator = Collator.getInstance(Locale.getDefault())
