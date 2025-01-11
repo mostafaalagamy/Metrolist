@@ -164,7 +164,7 @@ fun LibraryArtistsScreen(
             Spacer(Modifier.weight(1f))
 
             Text(
-                text = pluralStringResource(R.plurals.n_artist, artists!!.size, artists!!.size),
+                text = pluralStringResource(R.plurals.n_artist, artists.size, artists.size),
                 style = MaterialTheme.typography.titleSmall,
                 color = MaterialTheme.colorScheme.secondary,
             )
