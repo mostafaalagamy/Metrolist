@@ -754,55 +754,38 @@ interface DatabaseDao {
     @Query("SELECT * FROM album_artist_map WHERE albumId = :albumId")
     fun albumArtistMaps(albumId: String): List<AlbumArtistMap>
 
-@Transaction
-@Query(
-    "SELECT *, (SELECT COUNT(*) FROM playlist_song_map WHERE playlistId = playlist.id) AS songCount " +
-    "FROM playlist " +
-    "WHERE bookmarkedAt IS NOT NULL OR bookmarkedAt IS NULL " +
-    "ORDER BY rowId"
-)
-fun playlistsByCreateDateAsc(): Flow<List<Playlist>>
+    @Transaction
+    @Query("SELECT *, (SELECT COUNT(*) FROM playlist_song_map WHERE playlistId = playlist.id) AS songCount FROM playlist WHERE bookmarkedAt IS NOT NULL ORDER BY rowId")
+    fun playlistsByCreateDateAsc(): Flow<List<Playlist>>
 
-@Transaction
-@Query(
-    "SELECT *, (SELECT COUNT(*) FROM playlist_song_map WHERE playlistId = playlist.id) AS songCount " +
-    "FROM playlist " +
-    "ORDER BY lastUpdateTime"
-)
-fun playlistsByUpdatedDateAsc(): Flow<List<Playlist>>
+    @Transaction
+    @Query(
+        "SELECT *, (SELECT COUNT(*) FROM playlist_song_map WHERE playlistId = playlist.id) AS songCount FROM playlist ORDER BY lastUpdateTime",
+    )
+    fun playlistsByUpdatedDateAsc(): Flow<List<Playlist>>
 
-@Transaction
-@Query(
-    "SELECT *, (SELECT COUNT(*) FROM playlist_song_map WHERE playlistId = playlist.id) AS songCount " +
-    "FROM playlist " +
-    "WHERE bookmarkedAt IS NOT NULL OR bookmarkedAt IS NULL " +
-    "ORDER BY name"
-)
-fun playlistsByNameAsc(): Flow<List<Playlist>>
+    @Transaction
+    @Query("SELECT *, (SELECT COUNT(*) FROM playlist_song_map WHERE playlistId = playlist.id) AS songCount FROM playlist WHERE bookmarkedAt IS NOT NULL ORDER BY name")
+    fun playlistsByNameAsc(): Flow<List<Playlist>>
 
-@Transaction
-@Query(
-    "SELECT *, (SELECT COUNT(*) FROM playlist_song_map WHERE playlistId = playlist.id) AS songCount " +
-    "FROM playlist " +
-    "WHERE bookmarkedAt IS NOT NULL OR bookmarkedAt IS NULL " +
-    "ORDER BY songCount"
-)
-fun playlistsBySongCountAsc(): Flow<List<Playlist>>
+    @Transaction
+    @Query("SELECT *, (SELECT COUNT(*) FROM playlist_song_map WHERE playlistId = playlist.id) AS songCount FROM playlist WHERE bookmarkedAt IS NOT NULL ORDER BY songCount")
+    fun playlistsBySongCountAsc(): Flow<List<Playlist>>
 
-fun playlists(
-    sortType: PlaylistSortType,
-    descending: Boolean,
-) = when (sortType) {
-    PlaylistSortType.CREATE_DATE -> playlistsByCreateDateAsc()
-    PlaylistSortType.NAME ->
-        playlistsByNameAsc().map { playlists ->
-            val collator = Collator.getInstance(Locale.getDefault())
-            collator.strength = Collator.PRIMARY
-            playlists.sortedWith(compareBy(collator) { it.playlist.name })
-        }
-    PlaylistSortType.SONG_COUNT -> playlistsBySongCountAsc()
-    PlaylistSortType.LAST_UPDATED -> playlistsByUpdatedDateAsc()
-}.map { it.reversed(descending) }
+    fun playlists(
+        sortType: PlaylistSortType,
+        descending: Boolean,
+    ) = when (sortType) {
+        PlaylistSortType.CREATE_DATE -> playlistsByCreateDateAsc()
+        PlaylistSortType.NAME ->
+            playlistsByNameAsc().map { playlists ->
+                val collator = Collator.getInstance(Locale.getDefault())
+                collator.strength = Collator.PRIMARY
+                playlists.sortedWith(compareBy(collator) { it.playlist.name })
+            }
+        PlaylistSortType.SONG_COUNT -> playlistsBySongCountAsc()
+        PlaylistSortType.LAST_UPDATED -> playlistsByUpdatedDateAsc()
+    }.map { it.reversed(descending) }
 
     @Transaction
     @Query(
