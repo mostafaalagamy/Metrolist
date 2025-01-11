@@ -172,7 +172,7 @@ fun LibraryAlbumsScreen(
             Spacer(Modifier.weight(1f))
 
             Text(
-                text = pluralStringResource(R.plurals.n_album, albums.size, albums.size),
+                text = pluralStringResource(R.plurals.n_album, albums!!.size, albums!!.size),
                 style = MaterialTheme.typography.titleSmall,
                 color = MaterialTheme.colorScheme.secondary,
             )
@@ -218,6 +218,17 @@ fun LibraryAlbumsScreen(
                         contentType = CONTENT_TYPE_HEADER,
                     ) {
                         headerContent()
+                    }
+
+                    albums?.let { albums ->
+                        if (albums.isEmpty()) {
+                            item {
+                                EmptyPlaceholder(
+                                    icon = R.drawable.album,
+                                    text = stringResource(R.string.library_album_empty),
+                                    modifier = Modifier.animateItem()
+                            )
+                        }
                     }
 
                     items(
@@ -268,6 +279,7 @@ fun LibraryAlbumsScreen(
                         )
                     }
                 }
+            }
 
             LibraryViewType.GRID ->
                 LazyVerticalGrid(
@@ -292,6 +304,17 @@ fun LibraryAlbumsScreen(
                         contentType = CONTENT_TYPE_HEADER,
                     ) {
                         headerContent()
+                    }
+
+                    albums?.let { albums ->
+                        if (albums.isEmpty()) {
+                            item(span = { GridItemSpan(maxLineSpan) }) {
+                                EmptyPlaceholder(
+                                    icon = R.drawable.album,
+                                    text = stringResource(R.string.library_album_empty),
+                                    modifier = Modifier.animateItem()
+                            )
+                        }
                     }
 
                     items(
@@ -326,6 +349,7 @@ fun LibraryAlbumsScreen(
                         )
                     }
                 }
+            }
         }
     }
 }
