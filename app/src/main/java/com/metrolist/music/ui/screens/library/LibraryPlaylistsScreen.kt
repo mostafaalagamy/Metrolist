@@ -379,7 +379,8 @@ fun LibraryPlaylistsScreen(
                                             }
                                         },
                                     ).animateItem(),
-                        )
+                            )
+                        }
                     }
                 }
 
@@ -506,7 +507,8 @@ fun LibraryPlaylistsScreen(
                                             }
                                         },
                                     ).animateItem(),
-                        )
+                            )
+                        }
                     }
                 }
 
