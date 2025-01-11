@@ -91,6 +91,9 @@ fun LibraryPlaylistsScreen(
 
     val coroutineScope = rememberCoroutineScope()
 
+    val likedSongs by viewModel.likedSongs.collectAsState()
+    val downloadSongs by viewModel.downloadSongs.collectAsState(initial = null)
+
     var viewType by rememberEnumPreference(PlaylistViewTypeKey, LibraryViewType.GRID)
     val (sortType, onSortTypeChange) = rememberEnumPreference(PlaylistSortTypeKey, PlaylistSortType.CREATE_DATE)
     val (sortDescending, onSortDescendingChange) = rememberPreference(PlaylistSortDescendingKey, true)
@@ -126,6 +129,13 @@ fun LibraryPlaylistsScreen(
 
     val backStackEntry by navController.currentBackStackEntryAsState()
     val scrollToTop = backStackEntry?.savedStateHandle?.getStateFlow("scrollToTop", false)?.collectAsState()
+    val (ytmSync) = rememberPreference(YtmSyncKey, true)
+
+    LaunchedEffect(Unit){
+        if (ytmSync){
+            viewModel.sync()
+        }
+    }
 
     LaunchedEffect(scrollToTop?.value) {
         if (scrollToTop?.value == true) {
@@ -134,14 +144,6 @@ fun LibraryPlaylistsScreen(
                 LibraryViewType.GRID -> lazyGridState.animateScrollToItem(0)
             }
             backStackEntry?.savedStateHandle?.set("scrollToTop", false)
-        }
-    }
-
-    val (ytmSync) = rememberPreference(YtmSyncKey, true)
-
-    LaunchedEffect(Unit){
-        if (ytmSync){
-            viewModel.sync()
         }
     }
 
@@ -280,6 +282,12 @@ fun LibraryPlaylistsScreen(
                         headerContent()
                     }
 
+                    playlists?.let { playlists ->
+                        if (playlists.isEmpty()) {
+                            item {
+                        }
+                    }
+
                     item(
                         key = "likedPlaylist",
                         contentType = { CONTENT_TYPE_PLAYLIST },
@@ -407,6 +415,12 @@ fun LibraryPlaylistsScreen(
                         contentType = CONTENT_TYPE_HEADER,
                     ) {
                         headerContent()
+                    }
+
+                    playlists?.let { playlists ->
+                        if (playlists.isEmpty()) {
+                            item(span = { GridItemSpan(maxLineSpan) }) {
+                        }
                     }
 
                     item(
