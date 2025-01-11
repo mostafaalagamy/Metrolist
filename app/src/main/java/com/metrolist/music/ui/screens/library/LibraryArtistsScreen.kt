@@ -212,6 +212,17 @@ fun LibraryArtistsScreen(
                         headerContent()
                     }
 
+                    artists?.let { artists ->
+                        if (artists.isEmpty()) {
+                            item {
+                                EmptyPlaceholder(
+                                    icon = R.drawable.artist,
+                                    text = stringResource(R.string.library_artist_empty),
+                                    modifier = Modifier.animateItem()
+                            )
+                        }
+                    }
+
                     items(
                         items = artists,
                         key = { it.id },
@@ -258,6 +269,7 @@ fun LibraryArtistsScreen(
                         )
                     }
                 }
+            }
 
             LibraryViewType.GRID ->
                 LazyVerticalGrid(
@@ -282,6 +294,17 @@ fun LibraryArtistsScreen(
                         contentType = CONTENT_TYPE_HEADER,
                     ) {
                         headerContent()
+                    }
+
+                    artists?.let { artists ->
+                        if (artists.isEmpty()) {
+                            item(span = { GridItemSpan(maxLineSpan) }) {
+                                EmptyPlaceholder(
+                                    icon = R.drawable.artist,
+                                    text = stringResource(R.string.library_artist_empty),
+                                    modifier = Modifier.animateItem()
+                            )
+                        }
                     }
 
                     items(
@@ -313,6 +336,7 @@ fun LibraryArtistsScreen(
                         )
                     }
                 }
+            }       
         }
     }
 }
