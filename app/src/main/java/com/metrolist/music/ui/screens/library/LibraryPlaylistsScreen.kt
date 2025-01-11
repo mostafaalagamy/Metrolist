@@ -234,7 +234,7 @@ fun LibraryPlaylistsScreen(
             Spacer(Modifier.weight(1f))
 
             Text(
-                text = pluralStringResource(R.plurals.n_playlist, playlists?.size ?: 0, playlists?.size ?: 0)
+                text = pluralStringResource(R.plurals.n_playlist, playlists!!.size, playlists!!.size)
                 style = MaterialTheme.typography.titleSmall,
                 color = MaterialTheme.colorScheme.secondary,
             )
