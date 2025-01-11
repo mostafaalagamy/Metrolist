@@ -751,6 +751,10 @@ interface DatabaseDao {
     fun albumWithSongs(albumId: String): Flow<AlbumWithSongs?>
 
     @Transaction
+    @Query("SELECT * FROM album_artist_map WHERE albumId = :albumId")
+    fun albumArtistMaps(albumId: String): List<AlbumArtistMap>
+
+    @Transaction
     @Query(
     "SELECT *, (SELECT COUNT(*) FROM playlist_song_map WHERE playlistId = playlist.id) AS songCount " +
     "FROM playlist " +
