@@ -9,6 +9,7 @@ import androidx.room.RawQuery
 import androidx.room.Transaction
 import androidx.room.Update
 import androidx.room.Upsert
+import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
 import com.metrolist.innertube.models.SongItem
 import com.metrolist.innertube.models.PlaylistItem
