@@ -754,83 +754,58 @@ interface DatabaseDao {
     @Query("SELECT * FROM album_artist_map WHERE albumId = :albumId")
     fun albumArtistMaps(albumId: String): List<AlbumArtistMap>
 
+        @Transaction
+    @RawQuery(observedEntities = [PlaylistEntity::class])
+    fun _getPlaylists(query: SupportSQLiteQuery): Flow<List<Playlist>>
+    private fun queryPlaylists(orderBy: String): SimpleSQLiteQuery {
+        return SimpleSQLiteQuery("""
+            SELECT p.*, COUNT(psm.playlistId) AS songCount
+            FROM playlist p
+                LEFT JOIN playlist_song_map psm ON p.id = psm.playlistId
+            WHERE p.bookmarkedAt IS NOT NULL OR p.isLocal = 1
+            GROUP BY p.id
+            ORDER BY $orderBy
+        """)
+    }
+    fun playlistsByCreateDateAsc(): Flow<List<Playlist>> = _getPlaylists(queryPlaylists("p.rowId"))
+    fun playlistsByNameAsc(): Flow<List<Playlist>> = _getPlaylists(queryPlaylists("p.name COLLATE NOCASE ASC"))
+    fun playlistsBySongCountAsc(): Flow<List<Playlist>> = _getPlaylists(queryPlaylists("songCount ASC"))
+    fun editablePlaylistsByCreateDateAsc(): Flow<List<Playlist>> = _getPlaylists(queryPlaylists("p.rowId ASC"))
+    fun playlists(sortType: PlaylistSortType, descending: Boolean) =
+        when (sortType) {
+            PlaylistSortType.CREATE_DATE -> playlistsByCreateDateAsc()
+            PlaylistSortType.NAME -> playlistsByNameAsc()
+            PlaylistSortType.SONG_COUNT -> playlistsBySongCountAsc()
+        }.map { it.reversed(descending) }
+    private fun queryPlaylistsWithDownloads(orderBy: String): SimpleSQLiteQuery {
+        return SimpleSQLiteQuery("""
+            SELECT p.*, COUNT(psm.playlistId) AS songCount
+            FROM playlist p
+                LEFT JOIN playlist_song_map psm ON p.id = psm.playlistId
+                INNER JOIN song s ON psm.songId = s.id and s.dateDownload IS NOT NULL
+            WHERE p.bookmarkedAt IS NOT NULL OR p.isLocal = 1
+            GROUP BY p.id
+            ORDER BY $orderBy
+        """)
+    }
+    fun playlistsWithDownloadsByCreateDateAsc(): Flow<List<Playlist>> = _getPlaylists(queryPlaylistsWithDownloads("p.rowId"))
+    fun playlistsWithDownloadsByNameAsc(): Flow<List<Playlist>> = _getPlaylists(queryPlaylistsWithDownloads("p.name COLLATE NOCASE ASC"))
+    fun playlistsWithDownloadsBySongCountAsc(): Flow<List<Playlist>> = _getPlaylists(queryPlaylistsWithDownloads("songCount ASC"))
+    fun playlistsWithDownloads(sortType: PlaylistSortType, descending: Boolean) =
+        when (sortType) {
+            PlaylistSortType.CREATE_DATE -> playlistsWithDownloadsByCreateDateAsc()
+            PlaylistSortType.NAME -> playlistsWithDownloadsByNameAsc()
+            PlaylistSortType.SONG_COUNT -> playlistsWithDownloadsBySongCountAsc()
+        }.map { it.reversed(descending) }
     @Transaction
-    @Query(
-    "SELECT *, (SELECT COUNT(*) FROM playlist_song_map WHERE playlistId = playlist.id) AS songCount " +
-    "FROM playlist " +
-    "WHERE bookmarkedAt IS NOT NULL OR bookmarkedAt IS NULL " +
-    "ORDER BY rowId"
-    )
-    fun playlistsByCreateDateAsc(): Flow<List<Playlist>>
-
-    @Transaction
-    @Query(
-    "SELECT *, (SELECT COUNT(*) FROM playlist_song_map WHERE playlistId = playlist.id) AS songCount " +
-    "FROM playlist " +
-    "ORDER BY lastUpdateTime"
-    )
-    fun playlistsByUpdatedDateAsc(): Flow<List<Playlist>>
-
-    @Transaction
-    @Query(
-    "SELECT *, (SELECT COUNT(*) FROM playlist_song_map WHERE playlistId = playlist.id) AS songCount " +
-    "FROM playlist " +
-    "WHERE bookmarkedAt IS NOT NULL OR bookmarkedAt IS NULL " +
-    "ORDER BY name"
-    )
-    fun playlistsByNameAsc(): Flow<List<Playlist>>
-
-    @Transaction
-    @Query(
-    "SELECT *, (SELECT COUNT(*) FROM playlist_song_map WHERE playlistId = playlist.id) AS songCount " +
-    "FROM playlist " +
-    "WHERE bookmarkedAt IS NOT NULL OR bookmarkedAt IS NULL " +
-    "ORDER BY songCount"
-    )
-    fun playlistsBySongCountAsc(): Flow<List<Playlist>>
-
-    fun playlists(
-        sortType: PlaylistSortType,
-        descending: Boolean,
-    ) = when (sortType) {
-        PlaylistSortType.CREATE_DATE -> playlistsByCreateDateAsc()
-        PlaylistSortType.NAME ->
-            playlistsByNameAsc().map { playlists ->
-                val collator = Collator.getInstance(Locale.getDefault())
-                    collator.strength = Collator.PRIMARY
-                    playlists.sortedWith(compareBy(collator) { it.playlist.name })
-            }
-        PlaylistSortType.SONG_COUNT -> playlistsBySongCountAsc()
-        PlaylistSortType.LAST_UPDATED -> playlistsByUpdatedDateAsc()
-    }.map { it.reversed(descending) }
-
-    @Transaction
-    @Query(
-        "SELECT *, (SELECT COUNT(*) FROM playlist_song_map WHERE playlistId = playlist.id) AS songCount FROM playlist WHERE id = :playlistId",
-    )
+    @Query("SELECT *, (SELECT COUNT(*) FROM playlist_song_map WHERE playlistId = playlist.id) AS songCount FROM playlist WHERE id = :playlistId")
     fun playlist(playlistId: String): Flow<Playlist?>
-
-    @Transaction
-    @Query("SELECT *, (SELECT COUNT(*) FROM playlist_song_map WHERE playlistId = playlist.id) AS songCount FROM playlist WHERE isEditable AND bookmarkedAt IS NOT NULL ORDER BY rowId")
-    fun editablePlaylistsByCreateDateAsc(): Flow<List<Playlist>>
-
-    @Transaction
-    @Query("SELECT *, (SELECT COUNT(*) FROM playlist_song_map WHERE playlistId = playlist.id) AS songCount FROM playlist WHERE browseId = :browseId")
-    fun playlistByBrowseId(browseId: String): Flow<Playlist?>
-
-    @Transaction
-    @Query("SELECT COUNT(*) from playlist_song_map WHERE playlistId = :playlistId AND songId = :songId LIMIT 1")
-    fun checkInPlaylist(
-        playlistId: String,
-        songId: String,
-    ): Int
-
     @Query("SELECT songId from playlist_song_map WHERE playlistId = :playlistId AND songId IN (:songIds)")
     fun playlistDuplicates(
         playlistId: String,
         songIds: List<String>,
     ): List<String>
-    @Transaction
+
     fun addSongToPlaylist(playlist: Playlist, songIds: List<String>) {
         var position = playlist.songCount
         songIds.forEach { id ->
