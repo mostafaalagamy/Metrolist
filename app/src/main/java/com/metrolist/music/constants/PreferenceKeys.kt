@@ -121,14 +121,6 @@ enum class AlbumFilter {
     LIKED
 }
 
-enum class LibraryFilter {
-    SONGS,
-    ARTISTS,
-    ALBUMS,
-    PLAYLISTS,
-    LIBRARY
-}
-
 enum class SongSortType {
     CREATE_DATE,
     NAME,
