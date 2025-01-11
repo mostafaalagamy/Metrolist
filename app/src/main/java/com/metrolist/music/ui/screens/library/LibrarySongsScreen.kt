@@ -100,10 +100,8 @@ fun LibrarySongsScreen(
         }
     }
 
-    val wrappedSongs = songs.map { item -> ItemWrapper(item) }.toMutableList()
-    var selection by remember {
-        mutableStateOf(false)
-    }
+    val wrappedSongs = songs?.map { item -> ItemWrapper(item) }?.toMutableList() ?: mutableListOf()
+    var selection by remember { mutableStateOf(false) }
 
     val lazyListState = rememberLazyListState()
 
@@ -141,16 +139,13 @@ fun LibrarySongsScreen(
                         },
                     )
                     ChipsRow(
-                        chips =
-                            listOf(
-                                SongFilter.LIKED to stringResource(R.string.filter_liked),
-                                SongFilter.LIBRARY to stringResource(R.string.filter_library),
-                                SongFilter.DOWNLOADED to stringResource(R.string.filter_downloaded),
-                            ),
+                        chips = listOf(
+                            SongFilter.LIKED to stringResource(R.string.filter_liked),
+                            SongFilter.LIBRARY to stringResource(R.string.filter_library),
+                            SongFilter.DOWNLOADED to stringResource(R.string.filter_downloaded),
+                        ),
                         currentValue = filter,
-                        onValueUpdate = {
-                            filter = it
-                        },
+                        onValueUpdate = { filter = it },
                         modifier = Modifier.weight(1f),
                     )
                 }
@@ -160,20 +155,19 @@ fun LibrarySongsScreen(
                 key = "header",
                 contentType = CONTENT_TYPE_HEADER,
             ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
                     if (selection) {
                         val count = wrappedSongs.count { it.isSelected }
-                        IconButton(
-                            onClick = { selection = false },
-                        ) {
+                        IconButton(onClick = { selection = false }) {
                             Icon(
                                 painter = painterResource(R.drawable.close),
                                 contentDescription = null,
                             )
                         }
-                        Text(text = pluralStringResource(R.plurals.n_song, count, count), modifier = Modifier.weight(1f))
+                        Text(
+                            text = pluralStringResource(R.plurals.n_song, count, count),
+                            modifier = Modifier.weight(1f),
+                        )
                         IconButton(
                             onClick = {
                                 if (count == wrappedSongs.size) {
@@ -184,11 +178,12 @@ fun LibrarySongsScreen(
                             },
                         ) {
                             Icon(
-                                painter = painterResource(if (count == wrappedSongs.size) R.drawable.deselect else R.drawable.select_all),
+                                painter = painterResource(
+                                    if (count == wrappedSongs.size) R.drawable.deselect else R.drawable.select_all
+                                ),
                                 contentDescription = null,
                             )
                         }
-
                         IconButton(
                             onClick = {
                                 menuState.show {
@@ -210,29 +205,27 @@ fun LibrarySongsScreen(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier.padding(horizontal = 16.dp),
                         ) {
-                           SortHeader(
-                               sortType = sortType,
-                               sortDescending = sortDescending,
-                                    onSortTypeChange = onSortTypeChange,
-                               onSortDescendingChange = onSortDescendingChange,
-                               sortTypeText = { sortType ->
-                                   when (sortType) {
-                                       SongSortType.CREATE_DATE -> R.string.sort_by_create_date
-                                       SongSortType.NAME -> R.string.sort_by_name
-                                       SongSortType.ARTIST -> R.string.sort_by_artist
-                                       SongSortType.PLAY_TIME -> R.string.sort_by_play_time
-                                   }
-                               },
-                           )
-
-                           Spacer(Modifier.weight(1f))
-
-                           Text(
-                               text = pluralStringResource(R.plurals.n_song, songs.size, songs.size),
-                               style = MaterialTheme.typography.titleSmall,
-                               color = MaterialTheme.colorScheme.secondary,
-                           )
-                       }
+                            SortHeader(
+                                sortType = sortType,
+                                sortDescending = sortDescending,
+                                onSortTypeChange = onSortTypeChange,
+                                onSortDescendingChange = onSortDescendingChange,
+                                sortTypeText = { sortType ->
+                                    when (sortType) {
+                                        SongSortType.CREATE_DATE -> R.string.sort_by_create_date
+                                        SongSortType.NAME -> R.string.sort_by_name
+                                        SongSortType.ARTIST -> R.string.sort_by_artist
+                                        SongSortType.PLAY_TIME -> R.string.sort_by_play_time
+                                    }
+                                },
+                            )
+                            Spacer(Modifier.weight(1f))
+                            Text(
+                                text = pluralStringResource(R.plurals.n_song, songs?.size ?: 0, songs?.size ?: 0),
+                                style = MaterialTheme.typography.titleSmall,
+                                color = MaterialTheme.colorScheme.secondary,
+                            )
+                        }
                     }
                 }
             }
@@ -265,49 +258,48 @@ fun LibrarySongsScreen(
                         }
                     },
                     isSelected = songWrapper.isSelected && selection,
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .combinedClickable(
-                                onClick = {
-                                    if (!selection) {
-                                        if (songWrapper.item.id == mediaMetadata?.id) {
-                                            playerConnection.player.togglePlayPause()
-                                        } else {
-                                            playerConnection.playQueue(
-                                                ListQueue(
-                                                    title = context.getString(R.string.queue_all_songs),
-                                                    items = songs.map { it.toMediaItem() },
-                                                    startIndex = index,
-                                                ),
-                                            )
-                                        }
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .combinedClickable(
+                            onClick = {
+                                if (!selection) {
+                                    if (songWrapper.item.id == mediaMetadata?.id) {
+                                        playerConnection.player.togglePlayPause()
                                     } else {
-                                        songWrapper.isSelected = !songWrapper.isSelected
+                                        playerConnection.playQueue(
+                                            ListQueue(
+                                                title = context.getString(R.string.queue_all_songs),
+                                                items = songs?.map { it.toMediaItem() } ?: emptyList(),
+                                                startIndex = index,
+                                            ),
+                                        )
                                     }
-                                },
-                                onLongClick = {
-                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                    if (!selection) {
-                                        selection = true
-                                    }
-                                    wrappedSongs.forEach { it.isSelected = false } // Clear previous selections
-                                    songWrapper.isSelected = true // Select current item
-                                },
-                            ).animateItemPlacement(),
-                    )
-                }
+                                } else {
+                                    songWrapper.isSelected = !songWrapper.isSelected
+                                }
+                            },
+                            onLongClick = {
+                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                if (!selection) {
+                                    selection = true
+                                }
+                                wrappedSongs.forEach { it.isSelected = false } // Clear previous selections
+                                songWrapper.isSelected = true // Select current item
+                            },
+                        ).animateItemPlacement(),
+                )
             }
+        }
 
         HideOnScrollFAB(
-            visible = songs.isNotEmpty(),
+            visible = songs?.isNotEmpty() == true,
             lazyListState = lazyListState,
             icon = R.drawable.shuffle,
             onClick = {
                 playerConnection.playQueue(
                     ListQueue(
                         title = context.getString(R.string.queue_all_songs),
-                        items = songs.shuffled().map { it.toMediaItem() },
+                        items = songs?.shuffled()?.map { it.toMediaItem() } ?: emptyList(),
                     ),
                 )
             },
