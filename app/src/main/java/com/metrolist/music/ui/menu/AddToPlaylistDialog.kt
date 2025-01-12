@@ -185,13 +185,11 @@ fun AddToPlaylistDialog(
                         ) {
                             Switch(
                                 checked = syncedPlaylist,
-                                onCheckedChange = {
-                                syncedPlaylist = !syncedPlaylist
-                            },
-                        )
+                                onCheckedChange = { syncedPlaylist = !syncedPlaylist },
+                            )
+                        }
                     }
                 }
-
             }
         )
     }
