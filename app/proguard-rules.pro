@@ -74,3 +74,12 @@
 -keep class com.my.kizzy.remote.** { <fields>; }
 # Keep Gateway data classes
 -keep class com.my.kizzy.gateway.entities.** { <fields>; }
+
+## Rules for NewPipeExtractor
+-keep class org.schabi.newpipe.extractor.timeago.patterns.** { *; }
+-keep class org.mozilla.javascript.** { *; }
+-keep class org.mozilla.classfile.ClassFileWriter
+-dontwarn org.mozilla.javascript.JavaToJSONConverters
+-dontwarn org.mozilla.javascript.tools.**
+
+
