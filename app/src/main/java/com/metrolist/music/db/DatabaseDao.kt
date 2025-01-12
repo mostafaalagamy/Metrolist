@@ -763,7 +763,7 @@ interface DatabaseDao {
             SELECT p.*, COUNT(psm.playlistId) AS songCount
             FROM playlist p
                 LEFT JOIN playlist_song_map psm ON p.id = psm.playlistId
-            WHERE p.bookmarkedAt IS NOT NULL OR p.isLocal = 1
+            WHERE p.bookmarkedAt IS NOT NULL
             GROUP BY p.id
             ORDER BY $orderBy
         """)
@@ -784,7 +784,7 @@ interface DatabaseDao {
             FROM playlist p
                 LEFT JOIN playlist_song_map psm ON p.id = psm.playlistId
                 INNER JOIN song s ON psm.songId = s.id and s.dateDownload IS NOT NULL
-            WHERE p.bookmarkedAt IS NOT NULL OR p.isLocal = 1
+            WHERE p.bookmarkedAt IS NOT NULL
             GROUP BY p.id
             ORDER BY $orderBy
         """)
