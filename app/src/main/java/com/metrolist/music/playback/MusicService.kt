@@ -428,7 +428,7 @@ class MusicService :
             ?: YTPlayerUtils.playerResponseForMetadata(mediaId).getOrNull()?.playbackTracking?.videostatsPlaybackUrl?.baseUrl
 
         playbackUrl?.let {
-            YouTube.registerPlayback(playbackUrl)
+            YouTube.registerPlayback(null, playbackUrl)
                 .onFailure {
                     reportException(it)
                 }
