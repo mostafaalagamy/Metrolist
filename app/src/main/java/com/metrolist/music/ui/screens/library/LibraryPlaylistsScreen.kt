@@ -95,10 +95,6 @@ fun LibraryPlaylistsScreen(
     val (sortType, onSortTypeChange) = rememberEnumPreference(PlaylistSortTypeKey, PlaylistSortType.CREATE_DATE)
     val (sortDescending, onSortDescendingChange) = rememberPreference(PlaylistSortDescendingKey, true)
     val gridItemSize by rememberEnumPreference(GridItemsSizeKey, GridItemSize.BIG)
-
-    val (ytmSync) = rememberPreference(YtmSyncKey, true)
-    
-    LaunchedEffect(Unit){ if (ytmSync){ viewModel.sync() }}
     
     val playlists by viewModel.allPlaylists.collectAsState()
 
@@ -130,6 +126,14 @@ fun LibraryPlaylistsScreen(
 
     val backStackEntry by navController.currentBackStackEntryAsState()
     val scrollToTop = backStackEntry?.savedStateHandle?.getStateFlow("scrollToTop", false)?.collectAsState()
+
+    val (ytmSync) = rememberPreference(YtmSyncKey, true)
+
+    LaunchedEffect(Unit){
+        if (ytmSync){
+            viewModel.sync()
+        }
+    }
 
     LaunchedEffect(scrollToTop?.value) {
         if (scrollToTop?.value == true) {
@@ -228,7 +232,7 @@ fun LibraryPlaylistsScreen(
             Spacer(Modifier.weight(1f))
 
             Text(
-                text = pluralStringResource(R.plurals.n_playlist, playlists.size, playlists.size),
+                text = pluralStringResource(R.plurals.n_playlist, playlists!!.size, playlists!!.size),
                 style = MaterialTheme.typography.titleSmall,
                 color = MaterialTheme.colorScheme.secondary,
             )
@@ -324,6 +328,12 @@ fun LibraryPlaylistsScreen(
                         )
                     }
 
+                    playlists?.let { playlists ->
+                        if (playlists.isEmpty()) {
+                            item {
+                        }
+                    }
+
                     items(
                         items = playlists,
                         key = { it.id },
@@ -367,7 +377,8 @@ fun LibraryPlaylistsScreen(
                                             }
                                         },
                                     ).animateItem(),
-                        )
+                            )
+                        }
                     }
                 }
 
@@ -462,6 +473,12 @@ fun LibraryPlaylistsScreen(
                         )
                     }
 
+                    playlists?.let { playlists ->
+                        if (playlists.isEmpty()) {
+                            item(span = { GridItemSpan(maxLineSpan) }) {
+                        }
+                    }
+ 
                     items(
                         items = playlists,
                         key = { it.id },
@@ -488,7 +505,8 @@ fun LibraryPlaylistsScreen(
                                             }
                                         },
                                     ).animateItem(),
-                        )
+                            )
+                        }
                     }
                 }
 
