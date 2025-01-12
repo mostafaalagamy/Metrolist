@@ -156,11 +156,13 @@ object YTPlayerUtils {
             playerResponse.streamingData?.adaptiveFormats
                 ?.filter { it.isAudio }
                 ?.maxByOrNull {
-                    it.bitrate * when (audioQuality) {
-                        AudioQuality.AUTO -> if (connectivityManager.isActiveNetworkMetered) -1 else 1
-                        AudioQuality.HIGH -> 1
-                        AudioQuality.LOW -> -1
-                    } + (if (it.mimeType.startsWith("audio/webm")) 10240 else 0) // prefer opus stream
+                    it.bitrate * 
+                        when (audioQuality) {
+                            AudioQuality.AUTO -> if (connectivityManager.isActiveNetworkMetered) -1 else 1 - 5
+                            AudioQuality.MAX -> 5
+                            AudioQuality.HIGH -> 1
+                            AudioQuality.LOW -> -1
+                        } + (if (it.mimeType.startsWith("audio/webm")) 10240 else 0) // prefer opus stream
                 }
         }
     /**
