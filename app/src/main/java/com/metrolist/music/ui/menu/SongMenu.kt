@@ -402,5 +402,24 @@ fun SongMenu(
                 onDismiss()
             }
         }
+        if (song.song.inLibrary == null) {
+            GridMenuItem(
+                icon = R.drawable.library_add,
+                title = R.string.add_to_library,
+            ) {
+                database.query {
+                    update(song.song.toggleLibrary())
+                }
+            }
+        } else {
+            GridMenuItem(
+                icon = R.drawable.library_add_check,
+                title = R.string.remove_from_library,
+            ) {
+                database.query {
+                    update(song.song.toggleLibrary())
+                }
+            }
+        }
     }
 }

@@ -283,6 +283,7 @@ fun HomeScreen(
                                     song = song!!,
                                     isActive = song!!.id == mediaMetadata?.id,
                                     isPlaying = isPlaying,
+                                    showInLibraryIcon = true,
                                     trailingContent = {
                                         IconButton(
                                             onClick = {
@@ -1227,6 +1228,7 @@ fun HomeScreen(
                                     song = song!!,
                                     isActive = song!!.id == mediaMetadata?.id,
                                     isPlaying = isPlaying,
+                                    showInLibraryIcon = true,
                                     trailingContent = {
                                         IconButton(
                                             onClick = {
