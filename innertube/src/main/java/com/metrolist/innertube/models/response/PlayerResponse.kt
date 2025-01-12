@@ -6,7 +6,7 @@ import com.metrolist.innertube.utils.createUrl
 import kotlinx.serialization.Serializable
 
 /**
- * PlayerResponse with [com.metrolist.innertube.models.YouTubeClient.ANDROID_MUSIC] client
+ * PlayerResponse with [com.metrolist.innertube.models.YouTubeClient.WEB_REMIX] client
  */
 @Serializable
 data class PlayerResponse(
