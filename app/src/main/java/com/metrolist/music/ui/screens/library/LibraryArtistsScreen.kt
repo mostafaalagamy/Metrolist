@@ -62,6 +62,7 @@ import com.metrolist.music.ui.component.ArtistListItem
 import com.metrolist.music.ui.component.ChipsRow
 import com.metrolist.music.ui.component.LocalMenuState
 import com.metrolist.music.ui.component.SortHeader
+import com.metrolist.music.ui.component.EmptyPlaceholder
 import com.metrolist.music.ui.menu.ArtistMenu
 import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
@@ -80,15 +81,43 @@ fun LibraryArtistsScreen(
     val haptic = LocalHapticFeedback.current
     var viewType by rememberEnumPreference(ArtistViewTypeKey, LibraryViewType.GRID)
 
-    var filter by rememberEnumPreference(ArtistFilterKey, ArtistFilter.ARTISTS)
+    var filter by rememberEnumPreference(ArtistFilterKey, ArtistFilter.LIKED)
     val (sortType, onSortTypeChange) = rememberEnumPreference(ArtistSortTypeKey, ArtistSortType.CREATE_DATE)
     val (sortDescending, onSortDescendingChange) = rememberPreference(ArtistSortDescendingKey, true)
     val gridItemSize by rememberEnumPreference(GridItemsSizeKey, GridItemSize.BIG)
 
     val (ytmSync) = rememberPreference(YtmSyncKey, true)
 
+    val filterContent = @Composable {
+        Row {
+            Spacer(Modifier.width(12.dp))
+            FilterChip(
+                label = { Text(stringResource(R.string.artists)) },
+                selected = true,
+                colors = FilterChipDefaults.filterChipColors(containerColor = MaterialTheme.colorScheme.surface),
+                onClick = onDeselect,
+                shape = RoundedCornerShape(16.dp),
+                leadingIcon = {
+                    Icon(painter = painterResource(R.drawable.close), contentDescription = "")
+                },
+            )
+            ChipsRow(
+                chips =
+                    listOf(
+                        ArtistFilter.LIKED to stringResource(R.string.filter_liked),
+                        ArtistFilter.LIBRARY to stringResource(R.string.filter_library)
+                    ),
+                currentValue = filter,
+                onValueUpdate = {
+                    filter = it
+                },
+                modifier = Modifier.weight(1f),
+            )
+        }
+    }
+
     LaunchedEffect(filter) {
-        if (ytmSync && filter == ArtistFilter.ARTISTS) {
+        if (ytmSync && filter == ArtistFilter.LIKED) {
             withContext(Dispatchers.IO) {
                 viewModel.sync()
             }
@@ -110,22 +139,6 @@ fun LibraryArtistsScreen(
                 LibraryViewType.GRID -> lazyGridState.animateScrollToItem(0)
             }
             backStackEntry?.savedStateHandle?.set("scrollToTop", false)
-        }
-    }
-
-    val filterContent = @Composable {
-        Row {
-            Spacer(Modifier.width(12.dp))
-            FilterChip(
-                label = { Text(stringResource(R.string.artists)) },
-                selected = true,
-                colors = FilterChipDefaults.filterChipColors(containerColor = MaterialTheme.colorScheme.surface),
-                onClick = onDeselect,
-                shape = RoundedCornerShape(16.dp),
-                leadingIcon = {
-                    Icon(painter = painterResource(R.drawable.close), contentDescription = "")
-                },
-            )
         }
     }
 
@@ -152,7 +165,7 @@ fun LibraryArtistsScreen(
             Spacer(Modifier.weight(1f))
 
             Text(
-                text = pluralStringResource(R.plurals.n_artist, artists.size, artists.size),
+                text = pluralStringResource(R.plurals.n_artist, artists!!.size, artists!!.size),
                 style = MaterialTheme.typography.titleSmall,
                 color = MaterialTheme.colorScheme.secondary,
             )
@@ -200,6 +213,17 @@ fun LibraryArtistsScreen(
                         headerContent()
                     }
 
+                    artists?.let { artists ->
+                        if (artists.isEmpty()) {
+                            item {
+                                EmptyPlaceholder(
+                                    icon = R.drawable.artist,
+                                    text = stringResource(R.string.library_artist_empty),
+                                    modifier = Modifier.animateItem()
+                            )
+                        }
+                    }
+ 
                     items(
                         items = artists,
                         key = { it.id },
@@ -246,6 +270,7 @@ fun LibraryArtistsScreen(
                         )
                     }
                 }
+            }
 
             LibraryViewType.GRID ->
                 LazyVerticalGrid(
@@ -270,6 +295,17 @@ fun LibraryArtistsScreen(
                         contentType = CONTENT_TYPE_HEADER,
                     ) {
                         headerContent()
+                    }
+
+                    artists?.let { artists ->
+                        if (artists.isEmpty()) {
+                            item(span = { GridItemSpan(maxLineSpan) }) {
+                                EmptyPlaceholder(
+                                    icon = R.drawable.artist,
+                                    text = stringResource(R.string.library_artist_empty),
+                                    modifier = Modifier.animateItem()
+                            )
+                        }
                     }
 
                     items(
@@ -301,6 +337,7 @@ fun LibraryArtistsScreen(
                         )
                     }
                 }
+            }
         }
     }
 }
