@@ -159,7 +159,7 @@ fun LibraryPlaylistsScreen(
             title = { Text(text = stringResource(R.string.create_playlist)) },
             onDismiss = { showAddPlaylistDialog = false },
             onDone = { playlistName ->
-                viewModel.viewModelScope.launch(Dispatchers.IO) {
+                coroutineScope.launch(Dispatchers.IO) {
                     val browseId = if (syncedPlaylist)
                         YouTube.createPlaylist(playlistName).getOrNull()
                     else null
@@ -182,12 +182,11 @@ fun LibraryPlaylistsScreen(
                 ) {
                     Column() {
                         Text(
-                            text = "Sync Playlist",
+                            text = stringResource(R.string.sync_playlist),
                             style = MaterialTheme.typography.titleLarge,
                         )
-
                         Text(
-                            text = "Note: This allows for syncing with YouTube Music. This is NOT changeable later. You cannot add local songs to synced playlists.",
+                            text = stringResource(R.string.allows_for_sync_witch_youtube),
                             style = MaterialTheme.typography.bodySmall,
                             modifier = Modifier.fillMaxWidth(0.7f)
                         )
