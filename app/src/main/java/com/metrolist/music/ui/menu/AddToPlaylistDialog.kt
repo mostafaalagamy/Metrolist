@@ -132,7 +132,7 @@ fun AddToPlaylistDialog(
         }
     }
 
-    if showAddPlaylistDialog {
+    if (showAddPlaylistDialog) {
         TextFieldDialog(
             icon = { Icon(painter = painterResource(R.drawable.add), contentDescription = null) },
             title = { Text(text = stringResource(R.string.create_playlist)) },
