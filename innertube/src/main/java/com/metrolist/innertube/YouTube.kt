@@ -1046,6 +1046,27 @@ object YouTube {
         innerTube.player(client, videoId, playlistId, signatureTimestamp).body<PlayerResponse>()
     }
 
+    suspend fun registerPlayback(playlistId: String? = null, playbackTracking: String) = runCatching {
+        val cpn = (1..16).map {
+            "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_"[Random.Default.nextInt(
+                0,
+                64
+            )]
+        }.joinToString("")
+
+        val playbackUrl = playbackTracking.replace(
+            "https://s.youtube.com",
+            "https://music.youtube.com",
+        )
+
+        innerTube.registerPlayback(
+            url = playbackUrl,
+            playlistId = playlistId,
+            cpn = cpn
+        )
+    }
+    
+    
     suspend fun next(
         endpoint: WatchEndpoint,
         continuation: String? = null,
