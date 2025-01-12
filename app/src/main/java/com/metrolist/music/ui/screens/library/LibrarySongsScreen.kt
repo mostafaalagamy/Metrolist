@@ -88,11 +88,11 @@ fun LibrarySongsScreen(
 
     val songs by viewModel.allSongs.collectAsState()
 
-    var filter by rememberEnumPreference(SongFilterKey, SongFilter.SONGS)
+    var filter by rememberEnumPreference(SongFilterKey, SongFilter.LIKED)
 
     LaunchedEffect(filter) {
         if (ytmSync) {
-            if (filter == SongFilter.SONGS) {
+            if (filter == SongFilter.LIKED) {
                 withContext(Dispatchers.IO) {
                     viewModel.syncLikedSongs()
                 }
@@ -143,7 +143,8 @@ fun LibrarySongsScreen(
                     ChipsRow(
                         chips =
                             listOf(
-                                SongFilter.SONGS to stringResource(R.string.songs),
+                                SongFilter.LIKED to stringResource(R.string.filter_liked),
+                                SongFilter.LIBRARY to stringResource(R.string.filter_library),
                                 SongFilter.DOWNLOADED to stringResource(R.string.filter_downloaded),
                             ),
                         currentValue = filter,
@@ -299,14 +300,14 @@ fun LibrarySongsScreen(
             }
 
         HideOnScrollFAB(
-            visible = songs.isNotEmpty(),
+            visible = songs?.isNotEmpty() == true,
             lazyListState = lazyListState,
             icon = R.drawable.shuffle,
             onClick = {
                 playerConnection.playQueue(
                     ListQueue(
                         title = context.getString(R.string.queue_all_songs),
-                        items = songs.shuffled().map { it.toMediaItem() },
+                        items = songs?.shuffled()?.map { it.toMediaItem() } ?: emptyList(),
                     ),
                 )
             },
