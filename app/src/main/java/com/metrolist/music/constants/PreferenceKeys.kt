@@ -106,16 +106,19 @@ enum class LibraryViewType {
 }
 
 enum class SongFilter {
-    SONGS,
-    DOWNLOADED,
+    LIBRARY,
+    LIKED,
+    DOWNLOADED
 }
 
 enum class ArtistFilter {
-    ARTISTS
+    LIBRARY,
+    LIKED
 }
 
 enum class AlbumFilter {
-     ALBUMS
+    LIBRARY,
+    LIKED
 }
 
 enum class SongSortType {
