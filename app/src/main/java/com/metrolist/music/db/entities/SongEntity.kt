@@ -48,4 +48,9 @@ data class SongEntity(
             this.cancel()
         }
     }
+    fun toggleLibrary() = copy(
+        liked = if (inLibrary == null) liked else false,
+        inLibrary = if (inLibrary == null) LocalDateTime.now() else null,
+        likedDate = if (inLibrary == null) likedDate else null
+    )
 }

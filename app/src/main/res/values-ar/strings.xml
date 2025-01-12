@@ -74,6 +74,10 @@
     <string name="liked">الأغاني المفضلة</string>
     <string name="offline">التحميلات</string>
     <string name="my_top">الأعلي إستماع : </string>
+    <string name="library_song_empty">ستظهر أغاني المكتبة هنا</string>
+    <string name="library_artist_empty">سيظهر هنا الفنانين</string>
+    <string name="library_album_empty">ستظهر ألبومات المكتبة هنا</string>
+    <string name="library_playlist_empty">ستظهر قوائم التشغيل الخاصة بك هنا</string>
     
     <!-- قوائم التشغيل -->
     <string name="liked_songs">الأغاني المفضلة</string>

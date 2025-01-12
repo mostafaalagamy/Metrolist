@@ -489,6 +489,7 @@ fun LocalPlaylistScreen(
                                 song = song.song,
                                 isActive = song.song.id == mediaMetadata?.id,
                                 isPlaying = isPlaying,
+                                showInLibraryIcon = true,
                                 trailingContent = {
                                     IconButton(
                                         onClick = {
@@ -613,6 +614,7 @@ fun LocalPlaylistScreen(
                                 song = songWrapper.item.song,
                                 isActive = songWrapper.item.song.id == mediaMetadata?.id,
                                 isPlaying = isPlaying,
+                                showInLibraryIcon = true,
                                 trailingContent = {
                                     IconButton(
                                         onClick = {

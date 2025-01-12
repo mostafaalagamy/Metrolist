@@ -63,6 +63,7 @@ import com.metrolist.music.ui.component.AlbumListItem
 import com.metrolist.music.ui.component.ChipsRow
 import com.metrolist.music.ui.component.LocalMenuState
 import com.metrolist.music.ui.component.SortHeader
+import com.metrolist.music.ui.component.EmptyPlaceholder
 import com.metrolist.music.ui.menu.AlbumMenu
 import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
@@ -84,7 +85,7 @@ fun LibraryAlbumsScreen(
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
 
     var viewType by rememberEnumPreference(AlbumViewTypeKey, LibraryViewType.GRID)
-    var filter by rememberEnumPreference(AlbumFilterKey, AlbumFilter.ALBUMS)
+    var filter by rememberEnumPreference(AlbumFilterKey, AlbumFilter.LIKED)
     val (sortType, onSortTypeChange) = rememberEnumPreference(AlbumSortTypeKey, AlbumSortType.CREATE_DATE)
     val (sortDescending, onSortDescendingChange) = rememberPreference(AlbumSortDescendingKey, true)
     val gridItemSize by rememberEnumPreference(GridItemsSizeKey, GridItemSize.BIG)
@@ -104,11 +105,23 @@ fun LibraryAlbumsScreen(
                     Icon(painter = painterResource(R.drawable.close), contentDescription = "")
                 },
             )
+            ChipsRow(
+                chips =
+                    listOf(
+                        AlbumFilter.LIKED to stringResource(R.string.filter_liked),
+                        AlbumFilter.LIBRARY to stringResource(R.string.filter_library)
+                    ),
+                currentValue = filter,
+                onValueUpdate = {
+                    filter = it
+                },
+                modifier = Modifier.weight(1f),
+            )
         }
     }
 
     LaunchedEffect(filter) {
-        if (ytmSync && filter == AlbumFilter.ALBUMS) {
+        if (ytmSync && filter == AlbumFilter.LIKED) {
             withContext(Dispatchers.IO) {
                 viewModel.sync()
             }
@@ -160,7 +173,7 @@ fun LibraryAlbumsScreen(
             Spacer(Modifier.weight(1f))
 
             Text(
-                text = pluralStringResource(R.plurals.n_album, albums.size, albums.size),
+                text = pluralStringResource(R.plurals.n_album, albums!!.size, albums!!.size),
                 style = MaterialTheme.typography.titleSmall,
                 color = MaterialTheme.colorScheme.secondary,
             )
@@ -208,6 +221,17 @@ fun LibraryAlbumsScreen(
                         headerContent()
                     }
 
+                    albums?.let { albums ->
+                        if (albums.isEmpty()) {
+                            item {
+                                EmptyPlaceholder(
+                                    icon = R.drawable.album,
+                                    text = stringResource(R.string.library_album_empty),
+                                    modifier = Modifier.animateItem()
+                            )
+                        }
+                    }
+ 
                     items(
                         items = albums,
                         key = { it.id },
@@ -256,6 +280,7 @@ fun LibraryAlbumsScreen(
                         )
                     }
                 }
+            }
 
             LibraryViewType.GRID ->
                 LazyVerticalGrid(
@@ -280,6 +305,17 @@ fun LibraryAlbumsScreen(
                         contentType = CONTENT_TYPE_HEADER,
                     ) {
                         headerContent()
+                    }
+
+                    albums?.let { albums ->
+                        if (albums.isEmpty()) {
+                            item(span = { GridItemSpan(maxLineSpan) }) {
+                                EmptyPlaceholder(
+                                    icon = R.drawable.album,
+                                    text = stringResource(R.string.library_album_empty),
+                                    modifier = Modifier.animateItem()
+                            )
+                        }
                     }
 
                     items(
@@ -314,6 +350,7 @@ fun LibraryAlbumsScreen(
                         )
                     }
                 }
+            }
         }
     }
 }
