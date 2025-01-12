@@ -170,13 +170,11 @@ enum class PlaylistSortType {
     CREATE_DATE,
     NAME,
     SONG_COUNT,
-    LAST_UPDATED,
 }
 
 enum class MixSortType {
     CREATE_DATE,
     NAME,
-    LAST_UPDATED,
 }
 
 enum class GridItemSize {
