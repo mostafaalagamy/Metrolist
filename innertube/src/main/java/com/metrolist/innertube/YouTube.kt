@@ -14,10 +14,10 @@ import com.metrolist.innertube.models.SearchSuggestions
 import com.metrolist.innertube.models.SongItem
 import com.metrolist.innertube.models.WatchEndpoint
 import com.metrolist.innertube.models.WatchEndpoint.WatchEndpointMusicSupportedConfigs.WatchEndpointMusicConfig.Companion.MUSIC_VIDEO_TYPE_ATV
-import com.metrolist.innertube.models.YouTubeClient.Companion.ANDROID_MUSIC
 import com.metrolist.innertube.models.YouTubeClient.Companion.IOS
 import com.metrolist.innertube.models.YouTubeClient.Companion.WEB
 import com.metrolist.innertube.models.YouTubeClient.Companion.WEB_REMIX
+import com.metrolist.innertube.models.YouTubeClient.Companion.WEB_CREATOR
 import com.metrolist.innertube.models.YouTubeClient.Companion.TVHTML5
 import com.metrolist.innertube.models.YouTubeLocale
 import com.metrolist.innertube.models.getContinuation
@@ -1051,8 +1051,8 @@ object YouTube {
     ): Result<PlayerResponse> =
         runCatching {
             var playerResponse: PlayerResponse
-            if (this.cookie != null) { // if logged in: try ANDROID_MUSIC client first because IOS client does not play age restricted songs
-                playerResponse = innerTube.player(ANDROID_MUSIC, videoId, playlistId).body<PlayerResponse>()
+            if (this.cookie != null) { // if logged in: try WEB_CREATOR client first because IOS client does not play age restricted songs
+                playerResponse = innerTube.player(WEB_CREATOR, videoId, playlistId).body<PlayerResponse>()
                 if (playerResponse.playabilityStatus.status == "OK") {
                     return@runCatching playerResponse
                 }
