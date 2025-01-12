@@ -14,11 +14,9 @@ import com.metrolist.innertube.models.SearchSuggestions
 import com.metrolist.innertube.models.SongItem
 import com.metrolist.innertube.models.WatchEndpoint
 import com.metrolist.innertube.models.WatchEndpoint.WatchEndpointMusicSupportedConfigs.WatchEndpointMusicConfig.Companion.MUSIC_VIDEO_TYPE_ATV
-import com.metrolist.innertube.models.YouTubeClient.Companion.IOS
+import com.metrolist.innertube.models.YouTubeClient
 import com.metrolist.innertube.models.YouTubeClient.Companion.WEB
 import com.metrolist.innertube.models.YouTubeClient.Companion.WEB_REMIX
-import com.metrolist.innertube.models.YouTubeClient.Companion.WEB_CREATOR
-import com.metrolist.innertube.models.YouTubeClient.Companion.TVHTML5
 import com.metrolist.innertube.models.YouTubeLocale
 import com.metrolist.innertube.models.getContinuation
 import com.metrolist.innertube.models.oddElements
@@ -29,7 +27,6 @@ import com.metrolist.innertube.models.response.GetQueueResponse
 import com.metrolist.innertube.models.response.GetSearchSuggestionsResponse
 import com.metrolist.innertube.models.response.GetTranscriptResponse
 import com.metrolist.innertube.models.response.NextResponse
-import com.metrolist.innertube.models.response.PipedResponse
 import com.metrolist.innertube.models.response.PlayerResponse
 import com.metrolist.innertube.models.response.SearchResponse
 import com.metrolist.innertube.models.response.AddItemYouTubePlaylistResponse
@@ -64,6 +61,8 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonPrimitive
+import kotlinx.coroutines.delay
+import kotlin.random.Random
 import java.net.Proxy
 
 /**
@@ -1045,43 +1044,31 @@ object YouTube {
             innerTube.unlikePlaylist(WEB_REMIX, playlistId)
     }
 
-    suspend fun player(
-        videoId: String,
-        playlistId: String? = null,
-    ): Result<PlayerResponse> =
-        runCatching {
-            var playerResponse: PlayerResponse
-            if (this.cookie != null) { // if logged in: try WEB_CREATOR client first because IOS client does not play age restricted songs
-                playerResponse = innerTube.player(WEB_CREATOR, videoId, playlistId).body<PlayerResponse>()
-                if (playerResponse.playabilityStatus.status == "OK") {
-                    return@runCatching playerResponse
-                }
-            }
+    suspend fun player(videoId: String, playlistId: String? = null, client: YouTubeClient, signatureTimestamp: Int? = null): Result<PlayerResponse> = runCatching {
+        innerTube.player(client, videoId, playlistId, signatureTimestamp).body<PlayerResponse>()
+    }
 
-            playerResponse = innerTube.player(IOS, videoId, playlistId).body<PlayerResponse>()
-            if (playerResponse.playabilityStatus.status == "OK") {
-                return@runCatching playerResponse
-            }
-            val safePlayerResponse = innerTube.player(TVHTML5, videoId, playlistId).body<PlayerResponse>()
-            if (safePlayerResponse.playabilityStatus.status != "OK") {
-                return@runCatching playerResponse
-            }
-            val audioStreams = innerTube.pipedStreams(videoId).body<PipedResponse>().audioStreams
-            safePlayerResponse.copy(
-                streamingData =
-                    safePlayerResponse.streamingData?.copy(
-                        adaptiveFormats =
-                            safePlayerResponse.streamingData.adaptiveFormats.mapNotNull { adaptiveFormat ->
-                                audioStreams.find { it.bitrate == adaptiveFormat.bitrate }?.let {
-                                    adaptiveFormat.copy(
-                                        url = it.url,
-                                    )
-                                }
-                            },
-                    ),
-            )
-        }
+    suspend fun registerPlayback(playlistId: String? = null, playbackTracking: String) = runCatching {
+        val cpn = (1..16).map {
+            "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_"[Random.Default.nextInt(
+                0,
+                64
+            )]
+        }.joinToString("")
 
+        val playbackUrl = playbackTracking.replace(
+            "https://s.youtube.com",
+            "https://music.youtube.com",
+        )
+
+        innerTube.registerPlayback(
+            url = playbackUrl,
+            playlistId = playlistId,
+            cpn = cpn
+        )
+    }
+    
+    
     suspend fun next(
         endpoint: WatchEndpoint,
         continuation: String? = null,

@@ -77,6 +77,10 @@ junit = { group = "junit", name = "junit", version = "4.13.2" }
 
 timber = { group = "com.jakewharton.timber", name = "timber", version = "5.0.1" }
 
+#newpipe-extractor = { group = "com.github.TeamNewPipe", name = "NewPipeExtractor", version = "v0.24.3" }
+# Use fork of NewPipeExtractor until https://github.com/TeamNewPipe/NewPipeExtractor/pull/1253 is merged
+newpipe-extractor = { group = "com.github.gechoto", name = "NewPipeExtractor", version = "00cf7dad9e49933c7faaa382c9c7b1e7afb28a7d" }
+
 [plugins]
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }

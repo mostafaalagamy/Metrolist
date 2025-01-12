@@ -53,7 +53,6 @@ import com.google.common.util.concurrent.MoreExecutors
 import com.metrolist.innertube.YouTube
 import com.metrolist.innertube.models.SongItem
 import com.metrolist.innertube.models.WatchEndpoint
-import com.metrolist.innertube.models.response.PlayerResponse
 import com.metrolist.music.MainActivity
 import com.metrolist.music.R
 import com.metrolist.music.constants.AudioNormalizationKey
@@ -105,6 +104,7 @@ import com.metrolist.music.utils.enumPreference
 import com.metrolist.music.utils.get
 import com.metrolist.music.utils.isInternetAvailable
 import com.metrolist.music.utils.reportException
+import com.metrolist.music.utils.YTPlayerUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -422,26 +422,29 @@ class MusicService :
         )
     }
 
-    private suspend fun recoverSong(
-        mediaId: String,
-        playerResponse: PlayerResponse? = null,
-    ) {
+    private suspend fun recoverSong(mediaId: String, playbackData: YTPlayerUtils.PlaybackData? = null) {
+        val playbackUrl = database.format(mediaId).first()?.playbackUrl
+            ?: playbackData?.playbackTracking?.videostatsPlaybackUrl?.baseUrl
+            ?: YTPlayerUtils.playerResponseForMetadata(mediaId).getOrNull()?.playbackTracking?.videostatsPlaybackUrl?.baseUrl
+
+        playbackUrl?.let {
+            YouTube.registerPlayback(null, playbackUrl)
+                .onFailure {
+                    reportException(it)
+                }
+        }
+
         val song = database.song(mediaId).first()
-        val mediaMetadata =
-            withContext(Dispatchers.Main) {
-                player.findNextMediaItemById(mediaId)?.metadata
-            } ?: return
-        val duration =
-            song?.song?.duration?.takeIf { it != -1 }
-                ?: mediaMetadata.duration.takeIf { it != -1 }
-                ?: (playerResponse ?: YouTube.player(mediaId).getOrNull())?.videoDetails?.lengthSeconds?.toInt()
-                ?: -1
+        val mediaMetadata = withContext(Dispatchers.Main) {
+            player.findNextMediaItemById(mediaId)?.metadata
+        } ?: return
+        val duration = song?.song?.duration?.takeIf { it != -1 }
+            ?: mediaMetadata.duration.takeIf { it != -1 }
+            ?: (playbackData?.videoDetails ?: YTPlayerUtils.playerResponseForMetadata(mediaId).getOrNull()?.videoDetails)?.lengthSeconds?.toInt()
+            ?: -1
         database.query {
-            if (song == null) {
-                insert(mediaMetadata.copy(duration = duration))
-            } else if (song.song.duration == -1) {
-                update(song.song.copy(duration = duration))
-            }
+            if (song == null) insert(mediaMetadata.copy(duration = duration))
+            else if (song.song.duration == -1) update(song.song.copy(duration = duration))
         }
         if (!database.hasRelatedSongs(mediaId)) {
             val relatedEndpoint = YouTube.next(WatchEndpoint(videoId = mediaId)).getOrNull()?.relatedEndpoint ?: return
@@ -453,9 +456,10 @@ class MusicService :
                     .map {
                         RelatedSongMap(
                             songId = mediaId,
-                            relatedSongId = it.id,
+                            relatedSongId = it.id
                         )
-                    }.forEach(::insert)
+                    }
+                    .forEach(::insert)
             }
         }
     }
@@ -732,7 +736,7 @@ class MusicService :
                 return@Factory dataSpec
             }
 
-            songUrlCache[mediaId]?.takeIf { it.second < System.currentTimeMillis() }?.let {
+            songUrlCache[mediaId]?.takeIf { it.second > System.currentTimeMillis() }?.let {
                 scope.launch(Dispatchers.IO) { recoverSong(mediaId) }
                 return@Factory dataSpec.withUri(it.first.toUri())
             }
@@ -740,11 +744,16 @@ class MusicService :
             // Check whether format exists so that users from older version can view format details
             // There may be inconsistent between the downloaded file and the displayed info if user change audio quality frequently
             val playedFormat = runBlocking(Dispatchers.IO) { database.format(mediaId).first() }
-            val playerResponse =
-                runBlocking(Dispatchers.IO) {
-                    YouTube.player(mediaId)
+            val playbackData = runBlocking(Dispatchers.IO) {
+                YTPlayerUtils.playerResponseForPlayback(
+                    mediaId,
+                    playedFormat = playedFormat,
+                    audioQuality = audioQuality,
+                    connectivityManager = connectivityManager,
+                )
                 }.getOrElse { throwable ->
                     when (throwable) {
+                        is PlaybackException -> throw throwable
                         is ConnectException, is UnknownHostException -> {
                             throw PlaybackException(
                                 getString(R.string.error_no_internet),
@@ -768,41 +777,8 @@ class MusicService :
                         )
                     }
                 }
-            if (playerResponse.playabilityStatus.status != "OK") {
-                throw PlaybackException(playerResponse.playabilityStatus.reason, null, PlaybackException.ERROR_CODE_REMOTE_ERROR)
-            }
 
-            val format =
-                if (playedFormat != null) {
-                    playerResponse.streamingData?.adaptiveFormats?.find {
-                        // Use itag to identify previously played format
-                        it.itag == playedFormat.itag
-                    } ?: playerResponse.streamingData
-                        ?.adaptiveFormats
-                        ?.filter { it.isAudio }
-                        ?.maxByOrNull {
-                            it.bitrate *
-                                when (audioQuality) {
-                                    AudioQuality.AUTO -> if (connectivityManager.isActiveNetworkMetered) -1 else 1 - 5
-                                    AudioQuality.MAX -> 5
-                                    AudioQuality.HIGH -> 1
-                                    AudioQuality.LOW -> -1
-                                } + (if (it.mimeType.startsWith("audio/webm")) 10240 else 0) // prefer opus stream
-                        }
-                } else {
-                    playerResponse.streamingData
-                        ?.adaptiveFormats
-                        ?.filter { it.isAudio }
-                        ?.maxByOrNull {
-                            it.bitrate *
-                                when (audioQuality) {
-                                    AudioQuality.AUTO -> if (connectivityManager.isActiveNetworkMetered) -1 else 1 - 5
-                                    AudioQuality.MAX -> 5
-                                    AudioQuality.HIGH -> 1
-                                    AudioQuality.LOW -> -1
-                                } + (if (it.mimeType.startsWith("audio/webm")) 10240 else 0) // prefer opus stream
-                        }
-                } ?: throw PlaybackException(getString(R.string.error_no_stream), null, ERROR_CODE_NO_STREAM)
+            val format = playbackData.format
 
             database.query {
                 upsert(
@@ -814,19 +790,17 @@ class MusicService :
                         bitrate = format.bitrate,
                         sampleRate = format.audioSampleRate,
                         contentLength = format.contentLength!!,
-                        loudnessDb = playerResponse.playerConfig?.audioConfig?.loudnessDb,
-                    ),
+                        loudnessDb = playbackData.audioConfig?.loudnessDb,
+                        playbackUrl = playbackData.playbackTracking?.videostatsPlaybackUrl?.baseUrl
+                    )
                 )
             }
-            scope.launch(Dispatchers.IO) { recoverSong(mediaId, playerResponse) }
+            scope.launch(Dispatchers.IO) { recoverSong(mediaId, playbackData) }
 
-            if (format.url != null) {
-                songUrlCache[mediaId] = format.url!! to playerResponse.streamingData!!.expiresInSeconds * 1000L
-                dataSpec.withUri(format.url!!.toUri()).subrange(dataSpec.uriPositionOffset, CHUNK_LENGTH)
-            } else {
-                songUrlCache[mediaId] = format.findUrl() to playerResponse.streamingData!!.expiresInSeconds * 1000L
-                dataSpec.withUri(format.findUrl().toUri()).subrange(dataSpec.uriPositionOffset, CHUNK_LENGTH)
-            }
+            val streamUrl = playbackData.streamUrl
+
+            songUrlCache[mediaId] = streamUrl to System.currentTimeMillis() + (playbackData.streamExpiresInSeconds * 1000L)
+            dataSpec.withUri(streamUrl.toUri()).subrange(dataSpec.uriPositionOffset, CHUNK_LENGTH)
         }
     }
 

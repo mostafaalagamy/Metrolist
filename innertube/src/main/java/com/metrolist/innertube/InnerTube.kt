@@ -218,6 +218,7 @@ class InnerTube {
         client: YouTubeClient,
         videoId: String,
         playlistId: String?,
+        signatureTimestamp: Int?,
     ) = httpClient.post("player") {
         ytClient(client, setLogin = true)
         setBody(
@@ -237,14 +238,31 @@ class InnerTube {
                     },
                 videoId = videoId,
                 playlistId = playlistId,
+                if (client.useSignatureTimestamp && signatureTimestamp != null) {
+                    PlayerBody.PlaybackContext(PlayerBody.PlaybackContext.ContentPlaybackContext(
+                        signatureTimestamp
+                    ))
+                } else null
             ),
         )
     }
 
-    suspend fun pipedStreams(videoId: String) =
-        httpClient.get("https://pipedapi.kavin.rocks/streams/$videoId") {
-            contentType(ContentType.Application.Json)
+    suspend fun registerPlayback(
+        url: String,
+        cpn: String,
+        playlistId: String?,
+        client: YouTubeClient = YouTubeClient.WEB_REMIX,
+    ) = httpClient.get(url) {
+        ytClient(client, true)
+        parameter("ver", "2")
+        parameter("c", client.clientName)
+        parameter("cpn", cpn)
+
+        if (playlistId != null) {
+            parameter("list", playlistId)
+            parameter("referrer", "https://music.youtube.com/playlist?list=$playlistId")
         }
+    }
 
     suspend fun browse(
         client: YouTubeClient,
