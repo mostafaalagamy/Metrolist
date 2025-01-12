@@ -423,6 +423,17 @@ class MusicService :
     }
 
     private suspend fun recoverSong(mediaId: String, playbackData: YTPlayerUtils.PlaybackData? = null) {
+        val playbackUrl = database.format(mediaId).first()?.playbackUrl
+            ?: playbackData?.playbackTracking?.videostatsPlaybackUrl?.baseUrl
+            ?: YTPlayerUtils.playerResponseForMetadata(mediaId).getOrNull()?.playbackTracking?.videostatsPlaybackUrl?.baseUrl
+
+        playbackUrl?.let {
+            YouTube.registerPlayback(queuePlaylistId, playbackUrl)
+                .onFailure {
+                    reportException(it)
+                }
+        }
+
         val song = database.song(mediaId).first()
         val mediaMetadata = withContext(Dispatchers.Main) {
             player.findNextMediaItemById(mediaId)?.metadata
@@ -452,6 +463,7 @@ class MusicService :
             }
         }
     }
+
     fun playQueue(
         queue: Queue,
         playWhenReady: Boolean = true,
@@ -842,18 +854,6 @@ class MusicService :
                         ),
                     )
                 } catch (_: SQLException) {
-                }
-            }
-            // TODO: support playlist id
-            if (mediaItem.metadata?.isLocal != true) {
-            CoroutineScope(Dispatchers.IO).launch {
-                val playerResponse = YTPlayerUtils.playerResponseForMetadata(mediaItem.mediaId, null).getOrNull()
-                    if (playerResponse?.playabilityStatus?.status == "OK") {
-                        YouTube.registerPlayback(
-                            playlistId = null,
-                            playbackTracking = playerResponse.playbackTracking?.videostatsPlaybackUrl?.baseUrl!!
-                        )
-                    }
                 }
             }
         }
