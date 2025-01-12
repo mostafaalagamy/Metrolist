@@ -162,7 +162,6 @@ object YTPlayerUtils {
                             AudioQuality.HIGH -> 1
                             AudioQuality.LOW -> -1
                         } + (if (it.mimeType.startsWith("audio/webm")) 10240 else 0) // prefer opus stream
-                    }
                 }
         }
     /**
