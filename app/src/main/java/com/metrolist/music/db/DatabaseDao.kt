@@ -760,7 +760,7 @@ interface DatabaseDao {
 
     @Transaction
     @Query(
-        "SELECT *, (SELECT COUNT(*) FROM playlist_song_map WHERE playlistId = playlist.id) AS songCount FROM playlist ORDER BY lastUpdateTime",
+        "SELECT *, (SELECT COUNT(*) FROM playlist_song_map WHERE playlistId = playlist.id) AS songCount FROM playlist WHERE bookmarkedAt IS NOT NULL ORDER BY lastUpdateTime",
     )
     fun playlistsByUpdatedDateAsc(): Flow<List<Playlist>>
 
