@@ -844,21 +844,20 @@ class MusicService :
                 } catch (_: SQLException) {
                 }
             }
-        }
-    }
-
-    // TODO: support playlist id
-    if (mediaItem.metadata?.isLocal != true) {
-        CoroutineScope(Dispatchers.IO).launch {
-            val playerResponse = YTPlayerUtils.playerResponseForMetadata(mediaItem.mediaId, null).getOrNull()
-                if (playerResponse?.playabilityStatus?.status == "OK") {
-                    YouTube.registerPlayback(
-                        playlistId = null,
-                        playbackTracking = playerResponse.playbackTracking?.videostatsPlaybackUrl?.baseUrl!!
-                    )
+            // TODO: support playlist id
+            if (mediaItem.metadata?.isLocal != true) {
+            CoroutineScope(Dispatchers.IO).launch {
+                val playerResponse = YTPlayerUtils.playerResponseForMetadata(mediaItem.mediaId, null).getOrNull()
+                    if (playerResponse?.playabilityStatus?.status == "OK") {
+                        YouTube.registerPlayback(
+                            playlistId = null,
+                            playbackTracking = playerResponse.playbackTracking?.videostatsPlaybackUrl?.baseUrl!!
+                        )
+                    }
                 }
             }
         }
+    }
 
     private fun saveQueueToDisk() {
         if (player.playbackState == STATE_IDLE) {
