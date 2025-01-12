@@ -424,6 +424,7 @@ class MusicService :
 
     private suspend fun recoverSong(mediaId: String, playbackData: YTPlayerUtils.PlaybackData? = null) {
         val playbackUrl = database.format(mediaId).first()?.playbackUrl
+            ?: playbackData?.playbackTracking?.videostatsPlaybackUrl?.baseUrl
             ?: YTPlayerUtils.playerResponseForMetadata(mediaId).getOrNull()?.playbackTracking?.videostatsPlaybackUrl?.baseUrl
 
         playbackUrl?.let {
