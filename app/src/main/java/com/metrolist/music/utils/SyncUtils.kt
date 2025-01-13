@@ -15,6 +15,7 @@ import com.metrolist.music.db.entities.SongEntity
 import com.metrolist.music.db.entities.Song
 import com.metrolist.music.models.toMediaMetadata
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
@@ -128,12 +129,14 @@ class SyncUtils @Inject constructor(
             val playlistList = page.items.filterIsInstance<PlaylistItem>()
             val dbPlaylists = database.playlistsByNameAsc().first()
 
-            dbPlaylists.filterNot { it.playlist.browseId in playlistList.map(PlaylistItem::id) }
-            .forEach { playlist ->
-                launch(Dispatchers.IO) {
-                    database.update(
-                        playlist.playlist.localToggleLike()
-                    )
+            coroutineScope {
+                dbPlaylists.filterNot { it.playlist.browseId in playlistList.map(PlaylistItem::id) }
+                .forEach { playlist ->
+                    launch(Dispatchers.IO) {
+                        database.update(
+                            playlist.playlist.localToggleLike()
+                        )
+                    }
                 }
             }
             
