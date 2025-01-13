@@ -93,7 +93,8 @@ fun LibrarySongsScreen(
     LaunchedEffect(filter) {
         if (ytmSync) {
             if (filter == SongFilter.LIKED) {
-                withContext(Dispatchers.IO) {
+                withContext(Dispatchers.IO) {.
+                    viewModel.syncLibrarySongs()
                     viewModel.syncLikedSongs()
                 }
             }
