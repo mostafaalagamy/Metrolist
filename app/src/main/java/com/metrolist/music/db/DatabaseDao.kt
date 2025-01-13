@@ -1154,15 +1154,13 @@ interface DatabaseDao {
 
     @Update
     fun update(playlistEntity: PlaylistEntity, playlistItem: PlaylistItem) {
-        update(
-            playlistEntity.copy(
-                name = playlistItem.title,
-                browseId = playlistItem.id,
-                isEditable = playlistItem.isEditable,
-            )
-        )
+        update(playlistEntity.copy(
+            name = playlistItem.title,
+            browseId = playlistItem.id,
+            isEditable = playlistItem.isEditable,
+            remoteSongCount = playlistItem.songCountText?.let { Regex("""\d+""").find(it)?.value?.toIntOrNull() }
+        ))
     }
-
     @Upsert
     fun upsert(map: SongAlbumMap)
 
