@@ -127,6 +127,7 @@ class SyncUtils @Inject constructor(
             val dbPlaylists = database.playlistsByNameAsc().first()
 
             dbPlaylists.filterNot { it.playlist.browseId in playlistList.map(PlaylistItem::id) }
+            .filterNot { it.playlist.browseId == null }
             .forEach { database.update(it.playlist.localToggleLike()) }
             
             playlistList.onEach { playlist ->
