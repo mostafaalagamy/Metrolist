@@ -45,7 +45,7 @@ data class LibraryPage(
                         )
                     },
                     songCountText = renderer.subtitle?.runs?.lastOrNull()?.text,
-                    thumbnail = if ((renderer.subtitle?.runs?.lastOrNull()?.text?.replace("[^0-9]".toRegex(), "")?.toIntOrNull() ?: 0) == 0) null
+                    thumbnail = if ((renderer.subtitle?.runs?.lastOrNull()?.text!!.replace("[^0-9]".toRegex(), "").toIntOrNull() ?: 0) == 0) null
                         else renderer.thumbnailRenderer.musicThumbnailRenderer?.getThumbnailUrl(),
                     playEndpoint = renderer.thumbnailOverlay
                         ?.musicItemThumbnailOverlayRenderer?.content
