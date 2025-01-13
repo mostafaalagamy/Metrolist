@@ -138,8 +138,10 @@ class SyncUtils @Inject constructor(
                             Regex("""\d+""").find(it)?.value?.toIntOrNull() 
                         }
                     )
+
                     database.insert(playlistEntity)
-                }
+                } else database.update(playlistEntity, playlist)
+
                 syncPlaylist(playlist.id, playlistEntity.id)
             }
         }
