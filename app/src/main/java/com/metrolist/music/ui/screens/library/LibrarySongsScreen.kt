@@ -90,12 +90,12 @@ fun LibrarySongsScreen(
 
     var filter by rememberEnumPreference(SongFilterKey, SongFilter.LIKED)
 
-    LaunchedEffect(filter) {
+    LaunchedEffect(Unit) {
         if (ytmSync) {
-            if (filter == SongFilter.LIKED) {
-                withContext(Dispatchers.IO) {
-                    viewModel.syncLikedSongs()
-                }
+            when (filter) {
+                SongFilter.LIKED -> viewModel.syncLikedSongs()
+                SongFilter.LIBRARY -> viewModel.syncLibrarySongs()
+                else -> return@LaunchedEffect
             }
         }
     }

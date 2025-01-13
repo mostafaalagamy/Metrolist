@@ -123,6 +123,9 @@ class LibrarySongsViewModel
              fun syncLikedSongs() {
                  viewModelScope.launch(Dispatchers.IO) { syncUtils.syncLikedSongs() }
              }
+             fun syncLibrarySongs() {
+                 viewModelScope.launch(Dispatchers.IO) { syncUtils.syncLibrarySongs() }
+             }
          }
 
 @HiltViewModel
