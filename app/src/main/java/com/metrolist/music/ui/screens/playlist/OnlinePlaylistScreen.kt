@@ -333,7 +333,7 @@ fun OnlinePlaylistScreen(
                                             modifier = Modifier.weight(1f)
                                         ) {
                                             Icon(
-                                                Icons.Rounded.Shuffle,
+                                                painter = painterResource(R.drawable.shuffle),
                                                 contentDescription = null,
                                                 modifier = Modifier.size(ButtonDefaults.IconSize)
                                             )
