@@ -320,7 +320,7 @@ fun YouTubePlaylistMenu(
         }
         playlist.shuffleEndpoint?.let { shuffleEndpoint ->
             GridMenuItem(
-                icon = Icons.Rounded.Shuffle,
+                icon = R.drawable.shuffle,
                 title = R.string.shuffle
             ) {
                 playerConnection.playQueue(YouTubeQueue(shuffleEndpoint))
