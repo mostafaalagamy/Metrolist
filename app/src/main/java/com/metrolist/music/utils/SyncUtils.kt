@@ -6,13 +6,14 @@ import com.metrolist.innertube.models.ArtistItem
 import com.metrolist.innertube.models.PlaylistItem
 import com.metrolist.innertube.models.SongItem
 import com.metrolist.innertube.utils.completed
+import com.metrolist.innertube.utils.completedLibraryPage
 import com.metrolist.music.db.MusicDatabase
 import com.metrolist.music.db.entities.ArtistEntity
 import com.metrolist.music.db.entities.PlaylistEntity
 import com.metrolist.music.db.entities.PlaylistSongMap
 import com.metrolist.music.db.entities.SongEntity
+import com.metrolist.music.db.entities.Song
 import com.metrolist.music.models.toMediaMetadata
-import com.metrolist.innertube.utils.completedLibraryPage
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import java.time.LocalDateTime
@@ -24,12 +25,12 @@ class SyncUtils @Inject constructor(
     val database: MusicDatabase,
 ) {
     suspend fun syncLikedSongs() {
-        YouTube.library("FEmusic_liked_videos").completedLibraryPage().onSuccess { page ->
-            val songs = page.items.filterIsInstance<SongItem>().reversed()
+        YouTube.playlist("LM").completed().onSuccess { page ->
+            val songs = page.songs.reversed()
 
-            database.songsByNameAsc().first()
+            database.likedSongsByNameAsc().first()
                 .filterNot { it.id in songs.map(SongItem::id) }
-                .forEach { database.update(it.song.toggleLibrary()) }
+                .forEach { database.update(it.song.localToggleLike()) }
 
             songs.forEach { song ->
                 val dbSong = database.song(song.id).firstOrNull()
@@ -43,11 +44,31 @@ class SyncUtils @Inject constructor(
         }
     }
 
+    suspend fun syncLibrarySongs() {
+        YouTube.library("FEmusic_liked_videos").completedLibraryPage().onSuccess { page ->
+            val songs = page.items.filterIsInstance<SongItem>().reversed()
+
+            database.songsByNameAsc().first()
+                .filterNot { it.id in songs.map(SongItem::id) }
+                .forEach { database.update(it.song.toggleLibrary()) }
+
+            songs.forEach { song ->
+                val dbSong = database.song(song.id).firstOrNull()
+                database.transaction {
+                    when (dbSong) {
+                        null -> insert(song.toMediaMetadata(), SongEntity::toggleLibrary)
+                        else -> if (dbSong.song.inLibrary == null) update(dbSong.song.toggleLibrary())
+                    }
+                }
+            }
+        }
+    }
+
     suspend fun syncLikedAlbums() {
         YouTube.library("FEmusic_liked_albums").completedLibraryPage().onSuccess { page ->
             val albums = page.items.filterIsInstance<AlbumItem>().reversed()
 
-            database.albumsByNameAsc().first()
+            database.albumsLikedByNameAsc().first()
                 .filterNot { it.id in albums.map(AlbumItem::id) }
                 .forEach { database.update(it.album.localToggleLike()) }
 
@@ -102,12 +123,9 @@ class SyncUtils @Inject constructor(
 
     suspend fun syncSavedPlaylists() {
         YouTube.library("FEmusic_liked_playlists").completedLibraryPage().onSuccess { page ->
-            val playlistList = page.items.filterIsInstance<PlaylistItem>()
+            val playlistList = page.items.filterIsInstance<PlaylistItem>().reversed()
             val dbPlaylists = database.playlistsByNameAsc().first()
-
-            dbPlaylists.filterNot { it.playlist.browseId in playlistList.map(PlaylistItem::id) }
-                .forEach { database.update(it.playlist.localToggleLike()) }
-
+            
             playlistList.drop(1).forEach { playlist ->
                 var playlistEntity = dbPlaylists.find { playlist.id == it.playlist.browseId }?.playlist
                 if (playlistEntity == null) {
