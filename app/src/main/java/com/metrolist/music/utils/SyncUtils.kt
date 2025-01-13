@@ -84,6 +84,7 @@ class SyncUtils @Inject constructor(
                     }
                     else -> if (dbAlbum.album.bookmarkedAt == null)
                         database.update(dbAlbum.album.localToggleLike())
+                    }
                 }
             }
         }
