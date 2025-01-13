@@ -29,26 +29,12 @@ suspend fun Result<PlaylistPage>.completed() =
         )
     }
 
-suspend fun Result<LibraryPage>.completedLibraryPage(): Result<LibraryPage>? = runCatching {
+suspend fun Result<LibraryPage>.completedLibraryPage(): Result<LibraryPage> = runCatching {
     val page = getOrThrow()
     val items = page.items.toMutableList()
     var continuation = page.continuation
     while (continuation != null) {
-        val continuationPage: LibraryContinuationPage = when (items.first()) {
-            is AlbumItem -> {
-                YouTube.libraryAlbumsContinuation(continuation).getOrNull() ?: break
-            }
-
-            is ArtistItem -> {
-                YouTube.libraryArtistsSubscriptionsContinuation(continuation).getOrNull() ?: break
-            }
-
-            is PlaylistItem -> {
-                YouTube.likedPlaylistsContinuation(continuation).getOrNull() ?: break
-            }
-
-            else -> return null
-        }
+        val continuationPage = YouTube.libraryContinuation(continuation).getOrNull() ?: break
         items += continuationPage.items
         continuation = continuationPage.continuation
     }
