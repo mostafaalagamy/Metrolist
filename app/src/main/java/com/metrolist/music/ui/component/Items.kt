@@ -971,7 +971,7 @@ fun PlaylistListItem(
     } else {
             pluralStringResource(R.plurals.n_song, playlist.songCount, playlist.songCount)
         }
-    }
+    },
     thumbnailContent = {
         val painter =
             when (playlist.playlist.name) {
@@ -1059,7 +1059,7 @@ fun PlaylistGridItem(
     } else {
             pluralStringResource(R.plurals.n_song, playlist.songCount, playlist.songCount)
         }
-    }
+    },
     badges = badges,
     thumbnailContent = {
         val painter =
