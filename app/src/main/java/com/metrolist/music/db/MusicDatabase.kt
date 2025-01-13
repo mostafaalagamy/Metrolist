@@ -405,4 +405,10 @@ class Migration13To14 : AutoMigrationSpec {
     DeleteColumn(tableName = "artist", columnName = "isLocal"),
     DeleteColumn(tableName = "playlist", columnName = "isLocal"),
 )
-class Migration15To16 : AutoMigrationSpec
+class Migration15To16 : AutoMigrationSpec {
+    override fun onPostMigrate(db: SupportSQLiteDatabase) {
+        // playlists
+        db.execSQL("UPDATE playlist SET bookmarkedAt = lastUpdateTime")
+        db.execSQL("UPDATE playlist SET isEditable = 1 WHERE browseId IS NOT NULL")
+    }
+}
