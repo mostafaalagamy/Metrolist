@@ -35,8 +35,8 @@ class SyncUtils @Inject constructor(
                 val dbSong = database.song(song.id).firstOrNull()
                 database.transaction {
                     when (dbSong) {
-                        null -> insert(song.toMediaMetadata(), SongEntity::localToggleLike)
-                        else -> if (!dbSong.song.liked) update(dbSong.song.localToggleLike())
+                        null -> insert(song.toMediaMetadata(), SongEntity::toggleLibrary)
+                        else -> if (dbSong.song.inLibrary == null) update(dbSong.song.toggleLibrary())
                     }
                 }
             }
