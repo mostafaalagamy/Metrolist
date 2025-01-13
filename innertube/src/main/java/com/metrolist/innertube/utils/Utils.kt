@@ -46,8 +46,6 @@ suspend fun Result<LibraryPage>.completedLibraryPage(): Result<LibraryPage>? = r
             is PlaylistItem -> {
                 YouTube.likedPlaylistsContinuation(continuation).getOrNull() ?: break
             }
-
-            else -> return null
         }
         items += continuationPage.items
         continuation = continuationPage.continuation
