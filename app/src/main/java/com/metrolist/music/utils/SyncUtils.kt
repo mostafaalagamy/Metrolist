@@ -132,11 +132,11 @@ class SyncUtils @Inject constructor(
                     playlistEntity = PlaylistEntity(
                         name = playlist.title,
                         browseId = playlist.id,
-                        isEditable = playlist.isEditable
+                        isEditable = playlist.isEditable,
+                        bookmarkedAt = LocalDateTime.now()
                     )
                     database.insert(playlistEntity)
                 }
-
                 syncPlaylist(playlist.id, playlistEntity.id)
             }
         }
