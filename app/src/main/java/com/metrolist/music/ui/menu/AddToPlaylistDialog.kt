@@ -33,6 +33,8 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewModelScope
+import com.metrolist.innertube.YouTube
+import com.metrolist.innertube.utils.parseCookieString
 import com.metrolist.music.LocalDatabase
 import com.metrolist.music.R
 import com.metrolist.music.constants.ListThumbnailSize
@@ -43,7 +45,8 @@ import com.metrolist.music.ui.component.ListDialog
 import com.metrolist.music.ui.component.ListItem
 import com.metrolist.music.ui.component.PlaylistListItem
 import com.metrolist.music.ui.component.TextFieldDialog
-import com.metrolist.innertube.YouTube
+import com.metrolist.music.constants.InnerTubeCookieKey
+import com.metrolist.music.utils.rememberPreference
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
@@ -60,6 +63,10 @@ fun AddToPlaylistDialog(
     val coroutineScope = rememberCoroutineScope()
     var playlists by remember {
         mutableStateOf(emptyList<Playlist>())
+    }
+    val (innerTubeCookie) = rememberPreference(InnerTubeCookieKey, "")
+    val isLoggedIn = remember(innerTubeCookie) {
+        "SAPISID" in parseCookieString(innerTubeCookie)
     }
     var showAddPlaylistDialog by rememberSaveable {
         mutableStateOf(false)
@@ -157,34 +164,32 @@ fun AddToPlaylistDialog(
             },
             extraContent = {
                 // synced/unsynced toggle
-                Row(
-                    modifier = Modifier.padding(vertical = 16.dp, horizontal = 40.dp)
-                ) {
-                    Column() {
-                        Text(
-                            text = stringResource(R.string.sync_playlist),
-                            style = MaterialTheme.typography.titleLarge,
-                        )
-
-                        Text(
-                            text = stringResource(R.string.allows_for_sync_witch_youtube),
-                            style = MaterialTheme.typography.bodySmall,
-                            modifier = Modifier.fillMaxWidth(0.7f)
-                        )
-                    }
+                if (isLoggedIn) {
                     Row(
-                        modifier = Modifier.weight(1f),
-                        horizontalArrangement = Arrangement.End
+                        modifier = Modifier.padding(vertical = 16.dp, horizontal = 40.dp)
                     ) {
-                        Switch(
-                            checked = syncedPlaylist,
-                            onCheckedChange = {
-                                syncedPlaylist = !syncedPlaylist
-                            },
-                        )
+                        Column() {
+                            Text(
+                                text = stringResource(R.string.sync_playlist),
+                                style = MaterialTheme.typography.titleLarge,
+                            )
+                            Text(
+                                text = stringResource(R.string.allows_for_sync_witch_youtube),
+                                style = MaterialTheme.typography.bodySmall,
+                                modifier = Modifier.fillMaxWidth(0.7f)
+                            )
+                        }
+                        Row(
+                            modifier = Modifier.weight(1f),
+                            horizontalArrangement = Arrangement.End
+                        ) {
+                            Switch(
+                                checked = syncedPlaylist,
+                                onCheckedChange = { syncedPlaylist = !syncedPlaylist },
+                            )
+                        }
                     }
                 }
-
             }
         )
     }
