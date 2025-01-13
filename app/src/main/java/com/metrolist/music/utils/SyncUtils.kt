@@ -75,7 +75,7 @@ class SyncUtils @Inject constructor(
             albums.forEach { album ->
                 when (val dbAlbum = database.album(album.id).firstOrNull()) {
                     null -> {
-                        database.insert(album)
+                        database.insert(albumPage)
                         database.album(album.id).firstOrNull()?.let {
                             database.update(it.album.localToggleLike())
                         }
