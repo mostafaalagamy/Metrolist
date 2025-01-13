@@ -135,6 +135,9 @@ fun YouTubePlaylistMenu(
                                     name = playlist.title,
                                     browseId = playlist.id,
                                     isEditable = false,
+                                    remoteSongCount = playlist.songCountText?.let {
+                                        Regex("""\d+""").find(it)?.value?.toIntOrNull()
+                                    }
                                 ).toggleLike()
                                 insert(playlistEntity)
                                 coroutineScope.launch(Dispatchers.IO) {
