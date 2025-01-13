@@ -68,7 +68,7 @@ class SyncUtils @Inject constructor(
         YouTube.library("FEmusic_liked_albums").completedLibraryPage().onSuccess { page ->
             val albums = page.items.filterIsInstance<AlbumItem>().reversed()
 
-            database.albumsByNameAsc().first()
+            database.albumsLikedByNameAsc().first()
                 .filterNot { it.id in albums.map(AlbumItem::id) }
                 .forEach { database.update(it.album.localToggleLike()) }
 
@@ -126,6 +126,8 @@ class SyncUtils @Inject constructor(
             val playlistList = page.items.filterIsInstance<PlaylistItem>()
             val dbPlaylists = database.playlistsByNameAsc().first()
 
+            dbPlaylists.filterNot { it.playlist.browseId in playlistList.map(PlaylistItem::id) }
+            
             playlistList.drop(1).forEach { playlist ->
                 var playlistEntity = dbPlaylists.find { playlist.id == it.playlist.browseId }?.playlist
                 if (playlistEntity == null) {
