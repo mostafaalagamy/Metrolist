@@ -23,6 +23,7 @@ data class PlaylistEntity(
     @ColumnInfo(name = "isEditable", defaultValue = true.toString())
     val isEditable: Boolean = true,
     val bookmarkedAt: LocalDateTime? = null,
+    val remoteSongCount: Int? = null
 ) {
     companion object {
         const val LIKED_PLAYLIST_ID = "LP_LIKED"

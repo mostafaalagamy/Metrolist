@@ -963,7 +963,15 @@ fun PlaylistListItem(
     autoPlaylist: Boolean = false,
 ) = ListItem(
     title = playlist.playlist.name,
-    subtitle = if (autoPlaylist) "" else pluralStringResource(R.plurals.n_song, playlist.songCount, playlist.songCount),
+    subtitle = if (autoPlaylist) {
+        ""
+    } else {
+        if (playlist.songCount == 0 && playlist.playlist.remoteSongCount != null) {
+            pluralStringResource(R.plurals.n_song, playlist.playlist.remoteSongCount, playlist.playlist.remoteSongCount)
+    } else {
+            pluralStringResource(R.plurals.n_song, playlist.songCount, playlist.songCount)
+        }
+    },
     thumbnailContent = {
         val painter =
             when (playlist.playlist.name) {
@@ -1043,7 +1051,15 @@ fun PlaylistGridItem(
     autoPlaylist: Boolean = false,
 ) = GridItem(
     title = playlist.playlist.name,
-    subtitle = if (autoPlaylist) "" else pluralStringResource(R.plurals.n_song, playlist.songCount, playlist.songCount),
+    subtitle = if (autoPlaylist) {
+        ""
+    } else {
+        if (playlist.songCount == 0 && playlist.playlist.remoteSongCount != null) {
+            pluralStringResource(R.plurals.n_song, playlist.playlist.remoteSongCount, playlist.playlist.remoteSongCount)
+    } else {
+            pluralStringResource(R.plurals.n_song, playlist.songCount, playlist.songCount)
+        }
+    },
     badges = badges,
     thumbnailContent = {
         val painter =

@@ -133,10 +133,15 @@ class SyncUtils @Inject constructor(
                         name = playlist.title,
                         browseId = playlist.id,
                         isEditable = playlist.isEditable,
-                        bookmarkedAt = LocalDateTime.now()
+                        bookmarkedAt = LocalDateTime.now(),
+                        remoteSongCount = playlist.songCountText?.let {
+                            Regex("""\d+""").find(it)?.value?.toIntOrNull() 
+                        }
                     )
+
                     database.insert(playlistEntity)
-                }
+                } else database.update(playlistEntity, playlist)
+
                 syncPlaylist(playlist.id, playlistEntity.id)
             }
         }
@@ -156,8 +161,7 @@ class SyncUtils @Inject constructor(
                         position = position,
                         setVideoId = song.setVideoId
                     )
-                }
-                .forEach(::insert)
+                }.forEach(::insert)
         }
     }
 }

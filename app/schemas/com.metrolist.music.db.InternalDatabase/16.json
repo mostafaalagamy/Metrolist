@@ -244,7 +244,7 @@
       },
       {
         "tableName": "playlist",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `name` TEXT NOT NULL, `browseId` TEXT, `isEditable` INTEGER NOT NULL DEFAULT true, `bookmarkedAt` INTEGER, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `name` TEXT NOT NULL, `browseId` TEXT, `isEditable` INTEGER NOT NULL DEFAULT true, `bookmarkedAt` INTEGER, `remoteSongCount` INTEGER, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -286,6 +286,12 @@
           {
             "fieldPath": "bookmarkedAt",
             "columnName": "bookmarkedAt",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "remoteSongCount",
+            "columnName": "remoteSongCount",
             "affinity": "INTEGER",
             "notNull": false
           }
