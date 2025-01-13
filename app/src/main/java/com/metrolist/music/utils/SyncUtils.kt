@@ -14,11 +14,8 @@ import com.metrolist.music.db.entities.PlaylistSongMap
 import com.metrolist.music.db.entities.SongEntity
 import com.metrolist.music.db.entities.Song
 import com.metrolist.music.models.toMediaMetadata
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -126,19 +123,8 @@ class SyncUtils @Inject constructor(
 
     suspend fun syncSavedPlaylists() {
         YouTube.library("FEmusic_liked_playlists").completedLibraryPage().onSuccess { page ->
-            val playlistList = page.items.filterIsInstance<PlaylistItem>()
+            val playlistList = page.items.filterIsInstance<PlaylistItem>().reversed()
             val dbPlaylists = database.playlistsByNameAsc().first()
-
-            coroutineScope {
-                dbPlaylists.filterNot { it.playlist.browseId in playlistList.map(PlaylistItem::id) }
-                .forEach { playlist ->
-                    launch(Dispatchers.IO) {
-                        database.update(
-                            playlist.playlist.localToggleLike()
-                        )
-                    }
-                }
-            }
             
             playlistList.drop(1).forEach { playlist ->
                 var playlistEntity = dbPlaylists.find { playlist.id == it.playlist.browseId }?.playlist
