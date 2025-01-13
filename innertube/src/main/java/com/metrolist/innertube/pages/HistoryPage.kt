@@ -35,7 +35,7 @@ data class HistoryPage(
                         name = it.text,
                         id = it.navigationEndpoint?.browseEndpoint?.browseId
                     )
-                } ?: return null,
+                } ?: emptyList(),
                 album = renderer.flexColumns.getOrNull(3)?.musicResponsiveListItemFlexColumnRenderer?.text?.runs?.firstOrNull()?.let {
                     Album(
                         name = it.text,
