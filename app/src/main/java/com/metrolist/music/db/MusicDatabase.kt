@@ -408,6 +408,7 @@ class Migration13To14 : AutoMigrationSpec {
 class Migration15To16 : AutoMigrationSpec {
     override fun onPostMigrate(db: SupportSQLiteDatabase) {
         // playlists
+        db.execSQL("ALTER TABLE playlist ADD COLUMN remoteSongCount INTEGER DEFAULT 0")
         db.execSQL("UPDATE playlist SET bookmarkedAt = lastUpdateTime")
         db.execSQL("UPDATE playlist SET isEditable = 1 WHERE browseId IS NOT NULL")
     }
