@@ -160,17 +160,17 @@ constructor(
 
             viewModelScope.launch {
 
-                YouTube.likedPlaylists().completedLibraryPage()?.onSuccess {
+                YouTube.library("FEmusic_liked_playlists").completedLibraryPage().onSuccess {
                     youtubePlaylists.value = it.items.filterIsInstance<PlaylistItem>()
                 }?.onFailure {
                     reportException(it)
                 }
-                YouTube.libraryAlbums().completedLibraryPage()?.onSuccess {
+                YouTube.library("FEmusic_liked_albums").completedLibraryPage().onSuccess {
                     youtubeAlbums.value = it.items.filterIsInstance<AlbumItem>()
                 }?.onFailure {
                     reportException(it)
                 }
-                YouTube.libraryArtistsSubscriptions().completedLibraryPage()?.onSuccess {
+                YouTube.library("FEmusic_library_corpus_artists").completedLibraryPage().onSuccess {
                     youtubeArtists.value = it.items.filterIsInstance<ArtistItem>()
                 }?.onFailure {
                     reportException(it)
