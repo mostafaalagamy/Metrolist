@@ -336,7 +336,7 @@ fun YouTubePlaylistMenu(
         }
         playlist.radioEndpoint?.let { radioEndpoint ->
             GridMenuItem(
-                icon = Icons.Rounded.Radio,
+                icon = R.drawable.radio,
                 title = R.string.start_radio
             ) {
                 println("Radio: ${radioEndpoint.playlistId}, ${radioEndpoint.params}")
