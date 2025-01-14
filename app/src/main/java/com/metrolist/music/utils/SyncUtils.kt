@@ -123,13 +123,14 @@ class SyncUtils @Inject constructor(
 
     suspend fun syncSavedPlaylists() {
         YouTube.library("FEmusic_liked_playlists").completedLibraryPage().onSuccess { page ->
-            val playlistList = page.items.filterIsInstance<PlaylistItem>().drop(1).reversed()
-            .filterNot { it.id == "LM" ||  it.id == "SE" }
+            val playlistList = page.items.filterIsInstance<PlaylistItem>()
+                .filterNot { it.id == "LM" ||  it.id == "SE" }
+                .reversed()
             val dbPlaylists = database.playlistsByNameAsc().first()
 
             dbPlaylists.filterNot { it.playlist.browseId in playlistList.map(PlaylistItem::id) }
-            .filterNot { it.playlist.browseId == null }
-            .forEach { database.update(it.playlist.localToggleLike()) }
+                .filterNot { it.playlist.browseId == null }
+                .forEach { database.update(it.playlist.localToggleLike()) }
             
             playlistList.onEach { playlist ->
                 var playlistEntity = dbPlaylists.find { playlist.id == it.playlist.browseId }?.playlist
