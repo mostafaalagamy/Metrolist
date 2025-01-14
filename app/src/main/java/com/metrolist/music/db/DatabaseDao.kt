@@ -1161,6 +1161,7 @@ interface DatabaseDao {
             remoteSongCount = playlistItem.songCountText?.let { Regex("""\d+""").find(it)?.value?.toIntOrNull() }
         ))
     }
+
     @Upsert
     fun upsert(map: SongAlbumMap)
 
@@ -1190,6 +1191,9 @@ interface DatabaseDao {
 
     @Delete
     fun delete(playlistSongMap: PlaylistSongMap)
+
+    @Query("DELETE FROM playlist WHERE browseId = :browseId")
+    fun deletePlaylistById(browseId: String)
 
     @Delete
     fun delete(lyrics: LyricsEntity)
