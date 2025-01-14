@@ -244,7 +244,7 @@
       },
       {
         "tableName": "playlist",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `name` TEXT NOT NULL, `browseId` TEXT, `isEditable` INTEGER NOT NULL DEFAULT true, `bookmarkedAt` INTEGER, `remoteSongCount` INTEGER, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `name` TEXT NOT NULL, `browseId` TEXT, `isEditable` INTEGER NOT NULL DEFAULT true, `bookmarkedAt` INTEGER, `remoteSongCount` INTEGER, `playEndpointParams` TEXT, `shuffleEndpointParams` TEXT, `radioEndpointParams` TEXT, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -293,6 +293,24 @@
             "fieldPath": "remoteSongCount",
             "columnName": "remoteSongCount",
             "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "playEndpointParams",
+            "columnName": "playEndpointParams",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "shuffleEndpointParams",
+            "columnName": "shuffleEndpointParams",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "radioEndpointParams",
+            "columnName": "radioEndpointParams",
+            "affinity": "TEXT",
             "notNull": false
           }
         ],

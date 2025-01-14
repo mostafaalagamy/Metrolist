@@ -268,6 +268,9 @@ fun OnlinePlaylistScreen(
                                                                     name = playlist.title,
                                                                     browseId = playlist.id,
                                                                     isEditable = playlist.isEditable,
+                                                                    playEndpointParams = playlist.playEndpoint?.params,
+                                                                    shuffleEndpointParams = playlist.shuffleEndpoint?.params,
+                                                                    radioEndpointParams = playlist.radioEndpoint?.params
                                                                 ).toggleLike()
                                                                 insert(playlistEntity)
                                                                 songs.map(SongItem::toMediaMetadata)
