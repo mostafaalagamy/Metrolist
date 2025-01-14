@@ -1,13 +1,11 @@
 package com.metrolist.music.ui.screens.library
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -35,8 +33,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -57,13 +55,12 @@ import com.metrolist.music.constants.GridItemsSizeKey
 import com.metrolist.music.constants.GridThumbnailHeight
 import com.metrolist.music.constants.LibraryViewType
 import com.metrolist.music.constants.YtmSyncKey
-import com.metrolist.music.ui.component.ArtistGridItem
-import com.metrolist.music.ui.component.ArtistListItem
+import com.metrolist.music.ui.component.LibraryArtistGridItem
+import com.metrolist.music.ui.component.LibraryArtistListItem
 import com.metrolist.music.ui.component.ChipsRow
 import com.metrolist.music.ui.component.LocalMenuState
 import com.metrolist.music.ui.component.SortHeader
 import com.metrolist.music.ui.component.EmptyPlaceholder
-import com.metrolist.music.ui.menu.ArtistMenu
 import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
 import com.metrolist.music.viewmodels.LibraryArtistsViewModel
@@ -229,44 +226,12 @@ fun LibraryArtistsScreen(
                         key = { it.id },
                         contentType = { CONTENT_TYPE_ARTIST },
                     ) { artist ->
-                        ArtistListItem(
-                            artist = artist,
-                            trailingContent = {
-                                IconButton(
-                                    onClick = {
-                                        menuState.show {
-                                            ArtistMenu(
-                                                originalArtist = artist,
-                                                coroutineScope = coroutineScope,
-                                                onDismiss = menuState::dismiss,
-                                            )
-                                        }
-                                    },
-                                ) {
-                                    Icon(
-                                        painter = painterResource(R.drawable.more_vert),
-                                        contentDescription = null,
-                                    )
-                                }
-                            },
-                            modifier =
-                                Modifier
-                                    .fillMaxWidth()
-                                    .combinedClickable(
-                                        onClick = {
-                                            navController.navigate("artist/${artist.id}")
-                                        },
-                                        onLongClick = {
-                                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                            menuState.show {
-                                                ArtistMenu(
-                                                    originalArtist = artist,
-                                                    coroutineScope = coroutineScope,
-                                                    onDismiss = menuState::dismiss,
-                                                )
-                                            }
-                                        },
-                                    ).animateItem(),
+                        LibraryArtistListItem(
+                            navController = navController,
+                            menuState = menuState,
+                            coroutineScope = coroutineScope,
+                            modifier = Modifier.animateItemPlacement(),
+                            artist = artist
                         )
                     }
                 }
@@ -313,27 +278,12 @@ fun LibraryArtistsScreen(
                         key = { it.id },
                         contentType = { CONTENT_TYPE_ARTIST },
                     ) { artist ->
-                        ArtistGridItem(
-                            artist = artist,
-                            fillMaxWidth = true,
-                            modifier =
-                                Modifier
-                                    .fillMaxWidth()
-                                    .combinedClickable(
-                                        onClick = {
-                                            navController.navigate("artist/${artist.id}")
-                                        },
-                                        onLongClick = {
-                                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                            menuState.show {
-                                                ArtistMenu(
-                                                    originalArtist = artist,
-                                                    coroutineScope = coroutineScope,
-                                                    onDismiss = menuState::dismiss,
-                                                )
-                                            }
-                                        },
-                                    ).animateItem(),
+                        LibraryArtistGridItem(
+                            navController = navController,
+                            menuState = menuState,
+                            coroutineScope = coroutineScope,
+                            modifier = Modifier.animateItemPlacement(),
+                            artist = artist
                         )
                     }
                 }

@@ -43,6 +43,7 @@ import androidx.media3.exoplayer.offline.Download
 import androidx.media3.exoplayer.offline.DownloadRequest
 import androidx.media3.exoplayer.offline.DownloadService
 import com.metrolist.innertube.YouTube
+import com.metrolist.innertube.models.WatchEndpoint
 import com.metrolist.innertube.models.PlaylistItem
 import com.metrolist.innertube.models.SongItem
 import com.metrolist.innertube.utils.completed
@@ -135,9 +136,10 @@ fun YouTubePlaylistMenu(
                                     name = playlist.title,
                                     browseId = playlist.id,
                                     isEditable = false,
-                                    remoteSongCount = playlist.songCountText?.let {
-                                        Regex("""\d+""").find(it)?.value?.toIntOrNull()
-                                    }
+                                    remoteSongCount = playlist.songCountText?.let { Regex("""\d+""").find(it)?.value?.toIntOrNull() },
+                                    playEndpointParams = playlist.playEndpoint?.params,
+                                    shuffleEndpointParams = playlist.shuffleEndpoint?.params,
+                                    radioEndpointParams = playlist.radioEndpoint?.params
                                 ).toggleLike()
                                 insert(playlistEntity)
                                 coroutineScope.launch(Dispatchers.IO) {
@@ -317,6 +319,7 @@ fun YouTubePlaylistMenu(
                 icon = R.drawable.play,
                 title = R.string.play,
             ) {
+                println("Play: ${it.playlistId}, ${it.params}")
                 playerConnection.playQueue(YouTubeQueue(it))
                 onDismiss()
             }
@@ -326,6 +329,7 @@ fun YouTubePlaylistMenu(
                 icon = R.drawable.shuffle,
                 title = R.string.shuffle
             ) {
+                println("Shuffle: id: ${shuffleEndpoint.playlistId}, params: ${shuffleEndpoint.params}")
                 playerConnection.playQueue(YouTubeQueue(shuffleEndpoint))
                 onDismiss()
             }
@@ -333,8 +337,9 @@ fun YouTubePlaylistMenu(
         playlist.radioEndpoint?.let { radioEndpoint ->
             GridMenuItem(
                 icon = R.drawable.radio,
-                title = R.string.start_radio,
+                title = R.string.start_radio
             ) {
+                println("Radio: ${radioEndpoint.playlistId}, ${radioEndpoint.params}")
                 playerConnection.playQueue(YouTubeQueue(radioEndpoint))
                 onDismiss()
             }

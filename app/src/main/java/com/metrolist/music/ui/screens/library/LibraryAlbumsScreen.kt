@@ -1,13 +1,11 @@
 package com.metrolist.music.ui.screens.library
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -35,8 +33,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -58,13 +56,12 @@ import com.metrolist.music.constants.GridItemsSizeKey
 import com.metrolist.music.constants.GridThumbnailHeight
 import com.metrolist.music.constants.LibraryViewType
 import com.metrolist.music.constants.YtmSyncKey
-import com.metrolist.music.ui.component.AlbumGridItem
-import com.metrolist.music.ui.component.AlbumListItem
+import com.metrolist.music.ui.component.LibraryAlbumGridItem
+import com.metrolist.music.ui.component.LibraryAlbumListItem
 import com.metrolist.music.ui.component.ChipsRow
 import com.metrolist.music.ui.component.LocalMenuState
 import com.metrolist.music.ui.component.SortHeader
 import com.metrolist.music.ui.component.EmptyPlaceholder
-import com.metrolist.music.ui.menu.AlbumMenu
 import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
 import com.metrolist.music.viewmodels.LibraryAlbumsViewModel
@@ -237,46 +234,13 @@ fun LibraryAlbumsScreen(
                         key = { it.id },
                         contentType = { CONTENT_TYPE_ALBUM },
                     ) { album ->
-                        AlbumListItem(
+                        LibraryAlbumListItem(
+                            navController = navController,
+                            menuState = menuState,
                             album = album,
                             isActive = album.id == mediaMetadata?.album?.id,
                             isPlaying = isPlaying,
-                            trailingContent = {
-                                IconButton(
-                                    onClick = {
-                                        menuState.show {
-                                            AlbumMenu(
-                                                originalAlbum = album,
-                                                navController = navController,
-                                                onDismiss = menuState::dismiss,
-                                            )
-                                        }
-                                    },
-                                ) {
-                                    Icon(
-                                        painter = painterResource(R.drawable.more_vert),
-                                        contentDescription = null,
-                                    )
-                                }
-                            },
-                            modifier =
-                                Modifier
-                                    .fillMaxWidth()
-                                    .combinedClickable(
-                                        onClick = {
-                                            navController.navigate("album/${album.id}")
-                                        },
-                                        onLongClick = {
-                                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                            menuState.show {
-                                                AlbumMenu(
-                                                    originalAlbum = album,
-                                                    navController = navController,
-                                                    onDismiss = menuState::dismiss,
-                                                )
-                                            }
-                                        },
-                                    ).animateItem(),
+                            modifier = Modifier.animateItemPlacement()
                         )
                     }
                 }
@@ -323,30 +287,14 @@ fun LibraryAlbumsScreen(
                         key = { it.id },
                         contentType = { CONTENT_TYPE_ALBUM },
                     ) { album ->
-                        AlbumGridItem(
+                        LibraryAlbumGridItem(
+                            navController = navController,
+                            menuState = menuState,
+                            coroutineScope = coroutineScope,
                             album = album,
                             isActive = album.id == mediaMetadata?.album?.id,
                             isPlaying = isPlaying,
-                            coroutineScope = coroutineScope,
-                            fillMaxWidth = true,
-                            modifier =
-                                Modifier
-                                    .fillMaxWidth()
-                                    .combinedClickable(
-                                        onClick = {
-                                            navController.navigate("album/${album.id}")
-                                        },
-                                        onLongClick = {
-                                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                            menuState.show {
-                                                AlbumMenu(
-                                                    originalAlbum = album,
-                                                    navController = navController,
-                                                    onDismiss = menuState::dismiss,
-                                                )
-                                            }
-                                        },
-                                    ).animateItem(),
+                            modifier = Modifier.animateItemPlacement()
                         )
                     }
                 }
