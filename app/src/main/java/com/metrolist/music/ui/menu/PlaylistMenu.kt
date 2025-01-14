@@ -213,14 +213,16 @@ fun PlaylistMenu(
                         showDeletePlaylistDialog = false
                         onDismiss()
                         database.transaction {
+                            // If playlist has a bookmark/like, remove it before deletion
+                            if (playlist.playlist.bookmarkedAt != null) {
+                                update(playlist.playlist.copy(bookmarkedAt = null))
+                            }
+                            // Delete the playlist
                             delete(playlist.playlist)
-                            deletePlaylistById(playlist.id)
                         }
 
                         coroutineScope.launch(Dispatchers.IO) {
-                            playlist.playlist.browseId?.let {
-                                YouTube.deletePlaylist(it)
-                            }
+                            playlist.playlist.browseId?.let { YouTube.deletePlaylist(it) }
                         }
                     }
                 ) {
