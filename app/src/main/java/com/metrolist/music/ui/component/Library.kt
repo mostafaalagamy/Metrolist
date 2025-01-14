@@ -30,9 +30,9 @@ fun LibraryArtistListItem(
     artist: Artist,
     modifier: Modifier = Modifier
 ) = ArtistListItem(
-    val haptic = LocalHapticFeedback.current
     artist = artist,
     trailingContent = {
+        val haptic = LocalHapticFeedback.current
         androidx.compose.material3.IconButton(
             onClick = {
                 menuState.show {
@@ -89,7 +89,6 @@ fun LibraryArtistGridItem(
 
 @Composable
 fun LibraryAlbumListItem(
-    val haptic = LocalHapticFeedback.current
     modifier: Modifier = Modifier,
     navController: NavController,
     menuState: MenuState,
@@ -101,6 +100,7 @@ fun LibraryAlbumListItem(
     isActive = isActive,
     isPlaying = isPlaying,
     trailingContent = {
+        val haptic = LocalHapticFeedback.current
         androidx.compose.material3.IconButton(
             onClick = {
                 menuState.show {
@@ -168,9 +168,9 @@ fun LibraryPlaylistListItem(
     playlist: Playlist,
     modifier: Modifier = Modifier
 ) = PlaylistListItem(
-    val haptic = LocalHapticFeedback.current
     playlist = playlist,
     trailingContent = {
+        val haptic = LocalHapticFeedback.current
         androidx.compose.material3.IconButton(
             onClick = {
                 menuState.show {
