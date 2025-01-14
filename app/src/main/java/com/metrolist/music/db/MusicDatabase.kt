@@ -63,7 +63,7 @@ class MusicDatabase(
         SortedSongAlbumMap::class,
         PlaylistSongMapPreview::class,
     ],
-    version = 16,
+    version = 17,
     exportSchema = true,
     autoMigrations = [
         AutoMigration(from = 2, to = 3),
@@ -79,7 +79,8 @@ class MusicDatabase(
         AutoMigration(from = 12, to = 13, spec = Migration12To13::class),
         AutoMigration(from = 13, to = 14, spec = Migration13To14::class),
         AutoMigration(from = 14, to = 15),
-        AutoMigration(from = 15, to = 16, spec = Migration15To16::class),
+        AutoMigration(from = 15, to = 16),
+        AutoMigration(from = 16, to = 17, spec = Migration16To17::class),
     ],
 )
 @TypeConverters(Converters::class)
@@ -405,10 +406,8 @@ class Migration13To14 : AutoMigrationSpec {
     DeleteColumn(tableName = "artist", columnName = "isLocal"),
     DeleteColumn(tableName = "playlist", columnName = "isLocal"),
 )
-class Migration15To16 : AutoMigrationSpec {
+class Migration16To17 : AutoMigrationSpec {
     override fun onPostMigrate(db: SupportSQLiteDatabase) {
-        // playlists
-        db.execSQL("CREATE TABLE IF NOT EXISTS `playlist` (`id` TEXT NOT NULL, `name` TEXT NOT NULL, `browseId` TEXT, `isEditable` INTEGER NOT NULL DEFAULT true, `bookmarkedAt` INTEGER, `remoteSongCount` INTEGER, `playEndpointParams` TEXT, `shuffleEndpointParams` TEXT, `radioEndpointParams` TEXT, PRIMARY KEY(`id`))")
         db.execSQL("UPDATE playlist SET bookmarkedAt = lastUpdateTime")
         db.execSQL("UPDATE playlist SET isEditable = 1 WHERE browseId IS NOT NULL")
     }
