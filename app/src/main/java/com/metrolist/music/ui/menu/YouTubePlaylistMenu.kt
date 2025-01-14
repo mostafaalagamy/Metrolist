@@ -43,6 +43,7 @@ import androidx.media3.exoplayer.offline.Download
 import androidx.media3.exoplayer.offline.DownloadRequest
 import androidx.media3.exoplayer.offline.DownloadService
 import com.metrolist.innertube.YouTube
+import com.metrolist.innertube.models.WatchEndpoint
 import com.metrolist.innertube.models.PlaylistItem
 import com.metrolist.innertube.models.SongItem
 import com.metrolist.innertube.utils.completed
@@ -331,12 +332,17 @@ fun YouTubePlaylistMenu(
             }
         }
         playlist.radioEndpoint?.let { radioEndpoint ->
-            GridMenuItem(
-                icon = R.drawable.radio,
-                title = R.string.start_radio,
-            ) {
-                playerConnection.playQueue(YouTubeQueue(radioEndpoint))
-                onDismiss()
+            playlist.playlist.radioEndpointParams?.let { radioEndpointParams ->
+                GridMenuItem(
+                    icon = Icons.Rounded.Radio,
+                    title = R.string.start_radio
+                ) {
+                    playerConnection.playQueue(YouTubeQueue(WatchEndpoint(
+                        playlistId = "RDAMPL$browseId",
+                        params = radioEndpointParams
+                    )))
+                    onDismiss()
+                }
             }
         }
         GridMenuItem(
