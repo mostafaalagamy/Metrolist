@@ -1,8 +1,6 @@
 package com.metrolist.music.ui.screens.library
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -10,7 +8,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -38,7 +35,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -66,12 +62,11 @@ import com.metrolist.music.constants.YtmSyncKey
 import com.metrolist.music.db.entities.Playlist
 import com.metrolist.music.db.entities.PlaylistEntity
 import com.metrolist.music.ui.component.HideOnScrollFAB
+import com.dd3boh.outertune.ui.component.LibraryPlaylistGridItem
+import com.dd3boh.outertune.ui.component.LibraryPlaylistListItem
 import com.metrolist.music.ui.component.LocalMenuState
-import com.metrolist.music.ui.component.PlaylistGridItem
-import com.metrolist.music.ui.component.PlaylistListItem
 import com.metrolist.music.ui.component.SortHeader
 import com.metrolist.music.ui.component.TextFieldDialog
-import com.metrolist.music.ui.menu.PlaylistMenu
 import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
 import com.metrolist.music.viewmodels.LibraryPlaylistsViewModel
@@ -344,44 +339,12 @@ fun LibraryPlaylistsScreen(
                         key = { it.id },
                         contentType = { CONTENT_TYPE_PLAYLIST },
                     ) { playlist ->
-                        PlaylistListItem(
-                            playlist = playlist,
-                            trailingContent = {
-                                IconButton(
-                                    onClick = {
-                                        menuState.show {
-                                            PlaylistMenu(
-                                                playlist = playlist,
-                                                coroutineScope = coroutineScope,
-                                                onDismiss = menuState::dismiss,
-                                            )
-                                        }
-                                    },
-                                ) {
-                                    Icon(
-                                        painter = painterResource(R.drawable.more_vert),
-                                        contentDescription = null,
-                                    )
-                                }
-                            },
-                            modifier =
-                                Modifier
-                                    .fillMaxWidth()
-                                    .combinedClickable(
-                                        onClick = {
-                                            navController.navigate("local_playlist/${playlist.id}")
-                                        },
-                                        onLongClick = {
-                                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                            menuState.show {
-                                                PlaylistMenu(
-                                                    playlist = playlist,
-                                                    coroutineScope = coroutineScope,
-                                                    onDismiss = menuState::dismiss,
-                                                )
-                                            }
-                                        },
-                                    ).animateItem(),
+                            LibraryPlaylistListItem(
+                                navController = navController,
+                                menuState = menuState,
+                                coroutineScope = coroutineScope,
+                                playlist = playlist,
+                                modifier = Modifier.animateItemPlacement()
                             )
                         }
                     }
@@ -489,27 +452,12 @@ fun LibraryPlaylistsScreen(
                         key = { it.id },
                         contentType = { CONTENT_TYPE_PLAYLIST },
                     ) { playlist ->
-                        PlaylistGridItem(
-                            playlist = playlist,
-                            fillMaxWidth = true,
-                            modifier =
-                                Modifier
-                                    .fillMaxWidth()
-                                    .combinedClickable(
-                                        onClick = {
-                                            navController.navigate("local_playlist/${playlist.id}")
-                                        },
-                                        onLongClick = {
-                                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                            menuState.show {
-                                                PlaylistMenu(
-                                                    playlist = playlist,
-                                                    coroutineScope = coroutineScope,
-                                                    onDismiss = menuState::dismiss,
-                                                )
-                                            }
-                                        },
-                                    ).animateItem(),
+                            LibraryPlaylistGridItem(
+                                navController = navController,
+                                menuState = menuState,
+                                coroutineScope = coroutineScope,
+                                playlist = playlist,
+                                modifier = Modifier.animateItemPlacement()
                             )
                         }
                     }
