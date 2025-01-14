@@ -11,6 +11,7 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavController
+import com.metrolist.music.R
 import com.metrolist.music.db.entities.Album
 import com.metrolist.music.db.entities.Artist
 import com.metrolist.music.db.entities.Playlist
@@ -64,6 +65,7 @@ fun LibraryArtistGridItem(
     modifier: Modifier = Modifier,
     navController: NavController,
     menuState: MenuState,
+    coroutineScope: CoroutineScope,
     artist: Artist,
     modifier: Modifier = Modifier
 ) = ArtistGridItem(
@@ -189,18 +191,6 @@ fun LibraryPlaylistListItem(
                                     author = null,
                                     songCountText = null,
                                     thumbnail = playlist.thumbnails.getOrNull(0),
-                                    playEndpoint = WatchEndpoint(
-                                        playlistId = browseId,
-                                        params = playlist.playlist.playEndpointParams
-                                    ),
-                                    shuffleEndpoint = WatchEndpoint(
-                                        playlistId = browseId,
-                                        params = playlist.playlist.shuffleEndpointParams
-                                    ),
-                                    radioEndpoint = WatchEndpoint(
-                                        playlistId = "RDAMPL$browseId",
-                                        params = playlist.playlist.radioEndpointParams
-                                    ),
                                     isEditable = false
                                 ),
                                 coroutineScope = coroutineScope,
@@ -265,18 +255,6 @@ fun LibraryPlaylistGridItem(
                                     author = null,
                                     songCountText = null,
                                     thumbnail = playlist.thumbnails.getOrNull(0),
-                                    playEndpoint = WatchEndpoint(
-                                        playlistId = browseId,
-                                        params = playlist.playlist.playEndpointParams
-                                    ),
-                                    shuffleEndpoint = WatchEndpoint(
-                                        playlistId = browseId,
-                                        params = playlist.playlist.shuffleEndpointParams
-                                    ),
-                                    radioEndpoint = WatchEndpoint(
-                                        playlistId = "RDAMPL$browseId",
-                                        params = playlist.playlist.radioEndpointParams
-                                    ),
                                     isEditable = false
                                 ),
                                 coroutineScope = coroutineScope,
