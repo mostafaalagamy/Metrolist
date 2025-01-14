@@ -136,9 +136,10 @@ fun YouTubePlaylistMenu(
                                     name = playlist.title,
                                     browseId = playlist.id,
                                     isEditable = false,
-                                    remoteSongCount = playlist.songCountText?.let {
-                                        Regex("""\d+""").find(it)?.value?.toIntOrNull()
-                                    }
+                                    remoteSongCount = playlist.songCountText?.let { Regex("""\d+""").find(it)?.value?.toIntOrNull() },
+                                    playEndpointParams = playlist.playEndpoint?.params,
+                                    shuffleEndpointParams = playlist.shuffleEndpoint?.params,
+                                    radioEndpointParams = playlist.radioEndpoint?.params
                                 ).toggleLike()
                                 insert(playlistEntity)
                                 coroutineScope.launch(Dispatchers.IO) {
@@ -318,6 +319,7 @@ fun YouTubePlaylistMenu(
                 icon = R.drawable.play,
                 title = R.string.play,
             ) {
+                println("Play: ${it.playlistId}, ${it.params}")
                 playerConnection.playQueue(YouTubeQueue(it))
                 onDismiss()
             }
@@ -327,22 +329,19 @@ fun YouTubePlaylistMenu(
                 icon = R.drawable.shuffle,
                 title = R.string.shuffle
             ) {
+                println("Shuffle: id: ${shuffleEndpoint.playlistId}, params: ${shuffleEndpoint.params}")
                 playerConnection.playQueue(YouTubeQueue(shuffleEndpoint))
                 onDismiss()
             }
         }
         playlist.radioEndpoint?.let { radioEndpoint ->
-            playlist.playlist.radioEndpointParams?.let { radioEndpointParams ->
-                GridMenuItem(
-                    icon = Icons.Rounded.Radio,
-                    title = R.string.start_radio
-                ) {
-                    playerConnection.playQueue(YouTubeQueue(WatchEndpoint(
-                        playlistId = "RDAMPL$browseId",
-                        params = radioEndpointParams
-                    )))
-                    onDismiss()
-                }
+            GridMenuItem(
+                icon = Icons.Rounded.Radio,
+                title = R.string.start_radio
+            ) {
+                println("Radio: ${radioEndpoint.playlistId}, ${radioEndpoint.params}")
+                playerConnection.playQueue(YouTubeQueue(radioEndpoint))
+                onDismiss()
             }
         }
         GridMenuItem(
