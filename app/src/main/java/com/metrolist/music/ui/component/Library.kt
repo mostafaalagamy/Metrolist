@@ -184,11 +184,11 @@ fun LibraryPlaylistListItem(
                                     songCountText = null,
                                     thumbnail = playlist.thumbnails.getOrNull(0),
                                     playEndpoint = WatchEndpoint(
-                                        playlistId = browseId,
-                                        params = playlist.playlist.playEndpointParams!!
+                                        playlistId = browseId?,
+                                        params = playlist.playlist.playEndpointParams
                                     ),
                                     shuffleEndpoint = WatchEndpoint(
-                                        playlistId = browseId,
+                                        playlistId = browseId?,
                                         params = playlist.playlist.shuffleEndpointParams
                                     ),
                                     radioEndpoint = WatchEndpoint(
@@ -259,11 +259,11 @@ fun LibraryPlaylistGridItem(
                                     songCountText = null,
                                     thumbnail = playlist.thumbnails.getOrNull(0),
                                     playEndpoint = WatchEndpoint(
-                                        playlistId = browseId,
-                                        params = playlist.playlist.playEndpointParams!!
+                                        playlistId = browseId?,
+                                        params = playlist.playlist.playEndpointParams
                                     ),
                                     shuffleEndpoint = WatchEndpoint(
-                                        playlistId = browseId,
+                                        playlistId = browseId?,
                                         params = playlist.playlist.shuffleEndpointParams
                                     ),
                                     radioEndpoint = WatchEndpoint(
