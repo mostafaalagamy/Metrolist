@@ -183,6 +183,19 @@ fun LibraryPlaylistListItem(
                                     title = playlist.playlist.name,
                                     author = null,
                                     songCountText = null,
+                                    thumbnail = playlist.thumbnails.getOrNull(0),
+                                    playEndpoint = WatchEndpoint(
+                                        playlistId = browseId,
+                                        params = playlist.playlist.playEndpointParams
+                                    ),
+                                    shuffleEndpoint = WatchEndpoint(
+                                        playlistId = browseId,
+                                        params = playlist.playlist.shuffleEndpointParams
+                                    ),
+                                    radioEndpoint = WatchEndpoint(
+                                        playlistId = "RDAMPL$browseId",
+                                        params = playlist.playlist.radioEndpointParams
+                                    ),
                                     isEditable = false
                                 ),
                                 coroutineScope = coroutineScope,
@@ -245,6 +258,19 @@ fun LibraryPlaylistGridItem(
                                     title = playlist.playlist.name,
                                     author = null,
                                     songCountText = null,
+                                    thumbnail = playlist.thumbnails.getOrNull(0),
+                                    playEndpoint = WatchEndpoint(
+                                        playlistId = browseId,
+                                        params = playlist.playlist.playEndpointParams
+                                    ),
+                                    shuffleEndpoint = WatchEndpoint(
+                                        playlistId = browseId,
+                                        params = playlist.playlist.shuffleEndpointParams
+                                    ),
+                                    radioEndpoint = WatchEndpoint(
+                                        playlistId = "RDAMPL$browseId",
+                                        params = playlist.playlist.radioEndpointParams
+                                    ),
                                     isEditable = false
                                 ),
                                 coroutineScope = coroutineScope,
