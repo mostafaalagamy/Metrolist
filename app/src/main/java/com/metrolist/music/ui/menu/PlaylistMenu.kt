@@ -212,12 +212,15 @@ fun PlaylistMenu(
                     onClick = {
                         showDeletePlaylistDialog = false
                         onDismiss()
-                        database.query {
+                        database.transaction {
                             delete(playlist.playlist)
+                            deletePlaylistById(playlist.id)
                         }
 
                         coroutineScope.launch(Dispatchers.IO) {
-                            playlist.playlist.browseId?.let { YouTube.deletePlaylist(it) }
+                            playlist.playlist.browseId?.let {
+                                YouTube.deletePlaylist(it)
+                            }
                         }
                     }
                 ) {
