@@ -58,11 +58,11 @@ fun LibraryArtistListItem(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun LibraryArtistGridItem(
-    modifier: Modifier = Modifier,
     navController: NavController,
     menuState: MenuState,
     coroutineScope: CoroutineScope,
     artist: Artist,
+    modifier: Modifier = Modifier
 ) = ArtistGridItem(
     artist = artist,
     fillMaxWidth = true,
