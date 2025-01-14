@@ -123,6 +123,42 @@ fun YouTubePlaylistMenu(
         onDismiss = { showChoosePlaylistDialog = false },
     )
 
+    var showDeletePlaylistDialog by remember {
+        mutableStateOf(false)
+    }
+    if (showDeletePlaylistDialog) {
+        DefaultDialog(
+            onDismiss = { showDeletePlaylistDialog = false },
+            content = {
+                Text(
+                    text = stringResource(R.string.delete_playlist_confirm, playlist.title),
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier.padding(horizontal = 18.dp)
+                )
+            },
+            buttons = {
+                TextButton(
+                    onClick = {
+                        showDeletePlaylistDialog = false
+                    }
+                ) {
+                    Text(text = stringResource(android.R.string.cancel))
+                }
+                TextButton(
+                    onClick = {
+                        showDeletePlaylistDialog = false
+                        onDismiss()
+                        database.transaction {
+                            deletePlaylistById(playlist.id)
+                        }
+                    }
+                ) {
+                    Text(text = stringResource(android.R.string.ok))
+                }
+            }
+        )
+    }
+
     YouTubeListItem(
         item = playlist,
         trailingContent = {
@@ -439,6 +475,12 @@ fun YouTubePlaylistMenu(
                 onDismiss()
                 selectAction()
             }
+        }
+        GridMenuItem(
+            icon = R.drawable.delete,
+            title = R.string.delete
+        ) {
+            showDeletePlaylistDialog = true
         }
     }
 }
