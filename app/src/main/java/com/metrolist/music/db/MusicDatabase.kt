@@ -408,7 +408,7 @@ class Migration13To14 : AutoMigrationSpec {
 class Migration15To16 : AutoMigrationSpec {
     override fun onPostMigrate(db: SupportSQLiteDatabase) {
         // playlists
-        db.execSQL("CREATE TABLE IF NOT EXISTS `playlist` (`id` TEXT NOT NULL, `name` TEXT NOT NULL, `browseId` TEXT, `isEditable` INTEGER NOT NULL DEFAULT true, `bookmarkedAt` INTEGER, `remoteSongCount` INTEGER, PRIMARY KEY(`id`))")
+        db.execSQL("CREATE TABLE IF NOT EXISTS `playlist` (`id` TEXT NOT NULL, `name` TEXT NOT NULL, `browseId` TEXT, `isEditable` INTEGER NOT NULL DEFAULT true, `bookmarkedAt` INTEGER, `remoteSongCount` INTEGER, `playEndpointParams` TEXT, `shuffleEndpointParams` TEXT, `radioEndpointParams` TEXT, PRIMARY KEY(`id`))")
         db.execSQL("UPDATE playlist SET bookmarkedAt = lastUpdateTime")
         db.execSQL("UPDATE playlist SET isEditable = 1 WHERE browseId IS NOT NULL")
     }
