@@ -190,48 +190,49 @@ fun PlaylistMenu(
     }
 
     if (showDeletePlaylistDialog) {
-    DefaultDialog(
-        onDismiss = { showDeletePlaylistDialog = false },
-        content = {
-            Text(
-                text = stringResource(R.string.delete_playlist_confirm, playlist.playlist.name),
-                style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier.padding(horizontal = 18.dp)
-            )
-        },
-        buttons = {
-            TextButton(
-                onClick = {
-                    showDeletePlaylistDialog = false
+        DefaultDialog(
+            onDismiss = { showDeletePlaylistDialog = false },
+            content = {
+                Text(
+                    text = stringResource(R.string.delete_playlist_confirm, playlist.playlist.name),
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier.padding(horizontal = 18.dp)
+                )
+            },
+            buttons = {
+                TextButton(
+                    onClick = {
+                        showDeletePlaylistDialog = false
+                    }
+                ) {
+                    Text(text = stringResource(android.R.string.cancel))
                 }
-            ) {
-                Text(text = stringResource(android.R.string.cancel))
-            }
 
-            TextButton(
-                onClick = {
-                    showDeletePlaylistDialog = false
-                    onDismiss()
-                    database.transaction {
-                        // First toggle the like using the same logic as the like button
-                        if (playlist.playlist.bookmarkedAt != null) {
-                            // Using the same toggleLike() method that's used in the like button
-                            update(playlist.playlist.toggleLike())
+                TextButton(
+                    onClick = {
+                        showDeletePlaylistDialog = false
+                        onDismiss()
+                        database.transaction {
+                            // First toggle the like using the same logic as the like button
+                            if (playlist.playlist.bookmarkedAt != null) {
+                                // Using the same toggleLike() method that's used in the like button
+                                update(playlist.playlist.toggleLike())
+                            }
+                            // Then delete the playlist
+                            delete(playlist.playlist)
                         }
-                        // Then delete the playlist
-                        delete(playlist.playlist)
-                    }
 
-                    coroutineScope.launch(Dispatchers.IO) {
-                        playlist.playlist.browseId?.let { YouTube.deletePlaylist(it) }
+                        coroutineScope.launch(Dispatchers.IO) {
+                            playlist.playlist.browseId?.let { YouTube.deletePlaylist(it) }
+                        }
                     }
+                ) {
+                    Text(text = stringResource(android.R.string.ok))
                 }
-            ) {
-                Text(text = stringResource(android.R.string.ok))
             }
-        }
-    )
-}
+        )
+    }
+
     var showChoosePlaylistDialog by rememberSaveable {
         mutableStateOf(false)
     }
