@@ -386,12 +386,12 @@ fun YouTubePlaylistMenu(
             }
             onDismiss()
         }
-        GridMenuItem(
-            icon = R.drawable.playlist_import,
-            title = R.string.import_playlist
-        ) {
-            showImportPlaylistDialog = true
-        }
+        //GridMenuItem(
+            //icon = R.drawable.playlist_import,
+            //title = R.string.import_playlist
+        //) {
+            //showImportPlaylistDialog = true
+        //}
         GridMenuItem(
             icon = R.drawable.playlist_add,
             title = R.string.add_to_playlist,
