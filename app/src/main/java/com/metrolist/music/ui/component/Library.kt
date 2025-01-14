@@ -184,16 +184,16 @@ fun LibraryPlaylistListItem(
                                     songCountText = null,
                                     thumbnail = playlist.thumbnails.getOrNull(0),
                                     playEndpoint = WatchEndpoint(
-                                        playlistId = browseId?,
-                                        params = playlist.playlist.playEndpointParams
+                                        playlistId = browseId ?: "",
+                                        params = playlist.playlist.playEndpointParams ?: ""
                                     ),
                                     shuffleEndpoint = WatchEndpoint(
-                                        playlistId = browseId?,
-                                        params = playlist.playlist.shuffleEndpointParams
+                                        playlistId = browseId ?: "",
+                                        params = playlist.playlist.shuffleEndpointParams ?: ""
                                     ),
                                     radioEndpoint = WatchEndpoint(
                                         playlistId = "RDAMPL$browseId",
-                                        params = playlist.playlist.radioEndpointParams
+                                        params = playlist.playlist.radioEndpointParams ?: ""
                                     ),
                                     isEditable = false
                                 ),
@@ -259,16 +259,16 @@ fun LibraryPlaylistGridItem(
                                     songCountText = null,
                                     thumbnail = playlist.thumbnails.getOrNull(0),
                                     playEndpoint = WatchEndpoint(
-                                        playlistId = browseId?,
-                                        params = playlist.playlist.playEndpointParams
+                                        playlistId = browseId ?: "",
+                                        params = playlist.playlist.playEndpointParams ?: ""
                                     ),
                                     shuffleEndpoint = WatchEndpoint(
-                                        playlistId = browseId?,
-                                        params = playlist.playlist.shuffleEndpointParams
+                                        playlistId = browseId ?: "",
+                                        params = playlist.playlist.shuffleEndpointParams ?: ""
                                     ),
                                     radioEndpoint = WatchEndpoint(
                                         playlistId = "RDAMPL$browseId",
-                                        params = playlist.playlist.radioEndpointParams
+                                        params = playlist.playlist.radioEndpointParams ?: ""
                                     ),
                                     isEditable = false
                                 ),
