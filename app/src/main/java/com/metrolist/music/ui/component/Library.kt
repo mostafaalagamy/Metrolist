@@ -63,7 +63,6 @@ fun LibraryArtistGridItem(
     menuState: MenuState,
     coroutineScope: CoroutineScope,
     artist: Artist,
-    modifier: Modifier = Modifier
 ) = ArtistGridItem(
     artist = artist,
     fillMaxWidth = true,
@@ -184,15 +183,15 @@ fun LibraryPlaylistListItem(
                                     author = null,
                                     songCountText = null,
                                     thumbnail = playlist.thumbnails.getOrNull(0),
-                                    playEndpoint = WatchEndpoint(
+                                    playEndpoint = WatchEndpoint?(
                                         playlistId = browseId,
                                         params = playlist.playlist.playEndpointParams
                                     ),
-                                    shuffleEndpoint = WatchEndpoint(
+                                    shuffleEndpoint = WatchEndpoint?(
                                         playlistId = browseId,
                                         params = playlist.playlist.shuffleEndpointParams
                                     ),
-                                    radioEndpoint = WatchEndpoint(
+                                    radioEndpoint = WatchEndpoint?(
                                         playlistId = "RDAMPL$browseId",
                                         params = playlist.playlist.radioEndpointParams
                                     ),
@@ -259,15 +258,15 @@ fun LibraryPlaylistGridItem(
                                     author = null,
                                     songCountText = null,
                                     thumbnail = playlist.thumbnails.getOrNull(0),
-                                    playEndpoint = WatchEndpoint(
+                                    playEndpoint = WatchEndpoint?(
                                         playlistId = browseId,
                                         params = playlist.playlist.playEndpointParams
                                     ),
-                                    shuffleEndpoint = WatchEndpoint(
+                                    shuffleEndpoint = WatchEndpoint?(
                                         playlistId = browseId,
                                         params = playlist.playlist.shuffleEndpointParams
                                     ),
-                                    radioEndpoint = WatchEndpoint(
+                                    radioEndpoint = WatchEndpoint?(
                                         playlistId = "RDAMPL$browseId",
                                         params = playlist.playlist.radioEndpointParams
                                     ),
