@@ -23,6 +23,7 @@ class AccountViewModel @Inject constructor() : ViewModel() {
         viewModelScope.launch {
             YouTube.library("FEmusic_liked_playlists").completedLibraryPage().onSuccess {
                 playlists.value = it.items.filterIsInstance<PlaylistItem>()
+                .filterNot { it.id == "SE" }
             }.onFailure {
                  reportException(it)
             }
