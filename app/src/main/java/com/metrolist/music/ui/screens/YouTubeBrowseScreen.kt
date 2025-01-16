@@ -167,12 +167,7 @@ fun YouTubeBrowseScreen(
                                                             playerConnection.player.togglePlayPause()
                                                         } else {
                                                             playerConnection.playQueue(
-                                                                YouTubeQueue(
-                                                                    WatchEndpoint(
-                                                                        videoId = song.id,
-                                                                    ),
-                                                                    song.toMediaMetadata(),
-                                                                ),
+                                                                playerConnection.playQueue(YouTubeQueue.radio(item.toMediaMetadata()))
                                                             )
                                                         }
                                                     }.animateItemPlacement(),
