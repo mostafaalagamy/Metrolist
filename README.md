@@ -14,6 +14,9 @@
   <img src="https://github.com/mostafaalagamy/Metrolist/blob/main/fastlane/metadata/android/images/screenshots/screenshot_6.jpeg" width="30%" />
 </p>
 
+<img
+src="https://github.com/mostafaalagamy/Metrolist/blob/main/fastlane/metadata/android/images/screenshots/syncScreen.jpeg" width="91%" />
+
 [![Latest release](https://img.shields.io/github/v/release/mostafaalagamy/Metrolist?style=for-the-badge)](https://github.com/mostafaalagamy/Metrolist/releases)
 [![GitHub license](https://img.shields.io/github/license/mostafaalagamy/metrolist?style=for-the-badge)](https://github.com/mostafaalagamy/Metrolist/blob/main/LICENSE)
 </div>
@@ -29,7 +32,8 @@
 - Download and cache songs for offline playback
 - Search for songs, albums, artists, videos and playlists
 - Live lyrics 
-- Login support 
+- YouTube Music account login support
+- Syncing of songs, artists, albums and playlists, from and to your account
 - Skip silence 
 - Import playlists 
 - Audio normalization 
@@ -63,6 +67,12 @@ height="80">](https://github.com/mostafaalagamy/Metrolist/releases/latest/downlo
    developer settings
 2. In the three dots menu at the top-right of the screen, click "Developer settings"
 3. Enable "Unknown sources"
+
+<div align="center">
+<h1>Special thanks</h1>
+
+[z-huang](https://github.com/z-huang)
+</div>
 
 <div align="center">
 <h1>Disclaimer</h1>
