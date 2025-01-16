@@ -244,49 +244,6 @@ interface DatabaseDao {
 
     @Transaction
     @Query(
-"""
-                SELECT
-                    song.*
-                FROM
-                    (
-                        SELECT
-                            n.songId AS eid,
-                            SUM(playTime) AS oldPlayTime,
-                            newPlayTime
-                        FROM
-                            event
-                        JOIN
-                            (
-                              SELECT
-                                songId,
-                                SUM(playTime) AS newPlayTime
-                              FROM
-                                event
-                            WHERE
-                                timestamp > (:now - 86400000 * 30 * 1)
-                              GROUP BY
-                                songId
-                              ORDER BY
-                               newPlayTime
-                            ) as n
-                        ON event.songId = n.songId
-                        WHERE
-                            timestamp < (:now - 86400000 * 30 * 1)
-                        GROUP BY
-                            n.songId
-                        ORDER BY
-                            oldPlayTime
-                    ) AS t
-                JOIN song on song.id = t.eid
-                WHERE 0.2 * t.oldPlayTime > t.newPlayTime
-                LIMIT 100
-
-        """,
-    )
-    fun forgottenFavorites(now: Long = System.currentTimeMillis()): Flow<List<Song>>
-
-    @Transaction
-    @Query(
         """
         SELECT
             song.*
@@ -415,39 +372,62 @@ interface DatabaseDao {
     ): Flow<List<Artist>>
 
     @Transaction
+    @Query("""
+        SELECT *, count(song.dateDownload) downloadCount
+        FROM album
+            JOIN song ON album.id = song.albumId
+            JOIN event ON song.id = event.songId
+        WHERE event.timestamp > :fromTimeStamp
+        GROUP BY album.id
+        ORDER BY SUM(event.playTime) DESC
+        LIMIT :limit OFFSET :offset;
+    """)
+    fun mostPlayedAlbums(fromTimeStamp: Long, limit: Int = 6, offset: Int = 0): Flow<List<Album>>
+
+    @Transaction
     @Query(
         """
-        SELECT album.*,
-               (SELECT COUNT(1)
-                FROM song_album_map
-                         JOIN event ON song_album_map.songId = event.songId
-                WHERE albumId = album.id
-                  AND timestamp > :fromTimeStamp AND timestamp <= :toTimeStamp) AS songCountListened,
-               (SELECT SUM(event.playTime)
-                FROM song_album_map
-                         JOIN event ON song_album_map.songId = event.songId
-                WHERE albumId = album.id
-                  AND timestamp > :fromTimeStamp AND timestamp <= :toTimeStamp) AS timeListened
-        FROM album
-                WHERE id IN (SELECT song.albumId
-                     FROM event
-                              JOIN
-                          song
-                          ON event.songId = song.id
-                     WHERE event.timestamp > :fromTimeStamp
-                     AND event.timestamp <= :toTimeStamp
-                     GROUP BY song.albumId
-                     HAVING song.albumId IS NOT NULL)
-                ORDER BY timeListened DESC
-                LIMIT :limit OFFSET :offset
-    """,
+        SELECT song.*
+        FROM (SELECT n.songId      AS eid,
+                     SUM(playTime) AS oldPlayTime,
+                     newPlayTime
+              FROM event
+                       JOIN
+                   (SELECT songId, SUM(playTime) AS newPlayTime
+                    FROM event
+                    WHERE timestamp > (:now - 86400000 * 30 * 1)
+                    GROUP BY songId
+                    ORDER BY newPlayTime) as n
+                   ON event.songId = n.songId
+              WHERE timestamp < (:now - 86400000 * 30 * 1)
+              GROUP BY n.songId
+              ORDER BY oldPlayTime) AS t
+                 JOIN song on song.id = t.eid
+        WHERE 0.2 * t.oldPlayTime > t.newPlayTime
+        LIMIT 100
+    """
     )
-    fun mostPlayedAlbums(
-        fromTimeStamp: Long,
-        limit: Int = 6,
+    fun forgottenFavorites(now: Long = System.currentTimeMillis()): Flow<List<Song>>
+    @Transaction
+    @Query(
+        """
+        SELECT song.*
+        FROM event
+                 JOIN
+             song ON event.songId = song.id
+        WHERE event.timestamp > (:now - 86400000 * 7 * 2)
+        GROUP BY song.albumId
+        HAVING song.albumId IS NOT NULL
+        ORDER BY sum(event.playTime) DESC
+        LIMIT :limit
+        OFFSET :offset
+        """,
+    )
+    fun recommendedAlbum(
+        now: Long = System.currentTimeMillis(),
+        limit: Int = 5,
         offset: Int = 0,
-        toTimeStamp: Long? = LocalDateTime.now().toInstant(ZoneOffset.UTC).toEpochMilli(),
-    ): Flow<List<Album>>
+    ): Flow<List<Song>>
 
     @Transaction
     @Query("SELECT * FROM song WHERE id = :songId")
@@ -904,6 +884,21 @@ interface DatabaseDao {
         "SELECT song.* FROM (SELECT * from related_song_map GROUP BY relatedSongId) map JOIN song ON song.id = map.relatedSongId where songId = :songId",
     )
     fun getRelatedSongs(songId: String): Flow<List<Song>>
+
+    @Transaction
+    @Query(
+        """
+        SELECT song.*
+        FROM (SELECT *
+              FROM related_song_map
+              GROUP BY relatedSongId) map
+                 JOIN
+             song
+             ON song.id = map.relatedSongId
+        WHERE songId = :songId
+        """
+    )
+    fun relatedSongs(songId: String): List<Song>
 
     @Transaction
     @Query(
