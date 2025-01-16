@@ -17,6 +17,8 @@ import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -667,12 +669,12 @@ class MainActivity : ComponentActivity() {
                         if (!active && navBackStackEntry?.destination?.route in topLevelScreens && navBackStackEntry?.destination?.route != "settings") {
                             AnimatedVisibility(
                             visible = true,
-                            enter = slideIntoContainer(
-                                AnimatedContentTransitionScope.SlideDirection.Up,
+                            enter = slideInVertically(
+                                initialOffsetY = { it },
                                 animationSpec = tween(300)
                             ),
-                            exit = slideOutOfContainer(
-                                AnimatedContentTransitionScope.SlideDirection.Down,
+                            exit = slideOutVertically(
+                                targetOffsetY = { it },
                                 animationSpec = tween(300)
                             )
                         ) {
