@@ -10,7 +10,7 @@ media3 = "1.5.1"
 room = "2.6.1"
 hilt = "2.54"
 ktor = "3.0.3"
-ksp = "2.0.20-1.0.26"
+ksp = "2.0.21-1.0.26"
 
 [libraries]
 annotation = { module = "androidx.annotation:annotation", version.ref = "annotation" }
