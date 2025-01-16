@@ -669,11 +669,11 @@ class MainActivity : ComponentActivity() {
                             visible = true,
                             enter = slideInVertically(
                                 initialOffsetY = { it },
-                                animationSpec = tween(300)
+                                animationSpec = tween(800)
                             ),
                             exit = slideOutVertically(
                                 targetOffsetY = { it },
-                                animationSpec = tween(300)
+                                animationSpec = tween(800)
                             )
                         ) {
                             TopAppBar(
