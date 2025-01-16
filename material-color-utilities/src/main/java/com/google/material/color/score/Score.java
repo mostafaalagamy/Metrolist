@@ -159,17 +159,7 @@ public final class Score {
         return colors;
     }
 
-    /**
-     * Given a map with keys of colors and values of how often the color appears, rank the colors
-     * based on population.
-     *
-     * @param colorsToPopulation map with keys of colors and values of how often the color appears,
-     *                           usually from a source image.
-     * @return Colors sorted by population. The most suitable color is the first item,
-     * the least suitable is the last.
-     * The list might be empty.
-     */
-    public static List<Integer> orderByPopulation(Map<Integer, Integer> colorsToPopulation) {
+    public static List<Integer> order(Map<Integer, Integer> colorsToPopulation) {
         // Determine the total count of all colors.
         double populationSum = 0.;
         for (Map.Entry<Integer, Integer> entry : colorsToPopulation.entrySet()) {
@@ -247,6 +237,7 @@ public final class Score {
 
         return colorsByScoreDescending;
     }
+
 
     private static class ScoredHCT {
         public final Hct hct;
