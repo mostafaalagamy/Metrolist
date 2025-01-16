@@ -258,4 +258,13 @@ public final class Score {
             return Double.compare(entry2.score, entry1.score);
         }
     }
+
+    static class OldScoredComparator implements Comparator<Map.Entry<Integer, Double>> {
+        public OldScoredComparator() {
+        }
+        @Override
+        public int compare(Map.Entry<Integer, Double> entry1, Map.Entry<Integer, Double> entry2) {
+            return -entry1.getValue().compareTo(entry2.getValue());
+        }
+    }
 }

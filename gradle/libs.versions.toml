@@ -1,16 +1,16 @@
 [versions]
-androidGradlePlugin = "8.6.1"
+androidGradlePlugin = "8.7.3"
 annotation = "1.9.1"
-json = "20240303"
-kotlin = "2.0.20"
+json = "20241224"
+kotlin = "2.0.21"
 compose = "1.7.6"
 lifecycle = "2.8.7"
 material3 = "1.3.1"
-media3 = "1.5.0"
+media3 = "1.5.1"
 room = "2.6.1"
-hilt = "2.53.1"
-ktor = "3.0.2"
-ksp = "2.0.20-1.0.24"
+hilt = "2.54"
+ktor = "3.0.3"
+ksp = "2.0.21-1.0.26"
 
 [libraries]
 annotation = { module = "androidx.annotation:annotation", version.ref = "annotation" }
@@ -30,7 +30,6 @@ compose-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "compos
 compose-ui-util = { group = "androidx.compose.ui", name = "ui-util", version.ref = "compose" }
 compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling", version.ref = "compose" }
 compose-animation = { group = "androidx.compose.animation", name = "animation-graphics", version.ref = "compose" }
-compose-animation-graphics = { group = "androidx.compose.animation", name = "animation-graphics", version.ref = "compose" }
 compose-reorderable = { group = "org.burnoutcrew.composereorderable", name = "reorderable", version = "0.9.6" }
 
 
@@ -71,7 +70,7 @@ json = { module = "org.json:json", version.ref = "json" }
 
 brotli = { group = "org.brotli", name = "dec", version = "0.1.2" }
 
-desugaring = { group = "com.android.tools", name = "desugar_jdk_libs", version = "2.1.3" }
+desugaring = { group = "com.android.tools", name = "desugar_jdk_libs", version = "2.1.4" }
 
 junit = { group = "junit", name = "junit", version = "4.13.2" }
 
