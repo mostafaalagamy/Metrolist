@@ -662,7 +662,17 @@ class MainActivity : ComponentActivity() {
     			    }
 			}
 
-                        if (!active && navBackStackEntry?.destination?.route in topLevelScreens && navBackStackEntry?.destination?.route != "settings") {
+                        AnimatedVisibility(
+                            visible = !active && navBackStackEntry?.destination?.route in topLevelScreens && navBackStackEntry?.destination?.route != "settings",
+                            enter = slideIntoContainer(
+                                AnimatedContentTransitionScope.SlideDirection.Up,
+                                animationSpec = tween(300)
+                            ),
+                            exit = slideOutOfContainer(
+                                AnimatedContentTransitionScope.SlideDirection.Down,
+                                animationSpec = tween(300)
+                            )
+                        ) {
                             TopAppBar(
                                 title = { 
                                     Text(
@@ -671,28 +681,18 @@ class MainActivity : ComponentActivity() {
                                     ) 
                                 },
                                 actions = {
-                                    IconButton(
-                                        onClick = { 
-                                            onActiveChange(true)
-                                        }
-                                    ) {
+                                    IconButton(onClick = { onActiveChange(true) }) {
                                         Icon(
                                             painter = painterResource(R.drawable.search),
                                             contentDescription = stringResource(R.string.search)
                                         )
                                     }
-                                    IconButton(
-                                        onClick = { 
-                                            navController.navigate("settings") 
-                                        }
-                                    ) {
-                                        BadgedBox(
-                                            badge = {
-                                                if (latestVersionName != BuildConfig.VERSION_NAME) {
-                                                    Badge()
-                                               }
-                                           }
-                                        ) {
+                                    IconButton(onClick = { navController.navigate("settings") }) {
+                                        BadgedBox(badge = {
+                                            if (latestVersionName != BuildConfig.VERSION_NAME) {
+                                                Badge()
+                                            }
+                                        }) {
                                             Icon(
                                                 painter = painterResource(R.drawable.settings),
                                                 contentDescription = stringResource(R.string.settings),
