@@ -48,9 +48,8 @@ src="https://github.com/mostafaalagamy/Metrolist/blob/main/fastlane/metadata/and
 <div align="center">
 <h1>Download Now</h1>
 
-[<img src="https://raw.githubusercontent.com/WSTxda/QP-Gallery-Releases/master/Images/GitHub.svg"
-alt='Get it on GitHub'
-height="80">](https://github.com/mostafaalagamy/Metrolist/releases/latest/download/Metrolist.apk)
+[<img src="https://github.com/machiav3lli/oandbackupx/blob/034b226cea5c1b30eb4f6a6f313e4dadcbb0ece4/badge_github.png" alt="Get it on GitHub" height="80">](https://github.com/mostafaalagamy/Metrolist/releases/latest/download/Metrolist.apk)
+[<img src="https://www.androidfreeware.net/images/androidfreeware-badge.png" alt="Get it on Android Freeware" height="80">](https://www.androidfreeware.net/download-metrolist-apk.html)
 
 </div>
 
