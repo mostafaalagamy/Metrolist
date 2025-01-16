@@ -662,8 +662,9 @@ class MainActivity : ComponentActivity() {
     			    }
 			}
 
-                        AnimatedVisibility(
-                            visible = !active && navBackStackEntry?.destination?.route in topLevelScreens && navBackStackEntry?.destination?.route != "settings",
+                        if (!active && navBackStackEntry?.destination?.route in topLevelScreens && navBackStackEntry?.destination?.route != "settings") {
+                            AnimatedVisibility(
+                            visible = true,
                             enter = slideIntoContainer(
                                 AnimatedContentTransitionScope.SlideDirection.Up,
                                 animationSpec = tween(300)
@@ -701,8 +702,10 @@ class MainActivity : ComponentActivity() {
                                         }
                                     }
                                 },
-                                scrollBehavior = searchBarScrollBehavior
-                            )
+                                scrollBehavior =
+		                    searchBarScrollBehavior
+                                )
+			    }
                         } else if (active || navBackStackEntry?.destination?.route?.startsWith("search/") == true) {
                             TopSearch(
                                 query = query,
