@@ -451,6 +451,92 @@ fun SongListItem(
 )
 
 @Composable
+fun SongGridItem(
+    song: Song,
+    modifier: Modifier = Modifier,
+    showLikedIcon: Boolean = true,
+    showInLibraryIcon: Boolean = false,
+    showDownloadIcon: Boolean = true,
+    badges: @Composable RowScope.() -> Unit = {
+        if (showLikedIcon && song.song.liked) {
+            Icon(
+                painter = painterResource(R.drawable.favorite),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.error,
+                modifier = Modifier
+                    .size(18.dp)
+                    .padding(end = 2.dp)
+            )
+        }
+        if (showInLibraryIcon && song.song.inLibrary != null) {
+            Icon(
+                painter = painterResource(R.drawable.library_add_check),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(18.dp)
+                    .padding(end = 2.dp)
+            )
+        }
+        if (showDownloadIcon) {
+            val download by LocalDownloadUtil.current.getDownload(song.id).collectAsState(initial = null)
+            when (download?.state) {
+                STATE_COMPLETED -> Icon(
+                    imageVector = Icons.Rounded.OfflinePin,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(18.dp)
+                        .padding(end = 2.dp)
+                )
+                STATE_QUEUED, STATE_DOWNLOADING -> CircularProgressIndicator(
+                    strokeWidth = 2.dp,
+                    modifier = Modifier
+                        .size(16.dp)
+                        .padding(end = 2.dp)
+                )
+                else -> {}
+            }
+        }
+    },
+    isActive: Boolean = false,
+    isPlaying: Boolean = false,
+    fillMaxWidth: Boolean = false,
+) = GridItem(
+    title = song.song.title,
+    subtitle = joinByBullet(
+        song.artists.joinToString { it.name },
+        makeTimeString(song.song.duration * 1000L)
+    ),
+    badges = badges,
+    thumbnailContent = {
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier.size(GridThumbnailHeight)
+        ) {
+            AsyncImage(
+                model = song.song.thumbnailUrl,
+                contentDescription = null,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clip(RoundedCornerShape(ThumbnailCornerRadius))
+            )
+            PlayingIndicatorBox(
+                isActive = isActive,
+                playWhenReady = isPlaying,
+                color = Color.White,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(
+                        color = Color.Black.copy(alpha = ActiveBoxAlpha),
+                        shape = RoundedCornerShape(ThumbnailCornerRadius)
+                    )
+            )
+        }
+    },
+    fillMaxWidth = fillMaxWidth,
+    modifier = modifier
+)
+
+@Composable
 fun SongSmallGridItem(
     song: Song,
     modifier: Modifier = Modifier,
