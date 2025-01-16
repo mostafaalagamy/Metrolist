@@ -17,6 +17,8 @@ import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -663,6 +665,17 @@ class MainActivity : ComponentActivity() {
 			}
 
                         if (!active && navBackStackEntry?.destination?.route in topLevelScreens && navBackStackEntry?.destination?.route != "settings") {
+                            AnimatedVisibility(
+                            visible = true,
+                            enter = slideInVertically(
+                                initialOffsetY = { it },
+                                animationSpec = tween(800)
+                            ),
+                            exit = slideOutVertically(
+                                targetOffsetY = { it },
+                                animationSpec = tween(800)
+                            )
+                        ) {
                             TopAppBar(
                                 title = { 
                                     Text(
@@ -671,28 +684,18 @@ class MainActivity : ComponentActivity() {
                                     ) 
                                 },
                                 actions = {
-                                    IconButton(
-                                        onClick = { 
-                                            onActiveChange(true)
-                                        }
-                                    ) {
+                                    IconButton(onClick = { onActiveChange(true) }) {
                                         Icon(
                                             painter = painterResource(R.drawable.search),
                                             contentDescription = stringResource(R.string.search)
                                         )
                                     }
-                                    IconButton(
-                                        onClick = { 
-                                            navController.navigate("settings") 
-                                        }
-                                    ) {
-                                        BadgedBox(
-                                            badge = {
-                                                if (latestVersionName != BuildConfig.VERSION_NAME) {
-                                                    Badge()
-                                               }
-                                           }
-                                        ) {
+                                    IconButton(onClick = { navController.navigate("settings") }) {
+                                        BadgedBox(badge = {
+                                            if (latestVersionName != BuildConfig.VERSION_NAME) {
+                                                Badge()
+                                            }
+                                        }) {
                                             Icon(
                                                 painter = painterResource(R.drawable.settings),
                                                 contentDescription = stringResource(R.string.settings),
@@ -701,8 +704,10 @@ class MainActivity : ComponentActivity() {
                                         }
                                     }
                                 },
-                                scrollBehavior = searchBarScrollBehavior
-                            )
+                                scrollBehavior =
+		                    searchBarScrollBehavior
+                                )
+			    }
                         } else if (active || navBackStackEntry?.destination?.route?.startsWith("search/") == true) {
                             TopSearch(
                                 query = query,
