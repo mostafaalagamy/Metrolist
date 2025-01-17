@@ -9,10 +9,10 @@ import com.metrolist.music.db.entities.Artist
 import com.metrolist.music.db.entities.LocalItem
 import com.metrolist.music.db.entities.Playlist
 import com.metrolist.music.db.entities.Song
-import com.metrolist.music.extensions.isSyncEnabled
 import com.metrolist.music.models.SimilarRecommendation
 import com.metrolist.music.utils.SyncUtils
 import com.metrolist.music.utils.reportException
+import com.metrolist.music.constants.YtmSyncKey
 import com.metrolist.innertube.YouTube
 import com.metrolist.innertube.models.PlaylistItem
 import com.metrolist.innertube.models.WatchEndpoint
@@ -168,18 +168,6 @@ class HomeViewModel @Inject constructor(
     init {
         viewModelScope.launch(Dispatchers.IO) {
             load()
-            val syncYtm = context.dataStore.data
-                .map {
-                    it[YtmSyncKey]
-                }
-                .distinctUntilChanged()
-
-            if (syncYtm.first() != false) { // defaults to true
-                viewModelScope.launch(Dispatchers.IO) { syncUtils.syncLikedSongs() }
-                viewModelScope.launch(Dispatchers.IO) { syncUtils.syncSavedPlaylists() }
-                viewModelScope.launch(Dispatchers.IO) { syncUtils.syncLikedAlbums() }
-                viewModelScope.launch(Dispatchers.IO) { syncUtils.syncArtistsSubscriptions() }
-            }
         }
     }
 }
