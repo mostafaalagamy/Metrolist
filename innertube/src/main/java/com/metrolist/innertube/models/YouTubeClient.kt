@@ -12,6 +12,7 @@ data class YouTubeClient(
     val loginSupported: Boolean = false,
     val loginRequired: Boolean = false,
     val useSignatureTimestamp: Boolean = false,
+    val isEmbedded: Boolean = false,
     // val origin: String? = null,
     // val referer: String? = null,
 ) {
@@ -62,7 +63,7 @@ data class YouTubeClient(
             useSignatureTimestamp = true,
         )
 
-        val TVHTML5 = YouTubeClient(
+        val TVHTML5_SIMPLY_EMBEDDED_PLAYER = YouTubeClient(
             clientName = "TVHTML5_SIMPLY_EMBEDDED_PLAYER",
             clientVersion = "2.0",
             clientId = "85",
@@ -70,6 +71,7 @@ data class YouTubeClient(
             loginSupported = true,
             loginRequired = true,
             useSignatureTimestamp = true,
+            isEmbedded = true,
         )
 
         val IOS = YouTubeClient(
