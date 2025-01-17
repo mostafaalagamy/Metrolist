@@ -46,6 +46,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -56,6 +57,9 @@ import com.metrolist.music.LocalDatabase
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
+import com.metrolist.music.constants.AccountChannelHandleKey
+import com.metrolist.music.constants.AccountEmailKey
+import com.metrolist.music.constants.AccountNameKey
 import com.metrolist.music.constants.GridThumbnailHeight
 import com.metrolist.music.constants.InnerTubeCookieKey
 import com.metrolist.music.constants.ListItemHeight
@@ -144,6 +148,9 @@ fun HomeScreen(
     val forgottenFavoritesLazyGridState = rememberLazyGridState()
     val recentActivityGridState = rememberLazyGridState()
 
+    val accountName by rememberPreference(AccountNameKey, "")
+    val accountEmail by rememberPreference(AccountEmailKey, "")
+    val accountChannelHandle by rememberPreference(AccountChannelHandleKey, "")
     val innerTubeCookie by rememberPreference(InnerTubeCookieKey, "")
     val isLoggedIn = remember(innerTubeCookie) {
         "SAPISID" in parseCookieString(innerTubeCookie)
@@ -575,67 +582,6 @@ fun HomeScreen(
                 }
             }
 
-            forgottenFavorites?.takeIf { it.isNotEmpty() }?.let { forgottenFavorites ->
-                item {
-                    NavigationTitle(
-                        title = stringResource(R.string.forgotten_favorites),
-                        modifier = Modifier.animateItem()
-                    )
-                }
-
-                item {
-                    // take min in case list size is less than 4
-                    val rows = min(4, forgottenFavorites.size)
-                    LazyHorizontalGrid(
-                        state = forgottenFavoritesLazyGridState,
-                        rows = GridCells.Fixed(rows),
-                        flingBehavior = rememberSnapFlingBehavior(forgottenFavoritesSnapLayoutInfoProvider),
-                        contentPadding = WindowInsets.systemBars
-                            .only(WindowInsetsSides.Horizontal)
-                            .asPaddingValues(),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(ListItemHeight * rows)
-                            .animateItem()
-                    ) {
-                        items(
-                            items = forgottenFavorites,
-                            key = { it.id }
-                        ) { originalSong ->
-                            val song by database.song(originalSong.id).collectAsState(initial = originalSong)
-
-                            SongListItem(
-                                song = song!!,
-                                showInLibraryIcon = true,
-                                isActive = song!!.id == mediaMetadata?.id,
-                                isPlaying = isPlaying,
-                                modifier = Modifier
-                                    .width(horizontalLazyGridItemWidth)
-                                    .combinedClickable(
-                                        onClick = {
-                                            if (song!!.id == mediaMetadata?.id) {
-                                                playerConnection.player.togglePlayPause()
-                                            } else {
-                                                playerConnection.playQueue(YouTubeQueue.radio(song!!.toMediaMetadata()))
-                                            }
-                                        },
-                                        onLongClick = {
-                                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                            menuState.show {
-                                                SongMenu(
-                                                    originalSong = song!!,
-                                                    navController = navController,
-                                                    onDismiss = menuState::dismiss
-                                                )
-                                            }
-                                        }
-                                    )
-                            )
-                        }
-                    }
-                }
-            }
-
             keepListening?.takeIf { it.isNotEmpty() }?.let { keepListening ->
                 item {
                     NavigationTitle(
@@ -831,39 +777,100 @@ fun HomeScreen(
                 }
             }
 
-            explorePage?.moodAndGenres?.let { moodAndGenres ->
+            forgottenFavorites?.takeIf { it.isNotEmpty() }?.let { forgottenFavorites ->
                 item {
                     NavigationTitle(
-                        title = stringResource(R.string.mood_and_genres),
-                        onClick = {
-                            navController.navigate("mood_and_genres")
-                        },
+                        title = stringResource(R.string.forgotten_favorites),
                         modifier = Modifier.animateItem()
                     )
                 }
 
                 item {
+                    // take min in case list size is less than 4
+                    val rows = min(4, forgottenFavorites.size)
                     LazyHorizontalGrid(
-                        rows = GridCells.Fixed(4),
-                        contentPadding = PaddingValues(6.dp),
+                        state = forgottenFavoritesLazyGridState,
+                        rows = GridCells.Fixed(rows),
+                        flingBehavior = rememberSnapFlingBehavior(forgottenFavoritesSnapLayoutInfoProvider),
+                        contentPadding = WindowInsets.systemBars
+                            .only(WindowInsetsSides.Horizontal)
+                            .asPaddingValues(),
                         modifier = Modifier
-                            .height((MoodAndGenresButtonHeight + 12.dp) * 4 + 12.dp)
+                            .fillMaxWidth()
+                            .height(ListItemHeight * rows)
                             .animateItem()
                     ) {
-                        items(moodAndGenres) {
-                            MoodAndGenresButton(
-                                title = it.title,
-                                onClick = {
-                                    navController.navigate("youtube_browse/${it.endpoint.browseId}?params=${it.endpoint.params}")
-                                },
+                        items(
+                            items = forgottenFavorites,
+                            key = { it.id }
+                        ) { originalSong ->
+                            val song by database.song(originalSong.id).collectAsState(initial = originalSong)
+
+                            SongListItem(
+                                song = song!!,
+                                showInLibraryIcon = true,
+                                isActive = song!!.id == mediaMetadata?.id,
+                                isPlaying = isPlaying,
                                 modifier = Modifier
-                                    .padding(6.dp)
-                                    .width(180.dp)
+                                    .width(horizontalLazyGridItemWidth)
+                                    .combinedClickable(
+                                        onClick = {
+                                            if (song!!.id == mediaMetadata?.id) {
+                                                playerConnection.player.togglePlayPause()
+                                            } else {
+                                                playerConnection.playQueue(YouTubeQueue.radio(song!!.toMediaMetadata()))
+                                            }
+                                        },
+                                        onLongClick = {
+                                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                            menuState.show {
+                                                SongMenu(
+                                                    originalSong = song!!,
+                                                    navController = navController,
+                                                    onDismiss = menuState::dismiss
+                                                )
+                                            }
+                                        }
+                                    )
                             )
                         }
                     }
                 }
             }
+
+            //explorePage?.moodAndGenres?.let { moodAndGenres ->
+            //    item {
+            //        NavigationTitle(
+            //            title = stringResource(R.string.mood_and_genres),
+            //            onClick = {
+            //                navController.navigate("mood_and_genres")
+            //            },
+            //            modifier = Modifier.animateItem()
+            //        )
+            //    }
+
+            //    item {
+            //        LazyHorizontalGrid(
+            //            rows = GridCells.Fixed(4),
+            //            contentPadding = PaddingValues(6.dp),
+            //            modifier = Modifier
+            //                .height((MoodAndGenresButtonHeight + 12.dp) * 4 + 12.dp)
+            //                .animateItem()
+            //        ) {
+            //            items(moodAndGenres) {
+            //                MoodAndGenresButton(
+            //                    title = it.title,
+            //                onClick = {
+            //                        navController.navigate("youtube_browse/${it.endpoint.browseId}?params=${it.endpoint.params}")
+            //                    },
+            //                    modifier = Modifier
+            //                        .padding(6.dp)
+            //                        .width(180.dp)
+            //                )
+            //            }
+            //        }
+            //    }
+            //}
 
             if (isLoading) {
                 item {
