@@ -225,7 +225,7 @@ class InnerTube {
             PlayerBody(
                 context =
                     client.toContext(locale, visitorData).let {
-                        if (client == YouTubeClient.TVHTML5) {
+                        if (client == YouTubeClient.TVHTML5_SIMPLY_EMBEDDED_PLAYER) {
                             it.copy(
                                 thirdParty =
                                     Context.ThirdParty(
