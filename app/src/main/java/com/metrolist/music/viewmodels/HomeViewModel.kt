@@ -117,7 +117,7 @@ class HomeViewModel @Inject constructor(
         YouTube.explore().onSuccess { page ->
             val artists: Set<String>
             val favouriteArtists: Set<String>
-            database.artistsInLibraryAsc().first().let { list ->
+            database.artistsBookmarkedByCreateDateAsc().first().let { list ->
                 artists = list.map(Artist::id).toHashSet()
                 favouriteArtists = list
                     .filter { it.artist.bookmarkedAt != null }
@@ -134,19 +134,6 @@ class HomeViewModel @Inject constructor(
             )
         }.onFailure {
             reportException(it)
-        }
-
-        YouTube.libraryRecentActivity().onSuccess { page ->
-            recentActivity.value = page.items.take(9).drop(1)
-
-            recentActivity.value!!.filterIsInstance<PlaylistItem>().forEach { item ->
-                val playlist = database.playlistByBrowseId(item.id).firstOrNull()
-                if (playlist != null) {
-                    recentPlaylistsDb.update { list ->
-                        list?.plusElement(playlist) ?: listOf(playlist)
-                    }
-                }
-            }
         }
 
         allYtItems.value = similarRecommendations.value?.flatMap { it.items }.orEmpty() +
