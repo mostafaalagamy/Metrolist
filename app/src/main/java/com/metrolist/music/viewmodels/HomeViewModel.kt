@@ -91,23 +91,23 @@ class HomeViewModel @Inject constructor(
                 }
         // Similar to songs
         val songRecommendations =
-            database.mostPlayedSongs(fromTimeStamp, limit = 10)
-                .first().filter { it.album != null }.shuffled().take(2)
-                .mapNotNull {
-                    val endpoint = YouTube.next(WatchEndpoint(videoId = it.id)).getOrNull()?.relatedEndpoint
-                        ?: return@mapNotNull null
+            database.mostPlayedSongs(fromTimeStamp, limit = 10).first()
+                .filter { it.album != null }
+                .shuffled().take(2)
+                .mapNotNull { song ->
+                    val endpoint = YouTube.next(WatchEndpoint(videoId = song.id)).getOrNull()?.relatedEndpoint ?: return@mapNotNull null
                     val page = YouTube.related(endpoint).getOrNull() ?: return@mapNotNull null
                     SimilarRecommendation(
-                        title = it,
-                        items = (page.albums.shuffled().take(4) +
+                        title = song,
+                        items = (page.songs.shuffled().take(8) +
+                                page.albums.shuffled().take(4) +
                                 page.artists.shuffled().take(4) +
                                 page.playlists.shuffled().take(4))
                             .shuffled()
                             .ifEmpty { return@mapNotNull null }
                     )
                 }
-        similarRecommendations.value = artistRecommendations + songRecommendations
-        isLoading.value = true
+        similarRecommendations.value = (artistRecommendations + songRecommendations).shuffled()
 
         YouTube.home().onSuccess { page ->
             homePage.value = page
