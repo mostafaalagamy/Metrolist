@@ -12,6 +12,7 @@ import com.metrolist.music.db.entities.Song
 import com.metrolist.music.models.SimilarRecommendation
 import com.metrolist.music.utils.SyncUtils
 import com.metrolist.music.utils.reportException
+import com.metrolist.music.utils.dataStore
 import com.metrolist.music.constants.HideExplicitKey
 import com.metrolist.music.constants.YtmSyncKey
 import com.metrolist.innertube.YouTube
