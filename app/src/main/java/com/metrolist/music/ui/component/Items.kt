@@ -523,8 +523,7 @@ fun SongGridItem(
             exit = fadeOut(tween(500)),
             modifier =
                 Modifier
-                    .align(Alignment.Center)
-                    .padding(8.dp),
+                    .align(Alignment.Center),
         ) {
             Box(
                 contentAlignment = Alignment.Center,
