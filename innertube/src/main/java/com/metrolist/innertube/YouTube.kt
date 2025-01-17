@@ -558,81 +558,39 @@ object YouTube {
             val editable = 
                 response.header?.musicEditablePlaylistDetailHeaderRenderer != null
             PlaylistPage(
-                playlist =
-                    PlaylistItem(
-                        id = playlistId,
-                        title =
-                            base
-                                ?.title
-                                ?.runs
-                                ?.firstOrNull()
-                                ?.text!!,
-                        author =
-                            base.straplineTextOne?.runs?.firstOrNull()?.let {
-                                Artist(
-                                    name = it.text,
-                                    id = it.navigationEndpoint?.browseEndpoint?.browseId,
-                                )
-                            },
-                        songCountText =
-                            base.secondSubtitle
-                                ?.runs
-                                ?.firstOrNull()
-                                ?.text,
-                        thumbnail =
-                            base.thumbnail
-                                ?.musicThumbnailRenderer
-                                ?.thumbnail
-                                ?.thumbnails
-                                ?.lastOrNull()
-                                ?.url!!,
-                        playEndpoint = null,
-                        shuffleEndpoint =
-                            base.buttons
-                                ?.lastOrNull()
-                                ?.menuRenderer
-                                ?.items
-                                ?.firstOrNull()
-                                ?.menuNavigationItemRenderer
-                                ?.navigationEndpoint
-                                ?.watchPlaylistEndpoint!!,
-                        radioEndpoint =
-                            base.buttons
-                                .lastOrNull()
-                                ?.menuRenderer
-                                ?.items?
-                                .find {
-                                    it.menuNavigationItemRenderer?.icon?.iconType == "MIX"
-                                }?.menuNavigationItemRenderer
-                                ?.navigationEndpoint
-                                ?.watchPlaylistEndpoint!!,
-                                isEditable = editable
-                    ),
-                songs =
-                    response.contents
-                        ?.twoColumnBrowseResultsRenderer
-                        ?.secondaryContents
-                        ?.sectionListRenderer
-                        ?.contents
-                        ?.firstOrNull()
-                        ?.musicPlaylistShelfRenderer
-                        ?.contents
-                        ?.mapNotNull {
-                            PlaylistPage.fromMusicResponsiveListItemRenderer(it.musicResponsiveListItemRenderer)
-                        }!!,
-                songsContinuation =
-                    response.contents.twoColumnBrowseResultsRenderer.secondaryContents.sectionListRenderer
-                        .contents
-                        .firstOrNull()
-                        ?.musicPlaylistShelfRenderer
-                        ?.continuations
-                        ?.getContinuation(),
-                continuation =
-                    response.contents.twoColumnBrowseResultsRenderer.secondaryContents.sectionListRenderer
-                        .continuations
-                        ?.getContinuation(),
-            )
-        }
+            playlist = PlaylistItem(
+                id = playlistId,
+                title = header.title.runs?.firstOrNull()?.text!!,
+                author = header.subtitle.runs?.getOrNull(2)?.let {
+                    Artist(
+                        name = it.text,
+                        id = it.navigationEndpoint?.browseEndpoint?.browseId
+                    )
+                },
+                songCountText = header.secondSubtitle.runs?.firstOrNull()?.text,
+                thumbnail = header.thumbnail.croppedSquareThumbnailRenderer?.getThumbnailUrl()!!,
+                playEndpoint =  response.contents?.singleColumnBrowseResultsRenderer?.tabs?.firstOrNull()
+                    ?.tabRenderer?.content?.sectionListRenderer?.contents?.firstOrNull()
+                    ?.musicPlaylistShelfRenderer?.contents?.firstOrNull()?.musicResponsiveListItemRenderer
+                    ?.overlay?.musicItemThumbnailOverlayRenderer?.content?.musicPlayButtonRenderer?.playNavigationEndpoint?.watchEndpoint,
+                shuffleEndpoint = header.menu.menuRenderer.topLevelButtons?.firstOrNull()?.buttonRenderer?.navigationEndpoint?.watchPlaylistEndpoint!!,
+                radioEndpoint = header.menu.menuRenderer.items?.find {
+                    it.menuNavigationItemRenderer?.icon?.iconType == "MIX"
+                }?.menuNavigationItemRenderer?.navigationEndpoint?.watchPlaylistEndpoint!!,
+                isEditable = editable
+            ),
+            songs = response.contents?.singleColumnBrowseResultsRenderer?.tabs?.firstOrNull()
+                ?.tabRenderer?.content?.sectionListRenderer?.contents?.firstOrNull()
+                ?.musicPlaylistShelfRenderer?.contents?.mapNotNull {
+                    PlaylistPage.fromMusicResponsiveListItemRenderer(it.musicResponsiveListItemRenderer)
+                }!!,
+            songsContinuation = response.contents.singleColumnBrowseResultsRenderer.tabs.firstOrNull()
+                ?.tabRenderer?.content?.sectionListRenderer?.contents?.firstOrNull()
+                ?.musicPlaylistShelfRenderer?.continuations?.getContinuation(),
+            continuation = response.contents.singleColumnBrowseResultsRenderer.tabs.firstOrNull()
+                ?.tabRenderer?.content?.sectionListRenderer?.continuations?.getContinuation()
+        )
+    }
 
     suspend fun playlistContinuation(continuation: String) =
         runCatching {
@@ -742,31 +700,6 @@ object YouTube {
                 ?.sectionListRenderer
                 ?.contents!!
                 .mapNotNull(MoodAndGenres.Companion::fromSectionListRendererContent)
-        }
-
-    suspend fun recommendAlbum(
-        browseId: String,
-        albumUtils: AlbumUtils,
-    ): Result<HomeAlbumRecommendation> =
-        runCatching {
-            val response = innerTube.browse(WEB_REMIX, browseId = browseId).body<BrowseResponse>()
-            HomeAlbumRecommendation(
-                albums =
-                    RecommendationAlbumBundle(
-                        recommendedAlbum = albumUtils,
-                        recommendationAlbum =
-                            response.contents
-                                ?.sectionListRenderer
-                                ?.contents
-                                ?.getOrNull(1)
-                                ?.musicCarouselShelfRenderer
-                                ?.contents!!
-                                .mapNotNull { it.musicTwoRowItemRenderer }
-                                .mapNotNull {
-                                    ArtistItemsPage.fromMusicTwoRowItemRenderer(it) as? PlaylistItem
-                                },
-                    ),
-            )
         }
 
     suspend fun home(): Result<HomePage> = runCatching {
