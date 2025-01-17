@@ -69,6 +69,7 @@ import com.metrolist.music.db.entities.Song
 import com.metrolist.music.extensions.togglePlayPause
 import com.metrolist.music.models.toMediaMetadata
 import com.metrolist.music.playback.queues.ListQueue
+import com.metrolist.music.playback.queues.LocalAlbumRadio
 import com.metrolist.music.playback.queues.YouTubeAlbumRadio
 import com.metrolist.music.playback.queues.YouTubeQueue
 import com.metrolist.music.ui.component.AlbumGridItem
@@ -851,7 +852,7 @@ fun HomeScreen(
         HideOnScrollFAB(
             visible = allLocalItems.isNotEmpty() || allYtItems.isNotEmpty(),
             lazyListState = lazylistState,
-            icon = R.drawable.shuffle,
+            icon = R.drawable.casino,
             onClick = {
                 val local = when {
                     allLocalItems.isNotEmpty() && allYtItems.isNotEmpty() -> Random.nextFloat() < 0.5
@@ -863,13 +864,11 @@ fun HomeScreen(
                         is Song -> playerConnection.playQueue(YouTubeQueue.radio(luckyItem.toMediaMetadata()))
                         is Album -> {
                             scope.launch(Dispatchers.IO) {
-                                val songs = database.albumSongs(luckyItem.id).first()
-                                playerConnection.playQueue(
-                                    ListQueue(
-                                        title = luckyItem.title,
-                                        items = songs.map(Song::toMediaMetadata)
+                                database.albumWithSongs(luckyItem.id).first()?.let {
+                                    playerConnection.playQueue(
+                                        LocalAlbumRadio(it)
                                     )
-                                )
+                                }
                             }
                         }
                         // not possible, already filtered out
@@ -891,7 +890,6 @@ fun HomeScreen(
                 }
             }
         )
-
         Indicator(
             isRefreshing = isRefreshing,
             state = pullRefreshState,
