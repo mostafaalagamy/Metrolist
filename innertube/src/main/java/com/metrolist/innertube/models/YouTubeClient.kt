@@ -12,6 +12,7 @@ data class YouTubeClient(
     val loginSupported: Boolean = false,
     val loginRequired: Boolean = false,
     val useSignatureTimestamp: Boolean = false,
+    val isEmbedded: Boolean = false,
     // val origin: String? = null,
     // val referer: String? = null,
 ) {
@@ -70,6 +71,7 @@ data class YouTubeClient(
             loginSupported = true,
             loginRequired = true,
             useSignatureTimestamp = true,
+            isEmbedded = true,
         )
 
         val IOS = YouTubeClient(
