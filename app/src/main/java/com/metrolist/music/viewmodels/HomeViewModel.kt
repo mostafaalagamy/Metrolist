@@ -12,15 +12,11 @@ import com.metrolist.music.db.entities.Song
 import com.metrolist.music.models.SimilarRecommendation
 import com.metrolist.music.utils.SyncUtils
 import com.metrolist.music.utils.reportException
-import com.metrolist.music.utils.dataStore
-import com.metrolist.music.utils.get
-import com.metrolist.music.constants.HideExplicitKey
 import com.metrolist.music.constants.YtmSyncKey
 import com.metrolist.innertube.YouTube
 import com.metrolist.innertube.models.PlaylistItem
 import com.metrolist.innertube.models.WatchEndpoint
 import com.metrolist.innertube.models.YTItem
-import com.metrolist.innertube.models.filterExplicit
 import com.metrolist.innertube.pages.ExplorePage
 import com.metrolist.innertube.pages.HomePage
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -35,7 +31,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    @ApplicationContext val context: Context,
+    @ApplicationContext context: Context,
     val database: MusicDatabase,
 ) : ViewModel() {
     val isRefreshing = MutableStateFlow(false)
@@ -55,8 +51,6 @@ class HomeViewModel @Inject constructor(
 
     private suspend fun load() {
         isLoading.value = true
-
-        val hideExplicit = context.dataStore.get(HideExplicitKey, false)
 
         quickPicks.value = database.quickPicks()
             .first().shuffled().take(20)
@@ -108,7 +102,6 @@ class HomeViewModel @Inject constructor(
                         items = (page.albums.shuffled().take(4) +
                                 page.artists.shuffled().take(4) +
                                 page.playlists.shuffled().take(4))
-                            .filterExplicit(hideExplicit)
                             .shuffled()
                             .ifEmpty { return@mapNotNull null }
                     )
@@ -117,7 +110,7 @@ class HomeViewModel @Inject constructor(
         isLoading.value = true
 
         YouTube.home().onSuccess { page ->
-            homePage.value = page.filterExplicit(hideExplicit)
+            homePage.value = page
         }.onFailure {
             reportException(it)
         }
@@ -139,7 +132,6 @@ class HomeViewModel @Inject constructor(
                         else if (album.artists.orEmpty().any { it.id in artists }) 1
                         else 2
                     }
-                    .filterExplicit(hideExplicit)
             )
         }.onFailure {
             reportException(it)
