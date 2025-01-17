@@ -81,6 +81,7 @@ import com.metrolist.music.ui.component.NavigationTitle
 import com.metrolist.music.ui.component.SongGridItem
 import com.metrolist.music.ui.component.SongListItem
 import com.metrolist.music.ui.component.YouTubeGridItem
+import com.metrolist.music.ui.component.ChipsRow
 import com.metrolist.music.ui.component.shimmer.GridItemPlaceHolder
 import com.metrolist.music.ui.component.shimmer.ShimmerHost
 import com.metrolist.music.ui.component.shimmer.TextPlaceholder
@@ -249,6 +250,7 @@ fun HomeScreen(
             isActive = item.id in listOf(mediaMetadata?.album?.id, mediaMetadata?.id),
             isPlaying = isPlaying,
             coroutineScope = scope,
+            thumbnailRatio = 1f,
             modifier = Modifier
                 .combinedClickable(
                     onClick = {
@@ -348,30 +350,28 @@ fun HomeScreen(
                         .fillMaxWidth()
                         .animateItem()
                 ) {
-                    NavigationTile(
-                        title = stringResource(R.string.history),
-                        icon = R.drawable.history,
-                        onClick = { navController.navigate("history") },
-                        modifier = Modifier.weight(1f)
+                    ChipsRow(
+                        chips = listOfNotNull(
+                            Pair("history", stringResource(R.string.history)),
+                            Pair("stats", stringResource(R.string.stats)),
+                            Pair("liked", stringResource(R.string.liked_songs)),
+                            Pair("downloads", stringResource(R.string.downloaded_songs)),
+                        ),
+                        currentValue = "",
+                        onValueUpdate = { value ->
+                            when (value) {
+                                "history" -> navController.navigate("history")
+                                "stats" -> navController.navigate("stats")
+                                "liked" -> navController.navigate("auto_playlist/liked")
+                                "downloads" -> navController.navigate("auto_playlist/downloaded")
+                                "account" -> navController.navigate("account")
+                            }
+                        },
+                        modifier = Modifier
+                            .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Horizontal))
+                            .fillMaxWidth(),
+                        containerColor = MaterialTheme.colorScheme.surfaceContainer
                     )
-
-                    NavigationTile(
-                        title = stringResource(R.string.stats),
-                        icon = R.drawable.trending_up,
-                        onClick = { navController.navigate("stats") },
-                        modifier = Modifier.weight(1f)
-                    )
-
-                    if (isLoggedIn) {
-                        NavigationTile(
-                            title = stringResource(R.string.account),
-                            icon = R.drawable.person,
-                            onClick = {
-                                navController.navigate("account")
-                            },
-                            modifier = Modifier.weight(1f)
-                        )
-                    }
                 }
             }
 
