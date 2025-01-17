@@ -17,6 +17,8 @@ import com.metrolist.innertube.YouTube
 import com.metrolist.innertube.models.PlaylistItem
 import com.metrolist.innertube.models.WatchEndpoint
 import com.metrolist.innertube.models.YTItem
+import com.metrolist.innertube.models.filterExplicit
+import com.metrolist.innertube.models.filterExplicit
 import com.metrolist.innertube.pages.ExplorePage
 import com.metrolist.innertube.pages.HomePage
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -51,6 +53,10 @@ class HomeViewModel @Inject constructor(
     val allYtItems = MutableStateFlow<List<YTItem>>(emptyList())
 
     private suspend fun load() {
+        isLoading.value = true
+
+        val hideExplicit = context.dataStore.get(HideExplicitKey, false)
+
         quickPicks.value = database.quickPicks()
             .first().shuffled().take(20)
 
@@ -109,7 +115,7 @@ class HomeViewModel @Inject constructor(
         isLoading.value = true
 
         YouTube.home().onSuccess { page ->
-            homePage.value = page
+            homePage.value = page.filterExplicit(hideExplicit)
         }.onFailure {
             reportException(it)
         }
