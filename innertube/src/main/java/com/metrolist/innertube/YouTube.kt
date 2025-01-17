@@ -38,8 +38,7 @@ import com.metrolist.innertube.pages.ArtistItemsPage
 import com.metrolist.innertube.pages.ArtistPage
 import com.metrolist.innertube.pages.BrowseResult
 import com.metrolist.innertube.pages.ExplorePage
-import com.metrolist.innertube.pages.HomeAlbumRecommendation
-import com.metrolist.innertube.pages.HomePlayList
+import com.zionhuang.innertube.pages.HomePage
 import com.metrolist.innertube.pages.MoodAndGenres
 import com.metrolist.innertube.pages.NewReleaseAlbumPage
 import com.metrolist.innertube.pages.NextPage
@@ -601,7 +600,7 @@ object YouTube {
                             base.buttons
                                 .lastOrNull()
                                 ?.menuRenderer
-                                ?.items!!
+                                ?.items?
                                 .find {
                                     it.menuNavigationItemRenderer?.icon?.iconType == "MIX"
                                 }?.menuNavigationItemRenderer
@@ -770,34 +769,27 @@ object YouTube {
             )
         }
 
-    suspend fun home(): Result<List<HomePlayList>> =
-        runCatching {
-            val response = innerTube.browse(WEB_REMIX, browseId = "FEmusic_home").body<BrowseResponse>()
-            val continuation =
-                response.contents
-                    ?.singleColumnBrowseResultsRenderer
-                    ?.tabs
-                    ?.firstOrNull()
-                    ?.tabRenderer
-                    ?.content
-                    ?.sectionListRenderer
-                    ?.continuations
-                    ?.firstOrNull()
-                    ?.nextContinuationData
-                    ?.continuation
-            response.contents
-                ?.singleColumnBrowseResultsRenderer
-                ?.tabs
-                ?.firstOrNull()
-                ?.tabRenderer
-                ?.content
-                ?.sectionListRenderer
-                ?.contents!!
-                .mapNotNull { it.musicCarouselShelfRenderer }
-                .map {
-                    HomePlayList.fromMusicCarouselShelfRenderer(it, continuation)
-                }
+    suspend fun home(): Result<HomePage> = runCatching {
+        var response = innerTube.browse(WEB_REMIX, browseId = "FEmusic_home").body<BrowseResponse>()
+        var continuation = response.contents?.singleColumnBrowseResultsRenderer?.tabs?.firstOrNull()
+            ?.tabRenderer?.content?.sectionListRenderer?.continuations?.getContinuation()
+        val sections = response.contents?.singleColumnBrowseResultsRenderer?.tabs?.firstOrNull()
+            ?.tabRenderer?.content?.sectionListRenderer?.contents!!
+            .mapNotNull { it.musicCarouselShelfRenderer }
+            .mapNotNull {
+                HomePage.Section.fromMusicCarouselShelfRenderer(it)
+            }.toMutableList()
+        while (continuation != null) {
+            response = innerTube.browse(WEB_REMIX, continuation = continuation).body<BrowseResponse>()
+            continuation = response.continuationContents?.sectionListContinuation?.continuations?.getContinuation()
+            sections += response.continuationContents?.sectionListContinuation?.contents
+                ?.mapNotNull { it.musicCarouselShelfRenderer }
+                ?.mapNotNull {
+                    HomePage.Section.fromMusicCarouselShelfRenderer(it)
+                }.orEmpty()
         }
+        HomePage(sections)
+    }
 
     suspend fun browse(
         browseId: String,
@@ -872,25 +864,6 @@ object YouTube {
                             }
                         }.orEmpty(),
             )
-        }
-
-    suspend fun browseContinuation(continuation: String): Result<List<HomePlayList>> =
-        runCatching {
-            val response = innerTube.browse(WEB_REMIX, continuation = continuation).body<BrowseResponse>()
-            val newContinuation =
-                response.continuationContents
-                    ?.sectionListContinuation
-                    ?.continuations
-                    ?.firstOrNull()
-                    ?.nextContinuationData
-                    ?.continuation
-            response.continuationContents
-                ?.sectionListContinuation
-                ?.contents!!
-                .mapNotNull { it.musicCarouselShelfRenderer }
-                .map {
-                    HomePlayList.fromMusicCarouselShelfRenderer(it, newContinuation)
-                }
         }
 
     suspend fun library(browseId: String) = runCatching {
