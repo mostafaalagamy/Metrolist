@@ -846,7 +846,6 @@ class MusicService :
                 }
             }
             // TODO: support playlist id
-            if (mediaItem.metadata?.isLocal != true) {
                 CoroutineScope(Dispatchers.IO).launch {
                     val playbackUrl = database.format(mediaItem.mediaId).first()?.playbackUrl
                         ?: YTPlayerUtils.playerResponseForMetadata(mediaItem.mediaId, null).getOrNull()?.playbackTracking?.videostatsPlaybackUrl?.baseUrl
@@ -855,9 +854,8 @@ class MusicService :
                             .onFailure {
                                 reportException(it)
                             }
+                        }
                     }
-                }
-            }
         }
     }
 
