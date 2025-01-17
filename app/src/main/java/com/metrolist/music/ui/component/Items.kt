@@ -481,7 +481,7 @@ fun SongGridItem(
             val download by LocalDownloadUtil.current.getDownload(song.id).collectAsState(initial = null)
             when (download?.state) {
                 STATE_COMPLETED -> Icon(
-                    imageVector = Icons.Rounded.OfflinePin,
+                    painter = painterResource(R.drawable.offline),
                     contentDescription = null,
                     modifier = Modifier
                         .size(18.dp)
@@ -508,30 +508,71 @@ fun SongGridItem(
     ),
     badges = badges,
     thumbnailContent = {
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier.size(GridThumbnailHeight)
+        AsyncImage(
+            model = song.song.thumbnailUrl,
+            contentDescription = null,
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .clip(RoundedCornerShape(ThumbnailCornerRadius)),
+        )
+
+        AnimatedVisibility(
+            visible = isActive,
+            enter = fadeIn(tween(500)),
+            exit = fadeOut(tween(500)),
         ) {
-            AsyncImage(
-                model = song.song.thumbnailUrl,
-                contentDescription = null,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .clip(RoundedCornerShape(ThumbnailCornerRadius))
-            )
-            PlayingIndicatorBox(
-                isActive = isActive,
-                playWhenReady = isPlaying,
-                color = Color.White,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(
-                        color = Color.Black.copy(alpha = ActiveBoxAlpha),
-                        shape = RoundedCornerShape(ThumbnailCornerRadius)
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .background(
+                            color = Color.Black.copy(alpha = if (isPlaying) 0.4f else 0f),
+                            shape = RoundedCornerShape(ThumbnailCornerRadius),
+                        ),
+            ) {
+                if (isPlaying) {
+                    PlayingIndicator(
+                        color = Color.White,
+                        modifier = Modifier
+                            .fillMaxSize(),
+                            .background(
+                                Color.Black.copy(
+                                    alpha = 0.6f
+                                )
+                            ),
                     )
-            )
+                }
+            }
+        }
+
+        AnimatedVisibility(
+            visible = !(isActive && isPlaying),
+            enter = fadeIn(),
+            exit = fadeOut(),
+            modifier =
+                Modifier
+                    .align(Alignment.Center)
+                    .padding(8.dp),
+        ) {
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier =
+                    Modifier
+                        .size(36.dp)
+                        .clip(CircleShape)
+                        .background(Color.Black.copy(alpha = 0.6f)),
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.play),
+                    contentDescription = null,
+                    tint = Color.White,
+                )
+            }
         }
     },
+    thumbnailShape = RoundedCornerShape(ThumbnailCornerRadius),
     fillMaxWidth = fillMaxWidth,
     modifier = modifier
 )
