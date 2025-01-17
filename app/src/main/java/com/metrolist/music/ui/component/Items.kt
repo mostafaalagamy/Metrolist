@@ -536,12 +536,12 @@ fun SongGridItem(
                     PlayingIndicator(
                         color = Color.White,
                         modifier = Modifier
-                            .fillMaxSize(),
+                            .fillMaxSize()
                             .background(
                                 Color.Black.copy(
                                     alpha = 0.6f
                                 )
-                            )
+                            ),
                     )
                 }
             }
