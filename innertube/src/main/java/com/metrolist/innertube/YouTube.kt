@@ -38,7 +38,7 @@ import com.metrolist.innertube.pages.ArtistItemsPage
 import com.metrolist.innertube.pages.ArtistPage
 import com.metrolist.innertube.pages.BrowseResult
 import com.metrolist.innertube.pages.ExplorePage
-import com.zionhuang.innertube.pages.HomePage
+import com.metrolist.innertube.pages.HomePage
 import com.metrolist.innertube.pages.MoodAndGenres
 import com.metrolist.innertube.pages.NewReleaseAlbumPage
 import com.metrolist.innertube.pages.NextPage
