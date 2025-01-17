@@ -521,6 +521,10 @@ fun SongGridItem(
             visible = isActive,
             enter = fadeIn(tween(500)),
             exit = fadeOut(tween(500)),
+            modifier =
+                Modifier
+                    .align(Alignment.Center)
+                    .padding(8.dp),
         ) {
             Box(
                 contentAlignment = Alignment.Center,
@@ -535,13 +539,7 @@ fun SongGridItem(
                 if (isPlaying) {
                     PlayingIndicator(
                         color = Color.White,
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(
-                                Color.Black.copy(
-                                    alpha = 0.6f
-                                )
-                            ),
+                        modifier = Modifier.height(24.dp),
                     )
                 }
             }
