@@ -62,7 +62,7 @@ data class YouTubeClient(
             useSignatureTimestamp = true,
         )
 
-        val TVHTML5 = YouTubeClient(
+        val TVHTML5_SIMPLY_EMBEDDED_PLAYER = YouTubeClient(
             clientName = "TVHTML5_SIMPLY_EMBEDDED_PLAYER",
             clientVersion = "2.0",
             clientId = "85",
