@@ -372,17 +372,44 @@ interface DatabaseDao {
     ): Flow<List<Artist>>
 
     @Transaction
-    @Query("""
-        SELECT *, count(song.dateDownload) downloadCount
-        FROM album
-            JOIN song ON album.id = song.albumId
-            JOIN event ON song.id = event.songId
+    @Query(
+    """
+    SELECT album.*,
+           COUNT(DISTINCT song_album_map.songId) as downloadCount,
+           (SELECT COUNT(1)
+            FROM song_album_map
+                     JOIN event e ON song_album_map.songId = e.songId
+            WHERE albumId = album.id
+              AND e.timestamp > :fromTimeStamp 
+              AND e.timestamp <= :toTimeStamp) AS songCountListened,
+           (SELECT SUM(e.playTime)
+            FROM song_album_map
+                     JOIN event e ON song_album_map.songId = e.songId
+            WHERE albumId = album.id
+              AND e.timestamp > :fromTimeStamp 
+              AND e.timestamp <= :toTimeStamp) AS timeListened
+    FROM album
+    JOIN song_album_map ON album.id = song_album_map.albumId
+    WHERE album.id IN (
+        SELECT sam.albumId
+        FROM event
+                 JOIN song_album_map sam ON event.songId = sam.songId
         WHERE event.timestamp > :fromTimeStamp
-        GROUP BY album.id
-        ORDER BY SUM(event.playTime) DESC
-        LIMIT :limit OFFSET :offset;
-    """)
-    fun mostPlayedAlbums(fromTimeStamp: Long, limit: Int = 6, offset: Int = 0): Flow<List<Album>>
+          AND event.timestamp <= :toTimeStamp
+        GROUP BY sam.albumId
+        HAVING sam.albumId IS NOT NULL
+    )
+    GROUP BY album.id
+    ORDER BY timeListened DESC
+    LIMIT :limit OFFSET :offset
+    """
+    )
+    fun mostPlayedAlbums(
+        fromTimeStamp: Long,
+        limit: Int = 6,
+        offset: Int = 0,
+        toTimeStamp: Long? = LocalDateTime.now().toInstant(ZoneOffset.UTC).toEpochMilli(),
+     ): Flow<List<Album>>
 
     @Transaction
     @Query(
