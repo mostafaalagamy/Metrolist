@@ -1560,12 +1560,13 @@ fun YouTubeGridItem(
             }
         }
     },
+    thumbnailRatio: Float = if (item is SongItem) 16f / 9 else 1f,
     isActive: Boolean = false,
     isPlaying: Boolean = false,
     fillMaxWidth: Boolean = false,
 ) {
     val thumbnailShape = if (item is ArtistItem) CircleShape else RoundedCornerShape(ThumbnailCornerRadius)
-    val thumbnailRatio = if (item is SongItem) 16f / 9 else 1f
+    val thumbnailRatio = thumbnailRatio,
 
     Column(
         modifier =
