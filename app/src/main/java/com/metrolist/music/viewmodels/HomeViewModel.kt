@@ -107,6 +107,7 @@ class HomeViewModel @Inject constructor(
                         items = (page.albums.shuffled().take(4) +
                                 page.artists.shuffled().take(4) +
                                 page.playlists.shuffled().take(4))
+                            .filterExplicit(hideExplicit)
                             .shuffled()
                             .ifEmpty { return@mapNotNull null }
                     )
@@ -137,6 +138,7 @@ class HomeViewModel @Inject constructor(
                         else if (album.artists.orEmpty().any { it.id in artists }) 1
                         else 2
                     }
+                    .filterExplicit(hideExplicit)
             )
         }.onFailure {
             reportException(it)
