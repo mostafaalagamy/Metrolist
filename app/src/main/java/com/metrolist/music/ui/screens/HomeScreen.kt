@@ -29,11 +29,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.TrendingUp
-import androidx.compose.material.icons.rounded.Casino
-import androidx.compose.material.icons.rounded.History
-import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
@@ -60,7 +55,6 @@ import coil.compose.AsyncImage
 import com.metrolist.music.LocalDatabase
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.LocalPlayerConnection
-import com.metrolist.music.LocalIsInternetConnected
 import com.metrolist.music.R
 import com.metrolist.music.constants.GridThumbnailHeight
 import com.metrolist.music.constants.InnerTubeCookieKey
@@ -85,7 +79,6 @@ import com.metrolist.music.ui.component.NavigationTile
 import com.metrolist.music.ui.component.NavigationTitle
 import com.metrolist.music.ui.component.SongGridItem
 import com.metrolist.music.ui.component.SongListItem
-import com.metrolist.music.ui.component.YouTubeCardItem
 import com.metrolist.music.ui.component.YouTubeGridItem
 import com.metrolist.music.ui.component.shimmer.GridItemPlaceHolder
 import com.metrolist.music.ui.component.shimmer.ShimmerHost
@@ -123,18 +116,15 @@ fun HomeScreen(
     val menuState = LocalMenuState.current
     val database = LocalDatabase.current
     val playerConnection = LocalPlayerConnection.current ?: return
-    val isNetworkConnected = LocalIsInternetConnected.current
     val haptic = LocalHapticFeedback.current
 
     val isPlaying by playerConnection.isPlaying.collectAsState()
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
-    val queuePlaylistId by playerConnection.queuePlaylistId.collectAsState()
 
     val quickPicks by viewModel.quickPicks.collectAsState()
     val forgottenFavorites by viewModel.forgottenFavorites.collectAsState()
     val keepListening by viewModel.keepListening.collectAsState()
     val similarRecommendations by viewModel.similarRecommendations.collectAsState()
-    val accountPlaylists by viewModel.accountPlaylists.collectAsState()
     val homePage by viewModel.homePage.collectAsState()
     val explorePage by viewModel.explorePage.collectAsState()
     val recentActivity by viewModel.recentActivity.collectAsState()
@@ -258,7 +248,6 @@ fun HomeScreen(
             isActive = item.id in listOf(mediaMetadata?.album?.id, mediaMetadata?.id),
             isPlaying = isPlaying,
             coroutineScope = scope,
-            thumbnailRatio = 1f,
             modifier = Modifier
                 .combinedClickable(
                     onClick = {
@@ -360,14 +349,14 @@ fun HomeScreen(
                 ) {
                     NavigationTile(
                         title = stringResource(R.string.history),
-                        icon = Icons.Rounded.History,
+                        icon = R.drawable.history,
                         onClick = { navController.navigate("history") },
                         modifier = Modifier.weight(1f)
                     )
 
                     NavigationTile(
                         title = stringResource(R.string.stats),
-                        icon = Icons.AutoMirrored.Rounded.TrendingUp,
+                        icon = R.drawable.trending_up,
                         onClick = { navController.navigate("stats") },
                         modifier = Modifier.weight(1f)
                     )
@@ -375,7 +364,7 @@ fun HomeScreen(
                     if (isLoggedIn) {
                         NavigationTile(
                             title = stringResource(R.string.account),
-                            icon = Icons.Rounded.Person,
+                            icon = R.drawable.person,
                             onClick = {
                                 navController.navigate("account")
                             },
@@ -470,12 +459,13 @@ fun HomeScreen(
                                         .width(horizontalLazyGridItemWidth)
                                         .combinedClickable(
                                             onClick = {
-                                                if (song!!.song.isAvailableOffline() || isNetworkConnected){
-                                                    if (song!!.id == mediaMetadata?.id) {
-                                                        playerConnection.player.togglePlayPause()
-                                                    } else {
-                                                        playerConnection.playQueue(YouTubeQueue.radio(song!!.toMediaMetadata()))
-                                                    }
+                                            if (song!!.id == mediaMetadata?.id) {
+                                                playerConnection.player.togglePlayPause()
+                                            } else {
+                                                playerConnection.playQueue(
+                                                    YouTubeQueue.radio(
+                                                        song!!.toMediaMetadata())
+                                                    )
                                                 }
                                             },
                                             onLongClick = {
@@ -667,34 +657,6 @@ fun HomeScreen(
                     ) {
                         items(keepListening) {
                             localGridItem(it)
-                        }
-                    }
-                }
-            }
-
-            accountPlaylists?.takeIf { it.isNotEmpty() }?.let { accountPlaylists ->
-                item {
-                    NavigationTitle(
-                        title = stringResource(R.string.your_youtube_playlists),
-                        onClick = {
-                            navController.navigate("account")
-                        },
-                        modifier = Modifier.animateItem()
-                    )
-                }
-
-                item {
-                    LazyRow(
-                        contentPadding = WindowInsets.systemBars
-                            .only(WindowInsetsSides.Horizontal)
-                            .asPaddingValues(),
-                        modifier = Modifier.animateItem()
-                    ) {
-                        items(
-                            items = accountPlaylists,
-                            key = { it.id },
-                        ) { item ->
-                            ytGridItem(item)
                         }
                     }
                 }
