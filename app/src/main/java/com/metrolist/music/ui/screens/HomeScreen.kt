@@ -127,6 +127,7 @@ fun HomeScreen(
     val forgottenFavorites by viewModel.forgottenFavorites.collectAsState()
     val keepListening by viewModel.keepListening.collectAsState()
     val similarRecommendations by viewModel.similarRecommendations.collectAsState()
+    val accountPlaylists by viewModel.accountPlaylists.collectAsState()
     val homePage by viewModel.homePage.collectAsState()
     val explorePage by viewModel.explorePage.collectAsState()
     val recentActivity by viewModel.recentActivity.collectAsState()
@@ -663,6 +664,42 @@ fun HomeScreen(
                 }
             }
 
+            accountPlaylists?.takeIf { it.isNotEmpty() }?.let { accountPlaylists ->
+                item {
+                    NavigationTitle(
+                        label = stringResource(R.string.your_ytb_playlists),
+                        title = if (isLoggedIn) accountName else stringResource(R.string.your_ytb_playlists),
+                        thumbnail = {
+                            Icon(
+                                 painter = painterResource(id = R.drawable.person),
+                                 contentDescription = null,
+                                 modifier = Modifier.size(24.dp)
+                            )
+                        },
+                        onClick = {
+                            navController.navigate("account")
+                        },
+                        modifier = Modifier.animateItem()
+                    )
+                }
+
+                item {
+                    LazyRow(
+                        contentPadding = WindowInsets.systemBars
+                            .only(WindowInsetsSides.Horizontal)
+                            .asPaddingValues(),
+                        modifier = Modifier.animateItem()
+                    ) {
+                        items(
+                            items = accountPlaylists,
+                            key = { it.id },
+                        ) { item ->
+                            ytGridItem(item)
+                        }
+                    }
+                }
+            }
+  
             similarRecommendations?.forEach {
                 item {
                     NavigationTitle(
