@@ -493,6 +493,13 @@ fun HomeScreen(
                     NavigationTitle(
                         label = stringResource(R.string.your_ytb_playlists),
                         title = if (isLoggedIn) accountName else stringResource(R.string.your_ytb_playlists),
+                        thumbnail = {
+                            Icon(
+                                 painter = painterResource(id = R.drawable.person),
+                                 contentDescription = null,
+                                 modifier = Modifier.size(24.dp)
+                            )
+                        },
                         onClick = {
                             navController.navigate("account")
                         },
