@@ -1566,7 +1566,7 @@ fun YouTubeGridItem(
     fillMaxWidth: Boolean = false,
 ) {
     val thumbnailShape = if (item is ArtistItem) CircleShape else RoundedCornerShape(ThumbnailCornerRadius)
-    val thumbnailRatio = thumbnailRatio,
+    val thumbnailRatio = thumbnailRatio
 
     Column(
         modifier =
