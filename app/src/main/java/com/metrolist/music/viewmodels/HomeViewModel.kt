@@ -75,7 +75,7 @@ class HomeViewModel @Inject constructor(
 
         if (YouTube.cookie != null) {
             YouTube.library("FEmusic_liked_playlists").completedLibraryPage().onSuccess {
-                youtubePlaylists.value = it.items.filterIsInstance<PlaylistItem>()
+                accountPlaylists.value = it.items.filterIsInstance<PlaylistItem>()
                 .filterNot { it.id == "SE" }
             }.onFailure {
                 reportException(it)
