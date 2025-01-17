@@ -852,7 +852,7 @@ fun HomeScreen(
         HideOnScrollFAB(
             visible = allLocalItems.isNotEmpty() || allYtItems.isNotEmpty(),
             lazyListState = lazylistState,
-            icon = R.drawable.casino,
+            icon = R.drawable.shuffle,
             onClick = {
                 val local = when {
                     allLocalItems.isNotEmpty() && allYtItems.isNotEmpty() -> Random.nextFloat() < 0.5
