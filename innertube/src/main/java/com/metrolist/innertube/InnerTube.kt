@@ -76,7 +76,7 @@ class InnerTube {
             }
 
             defaultRequest {
-                url("https://music.youtube.com/youtubei/v1/")
+                url(YouTubeClient.API_URL_YOUTUBE_MUSIC)
             }
         }
 
