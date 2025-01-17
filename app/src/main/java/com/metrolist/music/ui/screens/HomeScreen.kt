@@ -362,8 +362,9 @@ fun HomeScreen(
                         chips = listOfNotNull(
                             Pair("history", stringResource(R.string.history)),
                             Pair("stats", stringResource(R.string.stats)),
-                            Pair("liked", stringResource(R.string.liked_songs)),
-                            Pair("downloads", stringResource(R.string.downloaded_songs)),
+                            Pair("liked", stringResource(R.string.liked)),
+                            Pair("downloads", stringResource(R.string.offline)),
+                            if (isLoggedIn) Pair("account", stringResource(R.string.account)) else null
                         ),
                         currentValue = "",
                         onValueUpdate = { value ->
@@ -372,12 +373,9 @@ fun HomeScreen(
                                 "stats" -> navController.navigate("stats")
                                 "liked" -> navController.navigate("auto_playlist/liked")
                                 "downloads" -> navController.navigate("auto_playlist/downloaded")
-                                "account" -> navController.navigate("account")
+                                "account" -> if (isLoggedIn) navController.navigate("account")
                             }
                         },
-                        modifier = Modifier
-                            .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Horizontal))
-                            .fillMaxWidth(),
                         containerColor = MaterialTheme.colorScheme.surfaceContainer
                     )
                 }
