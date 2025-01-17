@@ -12,12 +12,12 @@ import com.metrolist.music.db.entities.Song
 import com.metrolist.music.models.SimilarRecommendation
 import com.metrolist.music.utils.SyncUtils
 import com.metrolist.music.utils.reportException
+import com.metrolist.music.constants.HideExplicitKey
 import com.metrolist.music.constants.YtmSyncKey
 import com.metrolist.innertube.YouTube
 import com.metrolist.innertube.models.PlaylistItem
 import com.metrolist.innertube.models.WatchEndpoint
 import com.metrolist.innertube.models.YTItem
-import com.metrolist.innertube.models.filterExplicit
 import com.metrolist.innertube.models.filterExplicit
 import com.metrolist.innertube.pages.ExplorePage
 import com.metrolist.innertube.pages.HomePage
@@ -33,9 +33,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    @ApplicationContext context: Context,
+    @ApplicationContext val context: Context,
     val database: MusicDatabase,
-    val syncUtils: SyncUtils
 ) : ViewModel() {
     val isRefreshing = MutableStateFlow(false)
     val isLoading = MutableStateFlow(false)
