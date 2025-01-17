@@ -19,6 +19,7 @@ import com.metrolist.innertube.models.WatchEndpoint
 import com.metrolist.innertube.models.YTItem
 import com.metrolist.innertube.pages.ExplorePage
 import com.metrolist.innertube.pages.HomePage
+import com.metrolist.innertube.utils.completedLibraryPage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -41,6 +42,7 @@ class HomeViewModel @Inject constructor(
     val forgottenFavorites = MutableStateFlow<List<Song>?>(null)
     val keepListening = MutableStateFlow<List<LocalItem>?>(null)
     val similarRecommendations = MutableStateFlow<List<SimilarRecommendation>?>(null)
+    val accountPlaylists = MutableStateFlow<List<PlaylistItem>?>(null)
     val homePage = MutableStateFlow<HomePage?>(null)
     val explorePage = MutableStateFlow<ExplorePage?>(null)
     val recentActivity = MutableStateFlow<List<YTItem>?>(null)
@@ -70,6 +72,15 @@ class HomeViewModel @Inject constructor(
         allLocalItems.value =
             (quickPicks.value.orEmpty() + forgottenFavorites.value.orEmpty() + keepListening.value.orEmpty())
                 .filter { it is Song || it is Album }
+
+        if (YouTube.cookie != null) {
+            YouTube.library("FEmusic_liked_playlists").completedLibraryPage().onSuccess {
+                youtubePlaylists.value = it.items.filterIsInstance<PlaylistItem>()
+                .filterNot { it.id == "SE" }
+            }.onFailure {
+                reportException(it)
+            }
+        }
 
         // Similar to artists
         val artistRecommendations =
