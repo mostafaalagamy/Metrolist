@@ -250,10 +250,7 @@ fun HistoryScreen(
                                             playerConnection.player.togglePlayPause()
                                         } else {
                                             playerConnection.playQueue(
-                                                YouTubeQueue(
-                                                    endpoint = WatchEndpoint(videoId = song.id),
-                                                    preloadItem = song.toMediaMetadata()
-                                                )
+                                                YouTubeQueue.radio(song.toMediaMetadata())
                                             )
                                         }
                                     },
