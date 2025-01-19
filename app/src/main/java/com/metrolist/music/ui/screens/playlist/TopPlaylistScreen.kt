@@ -509,7 +509,8 @@ fun TopPlaylistScreen(
                                         wrappedSongs?.forEach { it.isSelected = false }
                                         songWrapper.isSelected = true
                                     },
-                                ),
+                                )
+                            .animateItem()
                         )
                     }
                 }
