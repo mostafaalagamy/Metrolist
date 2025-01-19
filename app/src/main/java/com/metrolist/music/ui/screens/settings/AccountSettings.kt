@@ -139,25 +139,31 @@ fun AccountSettings(
                 )
             }
 
-            if (isLoggedIn) {
-                PreferenceEntry(
-                    title = {
+            PreferenceEntry(
+                title = {
+                    if (!isLoggedIn) {
+                        Text(stringResource(R.string.advanced_login))
+                    } else {
                         if (showToken) {
                             Text(stringResource(R.string.token_shown))
                         } else {
                             Text(stringResource(R.string.token_hidden))
                         }
-                    },
-                    icon = { Icon(painterResource(R.drawable.token), null) },
-                    onClick = {
+                    }
+                },
+                icon = { Icon(painterResource(R.drawable.token), null) },
+                onClick = {
+                    if (!isLoggedIn) {
+                        navigateToLoginScreen()
+                    } else {
                         if (showToken == false) {
                             showToken = true
                         } else {
                             showTokenEditor = true
                         }
-                    },
-                )
-            }
+                    }
+                },
+            )
 
             if (isLoggedIn) {
                 SwitchPreference(
