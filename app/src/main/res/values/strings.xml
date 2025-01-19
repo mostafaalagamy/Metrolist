@@ -294,6 +294,7 @@
     <string name="google">Google</string>
     <string name="discord">Discord</string>
     <string name="login">Login</string>
+    <string name="advanced_login">Advanced login (token)</string>
     <string name="logout">Logout</string>
     <string name="not_logged_in">Not logged in</string>
     <string name="token_hidden">Tap to show token</string>
