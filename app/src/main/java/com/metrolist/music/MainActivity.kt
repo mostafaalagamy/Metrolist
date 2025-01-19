@@ -943,6 +943,7 @@ class MainActivity : ComponentActivity() {
 
                     LaunchedEffect(shouldShowSearchBar, openSearchImmediately) {
                         if (shouldShowSearchBar && openSearchImmediately) {
+		            onActiveChange(true)
                             try {
                                 delay(100)
                                 searchBarFocusRequester.requestFocus()
