@@ -99,7 +99,14 @@ class App :
                 .map { it[InnerTubeCookieKey] }
                 .distinctUntilChanged()
                 .collect { cookie ->
-                    YouTube.cookie = if ("SAPISID" in parseCookieString(cookie?: "")) cookie else null
+                    try {
+                        YouTube.cookie = if ("SAPISID" in parseCookieString(cookie?: "")) cookie else null
+                    } catch (e: Exception) {
+                        Timber.e("Could not parse cookie. Clearing existing cookie. %s", e.message)
+                        dataStore.edit { settings ->
+                            settings[InnerTubeCookieKey] = ""
+                        }
+                    }
                 }
         }
     }
