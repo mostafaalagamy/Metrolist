@@ -531,6 +531,7 @@ fun AutoPlaylistScreen(
                                             songWrapper.isSelected = true
                                        },
                                     )
+                                .animateItem()
                         )
                     }
                 }
