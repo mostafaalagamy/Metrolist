@@ -80,7 +80,6 @@ import com.metrolist.music.playback.queues.YouTubeAlbumRadio
 import com.metrolist.music.playback.queues.YouTubeQueue
 import com.metrolist.music.ui.component.AlbumGridItem
 import com.metrolist.music.ui.component.ArtistGridItem
-import com.metrolist.music.ui.component.HideOnScrollFAB
 import com.metrolist.music.ui.component.LocalMenuState
 import com.metrolist.music.ui.component.NavigationTile
 import com.metrolist.music.ui.component.NavigationTitle
@@ -713,40 +712,6 @@ fun HomeScreen(
                 }
             }
 
-            //explorePage?.moodAndGenres?.let { moodAndGenres ->
-            //    item {
-            //        NavigationTitle(
-            //            title = stringResource(R.string.mood_and_genres),
-            //            onClick = {
-            //                navController.navigate("mood_and_genres")
-            //            },
-            //            modifier = Modifier.animateItem()
-            //        )
-            //    }
-
-            //    item {
-            //        LazyHorizontalGrid(
-            //            rows = GridCells.Fixed(4),
-            //            contentPadding = PaddingValues(6.dp),
-            //            modifier = Modifier
-            //                .height((MoodAndGenresButtonHeight + 12.dp) * 4 + 12.dp)
-            //                .animateItem()
-            //        ) {
-            //            items(moodAndGenres) {
-            //                MoodAndGenresButton(
-            //                    title = it.title,
-            //                onClick = {
-            //                        navController.navigate("youtube_browse/${it.endpoint.browseId}?params=${it.endpoint.params}")
-            //                    },
-            //                    modifier = Modifier
-            //                        .padding(6.dp)
-            //                        .width(180.dp)
-            //                )
-            //            }
-            //        }
-            //    }
-            //}
-
             if (isLoading) {
                 item {
                     ShimmerHost(
@@ -768,47 +733,6 @@ fun HomeScreen(
             }
         }
 
-        HideOnScrollFAB(
-            visible = allLocalItems.isNotEmpty() || allYtItems.isNotEmpty(),
-            lazyListState = lazylistState,
-            icon = R.drawable.shuffle,
-            onClick = {
-                val local = when {
-                    allLocalItems.isNotEmpty() && allYtItems.isNotEmpty() -> Random.nextFloat() < 0.5
-                    allLocalItems.isNotEmpty() -> true
-                    else -> false
-                }
-                if (local) {
-                    when (val luckyItem = allLocalItems.random()) {
-                        is Song -> playerConnection.playQueue(YouTubeQueue.radio(luckyItem.toMediaMetadata()))
-                        is Album -> {
-                            scope.launch(Dispatchers.IO) {
-                                database.albumWithSongs(luckyItem.id).first()?.let {
-                                    playerConnection.playQueue(
-                                        LocalAlbumRadio(it)
-                                    )
-                                }
-                            }
-                        }
-                        // not possible, already filtered out
-                        is Artist -> {}
-                        is Playlist -> {}
-                    }
-                } else {
-                    when (val luckyItem = allYtItems.random()) {
-                        is SongItem -> playerConnection.playQueue(YouTubeQueue.radio(luckyItem.toMediaMetadata()))
-                        is AlbumItem -> playerConnection.playQueue(YouTubeAlbumRadio(luckyItem.playlistId))
-                        is ArtistItem -> luckyItem.radioEndpoint?.let {
-                            playerConnection.playQueue(YouTubeQueue(it))
-                        }
-
-                        is PlaylistItem -> luckyItem.playEndpoint?.let {
-                            playerConnection.playQueue(YouTubeQueue(it))
-                        }
-                    }
-                }
-            }
-        )
         Indicator(
             isRefreshing = isRefreshing,
             state = pullRefreshState,

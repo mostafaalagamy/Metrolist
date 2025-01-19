@@ -143,6 +143,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import java.net.URLDecoder
 import java.net.URLEncoder
@@ -793,8 +794,11 @@ class MainActivity : ComponentActivity() {
                                         }
                                     }
                                 },
-                                focusRequester = searchBarFocusRequester,
-                                modifier = Modifier.align(Alignment.TopCenter),
+                                modifier =
+			            Modifier
+                                       .focusRequester(searchBarFocusRequester)
+                                       .align(Alignment.TopCenter),
+                                focusRequester = searchBarFocusRequester
                             ) {
                                 Crossfade(
                                     targetState = searchSource,
@@ -939,8 +943,12 @@ class MainActivity : ComponentActivity() {
 
                     LaunchedEffect(shouldShowSearchBar, openSearchImmediately) {
                         if (shouldShowSearchBar && openSearchImmediately) {
-                            onActiveChange(true)
-                            searchBarFocusRequester.requestFocus()
+		            onActiveChange(true)
+                            try {
+                                delay(100)
+                                searchBarFocusRequester.requestFocus()
+                            } catch (e: Exception) {
+                            }
                             openSearchImmediately = false
                         }
                     }
