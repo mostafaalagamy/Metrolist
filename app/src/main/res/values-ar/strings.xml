@@ -351,6 +351,9 @@
     <string name="login">تسجيل الدخول</string>
     <string name="logout">تسجيل الخروج</string>
     <string name="not_logged_in">لم يتم تسجيل الدخول</string>
+    <string name="token_hidden">اضغط لعرض ال Token</string>
+    <string name="token_shown">اضغط مرة أخرى للنسخ أو التعديل</string>
+    <string name="token_adv_login_description">هذه طريقة تسجيل دخول متقدمة. كبديل للبوابة الإلكترونية، يمكنك إدخال أو تحديث رمز تسجيل الدخول الخاص بك هنا مباشرة. على سبيل المثال، يمكن أن يسرع ذلك عملية تسجيل الدخول على أجهزة متعددة. يرجى ملاحظة أن أي صيغة رمز غير صالحة لا يستطيع التطبيق تحليلها لن يتم قبولها</string>
     <string name="ytm_sync">مزامنة تلقائية مع حساب YouTube Music الخاص بك</string>
     <string name="general">عام</string>
     <string name="content_language">لغة المحتوى الافتراضية</string>
