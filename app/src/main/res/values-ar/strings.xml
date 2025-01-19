@@ -349,6 +349,7 @@
     <string name="google">جوجل</string>
     <string name="discord">ديسكورد</string>
     <string name="login">تسجيل الدخول</string>
+    <string name="advanced_login">تسجيل الدخول المتقدم (token)</string>
     <string name="logout">تسجيل الخروج</string>
     <string name="not_logged_in">لم يتم تسجيل الدخول</string>
     <string name="token_hidden">اضغط لعرض ال Token</string>
