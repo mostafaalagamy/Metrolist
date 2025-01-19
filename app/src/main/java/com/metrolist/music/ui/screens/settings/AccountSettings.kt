@@ -153,14 +153,10 @@ fun AccountSettings(
                 },
                 icon = { Icon(painterResource(R.drawable.token), null) },
                 onClick = {
-                    if (!isLoggedIn) {
-                        navigateToLoginScreen()
+                    if (showToken == false) {
+                        showToken = true
                     } else {
-                        if (showToken == false) {
-                            showToken = true
-                        } else {
-                            showTokenEditor = true
-                        }
+                        showTokenEditor = true
                     }
                 },
             )
