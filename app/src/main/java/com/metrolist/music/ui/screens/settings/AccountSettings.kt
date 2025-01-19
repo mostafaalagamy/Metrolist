@@ -10,11 +10,14 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.navigation.NavController
 import com.metrolist.innertube.YouTube
 import com.metrolist.innertube.utils.parseCookieString
@@ -30,6 +33,8 @@ import com.metrolist.music.ui.component.IconButton
 import com.metrolist.music.ui.component.SwitchPreference
 import com.metrolist.music.ui.component.PreferenceEntry
 import com.metrolist.music.ui.component.PreferenceGroupTitle
+import com.metrolist.music.ui.component.TextFieldDialog
+import com.metrolist.music.ui.component.InfoLabel
 import com.metrolist.music.ui.utils.backToMain
 import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
@@ -50,6 +55,13 @@ fun AccountSettings(
     val (useLoginForBrowse, onUseLoginForBrowseChange) = rememberPreference(key = UseLoginForBrowse, defaultValue = false)
     val (ytmSync, onYtmSyncChange) = rememberPreference(YtmSyncKey, defaultValue = true)
     val context = LocalContext.current
+
+    var showToken: Boolean by remember {
+        mutableStateOf(false)
+    }
+    var showTokenEditor by remember {
+        mutableStateOf(false)
+    }
 
     Scaffold(
         topBar = {
@@ -103,6 +115,49 @@ fun AccountSettings(
                 },
                 onClick = { if (!isLoggedIn) navController.navigate("login") }
             )
+
+            if (showTokenEditor) {
+                TextFieldDialog(
+                    modifier = Modifier,
+                    initialTextFieldValue = TextFieldValue(innerTubeCookie),
+                    onDone = { onInnerTubeCookieChange(it) },
+                    onDismiss = { showTokenEditor = false },
+                    singleLine = false,
+                    maxLines = 20,
+                    isInputValid = {
+                        it.isNotEmpty() &&
+                            try {
+                                "SAPISID" in parseCookieString(it)
+                                true
+                            } catch (e: Exception) {
+                                false
+                        }
+                    },
+                    extraContent = {
+                        InfoLabel(text = stringResource(R.string.token_adv_login_description))
+                    }
+                )
+            }
+
+            if (isLoggedIn) {
+                PreferenceEntry(
+                    title = {
+                        if (showToken) {
+                            Text(stringResource(R.string.token_shown))
+                        } else {
+                            Text(stringResource(R.string.token_hidden))
+                        }
+                    },
+                    icon = { Icon(painterResource(R.drawable.token), null) },
+                    onClick = {
+                        if (showToken == false) {
+                            showToken = true
+                        } else {
+                            showTokenEditor = true
+                        }
+                    },
+                )
+            }
 
             if (isLoggedIn) {
                 SwitchPreference(
