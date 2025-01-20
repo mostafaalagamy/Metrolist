@@ -29,5 +29,5 @@ public enum TonePolarity {
     DARKER,
     LIGHTER,
     NEARER,
-    FARTHER;
+    FARTHER
 }

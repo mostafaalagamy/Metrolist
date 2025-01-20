@@ -368,7 +368,7 @@ public final class QuantizerWu implements Quantizer {
     throw new IllegalArgumentException("unexpected direction " + direction);
   }
 
-  private static enum Direction {
+  private enum Direction {
     RED,
     GREEN,
     BLUE

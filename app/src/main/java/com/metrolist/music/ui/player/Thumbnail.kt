@@ -90,13 +90,13 @@ fun Thumbnail(
             offsetX > threshold -> {
                 isPreviewingNextSong = true
                 previewImage = playerConnection.player.previousMediaItemIndex.takeIf { it != -1 }?.let {
-                    playerConnection.player.getMediaItemAt(it)?.mediaMetadata?.artworkUri?.toString()
+                    playerConnection.player.getMediaItemAt(it).mediaMetadata?.artworkUri?.toString()
                 }
             }
             offsetX < -threshold -> {
                 isPreviewingNextSong = true
                 previewImage = playerConnection.player.nextMediaItemIndex.takeIf { it != -1 }?.let {
-                    playerConnection.player.getMediaItemAt(it)?.mediaMetadata?.artworkUri?.toString()
+                    playerConnection.player.getMediaItemAt(it).mediaMetadata?.artworkUri?.toString()
                 }
             }
             else -> {

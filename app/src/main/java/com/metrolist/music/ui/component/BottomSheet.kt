@@ -255,7 +255,7 @@ class BottomSheetState(
                         isTopReached = false
                     }
 
-                    return if (isTopReached && available.y < 0 && source == NestedScrollSource.Drag) {
+                    return if (isTopReached && available.y < 0 && source == NestedScrollSource.UserInput) {
                         dispatchRawDelta(available.y)
                         available
                     } else {
@@ -272,7 +272,7 @@ class BottomSheetState(
                         isTopReached = consumed.y == 0f && available.y > 0
                     }
 
-                    return if (isTopReached && source == NestedScrollSource.Drag) {
+                    return if (isTopReached && source == NestedScrollSource.UserInput) {
                         dispatchRawDelta(available.y)
                         available
                     } else {

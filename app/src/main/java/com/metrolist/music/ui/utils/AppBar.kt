@@ -31,7 +31,7 @@ fun appBarScrollBehavior(
     )
 
 @ExperimentalMaterial3Api
-class AppBarScrollBehavior constructor(
+class AppBarScrollBehavior(
     override val state: TopAppBarState,
     override val snapAnimationSpec: AnimationSpec<Float>?,
     override val flingAnimationSpec: DecayAnimationSpec<Float>?,

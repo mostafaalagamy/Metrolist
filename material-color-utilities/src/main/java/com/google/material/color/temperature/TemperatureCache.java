@@ -185,7 +185,7 @@ public final class TemperatureCache {
 
     int ccwCount = (int) Math.floor(((double) count - 1.0) / 2.0);
     for (int i = 1; i < (ccwCount + 1); i++) {
-      int index = 0 - i;
+      int index = -i;
       while (index < 0) {
         index = allColors.size() + index;
       }

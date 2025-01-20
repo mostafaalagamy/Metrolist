@@ -188,7 +188,7 @@ fun LibraryPlaylistsScreen(
                     Row(
                         modifier = Modifier.padding(vertical = 16.dp, horizontal = 40.dp)
                     ) {
-                        Column() {
+                        Column {
                             Text(
                                 text = stringResource(R.string.sync_playlist),
                                 style = MaterialTheme.typography.titleLarge,
@@ -237,7 +237,7 @@ fun LibraryPlaylistsScreen(
             Spacer(Modifier.weight(1f))
 
             Text(
-                text = pluralStringResource(R.plurals.n_playlist, playlists!!.size, playlists!!.size),
+                text = pluralStringResource(R.plurals.n_playlist, playlists.size, playlists.size),
                 style = MaterialTheme.typography.titleSmall,
                 color = MaterialTheme.colorScheme.secondary,
             )
@@ -333,17 +333,17 @@ fun LibraryPlaylistsScreen(
                         )
                     }
 
-                    playlists?.let { playlists ->
+                    playlists.let { playlists ->
                         if (playlists.isEmpty()) {
                             item {
+                            }
                         }
-                    }
 
-                    items(
-                        items = playlists,
-                        key = { it.id },
-                        contentType = { CONTENT_TYPE_PLAYLIST },
-                    ) { playlist ->
+                        items(
+                            items = playlists,
+                            key = { it.id },
+                            contentType = { CONTENT_TYPE_PLAYLIST },
+                        ) { playlist ->
                             LibraryPlaylistListItem(
                                 navController = navController,
                                 menuState = menuState,
@@ -446,17 +446,17 @@ fun LibraryPlaylistsScreen(
                         )
                     }
 
-                    playlists?.let { playlists ->
+                    playlists.let { playlists ->
                         if (playlists.isEmpty()) {
                             item(span = { GridItemSpan(maxLineSpan) }) {
+                            }
                         }
-                    }
- 
-                    items(
-                        items = playlists,
-                        key = { it.id },
-                        contentType = { CONTENT_TYPE_PLAYLIST },
-                    ) { playlist ->
+
+                        items(
+                            items = playlists,
+                            key = { it.id },
+                            contentType = { CONTENT_TYPE_PLAYLIST },
+                        ) { playlist ->
                             LibraryPlaylistGridItem(
                                 navController = navController,
                                 menuState = menuState,

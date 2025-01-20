@@ -560,7 +560,7 @@ fun AutoPlaylistScreen(
                     )
                 } else {
                     Text(
-                        text = playlist ?: "",
+                        text = playlist,
                         style = MaterialTheme.typography.titleLarge
                     )
                 }
@@ -597,7 +597,7 @@ fun AutoPlaylistScreen(
                     IconButton(
                         onClick = {
                             if (count == wrappedSongs?.size) {
-                                wrappedSongs?.forEach { it.isSelected = false }
+                                wrappedSongs.forEach { it.isSelected = false }
                             } else {
                                 wrappedSongs?.forEach { it.isSelected = true }
                             }

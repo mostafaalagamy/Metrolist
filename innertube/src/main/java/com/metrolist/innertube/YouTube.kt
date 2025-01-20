@@ -405,14 +405,14 @@ object YouTube {
                         shuffleEndpoint =
                             response.header
                                 ?.musicImmersiveHeaderRenderer
-                                ?.playButton
+                                .playButton
                                 ?.buttonRenderer
                                 ?.navigationEndpoint
                                 ?.watchEndpoint,
                         radioEndpoint =
                             response.header
                                 ?.musicImmersiveHeaderRenderer
-                                ?.startRadioButton
+                                .startRadioButton
                                 ?.buttonRenderer
                                 ?.navigationEndpoint
                                 ?.watchEndpoint,
@@ -430,7 +430,7 @@ object YouTube {
                 description =
                     response.header
                         ?.musicImmersiveHeaderRenderer
-                        ?.description
+                        .description
                         ?.runs
                         ?.firstOrNull()
                         ?.text,
@@ -845,7 +845,7 @@ object YouTube {
             innerTube.unsubscribeChannel(WEB_REMIX, channelId)
     }
     suspend fun getChannelId(browseId: String): String {
-        YouTube.artist(browseId).onSuccess {
+        artist(browseId).onSuccess {
             return it.artist.channelId!!
         }
         return ""
