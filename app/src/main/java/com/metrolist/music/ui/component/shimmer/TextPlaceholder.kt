@@ -20,10 +20,10 @@ fun TextPlaceholder(
 ) {
     Spacer(
         modifier =
-            modifier
-                .padding(vertical = 4.dp)
-                .background(MaterialTheme.colorScheme.onSurface)
-                .fillMaxWidth(remember { 0.25f + Random.nextFloat() * 0.5f })
-                .height(height),
+        modifier
+            .padding(vertical = 4.dp)
+            .background(MaterialTheme.colorScheme.onSurface)
+            .fillMaxWidth(remember { 0.25f + Random.nextFloat() * 0.5f })
+            .height(height),
     )
 }

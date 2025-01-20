@@ -63,8 +63,8 @@ fun DefaultDialog(
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier =
-                    modifier
-                        .padding(24.dp),
+                modifier
+                    .padding(24.dp),
             ) {
                 if (icon != null) {
                     CompositionLocalProvider(LocalContentColor provides AlertDialogDefaults.iconContentColor) {
@@ -186,7 +186,7 @@ fun TextFieldDialog(
         }
 
     LaunchedEffect(Unit) {
-        if (autoFocus){
+        if (autoFocus) {
             delay(300)
             focusRequester.requestFocus()
         }
@@ -220,19 +220,19 @@ fun TextFieldDialog(
             singleLine = singleLine,
             maxLines = maxLines,
             colors =
-                OutlinedTextFieldDefaults.colors(),
+            OutlinedTextFieldDefaults.colors(),
             keyboardOptions = KeyboardOptions(imeAction = if (singleLine) ImeAction.Done else ImeAction.None),
             keyboardActions =
-                KeyboardActions(
-                    onDone = {
-                        onDone(textFieldValue.text)
-                        onDismiss()
-                    },
-                ),
+            KeyboardActions(
+                onDone = {
+                    onDone(textFieldValue.text)
+                    onDismiss()
+                },
+            ),
             modifier =
-                Modifier
-                    .weight(weight = 1f, fill = false)
-                    .focusRequester(focusRequester),
+            Modifier
+                .weight(weight = 1f, fill = false)
+                .focusRequester(focusRequester),
         )
         extraContent?.invoke()
     }

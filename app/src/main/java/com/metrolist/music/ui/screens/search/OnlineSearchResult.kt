@@ -139,11 +139,11 @@ fun OnlineSearchResult(
         YouTubeListItem(
             item = item,
             isActive =
-                when (item) {
-                    is SongItem -> mediaMetadata?.id == item.id
-                    is AlbumItem -> mediaMetadata?.album?.id == item.id
-                    else -> false
-                },
+            when (item) {
+                is SongItem -> mediaMetadata?.id == item.id
+                is AlbumItem -> mediaMetadata?.album?.id == item.id
+                else -> false
+            },
             isPlaying = isPlaying,
             trailingContent = {
                 IconButton(
@@ -156,34 +156,40 @@ fun OnlineSearchResult(
                 }
             },
             modifier =
-                Modifier
-                    .combinedClickable(
-                        onClick = {
-                            when (item) {
-                                is SongItem -> {
-                                    if (item.id == mediaMetadata?.id) {
-                                        playerConnection.player.togglePlayPause()
-                                    } else {
-                                        playerConnection.playQueue(YouTubeQueue(WatchEndpoint(videoId = item.id), item.toMediaMetadata()))
-                                    }
+            Modifier
+                .combinedClickable(
+                    onClick = {
+                        when (item) {
+                            is SongItem -> {
+                                if (item.id == mediaMetadata?.id) {
+                                    playerConnection.player.togglePlayPause()
+                                } else {
+                                    playerConnection.playQueue(
+                                        YouTubeQueue(
+                                            WatchEndpoint(videoId = item.id),
+                                            item.toMediaMetadata()
+                                        )
+                                    )
                                 }
-
-                                is AlbumItem -> navController.navigate("album/${item.id}")
-                                is ArtistItem -> navController.navigate("artist/${item.id}")
-                                is PlaylistItem -> navController.navigate("online_playlist/${item.id}")
                             }
-                        },
-                        onLongClick = longClick,
-                    ).animateItem(),
+
+                            is AlbumItem -> navController.navigate("album/${item.id}")
+                            is ArtistItem -> navController.navigate("artist/${item.id}")
+                            is PlaylistItem -> navController.navigate("online_playlist/${item.id}")
+                        }
+                    },
+                    onLongClick = longClick,
+                )
+                .animateItem(),
         )
     }
 
     LazyColumn(
         state = lazyListState,
         contentPadding =
-            LocalPlayerAwareWindowInsets.current
-                .add(WindowInsets(top = SearchFilterHeight))
-                .asPaddingValues(),
+        LocalPlayerAwareWindowInsets.current
+            .add(WindowInsets(top = SearchFilterHeight))
+            .asPaddingValues(),
     ) {
         if (searchFilter == null) {
             searchSummary?.summaries?.forEach { summary ->
@@ -246,15 +252,15 @@ fun OnlineSearchResult(
 
     ChipsRow(
         chips =
-            listOf(
-                null to stringResource(R.string.filter_all),
-                FILTER_SONG to stringResource(R.string.filter_songs),
-                FILTER_VIDEO to stringResource(R.string.filter_videos),
-                FILTER_ALBUM to stringResource(R.string.filter_albums),
-                FILTER_ARTIST to stringResource(R.string.filter_artists),
-                FILTER_COMMUNITY_PLAYLIST to stringResource(R.string.filter_community_playlists),
-                FILTER_FEATURED_PLAYLIST to stringResource(R.string.filter_featured_playlists),
-            ),
+        listOf(
+            null to stringResource(R.string.filter_all),
+            FILTER_SONG to stringResource(R.string.filter_songs),
+            FILTER_VIDEO to stringResource(R.string.filter_videos),
+            FILTER_ALBUM to stringResource(R.string.filter_albums),
+            FILTER_ARTIST to stringResource(R.string.filter_artists),
+            FILTER_COMMUNITY_PLAYLIST to stringResource(R.string.filter_community_playlists),
+            FILTER_FEATURED_PLAYLIST to stringResource(R.string.filter_featured_playlists),
+        ),
         currentValue = searchFilter,
         onValueUpdate = {
             if (viewModel.filter.value != it) {
@@ -265,10 +271,10 @@ fun OnlineSearchResult(
             }
         },
         modifier =
-            Modifier
-                .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Top))
-                .padding(top = AppBarHeight)
-                .background(MaterialTheme.colorScheme.surface)
-                .fillMaxWidth()
+        Modifier
+            .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Top))
+            .padding(top = AppBarHeight)
+            .background(MaterialTheme.colorScheme.surface)
+            .fillMaxWidth()
     )
 }

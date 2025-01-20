@@ -71,7 +71,7 @@ fun ContentSettings(
 ) {
     val context = LocalContext.current
     val localeManager = remember { LocaleManager(context) }
-    
+
     val (contentLanguage, onContentLanguageChange) = rememberPreference(
         key = PreferenceKeys.ContentLanguageKey,
         defaultValue = "system"
@@ -172,7 +172,7 @@ fun ContentSettings(
             onValueSelected = { newLanguage ->
                 if (localeManager.updateLocale(newLanguage)) {
                     setSelectedLanguage(newLanguage)
-                    
+
                     // Restart activity to apply changes
                     val intent = context.packageManager
                         .getLaunchIntentForPackage(context.packageName)
@@ -233,7 +233,8 @@ fun ContentSettings(
             selectedValue = preferredProvider,
             values = listOf(PreferredLyricsProvider.KUGOU, PreferredLyricsProvider.LRCLIB),
             valueText = {
-                it.name.toLowerCase(androidx.compose.ui.text.intl.Locale.current).capitalize(androidx.compose.ui.text.intl.Locale.current)
+                it.name.toLowerCase(androidx.compose.ui.text.intl.Locale.current)
+                    .capitalize(androidx.compose.ui.text.intl.Locale.current)
             },
             onValueSelected = onPreferredProviderChange,
         )
@@ -288,7 +289,7 @@ fun ContentSettings(
 class LocaleManager(private val context: Context) {
     companion object {
         private val COMPLEX_SCRIPT_LANGUAGES = setOf(
-            "ne", "mr", "hi", "bn", "pa", "gu", "ta", "te", "kn", "ml", 
+            "ne", "mr", "hi", "bn", "pa", "gu", "ta", "te", "kn", "ml",
             "si", "th", "lo", "my", "ka", "am", "km",
             "zh-CN", "zh-TW", "zh-HK", "ja", "ko"
         )
@@ -300,7 +301,7 @@ class LocaleManager(private val context: Context) {
             val config = context.resources.configuration
 
             Locale.setDefault(locale)
-            
+
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 setLocaleApi24(config, locale)
             } else {
@@ -309,10 +310,10 @@ class LocaleManager(private val context: Context) {
 
             @Suppress("DEPRECATION")
             context.resources.updateConfiguration(config, context.resources.displayMetrics)
-            
+
             val newContext = context.createConfigurationContext(config)
             updateAppContext(newContext)
-            
+
             return true
         } catch (e: Exception) {
             Log.e("LocaleManager", "Failed to update locale", e)
@@ -325,7 +326,7 @@ class LocaleManager(private val context: Context) {
             languageCode == "zh-CN" -> Locale.SIMPLIFIED_CHINESE
             languageCode == "zh-TW" -> Locale.TRADITIONAL_CHINESE
             languageCode == "zh-HK" -> Locale("zh", "HK")
-            
+
             languageCode in COMPLEX_SCRIPT_LANGUAGES -> {
                 if (languageCode.contains("-")) {
                     val (language, country) = languageCode.split("-")
@@ -341,12 +342,12 @@ class LocaleManager(private val context: Context) {
                         .build()
                 }
             }
-            
+
             languageCode.contains("-") -> {
                 val (language, country) = languageCode.split("-")
                 Locale(language, country)
             }
-            
+
             else -> Locale(languageCode)
         }
     }
@@ -388,7 +389,7 @@ class LocaleManager(private val context: Context) {
             val thread = activityThread.getMethod("currentActivityThread").invoke(null)
             val application = activityThread.getMethod("getApplication").invoke(thread)
             val appContext = application.javaClass.getMethod("getBaseContext").invoke(application)
-            
+
             val contextImpl = Class.forName("android.app.ContextImpl")
             val implResources = contextImpl.getDeclaredField("mResources")
             implResources.isAccessible = true

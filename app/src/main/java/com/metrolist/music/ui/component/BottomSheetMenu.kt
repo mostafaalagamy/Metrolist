@@ -77,13 +77,13 @@ fun BottomSheetMenu(
 
         Spacer(
             modifier =
-                Modifier
-                    .pointerInput(Unit) {
-                        detectTapGestures {
-                            state.dismiss()
-                        }
-                    }.background(MaterialTheme.colorScheme.scrim.copy(alpha = 0.5f))
-                    .fillMaxSize(),
+            Modifier
+                .pointerInput(Unit) {
+                    detectTapGestures {
+                        state.dismiss()
+                    }
+                }.background(MaterialTheme.colorScheme.scrim.copy(alpha = 0.5f))
+                .fillMaxSize(),
         )
     }
 
@@ -95,12 +95,12 @@ fun BottomSheetMenu(
     ) {
         Column(
             modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Horizontal))
-                    .padding(top = 48.dp)
-                    .clip(ShapeDefaults.Large.top())
-                    .background(background),
+            Modifier
+                .fillMaxWidth()
+                .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Horizontal))
+                .padding(top = 48.dp)
+                .clip(ShapeDefaults.Large.top())
+                .background(background),
         ) {
             state.content(this)
         }

@@ -200,24 +200,28 @@ enum class MyTopFilter {
                     .minusDays(1)
                     .toInstant(ZoneOffset.UTC)
                     .toEpochMilli()
+
             WEEK ->
                 LocalDateTime
                     .now()
                     .minusWeeks(1)
                     .toInstant(ZoneOffset.UTC)
                     .toEpochMilli()
+
             MONTH ->
                 LocalDateTime
                     .now()
                     .minusMonths(1)
                     .toInstant(ZoneOffset.UTC)
                     .toEpochMilli()
+
             YEAR ->
                 LocalDateTime
                     .now()
                     .minusMonths(12)
                     .toInstant(ZoneOffset.UTC)
                     .toEpochMilli()
+
             ALL_TIME -> 0
         }
 }

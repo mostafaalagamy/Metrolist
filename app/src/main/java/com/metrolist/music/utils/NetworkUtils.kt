@@ -8,7 +8,8 @@ import androidx.core.content.getSystemService
 fun isInternetAvailable(context: Context): Boolean {
     val connectivityManager = context.getSystemService<ConnectivityManager>() ?: return false
     val activeNetwork = connectivityManager.activeNetwork ?: return false
-    val networkCapabilities = connectivityManager.getNetworkCapabilities(activeNetwork) ?: return false
+    val networkCapabilities =
+        connectivityManager.getNetworkCapabilities(activeNetwork) ?: return false
 
     return when {
         networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true

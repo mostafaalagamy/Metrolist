@@ -255,7 +255,7 @@
     <string name="use_login_for_browse_desc">This can shows premium-only albums if you are logged in with a Premium account</string>
 
     <string name="general_settings">General settings</string>
-    
+
     <string name="appearance">Appearance</string>
     <string name="theme">Theme</string>
     <string name="enable_dynamic_theme">Enable dynamic theme</string>
@@ -322,7 +322,7 @@
     <string name="enable_kugou">Enable KuGou lyrics provider</string>
     <string name="enable_lrclib">Enable LrcLib lyrics provider</string>
     <string name="set_first_lyrics_provider">Preferred lyrics provider</string>
-    
+
     <string name="player_and_audio">Player and audio</string>
     <string name="audio_quality">Audio quality</string>
     <string name="audio_quality_max">Max (beta)</string>
@@ -357,7 +357,7 @@
     <string name="size_used">%s used</string>
 
     <string name="privacy">Privacy</string>
-    <string name="listen_history">Listen History</string>    
+    <string name="listen_history">Listen History</string>
     <string name="search_history">Search History</string>
     <string name="pause_listen_history">Pause listen history</string>
     <string name="clear_listen_history">Clear listen history</string>
@@ -367,7 +367,7 @@
     <string name="clear_search_history_confirm">Are you sure you want to clear all search history?</string>
     <string name="disable_screenshot">Disable screenshot</string>
     <string name="disable_screenshot_desc">When this option is on, screenshots and the app\'s view in Recents are disabled.</string>
-    
+
     <string name="hide_explicit">Hide explicit content</string>
 
     <string name="backup_restore">Backup and restore</string>
@@ -384,13 +384,13 @@
     <string name="preview">Preview</string>
     <string name="login_failed">Login failed</string>
 
-    <string name="enable_discord_rpc">Enable Rich Presence</string> 
-    
+    <string name="enable_discord_rpc">Enable Rich Presence</string>
+
     <string name="default_links">Open supported links</string>
     <string name="open_app_settings_error">Couldn\'t open app settings</string>
-    
+
     <string name="release_notes">Release Notes</string>
-    
+
     <string name="about">About</string>
     <string name="app_version">App version</string>
 

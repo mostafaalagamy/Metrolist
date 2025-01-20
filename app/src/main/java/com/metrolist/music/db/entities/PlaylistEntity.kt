@@ -34,9 +34,11 @@ data class PlaylistEntity(
 
         fun generatePlaylistId() = "LP" + RandomStringUtils.random(8, true, false)
     }
+
     fun localToggleLike() = copy(
         bookmarkedAt = if (bookmarkedAt != null) null else LocalDateTime.now()
     )
+
     fun toggleLike() = localToggleLike().also {
         CoroutineScope(Dispatchers.IO).launch {
             if (browseId != null)

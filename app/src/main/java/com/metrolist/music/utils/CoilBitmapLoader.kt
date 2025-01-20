@@ -23,7 +23,8 @@ class CoilBitmapLoader(
 
     override fun decodeBitmap(data: ByteArray): ListenableFuture<Bitmap> =
         scope.future(Dispatchers.IO) {
-            BitmapFactory.decodeByteArray(data, 0, data.size) ?: error("Could not decode image data")
+            BitmapFactory.decodeByteArray(data, 0, data.size)
+                ?: error("Could not decode image data")
         }
 
     override fun loadBitmap(uri: Uri): ListenableFuture<Bitmap> =

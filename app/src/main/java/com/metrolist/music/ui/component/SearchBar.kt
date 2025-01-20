@@ -100,11 +100,12 @@ fun TopSearch(
     placeholder: @Composable (() -> Unit)? = null,
     leadingIcon: @Composable (() -> Unit)? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
-    shape: Shape = SearchBarDefaults.inputFieldShape,    
-    colors: SearchBarColors = 
-            SearchBarDefaults.colors(
-            containerColor = 
-            MaterialTheme.colorScheme.surfaceContainer),
+    shape: Shape = SearchBarDefaults.inputFieldShape,
+    colors: SearchBarColors =
+        SearchBarDefaults.colors(
+            containerColor =
+            MaterialTheme.colorScheme.surfaceContainer
+        ),
     tonalElevation: Dp = TonalElevation,
     windowInsets: WindowInsets = WindowInsets.systemBars,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
@@ -124,10 +125,10 @@ fun TopSearch(
     val animationProgress: Float by animateFloatAsState(
         targetValue = if (active) 1f else 0f,
         animationSpec =
-            tween(
-                durationMillis = AnimationDurationMillis,
-                easing = MotionTokens.EasingLegacyCubicBezier,
-            ),
+        tween(
+            durationMillis = AnimationDurationMillis,
+            easing = MotionTokens.EasingLegacyCubicBezier,
+        ),
         label = "",
     )
 
@@ -149,7 +150,8 @@ fun TopSearch(
     }
 
     val topInset = windowInsets.asPaddingValues().calculateTopPadding()
-    val startInset = windowInsets.asPaddingValues().calculateStartPadding(LocalLayoutDirection.current)
+    val startInset =
+        windowInsets.asPaddingValues().calculateStartPadding(LocalLayoutDirection.current)
     val endInset = windowInsets.asPaddingValues().calculateEndPadding(LocalLayoutDirection.current)
 
     val topPadding = SearchBarVerticalPadding + topInset
@@ -167,10 +169,10 @@ fun TopSearch(
 
     BoxWithConstraints(
         modifier =
-            modifier
-                .offset {
-                    IntOffset(x = 0, y = scrollBehavior.state.heightOffset.roundToInt())
-                },
+        modifier
+            .offset {
+                IntOffset(x = 0, y = scrollBehavior.state.heightOffset.roundToInt())
+            },
         propagateMinConstraints = true,
     ) {
         val height: Dp
@@ -188,8 +190,16 @@ fun TopSearch(
 
             height = lerp(startHeight, endHeight, animationProgress).toDp()
             width = lerp(startWidth, endWidth, animationProgress).toDp()
-            startPadding = lerp((SearchBarHorizontalPadding + startInset).roundToPx().toFloat(), 0f, animationProgress).toDp()
-            endPadding = lerp((SearchBarHorizontalPadding + endInset).roundToPx().toFloat(), 0f, animationProgress).toDp()
+            startPadding = lerp(
+                (SearchBarHorizontalPadding + startInset).roundToPx().toFloat(),
+                0f,
+                animationProgress
+            ).toDp()
+            endPadding = lerp(
+                (SearchBarHorizontalPadding + endInset).roundToPx().toFloat(),
+                0f,
+                animationProgress
+            ).toDp()
         }
 
         Box(
@@ -207,12 +217,12 @@ fun TopSearch(
             contentColor = contentColorFor(colors.containerColor),
             tonalElevation = tonalElevation,
             modifier =
-                Modifier
-                    .padding(
-                        top = animatedSurfaceTopPadding,
-                        start = startPadding,
-                        end = endPadding,
-                    ).size(width = width, height = height),
+            Modifier
+                .padding(
+                    top = animatedSurfaceTopPadding,
+                    start = startPadding,
+                    end = endPadding,
+                ).size(width = width, height = height),
         ) {
             Column {
                 SearchBarInputField(
@@ -275,9 +285,9 @@ private fun SearchBarInputField(
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier =
-            modifier
-                .fillMaxWidth()
-                .height(InputFieldHeight),
+        modifier
+            .fillMaxWidth()
+            .height(InputFieldHeight),
     ) {
         if (leadingIcon != null) {
             Spacer(Modifier.width(SearchBarIconOffsetX))
@@ -288,31 +298,31 @@ private fun SearchBarInputField(
             value = query,
             onValueChange = onQueryChange,
             modifier =
-                Modifier
-                    .weight(1f)
-                    .focusRequester(focusRequester)
-                    .pointerInput(Unit) {
-                        awaitEachGesture {
-                            // Must be PointerEventPass.Initial to observe events before the text field
-                            // consumes them in the Main pass
-                            awaitFirstDown(pass = PointerEventPass.Initial)
-                            val upEvent = waitForUpOrCancellation(pass = PointerEventPass.Initial)
-                            if (upEvent != null) {
-                                onActiveChange(true)
-                            }
+            Modifier
+                .weight(1f)
+                .focusRequester(focusRequester)
+                .pointerInput(Unit) {
+                    awaitEachGesture {
+                        // Must be PointerEventPass.Initial to observe events before the text field
+                        // consumes them in the Main pass
+                        awaitFirstDown(pass = PointerEventPass.Initial)
+                        val upEvent = waitForUpOrCancellation(pass = PointerEventPass.Initial)
+                        if (upEvent != null) {
+                            onActiveChange(true)
                         }
-                    }.semantics {
-                        contentDescription = searchSemantics
-                        if (active) {
-                            stateDescription = suggestionsAvailableSemantics
-                        }
-                    }.onKeyEvent {
-                        if (it.key == Key.Enter) {
-                            onSearch(query.text)
-                            return@onKeyEvent true
-                        }
-                        false
-                    },
+                    }
+                }.semantics {
+                    contentDescription = searchSemantics
+                    if (active) {
+                        stateDescription = suggestionsAvailableSemantics
+                    }
+                }.onKeyEvent {
+                    if (it.key == Key.Enter) {
+                        onSearch(query.text)
+                        return@onKeyEvent true
+                    }
+                    false
+                },
             enabled = enabled,
             singleLine = true,
             textStyle = LocalTextStyle.current.merge(TextStyle(color = textColor)),

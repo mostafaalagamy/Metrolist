@@ -83,9 +83,9 @@ fun MoodAndGenresScreen(
                                         navController.navigate("youtube_browse/${it.endpoint.browseId}?params=${it.endpoint.params}")
                                     },
                                     modifier =
-                                        Modifier
-                                            .weight(1f)
-                                            .padding(6.dp),
+                                    Modifier
+                                        .weight(1f)
+                                        .padding(6.dp),
                                 )
                             }
 
@@ -124,12 +124,12 @@ fun MoodAndGenresButton(
     Box(
         contentAlignment = Alignment.CenterStart,
         modifier =
-            modifier
-                .height(MoodAndGenresButtonHeight)
-                .clip(RoundedCornerShape(6.dp))
-                .background(MaterialTheme.colorScheme.surfaceContainer)
-                .clickable(onClick = onClick)
-                .padding(horizontal = 12.dp),
+        modifier
+            .height(MoodAndGenresButtonHeight)
+            .clip(RoundedCornerShape(6.dp))
+            .background(MaterialTheme.colorScheme.surfaceContainer)
+            .clickable(onClick = onClick)
+            .padding(horizontal = 12.dp),
     ) {
         Text(
             text = title,

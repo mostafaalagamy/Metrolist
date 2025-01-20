@@ -1,5 +1,5 @@
 <resources>
-    
+
     <!-- أزرار التنقل -->
     <string name="home">الرئيسية</string>
     <string name="songs">الأغاني</string>
@@ -7,17 +7,17 @@
     <string name="albums">الألبومات</string>
     <string name="playlists">قوائم التشغيل</string>
     <string name="explore">الإستكشاف</string>
-    
+
     <!-- شريط علوي -->
     <plurals name="n_selected">
-    <item quantity="zero">لا شيء محدد</item>
-    <item quantity="one">عنصر واحد محدد</item>
-    <item quantity="two">عنصران محددان</item>
-    <item quantity="few">%d عناصر محددة</item>
-    <item quantity="many">%d عنصر محدد</item>
-    <item quantity="other">%d عنصر محدد</item>
+        <item quantity="zero">لا شيء محدد</item>
+        <item quantity="one">عنصر واحد محدد</item>
+        <item quantity="two">عنصران محددان</item>
+        <item quantity="few">%d عناصر محددة</item>
+        <item quantity="many">%d عنصر محدد</item>
+        <item quantity="other">%d عنصر محدد</item>
     </plurals>
-    
+
     <!-- الرئيسية-->
     <string name="history">السجل</string>
     <string name="stats">الإحصائيات</string>
@@ -30,13 +30,13 @@
     <string name="similar_to">مشابه لـ</string>
     <string name="keep_listening">استمر في الاستماع</string>
     <string name="your_ytb_playlists">حسابك</string>
-    
+
     <!-- التاريخ -->
     <string name="today">اليوم</string>
     <string name="yesterday">أمس</string>
     <string name="this_week">هذا الأسبوع</string>
     <string name="last_week">الأسبوع الماضي</string>
-    
+
     <!-- الاحصائيات -->
     <string name="most_played_songs">الأغاني الأكثر تشغيلًا</string>
     <string name="most_played_artists">الفنانون الأكثر تشغيلًا</string>
@@ -45,7 +45,7 @@
     <string name="months">شهور</string>
     <string name="years">سنين</string>
     <string name="continuous">مستمر</string>
-    
+
     <!-- البحث -->
     <string name="search">بحث</string>
     <string name="search_yt_music">البحث في موسيقى يوتيوب…</string>
@@ -63,13 +63,13 @@
     <string name="filter_featured_playlists">قوائم التشغيل المميزة</string>
     <string name="filter_bookmarked">المفضلة</string>
     <string name="no_results_found">لم يتم العثور على نتائج</string>
-    
+
     <!-- صفحة الفنان -->
     <string name="from_your_library">من مكتبتك</string>
-    
+
     <!-- صفحة الالبومات -->
     <string name="other_versions">إصدارات أخرى</string>
-    
+
     <!-- المكتبة -->
     <string name="liked">الأغاني المفضلة</string>
     <string name="offline">التحميلات</string>
@@ -78,7 +78,7 @@
     <string name="library_artist_empty">سيظهر هنا الفنانين</string>
     <string name="library_album_empty">ستظهر ألبومات المكتبة هنا</string>
     <string name="library_playlist_empty">ستظهر قوائم التشغيل الخاصة بك هنا</string>
-    
+
     <!-- قوائم التشغيل -->
     <string name="liked_songs">الأغاني المفضلة</string>
     <string name="downloaded_songs">الأغاني المحمّلة</string>
@@ -88,13 +88,13 @@
     <string name="delete_playlist_confirm">هل تريد حقًا حذف قائمة التشغيل "%s"؟</string>
     <string name="allows_for_sync_witch_youtube">ملاحظة: يسمح هذا بالمزامنة مع YouTube Music. لا يمكن تغيير هذا لاحقًا.</string>
     <string name="elements_selected">%1$d عنصر محدد</string>
-    
+
     <!-- الازرار -->
     <string name="retry">إعادة المحاولة</string>
     <string name="radio">راديو</string>
     <string name="shuffle">تشغيل عشوائي</string>
     <string name="reset">إعادة تعيين</string>
-    
+
     <!-- القائمة -->
     <string name="details">التفاصيل</string>
     <string name="edit">تعديل</string>
@@ -121,7 +121,7 @@
     <string name="select">تحديد الكل</string>
     <string name="remove_from_playlist">إزالة من قائمة التشغيل</string>
     <string name="like_all">الإعجاب بالكل</string>
-    
+
     <!-- قائمة الفرز-->
     <string name="sort_by_create_date">تاريخ الإضافة</string>
     <string name="sort_by_last_updated">تاريخ التحديث</string>
@@ -132,7 +132,7 @@
     <string name="sort_by_length">المدة</string>
     <string name="sort_by_play_time">وقت التشغيل</string>
     <string name="sort_by_custom">ترتيب مخصص</string>
-    
+
     <!-- الحوار -->
     <string name="media_id">معرف الوسائط</string>
     <string name="mime_type">نوع MIME</string>
@@ -167,125 +167,125 @@
     <string name="add_anyway">أضف على أية حال</string>
     <string name="duplicates_description_single">الأغنية موجودة بالفعل في قائمة التشغيل الخاصة بك</string>
     <string name="duplicates_description_multiple">توجد %d أغنية بالفعل في قائمة التشغيل الخاصة بك</string>
-    
+
     <!-- اسم -->
     <plurals name="n_song">
-    <item quantity="zero">لا أغانٍ</item>
-    <item quantity="one">%d أغنية</item>
-    <item quantity="two">%d أغنيتان</item>
-    <item quantity="few">%d أغانٍ</item>
-    <item quantity="many">%d أغنية</item>
-    <item quantity="other">%d أغنية</item>
+        <item quantity="zero">لا أغانٍ</item>
+        <item quantity="one">%d أغنية</item>
+        <item quantity="two">%d أغنيتان</item>
+        <item quantity="few">%d أغانٍ</item>
+        <item quantity="many">%d أغنية</item>
+        <item quantity="other">%d أغنية</item>
     </plurals>
 
     <plurals name="n_artist">
-    <item quantity="zero">لا فنانون</item>
-    <item quantity="one">%d فنان</item>
-    <item quantity="two">%d فنانان</item>
-    <item quantity="few">%d فنانون</item>
-    <item quantity="many">%d فناناً</item>
-    <item quantity="other">%d فناناً</item>
+        <item quantity="zero">لا فنانون</item>
+        <item quantity="one">%d فنان</item>
+        <item quantity="two">%d فنانان</item>
+        <item quantity="few">%d فنانون</item>
+        <item quantity="many">%d فناناً</item>
+        <item quantity="other">%d فناناً</item>
     </plurals>
 
     <plurals name="n_album">
-    <item quantity="zero">لا ألبومات</item>
-    <item quantity="one">%d ألبوم</item>
-    <item quantity="two">%d ألبومان</item>
-    <item quantity="few">%d ألبومات</item>
-    <item quantity="many">%d ألبوم</item>
-    <item quantity="other">%d ألبوم</item>
+        <item quantity="zero">لا ألبومات</item>
+        <item quantity="one">%d ألبوم</item>
+        <item quantity="two">%d ألبومان</item>
+        <item quantity="few">%d ألبومات</item>
+        <item quantity="many">%d ألبوم</item>
+        <item quantity="other">%d ألبوم</item>
     </plurals>
 
     <plurals name="n_playlist">
-    <item quantity="zero">لا قوائم تشغيل</item>
-    <item quantity="one">%d قائمة تشغيل</item>
-    <item quantity="two">%d قائمتا تشغيل</item>
-    <item quantity="few">%d قوائم تشغيل</item>
-    <item quantity="many">%d قائمة تشغيل</item>
-    <item quantity="other">%d قائمة التشغيل</item>
+        <item quantity="zero">لا قوائم تشغيل</item>
+        <item quantity="one">%d قائمة تشغيل</item>
+        <item quantity="two">%d قائمتا تشغيل</item>
+        <item quantity="few">%d قوائم تشغيل</item>
+        <item quantity="many">%d قائمة تشغيل</item>
+        <item quantity="other">%d قائمة التشغيل</item>
     </plurals>
 
     <plurals name="n_week">
-    <item quantity="zero">لا أسابيع</item>
-    <item quantity="one">%d أسبوع</item>
-    <item quantity="two">%d أسبوعان</item>
-    <item quantity="few">%d أسابيع</item>
-    <item quantity="many">%d أسبوع</item>
-    <item quantity="other">%d أسبوع</item>
+        <item quantity="zero">لا أسابيع</item>
+        <item quantity="one">%d أسبوع</item>
+        <item quantity="two">%d أسبوعان</item>
+        <item quantity="few">%d أسابيع</item>
+        <item quantity="many">%d أسبوع</item>
+        <item quantity="other">%d أسبوع</item>
     </plurals>
 
     <plurals name="n_month">
-    <item quantity="zero">لا أشهر</item>
-    <item quantity="one">%d شهر</item>
-    <item quantity="two">%d شهران</item>
-    <item quantity="few">%d أشهر</item>
-    <item quantity="many">%d شهراً</item>
-    <item quantity="other">%d شهراً</item>
+        <item quantity="zero">لا أشهر</item>
+        <item quantity="one">%d شهر</item>
+        <item quantity="two">%d شهران</item>
+        <item quantity="few">%d أشهر</item>
+        <item quantity="many">%d شهراً</item>
+        <item quantity="other">%d شهراً</item>
     </plurals>
 
     <plurals name="n_year">
-    <item quantity="zero">لا سنوات</item>
-    <item quantity="one">%d سنة</item>
-    <item quantity="two">%d سنتان</item>
-    <item quantity="few">%d سنوات</item>
-    <item quantity="many">%d سنة</item>
-    <item quantity="other">%d سنة</item>
+        <item quantity="zero">لا سنوات</item>
+        <item quantity="one">%d سنة</item>
+        <item quantity="two">%d سنتان</item>
+        <item quantity="few">%d سنوات</item>
+        <item quantity="many">%d سنة</item>
+        <item quantity="other">%d سنة</item>
     </plurals>
 
     <plurals name="n_element">
-    <item quantity="zero">لا عناصر</item>
-    <item quantity="one">%d عنصر</item>
-    <item quantity="two">%d عنصران</item>
-    <item quantity="few">%d عناصر</item>
-    <item quantity="many">%d عنصراً</item>
-    <item quantity="other">%d عنصراً</item>
+        <item quantity="zero">لا عناصر</item>
+        <item quantity="one">%d عنصر</item>
+        <item quantity="two">%d عنصران</item>
+        <item quantity="few">%d عناصر</item>
+        <item quantity="many">%d عنصراً</item>
+        <item quantity="other">%d عنصراً</item>
     </plurals>
 
     <plurals name="n_time">
-    <item quantity="zero">لا مرات</item>
-    <item quantity="one">%d مرة</item>
-    <item quantity="two">%d مرتان</item>
-    <item quantity="few">%d مرات</item>
-    <item quantity="many">%d مرة</item>
-    <item quantity="other">%d مرة</item>
+        <item quantity="zero">لا مرات</item>
+        <item quantity="one">%d مرة</item>
+        <item quantity="two">%d مرتان</item>
+        <item quantity="few">%d مرات</item>
+        <item quantity="many">%d مرة</item>
+        <item quantity="other">%d مرة</item>
     </plurals>
 
     <plurals name="minute">
-    <item quantity="zero">لا دقائق</item>
-    <item quantity="one">%d دقيقة</item>
-    <item quantity="two">%d دقيقتان</item>
-    <item quantity="few">%d دقائق</item>
-    <item quantity="many">%d دقيقة</item>
-    <item quantity="other">%d دقيقة</item>
+        <item quantity="zero">لا دقائق</item>
+        <item quantity="one">%d دقيقة</item>
+        <item quantity="two">%d دقيقتان</item>
+        <item quantity="few">%d دقائق</item>
+        <item quantity="many">%d دقيقة</item>
+        <item quantity="other">%d دقيقة</item>
     </plurals>
 
     <plurals name="seconds">
-    <item quantity="zero">لا ثوانٍ</item>
-    <item quantity="one">%d ثانية</item>
-    <item quantity="two">%d ثانيتان</item>
-    <item quantity="few">%d ثوانٍ</item>
-    <item quantity="many">%d ثانية</item>
-    <item quantity="other">%d ثانية</item>
+        <item quantity="zero">لا ثوانٍ</item>
+        <item quantity="one">%d ثانية</item>
+        <item quantity="two">%d ثانيتان</item>
+        <item quantity="few">%d ثوانٍ</item>
+        <item quantity="many">%d ثانية</item>
+        <item quantity="other">%d ثانية</item>
     </plurals>
-    
+
     <!-- شريط التنبيه -->
     <string name="playlist_imported">تم استيراد قائمة التشغيل</string>
     <string name="removed_song_from_playlist">تمت إزالة \"%s\" من قائمة التشغيل</string>
     <string name="playlist_synced">تمت مزامنة قائمة التشغيل</string>
     <string name="undo">تراجع</string>
-    
+
     <!-- المشغل -->
     <string name="lyrics_not_found">لم يتم العثور على كلمات الأغنية</string>
     <string name="sleep_timer">مؤقت النوم</string>
     <string name="end_of_song">نهاية الأغنية</string>
-    
+
     <string name="error_no_stream">لا يوجد بث متاح</string>
     <string name="error_no_internet">لا يوجد اتصال بالشبكة</string>
     <string name="error_timeout">انتهاء المهلة</string>
     <string name="error_unknown">خطأ غير معروف</string>
     <string name="seek_backward">للخلف 5 ثواني</string>
     <string name="seek_forward">للأمام 5 ثواني</string>
-    
+
     <!-- إجراءات المشغل -->
     <string name="action_like">إعجاب</string>
     <string name="action_remove_like">إزالة الإعجاب</string>
@@ -294,14 +294,14 @@
     <string name="repeat_mode_off">إيقاف وضع التكرار</string>
     <string name="repeat_mode_one">تكرار الأغنية الحالية</string>
     <string name="repeat_mode_all">تكرار قائمة الانتظار</string>
-    
+
     <!-- عنوان قائمة الانتظار -->
     <string name="queue_all_songs">جميع الأغاني</string>
     <string name="queue_searched_songs">الأغاني التي تم البحث عنها</string>
-    
+
     <!-- اسم الإشعار -->
     <string name="music_player">مشغل الموسيقى</string>
-    
+
     <!-- الإعدادات -->
     <string name="settings">الإعدادات</string>
     <string name="login_settings">إعدادات تسجيل الدخول</string>
@@ -310,7 +310,7 @@
 
     </string>
     <string name="general_settings">الإعدادات العامة</string>
-    
+
     <string name="appearance">المظهر</string>
     <string name="enable_dynamic_theme">تفعيل السمة الديناميكية</string>
     <string name="player_background_style">نمط خلفية المشغل</string>
@@ -344,7 +344,7 @@
     <string name="misc">متفرقات</string>
     <string name="default_open_tab">الصفحة الافتراضية</string>
     <string name="slim_navbar">إخفاء أسماء علامات شريط التنقل السفلي</string>
-    
+
     <string name="content">المحتوى</string>
     <string name="google">جوجل</string>
     <string name="discord">ديسكورد</string>
@@ -394,7 +394,7 @@
     <string name="auto_skip_next_on_error_desc">تأكد من تجربة التشغيل المتواصلة</string>
     <string name="stop_music_on_task_clear">إيقاف الموسيقى عند تنظيف الذاكرة العشوائية</string>
     <string name="equalizer">مُعادل الصوت</string>
-    
+
     <string name="storage">التخزين</string>
     <string name="cache">التخزين المؤقت</string>
     <string name="image_cache">التخزين المؤقت للصور</string>
@@ -407,9 +407,9 @@
     <string name="max_song_cache_size">الحد الأقصى لحجم التخزين المؤقت للأغاني</string>
     <string name="clear_song_cache">مسح التخزين المؤقت للأغاني</string>
     <string name="size_used">تم استخدام %s</string>
-    
+
     <string name="privacy">الخصوصية</string>
-    <string name="listen_history">سجل الاستماع</string>    
+    <string name="listen_history">سجل الاستماع</string>
     <string name="search_history">سجل البحث</string>
     <string name="pause_listen_history">إيقاف سجل الاستماع مؤقتاً</string>
     <string name="clear_listen_history">مسح سجل الاستماع</string>
@@ -426,7 +426,7 @@
     <string name="disable_screenshot_desc">عندما يكون هذا الخيار قيد التشغيل، يتم تعطيل لقطات الشاشة وعرض التطبيقات في "التطبيقات قيد التشغيل"</string>
 
     <string name="hide_explicit">إخفاء المحتوى الصريح</string>
-    
+
     <string name="backup_restore">النسخ الاحتياطي والاستعادة</string>
     <string name="backup">نسخ احتياطي</string>
     <string name="restore">استعادة</string>
@@ -445,15 +445,15 @@
 
     <string name="default_links">فتح الروابط المدعومة افتراضيًا</string>
     <string name="open_app_settings_error">لم يتمكن التطبيق من فتح إعدادات التطبيق</string>
-    
-    
+
+
     <string name="about">حول</string>
     <string name="app_version">إصدار التطبيق</string>
-    
+
     <string name="new_version_available">إصدار جديد متاح</string>
     <string name="translation_models">نماذج الترجمة</string>
     <string name="clear_translation_models">مسح نماذج الترجمة</string>
-    
+
     <string name="all_time">طوال الوقت</string>
     <string name="past_24_hours">آخر 24 ساعة</string>
     <string name="past_week">الأسبوع الماضي</string>

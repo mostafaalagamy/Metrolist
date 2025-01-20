@@ -149,46 +149,46 @@ fun LazyGridScope.DownloadGridMenu(
             )
         }
     }
-    }
+}
 
-    fun LazyGridScope.SleepTimerGridMenu(
-        modifier: Modifier = Modifier,
-        sleepTimerTimeLeft: Long,
-        enabled: Boolean = true,
-        onClick: () -> Unit
-    ) {
-        item {
-            Column(
-                modifier = modifier
-                    .clip(ShapeDefaults.Large)
-                    .height(GridMenuItemHeight)
-                    .clickable(
-                        onClick = onClick
+fun LazyGridScope.SleepTimerGridMenu(
+    modifier: Modifier = Modifier,
+    sleepTimerTimeLeft: Long,
+    enabled: Boolean = true,
+    onClick: () -> Unit
+) {
+    item {
+        Column(
+            modifier = modifier
+                .clip(ShapeDefaults.Large)
+                .height(GridMenuItemHeight)
+                .clickable(
+                    onClick = onClick
+                )
+                .padding(12.dp)
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
+                contentAlignment = Alignment.Center,
+                content = {
+                    Icon(
+                        painterResource(R.drawable.bedtime),
+                        contentDescription = null,
+                        modifier = Modifier.alpha(if (enabled) 1f else 0.5f)
                     )
-                    .padding(12.dp)
-            ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f),
-                    contentAlignment = Alignment.Center,
-                    content = {
-                        Icon(
-                            painterResource(R.drawable.bedtime),
-                            contentDescription = null,
-                            modifier = Modifier.alpha(if (enabled) 1f else 0.5f)
-                        )
-                    }
-                )
-                Text(
-                    text = if (enabled) makeTimeString(sleepTimerTimeLeft) else stringResource(
-                        id = R.string.sleep_timer
-                    ),
-                    style = MaterialTheme.typography.labelLarge,
-                    textAlign = TextAlign.Center,
-                    maxLines = 2,
-                    modifier = Modifier.fillMaxWidth()
-                )
-            }
+                }
+            )
+            Text(
+                text = if (enabled) makeTimeString(sleepTimerTimeLeft) else stringResource(
+                    id = R.string.sleep_timer
+                ),
+                style = MaterialTheme.typography.labelLarge,
+                textAlign = TextAlign.Center,
+                maxLines = 2,
+                modifier = Modifier.fillMaxWidth()
+            )
         }
     }
+}

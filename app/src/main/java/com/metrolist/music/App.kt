@@ -52,14 +52,14 @@ class App :
         YouTube.locale =
             YouTubeLocale(
                 gl =
-                    dataStore[ContentCountryKey]?.takeIf { it != SYSTEM_DEFAULT }
-                        ?: locale.country.takeIf { it in CountryCodeToName }
-                        ?: "US",
+                dataStore[ContentCountryKey]?.takeIf { it != SYSTEM_DEFAULT }
+                    ?: locale.country.takeIf { it in CountryCodeToName }
+                    ?: "US",
                 hl =
-                    dataStore[ContentLanguageKey]?.takeIf { it != SYSTEM_DEFAULT }
-                        ?: locale.language.takeIf { it in LanguageCodeToName }
-                        ?: languageTag.takeIf { it in LanguageCodeToName }
-                        ?: "en",
+                dataStore[ContentLanguageKey]?.takeIf { it != SYSTEM_DEFAULT }
+                    ?: locale.language.takeIf { it in LanguageCodeToName }
+                    ?: languageTag.takeIf { it in LanguageCodeToName }
+                    ?: "en",
             )
 
         if (dataStore[ProxyEnabledKey] == true) {
@@ -99,7 +99,8 @@ class App :
                 .distinctUntilChanged()
                 .collect { cookie ->
                     try {
-                        YouTube.cookie = if ("SAPISID" in parseCookieString(cookie?: "")) cookie else null
+                        YouTube.cookie =
+                            if ("SAPISID" in parseCookieString(cookie ?: "")) cookie else null
                     } catch (e: Exception) {
                         Timber.e("Could not parse cookie. Clearing existing cookie. %s", e.message)
                         dataStore.edit { settings ->
@@ -123,5 +124,5 @@ class App :
                     .maxSizeBytes((dataStore[MaxImageCacheSizeKey] ?: 512) * 1024 * 1024L)
                     .build(),
             ).build()
-    }
+}
     

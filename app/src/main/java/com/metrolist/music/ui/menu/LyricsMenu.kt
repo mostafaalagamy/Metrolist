@@ -123,7 +123,12 @@ fun LyricsMenu(
         DefaultDialog(
             modifier = Modifier.verticalScroll(rememberScrollState()),
             onDismiss = { showSearchDialog = false },
-            icon = { Icon(painter = painterResource(R.drawable.search), contentDescription = null) },
+            icon = {
+                Icon(
+                    painter = painterResource(R.drawable.search),
+                    contentDescription = null
+                )
+            },
             title = { Text(stringResource(R.string.search_lyrics)) },
             buttons = {
                 TextButton(
@@ -141,7 +146,10 @@ fun LyricsMenu(
                         try {
                             context.startActivity(
                                 Intent(Intent.ACTION_WEB_SEARCH).apply {
-                                    putExtra(SearchManager.QUERY, "${artistField.text} ${titleField.text} lyrics")
+                                    putExtra(
+                                        SearchManager.QUERY,
+                                        "${artistField.text} ${titleField.text} lyrics"
+                                    )
                                 },
                             )
                         } catch (_: Exception) {
@@ -155,7 +163,12 @@ fun LyricsMenu(
 
                 TextButton(
                     onClick = {
-                        viewModel.search(searchMediaMetadata.id, titleField.text, artistField.text, searchMediaMetadata.duration)
+                        viewModel.search(
+                            searchMediaMetadata.id,
+                            titleField.text,
+                            artistField.text,
+                            searchMediaMetadata.duration
+                        )
                         showSearchResultDialog = true
                     },
                 ) {
@@ -195,21 +208,22 @@ fun LyricsMenu(
             itemsIndexed(results) { index, result ->
                 Row(
                     modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .clickable {
-                                onDismiss()
-                                viewModel.cancelSearch()
-                                database.query {
-                                    upsert(
-                                        LyricsEntity(
-                                            id = searchMediaMetadata.id,
-                                            lyrics = result.lyrics,
-                                        ),
-                                    )
-                                }
-                            }.padding(12.dp)
-                            .animateContentSize(),
+                    Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            onDismiss()
+                            viewModel.cancelSearch()
+                            database.query {
+                                upsert(
+                                    LyricsEntity(
+                                        id = searchMediaMetadata.id,
+                                        lyrics = result.lyrics,
+                                    ),
+                                )
+                            }
+                        }
+                        .padding(12.dp)
+                        .animateContentSize(),
                 ) {
                     Column(
                         modifier = Modifier.weight(1f),
@@ -237,9 +251,9 @@ fun LyricsMenu(
                                     contentDescription = null,
                                     tint = MaterialTheme.colorScheme.secondary,
                                     modifier =
-                                        Modifier
-                                            .padding(start = 4.dp)
-                                            .size(18.dp),
+                                    Modifier
+                                        .padding(start = 4.dp)
+                                        .size(18.dp),
                                 )
                             }
                         }
@@ -275,8 +289,8 @@ fun LyricsMenu(
                         text = context.getString(R.string.lyrics_not_found),
                         textAlign = TextAlign.Center,
                         modifier =
-                            Modifier
-                                .fillMaxWidth(),
+                        Modifier
+                            .fillMaxWidth(),
                     )
                 }
             }
@@ -285,12 +299,12 @@ fun LyricsMenu(
 
     GridMenu(
         contentPadding =
-            PaddingValues(
-                start = 8.dp,
-                top = 8.dp,
-                end = 8.dp,
-                bottom = 8.dp + WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
-            ),
+        PaddingValues(
+            start = 8.dp,
+            top = 8.dp,
+            end = 8.dp,
+            bottom = 8.dp + WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
+        ),
     ) {
         GridMenuItem(
             icon = R.drawable.edit,

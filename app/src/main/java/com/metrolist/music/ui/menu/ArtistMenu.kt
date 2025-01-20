@@ -67,12 +67,12 @@ fun ArtistMenu(
 
     GridMenu(
         contentPadding =
-            PaddingValues(
-                start = 8.dp,
-                top = 8.dp,
-                end = 8.dp,
-                bottom = 8.dp + WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
-            ),
+        PaddingValues(
+            start = 8.dp,
+            top = 8.dp,
+            end = 8.dp,
+            bottom = 8.dp + WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
+        ),
     ) {
         if (artist.songCount > 0) {
             GridMenuItem(
@@ -129,7 +129,10 @@ fun ArtistMenu(
                     Intent().apply {
                         action = Intent.ACTION_SEND
                         type = "text/plain"
-                        putExtra(Intent.EXTRA_TEXT, "https://music.youtube.com/channel/${artist.id}")
+                        putExtra(
+                            Intent.EXTRA_TEXT,
+                            "https://music.youtube.com/channel/${artist.id}"
+                        )
                     }
                 context.startActivity(Intent.createChooser(intent, null))
             }

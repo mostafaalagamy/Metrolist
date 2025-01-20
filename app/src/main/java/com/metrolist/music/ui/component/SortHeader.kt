@@ -48,13 +48,13 @@ inline fun <reified T : Enum<T>> SortHeader(
             color = MaterialTheme.colorScheme.primary,
             style = MaterialTheme.typography.labelLarge,
             modifier =
-                Modifier
-                    .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = ripple(bounded = false),
-                    ) {
-                        menuExpanded = !menuExpanded
-                    }.padding(horizontal = 4.dp, vertical = 8.dp),
+            Modifier
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = ripple(bounded = false),
+                ) {
+                    menuExpanded = !menuExpanded
+                }.padding(horizontal = 4.dp, vertical = 8.dp),
         )
 
         DropdownMenu(
@@ -74,15 +74,15 @@ inline fun <reified T : Enum<T>> SortHeader(
                     trailingIcon = {
                         Icon(
                             painter =
-                                painterResource(
-                                    if (sortType ==
-                                        type
-                                    ) {
-                                        R.drawable.radio_button_checked
-                                    } else {
-                                        R.drawable.radio_button_unchecked
-                                    },
-                                ),
+                            painterResource(
+                                if (sortType ==
+                                    type
+                                ) {
+                                    R.drawable.radio_button_checked
+                                } else {
+                                    R.drawable.radio_button_unchecked
+                                },
+                            ),
                             contentDescription = null,
                         )
                     },
@@ -99,9 +99,9 @@ inline fun <reified T : Enum<T>> SortHeader(
                 icon = if (sortDescending) R.drawable.arrow_downward else R.drawable.arrow_upward,
                 color = MaterialTheme.colorScheme.primary,
                 modifier =
-                    Modifier
-                        .size(32.dp)
-                        .padding(8.dp),
+                Modifier
+                    .size(32.dp)
+                    .padding(8.dp),
                 onClick = { onSortDescendingChange(!sortDescending) },
             )
         }

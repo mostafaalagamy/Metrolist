@@ -89,16 +89,19 @@ fun Thumbnail(
         when {
             offsetX > threshold -> {
                 isPreviewingNextSong = true
-                previewImage = playerConnection.player.previousMediaItemIndex.takeIf { it != -1 }?.let {
-                    playerConnection.player.getMediaItemAt(it).mediaMetadata?.artworkUri?.toString()
-                }
+                previewImage =
+                    playerConnection.player.previousMediaItemIndex.takeIf { it != -1 }?.let {
+                        playerConnection.player.getMediaItemAt(it).mediaMetadata.artworkUri?.toString()
+                    }
             }
+
             offsetX < -threshold -> {
                 isPreviewingNextSong = true
                 previewImage = playerConnection.player.nextMediaItemIndex.takeIf { it != -1 }?.let {
-                    playerConnection.player.getMediaItemAt(it).mediaMetadata?.artworkUri?.toString()
+                    playerConnection.player.getMediaItemAt(it).mediaMetadata.artworkUri?.toString()
                 }
             }
+
             else -> {
                 isPreviewingNextSong = false
                 previewImage = null
@@ -132,7 +135,8 @@ fun Thumbnail(
                             },
                             onHorizontalDrag = { _, dragAmount ->
                                 if (swipeThumbnail) {
-                                    val adjustedDragAmount = if (layoutDirection == LayoutDirection.Rtl) -dragAmount else dragAmount
+                                    val adjustedDragAmount =
+                                        if (layoutDirection == LayoutDirection.Rtl) -dragAmount else dragAmount
                                     offsetX += adjustedDragAmount
                                     updateImagePreview(offsetX)
                                 }
@@ -176,7 +180,7 @@ fun Thumbnail(
                                 alpha = 0.5f
                             )
                     )
-                    
+
                     // Main thumbnail image
                     AsyncImage(
                         model = mediaMetadata?.thumbnailUrl,
@@ -187,13 +191,24 @@ fun Thumbnail(
                             .pointerInput(Unit) {
                                 detectTapGestures(
                                     onDoubleTap = { offset ->
-                                        val currentPosition = playerConnection.player.currentPosition
+                                        val currentPosition =
+                                            playerConnection.player.currentPosition
                                         if ((layoutDirection == LayoutDirection.Ltr && offset.x < size.width / 2) ||
-                                            (layoutDirection == LayoutDirection.Rtl && offset.x > size.width / 2)) {
-                                            playerConnection.player.seekTo((currentPosition - 5000).coerceAtLeast(0))
-                                            seekDirection = context.getString(R.string.seek_backward)
+                                            (layoutDirection == LayoutDirection.Rtl && offset.x > size.width / 2)
+                                        ) {
+                                            playerConnection.player.seekTo(
+                                                (currentPosition - 5000).coerceAtLeast(
+                                                    0
+                                                )
+                                            )
+                                            seekDirection =
+                                                context.getString(R.string.seek_backward)
                                         } else {
-                                            playerConnection.player.seekTo((currentPosition + 5000).coerceAtMost(playerConnection.player.duration))
+                                            playerConnection.player.seekTo(
+                                                (currentPosition + 5000).coerceAtMost(
+                                                    playerConnection.player.duration
+                                                )
+                                            )
                                             seekDirection = context.getString(R.string.seek_forward)
                                         }
                                         showSeekEffect = true
@@ -256,7 +271,7 @@ fun Thumbnail(
                                     alpha = 0.5f
                                 )
                         )
-                        
+
                         // Preview image
                         AsyncImage(
                             model = it,

@@ -25,7 +25,10 @@ android {
             isMinifyEnabled = true
             isShrinkResources = true
             isCrunchPngs = false
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
         debug {
             applicationIdSuffix = ".debug"
@@ -67,7 +70,7 @@ android {
     dependenciesInfo {
         includeInApk = false
         includeInBundle = false
-    }    
+    }
 }
 
 ksp {

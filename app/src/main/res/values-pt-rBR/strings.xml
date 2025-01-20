@@ -338,7 +338,7 @@
     <string name="size_used">%s usado</string>
 
     <string name="privacy">Privacidade</string>
-    <string name="listen_history">Histórico de ouvidas</string>    
+    <string name="listen_history">Histórico de ouvidas</string>
     <string name="search_history">Histórico de pesquisa</string>
     <string name="pause_listen_history">Pausar histórico de ouvidas</string>
     <string name="clear_listen_history">Limpar histórico de ouvidas</string>

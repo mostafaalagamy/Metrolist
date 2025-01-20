@@ -116,7 +116,7 @@ fun AddToPlaylistDialog(
             items(playlists) { playlist ->
                 PlaylistListItem(
                     playlist = playlist,
-                        modifier = Modifier.clickable {
+                    modifier = Modifier.clickable {
                         selectedPlaylist = playlist
                         coroutineScope.launch(Dispatchers.IO) {
                             if (songIds == null) {
@@ -140,7 +140,7 @@ fun AddToPlaylistDialog(
         TextFieldDialog(
             icon = { Icon(painter = painterResource(R.drawable.add), contentDescription = null) },
             title = { Text(text = stringResource(R.string.create_playlist)) },
-            initialTextFieldValue = TextFieldValue(initialTextFieldValue?: ""),
+            initialTextFieldValue = TextFieldValue(initialTextFieldValue ?: ""),
             onDismiss = { showAddPlaylistDialog = false },
             onDone = { playlistName ->
                 coroutineScope.launch(Dispatchers.IO) {

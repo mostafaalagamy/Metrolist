@@ -44,26 +44,26 @@ fun Song.toMediaMetadata() =
         id = song.id,
         title = song.title,
         artists =
-            artists.map {
-                MediaMetadata.Artist(
-                    id = it.id,
-                    name = it.name,
-                )
-            },
+        artists.map {
+            MediaMetadata.Artist(
+                id = it.id,
+                name = it.name,
+            )
+        },
         duration = song.duration,
         thumbnailUrl = song.thumbnailUrl,
         album =
-            album?.let {
-                MediaMetadata.Album(
-                    id = it.id,
-                    title = it.title,
-                )
-            } ?: song.albumId?.let { albumId ->
-                MediaMetadata.Album(
-                    id = albumId,
-                    title = song.albumName.orEmpty(),
-                )
-            },
+        album?.let {
+            MediaMetadata.Album(
+                id = it.id,
+                title = it.title,
+            )
+        } ?: song.albumId?.let { albumId ->
+            MediaMetadata.Album(
+                id = albumId,
+                title = song.albumName.orEmpty(),
+            )
+        },
     )
 
 fun SongItem.toMediaMetadata() =
@@ -71,21 +71,21 @@ fun SongItem.toMediaMetadata() =
         id = id,
         title = title,
         artists =
-            artists.map {
-                MediaMetadata.Artist(
-                    id = it.id,
-                    name = it.name,
-                )
-            },
+        artists.map {
+            MediaMetadata.Artist(
+                id = it.id,
+                name = it.name,
+            )
+        },
         duration = duration ?: -1,
         thumbnailUrl = thumbnail.resize(544, 544),
         album =
-            album?.let {
-                MediaMetadata.Album(
-                    id = it.id,
-                    title = it.name,
-                )
-            },
+        album?.let {
+            MediaMetadata.Album(
+                id = it.id,
+                title = it.name,
+            )
+        },
         explicit = explicit,
         setVideoId = setVideoId
     )

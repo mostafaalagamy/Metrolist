@@ -85,7 +85,7 @@
             "columnName": "inLibrary",
             "affinity": "INTEGER",
             "notNull": false
-            },
+          },
           {
             "fieldPath": "dateDownload",
             "columnName": "dateDownload",

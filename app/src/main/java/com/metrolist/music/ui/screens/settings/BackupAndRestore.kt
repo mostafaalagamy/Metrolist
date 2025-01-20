@@ -56,14 +56,24 @@ fun BackupAndRestore(
             .windowInsetsPadding(LocalPlayerAwareWindowInsets.current.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom))
             .verticalScroll(rememberScrollState())
     ) {
-        Spacer(Modifier.windowInsetsPadding(LocalPlayerAwareWindowInsets.current.only(WindowInsetsSides.Top)))
+        Spacer(
+            Modifier.windowInsetsPadding(
+                LocalPlayerAwareWindowInsets.current.only(
+                    WindowInsetsSides.Top
+                )
+            )
+        )
 
         PreferenceEntry(
             title = { Text(stringResource(R.string.backup)) },
             icon = { Icon(painterResource(R.drawable.backup), null) },
             onClick = {
                 val formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss")
-                backupLauncher.launch("${context.getString(R.string.app_name)}_${LocalDateTime.now().format(formatter)}.backup")
+                backupLauncher.launch(
+                    "${context.getString(R.string.app_name)}_${
+                        LocalDateTime.now().format(formatter)
+                    }.backup"
+                )
             },
         )
         PreferenceEntry(

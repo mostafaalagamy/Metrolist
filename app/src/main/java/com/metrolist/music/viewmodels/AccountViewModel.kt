@@ -23,20 +23,20 @@ class AccountViewModel @Inject constructor() : ViewModel() {
         viewModelScope.launch {
             YouTube.library("FEmusic_liked_playlists").completedLibraryPage().onSuccess {
                 playlists.value = it.items.filterIsInstance<PlaylistItem>()
-                .filterNot { it.id == "SE" }
+                    .filterNot { it.id == "SE" }
             }.onFailure {
-                 reportException(it)
+                reportException(it)
             }
             YouTube.library("FEmusic_liked_albums").completedLibraryPage().onSuccess {
                 albums.value = it.items.filterIsInstance<AlbumItem>()
             }.onFailure {
-                 reportException(it)
-             }
+                reportException(it)
+            }
             YouTube.library("FEmusic_library_corpus_artists").completedLibraryPage().onSuccess {
                 artists.value = it.items.filterIsInstance<ArtistItem>()
             }.onFailure {
                 reportException(it)
-             }
+            }
         }
     }
 }

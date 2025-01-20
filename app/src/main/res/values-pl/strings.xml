@@ -152,7 +152,7 @@
     <string name="artist_name">Nazwa artysty</string>
     <string name="error_artist_name_empty">Nazwa artysty nie może być pusta.</string>
 
-<!-- Noun -->
+    <!-- Noun -->
     <plurals name="n_song">
         <item quantity="one">%d utwór</item>
         <item quantity="few">%d utwory</item>

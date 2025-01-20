@@ -52,6 +52,7 @@ fun PlayerSliderTrack(
         )
     }
 }
+
 private fun DrawScope.drawTrack(
     tickFractions: FloatArray,
     activeRangeStart: Float,
@@ -102,8 +103,10 @@ private fun DrawScope.drawTrack(
         )
     }
 }
+
 private fun stepsToTickFractions(steps: Int): FloatArray {
     return if (steps == 0) floatArrayOf() else FloatArray(steps + 2) { it.toFloat() / (steps + 1) }
 }
+
 private fun calcFraction(a: Float, b: Float, pos: Float) =
     (if (b - a == 0f) 0f else (pos - a) / (b - a)).coerceIn(0f, 1f)

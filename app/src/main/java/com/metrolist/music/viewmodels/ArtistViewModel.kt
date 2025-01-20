@@ -23,32 +23,32 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ArtistViewModel
-    @Inject
-    constructor(
-        @ApplicationContext context: Context,
-        database: MusicDatabase,
-        savedStateHandle: SavedStateHandle,
-    ) : ViewModel() {
-        val artistId = savedStateHandle.get<String>("artistId")!!
-        var artistPage by mutableStateOf<ArtistPage?>(null)
-        val libraryArtist =
-            database
-                .artist(artistId)
-                .stateIn(viewModelScope, SharingStarted.Lazily, null)
-        val librarySongs =
-            database
-                .artistSongsPreview(artistId)
-                .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
+@Inject
+constructor(
+    @ApplicationContext context: Context,
+    database: MusicDatabase,
+    savedStateHandle: SavedStateHandle,
+) : ViewModel() {
+    val artistId = savedStateHandle.get<String>("artistId")!!
+    var artistPage by mutableStateOf<ArtistPage?>(null)
+    val libraryArtist =
+        database
+            .artist(artistId)
+            .stateIn(viewModelScope, SharingStarted.Lazily, null)
+    val librarySongs =
+        database
+            .artistSongsPreview(artistId)
+            .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
-        init {
-            viewModelScope.launch {
-                YouTube
-                    .artist(artistId)
-                    .onSuccess {
-                        artistPage = it.filterExplicit(context.dataStore.get(HideExplicitKey, false))
-                    }.onFailure {
-                        reportException(it)
-                    }
-            }
+    init {
+        viewModelScope.launch {
+            YouTube
+                .artist(artistId)
+                .onSuccess {
+                    artistPage = it.filterExplicit(context.dataStore.get(HideExplicitKey, false))
+                }.onFailure {
+                    reportException(it)
+                }
         }
     }
+}

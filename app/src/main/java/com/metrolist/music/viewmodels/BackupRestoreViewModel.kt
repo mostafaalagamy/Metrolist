@@ -33,10 +33,11 @@ class BackupRestoreViewModel @Inject constructor(
         runCatching {
             context.applicationContext.contentResolver.openOutputStream(uri)?.use {
                 it.buffered().zipOutputStream().use { outputStream ->
-                    (context.filesDir / "datastore" / SETTINGS_FILENAME).inputStream().buffered().use { inputStream ->
-                        outputStream.putNextEntry(ZipEntry(SETTINGS_FILENAME))
-                        inputStream.copyTo(outputStream)
-                    }
+                    (context.filesDir / "datastore" / SETTINGS_FILENAME).inputStream().buffered()
+                        .use { inputStream ->
+                            outputStream.putNextEntry(ZipEntry(SETTINGS_FILENAME))
+                            inputStream.copyTo(outputStream)
+                        }
                     runBlocking(Dispatchers.IO) {
                         database.checkpoint()
                     }
@@ -62,9 +63,10 @@ class BackupRestoreViewModel @Inject constructor(
                     while (entry != null) {
                         when (entry.name) {
                             SETTINGS_FILENAME -> {
-                                (context.filesDir / "datastore" / SETTINGS_FILENAME).outputStream().use { outputStream ->
-                                    inputStream.copyTo(outputStream)
-                                }
+                                (context.filesDir / "datastore" / SETTINGS_FILENAME).outputStream()
+                                    .use { outputStream ->
+                                        inputStream.copyTo(outputStream)
+                                    }
                             }
 
                             InternalDatabase.DB_NAME -> {

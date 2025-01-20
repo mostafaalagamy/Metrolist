@@ -68,11 +68,11 @@ fun NavGraphBuilder.navigationBuilder(
     composable(
         route = "search/{query}",
         arguments =
-            listOf(
-                navArgument("query") {
-                    type = NavType.StringType
-                },
-            ),
+        listOf(
+            navArgument("query") {
+                type = NavType.StringType
+            },
+        ),
         enterTransition = {
             fadeIn(tween(250))
         },
@@ -99,22 +99,22 @@ fun NavGraphBuilder.navigationBuilder(
     composable(
         route = "album/{albumId}",
         arguments =
-            listOf(
-                navArgument("albumId") {
-                    type = NavType.StringType
-                },
-            ),
+        listOf(
+            navArgument("albumId") {
+                type = NavType.StringType
+            },
+        ),
     ) {
         AlbumScreen(navController, scrollBehavior)
     }
     composable(
         route = "artist/{artistId}",
         arguments =
-            listOf(
-                navArgument("artistId") {
-                    type = NavType.StringType
-                },
-            ),
+        listOf(
+            navArgument("artistId") {
+                type = NavType.StringType
+            },
+        ),
     ) { backStackEntry ->
         val artistId = backStackEntry.arguments?.getString("artistId")!!
         if (artistId.startsWith("LA")) {
@@ -126,90 +126,90 @@ fun NavGraphBuilder.navigationBuilder(
     composable(
         route = "artist/{artistId}/songs",
         arguments =
-            listOf(
-                navArgument("artistId") {
-                    type = NavType.StringType
-                },
-            ),
+        listOf(
+            navArgument("artistId") {
+                type = NavType.StringType
+            },
+        ),
     ) {
         ArtistSongsScreen(navController, scrollBehavior)
     }
     composable(
         route = "artist/{artistId}/items?browseId={browseId}?params={params}",
         arguments =
-            listOf(
-                navArgument("artistId") {
-                    type = NavType.StringType
-                },
-                navArgument("browseId") {
-                    type = NavType.StringType
-                    nullable = true
-                },
-                navArgument("params") {
-                    type = NavType.StringType
-                    nullable = true
-                },
-            ),
+        listOf(
+            navArgument("artistId") {
+                type = NavType.StringType
+            },
+            navArgument("browseId") {
+                type = NavType.StringType
+                nullable = true
+            },
+            navArgument("params") {
+                type = NavType.StringType
+                nullable = true
+            },
+        ),
     ) {
         ArtistItemsScreen(navController, scrollBehavior)
     }
     composable(
         route = "online_playlist/{playlistId}",
         arguments =
-            listOf(
-                navArgument("playlistId") {
-                    type = NavType.StringType
-                },
-            ),
+        listOf(
+            navArgument("playlistId") {
+                type = NavType.StringType
+            },
+        ),
     ) {
         OnlinePlaylistScreen(navController, scrollBehavior)
     }
     composable(
         route = "local_playlist/{playlistId}",
         arguments =
-            listOf(
-                navArgument("playlistId") {
-                    type = NavType.StringType
-                },
-            ),
+        listOf(
+            navArgument("playlistId") {
+                type = NavType.StringType
+            },
+        ),
     ) {
         LocalPlaylistScreen(navController, scrollBehavior)
     }
     composable(
         route = "auto_playlist/{playlist}",
         arguments =
-            listOf(
-                navArgument("playlist") {
-                    type = NavType.StringType
-                },
-            ),
+        listOf(
+            navArgument("playlist") {
+                type = NavType.StringType
+            },
+        ),
     ) {
         AutoPlaylistScreen(navController, scrollBehavior)
     }
     composable(
         route = "top_playlist/{top}",
         arguments =
-            listOf(
-                navArgument("top") {
-                    type = NavType.StringType
-                },
-            ),
+        listOf(
+            navArgument("top") {
+                type = NavType.StringType
+            },
+        ),
     ) {
         TopPlaylistScreen(navController, scrollBehavior)
     }
     composable(
         route = "youtube_browse/{browseId}?params={params}",
         arguments =
-            listOf(
-                navArgument("browseId") {
-                    type = NavType.StringType
-                    nullable = true
-                },
-                navArgument("params") {
-                    type = NavType.StringType
-                    nullable = true
-                },
-            ),
+        listOf(
+            navArgument("browseId") {
+                type = NavType.StringType
+                nullable = true
+            },
+            navArgument("params") {
+                type = NavType.StringType
+                nullable = true
+            },
+        ),
     ) {
         YouTubeBrowseScreen(navController)
     }

@@ -99,7 +99,10 @@ fun DiscordSettings(
         }
     }
 
-    val (discordRPC, onDiscordRPCChange) = rememberPreference(key = EnableDiscordRPCKey, defaultValue = true)
+    val (discordRPC, onDiscordRPCChange) = rememberPreference(
+        key = EnableDiscordRPCKey,
+        defaultValue = true
+    )
 
     val isLoggedIn =
         remember(discordToken) {
@@ -111,20 +114,26 @@ fun DiscordSettings(
             .windowInsetsPadding(LocalPlayerAwareWindowInsets.current.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom))
             .verticalScroll(rememberScrollState())
     ) {
-        Spacer(Modifier.windowInsetsPadding(LocalPlayerAwareWindowInsets.current.only(WindowInsetsSides.Top)))
+        Spacer(
+            Modifier.windowInsetsPadding(
+                LocalPlayerAwareWindowInsets.current.only(
+                    WindowInsetsSides.Top
+                )
+            )
+        )
 
         AnimatedVisibility(
             visible = !infoDismissed,
         ) {
             Card(
                 colors =
-                    CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                    ),
+                CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                ),
                 modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
+                Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
             ) {
                 Icon(
                     painter = painterResource(R.drawable.info),
@@ -143,9 +152,9 @@ fun DiscordSettings(
                         infoDismissed = true
                     },
                     modifier =
-                        Modifier
-                            .align(Alignment.End)
-                            .padding(16.dp),
+                    Modifier
+                        .align(Alignment.End)
+                        .padding(16.dp),
                 ) {
                     Text(stringResource(R.string.dismiss))
                 }
@@ -164,11 +173,11 @@ fun DiscordSettings(
                 )
             },
             description =
-                if (discordUsername.isNotEmpty()) {
-                    "@$discordUsername"
-                } else {
-                    null
-                },
+            if (discordUsername.isNotEmpty()) {
+                "@$discordUsername"
+            } else {
+                null
+            },
             icon = { Icon(painterResource(R.drawable.discord), null) },
             trailingContent = {
                 if (isLoggedIn) {
@@ -233,9 +242,9 @@ fun RichPresence(song: Song?) {
         shape = MaterialTheme.shapes.medium,
         shadowElevation = 6.dp,
         modifier =
-            Modifier
-                .padding(16.dp)
-                .fillMaxWidth(),
+        Modifier
+            .padding(16.dp)
+            .fillMaxWidth(),
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
@@ -261,34 +270,42 @@ fun RichPresence(song: Song?) {
                         model = song?.song?.thumbnailUrl,
                         contentDescription = null,
                         modifier =
-                            Modifier
-                                .size(96.dp)
-                                .clip(RoundedCornerShape(12.dp))
-                                .align(Alignment.TopStart)
-                                .run {
-                                    if (song == null) {
-                                        border(2.dp, MaterialTheme.colorScheme.onSurface, RoundedCornerShape(12.dp))
-                                    } else {
-                                        this
-                                    }
-                                },
+                        Modifier
+                            .size(96.dp)
+                            .clip(RoundedCornerShape(12.dp))
+                            .align(Alignment.TopStart)
+                            .run {
+                                if (song == null) {
+                                    border(
+                                        2.dp,
+                                        MaterialTheme.colorScheme.onSurface,
+                                        RoundedCornerShape(12.dp)
+                                    )
+                                } else {
+                                    this
+                                }
+                            },
                     )
 
                     song?.artists?.firstOrNull()?.thumbnailUrl?.let {
                         Box(
                             modifier =
-                                Modifier
-                                    .border(2.dp, MaterialTheme.colorScheme.surfaceContainer, CircleShape)
-                                    .padding(2.dp)
-                                    .align(Alignment.BottomEnd),
+                            Modifier
+                                .border(
+                                    2.dp,
+                                    MaterialTheme.colorScheme.surfaceContainer,
+                                    CircleShape
+                                )
+                                .padding(2.dp)
+                                .align(Alignment.BottomEnd),
                         ) {
                             AsyncImage(
                                 model = it,
                                 contentDescription = null,
                                 modifier =
-                                    Modifier
-                                        .size(32.dp)
-                                        .clip(CircleShape),
+                                Modifier
+                                    .size(32.dp)
+                                    .clip(CircleShape),
                             )
                         }
                     }
@@ -296,9 +313,9 @@ fun RichPresence(song: Song?) {
 
                 Column(
                     modifier =
-                        Modifier
-                            .weight(1f)
-                            .padding(horizontal = 6.dp),
+                    Modifier
+                        .weight(1f)
+                        .padding(horizontal = 6.dp),
                 ) {
                     Text(
                         text = song?.song?.title ?: "Song Title",
@@ -334,7 +351,10 @@ fun RichPresence(song: Song?) {
             OutlinedButton(
                 enabled = song != null,
                 onClick = {
-                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://music.youtube.com/watch?v=${song?.id}"))
+                    val intent = Intent(
+                        Intent.ACTION_VIEW,
+                        Uri.parse("https://music.youtube.com/watch?v=${song?.id}")
+                    )
                     context.startActivity(intent)
                 },
                 modifier = Modifier.fillMaxWidth(),
@@ -344,7 +364,10 @@ fun RichPresence(song: Song?) {
 
             OutlinedButton(
                 onClick = {
-                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/mostafaalagamy/Metrolist"))
+                    val intent = Intent(
+                        Intent.ACTION_VIEW,
+                        Uri.parse("https://github.com/mostafaalagamy/Metrolist")
+                    )
                     context.startActivity(intent)
                 },
                 modifier = Modifier.fillMaxWidth(),

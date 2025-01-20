@@ -102,8 +102,8 @@ fun PlaylistMenu(
                     Download.STATE_COMPLETED
                 } else if (songs.all {
                         downloads[it.id]?.state == Download.STATE_QUEUED ||
-                            downloads[it.id]?.state == Download.STATE_DOWNLOADING ||
-                            downloads[it.id]?.state == Download.STATE_COMPLETED
+                                downloads[it.id]?.state == Download.STATE_DOWNLOADING ||
+                                downloads[it.id]?.state == Download.STATE_COMPLETED
                     }
                 ) {
                     Download.STATE_DOWNLOADING
@@ -123,14 +123,19 @@ fun PlaylistMenu(
             title = { Text(text = stringResource(R.string.edit_playlist)) },
             onDismiss = { showEditDialog = false },
             initialTextFieldValue =
-                TextFieldValue(
-                    playlist.playlist.name,
-                    TextRange(playlist.playlist.name.length),
-                ),
+            TextFieldValue(
+                playlist.playlist.name,
+                TextRange(playlist.playlist.name.length),
+            ),
             onDone = { name ->
                 onDismiss()
                 database.query {
-                    update(playlist.playlist.copy(name = name, lastUpdateTime = LocalDateTime.now()))
+                    update(
+                        playlist.playlist.copy(
+                            name = name,
+                            lastUpdateTime = LocalDateTime.now()
+                        )
+                    )
                 }
                 coroutineScope.launch(Dispatchers.IO) {
                     playlist.playlist.browseId?.let { YouTube.renamePlaylist(it, name) }
@@ -148,7 +153,10 @@ fun PlaylistMenu(
             onDismiss = { showRemoveDownloadDialog = false },
             content = {
                 Text(
-                    text = stringResource(R.string.remove_download_playlist_confirm, playlist.playlist.name),
+                    text = stringResource(
+                        R.string.remove_download_playlist_confirm,
+                        playlist.playlist.name
+                    ),
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.padding(horizontal = 18.dp),
                 )
@@ -238,7 +246,14 @@ fun PlaylistMenu(
         onGetSong = {
             coroutineScope.launch(Dispatchers.IO) {
                 // add songs to playlist and push to ytm
-                songs.let { playlist.playlist.browseId?.let { YouTube.addPlaylistToPlaylist(it, playlist.id) } }
+                songs.let {
+                    playlist.playlist.browseId?.let {
+                        YouTube.addPlaylistToPlaylist(
+                            it,
+                            playlist.id
+                        )
+                    }
+                }
 
                 playlist.playlist.browseId?.let { playlistId ->
                     YouTube.addPlaylistToPlaylist(playlistId, playlist.id)
@@ -274,12 +289,12 @@ fun PlaylistMenu(
 
     GridMenu(
         contentPadding =
-            PaddingValues(
-                start = 8.dp,
-                top = 8.dp,
-                end = 8.dp,
-                bottom = 8.dp + WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
-            ),
+        PaddingValues(
+            start = 8.dp,
+            top = 8.dp,
+            end = 8.dp,
+            bottom = 8.dp + WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
+        ),
     ) {
         GridMenuItem(
             icon = R.drawable.play,

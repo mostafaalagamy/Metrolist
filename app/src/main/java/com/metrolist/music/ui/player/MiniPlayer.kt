@@ -65,25 +65,25 @@ fun MiniPlayer(
 
     Box(
         modifier =
-            modifier
-                .fillMaxWidth()
-                .height(MiniPlayerHeight)
-                .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Horizontal)),
+        modifier
+            .fillMaxWidth()
+            .height(MiniPlayerHeight)
+            .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Horizontal)),
     ) {
         LinearProgressIndicator(
             progress = { (position.toFloat() / duration).coerceIn(0f, 1f) },
             modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .height(2.dp)
-                    .align(Alignment.BottomCenter),
+            Modifier
+                .fillMaxWidth()
+                .height(2.dp)
+                .align(Alignment.BottomCenter),
         )
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier =
-                modifier
-                    .fillMaxSize()
-                    .padding(end = 12.dp),
+            modifier
+                .fillMaxSize()
+                .padding(end = 12.dp),
         ) {
             Box(Modifier.weight(1f)) {
                 mediaMetadata?.let {
@@ -107,15 +107,15 @@ fun MiniPlayer(
             ) {
                 Icon(
                     painter =
-                        painterResource(
-                            if (playbackState == Player.STATE_ENDED) {
-                                R.drawable.replay
-                            } else if (isPlaying) {
-                                R.drawable.pause
-                            } else {
-                                R.drawable.play
-                            },
-                        ),
+                    painterResource(
+                        if (playbackState == Player.STATE_ENDED) {
+                            R.drawable.replay
+                        } else if (isPlaying) {
+                            R.drawable.pause
+                        } else {
+                            R.drawable.play
+                        },
+                    ),
                     contentDescription = null,
                 )
             }
@@ -164,7 +164,7 @@ fun MiniMediaInfo(
                         alpha = 0.5f
                     )
             )
-            
+
             // Main thumbnail
             AsyncImage(
                 model = mediaMetadata.thumbnailUrl,
@@ -174,7 +174,7 @@ fun MiniMediaInfo(
                     .fillMaxSize()
                     .clip(RoundedCornerShape(ThumbnailCornerRadius)),
             )
-            
+
             androidx.compose.animation.AnimatedVisibility(
                 visible = error != null,
                 enter = fadeIn(),
@@ -193,8 +193,8 @@ fun MiniMediaInfo(
                         contentDescription = null,
                         tint = MaterialTheme.colorScheme.error,
                         modifier =
-                            Modifier
-                                .align(Alignment.Center),
+                        Modifier
+                            .align(Alignment.Center),
                     )
                 }
             }
@@ -202,9 +202,9 @@ fun MiniMediaInfo(
 
         Column(
             modifier =
-                Modifier
-                    .weight(1f)
-                    .padding(horizontal = 6.dp),
+            Modifier
+                .weight(1f)
+                .padding(horizontal = 6.dp),
         ) {
             AnimatedContent(
                 targetState = mediaMetadata.title,

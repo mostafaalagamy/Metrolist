@@ -24,66 +24,75 @@ import javax.inject.Inject
 
 @HiltViewModel
 class OnlineSearchViewModel
-    @Inject
-    constructor(
-        @ApplicationContext val context: Context,
-        savedStateHandle: SavedStateHandle,
-    ) : ViewModel() {
-        val query = savedStateHandle.get<String>("query")!!
-        val filter = MutableStateFlow<YouTube.SearchFilter?>(null)
-        var summaryPage by mutableStateOf<SearchSummaryPage?>(null)
-        val viewStateMap = mutableStateMapOf<String, ItemsPage?>()
+@Inject
+constructor(
+    @ApplicationContext val context: Context,
+    savedStateHandle: SavedStateHandle,
+) : ViewModel() {
+    val query = savedStateHandle.get<String>("query")!!
+    val filter = MutableStateFlow<YouTube.SearchFilter?>(null)
+    var summaryPage by mutableStateOf<SearchSummaryPage?>(null)
+    val viewStateMap = mutableStateMapOf<String, ItemsPage?>()
 
-        init {
-            viewModelScope.launch {
-                filter.collect { filter ->
-                    if (filter == null) {
-                        if (summaryPage == null) {
-                            YouTube
-                                .searchSummary(query)
-                                .onSuccess {
-                                    summaryPage =
-                                        it.filterExplicit(
-                                            context.dataStore.get(
-                                                HideExplicitKey,
-                                                false,
+    init {
+        viewModelScope.launch {
+            filter.collect { filter ->
+                if (filter == null) {
+                    if (summaryPage == null) {
+                        YouTube
+                            .searchSummary(query)
+                            .onSuccess {
+                                summaryPage =
+                                    it.filterExplicit(
+                                        context.dataStore.get(
+                                            HideExplicitKey,
+                                            false,
+                                        ),
+                                    )
+                            }.onFailure {
+                                reportException(it)
+                            }
+                    }
+                } else {
+                    if (viewStateMap[filter.value] == null) {
+                        YouTube
+                            .search(query, filter)
+                            .onSuccess { result ->
+                                viewStateMap[filter.value] =
+                                    ItemsPage(
+                                        result.items
+                                            .distinctBy { it.id }
+                                            .filterExplicit(
+                                                context.dataStore.get(
+                                                    HideExplicitKey,
+                                                    false
+                                                )
                                             ),
-                                        )
-                                }.onFailure {
-                                    reportException(it)
-                                }
-                        }
-                    } else {
-                        if (viewStateMap[filter.value] == null) {
-                            YouTube
-                                .search(query, filter)
-                                .onSuccess { result ->
-                                    viewStateMap[filter.value] =
-                                        ItemsPage(
-                                            result.items
-                                                .distinctBy { it.id }
-                                                .filterExplicit(context.dataStore.get(HideExplicitKey, false)),
-                                            result.continuation,
-                                        )
-                                }.onFailure {
-                                    reportException(it)
-                                }
-                        }
+                                        result.continuation,
+                                    )
+                            }.onFailure {
+                                reportException(it)
+                            }
                     }
                 }
             }
         }
+    }
 
-        fun loadMore() {
-            val filter = filter.value?.value
-            viewModelScope.launch {
-                if (filter == null) return@launch
-                val viewState = viewStateMap[filter] ?: return@launch
-                val continuation = viewState.continuation
-                if (continuation != null) {
-                    val searchResult = YouTube.searchContinuation(continuation).getOrNull() ?: return@launch
-                    viewStateMap[filter] = ItemsPage((viewState.items + searchResult.items).distinctBy { it.id }, searchResult.continuation)
-                }
+    fun loadMore() {
+        val filter = filter.value?.value
+        viewModelScope.launch {
+            if (filter == null) return@launch
+            val viewState = viewStateMap[filter] ?: return@launch
+            val continuation = viewState.continuation
+            if (continuation != null) {
+                val searchResult =
+                    YouTube.searchContinuation(continuation).getOrNull() ?: return@launch
+                viewStateMap[filter] = ItemsPage(
+                    (viewState.items + searchResult.items).distinctBy { it.id },
+                    searchResult.continuation
+                )
             }
         }
     }
+}

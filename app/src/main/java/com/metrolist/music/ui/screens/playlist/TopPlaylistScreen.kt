@@ -120,7 +120,7 @@ fun TopPlaylistScreen(
         }
 
     val wrappedSongs = songs?.map { item -> ItemWrapper(item) }?.toMutableList()
-    
+
     var searchQuery by remember {
         mutableStateOf(TextFieldValue(""))
     }
@@ -239,9 +239,9 @@ fun TopPlaylistScreen(
                                         model = songs!![0].song.thumbnailUrl,
                                         contentDescription = null,
                                         modifier =
-                                            Modifier
-                                                .size(AlbumThumbnailSize)
-                                                .clip(RoundedCornerShape(ThumbnailCornerRadius)),
+                                        Modifier
+                                            .size(AlbumThumbnailSize)
+                                            .clip(RoundedCornerShape(ThumbnailCornerRadius)),
                                     )
 
                                     Column(
@@ -316,7 +316,8 @@ fun TopPlaylistScreen(
                                                                         .Builder(
                                                                             song.song.id,
                                                                             song.song.id.toUri(),
-                                                                        ).setCustomCacheKey(song.song.id)
+                                                                        )
+                                                                        .setCustomCacheKey(song.song.id)
                                                                         .setData(song.song.title.toByteArray())
                                                                         .build()
                                                                 DownloadService.sendAddDownload(
@@ -379,7 +380,8 @@ fun TopPlaylistScreen(
                                             playerConnection.playQueue(
                                                 ListQueue(
                                                     title = name,
-                                                    items = songs!!.shuffled().map { it.toMediaItem() },
+                                                    items = songs!!.shuffled()
+                                                        .map { it.toMediaItem() },
                                                 ),
                                             )
                                         },
@@ -404,36 +406,39 @@ fun TopPlaylistScreen(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier.padding(start = 16.dp),
                         ) {
-                           SortHeader(
-                               sortType = sortType,
-                               sortDescending = false,
-                               onSortTypeChange = {
+                            SortHeader(
+                                sortType = sortType,
+                                sortDescending = false,
+                                onSortTypeChange = {
                                     viewModel.topPeriod.value = it
-                               },
-                               onSortDescendingChange = {},
-                               sortTypeText = { sortType ->
-                                   when (sortType) {
-                                       MyTopFilter.ALL_TIME -> R.string.all_time
-                                       MyTopFilter.DAY -> R.string.past_24_hours
-                                       MyTopFilter.WEEK -> R.string.past_week
-                                       MyTopFilter.MONTH -> R.string.past_month
-                                       MyTopFilter.YEAR -> R.string.past_year
-                                   }
-                               },
-                               modifier = Modifier.weight(1f),
-                               showDescending = false,
-                           )
+                                },
+                                onSortDescendingChange = {},
+                                sortTypeText = { sortType ->
+                                    when (sortType) {
+                                        MyTopFilter.ALL_TIME -> R.string.all_time
+                                        MyTopFilter.DAY -> R.string.past_24_hours
+                                        MyTopFilter.WEEK -> R.string.past_week
+                                        MyTopFilter.MONTH -> R.string.past_month
+                                        MyTopFilter.YEAR -> R.string.past_year
+                                    }
+                                },
+                                modifier = Modifier.weight(1f),
+                                showDescending = false,
+                            )
                         }
                     }
                 }
-            
+
                 val searchQueryStr = (searchQuery.text.trim())
-                val filteredSongs = if (searchQueryStr.isEmpty())
-                { wrappedSongs }
-                else{
+                val filteredSongs = if (searchQueryStr.isEmpty()) {
+                    wrappedSongs
+                } else {
                     wrappedSongs?.filter {
                         (it.item.song.title).contains(searchQueryStr, ignoreCase = true) or
-                                (it.item.artists.joinToString("").trim()).contains(searchQueryStr, ignoreCase = true)
+                                (it.item.artists.joinToString("").trim()).contains(
+                                    searchQueryStr,
+                                    ignoreCase = true
+                                )
                     }
                 }
 
@@ -488,8 +493,8 @@ fun TopPlaylistScreen(
                                             songWrapper.isSelected = !songWrapper.isSelected
                                         }
                                     },
-                                onLongClick = {
-                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                    onLongClick = {
+                                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                                         if (!selection) {
                                             selection = true
                                         }
@@ -497,7 +502,7 @@ fun TopPlaylistScreen(
                                         songWrapper.isSelected = true
                                     },
                                 )
-                            .animateItem()
+                                .animateItem()
                         )
                     }
                 }
@@ -592,10 +597,11 @@ fun TopPlaylistScreen(
                         onClick = {
                             menuState.show {
                                 SelectionSongMenu(
-                                    songSelection = wrappedSongs?.filter { it.isSelected }!!.map { it.item },
+                                    songSelection = wrappedSongs?.filter { it.isSelected }!!
+                                        .map { it.item },
                                     onDismiss = menuState::dismiss,
                                     clearAction = { selection = false },
-                               )
+                                )
                             }
                         },
                     ) {

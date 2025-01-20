@@ -1,33 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
     <shortcut
-        android:shortcutId="search"
         android:enabled="true"
         android:icon="@drawable/shortcut_search"
+        android:shortcutId="search"
         android:shortcutShortLabel="@string/search">
         <intent
+            android:action="com.metrolist.music.action.SEARCH"
             android:targetClass="com.metrolist.music.MainActivity"
-            android:targetPackage="com.metrolist.music"
-            android:action="com.metrolist.music.action.SEARCH" />
+            android:targetPackage="com.metrolist.music" />
     </shortcut>
     <shortcut
-        android:shortcutId="explore"
         android:enabled="true"
         android:icon="@drawable/shortcut_explore"
+        android:shortcutId="explore"
         android:shortcutShortLabel="@string/explore">
         <intent
+            android:action="com.metrolist.music.action.EXPLORE"
             android:targetClass="com.metrolist.music.MainActivity"
-            android:targetPackage="com.metrolist.music"
-            android:action="com.metrolist.music.action.EXPLORE" />
+            android:targetPackage="com.metrolist.music" />
     </shortcut>
     <shortcut
-        android:shortcutId="library"
         android:enabled="true"
         android:icon="@drawable/shortcut_library"
+        android:shortcutId="library"
         android:shortcutShortLabel="@string/filter_library">
         <intent
+            android:action="com.metrolist.music.action.LIBRARY"
             android:targetClass="com.metrolist.music.MainActivity"
-            android:targetPackage="com.metrolist.music"
-            android:action="com.metrolist.music.action.LIBRARY" />
+            android:targetPackage="com.metrolist.music" />
     </shortcut>
 </shortcuts>

@@ -51,9 +51,9 @@ fun LoginScreen(navController: NavController) {
 
     AndroidView(
         modifier =
-            Modifier
-                .windowInsetsPadding(LocalPlayerAwareWindowInsets.current)
-                .fillMaxSize(),
+        Modifier
+            .windowInsetsPadding(LocalPlayerAwareWindowInsets.current)
+            .fillMaxSize(),
         factory = { context ->
             WebView(context).apply {
                 webViewClient =
@@ -65,7 +65,8 @@ fun LoginScreen(navController: NavController) {
                         ) {
                             if (url.startsWith("https://music.youtube.com")) {
                                 var youTubeCookieString = CookieManager.getInstance().getCookie(url)
-                                innerTubeCookie = if ("SAPISID" in parseCookieString(youTubeCookieString)) youTubeCookieString else ""
+                                innerTubeCookie =
+                                    if ("SAPISID" in parseCookieString(youTubeCookieString)) youTubeCookieString else ""
                                 GlobalScope.launch {
                                     YouTube
                                         .accountInfo()
@@ -97,10 +98,10 @@ fun LoginScreen(navController: NavController) {
                         @JavascriptInterface
                         fun onRetrieveVisitorData(newVisitorData: String?) {
                             if (innerTubeCookie == "") {
-                            visitorData = ""
-                            return
+                                visitorData = ""
+                                return
                             }
-                            
+
                             if (newVisitorData != null) {
                                 visitorData = newVisitorData
                             }

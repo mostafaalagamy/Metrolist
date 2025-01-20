@@ -60,15 +60,15 @@ fun YouTubeArtistMenu(
             ) {
                 Icon(
                     painter =
-                        painterResource(
-                            if (libraryArtist?.artist?.bookmarkedAt !=
-                                null
-                            ) {
-                                R.drawable.favorite
-                            } else {
-                                R.drawable.favorite_border
-                            },
-                        ),
+                    painterResource(
+                        if (libraryArtist?.artist?.bookmarkedAt !=
+                            null
+                        ) {
+                            R.drawable.favorite
+                        } else {
+                            R.drawable.favorite_border
+                        },
+                    ),
                     tint = if (libraryArtist?.artist?.bookmarkedAt != null) MaterialTheme.colorScheme.error else LocalContentColor.current,
                     contentDescription = null,
                 )
@@ -80,12 +80,12 @@ fun YouTubeArtistMenu(
 
     GridMenu(
         contentPadding =
-            PaddingValues(
-                start = 8.dp,
-                top = 8.dp,
-                end = 8.dp,
-                bottom = 8.dp + WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
-            ),
+        PaddingValues(
+            start = 8.dp,
+            top = 8.dp,
+            end = 8.dp,
+            bottom = 8.dp + WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
+        ),
     ) {
         artist.radioEndpoint?.let { watchEndpoint ->
             GridMenuItem(

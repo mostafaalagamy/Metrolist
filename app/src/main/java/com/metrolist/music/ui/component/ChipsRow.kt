@@ -55,9 +55,9 @@ fun <E> ChipsRow(
 ) {
     Row(
         modifier =
-            modifier
-                .fillMaxWidth()
-                .horizontalScroll(rememberScrollState()),
+        modifier
+            .fillMaxWidth()
+            .horizontalScroll(rememberScrollState()),
     ) {
         Spacer(Modifier.width(12.dp))
 
@@ -99,9 +99,9 @@ fun <Int> ChoiceChipsRow(
 
     Row(
         modifier =
-            modifier
-                .fillMaxWidth()
-                .padding(start = 12.dp),
+        modifier
+            .fillMaxWidth()
+            .padding(start = 12.dp),
     ) {
         var expanded by remember { mutableStateOf(false) }
 
@@ -114,12 +114,12 @@ fun <Int> ChoiceChipsRow(
                 label = {
                     Text(
                         text =
-                            when (selectedOption) {
-                                OptionStats.WEEKS -> stringResource(id = R.string.weeks)
-                                OptionStats.MONTHS -> stringResource(id = R.string.months)
-                                OptionStats.YEARS -> stringResource(id = R.string.years)
-                                OptionStats.CONTINUOUS -> stringResource(id = R.string.continuous)
-                            },
+                        when (selectedOption) {
+                            OptionStats.WEEKS -> stringResource(id = R.string.weeks)
+                            OptionStats.MONTHS -> stringResource(id = R.string.months)
+                            OptionStats.YEARS -> stringResource(id = R.string.years)
+                            OptionStats.CONTINUOUS -> stringResource(id = R.string.continuous)
+                        },
                     )
                 },
                 trailingIcon = {
@@ -171,9 +171,9 @@ fun <Int> ChoiceChipsRow(
         ) {
             Row(
                 modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .horizontalScroll(rememberScrollState()),
+                Modifier
+                    .fillMaxWidth()
+                    .horizontalScroll(rememberScrollState()),
             ) {
                 chips.forEach { (value, label) ->
                     Spacer(Modifier.width(8.dp))

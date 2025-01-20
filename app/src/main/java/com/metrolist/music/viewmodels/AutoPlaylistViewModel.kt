@@ -31,18 +31,18 @@ import javax.inject.Inject
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class AutoPlaylistViewModel
-    @Inject
-    constructor(
-        @ApplicationContext context: Context,
-        database: MusicDatabase,
-        downloadUtil: DownloadUtil,
-        savedStateHandle: SavedStateHandle,
-        private val syncUtils: SyncUtils,
-    ) : ViewModel() {
-        val playlist = savedStateHandle.get<String>("playlist")!!
+@Inject
+constructor(
+    @ApplicationContext context: Context,
+    database: MusicDatabase,
+    downloadUtil: DownloadUtil,
+    savedStateHandle: SavedStateHandle,
+    private val syncUtils: SyncUtils,
+) : ViewModel() {
+    val playlist = savedStateHandle.get<String>("playlist")!!
 
-        @OptIn(ExperimentalCoroutinesApi::class)
-        val likedSongs =
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val likedSongs =
         context.dataStore.data
             .map {
                 it[SongSortTypeKey].toEnum(SongSortType.CREATE_DATE) to (it[SongSortDescendingKey]
@@ -79,7 +79,8 @@ class AutoPlaylistViewModel
                     else -> MutableStateFlow(emptyList())
                 }
             }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
-            fun syncLikedSongs() {
-                viewModelScope.launch(Dispatchers.IO) { syncUtils.syncLikedSongs() }
-            }
+
+    fun syncLikedSongs() {
+        viewModelScope.launch(Dispatchers.IO) { syncUtils.syncLikedSongs() }
     }
+}

@@ -113,8 +113,8 @@ fun AlbumMenu(
                     STATE_COMPLETED
                 } else if (songs.all {
                         downloads[it.id]?.state == STATE_QUEUED ||
-                            downloads[it.id]?.state == STATE_DOWNLOADING ||
-                            downloads[it.id]?.state == STATE_COMPLETED
+                                downloads[it.id]?.state == STATE_DOWNLOADING ||
+                                downloads[it.id]?.state == STATE_COMPLETED
                     }
                 ) {
                     STATE_DOWNLOADING
@@ -184,8 +184,8 @@ fun AlbumMenu(
                         )
                     },
                     modifier =
-                        Modifier
-                            .clickable { showErrorPlaylistAddDialog = false },
+                    Modifier
+                        .clickable { showErrorPlaylistAddDialog = false },
                 )
             }
 
@@ -206,13 +206,14 @@ fun AlbumMenu(
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier =
-                        Modifier
-                            .height(ListItemHeight)
-                            .clickable {
-                                navController.navigate("artist/${artist.id}")
-                                showSelectArtistDialog = false
-                                onDismiss()
-                            }.padding(horizontal = 12.dp),
+                    Modifier
+                        .height(ListItemHeight)
+                        .clickable {
+                            navController.navigate("artist/${artist.id}")
+                            showSelectArtistDialog = false
+                            onDismiss()
+                        }
+                        .padding(horizontal = 12.dp),
                 ) {
                     Box(
                         modifier = Modifier.padding(8.dp),
@@ -222,9 +223,9 @@ fun AlbumMenu(
                             model = artist.thumbnailUrl,
                             contentDescription = null,
                             modifier =
-                                Modifier
-                                    .size(ListThumbnailSize)
-                                    .clip(CircleShape),
+                            Modifier
+                                .size(ListThumbnailSize)
+                                .clip(CircleShape),
                         )
                     }
                     Text(
@@ -234,9 +235,9 @@ fun AlbumMenu(
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         modifier =
-                            Modifier
-                                .weight(1f)
-                                .padding(horizontal = 8.dp),
+                        Modifier
+                            .weight(1f)
+                            .padding(horizontal = 8.dp),
                     )
                 }
             }
@@ -268,12 +269,12 @@ fun AlbumMenu(
 
     GridMenu(
         contentPadding =
-            PaddingValues(
-                start = 8.dp,
-                top = 8.dp,
-                end = 8.dp,
-                bottom = 8.dp + WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
-            ),
+        PaddingValues(
+            start = 8.dp,
+            top = 8.dp,
+            end = 8.dp,
+            bottom = 8.dp + WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
+        ),
     ) {
         GridMenuItem(
             icon = R.drawable.playlist_play,
@@ -363,7 +364,10 @@ fun AlbumMenu(
                 Intent().apply {
                     action = Intent.ACTION_SEND
                     type = "text/plain"
-                    putExtra(Intent.EXTRA_TEXT, "https://music.youtube.com/browse/${album.album.id}")
+                    putExtra(
+                        Intent.EXTRA_TEXT,
+                        "https://music.youtube.com/browse/${album.album.id}"
+                    )
                 }
             context.startActivity(Intent.createChooser(intent, null))
         }

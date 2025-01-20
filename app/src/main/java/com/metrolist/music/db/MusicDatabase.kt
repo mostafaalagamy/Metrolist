@@ -116,10 +116,10 @@ abstract class InternalDatabase : RoomDatabase() {
         fun newInstance(context: Context): MusicDatabase =
             MusicDatabase(
                 delegate =
-                    Room
-                        .databaseBuilder(context, InternalDatabase::class.java, DB_NAME)
-                        .addMigrations(MIGRATION_1_2)
-                        .build(),
+                Room
+                    .databaseBuilder(context, InternalDatabase::class.java, DB_NAME)
+                    .addMigrations(MIGRATION_1_2)
+                    .build(),
             )
     }
 }
@@ -205,8 +205,10 @@ val MIGRATION_1_2 =
                             title = cursor.getString(1),
                             duration = cursor.getInt(3),
                             liked = cursor.getInt(4) == 1,
-                            createDate = Instant.ofEpochMilli(Date(cursor.getLong(8)).time).atZone(ZoneOffset.UTC).toLocalDateTime(),
-                            modifyDate = Instant.ofEpochMilli(Date(cursor.getLong(9)).time).atZone(ZoneOffset.UTC).toLocalDateTime(),
+                            createDate = Instant.ofEpochMilli(Date(cursor.getLong(8)).time)
+                                .atZone(ZoneOffset.UTC).toLocalDateTime(),
+                            modifyDate = Instant.ofEpochMilli(Date(cursor.getLong(9)).time)
+                                .atZone(ZoneOffset.UTC).toLocalDateTime(),
                         ),
                     )
                     songArtistMaps.add(
@@ -339,7 +341,11 @@ val MIGRATION_1_2 =
     DeleteColumn(tableName = "playlist", columnName = "lastUpdateTime"),
 )
 @RenameColumn.Entries(
-    RenameColumn(tableName = "song", fromColumnName = "download_state", toColumnName = "downloadState"),
+    RenameColumn(
+        tableName = "song",
+        fromColumnName = "download_state",
+        toColumnName = "downloadState"
+    ),
     RenameColumn(tableName = "song", fromColumnName = "create_date", toColumnName = "createDate"),
     RenameColumn(tableName = "song", fromColumnName = "modify_date", toColumnName = "modifyDate"),
 )
@@ -347,7 +353,13 @@ class Migration5To6 : AutoMigrationSpec {
     override fun onPostMigrate(db: SupportSQLiteDatabase) {
         db.query("SELECT id FROM playlist WHERE id NOT LIKE 'LP%'").use { cursor ->
             while (cursor.moveToNext()) {
-                db.execSQL("UPDATE playlist SET browseID = '${cursor.getString(0)}' WHERE id = '${cursor.getString(0)}'")
+                db.execSQL(
+                    "UPDATE playlist SET browseID = '${cursor.getString(0)}' WHERE id = '${
+                        cursor.getString(
+                            0
+                        )
+                    }'"
+                )
             }
         }
     }
@@ -357,7 +369,13 @@ class Migration6To7 : AutoMigrationSpec {
     override fun onPostMigrate(db: SupportSQLiteDatabase) {
         db.query("SELECT id, createDate FROM song").use { cursor ->
             while (cursor.moveToNext()) {
-                db.execSQL("UPDATE song SET inLibrary = ${cursor.getLong(1)} WHERE id = '${cursor.getString(0)}'")
+                db.execSQL(
+                    "UPDATE song SET inLibrary = ${cursor.getLong(1)} WHERE id = '${
+                        cursor.getString(
+                            0
+                        )
+                    }'"
+                )
             }
         }
     }
@@ -396,13 +414,13 @@ class Migration11To12 : AutoMigrationSpec {
                     table = "album",
                     conflictAlgorithm = SQLiteDatabase.CONFLICT_IGNORE,
                     values =
-                        contentValuesOf(
-                            "id" to albumId,
-                            "title" to albumName,
-                            "songCount" to 0,
-                            "duration" to 0,
-                            "lastUpdateTime" to 0,
-                        ),
+                    contentValuesOf(
+                        "id" to albumId,
+                        "title" to albumName,
+                        "songCount" to 0,
+                        "duration" to 0,
+                        "lastUpdateTime" to 0,
+                    ),
                 )
             }
         }
@@ -419,7 +437,13 @@ class Migration13To14 : AutoMigrationSpec {
     @SuppressLint("Range")
     override fun onPostMigrate(db: SupportSQLiteDatabase) {
         db.execSQL("UPDATE playlist SET createdAt = '${Converters().dateToTimestamp(LocalDateTime.now())}'")
-        db.execSQL("UPDATE playlist SET lastUpdateTime = '${Converters().dateToTimestamp(LocalDateTime.now())}'")
+        db.execSQL(
+            "UPDATE playlist SET lastUpdateTime = '${
+                Converters().dateToTimestamp(
+                    LocalDateTime.now()
+                )
+            }'"
+        )
     }
 }
 

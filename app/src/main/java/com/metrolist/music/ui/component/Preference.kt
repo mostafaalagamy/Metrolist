@@ -52,13 +52,13 @@ fun PreferenceEntry(
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier =
-            modifier
-                .fillMaxWidth()
-                .clickable(
-                    enabled = isEnabled && onClick != null,
-                    onClick = onClick ?: {},
-                ).alpha(if (isEnabled) 1f else 0.5f)
-                .padding(horizontal = 16.dp, vertical = 16.dp),
+        modifier
+            .fillMaxWidth()
+            .clickable(
+                enabled = isEnabled && onClick != null,
+                onClick = onClick ?: {},
+            ).alpha(if (isEnabled) 1f else 0.5f)
+            .padding(horizontal = 16.dp, vertical = 16.dp),
     ) {
         if (icon != null) {
             Box(
@@ -119,12 +119,12 @@ fun <T> ListPreference(
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .clickable {
-                                showDialog = false
-                                onValueSelected(value)
-                            }.padding(horizontal = 16.dp, vertical = 12.dp),
+                    Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            showDialog = false
+                            onValueSelected(value)
+                        }.padding(horizontal = 16.dp, vertical = 12.dp),
                 ) {
                     RadioButton(
                         selected = value == selectedValue,
@@ -217,10 +217,10 @@ fun EditTextPreference(
     if (showDialog) {
         TextFieldDialog(
             initialTextFieldValue =
-                TextFieldValue(
-                    text = value,
-                    selection = TextRange(value.length),
-                ),
+            TextFieldValue(
+                text = value,
+                selection = TextRange(value.length),
+            ),
             singleLine = singleLine,
             isInputValid = isInputValid,
             onDone = onValueChange,
@@ -259,7 +259,12 @@ fun SliderPreference(
         AlertDialog(
             properties = DialogProperties(usePlatformDefaultWidth = false),
             onDismissRequest = { showDialog = false },
-            icon = { Icon(painter = painterResource(R.drawable.history), contentDescription = null) },
+            icon = {
+                Icon(
+                    painter = painterResource(R.drawable.history),
+                    contentDescription = null
+                )
+            },
             title = { Text(stringResource(R.string.history_duration)) },
             confirmButton = {
                 TextButton(
@@ -284,7 +289,11 @@ fun SliderPreference(
             text = {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
-                        text = pluralStringResource(R.plurals.seconds, sliderValue.roundToInt(), sliderValue.roundToInt()),
+                        text = pluralStringResource(
+                            R.plurals.seconds,
+                            sliderValue.roundToInt(),
+                            sliderValue.roundToInt()
+                        ),
                         style = MaterialTheme.typography.bodyLarge,
                     )
 

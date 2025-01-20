@@ -62,8 +62,10 @@ class HomeViewModel @Inject constructor(
         val keepListeningAlbums = database.mostPlayedAlbums(fromTimeStamp, limit = 8, offset = 2)
             .first().filter { it.album.thumbnailUrl != null }.shuffled().take(5)
         val keepListeningArtists = database.mostPlayedArtists(fromTimeStamp)
-            .first().filter { it.artist.isYouTubeArtist && it.artist.thumbnailUrl != null }.shuffled().take(5)
-        keepListening.value = (keepListeningSongs + keepListeningAlbums + keepListeningArtists).shuffled()
+            .first().filter { it.artist.isYouTubeArtist && it.artist.thumbnailUrl != null }
+            .shuffled().take(5)
+        keepListening.value =
+            (keepListeningSongs + keepListeningAlbums + keepListeningArtists).shuffled()
 
         allLocalItems.value =
             (quickPicks.value.orEmpty() + forgottenFavorites.value.orEmpty() + keepListening.value.orEmpty())
@@ -72,7 +74,7 @@ class HomeViewModel @Inject constructor(
         if (YouTube.cookie != null) {
             YouTube.library("FEmusic_liked_playlists").completedLibraryPage().onSuccess {
                 accountPlaylists.value = it.items.filterIsInstance<PlaylistItem>()
-                .filterNot { it.id == "SE" }
+                    .filterNot { it.id == "SE" }
             }.onFailure {
                 reportException(it)
             }
@@ -102,7 +104,9 @@ class HomeViewModel @Inject constructor(
                 .filter { it.album != null }
                 .shuffled().take(2)
                 .mapNotNull { song ->
-                    val endpoint = YouTube.next(WatchEndpoint(videoId = song.id)).getOrNull()?.relatedEndpoint ?: return@mapNotNull null
+                    val endpoint =
+                        YouTube.next(WatchEndpoint(videoId = song.id)).getOrNull()?.relatedEndpoint
+                            ?: return@mapNotNull null
                     val page = YouTube.related(endpoint).getOrNull() ?: return@mapNotNull null
                     SimilarRecommendation(
                         title = song,
