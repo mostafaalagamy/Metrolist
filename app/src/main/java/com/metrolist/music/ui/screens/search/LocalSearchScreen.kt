@@ -205,7 +205,7 @@ fun LocalSearchScreen(
                                                     }
                                                 }
                                             },
-                                        ).animateItemPlacement(),
+                                        ).animateItem(),
                             )
 
                         is Album ->
@@ -218,7 +218,7 @@ fun LocalSearchScreen(
                                         .clickable {
                                             onDismiss()
                                             navController.navigate("album/${item.id}")
-                                        }.animateItemPlacement(),
+                                        }.animateItem(),
                             )
 
                         is Artist ->
@@ -229,7 +229,7 @@ fun LocalSearchScreen(
                                         .clickable {
                                             onDismiss()
                                             navController.navigate("artist/${item.id}")
-                                        }.animateItemPlacement(),
+                                        }.animateItem(),
                             )
 
                         is Playlist ->
@@ -240,7 +240,7 @@ fun LocalSearchScreen(
                                         .clickable {
                                             onDismiss()
                                             navController.navigate("local_playlist/${item.id}")
-                                        }.animateItemPlacement(),
+                                        }.animateItem(),
                             )
                     }
                 }
