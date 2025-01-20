@@ -26,25 +26,25 @@ fun GridItemPlaceHolder(
 ) {
     Column(
         modifier =
-            if (fillMaxWidth) {
-                modifier
-                    .padding(12.dp)
-                    .fillMaxWidth()
-            } else {
-                modifier
-                    .padding(12.dp)
-                    .width(GridThumbnailHeight)
-            },
+        if (fillMaxWidth) {
+            modifier
+                .padding(12.dp)
+                .fillMaxWidth()
+        } else {
+            modifier
+                .padding(12.dp)
+                .width(GridThumbnailHeight)
+        },
     ) {
         Spacer(
             modifier =
-                if (fillMaxWidth) {
-                    Modifier.fillMaxWidth()
-                } else {
-                    Modifier.height(GridThumbnailHeight)
-                }.aspectRatio(1f)
-                    .clip(thumbnailShape)
-                    .background(MaterialTheme.colorScheme.onSurface),
+            if (fillMaxWidth) {
+                Modifier.fillMaxWidth()
+            } else {
+                Modifier.height(GridThumbnailHeight)
+            }.aspectRatio(1f)
+                .clip(thumbnailShape)
+                .background(MaterialTheme.colorScheme.onSurface),
         )
 
         Spacer(modifier = Modifier.height(6.dp))

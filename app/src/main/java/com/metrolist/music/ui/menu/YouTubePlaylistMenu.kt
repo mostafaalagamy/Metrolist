@@ -134,7 +134,11 @@ fun YouTubePlaylistMenu(
                                     name = playlist.title,
                                     browseId = playlist.id,
                                     isEditable = false,
-                                    remoteSongCount = playlist.songCountText?.let { Regex("""\d+""").find(it)?.value?.toIntOrNull() },
+                                    remoteSongCount = playlist.songCountText?.let {
+                                        Regex("""\d+""").find(
+                                            it
+                                        )?.value?.toIntOrNull()
+                                    },
                                     playEndpointParams = playlist.playEndpoint?.params,
                                     shuffleEndpointParams = playlist.shuffleEndpoint?.params,
                                     radioEndpointParams = playlist.radioEndpoint?.params
@@ -201,7 +205,10 @@ fun YouTubePlaylistMenu(
             onDismiss = { showRemoveDownloadDialog = false },
             content = {
                 Text(
-                    text = stringResource(R.string.remove_download_playlist_confirm, playlist.title),
+                    text = stringResource(
+                        R.string.remove_download_playlist_confirm,
+                        playlist.title
+                    ),
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.padding(horizontal = 18.dp)
                 )
@@ -250,7 +257,7 @@ fun YouTubePlaylistMenu(
         playlistTitle = playlist.title,
         onDismiss = { showImportPlaylistDialog = false }
     )
-    
+
     if (showErrorPlaylistAddDialog) {
         ListDialog(
             onDismiss = {
@@ -270,8 +277,8 @@ fun YouTubePlaylistMenu(
                         )
                     },
                     modifier =
-                        Modifier
-                            .clickable { showErrorPlaylistAddDialog = false },
+                    Modifier
+                        .clickable { showErrorPlaylistAddDialog = false },
                 )
             }
 
@@ -287,17 +294,17 @@ fun YouTubePlaylistMenu(
                                 model = song.thumbnailUrl,
                                 contentDescription = null,
                                 modifier =
-                                    Modifier
-                                        .fillMaxSize()
-                                        .clip(RoundedCornerShape(ThumbnailCornerRadius)),
+                                Modifier
+                                    .fillMaxSize()
+                                    .clip(RoundedCornerShape(ThumbnailCornerRadius)),
                             )
                         }
                     },
                     subtitle =
-                        joinByBullet(
-                            song.artists.joinToString { it.name },
-                            makeTimeString(song.duration * 1000L),
-                        ),
+                    joinByBullet(
+                        song.artists.joinToString { it.name },
+                        makeTimeString(song.duration * 1000L),
+                    ),
                 )
             }
         }
@@ -305,12 +312,12 @@ fun YouTubePlaylistMenu(
 
     GridMenu(
         contentPadding =
-            PaddingValues(
-                start = 8.dp,
-                top = 8.dp,
-                end = 8.dp,
-                bottom = 8.dp + WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
-            ),
+        PaddingValues(
+            start = 8.dp,
+            top = 8.dp,
+            end = 8.dp,
+            bottom = 8.dp + WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
+        ),
     ) {
         playlist.playEndpoint?.let {
             GridMenuItem(
@@ -385,10 +392,10 @@ fun YouTubePlaylistMenu(
             onDismiss()
         }
         //GridMenuItem(
-            //icon = R.drawable.playlist_import,
-            //title = R.string.import_playlist
+        //icon = R.drawable.playlist_import,
+        //title = R.string.import_playlist
         //) {
-            //showImportPlaylistDialog = true
+        //showImportPlaylistDialog = true
         //}
         GridMenuItem(
             icon = R.drawable.playlist_add,
@@ -419,7 +426,7 @@ fun YouTubePlaylistMenu(
                 }
             )
         }
-        
+
         GridMenuItem(
             icon = R.drawable.share,
             title = R.string.share,

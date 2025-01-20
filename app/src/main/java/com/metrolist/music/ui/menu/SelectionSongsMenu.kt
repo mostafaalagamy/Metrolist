@@ -77,8 +77,8 @@ fun SelectionSongMenu(
                     Download.STATE_COMPLETED
                 } else if (songSelection.all {
                         downloads[it.id]?.state == Download.STATE_QUEUED ||
-                            downloads[it.id]?.state == Download.STATE_DOWNLOADING ||
-                            downloads[it.id]?.state == Download.STATE_COMPLETED
+                                downloads[it.id]?.state == Download.STATE_DOWNLOADING ||
+                                downloads[it.id]?.state == Download.STATE_COMPLETED
                     }
                 ) {
                     Download.STATE_DOWNLOADING
@@ -146,12 +146,12 @@ fun SelectionSongMenu(
 
     GridMenu(
         contentPadding =
-            PaddingValues(
-                start = 8.dp,
-                top = 8.dp,
-                end = 8.dp,
-                bottom = 8.dp + WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
-            ),
+        PaddingValues(
+            start = 8.dp,
+            top = 8.dp,
+            end = 8.dp,
+            bottom = 8.dp + WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
+        ),
     ) {
         GridMenuItem(
             icon = R.drawable.play,
@@ -308,8 +308,8 @@ fun SelectionMediaMetadataMenu(
                     Download.STATE_COMPLETED
                 } else if (songSelection.all {
                         downloads[it.id]?.state == Download.STATE_QUEUED ||
-                            downloads[it.id]?.state == Download.STATE_DOWNLOADING ||
-                            downloads[it.id]?.state == Download.STATE_COMPLETED
+                                downloads[it.id]?.state == Download.STATE_DOWNLOADING ||
+                                downloads[it.id]?.state == Download.STATE_COMPLETED
                     }
                 ) {
                     Download.STATE_DOWNLOADING
@@ -318,7 +318,7 @@ fun SelectionMediaMetadataMenu(
                 }
         }
     }
-    
+
 
     var showChoosePlaylistDialog by rememberSaveable {
         mutableStateOf(false)
@@ -368,12 +368,12 @@ fun SelectionMediaMetadataMenu(
 
     GridMenu(
         contentPadding =
-            PaddingValues(
-                start = 8.dp,
-                top = 8.dp,
-                end = 8.dp,
-                bottom = 8.dp + WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
-            ),
+        PaddingValues(
+            start = 8.dp,
+            top = 8.dp,
+            end = 8.dp,
+            bottom = 8.dp + WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
+        ),
     ) {
         if (currentItems.isNotEmpty()) {
             GridMenuItem(

@@ -26,9 +26,9 @@ fun EmptyPlaceholder(
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier =
-            modifier
-                .fillMaxSize()
-                .padding(12.dp),
+        modifier
+            .fillMaxSize()
+            .padding(12.dp),
     ) {
         Image(
             painter = painterResource(icon),

@@ -46,9 +46,18 @@ fun PrivacySettings(
     scrollBehavior: TopAppBarScrollBehavior,
 ) {
     val database = LocalDatabase.current
-    val (pauseListenHistory, onPauseListenHistoryChange) = rememberPreference(key = PauseListenHistoryKey, defaultValue = false)
-    val (pauseSearchHistory, onPauseSearchHistoryChange) = rememberPreference(key = PauseSearchHistoryKey, defaultValue = false)    
-    val (disableScreenshot, onDisableScreenshotChange) = rememberPreference(key = DisableScreenshotKey, defaultValue = false)
+    val (pauseListenHistory, onPauseListenHistoryChange) = rememberPreference(
+        key = PauseListenHistoryKey,
+        defaultValue = false
+    )
+    val (pauseSearchHistory, onPauseSearchHistoryChange) = rememberPreference(
+        key = PauseSearchHistoryKey,
+        defaultValue = false
+    )
+    val (disableScreenshot, onDisableScreenshotChange) = rememberPreference(
+        key = DisableScreenshotKey,
+        defaultValue = false
+    )
 
     var showClearListenHistoryDialog by remember {
         mutableStateOf(false)
@@ -125,12 +134,18 @@ fun PrivacySettings(
             .windowInsetsPadding(LocalPlayerAwareWindowInsets.current.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom))
             .verticalScroll(rememberScrollState())
     ) {
-        Spacer(Modifier.windowInsetsPadding(LocalPlayerAwareWindowInsets.current.only(WindowInsetsSides.Top)))
+        Spacer(
+            Modifier.windowInsetsPadding(
+                LocalPlayerAwareWindowInsets.current.only(
+                    WindowInsetsSides.Top
+                )
+            )
+        )
 
         PreferenceGroupTitle(
             title = stringResource(R.string.listen_history)
         )
-        
+
         SwitchPreference(
             title = { Text(stringResource(R.string.pause_listen_history)) },
             icon = { Icon(painterResource(R.drawable.history), null) },
@@ -146,7 +161,7 @@ fun PrivacySettings(
         PreferenceGroupTitle(
             title = stringResource(R.string.search_history)
         )
-        
+
         SwitchPreference(
             title = { Text(stringResource(R.string.pause_search_history)) },
             icon = { Icon(painterResource(R.drawable.search_off), null) },
@@ -158,11 +173,11 @@ fun PrivacySettings(
             icon = { Icon(painterResource(R.drawable.clear_all), null) },
             onClick = { showClearSearchHistoryDialog = true },
         )
-        
+
         PreferenceGroupTitle(
             title = stringResource(R.string.misc),
         )
-        
+
         SwitchPreference(
             title = { Text(stringResource(R.string.disable_screenshot)) },
             description = stringResource(R.string.disable_screenshot_desc),

@@ -42,21 +42,51 @@ fun PlayerSettings(
     navController: NavController,
     scrollBehavior: TopAppBarScrollBehavior,
 ) {
-    val (audioQuality, onAudioQualityChange) = rememberEnumPreference(AudioQualityKey, defaultValue = AudioQuality.AUTO)
-    val (persistentQueue, onPersistentQueueChange) = rememberPreference(PersistentQueueKey, defaultValue = true)
-    val (skipSilence, onSkipSilenceChange) = rememberPreference(SkipSilenceKey, defaultValue = false)
-    val (audioNormalization, onAudioNormalizationChange) = rememberPreference(AudioNormalizationKey, defaultValue = true)
-    val (autoLoadMore, onAutoLoadMoreChange) = rememberPreference(AutoLoadMoreKey, defaultValue = true)
-    val (similarContentEnabled, similarContentEnabledChange) = rememberPreference(key = SimilarContent, defaultValue = true)
-    val (autoSkipNextOnError, onAutoSkipNextOnErrorChange) = rememberPreference(AutoSkipNextOnErrorKey, defaultValue = false)
-    val (stopMusicOnTaskClear, onStopMusicOnTaskClearChange) = rememberPreference(StopMusicOnTaskClearKey, defaultValue = false)
+    val (audioQuality, onAudioQualityChange) = rememberEnumPreference(
+        AudioQualityKey,
+        defaultValue = AudioQuality.AUTO
+    )
+    val (persistentQueue, onPersistentQueueChange) = rememberPreference(
+        PersistentQueueKey,
+        defaultValue = true
+    )
+    val (skipSilence, onSkipSilenceChange) = rememberPreference(
+        SkipSilenceKey,
+        defaultValue = false
+    )
+    val (audioNormalization, onAudioNormalizationChange) = rememberPreference(
+        AudioNormalizationKey,
+        defaultValue = true
+    )
+    val (autoLoadMore, onAutoLoadMoreChange) = rememberPreference(
+        AutoLoadMoreKey,
+        defaultValue = true
+    )
+    val (similarContentEnabled, similarContentEnabledChange) = rememberPreference(
+        key = SimilarContent,
+        defaultValue = true
+    )
+    val (autoSkipNextOnError, onAutoSkipNextOnErrorChange) = rememberPreference(
+        AutoSkipNextOnErrorKey,
+        defaultValue = false
+    )
+    val (stopMusicOnTaskClear, onStopMusicOnTaskClearChange) = rememberPreference(
+        StopMusicOnTaskClearKey,
+        defaultValue = false
+    )
 
     Column(
         Modifier
             .windowInsetsPadding(LocalPlayerAwareWindowInsets.current.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom))
             .verticalScroll(rememberScrollState())
     ) {
-        Spacer(Modifier.windowInsetsPadding(LocalPlayerAwareWindowInsets.current.only(WindowInsetsSides.Top)))
+        Spacer(
+            Modifier.windowInsetsPadding(
+                LocalPlayerAwareWindowInsets.current.only(
+                    WindowInsetsSides.Top
+                )
+            )
+        )
 
         PreferenceGroupTitle(
             title = stringResource(R.string.player)

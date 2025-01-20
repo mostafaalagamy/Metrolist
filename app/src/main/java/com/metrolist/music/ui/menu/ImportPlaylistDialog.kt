@@ -50,7 +50,7 @@ fun ImportPlaylistDialog(
                 coroutineScope.launch(Dispatchers.IO) {
                     val playlist = database.playlist(newPlaylist.id).firstOrNull()
 
-                    if (playlist != null){
+                    if (playlist != null) {
                         songIds = onGetSong()
                         database.addSongToPlaylist(playlist, songIds!!)
                     }

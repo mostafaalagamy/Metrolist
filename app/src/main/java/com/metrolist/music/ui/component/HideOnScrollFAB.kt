@@ -34,12 +34,12 @@ fun BoxScope.HideOnScrollFAB(
         enter = slideInVertically { it },
         exit = slideOutVertically { it },
         modifier =
-            Modifier
-                .align(Alignment.BottomEnd)
-                .windowInsetsPadding(
-                    LocalPlayerAwareWindowInsets.current
-                        .only(WindowInsetsSides.Bottom + WindowInsetsSides.Horizontal),
-                ),
+        Modifier
+            .align(Alignment.BottomEnd)
+            .windowInsetsPadding(
+                LocalPlayerAwareWindowInsets.current
+                    .only(WindowInsetsSides.Bottom + WindowInsetsSides.Horizontal),
+            ),
     ) {
         FloatingActionButton(
             modifier = Modifier.padding(16.dp),
@@ -65,12 +65,12 @@ fun BoxScope.HideOnScrollFAB(
         enter = slideInVertically { it },
         exit = slideOutVertically { it },
         modifier =
-            Modifier
-                .align(Alignment.BottomEnd)
-                .windowInsetsPadding(
-                    LocalPlayerAwareWindowInsets.current
-                        .only(WindowInsetsSides.Bottom + WindowInsetsSides.Horizontal),
-                ),
+        Modifier
+            .align(Alignment.BottomEnd)
+            .windowInsetsPadding(
+                LocalPlayerAwareWindowInsets.current
+                    .only(WindowInsetsSides.Bottom + WindowInsetsSides.Horizontal),
+            ),
     ) {
         FloatingActionButton(
             modifier = Modifier.padding(16.dp),
@@ -96,12 +96,12 @@ fun BoxScope.HideOnScrollFAB(
         enter = slideInVertically { it },
         exit = slideOutVertically { it },
         modifier =
-            Modifier
-                .align(Alignment.BottomEnd)
-                .windowInsetsPadding(
-                    LocalPlayerAwareWindowInsets.current
-                        .only(WindowInsetsSides.Bottom + WindowInsetsSides.Horizontal),
-                ),
+        Modifier
+            .align(Alignment.BottomEnd)
+            .windowInsetsPadding(
+                LocalPlayerAwareWindowInsets.current
+                    .only(WindowInsetsSides.Bottom + WindowInsetsSides.Horizontal),
+            ),
     ) {
         FloatingActionButton(
             modifier = Modifier.padding(16.dp),

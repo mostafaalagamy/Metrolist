@@ -25,11 +25,11 @@ fun PlaybackError(
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         verticalAlignment = Alignment.CenterVertically,
         modifier =
-            Modifier.pointerInput(Unit) {
-                detectTapGestures(
-                    onTap = { retry() },
-                )
-            },
+        Modifier.pointerInput(Unit) {
+            detectTapGestures(
+                onTap = { retry() },
+            )
+        },
     ) {
         Icon(
             painter = painterResource(R.drawable.info),

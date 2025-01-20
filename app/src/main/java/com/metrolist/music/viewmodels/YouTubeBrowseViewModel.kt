@@ -18,25 +18,25 @@ import javax.inject.Inject
 
 @HiltViewModel
 class YouTubeBrowseViewModel
-    @Inject
-    constructor(
-        @ApplicationContext val context: Context,
-        savedStateHandle: SavedStateHandle,
-    ) : ViewModel() {
-        private val browseId = savedStateHandle.get<String>("browseId")!!
-        private val params = savedStateHandle.get<String>("params")
+@Inject
+constructor(
+    @ApplicationContext val context: Context,
+    savedStateHandle: SavedStateHandle,
+) : ViewModel() {
+    private val browseId = savedStateHandle.get<String>("browseId")!!
+    private val params = savedStateHandle.get<String>("params")
 
-        val result = MutableStateFlow<BrowseResult?>(null)
+    val result = MutableStateFlow<BrowseResult?>(null)
 
-        init {
-            viewModelScope.launch {
-                YouTube
-                    .browse(browseId, params)
-                    .onSuccess {
-                        result.value = it.filterExplicit(context.dataStore.get(HideExplicitKey, false))
-                    }.onFailure {
-                        reportException(it)
-                    }
-            }
+    init {
+        viewModelScope.launch {
+            YouTube
+                .browse(browseId, params)
+                .onSuccess {
+                    result.value = it.filterExplicit(context.dataStore.get(HideExplicitKey, false))
+                }.onFailure {
+                    reportException(it)
+                }
         }
     }
+}

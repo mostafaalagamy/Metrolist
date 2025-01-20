@@ -45,8 +45,14 @@ fun SettingsScreen(
             .windowInsetsPadding(LocalPlayerAwareWindowInsets.current.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom))
             .verticalScroll(rememberScrollState())
     ) {
-        Spacer(Modifier.windowInsetsPadding(LocalPlayerAwareWindowInsets.current.only(WindowInsetsSides.Top)))
-        
+        Spacer(
+            Modifier.windowInsetsPadding(
+                LocalPlayerAwareWindowInsets.current.only(
+                    WindowInsetsSides.Top
+                )
+            )
+        )
+
         PreferenceEntry(
             title = { Text(stringResource(R.string.appearance)) },
             icon = { Icon(painterResource(R.drawable.palette), null) },
@@ -88,25 +94,42 @@ fun SettingsScreen(
                 icon = { Icon(painterResource(R.drawable.link), null) },
                 onClick = {
                     try {
-                        val intent = Intent(Settings.ACTION_APP_OPEN_BY_DEFAULT_SETTINGS, Uri.parse("package:${context.packageName}"))
+                        val intent = Intent(
+                            Settings.ACTION_APP_OPEN_BY_DEFAULT_SETTINGS,
+                            Uri.parse("package:${context.packageName}")
+                        )
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                         context.startActivity(intent)
                     } catch (e: Exception) {
                         when (e) {
                             is ActivityNotFoundException -> {
-                                Toast.makeText(context, R.string.open_app_settings_error, Toast.LENGTH_LONG).show()
+                                Toast.makeText(
+                                    context,
+                                    R.string.open_app_settings_error,
+                                    Toast.LENGTH_LONG
+                                ).show()
                             }
+
                             is SecurityException -> {
-                                Toast.makeText(context, R.string.open_app_settings_error, Toast.LENGTH_LONG).show()
+                                Toast.makeText(
+                                    context,
+                                    R.string.open_app_settings_error,
+                                    Toast.LENGTH_LONG
+                                ).show()
                             }
+
                             else -> {
-                                Toast.makeText(context, R.string.open_app_settings_error, Toast.LENGTH_LONG).show()
+                                Toast.makeText(
+                                    context,
+                                    R.string.open_app_settings_error,
+                                    Toast.LENGTH_LONG
+                                ).show()
                             }
                         }
                     }
                 },
             )
-        }       
+        }
         PreferenceEntry(
             title = { Text(stringResource(R.string.about)) },
             icon = { Icon(painterResource(R.drawable.info), null) },

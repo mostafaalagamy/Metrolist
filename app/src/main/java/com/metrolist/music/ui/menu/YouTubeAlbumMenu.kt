@@ -110,8 +110,8 @@ fun YouTubeAlbumMenu(
                     Download.STATE_COMPLETED
                 } else if (songs.all {
                         downloads[it]?.state == Download.STATE_QUEUED ||
-                            downloads[it]?.state == Download.STATE_DOWNLOADING ||
-                            downloads[it]?.state == Download.STATE_COMPLETED
+                                downloads[it]?.state == Download.STATE_DOWNLOADING ||
+                                downloads[it]?.state == Download.STATE_COMPLETED
                     }
                 ) {
                     Download.STATE_DOWNLOADING
@@ -167,8 +167,8 @@ fun YouTubeAlbumMenu(
                         )
                     },
                     modifier =
-                        Modifier
-                            .clickable { showErrorPlaylistAddDialog = false },
+                    Modifier
+                        .clickable { showErrorPlaylistAddDialog = false },
                 )
             }
 
@@ -193,25 +193,27 @@ fun YouTubeAlbumMenu(
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier =
-                        Modifier
-                            .height(ListItemHeight)
-                            .clickable {
-                                navController.navigate("artist/${artist.id}")
-                                showSelectArtistDialog = false
-                                onDismiss()
-                            }.padding(horizontal = 12.dp),
+                    Modifier
+                        .height(ListItemHeight)
+                        .clickable {
+                            navController.navigate("artist/${artist.id}")
+                            showSelectArtistDialog = false
+                            onDismiss()
+                        }
+                        .padding(horizontal = 12.dp),
                 ) {
                     Box(
                         contentAlignment = Alignment.CenterStart,
                         modifier =
-                            Modifier
-                                .fillParentMaxWidth()
-                                .height(ListItemHeight)
-                                .clickable {
-                                    showSelectArtistDialog = false
-                                    onDismiss()
-                                    navController.navigate("artist/${artist.id}")
-                                }.padding(horizontal = 24.dp),
+                        Modifier
+                            .fillParentMaxWidth()
+                            .height(ListItemHeight)
+                            .clickable {
+                                showSelectArtistDialog = false
+                                onDismiss()
+                                navController.navigate("artist/${artist.id}")
+                            }
+                            .padding(horizontal = 24.dp),
                     ) {
                         Text(
                             text = artist.name,
@@ -250,12 +252,12 @@ fun YouTubeAlbumMenu(
 
     GridMenu(
         contentPadding =
-            PaddingValues(
-                start = 8.dp,
-                top = 8.dp,
-                end = 8.dp,
-                bottom = 8.dp + WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
-            ),
+        PaddingValues(
+            start = 8.dp,
+            top = 8.dp,
+            end = 8.dp,
+            bottom = 8.dp + WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
+        ),
     ) {
         GridMenuItem(
             icon = R.drawable.radio,

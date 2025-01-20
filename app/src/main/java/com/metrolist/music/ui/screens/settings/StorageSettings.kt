@@ -62,8 +62,14 @@ fun StorageSettings(
     val downloadCache = LocalPlayerConnection.current?.service?.downloadCache ?: return
 
     val coroutineScope = rememberCoroutineScope()
-    val (maxImageCacheSize, onMaxImageCacheSizeChange) = rememberPreference(key = MaxImageCacheSizeKey, defaultValue = 512)
-    val (maxSongCacheSize, onMaxSongCacheSizeChange) = rememberPreference(key = MaxSongCacheSizeKey, defaultValue = 1024)
+    val (maxImageCacheSize, onMaxImageCacheSizeChange) = rememberPreference(
+        key = MaxImageCacheSizeKey,
+        defaultValue = 512
+    )
+    val (maxSongCacheSize, onMaxSongCacheSizeChange) = rememberPreference(
+        key = MaxSongCacheSizeKey,
+        defaultValue = 1024
+    )
 
     var imageCacheSize by remember {
         mutableStateOf(imageDiskCache.size)
@@ -79,7 +85,10 @@ fun StorageSettings(
         label = "",
     )
     val playerCacheProgress by animateFloatAsState(
-        targetValue = (playerCacheSize.toFloat() / (maxSongCacheSize * 1024 * 1024L)).coerceIn(0f, 1f),
+        targetValue = (playerCacheSize.toFloat() / (maxSongCacheSize * 1024 * 1024L)).coerceIn(
+            0f,
+            1f
+        ),
         label = "",
     )
 
@@ -107,7 +116,13 @@ fun StorageSettings(
             .windowInsetsPadding(LocalPlayerAwareWindowInsets.current.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom))
             .verticalScroll(rememberScrollState()),
     ) {
-        Spacer(Modifier.windowInsetsPadding(LocalPlayerAwareWindowInsets.current.only(WindowInsetsSides.Top)))
+        Spacer(
+            Modifier.windowInsetsPadding(
+                LocalPlayerAwareWindowInsets.current.only(
+                    WindowInsetsSides.Top
+                )
+            )
+        )
 
         PreferenceGroupTitle(
             title = stringResource(R.string.downloaded_songs),
@@ -144,19 +159,21 @@ fun StorageSettings(
             LinearProgressIndicator(
                 progress = { playerCacheProgress },
                 modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 6.dp),
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 6.dp),
             )
 
             Text(
                 text =
-                    stringResource(
-                        R.string.size_used,
-                        "${formatFileSize(playerCacheSize)} / ${formatFileSize(
+                stringResource(
+                    R.string.size_used,
+                    "${formatFileSize(playerCacheSize)} / ${
+                        formatFileSize(
                             maxSongCacheSize * 1024 * 1024L,
-                        )}",
-                    ),
+                        )
+                    }",
+                ),
                 style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp),
             )
@@ -190,13 +207,16 @@ fun StorageSettings(
         LinearProgressIndicator(
             progress = { imageCacheProgress },
             modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 6.dp),
+            Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 6.dp),
         )
 
         Text(
-            text = stringResource(R.string.size_used, "${formatFileSize(imageCacheSize)} / ${formatFileSize(imageDiskCache.maxSize)}"),
+            text = stringResource(
+                R.string.size_used,
+                "${formatFileSize(imageCacheSize)} / ${formatFileSize(imageDiskCache.maxSize)}"
+            ),
             style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp),
         )

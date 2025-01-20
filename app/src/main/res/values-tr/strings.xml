@@ -1,5 +1,5 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    
+
     <!-- Alt gezinme -->
     <string name="home">Ana Sayfa</string>
     <string name="songs">Şarkılar</string>
@@ -252,7 +252,7 @@
     <string name="set_quick_picks">Hızlı Seçimleri Ayarla</string>
     <string name="last_song_listened">Son dinlenen şarkıya göre</string>
     <string name="restart_to_take_effect">Etkili olması için yeniden başlatın</string>
-    
+
     <string name="player_and_audio">Oynatıcı ve ses</string>
     <string name="audio_quality">Ses kalitesi</string>
     <string name="audio_quality_auto">Otomatik</string>
@@ -262,7 +262,7 @@
     <string name="skip_silence">Sessizliği atla</string>
     <string name="audio_normalization">Ses normalizasyonu</string>
     <string name="equalizer">Ekolayzır</string>
-    
+
     <string name="storage">Depolama</string>
     <string name="cache">Önbellek</string>
     <string name="image_cache">Resim Önbelleği</string>
@@ -275,7 +275,7 @@
     <string name="max_song_cache_size">Maksimum şarkı önbellek boyutu</string>
     <string name="clear_song_cache">Şarkı önbelleğini temizle</string>
     <string name="size_used">%s kullanıldı</string>
-    
+
     <string name="privacy">Gizlilik</string>
     <string name="pause_listen_history">Dinleme geçmişini duraklat</string>
     <string name="clear_listen_history">Dinleme geçmişini temizle</string>
@@ -285,7 +285,7 @@
     <string name="clear_search_history_confirm">Tüm arama geçmişini temizlemek istediğinizden emin misiniz?</string>
     <string name="enable_kugou">KuGou şarkı sözleri sağlayıcısını etkinleştir</string>
     <string name="enable_lrclib">LrcLib şarkı sözleri sağlayıcısını etkinleştir</string>
-    
+
     <string name="backup_restore">Yedekleme ve geri yükleme</string>
     <string name="backup">Yedekleme</string>
     <string name="restore">Geri yükle</string>
@@ -293,19 +293,19 @@
     <string name="backup_create_success">Yedekleme başarıyla oluşturuldu</string>
     <string name="backup_create_failed">Yedekleme oluşturulamadı</string>
     <string name="restore_failed">Yedekleme geri yüklenemedi</string>
-    
+
     <string name="about">Hakkında</string>
     <string name="app_version">Uygulama sürümü</string>
-    
+
     <string name="new_version_available">Yeni sürüm mevcut</string>
     <string name="translation_models">Çeviri Modelleri</string>
     <string name="clear_translation_models">Çeviri modellerini temizle</string>
-    
+
     <string name="all_time">Tüm zamanlar</string>
     <string name="past_24_hours">Son 24 saat</string>
     <string name="past_week">Son hafta</string>
     <string name="past_month">Son ay</string>
     <string name="past_year">Son yıl</string>
     <string name="top_length">En İyi listem uzunluğu</string>
-     
+
 </resources>

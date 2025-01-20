@@ -119,7 +119,7 @@ fun HistoryScreen(
     val historySource by viewModel.historySource.collectAsState()
     val events by viewModel.events.collectAsState()
     val historyPage by viewModel.historyPage
-    
+
     val innerTubeCookie by rememberPreference(InnerTubeCookieKey, "")
     val isLoggedIn = remember(innerTubeCookie) {
         "SAPISID" in parseCookieString(innerTubeCookie)
@@ -146,7 +146,12 @@ fun HistoryScreen(
             events.mapValues { (_, songs) ->
                 songs.filter { event ->
                     event.song.song.title.contains(query.text, ignoreCase = true) ||
-                    event.song.artists.any { it.name.contains(query.text, ignoreCase = true) }
+                            event.song.artists.any {
+                                it.name.contains(
+                                    query.text,
+                                    ignoreCase = true
+                                )
+                            }
                 }
             }.filterValues { it.isNotEmpty() }
         }
@@ -160,7 +165,7 @@ fun HistoryScreen(
                 section.copy(
                     songs = section.songs.filter { song ->
                         song.title.contains(query.text, ignoreCase = true) ||
-                        song.artists.any { it.name.contains(query.text, ignoreCase = true) }
+                                song.artists.any { it.name.contains(query.text, ignoreCase = true) }
                     }
                 )
             }?.filter { it.songs.isNotEmpty() }
@@ -176,8 +181,13 @@ fun HistoryScreen(
     Box(Modifier.fillMaxSize()) {
         LazyColumn(
             state = lazyListState,
-            contentPadding = LocalPlayerAwareWindowInsets.current.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom).asPaddingValues(),
-            modifier = Modifier.windowInsetsPadding(LocalPlayerAwareWindowInsets.current.only(WindowInsetsSides.Top))
+            contentPadding = LocalPlayerAwareWindowInsets.current.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom)
+                .asPaddingValues(),
+            modifier = Modifier.windowInsetsPadding(
+                LocalPlayerAwareWindowInsets.current.only(
+                    WindowInsetsSides.Top
+                )
+            )
         ) {
             item {
                 ChipsRow(
@@ -408,9 +418,11 @@ fun HistoryScreen(
                             isSearching = false
                             query = TextFieldValue()
                         }
+
                         selection -> {
                             selection = false
                         }
+
                         else -> {
                             navController.navigateUp()
                         }

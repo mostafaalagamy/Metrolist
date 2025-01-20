@@ -78,23 +78,44 @@ fun AppearanceSettings(
     navController: NavController,
     scrollBehavior: TopAppBarScrollBehavior,
 ) {
-    val (dynamicTheme, onDynamicThemeChange) = rememberPreference(DynamicThemeKey, defaultValue = true)
-    val (darkMode, onDarkModeChange) = rememberEnumPreference(DarkModeKey, defaultValue = DarkMode.AUTO)
+    val (dynamicTheme, onDynamicThemeChange) = rememberPreference(
+        DynamicThemeKey,
+        defaultValue = true
+    )
+    val (darkMode, onDarkModeChange) = rememberEnumPreference(
+        DarkModeKey,
+        defaultValue = DarkMode.AUTO
+    )
     val (playerBackground, onPlayerBackgroundChange) =
         rememberEnumPreference(
             PlayerBackgroundStyleKey,
             defaultValue = PlayerBackgroundStyle.DEFAULT,
         )
     val (pureBlack, onPureBlackChange) = rememberPreference(PureBlackKey, defaultValue = false)
-    val (defaultOpenTab, onDefaultOpenTabChange) = rememberEnumPreference(DefaultOpenTabKey, defaultValue = NavigationTab.HOME)
-    val (lyricsPosition, onLyricsPositionChange) = rememberEnumPreference(LyricsTextPositionKey, defaultValue = LyricsPosition.CENTER)
+    val (defaultOpenTab, onDefaultOpenTabChange) = rememberEnumPreference(
+        DefaultOpenTabKey,
+        defaultValue = NavigationTab.HOME
+    )
+    val (lyricsPosition, onLyricsPositionChange) = rememberEnumPreference(
+        LyricsTextPositionKey,
+        defaultValue = LyricsPosition.CENTER
+    )
     val (lyricsClick, onLyricsClickChange) = rememberPreference(LyricsClickKey, defaultValue = true)
-    val (sliderStyle, onSliderStyleChange) = rememberEnumPreference(SliderStyleKey, defaultValue = SliderStyle.DEFAULT)
-    val (swipeThumbnail, onSwipeThumbnailChange) = rememberPreference(SwipeThumbnailKey, defaultValue = true)
-    val (gridItemSize, onGridItemSizeChange) = rememberEnumPreference(GridItemsSizeKey, defaultValue = GridItemSize.BIG)
+    val (sliderStyle, onSliderStyleChange) = rememberEnumPreference(
+        SliderStyleKey,
+        defaultValue = SliderStyle.DEFAULT
+    )
+    val (swipeThumbnail, onSwipeThumbnailChange) = rememberPreference(
+        SwipeThumbnailKey,
+        defaultValue = true
+    )
+    val (gridItemSize, onGridItemSizeChange) = rememberEnumPreference(
+        GridItemsSizeKey,
+        defaultValue = GridItemSize.BIG
+    )
 
     val (slimNav, onSlimNavChange) = rememberPreference(SlimNavBarKey, defaultValue = false)
-    
+
     val availableBackgroundStyles = PlayerBackgroundStyle.entries.filter {
         it != PlayerBackgroundStyle.BLUR || Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
     }
@@ -105,7 +126,10 @@ fun AppearanceSettings(
             if (darkMode == DarkMode.AUTO) isSystemInDarkTheme else darkMode == DarkMode.ON
         }
 
-    val (defaultChip, onDefaultChipChange) = rememberEnumPreference(key = ChipSortTypeKey, defaultValue = LibraryFilter.LIBRARY)
+    val (defaultChip, onDefaultChipChange) = rememberEnumPreference(
+        key = ChipSortTypeKey,
+        defaultValue = LibraryFilter.LIBRARY
+    )
 
     var showSliderOptionDialog by rememberSaveable {
         mutableStateOf(false)
@@ -237,7 +261,7 @@ fun AppearanceSettings(
                                 )
                             }
                     )
-                    
+
                     Text(
                         text = stringResource(R.string.slim),
                         style = MaterialTheme.typography.labelLarge
@@ -307,11 +331,11 @@ fun AppearanceSettings(
         PreferenceEntry(
             title = { Text(stringResource(R.string.player_slider_style)) },
             description =
-                when (sliderStyle) {
-                    SliderStyle.DEFAULT -> stringResource(R.string.default_)
-                    SliderStyle.SQUIGGLY -> stringResource(R.string.squiggly)
-                    SliderStyle.SLIM -> stringResource(R.string.slim)
-                },
+            when (sliderStyle) {
+                SliderStyle.DEFAULT -> stringResource(R.string.default_)
+                SliderStyle.SQUIGGLY -> stringResource(R.string.squiggly)
+                SliderStyle.SLIM -> stringResource(R.string.slim)
+            },
             icon = { Icon(painterResource(R.drawable.sliders), null) },
             onClick = {
                 showSliderOptionDialog = true

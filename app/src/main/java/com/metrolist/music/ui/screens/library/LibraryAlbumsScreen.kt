@@ -82,7 +82,10 @@ fun LibraryAlbumsScreen(
 
     var viewType by rememberEnumPreference(AlbumViewTypeKey, LibraryViewType.GRID)
     var filter by rememberEnumPreference(AlbumFilterKey, AlbumFilter.LIKED)
-    val (sortType, onSortTypeChange) = rememberEnumPreference(AlbumSortTypeKey, AlbumSortType.CREATE_DATE)
+    val (sortType, onSortTypeChange) = rememberEnumPreference(
+        AlbumSortTypeKey,
+        AlbumSortType.CREATE_DATE
+    )
     val (sortDescending, onSortDescendingChange) = rememberPreference(AlbumSortDescendingKey, true)
     val gridItemSize by rememberEnumPreference(GridItemsSizeKey, GridItemSize.BIG)
 
@@ -103,10 +106,10 @@ fun LibraryAlbumsScreen(
             )
             ChipsRow(
                 chips =
-                    listOf(
-                        AlbumFilter.LIKED to stringResource(R.string.filter_liked),
-                        AlbumFilter.LIBRARY to stringResource(R.string.filter_library)
-                    ),
+                listOf(
+                    AlbumFilter.LIKED to stringResource(R.string.filter_liked),
+                    AlbumFilter.LIBRARY to stringResource(R.string.filter_library)
+                ),
                 currentValue = filter,
                 onValueUpdate = {
                     filter = it
@@ -131,7 +134,8 @@ fun LibraryAlbumsScreen(
     val lazyListState = rememberLazyListState()
     val lazyGridState = rememberLazyGridState()
     val backStackEntry by navController.currentBackStackEntryAsState()
-    val scrollToTop = backStackEntry?.savedStateHandle?.getStateFlow("scrollToTop", false)?.collectAsState()
+    val scrollToTop =
+        backStackEntry?.savedStateHandle?.getStateFlow("scrollToTop", false)?.collectAsState()
 
     LaunchedEffect(scrollToTop?.value) {
         if (scrollToTop?.value == true) {
@@ -182,12 +186,12 @@ fun LibraryAlbumsScreen(
             ) {
                 Icon(
                     painter =
-                        painterResource(
-                            when (viewType) {
-                                LibraryViewType.LIST -> R.drawable.list
-                                LibraryViewType.GRID -> R.drawable.grid_view
-                            },
-                        ),
+                    painterResource(
+                        when (viewType) {
+                            LibraryViewType.LIST -> R.drawable.list
+                            LibraryViewType.GRID -> R.drawable.grid_view
+                        },
+                    ),
                     contentDescription = null,
                 )
             }
@@ -243,15 +247,15 @@ fun LibraryAlbumsScreen(
                             )
                         }
                     }
-            }
+                }
 
             LibraryViewType.GRID ->
                 LazyVerticalGrid(
                     state = lazyGridState,
                     columns =
-                        GridCells.Adaptive(
-                            minSize = GridThumbnailHeight + if (gridItemSize == GridItemSize.BIG) 24.dp else (-24).dp,
-                        ),
+                    GridCells.Adaptive(
+                        minSize = GridThumbnailHeight + if (gridItemSize == GridItemSize.BIG) 24.dp else (-24).dp,
+                    ),
                     contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues(),
                 ) {
                     item(
@@ -297,7 +301,7 @@ fun LibraryAlbumsScreen(
                             )
                         }
                     }
-            }
+                }
         }
     }
 }

@@ -23,12 +23,12 @@ fun LibraryScreen(navController: NavController) {
         Row {
             ChipsRow(
                 chips =
-                    listOf(
-                        LibraryFilter.PLAYLISTS to stringResource(R.string.filter_playlists),
-                        LibraryFilter.SONGS to stringResource(R.string.filter_songs),
-                        LibraryFilter.ALBUMS to stringResource(R.string.filter_albums),
-                        LibraryFilter.ARTISTS to stringResource(R.string.filter_artists),
-                    ),
+                listOf(
+                    LibraryFilter.PLAYLISTS to stringResource(R.string.filter_playlists),
+                    LibraryFilter.SONGS to stringResource(R.string.filter_songs),
+                    LibraryFilter.ALBUMS to stringResource(R.string.filter_albums),
+                    LibraryFilter.ARTISTS to stringResource(R.string.filter_artists),
+                ),
                 currentValue = filterType,
                 onValueUpdate = {
                     filterType =
@@ -49,9 +49,17 @@ fun LibraryScreen(navController: NavController) {
         when (filterType) {
             LibraryFilter.LIBRARY -> LibraryMixScreen(navController, filterContent)
             LibraryFilter.PLAYLISTS -> LibraryPlaylistsScreen(navController, filterContent)
-            LibraryFilter.SONGS -> LibrarySongsScreen(navController, { filterType = LibraryFilter.LIBRARY })
-            LibraryFilter.ALBUMS -> LibraryAlbumsScreen(navController, { filterType = LibraryFilter.LIBRARY })
-            LibraryFilter.ARTISTS -> LibraryArtistsScreen(navController, { filterType = LibraryFilter.LIBRARY })
+            LibraryFilter.SONGS -> LibrarySongsScreen(
+                navController,
+                { filterType = LibraryFilter.LIBRARY })
+
+            LibraryFilter.ALBUMS -> LibraryAlbumsScreen(
+                navController,
+                { filterType = LibraryFilter.LIBRARY })
+
+            LibraryFilter.ARTISTS -> LibraryArtistsScreen(
+                navController,
+                { filterType = LibraryFilter.LIBRARY })
         }
     }
 }

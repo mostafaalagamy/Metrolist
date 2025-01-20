@@ -64,7 +64,8 @@ fun ReleaseNotesCard() {
 suspend fun fetchReleaseNotesText(): List<String> {
     return withContext(Dispatchers.IO) {
         try {
-            val document = Jsoup.connect("https://github.com/mostafaalagamy/Metrolist/releases/latest").get()
+            val document =
+                Jsoup.connect("https://github.com/mostafaalagamy/Metrolist/releases/latest").get()
             val changelogElement = document.selectFirst(".markdown-body")
             val htmlContent = changelogElement?.html() ?: "No release notes found"
 

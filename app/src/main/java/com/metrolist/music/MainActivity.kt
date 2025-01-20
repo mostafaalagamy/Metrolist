@@ -118,6 +118,7 @@ import java.util.Locale
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.days
 
+@Suppress("DEPRECATION")
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     @Inject
@@ -172,10 +173,10 @@ class MainActivity : ComponentActivity() {
     override fun attachBaseContext(newBase: Context) {
         val sharedPreferences = newBase.getSharedPreferences("app_settings", Context.MODE_PRIVATE)
         val savedLanguage = sharedPreferences.getString("app_language", Locale.getDefault().language) ?: "en"
-        
+
         val localeManager = LocaleManager(newBase)
         localeManager.updateLocale(savedLanguage)
-        
+
         super.attachBaseContext(newBase)
     }
 
@@ -186,7 +187,7 @@ class MainActivity : ComponentActivity() {
         window.decorView.layoutDirection = View.LAYOUT_DIRECTION_LTR
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
-	lifecycleScope.launch {
+        lifecycleScope.launch {
             dataStore.data
                 .map { it[DisableScreenshotKey] ?: false }
                 .distinctUntilChanged()
@@ -200,7 +201,7 @@ class MainActivity : ComponentActivity() {
                         window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
                     }
                 }
-	}
+        }
 
         intent?.let { handlevideoIdIntent(it) }
 
@@ -211,7 +212,7 @@ class MainActivity : ComponentActivity() {
                         latestVersionName = it
                     }
                 }
-	    }
+            }
 
             val enableDynamicTheme by rememberPreference(DynamicThemeKey, defaultValue = true)
             val darkTheme by rememberEnumPreference(DarkModeKey, defaultValue = DarkMode.AUTO)
@@ -261,9 +262,9 @@ class MainActivity : ComponentActivity() {
             ) {
                 BoxWithConstraints(
                     modifier =
-                        Modifier
-                            .fillMaxSize()
-                            .background(MaterialTheme.colorScheme.surface),
+                    Modifier
+                        .fillMaxSize()
+                        .background(MaterialTheme.colorScheme.surface),
                 ) {
                     val focusManager = LocalFocusManager.current
                     val density = LocalDensity.current
@@ -274,7 +275,7 @@ class MainActivity : ComponentActivity() {
                     val navBackStackEntry by navController.currentBackStackEntryAsState()
 
                     val navigationItems = remember { Screens.MainScreens }
-		    val (slimNav) = rememberPreference(SlimNavBarKey, defaultValue = false)
+                    val (slimNav) = rememberPreference(SlimNavBarKey, defaultValue = false)
                     val defaultOpenTab =
                         remember {
                             dataStore[DefaultOpenTabKey].toEnum(defaultValue = NavigationTab.HOME)
@@ -299,13 +300,13 @@ class MainActivity : ComponentActivity() {
                     val (query, onQueryChange) =
                         rememberSaveable(stateSaver = TextFieldValue.Saver) {
                             mutableStateOf(TextFieldValue())
-			}
+                        }
 
                     var active by rememberSaveable {
                         mutableStateOf(false)
-		    }
+                    }
 
-		    val onActiveChange: (Boolean) -> Unit = { newActive ->
+                    val onActiveChange: (Boolean) -> Unit = { newActive ->
                         active = newActive
                         if (!newActive) {
                             focusManager.clearFocus()
@@ -333,22 +334,22 @@ class MainActivity : ComponentActivity() {
 
                     var openSearchImmediately: Boolean by remember {
                         mutableStateOf(intent?.action == ACTION_SEARCH)
-		    }
+                    }
 
-		    val shouldShowSearchBar =
+                    val shouldShowSearchBar =
                         remember(active, navBackStackEntry) {
                             active ||
-                                navigationItems.fastAny { it.route == navBackStackEntry?.destination?.route } ||
-                                navBackStackEntry?.destination?.route?.startsWith("search/") == true
-			}
+                                    navigationItems.fastAny { it.route == navBackStackEntry?.destination?.route } ||
+                                    navBackStackEntry?.destination?.route?.startsWith("search/") == true
+                        }
 
-		    val shouldShowNavigationBar =
+                    val shouldShowNavigationBar =
                         remember(navBackStackEntry, active) {
                             navBackStackEntry?.destination?.route == null ||
-                                navigationItems.fastAny { it.route == navBackStackEntry?.destination?.route } &&
-                                !active
-			}
-			
+                                    navigationItems.fastAny { it.route == navBackStackEntry?.destination?.route } &&
+                                    !active
+                        }
+
                     val navigationBarHeight by animateDpAsState(
                         targetValue = if (shouldShowNavigationBar) NavigationBarHeight else 0.dp,
                         animationSpec = NavigationBarAnimationSpec,
@@ -376,14 +377,14 @@ class MainActivity : ComponentActivity() {
                         appBarScrollBehavior(
                             canScroll = {
                                 navBackStackEntry?.destination?.route?.startsWith("search/") == false &&
-                                    (playerBottomSheetState.isCollapsed || playerBottomSheetState.isDismissed)
+                                        (playerBottomSheetState.isCollapsed || playerBottomSheetState.isDismissed)
                             },
                         )
                     val topAppBarScrollBehavior =
                         appBarScrollBehavior(
                             canScroll = {
                                 navBackStackEntry?.destination?.route?.startsWith("search/") == false &&
-                                    (playerBottomSheetState.isCollapsed || playerBottomSheetState.isDismissed)
+                                        (playerBottomSheetState.isCollapsed || playerBottomSheetState.isDismissed)
                             },
                         )
 
@@ -418,7 +419,7 @@ class MainActivity : ComponentActivity() {
                         if (active) {
                             searchBarScrollBehavior.state.resetHeightOffset()
                             topAppBarScrollBehavior.state.resetHeightOffset()
-			    searchBarFocusRequester.requestFocus()
+                            searchBarFocusRequester.requestFocus()
                         }
                     }
 
@@ -485,10 +486,10 @@ class MainActivity : ComponentActivity() {
                                             }
                                         }
 
-				    "browse" ->
-					uri.lastPathSegment?.let { browseId ->
+                                    "browse" ->
+                                        uri.lastPathSegment?.let { browseId ->
                                             navController.navigate("album/$browseId")
-					}
+                                        }
 
                                     "channel", "c" ->
                                         uri.lastPathSegment?.let { artistId ->
@@ -501,24 +502,24 @@ class MainActivity : ComponentActivity() {
                                             uri.host == "youtu.be" -> path
                                             else -> null
                                         }?.let { videoId ->
-                                    coroutineScope.launch {
-                                        withContext(Dispatchers.IO) {
-                                            YouTube.queue(listOf(videoId))
-                                        }.onSuccess {
-                                            playerConnection?.playQueue(YouTubeQueue(WatchEndpoint(videoId = it.firstOrNull()?.id), it.firstOrNull()?.toMediaMetadata()))
-                                        }.onFailure {
-                                            reportException(it)
+                                            coroutineScope.launch {
+                                                withContext(Dispatchers.IO) {
+                                                    YouTube.queue(listOf(videoId))
+                                                }.onSuccess {
+                                                    playerConnection?.playQueue(YouTubeQueue(WatchEndpoint(videoId = it.firstOrNull()?.id), it.firstOrNull()?.toMediaMetadata()))
+                                                }.onFailure {
+                                                    reportException(it)
+                                                }
+                                            }
                                         }
-                                    }
                                 }
                             }
-                        }
 
                         addOnNewIntentListener(listener)
                         onDispose { removeOnNewIntentListener(listener) }
                     }
 
-		    CompositionLocalProvider(
+                    CompositionLocalProvider(
                         LocalDatabase provides database,
                         LocalContentColor provides contentColorFor(MaterialTheme.colorScheme.surface),
                         LocalPlayerConnection provides playerConnection,
@@ -527,7 +528,7 @@ class MainActivity : ComponentActivity() {
                         LocalShimmerTheme provides ShimmerTheme,
                         LocalSyncUtils provides syncUtils
                     ) {
-	                NavHost(
+                        NavHost(
                             navController = navController,
                             startDestination = when (tabOpenedFromShortcut ?: defaultOpenTab) {
                                 NavigationTab.HOME -> Screens.Home
@@ -537,21 +538,21 @@ class MainActivity : ComponentActivity() {
                             enterTransition = {
                                 val currentTab = initialState.destination.route
                                 val targetTab = targetState.destination.route
-        
+
                                 val direction = when {
                                     targetTab == "settings" -> AnimatedContentTransitionScope.SlideDirection.Left
-            
+
                                     currentTab in topLevelScreens && targetTab in topLevelScreens -> {
                                         val currentIndex = navigationItems.indexOfFirst { it.route == currentTab }
                                         val targetIndex = navigationItems.indexOfFirst { it.route == targetTab }
-                                        if (targetIndex > currentIndex) 
+                                        if (targetIndex > currentIndex)
                                             AnimatedContentTransitionScope.SlideDirection.Left
-                                        else 
+                                        else
                                             AnimatedContentTransitionScope.SlideDirection.Right
                                     }
                                     else -> AnimatedContentTransitionScope.SlideDirection.Left
                                 }
-        
+
                                 slideIntoContainer(
                                     towards = direction,
                                     animationSpec = tween(200)
@@ -560,21 +561,21 @@ class MainActivity : ComponentActivity() {
                             exitTransition = {
                                 val currentTab = initialState.destination.route
                                 val targetTab = targetState.destination.route
-        
+
                                 val direction = when {
                                     targetTab == "settings" -> AnimatedContentTransitionScope.SlideDirection.Left
-            
+
                                     currentTab in topLevelScreens && targetTab in topLevelScreens -> {
                                         val currentIndex = navigationItems.indexOfFirst { it.route == currentTab }
                                         val targetIndex = navigationItems.indexOfFirst { it.route == targetTab }
-                                        if (targetIndex > currentIndex) 
+                                        if (targetIndex > currentIndex)
                                             AnimatedContentTransitionScope.SlideDirection.Left
-                                        else 
+                                        else
                                             AnimatedContentTransitionScope.SlideDirection.Right
                                     }
                                     else -> AnimatedContentTransitionScope.SlideDirection.Left
                                 }
-        
+
                                 slideOutOfContainer(
                                     towards = direction,
                                     animationSpec = tween(200)
@@ -582,7 +583,7 @@ class MainActivity : ComponentActivity() {
                             },
                             popEnterTransition = {
                                 val currentTab = initialState.destination.route
-        
+
                                 if (currentTab == "settings") {
                                     slideIntoContainer(
                                         towards = AnimatedContentTransitionScope.SlideDirection.Right,
@@ -597,7 +598,7 @@ class MainActivity : ComponentActivity() {
                             },
                             popExitTransition = {
                                 val currentTab = initialState.destination.route
-        
+
                                 if (currentTab == "settings") {
                                     slideOutOfContainer(
                                         towards = AnimatedContentTransitionScope.SlideDirection.Right,
@@ -621,61 +622,61 @@ class MainActivity : ComponentActivity() {
                             )
                         ) {
                             navigationBuilder(navController, topAppBarScrollBehavior, latestVersionName)
-		   	    }
+                        }
 
-			val currentTitle = remember(navBackStackEntry) {
- 			    when (navBackStackEntry?.destination?.route) {
-        			Screens.Home.route -> R.string.home
-        			Screens.Explore.route -> R.string.explore
-        			Screens.Library.route -> R.string.filter_library
-        			else -> null
-    			    }
-			}
+                        val currentTitle = remember(navBackStackEntry) {
+                            when (navBackStackEntry?.destination?.route) {
+                                Screens.Home.route -> R.string.home
+                                Screens.Explore.route -> R.string.explore
+                                Screens.Library.route -> R.string.filter_library
+                                else -> null
+                            }
+                        }
 
                         if (!active && navBackStackEntry?.destination?.route in topLevelScreens && navBackStackEntry?.destination?.route != "settings") {
                             AnimatedVisibility(
-                            visible = true,
-                            enter = slideInVertically(
-                                initialOffsetY = { it },
-                                animationSpec = tween(800)
-                            ),
-                            exit = slideOutVertically(
-                                targetOffsetY = { it },
-                                animationSpec = tween(800)
-                            )
-                        ) {
-                            TopAppBar(
-                                title = { 
-                                    Text(
-                                        text = currentTitle?.let { stringResource(it) } ?: "",
-                                        style = MaterialTheme.typography.titleLarge,
-                                    ) 
-                                },
-                                actions = {
-                                    IconButton(onClick = { onActiveChange(true) }) {
-                                        Icon(
-                                            painter = painterResource(R.drawable.search),
-                                            contentDescription = stringResource(R.string.search)
+                                visible = true,
+                                enter = slideInVertically(
+                                    initialOffsetY = { it },
+                                    animationSpec = tween(800)
+                                ),
+                                exit = slideOutVertically(
+                                    targetOffsetY = { it },
+                                    animationSpec = tween(800)
+                                )
+                            ) {
+                                TopAppBar(
+                                    title = {
+                                        Text(
+                                            text = currentTitle?.let { stringResource(it) } ?: "",
+                                            style = MaterialTheme.typography.titleLarge,
                                         )
-                                    }
-                                    IconButton(onClick = { navController.navigate("settings") }) {
-                                        BadgedBox(badge = {
-                                            if (latestVersionName != BuildConfig.VERSION_NAME) {
-                                                Badge()
-                                            }
-                                        }) {
+                                    },
+                                    actions = {
+                                        IconButton(onClick = { onActiveChange(true) }) {
                                             Icon(
-                                                painter = painterResource(R.drawable.settings),
-                                                contentDescription = stringResource(R.string.settings),
-                                                modifier = Modifier.size(24.dp)
+                                                painter = painterResource(R.drawable.search),
+                                                contentDescription = stringResource(R.string.search)
                                             )
                                         }
-                                    }
-                                },
-                                scrollBehavior =
-		                    searchBarScrollBehavior
+                                        IconButton(onClick = { navController.navigate("settings") }) {
+                                            BadgedBox(badge = {
+                                                if (latestVersionName != BuildConfig.VERSION_NAME) {
+                                                    Badge()
+                                                }
+                                            }) {
+                                                Icon(
+                                                    painter = painterResource(R.drawable.settings),
+                                                    contentDescription = stringResource(R.string.settings),
+                                                    modifier = Modifier.size(24.dp)
+                                                )
+                                            }
+                                        }
+                                    },
+                                    scrollBehavior =
+                                    searchBarScrollBehavior
                                 )
-			    }
+                            }
                         } else if (active || navBackStackEntry?.destination?.route?.startsWith("search/") == true) {
                             TopSearch(
                                 query = query,
@@ -718,7 +719,7 @@ class MainActivity : ComponentActivity() {
                                         Icon(
                                             painterResource(
                                                 if (active ||
-                                                !navigationItems.fastAny { it.route == navBackStackEntry?.destination?.route }
+                                                    !navigationItems.fastAny { it.route == navBackStackEntry?.destination?.route }
                                                 ) {
                                                     R.drawable.arrow_back
                                                 } else {
@@ -762,19 +763,19 @@ class MainActivity : ComponentActivity() {
                                     }
                                 },
                                 modifier =
-			            Modifier
-                                       .focusRequester(searchBarFocusRequester)
-                                       .align(Alignment.TopCenter),
+                                Modifier
+                                    .focusRequester(searchBarFocusRequester)
+                                    .align(Alignment.TopCenter),
                                 focusRequester = searchBarFocusRequester
                             ) {
                                 Crossfade(
                                     targetState = searchSource,
                                     label = "",
                                     modifier =
-                                        Modifier
-                                            .fillMaxSize()
-                                            .padding(bottom = if (!playerBottomSheetState.isDismissed) MiniPlayerHeight else 0.dp)
-                                            .navigationBarsPadding(),
+                                    Modifier
+                                        .fillMaxSize()
+                                        .padding(bottom = if (!playerBottomSheetState.isDismissed) MiniPlayerHeight else 0.dp)
+                                        .navigationBarsPadding(),
                                 ) { searchSource ->
                                     when (searchSource) {
                                         SearchSource.LOCAL ->
@@ -802,7 +803,7 @@ class MainActivity : ComponentActivity() {
                                     }
                                 }
                             }
-			}
+                        }
 
                         BottomSheetPlayer(
                             state = playerBottomSheetState,
@@ -821,10 +822,10 @@ class MainActivity : ComponentActivity() {
                                     } else {
                                         val slideOffset =
                                             (bottomInset + NavigationBarHeight) *
-                                                playerBottomSheetState.progress.coerceIn(
-                                                    0f,
-                                                    1f,
-                                                )
+                                                    playerBottomSheetState.progress.coerceIn(
+                                                        0f,
+                                                        1f,
+                                                    )
                                         val hideOffset =
                                             (bottomInset + NavigationBarHeight) * (1 - navigationBarHeight / NavigationBarHeight)
                                         IntOffset(
@@ -882,7 +883,7 @@ class MainActivity : ComponentActivity() {
                         )
 
                         sharedSong?.let { song ->
-                            playerConnection?.let { playerConnection ->
+                            playerConnection?.let {
                                 Dialog(
                                     onDismissRequest = { sharedSong = null },
                                     properties = DialogProperties(usePlatformDefaultWidth = false),
@@ -910,11 +911,11 @@ class MainActivity : ComponentActivity() {
 
                     LaunchedEffect(shouldShowSearchBar, openSearchImmediately) {
                         if (shouldShowSearchBar && openSearchImmediately) {
-		            onActiveChange(true)
+                            onActiveChange(true)
                             try {
                                 delay(100)
                                 searchBarFocusRequester.requestFocus()
-                            } catch (e: Exception) {
+                            } catch (_: Exception) {
                             }
                             openSearchImmediately = false
                         }

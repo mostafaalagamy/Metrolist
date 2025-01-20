@@ -27,24 +27,24 @@ fun ListItemPlaceHolder(
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier =
-            modifier
-                .height(ListItemHeight)
-                .padding(horizontal = 6.dp),
+        modifier
+            .height(ListItemHeight)
+            .padding(horizontal = 6.dp),
     ) {
         Spacer(
             modifier =
-                Modifier
-                    .padding(6.dp)
-                    .size(ListThumbnailSize)
-                    .clip(thumbnailShape)
-                    .background(MaterialTheme.colorScheme.onSurface),
+            Modifier
+                .padding(6.dp)
+                .size(ListThumbnailSize)
+                .clip(thumbnailShape)
+                .background(MaterialTheme.colorScheme.onSurface),
         )
 
         Column(
             modifier =
-                Modifier
-                    .weight(1f)
-                    .padding(horizontal = 6.dp),
+            Modifier
+                .weight(1f)
+                .padding(horizontal = 6.dp),
         ) {
             TextPlaceholder()
             TextPlaceholder()

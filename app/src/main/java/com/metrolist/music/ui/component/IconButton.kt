@@ -46,14 +46,14 @@ fun ResizableIconButton(
         contentDescription = null,
         colorFilter = ColorFilter.tint(color),
         modifier =
-            Modifier
-                .clickable(
-                    indication = indication ?: ripple(bounded = false),
-                    interactionSource = remember { MutableInteractionSource() },
-                    enabled = enabled,
-                    onClick = onClick,
-                ).alpha(if (enabled) 1f else 0.5f)
-                .then(modifier),
+        Modifier
+            .clickable(
+                indication = indication ?: ripple(bounded = false),
+                interactionSource = remember { MutableInteractionSource() },
+                enabled = enabled,
+                onClick = onClick,
+            ).alpha(if (enabled) 1f else 0.5f)
+            .then(modifier),
     )
 }
 
@@ -70,23 +70,23 @@ fun IconButton(
 ) {
     Box(
         modifier =
-            modifier
-                .minimumInteractiveComponentSize()
-                .size(IconButtonTokens.StateLayerSize)
-                .clip(CircleShape)
-                .background(color = colors.containerColor(enabled))
-                .combinedClickable(
-                    onClick = onClick,
-                    onLongClick = onLongClick,
-                    enabled = enabled,
-                    role = Role.Button,
-                    interactionSource = interactionSource,
-                    indication =
-                        ripple(
-                            bounded = false,
-                            radius = IconButtonTokens.StateLayerSize / 2,
-                        ),
+        modifier
+            .minimumInteractiveComponentSize()
+            .size(IconButtonTokens.StateLayerSize)
+            .clip(CircleShape)
+            .background(color = colors.containerColor(enabled))
+            .combinedClickable(
+                onClick = onClick,
+                onLongClick = onLongClick,
+                enabled = enabled,
+                role = Role.Button,
+                interactionSource = interactionSource,
+                indication =
+                ripple(
+                    bounded = false,
+                    radius = IconButtonTokens.StateLayerSize / 2,
                 ),
+            ),
         contentAlignment = Alignment.Center,
     ) {
         val contentColor = colors.contentColor(enabled)

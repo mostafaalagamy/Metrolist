@@ -126,25 +126,27 @@ fun YouTubeSongMenu(
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier =
+                    Modifier
+                        .height(ListItemHeight)
+                        .clickable {
+                            navController.navigate("artist/${artist.id}")
+                            showSelectArtistDialog = false
+                            onDismiss()
+                        }
+                        .padding(horizontal = 12.dp),
+                ) {
+                    Box(
+                        contentAlignment = Alignment.CenterStart,
+                        modifier =
                         Modifier
+                            .fillParentMaxWidth()
                             .height(ListItemHeight)
                             .clickable {
                                 navController.navigate("artist/${artist.id}")
                                 showSelectArtistDialog = false
                                 onDismiss()
-                            }.padding(horizontal = 12.dp),
-                ) {
-                    Box(
-                        contentAlignment = Alignment.CenterStart,
-                        modifier =
-                            Modifier
-                                .fillParentMaxWidth()
-                                .height(ListItemHeight)
-                                .clickable {
-                                    navController.navigate("artist/${artist.id}")
-                                    showSelectArtistDialog = false
-                                    onDismiss()
-                                }.padding(horizontal = 24.dp),
+                            }
+                            .padding(horizontal = 24.dp),
                     ) {
                         Text(
                             text = artist.name,
@@ -162,18 +164,18 @@ fun YouTubeSongMenu(
     ListItem(
         title = song.title,
         subtitle =
-            joinByBullet(
-                song.artists.joinToString { it.name },
-                song.duration?.let { makeTimeString(it * 1000L) },
-            ),
+        joinByBullet(
+            song.artists.joinToString { it.name },
+            song.duration?.let { makeTimeString(it * 1000L) },
+        ),
         thumbnailContent = {
             AsyncImage(
                 model = song.thumbnail,
                 contentDescription = null,
                 modifier =
-                    Modifier
-                        .size(ListThumbnailSize)
-                        .clip(RoundedCornerShape(ThumbnailCornerRadius)),
+                Modifier
+                    .size(ListThumbnailSize)
+                    .clip(RoundedCornerShape(ThumbnailCornerRadius)),
             )
         },
         trailingContent = {
@@ -203,12 +205,12 @@ fun YouTubeSongMenu(
 
     GridMenu(
         contentPadding =
-            PaddingValues(
-                start = 8.dp,
-                top = 8.dp,
-                end = 8.dp,
-                bottom = 8.dp + WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
-            ),
+        PaddingValues(
+            start = 8.dp,
+            top = 8.dp,
+            end = 8.dp,
+            bottom = 8.dp + WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
+        ),
     ) {
         GridMenuItem(
             icon = R.drawable.radio,

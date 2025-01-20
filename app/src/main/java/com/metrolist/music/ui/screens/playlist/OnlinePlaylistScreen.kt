@@ -147,7 +147,12 @@ fun OnlinePlaylistScreen(
                     .mapIndexed { index, song -> index to song }
                     .filter { (_, song) ->
                         song.title.contains(query.text, ignoreCase = true) ||
-                            song.artists.fastAny { it.name.contains(query.text, ignoreCase = true) }
+                                song.artists.fastAny {
+                                    it.name.contains(
+                                        query.text,
+                                        ignoreCase = true
+                                    )
+                                }
                     }
             }
         }
@@ -177,7 +182,8 @@ fun OnlinePlaylistScreen(
     ) {
         LazyColumn(
             state = lazyListState,
-            contentPadding = LocalPlayerAwareWindowInsets.current.union(WindowInsets.ime).asPaddingValues(),
+            contentPadding = LocalPlayerAwareWindowInsets.current.union(WindowInsets.ime)
+                .asPaddingValues(),
         ) {
             playlist.let { playlist ->
                 if (playlist != null) {
@@ -185,9 +191,9 @@ fun OnlinePlaylistScreen(
                         item {
                             Column(
                                 modifier =
-                                    Modifier
-                                        .padding(12.dp)
-                                        .animateItem(),
+                                Modifier
+                                    .padding(12.dp)
+                                    .animateItem(),
                             ) {
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically,
@@ -196,9 +202,9 @@ fun OnlinePlaylistScreen(
                                         model = playlist.thumbnail,
                                         contentDescription = null,
                                         modifier =
-                                            Modifier
-                                                .size(AlbumThumbnailSize)
-                                                .clip(RoundedCornerShape(ThumbnailCornerRadius)),
+                                        Modifier
+                                            .size(AlbumThumbnailSize)
+                                            .clip(RoundedCornerShape(ThumbnailCornerRadius)),
                                     )
 
                                     Spacer(Modifier.width(16.dp))
@@ -219,11 +225,11 @@ fun OnlinePlaylistScreen(
                                                 buildAnnotatedString {
                                                     withStyle(
                                                         style =
-                                                            MaterialTheme.typography.titleMedium
-                                                                .copy(
-                                                                    fontWeight = FontWeight.Normal,
-                                                                    color = MaterialTheme.colorScheme.onBackground,
-                                                                ).toSpanStyle(),
+                                                        MaterialTheme.typography.titleMedium
+                                                            .copy(
+                                                                fontWeight = FontWeight.Normal,
+                                                                color = MaterialTheme.colorScheme.onBackground,
+                                                            ).toSpanStyle(),
                                                     ) {
                                                         if (artist.id != null) {
                                                             val link =
@@ -275,20 +281,20 @@ fun OnlinePlaylistScreen(
                                                                     }
                                                                     .forEach(::insert)
                                                             }
-                                                            } else {
-                                                                database.transaction {
-                                                                    update(dbPlaylist!!.playlist.toggleLike())
-                                                                }
+                                                        } else {
+                                                            database.transaction {
+                                                                update(dbPlaylist!!.playlist.toggleLike())
+                                                            }
                                                         }
                                                     }
-                                                        ) {
-                                                        Icon(
-                                                            painter = painterResource(
-                                                                if (dbPlaylist?.playlist?.bookmarkedAt != null) R.drawable.favorite else R.drawable.favorite_border
-                                                            ),
-                                                            contentDescription = null,
-                                                            tint = if (dbPlaylist?.playlist?.bookmarkedAt != null) MaterialTheme.colorScheme.error else LocalContentColor.current
-                                                        )
+                                                ) {
+                                                    Icon(
+                                                        painter = painterResource(
+                                                            if (dbPlaylist?.playlist?.bookmarkedAt != null) R.drawable.favorite else R.drawable.favorite_border
+                                                        ),
+                                                        contentDescription = null,
+                                                        tint = if (dbPlaylist?.playlist?.bookmarkedAt != null) MaterialTheme.colorScheme.error else LocalContentColor.current
+                                                    )
                                                 }
                                             }
 
@@ -321,7 +327,11 @@ fun OnlinePlaylistScreen(
                                     playlist.shuffleEndpoint?.let { shuffleEndpoint ->
                                         Button(
                                             onClick = {
-                                                playerConnection.playQueue(YouTubeQueue(shuffleEndpoint))
+                                                playerConnection.playQueue(
+                                                    YouTubeQueue(
+                                                        shuffleEndpoint
+                                                    )
+                                                )
                                             },
                                             contentPadding = ButtonDefaults.ButtonWithIconContentPadding,
                                             modifier = Modifier.weight(1f)
@@ -339,7 +349,11 @@ fun OnlinePlaylistScreen(
                                     playlist.radioEndpoint?.let { radioEndpoint ->
                                         OutlinedButton(
                                             onClick = {
-                                                playerConnection.playQueue(YouTubeQueue(radioEndpoint))
+                                                playerConnection.playQueue(
+                                                    YouTubeQueue(
+                                                        radioEndpoint
+                                                    )
+                                                )
                                             },
                                             contentPadding = ButtonDefaults.ButtonWithIconContentPadding,
                                             modifier = Modifier.weight(1f),
@@ -385,41 +399,42 @@ fun OnlinePlaylistScreen(
                                 }
                             },
                             modifier =
-                                Modifier
-                                    .combinedClickable(
-                                        enabled = !hideExplicit || !song.item.second.explicit,
-                                        onClick = {
-                                            if (!selection) {
-                                                if (song.item.second.id == mediaMetadata?.id) {
-                                                    playerConnection.player.togglePlayPause()
-                                                } else {
-                                                    playerConnection.service.getAutomix(playlistId = playlist.id)
-                                                    playerConnection.playQueue(
-                                                        YouTubeQueue(
-                                                            song.item.second.endpoint
-                                                                ?: WatchEndpoint(
-                                                                    videoId =
-                                                                        song.item.second
-                                                                            .id,
-                                                                ),
-                                                            song.item.second.toMediaMetadata(),
-                                                        ),
-                                                    )
-                                                }
+                            Modifier
+                                .combinedClickable(
+                                    enabled = !hideExplicit || !song.item.second.explicit,
+                                    onClick = {
+                                        if (!selection) {
+                                            if (song.item.second.id == mediaMetadata?.id) {
+                                                playerConnection.player.togglePlayPause()
                                             } else {
-                                                song.isSelected = !song.isSelected
+                                                playerConnection.service.getAutomix(playlistId = playlist.id)
+                                                playerConnection.playQueue(
+                                                    YouTubeQueue(
+                                                        song.item.second.endpoint
+                                                            ?: WatchEndpoint(
+                                                                videoId =
+                                                                song.item.second
+                                                                    .id,
+                                                            ),
+                                                        song.item.second.toMediaMetadata(),
+                                                    ),
+                                                )
                                             }
-                                        },
-                                        onLongClick = {
-                                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                            if (!selection) {
-                                                selection = true
-                                            }
-                                            wrappedSongs.forEach { it.isSelected = false }
-                                            song.isSelected = true
-                                        },
-                                    ).alpha(if (hideExplicit && song.item.second.explicit) 0.3f else 1f)
-                                    .animateItem(),
+                                        } else {
+                                            song.isSelected = !song.isSelected
+                                        }
+                                    },
+                                    onLongClick = {
+                                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                        if (!selection) {
+                                            selection = true
+                                        }
+                                        wrappedSongs.forEach { it.isSelected = false }
+                                        song.isSelected = true
+                                    },
+                                )
+                                .alpha(if (hideExplicit && song.item.second.explicit) 0.3f else 1f)
+                                .animateItem(),
                         )
                     }
                 } else {
@@ -429,10 +444,10 @@ fun OnlinePlaylistScreen(
                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                     Spacer(
                                         modifier =
-                                            Modifier
-                                                .size(AlbumThumbnailSize)
-                                                .clip(RoundedCornerShape(ThumbnailCornerRadius))
-                                                .background(MaterialTheme.colorScheme.onSurface),
+                                        Modifier
+                                            .size(AlbumThumbnailSize)
+                                            .clip(RoundedCornerShape(ThumbnailCornerRadius))
+                                            .background(MaterialTheme.colorScheme.onSurface),
                                     )
 
                                     Spacer(Modifier.width(16.dp))
@@ -574,13 +589,13 @@ fun OnlinePlaylistScreen(
                 }
             }
         )
-        
+
         SnackbarHost(
             hostState = snackbarHostState,
             modifier =
-                Modifier
-                    .windowInsetsPadding(LocalPlayerAwareWindowInsets.current.union(WindowInsets.ime))
-                    .align(Alignment.BottomCenter),
+            Modifier
+                .windowInsetsPadding(LocalPlayerAwareWindowInsets.current.union(WindowInsets.ime))
+                .align(Alignment.BottomCenter),
         )
     }
 }

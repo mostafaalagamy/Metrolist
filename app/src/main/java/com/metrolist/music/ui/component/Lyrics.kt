@@ -82,7 +82,8 @@ fun Lyrics(
     val menuState = LocalMenuState.current
     val density = LocalDensity.current
     var showLyrics by rememberPreference(ShowLyricsKey, false)
-    val landscapeOffset = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
+    val landscapeOffset =
+        LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
 
     val lyricsTextPosition by rememberEnumPreference(LyricsTextPositionKey, LyricsPosition.CENTER)
     val changeLyrics by rememberPreference(LyricsClickKey, true)
@@ -91,7 +92,10 @@ fun Lyrics(
     val lyricsEntity by playerConnection.currentLyrics.collectAsState(initial = null)
     val lyrics = remember(lyricsEntity) { lyricsEntity?.lyrics?.trim() }
 
-    val playerBackground by rememberEnumPreference(key = PlayerBackgroundStyleKey, defaultValue = PlayerBackgroundStyle.DEFAULT)
+    val playerBackground by rememberEnumPreference(
+        key = PlayerBackgroundStyleKey,
+        defaultValue = PlayerBackgroundStyle.DEFAULT
+    )
 
     val darkTheme by rememberEnumPreference(DarkModeKey, defaultValue = DarkMode.AUTO)
     val isSystemInDarkTheme = isSystemInDarkTheme()
@@ -113,7 +117,7 @@ fun Lyrics(
         remember(lyrics) {
             !lyrics.isNullOrEmpty() && lyrics.startsWith("[")
         }
-    
+
     val textColor = when (playerBackground) {
         PlayerBackgroundStyle.DEFAULT -> MaterialTheme.colorScheme.secondary
         else ->
@@ -148,7 +152,10 @@ fun Lyrics(
             delay(50)
             val sliderPosition = sliderPositionProvider()
             isSeeking = sliderPosition != null
-            currentLineIndex = findCurrentLineIndex(lines, sliderPosition ?: playerConnection.player.currentPosition)
+            currentLineIndex = findCurrentLineIndex(
+                lines,
+                sliderPosition ?: playerConnection.player.currentPosition
+            )
         }
     }
 
@@ -174,7 +181,8 @@ fun Lyrics(
          */
         fun calculateOffset() = with(density) {
             if (landscapeOffset) {
-                16.dp.toPx().toInt() * countNewLine(lines[currentLineIndex].text) // landscape sits higher by default
+                16.dp.toPx()
+                    .toInt() * countNewLine(lines[currentLineIndex].text) // landscape sits higher by default
             } else {
                 20.dp.toPx().toInt() * countNewLine(lines[currentLineIndex].text)
             }
@@ -211,19 +219,27 @@ fun Lyrics(
                 .fadingEdge(vertical = 64.dp)
                 .nestedScroll(remember {
                     object : NestedScrollConnection {
-                        override fun onPostScroll(consumed: Offset, available: Offset, source: NestedScrollSource): Offset {
+                        override fun onPostScroll(
+                            consumed: Offset,
+                            available: Offset,
+                            source: NestedScrollSource
+                        ): Offset {
                             lastPreviewTime = System.currentTimeMillis()
                             return super.onPostScroll(consumed, available, source)
                         }
 
-                        override suspend fun onPostFling(consumed: Velocity, available: Velocity): Velocity {
+                        override suspend fun onPostFling(
+                            consumed: Velocity,
+                            available: Velocity
+                        ): Velocity {
                             lastPreviewTime = System.currentTimeMillis()
                             return super.onPostFling(consumed, available)
                         }
                     }
                 })
         ) {
-            val displayedCurrentLineIndex = if (isSeeking) deferredCurrentLineIndex else currentLineIndex
+            val displayedCurrentLineIndex =
+                if (isSeeking) deferredCurrentLineIndex else currentLineIndex
 
             if (lyrics == null) {
                 item {
@@ -294,7 +310,7 @@ fun Lyrics(
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
                     .padding(end = 12.dp)
-            ) {                
+            ) {
                 IconButton(
                     onClick = {
                         menuState.show {
@@ -307,7 +323,7 @@ fun Lyrics(
                     }
                 ) {
                     Icon(
-                    painter = painterResource(id = R.drawable.more_horiz),
+                        painter = painterResource(id = R.drawable.more_horiz),
                         contentDescription = null,
                         tint = textColor
                     )

@@ -82,6 +82,7 @@ interface DatabaseDao {
                 collator.strength = Collator.PRIMARY
                 songs.sortedWith(compareBy(collator) { it.song.title })
             }
+
         SongSortType.ARTIST ->
             songsByRowIdAsc().map { songs ->
                 val collator = Collator.getInstance(Locale.getDefault())
@@ -102,6 +103,7 @@ interface DatabaseDao {
                         }
                     }
             }
+
         SongSortType.PLAY_TIME -> songsByPlayTimeAsc()
     }.map { it.reversed(descending) }
 
@@ -132,6 +134,7 @@ interface DatabaseDao {
                 collator.strength = Collator.PRIMARY
                 songs.sortedWith(compareBy(collator) { it.song.title })
             }
+
         SongSortType.ARTIST ->
             likedSongsByRowIdAsc().map { songs ->
                 val collator = Collator.getInstance(Locale.getDefault())
@@ -152,6 +155,7 @@ interface DatabaseDao {
                         }
                     }
             }
+
         SongSortType.PLAY_TIME -> likedSongsByPlayTimeAsc()
     }.map { it.reversed(descending) }
 
@@ -197,6 +201,7 @@ interface DatabaseDao {
                 collator.strength = Collator.PRIMARY
                 artistSongs.sortedWith(compareBy(collator) { it.song.title })
             }
+
         ArtistSongSortType.PLAY_TIME -> artistSongsByPlayTimeAsc(artistId)
     }.map { it.reversed(descending) }
 
@@ -373,7 +378,7 @@ interface DatabaseDao {
 
     @Transaction
     @Query(
-    """
+        """
     SELECT album.*,
            COUNT(DISTINCT song_album_map.songId) as downloadCount,
            (SELECT COUNT(1)
@@ -409,7 +414,7 @@ interface DatabaseDao {
         limit: Int = 6,
         offset: Int = 0,
         toTimeStamp: Long? = LocalDateTime.now().toInstant(ZoneOffset.UTC).toEpochMilli(),
-     ): Flow<List<Album>>
+    ): Flow<List<Album>>
 
     @Transaction
     @Query(
@@ -435,6 +440,7 @@ interface DatabaseDao {
     """
     )
     fun forgottenFavorites(now: Long = System.currentTimeMillis()): Flow<List<Song>>
+
     @Transaction
     @Query(
         """
@@ -503,6 +509,7 @@ interface DatabaseDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertSetVideoId(setVideoIdEntity: SetVideoIdEntity)
+
     @Query("SELECT * FROM set_video_id WHERE videoId = :videoId")
     suspend fun getSetVideoId(videoId: String): SetVideoIdEntity?
 
@@ -605,6 +612,7 @@ interface DatabaseDao {
                 collator.strength = Collator.PRIMARY
                 artist.sortedWith(compareBy(collator) { it.artist.name })
             }
+
         ArtistSortType.SONG_COUNT -> artistsBySongCountAsc()
         ArtistSortType.PLAY_TIME -> artistsByPlayTimeAsc()
     }.map { artists ->
@@ -624,6 +632,7 @@ interface DatabaseDao {
                 collator.strength = Collator.PRIMARY
                 artist.sortedWith(compareBy(collator) { it.artist.name })
             }
+
         ArtistSortType.SONG_COUNT -> artistsBookmarkedBySongCountAsc()
         ArtistSortType.PLAY_TIME -> artistsBookmarkedByPlayTimeAsc()
     }.map { artists ->
@@ -714,12 +723,14 @@ interface DatabaseDao {
                 collator.strength = Collator.PRIMARY
                 albums.sortedWith(compareBy(collator) { it.album.title })
             }
+
         AlbumSortType.ARTIST ->
             albumsByCreateDateAsc().map { albums ->
                 val collator = Collator.getInstance(Locale.getDefault())
                 collator.strength = Collator.PRIMARY
                 albums.sortedWith(compareBy(collator) { album -> album.artists.joinToString("") { it.name } })
             }
+
         AlbumSortType.YEAR -> albumsByYearAsc()
         AlbumSortType.SONG_COUNT -> albumsBySongCountAsc()
         AlbumSortType.LENGTH -> albumsByLengthAsc()
@@ -737,12 +748,14 @@ interface DatabaseDao {
                 collator.strength = Collator.PRIMARY
                 albums.sortedWith(compareBy(collator) { it.album.title })
             }
+
         AlbumSortType.ARTIST ->
             albumsLikedByCreateDateAsc().map { albums ->
                 val collator = Collator.getInstance(Locale.getDefault())
                 collator.strength = Collator.PRIMARY
                 albums.sortedWith(compareBy(collator) { album -> album.artists.joinToString("") { it.name } })
             }
+
         AlbumSortType.YEAR -> albumsLikedByYearAsc()
         AlbumSortType.SONG_COUNT -> albumsLikedBySongCountAsc()
         AlbumSortType.LENGTH -> albumsLikedByLengthAsc()
@@ -790,6 +803,7 @@ interface DatabaseDao {
                 collator.strength = Collator.PRIMARY
                 playlists.sortedWith(compareBy(collator) { it.playlist.name })
             }
+
         PlaylistSortType.SONG_COUNT -> playlistsBySongCountAsc()
         PlaylistSortType.LAST_UPDATED -> playlistsByUpdatedDateAsc()
     }.map { it.reversed(descending) }
@@ -820,6 +834,7 @@ interface DatabaseDao {
         playlistId: String,
         songIds: List<String>,
     ): List<String>
+
     @Transaction
     fun addSongToPlaylist(playlist: Playlist, songIds: List<String>) {
         var position = playlist.songCount
@@ -993,7 +1008,8 @@ interface DatabaseDao {
     ) {
         if (insert(mediaMetadata.toSongEntity().let(block)) == -1L) return
         mediaMetadata.artists.forEachIndexed { index, artist ->
-            val artistId = artist.id ?: artistByName(artist.name)?.id ?: ArtistEntity.generateArtistId()
+            val artistId =
+                artist.id ?: artistByName(artist.name)?.id ?: ArtistEntity.generateArtistId()
             insert(
                 ArtistEntity(
                     id = artistId,
@@ -1044,7 +1060,8 @@ interface DatabaseDao {
         albumPage.album.artists
             ?.map { artist ->
                 ArtistEntity(
-                    id = artist.id ?: artistByName(artist.name)?.id ?: ArtistEntity.generateArtistId(),
+                    id = artist.id ?: artistByName(artist.name)?.id
+                    ?: ArtistEntity.generateArtistId(),
                     name = artist.name,
                 )
             }?.onEach(::insert)
@@ -1073,7 +1090,8 @@ interface DatabaseDao {
         )
         songArtistMap(song.id).forEach(::delete)
         mediaMetadata.artists.forEachIndexed { index, artist ->
-            val artistId = artist.id ?: artistByName(artist.name)?.id ?: ArtistEntity.generateArtistId()
+            val artistId =
+                artist.id ?: artistByName(artist.name)?.id ?: ArtistEntity.generateArtistId()
             insert(
                 ArtistEntity(
                     id = artistId,
@@ -1160,7 +1178,8 @@ interface DatabaseDao {
             artists
                 .map { artist ->
                     ArtistEntity(
-                        id = artist.id ?: artistByName(artist.name)?.id ?: ArtistEntity.generateArtistId(),
+                        id = artist.id ?: artistByName(artist.name)?.id
+                        ?: ArtistEntity.generateArtistId(),
                         name = artist.name,
                     )
                 }.onEach(::insert)
@@ -1176,15 +1195,17 @@ interface DatabaseDao {
 
     @Update
     fun update(playlistEntity: PlaylistEntity, playlistItem: PlaylistItem) {
-        update(playlistEntity.copy(
-            name = playlistItem.title,
-            browseId = playlistItem.id,
-            isEditable = playlistItem.isEditable,
-            remoteSongCount = playlistItem.songCountText?.let { Regex("""\d+""").find(it)?.value?.toIntOrNull() },
-            playEndpointParams = playlistItem.playEndpoint?.params,
-            shuffleEndpointParams = playlistItem.shuffleEndpoint?.params,
-            radioEndpointParams = playlistItem.radioEndpoint?.params
-        ))
+        update(
+            playlistEntity.copy(
+                name = playlistItem.title,
+                browseId = playlistItem.id,
+                isEditable = playlistItem.isEditable,
+                remoteSongCount = playlistItem.songCountText?.let { Regex("""\d+""").find(it)?.value?.toIntOrNull() },
+                playEndpointParams = playlistItem.playEndpoint?.params,
+                shuffleEndpointParams = playlistItem.shuffleEndpoint?.params,
+                radioEndpointParams = playlistItem.radioEndpoint?.params
+            )
+        )
     }
 
     @Upsert

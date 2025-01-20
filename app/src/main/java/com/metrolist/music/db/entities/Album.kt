@@ -14,11 +14,11 @@ data class Album(
         entityColumn = "id",
         parentColumn = "id",
         associateBy =
-            Junction(
-                value = AlbumArtistMap::class,
-                parentColumn = "albumId",
-                entityColumn = "artistId",
-            ),
+        Junction(
+            value = AlbumArtistMap::class,
+            parentColumn = "albumId",
+            entityColumn = "artistId",
+        ),
     )
     val artists: List<ArtistEntity>,
     val songCountListened: Int? = 0,

@@ -109,7 +109,10 @@ fun SongMenu(
             icon = { Icon(painter = painterResource(R.drawable.edit), contentDescription = null) },
             title = { Text(text = stringResource(R.string.edit_song)) },
             onDismiss = { showEditDialog = false },
-            initialTextFieldValue = TextFieldValue(song.song.title, TextRange(song.song.title.length)),
+            initialTextFieldValue = TextFieldValue(
+                song.song.title,
+                TextRange(song.song.title.length)
+            ),
             onDone = { title ->
                 onDismiss()
                 database.query {
@@ -161,8 +164,8 @@ fun SongMenu(
                         )
                     },
                     modifier =
-                        Modifier
-                            .clickable { showErrorPlaylistAddDialog = false },
+                    Modifier
+                        .clickable { showErrorPlaylistAddDialog = false },
                 )
             }
 
@@ -187,13 +190,14 @@ fun SongMenu(
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier =
-                        Modifier
-                            .height(ListItemHeight)
-                            .clickable {
-                                navController.navigate("artist/${artist.id}")
-                                showSelectArtistDialog = false
-                                onDismiss()
-                            }.padding(horizontal = 12.dp),
+                    Modifier
+                        .height(ListItemHeight)
+                        .clickable {
+                            navController.navigate("artist/${artist.id}")
+                            showSelectArtistDialog = false
+                            onDismiss()
+                        }
+                        .padding(horizontal = 12.dp),
                 ) {
                     Box(
                         modifier = Modifier.padding(8.dp),
@@ -203,9 +207,9 @@ fun SongMenu(
                             model = artist.thumbnailUrl,
                             contentDescription = null,
                             modifier =
-                                Modifier
-                                    .size(ListThumbnailSize)
-                                    .clip(CircleShape),
+                            Modifier
+                                .size(ListThumbnailSize)
+                                .clip(CircleShape),
                         )
                     }
                     Text(
@@ -215,9 +219,9 @@ fun SongMenu(
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         modifier =
-                            Modifier
-                                .weight(1f)
-                                .padding(horizontal = 8.dp),
+                        Modifier
+                            .weight(1f)
+                            .padding(horizontal = 8.dp),
                     )
                 }
             }
@@ -248,12 +252,12 @@ fun SongMenu(
 
     GridMenu(
         contentPadding =
-            PaddingValues(
-                start = 8.dp,
-                top = 8.dp,
-                end = 8.dp,
-                bottom = 8.dp + WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
-            ),
+        PaddingValues(
+            start = 8.dp,
+            top = 8.dp,
+            end = 8.dp,
+            bottom = 8.dp + WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
+        ),
     ) {
         GridMenuItem(
             icon = R.drawable.radio,

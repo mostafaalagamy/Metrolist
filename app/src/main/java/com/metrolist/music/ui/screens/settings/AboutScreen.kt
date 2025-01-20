@@ -57,7 +57,13 @@ fun AboutScreen(
             .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Spacer(Modifier.windowInsetsPadding(LocalPlayerAwareWindowInsets.current.only(WindowInsetsSides.Top)))
+        Spacer(
+            Modifier.windowInsetsPadding(
+                LocalPlayerAwareWindowInsets.current.only(
+                    WindowInsetsSides.Top
+                )
+            )
+        )
 
         Spacer(Modifier.height(4.dp))
 
@@ -66,10 +72,10 @@ fun AboutScreen(
             contentDescription = null,
             colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground, BlendMode.SrcIn),
             modifier =
-                Modifier
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.surfaceContainer)
-                    .clickable { },
+            Modifier
+                .clip(CircleShape)
+                .background(MaterialTheme.colorScheme.surfaceContainer)
+                .clickable { },
         )
 
         Row(
@@ -89,15 +95,16 @@ fun AboutScreen(
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.secondary,
                 modifier =
-                    Modifier
-                        .border(
-                            width = 1.dp,
-                            color = MaterialTheme.colorScheme.secondary,
-                            shape = CircleShape,
-                        ).padding(
-                            horizontal = 6.dp,
-                            vertical = 2.dp,
-                        ),
+                Modifier
+                    .border(
+                        width = 1.dp,
+                        color = MaterialTheme.colorScheme.secondary,
+                        shape = CircleShape,
+                    )
+                    .padding(
+                        horizontal = 6.dp,
+                        vertical = 2.dp,
+                    ),
             )
 
             Spacer(Modifier.width(4.dp))
@@ -107,15 +114,16 @@ fun AboutScreen(
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.secondary,
                 modifier =
-                    Modifier
-                        .border(
-                            width = 1.dp,
-                            color = MaterialTheme.colorScheme.secondary,
-                            shape = CircleShape,
-                        ).padding(
-                            horizontal = 6.dp,
-                            vertical = 2.dp,
-                        ),
+                Modifier
+                    .border(
+                        width = 1.dp,
+                        color = MaterialTheme.colorScheme.secondary,
+                        shape = CircleShape,
+                    )
+                    .padding(
+                        horizontal = 6.dp,
+                        vertical = 2.dp,
+                    ),
             )
 
             if (BuildConfig.DEBUG) {
@@ -126,15 +134,16 @@ fun AboutScreen(
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.secondary,
                     modifier =
-                        Modifier
-                            .border(
-                                width = 1.dp,
-                                color = MaterialTheme.colorScheme.secondary,
-                                shape = CircleShape,
-                            ).padding(
-                                horizontal = 6.dp,
-                                vertical = 2.dp,
-                            ),
+                    Modifier
+                        .border(
+                            width = 1.dp,
+                            color = MaterialTheme.colorScheme.secondary,
+                            shape = CircleShape,
+                        )
+                        .padding(
+                            horizontal = 6.dp,
+                            vertical = 2.dp,
+                        ),
                 )
             }
         }
@@ -158,7 +167,7 @@ fun AboutScreen(
                     contentDescription = null
                 )
             }
-            
+
             IconButton(
                 onClick = { uriHandler.openUri("https://www.instagram.com/mostafaalagamy") }
             ) {

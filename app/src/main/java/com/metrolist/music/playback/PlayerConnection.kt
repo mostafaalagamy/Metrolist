@@ -41,7 +41,11 @@ class PlayerConnection(
     val isPlaying =
         combine(playbackState, playWhenReady) { playbackState, playWhenReady ->
             playWhenReady && playbackState != STATE_ENDED
-        }.stateIn(scope, SharingStarted.Lazily, player.playWhenReady && player.playbackState != STATE_ENDED)
+        }.stateIn(
+            scope,
+            SharingStarted.Lazily,
+            player.playWhenReady && player.playbackState != STATE_ENDED
+        )
     val mediaMetadata = MutableStateFlow(player.currentMetadata)
     val currentSong =
         mediaMetadata.flatMapLatest {
@@ -113,7 +117,7 @@ class PlayerConnection(
         player.prepare()
         player.playWhenReady = true
     }
-    
+
     override fun onPlaybackStateChanged(state: Int) {
         playbackState.value = state
         error.value = player.playerError
@@ -168,13 +172,14 @@ class PlayerConnection(
 
     private fun updateCanSkipPreviousAndNext() {
         if (!player.currentTimeline.isEmpty) {
-            val window = player.currentTimeline.getWindow(player.currentMediaItemIndex, Timeline.Window())
+            val window =
+                player.currentTimeline.getWindow(player.currentMediaItemIndex, Timeline.Window())
             canSkipPrevious.value = player.isCommandAvailable(COMMAND_SEEK_IN_CURRENT_MEDIA_ITEM) ||
-                !window.isLive ||
-                player.isCommandAvailable(COMMAND_SEEK_TO_PREVIOUS_MEDIA_ITEM)
+                    !window.isLive ||
+                    player.isCommandAvailable(COMMAND_SEEK_TO_PREVIOUS_MEDIA_ITEM)
             canSkipNext.value = window.isLive &&
-                window.isDynamic ||
-                player.isCommandAvailable(COMMAND_SEEK_TO_NEXT_MEDIA_ITEM)
+                    window.isDynamic ||
+                    player.isCommandAvailable(COMMAND_SEEK_TO_NEXT_MEDIA_ITEM)
         } else {
             canSkipPrevious.value = false
             canSkipNext.value = false

@@ -158,7 +158,11 @@ class MusicService :
 
     private lateinit var connectivityManager: ConnectivityManager
 
-    private val audioQuality by enumPreference(this, AudioQualityKey, com.metrolist.music.constants.AudioQuality.AUTO)
+    private val audioQuality by enumPreference(
+        this,
+        AudioQualityKey,
+        com.metrolist.music.constants.AudioQuality.AUTO
+    )
 
     private var currentQueue: Queue = EmptyQueue
     var queueTitle: String? = null
@@ -199,7 +203,12 @@ class MusicService :
     override fun onCreate() {
         super.onCreate()
         setMediaNotificationProvider(
-            DefaultMediaNotificationProvider(this, { NOTIFICATION_ID }, CHANNEL_ID, R.string.music_player)
+            DefaultMediaNotificationProvider(
+                this,
+                { NOTIFICATION_ID },
+                CHANNEL_ID,
+                R.string.music_player
+            )
                 .apply {
                     setSmallIcon(R.drawable.small_icon)
                 },
@@ -278,7 +287,9 @@ class MusicService :
         ) { mediaMetadata, showLyrics ->
             mediaMetadata to showLyrics
         }.collectLatest(scope) { (mediaMetadata, showLyrics) ->
-            if (showLyrics && mediaMetadata != null && database.lyrics(mediaMetadata.id).first() == null) {
+            if (showLyrics && mediaMetadata != null && database.lyrics(mediaMetadata.id)
+                    .first() == null
+            ) {
                 val lyrics = lyricsHelper.getLyrics(mediaMetadata)
                 database.query {
                     upsert(
@@ -341,12 +352,12 @@ class MusicService :
             }.onSuccess { queue ->
                 playQueue(
                     queue =
-                        ListQueue(
-                            title = queue.title,
-                            items = queue.items.map { it.toMediaItem() },
-                            startIndex = queue.mediaItemIndex,
-                            position = queue.position,
-                        ),
+                    ListQueue(
+                        title = queue.title,
+                        items = queue.items.map { it.toMediaItem() },
+                        startIndex = queue.mediaItemIndex,
+                        position = queue.position,
+                    ),
                     playWhenReady = false,
                 )
             }
@@ -387,7 +398,8 @@ class MusicService :
                                 R.string.action_like
                             },
                         ),
-                    ).setIconResId(if (currentSong.value?.song?.liked == true) R.drawable.favorite else R.drawable.favorite_border)
+                    )
+                    .setIconResId(if (currentSong.value?.song?.liked == true) R.drawable.favorite else R.drawable.favorite_border)
                     .setSessionCommand(CommandToggleLike)
                     .setEnabled(currentSong.value != null)
                     .build(),
@@ -421,21 +433,27 @@ class MusicService :
         )
     }
 
-    private suspend fun recoverSong(mediaId: String, playbackData: YTPlayerUtils.PlaybackData? = null) {
+    private suspend fun recoverSong(
+        mediaId: String,
+        playbackData: YTPlayerUtils.PlaybackData? = null
+    ) {
         val song = database.song(mediaId).first()
         val mediaMetadata = withContext(Dispatchers.Main) {
             player.findNextMediaItemById(mediaId)?.metadata
         } ?: return
         val duration = song?.song?.duration?.takeIf { it != -1 }
             ?: mediaMetadata.duration.takeIf { it != -1 }
-            ?: (playbackData?.videoDetails ?: YTPlayerUtils.playerResponseForMetadata(mediaId).getOrNull()?.videoDetails)?.lengthSeconds?.toInt()
+            ?: (playbackData?.videoDetails ?: YTPlayerUtils.playerResponseForMetadata(mediaId)
+                .getOrNull()?.videoDetails)?.lengthSeconds?.toInt()
             ?: -1
         database.query {
             if (song == null) insert(mediaMetadata.copy(duration = duration))
             else if (song.song.duration == -1) update(song.song.copy(duration = duration))
         }
         if (!database.hasRelatedSongs(mediaId)) {
-            val relatedEndpoint = YouTube.next(WatchEndpoint(videoId = mediaId)).getOrNull()?.relatedEndpoint ?: return
+            val relatedEndpoint =
+                YouTube.next(WatchEndpoint(videoId = mediaId)).getOrNull()?.relatedEndpoint
+                    ?: return
             val relatedPage = YouTube.related(relatedEndpoint).getOrNull() ?: return
             database.query {
                 relatedPage.songs
@@ -476,8 +494,16 @@ class MusicService :
             }
             if (initialStatus.items.isEmpty()) return@launch
             if (queue.preloadItem != null) {
-                player.addMediaItems(0, initialStatus.items.subList(0, initialStatus.mediaItemIndex))
-                player.addMediaItems(initialStatus.items.subList(initialStatus.mediaItemIndex + 1, initialStatus.items.size))
+                player.addMediaItems(
+                    0,
+                    initialStatus.items.subList(0, initialStatus.mediaItemIndex)
+                )
+                player.addMediaItems(
+                    initialStatus.items.subList(
+                        initialStatus.mediaItemIndex + 1,
+                        initialStatus.items.size
+                    )
+                )
             } else {
                 player.setMediaItems(
                     initialStatus.items,
@@ -498,14 +524,18 @@ class MusicService :
 
     fun startRadioSeamlessly() {
         val currentMediaMetadata = player.currentMetadata ?: return
-        if (player.currentMediaItemIndex > 0) player.removeMediaItems(0, player.currentMediaItemIndex)
+        if (player.currentMediaItemIndex > 0) player.removeMediaItems(
+            0,
+            player.currentMediaItemIndex
+        )
         if (player.currentMediaItemIndex <
             player.mediaItemCount - 1
         ) {
             player.removeMediaItems(player.currentMediaItemIndex + 1, player.mediaItemCount)
         }
         scope.launch(SilentHandler) {
-            val radioQueue = YouTubeQueue(endpoint = WatchEndpoint(videoId = currentMediaMetadata.id))
+            val radioQueue =
+                YouTubeQueue(endpoint = WatchEndpoint(videoId = currentMediaMetadata.id))
             val initialStatus = radioQueue.getInitialStatus()
             if (initialStatus.title != null) {
                 queueTitle = initialStatus.title
@@ -572,7 +602,10 @@ class MusicService :
     }
 
     fun playNext(items: List<MediaItem>) {
-        player.addMediaItems(if (player.mediaItemCount == 0) 0 else player.currentMediaItemIndex + 1, items)
+        player.addMediaItems(
+            if (player.mediaItemCount == 0) 0 else player.currentMediaItemIndex + 1,
+            items
+        )
         player.prepare()
     }
 
@@ -623,7 +656,8 @@ class MusicService :
             currentQueue.hasNextPage()
         ) {
             scope.launch(SilentHandler) {
-                val mediaItems = currentQueue.nextPage().filterExplicit(dataStore.get(HideExplicitKey, false))
+                val mediaItems =
+                    currentQueue.nextPage().filterExplicit(dataStore.get(HideExplicitKey, false))
                 if (player.playbackState != STATE_IDLE) {
                     player.addMediaItems(mediaItems)
                 }
@@ -645,8 +679,13 @@ class MusicService :
         player: Player,
         events: Player.Events,
     ) {
-        if (events.containsAny(Player.EVENT_PLAYBACK_STATE_CHANGED, Player.EVENT_PLAY_WHEN_READY_CHANGED)) {
-            val isBufferingOrReady = player.playbackState == Player.STATE_BUFFERING || player.playbackState == Player.STATE_READY
+        if (events.containsAny(
+                Player.EVENT_PLAYBACK_STATE_CHANGED,
+                Player.EVENT_PLAY_WHEN_READY_CHANGED
+            )
+        ) {
+            val isBufferingOrReady =
+                player.playbackState == Player.STATE_BUFFERING || player.playbackState == Player.STATE_READY
             if (isBufferingOrReady && player.playWhenReady) {
                 openAudioEffectSession()
             } else {
@@ -664,7 +703,8 @@ class MusicService :
             // Always put current playing item at first
             val shuffledIndices = IntArray(player.mediaItemCount) { it }
             shuffledIndices.shuffle()
-            shuffledIndices[shuffledIndices.indexOf(player.currentMediaItemIndex)] = shuffledIndices[0]
+            shuffledIndices[shuffledIndices.indexOf(player.currentMediaItemIndex)] =
+                shuffledIndices[0]
             shuffledIndices[0] = player.currentMediaItemIndex
             player.setShuffleOrder(DefaultShuffleOrder(shuffledIndices, System.currentTimeMillis()))
         }
@@ -717,7 +757,11 @@ class MusicService :
         return ResolvingDataSource.Factory(createCacheDataSource()) { dataSpec ->
             val mediaId = dataSpec.key ?: error("No media id")
 
-            if (downloadCache.isCached(mediaId, dataSpec.position, if (dataSpec.length >= 0) dataSpec.length else 1) ||
+            if (downloadCache.isCached(
+                    mediaId,
+                    dataSpec.position,
+                    if (dataSpec.length >= 0) dataSpec.length else 1
+                ) ||
                 playerCache.isCached(mediaId, dataSpec.position, CHUNK_LENGTH)
             ) {
                 scope.launch(Dispatchers.IO) { recoverSong(mediaId) }
@@ -739,32 +783,32 @@ class MusicService :
                     audioQuality = audioQuality,
                     connectivityManager = connectivityManager,
                 )
-                }.getOrElse { throwable ->
-                    when (throwable) {
-                        is PlaybackException -> throw throwable
-                        is ConnectException, is UnknownHostException -> {
-                            throw PlaybackException(
-                                getString(R.string.error_no_internet),
-                                throwable,
-                                PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_FAILED,
-                            )
-                        }
-
-                        is SocketTimeoutException -> {
-                            throw PlaybackException(
-                                getString(R.string.error_timeout),
-                                throwable,
-                                PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_TIMEOUT,
-                            )
-                        }
-
-                        else -> throw PlaybackException(
-                            getString(R.string.error_unknown),
+            }.getOrElse { throwable ->
+                when (throwable) {
+                    is PlaybackException -> throw throwable
+                    is ConnectException, is UnknownHostException -> {
+                        throw PlaybackException(
+                            getString(R.string.error_no_internet),
                             throwable,
-                            PlaybackException.ERROR_CODE_REMOTE_ERROR,
+                            PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_FAILED,
                         )
                     }
+
+                    is SocketTimeoutException -> {
+                        throw PlaybackException(
+                            getString(R.string.error_timeout),
+                            throwable,
+                            PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_TIMEOUT,
+                        )
+                    }
+
+                    else -> throw PlaybackException(
+                        getString(R.string.error_unknown),
+                        throwable,
+                        PlaybackException.ERROR_CODE_REMOTE_ERROR,
+                    )
                 }
+            }
 
             val format = playbackData.format
 
@@ -823,12 +867,13 @@ class MusicService :
         eventTime: AnalyticsListener.EventTime,
         playbackStats: PlaybackStats,
     ) {
-        val mediaItem = eventTime.timeline.getWindow(eventTime.windowIndex, Timeline.Window()).mediaItem
+        val mediaItem =
+            eventTime.timeline.getWindow(eventTime.windowIndex, Timeline.Window()).mediaItem
 
         if (playbackStats.totalPlayTimeMs >= (
-                dataStore[HistoryDuration]?.times(1000f)
-                    ?: 30000f
-            ) &&
+                    dataStore[HistoryDuration]?.times(1000f)
+                        ?: 30000f
+                    ) &&
             !dataStore.get(PauseListenHistoryKey, false)
         ) {
             database.query {
@@ -845,16 +890,17 @@ class MusicService :
                 }
             }
             // TODO: support playlist id
-                CoroutineScope(Dispatchers.IO).launch {
-                    val playbackUrl = database.format(mediaItem.mediaId).first()?.playbackUrl
-                        ?: YTPlayerUtils.playerResponseForMetadata(mediaItem.mediaId, null).getOrNull()?.playbackTracking?.videostatsPlaybackUrl?.baseUrl
-                    playbackUrl?.let {
-                        YouTube.registerPlayback(null, playbackUrl)
-                            .onFailure {
-                                reportException(it)
-                            }
+            CoroutineScope(Dispatchers.IO).launch {
+                val playbackUrl = database.format(mediaItem.mediaId).first()?.playbackUrl
+                    ?: YTPlayerUtils.playerResponseForMetadata(mediaItem.mediaId, null)
+                        .getOrNull()?.playbackTracking?.videostatsPlaybackUrl?.baseUrl
+                playbackUrl?.let {
+                    YouTube.registerPlayback(null, playbackUrl)
+                        .onFailure {
+                            reportException(it)
                         }
-                    }
+                }
+            }
         }
     }
 

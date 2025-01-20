@@ -65,8 +65,6 @@ import com.metrolist.music.LocalDatabase
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
-import com.metrolist.music.constants.AccountChannelHandleKey
-import com.metrolist.music.constants.AccountEmailKey
 import com.metrolist.music.constants.AccountNameKey
 import com.metrolist.music.constants.GridThumbnailHeight
 import com.metrolist.music.constants.InnerTubeCookieKey
@@ -126,23 +124,15 @@ fun HomeScreen(
     val accountPlaylists by viewModel.accountPlaylists.collectAsState()
     val homePage by viewModel.homePage.collectAsState()
     val explorePage by viewModel.explorePage.collectAsState()
-    val recentActivity by viewModel.recentActivity.collectAsState()
-    val recentPlaylistsDb by viewModel.recentPlaylistsDb.collectAsState()
 
-    val allLocalItems by viewModel.allLocalItems.collectAsState()
-    val allYtItems by viewModel.allYtItems.collectAsState()
-
-    val isLoading by viewModel.isLoading.collectAsState()
+    val isLoading: Boolean by viewModel.isLoading.collectAsState()
     val isRefreshing by viewModel.isRefreshing.collectAsState()
     val pullRefreshState = rememberPullToRefreshState()
 
     val quickPicksLazyGridState = rememberLazyGridState()
     val forgottenFavoritesLazyGridState = rememberLazyGridState()
-    val recentActivityGridState = rememberLazyGridState()
 
     val accountName by rememberPreference(AccountNameKey, "")
-    val accountEmail by rememberPreference(AccountEmailKey, "")
-    val accountChannelHandle by rememberPreference(AccountChannelHandleKey, "")
     val innerTubeCookie by rememberPreference(InnerTubeCookieKey, "")
     val isLoggedIn = remember(innerTubeCookie) {
         "SAPISID" in parseCookieString(innerTubeCookie)
@@ -151,7 +141,8 @@ fun HomeScreen(
     val scope = rememberCoroutineScope()
     val lazylistState = rememberLazyListState()
     val backStackEntry by navController.currentBackStackEntryAsState()
-    val scrollToTop = backStackEntry?.savedStateHandle?.getStateFlow("scrollToTop", false)?.collectAsState()
+    val scrollToTop =
+        backStackEntry?.savedStateHandle?.getStateFlow("scrollToTop", false)?.collectAsState()
 
     LaunchedEffect(scrollToTop?.value) {
         if (scrollToTop?.value == true) {
@@ -355,7 +346,10 @@ fun HomeScreen(
                             Pair("stats", stringResource(R.string.stats)),
                             Pair("liked", stringResource(R.string.liked)),
                             Pair("downloads", stringResource(R.string.offline)),
-                            if (isLoggedIn) Pair("account", stringResource(R.string.account)) else null
+                            if (isLoggedIn) Pair(
+                                "account",
+                                stringResource(R.string.account)
+                            ) else null
                         ),
                         currentValue = "",
                         onValueUpdate = { value ->
@@ -398,7 +392,8 @@ fun HomeScreen(
                             key = { it.id }
                         ) { originalSong ->
                             // fetch song from database to keep updated
-                            val song by database.song(originalSong.id).collectAsState(initial = originalSong)
+                            val song by database.song(originalSong.id)
+                                .collectAsState(initial = originalSong)
 
                             SongListItem(
                                 song = song!!,
@@ -485,9 +480,9 @@ fun HomeScreen(
                         title = if (isLoggedIn) accountName else stringResource(R.string.your_ytb_playlists),
                         thumbnail = {
                             Icon(
-                                 painter = painterResource(id = R.drawable.person),
-                                 contentDescription = null,
-                                 modifier = Modifier.size(24.dp)
+                                painter = painterResource(id = R.drawable.person),
+                                contentDescription = null,
+                                modifier = Modifier.size(24.dp)
                             )
                         },
                         onClick = {
@@ -521,7 +516,10 @@ fun HomeScreen(
                         title = it.title.title,
                         thumbnail = it.title.thumbnailUrl?.let { thumbnailUrl ->
                             {
-                                val shape = if (it.title is Artist) CircleShape else RoundedCornerShape(ThumbnailCornerRadius)
+                                val shape =
+                                    if (it.title is Artist) CircleShape else RoundedCornerShape(
+                                        ThumbnailCornerRadius
+                                    )
                                 AsyncImage(
                                     model = thumbnailUrl,
                                     contentDescription = null,
@@ -564,7 +562,10 @@ fun HomeScreen(
                         label = it.label,
                         thumbnail = it.thumbnail?.let { thumbnailUrl ->
                             {
-                                val shape = if (it.endpoint?.isArtistEndpoint == true) CircleShape else RoundedCornerShape(ThumbnailCornerRadius)
+                                val shape =
+                                    if (it.endpoint?.isArtistEndpoint == true) CircleShape else RoundedCornerShape(
+                                        ThumbnailCornerRadius
+                                    )
                                 AsyncImage(
                                     model = thumbnailUrl,
                                     contentDescription = null,
@@ -656,7 +657,9 @@ fun HomeScreen(
                     LazyHorizontalGrid(
                         state = forgottenFavoritesLazyGridState,
                         rows = GridCells.Fixed(rows),
-                        flingBehavior = rememberSnapFlingBehavior(forgottenFavoritesSnapLayoutInfoProvider),
+                        flingBehavior = rememberSnapFlingBehavior(
+                            forgottenFavoritesSnapLayoutInfoProvider
+                        ),
                         contentPadding = WindowInsets.systemBars
                             .only(WindowInsetsSides.Horizontal)
                             .asPaddingValues(),
@@ -669,7 +672,8 @@ fun HomeScreen(
                             items = forgottenFavorites,
                             key = { it.id }
                         ) { originalSong ->
-                            val song by database.song(originalSong.id).collectAsState(initial = originalSong)
+                            val song by database.song(originalSong.id)
+                                .collectAsState(initial = originalSong)
 
                             SongListItem(
                                 song = song!!,

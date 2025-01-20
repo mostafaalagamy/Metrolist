@@ -44,9 +44,9 @@ fun DiscordLoginScreen(navController: NavController) {
 
     AndroidView(
         modifier =
-            Modifier
-                .windowInsetsPadding(LocalPlayerAwareWindowInsets.current)
-                .fillMaxSize(),
+        Modifier
+            .windowInsetsPadding(LocalPlayerAwareWindowInsets.current)
+            .fillMaxSize(),
         factory = { context ->
             WebView(context).apply {
                 layoutParams =

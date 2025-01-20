@@ -137,7 +137,7 @@
     <string name="create_playlist">Créer une liste de lecture</string>
     <string name="playlist_name">Nom de la liste de lecture</string>
     <string name="error_playlist_name_empty">Le nom de la liste de lecture ne peut être vide.</string>
-  
+
     <string name="edit_artist">Éditer l\’artiste</string>
     <string name="artist_name">Nom de l\’artiste</string>
     <string name="error_artist_name_empty">Le nom de l\’artiste ne peut être vide.</string>

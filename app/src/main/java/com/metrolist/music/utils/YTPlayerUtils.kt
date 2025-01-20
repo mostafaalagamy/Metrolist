@@ -17,6 +17,7 @@ object YTPlayerUtils {
     private val httpClient = OkHttpClient.Builder()
         .proxy(YouTube.proxy)
         .build()
+
     /**
      * The main client is used for metadata and initial streams.
      * Do not use other clients for this because it can result in inconsistent metadata.
@@ -27,6 +28,7 @@ object YTPlayerUtils {
      * - premium formats
      */
     private val MAIN_CLIENT: YouTubeClient = WEB_REMIX
+
     /**
      * Clients used for fallback streams in case the streams of the main client do not work.
      */
@@ -34,6 +36,7 @@ object YTPlayerUtils {
         TVHTML5_SIMPLY_EMBEDDED_PLAYER,
         IOS,
     )
+
     data class PlaybackData(
         val audioConfig: PlayerResponse.PlayerConfig.AudioConfig?,
         val videoDetails: PlayerResponse.VideoDetails?,
@@ -42,6 +45,7 @@ object YTPlayerUtils {
         val streamUrl: String,
         val streamExpiresInSeconds: Int,
     )
+
     /**
      * Custom player response intended to use for playback.
      * Metadata like audioConfig and videoDetails are from [MAIN_CLIENT].
@@ -99,7 +103,8 @@ object YTPlayerUtils {
                         connectivityManager,
                     ) ?: continue
                 streamUrl = findUrlOrNull(format, videoId) ?: continue
-                streamExpiresInSeconds = streamPlayerResponse.streamingData?.expiresInSeconds ?: continue
+                streamExpiresInSeconds =
+                    streamPlayerResponse.streamingData?.expiresInSeconds ?: continue
                 if (clientIndex == STREAM_FALLBACK_CLIENTS.size - 1) {
                     /** skip [validateStatus] for last client */
                     break
@@ -138,6 +143,7 @@ object YTPlayerUtils {
             streamExpiresInSeconds,
         )
     }
+
     /**
      * Simple player response intended to use for metadata only.
      * Stream URLs of this response might not work so don't use them.
@@ -147,6 +153,7 @@ object YTPlayerUtils {
         playlistId: String? = null,
     ): Result<PlayerResponse> =
         YouTube.player(videoId, playlistId, client = MAIN_CLIENT)
+
     private fun findFormat(
         playerResponse: PlayerResponse,
         playedFormat: FormatEntity?,
@@ -159,15 +166,16 @@ object YTPlayerUtils {
             playerResponse.streamingData?.adaptiveFormats
                 ?.filter { it.isAudio }
                 ?.maxByOrNull {
-                    it.bitrate * 
-                        when (audioQuality) {
-                            AudioQuality.AUTO -> if (connectivityManager.isActiveNetworkMetered) -1 else 1 - 5
-                            AudioQuality.MAX -> 5
-                            AudioQuality.HIGH -> 1
-                            AudioQuality.LOW -> -1
-                        } + (if (it.mimeType.startsWith("audio/webm")) 10240 else 0) // prefer opus stream
+                    it.bitrate *
+                            when (audioQuality) {
+                                AudioQuality.AUTO -> if (connectivityManager.isActiveNetworkMetered) -1 else 1 - 5
+                                AudioQuality.MAX -> 5
+                                AudioQuality.HIGH -> 1
+                                AudioQuality.LOW -> -1
+                            } + (if (it.mimeType.startsWith("audio/webm")) 10240 else 0) // prefer opus stream
                 }
         }
+
     /**
      * Checks if the stream url returns a successful status.
      * If this returns true the url is likely to work.
@@ -185,6 +193,7 @@ object YTPlayerUtils {
         }
         return false
     }
+
     /**
      * Wrapper around the [NewPipeUtils.getSignatureTimestamp] function which reports exceptions
      */
@@ -197,6 +206,7 @@ object YTPlayerUtils {
             }
             .getOrNull()
     }
+
     /**
      * Wrapper around the [NewPipeUtils.getStreamUrl] function which reports exceptions
      */

@@ -93,31 +93,46 @@ fun LibraryPlaylistsScreen(
     val coroutineScope = rememberCoroutineScope()
 
     var viewType by rememberEnumPreference(PlaylistViewTypeKey, LibraryViewType.GRID)
-    val (sortType, onSortTypeChange) = rememberEnumPreference(PlaylistSortTypeKey, PlaylistSortType.CREATE_DATE)
-    val (sortDescending, onSortDescendingChange) = rememberPreference(PlaylistSortDescendingKey, true)
+    val (sortType, onSortTypeChange) = rememberEnumPreference(
+        PlaylistSortTypeKey,
+        PlaylistSortType.CREATE_DATE
+    )
+    val (sortDescending, onSortDescendingChange) = rememberPreference(
+        PlaylistSortDescendingKey,
+        true
+    )
     val gridItemSize by rememberEnumPreference(GridItemsSizeKey, GridItemSize.BIG)
-    
+
     val playlists by viewModel.allPlaylists.collectAsState()
 
     val topSize by viewModel.topValue.collectAsState(initial = 50)
 
     val likedPlaylist =
         Playlist(
-            playlist = PlaylistEntity(id = UUID.randomUUID().toString(), name = stringResource(R.string.liked)),
+            playlist = PlaylistEntity(
+                id = UUID.randomUUID().toString(),
+                name = stringResource(R.string.liked)
+            ),
             songCount = 0,
             thumbnails = emptyList(),
         )
 
     val downloadPlaylist =
         Playlist(
-            playlist = PlaylistEntity(id = UUID.randomUUID().toString(), name = stringResource(R.string.offline)),
+            playlist = PlaylistEntity(
+                id = UUID.randomUUID().toString(),
+                name = stringResource(R.string.offline)
+            ),
             songCount = 0,
             thumbnails = emptyList(),
         )
 
     val topPlaylist =
         Playlist(
-            playlist = PlaylistEntity(id = UUID.randomUUID().toString(), name = stringResource(R.string.my_top) + " $topSize"),
+            playlist = PlaylistEntity(
+                id = UUID.randomUUID().toString(),
+                name = stringResource(R.string.my_top) + " $topSize"
+            ),
             songCount = 0,
             thumbnails = emptyList(),
         )
@@ -126,7 +141,8 @@ fun LibraryPlaylistsScreen(
     val lazyGridState = rememberLazyGridState()
 
     val backStackEntry by navController.currentBackStackEntryAsState()
-    val scrollToTop = backStackEntry?.savedStateHandle?.getStateFlow("scrollToTop", false)?.collectAsState()
+    val scrollToTop =
+        backStackEntry?.savedStateHandle?.getStateFlow("scrollToTop", false)?.collectAsState()
 
     val (innerTubeCookie) = rememberPreference(InnerTubeCookieKey, "")
     val isLoggedIn = remember(innerTubeCookie) {
@@ -135,8 +151,8 @@ fun LibraryPlaylistsScreen(
 
     val (ytmSync) = rememberPreference(YtmSyncKey, true)
 
-    LaunchedEffect(Unit){
-        if (ytmSync){
+    LaunchedEffect(Unit) {
+        if (ytmSync) {
             viewModel.sync()
         }
     }
@@ -158,7 +174,7 @@ fun LibraryPlaylistsScreen(
     var syncedPlaylist: Boolean by remember {
         mutableStateOf(false)
     }
-    
+
     if (showAddPlaylistDialog) {
         TextFieldDialog(
             icon = { Icon(painter = painterResource(R.drawable.add), contentDescription = null) },
@@ -250,12 +266,12 @@ fun LibraryPlaylistsScreen(
             ) {
                 Icon(
                     painter =
-                        painterResource(
-                            when (viewType) {
-                                LibraryViewType.LIST -> R.drawable.list
-                                LibraryViewType.GRID -> R.drawable.grid_view
-                            },
-                        ),
+                    painterResource(
+                        when (viewType) {
+                            LibraryViewType.LIST -> R.drawable.list
+                            LibraryViewType.GRID -> R.drawable.grid_view
+                        },
+                    ),
                     contentDescription = null,
                 )
             }
@@ -293,11 +309,12 @@ fun LibraryPlaylistsScreen(
                             playlist = likedPlaylist,
                             autoPlaylist = true,
                             modifier =
-                                Modifier
-                                    .fillMaxWidth()
-                                    .clickable {
-                                        navController.navigate("auto_playlist/liked")
-                                    }.animateItem(),
+                            Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    navController.navigate("auto_playlist/liked")
+                                }
+                                .animateItem(),
                         )
                     }
 
@@ -309,11 +326,12 @@ fun LibraryPlaylistsScreen(
                             playlist = downloadPlaylist,
                             autoPlaylist = true,
                             modifier =
-                                Modifier
-                                    .fillMaxWidth()
-                                    .clickable {
-                                        navController.navigate("auto_playlist/downloaded")
-                                    }.animateItem(),
+                            Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    navController.navigate("auto_playlist/downloaded")
+                                }
+                                .animateItem(),
                         )
                     }
 
@@ -325,11 +343,12 @@ fun LibraryPlaylistsScreen(
                             playlist = topPlaylist,
                             autoPlaylist = true,
                             modifier =
-                                Modifier
-                                    .fillMaxWidth()
-                                    .clickable {
-                                        navController.navigate("top_playlist/$topSize")
-                                    }.animateItem(),
+                            Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    navController.navigate("top_playlist/$topSize")
+                                }
+                                .animateItem(),
                         )
                     }
 
@@ -368,9 +387,9 @@ fun LibraryPlaylistsScreen(
                 LazyVerticalGrid(
                     state = lazyGridState,
                     columns =
-                        GridCells.Adaptive(
-                            minSize = GridThumbnailHeight + if (gridItemSize == GridItemSize.BIG) 24.dp else (-24).dp,
-                        ),
+                    GridCells.Adaptive(
+                        minSize = GridThumbnailHeight + if (gridItemSize == GridItemSize.BIG) 24.dp else (-24).dp,
+                    ),
                     contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues(),
                 ) {
                     item(
@@ -398,13 +417,14 @@ fun LibraryPlaylistsScreen(
                             fillMaxWidth = true,
                             autoPlaylist = true,
                             modifier =
-                                Modifier
-                                    .fillMaxWidth()
-                                    .combinedClickable(
-                                        onClick = {
-                                            navController.navigate("auto_playlist/liked")
-                                        },
-                                    ).animateItem(),
+                            Modifier
+                                .fillMaxWidth()
+                                .combinedClickable(
+                                    onClick = {
+                                        navController.navigate("auto_playlist/liked")
+                                    },
+                                )
+                                .animateItem(),
                         )
                     }
 
@@ -417,13 +437,14 @@ fun LibraryPlaylistsScreen(
                             fillMaxWidth = true,
                             autoPlaylist = true,
                             modifier =
-                                Modifier
-                                    .fillMaxWidth()
-                                    .combinedClickable(
-                                        onClick = {
-                                            navController.navigate("auto_playlist/downloaded")
-                                        },
-                                    ).animateItem(),
+                            Modifier
+                                .fillMaxWidth()
+                                .combinedClickable(
+                                    onClick = {
+                                        navController.navigate("auto_playlist/downloaded")
+                                    },
+                                )
+                                .animateItem(),
                         )
                     }
 
@@ -436,13 +457,14 @@ fun LibraryPlaylistsScreen(
                             fillMaxWidth = true,
                             autoPlaylist = true,
                             modifier =
-                                Modifier
-                                    .fillMaxWidth()
-                                    .combinedClickable(
-                                        onClick = {
-                                            navController.navigate("top_playlist/$topSize")
-                                        },
-                                    ).animateItem(),
+                            Modifier
+                                .fillMaxWidth()
+                                .combinedClickable(
+                                    onClick = {
+                                        navController.navigate("top_playlist/$topSize")
+                                    },
+                                )
+                                .animateItem(),
                         )
                     }
 

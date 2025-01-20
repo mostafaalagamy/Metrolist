@@ -57,7 +57,10 @@ fun AccountSettings(
     val isLoggedIn = remember(innerTubeCookie) {
         "SAPISID" in parseCookieString(innerTubeCookie)
     }
-    val (useLoginForBrowse, onUseLoginForBrowseChange) = rememberPreference(key = UseLoginForBrowse, defaultValue = false)
+    val (useLoginForBrowse, onUseLoginForBrowseChange) = rememberPreference(
+        key = UseLoginForBrowse,
+        defaultValue = false
+    )
     val (ytmSync, onYtmSyncChange) = rememberPreference(YtmSyncKey, defaultValue = true)
     val context = LocalContext.current
 
@@ -131,12 +134,12 @@ fun AccountSettings(
                     maxLines = 20,
                     isInputValid = {
                         it.isNotEmpty() &&
-                            try {
-                                "SAPISID" in parseCookieString(it)
-                                true
-                            } catch (e: Exception) {
-                                false
-                        }
+                                try {
+                                    "SAPISID" in parseCookieString(it)
+                                    true
+                                } catch (e: Exception) {
+                                    false
+                                }
                     },
                     extraContent = {
                         InfoLabel(text = stringResource(R.string.token_adv_login_description))

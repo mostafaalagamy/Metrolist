@@ -17,42 +17,42 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AlbumViewModel
-    @Inject
-    constructor(
-        database: MusicDatabase,
-        savedStateHandle: SavedStateHandle,
-    ) : ViewModel() {
-        val albumId = savedStateHandle.get<String>("albumId")!!
-        val playlistId = MutableStateFlow("")
-        val albumWithSongs =
-            database
-                .albumWithSongs(albumId)
-                .stateIn(viewModelScope, SharingStarted.Eagerly, null)
-        var otherVersions = MutableStateFlow<List<AlbumItem>>(emptyList())
+@Inject
+constructor(
+    database: MusicDatabase,
+    savedStateHandle: SavedStateHandle,
+) : ViewModel() {
+    val albumId = savedStateHandle.get<String>("albumId")!!
+    val playlistId = MutableStateFlow("")
+    val albumWithSongs =
+        database
+            .albumWithSongs(albumId)
+            .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+    var otherVersions = MutableStateFlow<List<AlbumItem>>(emptyList())
 
-        init {
-            viewModelScope.launch {
-                val album = database.album(albumId).first()
-                YouTube
-                    .album(albumId)
-                    .onSuccess {
-                        playlistId.value = it.album.playlistId
-                        otherVersions.value = it.otherVersions
-                        database.transaction {
-                            if (album == null) {
-                                insert(it)
-                            } else {
-                                update(album.album, it, album.artists)
-                            }
-                        }
-                    }.onFailure {
-                        reportException(it)
-                        if (it.message?.contains("NOT_FOUND") == true) {
-                            database.query {
-                                album?.album?.let(::delete)
-                            }
+    init {
+        viewModelScope.launch {
+            val album = database.album(albumId).first()
+            YouTube
+                .album(albumId)
+                .onSuccess {
+                    playlistId.value = it.album.playlistId
+                    otherVersions.value = it.otherVersions
+                    database.transaction {
+                        if (album == null) {
+                            insert(it)
+                        } else {
+                            update(album.album, it, album.artists)
                         }
                     }
-            }
+                }.onFailure {
+                    reportException(it)
+                    if (it.message?.contains("NOT_FOUND") == true) {
+                        database.query {
+                            album?.album?.let(::delete)
+                        }
+                    }
+                }
         }
     }
+}

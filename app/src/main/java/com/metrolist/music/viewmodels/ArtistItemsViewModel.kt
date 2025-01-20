@@ -21,57 +21,57 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ArtistItemsViewModel
-    @Inject
-    constructor(
-        @ApplicationContext val context: Context,
-        savedStateHandle: SavedStateHandle,
-    ) : ViewModel() {
-        private val browseId = savedStateHandle.get<String>("browseId")!!
-        private val params = savedStateHandle.get<String>("params")
+@Inject
+constructor(
+    @ApplicationContext val context: Context,
+    savedStateHandle: SavedStateHandle,
+) : ViewModel() {
+    private val browseId = savedStateHandle.get<String>("browseId")!!
+    private val params = savedStateHandle.get<String>("params")
 
-        val title = MutableStateFlow("")
-        val itemsPage = MutableStateFlow<ItemsPage?>(null)
+    val title = MutableStateFlow("")
+    val itemsPage = MutableStateFlow<ItemsPage?>(null)
 
-        init {
-            viewModelScope.launch {
-                YouTube
-                    .artistItems(
-                        BrowseEndpoint(
-                            browseId = browseId,
-                            params = params,
-                        ),
-                    ).onSuccess { artistItemsPage ->
-                        title.value = artistItemsPage.title
-                        itemsPage.value =
-                            ItemsPage(
-                                items = artistItemsPage.items.distinctBy { it.id },
-                                continuation = artistItemsPage.continuation,
-                            )
-                    }.onFailure {
-                        reportException(it)
-                    }
-            }
-        }
-
-        fun loadMore() {
-            viewModelScope.launch {
-                val oldItemsPage = itemsPage.value ?: return@launch
-                val continuation = oldItemsPage.continuation ?: return@launch
-                YouTube
-                    .artistItemsContinuation(continuation)
-                    .onSuccess { artistItemsContinuationPage ->
-                        itemsPage.update {
-                            ItemsPage(
-                                items =
-                                    (oldItemsPage.items + artistItemsContinuationPage.items)
-                                        .distinctBy { it.id }
-                                        .filterExplicit(context.dataStore.get(HideExplicitKey, false)),
-                                continuation = artistItemsContinuationPage.continuation,
-                            )
-                        }
-                    }.onFailure {
-                        reportException(it)
-                    }
-            }
+    init {
+        viewModelScope.launch {
+            YouTube
+                .artistItems(
+                    BrowseEndpoint(
+                        browseId = browseId,
+                        params = params,
+                    ),
+                ).onSuccess { artistItemsPage ->
+                    title.value = artistItemsPage.title
+                    itemsPage.value =
+                        ItemsPage(
+                            items = artistItemsPage.items.distinctBy { it.id },
+                            continuation = artistItemsPage.continuation,
+                        )
+                }.onFailure {
+                    reportException(it)
+                }
         }
     }
+
+    fun loadMore() {
+        viewModelScope.launch {
+            val oldItemsPage = itemsPage.value ?: return@launch
+            val continuation = oldItemsPage.continuation ?: return@launch
+            YouTube
+                .artistItemsContinuation(continuation)
+                .onSuccess { artistItemsContinuationPage ->
+                    itemsPage.update {
+                        ItemsPage(
+                            items =
+                            (oldItemsPage.items + artistItemsContinuationPage.items)
+                                .distinctBy { it.id }
+                                .filterExplicit(context.dataStore.get(HideExplicitKey, false)),
+                            continuation = artistItemsContinuationPage.continuation,
+                        )
+                    }
+                }.onFailure {
+                    reportException(it)
+                }
+        }
+    }
+}
