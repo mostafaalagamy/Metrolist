@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     
     <!-- أزرار التنقل -->
     <string name="home">الرئيسية</string>

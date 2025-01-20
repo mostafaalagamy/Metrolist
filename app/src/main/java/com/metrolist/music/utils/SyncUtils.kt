@@ -12,7 +12,6 @@ import com.metrolist.music.db.entities.ArtistEntity
 import com.metrolist.music.db.entities.PlaylistEntity
 import com.metrolist.music.db.entities.PlaylistSongMap
 import com.metrolist.music.db.entities.SongEntity
-import com.metrolist.music.db.entities.Song
 import com.metrolist.music.models.toMediaMetadata
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull

@@ -9,6 +9,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavController
+import com.metrolist.innertube.models.PlaylistItem
+import com.metrolist.innertube.models.WatchEndpoint
 import com.metrolist.music.R
 import com.metrolist.music.db.entities.Album
 import com.metrolist.music.db.entities.Artist
@@ -17,8 +19,6 @@ import com.metrolist.music.ui.menu.AlbumMenu
 import com.metrolist.music.ui.menu.ArtistMenu
 import com.metrolist.music.ui.menu.PlaylistMenu
 import com.metrolist.music.ui.menu.YouTubePlaylistMenu
-import com.metrolist.innertube.models.PlaylistItem
-import com.metrolist.innertube.models.WatchEndpoint
 import kotlinx.coroutines.CoroutineScope
 
 @Composable
