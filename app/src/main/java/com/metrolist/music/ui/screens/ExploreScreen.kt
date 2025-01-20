@@ -113,7 +113,7 @@ fun ExploreScreen(
                                                 )
                                             }
                                         },
-                                    ).animateItemPlacement(),
+                                    ).animateItem(),
                         )
                     }
                 }

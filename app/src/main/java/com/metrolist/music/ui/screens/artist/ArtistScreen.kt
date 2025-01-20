@@ -277,7 +277,7 @@ fun ArtistScreen(
                                                 )
                                             }
                                         },
-                                    ).animateItemPlacement(),
+                                    ).animateItem(),
                         )
                     }
                 }
@@ -348,7 +348,7 @@ fun ArtistScreen(
                                                     )
                                                 }
                                             },
-                                        ).animateItemPlacement(),
+                                        ).animateItem(),
                             )
                         }
                     } else {
@@ -415,7 +415,7 @@ fun ArtistScreen(
                                                             }
                                                         }
                                                     },
-                                                ).animateItemPlacement(),
+                                                ).animateItem(),
                                     )
                                 }
                             }

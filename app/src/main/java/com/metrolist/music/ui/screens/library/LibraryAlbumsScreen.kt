@@ -239,7 +239,7 @@ fun LibraryAlbumsScreen(
                             album = album,
                             isActive = album.id == mediaMetadata?.album?.id,
                             isPlaying = isPlaying,
-                            modifier = Modifier.animateItemPlacement()
+                            modifier = Modifier.animateItem()
                         )
                     }
                 }
@@ -293,7 +293,7 @@ fun LibraryAlbumsScreen(
                             album = album,
                             isActive = album.id == mediaMetadata?.album?.id,
                             isPlaying = isPlaying,
-                            modifier = Modifier.animateItemPlacement()
+                            modifier = Modifier.animateItem()
                         )
                     }
                 }
