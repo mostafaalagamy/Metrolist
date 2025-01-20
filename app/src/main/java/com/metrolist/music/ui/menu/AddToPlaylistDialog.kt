@@ -29,14 +29,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.TextUnit
-import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewModelScope
 import com.metrolist.innertube.YouTube
 import com.metrolist.innertube.utils.parseCookieString
 import com.metrolist.music.LocalDatabase
 import com.metrolist.music.R
+import com.metrolist.music.constants.InnerTubeCookieKey
 import com.metrolist.music.constants.ListThumbnailSize
 import com.metrolist.music.db.entities.Playlist
 import com.metrolist.music.db.entities.PlaylistEntity
@@ -45,7 +43,6 @@ import com.metrolist.music.ui.component.ListDialog
 import com.metrolist.music.ui.component.ListItem
 import com.metrolist.music.ui.component.PlaylistListItem
 import com.metrolist.music.ui.component.TextFieldDialog
-import com.metrolist.music.constants.InnerTubeCookieKey
 import com.metrolist.music.utils.rememberPreference
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

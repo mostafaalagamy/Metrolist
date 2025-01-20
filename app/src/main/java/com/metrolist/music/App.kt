@@ -37,7 +37,6 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.net.Proxy
 import java.util.Locale
-import kotlin.collections.contains
 
 @HiltAndroidApp
 class App :

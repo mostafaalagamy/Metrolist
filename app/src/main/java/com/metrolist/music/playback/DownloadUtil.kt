@@ -4,7 +4,6 @@ import android.content.Context
 import android.net.ConnectivityManager
 import androidx.core.content.getSystemService
 import androidx.core.net.toUri
-import androidx.media3.common.PlaybackException
 import androidx.media3.database.DatabaseProvider
 import androidx.media3.datasource.ResolvingDataSource
 import androidx.media3.datasource.cache.CacheDataSource
@@ -14,13 +13,13 @@ import androidx.media3.exoplayer.offline.Download
 import androidx.media3.exoplayer.offline.DownloadManager
 import androidx.media3.exoplayer.offline.DownloadNotificationHelper
 import com.metrolist.innertube.YouTube
-import com.metrolist.music.utils.YTPlayerUtils
 import com.metrolist.music.constants.AudioQuality
 import com.metrolist.music.constants.AudioQualityKey
 import com.metrolist.music.db.MusicDatabase
 import com.metrolist.music.db.entities.FormatEntity
 import com.metrolist.music.di.DownloadCache
 import com.metrolist.music.di.PlayerCache
+import com.metrolist.music.utils.YTPlayerUtils
 import com.metrolist.music.utils.enumPreference
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers

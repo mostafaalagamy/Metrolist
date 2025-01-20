@@ -1,10 +1,10 @@
 package com.metrolist.music.utils
 
 import android.content.Context
-import com.my.kizzy.rpc.KizzyRPC
-import com.my.kizzy.rpc.RpcImage
 import com.metrolist.music.R
 import com.metrolist.music.db.entities.Song
+import com.my.kizzy.rpc.KizzyRPC
+import com.my.kizzy.rpc.RpcImage
 
 class DiscordRPC(
     val context: Context,

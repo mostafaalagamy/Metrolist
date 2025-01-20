@@ -51,7 +51,6 @@ import androidx.media3.exoplayer.offline.DownloadService
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.metrolist.innertube.YouTube
-import com.metrolist.innertube.models.WatchEndpoint
 import com.metrolist.music.LocalDatabase
 import com.metrolist.music.LocalDownloadUtil
 import com.metrolist.music.LocalPlayerConnection
@@ -74,7 +73,6 @@ import com.metrolist.music.ui.component.SongListItem
 import com.metrolist.music.ui.component.TextFieldDialog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.time.LocalDateTime
 
 @Composable
 fun SongMenu(

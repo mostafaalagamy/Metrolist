@@ -10,8 +10,8 @@ import androidx.room.Transaction
 import androidx.room.Update
 import androidx.room.Upsert
 import androidx.sqlite.db.SupportSQLiteQuery
-import com.metrolist.innertube.models.SongItem
 import com.metrolist.innertube.models.PlaylistItem
+import com.metrolist.innertube.models.SongItem
 import com.metrolist.innertube.pages.AlbumPage
 import com.metrolist.innertube.pages.ArtistPage
 import com.metrolist.music.constants.AlbumSortType
@@ -35,12 +35,12 @@ import com.metrolist.music.db.entities.PlaylistSong
 import com.metrolist.music.db.entities.PlaylistSongMap
 import com.metrolist.music.db.entities.RelatedSongMap
 import com.metrolist.music.db.entities.SearchHistory
+import com.metrolist.music.db.entities.SetVideoIdEntity
 import com.metrolist.music.db.entities.Song
 import com.metrolist.music.db.entities.SongAlbumMap
 import com.metrolist.music.db.entities.SongArtistMap
 import com.metrolist.music.db.entities.SongEntity
 import com.metrolist.music.db.entities.SongWithStats
-import com.metrolist.music.db.entities.SetVideoIdEntity
 import com.metrolist.music.extensions.reversed
 import com.metrolist.music.extensions.toSQLiteQuery
 import com.metrolist.music.models.MediaMetadata

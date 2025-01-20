@@ -25,7 +25,6 @@ import com.metrolist.music.playback.queues.YouTubeQueue
 import com.metrolist.music.ui.component.GridMenu
 import com.metrolist.music.ui.component.GridMenuItem
 import com.metrolist.music.ui.component.YouTubeListItem
-import java.time.LocalDateTime
 
 @Composable
 fun YouTubeArtistMenu(

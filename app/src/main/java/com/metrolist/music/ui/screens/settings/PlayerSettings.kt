@@ -23,9 +23,9 @@ import com.metrolist.music.constants.AudioNormalizationKey
 import com.metrolist.music.constants.AudioQuality
 import com.metrolist.music.constants.AudioQualityKey
 import com.metrolist.music.constants.AutoLoadMoreKey
-import com.metrolist.music.constants.SimilarContent
 import com.metrolist.music.constants.AutoSkipNextOnErrorKey
 import com.metrolist.music.constants.PersistentQueueKey
+import com.metrolist.music.constants.SimilarContent
 import com.metrolist.music.constants.SkipSilenceKey
 import com.metrolist.music.constants.StopMusicOnTaskClearKey
 import com.metrolist.music.ui.component.EnumListPreference

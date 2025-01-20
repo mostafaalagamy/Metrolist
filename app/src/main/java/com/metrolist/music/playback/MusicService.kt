@@ -56,10 +56,8 @@ import com.metrolist.innertube.models.WatchEndpoint
 import com.metrolist.music.MainActivity
 import com.metrolist.music.R
 import com.metrolist.music.constants.AudioNormalizationKey
-import com.metrolist.music.constants.AudioQuality
 import com.metrolist.music.constants.AudioQualityKey
 import com.metrolist.music.constants.AutoLoadMoreKey
-import com.metrolist.music.constants.SimilarContent
 import com.metrolist.music.constants.AutoSkipNextOnErrorKey
 import com.metrolist.music.constants.DiscordTokenKey
 import com.metrolist.music.constants.EnableDiscordRPCKey
@@ -73,6 +71,7 @@ import com.metrolist.music.constants.PersistentQueueKey
 import com.metrolist.music.constants.PlayerVolumeKey
 import com.metrolist.music.constants.RepeatModeKey
 import com.metrolist.music.constants.ShowLyricsKey
+import com.metrolist.music.constants.SimilarContent
 import com.metrolist.music.constants.SkipSilenceKey
 import com.metrolist.music.db.MusicDatabase
 import com.metrolist.music.db.entities.Event
@@ -99,12 +98,12 @@ import com.metrolist.music.playback.queues.YouTubeQueue
 import com.metrolist.music.playback.queues.filterExplicit
 import com.metrolist.music.utils.CoilBitmapLoader
 import com.metrolist.music.utils.DiscordRPC
+import com.metrolist.music.utils.YTPlayerUtils
 import com.metrolist.music.utils.dataStore
 import com.metrolist.music.utils.enumPreference
 import com.metrolist.music.utils.get
 import com.metrolist.music.utils.isInternetAvailable
 import com.metrolist.music.utils.reportException
-import com.metrolist.music.utils.YTPlayerUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

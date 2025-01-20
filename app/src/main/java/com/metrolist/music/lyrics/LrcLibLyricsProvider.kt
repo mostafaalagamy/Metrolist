@@ -1,10 +1,10 @@
 package com.metrolist.music.lyrics
 
 import android.content.Context
+import com.metrolist.lrclib.LrcLib
 import com.metrolist.music.constants.EnableLrcLibKey
 import com.metrolist.music.utils.dataStore
 import com.metrolist.music.utils.get
-import com.metrolist.lrclib.LrcLib
 
 object LrcLibLyricsProvider : LyricsProvider {
     override val name = "LrcLib"

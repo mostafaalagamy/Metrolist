@@ -1,16 +1,15 @@
 package com.metrolist.music.db.entities
 
 import androidx.compose.runtime.Immutable
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import org.apache.commons.lang3.RandomStringUtils
-import java.time.LocalDateTime
 import com.metrolist.innertube.YouTube
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
+import org.apache.commons.lang3.RandomStringUtils
+import java.time.LocalDateTime
 
 @Immutable
 @Entity(tableName = "artist")
