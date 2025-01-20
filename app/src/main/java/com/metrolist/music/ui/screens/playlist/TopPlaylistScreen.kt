@@ -538,7 +538,7 @@ fun TopPlaylistScreen(
                     )
                 } else {
                     Text(
-                        text = name ?: "",
+                        text = name,
                     )
                 }
             },
@@ -574,7 +574,7 @@ fun TopPlaylistScreen(
                     IconButton(
                         onClick = {
                             if (count == wrappedSongs?.size) {
-                                wrappedSongs?.forEach { it.isSelected = false }
+                                wrappedSongs.forEach { it.isSelected = false }
                             } else {
                                 wrappedSongs?.forEach { it.isSelected = true }
                             }

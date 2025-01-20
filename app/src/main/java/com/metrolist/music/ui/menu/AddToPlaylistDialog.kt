@@ -166,7 +166,7 @@ fun AddToPlaylistDialog(
                     Row(
                         modifier = Modifier.padding(vertical = 16.dp, horizontal = 40.dp)
                     ) {
-                        Column() {
+                        Column {
                             Text(
                                 text = stringResource(R.string.sync_playlist),
                                 style = MaterialTheme.typography.titleLarge,

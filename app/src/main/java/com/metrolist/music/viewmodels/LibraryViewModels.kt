@@ -203,7 +203,7 @@ class LibraryAlbumsViewModel
             viewModelScope.launch(Dispatchers.IO) {
                 allAlbums.collect { albums ->
                     albums
-                        ?.filter {
+                        .filter {
                             it.album.songCount == 0
                         }?.forEach { album ->
                             YouTube

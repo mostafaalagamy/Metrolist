@@ -2,6 +2,7 @@
 
 package com.metrolist.music.ui.component
 
+import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandIn
@@ -1484,6 +1485,7 @@ fun YouTubeListItem(
     isActive = isActive,
 )
 
+@SuppressLint("SuspiciousIndentation")
 @Composable
 fun YouTubeGridItem(
     item: YTItem,

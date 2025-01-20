@@ -161,7 +161,7 @@ fun LibraryArtistsScreen(
             Spacer(Modifier.weight(1f))
 
             Text(
-                text = pluralStringResource(R.plurals.n_artist, artists!!.size, artists!!.size),
+                text = pluralStringResource(R.plurals.n_artist, artists.size, artists.size),
                 style = MaterialTheme.typography.titleSmall,
                 color = MaterialTheme.colorScheme.secondary,
             )
@@ -209,31 +209,31 @@ fun LibraryArtistsScreen(
                         headerContent()
                     }
 
-                    artists?.let { artists ->
+                    artists.let { artists ->
                         if (artists.isEmpty()) {
                             item {
                                 EmptyPlaceholder(
                                     icon = R.drawable.artist,
                                     text = stringResource(R.string.library_artist_empty),
                                     modifier = Modifier.animateItem()
+                                )
+                            }
+                        }
+
+                        items(
+                            items = artists,
+                            key = { it.id },
+                            contentType = { CONTENT_TYPE_ARTIST },
+                        ) { artist ->
+                            LibraryArtistListItem(
+                                navController = navController,
+                                menuState = menuState,
+                                coroutineScope = coroutineScope,
+                                modifier = Modifier.animateItem(),
+                                artist = artist
                             )
                         }
                     }
- 
-                    items(
-                        items = artists,
-                        key = { it.id },
-                        contentType = { CONTENT_TYPE_ARTIST },
-                    ) { artist ->
-                        LibraryArtistListItem(
-                            navController = navController,
-                            menuState = menuState,
-                            coroutineScope = coroutineScope,
-                            modifier = Modifier.animateItem(),
-                            artist = artist
-                        )
-                    }
-                }
             }
 
             LibraryViewType.GRID ->
@@ -261,31 +261,31 @@ fun LibraryArtistsScreen(
                         headerContent()
                     }
 
-                    artists?.let { artists ->
+                    artists.let { artists ->
                         if (artists.isEmpty()) {
                             item(span = { GridItemSpan(maxLineSpan) }) {
                                 EmptyPlaceholder(
                                     icon = R.drawable.artist,
                                     text = stringResource(R.string.library_artist_empty),
                                     modifier = Modifier.animateItem()
+                                )
+                            }
+                        }
+
+                        items(
+                            items = artists,
+                            key = { it.id },
+                            contentType = { CONTENT_TYPE_ARTIST },
+                        ) { artist ->
+                            LibraryArtistGridItem(
+                                navController = navController,
+                                menuState = menuState,
+                                coroutineScope = coroutineScope,
+                                modifier = Modifier.animateItem(),
+                                artist = artist
                             )
                         }
                     }
-
-                    items(
-                        items = artists,
-                        key = { it.id },
-                        contentType = { CONTENT_TYPE_ARTIST },
-                    ) { artist ->
-                        LibraryArtistGridItem(
-                            navController = navController,
-                            menuState = menuState,
-                            coroutineScope = coroutineScope,
-                            modifier = Modifier.animateItem(),
-                            artist = artist
-                        )
-                    }
-                }
             }
         }
     }

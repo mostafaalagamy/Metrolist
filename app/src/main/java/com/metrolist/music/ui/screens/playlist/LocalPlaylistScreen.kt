@@ -668,7 +668,7 @@ fun LocalPlaylistScreen(
                                                     if (!selection) {
                                                         selection = true
                                                     }
-                                                    wrappedSongs?.forEach { it.isSelected = false }
+                                                wrappedSongs.forEach { it.isSelected = false }
                                                     songWrapper.isSelected = true
                                                 },
                                             ),
@@ -843,8 +843,8 @@ fun LocalPlaylistHeader(
         mutableIntStateOf(Download.STATE_STOPPED)
     }
 
-    val liked = playlist?.playlist?.bookmarkedAt != null
-    val editable: Boolean = playlist?.playlist?.isEditable == true
+    val liked = playlist.playlist?.bookmarkedAt != null
+    val editable: Boolean = playlist.playlist?.isEditable == true
 
     LaunchedEffect(songs) {
         if (songs.isEmpty()) return@LaunchedEffect

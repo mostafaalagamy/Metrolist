@@ -298,14 +298,14 @@ fun LibrarySongsScreen(
             }
 
         HideOnScrollFAB(
-            visible = songs?.isNotEmpty() == true,
+            visible = songs.isNotEmpty() == true,
             lazyListState = lazyListState,
             icon = R.drawable.shuffle,
             onClick = {
                 playerConnection.playQueue(
                     ListQueue(
                         title = context.getString(R.string.queue_all_songs),
-                        items = songs?.shuffled()?.map { it.toMediaItem() } ?: emptyList(),
+                        items = songs.shuffled()?.map { it.toMediaItem() } ?: emptyList(),
                     ),
                 )
             },
