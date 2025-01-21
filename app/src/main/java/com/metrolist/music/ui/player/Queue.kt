@@ -486,7 +486,9 @@ fun Queue(
         }
 
         LaunchedEffect(mutableQueueWindows) {
-            reorderableState.listState.scrollToItem(currentWindowIndex)
+            if (currentWindowIndex != -1) {
+                reorderableState.listState.scrollToItem(currentWindowIndex)
+            }
         }
 
         Box(
