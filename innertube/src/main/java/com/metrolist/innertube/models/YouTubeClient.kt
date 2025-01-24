@@ -76,10 +76,10 @@ data class YouTubeClient(
 
         val IOS = YouTubeClient(
             clientName = "IOS",
-            clientVersion = "19.45.4",
+            clientVersion = "20.03.02",
             clientId = "5",
-            userAgent = "com.google.ios.youtube/19.45.4 (iPhone16,2; U; CPU iOS 18_1_0 like Mac OS X;)",
-            osVersion = "18.1.0.22B83",
+            userAgent = "com.google.ios.youtube/20.03.02 (iPhone16,2; U; CPU iOS 18_2_1 like Mac OS X;)",
+            osVersion = "18.2.1.22C161",
         )
     }
 }
