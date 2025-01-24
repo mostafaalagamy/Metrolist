@@ -117,7 +117,9 @@ import com.metrolist.music.ui.component.LocalMenuState
 import com.metrolist.music.ui.component.SongListItem
 import com.metrolist.music.ui.component.SortHeader
 import com.metrolist.music.ui.component.TextFieldDialog
+import com.metrolist.music.ui.menu.PlaylistMenu
 import com.metrolist.music.ui.menu.SelectionSongMenu
+import com.metrolist.music.ui.menu.YouTubePlaylistMenu
 import com.metrolist.music.ui.menu.SongMenu
 import com.metrolist.music.ui.utils.ItemWrapper
 import com.metrolist.music.ui.utils.backToMain
@@ -298,15 +300,20 @@ fun LocalPlaylistScreen(
                 TextButton(
                     onClick = {
                         showRemoveDownloadDialog = false
+                        if (!editable) {
+                            database.transaction {
+                                playlist?.id?.let { clearPlaylist(it) }
+                            }
+                        }
                         songs.forEach { song ->
                             DownloadService.sendRemoveDownload(
                                 context,
                                 ExoDownloadService::class.java,
                                 song.song.id,
-                                false,
+                                false
                             )
                         }
-                    },
+                    }
                 ) {
                     Text(text = stringResource(android.R.string.ok))
                 }
@@ -1031,22 +1038,6 @@ fun LocalPlaylistHeader(
                         }
                     }
 
-                    if (playlist.playlist.browseId != null) {
-                        IconButton(
-                            onClick = {
-                                scope.launch(Dispatchers.IO) {
-                                    syncUtils.syncPlaylist(playlist.playlist.browseId, playlist.id)
-                                    snackbarHostState.showSnackbar(context.getString(R.string.playlist_synced))
-                                }
-                            },
-                        ) {
-                            Icon(
-                                painter = painterResource(R.drawable.sync),
-                                contentDescription = null,
-                            )
-                        }
-                    }
-
                     when (downloadState) {
                         Download.STATE_COMPLETED -> {
                             IconButton(
@@ -1118,6 +1109,23 @@ fun LocalPlaylistHeader(
                         Icon(
                             painter = painterResource(R.drawable.queue_music),
                             contentDescription = null,
+                        )
+                    }
+
+                    IconButton(
+                        onClick = {
+                            menuState.show {
+                                PlaylistMenu(
+                                    playlist = playlist,
+                                    coroutineScope = coroutineScope,
+                                    onDismiss = menuState::dismiss
+                                )
+                            }
+                        }
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.more_vert),
+                            contentDescription = null
                         )
                     }
                 }
