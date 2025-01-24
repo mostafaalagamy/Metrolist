@@ -1,5 +1,6 @@
 package com.metrolist.music.ui.menu
 
+import android.content.Intent
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
@@ -47,6 +48,7 @@ import com.metrolist.music.extensions.toMediaItem
 import com.metrolist.music.models.toMediaMetadata
 import com.metrolist.music.playback.ExoDownloadService
 import com.metrolist.music.playback.queues.ListQueue
+import com.metrolist.music.playback.queues.YouTubeQueue
 import com.metrolist.music.ui.component.DefaultDialog
 import com.metrolist.music.ui.component.DownloadGridMenu
 import com.metrolist.music.ui.component.GridMenu
@@ -56,6 +58,7 @@ import com.metrolist.music.ui.component.TextFieldDialog
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.time.LocalDateTime
 
 @Composable
@@ -322,6 +325,33 @@ fun PlaylistMenu(
             )
         }
 
+        playlist.playlist.browseId?.let { browseId ->
+            GridMenuItem(
+                icon = R.drawable.radio,
+                title = R.string.start_radio
+            ) {
+                coroutineScope.launch(Dispatchers.IO) {
+                    YouTube.playlist(browseId).getOrNull()?.playlist?.let { playlistItem ->
+                        playlistItem.radioEndpoint?.let { radioEndpoint ->
+                            withContext(Dispatchers.Main) {
+                                playerConnection.playQueue(YouTubeQueue(radioEndpoint))
+                            }
+                        }
+                    }
+                }
+                onDismiss()
+            }
+        }
+        GridMenuItem(
+            icon = R.drawable.playlist_play,
+            title = R.string.play_next
+        ) {
+            coroutineScope.launch {
+                playerConnection.playNext(songs.map { it.toMediaItem() })
+            }
+            onDismiss()
+        }
+
         GridMenuItem(
             icon = R.drawable.queue_music,
             title = R.string.add_to_queue,
@@ -380,30 +410,18 @@ fun PlaylistMenu(
             }
         }
 
-        if (playlist.playlist.browseId != null) {
+        playlist.playlist.shareLink?.let { shareLink ->
             GridMenuItem(
-                icon = R.drawable.sync,
-                title = R.string.sync,
+                icon = R.drawable.share,
+                title = R.string.share
             ) {
-                onDismiss()
-                coroutineScope.launch(Dispatchers.IO) {
-                    val playlistPage =
-                        YouTube.playlist(playlist.playlist.browseId).completed().getOrNull()
-                            ?: return@launch
-                    database.transaction {
-                        clearPlaylist(playlist.id)
-                        playlistPage.songs
-                            .map(SongItem::toMediaMetadata)
-                            .onEach(::insert)
-                            .mapIndexed { position, song ->
-                                PlaylistSongMap(
-                                    songId = song.id,
-                                    playlistId = playlist.id,
-                                    position = position,
-                                )
-                            }.forEach(::insert)
-                    }
+                val intent = Intent().apply {
+                    action = Intent.ACTION_SEND
+                    type = "text/plain"
+                    putExtra(Intent.EXTRA_TEXT, shareLink)
                 }
+                context.startActivity(Intent.createChooser(intent, null))
+                onDismiss()
             }
         }
     }
