@@ -673,7 +673,6 @@ class MainActivity : ComponentActivity() {
                                         onSearch = onSearch,
                                         active = active,
                                         onActiveChange = onActiveChange,
-                                        scrollBehavior = searchBarScrollBehavior,
                                         placeholder = {
                                             Text(
                                                 text = stringResource(
@@ -773,7 +772,7 @@ class MainActivity : ComponentActivity() {
                                                 .fillMaxSize()
                                                 .padding(bottom = if (!playerBottomSheetState.isDismissed) MiniPlayerHeight else 0.dp)
                                                 .navigationBarsPadding(),
-                                                ) { searchSource ->
+                                        ) { searchSource ->
                                             when (searchSource) {
                                                 SearchSource.LOCAL ->
                                                     LocalSearchScreen(
