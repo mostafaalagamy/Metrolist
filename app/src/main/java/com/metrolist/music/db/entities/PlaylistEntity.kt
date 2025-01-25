@@ -35,6 +35,13 @@ data class PlaylistEntity(
         fun generatePlaylistId() = "LP" + RandomStringUtils.random(8, true, false)
     }
 
+    val shareLink: String?
+        get() {
+            return if (browseId != null)
+                "https://music.youtube.com/playlist?list=$browseId"
+            else null
+        }
+
     fun localToggleLike() = copy(
         bookmarkedAt = if (bookmarkedAt != null) null else LocalDateTime.now()
     )
