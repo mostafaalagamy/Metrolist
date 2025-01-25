@@ -2,16 +2,9 @@ package com.metrolist.music.ui.menu
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -27,31 +20,26 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
-import com.metrolist.innertube.YouTube
 import com.metrolist.innertube.utils.parseCookieString
 import com.metrolist.music.LocalDatabase
 import com.metrolist.music.R
 import com.metrolist.music.constants.InnerTubeCookieKey
 import com.metrolist.music.constants.ListThumbnailSize
 import com.metrolist.music.db.entities.Playlist
-import com.metrolist.music.db.entities.PlaylistEntity
+import com.metrolist.music.ui.component.CreatePlaylistDialog
 import com.metrolist.music.ui.component.DefaultDialog
 import com.metrolist.music.ui.component.ListDialog
 import com.metrolist.music.ui.component.ListItem
 import com.metrolist.music.ui.component.PlaylistListItem
-import com.metrolist.music.ui.component.TextFieldDialog
 import com.metrolist.music.utils.rememberPreference
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.time.LocalDateTime
 
 @Composable
 fun AddToPlaylistDialog(
     isVisible: Boolean,
-    noSyncing: Boolean = false,
+    allowSyncing: Boolean = true,
     initialTextFieldValue: String? = null,
     onGetSong: suspend (Playlist) -> List<String>, // list of song ids. Songs should be inserted to database in this function.
     onDismiss: () -> Unit,
@@ -65,11 +53,7 @@ fun AddToPlaylistDialog(
     val isLoggedIn = remember(innerTubeCookie) {
         "SAPISID" in parseCookieString(innerTubeCookie)
     }
-    var showAddPlaylistDialog by rememberSaveable {
-        mutableStateOf(false)
-    }
-
-    var syncedPlaylist: Boolean by remember {
+    var showCreatePlaylistDialog by rememberSaveable {
         mutableStateOf(false)
     }
 
@@ -108,7 +92,7 @@ fun AddToPlaylistDialog(
                         )
                     },
                     modifier = Modifier.clickable {
-                        showAddPlaylistDialog = true
+                        showCreatePlaylistDialog = true
                     }
                 )
             }
@@ -136,117 +120,69 @@ fun AddToPlaylistDialog(
         }
     }
 
-    if (showAddPlaylistDialog) {
-        TextFieldDialog(
-            icon = { Icon(painter = painterResource(R.drawable.add), contentDescription = null) },
-            title = { Text(text = stringResource(R.string.create_playlist)) },
-            initialTextFieldValue = TextFieldValue(initialTextFieldValue ?: ""),
-            onDismiss = { showAddPlaylistDialog = false },
-            onDone = { playlistName ->
-                coroutineScope.launch(Dispatchers.IO) {
-                    val browseId = if (syncedPlaylist)
-                        YouTube.createPlaylist(playlistName).getOrNull()
-                    else null
-
-                    database.query {
-                        insert(
-                            PlaylistEntity(
-                                name = playlistName,
-                                browseId = browseId,
-                                bookmarkedAt = LocalDateTime.now(),
-                                isEditable = true
-                            )
-                        )
-                    }
-                }
-            },
-            extraContent = {
-                // synced/unsynced toggle
-                if (isLoggedIn) {
-                    Row(
-                        modifier = Modifier.padding(vertical = 16.dp, horizontal = 40.dp)
-                    ) {
-                        Column {
-                            Text(
-                                text = stringResource(R.string.sync_playlist),
-                                style = MaterialTheme.typography.titleLarge,
-                            )
-                            Text(
-                                text = stringResource(R.string.allows_for_sync_witch_youtube),
-                                style = MaterialTheme.typography.bodySmall,
-                                modifier = Modifier.fillMaxWidth(0.7f)
-                            )
-                        }
-                        Row(
-                            modifier = Modifier.weight(1f),
-                            horizontalArrangement = Arrangement.End
-                        ) {
-                            Switch(
-                                checked = syncedPlaylist,
-                                onCheckedChange = { syncedPlaylist = !syncedPlaylist },
-                            )
-                        }
-                    }
-                }
-            }
+    if (showCreatePlaylistDialog) {
+        CreatePlaylistDialog(
+            onDismiss = { showCreatePlaylistDialog = false },
+            initialTextFieldValue = initialTextFieldValue,
+            allowSyncing = allowSyncing
         )
     }
 
     // duplicate songs warning
-    if (showDuplicateDialog) {
-        DefaultDialog(
-            title = { Text(stringResource(R.string.duplicates)) },
-            buttons = {
-                TextButton(
-                    onClick = {
-                        showDuplicateDialog = false
-                        onDismiss()
-                        database.transaction {
-                            addSongToPlaylist(
-                                selectedPlaylist!!,
-                                songIds!!.filter {
-                                    !duplicates.contains(it)
-                                }
-                            )
+        if (showDuplicateDialog) {
+            DefaultDialog(
+                title = { Text(stringResource(R.string.duplicates)) },
+                buttons = {
+                    TextButton(
+                        onClick = {
+                            showDuplicateDialog = false
+                            onDismiss()
+                            database.transaction {
+                                addSongToPlaylist(
+                                    selectedPlaylist!!,
+                                    songIds!!.filter {
+                                        !duplicates.contains(it)
+                                    }
+                                )
+                            }
                         }
+                    ) {
+                        Text(stringResource(R.string.skip_duplicates))
                     }
-                ) {
-                    Text(stringResource(R.string.skip_duplicates))
-                }
 
-                TextButton(
-                    onClick = {
-                        showDuplicateDialog = false
-                        onDismiss()
-                        database.transaction {
-                            addSongToPlaylist(selectedPlaylist!!, songIds!!)
+                    TextButton(
+                        onClick = {
+                            showDuplicateDialog = false
+                            onDismiss()
+                            database.transaction {
+                                addSongToPlaylist(selectedPlaylist!!, songIds!!)
+                            }
                         }
+                    ) {
+                        Text(stringResource(R.string.add_anyway))
                     }
-                ) {
-                    Text(stringResource(R.string.add_anyway))
-                }
 
-                TextButton(
-                    onClick = {
-                        showDuplicateDialog = false
+                    TextButton(
+                        onClick = {
+                            showDuplicateDialog = false
+                        }
+                    ) {
+                        Text(stringResource(android.R.string.cancel))
                     }
-                ) {
-                    Text(stringResource(android.R.string.cancel))
-                }
-            },
-            onDismiss = {
-                showDuplicateDialog = false
-            }
-        ) {
-            Text(
-                text = if (duplicates.size == 1) {
-                    stringResource(R.string.duplicates_description_single)
-                } else {
-                    stringResource(R.string.duplicates_description_multiple, duplicates.size)
                 },
-                textAlign = TextAlign.Start,
-                modifier = Modifier.align(Alignment.Start)
-            )
+                onDismiss = {
+                    showDuplicateDialog = false
+                }
+            ) {
+                Text(
+                    text = if (duplicates.size == 1) {
+                        stringResource(R.string.duplicates_description_single)
+                    } else {
+                        stringResource(R.string.duplicates_description_multiple, duplicates.size)
+                    },
+                    textAlign = TextAlign.Start,
+                    modifier = Modifier.align(Alignment.Start)
+                )
+            }
         }
-    }
 }
