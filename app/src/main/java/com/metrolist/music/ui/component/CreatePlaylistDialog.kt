@@ -19,6 +19,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
@@ -41,7 +42,7 @@ fun CreatePlaylistDialog(
     val coroutineScope = rememberCoroutineScope()
     var syncedPlaylist by remember { mutableStateOf(false) }
     TextFieldDialog(
-        icon = { Icon(imageVector = Icons.Rounded.Add, contentDescription = null) },
+        icon = { Icon(painter = painterResource(R.drawable.add), contentDescription = null) },
         title = { Text(text = stringResource(R.string.create_playlist)) },
         initialTextFieldValue = TextFieldValue(initialTextFieldValue?: ""),
         onDismiss = onDismiss,
@@ -56,7 +57,7 @@ fun CreatePlaylistDialog(
                             name = playlistName,
                             browseId = browseId,
                             bookmarkedAt = LocalDateTime.now(),
-                            isEditable = !syncedPlaylist
+                            isEditable = true,
                         )
                     )
                 }
@@ -69,11 +70,11 @@ fun CreatePlaylistDialog(
                 ) {
                     Column() {
                         Text(
-                            text = "Sync Playlist",
+                            text = stringResource(R.string.sync_playlist),
                             style = MaterialTheme.typography.titleLarge,
                         )
                         Text(
-                            text = "Note: This allows for syncing with YouTube Music. This is NOT changeable later. You cannot add local songs to synced playlists.",
+                            text = stringResource(R.string.allows_for_sync_witch_youtube),
                             style = MaterialTheme.typography.bodySmall,
                             modifier = Modifier.fillMaxWidth(0.7f)
                         )
