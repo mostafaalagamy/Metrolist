@@ -48,8 +48,18 @@ src="https://github.com/mostafaalagamy/Metrolist/blob/main/fastlane/metadata/and
 <div align="center">
 <h1>Download Now</h1>
 
-[<img src="https://github.com/machiav3lli/oandbackupx/blob/034b226cea5c1b30eb4f6a6f313e4dadcbb0ece4/badge_github.png" alt="Get it on GitHub" height="80">](https://github.com/mostafaalagamy/Metrolist/releases/latest/download/Metrolist.apk)
-[<img src="https://www.androidfreeware.net/images/androidfreeware-badge.png" alt="Get it on Android Freeware" height="80">](https://www.androidfreeware.net/download-metrolist-apk.html)
+[<img src="https://github.com/machiav3lli/oandbackupx/blob/034b226cea5c1b30eb4f6a6f313e4dadcbb0ece4/badge_github.png" alt="Get it on GitHub" height="82"
+align="center">](https://github.com/mostafaalagamy/Metrolist/releases/latest/download/Metrolist.apk)
+[<img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png" alt="Get it on IzzyOnDroid" height="80"
+align="center">](https://apt.izzysoft.de/fdroid/index/apk/com.metrolist.music)
+[<img src="https://www.openapk.net/images/openapk-badge.png" alt="Get it on OpenAPK" height="80"
+align="center">](https://www.openapk.net/metrolist/com.metrolist.music/)
+[<img src="https://www.androidfreeware.net/images/androidfreeware-badge.png" alt="Get it on Android Freeware" height="80"
+align="center">](https://www.androidfreeware.net/download-metrolist-apk.html)
+[<img src="https://github.com/ImranR98/Obtainium/blob/main/assets/graphics/badge_obtainium.png"
+alt="Get it on Obtainium"
+height="55"
+align="center">](https://apps.obtainium.imranr.dev/redirect?r=obtainium://add/https://github.com/mostafaalagamy/Metrolist/)
 
 </div>
 
