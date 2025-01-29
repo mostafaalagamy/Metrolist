@@ -15,6 +15,10 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.Crossfade
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -923,85 +927,31 @@ class MainActivity : ComponentActivity() {
                                     NavigationTab.LIBRARY -> Screens.Library
                                 }.route,
                                 enterTransition = {
-                                    val currentTab = initialState.destination.route
-                                    val targetTab = targetState.destination.route
-
-                                    val direction = when {
-                                        targetTab == "settings" -> AnimatedContentTransitionScope.SlideDirection.Left
-
-                                        currentTab in topLevelScreens && targetTab in topLevelScreens -> {
-                                            val currentIndex =
-                                                navigationItems.indexOfFirst { it.route == currentTab }
-                                            val targetIndex =
-                                                navigationItems.indexOfFirst { it.route == targetTab }
-                                            if (targetIndex > currentIndex)
-                                                AnimatedContentTransitionScope.SlideDirection.Left
-                                            else
-                                                AnimatedContentTransitionScope.SlideDirection.Right
-                                        }
-
-                                        else -> AnimatedContentTransitionScope.SlideDirection.Left
+                                    if (initialState.destination.route in topLevelScreens && targetState.destination.route in topLevelScreens) {
+                                        fadeIn(tween(250))
+                                    } else {
+                                        fadeIn(tween(250)) + slideInHorizontally { it / 2 }
                                     }
-
-                                    slideIntoContainer(
-                                        towards = direction,
-                                        animationSpec = tween(200)
-                                    )
                                 },
                                 exitTransition = {
-                                    val currentTab = initialState.destination.route
-                                    val targetTab = targetState.destination.route
-
-                                    val direction = when {
-                                        targetTab == "settings" -> AnimatedContentTransitionScope.SlideDirection.Left
-
-                                        currentTab in topLevelScreens && targetTab in topLevelScreens -> {
-                                            val currentIndex =
-                                                navigationItems.indexOfFirst { it.route == currentTab }
-                                            val targetIndex =
-                                                navigationItems.indexOfFirst { it.route == targetTab }
-                                            if (targetIndex > currentIndex)
-                                                AnimatedContentTransitionScope.SlideDirection.Left
-                                            else
-                                                AnimatedContentTransitionScope.SlideDirection.Right
-                                        }
-
-                                        else -> AnimatedContentTransitionScope.SlideDirection.Left
+                                    if (initialState.destination.route in topLevelScreens && targetState.destination.route in topLevelScreens) {
+                                        fadeOut(tween(200))
+                                    } else {
+                                        fadeOut(tween(200)) + slideOutHorizontally { -it / 2 }
                                     }
-
-                                    slideOutOfContainer(
-                                        towards = direction,
-                                        animationSpec = tween(200)
-                                    )
                                 },
                                 popEnterTransition = {
-                                    val currentTab = initialState.destination.route
-
-                                    if (currentTab == "settings") {
-                                        slideIntoContainer(
-                                            towards = AnimatedContentTransitionScope.SlideDirection.Right,
-                                            animationSpec = tween(200)
-                                        )
+                                    if ((initialState.destination.route in topLevelScreens || initialState.destination.route?.startsWith("search/") == true) && targetState.destination.route in topLevelScreens) {
+                                        fadeIn(tween(250))
                                     } else {
-                                        slideIntoContainer(
-                                            towards = AnimatedContentTransitionScope.SlideDirection.Right,
-                                            animationSpec = tween(200)
-                                        )
+                                        fadeIn(tween(250)) + slideInHorizontally { -it / 2 }
                                     }
                                 },
                                 popExitTransition = {
-                                    val currentTab = initialState.destination.route
-
-                                    if (currentTab == "settings") {
-                                        slideOutOfContainer(
-                                            towards = AnimatedContentTransitionScope.SlideDirection.Right,
-                                            animationSpec = tween(200)
-                                        )
+                                    if ((initialState.destination.route in topLevelScreens || initialState.destination.route?.startsWith("search/") == true) && targetState.destination.route in topLevelScreens) {
+                                        fadeOut(tween(200))
                                     } else {
-                                        slideOutOfContainer(
-                                            towards = AnimatedContentTransitionScope.SlideDirection.Right,
-                                            animationSpec = tween(200)
-                                        )
+                                        fadeOut(tween(200)) + slideOutHorizontally { it / 2 }
                                     }
                                 },
                                 modifier = Modifier.nestedScroll(
