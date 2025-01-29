@@ -460,7 +460,7 @@ fun HomeScreen(
                         rows = GridCells.Fixed(rows),
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height((GridThumbnailHeight + 24.dp + with(LocalDensity.current) {
+                            .height((GridThumbnailHeight + with(LocalDensity.current) {
                                 MaterialTheme.typography.bodyLarge.lineHeight.toDp() * 2 +
                                         MaterialTheme.typography.bodyMedium.lineHeight.toDp() * 2
                             }) * rows)
