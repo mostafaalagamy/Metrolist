@@ -215,7 +215,7 @@ fun HistoryScreen(
 
                     items(
                         items = section.songs,
-                        key = { it.id }
+                        key = { "${section.title}_${it.id}" }
                     ) { song ->
                         YouTubeListItem(
                             item = song,
@@ -278,7 +278,7 @@ fun HistoryScreen(
 
                     items(
                         items = wrappedItems,
-                        key = { it.item.event.id }
+                        key = { "${dateAgo}_${it.item.event.id}" }
                     ) { wrappedItem ->
                         val event = wrappedItem.item
                         SongListItem(
