@@ -78,9 +78,13 @@ import com.metrolist.music.db.entities.Playlist
 import com.metrolist.music.db.entities.Song
 import com.metrolist.music.extensions.togglePlayPause
 import com.metrolist.music.models.toMediaMetadata
+import com.metrolist.music.playback.queues.ListQueue
+import com.metrolist.music.playback.queues.LocalAlbumRadio
+import com.metrolist.music.playback.queues.YouTubeAlbumRadio
 import com.metrolist.music.playback.queues.YouTubeQueue
 import com.metrolist.music.ui.component.AlbumGridItem
 import com.metrolist.music.ui.component.ArtistGridItem
+import com.metrolist.music.ui.component.HideOnScrollFAB
 import com.metrolist.music.ui.component.ChipsRow
 import com.metrolist.music.ui.component.LocalMenuState
 import com.metrolist.music.ui.component.NavigationTitle
@@ -100,7 +104,10 @@ import com.metrolist.music.ui.menu.YouTubeSongMenu
 import com.metrolist.music.ui.utils.SnapLayoutInfoProvider
 import com.metrolist.music.utils.rememberPreference
 import com.metrolist.music.viewmodels.HomeViewModel
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.first
 import kotlin.math.min
+import kotlin.random.Random
 
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
@@ -124,6 +131,9 @@ fun HomeScreen(
     val accountPlaylists by viewModel.accountPlaylists.collectAsState()
     val homePage by viewModel.homePage.collectAsState()
     val explorePage by viewModel.explorePage.collectAsState()
+
+    val allLocalItems by viewModel.allLocalItems.collectAsState()
+    val allYtItems by viewModel.allYtItems.collectAsState()
 
     val isLoading: Boolean by viewModel.isLoading.collectAsState()
     val isRefreshing by viewModel.isRefreshing.collectAsState()
@@ -727,6 +737,47 @@ fun HomeScreen(
                 }
             }
         }
+
+        HideOnScrollFAB(
+            visible = allLocalItems.isNotEmpty() || allYtItems.isNotEmpty(),
+            lazyListState = lazylistState,
+            icon = R.drawable.shuffle,
+            onClick = {
+                val local = when {
+                    allLocalItems.isNotEmpty() && allYtItems.isNotEmpty() -> Random.nextFloat() < 0.5
+                    allLocalItems.isNotEmpty() -> true
+                    else -> false
+                }
+                scope.launch(Dispatchers.Main) {
+                    if (local) {
+                        when (val luckyItem = allLocalItems.random()) {
+                            is Song -> playerConnection.playQueue(YouTubeQueue.radio(luckyItem.toMediaMetadata()))
+                            is Album -> {
+                                val albumWithSongs = withContext(Dispatchers.IO) {
+                                    database.albumWithSongs(luckyItem.id).first()
+                                }
+                                albumWithSongs?.let {
+                                    playerConnection.playQueue(LocalAlbumRadio(it))
+                                }
+                            }
+                            is Artist -> {}
+                            is Playlist -> {}
+                        }
+                    } else {
+                        when (val luckyItem = allYtItems.random()) {
+                            is SongItem -> playerConnection.playQueue(YouTubeQueue.radio(luckyItem.toMediaMetadata()))
+                            is AlbumItem -> playerConnection.playQueue(YouTubeAlbumRadio(luckyItem.playlistId))
+                            is ArtistItem -> luckyItem.radioEndpoint?.let {
+                                playerConnection.playQueue(YouTubeQueue(it))
+                            }
+                            is PlaylistItem -> luckyItem.playEndpoint?.let {
+                                playerConnection.playQueue(YouTubeQueue(it))
+                            }
+                        }
+                    }
+                }
+            }
+        )
 
         Indicator(
             isRefreshing = isRefreshing,
