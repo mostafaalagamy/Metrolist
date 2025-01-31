@@ -93,6 +93,8 @@ fun LoginScreen(navController: NavController) {
                     setSupportZoom(true)
                     builtInZoomControls = true
                 }
+                CookieManager.getInstance().setAcceptCookie(true)
+                CookieManager.getInstance().setAcceptThirdPartyCookies(this, true)
                 addJavascriptInterface(
                     object {
                         @JavascriptInterface
