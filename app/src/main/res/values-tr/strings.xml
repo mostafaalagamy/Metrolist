@@ -1,5 +1,4 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-
     <!-- Alt gezinme -->
     <string name="home">Ana Sayfa</string>
     <string name="songs">Şarkılar</string>
@@ -32,11 +31,17 @@
     <string name="yesterday">Dün</string>
     <string name="this_week">Bu Hafta</string>
     <string name="last_week">Geçen Hafta</string>
+    <string name="local_history">Yerel</string>
+    <string name="remote_history">Uzak</string>
 
     <!-- İstatistikler -->
     <string name="most_played_songs">En Çok Çalınan Şarkılar</string>
     <string name="most_played_artists">En Çok Çalınan Sanatçılar</string>
     <string name="most_played_albums">En Çok Çalınan Albümler</string>
+    <string name="weeks">Haftalık</string>
+    <string name="months">Aylık</string>
+    <string name="years">Yıllık</string>
+    <string name="continuous">Devam eden</string>
 
     <!-- Arama -->
     <string name="search">Ara</string>
@@ -66,13 +71,20 @@
     <string name="liked">Beğenilenler</string>
     <string name="offline">İndirilenler</string>
     <string name="my_top">En İyilerim</string>
+    <string name="library_song_empty">Kütüphane şarkıları burada gösterilecek</string>
+    <string name="library_artist_empty">Kütüphane sanatçıları burada gösterilecek</string>
+    <string name="library_album_empty">Kütüphane albümleri burada gösterilecek</string>
+    <string name="library_playlist_empty">Çalma listeleriniz burada gösterilecek</string>
 
     <!-- Çalma Listesi -->
     <string name="liked_songs">Beğenilen şarkılar</string>
     <string name="downloaded_songs">İndirilen şarkılar</string>
+    <string name="sync_playlist">Çalma listesini senkronize et</string>
     <string name="playlist_is_empty">Çalma listesi boş</string>
     <string name="remove_download_playlist_confirm">\"%s\" çalma listesindeki tüm şarkıları İndirilen Şarkılar depolama alanından kaldırmak istediğinizden emin misiniz?</string>
     <string name="delete_playlist_confirm">\"%s\" çalma listesini silmek istediğinizden emin misiniz?</string>
+    <string name="elements_selected">%1$d Öğe seçildi</string>
+    <string name="allows_for_sync_witch_youtube">Not: Bu, YouTube Music ile senkronizasyona izin verir. Bu daha sonra DEĞİŞTİRİLEMEZ.</string>
 
     <!-- Düğme -->
     <string name="retry">Yeniden Dene</string>
@@ -89,6 +101,7 @@
     <string name="add_to_queue">Sıraya ekle</string>
     <string name="add_to_library">Kütüphaneye ekle</string>
     <string name="remove_from_library">Kütüphaneden kaldır</string>
+    <string name="remove_from_playlist">Çalma listesinden kaldır</string>
     <string name="download">İndir</string>
     <string name="downloading">İndiriliyor</string>
     <string name="remove_download">İndirmeyi kaldır</string>
@@ -105,6 +118,7 @@
     <string name="advanced">Gelişmiş</string>
     <string name="select">Tümünü seç</string>
     <string name="like_all">Tümünü beğen</string>
+    <string name="tempo_and_pitch">Tempo ve Ses Aralığı</string>
 
     <!-- Sıralama menüsü -->
     <string name="sort_by_create_date">Eklenme tarihi</string>
@@ -131,6 +145,7 @@
 
     <string name="edit_lyrics">Şarkı sözlerini düzenle</string>
     <string name="search_lyrics">Şarkı sözlerini ara</string>
+    <string name="lyrics">Şarkı sözlerini</string>
 
     <string name="edit_song">Şarkıyı düzenle</string>
     <string name="song_title">Şarkı başlığı</string>
@@ -149,6 +164,12 @@
     <string name="edit_artist">Sanatçıyı düzenle</string>
     <string name="artist_name">Sanatçı adı</string>
     <string name="error_artist_name_empty">Sanatçı adı boş olamaz.</string>
+
+    <string name="duplicates">Yinelenenler</string>
+    <string name="skip_duplicates">Yinelenenleri atla</string>
+    <string name="add_anyway">Her neyse ekle</string>
+    <string name="duplicates_description_single">Şarkı zaten çalma listenizde mevcut</string>
+    <string name="duplicates_description_multiple">Çalma listenizde zaten %d şarkılar var</string>
 
     <!-- İsim -->
     <plurals name="n_song">
@@ -183,6 +204,10 @@
         <item quantity="one">%d öğe</item>
         <item quantity="other">%d öğe</item>
     </plurals>
+    <plurals name="n_time">
+        <item quantity="one">%d kez</item>
+        <item quantity="other">%d kez</item>
+    </plurals>
 
     <!-- Snackbar -->
     <string name="playlist_imported">Çalma listesi içe aktarıldı</string>
@@ -202,6 +227,8 @@
     <string name="error_no_internet">Ağ bağlantısı yok</string>
     <string name="error_timeout">Zaman aşımı</string>
     <string name="error_unknown">Bilinmeyen hata</string>
+    <string name="seek_backward">5 saniye geriye</string>
+    <string name="seek_forward">5 saniye ileri</string>
 
     <!-- Oynatıcı eylemi -->
     <string name="action_like">Beğen</string>
@@ -215,13 +242,21 @@
     <!-- Sıra Başlığı -->
     <string name="queue_all_songs">Tüm şarkılar</string>
     <string name="queue_searched_songs">Aranan şarkılar</string>
+    <string name="similar_content">Benzer içerik</string>
 
     <!-- Bildirim adı -->
     <string name="music_player">Müzik Çalar</string>
 
     <!-- Ayarlar -->
     <string name="settings">Ayarlar</string>
+    <string name="login_settings">Giriş ayarları</string>
+    <string name="use_login_for_browse">Premium içeriklere göz atmak için oturum açmayı kullanın</string>
+    <string name="use_login_for_browse_desc">Premium hesabınızla oturum açtıysanız bu, yalnızca premium albümleri gösterebilir</string>
+
+    <string name="general_settings">Genel ayarlar</string>
+
     <string name="appearance">Görünüm</string>
+    <string name="theme">Tema</string>
     <string name="enable_dynamic_theme">Dinamik temayı etkinleştir</string>
     <string name="dark_theme">Karanlık tema</string>
     <string name="dark_theme_on">Açık</string>
@@ -230,17 +265,42 @@
     <string name="player_background_style">Oynatıcı arka plan stili</string>
     <string name="follow_theme">Temayı takip et</string>
     <string name="gradient">Gradyan</string>
+    <string name="player_background_blur">Bulanıklık</string>
     <string name="enable_squiggly_slider">Dalgalı kaydırıcıyı etkinleştir</string>
+    <string name="enable_swipe_thumbnail">Şarkıyı değiştirmek için kaydırmayı etkinleştir</string>
     <string name="pure_black">Saf siyah</string>
-    <string name="default_open_tab">Varsayılan açılış sekmesi</string>
     <string name="customize_navigation_tabs">Gezinme sekmelerini özelleştir</string>
+    <string name="player">Oynatıcı</string>
+    <string name="player_text_alignment">Oynatıcı metin hizalaması</string>
     <string name="lyrics_text_position">Şarkı sözleri metin konumu</string>
+    <string name="sided">Yan</string>
     <string name="left">Sol</string>
     <string name="center">Orta</string>
     <string name="right">Sağ</string>
+    <string name="lyrics_click_change">Tıklamada şarkı sözlerini değiştir</string>
+    <string name="grid_cell_size">Izgara hücre boyutu</string>
+    <string name="small">Küçük</string>
+    <string name="big">Büyük</string>
+    <string name="player_slider_style">Oynatıcı kaydırıcı stili</string>
+    <string name="default_">Varsayılan</string>
+    <string name="squiggly">Dalgalı</string>
+    <string name="slim">İnce</string>
+    <string name="misc">Çeşitli</string>
+    <string name="default_open_tab">Varsayılan açılış sekmesi</string>
+    <string name="slim_navbar">Alt gezinme çubuğu etiketlerini gizle</string>
 
     <string name="content">İçerik</string>
+    <string name="google">Google</string>
+    <string name="discord">Discord</string>
     <string name="login">Giriş</string>
+    <string name="advanced_login">Gelişmiş giriş (token)</string>
+    <string name="logout">Çıkış</string>
+    <string name="not_logged_in">Giriş yapılmadı</string>
+    <string name="token_hidden">Token\'i göstermek için dokunun</string>
+    <string name="token_shown">Kopyalamak veya düzenlemek için tekrar dokunun</string>
+    <string name="token_adv_login_description">Bu, GELİŞMİŞ bir giriş yöntemidir. Web portalına alternatif olarak, giriş token\'inizi burada doğrudan girebilir veya güncelleyebilirsiniz. Örneğin, bu, birden fazla cihazda giriş yapmayı hızlandırabilir. Lütfen uygulamanın ayrıştıramadığı geçersiz token formatlarının kabul edilmeyeceğini unutmayın</string>
+    <string name="ytm_sync">YouTube Music hesabınızla otomatik senkronize edin</string>
+    <string name="general">Genel</string>
     <string name="content_language">Varsayılan içerik dili</string>
     <string name="content_country">Varsayılan içerik ülkesi</string>
     <string name="system_default">Sistem varsayılanı</string>
@@ -248,19 +308,38 @@
     <string name="enable_proxy">Proxy\'i etkinleştir</string>
     <string name="proxy_type">Proxy türü</string>
     <string name="proxy_url">Proxy URL\'si</string>
-    <string name="default_lib_chips">Varsayılan kütüphane çipi değiştir</string>
+    <string name="default_lib_chips">Varsayılan kütüphane çipini değiştir</string>
     <string name="set_quick_picks">Hızlı Seçimleri Ayarla</string>
     <string name="last_song_listened">Son dinlenen şarkıya göre</string>
     <string name="restart_to_take_effect">Etkili olması için yeniden başlatın</string>
+    <string name="app_language">Uygulama dili</string>
+    <string name="configure_app_language">Uygulama dillerini yapılandır</string>
+    <string name="intent_app_language_not_found">Uygulama dili ayarları bulunamadı, lütfen manuel olarak yapılandırın</string>
+    <string name="open_supported_links">Desteklenen bağlantıları varsayılan olarak aç</string>
+    <string name="configure_supported_links">Desteklenen bağlantıları yapılandır</string>
+    <string name="intent_supported_links_not_found">Desteklenen bağlantı ayarları bulunamadı, lütfen manuel olarak yapılandırın</string>
+    <string name="enable_kugou">KuGou şarkı sözleri sağlayıcısını etkinleştir</string>
+    <string name="enable_lrclib">LrcLib şarkı sözleri sağlayıcısını etkinleştir</string>
+    <string name="set_first_lyrics_provider">Tercih edilen şarkı sözleri sağlayıcısı</string>
 
     <string name="player_and_audio">Oynatıcı ve ses</string>
     <string name="audio_quality">Ses kalitesi</string>
+    <string name="audio_quality_max">Maksimum (beta)</string>
     <string name="audio_quality_auto">Otomatik</string>
     <string name="audio_quality_high">Yüksek</string>
     <string name="audio_quality_low">Düşük</string>
+    <string name="queue">Kuyruk</string>
     <string name="persistent_queue">Sürekli kuyruk</string>
+    <string name="persistent_queue_desc">Uygulama başladığında son sıranızı geri yükleyin</string>
+    <string name="auto_load_more">Otomatik daha fazla şarkı yükle</string>
+    <string name="auto_load_more_desc">Kuyruğun sonuna ulaşıldığında otomatik olarak daha fazla şarkı ekleyin, mümkünse</string>
+    <string name="enable_similar_content">Benzer İçeriği Etkinleştir</string>
+    <string name="similar_content_desc">Kuyruğun sonuna ulaşıldığında otomatik olarak daha fazla benzer şarkı ekleyin</string>
     <string name="skip_silence">Sessizliği atla</string>
     <string name="audio_normalization">Ses normalizasyonu</string>
+    <string name="auto_skip_next_on_error">Hata oluştuğunda otomatik olarak sonraki şarkıya geç</string>
+    <string name="auto_skip_next_on_error_desc">Sürekli çalma deneyiminizi sağlayın</string>
+    <string name="stop_music_on_task_clear">Görev temizlendiğinde müziği durdur</string>
     <string name="equalizer">Ekolayzır</string>
 
     <string name="storage">Depolama</string>
@@ -277,14 +356,18 @@
     <string name="size_used">%s kullanıldı</string>
 
     <string name="privacy">Gizlilik</string>
+    <string name="listen_history">Dinleme Geçmişi</string>
+    <string name="search_history">Arama Geçmişi</string>
     <string name="pause_listen_history">Dinleme geçmişini duraklat</string>
     <string name="clear_listen_history">Dinleme geçmişini temizle</string>
     <string name="clear_listen_history_confirm">Tüm dinleme geçmişini temizlemek istediğinizden emin misiniz?</string>
     <string name="pause_search_history">Arama geçmişini duraklat</string>
     <string name="clear_search_history">Arama geçmişini temizle</string>
     <string name="clear_search_history_confirm">Tüm arama geçmişini temizlemek istediğinizden emin misiniz?</string>
-    <string name="enable_kugou">KuGou şarkı sözleri sağlayıcısını etkinleştir</string>
-    <string name="enable_lrclib">LrcLib şarkı sözleri sağlayıcısını etkinleştir</string>
+    <string name="disable_screenshot">Ekran görüntüsünü devre dışı bırak</string>
+    <string name="disable_screenshot_desc">Bu seçenek açık olduğunda, ekran görüntüleri ve uygulamanın Sonlar görünümü devre dışı bırakılır.</string>
+
+    <string name="hide_explicit">Uygunsuz içeriği gizle</string>
 
     <string name="backup_restore">Yedekleme ve geri yükleme</string>
     <string name="backup">Yedekleme</string>
@@ -293,6 +376,19 @@
     <string name="backup_create_success">Yedekleme başarıyla oluşturuldu</string>
     <string name="backup_create_failed">Yedekleme oluşturulamadı</string>
     <string name="restore_failed">Yedekleme geri yüklenemedi</string>
+    <string name="discord_integration">Discord Entegrasyonu</string>
+    <string name="discord_information">Metrolist, Discord hesabınızın durumunu ayarlamak için KizzyRPC kütüphanesini kullanır. Bu, Discord Gateway bağlantısını kullanmayı içerir ve bu, Discord\'un Hizmet Şartları\'nın ihlali olarak kabul edilebilir. Ancak, bu nedenle kullanıcı hesaplarının askıya alındığına dair bilinen bir vaka yoktur. Kendi sorumluluğunuzda kullanın.\n\nMetrolist yalnızca token\'inizi çıkaracak ve diğer her şey yerel olarak saklanacaktır.</string>
+    <string name="dismiss">Kapat</string>
+    <string name="options">Seçenekler</string>
+    <string name="preview">Önizleme</string>
+    <string name="login_failed">Giriş başarısız</string>
+
+    <string name="enable_discord_rpc">Rich Presence\'ı Etkinleştir</string>
+
+    <string name="default_links">Desteklenen bağlantıları aç</string>
+    <string name="open_app_settings_error">Uygulama ayarları açılamadı</string>
+
+    <string name="release_notes">Sürüm Notları</string>
 
     <string name="about">Hakkında</string>
     <string name="app_version">Uygulama sürümü</string>
@@ -307,5 +403,9 @@
     <string name="past_month">Son ay</string>
     <string name="past_year">Son yıl</string>
     <string name="top_length">En İyi listem uzunluğu</string>
-
+    <string name="history_duration">Geçmiş süresi</string>
+    <plurals name="seconds">
+        <item quantity="one">1 saniye</item>
+        <item quantity="other">%d saniye</item>
+    </plurals>
 </resources>
