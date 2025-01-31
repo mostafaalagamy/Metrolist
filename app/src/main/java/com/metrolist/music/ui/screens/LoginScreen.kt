@@ -62,7 +62,7 @@ fun LoginScreen(navController: NavController) {
             WebView(context).apply {
                 webViewClient = object : WebViewClient() {
                     override fun onPageStarted(view: WebView, url: String, favicon: android.graphics.Bitmap?) {
-                        Timber.tag("WebView").d("Page started: $url")
+//                        Timber.tag("WebView").d("Page started: $url") // Uncomment this line to debug WebView
                         super.onPageStarted(view, url, favicon)
                     }
 
