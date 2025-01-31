@@ -198,14 +198,21 @@ fun OnlinePlaylistScreen(
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically,
                                 ) {
+                                    Box(
+                                    contentAlignment = Alignment.Center,
+                                    modifier = Modifier
+                                        .size(AlbumThumbnailSize)
+                                        .clip(RoundedCornerShape(ThumbnailCornerRadius))
+                                        .fillMaxWidth(),
+                                ) {
                                     AsyncImage(
                                         model = playlist.thumbnail,
                                         contentDescription = null,
-                                        modifier =
-                                        Modifier
-                                            .size(AlbumThumbnailSize)
+                                        modifier = Modifier
+                                            .fillMaxWidth()
                                             .clip(RoundedCornerShape(ThumbnailCornerRadius)),
-                                    )
+                                        )
+                                    }
 
                                     Spacer(Modifier.width(16.dp))
 

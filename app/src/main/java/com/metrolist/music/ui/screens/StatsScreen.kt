@@ -35,9 +35,10 @@ import com.metrolist.music.extensions.togglePlayPause
 import com.metrolist.music.models.toMediaMetadata
 import com.metrolist.music.playback.queues.YouTubeQueue
 import com.metrolist.music.ui.component.ChoiceChipsRow
-import com.metrolist.music.ui.component.CircularItemsGrid
 import com.metrolist.music.ui.component.IconButton
-import com.metrolist.music.ui.component.LocalItemsGrid
+import com.metrolist.music.ui.component.LocalSongsGrid
+import com.metrolist.music.ui.component.LocalArtistsGrid
+import com.metrolist.music.ui.component.LocalAlbumsGrid
 import com.metrolist.music.ui.component.LocalMenuState
 import com.metrolist.music.ui.component.NavigationTitle
 import com.metrolist.music.ui.menu.AlbumMenu
@@ -230,7 +231,7 @@ fun StatsScreen(
                     items = mostPlayedSongsStats,
                     key = { _, song -> song.id },
                 ) { index, song ->
-                    LocalItemsGrid(
+                    LocalSongsGrid(
                         title = "${index + 1}. ${song.title}",
                         subtitle =
                         joinByBullet(
@@ -290,7 +291,7 @@ fun StatsScreen(
                     items = mostPlayedArtists,
                     key = { _, artist -> artist.id },
                 ) { index, artist ->
-                    CircularItemsGrid(
+                    LocalArtistsGrid(
                         title = "${index + 1}. ${artist.artist.name}",
                         subtitle =
                         joinByBullet(
@@ -339,7 +340,7 @@ fun StatsScreen(
                         items = mostPlayedAlbums,
                         key = { _, album -> album.id },
                     ) { index, album ->
-                        LocalItemsGrid(
+                        LocalAlbumsGrid(
                             title = "${index + 1}. ${album.album.title}",
                             subtitle =
                             joinByBullet(
