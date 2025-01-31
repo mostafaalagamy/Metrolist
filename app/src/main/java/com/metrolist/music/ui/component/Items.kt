@@ -1606,7 +1606,7 @@ fun YouTubeGridItem(
             contentAlignment = Alignment.Center,
             modifier =
             Modifier
-                .height(GridThumbnailHeight)
+                .fillMaxSize()
                 .aspectRatio(thumbnailRatio)
                 .clip(thumbnailShape),
         ) {
