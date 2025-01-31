@@ -211,7 +211,6 @@
 
     <!-- Snackbar -->
     <string name="playlist_imported">Çalma listesi içe aktarıldı</string>
-    <string name="imported_playlist">İçe aktarılan çalma listesi</string>
     <string name="removed_song_from_playlist">\"%s\" çalma listesinden kaldırıldı</string>
     <string name="playlist_synced">Çalma listesi senkronize edildi</string>
     <string name="undo">Geri al</string>
