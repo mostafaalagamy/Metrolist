@@ -235,15 +235,21 @@ fun TopPlaylistScreen(
                                     horizontalArrangement = Arrangement.spacedBy(12.dp),
                                     verticalAlignment = Alignment.CenterVertically,
                                 ) {
+                                    Box(
+                                    contentAlignment = Alignment.Center,
+                                    modifier = Modifier
+                                        .size(AlbumThumbnailSize)
+                                        .clip(RoundedCornerShape(ThumbnailCornerRadius))
+                                        .fillMaxWidth(),
+                                ) {
                                     AsyncImage(
                                         model = songs!![0].song.thumbnailUrl,
                                         contentDescription = null,
-                                        modifier =
-                                        Modifier
-                                            .size(AlbumThumbnailSize)
+                                        modifier = Modifier
+                                            .fillMaxWidth()
                                             .clip(RoundedCornerShape(ThumbnailCornerRadius)),
-                                    )
-
+                                        )
+                                    }
                                     Column(
                                         verticalArrangement = Arrangement.Center,
                                     ) {
