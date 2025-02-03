@@ -297,7 +297,7 @@ fun SelectionMediaMetadataMenu(
     val playerConnection = LocalPlayerConnection.current ?: return
 
     val allLiked by remember(songSelection) {
-        mutableStateOf(songSelection.isNotEmpty() && songSelection.all { it.liked })
+        mutableStateOf(songSelection.isNotEmpty() && songSelection.all { it.song.liked })
     }
 
     var downloadState by remember {
@@ -442,7 +442,7 @@ fun SelectionMediaMetadataMenu(
                         update(song.toSongEntity().toggleLike())
                     }
                 } else {
-                    songSelection.filter { !it.liked }.forEach { song ->
+                    songSelection.filter { !it.song.liked }.forEach { song ->
                         update(song.toSongEntity().toggleLike())
                     }
                 }
