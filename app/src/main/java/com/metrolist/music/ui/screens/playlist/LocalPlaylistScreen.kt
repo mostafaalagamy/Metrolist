@@ -414,7 +414,7 @@ fun LocalPlaylistScreen(
                                 onShowRemoveDownloadDialog = { showRemoveDownloadDialog = true },
                                 onshowDeletePlaylistDialog = { showDeletePlaylistDialog = true },
                                 snackbarHostState = snackbarHostState,
-                                modifier = Modifier.animateItem(),
+                                modifier = Modifier.animateItem()
                             )
                         }
                     }
