@@ -17,6 +17,7 @@ data class MediaMetadata(
     val album: Album? = null,
     val setVideoId: String? = null,
     val explicit: Boolean = false,
+    val liked: Boolean = false,
 ) : Serializable {
     data class Artist(
         val id: String?,
