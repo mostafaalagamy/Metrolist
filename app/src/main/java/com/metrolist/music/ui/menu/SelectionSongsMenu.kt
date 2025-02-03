@@ -296,6 +296,10 @@ fun SelectionMediaMetadataMenu(
     val downloadUtil = LocalDownloadUtil.current
     val playerConnection = LocalPlayerConnection.current ?: return
 
+    val allLiked by remember(selection) {
+        mutableStateOf(selection.isNotEmpty() && selection.all { it.liked })
+    }
+
     var downloadState by remember {
         mutableIntStateOf(Download.STATE_STOPPED)
     }
@@ -428,6 +432,23 @@ fun SelectionMediaMetadataMenu(
             clearAction()
         }
 
+        GridMenuItem(
+            icon = if (allLiked) R.drawable.favorite else R.drawable.favorite_border,
+            title = R.string.like_all,
+        ) {
+            database.query {
+                if (allLiked) {
+                    selection.forEach { song ->
+                        update(song.toSongEntity().toggleLike())
+                    }
+                } else {
+                    selection.filter { !it.liked }.forEach { song ->
+                        update(song.toSongEntity().toggleLike())
+                    }
+                }
+            }
+        }
+ 
         DownloadGridMenu(
             state = downloadState,
             onDownload = {
