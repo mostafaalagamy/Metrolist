@@ -121,6 +121,7 @@
     <string name="select">تحديد الكل</string>
     <string name="remove_from_playlist">إزالة من قائمة التشغيل</string>
     <string name="like_all">الإعجاب بالكل</string>
+    <string name="dislike_all">إلغاء الإعجاب بالكل</string>
 
     <!-- قائمة الفرز-->
     <string name="sort_by_create_date">تاريخ الإضافة</string>

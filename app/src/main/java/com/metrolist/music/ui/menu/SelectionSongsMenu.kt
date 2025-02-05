@@ -65,6 +65,14 @@ fun SelectionSongMenu(
         )
     }
 
+    val allLiked by remember(songSelection) {
+        mutableStateOf(
+            songSelection.isNotEmpty() && songSelection.all {
+                it.song.liked
+            },
+        )
+    }
+
     var downloadState by remember {
         mutableIntStateOf(Download.STATE_STOPPED)
     }
@@ -246,8 +254,8 @@ fun SelectionSongMenu(
         )
 
         GridMenuItem(
-            icon = if (songSelection.all { it.song.liked }) R.drawable.favorite else R.drawable.favorite_border,
-            title = R.string.like_all,
+            icon = if (allLiked) R.drawable.favorite else R.drawable.favorite_border,
+            title = if (allLiked) R.string.dislike_all else R.string.like_all,
         ) {
             val allLiked =
                 songSelection.all {
