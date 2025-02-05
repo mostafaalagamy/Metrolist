@@ -899,19 +899,18 @@ class MainActivity : ComponentActivity() {
                                                                 }
                                                             }
                                                         }
-                                                        return@NavigationBarItem
-                                                    }
-
-                                                    if (isSelected) {
-                                                        navController.currentBackStackEntry?.savedStateHandle?.set(
-                                                            "scrollToTop",
-                                                            true
-                                                        )
-                                                        coroutineScope.launch {
-                                                            searchBarScrollBehavior.state.resetHeightOffset()
-                                                        }
                                                     } else {
-                                                        navigateToScreen(navController, screen)
+                                                        if (isSelected) {
+                                                            navController.currentBackStackEntry?.savedStateHandle?.set(
+                                                                "scrollToTop",
+                                                                true
+                                                            )
+                                                            coroutineScope.launch {
+                                                                searchBarScrollBehavior.state.resetHeightOffset()
+                                                            }
+                                                        } else {
+                                                            navigateToScreen(navController, screen)
+                                                        }
                                                     }
                                                 },
                                             )
