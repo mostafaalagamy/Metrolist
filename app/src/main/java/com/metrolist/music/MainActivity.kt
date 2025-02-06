@@ -15,12 +15,12 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
@@ -58,6 +58,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -92,6 +93,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -843,6 +845,9 @@ class MainActivity : ComponentActivity() {
                                                 }
                                             },
                                     ) {
+                                        var lastTapTime by remember { mutableLongStateOf(0L) }
+                                        var lastTappedIcon by remember { mutableStateOf<Int?>(null) }
+                                        var navigateToExplore by remember { mutableStateOf(false) }
                                         navigationItems.fastForEach { screen ->
                                             val isSelected =
                                                 navBackStackEntry?.destination?.hierarchy?.any { it.route == screen.route } == true
@@ -867,21 +872,44 @@ class MainActivity : ComponentActivity() {
                                                     }
                                                 },
                                                 onClick = {
-                                                    if (isSelected) {
-                                                        navController.currentBackStackEntry?.savedStateHandle?.set(
-                                                            "scrollToTop",
-                                                            true
-                                                        )
-                                                        coroutineScope.launch {
-                                                            searchBarScrollBehavior.state.resetHeightOffset()
+                                                    val currentTapTime = System.currentTimeMillis()
+                                                    val timeSinceLastTap =
+                                                        currentTapTime - lastTapTime
+                                                    val isDoubleTap =
+                                                        screen.titleId == R.string.explore &&
+                                                                lastTappedIcon == R.string.explore &&
+                                                                timeSinceLastTap < 300
+
+                                                    lastTapTime = currentTapTime
+                                                    lastTappedIcon = screen.titleId
+
+                                                    if (screen.titleId == R.string.explore) {
+                                                        if (isDoubleTap) {
+                                                            onActiveChange(true)
+                                                            navigateToExplore = false
+                                                        } else {
+                                                            navigateToExplore = true
+                                                            coroutineScope.launch {
+                                                                delay(300)
+                                                                if (navigateToExplore) {
+                                                                    navigateToScreen(
+                                                                        navController,
+                                                                        screen
+                                                                    )
+                                                                }
+                                                            }
                                                         }
                                                     } else {
-                                                        navController.navigate(screen.route) {
-                                                            popUpTo(navController.graph.startDestinationId) {
-                                                                saveState = true
+                                                        if (isSelected) {
+                                                            navController.currentBackStackEntry?.savedStateHandle?.set(
+                                                                "scrollToTop",
+                                                                true
+                                                            )
+                                                            coroutineScope.launch {
+                                                                searchBarScrollBehavior.state.resetHeightOffset()
                                                             }
-                                                            launchSingleTop = true
-                                                            restoreState = true
+                                                        } else {
+                                                            navigateToScreen(navController, screen)
                                                         }
                                                     }
                                                 },
@@ -977,7 +1005,6 @@ class MainActivity : ComponentActivity() {
                             modifier = Modifier.align(Alignment.BottomCenter)
                         )
 
-
                         sharedSong?.let { song ->
                             playerConnection?.let {
                                 Dialog(
@@ -1018,6 +1045,19 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             }
+        }
+    }
+
+    private fun navigateToScreen(
+        navController: NavHostController,
+        screen: Screens
+    ) {
+        navController.navigate(screen.route) {
+            popUpTo(navController.graph.startDestinationId) {
+                saveState = true
+            }
+            launchSingleTop = true
+            restoreState = true
         }
     }
 
