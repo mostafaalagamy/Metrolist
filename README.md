@@ -1,21 +1,21 @@
 <div align="center">
-<img src="https://github.com/mostafaalagamy/Metrolist/blob/fastlane/fastlane/metadata/android/en-US/images/icon.png" width="160" height="160" style="display: block; margin: 0 auto"/>
+<img src="https://github.com/mostafaalagamy/Metrolist/blob/main/fastlane/metadata/android/en-US/images/icon.png" width="160" height="160" style="display: block; margin: 0 auto"/>
 <h1>Metrolist</h1>
 <p>YouTube Music client for Android</p>
 
 <h1>Screenshots</h1>
 
-  <img src="https://github.com/mostafaalagamy/Metrolist/blob/fastlane/fastlane/metadata/android/en-US/images/screenshots/screenshot_1.png" width="30%" />
-  <img src="https://github.com/mostafaalagamy/Metrolist/blob/fastlane/fastlane/metadata/android/en-US/images/screenshots/screenshot_2.png" width="30%" />
-  <img src="https://github.com/mostafaalagamy/Metrolist/blob/fastlane/fastlane/metadata/android/en-US/images/screenshots/screenshot_3.png" width="30%" />
+  <img src="https://github.com/mostafaalagamy/Metrolist/blob/main/fastlane/metadata/android/en-US/images/screenshots/screenshot_1.png" width="30%" />
+  <img src="https://github.com/mostafaalagamy/Metrolist/blob/main/fastlane/metadata/android/en-US/images/screenshots/screenshot_2.png" width="30%" />
+  <img src="https://github.com/mostafaalagamy/Metrolist/blob/main/fastlane/metadata/android/en-US/images/screenshots/screenshot_3.png" width="30%" />
 
-  <img src="https://github.com/mostafaalagamy/Metrolist/blob/fastlane/fastlane/metadata/android/en-US/images/screenshots/screenshot_4.png" width="30%" />
-  <img src="https://github.com/mostafaalagamy/Metrolist/blob/fastlane/fastlane/metadata/android/en-US/images/screenshots/screenshot_5.png" width="30%" />
-  <img src="https://github.com/mostafaalagamy/Metrolist/blob/fastlane/fastlane/metadata/android/en-US/images/screenshots/screenshot_6.png" width="30%" />
+  <img src="https://github.com/mostafaalagamy/Metrolist/blob/main/fastlane/metadata/android/en-US/images/screenshots/screenshot_4.png" width="30%" />
+  <img src="https://github.com/mostafaalagamy/Metrolist/blob/main/fastlane/metadata/android/en-US/images/screenshots/screenshot_5.png" width="30%" />
+  <img src="https://github.com/mostafaalagamy/Metrolist/blob/main/fastlane/metadata/android/en-US/images/screenshots/screenshot_6.png" width="30%" />
 </p>
 
 <img
-src="https://github.com/mostafaalagamy/Metrolist/blob/fastlane/fastlane/metadata/android/en-US/images/syncScreen.png" width="91.5%" />
+src="https://github.com/mostafaalagamy/Metrolist/blob/main/fastlane/metadata/android/en-US/images/syncScreen.png" width="91.5%" />
 
 [![Latest release](https://img.shields.io/github/v/release/mostafaalagamy/Metrolist?style=for-the-badge)](https://github.com/mostafaalagamy/Metrolist/releases)
 [![GitHub license](https://img.shields.io/github/license/mostafaalagamy/metrolist?style=for-the-badge)](https://github.com/mostafaalagamy/Metrolist/blob/main/LICENSE)
