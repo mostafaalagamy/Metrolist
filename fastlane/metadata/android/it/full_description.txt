@@ -1,0 +1,23 @@
+Client YouTube Music Material 3 per Android
+
+Caratteristiche:
+
+- Riproduci qualsiasi canzone o video da YouTube Music
+- Riproduzione in background
+- Suggerimenti rapidi personalizzati
+- Gestione della libreria
+- Scarica e memorizza canzoni per la riproduzione offline
+- Cerca canzoni, album, artisti, video e playlist
+- Testo in tempo reale
+- Supporto per l'accesso all'account YouTube Music
+- Sincronizzazione di canzoni, artisti, album e playlist dal e verso il tuo account
+- Salta i silenzi
+- Importa playlist
+- Normalizzazione dell'audio
+- Regola tempo/timbro
+- Gestione delle playlist locali
+- Riorganizza le canzoni nella playlist o nella coda
+- Tema chiaro - scuro - nero - dinamico
+- Timer per il sonno
+- Material 3
+- ecc.

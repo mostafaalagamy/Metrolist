@@ -17,5 +17,11 @@ jobs:
           distribution: "zulu"
           cache: 'gradle'
 
-      - name: Build debug APK and run jvm tests
+      - name: Build debug APK and run JVM tests
         run: ./gradlew assembleDebug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: debug-apk
+          path: app/build/outputs/apk/debug/*.apk
