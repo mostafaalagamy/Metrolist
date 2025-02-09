@@ -80,7 +80,10 @@ align="center">](https://apps.obtainium.imranr.dev/redirect?r=obtainium://add/ht
 <div align="center">
 <h1>Special thanks</h1>
 
-[z-huang](https://github.com/z-huang)
+[z-huang](https://github.com/z-huang),
+[Malopieds](https://github.com/Malopieds),
+[Davide Garberi](https://github.com/DD3Boh),
+[Michael Zh](https://github.com/mikooomich)
 </div>
 
 <div align="center">
