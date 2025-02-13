@@ -417,7 +417,6 @@
     <string name="new_version_available">Доступна нова версія</string>
     <string name="translation_models">Моделі перекладу</string>
     <string name="clear_translation_models">Очистити моделі перекладу</string>
-</resources>
 
     <string name="all_time">Весь час</string>
     <string name="past_24_hours">Минулі 24 години</string>
@@ -432,3 +431,4 @@
         <item quantity="many">%d cекунд</item>
         <item quantity="other">%d секунд</item>
     </plurals>
+</resources>    
