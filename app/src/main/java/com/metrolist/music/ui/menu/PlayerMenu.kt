@@ -284,14 +284,26 @@ fun PlayerMenu(
             context.startActivity(Intent.createChooser(intent, null))
             onDismiss()
         }
+
+        GridMenuItem(
+            icon = R.drawable.link,
+            title = R.string.copy_link,
+        ) {
+            val clipboard = context.getSystemService(android.content.Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
+            val clip = android.content.ClipData.newPlainText("Song Link", "https://music.youtube.com/watch?v=${mediaMetadata.id}")
+            clipboard.setPrimaryClip(clip)
+            android.widget.Toast.makeText(context, R.string.link_copied, android.widget.Toast.LENGTH_SHORT).show()
+            onDismiss()
+        }
+
+        GridMenuItem(
+            icon = R.drawable.info,
+            title = R.string.details,
+        ) {
+            onShowDetailsDialog()
+            onDismiss()
+        }
         if (isQueueTrigger != true) {
-            GridMenuItem(
-                icon = R.drawable.info,
-                title = R.string.details,
-            ) {
-                onShowDetailsDialog()
-                onDismiss()
-            }
             GridMenuItem(
                 icon = R.drawable.equalizer,
                 title = R.string.equalizer,
