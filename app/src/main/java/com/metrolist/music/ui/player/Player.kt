@@ -677,33 +677,7 @@ fun BottomSheetPlayer(
                 }
 
                 Spacer(modifier = Modifier.size(12.dp))
-
-                Box(
-                    modifier =
-                    Modifier
-                        .size(40.dp)
-                        .clip(RoundedCornerShape(24.dp))
-                        .background(TextBackgroundColor)
-                        .clickable {
-                            val clipboard = context.getSystemService(android.content.Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
-                            val clip = android.content.ClipData.newPlainText("Song Link", "https://music.youtube.com/watch?v=${mediaMetadata.id}")
-                            clipboard.setPrimaryClip(clip)
-                            android.widget.Toast.makeText(context, R.string.link_copied, android.widget.Toast.LENGTH_SHORT).show()
-                        },
-                ) {
-                    Image(
-                        painter = painterResource(R.drawable.link),
-                        contentDescription = null,
-                        colorFilter = ColorFilter.tint(icBackgroundColor),
-                        modifier =
-                        Modifier
-                            .align(Alignment.Center)
-                            .size(24.dp),
-                    )
-                }
-
-                Spacer(modifier = Modifier.size(12.dp))
-
+                
                 Box(
                     contentAlignment = Alignment.Center,
                     modifier =
