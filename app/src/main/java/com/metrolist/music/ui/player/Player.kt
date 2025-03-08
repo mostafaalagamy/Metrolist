@@ -677,7 +677,6 @@ fun BottomSheetPlayer(
                 }
 
                 Spacer(modifier = Modifier.size(12.dp))
-                
                 Box(
                     contentAlignment = Alignment.Center,
                     modifier =
