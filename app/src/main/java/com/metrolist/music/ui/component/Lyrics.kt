@@ -154,6 +154,10 @@ fun Lyrics(
         mutableStateOf(false)
     }
 
+    var shouldScrollToFirstLine by rememberSaveable {
+        mutableStateOf(true)
+    }
+
     LaunchedEffect(lyrics) {
         if (lyrics.isNullOrEmpty() || !lyrics.startsWith("[")) {
             currentLineIndex = -1
@@ -200,7 +204,12 @@ fun Lyrics(
         }
 
         if (!isSynced) return@LaunchedEffect
-        if (currentLineIndex != -1) {
+        if(currentLineIndex == 0 && shouldScrollToFirstLine) {
+            shouldScrollToFirstLine = false
+            lazyListState.animateScrollToItem(
+                currentLineIndex,
+                with(density) { 36.dp.toPx().toInt() } + calculateOffset())
+        } else if (currentLineIndex != -1) {
             deferredCurrentLineIndex = currentLineIndex
             if (lastPreviewTime == 0L || currentLineIndex != previousLineIndex) {
                 if (isSeeking) {
@@ -227,6 +236,9 @@ fun Lyrics(
                 }
                 previousLineIndex = currentLineIndex
             }
+        }
+        if(currentLineIndex > 0) {
+            shouldScrollToFirstLine = true
         }
     }
 
