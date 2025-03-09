@@ -222,12 +222,14 @@ fun Lyrics(
 
                     val viewportStartOffset = lazyListState.layoutInfo.viewportStartOffset
                     val viewportEndOffset = lazyListState.layoutInfo.viewportEndOffset
-                    val currentLineOffset = visibleItemsInfo.find { it.index == previousLineIndex }?.offset ?: 0
+                    val currentLineOffset = visibleItemsInfo.find { it.index == currentLineIndex }?.offset ?: 0
+                    val previousLineOffset = visibleItemsInfo.find { it.index == previousLineIndex }?.offset ?: 0
 
                     val centerRangeStart = viewportStartOffset + (viewportEndOffset - viewportStartOffset) / 2
                     val centerRangeEnd = viewportEndOffset - (viewportEndOffset - viewportStartOffset) / 8
 
-                    if (currentLineOffset in centerRangeStart..centerRangeEnd) {
+                    if (currentLineOffset in centerRangeStart..centerRangeEnd ||
+                        previousLineOffset in centerRangeStart..centerRangeEnd) {
                         lazyListState.animateScrollToItem(
                             currentLineIndex,
                             with(density) { 36.dp.toPx().toInt() } + calculateOffset())
