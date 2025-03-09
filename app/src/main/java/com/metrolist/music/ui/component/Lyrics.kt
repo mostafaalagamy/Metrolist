@@ -203,7 +203,6 @@ fun Lyrics(
         if (currentLineIndex != -1) {
             deferredCurrentLineIndex = currentLineIndex
             if (lastPreviewTime == 0L || currentLineIndex != previousLineIndex) {
-                previousLineIndex = currentLineIndex
                 if (isSeeking) {
                     lazyListState.scrollToItem(currentLineIndex,
                         with(density) { 36.dp.toPx().toInt() } + calculateOffset())
@@ -214,7 +213,7 @@ fun Lyrics(
 
                     val viewportStartOffset = lazyListState.layoutInfo.viewportStartOffset
                     val viewportEndOffset = lazyListState.layoutInfo.viewportEndOffset
-                    val currentLineOffset = visibleItemsInfo.find { it.index == currentLineIndex }?.offset ?: 0
+                    val currentLineOffset = visibleItemsInfo.find { it.index == previousLineIndex }?.offset ?: 0
 
                     val centerRangeStart = viewportStartOffset + (viewportEndOffset - viewportStartOffset) / 2
                     val centerRangeEnd = viewportEndOffset - (viewportEndOffset - viewportStartOffset) / 8
@@ -226,6 +225,7 @@ fun Lyrics(
                         initialScrollDone = true
                     }
                 }
+                previousLineIndex = currentLineIndex
             }
         }
     }
