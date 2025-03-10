@@ -23,6 +23,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -49,6 +50,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
 import com.metrolist.music.constants.DarkModeKey
@@ -158,6 +162,33 @@ fun Lyrics(
         mutableStateOf(true)
     }
 
+    var isAppMinimized by rememberSaveable {
+        mutableStateOf(false)
+    }
+
+    val lazyListState = rememberLazyListState()
+
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_STOP) {
+                val visibleItemsInfo = lazyListState.layoutInfo.visibleItemsInfo
+                val isCurrentLineVisible = visibleItemsInfo.any { it.index == currentLineIndex }
+                if (isCurrentLineVisible) {
+                    initialScrollDone = false
+                }
+                isAppMinimized = true
+            } else if(event == Lifecycle.Event.ON_START) {
+                isAppMinimized = false
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
+
     LaunchedEffect(lyrics) {
         if (lyrics.isNullOrEmpty() || !lyrics.startsWith("[")) {
             currentLineIndex = -1
@@ -183,8 +214,6 @@ fun Lyrics(
         }
     }
 
-    val lazyListState = rememberLazyListState()
-
     LaunchedEffect(currentLineIndex, lastPreviewTime, initialScrollDone) {
         /**
          * Count number of new lines in a lyric
@@ -204,22 +233,25 @@ fun Lyrics(
         }
 
         if (!isSynced) return@LaunchedEffect
-        if(currentLineIndex == 0 && shouldScrollToFirstLine) {
+        if((currentLineIndex == 0 && shouldScrollToFirstLine) || !initialScrollDone) {
             shouldScrollToFirstLine = false
-            lazyListState.animateScrollToItem(
+            lazyListState.scrollToItem(
                 currentLineIndex,
                 with(density) { 36.dp.toPx().toInt() } + calculateOffset())
+            if(!isAppMinimized) {
+                initialScrollDone = true
+            }
         } else if (currentLineIndex != -1) {
             deferredCurrentLineIndex = currentLineIndex
-            if (lastPreviewTime == 0L || currentLineIndex != previousLineIndex) {
-                if (isSeeking) {
-                    lazyListState.scrollToItem(currentLineIndex,
-                        with(density) { 36.dp.toPx().toInt() } + calculateOffset())
-                } else {
-                    val visibleItemsInfo = lazyListState.layoutInfo.visibleItemsInfo
-                    val isCurrentLineVisible = visibleItemsInfo.any { it.index == currentLineIndex }
-                    if (!isCurrentLineVisible && initialScrollDone) return@LaunchedEffect
+            if (isSeeking) {
+                lazyListState.scrollToItem(
+                    currentLineIndex,
+                    with(density) { 36.dp.toPx().toInt() } + calculateOffset())
+            } else if (lastPreviewTime == 0L || currentLineIndex != previousLineIndex) {
+                val visibleItemsInfo = lazyListState.layoutInfo.visibleItemsInfo
+                val isCurrentLineVisible = visibleItemsInfo.any { it.index == currentLineIndex }
 
+                if (isCurrentLineVisible) {
                     val viewportStartOffset = lazyListState.layoutInfo.viewportStartOffset
                     val viewportEndOffset = lazyListState.layoutInfo.viewportEndOffset
                     val currentLineOffset = visibleItemsInfo.find { it.index == currentLineIndex }?.offset ?: 0
@@ -233,15 +265,14 @@ fun Lyrics(
                         lazyListState.animateScrollToItem(
                             currentLineIndex,
                             with(density) { 36.dp.toPx().toInt() } + calculateOffset())
-                        initialScrollDone = true
                     }
                 }
-                previousLineIndex = currentLineIndex
             }
         }
         if(currentLineIndex > 0) {
             shouldScrollToFirstLine = true
         }
+        previousLineIndex = currentLineIndex
     }
 
     BoxWithConstraints(
