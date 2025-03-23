@@ -12,6 +12,7 @@ data class YouTubeClient(
     val loginSupported: Boolean = false,
     val loginRequired: Boolean = false,
     val useSignatureTimestamp: Boolean = false,
+    val useWebPoTokens: Boolean = false,
     val isEmbedded: Boolean = false,
     // val origin: String? = null,
     // val referer: String? = null,
@@ -23,7 +24,7 @@ data class YouTubeClient(
             osVersion = osVersion,
             gl = locale.gl,
             hl = locale.hl,
-            visitorData = visitorData
+            visitorData = visitorData,
         )
     )
 
@@ -39,18 +40,19 @@ data class YouTubeClient(
 
         val WEB = YouTubeClient(
             clientName = "WEB",
-            clientVersion = "2.20241126.01.00",
+            clientVersion = "2.20250122.04.00",
             clientId = "1",
             userAgent = USER_AGENT_WEB,
         )
 
         val WEB_REMIX = YouTubeClient(
             clientName = "WEB_REMIX",
-            clientVersion = "1.20241127.01.00",
+            clientVersion = "1.20250122.01.00",
             clientId = "67",
             userAgent = USER_AGENT_WEB,
             loginSupported = true,
             useSignatureTimestamp = true,
+            useWebPoTokens = true
         )
 
         val WEB_CREATOR = YouTubeClient(
