@@ -89,6 +89,11 @@ import androidx.media3.exoplayer.offline.DownloadService
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.metrolist.innertube.YouTube
+import com.metrolist.innertube.models.SongItem
+import com.metrolist.innertube.pages.PlaylistPage
+import com.metrolist.innertube.utils.completed
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import com.metrolist.music.LocalDatabase
 import com.metrolist.music.LocalDownloadUtil
 import com.metrolist.music.LocalPlayerAwareWindowInsets
@@ -103,8 +108,10 @@ import com.metrolist.music.constants.PlaylistSongSortTypeKey
 import com.metrolist.music.constants.ThumbnailCornerRadius
 import com.metrolist.music.db.entities.Playlist
 import com.metrolist.music.db.entities.PlaylistSong
+import com.metrolist.music.db.entities.PlaylistSongMap
 import com.metrolist.music.extensions.move
 import com.metrolist.music.extensions.toMediaItem
+import com.metrolist.music.models.toMediaMetadata
 import com.metrolist.music.extensions.togglePlayPause
 import com.metrolist.music.playback.ExoDownloadService
 import com.metrolist.music.playback.queues.ListQueue
@@ -1038,6 +1045,40 @@ fun LocalPlaylistHeader(
                             Icon(
                                 painter = painterResource(R.drawable.edit),
                                 contentDescription = null,
+                            )
+                        }
+                    }
+
+                    if (playlist.playlist.browseId != null) {
+                        IconButton(
+                            onClick = {
+                                scope.launch(Dispatchers.IO) {
+                                    val playlistPage =
+                                        YouTube.playlist(playlist.playlist.browseId).completed().getOrNull()
+                                            ?: return@launch
+                                    database.transaction {
+                                        clearPlaylist(playlist.id)
+                                        playlistPage.songs
+                                            .map(SongItem::toMediaMetadata)
+                                            .onEach(::insert)
+                                            .mapIndexed { position, song ->
+                                                PlaylistSongMap(
+                                                    songId = song.id,
+                                                    playlistId = playlist.id,
+                                                    position = position
+                                                )
+                                            }
+                                            .forEach(::insert)
+                                    }
+                                }
+                                scope.launch(Dispatchers.Main) {
+                                    snackbarHostState.showSnackbar(context.getString(R.string.playlist_synced))
+                                }
+                            }
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.sync),
+                                contentDescription = null
                             )
                         }
                     }

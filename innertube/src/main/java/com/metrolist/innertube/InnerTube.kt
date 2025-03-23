@@ -33,7 +33,8 @@ class InnerTube {
             gl = Locale.getDefault().country,
             hl = Locale.getDefault().toLanguageTag(),
         )
-    var visitorData: String = "CgtsZG1ySnZiQWtSbyiMjuGSBg%3D%3D"
+    var visitorData: String? = null
+    var dataSyncId: String? = null
     var cookie: String? = null
         set(value) {
             field = value
@@ -219,31 +220,33 @@ class InnerTube {
         videoId: String,
         playlistId: String?,
         signatureTimestamp: Int?,
+        webPlayerPot: String?,
     ) = httpClient.post("player") {
         ytClient(client, setLogin = true)
         setBody(
             PlayerBody(
-                context =
-                    client.toContext(locale, visitorData).let {
-                        if ((client.isEmbedded)) {
-                            it.copy(
-                                thirdParty =
-                                    Context.ThirdParty(
-                                        embedUrl = "https://www.youtube.com/watch?v=$videoId",
-                                    ),
+                context = client.toContext(locale, visitorData).let {
+                    if (client.isEmbedded) {
+                        it.copy(
+                            thirdParty = Context.ThirdParty(
+                                embedUrl = "https://www.youtube.com/watch?v=${videoId}"
                             )
-                        } else {
-                            it
-                        }
-                    },
+                        )
+                    } else it
+                },
                 videoId = videoId,
                 playlistId = playlistId,
-                if (client.useSignatureTimestamp && signatureTimestamp != null) {
-                    PlayerBody.PlaybackContext(PlayerBody.PlaybackContext.ContentPlaybackContext(
-                        signatureTimestamp
-                    ))
+                playbackContext = if (client.useSignatureTimestamp && signatureTimestamp != null) {
+                    PlayerBody.PlaybackContext(
+                        PlayerBody.PlaybackContext.ContentPlaybackContext(
+                            signatureTimestamp
+                        )
+                    )
+                } else null,
+                serviceIntegrityDimensions = if (client.useWebPoTokens && webPlayerPot != null) {
+                    PlayerBody.ServiceIntegrityDimensions(webPlayerPot)
                 } else null
-            ),
+            )
         )
     }
 
@@ -274,9 +277,10 @@ class InnerTube {
         ytClient(client, setLogin = setLogin || useLoginForBrowse)
         setBody(
             BrowseBody(
-                context = client.toContext(locale, visitorData),
+                client.toContext(locale, visitorData),
                 browseId = browseId,
                 params = params,
+                continuation = continuation
             ),
         )
         parameter("continuation", continuation)

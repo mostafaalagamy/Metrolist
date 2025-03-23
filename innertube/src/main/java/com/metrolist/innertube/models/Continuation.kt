@@ -15,3 +15,6 @@ data class Continuation(
         val continuation: String,
     )
 }
+
+fun List<Continuation>.getContinuation() =
+    firstOrNull()?.nextContinuationData?.continuation
