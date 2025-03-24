@@ -28,6 +28,7 @@ import com.metrolist.music.R
 import com.metrolist.music.constants.AccountChannelHandleKey
 import com.metrolist.music.constants.AccountEmailKey
 import com.metrolist.music.constants.AccountNameKey
+import com.metrolist.music.constants.DataSyncIdKey
 import com.metrolist.music.constants.InnerTubeCookieKey
 import com.metrolist.music.constants.VisitorDataKey
 import com.metrolist.music.ui.component.IconButton
@@ -46,6 +47,7 @@ private const val YOUTUBE_MUSIC_URL = "https://music.youtube.com"
 @Composable
 fun LoginScreen(navController: NavController) {
     var visitorData by rememberPreference(VisitorDataKey, "")
+    var dataSyncId by rememberPreference(DataSyncIdKey, "")
     var innerTubeCookie by rememberPreference(InnerTubeCookieKey, "")
     var accountName by rememberPreference(AccountNameKey, "")
     var accountEmail by rememberPreference(AccountEmailKey, "")
@@ -87,6 +89,7 @@ fun LoginScreen(navController: NavController) {
                                 Timber.tag("WebView").e("Failed to retrieve InnerTube cookie")
                             }
                             loadUrl("javascript:Android.onRetrieveVisitorData(window.yt.config_.VISITOR_DATA)")
+                            loadUrl("javascript:Android.onRetrieveDataSyncId(window.yt.config_.DATASYNC_ID)")
                         }
                     }
 
@@ -98,8 +101,8 @@ fun LoginScreen(navController: NavController) {
                 }
                 settings.apply {
                     javaScriptEnabled = true
-                    setSupportZoom(true)
-                    builtInZoomControls = true
+                    setSupportZoom(false)
+                    builtInZoomControls = false
                 }
                 CookieManager.getInstance().setAcceptCookie(true)
                 CookieManager.getInstance().setAcceptThirdPartyCookies(this, true)
@@ -116,6 +119,12 @@ fun LoginScreen(navController: NavController) {
                             if (newVisitorData != null) {
                                 visitorData = newVisitorData
                                 Timber.tag("WebView").d("Visitor data retrieved: $visitorData")
+                            }
+                        }
+                        @JavascriptInterface
+                        fun onRetrieveDataSyncId(newDataSyncId: String?) {
+                            if (newDataSyncId != null) {
+                                dataSyncId = newDataSyncId
                             }
                         }
                     },

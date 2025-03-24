@@ -11,6 +11,7 @@ room = "2.6.1"
 hilt = "2.55"
 ktor = "3.0.3"
 ksp = "2.1.0-1.0.29"
+webkit = "1.12.1"
 
 [libraries]
 annotation = { module = "androidx.annotation:annotation", version.ref = "annotation" }

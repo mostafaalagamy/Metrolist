@@ -14,6 +14,7 @@ import com.metrolist.innertube.utils.parseCookieString
 import com.metrolist.music.constants.ContentCountryKey
 import com.metrolist.music.constants.ContentLanguageKey
 import com.metrolist.music.constants.CountryCodeToName
+import com.metrolist.music.constants.DataSyncIdKey
 import com.metrolist.music.constants.InnerTubeCookieKey
 import com.metrolist.music.constants.LanguageCodeToName
 import com.metrolist.music.constants.MaxImageCacheSizeKey
@@ -45,6 +46,7 @@ class App :
     @OptIn(DelicateCoroutinesApi::class)
     override fun onCreate() {
         super.onCreate()
+        instance = this;
         Timber.plant(Timber.DebugTree())
 
         val locale = Locale.getDefault()
@@ -90,7 +92,15 @@ class App :
                             dataStore.edit { settings ->
                                 settings[VisitorDataKey] = newVisitorData
                             }
-                        } ?: YouTube.DEFAULT_VISITOR_DATA
+                        }
+                }
+        }
+        GlobalScope.launch {
+            dataStore.data
+                .map { it[DataSyncIdKey] }
+                .distinctUntilChanged()
+                .collect { dataSyncId ->
+                    YouTube.dataSyncId = dataSyncId
                 }
         }
         GlobalScope.launch {
@@ -104,7 +114,9 @@ class App :
                     } catch (e: Exception) {
                         Timber.e("Could not parse cookie. Clearing existing cookie. %s", e.message)
                         dataStore.edit { settings ->
-                            settings[InnerTubeCookieKey] = ""
+                            settings.remove(InnerTubeCookieKey)
+                            settings.remove(VisitorDataKey)
+                            settings.remove(DataSyncIdKey)
                         }
                     }
                 }
@@ -124,5 +136,10 @@ class App :
                     .maxSizeBytes((dataStore[MaxImageCacheSizeKey] ?: 512) * 1024 * 1024L)
                     .build(),
             ).build()
+
+    companion object {
+        lateinit var instance: App
+            private set
+    }
 }
     

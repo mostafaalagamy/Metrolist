@@ -23,7 +23,10 @@ data class ArtistEntity(
 ) {
 
     val isYouTubeArtist: Boolean
-        get() = id.startsWith("UC")
+        get() = id.startsWith("UC") || id.startsWith("FEmusic_library_privately_owned_artist")
+
+    val isPrivatelyOwnedArtist: Boolean
+        get() = id.startsWith("FEmusic_library_privately_owned_artist")
 
     val isLocalArtist: Boolean
         get() = id.startsWith("LA")
