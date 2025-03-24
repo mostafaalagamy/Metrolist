@@ -23,6 +23,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -30,6 +31,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -48,6 +50,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
 import com.metrolist.music.constants.DarkModeKey
@@ -71,6 +76,7 @@ import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
 @Composable
@@ -87,6 +93,7 @@ fun Lyrics(
 
     val lyricsTextPosition by rememberEnumPreference(LyricsTextPositionKey, LyricsPosition.CENTER)
     val changeLyrics by rememberPreference(LyricsClickKey, true)
+    val scope = rememberCoroutineScope()
 
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
     val lyricsEntity by playerConnection.currentLyrics.collectAsState(initial = null)
@@ -136,11 +143,50 @@ fun Lyrics(
         mutableIntStateOf(0)
     }
 
+    var previousLineIndex by rememberSaveable {
+        mutableIntStateOf(0)
+    }
+
     var lastPreviewTime by rememberSaveable {
         mutableLongStateOf(0L)
     }
     var isSeeking by remember {
         mutableStateOf(false)
+    }
+
+    var initialScrollDone by rememberSaveable {
+        mutableStateOf(false)
+    }
+
+    var shouldScrollToFirstLine by rememberSaveable {
+        mutableStateOf(true)
+    }
+
+    var isAppMinimized by rememberSaveable {
+        mutableStateOf(false)
+    }
+
+    val lazyListState = rememberLazyListState()
+
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_STOP) {
+                val visibleItemsInfo = lazyListState.layoutInfo.visibleItemsInfo
+                val isCurrentLineVisible = visibleItemsInfo.any { it.index == currentLineIndex }
+                if (isCurrentLineVisible) {
+                    initialScrollDone = false
+                }
+                isAppMinimized = true
+            } else if(event == Lifecycle.Event.ON_START) {
+                isAppMinimized = false
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
     }
 
     LaunchedEffect(lyrics) {
@@ -168,9 +214,7 @@ fun Lyrics(
         }
     }
 
-    val lazyListState = rememberLazyListState()
-
-    LaunchedEffect(currentLineIndex, lastPreviewTime) {
+    LaunchedEffect(currentLineIndex, lastPreviewTime, initialScrollDone) {
         /**
          * Count number of new lines in a lyric
          */
@@ -189,18 +233,46 @@ fun Lyrics(
         }
 
         if (!isSynced) return@LaunchedEffect
-        if (currentLineIndex != -1) {
+        if((currentLineIndex == 0 && shouldScrollToFirstLine) || !initialScrollDone) {
+            shouldScrollToFirstLine = false
+            lazyListState.scrollToItem(
+                currentLineIndex,
+                with(density) { 36.dp.toPx().toInt() } + calculateOffset())
+            if(!isAppMinimized) {
+                initialScrollDone = true
+            }
+        } else if (currentLineIndex != -1) {
             deferredCurrentLineIndex = currentLineIndex
-            if (lastPreviewTime == 0L) {
-                if (isSeeking) {
-                    lazyListState.scrollToItem(currentLineIndex,
-                        with(density) { 36.dp.toPx().toInt() } + calculateOffset())
-                } else {
-                    lazyListState.animateScrollToItem(currentLineIndex,
-                        with(density) { 36.dp.toPx().toInt() } + calculateOffset())
+            if (isSeeking) {
+                lazyListState.scrollToItem(
+                    currentLineIndex,
+                    with(density) { 36.dp.toPx().toInt() } + calculateOffset())
+            } else if (lastPreviewTime == 0L || currentLineIndex != previousLineIndex) {
+                val visibleItemsInfo = lazyListState.layoutInfo.visibleItemsInfo
+                val isCurrentLineVisible = visibleItemsInfo.any { it.index == currentLineIndex }
+
+                if (isCurrentLineVisible) {
+                    val viewportStartOffset = lazyListState.layoutInfo.viewportStartOffset
+                    val viewportEndOffset = lazyListState.layoutInfo.viewportEndOffset
+                    val currentLineOffset = visibleItemsInfo.find { it.index == currentLineIndex }?.offset ?: 0
+                    val previousLineOffset = visibleItemsInfo.find { it.index == previousLineIndex }?.offset ?: 0
+
+                    val centerRangeStart = viewportStartOffset + (viewportEndOffset - viewportStartOffset) / 2
+                    val centerRangeEnd = viewportEndOffset - (viewportEndOffset - viewportStartOffset) / 8
+
+                    if (currentLineOffset in centerRangeStart..centerRangeEnd ||
+                        previousLineOffset in centerRangeStart..centerRangeEnd) {
+                        lazyListState.animateScrollToItem(
+                            currentLineIndex,
+                            with(density) { 36.dp.toPx().toInt() } + calculateOffset())
+                    }
                 }
             }
         }
+        if(currentLineIndex > 0) {
+            shouldScrollToFirstLine = true
+        }
+        previousLineIndex = currentLineIndex
     }
 
     BoxWithConstraints(
@@ -278,6 +350,16 @@ fun Lyrics(
                             .fillMaxWidth()
                             .clickable(enabled = isSynced && changeLyrics) {
                                 playerConnection.player.seekTo(item.time)
+                                scope.launch {
+                                    lazyListState.animateScrollToItem(
+                                        index,
+                                        with(density) { 36.dp.toPx().toInt() } +
+                                                with(density) {
+                                                    val count = item.text.count { it == '\n' }
+                                                    (if (landscapeOffset) 16.dp.toPx() else 20.dp.toPx()).toInt() * count
+                                                }
+                                    )
+                                }
                                 lastPreviewTime = 0L
                             }
                             .padding(horizontal = 24.dp, vertical = 8.dp)
@@ -334,4 +416,4 @@ fun Lyrics(
 }
 
 const val ANIMATE_SCROLL_DURATION = 300L
-val LyricsPreviewTime = 4.seconds
+val LyricsPreviewTime = 2.seconds
