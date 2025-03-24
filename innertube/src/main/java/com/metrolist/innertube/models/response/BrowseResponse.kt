@@ -20,6 +20,7 @@ import kotlinx.serialization.Serializable
 data class BrowseResponse(
     val contents: Contents?,
     val continuationContents: ContinuationContents?,
+    val onResponseReceivedActions: List<ResponseAction>?,
     val header: Header?,
     val microformat: Microformat?,
     val responseContext: ResponseContext,
@@ -71,6 +72,16 @@ data class BrowseResponse(
         data class GridContinuation(
             val items: List<GridRenderer.Item>,
             val continuations: List<Continuation>?,
+        )
+    }
+
+    @Serializable
+    data class ResponseAction(
+        val appendContinuationItemsAction: ContinuationItems?,
+    ) {
+        @Serializable
+        data class ContinuationItems(
+            val continuationItems: List<MusicShelfRenderer.Content>?,
         )
     }
 
