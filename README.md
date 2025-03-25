@@ -61,7 +61,7 @@ align="center">](https://www.androidfreeware.net/download-metrolist-apk.html)
 alt="Get it on Obtainium"
 height="55"
 align="center">](https://apps.obtainium.imranr.dev/redirect?r=obtainium://add/https://github.com/mostafaalagamy/Metrolist/)
-[<img src="https://github.com/mostafaalagamy/Metrolist/blob/down/fastlane/metadata/android/en-US/images/belberi_github.png" alt="Get it on Belberi" height="82"
+[<img src="https://github.com/mostafaalagamy/Metrolist/blob/main/fastlane/metadata/android/en-US/images/belberi_github.png" alt="Get it on Belberi" height="82"
 align="center">](https://belberi.com/metrolist/?fbclid=PAY2xjawJP5dlleHRuA2FlbQIxMAABpjSk1oBp4e8aSV4nfX2dfunQObTlMWIkN-aVA9CSq36pnmkHsvfoYTjhHg_aem_9o9OGbQuZ2PjJTArq21UDA)
 
 </div>
