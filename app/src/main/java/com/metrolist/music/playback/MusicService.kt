@@ -659,7 +659,7 @@ class MusicService :
                 val mediaItems =
                     currentQueue.nextPage().filterExplicit(dataStore.get(HideExplicitKey, false))
                 if (player.playbackState != STATE_IDLE) {
-                    player.addMediaItems(mediaItems)
+                    player.addMediaItems(mediaItems.drop(1))
                 }
             }
         }
