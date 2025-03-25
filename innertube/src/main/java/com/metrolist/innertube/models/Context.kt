@@ -33,5 +33,6 @@ data class Context(
     @Serializable
     data class User(
         val lockedSafetyMode: Boolean = false,
+        val onBehalfOfUser: String? = null,
     )
 }
