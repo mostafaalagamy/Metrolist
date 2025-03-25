@@ -73,7 +73,6 @@ fun AccountSettings(
         defaultValue = false
     )
     val (ytmSync, onYtmSyncChange) = rememberPreference(YtmSyncKey, defaultValue = true)
-    val context = LocalContext.current
 
     var showToken: Boolean by remember {
         mutableStateOf(false)
