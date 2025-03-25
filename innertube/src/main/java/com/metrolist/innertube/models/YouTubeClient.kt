@@ -27,7 +27,7 @@ data class YouTubeClient(
             visitorData = visitorData
         ),
         user = Context.User(
-            onBehalfOfUser = dataSyncId
+            onBehalfOfUser = if (loginSupported) dataSyncId else null
         ),
     )
 
