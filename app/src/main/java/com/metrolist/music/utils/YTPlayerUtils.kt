@@ -76,11 +76,6 @@ object YTPlayerUtils {
          */
         val signatureTimestamp = getSignatureTimestampOrNull(videoId)
 
-        // --- TODO: GET WEB PO TOKENS HERE ---
-         val webPlayerPot = "" // TODO
-         val webStreamingPot = "" // TODO
-         // ---
-
         val isLoggedIn = YouTube.cookie != null
         val sessionId =
             if (isLoggedIn) {
@@ -120,20 +115,14 @@ object YTPlayerUtils {
 
             // decide which client to use for streams and load its player response
             val client: YouTubeClient
-            val client =
-                 if (clientIndex == -1) {
-                     // try with streams from main client first
-                     MAIN_CLIENT
-                 } else {
-                     // after main client use fallback clients
-                     STREAM_FALLBACK_CLIENTS[clientIndex]
-                 }
- 
-             // get player response for streams
-             if (client == MAIN_CLIENT) {
+            if (clientIndex == -1) {
+                // try with streams from main client first
                 client = MAIN_CLIENT
                 streamPlayerResponse = mainPlayerResponse
             } else {
+                // after main client use fallback clients
+                client = STREAM_FALLBACK_CLIENTS[clientIndex]
+
                 if (client.loginRequired && !isLoggedIn) {
                     // skip client if it requires login but user is not logged in
                     continue
@@ -174,7 +163,7 @@ object YTPlayerUtils {
                     // working stream found
                     break
                 } else {
-                    Log.d(TAG, "[$videoId] [${client.clientName}] got bad http status code with " + streamUrl)
+                    Log.d(TAG, "[$videoId] [${client.clientName}] got bad http status code")
                 }
             }
         }
