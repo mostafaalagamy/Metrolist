@@ -112,7 +112,7 @@ fun LoginScreen(navController: NavController) {
                         @JavascriptInterface
                         fun onRetrieveDataSyncId(newDataSyncId: String?) {
                             if (newDataSyncId != null) {
-                                dataSyncId = newDataSyncId
+                                dataSyncId = newDataSyncId.substringBefore("||")
                             }
                         }
                     },
