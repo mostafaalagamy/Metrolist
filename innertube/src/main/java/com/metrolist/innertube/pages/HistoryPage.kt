@@ -21,7 +21,9 @@ data class HistoryPage(
             return HistorySection(
                 title = renderer.title?.runs?.firstOrNull()?.text!!,
                 songs = renderer.contents?.getItems()?.mapNotNull {
-                    fromMusicResponsiveListItemRenderer(it)
+                    it.musicResponsiveListItemRenderer?.let { renderer ->
+                         fromMusicResponsiveListItemRenderer(renderer)
+                    }
                 }!!
             )
         }
