@@ -1,11 +1,3 @@
-/*
- * Copyright (C) 2025 OuterTune Project
- *
- * SPDX-License-Identifier: GPL-3.0
- *
- * For any other attributions, refer to the git commit history
- */
-
 package com.metrolist.music.utils
 
 import android.net.ConnectivityManager
@@ -171,7 +163,7 @@ object YTPlayerUtils {
                     // working stream found
                     break
                 } else {
-                    Log.d(TAG, "[$videoId] [${client.clientName}] got bad http status code with " + streamUrl)
+                    Log.d(TAG, "[$videoId] [${client.clientName}] got bad http status code")
                 }
             }
         }

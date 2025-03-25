@@ -17,15 +17,18 @@ data class YouTubeClient(
     // val origin: String? = null,
     // val referer: String? = null,
 ) {
-    fun toContext(locale: YouTubeLocale, visitorData: String?) = Context(
+    fun toContext(locale: YouTubeLocale, visitorData: String?, dataSyncId: String?) = Context(
         client = Context.Client(
             clientName = clientName,
             clientVersion = clientVersion,
             osVersion = osVersion,
             gl = locale.gl,
             hl = locale.hl,
-            visitorData = visitorData,
-        )
+            visitorData = visitorData
+        ),
+        user = Context.User(
+            onBehalfOfUser = if (loginSupported) dataSyncId else null
+        ),
     )
 
     companion object {
@@ -40,24 +43,24 @@ data class YouTubeClient(
 
         val WEB = YouTubeClient(
             clientName = "WEB",
-            clientVersion = "2.20250122.04.00",
+            clientVersion = "2.20250312.04.00",
             clientId = "1",
             userAgent = USER_AGENT_WEB,
         )
 
         val WEB_REMIX = YouTubeClient(
             clientName = "WEB_REMIX",
-            clientVersion = "1.20250122.01.00",
+            clientVersion = "1.20250310.01.00",
             clientId = "67",
             userAgent = USER_AGENT_WEB,
             loginSupported = true,
             useSignatureTimestamp = true,
-            useWebPoTokens = true
+            useWebPoTokens = true,
         )
 
         val WEB_CREATOR = YouTubeClient(
             clientName = "WEB_CREATOR",
-            clientVersion = "1.20241203.01.00",
+            clientVersion = "1.20250312.03.01",
             clientId = "62",
             userAgent = USER_AGENT_WEB,
             loginSupported = true,
@@ -69,7 +72,7 @@ data class YouTubeClient(
             clientName = "TVHTML5_SIMPLY_EMBEDDED_PLAYER",
             clientVersion = "2.0",
             clientId = "85",
-            userAgent = "Mozilla/5.0 (PlayStation; PlayStation 4/12.00) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.4 Safari/605.1.15",
+            userAgent = "Mozilla/5.0 (PlayStation; PlayStation 4/12.02) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.4 Safari/605.1.15",
             loginSupported = true,
             loginRequired = true,
             useSignatureTimestamp = true,
@@ -78,10 +81,10 @@ data class YouTubeClient(
 
         val IOS = YouTubeClient(
             clientName = "IOS",
-            clientVersion = "20.03.02",
+            clientVersion = "20.10.4",
             clientId = "5",
-            userAgent = "com.google.ios.youtube/20.03.02 (iPhone16,2; U; CPU iOS 18_2_1 like Mac OS X;)",
-            osVersion = "18.2.1.22C161",
+            userAgent = "com.google.ios.youtube/20.10.4 (iPhone16,2; U; CPU iOS 18_3_2 like Mac OS X;)",
+            osVersion = "18.3.2.22D82",
         )
     }
 }

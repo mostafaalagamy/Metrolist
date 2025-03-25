@@ -3,7 +3,6 @@ package com.metrolist.music.ui.screens
 import android.annotation.SuppressLint
 import android.webkit.CookieManager
 import android.webkit.JavascriptInterface
-import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.activity.compose.BackHandler
@@ -21,8 +20,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavController
-import com.metrolist.innertube.YouTube
-import com.metrolist.innertube.utils.parseCookieString
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.R
 import com.metrolist.music.constants.AccountChannelHandleKey
@@ -35,17 +32,17 @@ import com.metrolist.music.ui.component.IconButton
 import com.metrolist.music.ui.utils.backToMain
 import com.metrolist.music.utils.rememberPreference
 import com.metrolist.music.utils.reportException
+import com.metrolist.innertube.YouTube
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import timber.log.Timber
-
-private const val YOUTUBE_MUSIC_URL = "https://music.youtube.com"
 
 @SuppressLint("SetJavaScriptEnabled")
 @OptIn(ExperimentalMaterial3Api::class, DelicateCoroutinesApi::class)
 @Composable
-fun LoginScreen(navController: NavController) {
+fun LoginScreen(
+    navController: NavController,
+) {
     var visitorData by rememberPreference(VisitorDataKey, "")
     var dataSyncId by rememberPreference(DataSyncIdKey, "")
     var innerTubeCookie by rememberPreference(InnerTubeCookieKey, "")
@@ -56,86 +53,53 @@ fun LoginScreen(navController: NavController) {
     var webView: WebView? = null
 
     AndroidView(
-        modifier =
-        Modifier
+        modifier = Modifier
             .windowInsetsPadding(LocalPlayerAwareWindowInsets.current)
             .fillMaxSize(),
         factory = { context ->
             WebView(context).apply {
                 webViewClient = object : WebViewClient() {
-                    override fun onPageStarted(view: WebView, url: String, favicon: android.graphics.Bitmap?) {
-//                        Timber.tag("WebView").d("Page started: $url") // Uncomment this line to debug WebView
-                        super.onPageStarted(view, url, favicon)
-                    }
-
                     override fun onPageFinished(view: WebView, url: String?) {
-                        Timber.tag("WebView").d("Page finished: $url")
-                        if (url != null && url.startsWith(YOUTUBE_MUSIC_URL)) {
-                            val youTubeCookieString = CookieManager.getInstance().getCookie(url)
-                            innerTubeCookie = if ("SAPISID" in parseCookieString(youTubeCookieString)) youTubeCookieString else ""
-                            if (innerTubeCookie.isNotEmpty()) {
-                                GlobalScope.launch {
-                                    YouTube.accountInfo().onSuccess {
-                                        accountName = it.name
-                                        accountEmail = it.email.orEmpty()
-                                        accountChannelHandle = it.channelHandle.orEmpty()
-                                        Timber.tag("WebView").d("Account info retrieved: $accountName, $accountEmail, $accountChannelHandle")
-                                    }.onFailure {
-                                        reportException(it)
-                                        Timber.tag("WebView").e(it, "Failed to retrieve account info")
-                                    }
-                                }
-                            } else {
-                                Timber.tag("WebView").e("Failed to retrieve InnerTube cookie")
-                            }
-                            loadUrl("javascript:Android.onRetrieveVisitorData(window.yt.config_.VISITOR_DATA)")
-                            loadUrl("javascript:Android.onRetrieveDataSyncId(window.yt.config_.DATASYNC_ID)")
-                        }
-                    }
+                        loadUrl("javascript:Android.onRetrieveVisitorData(window.yt.config_.VISITOR_DATA)")
+                        loadUrl("javascript:Android.onRetrieveDataSyncId(window.yt.config_.DATASYNC_ID)")
 
-                    override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
-                        val url = request.url.toString()
-                        Timber.tag("WebView").d("Loading URL: $url")
-                        return super.shouldOverrideUrlLoading(view, request)
+                        if (url?.startsWith("https://music.youtube.com") == true) {
+                            innerTubeCookie = CookieManager.getInstance().getCookie(url)
+                            GlobalScope.launch {
+                                YouTube.accountInfo().onSuccess {
+                                    accountName = it.name
+                                    accountEmail = it.email.orEmpty()
+                                    accountChannelHandle = it.channelHandle.orEmpty()
+                                }.onFailure {
+                                    reportException(it)
+                                }
+                            }
+                        }
                     }
                 }
                 settings.apply {
                     javaScriptEnabled = true
-                    setSupportZoom(false)
-                    builtInZoomControls = false
+                    setSupportZoom(true)
+                    builtInZoomControls = true
                 }
-                CookieManager.getInstance().setAcceptCookie(true)
-                CookieManager.getInstance().setAcceptThirdPartyCookies(this, true)
-                addJavascriptInterface(
-                    object {
-                        @JavascriptInterface
-                        fun onRetrieveVisitorData(newVisitorData: String?) {
-                            if (innerTubeCookie == "") {
-                                visitorData = ""
-                                Timber.tag("WebView").e("InnerTube cookie is empty, cannot retrieve visitor data")
-                                return
-                            }
-
-                            if (newVisitorData != null) {
-                                visitorData = newVisitorData
-                                Timber.tag("WebView").d("Visitor data retrieved: $visitorData")
-                            }
+                addJavascriptInterface(object {
+                    @JavascriptInterface
+                    fun onRetrieveVisitorData(newVisitorData: String?) {
+                        if (newVisitorData != null) {
+                            visitorData = newVisitorData
                         }
-                        @JavascriptInterface
-                        fun onRetrieveDataSyncId(newDataSyncId: String?) {
-                            if (newDataSyncId != null) {
-                                dataSyncId = newDataSyncId
-                            }
+                    }
+                    @JavascriptInterface
+                    fun onRetrieveDataSyncId(newDataSyncId: String?) {
+                        if (newDataSyncId != null) {
+                            dataSyncId = newDataSyncId.substringBefore("||")
                         }
-                    },
-                    "Android",
-                )
+                    }
+                }, "Android")
                 webView = this
-                loadUrl(
-                    "https://accounts.google.com/ServiceLogin?ltmpl=music&service=youtube&passive=true&continue=$YOUTUBE_MUSIC_URL",
-                )
+                loadUrl("https://accounts.google.com/ServiceLogin?continue=https%3A%2F%2Fmusic.youtube.com")
             }
-        },
+        }
     )
 
     TopAppBar(
@@ -143,14 +107,14 @@ fun LoginScreen(navController: NavController) {
         navigationIcon = {
             IconButton(
                 onClick = navController::navigateUp,
-                onLongClick = navController::backToMain,
+                onLongClick = navController::backToMain
             ) {
                 Icon(
                     painterResource(R.drawable.arrow_back),
-                    contentDescription = null,
+                    contentDescription = null
                 )
             }
-        },
+        }
     )
 
     BackHandler(enabled = webView?.canGoBack() == true) {

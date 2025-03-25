@@ -19,11 +19,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.datastore.preferences.core.edit
 import androidx.navigation.NavController
 import com.metrolist.innertube.YouTube
 import com.metrolist.innertube.utils.parseCookieString
@@ -44,7 +46,9 @@ import com.metrolist.music.ui.component.PreferenceGroupTitle
 import com.metrolist.music.ui.component.SwitchPreference
 import com.metrolist.music.ui.component.TextFieldDialog
 import com.metrolist.music.ui.utils.backToMain
+import com.metrolist.music.utils.dataStore
 import com.metrolist.music.utils.rememberPreference
+import kotlinx.coroutines.runBlocking
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -52,6 +56,8 @@ fun AccountSettings(
     navController: NavController,
     scrollBehavior: TopAppBarScrollBehavior,
 ) {
+    val context = LocalContext.current
+
     val (accountName, onAccountNameChange) = rememberPreference(AccountNameKey, "")
     val (accountEmail, onAccountEmailChange) = rememberPreference(AccountEmailKey, "")
     val (accountChannelHandle, onAccountChannelHandleChange) = rememberPreference(AccountChannelHandleKey, "")
@@ -67,7 +73,6 @@ fun AccountSettings(
         defaultValue = false
     )
     val (ytmSync, onYtmSyncChange) = rememberPreference(YtmSyncKey, defaultValue = true)
-    val context = LocalContext.current
 
     var showToken: Boolean by remember {
         mutableStateOf(false)
@@ -121,8 +126,18 @@ fun AccountSettings(
                 icon = { Icon(painterResource(R.drawable.login), null) },
                 trailingContent = {
                     if (isLoggedIn) {
-                        OutlinedButton(onClick = { onInnerTubeCookieChange("") }) {
-                            Text(stringResource(R.string.logout))
+                        OutlinedButton(onClick = {
+                            onInnerTubeCookieChange("")
+                            runBlocking {
+                                context.dataStore.edit { settings ->
+                                    settings.remove(InnerTubeCookieKey)
+                                    settings.remove(VisitorDataKey)
+                                    settings.remove(DataSyncIdKey)
+                                }
+                            }
+                        }
+                    ) {
+                        Text(stringResource(R.string.logout))
                         }
                     }
                 },
