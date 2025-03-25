@@ -16,12 +16,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavController
-import com.metrolist.innertube.YouTube
-import com.metrolist.innertube.utils.parseCookieString
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.R
 import com.metrolist.music.constants.AccountChannelHandleKey
@@ -34,6 +31,7 @@ import com.metrolist.music.ui.component.IconButton
 import com.metrolist.music.ui.utils.backToMain
 import com.metrolist.music.utils.rememberPreference
 import com.metrolist.music.utils.reportException
+import com.metrolist.innertube.YouTube
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -41,7 +39,9 @@ import kotlinx.coroutines.launch
 @SuppressLint("SetJavaScriptEnabled")
 @OptIn(ExperimentalMaterial3Api::class, DelicateCoroutinesApi::class)
 @Composable
-fun LoginScreen(navController: NavController) {
+fun LoginScreen(
+    navController: NavController,
+) {
     var visitorData by rememberPreference(VisitorDataKey, "")
     var dataSyncId by rememberPreference(DataSyncIdKey, "")
     var innerTubeCookie by rememberPreference(InnerTubeCookieKey, "")
@@ -52,78 +52,53 @@ fun LoginScreen(navController: NavController) {
     var webView: WebView? = null
 
     AndroidView(
-        modifier =
-        Modifier
+        modifier = Modifier
             .windowInsetsPadding(LocalPlayerAwareWindowInsets.current)
             .fillMaxSize(),
         factory = { context ->
             WebView(context).apply {
-                webViewClient =
-                    object : WebViewClient() {
-                        override fun doUpdateVisitedHistory(
-                            view: WebView,
-                            url: String,
-                            isReload: Boolean,
-                        ) {
-                            if (url.startsWith("https://music.youtube.com")) {
-                                var youTubeCookieString = CookieManager.getInstance().getCookie(url)
-                                innerTubeCookie =
-                                    if ("SAPISID" in parseCookieString(youTubeCookieString)) youTubeCookieString else ""
-                                GlobalScope.launch {
-                                    YouTube
-                                        .accountInfo()
-                                        .onSuccess {
-                                            accountName = it.name
-                                            accountEmail = it.email.orEmpty()
-                                            accountChannelHandle = it.channelHandle.orEmpty()
-                                        }.onFailure {
-                                            reportException(it)
-                                        }
+                webViewClient = object : WebViewClient() {
+                    override fun onPageFinished(view: WebView, url: String?) {
+                        loadUrl("javascript:Android.onRetrieveVisitorData(window.yt.config_.VISITOR_DATA)")
+                        loadUrl("javascript:Android.onRetrieveDataSyncId(window.yt.config_.DATASYNC_ID)")
+
+                        if (url?.startsWith("https://music.youtube.com") == true) {
+                            innerTubeCookie = CookieManager.getInstance().getCookie(url)
+                            GlobalScope.launch {
+                                YouTube.accountInfo().onSuccess {
+                                    accountName = it.name
+                                    accountEmail = it.email.orEmpty()
+                                    accountChannelHandle = it.channelHandle.orEmpty()
+                                }.onFailure {
+                                    reportException(it)
                                 }
                             }
                         }
-
-                        override fun onPageFinished(
-                            view: WebView,
-                            url: String?,
-                        ) {
-                            loadUrl("javascript:Android.onRetrieveVisitorData(window.yt.config_.VISITOR_DATA)")
-                            loadUrl("javascript:Android.onRetrieveDataSyncId(window.yt.config_.DATASYNC_ID)")
-                        }
                     }
+                }
                 settings.apply {
                     javaScriptEnabled = true
-                    setSupportZoom(false)
-                    builtInZoomControls = false
+                    setSupportZoom(true)
+                    builtInZoomControls = true
                 }
-                addJavascriptInterface(
-                    object {
-                        @JavascriptInterface
-                        fun onRetrieveVisitorData(newVisitorData: String?) {
-                            if (innerTubeCookie == "") {
-                                visitorData = ""
-                                return
-                            }
-
-                            if (newVisitorData != null) {
-                                visitorData = newVisitorData
-                            }
+                addJavascriptInterface(object {
+                    @JavascriptInterface
+                    fun onRetrieveVisitorData(newVisitorData: String?) {
+                        if (newVisitorData != null) {
+                            visitorData = newVisitorData
                         }
-                        @JavascriptInterface
-                        fun onRetrieveDataSyncId(newDataSyncId: String?) {
-                            if (newDataSyncId != null) {
-                                dataSyncId = newDataSyncId.substringBefore("||")
-                            }
+                    }
+                    @JavascriptInterface
+                    fun onRetrieveDataSyncId(newDataSyncId: String?) {
+                        if (newDataSyncId != null) {
+                            dataSyncId = newDataSyncId.substringBefore("||")
                         }
-                    },
-                    "Android",
-                )
+                    }
+                }, "Android")
                 webView = this
-                loadUrl(
-                    "https://accounts.google.com/ServiceLogin?continue=https%3A%2F%2Fmusic.youtube.com"
-                )
+                loadUrl("https://accounts.google.com/ServiceLogin?continue=https%3A%2F%2Fmusic.youtube.com")
             }
-        },
+        }
     )
 
     TopAppBar(
@@ -131,14 +106,14 @@ fun LoginScreen(navController: NavController) {
         navigationIcon = {
             IconButton(
                 onClick = navController::navigateUp,
-                onLongClick = navController::backToMain,
+                onLongClick = navController::backToMain
             ) {
                 Icon(
                     painterResource(R.drawable.arrow_back),
-                    contentDescription = null,
+                    contentDescription = null
                 )
             }
-        },
+        }
     )
 
     BackHandler(enabled = webView?.canGoBack() == true) {
