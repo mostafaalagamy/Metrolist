@@ -206,7 +206,11 @@ class InnerTube {
         ytClient(client, setLogin = useLoginForBrowse)
         setBody(
             SearchBody(
-                context = client.toContext(locale, visitorData),
+                context = client.toContext(
+                    locale,
+                    visitorData,
+                    if (useLoginForBrowse) dataSyncId else null
+                ),
                 query = query,
                 params = params,
             ),
@@ -225,7 +229,7 @@ class InnerTube {
         ytClient(client, setLogin = true)
         setBody(
             PlayerBody(
-                context = client.toContext(locale, visitorData).let {
+                context = client.toContext(locale, visitorData, dataSyncId).let {
                     if (client.isEmbedded) {
                         it.copy(
                             thirdParty = Context.ThirdParty(
@@ -277,7 +281,11 @@ class InnerTube {
         ytClient(client, setLogin = setLogin || useLoginForBrowse)
         setBody(
             BrowseBody(
-                client.toContext(locale, visitorData),
+                context = client.toContext(
+                    locale,
+                    visitorData,
+                    if (setLogin || useLoginForBrowse) dataSyncId else null
+                ),
                 browseId = browseId,
                 params = params,
                 continuation = continuation
@@ -302,7 +310,7 @@ class InnerTube {
         ytClient(client, setLogin = true)
         setBody(
             NextBody(
-                context = client.toContext(locale, visitorData),
+                context = client.toContext(locale, visitorData, dataSyncId),
                 videoId = videoId,
                 playlistId = playlistId,
                 playlistSetVideoId = playlistSetVideoId,
@@ -365,7 +373,7 @@ class InnerTube {
         ytClient(client, setLogin = true)
         setBody(
             EditPlaylistBody(
-                context = client.toContext(locale, visitorData),
+                context = client.toContext(locale, visitorData, dataSyncId),
                 playlistId = playlistId.removePrefix("VL"),
                 actions = listOf(
                     Action.AddPlaylistAction(addedFullListId = addPlaylistId)
@@ -382,7 +390,7 @@ class InnerTube {
         ytClient(client, setLogin = true)
         setBody(
             EditPlaylistBody(
-                context = client.toContext(locale, visitorData),
+                context = client.toContext(locale, visitorData, dataSyncId),
                 playlistId = playlistId,
                 actions = listOf(
                     Action.RenamePlaylistAction(
@@ -401,7 +409,7 @@ class InnerTube {
         ytClient(client, setLogin = true)
         setBody(
             EditPlaylistBody(
-                context = client.toContext(locale, visitorData),
+                context = client.toContext(locale, visitorData, dataSyncId),
                 playlistId = playlistId.removePrefix("VL"),
                 actions = listOf(
                     Action.AddVideoAction(addedVideoId = videoId)
@@ -418,7 +426,7 @@ class InnerTube {
         ytClient(client, setLogin = true)
         setBody(
             EditPlaylistBody(
-                context = client.toContext(locale, visitorData),
+                context = client.toContext(locale, visitorData, dataSyncId),
                 playlistId = playlistId.removePrefix("VL"),
                 actions = listOf(
                     Action.RemoveVideoAction(
@@ -438,7 +446,7 @@ class InnerTube {
         ytClient(client, setLogin = true)
         setBody(
             PlaylistDeleteBody(
-                context = client.toContext(locale, visitorData),
+                context = client.toContext(locale, visitorData, dataSyncId),
                 playlistId = playlistId
             )
         )
@@ -449,6 +457,6 @@ class InnerTube {
     suspend fun accountMenu(client: YouTubeClient) =
         httpClient.post("account/account_menu") {
             ytClient(client, setLogin = true)
-            setBody(AccountMenuBody(client.toContext(locale, visitorData)))
+            setBody(AccountMenuBody(client.toContext(locale, visitorData, dataSyncId)))
         }
 }
