@@ -113,7 +113,7 @@ class InnerTube {
         ytClient(client, setLogin = true)
         setBody(
             LikeBody(
-                context = client.toContext(locale, visitorData),
+                context = client.toContext(locale, visitorData, dataSyncId),
                 target = LikeBody.Target.VideoTarget(videoId)
             )
         )
@@ -126,7 +126,7 @@ class InnerTube {
         ytClient(client, setLogin = true)
         setBody(
             LikeBody(
-                context = client.toContext(locale, visitorData),
+                context = client.toContext(locale, visitorData, dataSyncId),
                 target = LikeBody.Target.VideoTarget(videoId)
             )
         )
@@ -139,7 +139,7 @@ class InnerTube {
         ytClient(client, setLogin = true)
         setBody(
             LikeBody(
-                context = client.toContext(locale, visitorData),
+                context = client.toContext(locale, visitorData, dataSyncId),
                 target = LikeBody.Target.PlaylistTarget(playlistId)
             )
         )
@@ -152,7 +152,7 @@ class InnerTube {
         ytClient(client, setLogin = true)
         setBody(
             LikeBody(
-                context = client.toContext(locale, visitorData),
+                context = client.toContext(locale, visitorData, dataSyncId),
                 target = LikeBody.Target.PlaylistTarget(playlistId)
             )
         )
@@ -165,7 +165,7 @@ class InnerTube {
         ytClient(client, true)
         setBody(
             CreatePlaylistBody(
-                context = client.toContext(locale, visitorData),
+                context = client.toContext(locale, visitorData, dataSyncId),
                 title = title
             )
         )
@@ -178,7 +178,7 @@ class InnerTube {
         ytClient(client, setLogin = true)
         setBody(
             SubscribeBody(
-                context = client.toContext(locale, visitorData),
+                context = client.toContext(locale, visitorData, dataSyncId),
                 channelIds = listOf(channelId)
             )
         )
@@ -191,7 +191,7 @@ class InnerTube {
         ytClient(client, setLogin = true)
         setBody(
             SubscribeBody(
-                context = client.toContext(locale, visitorData),
+                context = client.toContext(locale, visitorData, dataSyncId),
                 channelIds = listOf(channelId)
             )
         )
@@ -359,7 +359,7 @@ class InnerTube {
         }
         setBody(
             GetTranscriptBody(
-                context = client.toContext(locale, null),
+                context = client.toContext(locale, null, null),
                 params = "\n${11.toChar()}$videoId".encodeBase64(),
             ),
         )
