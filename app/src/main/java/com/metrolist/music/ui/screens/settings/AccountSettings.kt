@@ -121,8 +121,18 @@ fun AccountSettings(
                 icon = { Icon(painterResource(R.drawable.login), null) },
                 trailingContent = {
                     if (isLoggedIn) {
-                        OutlinedButton(onClick = { onInnerTubeCookieChange("") }) {
-                            Text(stringResource(R.string.logout))
+                        OutlinedButton(onClick = {
+                            onInnerTubeCookieChange("")
+                            runBlocking {
+                                context.dataStore.edit { settings ->
+                                    settings.remove(InnerTubeCookieKey)
+                                    settings.remove(VisitorDataKey)
+                                    settings.remove(DataSyncIdKey)
+                                }
+                            }
+                        }
+                    ) {
+                        Text(stringResource(R.string.logout))
                         }
                     }
                 },
