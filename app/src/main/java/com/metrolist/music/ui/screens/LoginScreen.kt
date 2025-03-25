@@ -3,7 +3,6 @@ package com.metrolist.music.ui.screens
 import android.annotation.SuppressLint
 import android.webkit.CookieManager
 import android.webkit.JavascriptInterface
-import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.activity.compose.BackHandler
@@ -38,9 +37,6 @@ import com.metrolist.music.utils.reportException
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import timber.log.Timber
-
-private const val YOUTUBE_MUSIC_URL = "https://music.youtube.com"
 
 @SuppressLint("SetJavaScriptEnabled")
 @OptIn(ExperimentalMaterial3Api::class, DelicateCoroutinesApi::class)
@@ -62,63 +58,55 @@ fun LoginScreen(navController: NavController) {
             .fillMaxSize(),
         factory = { context ->
             WebView(context).apply {
-                webViewClient = object : WebViewClient() {
-                    override fun onPageStarted(view: WebView, url: String, favicon: android.graphics.Bitmap?) {
-//                        Timber.tag("WebView").d("Page started: $url") // Uncomment this line to debug WebView
-                        super.onPageStarted(view, url, favicon)
-                    }
-
-                    override fun onPageFinished(view: WebView, url: String?) {
-                        Timber.tag("WebView").d("Page finished: $url")
-                        if (url != null && url.startsWith(YOUTUBE_MUSIC_URL)) {
-                            val youTubeCookieString = CookieManager.getInstance().getCookie(url)
-                            innerTubeCookie = if ("SAPISID" in parseCookieString(youTubeCookieString)) youTubeCookieString else ""
-                            if (innerTubeCookie.isNotEmpty()) {
+                webViewClient =
+                    object : WebViewClient() {
+                        override fun doUpdateVisitedHistory(
+                            view: WebView,
+                            url: String,
+                            isReload: Boolean,
+                        ) {
+                            if (url.startsWith("https://music.youtube.com")) {
+                                var youTubeCookieString = CookieManager.getInstance().getCookie(url)
+                                innerTubeCookie =
+                                    if ("SAPISID" in parseCookieString(youTubeCookieString)) youTubeCookieString else ""
                                 GlobalScope.launch {
-                                    YouTube.accountInfo().onSuccess {
-                                        accountName = it.name
-                                        accountEmail = it.email.orEmpty()
-                                        accountChannelHandle = it.channelHandle.orEmpty()
-                                        Timber.tag("WebView").d("Account info retrieved: $accountName, $accountEmail, $accountChannelHandle")
-                                    }.onFailure {
-                                        reportException(it)
-                                        Timber.tag("WebView").e(it, "Failed to retrieve account info")
-                                    }
+                                    YouTube
+                                        .accountInfo()
+                                        .onSuccess {
+                                            accountName = it.name
+                                            accountEmail = it.email.orEmpty()
+                                            accountChannelHandle = it.channelHandle.orEmpty()
+                                        }.onFailure {
+                                            reportException(it)
+                                        }
                                 }
-                            } else {
-                                Timber.tag("WebView").e("Failed to retrieve InnerTube cookie")
                             }
+                        }
+
+                        override fun onPageFinished(
+                            view: WebView,
+                            url: String?,
+                        ) {
                             loadUrl("javascript:Android.onRetrieveVisitorData(window.yt.config_.VISITOR_DATA)")
                             loadUrl("javascript:Android.onRetrieveDataSyncId(window.yt.config_.DATASYNC_ID)")
                         }
                     }
-
-                    override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
-                        val url = request.url.toString()
-                        Timber.tag("WebView").d("Loading URL: $url")
-                        return super.shouldOverrideUrlLoading(view, request)
-                    }
-                }
                 settings.apply {
                     javaScriptEnabled = true
                     setSupportZoom(false)
                     builtInZoomControls = false
                 }
-                CookieManager.getInstance().setAcceptCookie(true)
-                CookieManager.getInstance().setAcceptThirdPartyCookies(this, true)
                 addJavascriptInterface(
                     object {
                         @JavascriptInterface
                         fun onRetrieveVisitorData(newVisitorData: String?) {
                             if (innerTubeCookie == "") {
                                 visitorData = ""
-                                Timber.tag("WebView").e("InnerTube cookie is empty, cannot retrieve visitor data")
                                 return
                             }
 
                             if (newVisitorData != null) {
                                 visitorData = newVisitorData
-                                Timber.tag("WebView").d("Visitor data retrieved: $visitorData")
                             }
                         }
                         @JavascriptInterface
@@ -132,7 +120,7 @@ fun LoginScreen(navController: NavController) {
                 )
                 webView = this
                 loadUrl(
-                    "https://accounts.google.com/ServiceLogin?ltmpl=music&service=youtube&passive=true&continue=$YOUTUBE_MUSIC_URL",
+                    "https://accounts.google.com/ServiceLogin?ltmpl=music&service=youtube&passive=true&continue=https%3A%2F%2Fwww.youtube.com%2Fsignin%3Faction_handle_signin%3Dtrue%26next%3Dhttps%253A%252F%252Fmusic.youtube.com%252F",
                 )
             }
         },
