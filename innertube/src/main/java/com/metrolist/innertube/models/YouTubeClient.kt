@@ -17,7 +17,7 @@ data class YouTubeClient(
     // val origin: String? = null,
     // val referer: String? = null,
 ) {
-    fun toContext(locale: YouTubeLocale, visitorData: String?) = Context(
+    fun toContext(locale: YouTubeLocale, visitorData: String?, dataSyncId: String?) = Context(
         client = Context.Client(
             clientName = clientName,
             clientVersion = clientVersion,
@@ -25,7 +25,10 @@ data class YouTubeClient(
             gl = locale.gl,
             hl = locale.hl,
             visitorData = visitorData,
-        )
+        ),
+         user = Context.User(
+             onBehalfOfUser = dataSyncId
+         ),
     )
 
     companion object {
