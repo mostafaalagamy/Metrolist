@@ -68,7 +68,7 @@ data class AlbumPage(
             response.contents?.twoColumnBrowseResultsRenderer?.secondaryContents?.sectionListRenderer?.contents?.firstOrNull()?.musicShelfRenderer
 
             val songs = shelfRenderer?.contents?.getItems()?.mapNotNull {
-                getSong(response, it, album)
+                it.musicResponsiveListItemRenderer?.let { renderer -> getSong(renderer, album) }
             }
             return songs ?: emptyList()
         }
