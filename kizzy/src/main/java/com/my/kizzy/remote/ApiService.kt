@@ -45,21 +45,25 @@ class ApiService {
         }
     }
 
-    suspend fun getImage(url: String) = client.get {
-        url("$BASE_URL/image")
-        parameter("url", url)
+    suspend fun getImage(url: String) = runCatching {
+         client.get {
+             url("$BASE_URL/image")
+             parameter("url", url)
+         }
     }
 
-    suspend fun uploadImage(file: File) = client.post {
-        url("$BASE_URL/upload")
-        setBody(MultiPartFormDataContent(
-            formData {
-                append("temp", file.readBytes(), Headers.build {
-                    append(HttpHeaders.ContentType, "image/*")
-                    append(HttpHeaders.ContentDisposition, "filename=${file.name}")
-                })
-            }
-        ))
+    suspend fun uploadImage(file: File) = runCatching {
+         client.post {
+             url("$BASE_URL/upload")
+             setBody(MultiPartFormDataContent(
+                 formData {
+                     append("\"temp\"", file.readBytes(), Headers.build {
+                         append(HttpHeaders.ContentType, "image/*")
+                         append(HttpHeaders.ContentDisposition, "filename=\"${file.name}\"")
+                     })
+                 }
+             ))
+         }
     }
 
     companion object {
