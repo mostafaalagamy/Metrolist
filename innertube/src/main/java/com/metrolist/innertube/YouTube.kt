@@ -528,19 +528,18 @@ object YouTube {
     }
 
     suspend fun playlistContinuation(continuation: String) = runCatching {
-        val response = innerTube.browse(
-            client = WEB_REMIX,
-            continuation = continuation,
-            setLogin = true
-        ).body<BrowseResponse>()
+         val response = innerTube.browse(
+             client = WEB_REMIX,
+             continuation = continuation,
+             setLogin = true
+         ).body<BrowseResponse>()
  
          val musicPlaylistShelfContinuation = response.continuationContents?.musicPlaylistShelfContinuation
          if (musicPlaylistShelfContinuation != null) {
              PlaylistContinuationPage(
                  songs = musicPlaylistShelfContinuation.contents.getItems().mapNotNull {
-                    PlaylistPage.fromMusicResponsiveListItemRenderer(renderer)
-                }
-            },
+                     PlaylistPage.fromMusicResponsiveListItemRenderer(it)
+                 },
                  continuation = musicPlaylistShelfContinuation.continuations?.getContinuation()
              )
          } else {
