@@ -69,7 +69,12 @@ data class RelatedPage(
                             renderer.title.runs
                                 ?.firstOrNull()
                                 ?.text ?: return null,
-                        artists = null,
+                        artists = renderer.subtitle?.runs?.oddElements()?.drop(1)?.map {
+                            Artist(
+                                name = it.text,
+                                id = it.navigationEndpoint?.browseEndpoint?.browseId
+                            )
+                        },
                         year =
                             renderer.subtitle
                                 ?.runs
@@ -92,18 +97,11 @@ data class RelatedPage(
                             renderer.title.runs
                                 ?.firstOrNull()
                                 ?.text ?: return null,
-                        author =
-                            renderer.subtitle?.runs?.getOrNull(2)?.let {
-                                Artist(
-                                    name = it.text,
-                                    id = it.navigationEndpoint?.browseEndpoint?.browseId,
-                                )
-                            },
-                        songCountText =
-                            renderer.subtitle
-                                ?.runs
-                                ?.getOrNull(4)
-                                ?.text,
+                        author = Artist(
+                            name = renderer.subtitle?.runs?.lastOrNull()?.text ?: return null,
+                            id = null
+                        ),
+                        songCountText = renderer.subtitle.runs.getOrNull(4)?.text,
                         thumbnail = renderer.thumbnailRenderer.musicThumbnailRenderer?.getThumbnailUrl() ?: return null,
                         playEndpoint =
                             renderer.thumbnailOverlay
@@ -127,7 +125,7 @@ data class RelatedPage(
                                     it.menuNavigationItemRenderer?.icon?.iconType == "MIX"
                                 }?.menuNavigationItemRenderer
                                 ?.navigationEndpoint
-                                ?.watchPlaylistEndpoint ?: return null,
+                                ?.watchPlaylistEndpoint,
                     )
                 renderer.isArtist -> {
                     ArtistItem(
