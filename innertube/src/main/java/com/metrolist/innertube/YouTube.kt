@@ -205,10 +205,9 @@ object YouTube {
             response.contents?.twoColumnBrowseResultsRenderer?.secondaryContents?.sectionListRenderer
                 ?.contents?.firstOrNull()?.musicPlaylistShelfRenderer?.contents
 
-        val songs = contents?.getItems()?.mapNotNull {
-            AlbumPage.getSong(it)
-        }
-        songs!!
+        val songs = contents?.getItems()?.mapNotNull { AlbumPage.getSong(it) } ?: emptyList()
+
+        songs
     }
 
     suspend fun artist(browseId: String): Result<ArtistPage> = runCatching {
@@ -219,7 +218,7 @@ object YouTube {
                 id = browseId,
                 title = response.header?.musicImmersiveHeaderRenderer?.title?.runs?.firstOrNull()?.text
                     ?: response.header?.musicVisualHeaderRenderer?.title?.runs?.firstOrNull()?.text
-                    ?: response.header?.musicHeaderRenderer?.title?.runs?.firstOrNull()?.text!!,
+                    ?: response.header?.musicHeaderRenderer?.title?.runs?.firstOrNull()?.text,
                 thumbnail = response.header?.musicImmersiveHeaderRenderer?.thumbnail?.musicThumbnailRenderer?.getThumbnailUrl()
                     ?: response.header?.musicVisualHeaderRenderer?.foregroundThumbnail?.musicThumbnailRenderer?.getThumbnailUrl()
                     ?: response.header?.musicDetailHeaderRenderer?.thumbnail?.musicThumbnailRenderer?.getThumbnailUrl(),
