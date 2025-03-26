@@ -1,3 +1,4 @@
+
 package com.metrolist.innertube.pages
 
 import com.metrolist.innertube.models.Album
@@ -21,9 +22,7 @@ data class HistoryPage(
             return HistorySection(
                 title = renderer.title?.runs?.firstOrNull()?.text!!,
                 songs = renderer.contents?.getItems()?.mapNotNull {
-                    it.musicResponsiveListItemRenderer?.let { renderer ->
-                         fromMusicResponsiveListItemRenderer(renderer)
-                    }
+                    fromMusicResponsiveListItemRenderer(it)
                 }!!
             )
         }
