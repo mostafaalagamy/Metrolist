@@ -68,10 +68,7 @@ fun AccountSettings(
     val isLoggedIn = remember(innerTubeCookie) {
         "SAPISID" in parseCookieString(innerTubeCookie)
     }
-    val (useLoginForBrowse, onUseLoginForBrowseChange) = rememberPreference(
-        key = UseLoginForBrowse,
-        defaultValue = false
-    )
+    val (useLoginForBrowse, onUseLoginForBrowseChange) = rememberPreference(UseLoginForBrowse, true)
     val (ytmSync, onYtmSyncChange) = rememberPreference(YtmSyncKey, defaultValue = true)
 
     var showToken: Boolean by remember {
