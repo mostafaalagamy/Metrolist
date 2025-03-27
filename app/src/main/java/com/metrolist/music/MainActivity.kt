@@ -230,7 +230,6 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    open class BaseActivity : AppCompatActivity() {
     override fun attachBaseContext(newBase: Context) {
         super.attachBaseContext(LocaleManager.applySavedLocale(newBase))
     }
