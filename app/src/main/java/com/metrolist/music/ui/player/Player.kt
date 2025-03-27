@@ -107,6 +107,8 @@ import com.metrolist.music.constants.QueuePeekHeight
 import com.metrolist.music.constants.ShowLyricsKey
 import com.metrolist.music.constants.SliderStyle
 import com.metrolist.music.constants.SliderStyleKey
+import com.metrolist.music.constants.PlayerButtonsStyle
+import com.metrolist.music.constants.PlayerButtonsStyleKey
 import com.metrolist.music.extensions.togglePlayPause
 import com.metrolist.music.extensions.toggleRepeatMode
 import com.metrolist.music.models.MediaMetadata
@@ -147,6 +149,11 @@ fun BottomSheetPlayer(
     val playerBackground by rememberEnumPreference(
         key = PlayerBackgroundStyleKey,
         defaultValue = PlayerBackgroundStyle.DEFAULT
+    )
+
+    val playerButtonsStyle by rememberEnumPreference(
+        key = PlayerButtonsStyleKey,
+        defaultValue = PlayerButtonsStyle.DEFAULT
     )
 
     val isSystemInDarkTheme = isSystemInDarkTheme()
@@ -322,6 +329,14 @@ fun BottomSheetPlayer(
                 }
             }
         }
+
+    val (textButtonColor, iconButtonColor) = when (playerButtonsStyle) {
+        PlayerButtonsStyle.DEFAULT -> Pair(TextBackgroundColor, icBackgroundColor)
+        PlayerButtonsStyle.SECONDARY -> Pair(
+            MaterialTheme.colorScheme.secondary,
+            MaterialTheme.colorScheme.onSecondary
+        )
+    }
 
     val download by LocalDownloadUtil.current.getDownload(mediaMetadata?.id ?: "")
         .collectAsState(initial = null)
@@ -651,7 +666,7 @@ fun BottomSheetPlayer(
                     Modifier
                         .size(40.dp)
                         .clip(RoundedCornerShape(24.dp))
-                        .background(TextBackgroundColor)
+                        .background(textButtonColor)
                         .clickable {
                             val intent =
                                 Intent().apply {
@@ -668,7 +683,7 @@ fun BottomSheetPlayer(
                     Image(
                         painter = painterResource(R.drawable.share),
                         contentDescription = null,
-                        colorFilter = ColorFilter.tint(icBackgroundColor),
+                        colorFilter = ColorFilter.tint(iconButtonColor),
                         modifier =
                         Modifier
                             .align(Alignment.Center)
@@ -683,7 +698,7 @@ fun BottomSheetPlayer(
                     Modifier
                         .size(40.dp)
                         .clip(RoundedCornerShape(24.dp))
-                        .background(TextBackgroundColor)
+                        .background(textButtonColor)
                         .clickable {
                             menuState.show {
                                 PlayerMenu(
@@ -699,7 +714,7 @@ fun BottomSheetPlayer(
                     Image(
                         painter = painterResource(R.drawable.more_horiz),
                         contentDescription = null,
-                        colorFilter = ColorFilter.tint(icBackgroundColor),
+                        colorFilter = ColorFilter.tint(iconButtonColor),
                     )
                 }
             }
@@ -868,7 +883,7 @@ fun BottomSheetPlayer(
                     Modifier
                         .size(72.dp)
                         .clip(RoundedCornerShape(playPauseRoundness))
-                        .background(TextBackgroundColor)
+                        .background(textButtonColor)
                         .clickable {
                             if (playbackState == STATE_ENDED) {
                                 playerConnection.player.seekTo(0, 0)
@@ -892,7 +907,7 @@ fun BottomSheetPlayer(
                             },
                         ),
                         contentDescription = null,
-                        colorFilter = ColorFilter.tint(icBackgroundColor),
+                        colorFilter = ColorFilter.tint(iconButtonColor),
                         modifier =
                         Modifier
                             .align(Alignment.Center)
