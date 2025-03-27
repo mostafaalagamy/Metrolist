@@ -182,14 +182,6 @@ fun BottomSheetPlayer(
         MaterialTheme.colorScheme.surfaceContainer
     }
 
-    val (textButtonColor, iconButtonColor) = when (playerButtonsStyle) {
-        PlayerButtonsStyle.DEFAULT -> Pair(TextBackgroundColor, icBackgroundColor)
-        PlayerButtonsStyle.SECONDARY -> Pair(
-            MaterialTheme.colorScheme.secondary,
-            MaterialTheme.colorScheme.onSecondary
-        )
-    }
-
     val playbackState by playerConnection.playbackState.collectAsState()
     val isPlaying by playerConnection.isPlaying.collectAsState()
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
@@ -337,6 +329,14 @@ fun BottomSheetPlayer(
                 }
             }
         }
+
+    val (textButtonColor, iconButtonColor) = when (playerButtonsStyle) {
+        PlayerButtonsStyle.DEFAULT -> Pair(TextBackgroundColor, icBackgroundColor)
+        PlayerButtonsStyle.SECONDARY -> Pair(
+            MaterialTheme.colorScheme.secondary,
+            MaterialTheme.colorScheme.onSecondary
+        )
+    }
 
     val download by LocalDownloadUtil.current.getDownload(mediaMetadata?.id ?: "")
         .collectAsState(initial = null)
