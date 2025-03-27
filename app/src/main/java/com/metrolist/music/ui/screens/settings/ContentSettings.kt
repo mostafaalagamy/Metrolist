@@ -162,6 +162,7 @@ fun ContentSettings(
         )
 
         // Language settings
+        PreferenceGroupTitle(title = stringResource(R.string.app_language))
         ListPreference(
             title = { Text(stringResource(R.string.app_language)) },
             icon = { Icon(painterResource(R.drawable.language), null) },
@@ -171,8 +172,8 @@ fun ContentSettings(
             onValueSelected = { newLanguage ->
                 if (localeManager.updateLocale(newLanguage)) {
                     setSelectedLanguage(newLanguage)
-                
-                    // إعادة تشغيل النشاط الحالي
+
+                    // Restart activity to apply changes
                     val intent = context.packageManager
                         .getLaunchIntentForPackage(context.packageName)
                         ?.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -281,150 +282,10 @@ fun ContentSettings(
                 )
             }
         },
+        scrollBehavior = scrollBehavior,
     )
 }
 
-// LocaleManager
-class LocaleManager(private val context: Context) {
-    companion object {
-        private val COMPLEX_SCRIPT_LANGUAGES = setOf(
-            "ne", "mr", "hi", "bn", "pa", "gu", "ta", "te", "kn", "ml",
-            "si", "th", "lo", "my", "ka", "am", "km",
-            "zh-CN", "zh-TW", "zh-HK", "ja", "ko"
-        )
-
-        fun applySavedLocale(context: Context): Context {
-            val prefs = context.getSharedPreferences("AppPreferences", Context.MODE_PRIVATE)
-            val languageCode = prefs.getString("app_language", "en") ?: "en"
-            return LocaleManager(context).wrapContext(context, languageCode)
-        }
-    }
-
-    fun updateLocale(languageCode: String): Boolean {
-        try {
-            val locale = createLocaleFromCode(languageCode)
-            val resources = context.resources
-            val config = Configuration(resources.configuration)
-
-            Locale.setDefault(locale)
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                setLocaleApi24(config, locale)
-            } else {
-                setLocaleLegacy(config, locale)
-            }
-
-            resources.updateConfiguration(config, resources.displayMetrics)
-
-            // Save settings to SharedPreferences
-            val prefs = context.getSharedPreferences("AppPreferences", Context.MODE_PRIVATE)
-            prefs.edit().putString("app_language", languageCode).apply()
-
-            return true
-        } catch (e: Exception) {
-            Log.e("LocaleManager", "Failed to update locale", e)
-            return false
-        }
-    }
-
-    fun wrapContext(context: Context, languageCode: String): Context {
-        if (languageCode == "en") {
-            return context
-        }
-
-        val locale = createLocaleFromCode(languageCode)
-        val config = Configuration(context.resources.configuration)
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            setLocaleApi24(config, locale)
-        } else {
-            setLocaleLegacy(config, locale)
-        }
-
-        return context.createConfigurationContext(config)
-    }
-
-    private fun createLocaleFromCode(languageCode: String): Locale {
-        return when {
-            languageCode == "zh-CN" -> Locale.SIMPLIFIED_CHINESE
-            languageCode == "zh-TW" -> Locale.TRADITIONAL_CHINESE
-            languageCode == "zh-HK" -> Locale("zh", "HK")
-
-            languageCode in COMPLEX_SCRIPT_LANGUAGES -> {
-                if (languageCode.contains("-")) {
-                    val (language, country) = languageCode.split("-")
-                    Locale.Builder()
-                        .setLanguage(language)
-                        .setRegion(country)
-                        .setScript(getScriptForLanguage(languageCode))
-                        .build()
-                } else {
-                    Locale.Builder()
-                        .setLanguage(languageCode)
-                        .setScript(getScriptForLanguage(languageCode))
-                        .build()
-                }
-            }
-
-            languageCode.contains("-") -> {
-                val (language, country) = languageCode.split("-")
-                Locale(language, country)
-            }
-
-            else -> Locale(languageCode)
-        }
-    }
-
-    private fun getScriptForLanguage(languageCode: String): String {
-        return when (languageCode) {
-            "hi", "mr" -> "Deva"
-            "bn" -> "Beng"
-            "pa" -> "Guru"
-            "gu" -> "Gujr"
-            "ta" -> "Taml"
-            "te" -> "Telu"
-            "kn" -> "Knda"
-            "ml" -> "Mlym"
-            "si" -> "Sinh"
-            "th" -> "Thai"
-            "ka" -> "Geor"
-            "am" -> "Ethi"
-            "km" -> "Khmr"
-            else -> ""
-        }
-    }
-
-    @TargetApi(Build.VERSION_CODES.N)
-    private fun setLocaleApi24(config: Configuration, locale: Locale) {
-        val localeList = LocaleList(locale)
-        LocaleList.setDefault(localeList)
-        config.setLocales(localeList)
-    }
-
-    @Suppress("DEPRECATION")
-    private fun setLocaleLegacy(config: Configuration, locale: Locale) {
-        config.locale = locale
-    }
-}
-
-    private fun updateAppContext(newContext: Context) {
-        try {
-            val activityThread = Class.forName("android.app.ActivityThread")
-            val thread = activityThread.getMethod("currentActivityThread").invoke(null)
-            val application = activityThread.getMethod("getApplication").invoke(thread)
-            val appContext = application.javaClass.getMethod("getBaseContext").invoke(application)
-
-            val contextImpl = Class.forName("android.app.ContextImpl")
-            val implResources = contextImpl.getDeclaredField("mResources")
-            implResources.isAccessible = true
-            implResources.set(appContext, newContext.resources)
-        } catch (e: Exception) {
-            Log.e("LocaleManager", "Failed to update app context", e)
-        }
-    }
-}
-
-// Language mappings
 val LanguageCodeToName = mapOf(
     "ar" to "العربية",
     "en" to "English",
