@@ -162,7 +162,6 @@ fun ContentSettings(
         )
 
         // Language settings
-        PreferenceGroupTitle(title = stringResource(R.string.app_language))
         ListPreference(
             title = { Text(stringResource(R.string.app_language)) },
             icon = { Icon(painterResource(R.drawable.language), null) },
@@ -172,8 +171,8 @@ fun ContentSettings(
             onValueSelected = { newLanguage ->
                 if (localeManager.updateLocale(newLanguage)) {
                     setSelectedLanguage(newLanguage)
-
-                    // Restart activity to apply changes
+                
+                    // إعادة تشغيل النشاط الحالي
                     val intent = context.packageManager
                         .getLaunchIntentForPackage(context.packageName)
                         ?.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -293,12 +292,19 @@ class LocaleManager(private val context: Context) {
             "si", "th", "lo", "my", "ka", "am", "km",
             "zh-CN", "zh-TW", "zh-HK", "ja", "ko"
         )
+
+        fun applySavedLocale(context: Context): Context {
+            val prefs = context.getSharedPreferences("AppPreferences", Context.MODE_PRIVATE)
+            val languageCode = prefs.getString("app_language", "en") ?: "en"
+            return LocaleManager(context).wrapContext(context, languageCode)
+        }
     }
 
     fun updateLocale(languageCode: String): Boolean {
         try {
             val locale = createLocaleFromCode(languageCode)
-            val config = context.resources.configuration
+            val resources = context.resources
+            val config = Configuration(resources.configuration)
 
             Locale.setDefault(locale)
 
@@ -308,17 +314,34 @@ class LocaleManager(private val context: Context) {
                 setLocaleLegacy(config, locale)
             }
 
-            @Suppress("DEPRECATION")
-            context.resources.updateConfiguration(config, context.resources.displayMetrics)
+            resources.updateConfiguration(config, resources.displayMetrics)
 
-            val newContext = context.createConfigurationContext(config)
-            updateAppContext(newContext)
+            // Save settings to SharedPreferences
+            val prefs = context.getSharedPreferences("AppPreferences", Context.MODE_PRIVATE)
+            prefs.edit().putString("app_language", languageCode).apply()
 
             return true
         } catch (e: Exception) {
             Log.e("LocaleManager", "Failed to update locale", e)
             return false
         }
+    }
+
+    fun wrapContext(context: Context, languageCode: String): Context {
+        if (languageCode == "en") {
+            return context
+        }
+
+        val locale = createLocaleFromCode(languageCode)
+        val config = Configuration(context.resources.configuration)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            setLocaleApi24(config, locale)
+        } else {
+            setLocaleLegacy(config, locale)
+        }
+
+        return context.createConfigurationContext(config)
     }
 
     private fun createLocaleFromCode(languageCode: String): Locale {
@@ -354,19 +377,19 @@ class LocaleManager(private val context: Context) {
 
     private fun getScriptForLanguage(languageCode: String): String {
         return when (languageCode) {
-            "hi", "mr" -> "Deva" // Devanagari
-            "bn" -> "Beng" // Bengali
-            "pa" -> "Guru" // Gurmukhi
-            "gu" -> "Gujr" // Gujarati
-            "ta" -> "Taml" // Tamil
-            "te" -> "Telu" // Telugu
-            "kn" -> "Knda" // Kannada
-            "ml" -> "Mlym" // Malayalam
-            "si" -> "Sinh" // Sinhala
-            "th" -> "Thai" // Thai
-            "ka" -> "Geor" // Georgian
-            "am" -> "Ethi" // Ethiopic
-            "km" -> "Khmr" // Khmer
+            "hi", "mr" -> "Deva"
+            "bn" -> "Beng"
+            "pa" -> "Guru"
+            "gu" -> "Gujr"
+            "ta" -> "Taml"
+            "te" -> "Telu"
+            "kn" -> "Knda"
+            "ml" -> "Mlym"
+            "si" -> "Sinh"
+            "th" -> "Thai"
+            "ka" -> "Geor"
+            "am" -> "Ethi"
+            "km" -> "Khmr"
             else -> ""
         }
     }
@@ -382,6 +405,7 @@ class LocaleManager(private val context: Context) {
     private fun setLocaleLegacy(config: Configuration, locale: Locale) {
         config.locale = locale
     }
+}
 
     private fun updateAppContext(newContext: Context) {
         try {
