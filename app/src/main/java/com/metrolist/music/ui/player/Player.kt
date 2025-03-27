@@ -107,6 +107,8 @@ import com.metrolist.music.constants.QueuePeekHeight
 import com.metrolist.music.constants.ShowLyricsKey
 import com.metrolist.music.constants.SliderStyle
 import com.metrolist.music.constants.SliderStyleKey
+import com.metrolist.music.constants.PlayerButtonsStyle
+import com.metrolist.music.constants.PlayerButtonsStyleKey
 import com.metrolist.music.extensions.togglePlayPause
 import com.metrolist.music.extensions.toggleRepeatMode
 import com.metrolist.music.models.MediaMetadata
