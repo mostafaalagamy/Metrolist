@@ -318,6 +318,9 @@
     <string name="gradient">ألوان متدرجة</string>
     <string name="player_background_blur">ضبابي</string>
     <string name="follow_theme">اتباع السيم</string>
+    <string name="player_buttons_style">ألوان أزرار المشغل</string>
+    <string name="default_style">افتراضي</string>
+    <string name="secondary_color_style">اللون الثانوي للتطبيق</string>
     <string name="enable_squiggly_slider">تمكين الشريط المتعرج</string>
     <string name="enable_swipe_thumbnail">تمكين التمرير لتغيير الأغنية</string>
     <string name="dark_theme">السمة الداكنة</string>
