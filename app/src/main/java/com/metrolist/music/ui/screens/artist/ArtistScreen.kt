@@ -94,6 +94,10 @@ import com.metrolist.music.ui.utils.fadingEdge
 import com.metrolist.music.ui.utils.resize
 import com.metrolist.music.viewmodels.ArtistViewModel
 import com.valentinilk.shimmer.shimmer
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.widget.Toast
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -501,6 +505,22 @@ fun ArtistScreen(
         actions = {
             IconButton(
                 onClick = {
+                    viewModel.artistPage?.artist?.shareLink?.let { link ->
+                        val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                        val clip = ClipData.newPlainText("Artist Link", link)
+                        clipboard.setPrimaryClip(clip)
+                        Toast.makeText(context, R.string.link_copied, Toast.LENGTH_SHORT).show()
+                    }
+                },
+            ) {
+                Icon(
+                    painterResource(R.drawable.link),
+                    contentDescription = null,
+                )
+            }
+
+            IconButton(
+                onClick = {
                     database.transaction {
                         val artist = libraryArtist?.artist
                         if (artist != null) {
@@ -532,25 +552,6 @@ fun ArtistScreen(
                         },
                     ),
                     tint = if (libraryArtist?.artist?.bookmarkedAt != null) MaterialTheme.colorScheme.error else LocalContentColor.current,
-                    contentDescription = null,
-                )
-            }
-
-            IconButton(
-                onClick = {
-                    viewModel.artistPage?.artist?.shareLink?.let { link ->
-                        val intent =
-                            Intent().apply {
-                                action = Intent.ACTION_SEND
-                                type = "text/plain"
-                                putExtra(Intent.EXTRA_TEXT, link)
-                            }
-                        context.startActivity(Intent.createChooser(intent, null))
-                    }
-                },
-            ) {
-                Icon(
-                    painterResource(R.drawable.share),
                     contentDescription = null,
                 )
             }
