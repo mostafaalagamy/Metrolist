@@ -40,6 +40,22 @@ import com.metrolist.music.utils.rememberPreference
 import java.net.Proxy
 import java.util.Locale
 
+object PreferenceKeys {
+    val ContentLanguageKey = stringPreferencesKey("content_language")
+    val ContentCountryKey = stringPreferencesKey("content_country")
+    val HideExplicitKey = booleanPreferencesKey("hide_explicit")
+    val ProxyEnabledKey = booleanPreferencesKey("proxy_enabled")
+    val ProxyTypeKey = stringPreferencesKey("proxy_type")
+    val ProxyUrlKey = stringPreferencesKey("proxy_url")
+    val TopSizeKey = stringPreferencesKey("top_size")
+    val HistoryDurationKey = floatPreferencesKey("history_duration")
+    val QuickPicksKey = stringPreferencesKey("quick_picks")
+    val EnableKugouKey = booleanPreferencesKey("enable_kugou")
+    val EnableLrcLibKey = booleanPreferencesKey("enable_lrclib")
+    val PreferredLyricsProviderKey = stringPreferencesKey("preferred_lyrics_provider")
+    val AppLanguageKey = stringPreferencesKey("app_language")
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ContentSettings(
@@ -50,20 +66,54 @@ fun ContentSettings(
     val localeManager = remember { LocaleManager(context) }
     val languages = listOf(SYSTEM_DEFAULT) + LanguageCodeToName.keys.toList()
 
-    val (contentLanguage, onContentLanguageChange) = rememberPreference(key = PreferenceKeys.ContentLanguageKey, defaultValue = "system")
-    val (contentCountry, onContentCountryChange) = rememberPreference(key = PreferenceKeys.ContentCountryKey, defaultValue = "system")
-    val (selectedLanguage, onSelectedLanguageChange) = rememberPreference(key = PreferenceKeys.AppLanguageKey, defaultValue = "en")
-    val (hideExplicit, onHideExplicitChange) = rememberPreference(key = PreferenceKeys.HideExplicitKey, defaultValue = false)
-
-    val (proxyEnabled, onProxyEnabledChange) = rememberPreference(key = PreferenceKeys.ProxyEnabledKey, defaultValue = false)
-    val (proxyType, onProxyTypeChange) = rememberEnumPreference(key = PreferenceKeys.ProxyTypeKey, defaultValue = Proxy.Type.HTTP)
-    val (proxyUrl, onProxyUrlChange) = rememberPreference(key = PreferenceKeys.ProxyUrlKey, defaultValue = "host:port")
-
-    val (lengthTop, onLengthTopChange) = rememberPreference(key = PreferenceKeys.TopSizeKey, defaultValue = "50")
-    val (quickPicks, onQuickPicksChange) = rememberEnumPreference(key = PreferenceKeys.QuickPicksKey, defaultValue = QuickPicks.QUICK_PICKS)
-    val (enableKugou, onEnableKugouChange) = rememberPreference(key = PreferenceKeys.EnableKugouKey, defaultValue = true)
-    val (enableLrclib, onEnableLrclibChange) = rememberPreference(key = PreferenceKeys.EnableLrcLibKey, defaultValue = true)
-    val (preferredProvider, onPreferredProviderChange) = rememberEnumPreference(key = PreferenceKeys.PreferredLyricsProviderKey, defaultValue = PreferredLyricsProvider.LRCLIB)
+    val (contentLanguage, onContentLanguageChange) = rememberPreference(
+        key = PreferenceKeys.ContentLanguageKey,
+        defaultValue = "system"
+    )
+    val (contentCountry, onContentCountryChange) = rememberPreference(
+        key = PreferenceKeys.ContentCountryKey,
+        defaultValue = "system"
+    )
+    val (hideExplicit, onHideExplicitChange) = rememberPreference(
+        key = PreferenceKeys.HideExplicitKey,
+        defaultValue = false
+    )
+    val (proxyEnabled, onProxyEnabledChange) = rememberPreference(
+        key = PreferenceKeys.ProxyEnabledKey,
+        defaultValue = false
+    )
+    val (proxyType, onProxyTypeChange) = rememberEnumPreference(
+        key = PreferenceKeys.ProxyTypeKey,
+        defaultValue = Proxy.Type.HTTP
+    )
+    val (proxyUrl, onProxyUrlChange) = rememberPreference(
+        key = PreferenceKeys.ProxyUrlKey,
+        defaultValue = "host:port"
+    )
+    val (lengthTop, onLengthTopChange) = rememberPreference(
+        key = PreferenceKeys.TopSizeKey,
+        defaultValue = "50"
+    )
+    val (quickPicks, onQuickPicksChange) = rememberEnumPreference(
+        key = PreferenceKeys.QuickPicksKey,
+        defaultValue = QuickPicks.QUICK_PICKS
+    )
+    val (enableKugou, onEnableKugouChange) = rememberPreference(
+        key = PreferenceKeys.EnableKugouKey,
+        defaultValue = true
+    )
+    val (enableLrclib, onEnableLrclibChange) = rememberPreference(
+        key = PreferenceKeys.EnableLrcLibKey,
+        defaultValue = true
+    )
+    val (preferredProvider, onPreferredProviderChange) = rememberEnumPreference(
+        key = PreferenceKeys.PreferredLyricsProviderKey,
+        defaultValue = PreferredLyricsProvider.LRCLIB
+    )
+    val (selectedLanguage, setSelectedLanguage) = rememberPreference(
+        key = PreferenceKeys.AppLanguageKey,
+        defaultValue = "en"
+    )
 
     Column(
         Modifier
