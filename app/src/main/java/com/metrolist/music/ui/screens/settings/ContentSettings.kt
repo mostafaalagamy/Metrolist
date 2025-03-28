@@ -94,10 +94,6 @@ fun ContentSettings(
         key = PreferenceKeys.TopSizeKey,
         defaultValue = "50"
     )
-    val (historyDuration, onHistoryDurationChange) = rememberPreference(
-        key = PreferenceKeys.HistoryDurationKey,
-        defaultValue = 30f
-    )
     val (quickPicks, onQuickPicksChange) = rememberEnumPreference(
         key = PreferenceKeys.QuickPicksKey,
         defaultValue = QuickPicks.QUICK_PICKS
@@ -256,12 +252,6 @@ fun ContentSettings(
                 }
             },
             onValueSelected = onQuickPicksChange,
-        )
-        SliderPreference(
-            title = { Text(stringResource(R.string.history_duration)) },
-            icon = { Icon(painterResource(R.drawable.history), null) },
-            value = historyDuration,
-            onValueChange = onHistoryDurationChange,
         )
     }
 
