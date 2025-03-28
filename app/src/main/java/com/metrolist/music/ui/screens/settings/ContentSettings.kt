@@ -31,6 +31,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.navigation.NavController
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.R
+import com.metrolist.music.constants.LanguageCodeToName
 import com.metrolist.music.constants.CountryCodeToName
 import com.metrolist.music.constants.PreferredLyricsProvider
 import com.metrolist.music.constants.QuickPicks
@@ -42,6 +43,7 @@ import com.metrolist.music.ui.component.PreferenceGroupTitle
 import com.metrolist.music.ui.component.SliderPreference
 import com.metrolist.music.ui.component.SwitchPreference
 import com.metrolist.music.ui.utils.backToMain
+import com.metrolist.music.utils.LocaleManager
 import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
 import java.net.Proxy
