@@ -10,7 +10,7 @@
     <!-- Top bar -->
     <plurals name="n_selected">
         <item quantity="one">%d 個已選取</item>
-        <item quantity="other">%d 個已選取</item>
+        <item quantity="other">%d 個已選取</item>
     </plurals>
 
     <!-- Home -->
@@ -42,7 +42,6 @@
     <string name="months">月</string>
     <string name="years">年</string>
     <string name="continuous">連續</string>
-
 
     <!-- Search -->
     <string name="search">搜尋</string>
@@ -296,7 +295,7 @@
     <string name="not_logged_in">未登入</string>
     <string name="token_hidden">點擊以顯示 Token</string>
     <string name="token_shown">再次點擊以複製或編輯</string>
-    <string name="token_adv_login_description">這是進階登入方法。作為網路入口網站的替代方案，您可以在此直接輸入或更新您的登入 Token。例如，這可以加快在多個裝置上登入的速度。請注意，任何應用程式無法解析的無效 Token 格式將不被接受</string>
+    <string name="token_adv_login_description">這是進階登入方法。作為網路入口網站的替代方案，您可以在此直接輸入或更新您的登入 Token。例如，這可以加快登入速度，或在其他情況下使用。</string>
     <string name="ytm_sync">自動與您的 YouTube Music 帳戶同步</string>
     <string name="general">一般</string>
     <string name="content_language">預設內容語言</string>
@@ -311,72 +310,4 @@
     <string name="intent_app_language_not_found">找不到應用程式語言設定，請手動設定</string>
     <string name="open_supported_links">預設開啟支援的連結</string>
     <string name="configure_supported_links">設定支援的連結</string>
-    <string name="intent_supported_links_not_found">找不到支援的連結設定，請手動設定</string>
-    <string name="enable_kugou">啟用酷狗歌詞提供者</string>
-    <string name="enable_lrclib">啟用 LrcLib 歌詞提供者</string>
-    <string name="set_first_lyrics_provider">偏好的歌詞提供者</string>
-
-    <string name="player_and_audio">播放與音訊</string>
-    <string name="audio_quality">音質</string>
-    <string name="audio_quality_max">最高 (測試版)</string>
-    <string name="audio_quality_auto">自動</string>
-    <string name="audio_quality_high">高</string>
-    <string name="audio_quality_low">低</string>
-    string name="queue">佇列</string>
-    <string name="persistent_queue">保留播放佇列</string>
-    <string name="persistent_queue_desc">開啟應用程式時還原上次的播放佇列</string>
-    <string name="auto_load_more">自動載入更多歌曲</string>
-    <string name="enable_similar_content">啟用相似內容</string>
-    <string name="skip_silence">跳過無聲片段</string>
-    <string name="audio_normalization">標準化音量</string>
-    <string name="auto_skip_next_on_error">發生錯誤時自動跳到下一首</string>
-    <string name="auto_skip_next_on_error_desc">讓你享受音樂不中斷</string>
-    <string name="stop_music_on_task_clear">將音樂在清除任務時停止</string>
-    <string name="equalizer">等化器</string>
-
-    <string name="storage">儲存</string>
-    <string name="cache">快取</string>
-    <string name="image_cache">圖片快取</string>
-    <string name="song_cache">歌曲快取</string>
-    <string name="max_cache_size">最大快取大小</string>
-    <string name="unlimited">無限制</string>
-    <string name="clear_all_downloads">清除所有下載</string>
-    <string name="max_image_cache_size">圖片快取大小</string>
-    <string name="clear_image_cache">清除圖片快取</string>
-    <string name="max_song_cache_size">歌曲快取大小</string>
-    <string name="clear_song_cache">清除歌曲快取</string>
-    <string name="size_used">已使用 %s</string>
-
-    <string name="privacy">隱私</string>
-    <string name="listen_history">觀看紀錄</string>
-    <string name="search_history">搜尋紀錄</string>
-    <string name="pause_listen_history">暫停觀看記錄</string>
-    <string name="clear_listen_history">清除觀看記錄</string>
-    <string name="clear_listen_history_confirm">您確定要清除所有觀看記錄嗎？</string>
-    <string name="pause_search_history">暫停搜尋記錄</string>
-    <string name="clear_search_history">清除搜尋記錄</string>
-    <string name="clear_search_history_confirm">您確定要清除所有搜尋記錄嗎？</string>
-    <string name="disable_screenshot">停用螢幕截圖</string>
-    <string name="disable_screenshot_desc">啟用此選項後，將停用螢幕截圖和應用程式在「最近使用的應用程式」中的預覽。</string>
-
-    <string name="hide_explicit">隱藏煽情露骨內容</string>
-    
-    <string name="backup_restore">備份與還原</string>
-    <string name="backup">備份</string>
-    <string name="restore">還原</string>
-    <string name="backup_create_success">成功建立備份</string>
-    <string name="backup_create_failed">無法建立備份</string>
-    <string name="restore_failed">無法還原備份</string>
-
-    <string name="discord_integration">Discord 整合</string>
-    <string name="discord_information">Metrolist使用KizzyRPC函式庫來設定您的Discord狀態。這會用到Discord Gateway連線，可能會違反Discord服務條款，但是目前沒有使用者為此被停用帳號。使用此功能需自行承擔此風險。\n\nMetrolist只會提取你的token，所有東西都存在本機。</string>
-    <string name="dismiss">了解</string>
-    <string name="options">選項</string>
-    <string name="preview">預覽</string>
-    <string name="login_failed">登入失敗</string>
-    
-    <string name="enable_discord_rpc">啟用 Rich Presense</string>
-
-    <string name="default_links">開啟支援的連結</string>
-    <string name="open_app_settings_error">無法開啟應用程式設定</string>
-</resources>
+    <string name="intent_supported_links_not_found">找
