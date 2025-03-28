@@ -1,15 +1,15 @@
 [versions]
-androidGradlePlugin = "8.8.0"
+androidGradlePlugin = "8.8.2"
 annotation = "1.9.1"
 json = "20241224"
 kotlin = "2.1.0"
-compose = "1.7.6"
+compose = "1.7.8"
 lifecycle = "2.8.7"
 material3 = "1.3.1"
 media3 = "1.5.1"
 room = "2.6.1"
 hilt = "2.55"
-ktor = "3.0.3"
+ktor = "3.1.1"
 ksp = "2.1.0-1.0.29"
 webkit = "1.12.1"
 
@@ -20,10 +20,10 @@ coroutines-guava = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines
 concurrent-futures = { group = "androidx.concurrent", name = "concurrent-futures-ktx", version = "1.2.0" }
 
 gradle = { group = "com.android.tools.build", name = "gradle", version.ref = "androidGradlePlugin" }
-activity = { group = "androidx.activity", name = "activity-compose", version = "1.10.0" }
-navigation = { group = "androidx.navigation", name = "navigation-compose", version = "2.8.5" }
+activity = { group = "androidx.activity", name = "activity-compose", version = "1.10.1" }
+navigation = { group = "androidx.navigation", name = "navigation-compose", version = "2.8.8" }
 hilt-navigation = { group = "androidx.hilt", name = "hilt-navigation-compose", version = "1.2.0" }
-datastore = { group = "androidx.datastore", name = "datastore-preferences", version = "1.1.2" }
+datastore = { group = "androidx.datastore", name = "datastore-preferences", version = "1.1.3" }
 
 compose-runtime = { group = "androidx.compose.runtime", name = "runtime", version.ref = "compose" }
 compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version = "1.7.6" }
@@ -71,7 +71,7 @@ json = { module = "org.json:json", version.ref = "json" }
 
 brotli = { group = "org.brotli", name = "dec", version = "0.1.2" }
 
-desugaring = { group = "com.android.tools", name = "desugar_jdk_libs", version = "2.1.4" }
+desugaring = { group = "com.android.tools", name = "desugar_jdk_libs", version = "2.1.5" }
 
 junit = { group = "junit", name = "junit", version = "4.13.2" }
 
