@@ -1,18 +1,24 @@
 package com.metrolist.music.ui.component
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialogDefaults
+import androidx.compose.material3.BasicAlertDialog
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
@@ -35,10 +41,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.metrolist.music.R
+import com.metrolist.music.constants.DialogCornerRadius
 import kotlinx.coroutines.delay
 
 @Composable
@@ -113,6 +121,76 @@ fun DefaultDialog(
         }
     }
 }
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ActionPromptDialog(
+    title: String? = null,
+    titleBar: @Composable (RowScope.() -> Unit)? = null,
+    onDismiss: () -> Unit,
+    onConfirm: () -> Unit,
+    onReset: (() -> Unit)? = null,
+    onCancel: (() -> Unit)? = null,
+    content: @Composable ColumnScope.() -> Unit = {}
+) = BasicAlertDialog(
+    onDismissRequest = { onDismiss() },
+    content = {
+        Column(
+            modifier = Modifier
+                .background(
+                    MaterialTheme.colorScheme.background,
+                    RoundedCornerShape(DialogCornerRadius)
+                )
+                .fillMaxWidth(0.8f)
+                .padding(16.dp)
+        ) {
+            Column(modifier = Modifier.padding(12.dp)) {
+                // title
+                if (titleBar != null) {
+                    Row {
+                        titleBar()
+                    }
+                } else if (title != null) {
+                    Text(
+                        text = title,
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 1,
+                        style = MaterialTheme.typography.titleLarge,
+                    )
+                }
+ 
+                content() // body
+            }
+
+            Row(
+                horizontalArrangement = Arrangement.End,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                if (onReset != null)
+                    Row(modifier = Modifier.weight(1f)) {
+                        TextButton(
+                            onClick = { onReset() },
+                        ) {
+                            Text(stringResource(R.string.reset))
+                        }
+                    }
+ 
+                TextButton(
+                    onClick = { onConfirm() }
+                ) {
+                    Text(stringResource(android.R.string.ok))
+                }
+ 
+                if (onCancel != null)
+                    TextButton(
+                        onClick = { onCancel() }
+                    ) {
+                        Text(stringResource(android.R.string.cancel))
+                    }
+            }
+        }
+    }
+)
 
 @Composable
 fun ListDialog(
