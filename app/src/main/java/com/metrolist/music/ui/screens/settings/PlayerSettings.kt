@@ -1,21 +1,33 @@
 package com.metrolist.music.ui.screens.settings
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.R
@@ -28,9 +40,12 @@ import com.metrolist.music.constants.PersistentQueueKey
 import com.metrolist.music.constants.SimilarContent
 import com.metrolist.music.constants.SkipSilenceKey
 import com.metrolist.music.constants.StopMusicOnTaskClearKey
+import com.metrolist.music.constants.minPlaybackDurKey
+import com.metrolist.music.ui.component.ActionPromptDialog
 import com.metrolist.music.ui.component.EnumListPreference
 import com.metrolist.music.ui.component.IconButton
 import com.metrolist.music.ui.component.PreferenceGroupTitle
+import com.metrolist.music.ui.component.PreferenceEntry
 import com.metrolist.music.ui.component.SwitchPreference
 import com.metrolist.music.ui.utils.backToMain
 import com.metrolist.music.utils.rememberEnumPreference
@@ -74,6 +89,50 @@ fun PlayerSettings(
         StopMusicOnTaskClearKey,
         defaultValue = false
     )
+    val (minPlaybackDur, onMinPlaybackDurChange) = rememberPreference(minPlaybackDurKey, defaultValue = 30)
+
+    var showMinPlaybackDur by remember {
+        mutableStateOf(false)
+    }
+    var tempminPlaybackDur by remember {
+        mutableIntStateOf(minPlaybackDur)
+    }
+
+    if (showMinPlaybackDur) {
+        ActionPromptDialog(
+            title = stringResource(R.string.min_playback_duration_title),
+            onDismiss = { showMinPlaybackDur = false },
+            onConfirm = {
+                showMinPlaybackDur = false
+                onMinPlaybackDurChange(tempminPlaybackDur)
+            },
+            onCancel = {
+                showMinPlaybackDur = false
+                tempminPlaybackDur = minPlaybackDur
+            }
+        ) {
+            Text(
+                text = stringResource(R.string.min_playback_duration_description),
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.padding(horizontal = 4.dp)
+            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text = stringResource(R.string.percentage_format, tempminPlaybackDur),
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.padding(horizontal = 8.dp)
+                )
+                Slider(
+                    value = tempminPlaybackDur.toFloat(),
+                    onValueChange = { tempminPlaybackDur = it.toInt() },
+                    valueRange = 0f..100f
+                )
+            }
+        }
+    }
 
     Column(
         Modifier
@@ -104,6 +163,17 @@ fun PlayerSettings(
                     AudioQuality.LOW -> stringResource(R.string.audio_quality_low)
                 }
             }
+        )
+
+        PreferenceEntry(
+            title = { Text(stringResource(R.string.minimum_playback_duration)) },
+            icon = { 
+                Icon(
+                    painter = painterResource(R.drawable.history),
+                    contentDescription = null
+                ) 
+            },
+            onClick = { showMinPlaybackDur = true }
         )
 
         SwitchPreference(
