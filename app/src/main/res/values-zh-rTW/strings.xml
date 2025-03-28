@@ -71,7 +71,7 @@
     <!-- Library -->
     <string name="liked">喜歡的歌曲</string>
     <string name="offline">已下載</string>
-    <string name="my_top">My Top</string>
+    <string name="my_top">我的 Top</string>
     <string name="library_song_empty">媒體庫的歌曲將在此顯示</string>
     <string name="library_artist_empty">媒體庫的藝人將在此顯示</string>
     <string name="library_album_empty">媒體庫的專輯將在此顯示</string>
@@ -318,18 +318,20 @@
 
     <string name="player_and_audio">播放與音訊</string>
     <string name="audio_quality">音質</string>
+    <string name="audio_quality_max">最高 (測試版)</string>
     <string name="audio_quality_auto">自動</string>
     <string name="audio_quality_high">高</string>
     <string name="audio_quality_low">低</string>
+    string name="queue">佇列</string>
     <string name="persistent_queue">保留播放佇列</string>
     <string name="persistent_queue_desc">開啟應用程式時還原上次的播放佇列</string>
+    <string name="auto_load_more">自動載入更多歌曲</string>
+    <string name="enable_similar_content">啟用相似內容</string>
     <string name="skip_silence">跳過無聲片段</string>
     <string name="audio_normalization">標準化音量</string>
-
     <string name="auto_skip_next_on_error">發生錯誤時自動跳到下一首</string>
     <string name="auto_skip_next_on_error_desc">讓你享受音樂不中斷</string>
     <string name="stop_music_on_task_clear">將音樂在清除任務時停止</string>
-
     <string name="equalizer">等化器</string>
 
     <string name="storage">儲存</string>
@@ -346,6 +348,8 @@
     <string name="size_used">已使用 %s</string>
 
     <string name="privacy">隱私</string>
+    <string name="listen_history">觀看紀錄</string>
+    <string name="search_history">搜尋紀錄</string>
     <string name="pause_listen_history">暫停觀看記錄</string>
     <string name="clear_listen_history">清除觀看記錄</string>
     <string name="clear_listen_history_confirm">您確定要清除所有觀看記錄嗎？</string>
@@ -360,7 +364,6 @@
     <string name="backup_restore">備份與還原</string>
     <string name="backup">備份</string>
     <string name="restore">還原</string>
-    <string name="imported_playlist">已匯入的播放清單</string>
     <string name="backup_create_success">成功建立備份</string>
     <string name="backup_create_failed">無法建立備份</string>
     <string name="restore_failed">無法還原備份</string>
@@ -371,12 +374,9 @@
     <string name="options">選項</string>
     <string name="preview">預覽</string>
     <string name="login_failed">登入失敗</string>
+    
     <string name="enable_discord_rpc">啟用 Rich Presense</string>
 
-    <string name="about">關於</string>
-    <string name="app_version">應用程式版本</string>
-
-    <string name="new_version_available">發現新版本</string>
-    <string name="translation_models">翻譯模型</string>
-    <string name="clear_translation_models">清除翻譯模型</string>
+    <string name="default_links">開啟支援的連結</string>
+    <string name="open_app_settings_error">無法開啟應用程式設定</string>
 </resources>
