@@ -83,10 +83,7 @@
     <string name="playlist_is_empty">La playlist è vuota</string>
     <string name="remove_download_playlist_confirm">Vuoi veramente rimuovere tutti i brani della playlist \"%s\" dalla sezione dei brani scaricati?</string>
     <string name="delete_playlist_confirm">Vuoi veramente rimuovere la playlist \"%s\"?</string>
-    <plurals name="elements_selected">
-        <item quantity="one">%d elemento selezionato</item>
-        <item quantity="other">%d elementi selezionati</item>
-    </plurals>
+    <string name="elements_selected">%d elemento selezionato</string>
     <string name="allows_for_sync_witch_youtube">Nota: questo attiva la sincronizzazione con YouTube Music. Tale azione NON è modificabile successivamente.</string>
     
     <!-- Button -->
