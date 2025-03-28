@@ -45,6 +45,7 @@ import com.metrolist.music.ui.component.ActionPromptDialog
 import com.metrolist.music.ui.component.EnumListPreference
 import com.metrolist.music.ui.component.IconButton
 import com.metrolist.music.ui.component.PreferenceGroupTitle
+import com.metrolist.music.ui.component.PreferenceEntry
 import com.metrolist.music.ui.component.SwitchPreference
 import com.metrolist.music.ui.utils.backToMain
 import com.metrolist.music.utils.rememberEnumPreference
