@@ -130,7 +130,6 @@ fun HomeScreen(
     val similarRecommendations by viewModel.similarRecommendations.collectAsState()
     val accountPlaylists by viewModel.accountPlaylists.collectAsState()
     val homePage by viewModel.homePage.collectAsState()
-    val explorePage by viewModel.explorePage.collectAsState()
 
     val allLocalItems by viewModel.allLocalItems.collectAsState()
     val allYtItems by viewModel.allYtItems.collectAsState()
@@ -598,56 +597,6 @@ fun HomeScreen(
                     ) {
                         items(it.items) { item ->
                             ytGridItem(item)
-                        }
-                    }
-                }
-            }
-
-            explorePage?.newReleaseAlbums?.let { newReleaseAlbums ->
-                item {
-                    NavigationTitle(
-                        title = stringResource(R.string.new_release_albums),
-                        onClick = {
-                            navController.navigate("new_release")
-                        },
-                        modifier = Modifier.animateItem()
-                    )
-                }
-
-                item {
-                    LazyRow(
-                        contentPadding = WindowInsets.systemBars
-                            .only(WindowInsetsSides.Horizontal)
-                            .asPaddingValues(),
-                        modifier = Modifier.animateItem()
-                    ) {
-                        items(
-                            items = newReleaseAlbums,
-                            key = { it.id }
-                        ) { album ->
-                            YouTubeGridItem(
-                                item = album,
-                                isActive = mediaMetadata?.album?.id == album.id,
-                                isPlaying = isPlaying,
-                                coroutineScope = scope,
-                                modifier = Modifier
-                                    .combinedClickable(
-                                        onClick = {
-                                            navController.navigate("album/${album.id}")
-                                        },
-                                        onLongClick = {
-                                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                            menuState.show {
-                                                YouTubeAlbumMenu(
-                                                    albumItem = album,
-                                                    navController = navController,
-                                                    onDismiss = menuState::dismiss
-                                                )
-                                            }
-                                        }
-                                    )
-                                    .animateItem()
-                            )
                         }
                     }
                 }
