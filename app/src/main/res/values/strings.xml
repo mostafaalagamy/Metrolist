@@ -348,6 +348,10 @@
     <string name="auto_skip_next_on_error_desc">Ensure your continuous playback experience</string>
     <string name="stop_music_on_task_clear">Stop music on task clear</string>
     <string name="equalizer">Equalizer</string>
+    <string name="min_playback_duration_title">Minimum playback duration</string>
+    <string name="min_playback_duration_description">The minimum amount of a song that must be played before it is considered \"played\"</string>
+    <string name="percentage_format">%d%%</string>
+    <string name="minimum_playback_duration">Minimum playback duration</string>
 
     <string name="storage">Storage</string>
     <string name="cache">Cache</string>

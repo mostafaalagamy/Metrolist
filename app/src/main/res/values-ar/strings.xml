@@ -398,6 +398,10 @@
     <string name="auto_skip_next_on_error_desc">تأكد من تجربة التشغيل المتواصلة</string>
     <string name="stop_music_on_task_clear">إيقاف الموسيقى عند تنظيف الذاكرة العشوائية</string>
     <string name="equalizer">مُعادل الصوت</string>
+    <string name="min_playback_duration_title">الحد الأدنى لمدة التشغيل</string>
+    <string name="min_playback_duration_description">الحد الأدنى لمدة تشغيل الأغنية قبل اعتبارها مُشغّلة</string>
+    <string name="percentage_format">%d%%</string>
+    <string name="minimum_playback_duration">الحد الأدنى لمدة التشغيل</string>
 
     <string name="storage">التخزين</string>
     <string name="cache">التخزين المؤقت</string>
