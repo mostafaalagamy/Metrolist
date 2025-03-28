@@ -29,6 +29,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.navigation.NavController
 import com.metrolist.innertube.YouTube
 import com.metrolist.innertube.utils.parseCookieString
+import com.metrolist.music.App.Companion.forgetAccount
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.R
 import com.metrolist.music.constants.AccountChannelHandleKey
@@ -68,10 +69,7 @@ fun AccountSettings(
     val isLoggedIn = remember(innerTubeCookie) {
         "SAPISID" in parseCookieString(innerTubeCookie)
     }
-    val (useLoginForBrowse, onUseLoginForBrowseChange) = rememberPreference(
-        key = UseLoginForBrowse,
-        defaultValue = false
-    )
+    val (useLoginForBrowse, onUseLoginForBrowseChange) = rememberPreference(UseLoginForBrowse, true)
     val (ytmSync, onYtmSyncChange) = rememberPreference(YtmSyncKey, defaultValue = true)
 
     var showToken: Boolean by remember {
@@ -128,13 +126,7 @@ fun AccountSettings(
                     if (isLoggedIn) {
                         OutlinedButton(onClick = {
                             onInnerTubeCookieChange("")
-                            runBlocking {
-                                context.dataStore.edit { settings ->
-                                    settings.remove(InnerTubeCookieKey)
-                                    settings.remove(VisitorDataKey)
-                                    settings.remove(DataSyncIdKey)
-                                }
-                            }
+                            forgetAccount(context)
                         }
                     ) {
                         Text(stringResource(R.string.logout))

@@ -138,7 +138,6 @@ import com.metrolist.music.ui.screens.navigationBuilder
 import com.metrolist.music.ui.screens.search.LocalSearchScreen
 import com.metrolist.music.ui.screens.search.OnlineSearchScreen
 import com.metrolist.music.ui.screens.settings.DarkMode
-import com.metrolist.music.ui.screens.settings.LocaleManager
 import com.metrolist.music.ui.screens.settings.NavigationTab
 import com.metrolist.music.ui.theme.ColorSaver
 import com.metrolist.music.ui.theme.DefaultThemeColor
@@ -154,6 +153,7 @@ import com.metrolist.music.utils.get
 import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
 import com.metrolist.music.utils.reportException
+import com.metrolist.music.utils.LocaleManager
 import com.valentinilk.shimmer.LocalShimmerTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
@@ -231,14 +231,7 @@ class MainActivity : ComponentActivity() {
     }
 
     override fun attachBaseContext(newBase: Context) {
-        val sharedPreferences = newBase.getSharedPreferences("app_settings", Context.MODE_PRIVATE)
-        val savedLanguage =
-            sharedPreferences.getString("app_language", Locale.getDefault().language) ?: "en"
-
-        val localeManager = LocaleManager(newBase)
-        localeManager.updateLocale(savedLanguage)
-
-        super.attachBaseContext(newBase)
+        super.attachBaseContext(LocaleManager.applySavedLocale(newBase))
     }
 
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
