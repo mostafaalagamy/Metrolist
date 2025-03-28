@@ -49,22 +49,6 @@ import com.metrolist.music.utils.rememberPreference
 import java.net.Proxy
 import java.util.Locale
 
-object PreferenceKeys {
-    val ContentLanguageKey = stringPreferencesKey("content_language")
-    val ContentCountryKey = stringPreferencesKey("content_country")
-    val HideExplicitKey = booleanPreferencesKey("hide_explicit")
-    val ProxyEnabledKey = booleanPreferencesKey("proxy_enabled")
-    val ProxyTypeKey = stringPreferencesKey("proxy_type")
-    val ProxyUrlKey = stringPreferencesKey("proxy_url")
-    val TopSizeKey = stringPreferencesKey("top_size")
-    val HistoryDurationKey = floatPreferencesKey("history_duration")
-    val QuickPicksKey = stringPreferencesKey("quick_picks")
-    val EnableKugouKey = booleanPreferencesKey("enable_kugou")
-    val EnableLrcLibKey = booleanPreferencesKey("enable_lrclib")
-    val PreferredLyricsProviderKey = stringPreferencesKey("preferred_lyrics_provider")
-    val AppLanguageKey = stringPreferencesKey("app_language")
-}
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ContentSettings(
@@ -73,6 +57,7 @@ fun ContentSettings(
 ) {
     val context = LocalContext.current
     val localeManager = remember { LocaleManager(context) }
+    val languages = listOf(SYSTEM_DEFAULT) + LanguageCodeToName.keys.toList()
 
     val (contentLanguage, onContentLanguageChange) = rememberPreference(
         key = PreferenceKeys.ContentLanguageKey,
@@ -169,8 +154,10 @@ fun ContentSettings(
             title = { Text(stringResource(R.string.app_language)) },
             icon = { Icon(painterResource(R.drawable.language), null) },
             selectedValue = selectedLanguage,
-            values = LanguageCodeToName.keys.toList(),
-            valueText = { LanguageCodeToName[it] ?: stringResource(R.string.system_default) },
+            values = languages,
+            valueText = { code ->
+                LanguageCodeToName[code] ?: stringResource(R.string.system_default)
+            },
             onValueSelected = { newLanguage ->
                 if (localeManager.updateLocale(newLanguage)) {
                     setSelectedLanguage(newLanguage)
