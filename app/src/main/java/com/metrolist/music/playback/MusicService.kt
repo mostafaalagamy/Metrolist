@@ -62,7 +62,7 @@ import com.metrolist.music.constants.AutoSkipNextOnErrorKey
 import com.metrolist.music.constants.DiscordTokenKey
 import com.metrolist.music.constants.EnableDiscordRPCKey
 import com.metrolist.music.constants.HideExplicitKey
-import com.metrolist.music.constants.HistoryDuration
+import com.metrolist.music.constants.minPlaybackDurKey
 import com.metrolist.music.constants.MediaSessionConstants.CommandToggleLike
 import com.metrolist.music.constants.MediaSessionConstants.CommandToggleRepeatMode
 import com.metrolist.music.constants.MediaSessionConstants.CommandToggleShuffle
@@ -870,23 +870,21 @@ class MusicService :
         val mediaItem =
             eventTime.timeline.getWindow(eventTime.windowIndex, Timeline.Window()).mediaItem
 
-        if (playbackStats.totalPlayTimeMs >= (
-                    dataStore[HistoryDuration]?.times(1000f)
-                        ?: 30000f
-                    ) &&
-            !dataStore.get(PauseListenHistoryKey, false)
-        ) {
-            database.query {
-                incrementTotalPlayTime(mediaItem.mediaId, playbackStats.totalPlayTimeMs)
-                try {
-                    insert(
-                        Event(
-                            songId = mediaItem.mediaId,
-                            timestamp = LocalDateTime.now(),
-                            playTime = playbackStats.totalPlayTimeMs,
-                        ),
-                    )
-                } catch (_: SQLException) {
+        var minPlaybackDur = (dataStore.get(minPlaybackDurKey, 30) / 100)
+         // ensure within bounds. Ehhh 99 is good enough to avoid any rounding errors
+         if (playbackStats.totalPlayTimeMs.toFloat() / ((mediaItem.metadata?.duration?.times(1000)) ?: -1) >= minPlaybackDur
+             && !dataStore.get(PauseListenHistoryKey, false)) {
+                database.query {
+                    incrementTotalPlayTime(mediaItem.mediaId, playbackStats.totalPlayTimeMs)
+                    try {
+                        insert(
+                            Event(
+                                songId = mediaItem.mediaId,
+                                timestamp = LocalDateTime.now(),
+                                playTime = playbackStats.totalPlayTimeMs,
+                            ),
+                        )
+                    } catch (_: SQLException) {
                 }
             }
             // TODO: support playlist id
