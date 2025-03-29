@@ -666,45 +666,6 @@ fun HomeScreen(
                 }
 
                 item {
-                    zza/ui/screens/HomeScreen.kt
-+79
--8
-Original file line number	Diff line number	Diff line change
-@@ -1,5 +1,6 @@
-package com.maloy.muzza.ui.screens
-
-import android.annotation.SuppressLint
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
-@@ -60,6 +61,7 @@ import com.maloy.innertube.models.PlaylistItem
-import com.maloy.innertube.models.SongItem
-import com.maloy.innertube.models.WatchEndpoint
-import com.maloy.innertube.models.YTItem
-import com.maloy.innertube.pages.HomePage
-import com.maloy.muzza.LocalDatabase
-import com.maloy.muzza.LocalPlayerAwareWindowInsets
-import com.maloy.muzza.LocalPlayerConnection
-@@ -87,6 +89,7 @@ import com.maloy.muzza.ui.component.NavigationTitle
-import com.maloy.muzza.ui.component.SongGridItem
-import com.maloy.muzza.ui.component.SongListItem
-import com.maloy.muzza.ui.component.YouTubeGridItem
-import com.maloy.muzza.ui.component.YouTubeListItem
-import com.maloy.muzza.ui.component.shimmer.GridItemPlaceHolder
-import com.maloy.muzza.ui.component.shimmer.ShimmerHost
-import com.maloy.muzza.ui.component.shimmer.TextPlaceholder
-@@ -103,6 +106,7 @@ import com.maloy.muzza.viewmodels.HomeViewModel
-import kotlin.math.min
-import kotlin.random.Random
-
-@SuppressLint("SuspiciousIndentation")
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
-@Composable
-fun HomeScreen(
-@@ -613,14 +617,81 @@ fun HomeScreen(
-                }
-
-                item {
                     LazyRow(
                         contentPadding = WindowInsets.systemBars
                             .only(WindowInsetsSides.Horizontal)
