@@ -175,6 +175,6 @@ fun AboutScreen(
                     contentDescription = null,
                 )
             }
-        },
+        }
     )
 }

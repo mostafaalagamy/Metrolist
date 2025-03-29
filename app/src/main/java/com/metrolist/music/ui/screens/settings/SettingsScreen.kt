@@ -170,6 +170,6 @@ fun SettingsScreen(
                     contentDescription = null
                 )
             }
-        },
+        }
     )
 }

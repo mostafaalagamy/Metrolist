@@ -460,7 +460,7 @@ fun AppearanceSettings(
                     contentDescription = null,
                 )
             }
-        },
+        }
     )
 }
 
