@@ -228,8 +228,7 @@ fun DiscordSettings(
                     contentDescription = null,
                 )
             }
-        },
-        scrollBehavior = scrollBehavior,
+        }
     )
 }
 
