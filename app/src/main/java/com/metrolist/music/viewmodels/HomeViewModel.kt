@@ -61,6 +61,50 @@ class HomeViewModel @Inject constructor(
     private suspend fun load() {
         isLoading.value = true
 
+        if (!YouTube.useLoginForBrowse) {
+            // show local items only if we're not using the user's private YouTube Music homepage
+            // to avoid showing duplicated items (i.e quick picks)
+            loadLocalItems()
+        }
+
+        YouTube.home().onSuccess { page ->
+            homePage.value = page
+        }.onFailure {
+            reportException(it)
+        }
+
+        YouTube.explore().onSuccess { page ->
+            val artists: Set<String>
+            val favouriteArtists: Set<String>
+            database.artistsByCreateDateAsc().first().let { list ->
+                artists = list.map(Artist::id).toHashSet()
+                favouriteArtists = list
+                    .filter { it.artist.bookmarkedAt != null }
+                    .map { it.id }
+                    .toHashSet()
+            }
+            explorePage.value = page.copy(
+                newReleaseAlbums = page.newReleaseAlbums
+                    .sortedBy { album ->
+                        if (album.artists.orEmpty().any { it.id in favouriteArtists }) 0
+                        else if (album.artists.orEmpty().any { it.id in artists }) 1
+                        else 2
+                    }
+            )
+        }.onFailure {
+            reportException(it)
+        }
+
+        syncUtils.syncRecentActivity()
+
+        allYtItems.value = similarRecommendations.value?.flatMap { it.items }.orEmpty() +
+                homePage.value?.sections?.flatMap { it.items }.orEmpty() +
+                explorePage.value?.newReleaseAlbums.orEmpty()
+
+        isLoading.value = false
+    }
+
+    private suspend fun loadLocalItems() {
         quickPicks.value = database.quickPicks()
             .first().shuffled().take(20)
 
@@ -130,40 +174,6 @@ class HomeViewModel @Inject constructor(
                     )
                 }
         similarRecommendations.value = (artistRecommendations + songRecommendations).shuffled()
-
-        YouTube.home().onSuccess { page ->
-            homePage.value = page
-        }.onFailure {
-            reportException(it)
-        }
- 
-         YouTube.explore().onSuccess { page ->
-             val artists: Set<String>
-             val favouriteArtists: Set<String>
-             database.artistsByCreateDateAsc().first().let { list ->
-                 artists = list.map(Artist::id).toHashSet()
-                 favouriteArtists = list
-                     .filter { it.artist.bookmarkedAt != null }
-                     .map { it.id }
-                     .toHashSet()
-             }
-             explorePage.value = page.copy(
-                 newReleaseAlbums = page.newReleaseAlbums
-                     .sortedBy { album ->
-                         if (album.artists.orEmpty().any { it.id in favouriteArtists }) 0
-                         else if (album.artists.orEmpty().any { it.id in artists }) 1
-                         else 2
-                     }
-             )
-         }.onFailure {
-             reportException(it)
-         }
- 
-         allYtItems.value = similarRecommendations.value?.flatMap { it.items }.orEmpty() +
-                 homePage.value?.sections?.flatMap { it.items }.orEmpty() +
-                 explorePage.value?.newReleaseAlbums.orEmpty()
- 
-         isLoading.value = false
     }
 
     fun refresh() {
