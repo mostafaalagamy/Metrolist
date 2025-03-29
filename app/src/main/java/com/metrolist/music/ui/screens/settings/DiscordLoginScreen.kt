@@ -109,7 +109,7 @@ fun DiscordLoginScreen(navController: NavController) {
                     contentDescription = null,
                 )
             }
-        },
+        }
     )
 
     BackHandler(enabled = webView?.canGoBack() == true) {

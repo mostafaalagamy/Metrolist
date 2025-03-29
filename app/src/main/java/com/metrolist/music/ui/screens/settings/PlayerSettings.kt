@@ -250,7 +250,6 @@ fun PlayerSettings(
                     contentDescription = null
                 )
             }
-        },
-        scrollBehavior = scrollBehavior
+        }
     )
 }
