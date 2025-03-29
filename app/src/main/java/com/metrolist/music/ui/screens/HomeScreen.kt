@@ -112,7 +112,7 @@ import kotlinx.coroutines.flow.first
 import kotlin.math.min
 import kotlin.random.Random
 
-@SuppressLint({"SuspiciousIndentation", "UnusedBoxWithConstraintsScope"})
+@SuppressLint("SuspiciousIndentation")
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
