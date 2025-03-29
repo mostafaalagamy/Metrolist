@@ -648,10 +648,7 @@ fun HomeScreen(
                         label = it.label,
                         thumbnail = it.thumbnail?.let { thumbnailUrl ->
                             {
-                                val shape =
-                                    if (it.endpoint?.isArtistEndpoint == true) CircleShape else RoundedCornerShape(
-                                        ThumbnailCornerRadius
-                                    )
+                                val shape = if (it.endpoint?.isArtistEndpoint == true) CircleShape else RoundedCornerShape(ThumbnailCornerRadius)
                                 AsyncImage(
                                     model = thumbnailUrl,
                                     contentDescription = null,
@@ -666,14 +663,6 @@ fun HomeScreen(
                 }
 
                 item {
-                    LazyRow(
-                        contentPadding = WindowInsets.systemBars
-                            .only(WindowInsetsSides.Horizontal)
-                            .asPaddingValues(),
-                        modifier = Modifier.animateItem()
-                    ) {
-                        items(it.items) { item ->
-                            ytGridItem(item)
                     when (it.sectionType) {
                         HomePage.SectionType.LIST -> {
                             LazyRow(
@@ -687,6 +676,7 @@ fun HomeScreen(
                                 }
                             }
                         }
+
                         HomePage.SectionType.GRID -> {
                             val lazyGridState = rememberLazyGridState()
                             val snapLayoutInfoProvider = remember(lazyGridState) {
@@ -728,18 +718,18 @@ fun HomeScreen(
                                                         )
                                                     )
                                                 },
-                                                 onLongClick = {
-                                                     haptic.performHapticFeedback(
-                                                         HapticFeedbackType.LongPress,
-                                                     )
-                                                     menuState.show {
-                                                         YouTubeSongMenu(
-                                                             song = song,
-                                                             navController = navController,
-                                                             onDismiss = menuState::dismiss,
-                                                         )
-                                                     }
-                                                 },
+                                                onLongClick = {
+                                                    haptic.performHapticFeedback(
+                                                        HapticFeedbackType.LongPress,
+                                                    )
+                                                    menuState.show {
+                                                        YouTubeSongMenu(
+                                                            song = song,
+                                                            navController = navController,
+                                                            onDismiss = menuState::dismiss,
+                                                        )
+                                                    }
+                                                },
                                             ),
                                         trailingContent = {
                                             IconButton(
@@ -766,7 +756,7 @@ fun HomeScreen(
                     }
                 }
             }
-
+ 
             if (isLoading) {
                 item {
                     ShimmerHost(
