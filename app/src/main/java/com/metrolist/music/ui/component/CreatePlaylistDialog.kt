@@ -1,5 +1,6 @@
 package com.metrolist.music.ui.component
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,6 +17,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
@@ -24,9 +26,13 @@ import com.metrolist.music.LocalDatabase
 import com.metrolist.music.R
 import com.metrolist.music.db.entities.PlaylistEntity
 import com.metrolist.innertube.YouTube
+import com.metrolist.music.constants.InnerTubeCookieKey
+import com.metrolist.music.utils.rememberPreference
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.time.LocalDateTime
+import java.util.logging.Logger
 
 @Composable
 fun CreatePlaylistDialog(
@@ -37,6 +43,10 @@ fun CreatePlaylistDialog(
     val database = LocalDatabase.current
     val coroutineScope = rememberCoroutineScope()
     var syncedPlaylist by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+
+    val innerTubeCookie by rememberPreference(InnerTubeCookieKey, "")
+    val isSignedIn = innerTubeCookie.isNotEmpty()
     TextFieldDialog(
         icon = { Icon(painter = painterResource(R.drawable.add), contentDescription = null) },
         title = { Text(text = stringResource(R.string.create_playlist)) },
@@ -44,8 +54,13 @@ fun CreatePlaylistDialog(
         onDismiss = onDismiss,
         onDone = { playlistName ->
             coroutineScope.launch(Dispatchers.IO) {
-                val browseId = if (syncedPlaylist)
-                    YouTube.createPlaylist(playlistName)
+                val browseId = if (syncedPlaylist && isSignedIn){
+                        YouTube.createPlaylist(playlistName)
+                }else if (syncedPlaylist){
+                    Logger.getLogger("CreatePlaylistDialog").warning("Not signed in")
+
+                    return@launch
+                }
                 else null
                 database.query {
                     insert(
@@ -82,8 +97,14 @@ fun CreatePlaylistDialog(
                         Switch(
                             checked = syncedPlaylist,
                             onCheckedChange = {
-                                syncedPlaylist = !syncedPlaylist
+                                if (!isSignedIn && !syncedPlaylist) {
+                                    Toast.makeText(context, context.getString(R.string.not_logged_in_youtube),Toast.LENGTH_SHORT).show()
+                                } else {
+                                    syncedPlaylist = !syncedPlaylist
+                                }
                             },
+
+
                         )
                     }
                 }
