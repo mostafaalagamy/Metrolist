@@ -13,6 +13,7 @@ import com.metrolist.innertube.models.oddElements
 
 data class HomePage(
     val sections: List<Section>,
+    val continuation: String? = null,
 ) {
     data class Section(
         val title: String,
