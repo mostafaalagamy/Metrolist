@@ -755,6 +755,8 @@ fun HomeScreen(
                                 ) { song ->
                                     YouTubeListItem(
                                         item = song,
+                                        isActive = song.id == mediaMetadata?.id,
+                                        isPlaying = isPlaying,
                                         modifier = Modifier
                                             .width(horizontalLazyGridItemWidth)
                                             .combinedClickable(
@@ -764,7 +766,19 @@ fun HomeScreen(
                                                             song.toMediaMetadata()
                                                         )
                                                     )
-                                                }
+                                                },
+                                                 onLongClick = {
+                                                     haptic.performHapticFeedback(
+                                                         HapticFeedbackType.LongPress,
+                                                     )
+                                                     menuState.show {
+                                                         YouTubeSongMenu(
+                                                             song = song,
+                                                             navController = navController,
+                                                             onDismiss = menuState::dismiss,
+                                                         )
+                                                     }
+                                                 },
                                             ),
                                         trailingContent = {
                                             IconButton(
