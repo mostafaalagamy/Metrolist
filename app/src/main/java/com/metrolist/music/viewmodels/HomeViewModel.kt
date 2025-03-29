@@ -132,10 +132,10 @@ class HomeViewModel @Inject constructor(
         similarRecommendations.value = (artistRecommendations + songRecommendations).shuffled()
 
         YouTube.home().onSuccess { page ->
-             homePage.value = page.filterExplicit(hideExplicit)
-         }.onFailure {
-             reportException(it)
-         }
+            homePage.value = page
+        }.onFailure {
+            reportException(it)
+        }
  
          YouTube.explore().onSuccess { page ->
              val artists: Set<String>
@@ -154,7 +154,6 @@ class HomeViewModel @Inject constructor(
                          else if (album.artists.orEmpty().any { it.id in artists }) 1
                          else 2
                      }
-                     .filterExplicit(hideExplicit)
              )
          }.onFailure {
              reportException(it)
