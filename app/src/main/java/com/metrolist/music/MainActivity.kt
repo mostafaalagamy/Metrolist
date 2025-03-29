@@ -883,7 +883,7 @@ class MainActivity : ComponentActivity() {
                                                         } else {
                                                             navigateToExplore = true
                                                             coroutineScope.launch {
-                                                                delay(300)
+                                                                delay(100)
                                                                 if (navigateToExplore) {
                                                                     navigateToScreen(
                                                                         navController,
