@@ -95,8 +95,6 @@ class HomeViewModel @Inject constructor(
             reportException(it)
         }
 
-        syncUtils.syncRecentActivity()
-
         allYtItems.value = similarRecommendations.value?.flatMap { it.items }.orEmpty() +
                 homePage.value?.sections?.flatMap { it.items }.orEmpty() +
                 explorePage.value?.newReleaseAlbums.orEmpty()
