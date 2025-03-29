@@ -1,11 +1,11 @@
 <resources>
     <!-- Bottom navigation -->
-    <string name="首頁">Home</string>
-    <string name="歌曲">Songs</string>
-    <string name="藝人">Artists</string>
-    <string name="專輯">Albums</string>
-    <string name="播放清單">Playlists</string>
-    <string name="探索">Explore</string>
+    <string name="Home">首頁</string>
+    <string name="Songs">歌曲</string>
+    <string name="Artists">藝人</string>
+    <string name="Albums">專輯</string>
+    <string name="Playlists">播放清單</string>
+    <string name="Explore">探索</string>
 
     <!-- Top bar -->
     <plurals name="n_selected">
