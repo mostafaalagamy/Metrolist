@@ -97,6 +97,6 @@ fun BackupAndRestore(
                     contentDescription = null,
                 )
             }
-        },
+        }
     )
 }
