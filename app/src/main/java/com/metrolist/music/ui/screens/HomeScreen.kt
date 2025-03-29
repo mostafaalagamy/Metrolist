@@ -677,6 +677,14 @@ fun HomeScreen(
                                 )
                             }
                         },
+                        onClick = it.endpoint?.browseId?.let { browseId ->
+                            {
+                                if (browseId == "FEmusic_moods_and_genres")
+                                    navController.navigate("mood_and_genres")
+                                else
+                                    navController.navigate("browse/$browseId")
+                            }
+                        },
                         modifier = Modifier.animateItem()
                     )
                 }
