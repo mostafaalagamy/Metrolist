@@ -393,6 +393,7 @@
     <string name="options">Options</string>
     <string name="preview">Preview</string>
     <string name="login_failed">Login failed</string>
+    <string name="not_logged_in_youtube">Not logged in to YouTube</string>
 
     <string name="enable_discord_rpc">Enable Rich Presence</string>
 
