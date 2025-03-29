@@ -67,6 +67,7 @@ data class MusicResponsiveListItemRenderer(
         @Serializable
         data class MusicResponsiveListItemFlexColumnRenderer(
             val text: Runs?,
+            val navigationEndpoint: NavigationEndpoint?,
         )
     }
 
