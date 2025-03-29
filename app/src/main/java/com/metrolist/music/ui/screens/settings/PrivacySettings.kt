@@ -199,6 +199,6 @@ fun PrivacySettings(
                     contentDescription = null,
                 )
             }
-        },
+        }
     )
 }
