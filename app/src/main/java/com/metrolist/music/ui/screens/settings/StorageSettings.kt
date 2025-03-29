@@ -251,6 +251,6 @@ fun StorageSettings(
                     contentDescription = null,
                 )
             }
-        },
+        }
     )
 }
