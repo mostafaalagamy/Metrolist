@@ -93,8 +93,7 @@ fun AccountSettings(
                             contentDescription = null
                         )
                     }
-                },
-                scrollBehavior = scrollBehavior
+                }
             )
         }
     ) { paddingValues ->
