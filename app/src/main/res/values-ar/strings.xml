@@ -442,6 +442,7 @@
     <string name="backup_create_success">تم إنشاء النسخ الاحتياطي بنجاح</string>
     <string name="backup_create_failed">تعذر إنشاء النسخ الاحتياطي</string>
     <string name="restore_failed">فشل في استعادة النسخ الاحتياطي</string>
+    <string name="not_logged_in_youtube">لم يتم تسجيل الدخول إلى يوتيوب</string>
 
     <string name="discord_integration">دمج ديسكورد</string>
     <string name="discord_information">متروليست تستخدم مكتبة KizzyRPC لتعيين حالة حسابك على ديسكورد. يتضمن ذلك استخدام اتصال Discord Gateway، والذي قد يعتبر انتهاكًا لشروط الخدمة الخاصة بديسكورد. ومع ذلك، لا توجد حالات معروفة تم فيها تعليق حسابات المستخدمين لهذا السبب. استخدم هذه الخدمة على مسؤوليتك الخاصة.
