@@ -81,6 +81,7 @@ fun LoginScreen(
                     javaScriptEnabled = true
                     setSupportZoom(true)
                     builtInZoomControls = true
+                    displayZoomControls = false
                 }
                 addJavascriptInterface(object {
                     @JavascriptInterface
