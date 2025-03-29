@@ -212,6 +212,6 @@ fun ContentSettings(
                     contentDescription = null,
                 )
             }
-        },
+        }
     )
 }
