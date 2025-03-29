@@ -5,6 +5,7 @@ import com.metrolist.innertube.models.Artist
 import com.metrolist.innertube.models.ArtistItem
 import com.metrolist.innertube.models.BrowseEndpoint
 import com.metrolist.innertube.models.MusicCarouselShelfRenderer
+import com.metrolist.innertube.models.MusicResponsiveListItemRenderer
 import com.metrolist.innertube.models.MusicTwoRowItemRenderer
 import com.metrolist.innertube.models.PlaylistItem
 import com.metrolist.innertube.models.SongItem
@@ -13,6 +14,7 @@ import com.metrolist.innertube.models.oddElements
 
 data class HomePage(
     val sections: List<Section>,
+    val continuation: String? = null,
 ) {
     data class Section(
         val title: String,
@@ -20,6 +22,7 @@ data class HomePage(
         val thumbnail: String?,
         val endpoint: BrowseEndpoint?,
         val items: List<YTItem>,
+        val sectionType: SectionType,
     ) {
         companion object {
             fun fromMusicCarouselShelfRenderer(renderer: MusicCarouselShelfRenderer): Section? {
@@ -29,34 +32,43 @@ data class HomePage(
                     thumbnail = renderer.header.musicCarouselShelfBasicHeaderRenderer.thumbnail?.musicThumbnailRenderer?.getThumbnailUrl(),
                     endpoint = renderer.header.musicCarouselShelfBasicHeaderRenderer.moreContentButton?.buttonRenderer?.navigationEndpoint?.browseEndpoint,
                     items = renderer.contents.mapNotNull {
-                        it.musicTwoRowItemRenderer
-                    }.mapNotNull {
-                        fromMusicTwoRowItemRenderer(it)
+                        it.musicTwoRowItemRenderer?.let { renderer ->
+                             fromMusicTwoRowItemRenderer(
+                                 renderer
+                             )
+                         } ?: it.musicResponsiveListItemRenderer?.let { renderer ->
+                             fromMusicResponsiveListItemRenderer(
+                                 renderer
+                             )
+                         }
                     }.ifEmpty {
                         return null
-                    }
+                    },
+                     sectionType = if (renderer.contents.any { it.musicResponsiveListItemRenderer != null }) SectionType.GRID else SectionType.LIST,
                 )
             }
 
             private fun fromMusicTwoRowItemRenderer(renderer: MusicTwoRowItemRenderer): YTItem? {
                 return when {
                     renderer.isSong -> {
-                        SongItem(
-                            id = renderer.navigationEndpoint.watchEndpoint?.videoId ?: return null,
-                            title = renderer.title.runs?.firstOrNull()?.text ?: return null,
-                            artists = listOfNotNull(renderer.subtitle?.runs?.firstOrNull()?.let {
-                                Artist(
-                                    name = it.text,
-                                    id = it.navigationEndpoint?.browseEndpoint?.browseId
-                                )
-                            }),
-                            album = null,
-                            duration = null,
-                            thumbnail = renderer.thumbnailRenderer.musicThumbnailRenderer?.getThumbnailUrl() ?: return null,
-                            explicit = renderer.subtitleBadges?.find {
-                                it.musicInlineBadgeRenderer?.icon?.iconType == "MUSIC_EXPLICIT_BADGE"
-                            } != null
-                        )
+                        renderer.subtitle?.runs?.oddElements()?.drop(1)?.map {
+                             Artist(
+                                 name = it.text,
+                                 id = it.navigationEndpoint?.browseEndpoint?.browseId
+                             )
+                         }?.let {
+                             SongItem(
+                                 id = renderer.navigationEndpoint.watchEndpoint?.videoId ?: return null,
+                                 title = renderer.title.runs?.firstOrNull()?.text ?: return null,
+                                 artists = it,
+                                 album = null,
+                                 duration = null,
+                                 thumbnail = renderer.thumbnailRenderer.musicThumbnailRenderer?.getThumbnailUrl() ?: return null,
+                                 explicit = renderer.subtitleBadges?.find {
+                                     it.musicInlineBadgeRenderer?.icon?.iconType == "MUSIC_EXPLICIT_BADGE"
+                                 } != null
+                             )
+                         }
                     }
 
                     renderer.isAlbum -> {
@@ -121,7 +133,34 @@ data class HomePage(
                     else -> null
                 }
             }
+            private fun fromMusicResponsiveListItemRenderer(renderer: MusicResponsiveListItemRenderer): YTItem? {
+                 return when {
+                     renderer.isSong -> {
+                         SongItem(
+                             id = renderer.playlistItemData?.videoId ?: return null,
+                             title = renderer.flexColumns.firstOrNull()?.musicResponsiveListItemFlexColumnRenderer?.text?.runs?.firstOrNull()?.text?: return null,
+                             artists = listOfNotNull(renderer.flexColumns.getOrNull(1)?.musicResponsiveListItemFlexColumnRenderer?.text?.runs?.firstOrNull()?.let {
+                                 Artist(
+                                     name = it.text,
+                                     id = it.navigationEndpoint?.browseEndpoint?.browseId
+                                 )
+                             }),
+                             album = null,
+                             duration = null,
+                             thumbnail = renderer.thumbnail?.musicThumbnailRenderer?.getThumbnailUrl() ?: return null,
+                             explicit = renderer.badges?.find {
+                                 it.musicInlineBadgeRenderer?.icon?.iconType == "MUSIC_EXPLICIT_BADGE"
+                             } != null
+                         )
+                     }
+                     else -> null
+                 }
+            }
         }
+    }
+
+    enum class SectionType {
+         LIST, GRID
     }
 
 //    fun filterExplicit(enabled: Boolean = true) =
