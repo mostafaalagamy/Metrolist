@@ -71,6 +71,9 @@ android {
         includeInApk = false
         includeInBundle = false
     }
+    androidResources {
+        generateLocaleConfig = true
+    }
 }
 
 ksp {
