@@ -390,13 +390,12 @@ fun SongListItem(
                 LaunchedEffect(target) {
                     when (target) {
                         SwipeToDismissBoxValue.StartToEnd -> {
-                            Toast.makeText(context, R.string.play_next, Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, R.string.added_to_play_next, Toast.LENGTH_SHORT).show()
                             playerConnection.playNext(listOf(song.toMediaItem()))
-
                         }
 
                         SwipeToDismissBoxValue.EndToStart -> {
-                            Toast.makeText(context, R.string.add_to_queue, Toast.LENGTH_SHORT)
+                            Toast.makeText(context, R.string.added_to_queue, Toast.LENGTH_SHORT)
                                 .show()
 
                             playerConnection.addToQueue(listOf(song.toMediaItem()))
@@ -419,30 +418,32 @@ fun SongListItem(
                     SwipeToDismissBoxValue.EndToStart -> R.drawable.queue_music
                     else -> null
                 }
-                Row(
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    horizontalArrangement = when (target) {
-                        SwipeToDismissBoxValue.StartToEnd -> Arrangement.Start
-                        SwipeToDismissBoxValue.EndToStart -> Arrangement.End
-                        else -> Arrangement.Center
-                    },
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Box(
+                when (target) {
+                    SwipeToDismissBoxValue.StartToEnd -> Arrangement.Start
+                    SwipeToDismissBoxValue.EndToStart -> Arrangement.End
+                    else -> null
+                }?.let {
+                    Row(
                         modifier = Modifier
-                            .width(40.dp)
-                            .fillMaxHeight()
-                            .background(color),
-                        contentAlignment = Alignment.Center
+                            .fillMaxSize(),
+                        horizontalArrangement = it,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        icon?.let {
-                            Icon(
-                                painter = painterResource(id = it),
-                                contentDescription = null,
-                                modifier = Modifier.size(24.dp),
-                                tint = Color.White
-                            )
+                        Box(
+                            modifier = Modifier
+                                .width(40.dp)
+                                .fillMaxHeight()
+                                .background(color),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            icon?.let {
+                                Icon(
+                                    painter = painterResource(id = it),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(24.dp),
+                                    tint = Color.White
+                                )
+                            }
                         }
                     }
                 }
@@ -1602,19 +1603,18 @@ fun YouTubeListItem(
         state = dismissState,
         backgroundContent = {
             val target = dismissState.targetValue
-            LaunchedEffect(target) {
+            LaunchedEffect(key1 = target) {
                 when (target) {
                     SwipeToDismissBoxValue.StartToEnd -> {
-                        Toast.makeText(context, R.string.play_next, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, R.string.added_to_play_next, Toast.LENGTH_SHORT).show()
                         if (item is SongItem) {
                             playerConnection.playNext(listOf(item.toMediaItem()))
                         }
                     }
                     SwipeToDismissBoxValue.EndToStart -> {
-                        Toast.makeText(context, R.string.add_to_queue, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, R.string.added_to_queue, Toast.LENGTH_SHORT).show()
                         if (item is SongItem) {
                             playerConnection.addToQueue(listOf(item.toMediaItem()))
-
                         }
                     }
                     else -> {}
@@ -1633,30 +1633,32 @@ fun YouTubeListItem(
                 SwipeToDismissBoxValue.EndToStart -> R.drawable.queue_music
                 else -> null
             }
-            Row(
-                modifier = Modifier
-                    .fillMaxSize(),
-                horizontalArrangement = when (target) {
-                    SwipeToDismissBoxValue.StartToEnd -> Arrangement.Start
-                    SwipeToDismissBoxValue.EndToStart -> Arrangement.End
-                    else -> Arrangement.Center
-                },
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Box(
+            when (target) {
+                SwipeToDismissBoxValue.StartToEnd -> Arrangement.Start
+                SwipeToDismissBoxValue.EndToStart -> Arrangement.End
+                else -> null
+            }?.let {
+                Row(
                     modifier = Modifier
-                        .width(72.dp)
-                        .fillMaxHeight()
-                        .background(color),
-                    contentAlignment = Alignment.Center
+                        .fillMaxSize(),
+                    horizontalArrangement = it,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    icon?.let {
-                        Icon(
-                            painter = painterResource(id = it),
-                            contentDescription = null,
-                            modifier = Modifier.size(24.dp),
-                            tint = Color.White
-                        )
+                    Box(
+                        modifier = Modifier
+                            .width(72.dp)
+                            .fillMaxHeight()
+                            .background(color),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        icon?.let {
+                            Icon(
+                                painter = painterResource(id = it),
+                                contentDescription = null,
+                                modifier = Modifier.size(24.dp),
+                                tint = Color.White
+                            )
+                        }
                     }
                 }
             }
