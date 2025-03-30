@@ -50,8 +50,6 @@ class HomeViewModel @Inject constructor(
     private suspend fun load() {
         isLoading.value = true
 
-        if (!YouTube.useLoginForBrowse) {
-
         quickPicks.value = database.quickPicks()
             .first().shuffled().take(20)
 
