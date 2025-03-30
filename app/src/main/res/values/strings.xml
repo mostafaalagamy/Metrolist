@@ -365,6 +365,10 @@
     <string name="max_song_cache_size">Max song cache size</string>
     <string name="clear_song_cache">Clear song cache</string>
     <string name="size_used">%s used</string>
+    <string name="clear_song_cache_dialog">  Are you sure you want to clear all cached songs?</string>
+
+    <string name="clear_downloads_dialog">  Are you sure you want to clear all downloads?</string>
+
 
     <string name="privacy">Privacy</string>
     <string name="listen_history">Listen History</string>
