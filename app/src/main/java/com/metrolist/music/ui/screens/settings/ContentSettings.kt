@@ -29,6 +29,7 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.navigation.NavController
+import com.metrolist.innertube.YouTube
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.R
 import com.metrolist.music.constants.*
@@ -81,7 +82,19 @@ fun ContentSettings(
             valueText = {
                 LanguageCodeToName.getOrElse(it) { stringResource(R.string.system_default) }
             },
-            onValueSelected = onContentLanguageChange,
+            onValueSelected = { newValue ->
+                val locale = Locale.getDefault()
+                val languageTag = locale.toLanguageTag().replace("-Hant", "")
+ 
+                YouTube.locale = YouTube.locale.copy(
+                    hl = newValue.takeIf { it != SYSTEM_DEFAULT }
+                        ?: locale.language.takeIf { it in LanguageCodeToName }
+                        ?: languageTag.takeIf { it in LanguageCodeToName }
+                        ?: "en"
+                )
+ 
+                onContentLanguageChange(newValue)
+            }
         )
         ListPreference(
             title = { Text(stringResource(R.string.content_country)) },
@@ -91,7 +104,17 @@ fun ContentSettings(
             valueText = {
                 CountryCodeToName.getOrElse(it) { stringResource(R.string.system_default) }
             },
-            onValueSelected = onContentCountryChange,
+            onValueSelected = { newValue ->
+                val locale = Locale.getDefault()
+ 
+                YouTube.locale = YouTube.locale.copy(
+                    gl = newValue.takeIf { it != SYSTEM_DEFAULT }
+                        ?: locale.country.takeIf { it in CountryCodeToName }
+                        ?: "US"
+                )
+ 
+                onContentCountryChange(newValue)
+           }
         )
 
         SwitchPreference(

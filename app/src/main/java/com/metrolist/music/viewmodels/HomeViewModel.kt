@@ -47,17 +47,6 @@ class HomeViewModel @Inject constructor(
     val allLocalItems = MutableStateFlow<List<LocalItem>>(emptyList())
     val allYtItems = MutableStateFlow<List<YTItem>>(emptyList())
 
-    fun loadMoreYouTubeItems(continuation: String?) {
-         if (continuation == null) return
- 
-         viewModelScope.launch(Dispatchers.IO) {
-             val nextSections = YouTube.home().getOrNull() ?: return@launch
-             homePage.value = nextSections.copy(
-                 homePage.value?.sections.orEmpty() + nextSections.sections
-             )
-         }
-    }
-
     private suspend fun load() {
         isLoading.value = true
 
@@ -132,38 +121,29 @@ class HomeViewModel @Inject constructor(
         similarRecommendations.value = (artistRecommendations + songRecommendations).shuffled()
 
         YouTube.home().onSuccess { page ->
-            homePage.value = page
+            // Filter sections to remove playlists starting with RDAT
+            val filteredSections = page.sections.map { section ->
+                section.copy(
+                    items = section.items.filterNot { item ->
+                        item is PlaylistItem && item.id.startsWith("RDAT")
+                    }
+                )
+            }
+            homePage.value = page.copy(sections = filteredSections)
         }.onFailure {
             reportException(it)
         }
- 
-         YouTube.explore().onSuccess { page ->
-             val artists: Set<String>
-             val favouriteArtists: Set<String>
-             database.artistsByCreateDateAsc().first().let { list ->
-                 artists = list.map(Artist::id).toHashSet()
-                 favouriteArtists = list
-                     .filter { it.artist.bookmarkedAt != null }
-                     .map { it.id }
-                     .toHashSet()
-             }
-             explorePage.value = page.copy(
-                 newReleaseAlbums = page.newReleaseAlbums
-                     .sortedBy { album ->
-                         if (album.artists.orEmpty().any { it.id in favouriteArtists }) 0
-                         else if (album.artists.orEmpty().any { it.id in artists }) 1
-                         else 2
-                     }
-             )
-         }.onFailure {
-             reportException(it)
-         }
- 
-         allYtItems.value = similarRecommendations.value?.flatMap { it.items }.orEmpty() +
-                 homePage.value?.sections?.flatMap { it.items }.orEmpty() +
-                 explorePage.value?.newReleaseAlbums.orEmpty()
- 
-         isLoading.value = false
+
+        YouTube.explore().onSuccess { page ->
+            explorePage.value = page
+        }.onFailure {
+            reportException(it)
+        }
+
+        allYtItems.value = similarRecommendations.value?.flatMap { it.items }.orEmpty() +
+                homePage.value?.sections?.flatMap { it.items }.orEmpty()
+
+        isLoading.value = false
     }
 
     fun refresh() {
