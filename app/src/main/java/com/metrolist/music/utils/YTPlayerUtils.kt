@@ -216,19 +216,15 @@ object YTPlayerUtils {
         audioQuality: AudioQuality,
         connectivityManager: ConnectivityManager,
     ): PlayerResponse.StreamingData.Format? =
-        if (playedFormat != null) {
-            playerResponse.streamingData?.adaptiveFormats?.find { it.itag == playedFormat.itag }
-        } else {
-            playerResponse.streamingData?.adaptiveFormats
-                ?.filter { it.isAudio }
-                ?.maxByOrNull {
-                    it.bitrate * when (audioQuality) {
-                        AudioQuality.AUTO -> if (connectivityManager.isActiveNetworkMetered) -1 else 1
-                        AudioQuality.HIGH -> 1
-                        AudioQuality.LOW -> -1
-                    } + (if (it.mimeType.startsWith("audio/webm")) 10240 else 0) // prefer opus stream
-                }
-        }
+        playerResponse.streamingData?.adaptiveFormats
+            ?.filter { it.isAudio }
+            ?.maxByOrNull {
+                it.bitrate * when (audioQuality) {
+                    AudioQuality.AUTO -> if (connectivityManager.isActiveNetworkMetered) -1 else 1
+                    AudioQuality.HIGH -> 1
+                    AudioQuality.LOW -> -1
+                } + (if (it.mimeType.startsWith("audio/webm")) 10240 else 0) // prefer opus stream
+            }
 
     /**
      * Checks if the stream url returns a successful status.
