@@ -409,6 +409,7 @@ fun HomeScreen(
                                 showInLibraryIcon = true,
                                 isActive = song!!.id == mediaMetadata?.id,
                                 isPlaying = isPlaying,
+
                                 trailingContent = {
                                     IconButton(
                                         onClick = {

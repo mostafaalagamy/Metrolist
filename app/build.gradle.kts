@@ -133,6 +133,7 @@ dependencies {
     coreLibraryDesugaring(libs.desugaring)
 
     implementation(libs.timber)
+    implementation(libs.kermit)
 
     implementation(libs.ktor.serialization.json)
 
