@@ -414,6 +414,9 @@
     <string name="max_song_cache_size">الحد الأقصى لحجم التخزين المؤقت للأغاني</string>
     <string name="clear_song_cache">مسح التخزين المؤقت للأغاني</string>
     <string name="size_used">تم استخدام %s</string>
+    <string name="clear_song_cache_dialog">هل أنت متأكد أنك تريد مسح كافة الأغاني المخزنة مؤقتًا؟</string>
+ 
+     <string name="clear_downloads_dialog">هل أنت متأكد أنك تريد مسح كافة التنزيلات؟</string>
 
     <string name="privacy">الخصوصية</string>
     <string name="listen_history">سجل الاستماع</string>

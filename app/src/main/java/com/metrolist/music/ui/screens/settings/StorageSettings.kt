@@ -38,6 +38,8 @@ import com.metrolist.music.R
 import com.metrolist.music.constants.MaxImageCacheSizeKey
 import com.metrolist.music.constants.MaxSongCacheSizeKey
 import com.metrolist.music.extensions.tryOrNull
+import com.metrolist.music.ui.component.ActionPromptDialog
+import com.metrolist.music.ui.component.DefaultDialog
 import com.metrolist.music.ui.component.IconButton
 import com.metrolist.music.ui.component.ListPreference
 import com.metrolist.music.ui.component.PreferenceEntry
@@ -70,6 +72,8 @@ fun StorageSettings(
         key = MaxSongCacheSizeKey,
         defaultValue = 1024
     )
+    var clearCacheDialog by remember { mutableStateOf(false) }
+    var clearDownloads by remember { mutableStateOf(false) }
 
     var imageCacheSize by remember {
         mutableStateOf(imageDiskCache.size)
@@ -136,14 +140,28 @@ fun StorageSettings(
 
         PreferenceEntry(
             title = { Text(stringResource(R.string.clear_all_downloads)) },
-            onClick = {
-                coroutineScope.launch(Dispatchers.IO) {
-                    downloadCache.keys.forEach { key ->
-                        downloadCache.removeResource(key)
-                    }
-                }
+            onClick = {clearDownloads = true
             },
         )
+
+        if (clearDownloads) {
+            ActionPromptDialog(
+                title = stringResource(R.string.clear_all_downloads),
+                onDismiss = { clearDownloads = false },
+                onConfirm = {
+                    coroutineScope.launch(Dispatchers.IO) {
+                        downloadCache.keys.forEach { key ->
+                            downloadCache.removeResource(key)
+                        }
+                    }
+                    clearDownloads = false
+                },
+                onCancel = { clearDownloads = false },
+                content = {
+                    Text(text = stringResource(R.string.clear_downloads_dialog))
+                }
+            )
+        }
 
         PreferenceGroupTitle(
             title = stringResource(R.string.song_cache),
@@ -191,14 +209,31 @@ fun StorageSettings(
 
         PreferenceEntry(
             title = { Text(stringResource(R.string.clear_song_cache)) },
-            onClick = {
-                coroutineScope.launch(Dispatchers.IO) {
-                    playerCache.keys.forEach { key ->
-                        playerCache.removeResource(key)
-                    }
-                }
+            onClick = { clearCacheDialog = true
             },
         )
+
+        if (clearCacheDialog) {
+            ActionPromptDialog(
+                title = stringResource(R.string.clear_song_cache),
+                onDismiss = { clearCacheDialog = false },
+                onConfirm = {
+                    coroutineScope.launch(Dispatchers.IO) {
+                        playerCache.keys.forEach { key ->
+                            playerCache.removeResource(key)
+                        }
+                    }
+                    clearCacheDialog = false
+                },
+                onCancel = { clearCacheDialog = false },
+                content = {
+                    Text(text = stringResource(R.string.clear_song_cache_dialog))
+                }
+            )
+        }
+
+
+
 
         PreferenceGroupTitle(
             title = stringResource(R.string.image_cache),
