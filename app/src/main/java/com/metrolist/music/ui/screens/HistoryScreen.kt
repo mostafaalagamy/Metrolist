@@ -287,6 +287,7 @@ fun HistoryScreen(
                             isPlaying = isPlaying,
                             showInLibraryIcon = true,
                             isSelected = wrappedItem.isSelected && selection,
+
                             trailingContent = {
                                 IconButton(
                                     onClick = {

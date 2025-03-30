@@ -75,10 +75,8 @@ fun ArtistSongsScreen(
         ArtistSongSortDescendingKey,
         true
     )
-
     val artist by viewModel.artist.collectAsState()
     val songs by viewModel.songs.collectAsState()
-
     val lazyListState = rememberLazyListState()
 
     Box(
