@@ -382,6 +382,7 @@ fun SongListItem(
         val playerConnection = LocalPlayerConnection.current ?: return
 
         val dismissState = rememberSwipeToDismissBoxState(confirmValueChange = { false })
+        val colorScheme = MaterialTheme.colorScheme
 
         SwipeToDismissBox(
             state = dismissState,
@@ -409,8 +410,8 @@ fun SongListItem(
                 animateColorAsState(
                     when (dismissState.targetValue) {
                         SwipeToDismissBoxValue.Settled -> Color.Transparent
-                        SwipeToDismissBoxValue.StartToEnd -> Color.Gray
-                        SwipeToDismissBoxValue.EndToStart -> Color.Gray
+                        SwipeToDismissBoxValue.StartToEnd -> colorScheme.primary
+                        SwipeToDismissBoxValue.EndToStart -> colorScheme.primary
                     }
                 )
                 val icon = when (target) {
@@ -1598,6 +1599,7 @@ fun YouTubeListItem(
 
     val dismissState = rememberSwipeToDismissBoxState(confirmValueChange = { false })
 
+    val colorScheme = MaterialTheme.colorScheme
 
     SwipeToDismissBox(
         state = dismissState,
@@ -1624,8 +1626,8 @@ fun YouTubeListItem(
             animateColorAsState(
                 when (dismissState.targetValue) {
                     SwipeToDismissBoxValue.Settled -> Color.Transparent
-                    SwipeToDismissBoxValue.StartToEnd -> Color.Gray
-                    SwipeToDismissBoxValue.EndToStart -> Color.Gray
+                    SwipeToDismissBoxValue.StartToEnd -> colorScheme.primary
+                    SwipeToDismissBoxValue.EndToStart -> colorScheme.primary
                 }
             )
             val icon = when (target) {
