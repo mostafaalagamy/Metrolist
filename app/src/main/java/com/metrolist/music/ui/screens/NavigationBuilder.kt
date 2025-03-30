@@ -63,6 +63,9 @@ fun NavGraphBuilder.navigationBuilder(
     composable("account") {
         AccountScreen(navController, scrollBehavior)
     }
+    composable("new_release") {
+         NewReleaseScreen(navController, scrollBehavior)
+    }
     composable(
         route = "browse/{browseId}",
         arguments = listOf(
