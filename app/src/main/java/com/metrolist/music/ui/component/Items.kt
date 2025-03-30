@@ -323,6 +323,7 @@ fun SongListItem(
     showInLibraryIcon: Boolean = false,
     showDownloadIcon: Boolean = true,
     isSelected: Boolean = false,
+    isSwipeable: Boolean = true,
     badges: @Composable RowScope.() -> Unit = {
         if (showLikedIcon && song.song.liked) {
             Icon(
@@ -376,77 +377,168 @@ fun SongListItem(
     isPlaying: Boolean = false,
     trailingContent: @Composable RowScope.() -> Unit = {},
 ) {
+    if (isSwipeable) {
+        val context = LocalContext.current
+        val playerConnection = LocalPlayerConnection.current ?: return
 
-    val context = LocalContext.current
-    val playerConnection = LocalPlayerConnection.current ?: return
+        val dismissState = rememberSwipeToDismissBoxState(confirmValueChange = { false })
 
-    val dismissState = rememberSwipeToDismissBoxState(confirmValueChange = { false })
-
-    SwipeToDismissBox(
-        state = dismissState,
-        backgroundContent = {
-            val target = dismissState.targetValue
-            LaunchedEffect(target) {
-                when (target) {
-                    SwipeToDismissBoxValue.StartToEnd -> {
-                        Toast.makeText(context, R.string.play_next, Toast.LENGTH_SHORT).show()
+        SwipeToDismissBox(
+            state = dismissState,
+            backgroundContent = {
+                val target = dismissState.targetValue
+                LaunchedEffect(target) {
+                    when (target) {
+                        SwipeToDismissBoxValue.StartToEnd -> {
+                            Toast.makeText(context, R.string.play_next, Toast.LENGTH_SHORT).show()
                             playerConnection.playNext(listOf(song.toMediaItem()))
 
+                        }
+
+                        SwipeToDismissBoxValue.EndToStart -> {
+                            Toast.makeText(context, R.string.add_to_queue, Toast.LENGTH_SHORT)
+                                .show()
+
+                            playerConnection.addToQueue(listOf(song.toMediaItem()))
+
+                        }
+
+                        else -> {}
                     }
-                    SwipeToDismissBoxValue.EndToStart -> {
-                        Toast.makeText(context, R.string.add_to_queue, Toast.LENGTH_SHORT).show()
-
-                        playerConnection.addToQueue(listOf(song.toMediaItem()))
-
+                }
+                val color by
+                animateColorAsState(
+                    when (dismissState.targetValue) {
+                        SwipeToDismissBoxValue.Settled -> Color.Transparent
+                        SwipeToDismissBoxValue.StartToEnd -> Color.Gray
+                        SwipeToDismissBoxValue.EndToStart -> Color.Gray
                     }
-
-                    else -> {}
+                )
+                val icon = when (target) {
+                    SwipeToDismissBoxValue.StartToEnd -> R.drawable.playlist_play
+                    SwipeToDismissBoxValue.EndToStart -> R.drawable.queue_music
+                    else -> null
                 }
-            }
-            val color by
-            animateColorAsState(
-                when (dismissState.targetValue) {
-                    SwipeToDismissBoxValue.Settled -> Color.Transparent
-                    SwipeToDismissBoxValue.StartToEnd -> Color.Gray
-                    SwipeToDismissBoxValue.EndToStart -> Color.Gray
-                }
-            )
-            val icon = when (target) {
-                SwipeToDismissBoxValue.StartToEnd -> R.drawable.playlist_play
-                SwipeToDismissBoxValue.EndToStart -> R.drawable.queue_music
-                else -> null
-            }
-            Row(
-                modifier = Modifier
-                    .fillMaxSize(),
-                horizontalArrangement = when (target) {
-                    SwipeToDismissBoxValue.StartToEnd -> Arrangement.Start
-                    SwipeToDismissBoxValue.EndToStart -> Arrangement.End
-                    else -> Arrangement.Center
-                },
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Box(
+                Row(
                     modifier = Modifier
-                        .width(40.dp)
-                        .fillMaxHeight()
-                        .background(color),
-                    contentAlignment = Alignment.Center
+                        .fillMaxSize(),
+                    horizontalArrangement = when (target) {
+                        SwipeToDismissBoxValue.StartToEnd -> Arrangement.Start
+                        SwipeToDismissBoxValue.EndToStart -> Arrangement.End
+                        else -> Arrangement.Center
+                    },
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    icon?.let {
-                        Icon(
-                            painter = painterResource(id = it),
-                            contentDescription = null,
-                            modifier = Modifier.size(24.dp),
-                            tint = Color.White
+                    Box(
+                        modifier = Modifier
+                            .width(40.dp)
+                            .fillMaxHeight()
+                            .background(color),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        icon?.let {
+                            Icon(
+                                painter = painterResource(id = it),
+                                contentDescription = null,
+                                modifier = Modifier.size(24.dp),
+                                tint = Color.White
+                            )
+                        }
+                    }
+                }
+            }
+
+        ) {
+
+            ListItem(
+                title = song.song.title,
+                subtitle =
+                joinByBullet(
+                    song.artists.joinToString { it.name },
+                    makeTimeString(song.song.duration * 1000L),
+                ),
+                badges = badges,
+                thumbnailContent = {
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier.size(ListThumbnailSize),
+                    ) {
+                        if (albumIndex != null) {
+                            androidx.compose.animation.AnimatedVisibility(
+                                visible = !isActive,
+                                enter = fadeIn() + expandIn(expandFrom = Alignment.Center),
+                                exit = shrinkOut(shrinkTowards = Alignment.Center) + fadeOut(),
+                            ) {
+                                if (isSelected) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.done),
+                                        modifier = Modifier.align(Alignment.Center),
+                                        contentDescription = null,
+                                    )
+                                } else {
+                                    Text(
+                                        text = albumIndex.toString(),
+                                        style = MaterialTheme.typography.labelLarge,
+                                    )
+                                }
+                            }
+                        } else {
+                            if (isSelected) {
+                                Box(
+                                    contentAlignment = Alignment.Center,
+                                    modifier =
+                                    Modifier
+                                        .fillMaxSize()
+                                        .zIndex(1000f)
+                                        .clip(RoundedCornerShape(ThumbnailCornerRadius))
+                                        .background(Color.Black.copy(alpha = 0.5f)),
+                                ) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.done),
+                                        modifier = Modifier.align(Alignment.Center),
+                                        contentDescription = null,
+                                    )
+                                }
+                            }
+                            AsyncImage(
+                                model = song.song.thumbnailUrl,
+                                contentDescription = null,
+                                modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .clip(RoundedCornerShape(ThumbnailCornerRadius)),
+                            )
+                        }
+
+                        PlayingIndicatorBox(
+                            isActive = isActive,
+                            playWhenReady = isPlaying,
+                            color = if (albumIndex != null) MaterialTheme.colorScheme.onBackground else Color.White,
+                            modifier =
+                            Modifier
+                                .fillMaxSize()
+                                .background(
+                                    color =
+                                    if (albumIndex != null) {
+                                        Color.Transparent
+                                    } else {
+                                        Color.Black.copy(
+                                            alpha = 0.4f,
+                                        )
+                                    },
+                                    shape = RoundedCornerShape(ThumbnailCornerRadius),
+                                ),
                         )
                     }
-                }
-            }
+
+                },
+
+                trailingContent = trailingContent,
+                modifier = modifier,
+                isActive = isActive,
+            )
         }
-
-    ) {
-
+    }else{
         ListItem(
             title = song.song.title,
             subtitle =
@@ -535,7 +627,8 @@ fun SongListItem(
             isActive = isActive,
         )
     }
-}
+    }
+
 
 @Composable
 fun SongGridItem(
