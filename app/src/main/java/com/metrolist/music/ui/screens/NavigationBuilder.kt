@@ -12,6 +12,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.metrolist.music.ui.screens.BrowseScreen
 import com.metrolist.music.ui.screens.artist.ArtistItemsScreen
 import com.metrolist.music.ui.screens.artist.ArtistScreen
 import com.metrolist.music.ui.screens.artist.ArtistSongsScreen
@@ -64,6 +65,20 @@ fun NavGraphBuilder.navigationBuilder(
     }
     composable("new_release") {
         NewReleaseScreen(navController, scrollBehavior)
+    }
+    composable(
+        route = "browse/{browseId}",
+        arguments = listOf(
+            navArgument("browseId") {
+                type = NavType.StringType
+            }
+        )
+    ) {
+        BrowseScreen(
+            navController,
+            scrollBehavior,
+            it.arguments?.getString("browseId")
+        )
     }
     composable(
         route = "search/{query}",

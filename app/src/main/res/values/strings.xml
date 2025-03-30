@@ -254,8 +254,8 @@
     <!-- Settings -->
     <string name="settings">Settings</string>
     <string name="login_settings">Login settings</string>
-    <string name="use_login_for_browse">Use login for browsing premium content</string>
-    <string name="use_login_for_browse_desc">This can shows premium-only albums if you are logged in with a Premium account</string>
+    <string name="use_login_for_browse">Use login for browsing more content</string>
+    <string name="use_login_for_browse_desc">This can shows more content if you are logged in with YTMusic account</string>
 
     <string name="general_settings">General settings</string>
 
