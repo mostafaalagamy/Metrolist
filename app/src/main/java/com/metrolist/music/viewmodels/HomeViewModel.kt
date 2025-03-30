@@ -47,17 +47,6 @@ class HomeViewModel @Inject constructor(
     val allLocalItems = MutableStateFlow<List<LocalItem>>(emptyList())
     val allYtItems = MutableStateFlow<List<YTItem>>(emptyList())
 
-    fun loadMoreYouTubeItems(continuation: String?) {
-         if (continuation == null) return
- 
-         viewModelScope.launch(Dispatchers.IO) {
-             val nextSections = YouTube.home().getOrNull() ?: return@launch
-             homePage.value = nextSections.copy(
-                 homePage.value?.sections.orEmpty() + nextSections.sections
-             )
-         }
-    }
-
     private suspend fun load() {
         isLoading.value = true
 
@@ -154,6 +143,7 @@ class HomeViewModel @Inject constructor(
                     )
                 }
         similarRecommendations.value = (artistRecommendations + songRecommendations).shuffled()
+
     }
 
     fun refresh() {
