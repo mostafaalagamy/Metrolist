@@ -391,6 +391,7 @@ fun AlbumScreen(
                         isActive = songWrapper.item.id == mediaMetadata?.id,
                         isPlaying = isPlaying,
                         showInLibraryIcon = true,
+
                         trailingContent = {
                             IconButton(
                                 onClick = {

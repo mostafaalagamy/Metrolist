@@ -98,7 +98,10 @@
     <string name="start_radio">Start radio</string>
     <string name="play">Play</string>
     <string name="play_next">Play next</string>
+    <string name="added_to_play_next">Added to play next</string>
+
     <string name="add_to_queue">Add to queue</string>
+    <string name="added_to_queue">Added to the queue</string>
     <string name="add_to_library">Add to library</string>
     <string name="remove_from_library">Remove from library</string>
     <string name="remove_from_playlist">Remove from playlist</string>
