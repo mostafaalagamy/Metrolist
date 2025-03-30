@@ -51,29 +51,7 @@ class HomeViewModel @Inject constructor(
         isLoading.value = true
 
         if (!YouTube.useLoginForBrowse) {
-            // show local items only if we're not using the user's private YouTube Music homepage
-            // to avoid showing duplicated items (i.e quick picks)
-            loadLocalItems()
-        }
 
-        YouTube.home().onSuccess { page ->
-            homePage.value = page
-        }.onFailure {
-            reportException(it)
-        }
-
-        YouTube.explore().onSuccess { page ->
-            explorePage.value = page
-        }.onFailure {
-            reportException(it)
-        }
-
-        allYtItems.value = similarRecommendations.value?.flatMap { it.items }.orEmpty() +
-                homePage.value?.sections?.flatMap { it.items }.orEmpty()
-        isLoading.value = false
-    }
-
-    private suspend fun loadLocalItems() {
         quickPicks.value = database.quickPicks()
             .first().shuffled().take(20)
 
@@ -144,6 +122,22 @@ class HomeViewModel @Inject constructor(
                 }
         similarRecommendations.value = (artistRecommendations + songRecommendations).shuffled()
 
+        YouTube.home().onSuccess { page ->
+            homePage.value = page
+        }.onFailure {
+            reportException(it)
+        }
+
+        YouTube.explore().onSuccess { page ->
+            explorePage.value = page
+        }.onFailure {
+            reportException(it)
+        }
+
+        allYtItems.value = similarRecommendations.value?.flatMap { it.items }.orEmpty() +
+                homePage.value?.sections?.flatMap { it.items }.orEmpty()
+
+        isLoading.value = false
     }
 
     fun refresh() {
