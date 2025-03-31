@@ -121,6 +121,7 @@ import com.metrolist.music.ui.component.rememberBottomSheetState
 import com.metrolist.music.ui.menu.PlayerMenu
 import com.metrolist.music.ui.screens.settings.DarkMode
 import com.metrolist.music.ui.theme.extractGradientColors
+import com.metrolist.music.ui.utils.ShowMediaInfo
 import com.metrolist.music.utils.makeTimeString
 import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
@@ -450,6 +451,10 @@ fun BottomSheetPlayer(
         mutableStateOf(false)
     }
 
+    var showMediaInfoDialog by rememberSaveable {
+        mutableStateOf(false)
+    }
+
     if (showDetailsDialog) {
         AlertDialog(
             properties = DialogProperties(usePlatformDefaultWidth = false),
@@ -515,6 +520,32 @@ fun BottomSheetPlayer(
                         )
                         Spacer(Modifier.height(8.dp))
                     }
+                }
+            },
+        )
+    }
+
+    if (showMediaInfoDialog) {
+        AlertDialog(
+            properties = DialogProperties(usePlatformDefaultWidth = false),
+            onDismissRequest = { showMediaInfoDialog = false },
+            containerColor = if (useBlackBackground) Color.Black else AlertDialogDefaults.containerColor,
+            icon = {
+                Icon(
+                    painter = painterResource(R.drawable.info),
+                    contentDescription = null,
+                )
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = { showMediaInfoDialog = false },
+                ) {
+                    Text(stringResource(android.R.string.ok))
+                }
+            },
+            text = {
+                Column {
+                    mediaMetadata?.id?.let { ShowMediaInfo(videoId = it) }
                 }
             },
         )
@@ -702,7 +733,12 @@ fun BottomSheetPlayer(
                                     mediaMetadata = mediaMetadata,
                                     navController = navController,
                                     playerBottomSheetState = state,
-                                    onShowDetailsDialog = { showDetailsDialog = true },
+                                    onShowDetailsDialog = {
+                                        showDetailsDialog = true
+                                    },
+                                    onShowMediaInfoDialog = {
+                                        showMediaInfoDialog = true
+                                    },
                                     onDismiss = menuState::dismiss,
                                 )
                             }

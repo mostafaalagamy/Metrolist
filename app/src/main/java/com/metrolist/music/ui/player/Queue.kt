@@ -42,6 +42,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.AlertDialogDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -106,6 +107,7 @@ import com.metrolist.music.ui.component.LocalMenuState
 import com.metrolist.music.ui.component.MediaMetadataListItem
 import com.metrolist.music.ui.menu.PlayerMenu
 import com.metrolist.music.ui.menu.SelectionMediaMetadataMenu
+import com.metrolist.music.ui.utils.ShowMediaInfo
 import com.metrolist.music.utils.makeTimeString
 import com.metrolist.music.utils.rememberPreference
 import kotlinx.coroutines.Job
@@ -151,6 +153,9 @@ fun Queue(
     }
 
     var showDetailsDialog by rememberSaveable {
+        mutableStateOf(false)
+    }
+    var showMediaInfoDialog by rememberSaveable {
         mutableStateOf(false)
     }
 
@@ -248,6 +253,31 @@ fun Queue(
                         )
                         Spacer(Modifier.height(8.dp))
                     }
+                }
+            },
+        )
+    }
+
+    if (showMediaInfoDialog) {
+        AlertDialog(
+            properties = DialogProperties(usePlatformDefaultWidth = false),
+            onDismissRequest = { showMediaInfoDialog = false },
+            icon = {
+                Icon(
+                    painter = painterResource(R.drawable.info),
+                    contentDescription = null,
+                )
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = { showMediaInfoDialog = false },
+                ) {
+                    Text(stringResource(android.R.string.ok))
+                }
+            },
+            text = {
+                Column {
+                    mediaMetadata?.id?.let { ShowMediaInfo(videoId = it) }
                 }
             },
         )
@@ -601,6 +631,9 @@ fun Queue(
                                                         onShowDetailsDialog = {
                                                             showDetailsDialog = true
                                                         },
+                                                        onShowMediaInfoDialog = {
+                                                            showMediaInfoDialog = true
+                                                        },
                                                         onDismiss = menuState::dismiss,
                                                     )
                                                 }
@@ -725,6 +758,9 @@ fun Queue(
                                                     isQueueTrigger = true,
                                                     onShowDetailsDialog = {
                                                         showDetailsDialog = true
+                                                    },
+                                                    onShowMediaInfoDialog = {
+                                                        showMediaInfoDialog = true
                                                     },
                                                     onDismiss = menuState::dismiss,
                                                 )

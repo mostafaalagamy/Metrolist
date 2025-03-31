@@ -472,4 +472,11 @@
     <string name="past_year">السنة الماضية</string>
     <string name="top_length">طول قائمة الأغاني المفضلة الخاصة بي</string>
     <string name="history_duration">مدة التاريخ</string>
+    <string name="information">Information</string>
+    <string name="description">Description</string>
+    <string name="numbers">Numbers</string>
+    <string name="subscribers">Subscribers</string>
+    <string name="views">Views</string>
+    <string name="likes">Likes</string>
+    <string name="dislikes">Dislikes</string>
 </resources>

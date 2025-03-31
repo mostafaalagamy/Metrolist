@@ -81,6 +81,7 @@ fun PlayerMenu(
     playerBottomSheetState: BottomSheetState,
     isQueueTrigger: Boolean? = false,
     onShowDetailsDialog: () -> Unit,
+    onShowMediaInfoDialog: () -> Unit,
     onDismiss: () -> Unit,
 ) {
     mediaMetadata ?: return
@@ -301,6 +302,13 @@ fun PlayerMenu(
             title = R.string.details,
         ) {
             onShowDetailsDialog()
+            onDismiss()
+        }
+        GridMenuItem(
+            icon = R.drawable.info,
+            title = R.string.information,
+        ) {
+            onShowMediaInfoDialog()
             onDismiss()
         }
         if (isQueueTrigger != true) {
