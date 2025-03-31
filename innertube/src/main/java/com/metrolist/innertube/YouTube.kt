@@ -369,23 +369,44 @@ object YouTube {
             setLogin = true
         ).body<BrowseResponse>()
 
-        val musicPlaylistShelfContinuation = response.continuationContents?.musicPlaylistShelfContinuation
-        if (musicPlaylistShelfContinuation != null) {
-            PlaylistContinuationPage(
-                songs = musicPlaylistShelfContinuation.contents.getItems().mapNotNull {
-                    PlaylistPage.fromMusicResponsiveListItemRenderer(it)
-                },
-                continuation = musicPlaylistShelfContinuation.continuations?.getContinuation()
-            )
-        } else {
-            val continuationItems = response.onResponseReceivedActions?.firstOrNull()
-                ?.appendContinuationItemsAction?.continuationItems
-            PlaylistContinuationPage(
-                songs = continuationItems?.getItems()?.mapNotNull {
-                    PlaylistPage.fromMusicResponsiveListItemRenderer(it)
-                } ?: emptyList(),
-                continuation = continuationItems?.getContinuation()
-            )
+        when {
+            response.continuationContents?.musicPlaylistShelfContinuation != null -> {
+                val shelf = response.continuationContents.musicPlaylistShelfContinuation
+                PlaylistContinuationPage(
+                    songs = shelf.contents?.mapNotNull { content ->
+                        content.musicResponsiveListItemRenderer?.let {
+                            PlaylistPage.fromMusicResponsiveListItemRenderer(it)
+                        }
+                    } ?: emptyList(),
+                    continuation = shelf.continuations?.getContinuation()
+                )
+            }
+
+            response.continuationContents?.musicShelfContinuation != null -> {
+                val shelf = response.continuationContents.musicShelfContinuation
+                PlaylistContinuationPage(
+                    songs = shelf.contents?.mapNotNull { content ->
+                        content.musicResponsiveListItemRenderer?.let {
+                            PlaylistPage.fromMusicResponsiveListItemRenderer(it)
+                        }
+                    } ?: emptyList(),
+                    continuation = shelf.continuations?.getContinuation()
+                )
+            }
+
+            else -> {
+                val continuationItems = response.onResponseReceivedActions?.firstOrNull()
+                    ?.appendContinuationItemsAction?.continuationItems
+            
+                PlaylistContinuationPage(
+                    songs = continuationItems?.mapNotNull { item ->
+                        item.musicResponsiveListItemRenderer?.let {
+                            PlaylistPage.fromMusicResponsiveListItemRenderer(it)
+                        }
+                    } ?: emptyList(),
+                    continuation = continuationItems?.getContinuation()
+                )
+            }
         }
     }
 
