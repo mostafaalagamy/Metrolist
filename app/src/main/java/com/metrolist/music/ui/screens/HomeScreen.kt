@@ -557,6 +557,25 @@ fun HomeScreen(
                                 isActive = song!!.id == mediaMetadata?.id,
                                 isPlaying = isPlaying,
                                 isSwipeable = false,
+                                trailingContent = {
+                                    IconButton(
+                                        onClick = {
+                                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                            menuState.show {
+                                                SongMenu(
+                                                    originalSong = song!!,
+                                                    navController = navController,
+                                                    onDismiss = menuState::dismiss
+                                                )
+                                            }
+                                        }
+                                    ) {
+                                        Icon(
+                                            painter = painterResource(R.drawable.more_vert),
+                                            contentDescription = null
+                                        )
+                                    }
+                                },
                                 modifier = Modifier
                                     .width(horizontalLazyGridItemWidth)
                                     .combinedClickable(
