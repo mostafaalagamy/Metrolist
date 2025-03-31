@@ -164,11 +164,17 @@ fun LibraryArtistsScreen(
 
             Spacer(Modifier.weight(1f))
 
-            Text(
-                text = pluralStringResource(R.plurals.n_artist, artists.size, artists.size),
-                style = MaterialTheme.typography.titleSmall,
-                color = MaterialTheme.colorScheme.secondary,
-            )
+            artists.let { artistsLikedSongs ->
+                Text(
+                    text = pluralStringResource(
+                        R.plurals.n_artist,
+                        artistsLikedSongs.size,
+                        artistsLikedSongs.size
+                    ),
+                    style = MaterialTheme.typography.titleSmall,
+                    color = MaterialTheme.colorScheme.secondary,
+                )
+            }
 
             IconButton(
                 onClick = {
