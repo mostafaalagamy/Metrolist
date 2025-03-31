@@ -121,15 +121,7 @@ class HomeViewModel @Inject constructor(
         similarRecommendations.value = (artistRecommendations + songRecommendations).shuffled()
 
         YouTube.home().onSuccess { page ->
-            // Filter sections to remove playlists starting with RDAT
-            val filteredSections = page.sections.map { section ->
-                section.copy(
-                    items = section.items.filterNot { item ->
-                        item is PlaylistItem && item.id.startsWith("RDAT")
-                    }
-                )
-            }
-            homePage.value = page.copy(sections = filteredSections)
+            homePage.value = page
         }.onFailure {
             reportException(it)
         }
