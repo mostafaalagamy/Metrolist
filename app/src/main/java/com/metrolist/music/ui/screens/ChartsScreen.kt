@@ -135,14 +135,20 @@ fun ChartSongItem(song: SongItem) {
 
 @Composable
 fun StandardItem(item: YTItem) {
-    Text(
-        text = when (item) {
-            is SongItem -> item.title ?: "Unknown song"
-            is AlbumItem -> item.title ?: "Unknown album"
-            else -> "Unknown item type"
-        },
-        modifier = Modifier.padding(8.dp)
-    )
+    when (item) {
+        is SongItem -> Text(
+            text = item.title ?: "Unknown Song",
+            modifier = Modifier.padding(8.dp)
+        )
+        is AlbumItem -> Text(
+            text = item.title ?: "Unknown Album",
+            modifier = Modifier.padding(8.dp)
+        )
+        else -> Text(
+            text = "Unknown item type",
+            modifier = Modifier.padding(8.dp)
+        )
+    }
 }
 
 @Composable
