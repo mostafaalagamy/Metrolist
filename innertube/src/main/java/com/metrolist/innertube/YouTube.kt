@@ -608,7 +608,6 @@ suspend fun getChartsPage(): Result<ChartsPage> = runCatching {
     response.contents?.singleColumnBrowseResultsRenderer?.tabs?.firstOrNull()
         ?.tabRenderer?.content?.sectionListRenderer?.contents?.forEach { content ->
             
-            // معالجة قسم Trending
             content.musicCarouselShelfRenderer?.let { renderer ->
                 val title = renderer.header?.musicCarouselShelfBasicHeaderRenderer?.title?.runs?.firstOrNull()?.text
                     ?: return@forEach
@@ -654,29 +653,6 @@ suspend fun getChartsPage(): Result<ChartsPage> = runCatching {
         sections = sections,
         continuation = response.continuationContents?.sectionListContinuation?.continuations?.getContinuation()
     )
-}
-
-private fun MusicResponsiveListItemRenderer.toChartItem(): YTItem? {
-    return try {
-        when {
-            flexColumns.size >= 3 -> {
-                SongItem(
-                    id = playlistItemData?.videoId ?: return null,
-                    title = flexColumns[0].musicResponsiveListItemFlexColumnRenderer.text.runs.firstOrNull()?.text ?: return null,
-                    artists = flexColumns[1].musicResponsiveListItemFlexColumnRenderer.text.runs.mapNotNull {
-                        Artist(name = it.text, id = it.navigationEndpoint?.browseEndpoint?.browseId)
-                    },
-                    thumbnail = thumbnail?.musicThumbnailRenderer?.getThumbnailUrl() ?: return null,
-                    explicit = badges?.any { it.musicInlineBadgeRenderer?.icon?.iconType == "MUSIC_EXPLICIT_BADGE" } == true,
-                    chartPosition = flexColumns.getOrNull(2)?.musicResponsiveListItemFlexColumnRenderer?.text?.runs?.firstOrNull()?.text?.toIntOrNull()
-                )
-            }
-            else -> null
-        }
-    } catch (e: Exception) {
-        println("Error parsing chart item: ${e.message}")
-        null
-    }
 }
 
     suspend fun musicHistory() = runCatching {
