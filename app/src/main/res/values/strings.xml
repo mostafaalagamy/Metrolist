@@ -35,7 +35,7 @@
     <string name="remote_history">Remote</string>
 
     <!-- Charts -->
-    <string name="charts_title">Charts</string>
+    <string name="charts">Charts</string>
     <string name="back_button_desc">Back</string>
     <string name="no_title">No title</string>
     <string name="unknown_artist">Unknown artist</string>
