@@ -369,7 +369,7 @@ fun FullScreenError(
             )
             Spacer(modifier = Modifier.height(16.dp))
             Button(onClick = onRetry) {
-                Text(stringResource(R.string.retry_button))
+                Text(stringResource(R.string.retry_button))}
         }
     }
-    }
+}
