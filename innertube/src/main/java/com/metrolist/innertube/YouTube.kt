@@ -680,46 +680,46 @@ private fun convertToChartItem(renderer: MusicResponsiveListItemRenderer): YTIte
     return try {
         when {
             renderer.flexColumns.size >= 3 && renderer.playlistItemData?.videoId != null -> {
+                val firstColumn = renderer.flexColumns.getOrNull(0)
+                    ?.musicResponsiveListItemFlexColumnRenderer
+                    ?.text ?: return null
+                
+                val secondColumn = renderer.flexColumns.getOrNull(1)
+                    ?.musicResponsiveListItemFlexColumnRenderer
+                    ?.text ?: return null
+
+                val titleRun = firstColumn.runs?.firstOrNull() ?: return null
+                val title = titleRun.text.takeIf { it.isNotBlank() } ?: return null
+
+                val artists = secondColumn.runs?.mapNotNull { run ->
+                    run.text.takeIf { it.isNotBlank() }?.let { name ->
+                        Artist(
+                            name = name,
+                            id = run.navigationEndpoint?.browseEndpoint?.browseId
+                        )
+                    }
+                } ?: emptyList()
+
+                val thirdColumn = renderer.flexColumns.getOrNull(2)
+                    ?.musicResponsiveListItemFlexColumnRenderer
+                    ?.text
+
                 SongItem(
                     id = renderer.playlistItemData.videoId,
-                    title = renderer.flexColumns[0]
-                        .musicResponsiveListItemFlexColumnRenderer
-                        .text
-                        .runs
-                        ?.firstOrNull()
-                        ?.text ?: return null,
-                    artists = renderer.flexColumns[1]
-                        .musicResponsiveListItemFlexColumnRenderer
-                        .text
-                        .runs
-                        ?.mapNotNull {
-                            it.navigationEndpoint?.browseEndpoint?.browseId?.let { id ->
-                                Artist(name = it.text, id = id)
-                            }
-                        } ?: emptyList(),
+                    title = title,
+                    artists = artists,
                     thumbnail = renderer.thumbnail?.musicThumbnailRenderer?.getThumbnailUrl() ?: return null,
                     explicit = renderer.badges?.any { 
                         it.musicInlineBadgeRenderer?.icon?.iconType == "MUSIC_EXPLICIT_BADGE" 
                     } == true,
-                    chartPosition = renderer.flexColumns.getOrNull(2)
-                        ?.musicResponsiveListItemFlexColumnRenderer
-                        ?.text
-                        ?.runs
-                        ?.firstOrNull()
-                        ?.text
-                        ?.toIntOrNull(),
-                    chartChange = renderer.flexColumns.getOrNull(2)
-                        ?.musicResponsiveListItemFlexColumnRenderer
-                        ?.text
-                        ?.runs
-                        ?.getOrNull(1)
-                        ?.text
+                    chartPosition = thirdColumn?.runs?.firstOrNull()?.text?.toIntOrNull(),
+                    chartChange = thirdColumn?.runs?.getOrNull(1)?.text
                 )
             }
             else -> null
         }
     } catch (e: Exception) {
-        println("Error converting to chart item: ${e.message}\n${Json.encodeToString(renderer)}")
+        println("Error converting chart item: ${e.message}\n${Json.encodeToString(renderer)}")
         null
     }
 }
