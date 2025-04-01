@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -35,9 +36,12 @@ import com.metrolist.music.ui.component.NavigationTitle
 import com.metrolist.music.ui.component.SongListItem
 import com.metrolist.music.constants.ListItemHeight
 import com.metrolist.music.constants.ThumbnailCornerRadius
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
+import com.metrolist.music.db.entities.Song
+import com.metrolist.music.extensions.togglePlayPause
+import androidx.compose.foundation.clip
+import androidx.compose.foundation.lazy.LazyListScope
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -139,7 +143,10 @@ fun ChartSectionView(
                         .fillMaxWidth()
                         .height(ListItemHeight * 4)
                 ) {
-                    itemsIndexed(items = section.items) { index, item ->
+                    itemsIndexed(
+                        items = section.items,
+                        key = { index, item -> item.id }
+                    ) { index, item ->
                         when (item) {
                             is SongItem -> SongListItem(
                                 song = item.toSong(),
@@ -177,7 +184,7 @@ fun ChartSectionView(
     }
 }
 
-fun SongItem.toSong(): Song {
+private fun SongItem.toSong(): Song {
     return Song(
         id = this.id,
         title = this.title ?: "",
