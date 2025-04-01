@@ -145,7 +145,10 @@ fun StandardItem(item: YTItem) {
 @Composable
 fun ChartAlbumItem(album: AlbumItem) {
     Column(modifier = Modifier.padding(8.dp)) {
-        Text(text = album.title)
+        // Handle potential null or non-String title
+        album.title?.toString()?.let { title ->
+            Text(text = title)
+        } ?: Text(text = "No title")
     }
 }
 
