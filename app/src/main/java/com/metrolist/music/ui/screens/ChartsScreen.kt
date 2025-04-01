@@ -1,6 +1,7 @@
 package com.metrolist.music.ui.screens
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -9,15 +10,17 @@ import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
@@ -27,19 +30,20 @@ import com.metrolist.music.R
 import com.metrolist.music.playback.queues.YouTubeQueue
 import com.metrolist.music.viewmodels.ChartsViewModel
 import com.metrolist.music.LocalPlayerConnection
-import androidx.compose.ui.text.AnnotatedString
 import com.metrolist.music.models.toMediaMetadata
 import com.metrolist.music.ui.component.NavigationTitle
 import com.metrolist.music.ui.component.SongListItem
-import com.metrolist.music.ui.component.shimmer.GridItemPlaceHolder
-import com.metrolist.music.ui.component.shimmer.ShimmerHost
-import com.metrolist.music.ui.component.shimmer.TextPlaceholder
+import com.metrolist.music.constants.ListItemHeight
+import com.metrolist.music.constants.ThumbnailCornerRadius
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.NavController
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun ChartsScreen(
-    viewModel: ChartsViewModel = hiltViewModel(),
-    onNavigateBack: () -> Unit
+    navController: NavController,
+    viewModel: ChartsViewModel = hiltViewModel()
 ) {
     val playerConnection = LocalPlayerConnection.current ?: return
     val chartsPage by viewModel.chartsPage.collectAsState()
@@ -48,6 +52,7 @@ fun ChartsScreen(
     val isPlaying by playerConnection.isPlaying.collectAsState()
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
     val haptic = LocalHapticFeedback.current
+    val context = LocalContext.current
 
     LaunchedEffect(Unit) {
         if (chartsPage == null) {
@@ -60,7 +65,7 @@ fun ChartsScreen(
             TopAppBar(
                 title = { Text(stringResource(R.string.charts_title)) },
                 navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
+                    IconButton(onClick = { navController.navigateUp() }) {
                         Icon(
                             painter = painterResource(R.drawable.arrow_back),
                             contentDescription = stringResource(R.string.back_button_desc)
@@ -68,14 +73,13 @@ fun ChartsScreen(
                     }
                 }
             )
-        },
-        modifier = Modifier.fillMaxSize()
+        }
     ) { paddingValues ->
         Surface(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
             if (isLoading) {
                 FullScreenLoading()
             } else if (error != null) {
-                FullScreenError(error = AnnotatedString(error!!), onRetry = { viewModel.loadCharts() })
+                FullScreenError(error = error!!, onRetry = { viewModel.loadCharts() })
             } else {
                 chartsPage?.let { page ->
                     LazyColumn(
@@ -90,7 +94,7 @@ fun ChartsScreen(
                                     currentMediaId = mediaMetadata?.id,
                                     onSongClick = { song ->
                                         if (song.id == mediaMetadata?.id) {
-                                            playerConnection.player.playWhenReady = !playerConnection.player.playWhenReady
+                                            playerConnection.player.togglePlayPause()
                                         } else {
                                             playerConnection.playQueue(
                                                 YouTubeQueue(
@@ -133,20 +137,19 @@ fun ChartSectionView(
                     rows = GridCells.Fixed(4),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(com.metrolist.music.constants.ListItemHeight * 4)
+                        .height(ListItemHeight * 4)
                 ) {
-                    items(items = section.items) { item ->
+                    itemsIndexed(items = section.items) { index, item ->
                         when (item) {
                             is SongItem -> SongListItem(
-                                song = item.toMediaMetadata(),
-                                showInLibraryIcon = false,
+                                song = item.toSong(),
                                 isActive = item.id == currentMediaId,
                                 isPlaying = isPlaying,
-                                thumbnailShape = RoundedCornerShape(4.dp),
+                                showInLibraryIcon = false,
                                 modifier = Modifier
-                                    .width(com.metrolist.music.constants.ListItemHeight * 3)
+                                    .width(ListItemHeight * 3)
                                     .combinedClickable(
-                                        onClick = { onClick(item) },
+                                        onClick = { onSongClick(item) },
                                         onLongClick = {
                                             haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                                         }
@@ -174,6 +177,16 @@ fun ChartSectionView(
     }
 }
 
+fun SongItem.toSong(): Song {
+    return Song(
+        id = this.id,
+        title = this.title ?: "",
+        artists = this.artists.map { it.name },
+        duration = this.duration?.toInt() ?: 0,
+        thumbnailUrl = this.thumbnail?.url ?: "",
+    )
+}
+
 @Composable
 fun ChartAlbumItem(album: AlbumItem) {
     Card(
@@ -190,7 +203,7 @@ fun ChartAlbumItem(album: AlbumItem) {
                 contentDescription = stringResource(R.string.album_cover_desc),
                 modifier = Modifier
                     .size(120.dp)
-                    .clip(RoundedCornerShape(8.dp))
+                    .clip(RoundedCornerShape(ThumbnailCornerRadius))
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
@@ -243,7 +256,7 @@ fun FullScreenLoading() {
 
 @Composable
 fun FullScreenError(
-    error: AnnotatedString,
+    error: String,
     onRetry: () -> Unit
 ) {
     Box(
