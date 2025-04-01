@@ -20,10 +20,9 @@ import com.metrolist.music.R
 import com.metrolist.music.playback.queues.YouTubeQueue
 import com.metrolist.music.viewmodels.ChartsViewModel
 import com.metrolist.music.LocalPlayerConnection
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.ui.text.AnnotatedString
+import com.metrolist.music.models.toMediaMetadata
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ChartsScreen(viewModel: ChartsViewModel = hiltViewModel()) {
     val playerConnection = LocalPlayerConnection.current ?: return
@@ -43,7 +42,7 @@ fun ChartsScreen(viewModel: ChartsViewModel = hiltViewModel()) {
         if (isLoading) {
             FullScreenLoading()
         } else if (error != null) {
-            FullScreenError(AnnotatedString(error!!)) { viewModel.loadCharts() }
+            FullScreenError(error = AnnotatedString(error!!), onRetry = { viewModel.loadCharts() })
         } else {
             chartsPage?.let { page ->
                 LazyColumn(
@@ -63,7 +62,7 @@ fun ChartsScreen(viewModel: ChartsViewModel = hiltViewModel()) {
                                         playerConnection.playQueue(
                                             YouTubeQueue(
                                                 song.endpoint ?: WatchEndpoint(videoId = song.id),
-                                                song.toMediaItem()
+                                                song.toMediaMetadata() // استخدم toMediaMetadata بدلاً من toMediaItem
                                             )
                                         )
                                     }
@@ -107,7 +106,7 @@ fun ChartSectionView(
                                     haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                                 }
                             )
-                            else -> StandardItem(item)
+                            else -> StandardItem(item = item)
                         }
                         Divider(modifier = Modifier.padding(vertical = 4.dp))
                     }
@@ -118,10 +117,10 @@ fun ChartSectionView(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     contentPadding = PaddingValues(vertical = 8.dp)
                 ) {
-                    items(section.items) { item ->
+                    items(items = section.items) { item ->
                         when (item) {
-                            is AlbumItem -> ChartAlbumItem(item)
-                            else -> StandardItem(item)
+                            is AlbumItem -> ChartAlbumItem(album = item)
+                            else -> StandardItem(item = item)
                         }
                     }
                 }
@@ -169,15 +168,11 @@ fun ChartSongItem(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 8.dp, vertical = 4.dp),
-        onClick = onClick,
+        onClick = onClick
     ) {
         Row(
             modifier = Modifier
-                .padding(12.dp)
-                .combinedClickable(
-                    onClick = onClick,
-                    onLongClick = onLongClick
-                ),
+                .padding(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
@@ -219,7 +214,7 @@ fun ChartSongItem(
             
             song.duration?.let { duration ->
                 Text(
-                    text = duration,
+                    text = duration.toString(),
                     style = MaterialTheme.typography.bodySmall
                 )
             }
@@ -239,17 +234,10 @@ fun ChartSongItem(
 
 @Composable
 fun StandardItem(item: YTItem) {
-    Card(
-        modifier = Modifier.padding(8.dp)
-    ) {
-        Text(
-            text = when (item) {
-                is SongItem -> item.title ?: "Unknown song"
-                is AlbumItem -> item.title ?: "Unknown album"
-                else -> "Unknown item type"
-            },
-            modifier = Modifier.padding(16.dp)
-        )
+    when (item) {
+        is SongItem -> Text(text = item.title)
+        is AlbumItem -> Text(text = item.title)
+        else -> Text(text = "Unknown item type")
     }
 }
 
@@ -264,7 +252,10 @@ fun FullScreenLoading() {
 }
 
 @Composable
-fun FullScreenError(error: AnnotatedString, onRetry: () -> Unit) {
+fun FullScreenError(
+    error: AnnotatedString,
+    onRetry: () -> Unit
+) {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -280,7 +271,7 @@ fun FullScreenError(error: AnnotatedString, onRetry: () -> Unit) {
             )
             Spacer(modifier = Modifier.height(16.dp))
             Button(onClick = onRetry) {
-                Text(text = AnnotatedString("Retry"))
+                Text(text = "Retry")
             }
         }
     }
