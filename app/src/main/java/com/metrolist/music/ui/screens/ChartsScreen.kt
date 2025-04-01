@@ -52,7 +52,7 @@ fun ChartsScreen(viewModel: ChartsViewModel = hiltViewModel()) {
 fun ChartSectionView(section: ChartsPage.ChartSection) {
     Column(modifier = Modifier.padding(16.dp)) {
         Text(
-            text = section.title,
+            text = section.title ?: "No Title",
             style = MaterialTheme.typography.headlineSmall,
             modifier = Modifier.padding(bottom = 8.dp)
         )
@@ -79,6 +79,13 @@ fun ChartSectionView(section: ChartsPage.ChartSection) {
                 }
             }
         }
+    }
+}
+
+@Composable
+fun ChartAlbumItem(album: AlbumItem) {
+    Column(modifier = Modifier.padding(8.dp)) {
+        Text(text = album.title ?: "No title")
     }
 }
 
@@ -139,16 +146,6 @@ fun StandardItem(item: YTItem) {
         is SongItem -> Text(text = item.title)
         is AlbumItem -> Text(text = item.title)
         else -> Text(text = "Unknown item type")
-    }
-}
-
-@Composable
-fun ChartAlbumItem(album: AlbumItem) {
-    Column(modifier = Modifier.padding(8.dp)) {
-        // Handle potential null or non-String title
-        album.title?.toString()?.let { title ->
-            Text(text = title)
-        } ?: Text(text = "No title")
     }
 }
 
