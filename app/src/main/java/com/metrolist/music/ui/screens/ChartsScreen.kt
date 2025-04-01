@@ -16,6 +16,7 @@ import com.metrolist.innertube.models.AlbumItem
 import com.metrolist.innertube.models.SongItem
 import com.metrolist.innertube.models.YTItem
 import com.metrolist.innertube.pages.ChartsPage
+import com.metrolist.music.R
 import com.metrolist.music.viewmodels.ChartsViewModel
 
 @Composable
@@ -134,11 +135,14 @@ fun ChartSongItem(song: SongItem) {
 
 @Composable
 fun StandardItem(item: YTItem) {
-    when (item) {
-        is SongItem -> Text(item.title)
-        is AlbumItem -> Text(item.title)
-        else -> Text("Unknown item type")
-    }
+    Text(
+        text = when (item) {
+            is SongItem -> item.title ?: "Unknown song"
+            is AlbumItem -> item.title ?: "Unknown album"
+            else -> "Unknown item type"
+        },
+        modifier = Modifier.padding(8.dp)
+    )
 }
 
 @Composable
