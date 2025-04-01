@@ -4,16 +4,13 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDownward
-import androidx.compose.material.icons.filled.ArrowUpward
-import androidx.compose.material.icons.filled.NewReleases
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.painterResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.metrolist.innertube.models.AlbumItem
 import com.metrolist.innertube.models.SongItem
@@ -100,11 +97,13 @@ fun ChartSongItem(song: SongItem) {
         
         song.chartChange?.let { change ->
             Icon(
-                imageVector = when (change) {
-                    "up" -> Icons.Filled.ArrowUpward
-                    "down" -> Icons.Filled.ArrowDownward
-                    else -> Icons.Filled.NewReleases
-                },
+                painter = painterResource(
+                    id = when (change) {
+                        "up" -> R.drawable.arrow_upward
+                        "down" -> R.drawable.arrow_downward
+                        else -> R.drawable.album
+                    }
+                ),
                 contentDescription = null,
                 tint = when (change) {
                     "up" -> Color.Green
@@ -118,20 +117,17 @@ fun ChartSongItem(song: SongItem) {
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = song.title,
-                style = MaterialTheme.typography.bodyLarge
-            )
+                style = MaterialTheme.typography.bodyLarge)
             Text(
                 text = song.artists.joinToString { it.name },
                 style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
-            )
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f))
         }
         
         song.duration?.let {
             Text(
                 text = it,
-                style = MaterialTheme.typography.bodySmall
-            )
+                style = MaterialTheme.typography.bodySmall)
         }
     }
 }
