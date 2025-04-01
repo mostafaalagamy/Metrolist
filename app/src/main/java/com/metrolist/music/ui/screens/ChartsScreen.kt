@@ -17,6 +17,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
@@ -40,8 +41,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import com.metrolist.music.db.entities.Song
 import com.metrolist.music.extensions.togglePlayPause
-import androidx.compose.foundation.clip
-import androidx.compose.foundation.lazy.LazyListScope
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -145,7 +144,13 @@ fun ChartSectionView(
                 ) {
                     itemsIndexed(
                         items = section.items,
-                        key = { index, item -> item.id }
+                        key = { index, item -> 
+                            when (item) {
+                                is SongItem -> item.id
+                                is AlbumItem -> item.id
+                                else -> index.toString()
+                            }
+                        }
                     ) { index, item ->
                         when (item) {
                             is SongItem -> SongListItem(
@@ -184,8 +189,10 @@ fun ChartSectionView(
     }
 }
 
+@Composable
 private fun SongItem.toSong(): Song {
     return Song(
+        song = "",  // Provide the required song parameter
         id = this.id,
         title = this.title ?: "",
         artists = this.artists.map { it.name },
