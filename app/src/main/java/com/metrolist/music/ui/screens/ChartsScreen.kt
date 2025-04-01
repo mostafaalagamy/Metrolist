@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -28,7 +29,7 @@ import coil.compose.AsyncImage
 import com.metrolist.innertube.models.*
 import com.metrolist.innertube.pages.ChartsPage
 import com.metrolist.music.R
-import com.metrolist.music.db.entities.SongEntity
+import com.metrolist.music.db.entities.Song
 import com.metrolist.music.playback.queues.YouTubeQueue
 import com.metrolist.music.viewmodels.ChartsViewModel
 import com.metrolist.music.LocalPlayerConnection
@@ -40,7 +41,6 @@ import com.metrolist.music.constants.ThumbnailCornerRadius
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import com.metrolist.music.extensions.togglePlayPause
-import java.time.LocalDateTime
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -55,7 +55,6 @@ fun ChartsScreen(
     val isPlaying by playerConnection.isPlaying.collectAsState()
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
     val haptic = LocalHapticFeedback.current
-    val context = LocalContext.current
 
     LaunchedEffect(Unit) {
         if (chartsPage == null) {
@@ -68,13 +67,10 @@ fun ChartsScreen(
             TopAppBar(
                 title = { Text(stringResource(R.string.charts_title)) },
                 navigationIcon = {
-                    IconButton(
-                        onClick = navController::navigateUp,
-                        onLongClick = navController::backToMain
-                    ) {
+                    IconButton(onClick = { navController.navigateUp() }) {
                         Icon(
-                            painterResource(R.drawable.arrow_back),
-                            contentDescription = null
+                            painter = painterResource(R.drawable.arrow_back),
+                            contentDescription = stringResource(R.string.back_button_desc)
                         )
                     }
                 }
@@ -82,38 +78,17 @@ fun ChartsScreen(
         }
     ) { paddingValues ->
         Surface(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
-            if (isLoading) {
-                FullScreenLoading()
-            } else if (error != null) {
-                FullScreenError(error = error!!, onRetry = { viewModel.loadCharts() })
-            } else {
-                chartsPage?.let { page ->
-                    LazyColumn(
-                        modifier = Modifier.fillMaxSize(),
-                        contentPadding = PaddingValues(vertical = 8.dp)
-                    ) {
-                        page.sections.forEach { section ->
-                            item {
-                                ChartSectionView(
-                                    section = section,
-                                    isPlaying = isPlaying,
-                                    currentMediaId = mediaMetadata?.id,
-                                    onSongClick = { song ->
-                                        if (song.id == mediaMetadata?.id) {
-                                            playerConnection.player.togglePlayPause()
-                                        } else {
-                                            playerConnection.playQueue(
-                                                YouTubeQueue(
-                                                    song.endpoint ?: WatchEndpoint(videoId = song.id),
-                                                    song.toMediaMetadata()
-                                                )
-                                            )
-                                        }
-                                    }
-                                )
-                            }
-                        }
-                    }
+            when {
+                isLoading -> FullScreenLoading()
+                error != null -> FullScreenError(error = error!!, onRetry = { viewModel.loadCharts() })
+                else -> chartsPage?.let { page ->
+                    ChartsContent(
+                        page = page,
+                        isPlaying = isPlaying,
+                        currentMediaId = mediaMetadata?.id,
+                        playerConnection = playerConnection,
+                        haptic = haptic
+                    )
                 }
             }
         }
@@ -121,15 +96,50 @@ fun ChartsScreen(
 }
 
 @Composable
-fun ChartSectionView(
+private fun ChartsContent(
+    page: ChartsPage,
+    isPlaying: Boolean,
+    currentMediaId: String?,
+    playerConnection: PlayerConnection,
+    haptic: HapticFeedback
+) {
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = PaddingValues(vertical = 8.dp)
+    ) {
+        page.sections.forEach { section ->
+            item {
+                ChartSection(
+                    section = section,
+                    isPlaying = isPlaying,
+                    currentMediaId = currentMediaId,
+                    onSongClick = { song ->
+                        if (song.id == currentMediaId) {
+                            playerConnection.player.togglePlayPause()
+                        } else {
+                            playerConnection.playQueue(
+                                YouTubeQueue(
+                                    song.endpoint ?: WatchEndpoint(videoId = song.id),
+                                    song.toMediaMetadata()
+                                )
+                            )
+                        }
+                    },
+                    haptic = haptic
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun ChartSection(
     section: ChartsPage.ChartSection,
     isPlaying: Boolean,
     currentMediaId: String?,
-    onSongClick: (SongItem) -> Unit
+    onSongClick: (SongItem) -> Unit,
+    haptic: HapticFeedback
 ) {
-    val haptic = LocalHapticFeedback.current
-    val lazyGridState = rememberLazyGridState()
-
     Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
         NavigationTitle(
             title = section.title ?: stringResource(R.string.no_title),
@@ -137,64 +147,79 @@ fun ChartSectionView(
         )
 
         when (section.chartType) {
-            ChartsPage.ChartType.TRENDING, ChartsPage.ChartType.TOP -> {
-                LazyHorizontalGrid(
-                    state = lazyGridState,
-                    rows = GridCells.Fixed(4),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(ListItemHeight * 4)
-                ) {
-                    items(items = section.items) { item ->
-                        when (item) {
-                            is SongItem -> SongListItem(
-                                song = SongEntity(
-                                    id = item.id,
-                                    title = item.title ?: "",
-                                    duration = item.duration?.toInt() ?: 0,
-                                    thumbnailUrl = item.thumbnail?.url,
-                                    albumId = item.album?.id,
-                                    albumName = item.album?.name,
-                                    liked = false,
-                                    inLibrary = null,
-                                    dateDownload = null
-                                ),
-                                isActive = item.id == currentMediaId,
-                                isPlaying = isPlaying,
-                                showInLibraryIcon = false,
-                                modifier = Modifier
-                                    .width(ListItemHeight * 3)
-                                    .combinedClickable(
-                                        onClick = { onSongClick(item) },
-                                        onLongClick = {
-                                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                        }
-                                    )
-                            )
-                            else -> StandardItem(item = item)
+            ChartsPage.ChartType.TRENDING, ChartsPage.ChartType.TOP -> 
+                SongsGrid(
+                    songs = section.items.filterIsInstance<SongItem>(),
+                    isPlaying = isPlaying,
+                    currentMediaId = currentMediaId,
+                    onSongClick = onSongClick,
+                    haptic = haptic
+                )
+            else -> 
+                AlbumsRow(
+                    items = section.items,
+                    haptic = haptic
+                )
+        }
+    }
+}
+
+@Composable
+private fun SongsGrid(
+    songs: List<SongItem>,
+    isPlaying: Boolean,
+    currentMediaId: String?,
+    onSongClick: (SongItem) -> Unit,
+    haptic: HapticFeedback
+) {
+    val gridState = rememberLazyGridState()
+    
+    LazyHorizontalGrid(
+        state = gridState,
+        rows = GridCells.Fixed(4),
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(ListItemHeight * 4)
+    ) {
+        items(songs) { song ->
+            SongListItem(
+                song = song.toSong(),
+                isActive = song.id == currentMediaId,
+                isPlaying = isPlaying,
+                showInLibraryIcon = false,
+                modifier = Modifier
+                    .width(ListItemHeight * 3)
+                    .combinedClickable(
+                        onClick = { onSongClick(song) },
+                        onLongClick = {
+                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                         }
-                    }
-                }
-            }
-            else -> {
-                LazyRow(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    contentPadding = PaddingValues(vertical = 8.dp)
-                ) {
-                    items(items = section.items) { item ->
-                        when (item) {
-                            is AlbumItem -> ChartAlbumItem(album = item)
-                            else -> StandardItem(item = item)
-                        }
-                    }
-                }
+                    )
+            )
+        }
+    }
+}
+
+@Composable
+private fun AlbumsRow(
+    items: List<YTItem>,
+    haptic: HapticFeedback
+) {
+    LazyRow(
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        contentPadding = PaddingValues(vertical = 8.dp)
+    ) {
+        items(items) { item ->
+            when (item) {
+                is AlbumItem -> AlbumCard(album = item)
+                else -> DefaultItem(item = item)
             }
         }
     }
 }
 
 @Composable
-fun ChartAlbumItem(album: AlbumItem) {
+private fun AlbumCard(album: AlbumItem) {
     Card(
         modifier = Modifier
             .width(160.dp)
@@ -229,25 +254,29 @@ fun ChartAlbumItem(album: AlbumItem) {
 }
 
 @Composable
-fun StandardItem(item: YTItem) {
-    when (item) {
-        is SongItem -> Text(
-            text = item.title ?: stringResource(R.string.no_title),
-            style = MaterialTheme.typography.bodyLarge
-        )
-        is AlbumItem -> Text(
-            text = item.title ?: stringResource(R.string.no_title),
-            style = MaterialTheme.typography.bodyLarge
-        )
-        else -> Text(
-            text = stringResource(R.string.unknown_item_type),
-            style = MaterialTheme.typography.bodyLarge
-        )
-    }
+private fun DefaultItem(item: YTItem) {
+    Text(
+        text = when (item) {
+            is SongItem -> item.title ?: stringResource(R.string.no_title)
+            is AlbumItem -> item.title ?: stringResource(R.string.no_title)
+            else -> stringResource(R.string.unknown_item_type)
+        },
+        style = MaterialTheme.typography.bodyLarge
+    )
+}
+
+private fun SongItem.toSong(): Song {
+    return Song(
+        id = this.id,
+        title = this.title ?: "",
+        artists = this.artists.map { it.name },
+        duration = this.duration?.toInt() ?: 0,
+        thumbnailUrl = this.thumbnail?.url ?: ""
+    )
 }
 
 @Composable
-fun FullScreenLoading() {
+private fun FullScreenLoading() {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -261,7 +290,7 @@ fun FullScreenLoading() {
 }
 
 @Composable
-fun FullScreenError(
+private fun FullScreenError(
     error: String,
     onRetry: () -> Unit
 ) {
