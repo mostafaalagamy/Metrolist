@@ -680,24 +680,40 @@ private fun convertToChartItem(renderer: MusicResponsiveListItemRenderer): YTIte
     return try {
         when {
             renderer.flexColumns.size >= 3 && renderer.playlistItemData?.videoId != null -> {
-                val flexColumn0 = renderer.flexColumns[0].musicResponsiveListItemFlexColumnRenderer.text
-                val flexColumn1 = renderer.flexColumns[1].musicResponsiveListItemFlexColumnRenderer.text
-                val flexColumn2 = renderer.flexColumns.getOrNull(2)?.musicResponsiveListItemFlexColumnRenderer?.text
-
                 SongItem(
                     id = renderer.playlistItemData.videoId,
-                    title = flexColumn0.runs?.firstOrNull()?.text ?: return null,
-                    artists = flexColumn1.runs?.mapNotNull {
-                        it.navigationEndpoint?.browseEndpoint?.browseId?.let { id ->
-                            Artist(name = it.text, id = id)
-                        }
-                    } ?: emptyList(),
+                    title = renderer.flexColumns[0]
+                        .musicResponsiveListItemFlexColumnRenderer
+                        .text
+                        .runs
+                        ?.firstOrNull()
+                        ?.text ?: return null,
+                    artists = renderer.flexColumns[1]
+                        .musicResponsiveListItemFlexColumnRenderer
+                        .text
+                        .runs
+                        ?.mapNotNull {
+                            it.navigationEndpoint?.browseEndpoint?.browseId?.let { id ->
+                                Artist(name = it.text, id = id)
+                            }
+                        } ?: emptyList(),
                     thumbnail = renderer.thumbnail?.musicThumbnailRenderer?.getThumbnailUrl() ?: return null,
                     explicit = renderer.badges?.any { 
                         it.musicInlineBadgeRenderer?.icon?.iconType == "MUSIC_EXPLICIT_BADGE" 
                     } == true,
-                    chartPosition = flexColumn2?.runs?.firstOrNull()?.text?.toIntOrNull(),
-                    chartChange = flexColumn2?.runs?.getOrNull(1)?.text
+                    chartPosition = renderer.flexColumns.getOrNull(2)
+                        ?.musicResponsiveListItemFlexColumnRenderer
+                        ?.text
+                        ?.runs
+                        ?.firstOrNull()
+                        ?.text
+                        ?.toIntOrNull(),
+                    chartChange = renderer.flexColumns.getOrNull(2)
+                        ?.musicResponsiveListItemFlexColumnRenderer
+                        ?.text
+                        ?.runs
+                        ?.getOrNull(1)
+                        ?.text
                 )
             }
             else -> null
