@@ -145,7 +145,7 @@ fun StandardItem(item: YTItem) {
 @Composable
 fun ChartAlbumItem(album: AlbumItem) {
     Column(modifier = Modifier.padding(8.dp)) {
-        Text(album.title)
+        Text(text = album.title)
     }
 }
 
