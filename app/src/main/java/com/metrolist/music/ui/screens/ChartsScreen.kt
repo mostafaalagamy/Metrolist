@@ -1,19 +1,26 @@
 package com.metrolist.music.ui.screens
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
 import com.metrolist.innertube.models.*
 import com.metrolist.innertube.pages.ChartsPage
 import com.metrolist.music.R
@@ -22,15 +29,25 @@ import com.metrolist.music.viewmodels.ChartsViewModel
 import com.metrolist.music.LocalPlayerConnection
 import androidx.compose.ui.text.AnnotatedString
 import com.metrolist.music.models.toMediaMetadata
+import com.metrolist.music.ui.component.NavigationTitle
+import com.metrolist.music.ui.component.SongListItem
+import com.metrolist.music.ui.component.shimmer.GridItemPlaceHolder
+import com.metrolist.music.ui.component.shimmer.ShimmerHost
+import com.metrolist.music.ui.component.shimmer.TextPlaceholder
 
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun ChartsScreen(viewModel: ChartsViewModel = hiltViewModel()) {
+fun ChartsScreen(
+    viewModel: ChartsViewModel = hiltViewModel(),
+    onNavigateBack: () -> Unit
+) {
     val playerConnection = LocalPlayerConnection.current ?: return
     val chartsPage by viewModel.chartsPage.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     val error by viewModel.error.collectAsState()
     val isPlaying by playerConnection.isPlaying.collectAsState()
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
+    val haptic = LocalHapticFeedback.current
 
     LaunchedEffect(Unit) {
         if (chartsPage == null) {
@@ -38,36 +55,53 @@ fun ChartsScreen(viewModel: ChartsViewModel = hiltViewModel()) {
         }
     }
 
-    Surface(modifier = Modifier.fillMaxSize()) {
-        if (isLoading) {
-            FullScreenLoading()
-        } else if (error != null) {
-            FullScreenError(error = AnnotatedString(error!!), onRetry = { viewModel.loadCharts() })
-        } else {
-            chartsPage?.let { page ->
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(vertical = 8.dp)
-                ) {
-                    page.sections.forEach { section ->
-                        item {
-                            ChartSectionView(
-                                section = section,
-                                isPlaying = isPlaying,
-                                currentMediaId = mediaMetadata?.id,
-                                onSongClick = { song ->
-                                    if (song.id == mediaMetadata?.id) {
-                                        playerConnection.player.playWhenReady = !playerConnection.player.playWhenReady
-                                    } else {
-                                        playerConnection.playQueue(
-                                            YouTubeQueue(
-                                                song.endpoint ?: WatchEndpoint(videoId = song.id),
-                                                song.toMediaMetadata() // استخدم toMediaMetadata بدلاً من toMediaItem
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(stringResource(R.string.charts_title)) },
+                navigationIcon = {
+                    IconButton(onClick = onNavigateBack) {
+                        Icon(
+                            painter = painterResource(R.drawable.arrow_back),
+                            contentDescription = stringResource(R.string.back_button_desc)
+                        )
+                    }
+                }
+            )
+        },
+        modifier = Modifier.fillMaxSize()
+    ) { paddingValues ->
+        Surface(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
+            if (isLoading) {
+                FullScreenLoading()
+            } else if (error != null) {
+                FullScreenError(error = AnnotatedString(error!!), onRetry = { viewModel.loadCharts() })
+            } else {
+                chartsPage?.let { page ->
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        contentPadding = PaddingValues(vertical = 8.dp)
+                    ) {
+                        page.sections.forEach { section ->
+                            item {
+                                ChartSectionView(
+                                    section = section,
+                                    isPlaying = isPlaying,
+                                    currentMediaId = mediaMetadata?.id,
+                                    onSongClick = { song ->
+                                        if (song.id == mediaMetadata?.id) {
+                                            playerConnection.player.playWhenReady = !playerConnection.player.playWhenReady
+                                        } else {
+                                            playerConnection.playQueue(
+                                                YouTubeQueue(
+                                                    song.endpoint ?: WatchEndpoint(videoId = song.id),
+                                                    song.toMediaMetadata()
+                                                )
                                             )
-                                        )
+                                        }
                                     }
-                                }
-                            )
+                                )
+                            }
                         }
                     }
                 }
@@ -84,31 +118,42 @@ fun ChartSectionView(
     onSongClick: (SongItem) -> Unit
 ) {
     val haptic = LocalHapticFeedback.current
+    val lazyGridState = rememberLazyGridState()
 
     Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
-        Text(
-            text = section.title ?: "No Title",
-            style = MaterialTheme.typography.headlineSmall,
+        NavigationTitle(
+            title = section.title ?: stringResource(R.string.no_title),
             modifier = Modifier.padding(bottom = 8.dp)
         )
 
         when (section.chartType) {
             ChartsPage.ChartType.TRENDING, ChartsPage.ChartType.TOP -> {
-                Column {
-                    section.items.forEach { item ->
+                LazyHorizontalGrid(
+                    state = lazyGridState,
+                    rows = GridCells.Fixed(4),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(com.metrolist.music.constants.ListItemHeight * 4)
+                ) {
+                    items(items = section.items) { item ->
                         when (item) {
-                            is SongItem -> ChartSongItem(
-                                song = item,
+                            is SongItem -> SongListItem(
+                                song = item.toMediaMetadata(),
+                                showInLibraryIcon = false,
                                 isActive = item.id == currentMediaId,
                                 isPlaying = isPlaying,
-                                onClick = { onSongClick(item) },
-                                onLongClick = {
-                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                }
+                                thumbnailShape = RoundedCornerShape(4.dp),
+                                modifier = Modifier
+                                    .width(com.metrolist.music.constants.ListItemHeight * 3)
+                                    .combinedClickable(
+                                        onClick = { onClick(item) },
+                                        onLongClick = {
+                                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                        }
+                                    )
                             )
                             else -> StandardItem(item = item)
                         }
-                        Divider(modifier = Modifier.padding(vertical = 4.dp))
                     }
                 }
             }
@@ -140,14 +185,22 @@ fun ChartAlbumItem(album: AlbumItem) {
             modifier = Modifier.padding(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            AsyncImage(
+                model = album.thumbnail?.url,
+                contentDescription = stringResource(R.string.album_cover_desc),
+                modifier = Modifier
+                    .size(120.dp)
+                    .clip(RoundedCornerShape(8.dp))
+            )
+            Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = album.title ?: "No title",
+                text = album.title ?: stringResource(R.string.no_title),
                 style = MaterialTheme.typography.bodyLarge,
                 maxLines = 2
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = album.artists?.joinToString { it.name } ?: "Unknown artist",
+                text = album.artists?.joinToString { it.name } ?: stringResource(R.string.unknown_artist),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
                 maxLines = 1
@@ -157,87 +210,20 @@ fun ChartAlbumItem(album: AlbumItem) {
 }
 
 @Composable
-fun ChartSongItem(
-    song: SongItem,
-    isActive: Boolean,
-    isPlaying: Boolean,
-    onClick: () -> Unit,
-    onLongClick: () -> Unit
-) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 8.dp, vertical = 4.dp),
-        onClick = onClick
-    ) {
-        Row(
-            modifier = Modifier
-                .padding(12.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = song.chartPosition?.toString() ?: "-",
-                style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier.width(32.dp)
-            )
-            
-            song.chartChange?.let { change ->
-                Icon(
-                    painter = painterResource(
-                        id = when (change) {
-                            "up" -> R.drawable.arrow_upward
-                            "down" -> R.drawable.arrow_downward
-                            else -> R.drawable.album
-                        }
-                    ),
-                    contentDescription = null,
-                    tint = when (change) {
-                        "up" -> Color.Green
-                        "down" -> Color.Red
-                        else -> Color.Blue
-                    },
-                    modifier = Modifier.size(24.dp)
-                )
-            } ?: Spacer(modifier = Modifier.width(24.dp))
-
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = song.title ?: "Unknown title",
-                    style = MaterialTheme.typography.bodyLarge
-                )
-                Text(
-                    text = song.artists.joinToString { it.name },
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
-                )
-            }
-            
-            song.duration?.let { duration ->
-                Text(
-                    text = duration.toString(),
-                    style = MaterialTheme.typography.bodySmall
-                )
-            }
-
-            if (isActive) {
-                Icon(
-                    painter = painterResource(
-                        if (isPlaying) R.drawable.pause else R.drawable.play
-                    ),
-                    contentDescription = null,
-                    modifier = Modifier.size(24.dp)
-                )
-            }
-        }
-    }
-}
-
-@Composable
 fun StandardItem(item: YTItem) {
     when (item) {
-        is SongItem -> Text(text = item.title)
-        is AlbumItem -> Text(text = item.title)
-        else -> Text(text = "Unknown item type")
+        is SongItem -> Text(
+            text = item.title ?: stringResource(R.string.no_title),
+            style = MaterialTheme.typography.bodyLarge
+        )
+        is AlbumItem -> Text(
+            text = item.title ?: stringResource(R.string.no_title),
+            style = MaterialTheme.typography.bodyLarge
+        )
+        else -> Text(
+            text = stringResource(R.string.unknown_item_type),
+            style = MaterialTheme.typography.bodyLarge
+        )
     }
 }
 
@@ -247,7 +233,11 @@ fun FullScreenLoading() {
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        CircularProgressIndicator()
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            CircularProgressIndicator()
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(stringResource(R.string.loading_charts))
+        }
     }
 }
 
@@ -271,7 +261,7 @@ fun FullScreenError(
             )
             Spacer(modifier = Modifier.height(16.dp))
             Button(onClick = onRetry) {
-                Text(text = "Retry")
+                Text(stringResource(R.string.retry_button))
             }
         }
     }
