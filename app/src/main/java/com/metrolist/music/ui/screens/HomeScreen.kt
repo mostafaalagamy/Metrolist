@@ -767,22 +767,3 @@ fun HomeScreen(
         )
     }
 }
-
-@Composable
-fun HomeScreen(
-    viewModel: HomeViewModel = hiltViewModel(),
-    navController: NavController
-) {
-    // ...
-
-    LaunchedEffect(Unit) {
-        viewModel.navigationEvents.collect { event ->
-            when (event) {
-                is HomeViewModel.NavigationEvent.NavigateToCharts -> {
-                    navController.navigate(Routes.ChartsScreen())
-                }
-                // معالجة أحداث التنقل الأخرى...
-            }
-        }
-    }
-}
