@@ -671,10 +671,11 @@ fun HomeScreen(
                         },
                         onClick = it.endpoint?.browseId?.let { browseId ->
                             {
-                                if (browseId == "FEmusic_moods_and_genres")
-                                    navController.navigate("mood_and_genres")
-                                else
-                                    navController.navigate("browse/$browseId")
+                                when (browseId) {
+                                    "FEmusic_moods_and_genres" -> navController.navigate("mood_and_genres")
+                                    "FEmusic_charts" -> navController.navigate("charts_screen")
+                                    else -> navController.navigate("browse/$browseId")
+                                }
                             }
                         },
                         modifier = Modifier.animateItem()
@@ -764,5 +765,24 @@ fun HomeScreen(
                 .align(Alignment.TopCenter)
                 .padding(LocalPlayerAwareWindowInsets.current.asPaddingValues()),
         )
+    }
+}
+
+@Composable
+fun HomeScreen(
+    viewModel: HomeViewModel = hiltViewModel(),
+    navController: NavController
+) {
+    // ...
+
+    LaunchedEffect(Unit) {
+        viewModel.navigationEvents.collect { event ->
+            when (event) {
+                is HomeViewModel.NavigationEvent.NavigateToCharts -> {
+                    navController.navigate(Routes.ChartsScreen())
+                }
+                // معالجة أحداث التنقل الأخرى...
+            }
+        }
     }
 }
