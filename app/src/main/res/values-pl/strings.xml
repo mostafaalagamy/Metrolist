@@ -107,6 +107,8 @@
     <string name="advanced">Zaawansowane</string>
     <string name="select">Zaznacz wszystko</string>
     <string name="like_all">Polub wszystko</string>
+    <string name="copy_link">Kopiuj link</string>
+    <string name="tempo_and_pitch">Tempo i wysokość dźwięku</string>
 
     <!-- Sort menu -->
     <string name="sort_by_create_date">Data dodania</string>
@@ -133,6 +135,7 @@
 
     <string name="edit_lyrics">Edytuj tekst</string>
     <string name="search_lyrics">Szukaj tekstu</string>
+    <string name="lyrics">Tekst</string>
 
     <string name="edit_song">Edytuj utwór</string>
     <string name="song_title">Tytuł utworu</string>
@@ -320,6 +323,7 @@
     <string name="min_playback_duration_description">Minimalna ilość utworu, która musi zostać odtworzona, zanim zostanie on uznany za „odtworzony”.</string>
     <string name="percentage_format">%d%%</string>
     <string name="minimum_playback_duration">Minimalny czas odtwarzania</string>
+    <string name="queue">Kolejka</string>
 
     <string name="storage">Pamięć</string>
     <string name="cache">Pamięć tymczasowa</string>
