@@ -135,17 +135,11 @@ fun ChartSongItem(song: SongItem) {
 
 @Composable
 fun StandardItem(item: YTItem) {
-    val itemText = when {
-        item is SongItem && !item.title.isNullOrEmpty() -> item.title
-        item is AlbumItem && !item.title.isNullOrEmpty() -> item.title
-        else -> "Unknown item"
+    when (item) {
+        is SongItem -> Text(text = item.title)
+        is AlbumItem -> Text(text = item.title)
+        else -> Text(text = "Unknown item type")
     }
-
-    Text(
-        text = itemText,
-        modifier = Modifier.padding(8.dp),
-        style = MaterialTheme.typography.bodyMedium
-    )
 }
 
 @Composable
