@@ -9,7 +9,6 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -29,6 +28,7 @@ import coil.compose.AsyncImage
 import com.metrolist.innertube.models.*
 import com.metrolist.innertube.pages.ChartsPage
 import com.metrolist.music.R
+import com.metrolist.music.db.entities.SongEntity
 import com.metrolist.music.playback.queues.YouTubeQueue
 import com.metrolist.music.viewmodels.ChartsViewModel
 import com.metrolist.music.LocalPlayerConnection
@@ -39,8 +39,8 @@ import com.metrolist.music.constants.ListItemHeight
 import com.metrolist.music.constants.ThumbnailCornerRadius
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
-import com.metrolist.music.db.entities.Song
 import com.metrolist.music.extensions.togglePlayPause
+import java.time.LocalDateTime
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -68,10 +68,13 @@ fun ChartsScreen(
             TopAppBar(
                 title = { Text(stringResource(R.string.charts_title)) },
                 navigationIcon = {
-                    IconButton(onClick = { navController.navigateUp() }) {
+                    IconButton(
+                        onClick = navController::navigateUp,
+                        onLongClick = navController::backToMain
+                    ) {
                         Icon(
-                            painter = painterResource(R.drawable.arrow_back),
-                            contentDescription = stringResource(R.string.back_button_desc)
+                            painterResource(R.drawable.arrow_back),
+                            contentDescription = null
                         )
                     }
                 }
@@ -142,19 +145,20 @@ fun ChartSectionView(
                         .fillMaxWidth()
                         .height(ListItemHeight * 4)
                 ) {
-                    itemsIndexed(
-                        items = section.items,
-                        key = { index, item -> 
-                            when (item) {
-                                is SongItem -> item.id
-                                is AlbumItem -> item.id
-                                else -> index.toString()
-                            }
-                        }
-                    ) { index, item ->
+                    items(items = section.items) { item ->
                         when (item) {
                             is SongItem -> SongListItem(
-                                song = item.toSong(),
+                                song = SongEntity(
+                                    id = item.id,
+                                    title = item.title ?: "",
+                                    duration = item.duration?.toInt() ?: 0,
+                                    thumbnailUrl = item.thumbnail?.url,
+                                    albumId = item.album?.id,
+                                    albumName = item.album?.name,
+                                    liked = false,
+                                    inLibrary = null,
+                                    dateDownload = null
+                                ),
                                 isActive = item.id == currentMediaId,
                                 isPlaying = isPlaying,
                                 showInLibraryIcon = false,
@@ -187,18 +191,6 @@ fun ChartSectionView(
             }
         }
     }
-}
-
-@Composable
-private fun SongItem.toSong(): Song {
-    return Song(
-        song = "",  // Provide the required song parameter
-        id = this.id,
-        title = this.title ?: "",
-        artists = this.artists.map { it.name },
-        duration = this.duration?.toInt() ?: 0,
-        thumbnailUrl = this.thumbnail?.url ?: "",
-    )
 }
 
 @Composable
