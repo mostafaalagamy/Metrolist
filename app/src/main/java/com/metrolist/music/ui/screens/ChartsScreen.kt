@@ -132,10 +132,11 @@ fun ChartSongItem(song: SongItem) {
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f))
         }
         
-        song.duration?.let {
+        song.duration?.let { duration ->
             Text(
-                text = it,
-                style = MaterialTheme.typography.bodySmall)
+                text = duration.toString(),
+                style = MaterialTheme.typography.bodySmall
+            )
         }
     }
 }
