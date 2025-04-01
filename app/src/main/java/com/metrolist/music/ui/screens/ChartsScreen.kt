@@ -450,4 +450,40 @@ private fun HorizontalChartSection(
                                 haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                                 menuState.show {
                                     YouTubeArtistMenu(
-        
+                                        artist = item,
+                                        onDismiss = menuState::dismiss
+                                    )
+                                }
+                            }
+                        )
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun FullScreenError(
+    error: AnnotatedString,
+    onRetry: () -> Unit
+) {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.padding(16.dp)
+        ) {
+            Text(
+                text = error,
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.error
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            Button(onClick = onRetry) {
+                Text(text = stringResource(R.string.retry))
+            }
+        }
+    }
+}
