@@ -69,8 +69,10 @@ import com.metrolist.music.ui.component.GridMenu
 import com.metrolist.music.ui.component.GridMenuItem
 import com.metrolist.music.ui.component.ListDialog
 import com.metrolist.music.ui.component.ListItem
+import com.metrolist.music.ui.component.LocalBottomSheetPageState
 import com.metrolist.music.ui.component.SongListItem
 import com.metrolist.music.ui.component.TextFieldDialog
+import com.metrolist.music.ui.utils.ShowMediaInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -250,6 +252,8 @@ fun SongMenu(
 
     HorizontalDivider()
 
+    val bottomSheetPageState = LocalBottomSheetPageState.current
+
     GridMenu(
         contentPadding =
         PaddingValues(
@@ -259,6 +263,15 @@ fun SongMenu(
             bottom = 8.dp + WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
         ),
     ) {
+        GridMenuItem(
+            icon = R.drawable.info,
+            title = R.string.details,
+        ) {
+            onDismiss()
+            bottomSheetPageState.show {
+                ShowMediaInfo(song.id)
+            }
+        }
         GridMenuItem(
             icon = R.drawable.radio,
             title = R.string.start_radio,

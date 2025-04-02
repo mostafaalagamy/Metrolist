@@ -259,4 +259,11 @@
     <string name="new_version_available">Versi baru tersedia</string>
     <string name="translation_models">Model Terjemahan</string>
     <string name="clear_translation_models">Bersihkan model terjemahan</string>
+    <string name="information">Information</string>
+    <string name="description">Description</string>
+    <string name="numbers">Numbers</string>
+    <string name="subscribers">Subscribers</string>
+    <string name="views">Views</string>
+    <string name="likes">Likes</string>
+    <string name="dislikes">Dislikes</string>
 </resources>
