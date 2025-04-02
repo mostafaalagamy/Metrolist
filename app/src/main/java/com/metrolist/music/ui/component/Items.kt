@@ -1709,7 +1709,7 @@ fun YouTubeListItem(
             backgroundContent = {
                 val target = dismissState.targetValue
                 var swipeStartTime = 0L
-                LaunchedEffect(target) {
+                LaunchedEffect(key1 = target) {
                     when (target) {
                         SwipeToDismissBoxValue.StartToEnd -> {
                             val swipeEndTime = System.currentTimeMillis()
