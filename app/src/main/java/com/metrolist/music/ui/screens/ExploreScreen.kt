@@ -70,8 +70,7 @@ fun ExploreScreen(
     val isChartsLoading by chartsViewModel.isLoading.collectAsState()
     val chartsError by chartsViewModel.error.collectAsState()
 
-    val coroutineScope = rememberCoroutineScope()
-    val scrollState = rememberScrollState()
+    val lazyListState = rememberLazyListState()
 
     LaunchedEffect(Unit) {
         if (chartsPage == null) {
@@ -79,63 +78,73 @@ fun ExploreScreen(
         }
     }
 
-    Box(
-        modifier = Modifier.fillMaxSize(),
-    ) {
-        Column(
-            modifier = Modifier.verticalScroll(scrollState),
-        ) {
-            Spacer(
-                Modifier.height(
-                    LocalPlayerAwareWindowInsets.current.asPaddingValues().calculateTopPadding(),
-                ),
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(stringResource(R.string.explore)) },
+                navigationIcon = {
+                    IconButton(onClick = { navController.navigateUp() }) {
+                        Icon(
+                            painter = painterResource(R.drawable.arrow_back),
+                            contentDescription = null,
+                        )
+                    }
+                },
             )
-
+        }
+    ) { paddingValues ->
+        LazyColumn(
+            state = lazyListState,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues),
+            contentPadding = LocalPlayerAwareWindowInsets.current
+                .only(WindowInsetsSides.Bottom)
+                .asPaddingValues(),
+        ) {
             // Charts Section
             if (isChartsLoading && chartsPage == null) {
-                ShimmerHost {
-                    TextPlaceholder(
-                        height = 36.dp,
-                        modifier = Modifier
-                            .padding(12.dp)
-                            .fillMaxWidth(0.5f)
-                    )
-
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .verticalScroll(rememberScrollState())
-                    ) {
-                        repeat(4) {
-                            Row(
+                item {
+                    ShimmerHost {
+                        Column {
+                            TextPlaceholder(
+                                height = 36.dp,
                                 modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(8.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                            ) {
-                                Box(
+                                    .padding(12.dp)
+                                    .fillMaxWidth(0.5f),
+                            )
+                            
+                            repeat(4) {
+                                Row(
                                     modifier = Modifier
-                                        .size(ListItemHeight - 16.dp)
-                                        .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f))
-                                )
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Column(
-                                    modifier = Modifier.fillMaxHeight(),
-                                    verticalArrangement = Arrangement.Center,
+                                        .fillMaxWidth()
+                                        .padding(8.dp),
+                                    verticalAlignment = Alignment.CenterVertically,
                                 ) {
                                     Box(
                                         modifier = Modifier
-                                            .height(16.dp)
-                                            .fillMaxWidth(0.7f)
-                                            .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f))
+                                            .size(ListItemHeight - 16.dp)
+                                            .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f)),
                                     )
-                                    Spacer(modifier = Modifier.height(8.dp))
-                                    Box(
-                                        modifier = Modifier
-                                            .height(12.dp)
-                                            .fillMaxWidth(0.5f)
-                                            .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f))
-                                   )
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Column(
+                                        modifier = Modifier.fillMaxHeight(),
+                                        verticalArrangement = Arrangement.Center,
+                                    ) {
+                                        Box(
+                                            modifier = Modifier
+                                                .height(16.dp)
+                                                .fillMaxWidth(0.7f)
+                                                .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f)),
+                                        )
+                                        Spacer(modifier = Modifier.height(8.dp))
+                                        Box(
+                                            modifier = Modifier
+                                                .height(12.dp)
+                                                .fillMaxWidth(0.5f)
+                                                .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f)),
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -144,40 +153,17 @@ fun ExploreScreen(
             }
 
             chartsPage?.sections?.forEach { section ->
-                NavigationTitle(
-                    title = section.title ?: stringResource(R.string.charts),
-                )
-                BoxWithConstraints(
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    val horizontalLazyGridItemWidthFactor = if (maxWidth * 0.475f >= 320.dp) 0.475f else 0.9f
-                    val horizontalLazyGridItemWidth = maxWidth * horizontalLazyGridItemWidthFactor
+                item {
+                    NavigationTitle(
+                        title = section.title ?: stringResource(R.string.charts),
+                    )
+                }
 
-                    val lazyGridState = rememberLazyGridState()
-                    val snapLayoutInfoProvider = remember(lazyGridState) {
-                        SnapLayoutInfoProvider(
-                            lazyGridState = lazyGridState,
-                            positionInLayout = { layoutSize, itemSize ->
-                                (layoutSize * horizontalLazyGridItemWidthFactor / 2f - itemSize / 2f)
-                            },
-                        )
-                    }
-
-                    LazyHorizontalGrid(
-                        state = lazyGridState,
-                        rows = GridCells.Fixed(4),
-                        flingBehavior = rememberSnapFlingBehavior(snapLayoutInfoProvider),
-                        contentPadding = WindowInsets.systemBars
-                            .only(WindowInsetsSides.Horizontal)
-                            .asPaddingValues(),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(ListItemHeight * 4),
+                item {
+                    Column(
+                        modifier = Modifier.fillMaxWidth()
                     ) {
-                        items(
-                            items = section.items.filterIsInstance<SongItem>(),
-                            key = { it.id },
-                        ) { song ->
+                        section.items.filterIsInstance<SongItem>().forEach { song ->
                             YouTubeListItem(
                                 item = song,
                                 isActive = song.id == mediaMetadata?.id,
@@ -202,7 +188,7 @@ fun ExploreScreen(
                                     }
                                 },
                                 modifier = Modifier
-                                    .width(horizontalLazyGridItemWidth)
+                                    .fillMaxWidth()
                                     .combinedClickable(
                                         onClick = {
                                             if (song.id == mediaMetadata?.id) {
@@ -233,136 +219,73 @@ fun ExploreScreen(
                 }
             }
 
-            if (chartsError != null) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Text(
-                        text = chartsError ?: stringResource(R.string.error_unknown),
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.error,
-                    )
-                }
-            }
-
             // New Release Albums Section
             explorePage?.newReleaseAlbums?.let { newReleaseAlbums ->
-                NavigationTitle(
-                    title = stringResource(R.string.new_release_albums),
-                    onClick = {
-                        navController.navigate("new_release")
-                    },
-                )
+                item {
+                    NavigationTitle(
+                        title = stringResource(R.string.new_release_albums),
+                        onClick = { navController.navigate("new_release") },
+                    )
+                }
 
-                LazyRow(
-                    contentPadding =
-                    WindowInsets.systemBars
-                        .only(WindowInsetsSides.Horizontal)
-                        .asPaddingValues(),
-                ) {
-                    items(
-                        items = newReleaseAlbums,
-                        key = { it.id },
-                    ) { album ->
-                        YouTubeGridItem(
-                            item = album,
-                            isActive = mediaMetadata?.album?.id == album.id,
-                            isPlaying = isPlaying,
-                            coroutineScope = coroutineScope,
-                            modifier =
-                            Modifier
-                                .combinedClickable(
-                                    onClick = {
-                                        navController.navigate("album/${album.id}")
-                                    },
-                                    onLongClick = {
-                                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                        menuState.show {
-                                            YouTubeAlbumMenu(
-                                                albumItem = album,
-                                                navController = navController,
-                                                onDismiss = menuState::dismiss,
-                                            )
-                                        }
-                                    },
-                                )
-                                .animateItem(),
-                        )
+                item {
+                    Column(
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        newReleaseAlbums.forEach { album ->
+                            YouTubeListItem(
+                                item = album,
+                                isActive = mediaMetadata?.album?.id == album.id,
+                                isPlaying = isPlaying,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .combinedClickable(
+                                        onClick = { navController.navigate("album/${album.id}") },
+                                        onLongClick = {
+                                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                            menuState.show {
+                                                YouTubeAlbumMenu(
+                                                    albumItem = album,
+                                                    navController = navController,
+                                                    onDismiss = menuState::dismiss,
+                                                )
+                                            }
+                                        },
+                                    ),
+                            )
+                        }
                     }
                 }
             }
 
             // Mood and Genres Section
             explorePage?.moodAndGenres?.let { moodAndGenres ->
-                NavigationTitle(
-                    title = stringResource(R.string.mood_and_genres),
-                    onClick = {
-                        navController.navigate("mood_and_genres")
-                    },
-                )
-
-                LazyHorizontalGrid(
-                    rows = GridCells.Fixed(4),
-                    contentPadding = PaddingValues(6.dp),
-                    modifier = Modifier.height((MoodAndGenresButtonHeight + 12.dp) * 4 + 12.dp),
-                ) {
-                    items(moodAndGenres) {
-                        MoodAndGenresButton(
-                            title = it.title,
-                            onClick = {
-                                navController.navigate("youtube_browse/${it.endpoint.browseId}?params=${it.endpoint.params}")
-                            },
-                            modifier =
-                            Modifier
-                                .padding(6.dp)
-                                .width(180.dp),
-                        )
-                    }
+                item {
+                    NavigationTitle(
+                        title = stringResource(R.string.mood_and_genres),
+                        onClick = { navController.navigate("mood_and_genres") },
+                    )
                 }
-            }
 
-            Spacer(
-                Modifier.height(
-                    LocalPlayerAwareWindowInsets.current.asPaddingValues()
-                        .calculateBottomPadding()
-                )
-            )
-
-            // Show shimmer loading for explore content
-            if (explorePage == null) {
-                ShimmerHost {
-                    TextPlaceholder(
-                        height = 36.dp,
-                        modifier =
-                        Modifier
-                            .padding(vertical = 12.dp, horizontal = 12.dp)
-                            .width(250.dp),
-                    )
-                    Row {
-                        repeat(2) {
-                            GridItemPlaceHolder()
-                        }
-                    }
-                    TextPlaceholder(
-                        height = 36.dp,
-                        modifier =
-                        Modifier
-                            .padding(vertical = 12.dp, horizontal = 12.dp)
-                            .width(250.dp),
-                    )
-                    repeat(4) {
-                        Row {
-                            repeat(2) {
-                                TextPlaceholder(
-                                    height = MoodAndGenresButtonHeight,
-                                    modifier =
-                                    Modifier
-                                        .padding(horizontal = 6.dp)
-                                        .width(200.dp),
-                                )
+                item {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        moodAndGenres.chunked(2).forEach { rowItems ->
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                rowItems.forEach { item ->
+                                    MoodAndGenresButton(
+                                        title = item.title,
+                                        onClick = {
+                                            navController.navigate("youtube_browse/${item.endpoint.browseId}?params=${item.endpoint.params}")
+                                        },
+                                        modifier = Modifier.weight(1f)
+                                    )
+                                }
                             }
                         }
                     }
