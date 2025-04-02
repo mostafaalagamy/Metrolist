@@ -143,7 +143,7 @@ fun ExploreScreen(
             }
 
             chartsPage?.sections?.forEach { section ->
-                val browseId = section.endpoint?.browseId
+                val browseId = item.endpoint?.browseId
                 NavigationTitle(
                     title = section.title ?: stringResource(R.string.charts),
                     onClick = if (browseId != null) {
