@@ -1766,7 +1766,6 @@ fun YouTubeListItem(
                 trailingContent = trailingContent,
                 modifier = modifier,
                 isActive = isActive,
-                isSwipeable = isSwipeable,
             )
         }
     }
