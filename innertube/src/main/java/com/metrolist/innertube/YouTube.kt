@@ -8,6 +8,8 @@ import com.metrolist.innertube.models.ArtistItem
 import com.metrolist.innertube.models.BrowseEndpoint
 import com.metrolist.innertube.models.GridRenderer
 import com.metrolist.innertube.models.MediaInfo
+import com.metrolist.innertube.models.MusicResponsiveListItemRenderer
+import com.metrolist.innertube.models.MusicTwoRowItemRenderer
 import com.metrolist.innertube.models.MusicCarouselShelfRenderer
 import com.metrolist.innertube.models.MusicShelfRenderer
 import com.metrolist.innertube.models.PlaylistItem
