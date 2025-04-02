@@ -34,7 +34,7 @@ import com.metrolist.music.models.toMediaMetadata
 import com.metrolist.music.playback.queues.YouTubeQueue
 import com.metrolist.music.ui.component.LocalMenuState
 import com.metrolist.music.ui.component.NavigationTitle
-import com.metrolist.music.ui.component.SongListItem
+import com.metrolist.music.ui.component.YouTubeListItem
 import com.metrolist.music.ui.component.shimmer.GridItemPlaceHolder
 import com.metrolist.music.ui.component.shimmer.ShimmerHost
 import com.metrolist.music.ui.component.shimmer.TextPlaceholder
@@ -190,9 +190,8 @@ fun ChartsScreen(
                                 items = section.items.filterIsInstance<SongItem>(),
                                 key = { it.id },
                             ) { song ->
-                                val mediaItem = song.toMediaMetadata()
-                                SongListItem(
-                                     song = mediaItem,
+                                YouTubeListItem(
+                                     item = song,
                                      isActive = song.id == mediaMetadata?.id,
                                      isPlaying = isPlaying,
                                      isSwipeable = false,
