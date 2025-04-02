@@ -144,11 +144,13 @@ fun ExploreScreen(
             }
 
             chartsPage?.sections?.forEach { section ->
+                val onClick: (() -> Unit)? = section.endpoint?.browseId?.let { browseId ->
+                    { navController.navigate("browse/$browseId") }
+                }
+
                 NavigationTitle(
                     title = section.title ?: stringResource(R.string.charts),
-                    onClick = section.endpoint?.browseId?.let { browseId ->
-                        { navController.navigate("browse/$browseId") }
-                    },
+                    onClick = onClick
                 )
 
                 BoxWithConstraints(
