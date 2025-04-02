@@ -173,7 +173,7 @@ fun ChartsScreen(
                             key = { it.id },
                         ) { song ->
                             SongListItem(
-                                song = song!!,
+                                item = song!!,
                                 showInLibraryIcon = true,
                                 isActive = song!!.id == mediaMetadata?.id,
                                 isPlaying = isPlaying,
