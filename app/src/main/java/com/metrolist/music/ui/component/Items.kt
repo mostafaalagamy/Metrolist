@@ -1523,7 +1523,6 @@ fun YouTubeListItem(
     modifier: Modifier = Modifier,
     albumIndex: Int? = null,
     isSelected: Boolean = false,
-    isSwipeable: Boolean = false,
     badges: @Composable RowScope.() -> Unit = {
         val database = LocalDatabase.current
         val song by database.song(item.id).collectAsState(initial = null)
@@ -1592,6 +1591,7 @@ fun YouTubeListItem(
     },
     isActive: Boolean = false,
     isPlaying: Boolean = false,
+    isSwipeable: Boolean = true,
     trailingContent: @Composable RowScope.() -> Unit = {},
 ) {
     val context = LocalContext.current
@@ -1766,14 +1766,10 @@ fun YouTubeListItem(
                 trailingContent = trailingContent,
                 modifier = modifier,
                 isActive = isActive,
+                isSwipeable = isSwipeable,
             )
         }
     }
-
-
-
-
-
 
 @SuppressLint("SuspiciousIndentation")
 @Composable
