@@ -98,17 +98,17 @@ fun ExploreScreen(
                             .padding(12.dp)
                             .fillMaxWidth(0.5f),
                     )
-                    
-                    Box(
+        
+                    Row(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(ListItemHeight * 4)
+                            .horizontalScroll(rememberScrollState())
                     ) {
-                        // Shimmer placeholder for charts
-                        items(4) {
+                        repeat(4) {
                             Row(
                                 modifier = Modifier
-                                    .width(horizontalLazyGridItemWidth)
+                                    .width(160.dp)
                                     .padding(8.dp),
                                 verticalAlignment = Alignment.CenterVertically,
                             ) {
