@@ -194,6 +194,7 @@ fun ChartsScreen(
                                      item = song,
                                      isActive = song.id == mediaMetadata?.id,
                                      isPlaying = isPlaying,
+                                     isSwipeable = false,
                                      trailingContent = {
                                          IconButton(
                                              onClick = {
