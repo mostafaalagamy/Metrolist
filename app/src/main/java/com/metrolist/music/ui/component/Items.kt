@@ -1713,11 +1713,11 @@ fun YouTubeListItem(
                     when (target) {
                         SwipeToDismissBoxValue.StartToEnd -> {
                             val swipeEndTime = System.currentTimeMillis()
-                                if (swipeEndTime - swipeStartTime > 1000) {
-                                    Toast.makeText(context, R.string.play_next, Toast.LENGTH_SHORT)
-                                        .show()
-                                    playerConnection.playNext(listOf(item.toMediaItem()))
-                                }
+                            if (swipeEndTime - swipeStartTime > 1000) {
+                                Toast.makeText(context, R.string.play_next, Toast.LENGTH_SHORT)
+                                    .show()
+                                playerConnection.playNext(listOf(item.toMediaItem()))
+                                
                             }
                         }
                         SwipeToDismissBoxValue.EndToStart -> {
