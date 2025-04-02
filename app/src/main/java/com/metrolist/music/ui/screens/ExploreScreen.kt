@@ -143,15 +143,15 @@ fun ExploreScreen(
             }
 
             chartsPage?.sections?.forEach { section ->
-                val onClick: (() -> Unit)? = section.endpoint?.browseId?.let { browseId ->
-                    { navController.navigate("browse/$browseId") }
-                }
-
+                val browseId = section.endpoint?.browseId
                 NavigationTitle(
                     title = section.title ?: stringResource(R.string.charts),
-                    onClick = onClick
+                    onClick = if (browseId != null) {
+                        { navController.navigate("browse/$browseId") }
+                    } else {
+                        null
+                    }
                 )
-
                 BoxWithConstraints(
                     modifier = Modifier.fillMaxWidth()
                 ) {
