@@ -67,7 +67,7 @@ fun NavGraphBuilder.navigationBuilder(
         NewReleaseScreen(navController, scrollBehavior)
     }
     composable("charts_screen") {
-       ChartsScreen()
+       ChartsScreen(navController)
     }
     composable(
         route = "browse/{browseId}",
