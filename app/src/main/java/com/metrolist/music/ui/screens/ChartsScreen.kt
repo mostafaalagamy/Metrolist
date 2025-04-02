@@ -1,6 +1,7 @@
 package com.metrolist.music.ui.screens
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.*
@@ -10,17 +11,8 @@ import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
@@ -76,8 +68,7 @@ fun ChartsScreen(
 
     BoxWithConstraints(
         modifier = Modifier
-            .fillMaxSize()
-            .windowInsetsPadding(LocalPlayerAwareWindowInsets.current.only(WindowInsetsSides.Top)),
+            .fillMaxSize(),
     ) {
         val horizontalLazyGridItemWidthFactor = if (maxWidth * 0.475f >= 320.dp) 0.475f else 0.9f
         val horizontalLazyGridItemWidth = maxWidth * horizontalLazyGridItemWidthFactor
@@ -109,9 +100,37 @@ fun ChartsScreen(
                                 .height(ListItemHeight * 4),
                         ) {
                             items(4) {
-                                GridItemPlaceHolder(
-                                    modifier = Modifier.width(horizontalLazyGridItemWidth),
-                                )
+                                Row(
+                                    modifier = Modifier
+                                        .width(horizontalLazyGridItemWidth)
+                                        .padding(8.dp),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                ) {
+                                    Box(
+                                        modifier = Modifier
+                                            .size(ListItemHeight - 16.dp)
+                                            .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f)),
+                                    )
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Column(
+                                        modifier = Modifier.fillMaxHeight(),
+                                        verticalArrangement = Arrangement.Center,
+                                    ) {
+                                        Box(
+                                            modifier = Modifier
+                                                .height(16.dp)
+                                                .width(120.dp)
+                                                .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f)),
+                                        )
+                                        Spacer(modifier = Modifier.height(8.dp))
+                                        Box(
+                                            modifier = Modifier
+                                                .height(12.dp)
+                                                .width(80.dp)
+                                                .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f)),
+                                        )
+                                    }
+                                }
                             }
                         }
                     }
