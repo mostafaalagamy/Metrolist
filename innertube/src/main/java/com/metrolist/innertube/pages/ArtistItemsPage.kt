@@ -9,7 +9,6 @@ import com.metrolist.innertube.models.PlaylistItem
 import com.metrolist.innertube.models.SongItem
 import com.metrolist.innertube.models.YTItem
 import com.metrolist.innertube.models.oddElements
-import com.metrolist.innertube.models.splitBySeparator
 import com.metrolist.innertube.utils.parseTime
 
 data class ArtistItemsPage(
@@ -63,21 +62,36 @@ data class ArtistItemsPage(
                         it.musicInlineBadgeRenderer?.icon?.iconType == "MUSIC_EXPLICIT_BADGE"
                     } != null
                 )
-                // Video
-                renderer.isSong -> SongItem(
-                    id = renderer.navigationEndpoint.watchEndpoint?.videoId ?: return null,
-                    title = renderer.title.runs?.firstOrNull()?.text ?: return null,
-                    artists = renderer.subtitle?.runs?.splitBySeparator()?.firstOrNull()?.oddElements()?.map {
+                renderer.isSong -> {
+                    val subtitleRuns = renderer.subtitle?.runs ?: return null
+                    val (artistRuns, albumRuns) = subtitleRuns.partition { run ->
+                        run.navigationEndpoint?.browseEndpoint?.browseId?.startsWith("UC") == true
+                    }
+                    val artists = artistRuns.map {
                         Artist(
                             name = it.text,
                             id = it.navigationEndpoint?.browseEndpoint?.browseId
                         )
-                    } ?: return null,
-                    album = null,
-                    duration = null,
-                    thumbnail = renderer.thumbnailRenderer.musicThumbnailRenderer?.getThumbnailUrl() ?: return null,
-                    endpoint = renderer.navigationEndpoint.watchEndpoint
-                )
+                    }.takeIf { it.isNotEmpty() } ?: return null
+                    SongItem(
+                        id = renderer.navigationEndpoint.watchEndpoint?.videoId ?: return null,
+                        title = renderer.title.runs?.firstOrNull()?.text ?: return null,
+                        artists = artists,
+                        album = albumRuns.firstOrNull {
+                            it.navigationEndpoint?.browseEndpoint?.browseId?.startsWith("MPREb_") == true
+                        }?.let { run ->
+                            run.navigationEndpoint?.browseEndpoint?.let { endpoint ->
+                                Album(
+                                    name = run.text,
+                                    id = endpoint.browseId
+                                )
+                            }
+                        },
+                        duration = null,
+                        thumbnail = renderer.thumbnailRenderer.musicThumbnailRenderer?.getThumbnailUrl() ?: return null,
+                        endpoint = renderer.navigationEndpoint.watchEndpoint
+                    )
+                }
                 renderer.isPlaylist -> PlaylistItem(
                     id = renderer.navigationEndpoint.browseEndpoint?.browseId?.removePrefix("VL") ?: return null,
                     title = renderer.title.runs?.firstOrNull()?.text ?: return null,

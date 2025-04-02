@@ -34,6 +34,16 @@
     <string name="local_history">Local</string>
     <string name="remote_history">Remote</string>
 
+    <!-- Charts -->
+    <string name="charts">Charts</string>
+    <string name="back_button_desc">Back</string>
+    <string name="no_title">No title</string>
+    <string name="unknown_artist">Unknown artist</string>
+    <string name="unknown_item_type">Unknown item type</string>
+    <string name="loading_charts">Loading charts...</string>
+    <string name="retry_button">Retry</string>
+    <string name="album_cover_desc">Album cover</string>
+
     <!-- Stats -->
     <string name="most_played_songs">Most played songs</string>
     <string name="most_played_artists">Most played artists</string>
