@@ -2,7 +2,7 @@ package com.metrolist.music.ui.screens
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
@@ -98,26 +98,25 @@ fun ExploreScreen(
                         height = 36.dp,
                         modifier = Modifier
                             .padding(12.dp)
-                            .fillMaxWidth(0.5f),
+                            .fillMaxWidth(0.5f)
                     )
-        
-                    Row(
+
+                    Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(ListItemHeight * 4)
-                            .horizontalScroll(rememberScrollState())
+                            .verticalScroll(rememberScrollState())
                     ) {
                         repeat(4) {
                             Row(
                                 modifier = Modifier
-                                    .width(160.dp)
+                                    .fillMaxWidth()
                                     .padding(8.dp),
                                 verticalAlignment = Alignment.CenterVertically,
                             ) {
                                 Box(
                                     modifier = Modifier
                                         .size(ListItemHeight - 16.dp)
-                                        .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f)),
+                                        .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f))
                                 )
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Column(
@@ -127,16 +126,16 @@ fun ExploreScreen(
                                     Box(
                                         modifier = Modifier
                                             .height(16.dp)
-                                            .width(120.dp)
-                                            .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f)),
+                                            .fillMaxWidth(0.7f)
+                                            .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f))
                                     )
                                     Spacer(modifier = Modifier.height(8.dp))
                                     Box(
                                         modifier = Modifier
                                             .height(12.dp)
-                                            .width(80.dp)
-                                            .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f)),
-                                    )
+                                            .fillMaxWidth(0.5f)
+                                            .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f))
+                                   )
                                 }
                             }
                         }
