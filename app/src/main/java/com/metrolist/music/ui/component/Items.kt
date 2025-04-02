@@ -387,23 +387,30 @@ fun SongListItem(
             state = dismissState,
             backgroundContent = {
                 val target = dismissState.targetValue
+                var swipeStartTime = 0L
                 LaunchedEffect(target) {
                     when (target) {
                         SwipeToDismissBoxValue.StartToEnd -> {
-                            Toast.makeText(context, R.string.added_to_play_next, Toast.LENGTH_SHORT).show()
-                            playerConnection.playNext(listOf(song.toMediaItem()))
+                            val swipeEndTime = System.currentTimeMillis()
+                             if (swipeEndTime - swipeStartTime > 1000) {
+                                 Toast.makeText(context, R.string.play_next, Toast.LENGTH_SHORT)
+                                     .show()
+                                 playerConnection.playNext(listOf(song.toMediaItem()))
+                             }
                         }
 
                         SwipeToDismissBoxValue.EndToStart -> {
-                            Toast.makeText(context, R.string.added_to_queue, Toast.LENGTH_SHORT)
-                                .show()
-
-                            playerConnection.addToQueue(listOf(song.toMediaItem()))
-
-                        }
-
-                        else -> {}
-                    }
+                            val swipeEndTime = System.currentTimeMillis()
+                             if (swipeEndTime - swipeStartTime > 1000) {
+                                 Toast.makeText(context, R.string.add_to_queue, Toast.LENGTH_SHORT)
+                                     .show()
+                                 playerConnection.addToQueue(listOf(song.toMediaItem()))
+                             }
+                         }
+                         else -> {
+                             swipeStartTime = System.currentTimeMillis()
+                         }
+                     }
                 }
                 val color by
                 animateColorAsState(
@@ -431,7 +438,6 @@ fun SongListItem(
                     ) {
                         Box(
                             modifier = Modifier
-                                .width(40.dp)
                                 .fillMaxHeight()
                                 .background(color),
                             contentAlignment = Alignment.Center
@@ -1702,21 +1708,32 @@ fun YouTubeListItem(
             state = dismissState,
             backgroundContent = {
                 val target = dismissState.targetValue
+                var swipeStartTime = 0L
                 LaunchedEffect(key1 = target) {
                     when (target) {
                         SwipeToDismissBoxValue.StartToEnd -> {
-                            Toast.makeText(context, R.string.added_to_play_next, Toast.LENGTH_SHORT).show()
-                            if (item is SongItem) {
-                                playerConnection.playNext(listOf(item.toMediaItem()))
+                            val swipeEndTime = System.currentTimeMillis()
+                                if (swipeEndTime - swipeStartTime > 1000) {
+                                    Toast.makeText(context, R.string.play_next, Toast.LENGTH_SHORT)
+                                        .show()
+                                    playerConnection.playNext(listOf(item.toMediaItem()))
+                                }
                             }
                         }
                         SwipeToDismissBoxValue.EndToStart -> {
-                            Toast.makeText(context, R.string.added_to_queue, Toast.LENGTH_SHORT).show()
-                            if (item is SongItem) {
-                                playerConnection.addToQueue(listOf(item.toMediaItem()))
+                            val swipeEndTime = System.currentTimeMillis()
+                             if (swipeEndTime - swipeStartTime > 1000) {
+                                 Toast.makeText(context, R.string.add_to_queue, Toast.LENGTH_SHORT)
+                                     .show()
+                                 playerConnection.addToQueue(listOf(item.toMediaItem()))
+                             }
+                         }
+ 
+                         else -> {
+                             swipeStartTime =
+                                 System.currentTimeMillis()
                             }
                         }
-                        else -> {}
                     }
                 }
                 val color by animateColorAsState(
@@ -1743,7 +1760,6 @@ fun YouTubeListItem(
                     ) {
                         Box(
                             modifier = Modifier
-                                .width(72.dp)
                                 .fillMaxHeight()
                                 .background(color),
                             contentAlignment = Alignment.Center
