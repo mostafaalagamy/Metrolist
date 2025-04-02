@@ -43,12 +43,12 @@ import com.metrolist.music.playback.queues.YouTubeQueue
 import com.metrolist.music.ui.component.LocalMenuState
 import com.metrolist.music.ui.component.NavigationTitle
 import com.metrolist.music.ui.component.YouTubeListItem
-import com.metrolist.music.ui.component.YouTubeSongMenu
 import com.metrolist.music.ui.component.shimmer.GridItemPlaceHolder
 import com.metrolist.music.ui.component.shimmer.ShimmerHost
 import com.metrolist.music.ui.component.shimmer.TextPlaceholder
 import com.metrolist.music.ui.utils.SnapLayoutInfoProvider
 import com.metrolist.music.viewmodels.ChartsViewModel
+import com.metrolist.music.ui.menu.YouTubeSongMenu
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
