@@ -65,37 +65,34 @@ data class HomePage(
                         val title = renderer.title.runs?.firstOrNull()?.text ?: return null
                         val thumbnail = renderer.thumbnailRenderer.musicThumbnailRenderer?.getThumbnailUrl() ?: return null
 
-                        val artists = subtitleRuns
-                            .filter { it.navigationEndpoint?.browseEndpoint?.browseId != null }
-                            .mapNotNull {
-                                 if (it.navigationEndpoint?.browseEndpoint?.browseId?.startsWith("UC") == true) {
-                                     Artist(
-                                         name = it.text,
-                                         id = it.navigationEndpoint.browseEndpoint.browseId
-                                     )
-                                 } else {
-                                     null
-                                 }
-                            }
-                            .takeIf { it.isNotEmpty() } ?: return null
+                        val (artistRuns, albumRuns) = subtitleRuns.partition { run ->
+                             run.navigationEndpoint?.browseEndpoint?.browseId?.startsWith("UC") == true
+                         }
+ 
+                         val artists = artistRuns.map {
+                             Artist(
+                                 name = it.text,
+                                 id = it.navigationEndpoint?.browseEndpoint?.browseId
+                             )
+                         }.takeIf { it.isNotEmpty() } ?: return null
 
                         SongItem(
                             id = videoId,
                             title = title,
                             artists = artists,
-                            album = subtitleRuns.firstOrNull { run ->
-                                run.navigationEndpoint?.browseEndpoint?.browseId != null &&
-                                        !artists.any { it.name == run.text }
-                            }?.let {
-                                it.navigationEndpoint?.browseEndpoint?.let { it1 ->
+                            album = albumRuns.firstOrNull {
+                                 it.navigationEndpoint?.browseEndpoint?.browseId?.startsWith("MPREb_") == true
+                             }?.let { run ->
+                                 run.navigationEndpoint?.browseEndpoint?.let { endpoint ->
                                      Album(
-                                         name = it.text,
-                                         id = it1.browseId
+                                         name = run.text,
+                                         id = endpoint.browseId
                                     )
                                 }
                             },
                             duration = null,
-                            thumbnail = thumbnail,
+                            thumbnail = renderer.thumbnailRenderer.musicThumbnailRenderer?.getThumbnailUrl()
+                                 ?: return null,
                             explicit = renderer.subtitleBadges?.any {
                                 it.musicInlineBadgeRenderer?.icon?.iconType == "MUSIC_EXPLICIT_BADGE"
                             } == true
@@ -216,5 +213,8 @@ data class HomePage(
                 }
             }
         }
+    }
+    enum class SectionType {
+         LIST, GRID
     }
 }
