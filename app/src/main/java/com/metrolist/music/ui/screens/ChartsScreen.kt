@@ -47,7 +47,6 @@ import com.metrolist.music.ui.menu.YouTubeSongMenu
 fun ChartsScreen(
     navController: NavController,
     viewModel: ChartsViewModel = hiltViewModel(),
-    isSwipeable: Boolean = false
 ) {
     val menuState = LocalMenuState.current
     val haptic = LocalHapticFeedback.current
