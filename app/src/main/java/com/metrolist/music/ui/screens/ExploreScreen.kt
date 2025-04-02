@@ -1,34 +1,27 @@
 package com.metrolist.music.ui.screens
 
-import android.annotation.SuppressLint
-import androidx.compose.animation.animateItem
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -53,11 +46,7 @@ import com.metrolist.music.ui.menu.YouTubeSongMenu
 import com.metrolist.music.ui.utils.SnapLayoutInfoProvider
 import com.metrolist.music.viewmodels.ChartsViewModel
 import com.metrolist.music.viewmodels.ExploreViewModel
-import kotlin.math.min
 
-private val MoodAndGenresButtonHeight = 48.dp
-
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun ExploreScreen(
@@ -70,66 +59,106 @@ fun ExploreScreen(
     val playerConnection = LocalPlayerConnection.current ?: return
     val isPlaying by playerConnection.isPlaying.collectAsState()
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
-    val layoutDirection = LocalLayoutDirection.current
 
     val explorePage by exploreViewModel.explorePage.collectAsState()
     val chartsPage by chartsViewModel.chartsPage.collectAsState()
     val isLoading by chartsViewModel.isLoading.collectAsState()
+    val error by chartsViewModel.error.collectAsState()
 
+    val lazyListState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
     val scrollState = rememberScrollState()
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(stringResource(R.string.explore)) },
-                navigationIcon = {
-                    IconButton(onClick = { navController.navigateUp() }) {
-                        Icon(
-                            painter = painterResource(R.drawable.arrow_back),
-                            contentDescription = null
+    LaunchedEffect(Unit) {
+        if (chartsPage == null) {
+            chartsViewModel.loadCharts()
+        }
+    }
+
+    BoxWithConstraints(
+        modifier = Modifier.fillMaxSize(),
+    ) {
+        LazyColumn(
+            state = lazyListState,
+            contentPadding = LocalPlayerAwareWindowInsets.current
+                .only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom)
+                .asPaddingValues(),
+        ) {
+            // Charts Section
+            if (isLoading && chartsPage == null) {
+                item {
+                    ShimmerHost(
+                        modifier = Modifier.animateItem(),
+                    ) {
+                        TextPlaceholder(
+                            height = 36.dp,
+                            modifier = Modifier
+                                .padding(12.dp)
+                                .fillMaxWidth(0.5f),
                         )
+                        LazyHorizontalGrid(
+                            rows = GridCells.Fixed(4),
+                            contentPadding = WindowInsets.systemBars
+                                .only(WindowInsetsSides.Horizontal)
+                                .asPaddingValues(),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(ListItemHeight * 4),
+                        ) {
+                            items(4) {
+                                Row(
+                                    modifier = Modifier
+                                        .width(maxWidth * 0.475f)
+                                        .padding(8.dp),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                ) {
+                                    Box(
+                                        modifier = Modifier
+                                            .size(ListItemHeight - 16.dp)
+                                            .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f)),
+                                    )
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Column(
+                                        modifier = Modifier.fillMaxHeight(),
+                                        verticalArrangement = Arrangement.Center,
+                                    ) {
+                                        Box(
+                                            modifier = Modifier
+                                                .height(16.dp)
+                                                .width(120.dp)
+                                                .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f)),
+                                        )
+                                        Spacer(modifier = Modifier.height(8.dp))
+                                        Box(
+                                            modifier = Modifier
+                                                .height(12.dp)
+                                                .width(80.dp)
+                                                .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f)),
+                                        )
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
-            )
-        }
-    ) { paddingValues ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-        ) {
-            Column(
-                modifier = Modifier.verticalScroll(scrollState),
-            ) {
-                Spacer(
-                    Modifier.height(
-                        LocalPlayerAwareWindowInsets.current.asPaddingValues().calculateTopPadding(),
-                    ),
-                )
+            }
 
-                // Charts Section
-                chartsPage?.sections?.forEach { section ->
+            chartsPage?.sections?.forEach { section ->
+                item {
                     NavigationTitle(
                         title = section.title ?: stringResource(R.string.charts),
                         modifier = Modifier.animateItem(),
                     )
+                }
 
-                    val horizontalLazyGridItemWidthFactor = 0.475f
-                    val horizontalLazyGridItemWidth = with(LocalDensity.current) {
-                        (LocalPlayerAwareWindowInsets.current.asPaddingValues().calculateLeftPadding() +
-                                LocalPlayerAwareWindowInsets.current.asPaddingValues().calculateRightPadding() +
-                                (LocalDensity.current.density * 320).dp) * horizontalLazyGridItemWidthFactor
-                    }
-
+                item {
                     val lazyGridState = rememberLazyGridState()
-                    val snapLayoutInfoProvider = remember(lazyGridState, layoutDirection) {
+                    val snapLayoutInfoProvider = remember(lazyGridState) {
                         SnapLayoutInfoProvider(
                             lazyGridState = lazyGridState,
                             positionInLayout = { layoutSize, itemSize ->
-                                (layoutSize * horizontalLazyGridItemWidthFactor / 2f - itemSize / 2f)
+                                (layoutSize * 0.475f / 2f - itemSize / 2f)
                             },
-                            layoutDirection = layoutDirection
                         )
                     }
 
@@ -142,7 +171,8 @@ fun ExploreScreen(
                             .asPaddingValues(),
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(ListItemHeight * 4),
+                            .height(ListItemHeight * 4)
+                            .animateItem(),
                     ) {
                         items(
                             items = section.items.filterIsInstance<SongItem>(),
@@ -152,7 +182,6 @@ fun ExploreScreen(
                                 item = song,
                                 isActive = song.id == mediaMetadata?.id,
                                 isPlaying = isPlaying,
-                                isSwipeable = false,
                                 trailingContent = {
                                     IconButton(
                                         onClick = {
@@ -172,7 +201,7 @@ fun ExploreScreen(
                                     }
                                 },
                                 modifier = Modifier
-                                    .width(horizontalLazyGridItemWidth)
+                                    .width(maxWidth * 0.475f)
                                     .combinedClickable(
                                         onClick = {
                                             if (song.id == mediaMetadata?.id) {
@@ -201,16 +230,20 @@ fun ExploreScreen(
                         }
                     }
                 }
+            }
 
-                // Original Explore Content
-                explorePage?.newReleaseAlbums?.let { newReleaseAlbums ->
+            // New Release Albums Section
+            explorePage?.newReleaseAlbums?.let { newReleaseAlbums ->
+                item {
                     NavigationTitle(
                         title = stringResource(R.string.new_release_albums),
                         onClick = {
                             navController.navigate("new_release")
                         },
                     )
+                }
 
+                item {
                     LazyRow(
                         contentPadding = WindowInsets.systemBars
                             .only(WindowInsetsSides.Horizontal)
@@ -246,15 +279,20 @@ fun ExploreScreen(
                         }
                     }
                 }
+            }
 
-                explorePage?.moodAndGenres?.let { moodAndGenres ->
+            // Mood and Genres Section
+            explorePage?.moodAndGenres?.let { moodAndGenres ->
+                item {
                     NavigationTitle(
                         title = stringResource(R.string.mood_and_genres),
                         onClick = {
                             navController.navigate("mood_and_genres")
                         },
                     )
+                }
 
+                item {
                     LazyHorizontalGrid(
                         rows = GridCells.Fixed(4),
                         contentPadding = PaddingValues(6.dp),
@@ -272,15 +310,12 @@ fun ExploreScreen(
                             )
                         }
                     }
-                    Spacer(
-                        Modifier.height(
-                            LocalPlayerAwareWindowInsets.current.asPaddingValues()
-                                .calculateBottomPadding()
-                        )
-                    )
                 }
+            }
 
-                if (explorePage == null) {
+            // Shimmer Loading for Explore Page
+            if (explorePage == null) {
+                item {
                     ShimmerHost {
                         TextPlaceholder(
                             height = 36.dp,
@@ -315,5 +350,37 @@ fun ExploreScreen(
                 }
             }
         }
+
+        if (error != null) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(
+                    text = error ?: stringResource(R.string.error_unknown),
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.error,
+                )
+            }
+        }
+    }
+}
+
+// Assuming MoodAndGenresButtonHeight is defined elsewhere, if not, define it
+private val MoodAndGenresButtonHeight = 48.dp
+
+@Composable
+fun MoodAndGenresButton(
+    title: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Button(
+        onClick = onClick,
+        modifier = modifier,
+    ) {
+        Text(text = title)
     }
 }
