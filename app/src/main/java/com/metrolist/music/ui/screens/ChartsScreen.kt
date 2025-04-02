@@ -192,7 +192,7 @@ fun ChartsScreen(
                             ) { song ->
                                 val mediaItem = song.toMediaMetadata()
                                 SongListItem(
-                                     item = song,
+                                     song = mediaItem,
                                      isActive = song.id == mediaMetadata?.id,
                                      isPlaying = isPlaying,
                                      isSwipeable = false,
