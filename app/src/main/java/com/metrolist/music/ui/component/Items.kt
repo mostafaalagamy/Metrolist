@@ -1523,7 +1523,72 @@ fun YouTubeListItem(
     modifier: Modifier = Modifier,
     albumIndex: Int? = null,
     isSelected: Boolean = false,
-    badges: @Composable RowScope.() -> Unit = { ... },
+    badges: @Composable RowScope.() -> Unit = {
+        val database = LocalDatabase.current
+        val song by database.song(item.id).collectAsState(initial = null)
+        val album by database.album(item.id).collectAsState(initial = null)
+
+        if (item is SongItem &&
+            song?.song?.liked == true ||
+            item is AlbumItem &&
+            album?.album?.bookmarkedAt != null
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.favorite),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.error,
+                modifier =
+                Modifier
+                    .size(18.dp)
+                    .padding(end = 2.dp),
+            )
+        }
+        if (item.explicit) {
+            Icon(
+                painter = painterResource(R.drawable.explicit),
+                contentDescription = null,
+                modifier =
+                Modifier
+                    .size(18.dp)
+                    .padding(end = 2.dp),
+            )
+        }
+        if (item is SongItem && song?.song?.inLibrary != null) {
+            Icon(
+                painter = painterResource(R.drawable.library_add_check),
+                contentDescription = null,
+                modifier =
+                Modifier
+                    .size(18.dp)
+                    .padding(end = 2.dp),
+            )
+        }
+        if (item is SongItem) {
+            val downloads by LocalDownloadUtil.current.downloads.collectAsState()
+            when (downloads[item.id]?.state) {
+                STATE_COMPLETED ->
+                    Icon(
+                        painter = painterResource(R.drawable.offline),
+                        contentDescription = null,
+                        modifier =
+                        Modifier
+                            .size(18.dp)
+                            .padding(end = 2.dp),
+                    )
+
+                STATE_QUEUED, STATE_DOWNLOADING ->
+                    CircularProgressIndicator(
+                        strokeWidth = 2.dp,
+                        modifier =
+                        Modifier
+                            .size(16.dp)
+                            .padding(end = 2.dp),
+                    )
+
+                else -> {}
+            }
+        }
+    },
     isActive: Boolean = false,
     isPlaying: Boolean = false,
     trailingContent: @Composable RowScope.() -> Unit = {},
@@ -1702,7 +1767,6 @@ fun YouTubeListItem(
         ListItemContent()
     }
 }
-
 @SuppressLint("SuspiciousIndentation")
 @Composable
 fun YouTubeGridItem(
@@ -1965,7 +2029,6 @@ fun YouTubeGridItem(
         }
     }
 }
-
 @Composable
 fun YouTubeSmallGridItem(
     item: YTItem,
