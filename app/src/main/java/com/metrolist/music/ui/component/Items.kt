@@ -1709,7 +1709,7 @@ fun YouTubeListItem(
             backgroundContent = {
                 val target = dismissState.targetValue
                 var swipeStartTime = 0L
-                LaunchedEffect(key1 = target) {
+                LaunchedEffect(target) {
                     when (target) {
                         SwipeToDismissBoxValue.StartToEnd -> {
                             val swipeEndTime = System.currentTimeMillis()
@@ -1717,22 +1717,21 @@ fun YouTubeListItem(
                                 Toast.makeText(context, R.string.play_next, Toast.LENGTH_SHORT)
                                     .show()
                                 playerConnection.playNext(listOf(item.toMediaItem()))
-                                
                             }
                         }
+
                         SwipeToDismissBoxValue.EndToStart -> {
                             val swipeEndTime = System.currentTimeMillis()
-                             if (swipeEndTime - swipeStartTime > 1000) {
-                                 Toast.makeText(context, R.string.add_to_queue, Toast.LENGTH_SHORT)
-                                     .show()
-                                 playerConnection.addToQueue(listOf(item.toMediaItem()))
-                             }
-                         }
- 
-                         else -> {
-                             swipeStartTime =
-                                 System.currentTimeMillis()
+                            if (swipeEndTime - swipeStartTime > 1000) {
+                                Toast.makeText(context, R.string.add_to_queue, Toast.LENGTH_SHORT)
+                                    .show()
+                                playerConnection.addToQueue(listOf(item.toMediaItem()))
                             }
+                        }
+
+                        else -> {
+                            swipeStartTime =
+                                System.currentTimeMillis()
                         }
                     }
                 }
