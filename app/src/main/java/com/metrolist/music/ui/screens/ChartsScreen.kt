@@ -173,8 +173,9 @@ fun ChartsScreen(
                             key = { it.id },
                         ) { song ->
                             SongListItem(
-                                item = song,
-                                isActive = song.id == mediaMetadata?.id,
+                                song = song!!,
+                                showInLibraryIcon = true,
+                                isActive = song!!.id == mediaMetadata?.id,
                                 isPlaying = isPlaying,
                                 isSwipeable = false,
                                 trailingContent = {
@@ -182,16 +183,16 @@ fun ChartsScreen(
                                         onClick = {
                                             menuState.show {
                                                 YouTubeSongMenu(
-                                                    song = song,
+                                                    song = song!!,
                                                     navController = navController,
-                                                    onDismiss = menuState::dismiss,
+                                                    onDismiss = menuState::dismiss
                                                 )
                                             }
-                                        },
+                                        }
                                     ) {
                                         Icon(
                                             painter = painterResource(R.drawable.more_vert),
-                                            contentDescription = null,
+                                            contentDescription = null
                                         )
                                     }
                                 },
@@ -199,7 +200,7 @@ fun ChartsScreen(
                                     .width(horizontalLazyGridItemWidth)
                                     .combinedClickable(
                                         onClick = {
-                                            if (song.id == mediaMetadata?.id) {
+                                            if (song!!.id == mediaMetadata?.id) {
                                                 playerConnection.player.togglePlayPause()
                                             } else {
                                                 playerConnection.playQueue(
@@ -214,9 +215,9 @@ fun ChartsScreen(
                                             haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                                             menuState.show {
                                                 YouTubeSongMenu(
-                                                    song = song,
+                                                    song = song!!,
                                                     navController = navController,
-                                                    onDismiss = menuState::dismiss,
+                                                    onDismiss = menuState::dismiss
                                                 )
                                             }
                                         },
