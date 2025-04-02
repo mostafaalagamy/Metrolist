@@ -476,7 +476,7 @@ fun HomeScreen(
                             }) * rows)
                             .animateItem()
                     ) {
-                        items(keepListening) {
+                        items(keepListening.drop(1)) {
                             localGridItem(it)
                         }
                     }
@@ -671,10 +671,11 @@ fun HomeScreen(
                         },
                         onClick = it.endpoint?.browseId?.let { browseId ->
                             {
-                                if (browseId == "FEmusic_moods_and_genres")
-                                    navController.navigate("mood_and_genres")
-                                else
-                                    navController.navigate("browse/$browseId")
+                                when (browseId) {
+                                    "FEmusic_moods_and_genres" -> navController.navigate("mood_and_genres")
+                                    "FEmusic_charts" -> navController.navigate("charts_screen")
+                                    else -> navController.navigate("browse/$browseId")
+                                }
                             }
                         },
                         modifier = Modifier.animateItem()
