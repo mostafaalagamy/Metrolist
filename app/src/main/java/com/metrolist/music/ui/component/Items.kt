@@ -1,15 +1,14 @@
-@file:OptIn(ExperimentalFoundationApi::class)
-
 package com.metrolist.music.ui.component
 
 import android.annotation.SuppressLint
+import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandIn
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkOut
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
@@ -32,10 +31,14 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SwipeToDismissBox
+import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -48,6 +51,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
@@ -89,6 +93,7 @@ import com.metrolist.music.db.entities.Album
 import com.metrolist.music.db.entities.Artist
 import com.metrolist.music.db.entities.Playlist
 import com.metrolist.music.db.entities.Song
+import com.metrolist.music.extensions.toMediaItem
 import com.metrolist.music.models.MediaMetadata
 import com.metrolist.music.playback.queues.LocalAlbumRadio
 import com.metrolist.music.ui.theme.extractThemeColor
@@ -100,6 +105,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.logging.Logger
 
 @Composable
 inline fun ListItem(
@@ -316,6 +322,7 @@ fun SongListItem(
     showInLibraryIcon: Boolean = false,
     showDownloadIcon: Boolean = true,
     isSelected: Boolean = false,
+    isSwipeable: Boolean = true,
     badges: @Composable RowScope.() -> Unit = {
         if (showLikedIcon && song.song.liked) {
             Icon(
@@ -368,91 +375,267 @@ fun SongListItem(
     isActive: Boolean = false,
     isPlaying: Boolean = false,
     trailingContent: @Composable RowScope.() -> Unit = {},
-) = ListItem(
-    title = song.song.title,
-    subtitle =
-    joinByBullet(
-        song.artists.joinToString { it.name },
-        makeTimeString(song.song.duration * 1000L),
-    ),
-    badges = badges,
-    thumbnailContent = {
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier.size(ListThumbnailSize),
-        ) {
-            if (albumIndex != null) {
-                AnimatedVisibility(
-                    visible = !isActive,
-                    enter = fadeIn() + expandIn(expandFrom = Alignment.Center),
-                    exit = shrinkOut(shrinkTowards = Alignment.Center) + fadeOut(),
-                ) {
-                    if (isSelected) {
-                        Icon(
-                            painter = painterResource(R.drawable.done),
-                            modifier = Modifier.align(Alignment.Center),
-                            contentDescription = null,
-                        )
-                    } else {
-                        Text(
-                            text = albumIndex.toString(),
-                            style = MaterialTheme.typography.labelLarge,
-                        )
+) {
+    if (isSwipeable) {
+        val context = LocalContext.current
+        val playerConnection = LocalPlayerConnection.current ?: return
+
+        val dismissState = rememberSwipeToDismissBoxState(confirmValueChange = { false })
+        val colorScheme = MaterialTheme.colorScheme
+
+        SwipeToDismissBox(
+            state = dismissState,
+            backgroundContent = {
+                val target = dismissState.targetValue
+                var swipeStartTime = 0L
+                LaunchedEffect(target) {
+                    when (target) {
+                        SwipeToDismissBoxValue.StartToEnd -> {
+                            val swipeEndTime = System.currentTimeMillis()
+                             if (swipeEndTime - swipeStartTime > 1000) {
+                                 Toast.makeText(context, R.string.play_next, Toast.LENGTH_SHORT)
+                                     .show()
+                                 playerConnection.playNext(listOf(song.toMediaItem()))
+                             }
+                        }
+
+                        SwipeToDismissBoxValue.EndToStart -> {
+                            val swipeEndTime = System.currentTimeMillis()
+                             if (swipeEndTime - swipeStartTime > 1000) {
+                                 Toast.makeText(context, R.string.add_to_queue, Toast.LENGTH_SHORT)
+                                     .show()
+                                 playerConnection.addToQueue(listOf(song.toMediaItem()))
+                             }
+                         }
+                         else -> {
+                             swipeStartTime = System.currentTimeMillis()
+                         }
+                     }
+                }
+                val color by
+                animateColorAsState(
+                    when (dismissState.targetValue) {
+                        SwipeToDismissBoxValue.Settled -> Color.Transparent
+                        SwipeToDismissBoxValue.StartToEnd -> colorScheme.primary
+                        SwipeToDismissBoxValue.EndToStart -> colorScheme.primary
+                    }
+                )
+                val icon = when (target) {
+                    SwipeToDismissBoxValue.StartToEnd -> R.drawable.playlist_play
+                    SwipeToDismissBoxValue.EndToStart -> R.drawable.queue_music
+                    else -> null
+                }
+                when (target) {
+                    SwipeToDismissBoxValue.StartToEnd -> Arrangement.Start
+                    SwipeToDismissBoxValue.EndToStart -> Arrangement.End
+                    else -> null
+                }?.let {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxSize(),
+                        horizontalArrangement = it,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxHeight()
+                                .background(color),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            icon?.let {
+                                Icon(
+                                    painter = painterResource(id = it),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(24.dp),
+                                    tint = Color.White
+                                )
+                            }
+                        }
                     }
                 }
-            } else {
-                if (isSelected) {
+            }
+
+        ) {
+
+            ListItem(
+                title = song.song.title,
+                subtitle =
+                joinByBullet(
+                    song.artists.joinToString { it.name },
+                    makeTimeString(song.song.duration * 1000L),
+                ),
+                badges = badges,
+                thumbnailContent = {
                     Box(
                         contentAlignment = Alignment.Center,
+                        modifier = Modifier.size(ListThumbnailSize),
+                    ) {
+                        if (albumIndex != null) {
+                            androidx.compose.animation.AnimatedVisibility(
+                                visible = !isActive,
+                                enter = fadeIn() + expandIn(expandFrom = Alignment.Center),
+                                exit = shrinkOut(shrinkTowards = Alignment.Center) + fadeOut(),
+                            ) {
+                                if (isSelected) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.done),
+                                        modifier = Modifier.align(Alignment.Center),
+                                        contentDescription = null,
+                                    )
+                                } else {
+                                    Text(
+                                        text = albumIndex.toString(),
+                                        style = MaterialTheme.typography.labelLarge,
+                                    )
+                                }
+                            }
+                        } else {
+                            if (isSelected) {
+                                Box(
+                                    contentAlignment = Alignment.Center,
+                                    modifier =
+                                    Modifier
+                                        .fillMaxSize()
+                                        .zIndex(1000f)
+                                        .clip(RoundedCornerShape(ThumbnailCornerRadius))
+                                        .background(Color.Black.copy(alpha = 0.5f)),
+                                ) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.done),
+                                        modifier = Modifier.align(Alignment.Center),
+                                        contentDescription = null,
+                                    )
+                                }
+                            }
+                            AsyncImage(
+                                model = song.song.thumbnailUrl,
+                                contentDescription = null,
+                                modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .clip(RoundedCornerShape(ThumbnailCornerRadius)),
+                            )
+                        }
+
+                        PlayingIndicatorBox(
+                            isActive = isActive,
+                            playWhenReady = isPlaying,
+                            color = if (albumIndex != null) MaterialTheme.colorScheme.onBackground else Color.White,
+                            modifier =
+                            Modifier
+                                .fillMaxSize()
+                                .background(
+                                    color =
+                                    if (albumIndex != null) {
+                                        Color.Transparent
+                                    } else {
+                                        Color.Black.copy(
+                                            alpha = 0.4f,
+                                        )
+                                    },
+                                    shape = RoundedCornerShape(ThumbnailCornerRadius),
+                                ),
+                        )
+                    }
+
+                },
+
+                trailingContent = trailingContent,
+                modifier = modifier,
+                isActive = isActive,
+            )
+        }
+    }else{
+        ListItem(
+            title = song.song.title,
+            subtitle =
+            joinByBullet(
+                song.artists.joinToString { it.name },
+                makeTimeString(song.song.duration * 1000L),
+            ),
+            badges = badges,
+            thumbnailContent = {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier.size(ListThumbnailSize),
+                ) {
+                    if (albumIndex != null) {
+                        androidx.compose.animation.AnimatedVisibility(
+                            visible = !isActive,
+                            enter = fadeIn() + expandIn(expandFrom = Alignment.Center),
+                            exit = shrinkOut(shrinkTowards = Alignment.Center) + fadeOut(),
+                        ) {
+                            if (isSelected) {
+                                Icon(
+                                    painter = painterResource(R.drawable.done),
+                                    modifier = Modifier.align(Alignment.Center),
+                                    contentDescription = null,
+                                )
+                            } else {
+                                Text(
+                                    text = albumIndex.toString(),
+                                    style = MaterialTheme.typography.labelLarge,
+                                )
+                            }
+                        }
+                    } else {
+                        if (isSelected) {
+                            Box(
+                                contentAlignment = Alignment.Center,
+                                modifier =
+                                Modifier
+                                    .fillMaxSize()
+                                    .zIndex(1000f)
+                                    .clip(RoundedCornerShape(ThumbnailCornerRadius))
+                                    .background(Color.Black.copy(alpha = 0.5f)),
+                            ) {
+                                Icon(
+                                    painter = painterResource(R.drawable.done),
+                                    modifier = Modifier.align(Alignment.Center),
+                                    contentDescription = null,
+                                )
+                            }
+                        }
+                        AsyncImage(
+                            model = song.song.thumbnailUrl,
+                            contentDescription = null,
+                            modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(ThumbnailCornerRadius)),
+                        )
+                    }
+
+                    PlayingIndicatorBox(
+                        isActive = isActive,
+                        playWhenReady = isPlaying,
+                        color = if (albumIndex != null) MaterialTheme.colorScheme.onBackground else Color.White,
                         modifier =
                         Modifier
                             .fillMaxSize()
-                            .zIndex(1000f)
-                            .clip(RoundedCornerShape(ThumbnailCornerRadius))
-                            .background(Color.Black.copy(alpha = 0.5f)),
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.done),
-                            modifier = Modifier.align(Alignment.Center),
-                            contentDescription = null,
-                        )
-                    }
+                            .background(
+                                color =
+                                if (albumIndex != null) {
+                                    Color.Transparent
+                                } else {
+                                    Color.Black.copy(
+                                        alpha = 0.4f,
+                                    )
+                                },
+                                shape = RoundedCornerShape(ThumbnailCornerRadius),
+                            ),
+                    )
                 }
-                AsyncImage(
-                    model = song.song.thumbnailUrl,
-                    contentDescription = null,
-                    modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(ThumbnailCornerRadius)),
-                )
-            }
 
-            PlayingIndicatorBox(
-                isActive = isActive,
-                playWhenReady = isPlaying,
-                color = if (albumIndex != null) MaterialTheme.colorScheme.onBackground else Color.White,
-                modifier =
-                Modifier
-                    .fillMaxSize()
-                    .background(
-                        color =
-                        if (albumIndex != null) {
-                            Color.Transparent
-                        } else {
-                            Color.Black.copy(
-                                alpha = 0.4f,
-                            )
-                        },
-                        shape = RoundedCornerShape(ThumbnailCornerRadius),
-                    ),
-            )
-        }
-    },
-    trailingContent = trailingContent,
-    modifier = modifier,
-    isActive = isActive,
-)
+            },
+
+            trailingContent = trailingContent,
+            modifier = modifier,
+            isActive = isActive,
+        )
+    }
+    }
+
 
 @Composable
 fun SongGridItem(
@@ -1339,7 +1522,7 @@ fun MediaMetadataListItem(
     modifier = modifier,
     isActive = isActive,
 )
-
+@ExperimentalMaterial3Api
 @Composable
 fun YouTubeListItem(
     item: YTItem,
@@ -1415,100 +1598,178 @@ fun YouTubeListItem(
     isActive: Boolean = false,
     isPlaying: Boolean = false,
     trailingContent: @Composable RowScope.() -> Unit = {},
-) = ListItem(
-    title = item.title,
-    subtitle =
-    when (item) {
-        is SongItem -> joinByBullet(
-            item.artists.joinToString { it.name },
-            makeTimeString(item.duration?.times(1000L))
-        )
-
-        is AlbumItem -> joinByBullet(item.artists?.joinToString { it.name }, item.year?.toString())
-        is ArtistItem -> null
-        is PlaylistItem -> joinByBullet(item.author?.name, item.songCountText)
-    },
-    badges = badges,
-    thumbnailContent = {
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier.size(ListThumbnailSize),
-        ) {
-            val thumbnailShape =
-                if (item is ArtistItem) CircleShape else RoundedCornerShape(ThumbnailCornerRadius)
-            if (albumIndex != null) {
-                AnimatedVisibility(
-                    visible = !isActive,
-                    enter = fadeIn() + expandIn(expandFrom = Alignment.Center),
-                    exit = shrinkOut(shrinkTowards = Alignment.Center) + fadeOut(),
+    isSwipeable: Boolean = true,
+) {
+    @Composable
+    fun ListItemContent() {
+        ListItem(
+            title = item.title,
+            subtitle =
+            when (item) {
+                is SongItem -> joinByBullet(
+                    item.artists.joinToString { it.name },
+                    makeTimeString(item.duration?.times(1000L))
+                )
+                is AlbumItem -> joinByBullet(
+                    item.artists?.joinToString { it.name },
+                    item.year?.toString()
+                )
+                is ArtistItem -> null
+                is PlaylistItem -> joinByBullet(item.author?.name, item.songCountText)
+            },
+            badges = badges,
+            thumbnailContent = {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier.size(ListThumbnailSize),
                 ) {
-                    if (isSelected) {
-                        Icon(
-                            painter = painterResource(R.drawable.done),
-                            modifier = Modifier.align(Alignment.Center),
-                            contentDescription = null,
-                        )
+                    val thumbnailShape =
+                        if (item is ArtistItem) CircleShape else RoundedCornerShape(ThumbnailCornerRadius)
+                    if (albumIndex != null) {
+                        AnimatedVisibility(
+                            visible = !isActive,
+                            enter = fadeIn() + expandIn(expandFrom = Alignment.Center),
+                            exit = shrinkOut(shrinkTowards = Alignment.Center) + fadeOut(),
+                        ) {
+                            if (isSelected) {
+                                Icon(
+                                    painter = painterResource(R.drawable.done),
+                                    modifier = Modifier.align(Alignment.Center),
+                                    contentDescription = null,
+                                )
+                            } else {
+                                Text(
+                                    text = albumIndex.toString(),
+                                    style = MaterialTheme.typography.labelLarge,
+                                )
+                            }
+                        }
                     } else {
-                        Text(
-                            text = albumIndex.toString(),
-                            style = MaterialTheme.typography.labelLarge,
+                        if (isSelected) {
+                            Box(
+                                contentAlignment = Alignment.Center,
+                                modifier =
+                                Modifier
+                                    .fillMaxSize()
+                                    .zIndex(1000f)
+                                    .clip(RoundedCornerShape(ThumbnailCornerRadius))
+                                    .background(Color.Black.copy(alpha = 0.5f)),
+                            ) {
+                                Icon(
+                                    painter = painterResource(R.drawable.done),
+                                    modifier = Modifier.align(Alignment.Center),
+                                    contentDescription = null,
+                                )
+                            }
+                        }
+                        AsyncImage(
+                            model = item.thumbnail,
+                            contentDescription = null,
+                            modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .clip(thumbnailShape),
                         )
                     }
-                }
-            } else {
-                if (isSelected) {
-                    Box(
-                        contentAlignment = Alignment.Center,
+
+                    PlayingIndicatorBox(
+                        isActive = isActive,
+                        playWhenReady = isPlaying,
+                        color = if (albumIndex != null) MaterialTheme.colorScheme.onBackground else Color.White,
                         modifier =
                         Modifier
                             .fillMaxSize()
-                            .zIndex(1000f)
-                            .clip(RoundedCornerShape(ThumbnailCornerRadius))
-                            .background(Color.Black.copy(alpha = 0.5f)),
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.done),
-                            modifier = Modifier.align(Alignment.Center),
-                            contentDescription = null,
-                        )
+                            .background(
+                                color =
+                                if (albumIndex != null) {
+                                    Color.Transparent
+                                } else {
+                                    Color.Black.copy(alpha = 0.4f)
+                                },
+                                shape = thumbnailShape,
+                            ),
+                    )
+                }
+            },
+            trailingContent = trailingContent,
+            modifier = modifier,
+            isActive = isActive,
+        )
+    }
+
+    if (isSwipeable) {
+        val context = LocalContext.current
+        val playerConnection = LocalPlayerConnection.current ?: return
+
+        val dismissState = rememberSwipeToDismissBoxState(confirmValueChange = { false })
+        val colorScheme = MaterialTheme.colorScheme
+
+        SwipeToDismissBox(
+            state = dismissState,
+            backgroundContent = {
+                val target = dismissState.targetValue
+                var swipeStartTime = 0L
+                LaunchedEffect(key1 = target) {
+                    when (target) {
+                        SwipeToDismissBoxValue.StartToEnd, SwipeToDismissBoxValue.EndToStart -> {
+                            val swipeEndTime = System.currentTimeMillis()
+                            if (swipeEndTime - swipeStartTime > 1000 && item is SongItem) {
+                                Toast.makeText(context, R.string.added_to_queue, Toast.LENGTH_SHORT).show()
+                                playerConnection.addToQueue(listOf(item.toMediaItem()))
+                            }
+                        }
+                        else -> {
+                            swipeStartTime = System.currentTimeMillis()
+                        }
                     }
                 }
-                AsyncImage(
-                    model = item.thumbnail,
-                    contentDescription = null,
-                    modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .clip(thumbnailShape),
+                val color by animateColorAsState(
+                    when (dismissState.targetValue) {
+                        SwipeToDismissBoxValue.Settled -> Color.Transparent
+                        SwipeToDismissBoxValue.StartToEnd -> colorScheme.primary
+                        SwipeToDismissBoxValue.EndToStart -> colorScheme.primary
+                    }
                 )
+                val icon = when (target) {
+                    SwipeToDismissBoxValue.StartToEnd -> R.drawable.playlist_play
+                    SwipeToDismissBoxValue.EndToStart -> R.drawable.queue_music
+                    else -> null
+                }
+                when (target) {
+                    SwipeToDismissBoxValue.StartToEnd -> Arrangement.Start
+                    SwipeToDismissBoxValue.EndToStart -> Arrangement.End
+                    else -> null
+                }?.let {
+                    Row(
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalArrangement = it,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxHeight()
+                                .background(color),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            icon?.let {
+                                Icon(
+                                    painter = painterResource(id = it),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(24.dp),
+                                    tint = Color.White
+                                )
+                            }
+                        }
+                    }
+                }
             }
-
-            PlayingIndicatorBox(
-                isActive = isActive,
-                playWhenReady = isPlaying,
-                color = if (albumIndex != null) MaterialTheme.colorScheme.onBackground else Color.White,
-                modifier =
-                Modifier
-                    .fillMaxSize()
-                    .background(
-                        color =
-                        if (albumIndex != null) {
-                            Color.Transparent
-                        } else {
-                            Color.Black.copy(
-                                alpha = 0.4f,
-                            )
-                        },
-                        shape = thumbnailShape,
-                    ),
-            )
+        ) {
+            ListItemContent()
         }
-    },
-    trailingContent = trailingContent,
-    modifier = modifier,
-    isActive = isActive,
-)
-
+    } else {
+        ListItemContent()
+    }
+}
 @SuppressLint("SuspiciousIndentation")
 @Composable
 fun YouTubeGridItem(
@@ -1771,7 +2032,6 @@ fun YouTubeGridItem(
         }
     }
 }
-
 @Composable
 fun YouTubeSmallGridItem(
     item: YTItem,

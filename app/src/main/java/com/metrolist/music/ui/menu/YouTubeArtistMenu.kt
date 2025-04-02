@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.systemBars
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -26,6 +27,7 @@ import com.metrolist.music.ui.component.GridMenu
 import com.metrolist.music.ui.component.GridMenuItem
 import com.metrolist.music.ui.component.YouTubeListItem
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun YouTubeArtistMenu(
     artist: ArtistItem,

@@ -411,6 +411,7 @@ fun HomeScreen(
                                 showInLibraryIcon = true,
                                 isActive = song!!.id == mediaMetadata?.id,
                                 isPlaying = isPlaying,
+                                isSwipeable = false,
                                 trailingContent = {
                                     IconButton(
                                         onClick = {
@@ -477,7 +478,7 @@ fun HomeScreen(
                             }) * rows)
                             .animateItem()
                     ) {
-                        items(keepListening) {
+                        items(keepListening.drop(1)) {
                             localGridItem(it)
                         }
                     }
@@ -557,6 +558,26 @@ fun HomeScreen(
                                 showInLibraryIcon = true,
                                 isActive = song!!.id == mediaMetadata?.id,
                                 isPlaying = isPlaying,
+                                isSwipeable = false,
+                                trailingContent = {
+                                    IconButton(
+                                        onClick = {
+                                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                            menuState.show {
+                                                SongMenu(
+                                                    originalSong = song!!,
+                                                    navController = navController,
+                                                    onDismiss = menuState::dismiss
+                                                )
+                                            }
+                                        }
+                                    ) {
+                                        Icon(
+                                            painter = painterResource(R.drawable.more_vert),
+                                            contentDescription = null
+                                        )
+                                    }
+                                },
                                 modifier = Modifier
                                     .width(horizontalLazyGridItemWidth)
                                     .combinedClickable(
@@ -652,10 +673,11 @@ fun HomeScreen(
                         },
                         onClick = it.endpoint?.browseId?.let { browseId ->
                             {
-                                if (browseId == "FEmusic_moods_and_genres")
-                                    navController.navigate("mood_and_genres")
-                                else
-                                    navController.navigate("browse/$browseId")
+                                when (browseId) {
+                                    "FEmusic_moods_and_genres" -> navController.navigate("mood_and_genres")
+                                    "FEmusic_charts" -> navController.navigate("charts_screen")
+                                    else -> navController.navigate("browse/$browseId")
+                                }
                             }
                         },
                         modifier = Modifier.animateItem()

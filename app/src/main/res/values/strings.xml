@@ -34,6 +34,16 @@
     <string name="local_history">Local</string>
     <string name="remote_history">Remote</string>
 
+    <!-- Charts -->
+    <string name="charts">Charts</string>
+    <string name="back_button_desc">Back</string>
+    <string name="no_title">No title</string>
+    <string name="unknown_artist">Unknown artist</string>
+    <string name="unknown_item_type">Unknown item type</string>
+    <string name="loading_charts">Loading charts...</string>
+    <string name="retry_button">Retry</string>
+    <string name="album_cover_desc">Album cover</string>
+
     <!-- Stats -->
     <string name="most_played_songs">Most played songs</string>
     <string name="most_played_artists">Most played artists</string>
@@ -98,7 +108,10 @@
     <string name="start_radio">Start radio</string>
     <string name="play">Play</string>
     <string name="play_next">Play next</string>
+    <string name="added_to_play_next">Added to play next</string>
+
     <string name="add_to_queue">Add to queue</string>
+    <string name="added_to_queue">Added to the queue</string>
     <string name="add_to_library">Add to library</string>
     <string name="remove_from_library">Remove from library</string>
     <string name="remove_from_playlist">Remove from playlist</string>

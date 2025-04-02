@@ -101,6 +101,9 @@ fun NavGraphBuilder.navigationBuilder(
     composable("new_release") {
         NewReleaseScreen(navController, scrollBehavior)
     }
+    composable("charts_screen") {
+       ChartsScreen(navController)
+    }
     composable(
         route = "browse/{browseId}",
         arguments = listOf(

@@ -259,6 +259,7 @@ fun LibrarySongsScreen(
                     song = songWrapper.item,
                     isActive = songWrapper.item.id == mediaMetadata?.id,
                     isPlaying = isPlaying,
+
                     trailingContent = {
                         IconButton(
                             onClick = {
