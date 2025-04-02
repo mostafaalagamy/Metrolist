@@ -146,8 +146,8 @@ fun ExploreScreen(
             chartsPage?.sections?.forEach { section ->
                 NavigationTitle(
                     title = section.title ?: stringResource(R.string.charts),
-                    onClick = {
-                        navController.navigate("browse/$browseId")
+                    onClick = it.endpoint?.browseId?.let { browseId ->
+                        { navController.navigate("browse/$browseId") }
                     },
                 )
 
