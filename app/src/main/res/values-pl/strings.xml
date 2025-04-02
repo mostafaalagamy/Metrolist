@@ -387,7 +387,6 @@
     <string name="backup_restore">Kopie i przywracanie</string>
     <string name="backup">Utwórz kopię zapasową</string>
     <string name="restore">Przywróć</string>
-    <string name="imported_playlist">Zaimportowano playlistę</string>
     <string name="backup_create_success">Kopia utworzona pomyślnie</string>
     <string name="backup_create_failed">Tworzenie kopii zakończone niepowodzeniem</string>
     <string name="restore_failed">Przywracanie zakończone niepowodzeniem</string>
