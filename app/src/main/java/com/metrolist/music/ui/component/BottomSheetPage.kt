@@ -6,6 +6,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -35,15 +36,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import com.metrolist.music.R
 import com.metrolist.music.ui.utils.top
 
-val LocalMenuState = compositionLocalOf { MenuState() }
+val LocalBottomSheetPageState = compositionLocalOf { BottomSheetPageState() }
 
 @Stable
-class MenuState(
+class BottomSheetPageState(
     isVisible: Boolean = false,
     content: @Composable ColumnScope.() -> Unit = {},
 ) {
@@ -61,9 +65,9 @@ class MenuState(
 }
 
 @Composable
-fun BottomSheetMenu(
+fun BottomSheetPage(
     modifier: Modifier = Modifier,
-    state: MenuState,
+    state: BottomSheetPageState,
     background: Color = MaterialTheme.colorScheme.surfaceColorAtElevation(NavigationBarDefaults.Elevation),
 ) {
     val focusManager = LocalFocusManager.current
@@ -84,9 +88,13 @@ fun BottomSheetMenu(
                     detectTapGestures {
                         state.dismiss()
                     }
-                }.background(MaterialTheme.colorScheme.scrim.copy(alpha = 0.5f))
+                }
+                .background(MaterialTheme.colorScheme.scrim.copy(alpha = 0.5f))
                 .fillMaxSize(),
         )
+
+
+
     }
 
     AnimatedVisibility(
