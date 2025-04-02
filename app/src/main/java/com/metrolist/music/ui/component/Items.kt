@@ -1711,27 +1711,15 @@ fun YouTubeListItem(
                 var swipeStartTime = 0L
                 LaunchedEffect(key1 = target) {
                     when (target) {
-                        SwipeToDismissBoxValue.StartToEnd -> {
+                        SwipeToDismissBoxValue.StartToEnd, SwipeToDismissBoxValue.EndToStart -> {
                             val swipeEndTime = System.currentTimeMillis()
-                            if (swipeEndTime - swipeStartTime > 1000) {
-                                Toast.makeText(context, R.string.play_next, Toast.LENGTH_SHORT)
-                                    .show()
-                                playerConnection.playNext(listOf(item.toMediaItem()))
-                            }
-                        }
-
-                        SwipeToDismissBoxValue.EndToStart -> {
-                            val swipeEndTime = System.currentTimeMillis()
-                            if (swipeEndTime - swipeStartTime > 1000) {
-                                Toast.makeText(context, R.string.add_to_queue, Toast.LENGTH_SHORT)
-                                    .show()
+                            if (swipeEndTime - swipeStartTime > 1000 && item is SongItem) {
+                                Toast.makeText(context, R.string.added_to_queue, Toast.LENGTH_SHORT).show()
                                 playerConnection.addToQueue(listOf(item.toMediaItem()))
                             }
                         }
-
                         else -> {
-                            swipeStartTime =
-                                System.currentTimeMillis()
+                            swipeStartTime = System.currentTimeMillis()
                         }
                     }
                 }
