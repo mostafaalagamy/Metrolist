@@ -33,11 +33,17 @@
     <string name="yesterday">Wczoraj</string>
     <string name="this_week">Ten tydzień</string>
     <string name="last_week">Ostatni tydzień</string>
+    <string name="local_history">Lokalna</string>
+    <string name="remote_history">Zdalna</string>
 
     <!-- Stats -->
     <string name="most_played_songs">Najczęściej słuchane utwory</string>
     <string name="most_played_artists">Najczęściej słuchani artyści</string>
     <string name="most_played_albums">Najczęściej słuchane albumy</string>
+    <string name="weeks">Tygodnie</string>
+    <string name="months">Miesiące</string>
+    <string name="years">Lata</string>
+    <string name="continuous">Ciągły</string>
 
     <!-- Search -->
     <string name="search">Szukaj</string>
@@ -67,6 +73,10 @@
     <string name="liked">Polubione</string>
     <string name="offline">Pobrane</string>
     <string name="my_top">Mój Top</string>
+    <string name="library_song_empty">Utwory z biblioteki będą wyświetlane tutaj</string>
+    <string name="library_artist_empty">Artyści z biblioteki pojawią się tutaj</string>
+    <string name="library_album_empty">Albumy z biblioteki pojawią się tutaj</string>
+    <string name="library_playlist_empty">Twoje playlisty pojawią się tutaj</string>
 
 
     <!-- Playlist -->
@@ -75,6 +85,8 @@
     <string name="playlist_is_empty">Playlista jest pusta</string>
     <string name="remove_download_playlist_confirm">Czy na pewno chcesz usunąć wszystkie \"%s\" utwory playlist z pamięci Pobrane utwory?</string>
     <string name="delete_playlist_confirm">Czy na pewno chcesz usunąć playlistę \"%s\"?</string>
+    <string name="elements_selected">%1$d Wybrane elementy</string>
+    <string name="allows_for_sync_witch_youtube">Uwaga: Umożliwia to synchronizację z YouTube Music. Nie można tego zmienić później.</string>
 
     <!-- Button -->
     <string name="retry">Ponów</string>
@@ -88,9 +100,11 @@
     <string name="start_radio">Włącz radio</string>
     <string name="play">Odtwórz</string>
     <string name="play_next">Odtwórz jako następny</string>
+    <string name="added_to_play_next">Dodano do odtworzenia jako następne</string>
     <string name="add_to_queue">Dodaj do kolejki</string>
     <string name="add_to_library">Dodaj do biblioteki</string>
     <string name="remove_from_library">Usuń z biblioteki</string>
+    <string name="remove_from_playlist">Usuń z playlisty</string>
     <string name="download">Pobierz</string>
     <string name="downloading">Pobieranie</string>
     <string name="remove_download">Usuń pobrane</string>
@@ -107,6 +121,7 @@
     <string name="advanced">Zaawansowane</string>
     <string name="select">Zaznacz wszystko</string>
     <string name="like_all">Polub wszystko</string>
+    <string name="dislike_all">Nie lubię wszystkich</string>
     <string name="copy_link">Kopiuj link</string>
     <string name="tempo_and_pitch">Tempo i wysokość dźwięku</string>
 
@@ -132,6 +147,7 @@
     <string name="file_size">Rozmiar</string>
     <string name="unknown">Nieznane</string>
     <string name="copied">Skopiowano do schowka</string>
+    <string name="link_copied">Link skopiowany do schowka</string>
 
     <string name="edit_lyrics">Edytuj tekst</string>
     <string name="search_lyrics">Szukaj tekstu</string>
@@ -154,6 +170,12 @@
     <string name="edit_artist">Edytuj artystę</string>
     <string name="artist_name">Nazwa artysty</string>
     <string name="error_artist_name_empty">Nazwa artysty nie może być pusta.</string>
+
+    <string name="duplicates">Duplikaty</string>
+    <string name="skip_duplicates">Pomiń duplikaty</string>
+    <string name="add_anyway">Dodaj mimo wszystko</string>
+    <string name="duplicates_description_single">Utwór znajduje się już na playliście</string>
+    <string name="duplicates_description_multiple">%d utwory są już na liście odtwarzania</string>
 
     <!-- Noun -->
     <plurals name="n_song">
@@ -207,6 +229,7 @@
 
     <!-- Snackbar -->
     <string name="playlist_imported">Playlista zaimportowana</string>
+    <string name="imported_playlist">Zaimportowana playlista</string>
     <string name="removed_song_from_playlist">Usunięto \"%s\" z playlisty</string>
     <string name="playlist_synced">Playlista zsynchronizowana</string>
     <string name="undo">Cofnij</string>
@@ -225,6 +248,8 @@
     <string name="error_no_internet">Brak połączenia</string>
     <string name="error_timeout">Błąd limitu czasu</string>
     <string name="error_unknown">Nieznany błąd</string>
+    <string name="seek_backward">5 sekund do tyłu</string>
+    <string name="seek_forward">5 sekund do przodu</string>
 
     <!-- Player action -->
     <string name="action_like">Polub</string>
@@ -238,12 +263,17 @@
     <!-- Queue Title -->
     <string name="queue_all_songs">Wszystkie utwory</string>
     <string name="queue_searched_songs">Szukane utwory</string>
+    <string name="similar_content">Podobna zawartość</string>
 
     <!-- Notification name -->
     <string name="music_player">Odtwarzacz muzyki</string>
 
     <!-- Settings -->
     <string name="settings">Ustawienia</string>
+    <string name="login_settings">Ustawienia logowania</string>
+    <string name="use_login_for_browse">Użyj loginu, by przeglądać więcej treści</string>
+    <string name="use_login_for_browse_desc">Może wyświetlać więcej treści, jeśli jesteś zalogowany na konto YTMusic</string>
+    
     <string name="appearance">Wygląd</string>
     <string name="enable_dynamic_theme">Włącz motyw dynamiczny</string>
     <string name="dark_theme">Ciemny motyw</string>
