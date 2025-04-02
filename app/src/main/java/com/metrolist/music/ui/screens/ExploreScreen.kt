@@ -147,7 +147,7 @@ fun ExploreScreen(
                 NavigationTitle(
                     title = section.title ?: stringResource(R.string.charts),
                     onClick = {
-                        navController.navigate("charts")
+                        navController.navigate("browse/$browseId")
                     },
                 )
 
