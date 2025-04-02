@@ -2,20 +2,7 @@ package com.metrolist.music.ui.screens
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.WindowInsetsSides
-import androidx.compose.foundation.layout.asPaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.only
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.systemBars
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
@@ -23,6 +10,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -40,17 +28,34 @@ import com.metrolist.music.R
 import com.metrolist.music.ui.component.LocalMenuState
 import com.metrolist.music.ui.component.NavigationTitle
 import com.metrolist.music.ui.component.YouTubeGridItem
+import com.metrolist.music.ui.component.YouTubeListItem
 import com.metrolist.music.ui.component.shimmer.GridItemPlaceHolder
 import com.metrolist.music.ui.component.shimmer.ShimmerHost
 import com.metrolist.music.ui.component.shimmer.TextPlaceholder
 import com.metrolist.music.ui.menu.YouTubeAlbumMenu
+import com.metrolist.music.ui.menu.YouTubeSongMenu
+import com.metrolist.music.ui.utils.SnapLayoutInfoProvider
+import com.metrolist.music.viewmodels.ChartsViewModel
 import com.metrolist.music.viewmodels.ExploreViewModel
+import com.metrolist.innertube.models.SongItem
+import com.metrolist.innertube.models.WatchEndpoint
+import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.TopAppBar
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.platform.LocalDensity
+import com.metrolist.music.constants.ListItemHeight
+import com.metrolist.music.extensions.togglePlayPause
+import com.metrolist.music.models.toMediaMetadata
+import com.metrolist.music.playback.queues.YouTubeQueue
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ExploreScreen(
     navController: NavController,
-    viewModel: ExploreViewModel = hiltViewModel(),
+    exploreViewModel: ExploreViewModel = hiltViewModel(),
+    chartsViewModel: ChartsViewModel = hiltViewModel(),
 ) {
     val menuState = LocalMenuState.current
     val haptic = LocalHapticFeedback.current
@@ -58,7 +63,9 @@ fun ExploreScreen(
     val isPlaying by playerConnection.isPlaying.collectAsState()
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
 
-    val explorePage by viewModel.explorePage.collectAsState()
+    val explorePage by exploreViewModel.explorePage.collectAsState()
+    val chartsPage by chartsViewModel.chartsPage.collectAsState()
+    val isLoading by chartsViewModel.isLoading.collectAsState()
 
     val coroutineScope = rememberCoroutineScope()
     val scrollState = rememberScrollState()
@@ -74,6 +81,99 @@ fun ExploreScreen(
                     LocalPlayerAwareWindowInsets.current.asPaddingValues().calculateTopPadding(),
                 ),
             )
+
+            chartsPage?.sections?.forEach { section ->
+                NavigationTitle(
+                    title = section.title ?: stringResource(R.string.charts),
+                    modifier = Modifier.animateItem(),
+                )
+
+                val horizontalLazyGridItemWidthFactor = 0.475f
+                val horizontalLazyGridItemWidth = with(LocalDensity.current) {
+                    (LocalPlayerAwareWindowInsets.current.asPaddingValues().calculateLeftPadding() +
+                            LocalPlayerAwareWindowInsets.current.asPaddingValues().calculateRightPadding() +
+                            (LocalDensity.current.density * 320)).dp * horizontalLazyGridItemWidthFactor
+                }
+
+                val lazyGridState = rememberLazyGridState()
+                val snapLayoutInfoProvider = remember(lazyGridState) {
+                    SnapLayoutInfoProvider(
+                        lazyGridState = lazyGridState,
+                        positionInLayout = { layoutSize, itemSize ->
+                            (layoutSize * horizontalLazyGridItemWidthFactor / 2f - itemSize / 2f)
+                        },
+                    )
+                }
+
+                LazyHorizontalGrid(
+                    state = lazyGridState,
+                    rows = GridCells.Fixed(4),
+                    flingBehavior = rememberSnapFlingBehavior(snapLayoutInfoProvider),
+                    contentPadding = WindowInsets.systemBars
+                        .only(WindowInsetsSides.Horizontal)
+                        .asPaddingValues(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(ListItemHeight * 4),
+                ) {
+                    items(
+                        items = section.items.filterIsInstance<SongItem>(),
+                        key = { it.id },
+                    ) { song ->
+                        YouTubeListItem(
+                            item = song,
+                            isActive = song.id == mediaMetadata?.id,
+                            isPlaying = isPlaying,
+                            isSwipeable = false, // تعطيل السحب هنا
+                            trailingContent = {
+                                IconButton(
+                                    onClick = {
+                                        menuState.show {
+                                            YouTubeSongMenu(
+                                                song = song,
+                                                navController = navController,
+                                                onDismiss = menuState::dismiss,
+                                            )
+                                        }
+                                    },
+                                ) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.more_vert),
+                                        contentDescription = null,
+                                    )
+                                }
+                            },
+                            modifier = Modifier
+                                .width(horizontalLazyGridItemWidth)
+                                .combinedClickable(
+                                    onClick = {
+                                        if (song.id == mediaMetadata?.id) {
+                                            playerConnection.player.togglePlayPause()
+                                        } else {
+                                            playerConnection.playQueue(
+                                                YouTubeQueue(
+                                                    endpoint = WatchEndpoint(videoId = song.id),
+                                                    preloadItem = song.toMediaMetadata(),
+                                                ),
+                                            )
+                                        }
+                                    },
+                                    onLongClick = {
+                                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                        menuState.show {
+                                            YouTubeSongMenu(
+                                                song = song,
+                                                navController = navController,
+                                                onDismiss = menuState::dismiss,
+                                            )
+                                        }
+                                    },
+                                ),
+                        )
+                    }
+                }
+            }
+
             explorePage?.newReleaseAlbums?.let { newReleaseAlbums ->
                 NavigationTitle(
                     title = stringResource(R.string.new_release_albums),
