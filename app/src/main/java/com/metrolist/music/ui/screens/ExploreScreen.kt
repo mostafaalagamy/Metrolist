@@ -145,10 +145,6 @@ fun ExploreScreen(
             chartsPage?.sections?.forEach { section ->
                 NavigationTitle(
                     title = section.title ?: stringResource(R.string.charts),
-                    onClick = {
-                        browseId?.let { navController.navigate("browse/$it") } 
-                            ?: navController.navigate("youtube_browse/${it.endpoint.browseId}?params=${it.endpoint.params}")
-                    }
                 )
                 BoxWithConstraints(
                     modifier = Modifier.fillMaxWidth()
