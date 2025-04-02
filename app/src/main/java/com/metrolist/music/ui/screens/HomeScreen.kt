@@ -476,7 +476,7 @@ fun HomeScreen(
                             }) * rows)
                             .animateItem()
                     ) {
-                        items(keepListening) {
+                        items(keepListening.drop(1)) {
                             localGridItem(it)
                         }
                     }
