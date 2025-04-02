@@ -190,7 +190,8 @@ fun ChartsScreen(
                                 items = section.items.filterIsInstance<SongItem>(),
                                 key = { it.id },
                             ) { song ->
-                                YouTubeListItem(
+                                val mediaItem = song.toMediaMetadata()
+                                SongListItem(
                                      item = song,
                                      isActive = song.id == mediaMetadata?.id,
                                      isPlaying = isPlaying,
