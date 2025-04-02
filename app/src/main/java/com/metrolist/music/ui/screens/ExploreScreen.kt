@@ -146,9 +146,11 @@ fun ExploreScreen(
                 NavigationTitle(
                     title = section.title ?: stringResource(R.string.charts),
                     onClick = {
-                        { navController.navigate("browse/$browseId") }
-                    } else {
-                        navController.navigate("youtube_browse/${it.endpoint.browseId}?params=${it.endpoint.params}")
+                        if (browseId != null) {
+                            navController.navigate("browse/$browseId")
+                        } else {
+                            navController.navigate("youtube_browse/${it.endpoint.browseId}?params=${it.endpoint.params}")
+                        }
                     }
                 )
                 BoxWithConstraints(
