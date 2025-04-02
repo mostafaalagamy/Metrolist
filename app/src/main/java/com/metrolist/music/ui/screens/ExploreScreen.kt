@@ -176,8 +176,7 @@ fun ExploreScreen(
                             .asPaddingValues(),
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(ListItemHeight * 4)
-                            .animateItem(),
+                            .height(ListItemHeight * 4),
                     ) {
                         items(
                             items = section.items.filterIsInstance<SongItem>(),
