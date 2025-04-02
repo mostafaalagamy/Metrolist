@@ -258,4 +258,11 @@
     <string name="new_version_available">새로운 버전 있습니다</string>
     <string name="translation_models">번역 모델</string>
     <string name="clear_translation_models">번역 모델 지우기</string>
+    <string name="information">Information</string>
+    <string name="description">Description</string>
+    <string name="numbers">Numbers</string>
+    <string name="subscribers">Subscribers</string>
+    <string name="views">Views</string>
+    <string name="likes">Likes</string>
+    <string name="dislikes">Dislikes</string>
 </resources>

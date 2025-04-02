@@ -410,6 +410,13 @@
     <string name="past_year">Ultimo anno</string>
     <string name="top_length">La lunghezza della mia lista top</string>
     <string name="history_duration">Durata della cronologia</string>
+    <string name="information">Information</string>
+    <string name="description">Description</string>
+    <string name="numbers">Numbers</string>
+    <string name="subscribers">Subscribers</string>
+    <string name="views">Views</string>
+    <string name="likes">Likes</string>
+    <string name="dislikes">Dislikes</string>
     <plurals name="seconds">
         <item quantity="one">1 secondo</item>
         <item quantity="other">%d secondi</item>

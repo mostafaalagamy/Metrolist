@@ -378,6 +378,13 @@
     <string name="past_year">Letztes Jahr</string>
     <string name="top_length">Meine Top-Liste Länge</string>
     <string name="history_duration">Verlauflänge</string>
+    <string name="information">Information</string>
+    <string name="description">Description</string>
+    <string name="numbers">Numbers</string>
+    <string name="subscribers">Subscribers</string>
+    <string name="views">Views</string>
+    <string name="likes">Likes</string>
+    <string name="dislikes">Dislikes</string>
     <plurals name="seconds">
         <item quantity="one">1 Sekunde</item>
         <item quantity="other">%d Sekunden</item>

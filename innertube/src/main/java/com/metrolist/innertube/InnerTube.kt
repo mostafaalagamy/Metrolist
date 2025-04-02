@@ -1,17 +1,22 @@
 package com.metrolist.innertube
 
 import com.metrolist.innertube.models.Context
+import com.metrolist.innertube.models.MediaInfo
+import com.metrolist.innertube.models.ReturnYouTubeDislikeResponse
 import com.metrolist.innertube.models.YouTubeClient
 import com.metrolist.innertube.models.YouTubeLocale
 import com.metrolist.innertube.models.body.*
+import com.metrolist.innertube.models.response.NextResponse
 import com.metrolist.innertube.utils.parseCookieString
 import com.metrolist.innertube.utils.sha1
 import io.ktor.client.*
+import io.ktor.client.call.body
 import io.ktor.client.engine.okhttp.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.compression.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
+import io.ktor.client.statement.bodyAsText
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.util.encodeBase64
@@ -469,4 +474,83 @@ class InnerTube {
             )
         )
     }
+
+    private suspend fun returnYouTubeDislike(videoId: String) =
+        httpClient.get("https://returnyoutubedislikeapi.com/Votes?videoId=$videoId") {
+            contentType(ContentType.Application.Json)
+        }
+
+
+    suspend fun getMediaInfo(videoId: String): Result<MediaInfo> =
+        runCatching {
+            val response = next(client = YouTubeClient.WEB, videoId, null, null, null, null, null).body<NextResponse>()
+
+            val baseForInfo =
+                response.contents.twoColumnWatchNextResults
+                    ?.results
+                    ?.results
+                    ?.content
+                    ?.find {
+                        it?.videoSecondaryInfoRenderer != null
+                    }?.videoSecondaryInfoRenderer
+
+            val baseForTitle =
+                response.contents.twoColumnWatchNextResults
+                    ?.results
+                    ?.results
+                    ?.content
+                    ?.find {
+                        it?.videoPrimaryInfoRenderer != null
+                    }?.videoPrimaryInfoRenderer
+
+            val returnYouTubeDislikeResponse =
+                returnYouTubeDislike(videoId).body<ReturnYouTubeDislikeResponse>()
+
+            return@runCatching MediaInfo(
+                videoId = videoId,
+                title = baseForTitle
+                    ?.title
+                    ?.runs
+                    ?.firstOrNull()
+                    ?.text,
+                author = baseForInfo
+                    ?.owner
+                    ?.videoOwnerRenderer
+                    ?.title
+                    ?.runs
+                    ?.firstOrNull()
+                    ?.text,
+                authorId =
+                    baseForInfo
+                        ?.owner
+                        ?.videoOwnerRenderer
+                        ?.navigationEndpoint
+                        ?.browseEndpoint
+                        ?.browseId,
+                authorThumbnail =
+                    baseForInfo
+                        ?.owner
+                        ?.videoOwnerRenderer
+                        ?.thumbnail
+                        ?.thumbnails
+                        ?.find {
+                            it.height == 48
+                        }?.url
+                        ?.replace("s48", "s960"),
+                description = baseForInfo?.attributedDescription?.content,
+                subscribers =
+                    baseForInfo
+                        ?.owner
+                        ?.videoOwnerRenderer
+                        ?.subscriberCountText
+                        ?.simpleText?.split(" ")?.firstOrNull(),
+                uploadDate = baseForTitle?.dateText?.simpleText,
+                viewCount = returnYouTubeDislikeResponse.viewCount,
+                like = returnYouTubeDislikeResponse.likes,
+                dislike = returnYouTubeDislikeResponse.dislikes,
+            )
+
+        }
+
+
 }

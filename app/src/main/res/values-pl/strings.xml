@@ -327,4 +327,11 @@
     <string name="past_month">Ubiegły miesiąc</string>
     <string name="past_year">Ubiegły rok</string>
     <string name="top_length">Długość listy Mój Top</string>
+    <string name="information">Information</string>
+    <string name="description">Description</string>
+    <string name="numbers">Numbers</string>
+    <string name="subscribers">Subscribers</string>
+    <string name="views">Views</string>
+    <string name="likes">Likes</string>
+    <string name="dislikes">Dislikes</string>
 </resources>

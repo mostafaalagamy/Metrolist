@@ -415,6 +415,13 @@
     <string name="past_year">過去一年</string>
     <string name="top_length">我的熱門清單長度</string>
     <string name="history_duration">History duration</string>
+    <string name="information">Information</string>
+    <string name="description">Description</string>
+    <string name="numbers">Numbers</string>
+    <string name="subscribers">Subscribers</string>
+    <string name="views">Views</string>
+    <string name="likes">Likes</string>
+    <string name="dislikes">Dislikes</string>
     <plurals name="seconds">
         <item quantity="one">1 秒</item>
         <item quantity="other">%d 秒</item>

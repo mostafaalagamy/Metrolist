@@ -405,6 +405,13 @@
     <string name="past_year">Năm trước</string>
     <string name="top_length">Độ dài danh sách Top của tôi</string>
     <string name="history_duration">Thời lượng nghe</string>
+    <string name="information">Information</string>
+    <string name="description">Description</string>
+    <string name="numbers">Numbers</string>
+    <string name="subscribers">Subscribers</string>
+    <string name="views">Views</string>
+    <string name="likes">Likes</string>
+    <string name="dislikes">Dislikes</string>
     <plurals name="seconds">
         <item quantity="one">1 giây</item>
         <item quantity="other">%d giây</item>

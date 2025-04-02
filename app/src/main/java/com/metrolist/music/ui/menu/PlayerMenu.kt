@@ -303,6 +303,7 @@ fun PlayerMenu(
             onShowDetailsDialog()
             onDismiss()
         }
+
         if (isQueueTrigger != true) {
             GridMenuItem(
                 icon = R.drawable.equalizer,

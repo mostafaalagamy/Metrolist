@@ -425,6 +425,13 @@
     <string name="past_year">Минулий рік</string>
     <string name="top_length">Довжина мого топ-списку</string>
     <string name="history_duration">Довжина історії</string>
+    <string name="information">Information</string>
+    <string name="description">Description</string>
+    <string name="numbers">Numbers</string>
+    <string name="subscribers">Subscribers</string>
+    <string name="views">Views</string>
+    <string name="likes">Likes</string>
+    <string name="dislikes">Dislikes</string>
     <plurals name="seconds">
         <item quantity="one">1 секунда</item>
         <item quantity="few">%d секунди</item>
