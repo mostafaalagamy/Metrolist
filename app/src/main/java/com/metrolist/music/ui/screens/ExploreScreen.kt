@@ -70,6 +70,19 @@ fun ExploreScreen(
 
     val coroutineScope = rememberCoroutineScope()  
     val scrollState = rememberScrollState()  
+    val backStackEntry by navController.currentBackStackEntryAsState()
+    val scrollToTop =
+        backStackEntry?.savedStateHandle?.getStateFlow(
+            "scrollToTop", false
+        )
+    ?.collectAsState()
+
+    LaunchedEffect(scrollToTop?.value) {
+        if (scrollToTop?.value == true) {
+            lazylistState.animateScrollToItem(0)
+            backStackEntry?.savedStateHandle?.set("scrollToTop", false)
+        }
+    }
 
     LaunchedEffect(Unit) {  
         if (chartsPage == null) {  
