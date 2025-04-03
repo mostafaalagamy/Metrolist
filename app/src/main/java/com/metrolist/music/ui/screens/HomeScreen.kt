@@ -59,6 +59,7 @@ import com.metrolist.innertube.models.ArtistItem
 import com.metrolist.innertube.models.PlaylistItem
 import com.metrolist.innertube.models.SongItem
 import com.metrolist.innertube.models.WatchEndpoint
+import com.metrolist.innertube.models.BrowseEndpoint
 import com.metrolist.innertube.models.YTItem
 import com.metrolist.innertube.utils.parseCookieString
 import com.metrolist.music.LocalDatabase
@@ -651,7 +652,7 @@ fun HomeScreen(
                 }
             }
 
-            homePage?.sections?.forEach {
+            homePage?.originalPage?.sections?.forEach {
                 item {
                     NavigationTitle(
                         title = it.title,
@@ -672,12 +673,16 @@ fun HomeScreen(
                             }
                         },
                         onClick = it.endpoint?.browseId?.let { browseId ->
-                            {
-                                when (browseId) {
-                                    "FEmusic_moods_and_genres" -> navController.navigate("mood_and_genres")
-                                    "FEmusic_charts" -> navController.navigate("charts_screen")
-                                    else -> navController.navigate("browse/$browseId")
+                            if (homePage?.browseContentAvailable?.get(browseId) == true) {
+                                {
+                                    when (browseId) {
+                                        "FEmusic_moods_and_genres" -> navController.navigate("mood_and_genres")
+                                        "FEmusic_charts" -> navController.navigate("charts_screen")
+                                        else -> navController.navigate("browse/$browseId")
+                                    }
                                 }
+                            } else {
+                                null
                             }
                         },
                         modifier = Modifier.animateItem()
@@ -697,7 +702,6 @@ fun HomeScreen(
                     }
                 }
             }
-
             if (isLoading) {
                 item {
                     ShimmerHost(
