@@ -3,23 +3,18 @@ package com.metrolist.music.ui.screens
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
@@ -38,16 +33,10 @@ import com.metrolist.music.constants.ListItemHeight
 import com.metrolist.music.extensions.togglePlayPause
 import com.metrolist.music.models.toMediaMetadata
 import com.metrolist.music.playback.queues.YouTubeQueue
-import com.metrolist.music.ui.component.LocalMenuState
-import com.metrolist.music.ui.component.NavigationTitle
-import com.metrolist.music.ui.component.YouTubeGridItem
-import com.metrolist.music.ui.component.YouTubeListItem
-import com.metrolist.music.ui.component.shimmer.GridItemPlaceHolder
-import com.metrolist.music.ui.component.shimmer.ShimmerHost
-import com.metrolist.music.ui.component.shimmer.TextPlaceholder
+import com.metrolist.music.ui.component.*
+import com.metrolist.music.ui.component.shimmer.*
 import com.metrolist.music.ui.menu.YouTubeAlbumMenu
 import com.metrolist.music.ui.menu.YouTubeSongMenu
-import com.metrolist.music.ui.utils.SnapLayoutInfoProvider
 import com.metrolist.music.viewmodels.ChartsViewModel
 import com.metrolist.music.viewmodels.ExploreViewModel
 
@@ -55,6 +44,7 @@ import com.metrolist.music.viewmodels.ExploreViewModel
 @Composable
 fun ExploreScreen(
     navController: NavController,
+    topAppBarScrollBehavior: TopAppBarScrollBehavior,
     exploreViewModel: ExploreViewModel = hiltViewModel(),
     chartsViewModel: ChartsViewModel = hiltViewModel(),
 ) {
@@ -69,12 +59,10 @@ fun ExploreScreen(
     val isChartsLoading by chartsViewModel.isLoading.collectAsState()
     val chartsError by chartsViewModel.error.collectAsState()
 
-    val coroutineScope = rememberCoroutineScope()
-    val scrollState = rememberScrollState()
-
+    val lazyListState = rememberLazyListState()
     val backStackEntry by navController.currentBackStackEntryAsState()
     val scrollToTop by backStackEntry?.savedStateHandle
-        ?.getStateFlow("scrollToTop", false)?.collectAsState() ?: return
+        ?.getStateFlow("scrollToTop", false)?.collectAsState() ?: mutableStateOf(false)
 
     LaunchedEffect(Unit) {
         if (chartsPage == null) {
@@ -84,25 +72,29 @@ fun ExploreScreen(
 
     LaunchedEffect(scrollToTop) {
         if (scrollToTop) {
-            scrollState.animateScrollTo(0)
+            lazyListState.animateScrollToItem(0)
+            topAppBarScrollBehavior.state.resetHeightOffset()
             backStackEntry?.savedStateHandle?.set("scrollToTop", false)
         }
     }
 
-    Box(
-        modifier = Modifier.fillMaxSize(),
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
+        state = lazyListState,
     ) {
-        Column(
-            modifier = Modifier.verticalScroll(scrollState),
-        ) {
+        item {
             Spacer(
                 Modifier.height(
-                    LocalPlayerAwareWindowInsets.current.asPaddingValues().calculateTopPadding(),
-                ),
+                    LocalPlayerAwareWindowInsets.current.asPaddingValues().calculateTopPadding()
+                )
             )
+        }
 
-            // Charts Section
-            if (isChartsLoading && chartsPage == null) {
+        // Charts Section
+        if (isChartsLoading && chartsPage == null) {
+            item {
                 ShimmerHost {
                     TextPlaceholder(
                         height = 36.dp,
@@ -161,31 +153,24 @@ fun ExploreScreen(
                     }
                 }
             }
+        }
 
-            chartsPage?.sections?.forEach { section ->
+        chartsPage?.sections?.forEach { section ->
+            item {
                 NavigationTitle(
                     title = section.title ?: stringResource(R.string.charts),
                 )
+            }
+            
+            item {
                 BoxWithConstraints(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     val horizontalLazyGridItemWidthFactor = if (maxWidth * 0.475f >= 320.dp) 0.475f else 0.9f
                     val horizontalLazyGridItemWidth = maxWidth * horizontalLazyGridItemWidthFactor
 
-                    val lazyGridState = rememberLazyGridState()
-                    val snapLayoutInfoProvider = remember(lazyGridState) {
-                        SnapLayoutInfoProvider(
-                            lazyGridState = lazyGridState,
-                            positionInLayout = { layoutSize, itemSize ->
-                                (layoutSize * horizontalLazyGridItemWidthFactor / 2f - itemSize / 2f)
-                            },
-                        )
-                    }
-
                     LazyHorizontalGrid(
-                        state = lazyGridState,
                         rows = GridCells.Fixed(4),
-                        flingBehavior = rememberSnapFlingBehavior(snapLayoutInfoProvider),
                         contentPadding = WindowInsets.systemBars
                             .only(WindowInsetsSides.Horizontal)
                             .asPaddingValues(),
@@ -251,8 +236,10 @@ fun ExploreScreen(
                     }
                 }
             }
+        }
 
-            if (chartsError != null) {
+        if (chartsError != null) {
+            item {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -266,16 +253,20 @@ fun ExploreScreen(
                     )
                 }
             }
+        }
 
-            // New Release Albums Section
-            explorePage?.newReleaseAlbums?.let { newReleaseAlbums ->
+        // New Release Albums Section
+        explorePage?.newReleaseAlbums?.let { newReleaseAlbums ->
+            item {
                 NavigationTitle(
                     title = stringResource(R.string.new_release_albums),
                     onClick = {
                         navController.navigate("new_release")
                     },
                 )
-
+            }
+            
+            item {
                 LazyRow(
                     contentPadding = WindowInsets.systemBars
                         .only(WindowInsetsSides.Horizontal)
@@ -289,7 +280,6 @@ fun ExploreScreen(
                             item = album,
                             isActive = mediaMetadata?.album?.id == album.id,
                             isPlaying = isPlaying,
-                            coroutineScope = coroutineScope,
                             modifier = Modifier
                                 .combinedClickable(
                                     onClick = {
@@ -306,21 +296,24 @@ fun ExploreScreen(
                                         }
                                     },
                                 )
-                                .animateItem(),
                         )
                     }
                 }
             }
+        }
 
-            // Mood and Genres Section
-            explorePage?.moodAndGenres?.let { moodAndGenres ->
+        // Mood and Genres Section
+        explorePage?.moodAndGenres?.let { moodAndGenres ->
+            item {
                 NavigationTitle(
                     title = stringResource(R.string.mood_and_genres),
                     onClick = {
                         navController.navigate("mood_and_genres")
                     },
                 )
-
+            }
+            
+            item {
                 LazyHorizontalGrid(
                     rows = GridCells.Fixed(4),
                     contentPadding = PaddingValues(6.dp),
@@ -339,16 +332,20 @@ fun ExploreScreen(
                     }
                 }
             }
+        }
 
+        item {
             Spacer(
                 Modifier.height(
                     LocalPlayerAwareWindowInsets.current.asPaddingValues()
                         .calculateBottomPadding()
                 )
             )
+        }
 
-            // Show shimmer loading for explore content
-            if (explorePage == null) {
+        // Show shimmer loading for explore content
+        if (explorePage == null) {
+            item {
                 ShimmerHost {
                     TextPlaceholder(
                         height = 36.dp,
