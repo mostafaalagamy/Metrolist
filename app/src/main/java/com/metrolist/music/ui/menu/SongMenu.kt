@@ -264,15 +264,6 @@ fun SongMenu(
         ),
     ) {
         GridMenuItem(
-            icon = R.drawable.info,
-            title = R.string.details,
-        ) {
-            onDismiss()
-            bottomSheetPageState.show {
-                ShowMediaInfo(song.id)
-            }
-        }
-        GridMenuItem(
             icon = R.drawable.radio,
             title = R.string.start_radio,
         ) {
@@ -383,6 +374,15 @@ fun SongMenu(
                         }
                     }
                 }
+            }
+        }
+        GridMenuItem(
+            icon = R.drawable.info,
+            title = R.string.details,
+        ) {
+            onDismiss()
+            bottomSheetPageState.show {
+                ShowMediaInfo(song.id)
             }
         }
         if (event != null) {
