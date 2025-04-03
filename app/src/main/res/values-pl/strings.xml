@@ -33,11 +33,17 @@
     <string name="yesterday">Wczoraj</string>
     <string name="this_week">Ten tydzień</string>
     <string name="last_week">Ostatni tydzień</string>
+    <string name="local_history">Lokalna</string>
+    <string name="remote_history">Zdalna</string>
 
     <!-- Stats -->
     <string name="most_played_songs">Najczęściej słuchane utwory</string>
     <string name="most_played_artists">Najczęściej słuchani artyści</string>
     <string name="most_played_albums">Najczęściej słuchane albumy</string>
+    <string name="weeks">Tygodnie</string>
+    <string name="months">Miesiące</string>
+    <string name="years">Lata</string>
+    <string name="continuous">Ciągły</string>
 
     <!-- Search -->
     <string name="search">Szukaj</string>
@@ -67,6 +73,10 @@
     <string name="liked">Polubione</string>
     <string name="offline">Pobrane</string>
     <string name="my_top">Mój Top</string>
+    <string name="library_song_empty">Utwory z biblioteki będą wyświetlane tutaj</string>
+    <string name="library_artist_empty">Artyści z biblioteki pojawią się tutaj</string>
+    <string name="library_album_empty">Albumy z biblioteki pojawią się tutaj</string>
+    <string name="library_playlist_empty">Twoje playlisty pojawią się tutaj</string>
 
 
     <!-- Playlist -->
@@ -75,6 +85,8 @@
     <string name="playlist_is_empty">Playlista jest pusta</string>
     <string name="remove_download_playlist_confirm">Czy na pewno chcesz usunąć wszystkie \"%s\" utwory playlist z pamięci Pobrane utwory?</string>
     <string name="delete_playlist_confirm">Czy na pewno chcesz usunąć playlistę \"%s\"?</string>
+    <string name="elements_selected">%1$d Wybrane elementy</string>
+    <string name="allows_for_sync_witch_youtube">Uwaga: Umożliwia to synchronizację z YouTube Music. Nie można tego zmienić później.</string>
 
     <!-- Button -->
     <string name="retry">Ponów</string>
@@ -88,9 +100,11 @@
     <string name="start_radio">Włącz radio</string>
     <string name="play">Odtwórz</string>
     <string name="play_next">Odtwórz jako następny</string>
+    <string name="added_to_play_next">Dodano do odtworzenia jako następne</string>
     <string name="add_to_queue">Dodaj do kolejki</string>
     <string name="add_to_library">Dodaj do biblioteki</string>
     <string name="remove_from_library">Usuń z biblioteki</string>
+    <string name="remove_from_playlist">Usuń z playlisty</string>
     <string name="download">Pobierz</string>
     <string name="downloading">Pobieranie</string>
     <string name="remove_download">Usuń pobrane</string>
@@ -107,6 +121,9 @@
     <string name="advanced">Zaawansowane</string>
     <string name="select">Zaznacz wszystko</string>
     <string name="like_all">Polub wszystko</string>
+    <string name="dislike_all">Nie lubię wszystkich</string>
+    <string name="copy_link">Kopiuj link</string>
+    <string name="tempo_and_pitch">Tempo i wysokość dźwięku</string>
 
     <!-- Sort menu -->
     <string name="sort_by_create_date">Data dodania</string>
@@ -130,9 +147,11 @@
     <string name="file_size">Rozmiar</string>
     <string name="unknown">Nieznane</string>
     <string name="copied">Skopiowano do schowka</string>
+    <string name="link_copied">Link skopiowany do schowka</string>
 
     <string name="edit_lyrics">Edytuj tekst</string>
     <string name="search_lyrics">Szukaj tekstu</string>
+    <string name="lyrics">Tekst</string>
 
     <string name="edit_song">Edytuj utwór</string>
     <string name="song_title">Tytuł utworu</string>
@@ -151,6 +170,12 @@
     <string name="edit_artist">Edytuj artystę</string>
     <string name="artist_name">Nazwa artysty</string>
     <string name="error_artist_name_empty">Nazwa artysty nie może być pusta.</string>
+
+    <string name="duplicates">Duplikaty</string>
+    <string name="skip_duplicates">Pomiń duplikaty</string>
+    <string name="add_anyway">Dodaj mimo wszystko</string>
+    <string name="duplicates_description_single">Utwór znajduje się już na playliście</string>
+    <string name="duplicates_description_multiple">%d utwory są już na liście odtwarzania</string>
 
     <!-- Noun -->
     <plurals name="n_song">
@@ -204,6 +229,7 @@
 
     <!-- Snackbar -->
     <string name="playlist_imported">Playlista zaimportowana</string>
+    <string name="imported_playlist">Zaimportowana playlista</string>
     <string name="removed_song_from_playlist">Usunięto \"%s\" z playlisty</string>
     <string name="playlist_synced">Playlista zsynchronizowana</string>
     <string name="undo">Cofnij</string>
@@ -222,6 +248,8 @@
     <string name="error_no_internet">Brak połączenia</string>
     <string name="error_timeout">Błąd limitu czasu</string>
     <string name="error_unknown">Nieznany błąd</string>
+    <string name="seek_backward">5 sekund do tyłu</string>
+    <string name="seek_forward">5 sekund do przodu</string>
 
     <!-- Player action -->
     <string name="action_like">Polub</string>
@@ -235,12 +263,17 @@
     <!-- Queue Title -->
     <string name="queue_all_songs">Wszystkie utwory</string>
     <string name="queue_searched_songs">Szukane utwory</string>
+    <string name="similar_content">Podobna zawartość</string>
 
     <!-- Notification name -->
     <string name="music_player">Odtwarzacz muzyki</string>
 
     <!-- Settings -->
     <string name="settings">Ustawienia</string>
+    <string name="login_settings">Ustawienia logowania</string>
+    <string name="use_login_for_browse">Użyj loginu, by przeglądać więcej treści</string>
+    <string name="use_login_for_browse_desc">Może wyświetlać więcej treści, jeśli jesteś zalogowany na konto YTMusic</string>
+    
     <string name="appearance">Wygląd</string>
     <string name="enable_dynamic_theme">Włącz motyw dynamiczny</string>
     <string name="dark_theme">Ciemny motyw</string>
@@ -250,7 +283,12 @@
     <string name="player_background_style">Styl tła odtwarzacza</string>
     <string name="follow_theme">Zgodnie z motywem</string>
     <string name="gradient">Gradient</string>
+    <string name="player_background_blur">Rozmazany</string>
+    <string name="player_buttons_style">Kolory przycisków odtwarzacza</string>
+    <string name="default_style">Domyślny</string>
+    <string name="secondary_color_style">Drugi</string>
     <string name="enable_squiggly_slider">Włącz animowany pasek postępu</string>
+    <string name="enable_swipe_thumbnail">Włącz przesuwanie, by zmienić utwór</string>
     <string name="pure_black">Czysta czerń</string>
     <string name="default_open_tab">Domyślna otwarta karta</string>
     <string name="customize_navigation_tabs">Dostosuj karty nawigacji</string>
@@ -258,6 +296,15 @@
     <string name="left">Po lewej</string>
     <string name="center">Na środku</string>
     <string name="right">Po prawej</string>
+    <string name="player_slider_style">Styl suwaka odtwarzacza</string>
+    <string name="default_">Domyślny</string>
+    <string name="squiggly">Animowany</string>
+    <string name="slim">Wąski</string>
+    <string name="lyrics_click_change">Zmiana tekstu po kliknięciu</string>
+    <string name="slim_navbar">Ukryj etykiety dolnego paska nawigacji</string>
+    <string name="grid_cell_size">Rozmiar siatki</string>
+    <string name="small">Mały</string>
+    <string name="big">Duży</string>
 
     <string name="content">Zawartość</string>
     <string name="login">Login</string>
@@ -272,6 +319,18 @@
     <string name="set_quick_picks">Ustaw Szybki wybór</string>
     <string name="last_song_listened">Na podstawie poprzedniego wysłuchanego utworu</string>
     <string name="restart_to_take_effect">Uruchom ponownie, aby zastosować zmiany</string>
+    <string name="advanced_login">Zaawansowane logowanie (token)</string>
+    <string name="token_adv_login_description">Jest to ZAAWANSOWANA metoda logowania. Alternatywnie do portalu internetowego można tutaj bezpośrednio wprowadzić lub zaktualizować token logowania. Może to na przykład przyspieszyć logowanie na wielu urządzeniach. Należy pamiętać, że wszelkie nieprawidłowe formaty tokenów, których aplikacja nie przeanalizuje, nie zostaną zaakceptowane</string>
+
+    <string name="discord_integration">Integracja Discord</string>
+    <string name="discord_information">Metrolist używa biblioteki KizzyRPC do ustawiania statusu konta Discord. Wiąże się to z użyciem połączenia Discord Gateway, co może być uznane za naruszenie TOS Discord. Nie są jednak znane przypadki zawieszenia kont użytkowników z tego powodu. Używaj na własne ryzyko.\n\nMetrolist wyodrębni tylko twój token, a wszystko inne jest przechowywane lokalnie</string>
+    <string name="dismiss">Odrzuć</string>
+    <string name="options">Opcje</string>
+    <string name="preview">Podgląd</string>
+    <string name="login_failed">Logowanie nie powiodło się</string>
+    <string name="not_logged_in_youtube">Niezalogowany do YouTube</string>
+
+    <string name="enable_discord_rpc">Włącz funkcję Rich Presence</string>
 
     <string name="player_and_audio">Odtwarzacz i dźwięk</string>
     <string name="audio_quality">Jakość dźwięku</string>
@@ -279,9 +338,22 @@
     <string name="audio_quality_high">Wysoka</string>
     <string name="audio_quality_low">Niska</string>
     <string name="persistent_queue">Stała kolejka</string>
+    <string name="persistent_queue_desc">Przywracanie ostatniej kolejki po uruchomieniu aplikacji</string>
+    <string name="auto_load_more">Automatyczne ładowanie kolejnych utworów</string>
+    <string name="auto_load_more_desc">Automatycznie dodawaj więcej utworów po osiągnięciu końca kolejki, jeśli to możliwe</string>
+    <string name="enable_similar_content">Włącz podobną zawartość</string>
+    <string name="similar_content_desc">Automatycznie dodawaj więcej podobnych utworów po osiągnięciu końca kolejki</string>
+    <string name="auto_skip_next_on_error">Automatyczne przejście do następnego utworu po wystąpieniu błędu</string>
+    <string name="auto_skip_next_on_error_desc">Zapewnij ciągłość odtwarzania</string>
+    <string name="stop_music_on_task_clear">Zatrzymanie muzyki po wykonaniu zadania</string>
     <string name="skip_silence">Pomijanie ciszy</string>
     <string name="audio_normalization">Normalizacja dźwięku</string>
     <string name="equalizer">Korektor</string>
+    <string name="min_playback_duration_title">Minimalny czas odtwarzania</string>
+    <string name="min_playback_duration_description">Minimalna ilość utworu, która musi zostać odtworzona, zanim zostanie on uznany za „odtworzony”.</string>
+    <string name="percentage_format">%d%%</string>
+    <string name="minimum_playback_duration">Minimalny czas odtwarzania</string>
+    <string name="queue">Kolejka</string>
 
     <string name="storage">Pamięć</string>
     <string name="cache">Pamięć tymczasowa</string>
@@ -305,14 +377,24 @@
     <string name="clear_search_history_confirm">Czy na pewno chcesz wyczyścić całą historię wyszukiwania?</string>
     <string name="enable_kugou">Włącz szukanie tekstu w KuGou</string>
     <string name="enable_lrclib">Włącz szukanie tekstu w LrcLib</string>
+    <string name="app_language">Język aplikacji</string>
+    <string name="set_first_lyrics_provider">Preferowany dostawca tekstów</string>
+    <string name="disable_screenshot">Wyłącz zrzut ekranu</string>
+    <string name="disable_screenshot_desc">Gdy ta opcja jest włączona, zrzuty ekranu i widok aplikacji w sekcji Ostatnie są wyłączone.</string>
+
+    <string name="hide_explicit">Ukrywanie treści dla dorosłych</string>
 
     <string name="backup_restore">Kopie i przywracanie</string>
     <string name="backup">Utwórz kopię zapasową</string>
     <string name="restore">Przywróć</string>
-    <string name="imported_playlist">Zaimportowano playlistę</string>
     <string name="backup_create_success">Kopia utworzona pomyślnie</string>
     <string name="backup_create_failed">Tworzenie kopii zakończone niepowodzeniem</string>
     <string name="restore_failed">Przywracanie zakończone niepowodzeniem</string>
+
+    <string name="default_links">Otwórz obsługiwane łącza</string>
+    <string name="open_app_settings_error">Nie można otworzyć ustawień aplikacji</string>
+
+    <string name="release_notes">Informacje o wydaniu</string>
 
     <string name="about">Informacje o aplikacji Metrolist</string>
     <string name="app_version">Wersja aplikacji</string>
