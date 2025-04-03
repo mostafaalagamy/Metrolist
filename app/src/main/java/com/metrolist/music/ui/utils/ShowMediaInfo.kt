@@ -66,10 +66,8 @@ import com.metrolist.music.ui.screens.settings.DarkMode
 import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
 
-
 @Composable
-fun ShowMediaInfo( videoId: String ) {
-
+fun ShowMediaInfo(videoId: String) {
     if (videoId.isBlank() || videoId.isEmpty()) return
 
     val windowInsets = WindowInsets.systemBars
@@ -114,16 +112,24 @@ fun ShowMediaInfo( videoId: String ) {
     ) {
         if (song != null) {
             item(contentType = "TitleDetails") {
-                Text(
-                    text = stringResource(R.string.details),
-                    style = TextStyle(
-                        fontSize = typography.titleMedium.fontSize,
-                        fontWeight = typography.titleMedium.fontWeight,
-                        color = typography.titleMedium.color,
-                        textAlign = TextAlign.Center
-                    ),
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center,
                     modifier = Modifier.fillMaxWidth()
-                )
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.info),
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onBackground,
+                        modifier = Modifier.padding(end = 8.dp)
+                    )
+                    Text(
+                        text = stringResource(R.string.details),
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onBackground,
+                        textAlign = TextAlign.Center
+                    )
+                }
             }
 
             item(contentType = "MediaDetails") {
@@ -135,21 +141,21 @@ fun ShowMediaInfo( videoId: String ) {
                     )
                     val extendedList = baseList + if (currentFormat != null) {
                         listOf(
-                        "Itag" to currentFormat?.itag?.toString(),
-                        stringResource(R.string.mime_type) to currentFormat?.mimeType,
-                        stringResource(R.string.codecs) to currentFormat?.codecs,
-                        stringResource(R.string.bitrate) to currentFormat?.bitrate?.let { "${it / 1000} Kbps" },
-                        stringResource(R.string.sample_rate) to currentFormat?.sampleRate?.let { "$it Hz" },
-                        stringResource(R.string.loudness) to currentFormat?.loudnessDb?.let { "$it dB" },
-                        stringResource(R.string.volume) to if (playerConnection != null)
-                            "${(playerConnection.player.volume * 100).toInt()}%" else null,
-                        stringResource(R.string.file_size) to
-                                currentFormat?.contentLength?.let {
-                                    Formatter.formatShortFileSize(
-                                        context,
-                                        it
-                                    )
-                                }
+                            "Itag" to currentFormat?.itag?.toString(),
+                            stringResource(R.string.mime_type) to currentFormat?.mimeType,
+                            stringResource(R.string.codecs) to currentFormat?.codecs,
+                            stringResource(R.string.bitrate) to currentFormat?.bitrate?.let { "${it / 1000} Kbps" },
+                            stringResource(R.string.sample_rate) to currentFormat?.sampleRate?.let { "$it Hz" },
+                            stringResource(R.string.loudness) to currentFormat?.loudnessDb?.let { "$it dB" },
+                            stringResource(R.string.volume) to if (playerConnection != null)
+                                "${(playerConnection.player.volume * 100).toInt()}%" else null,
+                            stringResource(R.string.file_size) to
+                                    currentFormat?.contentLength?.let {
+                                        Formatter.formatShortFileSize(
+                                            context,
+                                            it
+                                        )
+                                    }
                         )
                     } else {
                         emptyList()
@@ -159,84 +165,60 @@ fun ShowMediaInfo( videoId: String ) {
                         val displayText = text ?: stringResource(R.string.unknown)
                         Text(
                             text = label,
-                            style = typography.labelMedium,
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onBackground
                         )
                         Text(
                             text = displayText,
-                            style = typography.titleMedium,
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.onBackground,
                             modifier =
-                                Modifier
-                                    .clickable(
-                                        interactionSource = remember { MutableInteractionSource() },
-                                        indication = null,
-                                        onClick = {
-                                            clipboardManager.setText(AnnotatedString(displayText))
-                                            Toast.makeText(
-                                                context,
-                                                R.string.copied,
-                                                Toast.LENGTH_SHORT
-                                            )
-                                                .show()
-                                        },
-                                    )
-                                    .padding(horizontal = 16.dp),
+                            Modifier
+                                .clickable(
+                                    interactionSource = remember { MutableInteractionSource() },
+                                    indication = null,
+                                    onClick = {
+                                        clipboardManager.setText(AnnotatedString(displayText))
+                                        Toast.makeText(
+                                            context,
+                                            R.string.copied,
+                                            Toast.LENGTH_SHORT
+                                        )
+                                            .show()
+                                    },
+                                )
+                                .padding(horizontal = 16.dp),
                         )
                         Spacer(Modifier.height(8.dp))
                     }
                 }
             }
-        } else {
-            // if the song is not in the database, it will not be shown
-            // loader remain also if song is not loaded
-//            item(contentType = "MediaDetailsLoader") {
-//                ShimmerHost {
-//                    Row(
-//                        horizontalArrangement = Arrangement.Center,
-//                        verticalAlignment = Alignment.CenterVertically,
-//                        modifier = Modifier
-//                            .fillMaxWidth()
-//                            .padding(all = 16.dp)
-//
-//                    ) {
-//                        TextPlaceholder()
-//                    }
-//
-//                }
-//            }
         }
 
         item(contentType = "TitleMediaInfo") {
             Text(
                 text = stringResource(R.string.information),
-                style = TextStyle(
-                    fontSize = typography.titleMedium.fontSize,
-                    fontWeight = typography.titleMedium.fontWeight,
-                    color = typography.titleMedium.color,
-                    textAlign = TextAlign.Center
-                ),
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onBackground,
+                textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()
             )
         }
         if (info != null) {
-
-            if (song == null) // if the song is not in the database, title show
+            if (song == null)
                 item(contentType = "MediaTitle") {
                     Column(
                         horizontalAlignment = Alignment.Start,
                         verticalArrangement = Arrangement.Top,
                         modifier = Modifier
                             .fillMaxWidth()
-                            //.padding(horizontal = 16.dp)
                             .padding(top = 16.dp)
                     ) {
                         Text(
                             text = "" + info?.title,
-                            style = TextStyle(
-                                fontSize = typography.titleMedium.fontSize,
-                                fontWeight = typography.titleMedium.fontWeight,
-                                color = typography.titleMedium.color,
-                                textAlign = TextAlign.Start
-                            )
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.onBackground,
+                            textAlign = TextAlign.Start
                         )
                     }
                 }
@@ -251,16 +233,13 @@ fun ShowMediaInfo( videoId: String ) {
                 ) {
                     Text(
                         text = stringResource(R.string.artists),
-                        style = TextStyle(
-                            fontSize = typography.labelMedium.fontSize,
-                            fontWeight = typography.labelMedium.fontWeight,
-                            color = typography.labelMedium.color,
-                            textAlign = TextAlign.Start
-                        )
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onBackground,
+                        textAlign = TextAlign.Start
                     )
                     BasicText(
                         text = "" + info?.author,
-                        style = typography.titleMedium,
+                        style = MaterialTheme.typography.titleMedium.copy(color = MaterialTheme.colorScheme.onBackground),
                         modifier = Modifier
                             .padding(horizontal = 16.dp)
                             .padding(bottom = 16.dp)
@@ -276,16 +255,13 @@ fun ShowMediaInfo( videoId: String ) {
                 ) {
                     Text(
                         text = stringResource(R.string.description),
-                        style = TextStyle(
-                            fontSize = typography.labelMedium.fontSize,
-                            fontWeight = typography.labelMedium.fontWeight,
-                            color = typography.labelMedium.color,
-                            textAlign = TextAlign.Start
-                        )
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onBackground,
+                        textAlign = TextAlign.Start
                     )
                     BasicText(
                         text = info?.description ?: "",
-                        style = typography.titleMedium,
+                        style = MaterialTheme.typography.titleMedium.copy(color = MaterialTheme.colorScheme.onBackground),
                         modifier = Modifier
                             .padding(all = 16.dp)
                     )
@@ -300,12 +276,9 @@ fun ShowMediaInfo( videoId: String ) {
                 ) {
                     Text(
                         text = stringResource(R.string.numbers),
-                        style = TextStyle(
-                            fontSize = typography.labelMedium.fontSize,
-                            fontWeight = typography.labelMedium.fontWeight,
-                            color = typography.labelMedium.color,
-                            textAlign = TextAlign.Start
-                        )
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onBackground,
+                        textAlign = TextAlign.Start
                     )
                     Row(
                         horizontalArrangement = Arrangement.SpaceBetween,
@@ -317,57 +290,54 @@ fun ShowMediaInfo( videoId: String ) {
                         Column {
                             BasicText(
                                 text = stringResource(R.string.subscribers),
-                                style = typography.titleSmall,
+                                style = MaterialTheme.typography.titleSmall.copy(color = MaterialTheme.colorScheme.onBackground),
                             )
                             BasicText(
                                 text = info?.subscribers ?: "",
-                                style = typography.titleSmall,
+                                style = MaterialTheme.typography.titleSmall.copy(color = MaterialTheme.colorScheme.onBackground),
                                 modifier = Modifier.padding(top = 8.dp)
                             )
                         }
                         Column {
                             BasicText(
                                 text = stringResource(R.string.views),
-                                style = typography.titleSmall,
+                                style = MaterialTheme.typography.titleSmall.copy(color = MaterialTheme.colorScheme.onBackground),
                                 modifier = Modifier
                             )
                             BasicText(
                                 text = "" + info?.viewCount?.toInt()
                                     ?.let { numberFormatter(it) },
-                                style = typography.titleSmall,
+                                style = MaterialTheme.typography.titleSmall.copy(color = MaterialTheme.colorScheme.onBackground),
                                 modifier = Modifier.padding(top = 8.dp)
                             )
                         }
                         Column {
                             BasicText(
                                 text = stringResource(R.string.likes),
-                                style = typography.titleSmall,
+                                style = MaterialTheme.typography.titleSmall.copy(color = MaterialTheme.colorScheme.onBackground),
                                 modifier = Modifier
                             )
                             BasicText(
                                 text = "" + info?.like?.toInt()?.let { numberFormatter(it) },
-                                style = typography.titleSmall,
+                                style = MaterialTheme.typography.titleSmall.copy(color = MaterialTheme.colorScheme.onBackground),
                                 modifier = Modifier.padding(top = 8.dp)
                             )
                         }
                         Column {
                             BasicText(
                                 text = stringResource(R.string.dislikes),
-                                style = typography.titleSmall,
+                                style = MaterialTheme.typography.titleSmall.copy(color = MaterialTheme.colorScheme.onBackground),
                                 modifier = Modifier
                             )
                             BasicText(
                                 text = "" + info?.dislike?.toInt()?.let { numberFormatter(it) },
-                                style = typography.titleSmall,
+                                style = MaterialTheme.typography.titleSmall.copy(color = MaterialTheme.colorScheme.onBackground),
                                 modifier = Modifier.padding(top = 8.dp)
                             )
                         }
-
                     }
-
                 }
             }
-
         } else {
             item(contentType = "MediaInfoLoader") {
                 ShimmerHost {
@@ -377,11 +347,9 @@ fun ShowMediaInfo( videoId: String ) {
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(all = 16.dp)
-
                     ) {
                         TextPlaceholder()
                     }
-
                 }
             }
         }
