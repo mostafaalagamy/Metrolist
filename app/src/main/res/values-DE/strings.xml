@@ -1,5 +1,6 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Bottom navigation -->
+<?xml version='1.0' encoding='utf-8'?>
+<resources xmlns:ns0="http://schemas.android.com/tools">
+
     <string name="home">Startseite</string>
     <string name="songs">Titel</string>
     <string name="artists">Künstler</string>
@@ -7,12 +8,12 @@
     <string name="playlists">Wiedergabelisten</string>
     <string name="explore">Entdecken</string>
 
-    <!-- Top bar -->
-    <plurals name="n_selected" tools:ignore="MissingQuantity">
+
+    <plurals name="n_selected" ns0:ignore="MissingQuantity">
         <item quantity="other">%d ausgewählt</item>
     </plurals>
 
-    <!-- Home -->
+
     <string name="history">Hörverlauf</string>
     <string name="stats">Statistiken</string>
     <string name="mood_and_genres">Stimmungen und Genres</string>
@@ -25,18 +26,18 @@
     <string name="keep_listening">Höre weiter</string>
     <string name="your_ytb_playlists">Deine YouTube Wiedergabelisten</string>
 
-    <!-- History -->
+
     <string name="today">Heute</string>
     <string name="yesterday">Gestern</string>
     <string name="this_week">Diese Woche</string>
     <string name="last_week">Letzte Woche</string>
 
-    <!-- Stats -->
+
     <string name="most_played_songs">Meist gespielte Songs</string>
     <string name="most_played_artists">Meist gespielte Künstler</string>
     <string name="most_played_albums">Meist gespielte Alben</string>
 
-    <!-- Search -->
+
     <string name="search">Suche</string>
     <string name="search_yt_music">YouTube Musik durchsuchen…</string>
     <string name="search_library">Mediathek durchsuchen…</string>
@@ -54,32 +55,31 @@
     <string name="filter_bookmarked">Bookmarked</string>
     <string name="no_results_found">Keine Ergebnisse gefunden</string>
 
-    <!-- Artist screen -->
+
     <string name="from_your_library">Aus der Mediathek</string>
 
-    <!-- Album screen -->
+
     <string name="other_versions">Andere Versionen</string>
 
-    <!-- Library -->
+
     <string name="liked">Favoriten</string>
     <string name="offline">Heruntergeladen</string>
     <string name="my_top">Meine Top</string>
 
 
-    <!-- Playlist -->
     <string name="liked_songs">Favorisierte Titel</string>
     <string name="downloaded_songs">Heruntergeladene Titel</string>
     <string name="playlist_is_empty">Die Wiedergabeliste ist leer</string>
     <string name="remove_download_playlist_confirm">Bist du dir sicher, dass du alle \"%s\" Wiedergabeliste Songs aus dem heruntergeladene Songs Speicher entfernen löschen willst?</string>
     <string name="delete_playlist_confirm">Bist du dir sicher, dass du die Wiedergabeliste \"%s\" löschen willst?</string>
 
-    <!-- Button -->
+
     <string name="retry">Wiederholen</string>
     <string name="radio">Radio</string>
     <string name="shuffle">Shuffle</string>
     <string name="reset">Zurücksetzen</string>
 
-    <!-- Menu -->
+
     <string name="details">Details</string>
     <string name="edit">Bearbeiten</string>
     <string name="start_radio">Radio starten</string>
@@ -105,7 +105,7 @@
     <string name="select">Alles auswählen</string>
     <string name="like_all">Alles favorisieren</string>
 
-    <!-- Sort menu -->
+
     <string name="sort_by_create_date">Datum hinzugefügt</string>
     <string name="sort_by_last_updated">Datum aktualisiert</string>
     <string name="sort_by_name">Name</string>
@@ -116,7 +116,7 @@
     <string name="sort_by_play_time">Wiedergabedauer</string>
     <string name="sort_by_custom">Individuelle Reinfolge</string>
 
-    <!-- Dialog -->
+
     <string name="media_id">Medien-ID</string>
     <string name="mime_type">MIME Typ</string>
     <string name="codecs">Codecs</string>
@@ -150,7 +150,7 @@
     <string name="artist_name">Name des Künstlers</string>
     <string name="error_artist_name_empty">Der Name des Künstlers darf nicht leer sein.</string>
 
-    <!-- Noun -->
+
     <plurals name="n_song">
         <item quantity="one">%d Songs</item>
         <item quantity="other">%d Songs</item>
@@ -167,15 +167,15 @@
         <item quantity="one">%d Wiedergabeliste</item>
         <item quantity="other">%d Wiedergabelisten</item>
     </plurals>
-    <plurals name="n_week" tools:ignore="MissingQuantity">
+    <plurals name="n_week" ns0:ignore="MissingQuantity">
         <item quantity="one">%d Woche</item>
         <item quantity="other">%d Wochen</item>
     </plurals>
-    <plurals name="n_month" tools:ignore="MissingQuantity">
+    <plurals name="n_month" ns0:ignore="MissingQuantity">
         <item quantity="one">%d Monat</item>
         <item quantity="other">%d Monate</item>
     </plurals>
-    <plurals name="n_year" tools:ignore="MissingQuantity">
+    <plurals name="n_year" ns0:ignore="MissingQuantity">
         <item quantity="one">%d Jahr</item>
         <item quantity="other">%d Jahre</item>
     </plurals>
@@ -184,13 +184,13 @@
         <item quantity="other">%d Elemente</item>
     </plurals>
 
-    <!-- Snackbar -->
+
     <string name="playlist_imported">Wiedergabeliste importiert</string>
     <string name="removed_song_from_playlist">\"%s\" aus der Wiedergabeliste entfernt</string>
     <string name="playlist_synced">Wiedergabeliste synchronisiert</string>
     <string name="undo">Rückgängig machen</string>
 
-    <!-- Player -->
+
     <string name="lyrics_not_found">Songtext nicht gefunden</string>
     <string name="sleep_timer">Schlaf-Timer</string>
     <string name="end_of_song">Ende des Songs</string>
@@ -203,7 +203,7 @@
     <string name="error_timeout">Zeitüberschreitung</string>
     <string name="error_unknown">Unbekannter Fehler</string>
 
-    <!-- Player action -->
+
     <string name="action_like">Gefällt mir</string>
     <string name="action_remove_like">Aus Favoriten entfernen</string>
     <string name="action_shuffle_on">Shuffle ein</string>
@@ -212,14 +212,14 @@
     <string name="repeat_mode_one">Aktuellen Titel wiederholen</string>
     <string name="repeat_mode_all">Warteschlange wiederholen</string>
 
-    <!-- Queue Title -->
+
     <string name="queue_all_songs">Alle Titel</string>
     <string name="queue_searched_songs">Gesuchte Titel</string>
 
-    <!-- Notification name -->
+
     <string name="music_player">Musik-Player</string>
 
-    <!-- Einstellungen -->
+
     <string name="settings">Einstellungen</string>
     <string name="login_settings">Anmeldeeinstellungen</string>
     <string name="use_login_for_browse">Anmeldung für das Durchsuchen von Premium-Inhalten verwenden</string>
@@ -320,11 +320,11 @@
     <string name="song_cache">Song-Cache</string>
     <string name="max_cache_size">Maximale Cache-Größe</string>
     <string name="unlimited">Unbegrenzt</string>
-    <string name="clear_all_downloads">Alle Downloads entfernen</string>
+    <string name="clear_all_downloads">Alle Downloads löschen</string>
     <string name="max_image_cache_size">Maximale Größe des Bild-Caches</string>
-    <string name="clear_image_cache">Bild-Cache löschen</string>
-    <string name="max_song_cache_size">Maximale Größe des Song-Cache</string>
-    <string name="clear_song_cache">Song-Cache löschen</string>
+    <string name="clear_image_cache">Bild-Cache leeren</string>
+    <string name="max_song_cache_size">Maximale Größe des Song-Caches</string>
+    <string name="clear_song_cache">Song-Cache leeren</string>
     <string name="size_used">%s verwendet</string>
 
     <string name="privacy">Datenschutz</string>
@@ -340,7 +340,7 @@
     <string name="disable_screenshot_desc">Wenn diese Option aktiviert ist, sind Screenshots und die App-Ansicht in den letzten Apps deaktiviert.</string>
 
     <string name="backup_restore">Sichern und Wiederherstellen</string>
-    <string name="backup">Datensicherung</string>
+    <string name="backup">Sichern</string>
     <string name="restore">Wiederherstellen</string>
     <string name="imported_playlist">Importierte Wiedergabeliste</string>
     <string name="backup_create_success">Sicherung erfolgreich erstellt</string>
@@ -378,15 +378,65 @@
     <string name="past_year">Letztes Jahr</string>
     <string name="top_length">Meine Top-Liste Länge</string>
     <string name="history_duration">Verlauflänge</string>
-    <string name="information">Information</string>
-    <string name="description">Description</string>
-    <string name="numbers">Numbers</string>
-    <string name="subscribers">Subscribers</string>
-    <string name="views">Views</string>
+    <string name="information">Informationen</string>
+    <string name="description">Beschreibung</string>
+    <string name="numbers">Zahlen</string>
+    <string name="subscribers">Abonnenten</string>
+    <string name="views">Aufrufe</string>
     <string name="likes">Likes</string>
     <string name="dislikes">Dislikes</string>
     <plurals name="seconds">
         <item quantity="one">1 Sekunde</item>
         <item quantity="other">%d Sekunden</item>
+    </plurals>
+    <string name="minimum_playback_duration">Mindestspieldauer</string>
+    <string name="not_logged_in_youtube">Nicht auf YouTube angemeldet</string>
+    <string name="percentage_format">%d%%</string>
+    <string name="seek_forward">5 Sekunden vor</string>
+    <string name="add_anyway">Trotzdem hinzufügen</string>
+    <string name="local_history">Lokal</string>
+    <string name="dislike_all">Alle aus Favoriten entfernen</string>
+    <string name="similar_content">Ähnlicher Inhalt</string>
+    <string name="clear_song_cache_dialog">  Bist du sicher dass du den Songcache leeren willst?</string>
+    <string name="loading_charts">Charts werden geladen...</string>
+    <string name="copy_link">Link kopieren</string>
+    <string name="allows_for_sync_witch_youtube">Note: Dies syncronisiert die Playlist mit YouTube Music. Dies kann danach NICHT geändert werden.</string>
+    <string name="default_style">Standard</string>
+    <string name="duplicates">Duplikationen</string>
+    <string name="remove_from_playlist">Aus Playlist entfernen</string>
+    <string name="skip_duplicates">Duplikationen überspringen</string>
+    <string name="elements_selected">%1$d Elemente gewählt</string>
+    <string name="duplicates_description_multiple">%d Songs sind schon in deiner Playlist.</string>
+    <string name="min_playback_duration_title">Mindestspieldauer</string>
+    <string name="clear_downloads_dialog">  Bist du sicher dass du alle Downloads löschen willst?</string>
+    <string name="months">Monate</string>
+    <string name="link_copied">Link kopiert</string>
+    <string name="library_playlist_empty">Hier werden deine Playlists sein</string>
+    <string name="added_to_play_next">Zu Als Nächstes hinzugefügt</string>
+    <string name="added_to_queue">Zur Wiedergabeliste hinzugefügt</string>
+    <string name="library_song_empty">Hier werden Songs aus deiner Mediathek sein</string>
+    <string name="duplicates_description_single">Der Song ist schon in deiner Playlist.</string>
+    <string name="library_artist_empty">Hier werden Künstler aus deiner Mediathek sein</string>
+    <string name="charts">Charts</string>
+    <string name="retry_button">Erneut versuchen</string>
+    <string name="no_title">Kein Titel</string>
+    <string name="secondary_color_style">Sekundär</string>
+    <string name="unknown_item_type">Unbekannter Typ</string>
+    <string name="seek_backward">5 Sekunden zurück</string>
+    <string name="min_playback_duration_description">Die Mindestspieldauer muss erreicht werden bevor ein Song als \"gehört\" gilt.</string>
+    <string name="tempo_and_pitch">Tempo und Höhe</string>
+    <string name="unknown_artist">Unbekannter Künstler</string>
+    <string name="library_album_empty">Hier werden Albums aus deiner Mediathek sein</string>
+    <string name="years">Jahre</string>
+    <string name="weeks">Wochen</string>
+    <string name="remote_history">Online</string>
+    <string name="sync_playlist">Playlist synchronisieren</string>
+    <string name="back_button_desc">Zurück</string>
+    <string name="continuous">Durchgängig</string>
+    <string name="player_buttons_style">Player-Tastenfarbe</string>
+    <string name="album_cover_desc">Albumcover</string>
+    <plurals name="n_time">
+        <item quantity="one">%d Mal</item>
+        <item quantity="other">%d Male</item>
     </plurals>
 </resources>
