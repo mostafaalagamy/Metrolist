@@ -39,13 +39,18 @@ class HomeViewModel @Inject constructor(
     val keepListening = MutableStateFlow<List<LocalItem>?>(null)
     val similarRecommendations = MutableStateFlow<List<SimilarRecommendation>?>(null)
     val accountPlaylists = MutableStateFlow<List<PlaylistItem>?>(null)
-    val homePage = MutableStateFlow<HomePage?>(null)
+    val homePage = MutableStateFlow<HomePageWithBrowseCheck?>(null)
     val explorePage = MutableStateFlow<ExplorePage?>(null)
     val recentActivity = MutableStateFlow<List<YTItem>?>(null)
     val recentPlaylistsDb = MutableStateFlow<List<Playlist>?>(null)
 
     val allLocalItems = MutableStateFlow<List<LocalItem>>(emptyList())
     val allYtItems = MutableStateFlow<List<YTItem>>(emptyList())
+
+    data class HomePageWithBrowseCheck(
+        val originalPage: HomePage,
+        val browseContentAvailable: Map<String, Boolean>
+    )
 
     private suspend fun load() {
         isLoading.value = true
@@ -120,8 +125,24 @@ class HomeViewModel @Inject constructor(
                 }
         similarRecommendations.value = (artistRecommendations + songRecommendations).shuffled()
 
+        // homePage
         YouTube.home().onSuccess { page ->
-            homePage.value = page
+            val browseContentAvailable = mutableMapOf<String, Boolean>()
+            page.sections.forEach { section ->
+                section.endpoint?.browseId?.let { browseId ->
+                    if (browseId in listOf("FEmusic_moods_and_genres", "FEmusic_charts")) {
+                        browseContentAvailable[browseId] = true
+                    } else {
+                        YouTube.browse(browseId, params = null).onSuccess { browsePage ->
+                            browseContentAvailable[browseId] = browsePage.items.isNotEmpty()
+                        }.onFailure {
+                            browseContentAvailable[browseId] = false
+                            reportException(it)
+                        }
+                    }
+                }
+            }
+            homePage.value = HomePageWithBrowseCheck(page, browseContentAvailable)
         }.onFailure {
             reportException(it)
         }
@@ -133,7 +154,7 @@ class HomeViewModel @Inject constructor(
         }
 
         allYtItems.value = similarRecommendations.value?.flatMap { it.items }.orEmpty() +
-                homePage.value?.sections?.flatMap { it.items }.orEmpty()
+                homePage.value?.originalPage?.sections?.flatMap { it.items }.orEmpty()
 
         isLoading.value = false
     }
