@@ -90,6 +90,9 @@ align="center">](https://belberi.com/metrolist/?fbclid=PAY2xjawJP5dlleHRuA2FlbQI
 (OuterTune)
 [Davide Garberi](https://github.com/DD3Boh),
 [Michael Zh](https://github.com/mikooomich)
+
+(Muzza)
+[Maloy Android](https://github.com/Maloy-Android)
 </div>
 
 <div align="center">
