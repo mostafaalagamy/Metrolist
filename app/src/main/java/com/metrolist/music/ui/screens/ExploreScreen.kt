@@ -5,7 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
@@ -18,6 +17,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -44,10 +44,11 @@ import com.metrolist.music.viewmodels.ExploreViewModel
 @Composable
 fun ExploreScreen(
     navController: NavController,
-    topAppBarScrollBehavior: TopAppBarScrollBehavior,
     exploreViewModel: ExploreViewModel = hiltViewModel(),
     chartsViewModel: ChartsViewModel = hiltViewModel(),
 ) {
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+    
     val menuState = LocalMenuState.current
     val haptic = LocalHapticFeedback.current
     val playerConnection = LocalPlayerConnection.current ?: return
@@ -73,7 +74,7 @@ fun ExploreScreen(
     LaunchedEffect(scrollToTop) {
         if (scrollToTop) {
             lazyListState.animateScrollToItem(0)
-            topAppBarScrollBehavior.state.resetHeightOffset()
+            scrollBehavior.state.heightOffset = 0f // Reset scroll behavior
             backStackEntry?.savedStateHandle?.set("scrollToTop", false)
         }
     }
@@ -81,7 +82,7 @@ fun ExploreScreen(
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
+            .nestedScroll(scrollBehavior.nestedScrollConnection),
         state = lazyListState,
     ) {
         item {
@@ -92,7 +93,7 @@ fun ExploreScreen(
             )
         }
 
-        // Charts Section
+        // Charts Loading State
         if (isChartsLoading && chartsPage == null) {
             item {
                 ShimmerHost {
@@ -155,6 +156,7 @@ fun ExploreScreen(
             }
         }
 
+        // Charts Content
         chartsPage?.sections?.forEach { section ->
             item {
                 NavigationTitle(
@@ -238,6 +240,7 @@ fun ExploreScreen(
             }
         }
 
+        // Charts Error State
         if (chartsError != null) {
             item {
                 Box(
@@ -255,7 +258,7 @@ fun ExploreScreen(
             }
         }
 
-        // New Release Albums Section
+        // New Release Albums
         explorePage?.newReleaseAlbums?.let { newReleaseAlbums ->
             item {
                 NavigationTitle(
@@ -302,7 +305,7 @@ fun ExploreScreen(
             }
         }
 
-        // Mood and Genres Section
+        // Mood and Genres
         explorePage?.moodAndGenres?.let { moodAndGenres ->
             item {
                 NavigationTitle(
@@ -334,6 +337,7 @@ fun ExploreScreen(
             }
         }
 
+        // Bottom spacer for system bars
         item {
             Spacer(
                 Modifier.height(
@@ -343,7 +347,7 @@ fun ExploreScreen(
             )
         }
 
-        // Show shimmer loading for explore content
+        // Explore Loading State
         if (explorePage == null) {
             item {
                 ShimmerHost {
