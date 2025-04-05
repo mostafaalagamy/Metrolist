@@ -359,7 +359,7 @@
     <string name="slim">نحيل</string>
     <string name="misc">متفرقات</string>
     <string name="default_open_tab">الصفحة الافتراضية</string>
-    <string name="slim_navbar">إخفاء أسماء علامات شريط التنقل السفلي</string>
+    <string name="slim_navbar">إخفاء أسماء الصفحات من شريط التنقل السفلي</string>
 
     <string name="content">المحتوى</string>
     <string name="google">جوجل</string>
