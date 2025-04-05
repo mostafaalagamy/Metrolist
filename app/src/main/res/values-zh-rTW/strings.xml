@@ -32,7 +32,7 @@
     <string name="this_week">這週</string>
     <string name="last_week">上週</string>
     <string name="local_history">本地</string>
-    <string name="remote_history">雲端]</string>
+    <string name="remote_history">雲端</string>
 
     <!-- Stats -->
     <string name="most_played_songs">最常播放的歌曲</string>
@@ -380,8 +380,8 @@
 
     <string name="hide_explicit">隱藏煽情露骨內容</string>
 
-    <string name="backup_restore">備分與還原</string>
-    <string name="backup">備分</string>
+    <string name="backup_restore">備份與還原</string>
+    <string name="backup">備份</string>
     <string name="restore">還原</string>
     <string name="backup_create_success">已成功建立備份</string>
     <string name="backup_create_failed">無法建立備份</string>
