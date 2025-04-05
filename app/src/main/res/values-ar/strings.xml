@@ -125,6 +125,7 @@
     <string name="view_album">عرض الألبوم</string>
     <string name="refetch">إعادة التحميل</string>
     <string name="share">مشاركة</string>
+    <string name="copy_link">نسخ الرابط</string>
     <string name="delete">حذف</string>
     <string name="remove_from_history">إزالة من التاريخ</string>
     <string name="search_online">البحث على الإنترنت</string>
