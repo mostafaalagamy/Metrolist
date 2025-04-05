@@ -27,9 +27,9 @@ datastore = { group = "androidx.datastore", name = "datastore-preferences", vers
 
 compose-runtime = { group = "androidx.compose.runtime", name = "runtime", version.ref = "compose" }
 compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version = "1.7.6" }
-1.7.8-ui = { group = "androidx.1.7.8.ui", name = "ui", version = "1.7.8" }
-1.7.8-ui-util = { group = "androidx.1.7.8.ui", name = "ui-util", version.ref = "1.7.8" }
-1.7.8-ui-tooling = { group = "androidx.1.7.8.ui", name = "ui-tooling", version.ref = "1.7.8" }
+compose-ui = { group = "androidx.1.7.8.ui", name = "ui", version = "1.7.8" }
+compose-ui-util = { group = "androidx.1.7.8.ui", name = "ui-util", version.ref = "1.7.8" }
+compose-ui-tooling = { group = "androidx.1.7.8.ui", name = "ui-tooling", version.ref = "1.7.8" }
 compose-animation = { group = "androidx.compose.animation", name = "animation-graphics", version.ref = "compose" }
 compose-reorderable = { group = "org.burnoutcrew.composereorderable", name = "reorderable", version = "0.9.6" }
 
