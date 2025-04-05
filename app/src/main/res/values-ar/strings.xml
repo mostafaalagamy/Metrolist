@@ -37,6 +37,18 @@
     <string name="this_week">هذا الأسبوع</string>
     <string name="last_week">الأسبوع الماضي</string>
 
+    <!-- Charts -->
+    <string name="charts"></string>
+    <string name="back_button_desc">للخلف</string>
+    <string name="no_title">لا يوجد عنوان</string>
+    <string name="unknown_artist">فنان غير معروف</string>
+    <string name="unknown_item_type">نوع العنصر غير معروف</string>
+    <string name="loading_charts">جاري تحميل المخططات...</string>
+    <string name="retry_button">إعادة المحاولة</string>
+    <string name="album_cover_desc">غلاف الألبوم</string>
+    <string name="top_music_videos">أفضل مقاطع الفيديو الموسيقية</string>
+    <string name="trending">الأكثر رواجًا</string>
+
     <!-- الاحصائيات -->
     <string name="most_played_songs">الأغاني الأكثر تشغيلًا</string>
     <string name="most_played_artists">الفنانون الأكثر تشغيلًا</string>
@@ -113,6 +125,7 @@
     <string name="view_album">عرض الألبوم</string>
     <string name="refetch">إعادة التحميل</string>
     <string name="share">مشاركة</string>
+    <string name="copy_link">نسخ الرابط</string>
     <string name="delete">حذف</string>
     <string name="remove_from_history">إزالة من التاريخ</string>
     <string name="search_online">البحث على الإنترنت</string>
