@@ -12,19 +12,74 @@ plugins {
 android {
     namespace = "com.metrolist.music"
     compileSdk = 35
+    ndkVersion = "25.1.8937393"
+
     defaultConfig {
         applicationId = "com.metrolist.music"
-        minSdk = 24
+        minSdk = 21
         targetSdk = 35
         versionCode = 114
         versionName = "11.3.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        vectorDrawables.useSupportLibrary = true
     }
+
+    flavorDimensions += "abi"
+    productFlavors {
+        create("universal") {
+            dimension = "abi"
+            ndk {
+                abiFilters += listOf("armeabi-v7a", "arm64-v8a", "x86", "x86_64")
+            }
+            buildConfigField("String", "ARCHITECTURE", "\"universal\"")
+        }
+        create("arm64") {
+            dimension = "abi"
+            ndk { abiFilters += "arm64-v8a" }
+            buildConfigField("String", "ARCHITECTURE", "\"arm64\"")
+        }
+        create("armeabi") {
+            dimension = "abi"
+            ndk { abiFilters += "armeabi-v7a" }
+            buildConfigField("String", "ARCHITECTURE", "\"armeabi\"")
+        }
+        create("x86") {
+            dimension = "abi"
+            ndk { abiFilters += "x86" }
+            buildConfigField("String", "ARCHITECTURE", "\"x86\"")
+        }
+        create("x86_64") {
+            dimension = "abi"
+            ndk { abiFilters += "x86_64" }
+            buildConfigField("String", "ARCHITECTURE", "\"x86_64\"")
+        }
+    }
+
+    signingConfigs {
+        create("persistentDebug") {
+            storeFile = file("persistent-debug.keystore")
+            storePassword = "android"
+            keyAlias = "androiddebugkey"
+            keyPassword = "android"
+        }
+        create("release") {
+            storeFile = file("keystore/release.keystore")
+            storePassword = System.getenv("STORE_PASSWORD")
+            keyAlias = System.getenv("KEY_ALIAS")
+            keyPassword = System.getenv("KEY_PASSWORD")
+        }
+        getByName("debug") {
+            keyAlias = "androiddebugkey"
+            keyPassword = "android"
+            storePassword = "android"
+            storeFile = file("${System.getProperty("user.home")}/.android/debug.keystore")
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = true
             isShrinkResources = true
-            isCrunchPngs = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -32,53 +87,57 @@ android {
         }
         debug {
             applicationIdSuffix = ".debug"
+            isDebuggable = true
+            signingConfig = signingConfigs.getByName("persistentDebug")
         }
     }
-    signingConfigs {
-        getByName("debug") {
-            if (System.getenv("MUSIC_DEBUG_SIGNING_STORE_PASSWORD") != null) {
-                storeFile = file(System.getenv("MUSIC_DEBUG_KEYSTORE_FILE"))
-                storePassword = System.getenv("MUSIC_DEBUG_SIGNING_STORE_PASSWORD")
-                keyAlias = "debug"
-                keyPassword = System.getenv("MUSIC_DEBUG_SIGNING_KEY_PASSWORD")
-            }
-        }
-    }
-    buildFeatures {
-        buildConfig = true
-        compose = true
-    }
+
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
+
     kotlin {
-        jvmToolchain(17)
+        jvmToolchain(21)
     }
+
     kotlinOptions {
+        jvmTarget = "21"
         freeCompilerArgs = freeCompilerArgs + "-Xcontext-receivers"
-        jvmTarget = "17"
     }
-    testOptions {
-        unitTests.isIncludeAndroidResources = true
-        unitTests.isReturnDefaultValues = true
-    }
-    lint {
-        disable += "MissingTranslation"
-    }
+
+    buildFeatures {
+         compose = true
+         buildConfig = true
+     }
+
     dependenciesInfo {
         includeInApk = false
         includeInBundle = false
     }
+
+    lint {
+        disable += "MissingTranslation"
+        disable += "MissingQuantity"
+        disable += "ImpliedQuantity"
+    }
+
     androidResources {
         generateLocaleConfig = true
     }
+
+    packaging {
+         resources {
+             excludes += "/META-INF/{AL2.0,LGPL2.1}"
+         }
+     }
 }
 
 ksp {
     arg("room.schemaLocation", "$projectDir/schemas")
 }
+
 dependencies {
     implementation(libs.guava)
     implementation(libs.coroutines.guava)
@@ -135,5 +194,4 @@ dependencies {
     implementation(libs.timber)
 
     implementation(libs.ktor.serialization.json)
-
 }
