@@ -24,6 +24,10 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
+      - name: Restore Persistent Keystore
+        run: |
+          echo "${{ secrets.DEBUG_KEYSTORE }}" | base64 -d > ./app/persistent-debug.keystore
+
       - name: Build debug APK (universal)
         run: ./gradlew assembleUniversalDebug
         env:
@@ -37,7 +41,7 @@ jobs:
       - name: Sign APK
         uses: ilharp/sign-android-release@v1.0.4
         with:
-          releaseDir: app/build/outputs/apk/${{ matrix.abi }}/release/
+          releaseDir: app/build/outputs/apk/universal/release/
           signingKey: ${{ secrets.KEYSTORE }}
           keyAlias: ${{ secrets.KEY_ALIAS }}
           keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
