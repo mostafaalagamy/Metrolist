@@ -43,6 +43,8 @@
     <string name="loading_charts">Loading charts...</string>
     <string name="retry_button">Retry</string>
     <string name="album_cover_desc">Album cover</string>
+    <string name="top_music_videos">Top Music Videos</string>
+    <string name="trending">Trending</string>
 
     <!-- Stats -->
     <string name="most_played_songs">Most played songs</string>
