@@ -378,7 +378,7 @@ fun SongListItem(
     isPlaying: Boolean = false,
     trailingContent: @Composable RowScope.() -> Unit = {},
 ) {
-    val (swipeSongToAdd) = rememberPreference(swipeSongToAddKey, defaultValue = false)
+    val (swipeSongToAdd) = rememberPreference(SwipeSongToAddKey, defaultValue = false)
  
      if (isSwipeable && swipeSongToAdd) {
         val context = LocalContext.current
@@ -1701,7 +1701,7 @@ fun YouTubeListItem(
         )
     }
 
-    val (swipeSongToAdd) = rememberPreference(swipeSongToAddKey, defaultValue = false)
+    val (swipeSongToAdd) = rememberPreference(SwipeSongToAddKey, defaultValue = false)
     if (isSwipeable && swipeSongToAdd) {
         val context = LocalContext.current
         val playerConnection = LocalPlayerConnection.current ?: return
