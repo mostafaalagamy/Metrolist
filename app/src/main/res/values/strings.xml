@@ -290,6 +290,7 @@
     <string name="secondary_color_style">Secondary</string>
     <string name="enable_squiggly_slider">Enable squiggly slider</string>
     <string name="enable_swipe_thumbnail">Enable swipe to change song</string>
+    <string name="swipe_song_to_add">Swipe song to right for play next or left for adding to queue</string>
     <string name="pure_black">Pure black</string>
     <string name="customize_navigation_tabs">Customize navigation tabs</string>
     <string name="player">Player</string>
