@@ -2,7 +2,7 @@ name: Bump to new version
 on:
   push:
     branches:
-      - 'bumb'
+      - 'main'
     paths:
       - 'app/build.gradle.kts'
   workflow_dispatch:
