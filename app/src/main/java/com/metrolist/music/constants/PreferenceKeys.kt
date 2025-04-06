@@ -14,6 +14,7 @@ val DefaultOpenTabKey = stringPreferencesKey("defaultOpenTab")
 val SlimNavBarKey = booleanPreferencesKey("slimNavBar")
 val GridItemsSizeKey = stringPreferencesKey("gridItemSize")
 val SliderStyleKey = stringPreferencesKey("sliderStyle")
+val SwipeSongToAddKey = booleanPreferencesKey("swipe_song_to_Add")
 
 enum class SliderStyle {
     DEFAULT,

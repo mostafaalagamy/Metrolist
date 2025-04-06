@@ -343,6 +343,7 @@
     <string name="customize_navigation_tabs">تخصيص علامات التبويب</string>
     <string name="player_text_alignment">موضع إسم الفنان والأغنية</string>
     <string name="lyrics_text_position">موضع نص كلمات الأغاني</string>
+    <string name="swipe_song_to_add">مرر الأغنية إلى اليمين لتشغيلها بعد الأغنية الحالية أو إلى اليسار لإضافتها إلى قائمة الانتظار</string>
     <string name="theme">السمة</string>
     <string name="player">المشغل</string>
     <string name="sided">جانبي</string>
