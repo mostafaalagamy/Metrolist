@@ -442,7 +442,8 @@ fun SongListItem(
                     ) {
                         Box(
                             modifier = Modifier
-                                .fillMaxHeight()
+                                .width(56.dp)
+                                .height(48.dp)
                                 .background(color),
                             contentAlignment = Alignment.Center
                         ) {
@@ -1752,7 +1753,8 @@ fun YouTubeListItem(
                     ) {
                         Box(
                             modifier = Modifier
-                                .fillMaxHeight()
+                                .width(56.dp)
+                                .height(48.dp)
                                 .background(color),
                             contentAlignment = Alignment.Center
                         ) {
