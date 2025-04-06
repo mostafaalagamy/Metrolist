@@ -431,9 +431,9 @@ fun AppearanceSettings(
         )
 
         SwitchPreference(
-             title = { Text(stringResource(R.string.swipe_song_to_dismiss)) },
+             title = { Text(stringResource(R.string.swipe_song_to_add)) },
              icon = { Icon(painterResource(R.drawable.queue_music), null) },
-             checked = swipeSongToDismiss,
+             checked = swipeSongToAdd,
              onCheckedChange = onSwipeSongToAddChange
          )
 
