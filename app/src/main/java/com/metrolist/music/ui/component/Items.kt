@@ -378,7 +378,7 @@ fun SongListItem(
     isPlaying: Boolean = false,
     trailingContent: @Composable RowScope.() -> Unit = {},
 ) {
-    val (swipeSongToDismiss) = rememberPreference(swipeSongToAdd, defaultValue = false)
+    val (swipeSongToAdd) = rememberPreference(swipeSongToAdd, defaultValue = false)
  
      if (isSwipeable && swipeSongToAdd) {
         val context = LocalContext.current
