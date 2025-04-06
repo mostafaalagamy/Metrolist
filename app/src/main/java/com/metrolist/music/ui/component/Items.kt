@@ -84,7 +84,7 @@ import com.metrolist.music.LocalDatabase
 import com.metrolist.music.LocalDownloadUtil
 import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
-import com.metrolist.music.constants.SwipeSongToAdd
+import com.metrolist.music.constants.SwipeSongToAddKey
 import com.metrolist.music.constants.GridThumbnailHeight
 import com.metrolist.music.constants.ListItemHeight
 import com.metrolist.music.constants.ListThumbnailSize
@@ -378,7 +378,7 @@ fun SongListItem(
     isPlaying: Boolean = false,
     trailingContent: @Composable RowScope.() -> Unit = {},
 ) {
-    val (swipeSongToAdd) = rememberPreference(swipeSongToAdd, defaultValue = false)
+    val (swipeSongToAdd) = rememberPreference(swipeSongToAddKey, defaultValue = false)
  
      if (isSwipeable && swipeSongToAdd) {
         val context = LocalContext.current
@@ -1701,7 +1701,7 @@ fun YouTubeListItem(
         )
     }
 
-    val (swipeSongToAdd) = rememberPreference(swipeSongToAdd, defaultValue = false)
+    val (swipeSongToAdd) = rememberPreference(swipeSongToAddKey, defaultValue = false)
     if (isSwipeable && swipeSongToAdd) {
         val context = LocalContext.current
         val playerConnection = LocalPlayerConnection.current ?: return
