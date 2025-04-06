@@ -123,7 +123,7 @@ fun AppearanceSettings(
 
     val (slimNav, onSlimNavChange) = rememberPreference(SlimNavBarKey, defaultValue = false)
 
-    val (SwipeSongToAdd, onSwipeSongToAddChange) = rememberPreference(SwipeSongToAddKey, defaultValue = false)
+    val (swipeSongToAdd, onSwipeSongToAddChange) = rememberPreference(SwipeSongToAddKey, defaultValue = false)
 
     val availableBackgroundStyles = PlayerBackgroundStyle.entries.filter {
         it != PlayerBackgroundStyle.BLUR || Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
