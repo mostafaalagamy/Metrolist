@@ -37,15 +37,12 @@ jobs:
           OLD_VERSION=$(git diff HEAD^ HEAD -- app/build.gradle.kts | grep -oP 'versionName\s*=\s*"\K[^"]+' || echo "")
 
           if [ -z "$OLD_VERSION" ]; then
-            echo "Could not find previous version, assuming version changed"
             echo "version_changed=true" >> $GITHUB_OUTPUT
             echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
           elif [ "$OLD_VERSION" != "$NEW_VERSION" ]; then
-            echo "Version changed from $OLD_VERSION to $NEW_VERSION"
             echo "version_changed=true" >> $GITHUB_OUTPUT
             echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
           else
-            echo "Version did not change"
             echo "version_changed=false" >> $GITHUB_OUTPUT
           fi
       - name: Debug output
@@ -124,7 +121,11 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         run: |
-          gh release create v${{ needs.check-version.outputs.new_version }} \
-            --title "${{ needs.check-version.outputs.new_version }}" \
+          UNIVERSAL_APK=$(find downloaded_artifacts/Metrolist -name "*.apk")
+          ABI_APKS=$(find downloaded_artifacts -path "*/app-*-release/*.apk")
+          
+          gh release create "v${{ needs.check-version.outputs.new_version }}" \
+            --title "v${{ needs.check-version.outputs.new_version }}" \
             --notes "Release of version ${{ needs.check-version.outputs.new_version }}" \
-            downloaded_artifacts/*
+            "$UNIVERSAL_APK" \
+            $ABI_APKS
