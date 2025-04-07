@@ -114,10 +114,10 @@ fun SelectionSongMenu(
         onGetSong = { playlist ->
             coroutineScope.launch(Dispatchers.IO) {
                 playlist.playlist.browseId?.let { browseId ->
-                    YouTube.addToPlaylist(browseId, it.song)
+                    YouTube.addToPlaylist(browseId, it.song.id)
                 }
             }
-            listOf(it.song)
+            listOf(it.song.id)
         },
         onDismiss = {
             showChoosePlaylistDialog = false
