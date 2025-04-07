@@ -42,6 +42,9 @@ import com.metrolist.music.ui.component.DefaultDialog
 import com.metrolist.music.ui.component.DownloadGridMenu
 import com.metrolist.music.ui.component.GridMenu
 import com.metrolist.music.ui.component.GridMenuItem
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import java.time.LocalDateTime
 
 @SuppressLint("MutableCollectionMutableState")
@@ -106,8 +109,17 @@ fun SelectionSongMenu(
 
     AddToPlaylistDialog(
         isVisible = showChoosePlaylistDialog,
-        onGetSong = { songSelection.map { it.song.id } },
-        onDismiss = { showChoosePlaylistDialog = false },
+        onGetSong = {
+            selection.map {
+                runBlocking {
+                    withContext(Dispatchers.IO) {
+                        database.insert(it)
+                    }
+                }
+                it.id
+            }
+        },
+        onDismiss = { showChoosePlaylistDialog = false }
     )
 
     var showRemoveDownloadDialog by remember {
