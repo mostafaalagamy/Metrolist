@@ -268,7 +268,6 @@ fun MinPlaybackDurDialog(
                     value = currentValue,
                     onValueChange = { currentValue = it },
                     valueRange = 0f..100f,
-                    steps = 99,
                 )
 
                 Row(
