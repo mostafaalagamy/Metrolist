@@ -138,8 +138,6 @@ import kotlin.math.min
 import kotlin.math.pow
 import kotlin.time.Duration.Companion.seconds
 
-const val MIN_PLAYBACK_THRESHOLD = 0.3 // 0 <= MIN_PLAYBACK_THRESHOLD <= 1
-
 @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
 @AndroidEntryPoint
 class MusicService :
@@ -867,18 +865,20 @@ class MusicService :
 
     override fun onPlaybackStatsReady(eventTime: AnalyticsListener.EventTime, playbackStats: PlaybackStats) {
         val mediaItem = eventTime.timeline.getWindow(eventTime.windowIndex, Timeline.Window()).mediaItem
-
-        // increment play count
-        if (playbackStats.totalPlayTimeMs / ((mediaItem.metadata?.duration?.times(1000)) ?: -1) >= MIN_PLAYBACK_THRESHOLD) {
-            CoroutineScope(Dispatchers.IO).launch {
-                database.incrementTotalPlayTime(mediaItem.mediaId, playbackStats.totalPlayTimeMs)
-            }
+        var minPlaybackDur = (dataStore.get(minPlaybackDurKey, 30).toFloat() / 100)
+        // ensure within bounds
+        if (minPlaybackDur >= 1f) {
+            minPlaybackDur = 0.99f // Ehhh 99 is good enough to avoid any rounding errors
+        } else if (minPlaybackDur < 0.01f) {
+            minPlaybackDur = 0.01f // Still want "spam skipping" to not count as plays
         }
 
-        // total play time
-        if (playbackStats.totalPlayTimeMs.toFloat() / ((mediaItem.metadata?.duration?.times(1000)) ?: -1) >= MIN_PLAYBACK_THRESHOLD &&
-            !dataStore.get(PauseListenHistoryKey, false)) {
+        if (playbackStats.totalPlayTimeMs.toFloat() / ((mediaItem.metadata?.duration?.times(1000))
+                ?: -1) >= minPlaybackDur
+            && !dataStore.get(PauseListenHistoryKey, false)
+        ) {
             database.query {
+                incrementPlayCount(mediaItem.mediaId)
                 incrementTotalPlayTime(mediaItem.mediaId, playbackStats.totalPlayTimeMs)
                 try {
                     insert(
