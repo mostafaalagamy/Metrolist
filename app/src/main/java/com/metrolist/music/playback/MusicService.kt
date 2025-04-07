@@ -871,7 +871,7 @@ class MusicService :
         // increment play count
         if (playbackStats.totalPlayTimeMs / ((mediaItem.metadata?.duration?.times(1000)) ?: -1) >= MIN_PLAYBACK_THRESHOLD) {
             CoroutineScope(Dispatchers.IO).launch {
-                database.getSongPlayTime(mediaItem.mediaId)
+                database.incrementTotalPlayTime(mediaItem.mediaId)
             }
         }
 
