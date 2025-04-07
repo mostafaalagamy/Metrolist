@@ -27,6 +27,7 @@ import androidx.media3.common.Timeline
 import androidx.media3.exoplayer.offline.Download
 import androidx.media3.exoplayer.offline.DownloadRequest
 import androidx.media3.exoplayer.offline.DownloadService
+import com.metrolist.innertube.YouTube
 import com.metrolist.music.LocalDatabase
 import com.metrolist.music.LocalDownloadUtil
 import com.metrolist.music.LocalPlayerConnection
@@ -45,6 +46,7 @@ import com.metrolist.music.ui.component.GridMenuItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 
 @SuppressLint("MutableCollectionMutableState")
@@ -112,10 +114,10 @@ fun SelectionSongMenu(
         onGetSong = { playlist ->
             coroutineScope.launch(Dispatchers.IO) {
                 playlist.playlist.browseId?.let { browseId ->
-                    YouTube.addToPlaylist(browseId, song.id)
+                    YouTube.addToPlaylist(browseId, it.song)
                 }
             }
-            listOf(song.id)
+            listOf(it.song)
         },
         onDismiss = {
             showChoosePlaylistDialog = false
