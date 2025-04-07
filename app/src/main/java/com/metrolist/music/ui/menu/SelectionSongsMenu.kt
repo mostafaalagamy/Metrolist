@@ -110,13 +110,13 @@ fun SelectionSongMenu(
     AddToPlaylistDialog(
         isVisible = showChoosePlaylistDialog,
         onGetSong = {
-            selection.map {
+            songSelection.map {
                 runBlocking {
                     withContext(Dispatchers.IO) {
                         database.insert(it)
                     }
                 }
-                it.id
+                it.song.id
             }
         },
         onDismiss = { showChoosePlaylistDialog = false }
