@@ -75,6 +75,7 @@ import java.util.UUID
 @Composable
 fun LibraryPlaylistsScreen(
     navController: NavController,
+    initialTextFieldValue: String? = null,
     filterContent: @Composable () -> Unit,
     viewModel: LibraryPlaylistsViewModel = hiltViewModel(),
     allowSyncing: Boolean = true,
