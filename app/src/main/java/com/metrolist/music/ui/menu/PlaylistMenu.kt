@@ -180,7 +180,7 @@ fun PlaylistMenu(
                             DownloadService.sendRemoveDownload(
                                 context,
                                 ExoDownloadService::class.java,
-                                song.song.id,
+                                song.id,
                                 false,
                             )
                         }
@@ -249,15 +249,6 @@ fun PlaylistMenu(
         onGetSong = {
             coroutineScope.launch(Dispatchers.IO) {
                 // add songs to playlist and push to ytm
-                songs.let {
-                    playlist.playlist.browseId?.let {
-                        YouTube.addPlaylistToPlaylist(
-                            it,
-                            playlist.id
-                        )
-                    }
-                }
-
                 playlist.playlist.browseId?.let { playlistId ->
                     YouTube.addPlaylistToPlaylist(playlistId, playlist.id)
                 }

@@ -15,6 +15,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -27,6 +28,7 @@ import androidx.media3.common.Timeline
 import androidx.media3.exoplayer.offline.Download
 import androidx.media3.exoplayer.offline.DownloadRequest
 import androidx.media3.exoplayer.offline.DownloadService
+import com.metrolist.innertube.YouTube
 import com.metrolist.music.LocalDatabase
 import com.metrolist.music.LocalDownloadUtil
 import com.metrolist.music.LocalPlayerConnection
@@ -42,6 +44,10 @@ import com.metrolist.music.ui.component.DefaultDialog
 import com.metrolist.music.ui.component.DownloadGridMenu
 import com.metrolist.music.ui.component.GridMenu
 import com.metrolist.music.ui.component.GridMenuItem
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 
 @SuppressLint("MutableCollectionMutableState")
@@ -55,6 +61,7 @@ fun SelectionSongMenu(
     val context = LocalContext.current
     val database = LocalDatabase.current
     val downloadUtil = LocalDownloadUtil.current
+    val coroutineScope = rememberCoroutineScope()
     val playerConnection = LocalPlayerConnection.current ?: return
 
     val allInLibrary by remember {
@@ -106,8 +113,19 @@ fun SelectionSongMenu(
 
     AddToPlaylistDialog(
         isVisible = showChoosePlaylistDialog,
-        onGetSong = { songSelection.map { it.song.id } },
-        onDismiss = { showChoosePlaylistDialog = false },
+        onGetSong = { playlist ->
+            coroutineScope.launch(Dispatchers.IO) {
+                songSelection.forEach { song ->
+                    playlist.playlist.browseId?.let { browseId ->
+                        YouTube.addToPlaylist(browseId, song.id)
+                    }
+                }
+            }
+            songSelection.map { it.id }
+        },
+        onDismiss = {
+            showChoosePlaylistDialog = false
+        },
     )
 
     var showRemoveDownloadDialog by remember {
@@ -302,11 +320,37 @@ fun SelectionMediaMetadataMenu(
     val context = LocalContext.current
     val database = LocalDatabase.current
     val downloadUtil = LocalDownloadUtil.current
+    val coroutineScope = rememberCoroutineScope()
     val playerConnection = LocalPlayerConnection.current ?: return
 
     val allLiked by remember(songSelection) {
         mutableStateOf(songSelection.isNotEmpty() && songSelection.all { it.liked })
     }
+
+    var showChoosePlaylistDialog by rememberSaveable {
+        mutableStateOf(false)
+    }
+
+    val notAddedList by remember {
+        mutableStateOf(mutableListOf<Song>())
+    }
+
+    AddToPlaylistDialog(
+        isVisible = showChoosePlaylistDialog,
+        onGetSong = { playlist ->
+            coroutineScope.launch(Dispatchers.IO) {
+                songSelection.forEach { song ->
+                    playlist.playlist.browseId?.let { browseId ->
+                        YouTube.addToPlaylist(browseId, song.id)
+                    }
+                }
+            }
+            songSelection.map { it.id }
+        },
+        onDismiss = {
+            showChoosePlaylistDialog = false
+        },
+    )
 
     var downloadState by remember {
         mutableIntStateOf(Download.STATE_STOPPED)
@@ -329,11 +373,6 @@ fun SelectionMediaMetadataMenu(
                     Download.STATE_STOPPED
                 }
         }
-    }
-
-
-    var showChoosePlaylistDialog by rememberSaveable {
-        mutableStateOf(false)
     }
 
     var showRemoveDownloadDialog by remember {
@@ -438,6 +477,13 @@ fun SelectionMediaMetadataMenu(
             onDismiss()
             playerConnection.addToQueue(songSelection.map { it.toMediaItem() })
             clearAction()
+        }
+
+        GridMenuItem(
+            icon = R.drawable.playlist_add,
+            title = R.string.add_to_playlist,
+        ) {
+            showChoosePlaylistDialog = true
         }
 
         GridMenuItem(
