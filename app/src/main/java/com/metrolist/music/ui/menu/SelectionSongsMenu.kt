@@ -113,7 +113,7 @@ fun SelectionSongMenu(
             songSelection.map {
                 runBlocking {
                     withContext(Dispatchers.IO) {
-                        database.insert(it)
+                        database.insert(it.song)
                     }
                 }
                 it.song.id
