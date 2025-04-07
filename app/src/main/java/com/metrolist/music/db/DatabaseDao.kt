@@ -22,6 +22,7 @@ import com.metrolist.music.constants.SongSortType
 import com.metrolist.music.db.entities.Album
 import com.metrolist.music.db.entities.AlbumArtistMap
 import com.metrolist.music.db.entities.AlbumEntity
+import com.metrolist.music.db.entities.PlayCountEntity
 import com.metrolist.music.db.entities.AlbumWithSongs
 import com.metrolist.music.db.entities.Artist
 import com.metrolist.music.db.entities.ArtistEntity
@@ -48,6 +49,7 @@ import com.metrolist.music.models.toMediaMetadata
 import com.metrolist.music.ui.utils.resize
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.runBlocking
 import java.text.Collator
 import java.time.LocalDateTime
 import java.time.ZoneOffset
@@ -415,6 +417,13 @@ interface DatabaseDao {
         offset: Int = 0,
         toTimeStamp: Long? = LocalDateTime.now().toInstant(ZoneOffset.UTC).toEpochMilli(),
     ): Flow<List<Album>>
+
+    @Query("SELECT sum(count) from playCount WHERE song = :songId")
+    fun getLifetimePlayCount(songId: String?): Flow<Int>
+    @Query("SELECT sum(count) from playCount WHERE song = :songId AND year = :year")
+    fun getPlayCountByYear(songId: String?, year: Int): Flow<Int>
+    @Query("SELECT count from playCount WHERE song = :songId AND year = :year AND month = :month")
+    fun getPlayCountByMonth(songId: String?, year: Int, month: Int): Flow<Int>
 
     @Transaction
     @Query(
@@ -903,12 +912,28 @@ interface DatabaseDao {
     @Query("DELETE FROM search_history")
     fun clearSearchHistory()
 
-    @Transaction
     @Query("UPDATE song SET totalPlayTime = totalPlayTime + :playTime WHERE id = :songId")
-    fun incrementTotalPlayTime(
-        songId: String,
-        playTime: Long,
-    )
+    fun incrementTotalPlayTime(songId: String, playTime: Long)
+
+    @Query("UPDATE playCount SET count = count + 1 WHERE song = :songId AND year = :year AND month = :month")
+    fun incrementPlayCount(songId: String, year: Int, month: Int)
+
+    /**
+     * Increment by one the play count with today's year and month.
+     */
+    fun incrementPlayCount(songId: String) {
+        val time = LocalDateTime.now().atOffset(ZoneOffset.UTC)
+        var oldCount: Int
+        runBlocking {
+            oldCount = getPlayCountByMonth(songId, time.year, time.monthValue).first()
+        }
+
+        // add new
+        if (oldCount <= 0) {
+            insert(PlayCountEntity(songId, time.year, time.monthValue, 0))
+        }
+        incrementPlayCount(songId, time.year, time.monthValue)
+    }
 
     @Transaction
     @Query("UPDATE song SET inLibrary = :inLibrary WHERE id = :songId")
@@ -1000,6 +1025,9 @@ interface DatabaseDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(map: RelatedSongMap)
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun insert(playCountEntity: PlayCountEntity): Long
 
     @Transaction
     fun insert(
