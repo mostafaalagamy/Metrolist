@@ -79,9 +79,9 @@ import java.util.UUID
 @Composable
 fun LibraryPlaylistsScreen(
     navController: NavController,
-    initialTextFieldValue: String? = null,
     filterContent: @Composable () -> Unit,
     viewModel: LibraryPlaylistsViewModel = hiltViewModel(),
+    initialTextFieldValue: String? = null,
     allowSyncing: Boolean = true,
 ) {
     val menuState = LocalMenuState.current
