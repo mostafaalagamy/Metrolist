@@ -79,14 +79,15 @@ class MusicDatabase(
         LyricsEntity::class,
         Event::class,
         RelatedSongMap::class,
-        SetVideoIdEntity::class
+        SetVideoIdEntity::class,
+        PlayCountEntity::class
     ],
     views = [
         SortedSongArtistMap::class,
         SortedSongAlbumMap::class,
         PlaylistSongMapPreview::class,
     ],
-    version = 17,
+    version = 18,
     exportSchema = true,
     autoMigrations = [
         AutoMigration(from = 2, to = 3),
@@ -104,6 +105,7 @@ class MusicDatabase(
         AutoMigration(from = 14, to = 15),
         AutoMigration(from = 15, to = 16),
         AutoMigration(from = 16, to = 17, spec = Migration16To17::class),
+        AutoMigration(from = 17, to = 18),
     ],
 )
 @TypeConverters(Converters::class)
