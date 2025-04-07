@@ -15,7 +15,7 @@ webkit = "1.12.1"
 
 [libraries]
 annotation = { module = "androidx.annotation:annotation", version.ref = "annotation" }
-guava = { group = "com.google.guava", name = "guava", version = "33.4.0-android" }
+guava = { group = "com.google.guava", name = "guava", version = "33.4.6-android" }
 coroutines-guava = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-guava", version = "1.10.1" }
 concurrent-futures = { group = "androidx.concurrent", name = "concurrent-futures-ktx", version = "1.2.0" }
 
