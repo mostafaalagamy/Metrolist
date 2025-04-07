@@ -105,7 +105,16 @@ fun PlayerSettings(
         mutableIntStateOf(minPlaybackDur)
     }
 
-    
+    if (showMinPlaybackDur) {
+        MinPlaybackDurDialog(
+            initialValue = minPlaybackDur,
+            onDismiss = { showMinPlaybackDur = false },
+            onConfirm = {
+                showMinPlaybackDur = false
+                onMinPlaybackDurChange(it)
+            }
+        )
+    }
 
     Column(
         Modifier
