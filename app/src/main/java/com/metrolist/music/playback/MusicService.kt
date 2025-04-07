@@ -876,7 +876,8 @@ class MusicService :
         }
 
         // total play time
-        if (playbackStats.totalPlayTimeMs >= 30000 && !dataStore.get(PauseListenHistoryKey, false)) {
+        if (playbackStats.totalPlayTimeMs.toFloat() / ((mediaItem.metadata?.duration?.times(1000)) ?: -1) >= MIN_PLAYBACK_THRESHOLD &&
+            !dataStore.get(PauseListenHistoryKey, false)) {
             database.query {
                 incrementTotalPlayTime(mediaItem.mediaId, playbackStats.totalPlayTimeMs)
                 try {
