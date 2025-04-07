@@ -162,7 +162,9 @@ fun LibraryPlaylistsScreen(
 
     if (showCreatePlaylistDialog) {
         CreatePlaylistDialog(
-            onDismiss = { showCreatePlaylistDialog = false }
+            onDismiss = { showCreatePlaylistDialog = false },
+            initialTextFieldValue = initialTextFieldValue,
+            allowSyncing = allowSyncing
         )
     }
 
