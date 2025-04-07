@@ -37,6 +37,10 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -77,6 +81,8 @@ fun LibraryPlaylistsScreen(
     navController: NavController,
     filterContent: @Composable () -> Unit,
     viewModel: LibraryPlaylistsViewModel = hiltViewModel(),
+    initialTextFieldValue: String? = null,
+    allowSyncing: Boolean = true,
 ) {
     val menuState = LocalMenuState.current
     val haptic = LocalHapticFeedback.current
@@ -162,7 +168,9 @@ fun LibraryPlaylistsScreen(
 
     if (showCreatePlaylistDialog) {
         CreatePlaylistDialog(
-            onDismiss = { showCreatePlaylistDialog = false }
+            onDismiss = { showCreatePlaylistDialog = false },
+            initialTextFieldValue = initialTextFieldValue,
+            allowSyncing = allowSyncing
         )
     }
 
