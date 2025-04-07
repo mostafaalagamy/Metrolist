@@ -1,5 +1,6 @@
 package com.metrolist.music.ui.screens.settings
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -10,15 +11,20 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -50,6 +56,7 @@ import com.metrolist.music.ui.component.SwitchPreference
 import com.metrolist.music.ui.utils.backToMain
 import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
+import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -99,39 +106,14 @@ fun PlayerSettings(
     }
 
     if (showMinPlaybackDur) {
-        ActionPromptDialog(
-            title = stringResource(R.string.min_playback_duration_title),
+        MinPlaybackDurDialog(
+            initialValue = minPlaybackDur,
             onDismiss = { showMinPlaybackDur = false },
             onConfirm = {
                 showMinPlaybackDur = false
-                onMinPlaybackDurChange(tempminPlaybackDur)
-            },
-            onCancel = {
-                showMinPlaybackDur = false
-                tempminPlaybackDur = minPlaybackDur
+                onMinPlaybackDurChange(it)
             }
-        ) {
-            Text(
-                text = stringResource(R.string.min_playback_duration_description),
-                style = MaterialTheme.typography.bodySmall,
-                modifier = Modifier.padding(horizontal = 4.dp)
-            )
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(
-                    text = stringResource(R.string.percentage_format, tempminPlaybackDur),
-                    style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier.padding(horizontal = 8.dp)
-                )
-                Slider(
-                    value = tempminPlaybackDur.toFloat(),
-                    onValueChange = { tempminPlaybackDur = it.toInt() },
-                    valueRange = 0f..100f
-                )
-            }
-        }
+        )
     }
 
     Column(
@@ -249,6 +231,94 @@ fun PlayerSettings(
                     painterResource(R.drawable.arrow_back),
                     contentDescription = null
                 )
+            }
+        }
+    )
+}
+
+@Composable
+fun MinPlaybackDurDialog(
+    initialValue: Int,
+    onDismiss: () -> Unit,
+    onConfirm: (Int) -> Unit,
+) {
+    var currentValue by remember { mutableFloatStateOf(initialValue.toFloat()) }
+    val defaultValue = 30  // From original PlayerSettings default
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        modifier = Modifier
+           .fillMaxWidth(0.8f)
+           .padding(horizontal = 16.dp),
+        title = {
+            Text(
+                text = stringResource(R.string.min_playback_duration_title),
+                style = MaterialTheme.typography.headlineSmall,
+            )
+        },
+        text = {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = stringResource(R.string.min_playback_duration_description),
+                    style = MaterialTheme.typography.bodyMedium
+                )
+
+                Slider(
+                    value = currentValue,
+                    onValueChange = { currentValue = it },
+                    valueRange = 0f..100f,
+                    steps = 99,
+                )
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    FilledTonalIconButton(
+                        onClick = { currentValue = (currentValue - 1).coerceAtLeast(0f) },
+                        enabled = currentValue > 0f
+                    ) { Text("-") }
+
+                    Text(
+                        text = "${currentValue.roundToInt()}%",
+                        style = MaterialTheme.typography.titleLarge
+                    )
+
+                    FilledTonalIconButton(
+                        onClick = { currentValue = (currentValue + 1).coerceAtMost(100f) },
+                        enabled = currentValue < 100f
+                    ) { Text("+") }
+                }
+            }
+        },
+        confirmButton = {
+            Row(
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                TextButton(
+                    onClick = { currentValue = defaultValue.toFloat() },
+                    enabled = currentValue.roundToInt() != defaultValue
+                ) {
+                    Text(stringResource(R.string.reset))
+                }
+
+                Spacer(Modifier.weight(1f))
+
+                TextButton(onClick = onDismiss) {
+                    Text(stringResource(android.R.string.cancel))
+                }
+
+                Button(
+                    onClick = { onConfirm(currentValue.roundToInt()) },
+                    enabled = currentValue.roundToInt() != initialValue
+                ) {
+                    Text(stringResource(android.R.string.ok))
+                }
             }
         }
     )
