@@ -320,11 +320,37 @@ fun SelectionMediaMetadataMenu(
     val context = LocalContext.current
     val database = LocalDatabase.current
     val downloadUtil = LocalDownloadUtil.current
+    val coroutineScope = rememberCoroutineScope()
     val playerConnection = LocalPlayerConnection.current ?: return
 
     val allLiked by remember(songSelection) {
         mutableStateOf(songSelection.isNotEmpty() && songSelection.all { it.liked })
     }
+
+    var showChoosePlaylistDialog by rememberSaveable {
+        mutableStateOf(false)
+    }
+
+    val notAddedList by remember {
+        mutableStateOf(mutableListOf<Song>())
+    }
+
+    AddToPlaylistDialog(
+        isVisible = showChoosePlaylistDialog,
+        onGetSong = { playlist ->
+            coroutineScope.launch(Dispatchers.IO) {
+                songSelection.forEach { song ->
+                    playlist.playlist.browseId?.let { browseId ->
+                        YouTube.addToPlaylist(browseId, song.id)
+                    }
+                }
+            }
+            songSelection.map { it.id }
+        },
+        onDismiss = {
+            showChoosePlaylistDialog = false
+        },
+    )
 
     var downloadState by remember {
         mutableIntStateOf(Download.STATE_STOPPED)
@@ -456,6 +482,13 @@ fun SelectionMediaMetadataMenu(
             onDismiss()
             playerConnection.addToQueue(songSelection.map { it.toMediaItem() })
             clearAction()
+        }
+
+        GridMenuItem(
+            icon = R.drawable.playlist_add,
+            title = R.string.add_to_playlist,
+        ) {
+            showChoosePlaylistDialog = true
         }
 
         GridMenuItem(
