@@ -138,6 +138,8 @@ import kotlin.math.min
 import kotlin.math.pow
 import kotlin.time.Duration.Companion.seconds
 
+const val MIN_PLAYBACK_THRESHOLD = 0.3 // 0 <= MIN_PLAYBACK_THRESHOLD <= 1
+
 @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
 @AndroidEntryPoint
 class MusicService :
@@ -869,7 +871,7 @@ class MusicService :
         // increment play count
         if (playbackStats.totalPlayTimeMs / ((mediaItem.metadata?.duration?.times(1000)) ?: -1) >= MIN_PLAYBACK_THRESHOLD) {
             CoroutineScope(Dispatchers.IO).launch {
-                database.incrementPlayCount(mediaItem.mediaId)
+                database.getSongPlayTime(mediaItem.mediaId)
             }
         }
 
