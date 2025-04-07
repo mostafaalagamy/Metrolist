@@ -863,40 +863,29 @@ class MusicService :
                 ).build()
         }
 
-    override fun onPlaybackStatsReady(
-        eventTime: AnalyticsListener.EventTime,
-        playbackStats: PlaybackStats,
-    ) {
-        val mediaItem =
-            eventTime.timeline.getWindow(eventTime.windowIndex, Timeline.Window()).mediaItem
+    override fun onPlaybackStatsReady(eventTime: AnalyticsListener.EventTime, playbackStats: PlaybackStats) {
+        val mediaItem = eventTime.timeline.getWindow(eventTime.windowIndex, Timeline.Window()).mediaItem
 
-        var minPlaybackDur = (dataStore.get(minPlaybackDurKey, 30) / 100)
-         // ensure within bounds. Ehhh 99 is good enough to avoid any rounding errors
-         if (playbackStats.totalPlayTimeMs.toFloat() / ((mediaItem.metadata?.duration?.times(1000)) ?: -1) >= minPlaybackDur
-             && !dataStore.get(PauseListenHistoryKey, false)) {
-                database.query {
-                    incrementTotalPlayTime(mediaItem.mediaId, playbackStats.totalPlayTimeMs)
-                    try {
-                        insert(
-                            Event(
-                                songId = mediaItem.mediaId,
-                                timestamp = LocalDateTime.now(),
-                                playTime = playbackStats.totalPlayTimeMs,
-                            ),
-                        )
-                    } catch (_: SQLException) {
-                }
-            }
-            // TODO: support playlist id
+        // increment play count
+        if (playbackStats.totalPlayTimeMs / ((mediaItem.metadata?.duration?.times(1000)) ?: -1) >= MIN_PLAYBACK_THRESHOLD) {
             CoroutineScope(Dispatchers.IO).launch {
-                val playbackUrl = database.format(mediaItem.mediaId).first()?.playbackUrl
-                    ?: YTPlayerUtils.playerResponseForMetadata(mediaItem.mediaId, null)
-                        .getOrNull()?.playbackTracking?.videostatsPlaybackUrl?.baseUrl
-                playbackUrl?.let {
-                    YouTube.registerPlayback(null, playbackUrl)
-                        .onFailure {
-                            reportException(it)
-                        }
+                database.incrementPlayCount(mediaItem.mediaId)
+            }
+        }
+
+        // total play time
+        if (playbackStats.totalPlayTimeMs >= 30000 && !dataStore.get(PauseListenHistoryKey, false)) {
+            database.query {
+                incrementTotalPlayTime(mediaItem.mediaId, playbackStats.totalPlayTimeMs)
+                try {
+                    insert(
+                        Event(
+                            songId = mediaItem.mediaId,
+                            timestamp = LocalDateTime.now(),
+                            playTime = playbackStats.totalPlayTimeMs
+                        )
+                    )
+                } catch (_: SQLException) {
                 }
             }
         }
