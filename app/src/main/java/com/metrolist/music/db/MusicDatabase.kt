@@ -23,6 +23,7 @@ import com.metrolist.music.db.entities.Event
 import com.metrolist.music.db.entities.FormatEntity
 import com.metrolist.music.db.entities.LyricsEntity
 import com.metrolist.music.db.entities.PlaylistEntity
+import com.metrolist.music.db.entities.PlayCountEntity
 import com.metrolist.music.db.entities.PlaylistSongMap
 import com.metrolist.music.db.entities.PlaylistSongMapPreview
 import com.metrolist.music.db.entities.RelatedSongMap
