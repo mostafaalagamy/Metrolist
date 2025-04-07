@@ -247,7 +247,9 @@ fun MinPlaybackDurDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        modifier = Modifier.fillMaxWidth(0.8f),
+        modifier = Modifier
+           .fillMaxWidth(0.8f)
+           .padding(horizontal = 16.dp),
         title = {
             Text(
                 text = stringResource(R.string.min_playback_duration_title),
@@ -268,6 +270,7 @@ fun MinPlaybackDurDialog(
                     value = currentValue,
                     onValueChange = { currentValue = it },
                     valueRange = 0f..100f,
+                    steps = 99,
                 )
 
                 Row(
