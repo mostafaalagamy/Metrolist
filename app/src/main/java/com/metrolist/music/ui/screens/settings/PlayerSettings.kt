@@ -241,7 +241,7 @@ fun MinPlaybackDurDialog(
         modifier = Modifier.fillMaxWidth(0.8f),
         title = {
             Text(
-                text = stringResource(R.string.min_playback_duration),
+                text = stringResource(R.string.min_playback_duration_title),
                 style = MaterialTheme.typography.headlineSmall,
             )
         },
