@@ -105,7 +105,7 @@ class MusicDatabase(
         AutoMigration(from = 14, to = 15),
         AutoMigration(from = 15, to = 16),
         AutoMigration(from = 16, to = 17, spec = Migration16To17::class),
-        AutoMigration(from = 17, to = 18),
+        AutoMigration(from = 17, to = 18, spec = Migration17To18::class),
     ],
 )
 @TypeConverters(Converters::class)
@@ -459,5 +459,16 @@ class Migration16To17 : AutoMigrationSpec {
     override fun onPostMigrate(db: SupportSQLiteDatabase) {
         db.execSQL("UPDATE playlist SET bookmarkedAt = lastUpdateTime")
         db.execSQL("UPDATE playlist SET isEditable = 1 WHERE browseId IS NOT NULL")
+    }
+}
+
+class Migration17To18 : AutoMigrationSpec {
+    @SuppressLint("Range")
+    override fun onPostMigrate(db: SupportSQLiteDatabase) {
+        db.query("SELECT * FROM play_count").use { cursor ->
+            while (cursor.moveToNext()) {
+                val songId = cursor.getString(cursor.getColumnIndex("song"))
+            }
+        }
     }
 }
