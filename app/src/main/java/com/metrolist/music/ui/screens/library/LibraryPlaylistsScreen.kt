@@ -77,6 +77,7 @@ fun LibraryPlaylistsScreen(
     navController: NavController,
     filterContent: @Composable () -> Unit,
     viewModel: LibraryPlaylistsViewModel = hiltViewModel(),
+    allowSyncing: Boolean = true,
 ) {
     val menuState = LocalMenuState.current
     val haptic = LocalHapticFeedback.current
