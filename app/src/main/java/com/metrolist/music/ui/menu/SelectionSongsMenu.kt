@@ -375,11 +375,6 @@ fun SelectionMediaMetadataMenu(
         }
     }
 
-
-    var showChoosePlaylistDialog by rememberSaveable {
-        mutableStateOf(false)
-    }
-
     var showRemoveDownloadDialog by remember {
         mutableStateOf(false)
     }
