@@ -109,17 +109,17 @@ fun SelectionSongMenu(
 
     AddToPlaylistDialog(
         isVisible = showChoosePlaylistDialog,
-        onGetSong = {
-            songSelection.map {
-                runBlocking {
-                    withContext(Dispatchers.IO) {
-                        database.insert(it.song)
-                    }
+        onGetSong = { playlist ->
+            coroutineScope.launch(Dispatchers.IO) {
+                playlist.playlist.browseId?.let { browseId ->
+                    YouTube.addToPlaylist(browseId, song.id)
                 }
-                it.song.id
             }
+            listOf(song.id)
         },
-        onDismiss = { showChoosePlaylistDialog = false }
+        onDismiss = {
+            showChoosePlaylistDialog = false
+        },
     )
 
     var showRemoveDownloadDialog by remember {
