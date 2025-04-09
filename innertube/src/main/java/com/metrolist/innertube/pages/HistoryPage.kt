@@ -1,4 +1,3 @@
-
 package com.metrolist.innertube.pages
 
 import com.metrolist.innertube.models.Album
@@ -6,7 +5,6 @@ import com.metrolist.innertube.models.Artist
 import com.metrolist.innertube.models.MusicResponsiveListItemRenderer
 import com.metrolist.innertube.models.MusicShelfRenderer
 import com.metrolist.innertube.models.SongItem
-import com.metrolist.innertube.models.getItems
 import com.metrolist.innertube.models.oddElements
 import com.metrolist.innertube.utils.parseTime
 
@@ -17,15 +15,19 @@ data class HistoryPage(
         val title: String,
         val songs: List<SongItem>
     )
+
     companion object {
         fun fromMusicShelfRenderer(renderer: MusicShelfRenderer): HistorySection {
             return HistorySection(
                 title = renderer.title?.runs?.firstOrNull()?.text!!,
-                songs = renderer.contents?.getItems()?.mapNotNull {
-                    fromMusicResponsiveListItemRenderer(it)
+                songs = renderer.contents?.mapNotNull {
+                    it.musicResponsiveListItemRenderer?.let { renderer ->
+                        fromMusicResponsiveListItemRenderer(renderer)
+                    }
                 }!!
             )
         }
+
         private fun fromMusicResponsiveListItemRenderer(renderer: MusicResponsiveListItemRenderer): SongItem? {
             return SongItem(
                 id = renderer.playlistItemData?.videoId ?: return null,
@@ -38,16 +40,12 @@ data class HistoryPage(
                         id = it.navigationEndpoint?.browseEndpoint?.browseId
                     )
                 } ?: emptyList(),
-                album = renderer.flexColumns.getOrNull(2)?.musicResponsiveListItemFlexColumnRenderer?.text?.runs?.firstOrNull()
-                     ?.takeIf {
-                         it.navigationEndpoint?.browseEndpoint?.browseId != null
-                     }?.let {
-                         it.navigationEndpoint?.browseEndpoint?.browseId?.let { it1 ->
-                             Album(
-                                 name = it.text, id = it1
-                             )
-                         }
-                     },
+                album = renderer.flexColumns.getOrNull(3)?.musicResponsiveListItemFlexColumnRenderer?.text?.runs?.firstOrNull()?.let {
+                    Album(
+                        name = it.text,
+                        id = it.navigationEndpoint?.browseEndpoint?.browseId ?: return@let null
+                    )
+                },
                 duration = renderer.fixedColumns?.firstOrNull()?.musicResponsiveListItemFlexColumnRenderer
                     ?.text?.runs?.firstOrNull()?.text?.parseTime(),
                 thumbnail = renderer.thumbnail?.musicThumbnailRenderer?.getThumbnailUrl() ?: return null,
