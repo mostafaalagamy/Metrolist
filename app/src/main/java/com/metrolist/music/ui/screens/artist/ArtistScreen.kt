@@ -236,6 +236,7 @@ fun ArtistScreen(
                     ) { song ->
                         SongListItem(
                             song = song,
+                            showInLibraryIcon = true,
                             isActive = song.id == mediaMetadata?.id,
                             isPlaying = isPlaying,
                             trailingContent = {
