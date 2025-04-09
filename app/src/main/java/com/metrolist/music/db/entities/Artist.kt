@@ -7,7 +7,6 @@ import androidx.room.Embedded
 data class Artist(
     @Embedded
     val artist: ArtistEntity,
-    val songCount: Int,
     val timeListened: Int? = 0,
 ) : LocalItem() {
     override val id: String
@@ -16,4 +15,7 @@ data class Artist(
         get() = artist.name
     override val thumbnailUrl: String?
         get() = artist.thumbnailUrl
+
+    val songCount: Int
+        get() = artist.songCount
 }
