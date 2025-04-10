@@ -257,7 +257,6 @@ fun LibrarySongsScreen(
             ) { index, songWrapper ->
                 SongListItem(
                     song = songWrapper.item,
-                    showInLibraryIcon = true,
                     isActive = songWrapper.item.id == mediaMetadata?.id,
                     isPlaying = isPlaying,
 
