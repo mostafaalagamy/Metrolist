@@ -17,32 +17,19 @@ data class YouTubeClient(
     // val origin: String? = null,
     // val referer: String? = null,
 ) {
-    fun toContext(locale: YouTubeLocale, visitorData: String?, dataSyncId: String?): Context {
-        /*
-         * HACK: This is a workaround to avoid breaking older installations that have a dataSyncId
-         * that contains "||" in it.
-         * Return null if the dataSyncId contains "||" to indicate that we should use the default
-         * user.
-         */
-        val onBehalfOfUser = if (dataSyncId?.contains("||") != true)
-            dataSyncId
-        else
-            null
-
-        return Context(
-            client = Context.Client(
-                clientName = clientName,
-                clientVersion = clientVersion,
-                osVersion = osVersion,
-                gl = locale.gl,
-                hl = locale.hl,
-                visitorData = visitorData
-            ),
-            user = Context.User(
-                onBehalfOfUser = onBehalfOfUser
-            ),
-        )
-    }
+    fun toContext(locale: YouTubeLocale, visitorData: String?, dataSyncId: String?) = Context(
+        client = Context.Client(
+            clientName = clientName,
+            clientVersion = clientVersion,
+            osVersion = osVersion,
+            gl = locale.gl,
+            hl = locale.hl,
+            visitorData = visitorData
+        ),
+        user = Context.User(
+            onBehalfOfUser = if (loginSupported) dataSyncId else null
+        ),
+    )
 
     companion object {
         /**

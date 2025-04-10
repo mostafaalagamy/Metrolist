@@ -548,7 +548,7 @@ interface DatabaseDao {
 
     @Transaction
     @Query(
-        "SELECT * FROM artist WHERE songCount > 0 ORDER BY songCount"
+        "SELECT *, (SELECT COUNT(1) FROM song_artist_map JOIN song ON song_artist_map.songId = song.id WHERE artistId = artist.id AND song.inLibrary IS NOT NULL) AS songCount FROM artist WHERE songCount > 0 ORDER BY songCount",
     )
     fun artistsBySongCountAsc(): Flow<List<Artist>>
 
@@ -613,18 +613,6 @@ interface DatabaseDao {
     """,
     )
     fun artistsBookmarkedByPlayTimeAsc(): Flow<List<Artist>>
-
-    @Query("UPDATE artist SET songCount = :count WHERE id = :artistId")
-    suspend fun updateArtistSongCount(artistId: String, count: Int)
-
-    @Transaction
-    suspend fun updateArtistSongsCount(artistId: String) {
-    val count = getSongCountForArtist(artistId)
-    updateArtistSongCount(artistId, count)
-    }
-
-    @Query("SELECT COUNT(*) FROM song_artist_map WHERE artistId = :artistId")
-    suspend fun getSongCountForArtist(artistId: String): Int
 
     fun artists(
         sortType: ArtistSortType,
