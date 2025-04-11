@@ -287,9 +287,7 @@ fun SelectionSongMenu(
                     if ((!allLiked && !song.song.liked) || allLiked) {
                         val s = song.song.toggleLike()
                          update(s)
-                         if (!s.isLocal) {
-                             syncUtils.likeSong(s)
-                         }
+                         syncUtils.likeSong(s)
                     }
                 }
             }
