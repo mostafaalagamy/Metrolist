@@ -16,10 +16,11 @@ import com.metrolist.music.models.toMediaMetadata
 import com.metrolist.music.ui.utils.MAX_CONCURRENT_JOBS
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import java.time.LocalDateTime
 import javax.inject.Inject
 import javax.inject.Singleton
