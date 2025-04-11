@@ -257,7 +257,7 @@
 
     <string name="general_settings">Cài đặt chung</string>
 
-    <string name="appearance">Hiện thị</string>
+    <string name="appearance">Hiển thị</string>
     <string name="theme">Chủ đề</string>
     <string name="enable_dynamic_theme">Bật chủ đề theo màu sắc</string>
     <string name="dark_theme">Chủ đề tối</string>
@@ -342,6 +342,10 @@
     <string name="auto_skip_next_on_error_desc">Đảm bảo trải nghiệm phát liên tục của bạn</string>
     <string name="stop_music_on_task_clear">Kết thúc khi hàng chờ đã hết</string>
     <string name="equalizer">Bộ chỉnh âm</string>
+    <string name="min_playback_duration_title">Thời lượng nghe tối thiểu</string>
+    <string name="min_playback_duration_description">Thời lượng nghe tối thiểu của 1 bài hát trước khi nó được đánh dấu là \"đã phát\"</string>
+    <string name="percentage_format">%d%%</string>
+    <string name="minimum_playback_duration">Thời lượng nghe tối thiểu</string>
 
     <string name="storage">Lưu trữ</string>
     <string name="cache">Cache</string>
@@ -355,6 +359,9 @@
     <string name="max_song_cache_size">Dung lượng cache bài hát tối đa</string>
     <string name="clear_song_cache">Xoá hết cache nhạc</string>
     <string name="size_used">Đã sử dụng %s</string>
+    <string name="clear_song_cache_dialog">  Bạn có muốn xóa tất cả bộ nhớ đệm (cache) liên quan đến nhạc?</string>
+    
+    <string name="clear_downloads_dialog">  Bạn có muốn xóa tất cả bài hát đã tải xuống?</string>
 
     <string name="privacy">Riêng tư</string>
     <string name="listen_history">Lịch sử nghe</string>
@@ -382,7 +389,8 @@
     <string name="dismiss">Bỏ lỡ</string>
     <string name="options">Lựa chọn</string>
     <string name="preview">Xem trước</string>
-    <string name="login_failed">Đăng nhập đã thất bại</string>
+    <string name="login_failed">Đăng nhập thất bại</string>
+    <string name="not_logged_in_youtube">Chưa đăng nhập vào YouTube</string>
 
     <string name="enable_discord_rpc">Bật Discord Rich Presence</string>
 
@@ -405,13 +413,13 @@
     <string name="past_year">Năm trước</string>
     <string name="top_length">Độ dài danh sách Top của tôi</string>
     <string name="history_duration">Thời lượng nghe</string>
-    <string name="information">Information</string>
-    <string name="description">Description</string>
+    <string name="information">Thông tin chi tiết</string>
+    <string name="description">Mô tả</string>
     <string name="numbers">Numbers</string>
-    <string name="subscribers">Subscribers</string>
-    <string name="views">Views</string>
-    <string name="likes">Likes</string>
-    <string name="dislikes">Dislikes</string>
+    <string name="subscribers">Người đăng ký</string>
+    <string name="views">Lượt xem</string>
+    <string name="likes">Thích</string>
+    <string name="dislikes">Không thích</string>
     <plurals name="seconds">
         <item quantity="one">1 giây</item>
         <item quantity="other">%d giây</item>
