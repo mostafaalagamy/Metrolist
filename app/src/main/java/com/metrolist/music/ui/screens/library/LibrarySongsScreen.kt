@@ -64,6 +64,8 @@ import com.metrolist.music.ui.utils.ItemWrapper
 import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
 import com.metrolist.music.viewmodels.LibrarySongsViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -89,14 +91,10 @@ fun LibrarySongsScreen(
 
     val songs by viewModel.allSongs.collectAsState()
 
-    var filter by rememberEnumPreference(SongFilterKey, SongFilter.LIKED)
-
     LaunchedEffect(Unit) {
         if (ytmSync) {
-            when (filter) {
-                SongFilter.LIKED -> viewModel.syncLikedSongs()
-                SongFilter.LIBRARY -> viewModel.syncLibrarySongs()
-                else -> return@LaunchedEffect
+                withContext(Dispatchers.IO) {
+                    viewModel.syncLikedSongs()
             }
         }
     }
