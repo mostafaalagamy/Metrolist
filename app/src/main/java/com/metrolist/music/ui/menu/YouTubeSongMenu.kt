@@ -47,6 +47,7 @@ import com.metrolist.innertube.models.SongItem
 import com.metrolist.music.LocalDatabase
 import com.metrolist.music.LocalDownloadUtil
 import com.metrolist.music.LocalPlayerConnection
+import com.metrolist.music.LocalSyncUtils
 import com.metrolist.music.R
 import com.metrolist.music.constants.ListItemHeight
 import com.metrolist.music.constants.ListThumbnailSize
@@ -81,6 +82,7 @@ fun YouTubeSongMenu(
     val librarySong by database.song(song.id).collectAsState(initial = null)
     val download by LocalDownloadUtil.current.getDownload(song.id).collectAsState(initial = null)
     val coroutineScope = rememberCoroutineScope()
+    val syncUtils = LocalSyncUtils.current
     val artists =
         remember {
             song.artists.mapNotNull {
@@ -183,11 +185,16 @@ fun YouTubeSongMenu(
                 onClick = {
                     database.transaction {
                         librarySong.let { librarySong ->
+                            val s: SongEntity
                             if (librarySong == null) {
                                 insert(song.toMediaMetadata(), SongEntity::toggleLike)
+                                s = song.toMediaMetadata().toSongEntity().let(SongEntity::toggleLike)
                             } else {
-                                update(librarySong.song.toggleLike())
+                                s = librarySong.song.toggleLike()
+                                 update(s)
                             }
+
+                            syncUtils.likeSong(s)
                         }
                     }
                 },
