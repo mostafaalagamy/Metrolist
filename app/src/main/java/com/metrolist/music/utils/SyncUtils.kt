@@ -18,6 +18,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import java.time.LocalDateTime
 import javax.inject.Inject
