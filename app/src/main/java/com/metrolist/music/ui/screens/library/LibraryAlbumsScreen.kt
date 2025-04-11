@@ -119,8 +119,8 @@ fun LibraryAlbumsScreen(
         }
     }
 
-    LaunchedEffect(filter) {
-        if (ytmSync && filter == AlbumFilter.LIKED) {
+    LaunchedEffect(Unit) {
+        if (ytmSync) {
             withContext(Dispatchers.IO) {
                 viewModel.sync()
             }
