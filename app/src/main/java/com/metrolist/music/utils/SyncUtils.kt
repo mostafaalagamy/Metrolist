@@ -13,8 +13,12 @@ import com.metrolist.music.db.entities.PlaylistEntity
 import com.metrolist.music.db.entities.PlaylistSongMap
 import com.metrolist.music.db.entities.SongEntity
 import com.metrolist.music.models.toMediaMetadata
+import com.metrolist.music.ui.utils.MAX_CONCURRENT_JOBS
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import java.time.LocalDateTime
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -23,6 +27,16 @@ import javax.inject.Singleton
 class SyncUtils @Inject constructor(
     val database: MusicDatabase,
 ) {
+    @OptIn(DelicateCoroutinesApi::class, ExperimentalCoroutinesApi::class)
+    val syncCoroutine = newSingleThreadContext("syncUtils")
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    fun likeSong(s: SongEntity) {
+        CoroutineScope(syncCoroutine).launch {
+            YouTube.likeVideo(s.id, s.liked)
+        }
+    }
+ 
     suspend fun syncLikedSongs() {
         YouTube.playlist("LM").completed().onSuccess { page ->
             val songs = page.songs.reversed()
