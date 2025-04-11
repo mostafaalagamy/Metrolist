@@ -632,10 +632,7 @@ class MusicService :
              currentSong.value?.let {
                  val song = it.song.toggleLike()
                  update(song)
- 
-                 if (!song.isLocal) {
-                     syncUtils.likeSong(song)
-                 }
+                 syncUtils.likeSong(song)
              }
          }
      }
