@@ -243,9 +243,7 @@ fun SongMenu(
                         update(s)
                      }
  
-                     if (!s.isLocal) {
-                         syncUtils.likeSong(s)
-                    }
+                        syncUtils.likeSong(s)
                 },
             ) {
                 Icon(
