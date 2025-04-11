@@ -81,6 +81,8 @@ fun LibrarySongsScreen(
     val isPlaying by playerConnection.isPlaying.collectAsState()
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
 
+    var filter by rememberEnumPreference(SongFilterKey, SongFilter.LIKED)
+
     val (sortType, onSortTypeChange) = rememberEnumPreference(
         SongSortTypeKey,
         SongSortType.CREATE_DATE
