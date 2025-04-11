@@ -115,11 +115,10 @@ fun LibraryArtistsScreen(
         }
     }
 
-    LaunchedEffect(filter) {
-        if (ytmSync && filter == ArtistFilter.LIKED) {
+    LaunchedEffect(Unit) {
+        if (ytmSync)
             withContext(Dispatchers.IO) {
                 viewModel.sync()
-            }
         }
     }
 
