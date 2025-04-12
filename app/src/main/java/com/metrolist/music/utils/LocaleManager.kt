@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.metrolist.music.utils
 
 import android.annotation.TargetApi
