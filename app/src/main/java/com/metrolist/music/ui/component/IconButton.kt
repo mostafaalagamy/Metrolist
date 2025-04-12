@@ -10,8 +10,8 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.IconButtonColors
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
@@ -43,15 +43,14 @@ fun ResizableIconButton(
         painter = painterResource(icon),
         contentDescription = null,
         colorFilter = ColorFilter.tint(color),
-        modifier =
-        Modifier
+        modifier = modifier
             .clickable(
                 indication = indication ?: ripple(bounded = false),
                 interactionSource = remember { MutableInteractionSource() },
                 enabled = enabled,
                 onClick = onClick,
-            ).alpha(if (enabled) 1f else 0.5f)
-            .then(modifier),
+            )
+            .alpha(if (enabled) 1f else 0.5f),
     )
 }
 
@@ -67,12 +66,11 @@ fun IconButton(
     content: @Composable () -> Unit,
 ) {
     Box(
-        modifier =
-        modifier
+        modifier = modifier
             .minimumInteractiveComponentSize()
-            .size(IconButtonDefaults.MinSize)
+            .sizeIn(minWidth = 48.dp, minHeight = 48.dp) // بديل عن MinSize
             .clip(CircleShape)
-            .background(color = colors.containerColor(enabled))
+            .background(color = colors.containerColor) // تم التعديل هنا
             .combinedClickable(
                 onClick = onClick,
                 onLongClick = onLongClick,
@@ -86,7 +84,7 @@ fun IconButton(
             ),
         contentAlignment = Alignment.Center,
     ) {
-        val contentColor = colors.contentColor(enabled)
+        val contentColor = colors.contentColor
         CompositionLocalProvider(LocalContentColor provides contentColor, content = content)
     }
 }
