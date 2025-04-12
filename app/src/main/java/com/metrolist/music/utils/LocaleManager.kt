@@ -1,10 +1,14 @@
+@file:Suppress("DEPRECATION")
+
 package com.metrolist.music.utils
 
+import android.annotation.TargetApi
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.os.Build
 import android.os.LocaleList
+import android.util.Log
 import java.util.Locale
 
 class LocaleManager(private val context: Context) {
@@ -22,12 +26,31 @@ class LocaleManager(private val context: Context) {
         }
     }
 
-    fun updateLocale(languageCode: String): Context {
-        val locale = createLocaleFromCode(languageCode)
-        val prefs = context.getSharedPreferences("AppPreferences", Context.MODE_PRIVATE)
-        prefs.edit().putString("app_language", languageCode).apply()
+    fun updateLocale(languageCode: String): Boolean {
+        try {
+            val locale = createLocaleFromCode(languageCode)
+            val resources = context.resources
+            val config = Configuration(resources.configuration)
 
-        return wrapContext(context, languageCode)
+            Locale.setDefault(locale)
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                setLocaleApi24(config, locale)
+            } else {
+                setLocaleLegacy(config, locale)
+            }
+
+            resources.updateConfiguration(config, resources.displayMetrics)
+
+            // Save to SharedPreferences
+            val prefs = context.getSharedPreferences("AppPreferences", Context.MODE_PRIVATE)
+            prefs.edit().putString("app_language", languageCode).apply()
+
+            return true
+        } catch (e: Exception) {
+            Log.e("LocaleManager", "Failed to update locale", e)
+            return false
+        }
     }
 
     private fun wrapContext(context: Context, languageCode: String): Context {
@@ -35,12 +58,9 @@ class LocaleManager(private val context: Context) {
         val config = Configuration(context.resources.configuration)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            val localeList = LocaleList(locale)
-            LocaleList.setDefault(localeList)
-            config.setLocales(localeList)
+            setLocaleApi24(config, locale)
         } else {
-            config.setLocale(locale)
-            Locale.setDefault(locale)
+            setLocaleLegacy(config, locale)
         }
 
         return context.createConfigurationContext(config)
@@ -61,5 +81,17 @@ class LocaleManager(private val context: Context) {
             }
             else -> Locale(languageCode)
         }
+    }
+
+    @TargetApi(Build.VERSION_CODES.N)
+    private fun setLocaleApi24(config: Configuration, locale: Locale) {
+        val localeList = LocaleList(locale)
+        LocaleList.setDefault(localeList)
+        config.setLocales(localeList)
+    }
+
+    @Suppress("DEPRECATION")
+    private fun setLocaleLegacy(config: Configuration, locale: Locale) {
+        config.locale = locale
     }
 }
