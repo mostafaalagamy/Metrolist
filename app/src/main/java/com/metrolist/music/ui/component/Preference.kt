@@ -239,6 +239,85 @@ fun EditTextPreference(
 }
 
 @Composable
+fun SliderPreference(
+    modifier: Modifier = Modifier,
+    title: @Composable () -> Unit,
+    icon: (@Composable () -> Unit)? = null,
+    value: Float,
+    onValueChange: (Float) -> Unit,
+    isEnabled: Boolean = true,
+) {
+    var showDialog by remember {
+        mutableStateOf(false)
+    }
+
+    var sliderValue by remember {
+        mutableFloatStateOf(value)
+    }
+
+    if (showDialog) {
+        AlertDialog(
+            properties = DialogProperties(usePlatformDefaultWidth = false),
+            onDismissRequest = { showDialog = false },
+            icon = {
+                Icon(
+                    painter = painterResource(R.drawable.history),
+                    contentDescription = null
+                )
+            },
+            title = { Text(stringResource(R.string.history_duration)) },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        showDialog = false
+                        onValueChange.invoke(sliderValue)
+                    },
+                ) {
+                    Text(stringResource(android.R.string.ok))
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = {
+                        sliderValue = value
+                        showDialog = false
+                    },
+                ) {
+                    Text(stringResource(android.R.string.cancel))
+                }
+            },
+            text = {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(
+                        text = pluralStringResource(
+                            R.plurals.seconds,
+                            sliderValue.roundToInt(),
+                            sliderValue.roundToInt()
+                        ),
+                        style = MaterialTheme.typography.bodyLarge,
+                    )
+
+                    Slider(
+                        value = sliderValue,
+                        onValueChange = { sliderValue = it },
+                        valueRange = 15f..60f,
+                    )
+                }
+            },
+        )
+    }
+
+    PreferenceEntry(
+        modifier = modifier,
+        title = title,
+        description = value.roundToInt().toString(),
+        icon = icon,
+        onClick = { showDialog = true },
+        isEnabled = isEnabled,
+    )
+}
+
+@Composable
 fun PreferenceGroupTitle(
     title: String,
     modifier: Modifier = Modifier,

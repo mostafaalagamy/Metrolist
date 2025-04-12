@@ -46,12 +46,11 @@ import com.metrolist.music.constants.PersistentQueueKey
 import com.metrolist.music.constants.SimilarContent
 import com.metrolist.music.constants.SkipSilenceKey
 import com.metrolist.music.constants.StopMusicOnTaskClearKey
-import com.metrolist.music.constants.minPlaybackDurKey
-import com.metrolist.music.ui.component.ActionPromptDialog
+import com.metrolist.music.constants.HistoryDuration
 import com.metrolist.music.ui.component.EnumListPreference
 import com.metrolist.music.ui.component.IconButton
 import com.metrolist.music.ui.component.PreferenceGroupTitle
-import com.metrolist.music.ui.component.PreferenceEntry
+import com.metrolist.music.ui.component.SliderPreference
 import com.metrolist.music.ui.component.SwitchPreference
 import com.metrolist.music.ui.utils.backToMain
 import com.metrolist.music.utils.rememberEnumPreference
@@ -96,25 +95,10 @@ fun PlayerSettings(
         StopMusicOnTaskClearKey,
         defaultValue = false
     )
-    val (minPlaybackDur, onMinPlaybackDurChange) = rememberPreference(minPlaybackDurKey, defaultValue = 30)
-
-    var showMinPlaybackDur by remember {
-        mutableStateOf(false)
-    }
-    var tempminPlaybackDur by remember {
-        mutableIntStateOf(minPlaybackDur)
-    }
-
-    if (showMinPlaybackDur) {
-        MinPlaybackDurDialog(
-            initialValue = minPlaybackDur,
-            onDismiss = { showMinPlaybackDur = false },
-            onConfirm = {
-                showMinPlaybackDur = false
-                onMinPlaybackDurChange(it)
-            }
-        )
-    }
+    val (historyDuration, onHistoryDurationChange) = rememberPreference(
+        HistoryDuration,
+        defaultValue = 30f
+    )
 
     Column(
         Modifier
@@ -147,15 +131,11 @@ fun PlayerSettings(
             }
         )
 
-        PreferenceEntry(
-            title = { Text(stringResource(R.string.minimum_playback_duration)) },
-            icon = { 
-                Icon(
-                    painter = painterResource(R.drawable.history),
-                    contentDescription = null
-                ) 
-            },
-            onClick = { showMinPlaybackDur = true }
+        SliderPreference(
+            title = { Text(stringResource(R.string.history_duration)) },
+            icon = { Icon(painterResource(R.drawable.history), null) },
+            value = historyDuration,
+            onValueChange = onHistoryDurationChange,
         )
 
         SwitchPreference(
@@ -231,94 +211,6 @@ fun PlayerSettings(
                     painterResource(R.drawable.arrow_back),
                     contentDescription = null
                 )
-            }
-        }
-    )
-}
-
-@Composable
-fun MinPlaybackDurDialog(
-    initialValue: Int,
-    onDismiss: () -> Unit,
-    onConfirm: (Int) -> Unit,
-) {
-    var currentValue by remember { mutableFloatStateOf(initialValue.toFloat()) }
-    val defaultValue = 30  // From original PlayerSettings default
-
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        modifier = Modifier
-           .fillMaxWidth(0.8f)
-           .padding(horizontal = 16.dp),
-        title = {
-            Text(
-                text = stringResource(R.string.min_playback_duration_title),
-                style = MaterialTheme.typography.headlineSmall,
-            )
-        },
-        text = {
-            Column(
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = stringResource(R.string.min_playback_duration_description),
-                    style = MaterialTheme.typography.bodyMedium
-                )
-
-                Slider(
-                    value = currentValue,
-                    onValueChange = { currentValue = it },
-                    valueRange = 0f..100f,
-                    steps = 99,
-                )
-
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    FilledTonalIconButton(
-                        onClick = { currentValue = (currentValue - 1).coerceAtLeast(0f) },
-                        enabled = currentValue > 0f
-                    ) { Text("-") }
-
-                    Text(
-                        text = "${currentValue.roundToInt()}%",
-                        style = MaterialTheme.typography.titleLarge
-                    )
-
-                    FilledTonalIconButton(
-                        onClick = { currentValue = (currentValue + 1).coerceAtMost(100f) },
-                        enabled = currentValue < 100f
-                    ) { Text("+") }
-                }
-            }
-        },
-        confirmButton = {
-            Row(
-                horizontalArrangement = Arrangement.End,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                TextButton(
-                    onClick = { currentValue = defaultValue.toFloat() },
-                    enabled = currentValue.roundToInt() != defaultValue
-                ) {
-                    Text(stringResource(R.string.reset))
-                }
-
-                Spacer(Modifier.weight(1f))
-
-                TextButton(onClick = onDismiss) {
-                    Text(stringResource(android.R.string.cancel))
-                }
-
-                Button(
-                    onClick = { onConfirm(currentValue.roundToInt()) },
-                    enabled = currentValue.roundToInt() != initialValue
-                ) {
-                    Text(stringResource(android.R.string.ok))
-                }
             }
         }
     )

@@ -62,7 +62,7 @@ import com.metrolist.music.constants.AutoSkipNextOnErrorKey
 import com.metrolist.music.constants.DiscordTokenKey
 import com.metrolist.music.constants.EnableDiscordRPCKey
 import com.metrolist.music.constants.HideExplicitKey
-import com.metrolist.music.constants.minPlaybackDurKey
+import com.metrolist.music.constants.HistoryDuration
 import com.metrolist.music.constants.MediaSessionConstants.CommandToggleLike
 import com.metrolist.music.constants.MediaSessionConstants.CommandToggleRepeatMode
 import com.metrolist.music.constants.MediaSessionConstants.CommandToggleShuffle
@@ -878,32 +878,40 @@ class MusicService :
                 ).build()
         }
 
-    override fun onPlaybackStatsReady(eventTime: AnalyticsListener.EventTime, playbackStats: PlaybackStats) {
+    override fun onPlaybackStatsReady(
+        eventTime: AnalyticsListener.EventTime,
+        playbackStats: PlaybackStats,
+    ) {
         val mediaItem = eventTime.timeline.getWindow(eventTime.windowIndex, Timeline.Window()).mediaItem
-        var minPlaybackDur = (dataStore.get(minPlaybackDurKey, 30).toFloat() / 100)
-        // ensure within bounds
-        if (minPlaybackDur >= 1f) {
-            minPlaybackDur = 0.99f // Ehhh 99 is good enough to avoid any rounding errors
-        } else if (minPlaybackDur < 0.01f) {
-            minPlaybackDur = 0.01f // Still want "spam skipping" to not count as plays
-        }
 
-        if (playbackStats.totalPlayTimeMs.toFloat() / ((mediaItem.metadata?.duration?.times(1000))
-                ?: -1) >= minPlaybackDur
-            && !dataStore.get(PauseListenHistoryKey, false)
+        if (playbackStats.totalPlayTimeMs >= (
+                dataStore[HistoryDuration]?.times(1000f)
+                    ?: 30000f
+            ) &&
+            !dataStore.get(PauseListenHistoryKey, false)
         ) {
             database.query {
-                incrementPlayCount(mediaItem.mediaId)
                 incrementTotalPlayTime(mediaItem.mediaId, playbackStats.totalPlayTimeMs)
                 try {
                     insert(
                         Event(
                             songId = mediaItem.mediaId,
                             timestamp = LocalDateTime.now(),
-                            playTime = playbackStats.totalPlayTimeMs
-                        )
+                            playTime = playbackStats.totalPlayTimeMs,
+                        ),
                     )
                 } catch (_: SQLException) {
+            }
+        }
+        CoroutineScope(Dispatchers.IO).launch {
+            val playbackUrl = database.format(mediaItem.mediaId).first()?.playbackUrl
+                ?: YTPlayerUtils.playerResponseForMetadata(mediaItem.mediaId, null)
+                    .getOrNull()?.playbackTracking?.videostatsPlaybackUrl?.baseUrl
+            playbackUrl?.let {
+                YouTube.registerPlayback(null, playbackUrl)
+                    .onFailure {
+                        reportException(it)
+                    }
                 }
             }
         }
