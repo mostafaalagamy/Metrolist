@@ -436,6 +436,7 @@
     <string name="listen_history">سجل الاستماع</string>
     <string name="search_history">سجل البحث</string>
     <string name="pause_listen_history">إيقاف سجل الاستماع مؤقتاً</string>
+    <string name="pause_remote_listen_history">إيقاف مشاركة سجل الاستماع مع YouTube Music</string>
     <string name="clear_listen_history">مسح سجل الاستماع</string>
     <string name="clear_listen_history_confirm">هل أنت متأكد من أنك تريد مسح جميع سجل الاستماع؟</string>
     <string name="pause_search_history">إيقاف سجل البحث مؤقتاً</string>

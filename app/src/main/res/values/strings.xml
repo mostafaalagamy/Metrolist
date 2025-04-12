@@ -390,6 +390,7 @@
     <string name="listen_history">Listen History</string>
     <string name="search_history">Search History</string>
     <string name="pause_listen_history">Pause listen history</string>
+    <string name="pause_remote_listen_history">Pause share listen history with YouTube Music</string>
     <string name="clear_listen_history">Clear listen history</string>
     <string name="clear_listen_history_confirm">Are you sure you want to clear all listen history?</string>
     <string name="pause_search_history">Pause search history</string>
