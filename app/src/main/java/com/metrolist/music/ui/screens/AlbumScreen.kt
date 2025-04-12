@@ -3,8 +3,6 @@ package com.metrolist.music.ui.screens
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.pointerInput
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -49,9 +47,11 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withLink
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -178,41 +178,25 @@ fun AlbumScreen(
                                 fontSizeRange = FontSizeRange(16.sp, 22.sp),
                             )
 
-                            val annotatedString =
-                                buildAnnotatedString {
-                                    withStyle(
-                                        style =
-                                        MaterialTheme.typography.titleMedium
-                                            .copy(
-                                                fontWeight = FontWeight.Normal,
-                                                color = MaterialTheme.colorScheme.onBackground,
-                                            ).toSpanStyle(),
-                                    ) {
-                                        albumWithSongs.artists.fastForEachIndexed { index, artist ->
-                                            pushStringAnnotation(artist.id, artist.name)
-                                            append(artist.name)
-                                            pop()
-                                            if (index != albumWithSongs.artists.lastIndex) {
-                                                append(", ")
+                            val annotatedString = buildAnnotatedString {
+                                withStyle(
+                                    style = MaterialTheme.typography.titleMedium.copy(
+                                        fontWeight = FontWeight.Normal,
+                                        color = MaterialTheme.colorScheme.onBackground
+                                    ).toSpanStyle()
+                                ) {
+                                    albumWithSongsLocal.artists.fastForEachIndexed { index, artist ->
+                                        withLink(
+                                            LinkAnnotation.Clickable(artist.id) {
+                                                navController.navigate("artist/${artist.id}")
                                             }
+                                        ) { append(artist.name) }
+                                        if (index != albumWithSongsLocal.artists.lastIndex) {
+                                            append(", ")
                                         }
                                     }
                                 }
-                            Text(
-                                text = annotatedString,
-                                modifier = Modifier.pointerInput(Unit) {
-                                    detectTapGestures { offset ->
-                                        annotatedString.getStringAnnotations(offset, offset).firstOrNull()
-                                            ?.let { range ->
-                                                navController.navigate("artist/${range.tag}")
-                                            }
-                                    }
-                                },
-                                style = MaterialTheme.typography.titleMedium.copy(
-                                    fontWeight = FontWeight.Normal,
-                                    color = MaterialTheme.colorScheme.onBackground
-                                )
-                            )
+                            }
 
                             if (albumWithSongs.album.year != null) {
                                 Text(
