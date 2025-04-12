@@ -69,9 +69,9 @@ fun IconButton(
     Box(
         modifier = modifier
             .minimumInteractiveComponentSize()
-            .sizeIn(minWidth = 48.dp, minHeight = 48.dp) // بديل عن MinSize
+            .sizeIn(minWidth = 48.dp, minHeight = 48.dp)
             .clip(CircleShape)
-            .background(color = colors.containerColor) // تم التعديل هنا
+            .background(color = colors.containerColor)
             .combinedClickable(
                 onClick = onClick,
                 onLongClick = onLongClick,
