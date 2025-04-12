@@ -95,7 +95,7 @@ fun TopSearch(
     colors: SearchBarColors = SearchBarDefaults.colors(
         containerColor = MaterialTheme.colorScheme.surfaceContainerLow
     ),
-    tonalElevation: Dp = TonalElevation,
+    tonalElevation: Dp = SearchBarDefaults.TonalElevation,
     windowInsets: WindowInsets = WindowInsets.systemBars,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     focusRequester: FocusRequester = remember { FocusRequester() },
@@ -103,10 +103,7 @@ fun TopSearch(
 ) {
     val animationProgress: Float by animateFloatAsState(
         targetValue = if (active) 1f else 0f,
-        animationSpec = tween(
-            durationMillis = AnimationDurationMillis,
-            easing = androidx.compose.material3.tokens.MotionTokens.EasingLegacyCubicBezier,
-        ),
+        animationSpec = tween(durationMillis = AnimationDurationMillis),
         label = "SearchBarAnimation",
     )
 
@@ -252,7 +249,7 @@ private fun SearchBarInputField(
 ) {
     val focused = interactionSource.collectIsFocusedAsState().value
     val textColor = LocalTextStyle.current.color.takeOrElse {
-        colors.textColor(enabled, isError = false, focused = focused)
+        colors.textColor(focused)
     }
 
     Row(
@@ -297,7 +294,7 @@ private fun SearchBarInputField(
             enabled = enabled,
             singleLine = true,
             textStyle = LocalTextStyle.current.merge(TextStyle(color = textColor)),
-            cursorBrush = SolidColor(colors.cursorColor(isError = false)),
+            cursorBrush = SolidColor(colors.cursorColor),
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
             keyboardActions = KeyboardActions(onSearch = { onSearch(query.text) }),
             interactionSource = interactionSource,
@@ -330,9 +327,5 @@ val InputFieldHeight = 48.dp
 private val SearchBarCornerRadius: Dp = InputFieldHeight / 2
 internal val SearchBarVerticalPadding: Dp = 8.dp
 internal val SearchBarHorizontalPadding: Dp = 12.dp
-
-// Search bar has 16dp padding between icons and start/end
 val SearchBarIconOffsetX: Dp = 4.dp
-
-// Animation specs
 private const val AnimationDurationMillis: Int = 300
