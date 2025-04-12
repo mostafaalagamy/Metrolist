@@ -249,7 +249,7 @@ private fun SearchBarInputField(
 ) {
     val focused = interactionSource.collectIsFocusedAsState().value
     val textColor = LocalTextStyle.current.color.takeOrElse {
-        colors.textColor(focused)
+        if (focused) colors.focusedTextColor else colors.unfocusedTextColor
     }
 
     Row(
