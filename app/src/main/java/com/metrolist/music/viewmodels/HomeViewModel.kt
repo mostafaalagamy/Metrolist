@@ -32,7 +32,7 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     @ApplicationContext context: Context,
     val database: MusicDatabase,
-    private val syncUtils: SyncUtils,
+    val syncUtils: SyncUtils,
 ) : ViewModel() {
     val isRefreshing = MutableStateFlow(false)
     val isLoading = MutableStateFlow(false)
@@ -47,7 +47,7 @@ class HomeViewModel @Inject constructor(
     val recentActivity = MutableStateFlow<List<YTItem>?>(null)
     val recentPlaylistsDb = MutableStateFlow<List<Playlist>?>(null)
 
-    val (ytmSync) = rememberPreference(YtmSyncKey, true)
+    val ytmSync = MutableStateFlow(true)
 
     val allLocalItems = MutableStateFlow<List<LocalItem>>(emptyList())
     val allYtItems = MutableStateFlow<List<YTItem>>(emptyList())
@@ -175,14 +175,16 @@ class HomeViewModel @Inject constructor(
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
+            val prefs = context.getSharedPreferences("prefs", Context.MODE_PRIVATE)
+            ytmSync.value = prefs.getBoolean(YtmSyncKey, true)
+            
             load()
-            if (ytmSync) {
+            if (ytmSync.value) {
                 viewModelScope.launch(Dispatchers.IO) { syncUtils.syncLikedSongs() }
                 viewModelScope.launch(Dispatchers.IO) { syncUtils.syncLibrarySongs() }
                 viewModelScope.launch(Dispatchers.IO) { syncUtils.syncSavedPlaylists() }
                 viewModelScope.launch(Dispatchers.IO) { syncUtils.syncLikedAlbums() }
                 viewModelScope.launch(Dispatchers.IO) { syncUtils.syncArtistsSubscriptions() }
-        
             }
         }
     }
