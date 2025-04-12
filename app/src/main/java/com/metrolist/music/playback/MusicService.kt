@@ -904,7 +904,7 @@ class MusicService :
                 } catch (_: SQLException) {
             }
         }
-        if (dataStore.get(PauseRemoteListenHistoryKey, true)) {
+        if (!dataStore.get(PauseRemoteListenHistoryKey, false)) {
             CoroutineScope(Dispatchers.IO).launch {
                 val playbackUrl = database.format(mediaItem.mediaId).first()?.playbackUrl
                     ?: YTPlayerUtils.playerResponseForMetadata(mediaItem.mediaId, null)
