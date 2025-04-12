@@ -46,12 +46,11 @@ import com.metrolist.music.constants.PersistentQueueKey
 import com.metrolist.music.constants.SimilarContent
 import com.metrolist.music.constants.SkipSilenceKey
 import com.metrolist.music.constants.StopMusicOnTaskClearKey
-import com.metrolist.music.constants.minPlaybackDurKey
-import com.metrolist.music.ui.component.ActionPromptDialog
+import com.metrolist.music.constants.HistoryDurationKey
 import com.metrolist.music.ui.component.EnumListPreference
 import com.metrolist.music.ui.component.IconButton
 import com.metrolist.music.ui.component.PreferenceGroupTitle
-import com.metrolist.music.ui.component.PreferenceEntry
+import com.metrolist.music.ui.component.SliderPreference
 import com.metrolist.music.ui.component.SwitchPreference
 import com.metrolist.music.ui.utils.backToMain
 import com.metrolist.music.utils.rememberEnumPreference
@@ -96,25 +95,10 @@ fun PlayerSettings(
         StopMusicOnTaskClearKey,
         defaultValue = false
     )
-    val (minPlaybackDur, onMinPlaybackDurChange) = rememberPreference(minPlaybackDurKey, defaultValue = 30)
-
-    var showMinPlaybackDur by remember {
-        mutableStateOf(false)
-    }
-    var tempminPlaybackDur by remember {
-        mutableIntStateOf(minPlaybackDur)
-    }
-
-    if (showMinPlaybackDur) {
-        MinPlaybackDurDialog(
-            initialValue = minPlaybackDur,
-            onDismiss = { showMinPlaybackDur = false },
-            onConfirm = {
-                showMinPlaybackDur = false
-                onMinPlaybackDurChange(it)
-            }
-        )
-    }
+    val (historyDuration, onHistoryDurationChange) = rememberPreference(
+        key = PreferenceKeys.HistoryDurationKey,
+        defaultValue = 30f
+    )
 
     Column(
         Modifier
@@ -147,15 +131,11 @@ fun PlayerSettings(
             }
         )
 
-        PreferenceEntry(
-            title = { Text(stringResource(R.string.minimum_playback_duration)) },
-            icon = { 
-                Icon(
-                    painter = painterResource(R.drawable.history),
-                    contentDescription = null
-                ) 
-            },
-            onClick = { showMinPlaybackDur = true }
+        SliderPreference(
+            title = { Text(stringResource(R.string.history_duration)) },
+            icon = { Icon(painterResource(R.drawable.history), null) },
+            value = historyDuration,
+            onValueChange = onHistoryDurationChange,
         )
 
         SwitchPreference(
