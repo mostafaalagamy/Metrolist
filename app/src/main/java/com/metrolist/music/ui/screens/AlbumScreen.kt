@@ -3,6 +3,8 @@ package com.metrolist.music.ui.screens
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.pointerInput
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,7 +20,6 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -197,12 +198,21 @@ fun AlbumScreen(
                                         }
                                     }
                                 }
-                            ClickableText(annotatedString) { offset ->
-                                annotatedString.getStringAnnotations(offset, offset).firstOrNull()
-                                    ?.let { range ->
-                                        navController.navigate("artist/${range.tag}")
+                            Text(
+                                text = annotatedString,
+                                modifier = Modifier.pointerInput(Unit) {
+                                    detectTapGestures { offset ->
+                                        annotatedString.getStringAnnotations(offset, offset).firstOrNull()
+                                            ?.let { range ->
+                                                navController.navigate("artist/${range.tag}")
+                                            }
                                     }
-                            }
+                                },
+                                style = MaterialTheme.typography.titleMedium.copy(
+                                    fontWeight = FontWeight.Normal,
+                                    color = MaterialTheme.colorScheme.onBackground
+                                )
+                            )
 
                             if (albumWithSongs.album.year != null) {
                                 Text(
