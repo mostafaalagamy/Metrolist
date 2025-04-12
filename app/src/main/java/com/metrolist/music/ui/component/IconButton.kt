@@ -1,5 +1,3 @@
-@file:Suppress("INVISIBLE_MEMBER", "INVISIBLE_REFERENCE")
-
 package com.metrolist.music.ui.component
 
 import androidx.annotation.DrawableRes
@@ -19,7 +17,6 @@ import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.material3.ripple
-import androidx.compose.material3.tokens.IconButtonTokens
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
@@ -31,6 +28,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.unit.dp
 
 @Composable
 fun ResizableIconButton(
@@ -72,7 +70,7 @@ fun IconButton(
         modifier =
         modifier
             .minimumInteractiveComponentSize()
-            .size(IconButtonTokens.StateLayerSize)
+            .size(IconButtonDefaults.MinSize)
             .clip(CircleShape)
             .background(color = colors.containerColor(enabled))
             .combinedClickable(
@@ -81,10 +79,9 @@ fun IconButton(
                 enabled = enabled,
                 role = Role.Button,
                 interactionSource = interactionSource,
-                indication =
-                ripple(
+                indication = ripple(
                     bounded = false,
-                    radius = IconButtonTokens.StateLayerSize / 2,
+                    radius = 24.dp
                 ),
             ),
         contentAlignment = Alignment.Center,
