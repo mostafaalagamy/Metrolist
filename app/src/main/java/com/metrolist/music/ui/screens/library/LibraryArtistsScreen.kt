@@ -115,8 +115,8 @@ fun LibraryArtistsScreen(
         }
     }
 
-    LaunchedEffect(filter) {
-        if (ytmSync && filter == ArtistFilter.LIKED) {
+    LaunchedEffect(Unit) {
+        if (ytmSync) {
             withContext(Dispatchers.IO) {
                 viewModel.sync()
             }
@@ -164,12 +164,12 @@ fun LibraryArtistsScreen(
 
             Spacer(Modifier.weight(1f))
 
-            artists.let { artistsLikedSongs ->
+            artists?.let { artists ->
                 Text(
                     text = pluralStringResource(
                         R.plurals.n_artist,
-                        artistsLikedSongs.size,
-                        artistsLikedSongs.size
+                        artists.size,
+                        artists.size
                     ),
                     style = MaterialTheme.typography.titleSmall,
                     color = MaterialTheme.colorScheme.secondary,

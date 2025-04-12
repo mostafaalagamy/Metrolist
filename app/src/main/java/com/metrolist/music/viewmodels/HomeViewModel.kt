@@ -17,6 +17,7 @@ import com.metrolist.music.db.entities.LocalItem
 import com.metrolist.music.db.entities.Playlist
 import com.metrolist.music.db.entities.Song
 import com.metrolist.music.models.SimilarRecommendation
+import com.metrolist.music.utils.SyncUtils
 import com.metrolist.music.utils.reportException
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -30,6 +31,7 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     @ApplicationContext context: Context,
     val database: MusicDatabase,
+    val syncUtils: SyncUtils,
 ) : ViewModel() {
     val isRefreshing = MutableStateFlow(false)
     val isLoading = MutableStateFlow(false)
@@ -169,8 +171,13 @@ class HomeViewModel @Inject constructor(
     }
 
     init {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.IO) {           
             load()
+            viewModelScope.launch(Dispatchers.IO) { syncUtils.syncLikedSongs() }
+            viewModelScope.launch(Dispatchers.IO) { syncUtils.syncLibrarySongs() }
+            viewModelScope.launch(Dispatchers.IO) { syncUtils.syncSavedPlaylists() }
+            viewModelScope.launch(Dispatchers.IO) { syncUtils.syncLikedAlbums() }
+            viewModelScope.launch(Dispatchers.IO) { syncUtils.syncArtistsSubscriptions() }
         }
     }
 }
