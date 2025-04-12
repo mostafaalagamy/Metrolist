@@ -67,6 +67,7 @@ import com.metrolist.music.constants.MediaSessionConstants.CommandToggleLike
 import com.metrolist.music.constants.MediaSessionConstants.CommandToggleRepeatMode
 import com.metrolist.music.constants.MediaSessionConstants.CommandToggleShuffle
 import com.metrolist.music.constants.PauseListenHistoryKey
+import com.metrolist.music.constants.PauseRemoteListenHistoryKey
 import com.metrolist.music.constants.PersistentQueueKey
 import com.metrolist.music.constants.PlayerVolumeKey
 import com.metrolist.music.constants.RepeatModeKey
@@ -903,14 +904,16 @@ class MusicService :
                 } catch (_: SQLException) {
             }
         }
-        CoroutineScope(Dispatchers.IO).launch {
-            val playbackUrl = database.format(mediaItem.mediaId).first()?.playbackUrl
-                ?: YTPlayerUtils.playerResponseForMetadata(mediaItem.mediaId, null)
-                    .getOrNull()?.playbackTracking?.videostatsPlaybackUrl?.baseUrl
-            playbackUrl?.let {
-                YouTube.registerPlayback(null, playbackUrl)
-                    .onFailure {
-                        reportException(it)
+        if (!dataStore.get(PauseRemoteListenHistoryKey, false)) {
+            CoroutineScope(Dispatchers.IO).launch {
+                val playbackUrl = database.format(mediaItem.mediaId).first()?.playbackUrl
+                    ?: YTPlayerUtils.playerResponseForMetadata(mediaItem.mediaId, null)
+                        .getOrNull()?.playbackTracking?.videostatsPlaybackUrl?.baseUrl
+                playbackUrl?.let {
+                    YouTube.registerPlayback(null, playbackUrl)
+                        .onFailure {
+                            reportException(it)
+                        }
                     }
                 }
             }
