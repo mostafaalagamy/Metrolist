@@ -96,7 +96,7 @@ fun PlayerSettings(
         defaultValue = false
     )
     val (historyDuration, onHistoryDurationChange) = rememberPreference(
-        HistoryDurationKey,
+        HistoryDuration,
         defaultValue = 30f
     )
 
