@@ -125,7 +125,7 @@ jobs:
           ABI_APKS=$(find downloaded_artifacts -path "*/app-*-release/*.apk")
           
           gh release create "v${{ needs.check-version.outputs.new_version }}" \
-            --title "v${{ needs.check-version.outputs.new_version }}" \
+            --title "${{ needs.check-version.outputs.new_version }}" \
             --notes "Release of version ${{ needs.check-version.outputs.new_version }}" \
             "$UNIVERSAL_APK" \
             $ABI_APKS
