@@ -10,7 +10,6 @@ import com.metrolist.innertube.models.YTItem
 import com.metrolist.innertube.pages.ExplorePage
 import com.metrolist.innertube.pages.HomePage
 import com.metrolist.innertube.utils.completedLibraryPage
-import com.metrolist.music.constants.YtmSyncKey
 import com.metrolist.music.db.MusicDatabase
 import com.metrolist.music.db.entities.Album
 import com.metrolist.music.db.entities.Artist
@@ -46,8 +45,6 @@ class HomeViewModel @Inject constructor(
     val explorePage = MutableStateFlow<ExplorePage?>(null)
     val recentActivity = MutableStateFlow<List<YTItem>?>(null)
     val recentPlaylistsDb = MutableStateFlow<List<Playlist>?>(null)
-
-    val ytmSync = MutableStateFlow(true)
 
     val allLocalItems = MutableStateFlow<List<LocalItem>>(emptyList())
     val allYtItems = MutableStateFlow<List<YTItem>>(emptyList())
@@ -174,18 +171,13 @@ class HomeViewModel @Inject constructor(
     }
 
     init {
-        viewModelScope.launch(Dispatchers.IO) {
-            val prefs = context.getSharedPreferences("prefs", Context.MODE_PRIVATE)
-            ytmSync.value = prefs.getBoolean(YtmSyncKey, true)
-            
+        viewModelScope.launch(Dispatchers.IO) {           
             load()
-            if (ytmSync.value) {
-                viewModelScope.launch(Dispatchers.IO) { syncUtils.syncLikedSongs() }
-                viewModelScope.launch(Dispatchers.IO) { syncUtils.syncLibrarySongs() }
-                viewModelScope.launch(Dispatchers.IO) { syncUtils.syncSavedPlaylists() }
-                viewModelScope.launch(Dispatchers.IO) { syncUtils.syncLikedAlbums() }
-                viewModelScope.launch(Dispatchers.IO) { syncUtils.syncArtistsSubscriptions() }
-            }
+            viewModelScope.launch(Dispatchers.IO) { syncUtils.syncLikedSongs() }
+            viewModelScope.launch(Dispatchers.IO) { syncUtils.syncLibrarySongs() }
+            viewModelScope.launch(Dispatchers.IO) { syncUtils.syncSavedPlaylists() }
+            viewModelScope.launch(Dispatchers.IO) { syncUtils.syncLikedAlbums() }
+            viewModelScope.launch(Dispatchers.IO) { syncUtils.syncArtistsSubscriptions() }
         }
     }
 }
