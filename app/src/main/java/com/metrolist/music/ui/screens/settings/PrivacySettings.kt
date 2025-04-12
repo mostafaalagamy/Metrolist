@@ -57,7 +57,7 @@ fun PrivacySettings(
     )
     val (pauseRemoteListenHistory, onPauseRemoteListenHistoryChange) = rememberPreference(
         key = PauseRemoteListenHistoryKey,
-        defaultValue = true
+        defaultValue = false
     )
     val (disableScreenshot, onDisableScreenshotChange) = rememberPreference(
         key = DisableScreenshotKey,
@@ -158,11 +158,11 @@ fun PrivacySettings(
             onCheckedChange = onPauseListenHistoryChange,
         )
         SwitchPreference(
-            title = { Text(stringResource(R.string.pause_listen_history)) },
+            title = { Text(stringResource(R.string.pause_remote_listen_history)) },
             icon = { Icon(painterResource(R.drawable.history), null) },
             checked = pauseRemoteListenHistory,
             onCheckedChange = onPauseRemoteListenHistoryChange,
-            isEnabled = pauseListenHistory
+            isEnabled = !pauseListenHistory
         )
         PreferenceEntry(
             title = { Text(stringResource(R.string.clear_listen_history)) },
