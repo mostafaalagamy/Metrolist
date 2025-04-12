@@ -1,5 +1,3 @@
-@file:Suppress("INVISIBLE_MEMBER", "INVISIBLE_REFERENCE")
-
 package com.metrolist.music.ui.component
 
 import androidx.activity.compose.BackHandler
@@ -38,6 +36,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarColors
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.SearchBarDefaults.TonalElevation
@@ -45,9 +44,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.contentColorFor
-import androidx.compose.material3.internal.Strings
-import androidx.compose.material3.internal.getString
-import androidx.compose.material3.tokens.MotionTokens
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -57,6 +53,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.takeOrElse
@@ -95,12 +92,10 @@ fun TopSearch(
     leadingIcon: @Composable (() -> Unit)? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
     shape: Shape = SearchBarDefaults.inputFieldShape,
-    colors: SearchBarColors =
-        SearchBarDefaults.colors(
-            containerColor =
-            MaterialTheme.colorScheme.surfaceContainer
-        ),
-    tonalElevation: Dp = TonalElevation,
+    colors: SearchBarColors = SearchBarDefaults.colors(
+        containerColor = MaterialTheme.colorScheme.surfaceContainerLow
+    ),
+    tonalElevation: Dp = SearchBarDefaults.TonalElevation,
     windowInsets: WindowInsets = WindowInsets.systemBars,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     focusRequester: FocusRequester = remember { FocusRequester() },
@@ -108,12 +103,8 @@ fun TopSearch(
 ) {
     val animationProgress: Float by animateFloatAsState(
         targetValue = if (active) 1f else 0f,
-        animationSpec =
-        tween(
-            durationMillis = AnimationDurationMillis,
-            easing = MotionTokens.EasingLegacyCubicBezier,
-        ),
-        label = "",
+        animationSpec = tween(durationMillis = AnimationDurationMillis),
+        label = "SearchBarAnimation",
     )
 
     val defaultInputFieldShape = SearchBarDefaults.inputFieldShape
@@ -122,11 +113,9 @@ fun TopSearch(
         derivedStateOf {
             when {
                 shape == defaultInputFieldShape -> {
-                    // The shape can only be animated if it's the default spec value
                     val animatedRadius = SearchBarCornerRadius * (1 - animationProgress)
                     RoundedCornerShape(CornerSize(animatedRadius))
                 }
-
                 animationProgress == 1f -> defaultFullScreenShape
                 else -> shape
             }
@@ -134,8 +123,7 @@ fun TopSearch(
     }
 
     val topInset = windowInsets.asPaddingValues().calculateTopPadding()
-    val startInset =
-        windowInsets.asPaddingValues().calculateStartPadding(LocalLayoutDirection.current)
+    val startInset = windowInsets.asPaddingValues().calculateStartPadding(LocalLayoutDirection.current)
     val endInset = windowInsets.asPaddingValues().calculateEndPadding(LocalLayoutDirection.current)
 
     val topPadding = SearchBarVerticalPadding + topInset
@@ -152,11 +140,7 @@ fun TopSearch(
     }
 
     BoxWithConstraints(
-        modifier =
-        modifier
-            .offset {
-                IntOffset(x = 0, y = 0)
-            },
+        modifier = modifier.offset { IntOffset(x = 0, y = 0) },
         propagateMinConstraints = true,
     ) {
         val height: Dp
@@ -165,10 +149,9 @@ fun TopSearch(
         val endPadding: Dp
         with(LocalDensity.current) {
             val startWidth = constraints.maxWidth.toFloat()
-            val startHeight =
-                max(constraints.minHeight, InputFieldHeight.roundToPx())
-                    .coerceAtMost(constraints.maxHeight)
-                    .toFloat()
+            val startHeight = max(constraints.minHeight, InputFieldHeight.roundToPx())
+                .coerceAtMost(constraints.maxHeight)
+                .toFloat()
             val endWidth = constraints.maxWidth.toFloat()
             val endHeight = constraints.maxHeight.toFloat()
 
@@ -190,9 +173,7 @@ fun TopSearch(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(100.dp)
-                .background(
-                    color = MaterialTheme.colorScheme.surface
-                )
+                .background(color = MaterialTheme.colorScheme.surface)
         )
 
         Surface(
@@ -200,13 +181,13 @@ fun TopSearch(
             color = colors.containerColor,
             contentColor = contentColorFor(colors.containerColor),
             tonalElevation = tonalElevation,
-            modifier =
-            Modifier
+            modifier = Modifier
                 .padding(
                     top = animatedSurfaceTopPadding,
                     start = startPadding,
                     end = endPadding,
-                ).size(width = width, height = height),
+                )
+                .size(width = width, height = height),
         ) {
             Column {
                 SearchBarInputField(
@@ -220,7 +201,16 @@ fun TopSearch(
                     placeholder = placeholder,
                     leadingIcon = leadingIcon,
                     trailingIcon = trailingIcon,
-                    colors = colors.inputFieldColors,
+                    colors = TextFieldDefaults.colors(
+                        focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                        unfocusedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        focusedContainerColor = Color.Transparent,
+                        unfocusedContainerColor = Color.Transparent,
+                        disabledContainerColor = Color.Transparent,
+                        cursorColor = MaterialTheme.colorScheme.primary,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent
+                    ),
                     interactionSource = interactionSource,
                     focusRequester = focusRequester,
                 )
@@ -253,23 +243,18 @@ private fun SearchBarInputField(
     placeholder: @Composable (() -> Unit)? = null,
     leadingIcon: @Composable (() -> Unit)? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
-    colors: TextFieldColors = SearchBarDefaults.inputFieldColors(),
+    colors: TextFieldColors,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     focusRequester: FocusRequester = remember { FocusRequester() },
 ) {
     val focused = interactionSource.collectIsFocusedAsState().value
-
-    val searchSemantics = getString(Strings.SearchBarSearch)
-    val suggestionsAvailableSemantics = getString(Strings.SuggestionsAvailable)
-    val textColor =
-        LocalTextStyle.current.color.takeOrElse {
-            colors.textColor(enabled, isError = false, focused = focused)
-        }
+    val textColor = LocalTextStyle.current.color.takeOrElse {
+        if (focused) colors.focusedTextColor else colors.unfocusedTextColor
+    }
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier =
-        modifier
+        modifier = modifier
             .fillMaxWidth()
             .height(InputFieldHeight),
     ) {
@@ -281,26 +266,25 @@ private fun SearchBarInputField(
         BasicTextField(
             value = query,
             onValueChange = onQueryChange,
-            modifier =
-            Modifier
+            modifier = Modifier
                 .weight(1f)
                 .focusRequester(focusRequester)
                 .pointerInput(Unit) {
                     awaitEachGesture {
-                        // Must be PointerEventPass.Initial to observe events before the text field
-                        // consumes them in the Main pass
                         awaitFirstDown(pass = PointerEventPass.Initial)
                         val upEvent = waitForUpOrCancellation(pass = PointerEventPass.Initial)
                         if (upEvent != null) {
                             onActiveChange(true)
                         }
                     }
-                }.semantics {
-                    contentDescription = searchSemantics
+                }
+                .semantics {
+                    contentDescription = "Search"
                     if (active) {
-                        stateDescription = suggestionsAvailableSemantics
+                        stateDescription = "Suggestions available"
                     }
-                }.onKeyEvent {
+                }
+                .onKeyEvent {
                     if (it.key == Key.Enter) {
                         onSearch(query.text)
                         return@onKeyEvent true
@@ -310,7 +294,7 @@ private fun SearchBarInputField(
             enabled = enabled,
             singleLine = true,
             textStyle = LocalTextStyle.current.merge(TextStyle(color = textColor)),
-            cursorBrush = SolidColor(colors.cursorColor(isError = false)),
+            cursorBrush = SolidColor(colors.cursorColor),
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
             keyboardActions = KeyboardActions(onSearch = { onSearch(query.text) }),
             interactionSource = interactionSource,
@@ -343,9 +327,5 @@ val InputFieldHeight = 48.dp
 private val SearchBarCornerRadius: Dp = InputFieldHeight / 2
 internal val SearchBarVerticalPadding: Dp = 8.dp
 internal val SearchBarHorizontalPadding: Dp = 12.dp
-
-// Search bar has 16dp padding between icons and start/end, while by default text field has 12dp.
 val SearchBarIconOffsetX: Dp = 4.dp
-
-// Animation specs
-private const val AnimationDurationMillis: Int = MotionTokens.DurationMedium2.toInt()
+private const val AnimationDurationMillis: Int = 300

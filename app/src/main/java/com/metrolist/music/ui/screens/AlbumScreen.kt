@@ -18,7 +18,6 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -48,9 +47,11 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withLink
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -177,32 +178,26 @@ fun AlbumScreen(
                                 fontSizeRange = FontSizeRange(16.sp, 22.sp),
                             )
 
-                            val annotatedString =
-                                buildAnnotatedString {
-                                    withStyle(
-                                        style =
-                                        MaterialTheme.typography.titleMedium
-                                            .copy(
-                                                fontWeight = FontWeight.Normal,
-                                                color = MaterialTheme.colorScheme.onBackground,
-                                            ).toSpanStyle(),
-                                    ) {
-                                        albumWithSongs.artists.fastForEachIndexed { index, artist ->
-                                            pushStringAnnotation(artist.id, artist.name)
+                            Text(buildAnnotatedString {
+                                withStyle(
+                                    style = MaterialTheme.typography.titleMedium.copy(
+                                        fontWeight = FontWeight.Normal,
+                                        color = MaterialTheme.colorScheme.onBackground
+                                    ).toSpanStyle()
+                                ) {
+                                    albumWithSongs.artists.fastForEachIndexed { index, artist ->
+                                        val link = LinkAnnotation.Clickable(artist.id) {
+                                            navController.navigate("artist/${artist.id}")
+                                        }
+                                        withLink(link) {
                                             append(artist.name)
-                                            pop()
-                                            if (index != albumWithSongs.artists.lastIndex) {
-                                                append(", ")
-                                            }
+                                        }
+                                        if (index != albumWithSongs.artists.lastIndex) {
+                                            append(", ")
                                         }
                                     }
                                 }
-                            ClickableText(annotatedString) { offset ->
-                                annotatedString.getStringAnnotations(offset, offset).firstOrNull()
-                                    ?.let { range ->
-                                        navController.navigate("artist/${range.tag}")
-                                    }
-                            }
+                            })
 
                             if (albumWithSongs.album.year != null) {
                                 Text(
