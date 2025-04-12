@@ -49,6 +49,7 @@ import com.metrolist.music.constants.LibraryViewType
 import com.metrolist.music.constants.MixSortDescendingKey
 import com.metrolist.music.constants.MixSortType
 import com.metrolist.music.constants.MixSortTypeKey
+import com.metrolist.music.constants.YtmSyncKey
 import com.metrolist.music.db.entities.Album
 import com.metrolist.music.db.entities.Artist
 import com.metrolist.music.db.entities.Playlist
@@ -68,6 +69,8 @@ import com.metrolist.music.ui.menu.PlaylistMenu
 import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
 import com.metrolist.music.viewmodels.LibraryMixViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.text.Collator
 import java.time.LocalDateTime
 import java.util.Locale
@@ -93,6 +96,8 @@ fun LibraryMixScreen(
     )
     val (sortDescending, onSortDescendingChange) = rememberPreference(MixSortDescendingKey, true)
     val gridItemSize by rememberEnumPreference(GridItemsSizeKey, GridItemSize.BIG)
+
+    val (ytmSync) = rememberPreference(YtmSyncKey, true)
 
     val topSize by viewModel.topValue.collectAsState(initial = 50)
     val likedPlaylist =
@@ -184,6 +189,15 @@ fun LibraryMixScreen(
             backStackEntry?.savedStateHandle?.set("scrollToTop", false)
         }
     }
+
+    LaunchedEffect(Unit) {
+         if (ytmSync) {
+             withContext(Dispatchers.IO) {
+                 viewModel.syncAllLibrary()
+             }
+         }
+    }
+
     val headerContent = @Composable {
         Row(
             verticalAlignment = Alignment.CenterVertically,
