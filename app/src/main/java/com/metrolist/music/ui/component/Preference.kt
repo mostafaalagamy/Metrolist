@@ -7,15 +7,18 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Slider
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -33,7 +36,9 @@ import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.metrolist.music.R
 import kotlin.math.roundToInt
@@ -238,6 +243,7 @@ fun EditTextPreference(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SliderPreference(
     modifier: Modifier = Modifier,
@@ -256,37 +262,33 @@ fun SliderPreference(
     }
 
     if (showDialog) {
-        AlertDialog(
-            properties = DialogProperties(usePlatformDefaultWidth = false),
-            onDismissRequest = { showDialog = false },
-            icon = {
-                Icon(
-                    painter = painterResource(R.drawable.history),
-                    contentDescription = null
-                )
-            },
-            title = { Text(stringResource(R.string.history_duration)) },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        showDialog = false
-                        onValueChange.invoke(sliderValue)
-                    },
+        ActionPromptDialog(
+            titleBar = {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
                 ) {
-                    Text(stringResource(android.R.string.ok))
+                    Text(
+                        text = stringResource(R.string.history_duration),
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 1,
+                        style = MaterialTheme.typography.headlineSmall,
+                    )
                 }
             },
-            dismissButton = {
-                TextButton(
-                    onClick = {
-                        sliderValue = value
-                        showDialog = false
-                    },
-                ) {
-                    Text(stringResource(android.R.string.cancel))
-                }
+            onDismiss = { showDialog = false },
+            onConfirm = {
+                showDialog = false
+                onValueChange.invoke(sliderValue)
             },
-            text = {
+            onCancel = {
+                sliderValue = value
+                showDialog = false
+            },
+            onReset = {
+                sliderValue = 30f // Default value or any reset value you prefer
+            },
+            content = {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
                         text = pluralStringResource(
@@ -297,13 +299,16 @@ fun SliderPreference(
                         style = MaterialTheme.typography.bodyLarge,
                     )
 
+                    Spacer(Modifier.height(16.dp))
+
                     Slider(
                         value = sliderValue,
                         onValueChange = { sliderValue = it },
                         valueRange = 15f..60f,
+                        modifier = Modifier.fillMaxWidth()
                     )
                 }
-            },
+            }
         )
     }
 
