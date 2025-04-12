@@ -25,30 +25,27 @@ class LocaleManager(private val context: Context) {
     }
 
     fun updateLocale(languageCode: String): Boolean {
-        try {
-            val locale = createLocaleFromCode(languageCode)
-            val resources = context.resources
-            val config = Configuration(resources.configuration)
+        val locale = createLocaleFromCode(languageCode)
+        val prefs = context.getSharedPreferences("AppPreferences", Context.MODE_PRIVATE)
+        prefs.edit().putString("app_language", languageCode).apply()
 
-            Locale.setDefault(locale)
+        val resources = context.resources
+        val config = Configuration(resources.configuration)
+        Locale.setDefault(locale)
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                setLocaleApi24(config, locale)
-            } else {
-                setLocaleLegacy(config, locale)
-            }
-
-            resources.updateConfiguration(config, resources.displayMetrics)
-
-            // Save to SharedPreferences
-            val prefs = context.getSharedPreferences("AppPreferences", Context.MODE_PRIVATE)
-            prefs.edit().putString("app_language", languageCode).apply()
-
-            return true
-        } catch (e: Exception) {
-            Log.e("LocaleManager", "Failed to update locale", e)
-            return false
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            setLocaleApi24(config, locale)
+        } else {
+            setLocaleLegacy(config, locale)
         }
+
+        context.createConfigurationContext(config)
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+            resources.updateConfiguration(config, resources.displayMetrics)
+        }
+
+        return true
     }
 
     private fun wrapContext(context: Context, languageCode: String): Context {
