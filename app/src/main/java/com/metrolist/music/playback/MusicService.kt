@@ -1,4 +1,4 @@
-@Suppress("DEPRECATION")
+@file:Suppress("DEPRECATION")
 
 package com.metrolist.music.playback
 
