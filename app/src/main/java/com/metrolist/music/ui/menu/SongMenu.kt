@@ -54,6 +54,7 @@ import com.metrolist.innertube.YouTube
 import com.metrolist.music.LocalDatabase
 import com.metrolist.music.LocalDownloadUtil
 import com.metrolist.music.LocalPlayerConnection
+import com.metrolist.music.LocalSyncUtils
 import com.metrolist.music.R
 import com.metrolist.music.constants.ListItemHeight
 import com.metrolist.music.constants.ListThumbnailSize
@@ -93,6 +94,7 @@ fun SongMenu(
     val download by LocalDownloadUtil.current.getDownload(originalSong.id)
         .collectAsState(initial = null)
     val coroutineScope = rememberCoroutineScope()
+    val syncUtils = LocalSyncUtils.current
     val scope = rememberCoroutineScope()
     var refetchIconDegree by remember { mutableFloatStateOf(0f) }
 
@@ -236,9 +238,12 @@ fun SongMenu(
         trailingContent = {
             IconButton(
                 onClick = {
+                    val s = song.song.toggleLike()
                     database.query {
-                        update(song.song.toggleLike())
-                    }
+                        update(s)
+                     }
+ 
+                        syncUtils.likeSong(s)
                 },
             ) {
                 Icon(

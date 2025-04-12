@@ -98,6 +98,7 @@ import com.metrolist.music.playback.queues.YouTubeQueue
 import com.metrolist.music.playback.queues.filterExplicit
 import com.metrolist.music.utils.CoilBitmapLoader
 import com.metrolist.music.utils.DiscordRPC
+import com.metrolist.music.utils.SyncUtils
 import com.metrolist.music.utils.YTPlayerUtils
 import com.metrolist.music.utils.dataStore
 import com.metrolist.music.utils.enumPreference
@@ -149,6 +150,9 @@ class MusicService :
 
     @Inject
     lateinit var lyricsHelper: LyricsHelper
+    
+    @Inject
+    lateinit var syncUtils: SyncUtils
 
     @Inject
     lateinit var mediaLibrarySessionCallback: MediaLibrarySessionCallback
@@ -624,12 +628,14 @@ class MusicService :
     }
 
     fun toggleLike() {
-        database.query {
-            currentSong.value?.let {
-                update(it.song.toggleLike())
-            }
-        }
-    }
+         database.query {
+             currentSong.value?.let {
+                 val song = it.song.toggleLike()
+                 update(song)
+                 syncUtils.likeSong(song)
+             }
+         }
+     }
 
     private fun openAudioEffectSession() {
         if (isAudioEffectSessionOpened) return

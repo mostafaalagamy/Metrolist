@@ -32,6 +32,7 @@ import com.metrolist.innertube.YouTube
 import com.metrolist.music.LocalDatabase
 import com.metrolist.music.LocalDownloadUtil
 import com.metrolist.music.LocalPlayerConnection
+import com.metrolist.music.LocalSyncUtils
 import com.metrolist.music.R
 import com.metrolist.music.db.entities.PlaylistSongMap
 import com.metrolist.music.db.entities.Song
@@ -63,6 +64,7 @@ fun SelectionSongMenu(
     val downloadUtil = LocalDownloadUtil.current
     val coroutineScope = rememberCoroutineScope()
     val playerConnection = LocalPlayerConnection.current ?: return
+    val syncUtils = LocalSyncUtils.current
 
     val allInLibrary by remember {
         mutableStateOf(
@@ -283,7 +285,9 @@ fun SelectionSongMenu(
             database.query {
                 songSelection.forEach { song ->
                     if ((!allLiked && !song.song.liked) || allLiked) {
-                        update(song.song.toggleLike())
+                        val s = song.song.toggleLike()
+                         update(s)
+                         syncUtils.likeSong(s)
                     }
                 }
             }
