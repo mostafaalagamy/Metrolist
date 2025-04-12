@@ -73,6 +73,8 @@ import com.metrolist.music.ui.component.SortHeader
 import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
 import com.metrolist.music.viewmodels.LibraryPlaylistsViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.util.UUID
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -150,7 +152,9 @@ fun LibraryPlaylistsScreen(
 
     LaunchedEffect(Unit) {
         if (ytmSync) {
-            viewModel.sync()
+            withContext(Dispatchers.IO) {
+                viewModel.sync()
+            }
         }
     }
 
