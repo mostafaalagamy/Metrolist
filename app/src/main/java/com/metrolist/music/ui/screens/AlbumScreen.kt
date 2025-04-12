@@ -178,25 +178,26 @@ fun AlbumScreen(
                                 fontSizeRange = FontSizeRange(16.sp, 22.sp),
                             )
 
-                            val annotatedString = buildAnnotatedString {
+                            Text(buildAnnotatedString {
                                 withStyle(
                                     style = MaterialTheme.typography.titleMedium.copy(
                                         fontWeight = FontWeight.Normal,
                                         color = MaterialTheme.colorScheme.onBackground
                                     ).toSpanStyle()
                                 ) {
-                                    albumWithSongsLocal.artists.fastForEachIndexed { index, artist ->
-                                        withLink(
-                                            LinkAnnotation.Clickable(artist.id) {
-                                                navController.navigate("artist/${artist.id}")
-                                            }
-                                        ) { append(artist.name) }
-                                        if (index != albumWithSongsLocal.artists.lastIndex) {
+                                    albumWithSongs.artists.fastForEachIndexed { index, artist ->
+                                        val link = LinkAnnotation.Clickable(artist.id) {
+                                            navController.navigate("artist/${artist.id}")
+                                        }
+                                        withLink(link) {
+                                            append(artist.name)
+                                        }
+                                        if (index != albumWithSongs.artists.lastIndex) {
                                             append(", ")
                                         }
                                     }
                                 }
-                            }
+                            })
 
                             if (albumWithSongs.album.year != null) {
                                 Text(
