@@ -248,7 +248,7 @@ enum class PlayerBackgroundStyle {
 }
 
 val TopSize = stringPreferencesKey("topSize")
-val minPlaybackDurKey = intPreferencesKey("minPlaybackDur")
+val HistoryDuration = floatPreferencesKey("historyDuration")
 
 val PlayerButtonsStyleKey = stringPreferencesKey("player_buttons_style")
 val PlayerBackgroundStyleKey = stringPreferencesKey("playerBackgroundStyle")
