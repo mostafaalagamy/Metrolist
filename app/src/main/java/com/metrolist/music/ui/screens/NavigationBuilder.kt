@@ -249,7 +249,7 @@ fun NavGraphBuilder.navigationBuilder(
             },
         ),
     ) {
-        CacheSongsScreen(navController, scrollBehavior)
+        CachePlaylistScreen(navController, scrollBehavior)
     }
     composable(
         route = "top_playlist/{top}",
