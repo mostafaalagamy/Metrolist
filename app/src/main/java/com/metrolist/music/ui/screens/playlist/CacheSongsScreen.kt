@@ -138,7 +138,7 @@ fun CacheSongsScreen(
                                     verticalArrangement = Arrangement.Center,
                                 ) {
                                     Text(
-                                        "Cache Songs",
+                                        stringResource(R.string.cached_songs),
                                         style = MaterialTheme.typography.titleLarge,
                                         fontWeight = FontWeight.Bold
                                     )
@@ -295,7 +295,10 @@ fun CacheSongsScreen(
                         )
                     }
                     else -> {
-                        Text("Cache Songs", style = MaterialTheme.typography.titleLarge)
+                        Text(
+                            stringResource(R.string.cached_songs),
+                            style = MaterialTheme.typography.titleLarge
+                        )
                     }
                 }
             },
