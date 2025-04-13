@@ -93,6 +93,7 @@ import kotlinx.coroutines.withContext
 @Composable
 fun CacheSongsScreen(
     navController: NavController,
+    scrollBehavior: TopAppBarScrollBehavior,
     viewModel: CacheSongsViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
