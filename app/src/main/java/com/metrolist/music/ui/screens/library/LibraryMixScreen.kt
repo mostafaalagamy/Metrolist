@@ -130,11 +130,11 @@ fun LibraryMixScreen(
             thumbnails = emptyList(),
         )
 
-    val cacheSongsPlaylist =
+    val cachePlaylist =
         Playlist(
             playlist = PlaylistEntity(
                 id = UUID.randomUUID().toString(),
-                name = stringResource(R.string.cached_songs)
+                name = stringResource(R.string.cached_playlist)
             ),
             songCount = 0,
             thumbnails = emptyList(),
@@ -324,17 +324,17 @@ fun LibraryMixScreen(
                     }
 
                     item(
-                        key = "CacheSongsPlaylist",
+                        key = "cachePlaylist",
                         contentType = { CONTENT_TYPE_PLAYLIST },
                     ) {
                         PlaylistListItem(
-                            playlist = cacheSongsPlaylist,
+                            playlist = cachePlaylist,
                             autoPlaylist = true,
                             modifier =
                             Modifier
                                 .fillMaxWidth()
                                 .clickable {
-                                    navController.navigate("cache_songs/cached")
+                                    navController.navigate("cache_playlist/cached")
                                 }
                                 .animateItem(),
                         )
