@@ -130,6 +130,16 @@ fun LibraryMixScreen(
             thumbnails = emptyList(),
         )
 
+    val cacheSongsPlaylist =
+        Playlist(
+            playlist = PlaylistEntity(
+                id = "cached_songs",
+                name = stringResource(R.string.cached_songs)
+            ),
+            songCount = 0,
+            thumbnails = emptyList(),
+        )
+
     val albums = viewModel.albums.collectAsState()
     val artist = viewModel.artists.collectAsState()
     val playlist = viewModel.playlists.collectAsState()
@@ -308,6 +318,23 @@ fun LibraryMixScreen(
                                 .fillMaxWidth()
                                 .clickable {
                                     navController.navigate("top_playlist/$topSize")
+                                }
+                                .animateItem(),
+                        )
+                    }
+
+                    item(
+                        key = "CacheSongsPlaylist",
+                        contentType = { CONTENT_TYPE_PLAYLIST },
+                    ) {
+                        PlaylistListItem(
+                            playlist = cacheSongsPlaylist,
+                            autoPlaylist = true,
+                            modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    navController.navigate("cache_songs/cached")
                                 }
                                 .animateItem(),
                         )
@@ -534,6 +561,26 @@ fun LibraryMixScreen(
                                 .combinedClickable(
                                     onClick = {
                                         navController.navigate("top_playlist/$topSize")
+                                    },
+                                )
+                                .animateItem(),
+                        )
+                    }
+
+                    item(
+                        key = "CacheSongsPlaylist",
+                        contentType = { CONTENT_TYPE_PLAYLIST },
+                    ) {
+                        PlaylistGridItem(
+                            playlist = cacheSongsPlaylist,
+                            fillMaxWidth = true,
+                            autoPlaylist = true,
+                            modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .combinedClickable(
+                                    onClick = {
+                                        navController.navigate("cache_songs/cached")
                                     },
                                 )
                                 .animateItem(),
