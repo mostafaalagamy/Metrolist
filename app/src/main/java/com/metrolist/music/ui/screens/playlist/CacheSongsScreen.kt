@@ -183,21 +183,6 @@ fun CacheSongsScreen(
                     )
                 }
             }
-
-            HideOnScrollFAB(
-                visible = filteredSongs.isNotEmpty(),
-                lazyListState = lazyListState,
-                icon = R.drawable.shuffle,
-                onClick = {
-                    playerConnection.playQueue(
-                        ListQueue(
-                            title = "Cache Songs",
-                            items = filteredSongs.map { it.item.toMediaItem() }.shuffled()
-                        )
-                    )
-                },
-                modifier = Modifier.align(Alignment.BottomEnd)
-            )
         }
     }
 
