@@ -1301,6 +1301,7 @@ fun PlaylistListItem(
             when (playlist.playlist.name) {
                 stringResource(R.string.liked) -> R.drawable.favorite_border
                 stringResource(R.string.offline) -> R.drawable.offline
+                stringResource(R.string.cached_songs) -> R.drawable.cached
                 else -> {
                     if (autoPlaylist) {
                         R.drawable.trending_up
