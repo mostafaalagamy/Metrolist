@@ -142,7 +142,7 @@ fun CachePlaylistScreen(
                                     verticalArrangement = Arrangement.Center,
                                 ) {
                                     Text(
-                                        stringResource(R.string.cached_songs),
+                                        stringResource(R.string.cached_playlist),
                                         style = MaterialTheme.typography.titleLarge,
                                         fontWeight = FontWeight.Bold
                                     )
@@ -301,7 +301,7 @@ fun CachePlaylistScreen(
                     }
                     else -> {
                         Text(
-                            stringResource(R.string.cached_songs),
+                            stringResource(R.string.cached_playlist),
                             style = MaterialTheme.typography.titleLarge
                         )
                     }
