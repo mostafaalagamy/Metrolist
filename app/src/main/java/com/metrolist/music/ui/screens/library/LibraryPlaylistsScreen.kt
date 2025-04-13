@@ -315,18 +315,21 @@ fun LibraryPlaylistsScreen(
                     }
 
                     item(
-                        key = "TopPlaylist",
+                        key = "CacheSongsPlaylist",
                         contentType = { CONTENT_TYPE_PLAYLIST },
                     ) {
-                        PlaylistListItem(
-                            playlist = topPlaylist,
+                        PlaylistGridItem(
+                            playlist = cacheSongsPlaylist,
+                            fillMaxWidth = true,
                             autoPlaylist = true,
                             modifier =
                             Modifier
                                 .fillMaxWidth()
-                                .clickable {
-                                    navController.navigate("top_playlist/$topSize")
-                                }
+                                .combinedClickable(
+                                    onClick = {
+                                        navController.navigate("cache_songs/cached")
+                                    },
+                                )
                                 .animateItem(),
                         )
                     }
@@ -448,11 +451,11 @@ fun LibraryPlaylistsScreen(
                     }
 
                     item(
-                        key = "TopPlaylist",
+                        key = "CacheSongsPlaylist",
                         contentType = { CONTENT_TYPE_PLAYLIST },
                     ) {
                         PlaylistGridItem(
-                            playlist = topPlaylist,
+                            playlist = cacheSongsPlaylist,
                             fillMaxWidth = true,
                             autoPlaylist = true,
                             modifier =
@@ -460,7 +463,7 @@ fun LibraryPlaylistsScreen(
                                 .fillMaxWidth()
                                 .combinedClickable(
                                     onClick = {
-                                        navController.navigate("top_playlist/$topSize")
+                                        navController.navigate("cache_songs/cached")
                                     },
                                 )
                                 .animateItem(),
