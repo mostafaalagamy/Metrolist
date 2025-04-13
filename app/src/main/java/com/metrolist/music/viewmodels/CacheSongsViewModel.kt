@@ -47,6 +47,7 @@ class CacheSongsViewModel @Inject constructor(
                             }
                             SongSortType.PLAY_TIME -> compareBy { it.song.totalPlayTime }
                         }.reversed(descending)
+                )
             }
         }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 }
