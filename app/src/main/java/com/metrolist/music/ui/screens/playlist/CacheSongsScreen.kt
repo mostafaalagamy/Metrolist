@@ -103,7 +103,7 @@ import kotlinx.coroutines.withContext
 fun CacheSongsScreen(
     navController: NavController,
     scrollBehavior: TopAppBarScrollBehavior,
-    playlist: String
+    viewModel: CacheSongsViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
     val menuState = LocalMenuState.current
