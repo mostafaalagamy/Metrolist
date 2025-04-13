@@ -91,9 +91,9 @@ import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun OfflineScreen(
+fun CacheSongsScreen(
     navController: NavController,
-    viewModel: OfflineViewModel = hiltViewModel(),
+    viewModel: CacheSongsViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
     val menuState = LocalMenuState.current
