@@ -20,18 +20,34 @@ class CacheSongsViewModel @Inject constructor(
     database: MusicDatabase
 ) : ViewModel() {
     
+    private val _sortType = MutableStateFlow(SongSortType.CREATE_DATE)
+    private val _sortDescending = MutableStateFlow(true)
+
     val cachedSongs = database.songs()
-        .map { songs -> songs.filter { it.isCached } }
+        .map { songs -> 
+            songs.filter { song -> 
+                song.song.dateDownload != null
+            }.sortedWith(getComparator(_sortType.value, _sortDescending.value))
+        }
         .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
-    fun sortSongs(songs: List<Song>, sortType: SongSortType, descending: Boolean): List<Song> {
-        return when (sortType) {
-            SongSortType.CREATE_DATE -> songs.sortedBy { it.song.createDate }
-            SongSortType.NAME -> songs.sortedBy { it.song.title }
-            SongSortType.ARTIST -> songs.sortedBy { song -> 
+    private fun getComparator(
+        sortType: SongSortType, 
+        descending: Boolean
+    ): Comparator<Song> {
+        val comparator = when (sortType) {
+            SongSortType.CREATE_DATE -> compareBy { it.song.dateDownload ?: it.song.inLibrary }
+            SongSortType.NAME -> compareBy { it.song.title }
+            SongSortType.ARTIST -> compareBy { song -> 
                 song.artists.joinToString("") { it.name }
             }
-            SongSortType.PLAY_TIME -> songs.sortedBy { it.song.totalPlayTime }
-        }.let { if (descending) it.reversed() else it }
+            SongSortType.PLAY_TIME -> compareBy { it.song.totalPlayTime }
+        }
+        return if (descending) comparator.reversed() else comparator
+    }
+
+    fun updateSort(sortType: SongSortType, descending: Boolean) {
+        _sortType.value = sortType
+        _sortDescending.value = descending
     }
 }
