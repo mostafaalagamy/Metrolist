@@ -1,6 +1,11 @@
 package com.metrolist.music.ui.screens.playlist
 
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -25,11 +30,13 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -46,16 +53,17 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
@@ -74,6 +82,7 @@ import com.metrolist.music.playback.queues.ListQueue
 import com.metrolist.music.ui.component.AutoResizeText
 import com.metrolist.music.ui.component.EmptyPlaceholder
 import com.metrolist.music.ui.component.FontSizeRange
+import com.metrolist.music.ui.component.HideOnScrollFAB
 import com.metrolist.music.ui.component.IconButton
 import com.metrolist.music.ui.component.LocalMenuState
 import com.metrolist.music.ui.component.SongListItem
@@ -85,7 +94,7 @@ import com.metrolist.music.ui.utils.backToMain
 import com.metrolist.music.utils.makeTimeString
 import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
-import com.metrolist.music.viewmodels.OfflineViewModel
+import com.metrolist.music.viewmodels.CacheSongsViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -94,7 +103,7 @@ import kotlinx.coroutines.withContext
 fun CacheSongsScreen(
     navController: NavController,
     scrollBehavior: TopAppBarScrollBehavior,
-    viewModel: CacheSongsViewModel = hiltViewModel(),
+    playlist: String
 ) {
     val context = LocalContext.current
     val menuState = LocalMenuState.current
@@ -103,8 +112,8 @@ fun CacheSongsScreen(
     val isPlaying by playerConnection.isPlaying.collectAsState()
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
 
-    val songs by viewModel.offlineSongs.collectAsState()
-    val mutableSongs = remember { mutableStateListOf<Song>() }
+    val viewModel: CacheSongsViewModel = hiltViewModel()
+    val songs by viewModel.cachedSongs.collectAsState()
 
     var searchQuery by remember {
         mutableStateOf(TextFieldValue(""))
@@ -121,24 +130,21 @@ fun CacheSongsScreen(
     }
 
     val playlistLength = remember(songs) {
-        songs.fastSumBy { it.song.duration }
+        songs.sumOf { it.song.duration }
     }
 
-    val wrappedSongs = songs.map { item -> ItemWrapper(item) }.toMutableList()
-    var selection by remember { mutableStateOf(false) }
+    val wrappedSongs = remember(songs) {
+        songs.map { song -> ItemWrapper(song) }.toMutableList()
+    }
+    var selection by remember {
+        mutableStateOf(false)
+    }
 
     val (sortType, onSortTypeChange) = rememberEnumPreference(
         SongSortTypeKey,
         SongSortType.CREATE_DATE
     )
     val (sortDescending, onSortDescendingChange) = rememberPreference(SongSortDescendingKey, true)
-
-    LaunchedEffect(songs) {
-        mutableSongs.apply {
-            clear()
-            addAll(songs)
-        }
-    }
 
     val state = rememberLazyListState()
 
@@ -183,7 +189,7 @@ fun CacheSongsScreen(
 
                                 Column(verticalArrangement = Arrangement.Center) {
                                     AutoResizeText(
-                                        text = stringResource(R.string.offline_songs),
+                                        text = stringResource(R.string.cached_songs),
                                         fontWeight = FontWeight.Bold,
                                         maxLines = 2,
                                         overflow = TextOverflow.Ellipsis,
@@ -228,7 +234,7 @@ fun CacheSongsScreen(
                                     onClick = {
                                         playerConnection.playQueue(
                                             ListQueue(
-                                                title = "Offline Songs",
+                                                title = "Cached Songs",
                                                 items = songs.map { it.toMediaItem() },
                                             ),
                                         )
@@ -249,7 +255,7 @@ fun CacheSongsScreen(
                                     onClick = {
                                         playerConnection.playQueue(
                                             ListQueue(
-                                                title = "Offline Songs",
+                                                title = "Cached Songs",
                                                 items = songs.shuffled().map { it.toMediaItem() },
                                             ),
                                         )
@@ -297,9 +303,9 @@ fun CacheSongsScreen(
                 val filteredSongs = if (searchQuery.text.isEmpty()) {
                     wrappedSongs
                 } else {
-                    wrappedSongs.filter {
-                        (it.item.song.title).contains(searchQueryStr, ignoreCase = true) or
-                                (it.item.artists.joinToString("")).contains(
+                    wrappedSongs.filter { songWrapper ->
+                        (songWrapper.item.song.title).contains(searchQueryStr, ignoreCase = true) or
+                                (songWrapper.item.artists.joinToString("")).contains(
                                     searchQueryStr,
                                     ignoreCase = true
                                 )
@@ -308,7 +314,7 @@ fun CacheSongsScreen(
 
                 itemsIndexed(
                     items = filteredSongs,
-                    key = { _, song -> song.item.id },
+                    key = { _, songWrapper -> songWrapper.item.id },
                 ) { index, songWrapper ->
                     SongListItem(
                         song = songWrapper.item,
@@ -344,7 +350,7 @@ fun CacheSongsScreen(
                                         } else {
                                             playerConnection.playQueue(
                                                 ListQueue(
-                                                    title = "Offline Songs",
+                                                    title = "Cached Songs",
                                                     items = songs.map { it.toMediaItem() },
                                                     startIndex = songs.indexOfFirst { it.id == songWrapper.item.id }
                                                 ),
@@ -363,7 +369,6 @@ fun CacheSongsScreen(
                                     songWrapper.isSelected = true
                                 },
                             )
-                            .animateItem()
                     )
                 }
             }
@@ -376,7 +381,7 @@ fun CacheSongsScreen(
             onClick = {
                 playerConnection.playQueue(
                     ListQueue(
-                        title = "Offline Songs",
+                        title = "Cached Songs",
                         items = songs.shuffled().map { it.toMediaItem() }
                     )
                 )
@@ -417,7 +422,7 @@ fun CacheSongsScreen(
                     )
                 } else {
                     Text(
-                        text = stringResource(R.string.offline_songs),
+                        text = stringResource(R.string.cached_songs),
                         style = MaterialTheme.typography.titleLarge
                     )
                 }
