@@ -371,8 +371,7 @@ fun CacheSongsScreen(
                         )
                     }
                 }
-            },
-            scrollBehavior = scrollBehavior
+            }
         )
     }
 }
