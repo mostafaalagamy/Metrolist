@@ -241,7 +241,7 @@ fun NavGraphBuilder.navigationBuilder(
         AutoPlaylistScreen(navController, scrollBehavior)
     }
     composable(
-        route = "cache_songs/{playlist}",
+        route = "cache_playlist/{playlist}",
         arguments =
             listOf(
                 navArgument("playlist") {
