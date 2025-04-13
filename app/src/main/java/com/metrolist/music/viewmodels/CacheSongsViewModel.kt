@@ -23,7 +23,7 @@ import javax.inject.Inject
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
-class OfflineViewModel @Inject constructor(
+class CacheSongsViewModel @Inject constructor(
     @ApplicationContext context: Context,
     database: MusicDatabase,
 ) : ViewModel() {
