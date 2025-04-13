@@ -139,7 +139,7 @@ fun LibraryPlaylistsScreen(
     val cacheSongsPlaylist =
         Playlist(
             playlist = PlaylistEntity(
-                id = "cached_songs",
+                id = UUID.randomUUID().toString(),
                 name = stringResource(R.string.cached_songs)
             ),
             songCount = 0,
