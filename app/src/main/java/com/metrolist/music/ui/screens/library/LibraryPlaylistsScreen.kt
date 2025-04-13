@@ -136,6 +136,16 @@ fun LibraryPlaylistsScreen(
             thumbnails = emptyList(),
         )
 
+    val cacheSongsPlaylist =
+        Playlist(
+            playlist = PlaylistEntity(
+                id = "cached_songs",
+                name = stringResource(R.string.cached_songs)
+            ),
+            songCount = 0,
+            thumbnails = emptyList(),
+        )
+
     val lazyListState = rememberLazyListState()
     val lazyGridState = rememberLazyGridState()
 
@@ -304,6 +314,23 @@ fun LibraryPlaylistsScreen(
                         )
                     }
 
+                    item(
+                        key = "TopPlaylist",
+                        contentType = { CONTENT_TYPE_PLAYLIST },
+                    ) {
+                        PlaylistListItem(
+                            playlist = topPlaylist,
+                            autoPlaylist = true,
+                            modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    navController.navigate("top_playlist/$topSize")
+                                }
+                                .animateItem(),
+                        )
+                    }
+
                     playlists.let { playlists ->
                         if (playlists.isEmpty()) {
                             item {
@@ -394,6 +421,26 @@ fun LibraryPlaylistsScreen(
                                 .combinedClickable(
                                     onClick = {
                                         navController.navigate("auto_playlist/downloaded")
+                                    },
+                                )
+                                .animateItem(),
+                        )
+                    }
+
+                    item(
+                        key = "TopPlaylist",
+                        contentType = { CONTENT_TYPE_PLAYLIST },
+                    ) {
+                        PlaylistGridItem(
+                            playlist = topPlaylist,
+                            fillMaxWidth = true,
+                            autoPlaylist = true,
+                            modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .combinedClickable(
+                                    onClick = {
+                                        navController.navigate("top_playlist/$topSize")
                                     },
                                 )
                                 .animateItem(),
