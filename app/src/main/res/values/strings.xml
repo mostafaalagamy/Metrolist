@@ -84,8 +84,6 @@
     <string name="offline">Downloaded</string>
     <string name="my_top">My Top</string>
     <string name="cached_songs">Cached</string>
-    <string name="offline_songs">Offline Songs</string>
-    <string name="no_offline_songs">No offline songs found</string>
     <string name="library_song_empty">Library songs will show up here</string>
     <string name="library_artist_empty">Library artists will show up here</string>
     <string name="library_album_empty">Library albums will show up here</string>
