@@ -86,6 +86,7 @@
     <string name="liked">الأغاني المفضلة</string>
     <string name="offline">التحميلات</string>
     <string name="my_top">الأعلي إستماع : </string>
+    <string name="cached_playlist">الأغاني المخزنة مؤقتًا</string>
     <string name="library_song_empty">ستظهر أغاني المكتبة هنا</string>
     <string name="library_artist_empty">سيظهر هنا الفنانين</string>
     <string name="library_album_empty">ستظهر ألبومات المكتبة هنا</string>
