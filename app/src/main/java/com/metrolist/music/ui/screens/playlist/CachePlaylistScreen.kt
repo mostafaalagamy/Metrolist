@@ -51,7 +51,7 @@ import com.metrolist.music.viewmodels.HistoryViewModel
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun CacheSongsScreen(
+fun CachePlaylistScreen(
     navController: NavController,
     scrollBehavior: TopAppBarScrollBehavior,
     viewModel: HistoryViewModel = hiltViewModel(),
@@ -97,9 +97,11 @@ fun CacheSongsScreen(
         }
     }
 
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+    ) {
         LazyColumn(
-            state = lazyListState,
+            state = state,
             contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues(),
         ) {
             if (filteredSongs.isEmpty()) {
