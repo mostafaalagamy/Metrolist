@@ -195,7 +195,8 @@ fun CacheSongsScreen(
                             items = filteredSongs.map { it.item.toMediaItem() }.shuffled()
                         )
                     )
-                }
+                },
+                modifier = Modifier.align(Alignment.BottomEnd)
             )
         }
     }
