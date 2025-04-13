@@ -52,6 +52,7 @@ import com.metrolist.music.ui.screens.playlist.AutoPlaylistScreen
 import com.metrolist.music.ui.screens.playlist.LocalPlaylistScreen
 import com.metrolist.music.ui.screens.playlist.OnlinePlaylistScreen
 import com.metrolist.music.ui.screens.playlist.TopPlaylistScreen
+import com.metrolist.music.ui.screens.playlist.CachePlaylistScreen
 import com.metrolist.music.ui.screens.search.OnlineSearchResult
 import com.metrolist.music.ui.screens.settings.AboutScreen
 import com.metrolist.music.ui.screens.settings.AccountSettings
@@ -238,6 +239,17 @@ fun NavGraphBuilder.navigationBuilder(
         ),
     ) {
         AutoPlaylistScreen(navController, scrollBehavior)
+    }
+    composable(
+        route = "cache_playlist/{playlist}",
+        arguments =
+            listOf(
+                navArgument("playlist") {
+                    type = NavType.StringType
+            },
+        ),
+    ) {
+        CachePlaylistScreen(navController, scrollBehavior)
     }
     composable(
         route = "top_playlist/{top}",
