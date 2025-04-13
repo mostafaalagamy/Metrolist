@@ -136,11 +136,11 @@ fun LibraryPlaylistsScreen(
             thumbnails = emptyList(),
         )
 
-    val cacheSongsPlaylist =
+    val cachePlaylist =
         Playlist(
             playlist = PlaylistEntity(
                 id = UUID.randomUUID().toString(),
-                name = stringResource(R.string.cached_songs)
+                name = stringResource(R.string.cached_playlist)
             ),
             songCount = 0,
             thumbnails = emptyList(),
@@ -315,11 +315,11 @@ fun LibraryPlaylistsScreen(
                     }
 
                     item(
-                        key = "CacheSongsPlaylist",
+                        key = "cachePlaylist",
                         contentType = { CONTENT_TYPE_PLAYLIST },
                     ) {
                         PlaylistGridItem(
-                            playlist = cacheSongsPlaylist,
+                            playlist = cachePlaylist,
                             fillMaxWidth = true,
                             autoPlaylist = true,
                             modifier =
@@ -327,7 +327,7 @@ fun LibraryPlaylistsScreen(
                                 .fillMaxWidth()
                                 .combinedClickable(
                                     onClick = {
-                                        navController.navigate("cache_songs/cached")
+                                        navController.navigate("cache_playlist/cached")
                                     },
                                 )
                                 .animateItem(),
@@ -451,11 +451,11 @@ fun LibraryPlaylistsScreen(
                     }
 
                     item(
-                        key = "CacheSongsPlaylist",
+                        key = "cachePlaylist",
                         contentType = { CONTENT_TYPE_PLAYLIST },
                     ) {
                         PlaylistGridItem(
-                            playlist = cacheSongsPlaylist,
+                            playlist = cachePlaylist,
                             fillMaxWidth = true,
                             autoPlaylist = true,
                             modifier =
@@ -463,7 +463,7 @@ fun LibraryPlaylistsScreen(
                                 .fillMaxWidth()
                                 .combinedClickable(
                                     onClick = {
-                                        navController.navigate("cache_songs/cached")
+                                        navController.navigate("cache_playlist/cached")
                                     },
                                 )
                                 .animateItem(),
