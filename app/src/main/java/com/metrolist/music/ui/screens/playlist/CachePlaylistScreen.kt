@@ -97,6 +97,8 @@ fun CachePlaylistScreen(
         }
     }
 
+    val state = rememberLazyListState()
+
     Box(
         modifier = Modifier.fillMaxSize(),
     ) {
