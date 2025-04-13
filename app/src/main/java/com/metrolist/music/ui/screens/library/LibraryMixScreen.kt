@@ -568,11 +568,11 @@ fun LibraryMixScreen(
                     }
 
                     item(
-                        key = "CacheSongsPlaylist",
+                        key = "cachePlaylist",
                         contentType = { CONTENT_TYPE_PLAYLIST },
                     ) {
                         PlaylistGridItem(
-                            playlist = cacheSongsPlaylist,
+                            playlist = cachePlaylist,
                             fillMaxWidth = true,
                             autoPlaylist = true,
                             modifier =
@@ -580,7 +580,7 @@ fun LibraryMixScreen(
                                 .fillMaxWidth()
                                 .combinedClickable(
                                     onClick = {
-                                        navController.navigate("cache_songs/cached")
+                                        navController.navigate("cache_playlist/cached")
                                     },
                                 )
                                 .animateItem(),
