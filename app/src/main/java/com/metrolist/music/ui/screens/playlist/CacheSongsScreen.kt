@@ -254,6 +254,7 @@ fun CacheSongsScreen(
                                     }
                                 }
                             )
+                            .animateItem()
                     )
                 }
             }
