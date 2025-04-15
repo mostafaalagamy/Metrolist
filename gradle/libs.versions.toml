@@ -1,38 +1,38 @@
 [versions]
-androidGradlePlugin = "8.8.2"
+androidGradlePlugin = "8.11.0-alpha06"
 annotation = "1.9.1"
 json = "20250107"
-kotlin = "2.1.0"
-compose = "1.7.8"
+kotlin = "2.1.20"
+compose = "1.8.0-rc03"
 lifecycle = "2.8.7"
-material3 = "1.3.1"
-media3 = "1.6.0"
-room = "2.6.1"
+material3 = "1.4.0-alpha12"
+media3 = "1.6.1"
+room = "2.7.0"
 hilt = "2.56.1"
 ktor = "3.1.2"
-ksp = "2.1.0-1.0.29"
+ksp = "2.1.20-2.0.0"
 webkit = "1.12.1"
+newpipe = "dev-SNAPSHOT"
 
 [libraries]
 annotation = { module = "androidx.annotation:annotation", version.ref = "annotation" }
-guava = { group = "com.google.guava", name = "guava", version = "33.4.6-android" }
-coroutines-guava = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-guava", version = "1.10.1" }
+guava = { group = "com.google.guava", name = "guava", version = "33.4.8-android" }
+coroutines-guava = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-guava", version = "1.10.2" }
 concurrent-futures = { group = "androidx.concurrent", name = "concurrent-futures-ktx", version = "1.2.0" }
 
 gradle = { group = "com.android.tools.build", name = "gradle", version.ref = "androidGradlePlugin" }
 activity = { group = "androidx.activity", name = "activity-compose", version = "1.10.1" }
-navigation = { group = "androidx.navigation", name = "navigation-compose", version = "2.8.9" }
+navigation = { group = "androidx.navigation", name = "navigation-compose", version = "2.9.0-beta01" }
 hilt-navigation = { group = "androidx.hilt", name = "hilt-navigation-compose", version = "1.2.0" }
-datastore = { group = "androidx.datastore", name = "datastore-preferences", version = "1.1.3" }
+datastore = { group = "androidx.datastore", name = "datastore-preferences", version = "1.1.4" }
 
 compose-runtime = { group = "androidx.compose.runtime", name = "runtime", version.ref = "compose" }
-compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version = "1.7.6" }
-compose-ui = { group = "androidx.compose.ui", name = "ui", version = "compose" }
+compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "compose" }
+compose-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "compose" }
 compose-ui-util = { group = "androidx.compose.ui", name = "ui-util", version.ref = "compose" }
 compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling", version.ref = "compose" }
 compose-animation = { group = "androidx.compose.animation", name = "animation-graphics", version.ref = "compose" }
 compose-reorderable = { group = "org.burnoutcrew.composereorderable", name = "reorderable", version = "0.9.6" }
-
 
 squigglyslider = { group = "me.saket.squigglyslider", name = "squigglyslider", version = "1.0.0" }
 
@@ -43,7 +43,7 @@ material3 = { group = "androidx.compose.material3", name = "material3", version.
 
 coil = { group = "io.coil-kt", name = "coil-compose", version = "2.7.0" }
 
-shimmer = { group = "com.valentinilk.shimmer", name = "compose-shimmer", version = "1.3.1" }
+shimmer = { group = "com.valentinilk.shimmer", name = "compose-shimmer", version = "1.3.2" }
 
 palette = { group = "androidx.palette", name = "palette", version = "1.0.0" }
 
@@ -57,7 +57,7 @@ room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 
 apache-lang3 = { group = "org.apache.commons", name = "commons-lang3", version = "3.17.0" }
 
-hilt = { group = "com.google.dagger", name = "hilt-android", version = "2.53.1" }
+hilt = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
 
 ktor-client-core = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor" }
@@ -77,7 +77,7 @@ junit = { group = "junit", name = "junit", version = "4.13.2" }
 
 timber = { group = "com.jakewharton.timber", name = "timber", version = "5.0.1" }
 
-newpipe-extractor = { group = "com.github.TeamNewPipe", name = "NewPipeExtractor", version = "3a33cefbc014a820056d83076914544f29b82644" }
+newpipe-extractor = { group = "com.github.libre-tube", name = "NewPipeExtractor", version.ref = "newpipe" }
 
 [plugins]
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
