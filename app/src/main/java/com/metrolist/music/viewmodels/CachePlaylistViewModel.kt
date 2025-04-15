@@ -51,7 +51,7 @@ class CachePlaylistViewModel @Inject constructor(
                     .filter { it.song.dateDownload != null }
                     .sortedByDescending { it.song.dateDownload }
 
-                delay(500)
+                delay(1000)
             }
         }
     }
