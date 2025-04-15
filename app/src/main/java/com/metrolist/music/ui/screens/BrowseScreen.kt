@@ -6,8 +6,6 @@ package com.metrolist.music.ui.screens
  import androidx.compose.foundation.lazy.grid.GridCells
  import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
  import androidx.compose.foundation.lazy.grid.items
- import androidx.compose.material.icons.Icons
- import androidx.compose.material.icons.automirrored.rounded.ArrowBack
  import androidx.compose.material3.ExperimentalMaterial3Api
  import androidx.compose.material3.Icon
  import androidx.compose.material3.Text
@@ -18,6 +16,7 @@ package com.metrolist.music.ui.screens
  import androidx.compose.runtime.getValue
  import androidx.compose.runtime.rememberCoroutineScope
  import androidx.compose.ui.Modifier
+ import androidx.compose.ui.res.painterResource
  import androidx.compose.ui.res.stringResource
  import androidx.compose.ui.unit.dp
  import androidx.hilt.navigation.compose.hiltViewModel
@@ -139,7 +138,7 @@ package com.metrolist.music.ui.screens
                  onLongClick = navController::backToMain
              ) {
                  Icon(
-                     Icons.AutoMirrored.Rounded.ArrowBack,
+                     painterResource(R.drawable.arrow_back),
                      contentDescription = null
                  )
              }
