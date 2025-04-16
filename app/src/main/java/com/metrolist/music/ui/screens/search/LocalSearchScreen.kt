@@ -160,15 +160,16 @@ fun LocalSearchScreen(
                                     IconButton(
                                         onClick = {
                                             menuState.show {
-                                                SongMenu(
-                                                    originalSong = item,
-                                                    navController = navController,
-                                                ) {
-                                                    onDismiss()
-                                                    menuState.dismiss()
-                                                },
-                                                isFromCache = false
-                                            }
+                                               SongMenu(
+                                                   originalSong = item,
+                                                   navController = navController,
+                                                   onDismiss = {
+                                                       onDismiss()
+                                                       menuState.dismiss()
+                                                   },
+                                                   isFromCache = false
+                                               )
+                                           }
                                         },
                                     ) {
                                         Icon(
@@ -200,15 +201,16 @@ fun LocalSearchScreen(
                                         },
                                         onLongClick = {
                                             menuState.show {
-                                                SongMenu(
-                                                    originalSong = item,
-                                                    navController = navController,
-                                                ) {
-                                                    onDismiss()
-                                                    menuState.dismiss()
-                                                },
-                                                isFromCache = false
-                                            }
+                                               SongMenu(
+                                                   originalSong = item,
+                                                   navController = navController,
+                                                   onDismiss = {
+                                                       onDismiss()
+                                                       menuState.dismiss()
+                                                   },
+                                                   isFromCache = false
+                                               )
+                                           }
                                         },
                                     )
                                     .animateItem(),
