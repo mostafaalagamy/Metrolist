@@ -371,7 +371,7 @@ fun HomeScreen(
                                 "stats" -> navController.navigate("stats")
                                 "liked" -> navController.navigate("auto_playlist/liked")
                                 "downloads" -> navController.navigate("auto_playlist/downloaded")
-                                "cache" -> navController.navigate("cache_playlist")
+                                "cache" -> navController.navigate("cache_playlist/cached")
                                 "account" -> if (isLoggedIn) navController.navigate("account")
                             }
                         },
