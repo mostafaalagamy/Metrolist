@@ -485,11 +485,11 @@ interface DatabaseDao {
     fun song(songId: String?): Flow<Song?>
 
     @Transaction
-    @Query("SELECT * FROM Song WHERE id = :songId LIMIT 1")
+    @Query("SELECT * FROM song WHERE id = :songId LIMIT 1")
     suspend fun getSongById(songId: String): Song?
 
     @Transaction
-    @Query("SELECT * FROM Song WHERE id = :songId LIMIT 1")
+    @Query("SELECT * FROM song WHERE id = :songId LIMIT 1")
     fun getSongByIdBlocking(songId: String): Song?
 
     @Transaction
