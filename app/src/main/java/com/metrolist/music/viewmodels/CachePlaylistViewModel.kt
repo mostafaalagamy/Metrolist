@@ -56,40 +56,42 @@ class CachePlaylistViewModel @Inject constructor(
 
                 val completeSongs = mutableListOf<Song>()
 
-                database.query {
-                    songs.forEach { song ->
-                        val songId = song.song.id
+                for (song in songs) {
+                    val songId = song.song.id
+                    var updatedFormat: FormatEntity? = null
 
-                        if (song.format == null) {
-                            try {
-                                val result = YTPlayerUtils.playerResponseForPlayback(
-                                    mediaId = songId,
-                                    videoId = songId,
-                                    playedFormat = null,
-                                    audioQuality = audioQuality,
-                                    connectivityManager = connectivityManager
-                                ).getOrThrow()
+                    if (song.format == null) {
+                        try {
+                            val result = YTPlayerUtils.playerResponseForPlayback(
+                                mediaId = songId,
+                                videoId = songId,
+                                playedFormat = null,
+                                audioQuality = audioQuality,
+                                connectivityManager = connectivityManager
+                            ).getOrThrow()
 
-                                val format = result.format
+                            val format = result.format
+                            updatedFormat = FormatEntity(
+                                id = songId,
+                                itag = format.itag,
+                                mimeType = format.mimeType.split(";")[0],
+                                codecs = format.mimeType.split("codecs=")[1].removeSurrounding("\""),
+                                bitrate = format.bitrate,
+                                sampleRate = format.audioSampleRate,
+                                contentLength = format.contentLength!!,
+                                loudnessDb = result.audioConfig?.loudnessDb,
+                                playbackUrl = result.playbackTracking?.videostatsPlaybackUrl?.baseUrl
+                            )
+                        } catch (_: Exception) {
+                        }
+                    }
 
-                                upsert(
-                                    FormatEntity(
-                                        id = songId,
-                                        itag = format.itag,
-                                        mimeType = format.mimeType.split(";")[0],
-                                        codecs = format.mimeType.split("codecs=")[1].removeSurrounding("\""),
-                                        bitrate = format.bitrate,
-                                        sampleRate = format.audioSampleRate,
-                                        contentLength = format.contentLength!!,
-                                        loudnessDb = result.audioConfig?.loudnessDb,
-                                        playbackUrl = result.playbackTracking?.videostatsPlaybackUrl?.baseUrl
-                                    )
-                                )
-                            } catch (_: Exception) {
-                            }
+                    database.query {
+                        if (updatedFormat != null) {
+                            upsert(updatedFormat)
                         }
 
-                        val updated = database.getSongById(songId)
+                        val updated = getSongById(songId)
                         val contentLength = updated?.format?.contentLength
 
                         if (contentLength != null && playerCache.isCached(songId, 0, contentLength)) {
