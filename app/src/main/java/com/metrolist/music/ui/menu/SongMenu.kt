@@ -101,6 +101,8 @@ fun SongMenu(
     val scope = rememberCoroutineScope()
     var refetchIconDegree by remember { mutableFloatStateOf(0f) }
 
+    val cacheViewModel = viewModel<CachePlaylistViewModel>()
+
     val rotationAnimation by animateFloatAsState(
         targetValue = refetchIconDegree,
         animationSpec = tween(durationMillis = 800),
@@ -431,7 +433,6 @@ fun SongMenu(
                 title = R.string.remove_from_cache,
             ) {
                 onDismiss()
-                val cacheViewModel = viewModel<CachePlaylistViewModel>()
                 cacheViewModel.removeSongFromCache(song.id)
             }
         }
