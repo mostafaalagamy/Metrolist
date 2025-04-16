@@ -63,7 +63,6 @@ class CachePlaylistViewModel @Inject constructor(
                     if (song.format == null) {
                         try {
                             val result = YTPlayerUtils.playerResponseForPlayback(
-                                mediaId = songId,
                                 videoId = songId,
                                 playedFormat = null,
                                 audioQuality = audioQuality,
@@ -91,7 +90,7 @@ class CachePlaylistViewModel @Inject constructor(
                             upsert(updatedFormat)
                         }
 
-                        val updated = getSongById(songId)
+                        val updated = getSongByIdBlocking(songId)
                         val contentLength = updated?.format?.contentLength
 
                         if (contentLength != null && playerCache.isCached(songId, 0, contentLength)) {
