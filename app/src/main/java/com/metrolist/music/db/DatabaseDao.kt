@@ -493,7 +493,7 @@ interface DatabaseDao {
     fun getSongByIdBlocking(songId: String): Song?
 
     @Transaction
-    @Query("SELECT * FROM Song WHERE id IN (:songIds)")
+    @Query("SELECT * FROM song WHERE id IN (:songIds)")
     suspend fun getSongsByIds(songIds: List<String>): List<Song>
 
     
