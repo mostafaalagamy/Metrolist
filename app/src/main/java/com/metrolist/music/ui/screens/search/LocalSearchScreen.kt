@@ -59,6 +59,7 @@ fun LocalSearchScreen(
     query: String,
     navController: NavController,
     onDismiss: () -> Unit,
+    isFromCache: Boolean = false,
     viewModel: LocalSearchViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
