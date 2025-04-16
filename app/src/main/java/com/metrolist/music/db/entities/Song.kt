@@ -10,6 +10,7 @@ data class Song
 @JvmOverloads
 constructor(
     @Embedded val song: SongEntity,
+
     @Relation(
         entity = ArtistEntity::class,
         entityColumn = "id",
@@ -22,6 +23,7 @@ constructor(
         ),
     )
     val artists: List<ArtistEntity>,
+
     @Relation(
         entity = AlbumEntity::class,
         entityColumn = "id",
@@ -34,6 +36,12 @@ constructor(
         ),
     )
     val album: AlbumEntity? = null,
+
+    @Relation(
+        parentColumn = "id",
+        entityColumn = "id"
+    )
+    val format: FormatEntity? = null,
 ) : LocalItem() {
     override val id: String
         get() = song.id
