@@ -13,7 +13,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import java.time.LocalDateTime
 import javax.inject.Inject
 import androidx.media3.datasource.cache.SimpleCache
@@ -48,9 +47,15 @@ class CachePlaylistViewModel @Inject constructor(
                         val songId = song.song.id
 
                         if (song.format == null) {
-                            runCatching {
-                                val result = YTPlayerUtils.playerResponseForPlayback(songId)
-                                val format = result.getOrThrow().format
+                            try {
+                                val result = YTPlayerUtils.playerResponseForPlayback(
+                                    mediaId = songId,
+                                    playedFormat = null,
+                                    audioQuality = null,
+                                    connectivityManager = null
+                                ).getOrThrow()
+
+                                val format = result.format
 
                                 upsert(
                                     FormatEntity(
@@ -61,10 +66,11 @@ class CachePlaylistViewModel @Inject constructor(
                                         bitrate = format.bitrate,
                                         sampleRate = format.audioSampleRate,
                                         contentLength = format.contentLength!!,
-                                        loudnessDb = result.getOrThrow().audioConfig?.loudnessDb,
-                                        playbackUrl = result.getOrThrow().playbackTracking?.videostatsPlaybackUrl?.baseUrl
+                                        loudnessDb = result.audioConfig?.loudnessDb,
+                                        playbackUrl = result.playbackTracking?.videostatsPlaybackUrl?.baseUrl
                                     )
                                 )
+                            } catch (_: Exception) {
                             }
                         }
 
@@ -75,7 +81,6 @@ class CachePlaylistViewModel @Inject constructor(
                             if (updated.song.dateDownload == null) {
                                 update(updated.song.copy(dateDownload = LocalDateTime.now()))
                             }
-
                             completeSongs.add(updated)
                         }
                     }
