@@ -165,7 +165,8 @@ fun LocalSearchScreen(
                                                 ) {
                                                     onDismiss()
                                                     menuState.dismiss()
-                                                }
+                                                },
+                                                isFromCache = false
                                             }
                                         },
                                     ) {
@@ -204,7 +205,8 @@ fun LocalSearchScreen(
                                                 ) {
                                                     onDismiss()
                                                     menuState.dismiss()
-                                                }
+                                                },
+                                                isFromCache = false
                                             }
                                         },
                                     )
