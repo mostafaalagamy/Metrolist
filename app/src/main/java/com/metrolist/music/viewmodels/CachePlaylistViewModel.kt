@@ -37,9 +37,14 @@ class CachePlaylistViewModel @Inject constructor(
                     emptyList()
                 }
 
-                if (songs.isNotEmpty()) {
+                val completeSongs = songs.filter {
+                    val contentLength = it.format?.contentLength
+                    contentLength != null && playerCache.isCached(it.song.id, 0, contentLength)
+                }
+
+                if (completeSongs.isNotEmpty()) {
                     database.query {
-                        songs.forEach {
+                        completeSongs.forEach {
                             if (it.song.dateDownload == null) {
                                 update(it.song.copy(dateDownload = LocalDateTime.now()))
                             }
@@ -47,7 +52,7 @@ class CachePlaylistViewModel @Inject constructor(
                     }
                 }
 
-                _cachedSongs.value = songs
+                _cachedSongs.value = completeSongs
                     .filter { it.song.dateDownload != null }
                     .sortedByDescending { it.song.dateDownload }
 
