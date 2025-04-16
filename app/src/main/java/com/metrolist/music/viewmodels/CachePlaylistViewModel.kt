@@ -1,17 +1,27 @@
 package com.metrolist.music.viewmodels
 
+import android.content.Context
+import android.net.ConnectivityManager
+import androidx.core.content.getSystemService
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.metrolist.music.constants.AudioQuality
+import com.metrolist.music.constants.AudioQualityKey
 import com.metrolist.music.db.MusicDatabase
 import com.metrolist.music.db.entities.FormatEntity
 import com.metrolist.music.db.entities.Song
-import com.metrolist.music.di.PlayerCache
 import com.metrolist.music.di.DownloadCache
+import com.metrolist.music.di.PlayerCache
 import com.metrolist.music.utils.YTPlayerUtils
+import com.metrolist.music.utils.enumPreference
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import javax.inject.Inject
@@ -21,8 +31,12 @@ import androidx.media3.datasource.cache.SimpleCache
 class CachePlaylistViewModel @Inject constructor(
     private val database: MusicDatabase,
     @PlayerCache private val playerCache: SimpleCache,
-    @DownloadCache private val downloadCache: SimpleCache
+    @DownloadCache private val downloadCache: SimpleCache,
+    @ApplicationContext context: Context
 ) : ViewModel() {
+
+    private val connectivityManager = context.getSystemService<ConnectivityManager>()!!
+    private val audioQuality by enumPreference(context, AudioQualityKey, AudioQuality.AUTO)
 
     private val _cachedSongs = MutableStateFlow<List<Song>>(emptyList())
     val cachedSongs: StateFlow<List<Song>> = _cachedSongs
@@ -50,9 +64,10 @@ class CachePlaylistViewModel @Inject constructor(
                             try {
                                 val result = YTPlayerUtils.playerResponseForPlayback(
                                     mediaId = songId,
+                                    videoId = songId,
                                     playedFormat = null,
-                                    audioQuality = null,
-                                    connectivityManager = null
+                                    audioQuality = audioQuality,
+                                    connectivityManager = connectivityManager
                                 ).getOrThrow()
 
                                 val format = result.format
@@ -86,9 +101,11 @@ class CachePlaylistViewModel @Inject constructor(
                     }
                 }
 
-                _cachedSongs.value = completeSongs
-                    .filter { it.song.dateDownload != null }
-                    .sortedByDescending { it.song.dateDownload }
+                _cachedSongs.update {
+                    completeSongs
+                        .filter { it.song.dateDownload != null }
+                        .sortedByDescending { it.song.dateDownload }
+                }
 
                 delay(1000)
             }
