@@ -117,6 +117,7 @@
     <string name="add_to_queue">إضافة إلى القائمة</string>
     <string name="add_to_library">إضافة إلى المكتبة</string>
     <string name="remove_from_library">إزالة من المكتبة</string>
+    <string name="remove_from_cache">إزالة من التخزين المؤقت</string>
     <string name="download">تحميل</string>
     <string name="downloading">جارٍ التحميل</string>
     <string name="remove_download">إزالة التحميل</string>

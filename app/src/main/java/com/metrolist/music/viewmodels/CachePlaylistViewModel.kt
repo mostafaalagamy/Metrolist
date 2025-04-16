@@ -55,4 +55,8 @@ class CachePlaylistViewModel @Inject constructor(
             }
         }
     }
+
+    fun removeSongFromCache(songId: String) {
+        playerCache.removeResource(songId)
+    }
 }

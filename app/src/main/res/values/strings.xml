@@ -118,6 +118,7 @@
     <string name="add_to_library">Add to library</string>
     <string name="remove_from_library">Remove from library</string>
     <string name="remove_from_playlist">Remove from playlist</string>
+    <string name="remove_from_cache">Remove from cache</string>
     <string name="download">Download</string>
     <string name="downloading">Downloading</string>
     <string name="remove_download">Remove download</string>
