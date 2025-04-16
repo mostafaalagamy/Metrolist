@@ -46,6 +46,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.media3.exoplayer.offline.DownloadRequest
 import androidx.media3.exoplayer.offline.DownloadService
 import androidx.navigation.NavController
@@ -74,6 +75,7 @@ import com.metrolist.music.ui.component.LocalBottomSheetPageState
 import com.metrolist.music.ui.component.SongListItem
 import com.metrolist.music.ui.component.TextFieldDialog
 import com.metrolist.music.ui.utils.ShowMediaInfo
+import com.metrolist.music.viewmodels.CachePlaylistViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -85,6 +87,7 @@ fun SongMenu(
     playlistSong: PlaylistSong? = null,
     playlistBrowseId: String? = null,
     onDismiss: () -> Unit,
+    isFromCache: Boolean = false,
 ) {
     val context = LocalContext.current
     val database = LocalDatabase.current
@@ -97,6 +100,8 @@ fun SongMenu(
     val syncUtils = LocalSyncUtils.current
     val scope = rememberCoroutineScope()
     var refetchIconDegree by remember { mutableFloatStateOf(0f) }
+
+    val cacheViewModel = viewModel<CachePlaylistViewModel>()
 
     val rotationAnimation by animateFloatAsState(
         targetValue = refetchIconDegree,
@@ -420,6 +425,15 @@ fun SongMenu(
                     delete(playlistSong.map.copy(position = Int.MAX_VALUE))
                 }
                 onDismiss()
+            }
+        }
+        if (isFromCache) {
+            GridMenuItem(
+                icon = R.drawable.delete,
+                title = R.string.remove_from_cache,
+            ) {
+                onDismiss()
+                cacheViewModel.removeSongFromCache(song.id)
             }
         }
         if (song.song.inLibrary == null) {

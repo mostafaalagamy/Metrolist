@@ -258,6 +258,7 @@ fun CachePlaylistScreen(
                                         originalSong = songWrapper.item,
                                         navController = navController,
                                         onDismiss = menuState::dismiss,
+                                        isFromCache = true,
                                     )
                                 }
                             }) {
