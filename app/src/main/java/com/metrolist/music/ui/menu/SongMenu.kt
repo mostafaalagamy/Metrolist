@@ -393,6 +393,20 @@ fun SongMenu(
         }
         item {
             ListItem(
+                headlineContent = { Text(text = stringResource(R.string.edit)) },
+                leadingContent = {
+                    Icon(
+                        painter = painterResource(R.drawable.edit),
+                        contentDescription = null,
+                    )
+                },
+                modifier = Modifier.clickable {
+                    showEditDialog = true
+                }
+            )
+        }
+        item {
+            ListItem(
                 headlineContent = { Text(text = stringResource(R.string.add_to_queue)) },
                 leadingContent = {
                     Icon(
@@ -403,20 +417,6 @@ fun SongMenu(
                 modifier = Modifier.clickable {
                     onDismiss()
                     playerConnection.addToQueue(song.toMediaItem())
-                }
-            )
-        }
-        item {
-            ListItem(
-                headlineContent = { Text(text = stringResource(R.string.edit)) },
-                leadingContent = {
-                    Icon(
-                        painter = painterResource(R.drawable.edit),
-                        contentDescription = null,
-                    )
-                },
-                modifier = Modifier.clickable {
-                    showEditDialog = true
                 }
             )
         }

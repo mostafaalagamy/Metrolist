@@ -368,6 +368,31 @@ fun YouTubeSongMenu(
             )
         }
         item {
+            ListItem(
+                headlineContent = { 
+                    Text(text = if (librarySong?.song?.inLibrary != null) stringResource(R.string.remove_from_library) else stringResource(R.string.add_to_library))
+                },
+                leadingContent = {
+                    Icon(
+                        painter = painterResource(if (librarySong?.song?.inLibrary != null) R.drawable.library_add_check else R.drawable.library_add),
+                        contentDescription = null,
+                    )
+                },
+                modifier = Modifier.clickable {
+                    if (librarySong?.song?.inLibrary != null) {
+                        database.query {
+                            inLibrary(song.id, null)
+                        }
+                    } else {
+                        database.transaction {
+                            insert(song.toMediaMetadata())
+                            inLibrary(song.id, LocalDateTime.now())
+                        }
+                    }
+                }
+            )
+        }
+        item {
             when (download?.state) {
                 Download.STATE_COMPLETED -> {
                     ListItem(
@@ -478,31 +503,6 @@ fun YouTubeSongMenu(
                     }
                 )
             }
-        }
-        item {
-            ListItem(
-                headlineContent = { 
-                    Text(text = if (librarySong?.song?.inLibrary != null) stringResource(R.string.remove_from_library) else stringResource(R.string.add_to_library))
-                },
-                leadingContent = {
-                    Icon(
-                        painter = painterResource(if (librarySong?.song?.inLibrary != null) R.drawable.library_add_check else R.drawable.library_add),
-                        contentDescription = null,
-                    )
-                },
-                modifier = Modifier.clickable {
-                    if (librarySong?.song?.inLibrary != null) {
-                        database.query {
-                            inLibrary(song.id, null)
-                        }
-                    } else {
-                        database.transaction {
-                            insert(song.toMediaMetadata())
-                            inLibrary(song.id, LocalDateTime.now())
-                        }
-                    }
-                }
-            )
         }
         item {
              ListItem(
