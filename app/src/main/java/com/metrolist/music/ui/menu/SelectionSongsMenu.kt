@@ -1,14 +1,20 @@
 package com.metrolist.music.ui.menu
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.ListItem
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -20,6 +26,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
@@ -42,12 +49,7 @@ import com.metrolist.music.models.toMediaMetadata
 import com.metrolist.music.playback.ExoDownloadService
 import com.metrolist.music.playback.queues.ListQueue
 import com.metrolist.music.ui.component.DefaultDialog
-import com.metrolist.music.ui.component.DownloadGridMenu
-import com.metrolist.music.ui.component.GridMenu
-import com.metrolist.music.ui.component.GridMenuItem
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 
@@ -172,142 +174,240 @@ fun SelectionSongMenu(
         )
     }
 
-    GridMenu(
-        contentPadding =
-        PaddingValues(
+    LazyColumn(
+        contentPadding = PaddingValues(
             start = 8.dp,
             top = 8.dp,
             end = 8.dp,
             bottom = 8.dp + WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
         ),
     ) {
-        GridMenuItem(
-            icon = R.drawable.play,
-            title = R.string.play,
-        ) {
-            onDismiss()
-            playerConnection.playQueue(
-                ListQueue(
-                    title = "Selection",
-                    items = songSelection.map { it.toMediaItem() },
-                ),
+        item {
+            ListItem(
+                headlineContent = { Text(text = stringResource(R.string.play)) },
+                leadingContent = {
+                    Icon(
+                        painter = painterResource(R.drawable.play),
+                        contentDescription = null,
+                    )
+                },
+                modifier = Modifier.clickable {
+                    onDismiss()
+                    playerConnection.playQueue(
+                        ListQueue(
+                            title = "Selection",
+                            items = songSelection.map { it.toMediaItem() },
+                        ),
+                    )
+                    clearAction()
+                }
             )
-            clearAction()
         }
-
-        GridMenuItem(
-            icon = R.drawable.shuffle,
-            title = R.string.shuffle,
-        ) {
-            onDismiss()
-            playerConnection.playQueue(
-                ListQueue(
-                    title = "Selection",
-                    items = songSelection.shuffled().map { it.toMediaItem() },
-                ),
+        item {
+            ListItem(
+                headlineContent = { Text(text = stringResource(R.string.shuffle)) },
+                leadingContent = {
+                    Icon(
+                        painter = painterResource(R.drawable.shuffle),
+                        contentDescription = null,
+                    )
+                },
+                modifier = Modifier.clickable {
+                    onDismiss()
+                    playerConnection.playQueue(
+                        ListQueue(
+                            title = "Selection",
+                            items = songSelection.shuffled().map { it.toMediaItem() },
+                        ),
+                    )
+                    clearAction()
+                }
             )
-            clearAction()
         }
-
-        GridMenuItem(
-            icon = R.drawable.queue_music,
-            title = R.string.add_to_queue,
-        ) {
-            onDismiss()
-            playerConnection.addToQueue(songSelection.map { it.toMediaItem() })
-            clearAction()
+        item {
+            ListItem(
+                headlineContent = { Text(text = stringResource(R.string.add_to_queue)) },
+                leadingContent = {
+                    Icon(
+                        painter = painterResource(R.drawable.queue_music),
+                        contentDescription = null,
+                    )
+                },
+                modifier = Modifier.clickable {
+                    onDismiss()
+                    playerConnection.addToQueue(songSelection.map { it.toMediaItem() })
+                    clearAction()
+                }
+            )
         }
-
-        GridMenuItem(
-            icon = R.drawable.playlist_add,
-            title = R.string.add_to_playlist,
-        ) {
-            showChoosePlaylistDialog = true
+        item {
+            ListItem(
+                headlineContent = { Text(text = stringResource(R.string.add_to_playlist)) },
+                leadingContent = {
+                    Icon(
+                        painter = painterResource(R.drawable.playlist_add),
+                        contentDescription = null,
+                    )
+                },
+                modifier = Modifier.clickable {
+                    showChoosePlaylistDialog = true
+                }
+            )
         }
-
-        if (allInLibrary) {
-            GridMenuItem(
-                icon = R.drawable.library_add_check,
-                title = R.string.remove_from_library,
-            ) {
-                database.query {
-                    songSelection.forEach { song ->
-                        inLibrary(song.id, null)
+        item {
+            ListItem(
+                headlineContent = {
+                    Text(
+                        text = stringResource(
+                            if (allInLibrary) R.string.remove_from_library else R.string.add_to_library
+                        )
+                    )
+                },
+                leadingContent = {
+                    Icon(
+                        painter = painterResource(
+                            if (allInLibrary) R.drawable.library_add_check else R.drawable.library_add
+                        ),
+                        contentDescription = null,
+                    )
+                },
+                modifier = Modifier.clickable {
+                    if (allInLibrary) {
+                        database.query {
+                            songSelection.forEach { song ->
+                                inLibrary(song.id, null)
+                            }
+                        }
+                    } else {
+                        database.transaction {
+                            songSelection.forEach { song ->
+                                insert(song.toMediaMetadata())
+                                inLibrary(song.id, LocalDateTime.now())
+                            }
+                        }
                     }
                 }
-            }
-        } else {
-            GridMenuItem(
-                icon = R.drawable.library_add,
-                title = R.string.add_to_library,
-            ) {
-                database.transaction {
-                    songSelection.forEach { song ->
-                        insert(song.toMediaMetadata())
-                        inLibrary(song.id, LocalDateTime.now())
-                    }
-                }
-            }
+            )
         }
-
-        DownloadGridMenu(
-            state = downloadState,
-            onDownload = {
-                songSelection.forEach { song ->
-                    val downloadRequest =
-                        DownloadRequest
-                            .Builder(song.id, song.id.toUri())
-                            .setCustomCacheKey(song.id)
-                            .setData(song.song.title.toByteArray())
-                            .build()
-                    DownloadService.sendAddDownload(
-                        context,
-                        ExoDownloadService::class.java,
-                        downloadRequest,
-                        false,
+        item {
+            when (downloadState) {
+                Download.STATE_COMPLETED -> {
+                    ListItem(
+                        headlineContent = {
+                            Text(
+                                text = stringResource(R.string.remove_download),
+                                color = MaterialTheme.colorScheme.error
+                            )
+                        },
+                        leadingContent = {
+                            Icon(
+                                painter = painterResource(R.drawable.offline),
+                                contentDescription = null,
+                            )
+                        },
+                        modifier = Modifier.clickable {
+                            showRemoveDownloadDialog = true
+                        }
                     )
                 }
-            },
-            onRemoveDownload = {
-                showRemoveDownloadDialog = true
-            },
-        )
-
-        GridMenuItem(
-            icon = if (allLiked) R.drawable.favorite else R.drawable.favorite_border,
-            title = if (allLiked) R.string.dislike_all else R.string.like_all,
-        ) {
-            val allLiked =
-                songSelection.all {
-                    it.song.liked
+                Download.STATE_QUEUED, Download.STATE_DOWNLOADING -> {
+                    ListItem(
+                        headlineContent = { Text(text = stringResource(R.string.downloading)) },
+                        leadingContent = {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(24.dp),
+                                strokeWidth = 2.dp
+                            )
+                        },
+                        modifier = Modifier.clickable {
+                            showRemoveDownloadDialog = true
+                        }
+                    )
                 }
-            onDismiss()
-            database.query {
-                songSelection.forEach { song ->
-                    if ((!allLiked && !song.song.liked) || allLiked) {
-                        val s = song.song.toggleLike()
-                         update(s)
-                         syncUtils.likeSong(s)
-                    }
+                else -> {
+                    ListItem(
+                        headlineContent = { Text(text = stringResource(R.string.download)) },
+                        leadingContent = {
+                            Icon(
+                                painter = painterResource(R.drawable.download),
+                                contentDescription = null,
+                            )
+                        },
+                        modifier = Modifier.clickable {
+                            songSelection.forEach { song ->
+                                val downloadRequest =
+                                    DownloadRequest
+                                        .Builder(song.id, song.id.toUri())
+                                        .setCustomCacheKey(song.id)
+                                        .setData(song.song.title.toByteArray())
+                                        .build()
+                                DownloadService.sendAddDownload(
+                                    context,
+                                    ExoDownloadService::class.java,
+                                    downloadRequest,
+                                    false,
+                                )
+                            }
+                        }
+                    )
                 }
             }
         }
-
-        if (songPosition?.size != 0) {
-            GridMenuItem(
-                icon = R.drawable.delete,
-                title = R.string.delete,
-            ) {
-                onDismiss()
-                var i = 0
-                database.query {
-                    songPosition?.forEach { cur ->
-                        move(cur.playlistId, cur.position - i, Int.MAX_VALUE)
-                        delete(cur.copy(position = Int.MAX_VALUE))
-                        i++
+        item {
+            ListItem(
+                headlineContent = {
+                    Text(
+                        text = stringResource(
+                            if (allLiked) R.string.dislike_all else R.string.like_all
+                        )
+                    )
+                },
+                leadingContent = {
+                    Icon(
+                        painter = painterResource(
+                            if (allLiked) R.drawable.favorite else R.drawable.favorite_border
+                        ),
+                        contentDescription = null,
+                    )
+                },
+                modifier = Modifier.clickable {
+                    val allLiked = songSelection.all { it.song.liked }
+                    onDismiss()
+                    database.query {
+                        songSelection.forEach { song ->
+                            if ((!allLiked && !song.song.liked) || allLiked) {
+                                val s = song.song.toggleLike()
+                                update(s)
+                                syncUtils.likeSong(s)
+                            }
+                        }
                     }
                 }
-                clearAction()
+            )
+        }
+        if (songPosition?.size != 0) {
+            item {
+                ListItem(
+                    headlineContent = { Text(text = stringResource(R.string.delete)) },
+                    leadingContent = {
+                        Icon(
+                            painter = painterResource(R.drawable.delete),
+                            contentDescription = null,
+                        )
+                    },
+                    modifier = Modifier.clickable {
+                        onDismiss()
+                        var i = 0
+                        database.query {
+                            songPosition?.forEach { cur ->
+                                move(cur.playlistId, cur.position - i, Int.MAX_VALUE)
+                                delete(cur.copy(position = Int.MAX_VALUE))
+                                i++
+                            }
+                        }
+                        clearAction()
+                    }
+                )
             }
         }
     }
@@ -421,9 +521,8 @@ fun SelectionMediaMetadataMenu(
         )
     }
 
-    GridMenu(
-        contentPadding =
-        PaddingValues(
+    LazyColumn(
+        contentPadding = PaddingValues(
             start = 8.dp,
             top = 8.dp,
             end = 8.dp,
@@ -431,103 +530,193 @@ fun SelectionMediaMetadataMenu(
         ),
     ) {
         if (currentItems.isNotEmpty()) {
-            GridMenuItem(
-                icon = R.drawable.delete,
-                title = R.string.delete,
-            ) {
-                onDismiss()
-                var i = 0
-                currentItems.forEach { cur ->
-                    if (playerConnection.player.availableCommands.contains(Player.COMMAND_CHANGE_MEDIA_ITEMS)) {
-                        playerConnection.player.removeMediaItem(cur.firstPeriodIndex - i++)
+            item {
+                ListItem(
+                    headlineContent = { Text(text = stringResource(R.string.delete)) },
+                    leadingContent = {
+                        Icon(
+                            painter = painterResource(R.drawable.delete),
+                            contentDescription = null,
+                        )
+                    },
+                    modifier = Modifier.clickable {
+                        onDismiss()
+                        var i = 0
+                        currentItems.forEach { cur ->
+                            if (playerConnection.player.availableCommands.contains(Player.COMMAND_CHANGE_MEDIA_ITEMS)) {
+                                playerConnection.player.removeMediaItem(cur.firstPeriodIndex - i++)
+                            }
+                        }
+                        clearAction()
                     }
-                }
-                clearAction()
+                )
             }
         }
-
-        GridMenuItem(
-            icon = R.drawable.play,
-            title = R.string.play,
-        ) {
-            onDismiss()
-            playerConnection.playQueue(
-                ListQueue(
-                    title = "Selection",
-                    items = songSelection.map { it.toMediaItem() },
-                ),
+        item {
+            ListItem(
+                headlineContent = { Text(text = stringResource(R.string.play)) },
+                leadingContent = {
+                    Icon(
+                        painter = painterResource(R.drawable.play),
+                        contentDescription = null,
+                    )
+                },
+                modifier = Modifier.clickable {
+                    onDismiss()
+                    playerConnection.playQueue(
+                        ListQueue(
+                            title = "Selection",
+                            items = songSelection.map { it.toMediaItem() },
+                        ),
+                    )
+                    clearAction()
+                }
             )
-            clearAction()
         }
-
-        GridMenuItem(
-            icon = R.drawable.shuffle,
-            title = R.string.shuffle,
-        ) {
-            onDismiss()
-            playerConnection.playQueue(
-                ListQueue(
-                    title = "Selection",
-                    items = songSelection.shuffled().map { it.toMediaItem() },
-                ),
+        item {
+            ListItem(
+                headlineContent = { Text(text = stringResource(R.string.shuffle)) },
+                leadingContent = {
+                    Icon(
+                        painter = painterResource(R.drawable.shuffle),
+                        contentDescription = null,
+                    )
+                },
+                modifier = Modifier.clickable {
+                    onDismiss()
+                    playerConnection.playQueue(
+                        ListQueue(
+                            title = "Selection",
+                            items = songSelection.shuffled().map { it.toMediaItem() },
+                        ),
+                    )
+                    clearAction()
+                }
             )
-            clearAction()
         }
-
-        GridMenuItem(
-            icon = R.drawable.queue_music,
-            title = R.string.add_to_queue,
-        ) {
-            onDismiss()
-            playerConnection.addToQueue(songSelection.map { it.toMediaItem() })
-            clearAction()
+        item {
+            ListItem(
+                headlineContent = { Text(text = stringResource(R.string.add_to_queue)) },
+                leadingContent = {
+                    Icon(
+                        painter = painterResource(R.drawable.queue_music),
+                        contentDescription = null,
+                    )
+                },
+                modifier = Modifier.clickable {
+                    onDismiss()
+                    playerConnection.addToQueue(songSelection.map { it.toMediaItem() })
+                    clearAction()
+                }
+            )
         }
-
-        GridMenuItem(
-            icon = R.drawable.playlist_add,
-            title = R.string.add_to_playlist,
-        ) {
-            showChoosePlaylistDialog = true
+        item {
+            ListItem(
+                headlineContent = { Text(text = stringResource(R.string.add_to_playlist)) },
+                leadingContent = {
+                    Icon(
+                        painter = painterResource(R.drawable.playlist_add),
+                        contentDescription = null,
+                    )
+                },
+                modifier = Modifier.clickable {
+                    showChoosePlaylistDialog = true
+                }
+            )
         }
-
-        GridMenuItem(
-            icon = if (allLiked) R.drawable.favorite else R.drawable.favorite_border,
-            title = R.string.like_all,
-        ) {
-            database.query {
-                if (allLiked) {
-                    songSelection.forEach { song ->
-                        update(song.toSongEntity().toggleLike())
-                    }
-                } else {
-                    songSelection.filter { !it.liked }.forEach { song ->
-                        update(song.toSongEntity().toggleLike())
+        item {
+            ListItem(
+                headlineContent = {
+                    Text(
+                        text = stringResource(R.string.like_all)
+                    )
+                },
+                leadingContent = {
+                    Icon(
+                        painter = painterResource(
+                            if (allLiked) R.drawable.favorite else R.drawable.favorite_border
+                        ),
+                        contentDescription = null,
+                    )
+                },
+                modifier = Modifier.clickable {
+                    database.query {
+                        if (allLiked) {
+                            songSelection.forEach { song ->
+                                update(song.toSongEntity().toggleLike())
+                            }
+                        } else {
+                            songSelection.filter { !it.liked }.forEach { song ->
+                                update(song.toSongEntity().toggleLike())
+                            }
+                        }
                     }
                 }
-            }
+            )
         }
- 
-        DownloadGridMenu(
-            state = downloadState,
-            onDownload = {
-                songSelection.forEach { song ->
-                    val downloadRequest =
-                        DownloadRequest
-                            .Builder(song.id, song.id.toUri())
-                            .setCustomCacheKey(song.id)
-                            .setData(song.title.toByteArray())
-                            .build()
-                    DownloadService.sendAddDownload(
-                        context,
-                        ExoDownloadService::class.java,
-                        downloadRequest,
-                        false,
+        item {
+            when (downloadState) {
+                Download.STATE_COMPLETED -> {
+                    ListItem(
+                        headlineContent = {
+                            Text(
+                                text = stringResource(R.string.remove_download),
+                                color = MaterialTheme.colorScheme.error
+                            )
+                        },
+                        leadingContent = {
+                            Icon(
+                                painter = painterResource(R.drawable.offline),
+                                contentDescription = null,
+                            )
+                        },
+                        modifier = Modifier.clickable {
+                            showRemoveDownloadDialog = true
+                        }
                     )
                 }
-            },
-            onRemoveDownload = {
-                showRemoveDownloadDialog = true
-            },
-        )
+                Download.STATE_QUEUED, Download.STATE_DOWNLOADING -> {
+                    ListItem(
+                        headlineContent = { Text(text = stringResource(R.string.downloading)) },
+                        leadingContent = {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(24.dp),
+                                strokeWidth = 2.dp
+                            )
+                        },
+                        modifier = Modifier.clickable {
+                            showRemoveDownloadDialog = true
+                        }
+                    )
+                }
+                else -> {
+                    ListItem(
+                        headlineContent = { Text(text = stringResource(R.string.download)) },
+                        leadingContent = {
+                            Icon(
+                                painter = painterResource(R.drawable.download),
+                                contentDescription = null,
+                            )
+                        },
+                        modifier = Modifier.clickable {
+                            songSelection.forEach { song ->
+                                val downloadRequest =
+                                    DownloadRequest
+                                        .Builder(song.id, song.id.toUri())
+                                        .setCustomCacheKey(song.id)
+                                        .setData(song.title.toByteArray())
+                                        .build()
+                                DownloadService.sendAddDownload(
+                                    context,
+                                    ExoDownloadService::class.java,
+                                    downloadRequest,
+                                    false,
+                                )
+                            }
+                        }
+                    )
+                }
+            }
+        }
     }
 }

@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -22,6 +23,8 @@ import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ListItem
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -61,11 +64,7 @@ import com.metrolist.music.models.toMediaMetadata
 import com.metrolist.music.playback.ExoDownloadService
 import com.metrolist.music.playback.queues.YouTubeQueue
 import com.metrolist.music.ui.component.DefaultDialog
-import com.metrolist.music.ui.component.DownloadGridMenu
-import com.metrolist.music.ui.component.GridMenu
-import com.metrolist.music.ui.component.GridMenuItem
 import com.metrolist.music.ui.component.ListDialog
-import com.metrolist.music.ui.component.ListItem
 import com.metrolist.music.ui.component.YouTubeListItem
 import com.metrolist.music.utils.joinByBullet
 import com.metrolist.music.utils.makeTimeString
@@ -93,10 +92,7 @@ fun YouTubePlaylistMenu(
 
     var showChoosePlaylistDialog by rememberSaveable { mutableStateOf(false) }
     var showImportPlaylistDialog by rememberSaveable { mutableStateOf(false) }
-
-    var showErrorPlaylistAddDialog by rememberSaveable {
-        mutableStateOf(false)
-    }
+    var showErrorPlaylistAddDialog by rememberSaveable { mutableStateOf(false) }
 
     val notAddedList by remember {
         mutableStateOf(mutableListOf<MediaMetadata>())
@@ -137,9 +133,7 @@ fun YouTubePlaylistMenu(
                                     browseId = playlist.id,
                                     isEditable = false,
                                     remoteSongCount = playlist.songCountText?.let {
-                                        Regex("""\d+""").find(
-                                            it
-                                        )?.value?.toIntOrNull()
+                                        Regex("""\d+""").find(it)?.value?.toIntOrNull()
                                     },
                                     playEndpointParams = playlist.playEndpoint?.params,
                                     shuffleEndpointParams = playlist.shuffleEndpoint?.params,
@@ -217,9 +211,7 @@ fun YouTubePlaylistMenu(
             },
             buttons = {
                 TextButton(
-                    onClick = {
-                        showRemoveDownloadDialog = false
-                    }
+                    onClick = { showRemoveDownloadDialog = false }
                 ) {
                     Text(text = stringResource(android.R.string.cancel))
                 }
@@ -269,8 +261,8 @@ fun YouTubePlaylistMenu(
         ) {
             item {
                 ListItem(
-                    title = stringResource(R.string.already_in_playlist),
-                    thumbnailContent = {
+                    headlineContent = { Text(text = stringResource(R.string.already_in_playlist)) },
+                    leadingContent = {
                         Image(
                             painter = painterResource(R.drawable.close),
                             contentDescription = null,
@@ -278,16 +270,14 @@ fun YouTubePlaylistMenu(
                             modifier = Modifier.size(ListThumbnailSize),
                         )
                     },
-                    modifier =
-                    Modifier
-                        .clickable { showErrorPlaylistAddDialog = false },
+                    modifier = Modifier.clickable { showErrorPlaylistAddDialog = false },
                 )
             }
 
             items(notAddedList) { song ->
                 ListItem(
-                    title = song.title,
-                    thumbnailContent = {
+                    headlineContent = { Text(text = song.title) },
+                    leadingContent = {
                         Box(
                             contentAlignment = Alignment.Center,
                             modifier = Modifier.size(ListThumbnailSize),
@@ -295,161 +285,258 @@ fun YouTubePlaylistMenu(
                             AsyncImage(
                                 model = song.thumbnailUrl,
                                 contentDescription = null,
-                                modifier =
-                                Modifier
+                                modifier = Modifier
                                     .fillMaxSize()
                                     .clip(RoundedCornerShape(ThumbnailCornerRadius)),
                             )
                         }
                     },
-                    subtitle =
-                    joinByBullet(
-                        song.artists.joinToString { it.name },
-                        makeTimeString(song.duration * 1000L),
-                    ),
+                    supportingContent = {
+                        Text(
+                            text = joinByBullet(
+                                song.artists.joinToString { it.name },
+                                makeTimeString(song.duration * 1000L),
+                            )
+                        )
+                    },
                 )
             }
         }
     }
 
-    GridMenu(
-        contentPadding =
-        PaddingValues(
+    LazyColumn(
+        contentPadding = PaddingValues(
             start = 8.dp,
             top = 8.dp,
             end = 8.dp,
             bottom = 8.dp + WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
         ),
     ) {
-        playlist.playEndpoint?.let {
-            GridMenuItem(
-                icon = R.drawable.play,
-                title = R.string.play,
-            ) {
-                println("Play: ${it.playlistId}, ${it.params}")
-                playerConnection.playQueue(YouTubeQueue(it))
-                onDismiss()
+        playlist.playEndpoint?.let { playEndpoint ->
+            item {
+                ListItem(
+                    headlineContent = { Text(text = stringResource(R.string.play)) },
+                    leadingContent = {
+                        Icon(
+                            painter = painterResource(R.drawable.play),
+                            contentDescription = null,
+                        )
+                    },
+                    modifier = Modifier.clickable {
+                        println("Play: ${playEndpoint.playlistId}, ${playEndpoint.params}")
+                        playerConnection.playQueue(YouTubeQueue(playEndpoint))
+                        onDismiss()
+                    }
+                )
             }
         }
         playlist.shuffleEndpoint?.let { shuffleEndpoint ->
-            GridMenuItem(
-                icon = R.drawable.shuffle,
-                title = R.string.shuffle
-            ) {
-                println("Shuffle: id: ${shuffleEndpoint.playlistId}, params: ${shuffleEndpoint.params}")
-                playerConnection.playQueue(YouTubeQueue(shuffleEndpoint))
-                onDismiss()
+            item {
+                ListItem(
+                    headlineContent = { Text(text = stringResource(R.string.shuffle)) },
+                    leadingContent = {
+                        Icon(
+                            painter = painterResource(R.drawable.shuffle),
+                            contentDescription = null,
+                        )
+                    },
+                    modifier = Modifier.clickable {
+                        println("Shuffle: id: ${shuffleEndpoint.playlistId}, params: ${shuffleEndpoint.params}")
+                        playerConnection.playQueue(YouTubeQueue(shuffleEndpoint))
+                        onDismiss()
+                    }
+                )
             }
         }
         playlist.radioEndpoint?.let { radioEndpoint ->
-            GridMenuItem(
-                icon = R.drawable.radio,
-                title = R.string.start_radio
-            ) {
-                println("Radio: ${radioEndpoint.playlistId}, ${radioEndpoint.params}")
-                playerConnection.playQueue(YouTubeQueue(radioEndpoint))
-                onDismiss()
-            }
-        }
-        GridMenuItem(
-            icon = R.drawable.playlist_play,
-            title = R.string.play_next,
-        ) {
-            coroutineScope.launch {
-                songs
-                    .ifEmpty {
-                        withContext(Dispatchers.IO) {
-                            YouTube
-                                .playlist(playlist.id)
-                                .completed()
-                                .getOrNull()
-                                ?.songs
-                                .orEmpty()
-                        }
-                    }.let { songs ->
-                        playerConnection.playNext(songs.map { it.toMediaItem() })
-                    }
-            }
-            onDismiss()
-        }
-        GridMenuItem(
-            icon = R.drawable.queue_music,
-            title = R.string.add_to_queue,
-        ) {
-            coroutineScope.launch {
-                songs
-                    .ifEmpty {
-                        withContext(Dispatchers.IO) {
-                            YouTube
-                                .playlist(playlist.id)
-                                .completed()
-                                .getOrNull()
-                                ?.songs
-                                .orEmpty()
-                        }
-                    }.let { songs ->
-                        playerConnection.addToQueue(songs.map { it.toMediaItem() })
-                    }
-            }
-            onDismiss()
-        }
-        //GridMenuItem(
-        //icon = R.drawable.playlist_import,
-        //title = R.string.import_playlist
-        //) {
-        //showImportPlaylistDialog = true
-        //}
-        GridMenuItem(
-            icon = R.drawable.playlist_add,
-            title = R.string.add_to_playlist,
-        ) {
-            showChoosePlaylistDialog = true
-        }
-
-        if (songs.isNotEmpty()) {
-            DownloadGridMenu(
-                state = downloadState,
-                onDownload = {
-                    songs.forEach { song ->
-                        val downloadRequest = DownloadRequest.Builder(song.id, song.id.toUri())
-                            .setCustomCacheKey(song.id)
-                            .setData(song.title.toByteArray())
-                            .build()
-                        DownloadService.sendAddDownload(
-                            context,
-                            ExoDownloadService::class.java,
-                            downloadRequest,
-                            false
+            item {
+                ListItem(
+                    headlineContent = { Text(text = stringResource(R.string.start_radio)) },
+                    leadingContent = {
+                        Icon(
+                            painter = painterResource(R.drawable.radio),
+                            contentDescription = null,
                         )
+                    },
+                    modifier = Modifier.clickable {
+                        println("Radio: ${radioEndpoint.playlistId}, ${radioEndpoint.params}")
+                        playerConnection.playQueue(YouTubeQueue(radioEndpoint))
+                        onDismiss()
                     }
+                )
+            }
+        }
+        item {
+            ListItem(
+                headlineContent = { Text(text = stringResource(R.string.play_next)) },
+                leadingContent = {
+                    Icon(
+                        painter = painterResource(R.drawable.playlist_play),
+                        contentDescription = null,
+                    )
                 },
-                onRemoveDownload = {
-                    showRemoveDownloadDialog = true
+                modifier = Modifier.clickable {
+                    coroutineScope.launch {
+                        songs
+                            .ifEmpty {
+                                withContext(Dispatchers.IO) {
+                                    YouTube
+                                        .playlist(playlist.id)
+                                        .completed()
+                                        .getOrNull()
+                                        ?.songs
+                                        .orEmpty()
+                                }
+                            }.let { songs ->
+                                playerConnection.playNext(songs.map { it.toMediaItem() })
+                            }
+                    }
+                    onDismiss()
                 }
             )
         }
-
-        GridMenuItem(
-            icon = R.drawable.share,
-            title = R.string.share,
-        ) {
-            val intent =
-                Intent().apply {
-                    action = Intent.ACTION_SEND
-                    type = "text/plain"
-                    putExtra(Intent.EXTRA_TEXT, playlist.shareLink)
+        item {
+            ListItem(
+                headlineContent = { Text(text = stringResource(R.string.add_to_queue)) },
+                leadingContent = {
+                    Icon(
+                        painter = painterResource(R.drawable.queue_music),
+                        contentDescription = null,
+                    )
+                },
+                modifier = Modifier.clickable {
+                    coroutineScope.launch {
+                        songs
+                            .ifEmpty {
+                                withContext(Dispatchers.IO) {
+                                    YouTube
+                                        .playlist(playlist.id)
+                                        .completed()
+                                        .getOrNull()
+                                        ?.songs
+                                        .orEmpty()
+                                }
+                            }.let { songs ->
+                                playerConnection.addToQueue(songs.map { it.toMediaItem() })
+                            }
+                    }
+                    onDismiss()
                 }
-            context.startActivity(Intent.createChooser(intent, null))
-            onDismiss()
+            )
         }
-
+        item {
+            ListItem(
+                headlineContent = { Text(text = stringResource(R.string.add_to_playlist)) },
+                leadingContent = {
+                    Icon(
+                        painter = painterResource(R.drawable.playlist_add),
+                        contentDescription = null,
+                    )
+                },
+                modifier = Modifier.clickable {
+                    showChoosePlaylistDialog = true
+                }
+            )
+        }
+        if (songs.isNotEmpty()) {
+            item {
+                when (downloadState) {
+                    Download.STATE_COMPLETED -> {
+                        ListItem(
+                            headlineContent = {
+                                Text(
+                                    text = stringResource(R.string.remove_download),
+                                    color = MaterialTheme.colorScheme.error
+                                )
+                            },
+                            leadingContent = {
+                                Icon(
+                                    painter = painterResource(R.drawable.offline),
+                                    contentDescription = null,
+                                )
+                            },
+                            modifier = Modifier.clickable {
+                                showRemoveDownloadDialog = true
+                            }
+                        )
+                    }
+                    Download.STATE_QUEUED, Download.STATE_DOWNLOADING -> {
+                        ListItem(
+                            headlineContent = { Text(text = stringResource(R.string.downloading)) },
+                            leadingContent = {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.size(24.dp),
+                                    strokeWidth = 2.dp
+                                )
+                            },
+                            modifier = Modifier.clickable {
+                                showRemoveDownloadDialog = true
+                            }
+                        )
+                    }
+                    else -> {
+                        ListItem(
+                            headlineContent = { Text(text = stringResource(R.string.download)) },
+                            leadingContent = {
+                                Icon(
+                                    painter = painterResource(R.drawable.download),
+                                    contentDescription = null,
+                                )
+                            },
+                            modifier = Modifier.clickable {
+                                songs.forEach { song ->
+                                    val downloadRequest = DownloadRequest.Builder(song.id, song.id.toUri())
+                                        .setCustomCacheKey(song.id)
+                                        .setData(song.title.toByteArray())
+                                        .build()
+                                    DownloadService.sendAddDownload(
+                                        context,
+                                        ExoDownloadService::class.java,
+                                        downloadRequest,
+                                        false
+                                    )
+                                }
+                            }
+                        )
+                    }
+                }
+            }
+        }
+        item {
+            ListItem(
+                headlineContent = { Text(text = stringResource(R.string.share)) },
+                leadingContent = {
+                    Icon(
+                        painter = painterResource(R.drawable.share),
+                        contentDescription = null,
+                    )
+                },
+                modifier = Modifier.clickable {
+                    val intent = Intent().apply {
+                        action = Intent.ACTION_SEND
+                        type = "text/plain"
+                        putExtra(Intent.EXTRA_TEXT, playlist.shareLink)
+                    }
+                    context.startActivity(Intent.createChooser(intent, null))
+                    onDismiss()
+                }
+            )
+        }
         if (canSelect) {
-            GridMenuItem(
-                icon = R.drawable.select_all,
-                title = R.string.select,
-            ) {
-                onDismiss()
-                selectAction()
+            item {
+                ListItem(
+                    headlineContent = { Text(text = stringResource(R.string.select)) },
+                    leadingContent = {
+                        Icon(
+                            painter = painterResource(R.drawable.select_all),
+                            contentDescription = null,
+                        )
+                    },
+                    modifier = Modifier.clickable {
+                        onDismiss()
+                        selectAction()
+                    }
+                )
             }
         }
     }

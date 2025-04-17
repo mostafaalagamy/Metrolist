@@ -17,17 +17,19 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.ListItem
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -50,8 +52,6 @@ import com.metrolist.music.R
 import com.metrolist.music.db.entities.LyricsEntity
 import com.metrolist.music.models.MediaMetadata
 import com.metrolist.music.ui.component.DefaultDialog
-import com.metrolist.music.ui.component.GridMenu
-import com.metrolist.music.ui.component.GridMenuItem
 import com.metrolist.music.ui.component.ListDialog
 import com.metrolist.music.ui.component.TextFieldDialog
 import com.metrolist.music.viewmodels.LyricsMenuViewModel
@@ -297,33 +297,56 @@ fun LyricsMenu(
         }
     }
 
-    GridMenu(
-        contentPadding =
-        PaddingValues(
+    LazyColumn(
+        contentPadding = PaddingValues(
             start = 8.dp,
             top = 8.dp,
             end = 8.dp,
             bottom = 8.dp + WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
         ),
     ) {
-        GridMenuItem(
-            icon = R.drawable.edit,
-            title = R.string.edit,
-        ) {
-            showEditDialog = true
+        item {
+            ListItem(
+                headlineContent = { Text(text = stringResource(R.string.edit)) },
+                leadingContent = {
+                    Icon(
+                        painter = painterResource(R.drawable.edit),
+                        contentDescription = null,
+                    )
+                },
+                modifier = Modifier.clickable {
+                    showEditDialog = true
+                }
+            )
         }
-        GridMenuItem(
-            icon = R.drawable.cached,
-            title = R.string.refetch,
-        ) {
-            onDismiss()
-            viewModel.refetchLyrics(mediaMetadataProvider(), lyricsProvider())
+        item {
+            ListItem(
+                headlineContent = { Text(text = stringResource(R.string.refetch)) },
+                leadingContent = {
+                    Icon(
+                        painter = painterResource(R.drawable.cached),
+                        contentDescription = null,
+                    )
+                },
+                modifier = Modifier.clickable {
+                    onDismiss()
+                    viewModel.refetchLyrics(mediaMetadataProvider(), lyricsProvider())
+                }
+            )
         }
-        GridMenuItem(
-            icon = R.drawable.search,
-            title = R.string.search,
-        ) {
-            showSearchDialog = true
+        item {
+            ListItem(
+                headlineContent = { Text(text = stringResource(R.string.search)) },
+                leadingContent = {
+                    Icon(
+                        painter = painterResource(R.drawable.search),
+                        contentDescription = null,
+                    )
+                },
+                modifier = Modifier.clickable {
+                    showSearchDialog = true
+                }
+            )
         }
     }
 }
