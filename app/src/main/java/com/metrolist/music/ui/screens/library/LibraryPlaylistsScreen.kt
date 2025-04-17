@@ -318,9 +318,8 @@ fun LibraryPlaylistsScreen(
                         key = "cachePlaylist",
                         contentType = { CONTENT_TYPE_PLAYLIST },
                     ) {
-                        PlaylistGridItem(
+                        PlaylistListItem(
                             playlist = cachePlaylist,
-                            fillMaxWidth = true,
                             autoPlaylist = true,
                             modifier =
                             Modifier
