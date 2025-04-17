@@ -1,21 +1,27 @@
 package com.metrolist.music.ui.menu
 
 import android.content.Intent
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.metrolist.innertube.models.ArtistItem
 import com.metrolist.music.LocalDatabase
@@ -23,8 +29,6 @@ import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
 import com.metrolist.music.db.entities.ArtistEntity
 import com.metrolist.music.playback.queues.YouTubeQueue
-import com.metrolist.music.ui.component.GridMenu
-import com.metrolist.music.ui.component.GridMenuItem
 import com.metrolist.music.ui.component.YouTubeListItem
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -61,11 +65,8 @@ fun YouTubeArtistMenu(
                 },
             ) {
                 Icon(
-                    painter =
-                    painterResource(
-                        if (libraryArtist?.artist?.bookmarkedAt !=
-                            null
-                        ) {
+                    painter = painterResource(
+                        if (libraryArtist?.artist?.bookmarkedAt != null) {
                             R.drawable.favorite
                         } else {
                             R.drawable.favorite_border
@@ -80,9 +81,8 @@ fun YouTubeArtistMenu(
 
     HorizontalDivider()
 
-    GridMenu(
-        contentPadding =
-        PaddingValues(
+    LazyColumn(
+        contentPadding = PaddingValues(
             start = 8.dp,
             top = 8.dp,
             end = 8.dp,
@@ -90,35 +90,58 @@ fun YouTubeArtistMenu(
         ),
     ) {
         artist.radioEndpoint?.let { watchEndpoint ->
-            GridMenuItem(
-                icon = R.drawable.radio,
-                title = R.string.start_radio,
-            ) {
-                playerConnection.playQueue(YouTubeQueue(watchEndpoint))
-                onDismiss()
+            item {
+                ListItem(
+                    headlineContent = { Text(text = stringResource(R.string.start_radio)) },
+                    leadingContent = {
+                        Icon(
+                            painter = painterResource(R.drawable.radio),
+                            contentDescription = null,
+                        )
+                    },
+                    modifier = Modifier.clickable {
+                        playerConnection.playQueue(YouTubeQueue(watchEndpoint))
+                        onDismiss()
+                    }
+                )
             }
         }
         artist.shuffleEndpoint?.let { watchEndpoint ->
-            GridMenuItem(
-                icon = R.drawable.shuffle,
-                title = R.string.shuffle,
-            ) {
-                playerConnection.playQueue(YouTubeQueue(watchEndpoint))
-                onDismiss()
+            item {
+                ListItem(
+                    headlineContent = { Text(text = stringResource(R.string.shuffle)) },
+                    leadingContent = {
+                        Icon(
+                            painter = painterResource(R.drawable.shuffle),
+                            contentDescription = null,
+                        )
+                    },
+                    modifier = Modifier.clickable {
+                        playerConnection.playQueue(YouTubeQueue(watchEndpoint))
+                        onDismiss()
+                    }
+                )
             }
         }
-        GridMenuItem(
-            icon = R.drawable.share,
-            title = R.string.share,
-        ) {
-            val intent =
-                Intent().apply {
-                    action = Intent.ACTION_SEND
-                    type = "text/plain"
-                    putExtra(Intent.EXTRA_TEXT, artist.shareLink)
+        item {
+            ListItem(
+                headlineContent = { Text(text = stringResource(R.string.share)) },
+                leadingContent = {
+                    Icon(
+                        painter = painterResource(R.drawable.share),
+                        contentDescription = null,
+                    )
+                },
+                modifier = Modifier.clickable {
+                    val intent = Intent().apply {
+                        action = Intent.ACTION_SEND
+                        type = "text/plain"
+                        putExtra(Intent.EXTRA_TEXT, artist.shareLink)
+                    }
+                    context.startActivity(Intent.createChooser(intent, null))
+                    onDismiss()
                 }
-            context.startActivity(Intent.createChooser(intent, null))
-            onDismiss()
+            )
         }
     }
 }
