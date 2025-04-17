@@ -1,11 +1,15 @@
 package com.metrolist.music.ui.menu
 
 import android.content.Intent
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -13,6 +17,7 @@ import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.ListItem
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -34,25 +39,18 @@ import androidx.media3.exoplayer.offline.Download
 import androidx.media3.exoplayer.offline.DownloadRequest
 import androidx.media3.exoplayer.offline.DownloadService
 import com.metrolist.innertube.YouTube
-import com.metrolist.innertube.models.SongItem
-import com.metrolist.innertube.utils.completed
 import com.metrolist.music.LocalDatabase
 import com.metrolist.music.LocalDownloadUtil
 import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
 import com.metrolist.music.db.entities.Playlist
 import com.metrolist.music.db.entities.PlaylistSong
-import com.metrolist.music.db.entities.PlaylistSongMap
 import com.metrolist.music.db.entities.Song
 import com.metrolist.music.extensions.toMediaItem
-import com.metrolist.music.models.toMediaMetadata
 import com.metrolist.music.playback.ExoDownloadService
 import com.metrolist.music.playback.queues.ListQueue
 import com.metrolist.music.playback.queues.YouTubeQueue
 import com.metrolist.music.ui.component.DefaultDialog
-import com.metrolist.music.ui.component.DownloadGridMenu
-import com.metrolist.music.ui.component.GridMenu
-import com.metrolist.music.ui.component.GridMenuItem
 import com.metrolist.music.ui.component.PlaylistListItem
 import com.metrolist.music.ui.component.TextFieldDialog
 import kotlinx.coroutines.CoroutineScope
@@ -263,131 +261,229 @@ fun PlaylistMenu(
 
     HorizontalDivider()
 
-    GridMenu(
-        contentPadding =
-        PaddingValues(
+    LazyColumn(
+        contentPadding = PaddingValues(
             start = 8.dp,
             top = 8.dp,
             end = 8.dp,
             bottom = 8.dp + WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
         ),
     ) {
-        GridMenuItem(
-            icon = R.drawable.play,
-            title = R.string.play,
-        ) {
-            onDismiss()
-            playerConnection.playQueue(
-                ListQueue(
-                    title = playlist.playlist.name,
-                    items = songs.map { it.toMediaItem() },
-                ),
-            )
-        }
-
-        GridMenuItem(
-            icon = R.drawable.shuffle,
-            title = R.string.shuffle,
-        ) {
-            onDismiss()
-            playerConnection.playQueue(
-                ListQueue(
-                    title = playlist.playlist.name,
-                    items = songs.shuffled().map { it.toMediaItem() },
-                ),
-            )
-        }
-
         playlist.playlist.browseId?.let { browseId ->
-            GridMenuItem(
-                icon = R.drawable.radio,
-                title = R.string.start_radio
-            ) {
-                coroutineScope.launch(Dispatchers.IO) {
-                    YouTube.playlist(browseId).getOrNull()?.playlist?.let { playlistItem ->
-                        playlistItem.radioEndpoint?.let { radioEndpoint ->
-                            withContext(Dispatchers.Main) {
-                                playerConnection.playQueue(YouTubeQueue(radioEndpoint))
+            item {
+                ListItem(
+                    headlineContent = { Text(text = stringResource(R.string.start_radio)) },
+                    leadingContent = {
+                        Icon(
+                            painter = painterResource(R.drawable.radio),
+                            contentDescription = null,
+                        )
+                    },
+                    modifier = Modifier.clickable {
+                        coroutineScope.launch(Dispatchers.IO) {
+                            YouTube.playlist(browseId).getOrNull()?.playlist?.let { playlistItem ->
+                                playlistItem.radioEndpoint?.let { radioEndpoint ->
+                                    withContext(Dispatchers.Main) {
+                                        playerConnection.playQueue(YouTubeQueue(radioEndpoint))
+                                    }
+                                }
                             }
                         }
+                        onDismiss()
                     }
+                )
+            }
+        }
+        item {
+            ListItem(
+                headlineContent = { Text(text = stringResource(R.string.play)) },
+                leadingContent = {
+                    Icon(
+                        painter = painterResource(R.drawable.play),
+                        contentDescription = null,
+                    )
+                },
+                modifier = Modifier.clickable {
+                    onDismiss()
+                    playerConnection.playQueue(
+                        ListQueue(
+                            title = playlist.playlist.name,
+                            items = songs.map { it.toMediaItem() },
+                        ),
+                    )
                 }
-                onDismiss()
-            }
-        }
-        GridMenuItem(
-            icon = R.drawable.playlist_play,
-            title = R.string.play_next
-        ) {
-            coroutineScope.launch {
-                playerConnection.playNext(songs.map { it.toMediaItem() })
-            }
-            onDismiss()
-        }
-
-        GridMenuItem(
-            icon = R.drawable.queue_music,
-            title = R.string.add_to_queue,
-        ) {
-            onDismiss()
-            playerConnection.addToQueue(songs.map { it.toMediaItem() })
-        }
-
-        if (editable && autoPlaylist != true) {
-            GridMenuItem(
-                icon = R.drawable.edit,
-                title = R.string.edit
-            ) {
-                showEditDialog = true
-            }
-        }
-
-        if (downloadPlaylist != true) {
-            DownloadGridMenu(
-                state = downloadState,
-                onDownload = {
-                    songs.forEach { song ->
-                        val downloadRequest =
-                            DownloadRequest
-                                .Builder(song.id, song.id.toUri())
-                                .setCustomCacheKey(song.id)
-                                .setData(song.song.title.toByteArray())
-                                .build()
-                        DownloadService.sendAddDownload(
-                            context,
-                            ExoDownloadService::class.java,
-                            downloadRequest,
-                            false,
-                        )
-                    }
-                },
-                onRemoveDownload = {
-                    showRemoveDownloadDialog = true
-                },
             )
         }
-
-        if (autoPlaylist != true) {
-            GridMenuItem(
-                icon = R.drawable.delete,
-                title = R.string.delete,
-            ) {
-                showDeletePlaylistDialog = true
+        item {
+            ListItem(
+                headlineContent = { Text(text = stringResource(R.string.play_next)) },
+                leadingContent = {
+                    Icon(
+                        painter = painterResource(R.drawable.playlist_play),
+                        contentDescription = null,
+                    )
+                },
+                modifier = Modifier.clickable {
+                    coroutineScope.launch {
+                        playerConnection.playNext(songs.map { it.toMediaItem() })
+                    }
+                    onDismiss()
+                }
+            )
+        }
+        item {
+            ListItem(
+                headlineContent = { Text(text = stringResource(R.string.add_to_queue)) },
+                leadingContent = {
+                    Icon(
+                        painter = painterResource(R.drawable.queue_music),
+                        contentDescription = null,
+                    )
+                },
+                modifier = Modifier.clickable {
+                    onDismiss()
+                    playerConnection.addToQueue(songs.map { it.toMediaItem() })
+                }
+            )
+        }
+        item {
+            ListItem(
+                headlineContent = { Text(text = stringResource(R.string.shuffle)) },
+                leadingContent = {
+                    Icon(
+                        painter = painterResource(R.drawable.shuffle),
+                        contentDescription = null,
+                    )
+                },
+                modifier = Modifier.clickable {
+                    onDismiss()
+                    playerConnection.playQueue(
+                        ListQueue(
+                            title = playlist.playlist.name,
+                            items = songs.shuffled().map { it.toMediaItem() },
+                        ),
+                    )
+                }
+            )
+        }
+        if (editable && autoPlaylist != true) {
+            item {
+                ListItem(
+                    headlineContent = { Text(text = stringResource(R.string.edit)) },
+                    leadingContent = {
+                        Icon(
+                            painter = painterResource(R.drawable.edit),
+                            contentDescription = null,
+                        )
+                    },
+                    modifier = Modifier.clickable {
+                        showEditDialog = true
+                    }
+                )
             }
         }
-
-        playlist.playlist.shareLink?.let { shareLink ->
-            GridMenuItem(
-                icon = R.drawable.share,
-                title = R.string.share
-            ) {
-                val intent = Intent().apply {
-                    action = Intent.ACTION_SEND
-                    type = "text/plain"
-                    putExtra(Intent.EXTRA_TEXT, shareLink)
+        if (downloadPlaylist != true) {
+            item {
+                when (downloadState) {
+                    Download.STATE_COMPLETED -> {
+                        ListItem(
+                            headlineContent = {
+                                Text(
+                                    text = stringResource(R.string.remove_download),
+                                    color = MaterialTheme.colorScheme.error
+                                )
+                            },
+                            leadingContent = {
+                                Icon(
+                                    painter = painterResource(R.drawable.offline),
+                                    contentDescription = null,
+                                )
+                            },
+                            modifier = Modifier.clickable {
+                                showRemoveDownloadDialog = true
+                            }
+                        )
+                    }
+                    Download.STATE_QUEUED, Download.STATE_DOWNLOADING -> {
+                        ListItem(
+                            headlineContent = { Text(text = stringResource(R.string.downloading)) },
+                            leadingContent = {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.size(24.dp),
+                                    strokeWidth = 2.dp
+                                )
+                            },
+                            modifier = Modifier.clickable {
+                                showRemoveDownloadDialog = true
+                            }
+                        )
+                    }
+                    else -> {
+                        ListItem(
+                            headlineContent = { Text(text = stringResource(R.string.download)) },
+                            leadingContent = {
+                                Icon(
+                                    painter = painterResource(R.drawable.download),
+                                    contentDescription = null,
+                                )
+                            },
+                            modifier = Modifier.clickable {
+                                songs.forEach { song ->
+                                    val downloadRequest =
+                                        DownloadRequest
+                                            .Builder(song.id, song.id.toUri())
+                                            .setCustomCacheKey(song.id)
+                                            .setData(song.song.title.toByteArray())
+                                            .build()
+                                    DownloadService.sendAddDownload(
+                                        context,
+                                        ExoDownloadService::class.java,
+                                        downloadRequest,
+                                        false,
+                                    )
+                                }
+                            }
+                        )
+                    }
                 }
-                context.startActivity(Intent.createChooser(intent, null))
-                onDismiss()
+            }
+        }
+        if (autoPlaylist != true) {
+            item {
+                ListItem(
+                    headlineContent = { Text(text = stringResource(R.string.delete)) },
+                    leadingContent = {
+                        Icon(
+                            painter = painterResource(R.drawable.delete),
+                            contentDescription = null,
+                        )
+                    },
+                    modifier = Modifier.clickable {
+                        showDeletePlaylistDialog = true
+                    }
+                )
+            }
+        }
+        playlist.playlist.shareLink?.let { shareLink ->
+            item {
+                ListItem(
+                    headlineContent = { Text(text = stringResource(R.string.share)) },
+                    leadingContent = {
+                        Icon(
+                            painter = painterResource(R.drawable.share),
+                            contentDescription = null,
+                        )
+                    },
+                    modifier = Modifier.clickable {
+                        val intent = Intent().apply {
+                            action = Intent.ACTION_SEND
+                            type = "text/plain"
+                            putExtra(Intent.EXTRA_TEXT, shareLink)
+                        }
+                        context.startActivity(Intent.createChooser(intent, null))
+                        onDismiss()
+                    }
+                )
             }
         }
     }
