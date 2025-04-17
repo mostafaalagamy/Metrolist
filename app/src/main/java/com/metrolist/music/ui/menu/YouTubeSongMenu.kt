@@ -169,7 +169,7 @@ fun YouTubeSongMenu(
     ListItem(  
         headlineContent = {
             Text(
-                text = song.title
+                text = song.title,
                 modifier = Modifier.basicMarquee(),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
