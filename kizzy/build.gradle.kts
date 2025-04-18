@@ -1,11 +1,10 @@
 plugins {
-    kotlin("jvm")
-    @Suppress("DSL_SCOPE_VIOLATION")
     alias(libs.plugins.kotlin.serialization)
+    kotlin("jvm")
 }
 
 kotlin {
-    jvmToolchain(17)
+    jvmToolchain(21)
 }
 
 dependencies {
@@ -15,6 +14,5 @@ dependencies {
     implementation(libs.ktor.serialization.json)
     implementation(libs.ktor.client.encoding)
     implementation(libs.json)
-
     testImplementation(libs.junit)
 }

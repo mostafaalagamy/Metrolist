@@ -1,5 +1,5 @@
 [versions]
-androidGradlePlugin = "8.11.0-alpha06"
+androidGradlePlugin = "8.11.0-alpha07"
 annotation = "1.9.1"
 json = "20250107"
 kotlin = "2.1.20"
@@ -12,7 +12,7 @@ hilt = "2.56.1"
 ktor = "3.1.2"
 ksp = "2.1.20-2.0.0"
 webkit = "1.12.1"
-newpipe = "dev-SNAPSHOT"
+newpipe = "bc9a5a220e"
 
 [libraries]
 annotation = { module = "androidx.annotation:annotation", version.ref = "annotation" }
