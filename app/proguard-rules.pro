@@ -76,9 +76,6 @@
 # Keep any other essential classes that may be obfuscated
 -dontwarn io.ktor.**
 
-# Ignore Media3 session warnings
--dontwarn androidx.media3.session.**
-
 # Don't print notes about potential mistakes or omissions in the configuration for kotlinx-serialization classes
 # See also https://github.com/Kotlin/kotlinx.serialization/issues/1900
 -dontnote kotlinx.serialization.**
