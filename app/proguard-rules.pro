@@ -57,8 +57,13 @@
 ## Rules for NewPipeExtractor
 -keep class org.schabi.newpipe.extractor.timeago.patterns.** { *; }
 -keep class org.mozilla.javascript.** { *; }
+-keep class org.mozilla.javascript.engine.** { *; }
 -dontwarn org.mozilla.javascript.JavaToJSONConverters
 -dontwarn org.mozilla.javascript.tools.**
+-keep class javax.script.** { *; }
+-dontwarn javax.script.**
+-keep class jdk.dynalink.** { *; }
+-dontwarn jdk.dynalink.**
 
 # Keep Ktor client engine and plugins
 -keep class io.ktor.client.** { *; }
@@ -91,15 +96,6 @@
 -dontwarn org.openjsse.net.ssl.OpenJSSE
 -dontwarn org.slf4j.impl.StaticLoggerBinder
 
-# Keep Rhino classes
--keep class org.mozilla.javascript.** { *; }
-# For javax.script classes
--dontwarn javax.script.**
--keep class javax.script.** { *; }
-# For jdk.dynalink classes
--dontwarn jdk.dynalink.**
--keep class jdk.dynalink.** { *; }
-
 ## Logging (does not affect Timber)
 -assumenosideeffects class android.util.Log {
     public static boolean isLoggable(java.lang.String, int);
@@ -111,3 +107,10 @@
     #public static int e(...);
 
 }
+
+# generated automatically by the Android Gradle plugin.
+-dontwarn java.beans.BeanDescriptor
+-dontwarn java.beans.BeanInfo
+-dontwarn java.beans.IntrospectionException
+-dontwarn java.beans.Introspector
+-dontwarn java.beans.PropertyDescriptor
