@@ -79,8 +79,8 @@
 }
 
 # Generated automatically by the Android Gradle plugin.
- -dontwarn java.beans.BeanDescriptor
- -dontwarn java.beans.BeanInfo
- -dontwarn java.beans.IntrospectionException
- -dontwarn java.beans.Introspector
- -dontwarn java.beans.PropertyDescriptor
+-dontwarn java.beans.BeanDescriptor
+-dontwarn java.beans.BeanInfo
+-dontwarn java.beans.IntrospectionException
+-dontwarn java.beans.Introspector
+-dontwarn java.beans.PropertyDescriptor
