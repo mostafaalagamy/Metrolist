@@ -10,6 +10,7 @@ import com.metrolist.innertube.models.YTItem
 import com.metrolist.innertube.pages.ExplorePage
 import com.metrolist.innertube.pages.HomePage
 import com.metrolist.innertube.utils.completedLibraryPage
+import com.metrolist.music.constants.YtmSyncKey
 import com.metrolist.music.db.MusicDatabase
 import com.metrolist.music.db.entities.Album
 import com.metrolist.music.db.entities.Artist
@@ -173,11 +174,19 @@ class HomeViewModel @Inject constructor(
     init {
         viewModelScope.launch(Dispatchers.IO) {           
             load()
-            viewModelScope.launch(Dispatchers.IO) { syncUtils.syncLikedSongs() }
-            viewModelScope.launch(Dispatchers.IO) { syncUtils.syncLibrarySongs() }
-            viewModelScope.launch(Dispatchers.IO) { syncUtils.syncSavedPlaylists() }
-            viewModelScope.launch(Dispatchers.IO) { syncUtils.syncLikedAlbums() }
-            viewModelScope.launch(Dispatchers.IO) { syncUtils.syncArtistsSubscriptions() }
+            val syncYtm = context.dataStore.data
+                 .map {
+                     it[YtmSyncKey]
+                 }
+                 .distinctUntilChanged()
+ 
+             if (syncYtm.first() != false) { // defaults to true
+                 viewModelScope.launch(Dispatchers.IO) { syncUtils.syncLikedSongs() }
+                 viewModelScope.launch(Dispatchers.IO) { syncUtils.syncLibrarySongs() }
+                 viewModelScope.launch(Dispatchers.IO) { syncUtils.syncSavedPlaylists() }
+                 viewModelScope.launch(Dispatchers.IO) { syncUtils.syncLikedAlbums() }
+                 viewModelScope.launch(Dispatchers.IO) { syncUtils.syncArtistsSubscriptions() }
+             }
         }
     }
 }
