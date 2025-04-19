@@ -1,0 +1,110 @@
+name: Build APKs
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ '**' ]
+    paths-ignore:
+      - 'README.md'
+      - 'fastlane/**'
+      - 'assets/**'
+      - '.github/**/*.md'
+      - '.github/FUNDING.yml'
+      - '.github/ISSUE_TEMPLATE/**'
+
+permissions:
+  contents: write
+  discussions: write
+
+jobs:
+  build:
+    if: github.actor != 'dependabot[bot]'
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        abi: [ 'arm64', 'armeabi', 'x86', 'x86_64', 'universal' ]
+
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+      
+      - name: Set Up Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-cleanup: on-success
+          
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+ 
+      - name: Build Release APK (Unsigned)
+        # Cette commande génère un APK non signé : app/build/outputs/apk/<abi>/release/app-<abi>-release-unsigned.apk
+        run: ./gradlew assemble${{ matrix.abi }}Release
+        env:
+          PULL_REQUEST: 'false'
+ 
+      # ÉTAPE DE SIGNATURE SUPPRIMÉE
+      # - name: Sign APK
+      #   uses: ilharp/sign-android-release@v1.0.4
+      #   with:
+      #     releaseDir: app/build/outputs/apk/${{ matrix.abi }}/release/
+      #     signingKey: ${{ secrets.KEYSTORE }}
+      #     keyAlias: ${{ secrets.KEY_ALIAS }}
+      #     keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
+      #     keyPassword: ${{ secrets.KEY_PASSWORD }}
+      #     buildToolsVersion: 35.0.0
+      
+      - name: Move unsigned APK
+        # On déplace l'APK non signé et on le renomme comme s'il était le final
+        run: |
+          mkdir -p app/build/outputs/apk/${{ matrix.abi }}/release/out
+          find app/build/outputs/apk/${{ matrix.abi }}/release/ -maxdepth 1 -name "app-${{ matrix.abi }}-release-unsigned.apk" | xargs -I{} mv {} app/build/outputs/apk/${{ matrix.abi }}/release/out/app-${{ matrix.abi }}-release.apk
+  
+      - name: Upload Unsigned APK
+        # On upload l'APK qui est maintenant non signé mais renommé
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-${{ matrix.abi }}-release
+          path: app/build/outputs/apk/${{ matrix.abi }}/release/out/*
+
+  build_debug:
+    # Le job de build Debug reste inchangé car il utilise le debug.keystore
+    if: github.actor != 'dependabot[bot]'
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          
+      - name: Set Up Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-cleanup: on-success
+          
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Restore Persistent Keystore
+        run: |
+          echo "${{ secrets.DEBUG_KEYSTORE }}" | base64 -d > ./app/persistent-debug.keystore
+
+      - name: Build Debug APK
+        run: ./gradlew assembleUniversalDebug
+        env:
+          PULL_REQUEST: 'false'
+
+      - name: Upload Debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-universal-debug
+          path: app/build/outputs/apk/universal/debug/*.apk
