@@ -177,13 +177,13 @@ class HomeViewModel @Inject constructor(
     init {
         viewModelScope.launch(Dispatchers.IO) {           
             load()
-            val syncYtm = context.dataStore.data
+            val ytmSync = context.dataStore.data
                  .map {
                      it[YtmSyncKey]
                  }
                  .distinctUntilChanged()
  
-             if (syncYtm.first() != false) { // defaults to true
+             if (ytmSync.first() != false) { // defaults to true
                  viewModelScope.launch(Dispatchers.IO) { syncUtils.syncLikedSongs() }
                  viewModelScope.launch(Dispatchers.IO) { syncUtils.syncLibrarySongs() }
                  viewModelScope.launch(Dispatchers.IO) { syncUtils.syncSavedPlaylists() }
