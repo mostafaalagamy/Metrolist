@@ -160,7 +160,7 @@ fun LibraryPlaylistsScreen(
 
     val (ytmSync) = rememberPreference(YtmSyncKey, true)
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(ytmSync) {
         if (ytmSync) {
             withContext(Dispatchers.IO) {
                 viewModel.sync()
