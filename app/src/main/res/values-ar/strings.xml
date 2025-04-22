@@ -37,6 +37,18 @@
     <string name="this_week">هذا الأسبوع</string>
     <string name="last_week">الأسبوع الماضي</string>
 
+    <!-- Charts -->
+    <string name="charts"></string>
+    <string name="back_button_desc">للخلف</string>
+    <string name="no_title">لا يوجد عنوان</string>
+    <string name="unknown_artist">فنان غير معروف</string>
+    <string name="unknown_item_type">نوع العنصر غير معروف</string>
+    <string name="loading_charts">جاري تحميل المخططات...</string>
+    <string name="retry_button">إعادة المحاولة</string>
+    <string name="album_cover_desc">غلاف الألبوم</string>
+    <string name="top_music_videos">أفضل مقاطع الفيديو الموسيقية</string>
+    <string name="trending">الأكثر رواجًا</string>
+
     <!-- الاحصائيات -->
     <string name="most_played_songs">الأغاني الأكثر تشغيلًا</string>
     <string name="most_played_artists">الفنانون الأكثر تشغيلًا</string>
@@ -74,6 +86,7 @@
     <string name="liked">الأغاني المفضلة</string>
     <string name="offline">التحميلات</string>
     <string name="my_top">الأعلي إستماع : </string>
+    <string name="cached_playlist">الأغاني المخزنة مؤقتًا</string>
     <string name="library_song_empty">ستظهر أغاني المكتبة هنا</string>
     <string name="library_artist_empty">سيظهر هنا الفنانين</string>
     <string name="library_album_empty">ستظهر ألبومات المكتبة هنا</string>
@@ -104,6 +117,7 @@
     <string name="add_to_queue">إضافة إلى القائمة</string>
     <string name="add_to_library">إضافة إلى المكتبة</string>
     <string name="remove_from_library">إزالة من المكتبة</string>
+    <string name="remove_from_cache">إزالة من التخزين المؤقت</string>
     <string name="download">تحميل</string>
     <string name="downloading">جارٍ التحميل</string>
     <string name="remove_download">إزالة التحميل</string>
@@ -113,6 +127,7 @@
     <string name="view_album">عرض الألبوم</string>
     <string name="refetch">إعادة التحميل</string>
     <string name="share">مشاركة</string>
+    <string name="copy_link">نسخ الرابط</string>
     <string name="delete">حذف</string>
     <string name="remove_from_history">إزالة من التاريخ</string>
     <string name="search_online">البحث على الإنترنت</string>
@@ -330,6 +345,7 @@
     <string name="customize_navigation_tabs">تخصيص علامات التبويب</string>
     <string name="player_text_alignment">موضع إسم الفنان والأغنية</string>
     <string name="lyrics_text_position">موضع نص كلمات الأغاني</string>
+    <string name="swipe_song_to_add">مرر الأغنية إلى اليمين لتشغيلها بعد الأغنية الحالية أو إلى اليسار لإضافتها إلى قائمة الانتظار</string>
     <string name="theme">السمة</string>
     <string name="player">المشغل</string>
     <string name="sided">جانبي</string>
@@ -346,7 +362,7 @@
     <string name="slim">نحيل</string>
     <string name="misc">متفرقات</string>
     <string name="default_open_tab">الصفحة الافتراضية</string>
-    <string name="slim_navbar">إخفاء أسماء علامات شريط التنقل السفلي</string>
+    <string name="slim_navbar">إخفاء أسماء الصفحات من شريط التنقل السفلي</string>
 
     <string name="content">المحتوى</string>
     <string name="google">جوجل</string>
@@ -422,6 +438,7 @@
     <string name="listen_history">سجل الاستماع</string>
     <string name="search_history">سجل البحث</string>
     <string name="pause_listen_history">إيقاف سجل الاستماع مؤقتاً</string>
+    <string name="pause_remote_listen_history">إيقاف مشاركة سجل الاستماع مع YouTube Music</string>
     <string name="clear_listen_history">مسح سجل الاستماع</string>
     <string name="clear_listen_history_confirm">هل أنت متأكد من أنك تريد مسح جميع سجل الاستماع؟</string>
     <string name="pause_search_history">إيقاف سجل البحث مؤقتاً</string>

@@ -59,6 +59,7 @@ fun LocalSearchScreen(
     query: String,
     navController: NavController,
     onDismiss: () -> Unit,
+    isFromCache: Boolean = false,
     viewModel: LocalSearchViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
@@ -151,6 +152,7 @@ fun LocalSearchScreen(
                         is Song ->
                             SongListItem(
                                 song = item,
+                                showInLibraryIcon = true,
                                 isActive = item.id == mediaMetadata?.id,
                                 isPlaying = isPlaying,
 
@@ -158,14 +160,16 @@ fun LocalSearchScreen(
                                     IconButton(
                                         onClick = {
                                             menuState.show {
-                                                SongMenu(
-                                                    originalSong = item,
-                                                    navController = navController,
-                                                ) {
-                                                    onDismiss()
-                                                    menuState.dismiss()
-                                                }
-                                            }
+                                               SongMenu(
+                                                   originalSong = item,
+                                                   navController = navController,
+                                                   onDismiss = {
+                                                       onDismiss()
+                                                       menuState.dismiss()
+                                                   },
+                                                   isFromCache = false
+                                               )
+                                           }
                                         },
                                     ) {
                                         Icon(
@@ -197,14 +201,16 @@ fun LocalSearchScreen(
                                         },
                                         onLongClick = {
                                             menuState.show {
-                                                SongMenu(
-                                                    originalSong = item,
-                                                    navController = navController,
-                                                ) {
-                                                    onDismiss()
-                                                    menuState.dismiss()
-                                                }
-                                            }
+                                               SongMenu(
+                                                   originalSong = item,
+                                                   navController = navController,
+                                                   onDismiss = {
+                                                       onDismiss()
+                                                       menuState.dismiss()
+                                                   },
+                                                   isFromCache = false
+                                               )
+                                           }
                                         },
                                     )
                                     .animateItem(),

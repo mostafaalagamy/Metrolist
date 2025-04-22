@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.metrolist.music.playback
 
 import android.app.PendingIntent
@@ -62,11 +64,12 @@ import com.metrolist.music.constants.AutoSkipNextOnErrorKey
 import com.metrolist.music.constants.DiscordTokenKey
 import com.metrolist.music.constants.EnableDiscordRPCKey
 import com.metrolist.music.constants.HideExplicitKey
-import com.metrolist.music.constants.minPlaybackDurKey
+import com.metrolist.music.constants.HistoryDuration
 import com.metrolist.music.constants.MediaSessionConstants.CommandToggleLike
 import com.metrolist.music.constants.MediaSessionConstants.CommandToggleRepeatMode
 import com.metrolist.music.constants.MediaSessionConstants.CommandToggleShuffle
 import com.metrolist.music.constants.PauseListenHistoryKey
+import com.metrolist.music.constants.PauseRemoteListenHistoryKey
 import com.metrolist.music.constants.PersistentQueueKey
 import com.metrolist.music.constants.PlayerVolumeKey
 import com.metrolist.music.constants.RepeatModeKey
@@ -98,6 +101,7 @@ import com.metrolist.music.playback.queues.YouTubeQueue
 import com.metrolist.music.playback.queues.filterExplicit
 import com.metrolist.music.utils.CoilBitmapLoader
 import com.metrolist.music.utils.DiscordRPC
+import com.metrolist.music.utils.SyncUtils
 import com.metrolist.music.utils.YTPlayerUtils
 import com.metrolist.music.utils.dataStore
 import com.metrolist.music.utils.enumPreference
@@ -149,6 +153,9 @@ class MusicService :
 
     @Inject
     lateinit var lyricsHelper: LyricsHelper
+    
+    @Inject
+    lateinit var syncUtils: SyncUtils
 
     @Inject
     lateinit var mediaLibrarySessionCallback: MediaLibrarySessionCallback
@@ -238,6 +245,7 @@ class MusicService :
                 }
         mediaLibrarySessionCallback.apply {
             toggleLike = ::toggleLike
+            toggleLibrary = ::toggleLibrary
         }
         mediaSession =
             MediaLibrarySession
@@ -614,13 +622,23 @@ class MusicService :
         player.prepare()
     }
 
-    fun toggleLike() {
+    private fun toggleLibrary() {
         database.query {
             currentSong.value?.let {
-                update(it.song.toggleLike())
+                update(it.song.toggleLibrary())
             }
         }
     }
+
+    fun toggleLike() {
+         database.query {
+             currentSong.value?.let {
+                 val song = it.song.toggleLike()
+                 update(song)
+                 syncUtils.likeSong(song)
+             }
+         }
+     }
 
     private fun openAudioEffectSession() {
         if (isAudioEffectSessionOpened) return
@@ -867,27 +885,28 @@ class MusicService :
         eventTime: AnalyticsListener.EventTime,
         playbackStats: PlaybackStats,
     ) {
-        val mediaItem =
-            eventTime.timeline.getWindow(eventTime.windowIndex, Timeline.Window()).mediaItem
+        val mediaItem = eventTime.timeline.getWindow(eventTime.windowIndex, Timeline.Window()).mediaItem
 
-        var minPlaybackDur = (dataStore.get(minPlaybackDurKey, 30) / 100)
-         // ensure within bounds. Ehhh 99 is good enough to avoid any rounding errors
-         if (playbackStats.totalPlayTimeMs.toFloat() / ((mediaItem.metadata?.duration?.times(1000)) ?: -1) >= minPlaybackDur
-             && !dataStore.get(PauseListenHistoryKey, false)) {
-                database.query {
-                    incrementTotalPlayTime(mediaItem.mediaId, playbackStats.totalPlayTimeMs)
-                    try {
-                        insert(
-                            Event(
-                                songId = mediaItem.mediaId,
-                                timestamp = LocalDateTime.now(),
-                                playTime = playbackStats.totalPlayTimeMs,
-                            ),
-                        )
-                    } catch (_: SQLException) {
-                }
+        if (playbackStats.totalPlayTimeMs >= (
+                dataStore[HistoryDuration]?.times(1000f)
+                    ?: 30000f
+            ) &&
+            !dataStore.get(PauseListenHistoryKey, false)
+        ) {
+            database.query {
+                incrementTotalPlayTime(mediaItem.mediaId, playbackStats.totalPlayTimeMs)
+                try {
+                    insert(
+                        Event(
+                            songId = mediaItem.mediaId,
+                            timestamp = LocalDateTime.now(),
+                            playTime = playbackStats.totalPlayTimeMs,
+                        ),
+                    )
+                } catch (_: SQLException) {
             }
-            // TODO: support playlist id
+        }
+        if (!dataStore.get(PauseRemoteListenHistoryKey, false)) {
             CoroutineScope(Dispatchers.IO).launch {
                 val playbackUrl = database.format(mediaItem.mediaId).first()?.playbackUrl
                     ?: YTPlayerUtils.playerResponseForMetadata(mediaItem.mediaId, null)
@@ -897,6 +916,7 @@ class MusicService :
                         .onFailure {
                             reportException(it)
                         }
+                    }
                 }
             }
         }

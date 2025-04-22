@@ -169,25 +169,9 @@ data class HomePage(
                     else -> null
                 }
             }
-            private fun parseDuration(durationString: String?): Int? {
-                return durationString?.split(":")?.let { parts ->
-                    when (parts.size) {
-                        2 -> parts[0].toIntOrNull()?.times(60)?.plus(parts[1].toIntOrNull() ?: 0)
-                        3 -> parts[0].toIntOrNull()?.times(3600)?.plus(
-                            parts[1].toIntOrNull()?.times(60) ?: 0
-                        )?.plus(parts[2].toIntOrNull() ?: 0)
-                        else -> null
-                    }
-                }
-            }
             private fun fromMusicResponsiveListItemRenderer(renderer: MusicResponsiveListItemRenderer): YTItem? {
                 return when {
                     renderer.isSong -> {
-                        val durationColumn = renderer.flexColumns.firstOrNull { column ->
-                            column.musicResponsiveListItemFlexColumnRenderer.text?.runs?.any { run ->
-                                run.text.matches(Regex("^\\d+:\\d{2}$"))
-                            } == true
-                        }
                         SongItem(
                             id = renderer.playlistItemData?.videoId ?: return null,
                             title = renderer.flexColumns.firstOrNull()
@@ -217,8 +201,7 @@ data class HomePage(
                                         )
                                     }
                                 },
-                            duration = durationColumn?.musicResponsiveListItemFlexColumnRenderer
-                                ?.text?.runs?.firstOrNull()?.text?.let(::parseDuration),
+                            duration = null,
                             thumbnail = renderer.thumbnail?.musicThumbnailRenderer?.getThumbnailUrl()
                                 ?: return null,
                             explicit = renderer.badges?.any {

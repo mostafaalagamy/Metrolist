@@ -71,8 +71,7 @@ fun AboutScreen(
             painter = painterResource(R.drawable.about_splash),
             contentDescription = null,
             colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground, BlendMode.SrcIn),
-            modifier =
-            Modifier
+            modifier = Modifier
                 .clip(CircleShape)
                 .background(MaterialTheme.colorScheme.surfaceContainer)
                 .clickable { },
@@ -94,8 +93,7 @@ fun AboutScreen(
                 text = BuildConfig.VERSION_NAME,
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.secondary,
-                modifier =
-                Modifier
+                modifier = Modifier
                     .border(
                         width = 1.dp,
                         color = MaterialTheme.colorScheme.secondary,
@@ -116,8 +114,25 @@ fun AboutScreen(
                     text = "DEBUG",
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.secondary,
-                    modifier =
-                    Modifier
+                    modifier = Modifier
+                        .border(
+                            width = 1.dp,
+                            color = MaterialTheme.colorScheme.secondary,
+                            shape = CircleShape,
+                        )
+                        .padding(
+                            horizontal = 6.dp,
+                            vertical = 2.dp,
+                        ),
+                )
+            } else {
+                Spacer(Modifier.width(4.dp))
+
+                Text(
+                    text = BuildConfig.ARCHITECTURE.uppercase(),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.secondary,
+                    modifier = Modifier
                         .border(
                             width = 1.dp,
                             color = MaterialTheme.colorScheme.secondary,
@@ -160,7 +175,6 @@ fun AboutScreen(
                 )
             }
         }
-
     }
 
     TopAppBar(

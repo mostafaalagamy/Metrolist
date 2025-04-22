@@ -37,6 +37,10 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -69,6 +73,8 @@ import com.metrolist.music.ui.component.SortHeader
 import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
 import com.metrolist.music.viewmodels.LibraryPlaylistsViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.util.UUID
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -77,6 +83,8 @@ fun LibraryPlaylistsScreen(
     navController: NavController,
     filterContent: @Composable () -> Unit,
     viewModel: LibraryPlaylistsViewModel = hiltViewModel(),
+    initialTextFieldValue: String? = null,
+    allowSyncing: Boolean = true,
 ) {
     val menuState = LocalMenuState.current
     val haptic = LocalHapticFeedback.current
@@ -128,6 +136,16 @@ fun LibraryPlaylistsScreen(
             thumbnails = emptyList(),
         )
 
+    val cachePlaylist =
+        Playlist(
+            playlist = PlaylistEntity(
+                id = UUID.randomUUID().toString(),
+                name = stringResource(R.string.cached_playlist)
+            ),
+            songCount = 0,
+            thumbnails = emptyList(),
+        )
+
     val lazyListState = rememberLazyListState()
     val lazyGridState = rememberLazyGridState()
 
@@ -144,7 +162,9 @@ fun LibraryPlaylistsScreen(
 
     LaunchedEffect(Unit) {
         if (ytmSync) {
-            viewModel.sync()
+            withContext(Dispatchers.IO) {
+                viewModel.sync()
+            }
         }
     }
 
@@ -162,7 +182,9 @@ fun LibraryPlaylistsScreen(
 
     if (showCreatePlaylistDialog) {
         CreatePlaylistDialog(
-            onDismiss = { showCreatePlaylistDialog = false }
+            onDismiss = { showCreatePlaylistDialog = false },
+            initialTextFieldValue = initialTextFieldValue,
+            allowSyncing = allowSyncing
         )
     }
 
@@ -292,6 +314,25 @@ fun LibraryPlaylistsScreen(
                         )
                     }
 
+                    item(
+                        key = "cachePlaylist",
+                        contentType = { CONTENT_TYPE_PLAYLIST },
+                    ) {
+                        PlaylistListItem(
+                            playlist = cachePlaylist,
+                            autoPlaylist = true,
+                            modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .combinedClickable(
+                                    onClick = {
+                                        navController.navigate("cache_playlist/cached")
+                                    },
+                                )
+                                .animateItem(),
+                        )
+                    }
+
                     playlists.let { playlists ->
                         if (playlists.isEmpty()) {
                             item {
@@ -402,6 +443,26 @@ fun LibraryPlaylistsScreen(
                                 .combinedClickable(
                                     onClick = {
                                         navController.navigate("top_playlist/$topSize")
+                                    },
+                                )
+                                .animateItem(),
+                        )
+                    }
+
+                    item(
+                        key = "cachePlaylist",
+                        contentType = { CONTENT_TYPE_PLAYLIST },
+                    ) {
+                        PlaylistGridItem(
+                            playlist = cachePlaylist,
+                            fillMaxWidth = true,
+                            autoPlaylist = true,
+                            modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .combinedClickable(
+                                    onClick = {
+                                        navController.navigate("cache_playlist/cached")
                                     },
                                 )
                                 .animateItem(),

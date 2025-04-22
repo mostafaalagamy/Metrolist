@@ -59,6 +59,7 @@ import com.metrolist.innertube.models.ArtistItem
 import com.metrolist.innertube.models.PlaylistItem
 import com.metrolist.innertube.models.SongItem
 import com.metrolist.innertube.models.WatchEndpoint
+import com.metrolist.innertube.models.BrowseEndpoint
 import com.metrolist.innertube.models.YTItem
 import com.metrolist.innertube.utils.parseCookieString
 import com.metrolist.music.LocalDatabase
@@ -357,6 +358,7 @@ fun HomeScreen(
                             Pair("stats", stringResource(R.string.stats)),
                             Pair("liked", stringResource(R.string.liked)),
                             Pair("downloads", stringResource(R.string.offline)),
+                            Pair("cache", stringResource(R.string.cached_playlist)),
                             if (isLoggedIn) Pair(
                                 "account",
                                 stringResource(R.string.account)
@@ -369,6 +371,7 @@ fun HomeScreen(
                                 "stats" -> navController.navigate("stats")
                                 "liked" -> navController.navigate("auto_playlist/liked")
                                 "downloads" -> navController.navigate("auto_playlist/downloaded")
+                                "cache" -> navController.navigate("cache_playlist/cached")
                                 "account" -> if (isLoggedIn) navController.navigate("account")
                             }
                         },
@@ -478,7 +481,7 @@ fun HomeScreen(
                             }) * rows)
                             .animateItem()
                     ) {
-                        items(keepListening.drop(1)) {
+                        items(keepListening) {
                             localGridItem(it)
                         }
                     }
@@ -651,7 +654,7 @@ fun HomeScreen(
                 }
             }
 
-            homePage?.sections?.forEach {
+            homePage?.originalPage?.sections?.forEach {
                 item {
                     NavigationTitle(
                         title = it.title,
@@ -672,12 +675,16 @@ fun HomeScreen(
                             }
                         },
                         onClick = it.endpoint?.browseId?.let { browseId ->
-                            {
-                                when (browseId) {
-                                    "FEmusic_moods_and_genres" -> navController.navigate("mood_and_genres")
-                                    "FEmusic_charts" -> navController.navigate("charts_screen")
-                                    else -> navController.navigate("browse/$browseId")
+                            if (homePage?.browseContentAvailable?.get(browseId) == true) {
+                                {
+                                    when (browseId) {
+                                        "FEmusic_moods_and_genres" -> navController.navigate("mood_and_genres")
+                                        "FEmusic_charts" -> navController.navigate("charts_screen")
+                                        else -> navController.navigate("browse/$browseId")
+                                    }
                                 }
+                            } else {
+                                null
                             }
                         },
                         modifier = Modifier.animateItem()
@@ -697,7 +704,6 @@ fun HomeScreen(
                     }
                 }
             }
-
             if (isLoading) {
                 item {
                     ShimmerHost(

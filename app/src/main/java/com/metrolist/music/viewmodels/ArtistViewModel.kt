@@ -35,8 +35,12 @@ class ArtistViewModel @Inject constructor(
     fun fetchArtistsFromYTM() {
         viewModelScope.launch {
             YouTube.artist(artistId)
-                .onSuccess {
-                    artistPage = it
+                .onSuccess { page ->
+                    val filteredSections = page.sections.filterNot { section ->
+                        section.title.equals("From your library", ignoreCase = true)
+                    }
+
+                    artistPage = page.copy(sections = filteredSections)
                 }.onFailure {
                     reportException(it)
                 }

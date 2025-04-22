@@ -32,7 +32,7 @@ data class PlaylistEntity(
         const val LIKED_PLAYLIST_ID = "LP_LIKED"
         const val DOWNLOADED_PLAYLIST_ID = "LP_DOWNLOADED"
 
-        fun generatePlaylistId() = "LP" + RandomStringUtils.random(8, true, false)
+        fun generatePlaylistId() = "LP" + RandomStringUtils.insecure().next(8, true, false)
     }
 
     val shareLink: String?

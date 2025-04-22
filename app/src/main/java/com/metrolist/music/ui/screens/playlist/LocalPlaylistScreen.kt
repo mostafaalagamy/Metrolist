@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -1014,14 +1016,22 @@ fun LocalPlaylistHeader(
                     fontWeight = FontWeight.Normal,
                 )
 
-                Row {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .horizontalScroll(rememberScrollState()),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
                     if (editable) {
                         IconButton(
                             onClick = onshowDeletePlaylistDialog,
+                            modifier = Modifier.size(40.dp)
                         ) {
                             Icon(
                                 painter = painterResource(R.drawable.delete),
                                 contentDescription = null,
+                                modifier = Modifier.size(24.dp)
                             )
                         }
                     } else {
@@ -1030,22 +1040,27 @@ fun LocalPlaylistHeader(
                                 database.transaction {
                                     update(playlist.playlist.toggleLike())
                                 }
-                            }
+                            },
+                            modifier = Modifier.size(40.dp)
                         ) {
                             Icon(
                                 painter = painterResource(if (liked) R.drawable.favorite else R.drawable.favorite_border),
                                 contentDescription = null,
-                                tint = if (liked) MaterialTheme.colorScheme.error else LocalContentColor.current
+                                tint = if (liked) MaterialTheme.colorScheme.error else LocalContentColor.current,
+                                modifier = Modifier.size(24.dp)
                             )
                         }
                     }
+
                     if (editable) {
                         IconButton(
                             onClick = onShowEditDialog,
+                            modifier = Modifier.size(40.dp)
                         ) {
                             Icon(
                                 painter = painterResource(R.drawable.edit),
                                 contentDescription = null,
+                                modifier = Modifier.size(24.dp)
                             )
                         }
                     }
@@ -1054,9 +1069,9 @@ fun LocalPlaylistHeader(
                         IconButton(
                             onClick = {
                                 scope.launch(Dispatchers.IO) {
-                                    val playlistPage =
-                                        YouTube.playlist(playlist.playlist.browseId).completed().getOrNull()
-                                            ?: return@launch
+                                    val playlistPage = YouTube.playlist(playlist.playlist.browseId)
+                                        .completed()
+                                        .getOrNull() ?: return@launch
                                     database.transaction {
                                         clearPlaylist(playlist.id)
                                         playlistPage.songs
@@ -1075,11 +1090,13 @@ fun LocalPlaylistHeader(
                                 scope.launch(Dispatchers.Main) {
                                     snackbarHostState.showSnackbar(context.getString(R.string.playlist_synced))
                                 }
-                            }
+                            },
+                            modifier = Modifier.size(40.dp)
                         ) {
                             Icon(
                                 painter = painterResource(R.drawable.sync),
-                                contentDescription = null
+                                contentDescription = null,
+                                modifier = Modifier.size(24.dp)
                             )
                         }
                     }
@@ -1088,10 +1105,12 @@ fun LocalPlaylistHeader(
                         Download.STATE_COMPLETED -> {
                             IconButton(
                                 onClick = onShowRemoveDownloadDialog,
+                                modifier = Modifier.size(40.dp)
                             ) {
                                 Icon(
                                     painter = painterResource(R.drawable.offline),
                                     contentDescription = null,
+                                    modifier = Modifier.size(24.dp)
                                 )
                             }
                         }
@@ -1108,6 +1127,7 @@ fun LocalPlaylistHeader(
                                         )
                                     }
                                 },
+                                modifier = Modifier.size(40.dp)
                             ) {
                                 CircularProgressIndicator(
                                     strokeWidth = 2.dp,
@@ -1120,14 +1140,13 @@ fun LocalPlaylistHeader(
                             IconButton(
                                 onClick = {
                                     songs.forEach { song ->
-                                        val downloadRequest =
-                                            DownloadRequest
-                                                .Builder(song.song.id, song.song.id.toUri())
-                                                .setCustomCacheKey(song.song.id)
-                                                .setData(
-                                                    song.song.song.title
-                                                        .toByteArray(),
-                                                ).build()
+                                        val downloadRequest = DownloadRequest
+                                            .Builder(song.song.id, song.song.id.toUri())
+                                            .setCustomCacheKey(song.song.id)
+                                            .setData(
+                                                song.song.song.title
+                                                    .toByteArray(),
+                                            ).build()
                                         DownloadService.sendAddDownload(
                                             context,
                                             ExoDownloadService::class.java,
@@ -1136,10 +1155,12 @@ fun LocalPlaylistHeader(
                                         )
                                     }
                                 },
+                                modifier = Modifier.size(40.dp)
                             ) {
                                 Icon(
                                     painter = painterResource(R.drawable.download),
                                     contentDescription = null,
+                                    modifier = Modifier.size(24.dp)
                                 )
                             }
                         }
@@ -1151,10 +1172,12 @@ fun LocalPlaylistHeader(
                                 items = songs.map { it.song.toMediaItem() },
                             )
                         },
+                        modifier = Modifier.size(40.dp)
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.queue_music),
                             contentDescription = null,
+                            modifier = Modifier.size(24.dp)
                         )
                     }
                 }

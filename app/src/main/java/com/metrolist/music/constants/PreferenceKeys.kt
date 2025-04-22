@@ -14,6 +14,7 @@ val DefaultOpenTabKey = stringPreferencesKey("defaultOpenTab")
 val SlimNavBarKey = booleanPreferencesKey("slimNavBar")
 val GridItemsSizeKey = stringPreferencesKey("gridItemSize")
 val SliderStyleKey = stringPreferencesKey("sliderStyle")
+val SwipeSongToAddKey = booleanPreferencesKey("swipe_song_to_Add")
 
 enum class SliderStyle {
     DEFAULT,
@@ -52,6 +53,7 @@ val MaxImageCacheSizeKey = intPreferencesKey("maxImageCacheSize")
 val MaxSongCacheSizeKey = intPreferencesKey("maxSongCacheSize")
 
 val PauseListenHistoryKey = booleanPreferencesKey("pauseListenHistory")
+val PauseRemoteListenHistoryKey = booleanPreferencesKey("pauseRemoteListenHistory")
 val PauseSearchHistoryKey = booleanPreferencesKey("pauseSearchHistory")
 val DisableScreenshotKey = booleanPreferencesKey("disableScreenshot")
 
@@ -247,7 +249,7 @@ enum class PlayerBackgroundStyle {
 }
 
 val TopSize = stringPreferencesKey("topSize")
-val minPlaybackDurKey = intPreferencesKey("minPlaybackDur")
+val HistoryDuration = floatPreferencesKey("historyDuration")
 
 val PlayerButtonsStyleKey = stringPreferencesKey("player_buttons_style")
 val PlayerBackgroundStyleKey = stringPreferencesKey("playerBackgroundStyle")

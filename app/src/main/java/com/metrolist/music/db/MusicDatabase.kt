@@ -23,6 +23,7 @@ import com.metrolist.music.db.entities.Event
 import com.metrolist.music.db.entities.FormatEntity
 import com.metrolist.music.db.entities.LyricsEntity
 import com.metrolist.music.db.entities.PlaylistEntity
+import com.metrolist.music.db.entities.PlayCountEntity
 import com.metrolist.music.db.entities.PlaylistSongMap
 import com.metrolist.music.db.entities.PlaylistSongMapPreview
 import com.metrolist.music.db.entities.RelatedSongMap
@@ -79,14 +80,15 @@ class MusicDatabase(
         LyricsEntity::class,
         Event::class,
         RelatedSongMap::class,
-        SetVideoIdEntity::class
+        SetVideoIdEntity::class,
+        PlayCountEntity::class
     ],
     views = [
         SortedSongArtistMap::class,
         SortedSongAlbumMap::class,
         PlaylistSongMapPreview::class,
     ],
-    version = 17,
+    version = 18,
     exportSchema = true,
     autoMigrations = [
         AutoMigration(from = 2, to = 3),
@@ -104,6 +106,7 @@ class MusicDatabase(
         AutoMigration(from = 14, to = 15),
         AutoMigration(from = 15, to = 16),
         AutoMigration(from = 16, to = 17, spec = Migration16To17::class),
+        AutoMigration(from = 17, to = 18),
     ],
 )
 @TypeConverters(Converters::class)

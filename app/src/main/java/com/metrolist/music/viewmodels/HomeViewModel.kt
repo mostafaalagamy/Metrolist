@@ -10,19 +10,26 @@ import com.metrolist.innertube.models.YTItem
 import com.metrolist.innertube.pages.ExplorePage
 import com.metrolist.innertube.pages.HomePage
 import com.metrolist.innertube.utils.completedLibraryPage
+import com.metrolist.music.constants.QuickPicks
+import com.metrolist.music.constants.QuickPicksKey
 import com.metrolist.music.db.MusicDatabase
 import com.metrolist.music.db.entities.Album
 import com.metrolist.music.db.entities.Artist
 import com.metrolist.music.db.entities.LocalItem
 import com.metrolist.music.db.entities.Playlist
 import com.metrolist.music.db.entities.Song
+import com.metrolist.music.extensions.toEnum
+import com.metrolist.music.utils.dataStore
 import com.metrolist.music.models.SimilarRecommendation
+import com.metrolist.music.utils.SyncUtils
 import com.metrolist.music.utils.reportException
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -30,16 +37,21 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     @ApplicationContext context: Context,
     val database: MusicDatabase,
+    val syncUtils: SyncUtils,
 ) : ViewModel() {
     val isRefreshing = MutableStateFlow(false)
     val isLoading = MutableStateFlow(false)
+
+    private val quickPicksEnum = context.dataStore.data.map {
+        it[QuickPicksKey].toEnum(QuickPicks.QUICK_PICKS)
+    }.distinctUntilChanged()
 
     val quickPicks = MutableStateFlow<List<Song>?>(null)
     val forgottenFavorites = MutableStateFlow<List<Song>?>(null)
     val keepListening = MutableStateFlow<List<LocalItem>?>(null)
     val similarRecommendations = MutableStateFlow<List<SimilarRecommendation>?>(null)
     val accountPlaylists = MutableStateFlow<List<PlaylistItem>?>(null)
-    val homePage = MutableStateFlow<HomePage?>(null)
+    val homePage = MutableStateFlow<HomePageWithBrowseCheck?>(null)
     val explorePage = MutableStateFlow<ExplorePage?>(null)
     val recentActivity = MutableStateFlow<List<YTItem>?>(null)
     val recentPlaylistsDb = MutableStateFlow<List<Playlist>?>(null)
@@ -47,11 +59,22 @@ class HomeViewModel @Inject constructor(
     val allLocalItems = MutableStateFlow<List<LocalItem>>(emptyList())
     val allYtItems = MutableStateFlow<List<YTItem>>(emptyList())
 
+    data class HomePageWithBrowseCheck(
+        val originalPage: HomePage,
+        val browseContentAvailable: Map<String, Boolean>
+    )
+
+    private suspend fun getQuickPicks(){
+        when (quickPicksEnum.first()) {
+            QuickPicks.QUICK_PICKS -> quickPicks.value = database.quickPicks().first().shuffled().take(20)
+            QuickPicks.LAST_LISTEN -> songLoad()
+        }
+    }
+
     private suspend fun load() {
         isLoading.value = true
 
-        quickPicks.value = database.quickPicks()
-            .first().shuffled().take(20)
+        getQuickPicks()
 
         forgottenFavorites.value = database.forgottenFavorites()
             .first().shuffled().take(20)
@@ -120,8 +143,24 @@ class HomeViewModel @Inject constructor(
                 }
         similarRecommendations.value = (artistRecommendations + songRecommendations).shuffled()
 
+        // homePage
         YouTube.home().onSuccess { page ->
-            homePage.value = page
+            val browseContentAvailable = mutableMapOf<String, Boolean>()
+            page.sections.forEach { section ->
+                section.endpoint?.browseId?.let { browseId ->
+                    if (browseId in listOf("FEmusic_moods_and_genres", "FEmusic_charts")) {
+                        browseContentAvailable[browseId] = true
+                    } else {
+                        YouTube.browse(browseId, params = null).onSuccess { browsePage ->
+                            browseContentAvailable[browseId] = browsePage.items.isNotEmpty()
+                        }.onFailure {
+                            browseContentAvailable[browseId] = false
+                            reportException(it)
+                        }
+                    }
+                }
+            }
+            homePage.value = HomePageWithBrowseCheck(page, browseContentAvailable)
         }.onFailure {
             reportException(it)
         }
@@ -133,9 +172,20 @@ class HomeViewModel @Inject constructor(
         }
 
         allYtItems.value = similarRecommendations.value?.flatMap { it.items }.orEmpty() +
-                homePage.value?.sections?.flatMap { it.items }.orEmpty()
+                homePage.value?.originalPage?.sections?.flatMap { it.items }.orEmpty()
 
         isLoading.value = false
+    }
+
+    private suspend fun songLoad(){
+        val song = database.events().first().firstOrNull()?.song
+        if (song != null) {
+            println(song.song.title)
+            if (database.hasRelatedSongs(song.id)){
+                val relatedSongs = database.getRelatedSongs(song.id).first().shuffled().take(20)
+                quickPicks.value = relatedSongs
+            }
+        }
     }
 
     fun refresh() {
@@ -148,8 +198,13 @@ class HomeViewModel @Inject constructor(
     }
 
     init {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.IO) {           
             load()
+            viewModelScope.launch(Dispatchers.IO) { syncUtils.syncLikedSongs() }
+            viewModelScope.launch(Dispatchers.IO) { syncUtils.syncLibrarySongs() }
+            viewModelScope.launch(Dispatchers.IO) { syncUtils.syncSavedPlaylists() }
+            viewModelScope.launch(Dispatchers.IO) { syncUtils.syncLikedAlbums() }
+            viewModelScope.launch(Dispatchers.IO) { syncUtils.syncArtistsSubscriptions() }
         }
     }
 }

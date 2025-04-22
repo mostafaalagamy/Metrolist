@@ -887,14 +887,18 @@ class MainActivity : ComponentActivity() {
                                                             coroutineScope.launch {
                                                                 delay(100)
                                                                 if (navigateToExplore) {
-                                                                    navigateToScreen(
-                                                                        navController,
-                                                                        screen
-                                                                    )
+                                                                        if (isSelected) {
+                                                                            navController.currentBackStackEntry?.savedStateHandle?.set(
+                                                                                "scrollToTop",
+                                                                                true
+                                                                            )
+                                                                        } else {
+                                                                            navigateToScreen(navController, screen)
+                                                                        }
+                                                                    }
                                                                 }
                                                             }
-                                                        }
-                                                    } else {
+                                                        } else {
                                                         if (isSelected) {
                                                             navController.currentBackStackEntry?.savedStateHandle?.set(
                                                                 "scrollToTop",

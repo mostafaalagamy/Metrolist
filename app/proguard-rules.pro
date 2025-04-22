@@ -48,16 +48,6 @@
 # @Serializable and @Polymorphic are used at runtime for polymorphic serialization.
 -keepattributes RuntimeVisibleAnnotations,AnnotationDefault
 
-# Don't print notes about potential mistakes or omissions in the configuration for kotlinx-serialization classes
-# See also https://github.com/Kotlin/kotlinx.serialization/issues/1900
--dontnote kotlinx.serialization.**
-
-# Serialization core uses `java.lang.ClassValue` for caching inside these specified classes.
-# If there is no `java.lang.ClassValue` (for example, in Android), then R8/ProGuard will print a warning.
-# However, since in this case they will not be used, we can disable these warnings
--dontwarn kotlinx.serialization.internal.ClassValueReferences
-
-
 -dontwarn javax.servlet.ServletContainerInitializer
 -dontwarn org.bouncycastle.jsse.BCSSLParameters
 -dontwarn org.bouncycastle.jsse.BCSSLSocket
@@ -70,22 +60,27 @@
 -dontwarn org.openjsse.net.ssl.OpenJSSE
 -dontwarn org.slf4j.impl.StaticLoggerBinder
 
-# Keep Data data classes
--keep class com.my.kizzy.remote.** { <fields>; }
-# Keep Gateway data classes
--keep class com.my.kizzy.gateway.entities.** { <fields>; }
-
 ## Rules for NewPipeExtractor
 -keep class org.schabi.newpipe.extractor.timeago.patterns.** { *; }
 -keep class org.mozilla.javascript.** { *; }
 -keep class org.mozilla.classfile.ClassFileWriter
 -dontwarn org.mozilla.javascript.JavaToJSONConverters
 -dontwarn org.mozilla.javascript.tools.**
-# Please add these rules to your existing keep rules in order to suppress warning
-# This is generated automatically by the Android Gradle plugin.
+
+## Logging (does not affect Timber)
+-assumenosideeffects class android.util.Log {
+    public static boolean isLoggable(java.lang.String, int);
+    public static int v(...);
+    public static int d(...);
+    public static int i(...);
+    ## Leave warnings and errors in release builds
+    #public static int w(...);
+    #public static int e(...);
+}
+
+# Generated automatically by the Android Gradle plugin.
 -dontwarn java.beans.BeanDescriptor
 -dontwarn java.beans.BeanInfo
 -dontwarn java.beans.IntrospectionException
 -dontwarn java.beans.Introspector
 -dontwarn java.beans.PropertyDescriptor
-

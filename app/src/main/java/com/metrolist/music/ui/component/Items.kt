@@ -84,6 +84,7 @@ import com.metrolist.music.LocalDatabase
 import com.metrolist.music.LocalDownloadUtil
 import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
+import com.metrolist.music.constants.SwipeSongToAddKey
 import com.metrolist.music.constants.GridThumbnailHeight
 import com.metrolist.music.constants.ListItemHeight
 import com.metrolist.music.constants.ListThumbnailSize
@@ -99,6 +100,7 @@ import com.metrolist.music.playback.queues.LocalAlbumRadio
 import com.metrolist.music.ui.theme.extractThemeColor
 import com.metrolist.music.utils.joinByBullet
 import com.metrolist.music.utils.makeTimeString
+import com.metrolist.music.utils.rememberPreference
 import com.metrolist.music.utils.reportException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -376,7 +378,9 @@ fun SongListItem(
     isPlaying: Boolean = false,
     trailingContent: @Composable RowScope.() -> Unit = {},
 ) {
-    if (isSwipeable) {
+    val (swipeSongToAdd) = rememberPreference(SwipeSongToAddKey, defaultValue = false)
+ 
+     if (isSwipeable && swipeSongToAdd) {
         val context = LocalContext.current
         val playerConnection = LocalPlayerConnection.current ?: return
 
@@ -438,7 +442,8 @@ fun SongListItem(
                     ) {
                         Box(
                             modifier = Modifier
-                                .fillMaxHeight()
+                                .width(56.dp)
+                                .height(48.dp)
                                 .background(color),
                             contentAlignment = Alignment.Center
                         ) {
@@ -1296,6 +1301,7 @@ fun PlaylistListItem(
             when (playlist.playlist.name) {
                 stringResource(R.string.liked) -> R.drawable.favorite_border
                 stringResource(R.string.offline) -> R.drawable.offline
+                stringResource(R.string.cached_playlist) -> R.drawable.cached
                 else -> {
                     if (autoPlaylist) {
                         R.drawable.trending_up
@@ -1389,6 +1395,7 @@ fun PlaylistGridItem(
             when (playlist.playlist.name) {
                 stringResource(R.string.liked) -> R.drawable.favorite_border
                 stringResource(R.string.offline) -> R.drawable.offline
+                stringResource(R.string.cached_playlist) -> R.drawable.cached
                 else -> {
                     if (autoPlaylist) {
                         R.drawable.trending_up
@@ -1697,7 +1704,8 @@ fun YouTubeListItem(
         )
     }
 
-    if (isSwipeable) {
+    val (swipeSongToAdd) = rememberPreference(SwipeSongToAddKey, defaultValue = false)
+    if (isSwipeable && swipeSongToAdd) {
         val context = LocalContext.current
         val playerConnection = LocalPlayerConnection.current ?: return
 
@@ -1747,7 +1755,8 @@ fun YouTubeListItem(
                     ) {
                         Box(
                             modifier = Modifier
-                                .fillMaxHeight()
+                                .width(56.dp)
+                                .height(48.dp)
                                 .background(color),
                             contentAlignment = Alignment.Center
                         ) {

@@ -296,7 +296,17 @@ class LibraryMixViewModel
 constructor(
     @ApplicationContext context: Context,
     database: MusicDatabase,
+    private val syncUtils: SyncUtils,
 ) : ViewModel() {
+    val syncAllLibrary = {
+         viewModelScope.launch(Dispatchers.IO) {
+             syncUtils.syncLikedSongs()
+             syncUtils.syncLibrarySongs()
+             syncUtils.syncArtistsSubscriptions()
+             syncUtils.syncLikedAlbums()
+             syncUtils.syncSavedPlaylists()
+         }
+    }
     val topValue =
         context.dataStore.data
             .map { it[TopSize] ?: "50" }
