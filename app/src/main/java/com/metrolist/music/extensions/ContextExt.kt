@@ -12,8 +12,7 @@ import kotlinx.coroutines.runBlocking
 
 fun Context.isSyncEnabled(): Boolean {
     return runBlocking {
-        val ytmSync = dataStore[YtmSyncKey] ?: true
-        ytmSync && isUserLoggedIn()
+        dataStore.get(YtmSyncKey, true) && isUserLoggedIn()
     }
 }
 
