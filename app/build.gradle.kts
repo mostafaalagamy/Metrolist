@@ -161,7 +161,7 @@ dependencies {
 
     implementation(libs.material3)
     implementation(libs.palette)
-    implementation(projects.materialColorUtilities)
+    implementation(libs.materialKolor)
 
     implementation(libs.coil)
 
@@ -179,7 +179,7 @@ dependencies {
     implementation(libs.apache.lang3)
 
     implementation(libs.hilt)
-    implementation("org.jsoup:jsoup:1.18.1")
+    implementation("org.jsoup:jsoup:1.19.1")
     kapt(libs.hilt.compiler)
 
     implementation(projects.innertube)

@@ -10,9 +10,13 @@ import com.metrolist.innertube.models.YTItem
 import com.metrolist.innertube.pages.ExplorePage
 import com.metrolist.innertube.pages.HomePage
 import com.metrolist.innertube.utils.completedLibraryPage
+import com.metrolist.music.constants.QuickPicks
+import com.metrolist.music.constants.QuickPicksKey
 import com.metrolist.music.constants.YtmSyncKey
 import com.metrolist.music.db.MusicDatabase
 import com.metrolist.music.db.entities.*
+import com.metrolist.music.extensions.toEnum
+import com.metrolist.music.utils.dataStore
 import com.metrolist.music.models.SimilarRecommendation
 import com.metrolist.music.utils.SyncUtils
 import com.metrolist.music.utils.dataStore
@@ -34,6 +38,10 @@ class HomeViewModel @Inject constructor(
     val isRefreshing = MutableStateFlow(false)
     val isLoading = MutableStateFlow(false)
 
+    private val quickPicksEnum = context.dataStore.data.map {
+        it[QuickPicksKey].toEnum(QuickPicks.QUICK_PICKS)
+    }.distinctUntilChanged()
+
     val quickPicks = MutableStateFlow<List<Song>?>(null)
     val forgottenFavorites = MutableStateFlow<List<Song>?>(null)
     val keepListening = MutableStateFlow<List<LocalItem>?>(null)
@@ -52,11 +60,20 @@ class HomeViewModel @Inject constructor(
         val browseContentAvailable: Map<String, Boolean>
     )
 
+    private suspend fun getQuickPicks(){
+        when (quickPicksEnum.first()) {
+            QuickPicks.QUICK_PICKS -> quickPicks.value = database.quickPicks().first().shuffled().take(20)
+            QuickPicks.LAST_LISTEN -> songLoad()
+        }
+    }
+
     private suspend fun load() {
         isLoading.value = true
 
-        quickPicks.value = database.quickPicks().first().shuffled().take(20)
-        forgottenFavorites.value = database.forgottenFavorites().first().shuffled().take(20)
+        getQuickPicks()
+
+        forgottenFavorites.value = database.forgottenFavorites()
+            .first().shuffled().take(20)
 
         val fromTimeStamp = System.currentTimeMillis() - 86400000 * 7 * 2
 
@@ -153,6 +170,17 @@ class HomeViewModel @Inject constructor(
                 homePage.value?.originalPage?.sections?.flatMap { it.items }.orEmpty()
 
         isLoading.value = false
+    }
+
+    private suspend fun songLoad(){
+        val song = database.events().first().firstOrNull()?.song
+        if (song != null) {
+            println(song.song.title)
+            if (database.hasRelatedSongs(song.id)){
+                val relatedSongs = database.getRelatedSongs(song.id).first().shuffled().take(20)
+                quickPicks.value = relatedSongs
+            }
+        }
     }
 
     fun refresh() {
