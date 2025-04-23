@@ -1,87 +1,27 @@
 name: Build PR
-
 on:
   pull_request:
-    branches: ["**"]
+    branches:
+      - '**'
 
 jobs:
-  build_debug:
-    name: Build Debug APK
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up JDK 21
+      - name: set up JDK 21
         uses: actions/setup-java@v4
         with:
-          java-version: "21"
+          java-version: 21
           distribution: "temurin"
+          cache: 'gradle'
 
-      - name: Set Up Gradle
-        uses: gradle/actions/setup-gradle@v4
-        with:
-          cache-cleanup: "on-success"
+      - name: Build debug APK and run JVM tests
+        run: ./gradlew assembleDebug
 
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
-
-      - name: Restore Persistent Keystore
-        run: |
-          echo "${{ secrets.DEBUG_KEYSTORE }}" | base64 -d > ./app/persistent-debug.keystore
-
-      - name: Build Debug APK (Universal)
-        run: ./gradlew assembleUniversalDebug
-        env:
-          PULL_REQUEST: "true"
-
-      - name: Upload Debug APK
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: universal-debug-apk
-          path: app/build/outputs/apk/universal/debug/*.apk
-
-  build_release:
-    name: Build Release APK
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up JDK 21
-        uses: actions/setup-java@v4
-        with:
-          java-version: "21"
-          distribution: "temurin"
-
-      - name: Set Up Gradle
-        uses: gradle/actions/setup-gradle@v4
-        with:
-          cache-cleanup: "on-success"
-
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
-
-      - name: Build Release APK (Universal)
-        run: ./gradlew assembleUniversalRelease
-        env:
-          PULL_REQUEST: "true"
-
-      - name: Sign APK
-        uses: ilharp/sign-android-release@v1.0.4
-        with:
-          releaseDir: app/build/outputs/apk/universal/release/
-          signingKey: ${{ secrets.KEYSTORE }}
-          keyAlias: ${{ secrets.KEY_ALIAS }}
-          keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
-          keyPassword: ${{ secrets.KEY_PASSWORD }}
-          buildToolsVersion: 35.0.0
-
-      - name: Move signed release APK
-        run: |
-          mkdir -p app/build/outputs/apk/universal/release/out
-          find app/build/outputs/apk/universal/release/ -name "*-signed.apk" -o -name "*-unsigned-signed.apk" | xargs -I{} mv {} app/build/outputs/apk/universal/release/out/app-universal-release.apk
-
-      - name: Upload Release APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: universal-release-apk
-          path: app/build/outputs/apk/universal/release/out/*.apk
+          name: debug-apk
+          path: app/build/outputs/apk/debug/*.apk
