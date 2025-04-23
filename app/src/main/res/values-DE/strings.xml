@@ -439,4 +439,10 @@
         <item quantity="one">%d Mal</item>
         <item quantity="other">%d Male</item>
     </plurals>
+    <string name="pause_remote_listen_history">Pause share listen history with YouTube Music</string>
+    <string name="cached_playlist">Im Cache</string>
+    <string name="remove_from_cache">Aus Cache entfernen</string>
+    <string name="top_music_videos">Top Musikvideos</string>
+    <string name="trending">Im Trend</string>
+    <string name="swipe_song_to_add">Nach rechts wischen, um den nächsten Song abzuspielen, oder nach links um ihn zur Warteschlange hinzuzufügen.</string>
 </resources>
