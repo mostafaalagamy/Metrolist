@@ -55,8 +55,6 @@ align="center">](https://github.com/mostafaalagamy/Metrolist/releases/latest/dow
 align="center">](https://apt.izzysoft.de/fdroid/index/apk/com.metrolist.music)
 [<img src="https://www.openapk.net/images/openapk-badge.png" alt="Get it on OpenAPK" height="80"
 align="center">](https://www.openapk.net/metrolist/com.metrolist.music/)
-[<img src="https://www.androidfreeware.net/images/androidfreeware-badge.png" alt="Get it on Android Freeware" height="80"
-align="center">](https://www.androidfreeware.net/download-metrolist-apk.html)
 [<img src="https://github.com/ImranR98/Obtainium/blob/main/assets/graphics/badge_obtainium.png"
 alt="Get it on Obtainium"
 height="55"
