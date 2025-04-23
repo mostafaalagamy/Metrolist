@@ -96,6 +96,7 @@
     <string name="liked_songs">الأغاني المفضلة</string>
     <string name="downloaded_songs">الأغاني المحمّلة</string>
     <string name="sync_playlist">مزامنة قائمة التشغيل</string>
+    <string name="sync_disabled">المزامنة غير مفعلة</string>
     <string name="playlist_is_empty">قائمة التشغيل فارغة</string>
     <string name="remove_download_playlist_confirm">هل تريد حقًا إزالة جميع أغاني قائمة التشغيل "%s" من مساحة الأغاني المحملة؟</string>
     <string name="delete_playlist_confirm">هل تريد حقًا حذف قائمة التشغيل "%s"؟</string>
