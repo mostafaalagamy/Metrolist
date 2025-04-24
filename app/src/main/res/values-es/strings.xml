@@ -384,7 +384,7 @@
     <string name="clear_listen_history">Borrar historial de reproducciones</string>
     <string name="clear_listen_history_confirm">¿Seguro que deseas borrar todo el historial de reproducciones?</string>
     <string name="pause_search_history">Pausar historial de búsquedas</string>
-    <string name=="clear_search_history">Borrar historial de búsquedas</string>
+    <string name="clear_search_history">Borrar historial de búsquedas</string>
     <string name="clear_search_history_confirm">¿Seguro que deseas borrar todo el historial de búsquedas?</string>
     <string name="disable_screenshot">Desactivar capturas de pantalla</string>
     <string name="disable_screenshot_desc">Cuando esta opción está activada, las capturas de pantalla y la vista de la app en recientes están deshabilitadas.</string>
