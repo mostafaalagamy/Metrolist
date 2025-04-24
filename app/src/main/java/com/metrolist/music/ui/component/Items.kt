@@ -1345,7 +1345,7 @@ fun BoxScope.OverlayPlayButton(
             modifier = Modifier
                 .size(36.dp)
                 .clip(CircleShape)
-                .background(Color.Black.copy(alpha = 0.4f))
+                .background(Color.Black.copy(alpha = ActiveBoxAlpha))
         ) {
             Icon(
                 painter = painterResource(R.drawable.play),
