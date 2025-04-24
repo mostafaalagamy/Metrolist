@@ -1416,11 +1416,13 @@ fun SwipeToSongBox(
                             Toast.makeText(ctx, R.string.play_next, Toast.LENGTH_SHORT).show()
                             reset(offset, scope)
                         }
+
                         offset.value <= -threshold -> {
                             player?.addToQueue(listOf(mediaItem))
                             Toast.makeText(ctx, R.string.add_to_queue, Toast.LENGTH_SHORT).show()
                             reset(offset, scope)
                         }
+
                         else -> reset(offset, scope)
                     }
                 }
@@ -1445,6 +1447,7 @@ fun SwipeToSongBox(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(60.dp)
+                    .align(Alignment.Center)
                     .background(bg),
                 contentAlignment = align
             ) {
