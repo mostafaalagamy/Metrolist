@@ -19,6 +19,8 @@ jobs:
 
       - name: Build debug APK and run JVM tests
         run: ./gradlew assembleDebug
+        env:
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
