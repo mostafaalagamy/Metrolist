@@ -1248,7 +1248,10 @@ fun ItemThumbnail(
 ) {
     Box(
         contentAlignment = Alignment.Center,
-        modifier = modifier
+        modifier = Modifier
+            .fillMaxSize()
+            .aspectRatio(thumbnailRatio)
+            .clip(thumbnailShape)
     ) {
         if (albumIndex != null) {
             AnimatedVisibility(
