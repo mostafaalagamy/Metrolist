@@ -1237,6 +1237,7 @@ fun LocalAlbumsGrid(
 )
 
 @Composable
+@Composable
 fun ItemThumbnail(
     thumbnailUrl: String?,
     isActive: Boolean,
@@ -1244,13 +1245,15 @@ fun ItemThumbnail(
     shape: Shape,
     modifier: Modifier = Modifier,
     albumIndex: Int? = null,
-    showPlayOverlay: Boolean = false
+    showPlayOverlay: Boolean = false,
+    thumbnailRatio: Float = 1f
 ) {
     Box(
         contentAlignment = Alignment.Center,
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
-            .clip(RoundedCornerShape(ThumbnailCornerRadius))
+            .aspectRatio(thumbnailRatio)
+            .clip(shape)
     ) {
         if (albumIndex != null) {
             AnimatedVisibility(
