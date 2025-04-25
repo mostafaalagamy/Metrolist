@@ -1242,7 +1242,6 @@ fun ItemThumbnail(
     isActive: Boolean,
     isPlaying: Boolean,
     shape: Shape,
-    thumbnailRatio: Float = if (item is SongItem) 16f / 9 else 1f
     modifier: Modifier = Modifier,
     albumIndex: Int? = null,
     showPlayOverlay: Boolean = false
@@ -1250,6 +1249,7 @@ fun ItemThumbnail(
     val thumbnailShape =
         if (item is ArtistItem) CircleShape else RoundedCornerShape(ThumbnailCornerRadius)
     val thumbnailRatio = thumbnailRatio
+
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
