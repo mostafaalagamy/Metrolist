@@ -1237,7 +1237,6 @@ fun LocalAlbumsGrid(
 )
 
 @Composable
-@Composable
 fun ItemThumbnail(
     thumbnailUrl: String?,
     isActive: Boolean,
