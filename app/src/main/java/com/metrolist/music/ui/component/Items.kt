@@ -1246,15 +1246,11 @@ fun ItemThumbnail(
     albumIndex: Int? = null,
     showPlayOverlay: Boolean = false
 ) {
-    val thumbnailShape =
-        if (item is ArtistItem) CircleShape else RoundedCornerShape(ThumbnailCornerRadius)
-    val thumbnailRatio = thumbnailRatio
-
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
             .fillMaxSize()
-            .aspectRatio(thumbnailRatio)
+            .aspectRatio(shape)
             .clip(thumbnailShape)
     ) {
         if (albumIndex != null) {
