@@ -59,6 +59,10 @@ import com.metrolist.music.constants.PlaylistSortDescendingKey
 import com.metrolist.music.constants.PlaylistSortType
 import com.metrolist.music.constants.PlaylistSortTypeKey
 import com.metrolist.music.constants.PlaylistViewTypeKey
+import com.metrolist.music.constants.ShowLikedPlaylistKey
+import com.metrolist.music.constants.ShowDownloadedPlaylistKey
+import com.metrolist.music.constants.ShowTopPlaylistKey
+import com.metrolist.music.constants.ShowCachedPlaylistKey
 import com.metrolist.music.constants.YtmSyncKey
 import com.metrolist.music.db.entities.Playlist
 import com.metrolist.music.db.entities.PlaylistEntity
@@ -145,6 +149,11 @@ fun LibraryPlaylistsScreen(
             songCount = 0,
             thumbnails = emptyList(),
         )
+
+    val (showLiked) = rememberPreference(ShowLikedPlaylistKey, true)
+    val (showDownloaded) = rememberPreference(ShowDownloadedPlaylistKey, true)
+    val (showTop) = rememberPreference(ShowTopPlaylistKey, true)
+    val (showCached) = rememberPreference(ShowCachedPlaylistKey, true)
 
     val lazyListState = rememberLazyListState()
     val lazyGridState = rememberLazyGridState()
@@ -263,74 +272,80 @@ fun LibraryPlaylistsScreen(
                         headerContent()
                     }
 
-                    item(
-                        key = "likedPlaylist",
-                        contentType = { CONTENT_TYPE_PLAYLIST },
-                    ) {
-                        PlaylistListItem(
-                            playlist = likedPlaylist,
-                            autoPlaylist = true,
-                            modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .clickable {
-                                    navController.navigate("auto_playlist/liked")
-                                }
-                                .animateItem(),
-                        )
+                    if (showLiked) {
+                        item(
+                            key = "likedPlaylist",
+                            contentType = { CONTENT_TYPE_PLAYLIST },
+                        ) {
+                            PlaylistListItem(
+                                playlist = likedPlaylist,
+                                autoPlaylist = true,
+                                modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .clickable {
+                                        navController.navigate("auto_playlist/liked")
+                                    }
+                                    .animateItem(),
+                            )
+                        }
                     }
 
-                    item(
-                        key = "downloadedPlaylist",
-                        contentType = { CONTENT_TYPE_PLAYLIST },
-                    ) {
-                        PlaylistListItem(
-                            playlist = downloadPlaylist,
-                            autoPlaylist = true,
-                            modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .clickable {
-                                    navController.navigate("auto_playlist/downloaded")
-                                }
-                                .animateItem(),
-                        )
+                    if (showDownloaded) {
+                        item(
+                            key = "downloadedPlaylist",
+                            contentType = { CONTENT_TYPE_PLAYLIST },
+                        ) {
+                            PlaylistListItem(
+                                playlist = downloadPlaylist,
+                                autoPlaylist = true,
+                                modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .clickable {
+                                        navController.navigate("auto_playlist/downloaded")
+                                    }
+                                    .animateItem(),
+                            )
+                        }
                     }
 
-                    item(
-                        key = "TopPlaylist",
-                        contentType = { CONTENT_TYPE_PLAYLIST },
-                    ) {
-                        PlaylistListItem(
-                            playlist = topPlaylist,
-                            autoPlaylist = true,
-                            modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .clickable {
-                                    navController.navigate("top_playlist/$topSize")
-                                }
-                                .animateItem(),
-                        )
+                    if (showTop) {
+                        item(
+                            key = "TopPlaylist",
+                            contentType = { CONTENT_TYPE_PLAYLIST },
+                        ) {
+                            PlaylistListItem(
+                                playlist = topPlaylist,
+                                autoPlaylist = true,
+                                modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .clickable {
+                                        navController.navigate("top_playlist/$topSize")
+                                    }
+                                    .animateItem(),
+                            )
+                        }
                     }
 
-                    item(
-                        key = "cachePlaylist",
-                        contentType = { CONTENT_TYPE_PLAYLIST },
-                    ) {
-                        PlaylistListItem(
-                            playlist = cachePlaylist,
-                            autoPlaylist = true,
-                            modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .combinedClickable(
-                                    onClick = {
+                    if (showCached) {
+                        item(
+                            key = "cachePlaylist",
+                            contentType = { CONTENT_TYPE_PLAYLIST },
+                        ) {
+                            PlaylistListItem(
+                                playlist = cachePlaylist,
+                                autoPlaylist = true,
+                                modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .clickable {
                                         navController.navigate("cache_playlist/cached")
-                                    },
-                                )
-                                .animateItem(),
-                        )
+                                    }
+                                    .animateItem(),
+                            )
+                        }
                     }
 
                     playlists.let { playlists ->
@@ -389,84 +404,92 @@ fun LibraryPlaylistsScreen(
                         headerContent()
                     }
 
-                    item(
-                        key = "likedPlaylist",
-                        contentType = { CONTENT_TYPE_PLAYLIST },
-                    ) {
-                        PlaylistGridItem(
-                            playlist = likedPlaylist,
-                            fillMaxWidth = true,
-                            autoPlaylist = true,
-                            modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .combinedClickable(
-                                    onClick = {
-                                        navController.navigate("auto_playlist/liked")
-                                    },
-                                )
-                                .animateItem(),
-                        )
+                    if (showLiked) {
+                        item(
+                            key = "likedPlaylist",
+                            contentType = { CONTENT_TYPE_PLAYLIST },
+                        ) {
+                            PlaylistGridItem(
+                                playlist = likedPlaylist,
+                                fillMaxWidth = true,
+                                autoPlaylist = true,
+                                modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .combinedClickable(
+                                        onClick = {
+                                            navController.navigate("auto_playlist/liked")
+                                        },
+                                    )
+                                    .animateItem(),
+                            )
+                        }
                     }
 
-                    item(
-                        key = "downloadedPlaylist",
-                        contentType = { CONTENT_TYPE_PLAYLIST },
-                    ) {
-                        PlaylistGridItem(
-                            playlist = downloadPlaylist,
-                            fillMaxWidth = true,
-                            autoPlaylist = true,
-                            modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .combinedClickable(
-                                    onClick = {
-                                        navController.navigate("auto_playlist/downloaded")
-                                    },
-                                )
-                                .animateItem(),
-                        )
+                    if (showDownloaded) {
+                        item(
+                            key = "downloadedPlaylist",
+                            contentType = { CONTENT_TYPE_PLAYLIST },
+                        ) {
+                            PlaylistGridItem(
+                                playlist = downloadPlaylist,
+                                fillMaxWidth = true,
+                                autoPlaylist = true,
+                                modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .combinedClickable(
+                                        onClick = {
+                                            navController.navigate("auto_playlist/downloaded")
+                                        },
+                                    )
+                                    .animateItem(),
+                            )
+                        }
                     }
 
-                    item(
-                        key = "TopPlaylist",
-                        contentType = { CONTENT_TYPE_PLAYLIST },
-                    ) {
-                        PlaylistGridItem(
-                            playlist = topPlaylist,
-                            fillMaxWidth = true,
-                            autoPlaylist = true,
-                            modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .combinedClickable(
-                                    onClick = {
-                                        navController.navigate("top_playlist/$topSize")
-                                    },
-                                )
-                                .animateItem(),
-                        )
+                    if (showTop) {
+                        item(
+                            key = "TopPlaylist",
+                            contentType = { CONTENT_TYPE_PLAYLIST },
+                        ) {
+                            PlaylistGridItem(
+                                playlist = topPlaylist,
+                                fillMaxWidth = true,
+                                autoPlaylist = true,
+                                modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .combinedClickable(
+                                        onClick = {
+                                            navController.navigate("top_playlist/$topSize")
+                                        },
+                                    )
+                                    .animateItem(),
+                            )
+                        }
                     }
 
-                    item(
-                        key = "cachePlaylist",
-                        contentType = { CONTENT_TYPE_PLAYLIST },
-                    ) {
-                        PlaylistGridItem(
-                            playlist = cachePlaylist,
-                            fillMaxWidth = true,
-                            autoPlaylist = true,
-                            modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .combinedClickable(
-                                    onClick = {
-                                        navController.navigate("cache_playlist/cached")
-                                    },
-                                )
-                                .animateItem(),
-                        )
+                    if (showCached) {
+                        item(
+                            key = "cachePlaylist",
+                            contentType = { CONTENT_TYPE_PLAYLIST },
+                        ) {
+                            PlaylistGridItem(
+                                playlist = cachePlaylist,
+                                fillMaxWidth = true,
+                                autoPlaylist = true,
+                                modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .combinedClickable(
+                                        onClick = {
+                                            navController.navigate("cache_playlist/cached")
+                                        },
+                                    )
+                                    .animateItem(),
+                            )
+                        }
                     }
 
                     playlists.let { playlists ->
