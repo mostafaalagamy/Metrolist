@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -183,16 +184,22 @@ fun YouTubeSongMenu(
                 )  
             )  
         },  
-        leadingContent = {  
-            AsyncImage(  
-                model = song.thumbnail,  
-                contentDescription = null,  
-                modifier =  
-                Modifier  
-                    .size(ListThumbnailSize)  
-                    .clip(RoundedCornerShape(ThumbnailCornerRadius)),  
-            )  
-        },  
+        leadingContent = {
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .size(ListThumbnailSize)
+                    .clip(RoundedCornerShape(ThumbnailCornerRadius))
+            ) {
+                AsyncImage(
+                    model = song.thumbnail,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(ThumbnailCornerRadius))
+                )
+            }
+        },
         trailingContent = {  
             IconButton(  
                 onClick = {  
@@ -222,13 +229,15 @@ fun YouTubeSongMenu(
 
     HorizontalDivider()
 
+    Spacer(modifier = Modifier.height(12.dp))
+
     val bottomSheetPageState = LocalBottomSheetPageState.current
 
     // Row for "Play next", "Add to playlist", and "Share" buttons with grid-like background
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 8.dp, vertical = 8.dp),
+            .padding(start = 24.dp, end = 24.dp, top = 8.dp, bottom = 8.dp),
         horizontalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(8.dp),
     ) {
         // Play next button
