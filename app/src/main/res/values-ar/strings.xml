@@ -1,5 +1,4 @@
 <resources>
-
     <!-- أزرار التنقل -->
     <string name="home">الرئيسية</string>
     <string name="songs">الأغاني</string>
@@ -37,7 +36,7 @@
     <string name="this_week">هذا الأسبوع</string>
     <string name="last_week">الأسبوع الماضي</string>
 
-    <!-- Charts -->
+    <!-- المخططات البيانية-->
     <string name="charts"></string>
     <string name="back_button_desc">للخلف</string>
     <string name="no_title">لا يوجد عنوان</string>
@@ -364,6 +363,11 @@
     <string name="misc">متفرقات</string>
     <string name="default_open_tab">الصفحة الافتراضية</string>
     <string name="slim_navbar">إخفاء أسماء الصفحات من شريط التنقل السفلي</string>
+    <string name="auto_playlists">قوائم التشغيل التلقائية</string>
+    <string name="show_liked_playlist">إظهار قائمة المفضلة</string>
+    <string name="show_downloaded_playlist">إظهار قائمة التحميلات</string>
+    <string name="show_top_playlist">إظهار قائمة الأعلى أستماع</string>
+    <string name="show_cached_playlist">إظهار قائمة الأغاني المخزنة مؤقتًا</string>
 
     <string name="content">المحتوى</string>
     <string name="google">جوجل</string>

@@ -60,6 +60,10 @@ import com.metrolist.music.constants.PlayerButtonsStyleKey
 import com.metrolist.music.constants.SliderStyle
 import com.metrolist.music.constants.SliderStyleKey
 import com.metrolist.music.constants.SlimNavBarKey
+import com.metrolist.music.constants.ShowLikedPlaylistKey
+import com.metrolist.music.constants.ShowDownloadedPlaylistKey
+import com.metrolist.music.constants.ShowTopPlaylistKey
+import com.metrolist.music.constants.ShowCachedPlaylistKey
 import com.metrolist.music.constants.SwipeThumbnailKey
 import com.metrolist.music.constants.SwipeToSongKey
 import com.metrolist.music.ui.component.DefaultDialog
@@ -121,9 +125,32 @@ fun AppearanceSettings(
         defaultValue = GridItemSize.BIG
     )
 
-    val (slimNav, onSlimNavChange) = rememberPreference(SlimNavBarKey, defaultValue = false)
+    val (slimNav, onSlimNavChange) = rememberPreference(
+        SlimNavBarKey,
+        defaultValue = false
+    )
 
-    val (swipeToSong, onSwipeToSongChange) = rememberPreference(SwipeToSongKey, defaultValue = false)
+    val (swipeToSong, onSwipeToSongChange) = rememberPreference(
+        SwipeToSongKey,
+        defaultValue = false
+    )
+
+    val (showLikedPlaylist, onShowLikedPlaylistChange) = rememberPreference(
+        ShowLikedPlaylistKey,
+        defaultValue = true
+    )
+    val (showDownloadedPlaylist, onShowDownloadedPlaylistChange) = rememberPreference(
+        ShowDownloadedPlaylistKey,
+        defaultValue = true
+    )
+    val (showTopPlaylist, onShowTopPlaylistChange) = rememberPreference(
+        ShowTopPlaylistKey,
+        defaultValue = true
+    )
+    val (showCachedPlaylist, onShowCachedPlaylistChange) = rememberPreference(
+        ShowCachedPlaylistKey,
+        defaultValue = true
+    )
 
     val availableBackgroundStyles = PlayerBackgroundStyle.entries.filter {
         it != PlayerBackgroundStyle.BLUR || Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
@@ -455,6 +482,38 @@ fun AppearanceSettings(
                     GridItemSize.BIG -> stringResource(R.string.big)
                 }
             },
+        )
+
+        PreferenceGroupTitle(
+            title = stringResource(R.string.auto_playlists)
+        )
+
+        SwitchPreference(
+            title = { Text(stringResource(R.string.show_liked_playlist)) },
+            icon = { Icon(painterResource(R.drawable.favorite), null) },
+            checked = showLikedPlaylist,
+            onCheckedChange = onShowLikedPlaylistChange
+        )
+
+        SwitchPreference(
+            title = { Text(stringResource(R.string.show_downloaded_playlist)) },
+            icon = { Icon(painterResource(R.drawable.offline), null) },
+            checked = showDownloadedPlaylist,
+            onCheckedChange = onShowDownloadedPlaylistChange
+        )
+
+        SwitchPreference(
+            title = { Text(stringResource(R.string.show_top_playlist)) },
+            icon = { Icon(painterResource(R.drawable.trending_up), null) },
+            checked = showTopPlaylist,
+            onCheckedChange = onShowTopPlaylistChange
+        )
+
+        SwitchPreference(
+            title = { Text(stringResource(R.string.show_cached_playlist)) },
+            icon = { Icon(painterResource(R.drawable.cached), null) },
+            checked = showCachedPlaylist,
+            onCheckedChange = onShowCachedPlaylistChange
         )
     }
 
