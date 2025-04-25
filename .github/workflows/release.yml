@@ -79,7 +79,8 @@ jobs:
         run: ./gradlew assemble${{ matrix.abi }}Release
         env:
           PULL_REQUEST: 'false'
- 
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
+
       - name: Sign APK
         uses: ilharp/sign-android-release@v1.0.4
         with:
