@@ -1019,7 +1019,6 @@ fun YouTubeGridItem(
             isActive = isActive,
             isPlaying = isPlaying,
             shape = if (item is ArtistItem) CircleShape else RoundedCornerShape(ThumbnailCornerRadius),
-            showPlayOverlay = item is SongItem
         )
 
         if (item is SongItem && !isActive) {
@@ -1263,7 +1262,6 @@ fun ItemThumbnail(
     shape: Shape,
     modifier: Modifier = Modifier,
     albumIndex: Int? = null,
-    showPlayOverlay: Boolean = false,
     thumbnailRatio: Float = 1f
 ) {
     Box(
@@ -1293,8 +1291,6 @@ fun ItemThumbnail(
                     .clip(shape)
             )
         }
-
-        OverlayPlayButton(visible = showPlayOverlay && !isActive)
 
         PlayingIndicatorBox(
             isActive = isActive,
@@ -1353,8 +1349,7 @@ fun PlaylistThumbnail(
 
 @Composable
 fun BoxScope.OverlayPlayButton(
-    visible: Boolean,
-    modifier: Modifier = Modifier
+    visible: Boolean
 ) {
     AnimatedVisibility(
         visible = visible,
