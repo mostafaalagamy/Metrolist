@@ -676,7 +676,7 @@ fun PlaylistGridItem(
     playlist: Playlist,
     modifier: Modifier = Modifier,
     autoPlaylist: Boolean = false,
-    badges: @Composable RowScope.() -> Unit = { },
+    badges: @Composable RowScope.() -> Unit = {},
     fillMaxWidth: Boolean = false,
 ) = GridItem(
     title = playlist.playlist.name,
@@ -704,46 +704,63 @@ fun PlaylistGridItem(
         val width = maxWidth
 
         when (playlist.thumbnails.size) {
-            0 -> Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(ThumbnailCornerRadius))
-                    .background(MaterialTheme.colorScheme.surfaceContainer),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    painter = painterResource(painter),
-                    contentDescription = null,
-                    tint = LocalContentColor.current.copy(alpha = 0.8f),
-                    modifier = Modifier.size(width / 2)
-                )
+            0 -> {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .aspectRatio(1f)
+                        .clip(RoundedCornerShape(ThumbnailCornerRadius))
+                        .background(MaterialTheme.colorScheme.surfaceContainer)
+                ) {
+                    Icon(
+                        painter = painterResource(painter),
+                        contentDescription = null,
+                        tint = LocalContentColor.current.copy(alpha = 0.8f),
+                        modifier = Modifier.size(width / 2)
+                    )
+                }
             }
-            1 -> AsyncImage(
-                model = playlist.thumbnails[0],
-                contentDescription = null,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(ThumbnailCornerRadius))
-            )
-            else -> Box(
-                modifier = Modifier
-                    .size(width)
-                    .clip(RoundedCornerShape(ThumbnailCornerRadius))
-            ) {
-                listOf(
-                    Alignment.TopStart,
-                    Alignment.TopEnd,
-                    Alignment.BottomStart,
-                    Alignment.BottomEnd,
-                ).fastForEachIndexed { index, alignment ->
+
+            1 -> {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .aspectRatio(1f)
+                        .clip(RoundedCornerShape(ThumbnailCornerRadius))
+                ) {
                     AsyncImage(
-                        model = playlist.thumbnails.getOrNull(index),
+                        model = playlist.thumbnails[0],
                         contentDescription = null,
                         contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .align(alignment)
-                            .size(width / 2)
+                        modifier = Modifier.fillMaxSize()
                     )
+                }
+            }
+
+            else -> {
+                Box(
+                    modifier = Modifier
+                        .size(width)
+                        .aspectRatio(1f)
+                        .clip(RoundedCornerShape(ThumbnailCornerRadius))
+                ) {
+                    listOf(
+                        Alignment.TopStart,
+                        Alignment.TopEnd,
+                        Alignment.BottomStart,
+                        Alignment.BottomEnd,
+                    ).fastForEachIndexed { index, alignment ->
+                        AsyncImage(
+                            model = playlist.thumbnails.getOrNull(index),
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .align(alignment)
+                                .size(width / 2)
+                        )
+                    }
                 }
             }
         }
