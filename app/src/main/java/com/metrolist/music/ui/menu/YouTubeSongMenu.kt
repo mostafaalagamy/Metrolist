@@ -190,7 +190,7 @@ fun YouTubeSongMenu(
                 contentDescription = null,  
                 modifier =  
                 Modifier  
-                    .size(ListThumbnailSize)  
+                    .fillMaxWidth()  
                     .clip(RoundedCornerShape(ThumbnailCornerRadius)),  
             )  
         },  
