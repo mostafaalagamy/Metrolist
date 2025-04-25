@@ -1251,7 +1251,7 @@ fun ItemThumbnail(
         modifier = Modifier
             .fillMaxSize()
             .aspectRatio(shape)
-            .clip(thumbnailShape)
+            .clip(shape)
     ) {
         if (albumIndex != null) {
             AnimatedVisibility(
