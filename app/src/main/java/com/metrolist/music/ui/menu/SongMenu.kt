@@ -262,7 +262,7 @@ fun SongMenu(
 
     HorizontalDivider()
 
-    Spacer(modifier = Modifier.height(8.dp))
+    Spacer(modifier = Modifier.height(12.dp))
 
     val bottomSheetPageState = LocalBottomSheetPageState.current
 
