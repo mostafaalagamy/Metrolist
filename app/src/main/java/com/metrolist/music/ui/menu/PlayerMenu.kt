@@ -197,6 +197,8 @@ fun PlayerMenu(
         }
     }
 
+    Spacer(modifier = Modifier.height(24.dp))
+
     HorizontalDivider()
 
     Spacer(modifier = Modifier.height(12.dp))
@@ -204,7 +206,7 @@ fun PlayerMenu(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 8.dp),
+            .padding(start = 24.dp, end = 24.dp, top = 8.dp, bottom = 8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         // Start Radio
