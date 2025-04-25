@@ -1,4 +1,5 @@
 name: Build PR
+
 on:
   pull_request:
     branches:
@@ -7,6 +8,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
 
@@ -30,13 +32,11 @@ jobs:
             -validity 10000 \
             -dname "CN=Android Debug,O=Android,C=US"
 
-      - name: Build debug APK and run JVM tests
-        run: ./gradlew assembleDebug
-        env:
-          GITHUB_EVENT_NAME: ${{ github.event_name }}
+      - name: Build universal debug APK
+        run: ./gradlew assembleUniversalDebug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: debug-apk
-          path: app/build/outputs/apk/debug/*.apk
+          name: app-universal-debug
+          path: app/build/outputs/apk/universal/debug/*.apk
