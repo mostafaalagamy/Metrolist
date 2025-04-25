@@ -641,6 +641,7 @@ fun PlaylistListItem(
             1 -> AsyncImage(
                 model = playlist.thumbnails[0],
                 contentDescription = null,
+                contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .size(ListThumbnailSize)
                     .clip(RoundedCornerShape(ThumbnailCornerRadius))
@@ -659,6 +660,7 @@ fun PlaylistListItem(
                     AsyncImage(
                         model = playlist.thumbnails.getOrNull(index),
                         contentDescription = null,
+                        contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .align(alignment)
                             .size(ListThumbnailSize / 2)
