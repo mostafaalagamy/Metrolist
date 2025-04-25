@@ -733,7 +733,6 @@ fun PlaylistGridItem(
                     AsyncImage(
                         model = playlist.thumbnails[0],
                         contentDescription = null,
-                        contentScale = ContentScale.Crop,
                         modifier = Modifier.fillMaxWidth()
                     )
                 }
