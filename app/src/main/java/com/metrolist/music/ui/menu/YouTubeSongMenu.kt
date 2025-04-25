@@ -184,16 +184,22 @@ fun YouTubeSongMenu(
                 )  
             )  
         },  
-        leadingContent = {  
-            AsyncImage(  
-                model = song.thumbnail,  
-                contentDescription = null,  
-                modifier =  
-                Modifier  
-                    .fillMaxWidth()  
-                    .clip(RoundedCornerShape(ThumbnailCornerRadius)),  
-            )  
-        },  
+        leadingContent = {
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .size(ListThumbnailSize)
+                    .clip(RoundedCornerShape(ThumbnailCornerRadius))
+            ) {
+                AsyncImage(
+                    model = song.thumbnail,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(ThumbnailCornerRadius))
+                )
+            }
+        },
         trailingContent = {  
             IconButton(  
                 onClick = {  
@@ -231,7 +237,7 @@ fun YouTubeSongMenu(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 8.dp, vertical = 8.dp),
+            .padding(start = 24.dp, end = 24.dp, top = 8.dp, bottom = 8.dp),
         horizontalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(8.dp),
     ) {
         // Play next button
