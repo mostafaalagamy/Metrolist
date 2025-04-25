@@ -306,7 +306,7 @@ fun SongListItem(
                             model = song.song.thumbnailUrl,
                             contentDescription = null,
                             modifier = Modifier
-                                .fillMaxSize()
+                                .fillMaxWidth()
                                 .clip(shape)
                         )
                     }
@@ -706,7 +706,7 @@ fun PlaylistGridItem(
         when (playlist.thumbnails.size) {
             0 -> Box(
                 modifier = Modifier
-                    .size(width)
+                    .fillMaxWidth()
                     .clip(RoundedCornerShape(ThumbnailCornerRadius))
                     .background(MaterialTheme.colorScheme.surfaceContainer),
                 contentAlignment = Alignment.Center
@@ -722,7 +722,7 @@ fun PlaylistGridItem(
                 model = playlist.thumbnails[0],
                 contentDescription = null,
                 modifier = Modifier
-                    .size(width)
+                    .fillMaxWidth()
                     .clip(RoundedCornerShape(ThumbnailCornerRadius))
             )
             else -> Box(
@@ -901,7 +901,7 @@ fun YouTubeListItem(
                             model = item.thumbnail,
                             contentDescription = null,
                             modifier = Modifier
-                                .fillMaxSize()
+                                .fillMaxWidth()
                                 .clip(shape)
                         )
                     }
