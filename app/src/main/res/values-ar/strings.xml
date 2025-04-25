@@ -11,7 +11,7 @@
     <plurals name="n_selected">
         <item quantity="zero">لا شيء محدد</item>
         <item quantity="one">عنصر واحد محدد</item>
-        <item quantity="tw هذاo">عنصران محددان</item>
+        <item quantity="two">عنصران محددان</item>
         <item quantity="few">%d عناصر محددة</item>
         <item quantity="many">%d عنصر محدد</item>
         <item quantity="other">%d عنصر محدد</item>
