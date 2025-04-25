@@ -261,6 +261,8 @@ fun SongMenu(
 
     HorizontalDivider()
 
+    Spacer(modifier = Modifier.height(8.dp))
+
     val bottomSheetPageState = LocalBottomSheetPageState.current
 
     // Row for "Play next", "Add to playlist", and "Share" buttons with grid-like background
