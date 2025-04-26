@@ -1117,6 +1117,7 @@ fun LocalThumbnail(
         if (playButtonVisible) {
             IconButton(
                 onClick = {},
+                onLongClick = {},
                 enabled = false,
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
