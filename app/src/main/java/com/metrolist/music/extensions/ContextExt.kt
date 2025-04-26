@@ -8,14 +8,19 @@ import com.metrolist.music.constants.YtmSyncKey
 import com.metrolist.music.utils.dataStore
 import com.metrolist.music.utils.get
 import com.metrolist.innertube.utils.parseCookieString
+import kotlinx.coroutines.runBlocking
 
 fun Context.isSyncEnabled(): Boolean {
-    return dataStore.get(YtmSyncKey, true) && isUserLoggedIn()
+    return runBlocking {
+        dataStore.get(YtmSyncKey, true) && isUserLoggedIn()
+    }
 }
 
 fun Context.isUserLoggedIn(): Boolean {
-    val cookie = dataStore.get(InnerTubeCookieKey, "")
-    return "SAPISID" in parseCookieString(cookie)
+    return runBlocking {
+        val cookie = dataStore[InnerTubeCookieKey] ?: ""
+        "SAPISID" in parseCookieString(cookie) && isInternetConnected()
+    }
 }
 
 fun Context.isInternetConnected(): Boolean {
