@@ -3,6 +3,7 @@ package com.metrolist.music.constants
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import java.time.LocalDateTime
 import java.time.ZoneOffset
@@ -84,6 +85,12 @@ val MixSortDescendingKey = booleanPreferencesKey("albumSortDescending")
 val SongFilterKey = stringPreferencesKey("songFilter")
 val ArtistFilterKey = stringPreferencesKey("artistFilter")
 val AlbumFilterKey = stringPreferencesKey("albumFilter")
+
+val LastLikeSongSyncKey = longPreferencesKey("last_like_song_sync")
+val LastLibSongSyncKey = longPreferencesKey("last_library_song_sync")
+val LastAlbumSyncKey = longPreferencesKey("last_album_sync")
+val LastArtistSyncKey = longPreferencesKey("last_artist_sync")
+val LastPlaylistSyncKey = longPreferencesKey("last_playlist_sync")
 
 val ArtistViewTypeKey = stringPreferencesKey("artistViewType")
 val AlbumViewTypeKey = stringPreferencesKey("albumViewType")
