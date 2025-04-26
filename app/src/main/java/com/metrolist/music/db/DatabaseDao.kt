@@ -908,7 +908,7 @@ interface DatabaseDao {
 
     @Transaction
     @Query("SELECT * FROM event ORDER BY rowId ASC LIMIT 1")
-    fun firstEvent(): Flow<EventWithSong>
+    fun firstEvent(): Flow<EventWithSong?>
 
     @Transaction
     @Query("DELETE FROM event")
