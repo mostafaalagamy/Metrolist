@@ -11,16 +11,12 @@ import com.metrolist.innertube.utils.parseCookieString
 import kotlinx.coroutines.runBlocking
 
 fun Context.isSyncEnabled(): Boolean {
-    return runBlocking {
-        dataStore.get(YtmSyncKey, true) && isUserLoggedIn()
-    }
+    return dataStore.get(YtmSyncKey, true) && isUserLoggedIn()
 }
 
 fun Context.isUserLoggedIn(): Boolean {
-    return runBlocking {
-        val cookie = dataStore[InnerTubeCookieKey] ?: ""
-        "SAPISID" in parseCookieString(cookie) && isInternetConnected()
-    }
+    val cookie = dataStore.get(InnerTubeCookieKey, "")
+    return "SAPISID" in parseCookieString(cookie)
 }
 
 fun Context.isInternetConnected(): Boolean {
