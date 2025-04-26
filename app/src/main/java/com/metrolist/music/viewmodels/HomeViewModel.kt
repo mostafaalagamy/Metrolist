@@ -9,7 +9,7 @@ import com.metrolist.innertube.models.WatchEndpoint
 import com.metrolist.innertube.models.YTItem
 import com.metrolist.innertube.pages.ExplorePage
 import com.metrolist.innertube.pages.HomePage
-import com.metrolist.innertube.utils.completedLibraryPage
+import com.metrolist.innertube.utils.completed
 import com.metrolist.music.constants.QuickPicks
 import com.metrolist.music.constants.QuickPicksKey
 import com.metrolist.music.constants.YtmSyncKey
@@ -95,7 +95,7 @@ class HomeViewModel @Inject constructor(
                 .filter { it is Song || it is Album }
 
         if (YouTube.cookie != null) {
-            YouTube.library("FEmusic_liked_playlists").completedLibraryPage().onSuccess {
+            YouTube.library("FEmusic_liked_playlists").completed().onSuccess {
                 accountPlaylists.value = it.items.filterIsInstance<PlaylistItem>()
                     .filterNot { it.id == "SE" }
             }.onFailure {
