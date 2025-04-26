@@ -8,7 +8,6 @@ import com.metrolist.music.constants.YtmSyncKey
 import com.metrolist.music.utils.dataStore
 import com.metrolist.music.utils.get
 import com.metrolist.innertube.utils.parseCookieString
-import kotlinx.coroutines.runBlocking
 
 fun Context.isSyncEnabled(): Boolean {
     return dataStore.get(YtmSyncKey, true) && isUserLoggedIn()
