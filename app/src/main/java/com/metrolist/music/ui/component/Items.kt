@@ -1045,7 +1045,6 @@ fun LocalThumbnail(
     modifier: Modifier = Modifier,
     showCenterPlay: Boolean = false,
     playButtonVisible: Boolean = false,
-    playButtonOnClick: (() -> Unit)? = null,
     thumbnailRatio: Float = 1f
 ) {
     Box(
@@ -1069,10 +1068,7 @@ fun LocalThumbnail(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(
-                        color = Color.Black.copy(alpha = 0.4f),
-                        shape = shape
-                    )
+                    .background(Color.Black.copy(alpha = 0.4f), shape)
             ) {
                 if (isPlaying) {
                     PlayingIndicator(
@@ -1115,25 +1111,27 @@ fun LocalThumbnail(
         }
 
         if (playButtonVisible) {
-            IconButton(
-                onClick = {},
-                onLongClick = {},
-                enabled = false,
+            AnimatedVisibility(
+                visible = true,
+                enter = fadeIn(),
+                exit = fadeOut(),
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
-                    .padding(4.dp)
-                    .size(24.dp)
-                    .background(
-                        color = Color.Black.copy(alpha = 0.6f),
-                        shape = CircleShape
-                    )
+                    .padding(8.dp)
             ) {
-                Icon(
-                    painter = painterResource(R.drawable.play),
-                    contentDescription = null,
-                    tint = Color.White,
-                    modifier = Modifier.fillMaxSize(0.6f)
-                )
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .size(36.dp)
+                        .clip(CircleShape)
+                        .background(Color.Black.copy(alpha = ActiveBoxAlpha))
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.play),
+                        contentDescription = null,
+                        tint = Color.White
+                    )
+                }
             }
         }
     }
