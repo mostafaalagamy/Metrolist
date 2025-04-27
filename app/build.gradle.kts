@@ -11,15 +11,15 @@ plugins {
 
 android {
     namespace = "com.metrolist.music"
-    compileSdk = 35
+    compileSdk = 36
     ndkVersion = "25.1.8937393"
 
     defaultConfig {
         applicationId = "com.metrolist.music"
         minSdk = 21
-        targetSdk = 35
-        versionCode = 117
-        versionName = "11.7.0"
+        targetSdk = 36
+        versionCode = 118
+        versionName = "11.8.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
