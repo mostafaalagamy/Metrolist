@@ -488,25 +488,12 @@ fun AlbumListItem(
     isPlaying: Boolean = false,
     trailingContent: @Composable RowScope.() -> Unit = {},
 ) = ListItem(
-    title = {
-        Text(
-            text = album.album.title,
-            style = MaterialTheme.typography.bodyLarge,
-            fontWeight = FontWeight.Bold,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.basicMarquee().fillMaxWidth()
-        )
-    },
-    subtitle = {
-        Text(
-            text = album.artists.joinToString { it.name },
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.secondary,
-            maxLines = 2,
-            overflow = TextOverflow.Ellipsis,
-        )
-    },
+    title = album.album.title,
+    subtitle = joinByBullet(
+        album.artists.joinToString { it.name },
+        pluralStringResource(R.plurals.n_song, album.album.songCount, album.album.songCount),
+        album.album.year?.toString()
+    ),
     badges = badges,
     thumbnailContent = {
         ItemThumbnail(
@@ -529,19 +516,13 @@ fun AlbumGridItem(
     badges: @Composable RowScope.() -> Unit = {
         val database = LocalDatabase.current
         val downloadUtil = LocalDownloadUtil.current
-        var songs by remember {
-            mutableStateOf(emptyList<Song>())
-        }
+        var songs by remember { mutableStateOf(emptyList<Song>()) }
 
         LaunchedEffect(Unit) {
-            database.albumSongs(album.id).collect {
-                songs = it
-            }
+            database.albumSongs(album.id).collect { songs = it }
         }
 
-        var downloadState by remember {
-            mutableStateOf(Download.STATE_STOPPED)
-        }
+        var downloadState by remember { mutableStateOf(Download.STATE_STOPPED) }
 
         LaunchedEffect(songs) {
             if (songs.isEmpty()) return@LaunchedEffect
@@ -557,15 +538,31 @@ fun AlbumGridItem(
         if (album.album.bookmarkedAt != null) {
             Icon.Favorite()
         }
-
         Icon.Download(downloadState)
     },
     isActive: Boolean = false,
     isPlaying: Boolean = false,
     fillMaxWidth: Boolean = false,
 ) = GridItem(
-    title = album.album.title,
-    subtitle = album.artists.joinToString { it.name },
+    title = {
+        Text(
+            text = album.album.title,
+            style = MaterialTheme.typography.bodyLarge,
+            fontWeight = FontWeight.Bold,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.basicMarquee().fillMaxWidth()
+        )
+    },
+    subtitle = {
+        Text(
+            text = album.artists.joinToString { it.name },
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.secondary,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis
+        )
+    },
     badges = badges,
     thumbnailContent = {
         val database = LocalDatabase.current
@@ -582,10 +579,8 @@ fun AlbumGridItem(
             visible = !isActive,
             onClick = {
                 coroutineScope.launch {
-                    database.albumWithSongs(album.id).first()?.let { albumWithSongs ->
-                        playerConnection.playQueue(
-                            LocalAlbumRadio(albumWithSongs)
-                        )
+                    database.albumWithSongs(album.id).firstOrNull()?.let { albumWithSongs ->
+                        playerConnection.playQueue(LocalAlbumRadio(albumWithSongs))
                     }
                 }
             }
@@ -688,7 +683,7 @@ fun PlaylistGridItem(
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.secondary,
             maxLines = 2,
-            overflow = TextOverflow.Ellipsis,
+            overflow = TextOverflow.Ellipsis
         )
     },
     badges = badges,
