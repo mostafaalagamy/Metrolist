@@ -122,7 +122,7 @@ fun AppearanceSettings(
     )
     val (gridItemSize, onGridItemSizeChange) = rememberEnumPreference(
         GridItemsSizeKey,
-        defaultValue = GridItemSize.BIG
+        defaultValue = GridItemSize.SMALL
     )
 
     val (slimNav, onSlimNavChange) = rememberPreference(
