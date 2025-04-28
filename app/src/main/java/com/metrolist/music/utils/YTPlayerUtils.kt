@@ -58,6 +58,17 @@ object YTPlayerUtils {
          * This is why it is allowed to be null.
          */
         val signatureTimestamp = getSignatureTimestampOrNull(videoId)
+
+        val isLoggedIn = YouTube.cookie != null
+         val sessionId =
+             if (isLoggedIn) {
+                 // signed in sessions use dataSyncId as identifier
+                 YouTube.dataSyncId
+             } else {
+                 // signed out sessions use visitorData as identifier
+                 YouTube.visitorData
+             }
+
         val mainPlayerResponse =
             YouTube.player(videoId, playlistId, MAIN_CLIENT, signatureTimestamp).getOrThrow()
         val audioConfig = mainPlayerResponse.playerConfig?.audioConfig
@@ -67,19 +78,23 @@ object YTPlayerUtils {
         var streamUrl: String? = null
         var streamExpiresInSeconds: Int? = null
         var streamPlayerResponse: PlayerResponse? = null
+
         for (clientIndex in (-1 until STREAM_FALLBACK_CLIENTS.size)) {
             // reset for each client
             format = null
             streamUrl = null
             streamExpiresInSeconds = null
-            // decide which client to use
+
+            // decide which client to use for streams and load its player response
+            val client: YouTubeClient
             if (clientIndex == -1) {
                 // try with streams from main client first
+                client = MAIN_CLIENT
                 streamPlayerResponse = mainPlayerResponse
             } else {
                 // after main client use fallback clients
                 val client = STREAM_FALLBACK_CLIENTS[clientIndex]
-                if (client.loginRequired && YouTube.cookie == null) {
+                if (client.loginRequired && !isLoggedIn && YouTube.cookie == null) {
                     // skip client if it requires login but user is not logged in
                     continue
                 }
