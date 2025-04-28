@@ -852,7 +852,6 @@ class MainActivity : ComponentActivity() {
                                         state = playerBottomSheetState,
                                         navController = navController
                                     )
-
                                     NavigationBar(
                                         modifier = Modifier
                                             .align(Alignment.BottomCenter)
@@ -865,10 +864,10 @@ class MainActivity : ComponentActivity() {
                                                 } else {
                                                     val slideOffset =
                                                         (bottomInset + NavigationBarHeight) *
-                                                            playerBottomSheetState.progress.coerceIn(
-                                                                0f,
-                                                                1f,
-                                                            )
+                                                                playerBottomSheetState.progress.coerceIn(
+                                                                    0f,
+                                                                    1f,
+                                                                )
                                                     val hideOffset =
                                                         (bottomInset + NavigationBarHeight) * (1 - navigationBarHeight / NavigationBarHeight)
                                                     IntOffset(
@@ -879,7 +878,7 @@ class MainActivity : ComponentActivity() {
                                             },
                                         containerColor = if (pureBlack) Color.Black else MaterialTheme.colorScheme.surfaceContainer,
                                         contentColor = if (pureBlack) Color.White else MaterialTheme.colorScheme.onSurfaceVariant
-                                   ) {
+                                    ) {
                                         var lastTapTime by remember { mutableLongStateOf(0L) }
                                         var lastTappedIcon by remember { mutableStateOf<Int?>(null) }
                                         var navigateToExplore by remember { mutableStateOf(false) }
