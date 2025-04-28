@@ -1,36 +1,20 @@
 package com.metrolist.music.ui.screens.search
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.WindowInsetsSides
-import androidx.compose.foundation.layout.asPaddingValues
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.only
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.snapshotFlow
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
@@ -40,10 +24,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.metrolist.innertube.models.AlbumItem
-import com.metrolist.innertube.models.ArtistItem
-import com.metrolist.innertube.models.PlaylistItem
-import com.metrolist.innertube.models.SongItem
+import com.metrolist.innertube.models.*
 import com.metrolist.music.LocalDatabase
 import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
@@ -54,16 +35,14 @@ import com.metrolist.music.playback.queues.YouTubeQueue
 import com.metrolist.music.ui.component.LocalMenuState
 import com.metrolist.music.ui.component.SearchBarIconOffsetX
 import com.metrolist.music.ui.component.YouTubeListItem
-import com.metrolist.music.ui.menu.YouTubeAlbumMenu
-import com.metrolist.music.ui.menu.YouTubeArtistMenu
-import com.metrolist.music.ui.menu.YouTubePlaylistMenu
-import com.metrolist.music.ui.menu.YouTubeSongMenu
+import com.metrolist.music.ui.menu.*
 import com.metrolist.music.viewmodels.OnlineSearchSuggestionViewModel
 import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
+import androidx.compose.ui.graphics.Color
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class,
-    ExperimentalMaterial3Api::class
-)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun OnlineSearchScreen(
     query: String,
@@ -71,6 +50,7 @@ fun OnlineSearchScreen(
     navController: NavController,
     onSearch: (String) -> Unit,
     onDismiss: () -> Unit,
+    pureBlack: Boolean,
     viewModel: OnlineSearchSuggestionViewModel = hiltViewModel(),
 ) {
     val database = LocalDatabase.current
@@ -103,15 +83,12 @@ fun OnlineSearchScreen(
 
     LazyColumn(
         state = lazyListState,
-        contentPadding =
-        WindowInsets.systemBars
-            .only(WindowInsetsSides.Bottom)
-            .asPaddingValues(),
+        contentPadding = WindowInsets.systemBars.only(WindowInsetsSides.Bottom).asPaddingValues(),
+        modifier = Modifier
+            .fillMaxSize()
+            .background(if (pureBlack) Color.Black else MaterialTheme.colorScheme.background)
     ) {
-        items(
-            items = viewState.history,
-            key = { it.query },
-        ) { history ->
+        items(viewState.history, key = { it.query }) { history ->
             SuggestionItem(
                 query = history.query,
                 online = false,
@@ -125,21 +102,14 @@ fun OnlineSearchScreen(
                     }
                 },
                 onFillTextField = {
-                    onQueryChange(
-                        TextFieldValue(
-                            text = history.query,
-                            selection = TextRange(history.query.length),
-                        ),
-                    )
+                    onQueryChange(TextFieldValue(history.query, TextRange(history.query.length)))
                 },
                 modifier = Modifier.animateItem(),
+                pureBlack = pureBlack
             )
         }
 
-        items(
-            items = viewState.suggestions,
-            key = { it },
-        ) { query ->
+        items(viewState.suggestions, key = { it }) { query ->
             SuggestionItem(
                 query = query,
                 online = true,
@@ -148,14 +118,10 @@ fun OnlineSearchScreen(
                     onDismiss()
                 },
                 onFillTextField = {
-                    onQueryChange(
-                        TextFieldValue(
-                            text = query,
-                            selection = TextRange(query.length),
-                        ),
-                    )
+                    onQueryChange(TextFieldValue(query, TextRange(query.length)))
                 },
                 modifier = Modifier.animateItem(),
+                pureBlack = pureBlack
             )
         }
 
@@ -165,14 +131,10 @@ fun OnlineSearchScreen(
             }
         }
 
-        items(
-            items = viewState.items,
-            key = { it.id },
-        ) { item ->
+        items(viewState.items, key = { it.id }) { item ->
             YouTubeListItem(
                 item = item,
-                isActive =
-                when (item) {
+                isActive = when (item) {
                     is SongItem -> mediaMetadata?.id == item.id
                     is AlbumItem -> mediaMetadata?.album?.id == item.id
                     else -> false
@@ -183,32 +145,25 @@ fun OnlineSearchScreen(
                         onClick = {
                             menuState.show {
                                 when (item) {
-                                    is SongItem ->
-                                        YouTubeSongMenu(
-                                            song = item,
-                                            navController = navController,
-                                            onDismiss = menuState::dismiss,
-                                        )
-
-                                    is AlbumItem ->
-                                        YouTubeAlbumMenu(
-                                            albumItem = item,
-                                            navController = navController,
-                                            onDismiss = menuState::dismiss,
-                                        )
-
-                                    is ArtistItem ->
-                                        YouTubeArtistMenu(
-                                            artist = item,
-                                            onDismiss = menuState::dismiss,
-                                        )
-
-                                    is PlaylistItem ->
-                                        YouTubePlaylistMenu(
-                                            playlist = item,
-                                            coroutineScope = scope,
-                                            onDismiss = menuState::dismiss,
-                                        )
+                                    is SongItem -> YouTubeSongMenu(
+                                        song = item,
+                                        navController = navController,
+                                        onDismiss = menuState::dismiss
+                                    )
+                                    is AlbumItem -> YouTubeAlbumMenu(
+                                        albumItem = item,
+                                        navController = navController,
+                                        onDismiss = menuState::dismiss
+                                    )
+                                    is ArtistItem -> YouTubeArtistMenu(
+                                        artist = item,
+                                        onDismiss = menuState::dismiss
+                                    )
+                                    is PlaylistItem -> YouTubePlaylistMenu(
+                                        playlist = item,
+                                        coroutineScope = scope,
+                                        onDismiss = menuState::dismiss
+                                    )
                                 }
                             }
                         }
@@ -219,8 +174,7 @@ fun OnlineSearchScreen(
                         )
                     }
                 },
-                modifier =
-                Modifier
+                modifier = Modifier
                     .combinedClickable(
                         onClick = {
                             when (item) {
@@ -234,17 +188,14 @@ fun OnlineSearchScreen(
                                         onDismiss()
                                     }
                                 }
-
                                 is AlbumItem -> {
                                     navController.navigate("album/${item.id}")
                                     onDismiss()
                                 }
-
                                 is ArtistItem -> {
                                     navController.navigate("artist/${item.id}")
                                     onDismiss()
                                 }
-
                                 is PlaylistItem -> {
                                     navController.navigate("online_playlist/${item.id}")
                                     onDismiss()
@@ -255,37 +206,31 @@ fun OnlineSearchScreen(
                             haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                             menuState.show {
                                 when (item) {
-                                    is SongItem ->
-                                        YouTubeSongMenu(
-                                            song = item,
-                                            navController = navController,
-                                            onDismiss = menuState::dismiss,
-                                        )
-
-                                    is AlbumItem ->
-                                        YouTubeAlbumMenu(
-                                            albumItem = item,
-                                            navController = navController,
-                                            onDismiss = menuState::dismiss,
-                                        )
-
-                                    is ArtistItem ->
-                                        YouTubeArtistMenu(
-                                            artist = item,
-                                            onDismiss = menuState::dismiss,
-                                        )
-
-                                    is PlaylistItem ->
-                                        YouTubePlaylistMenu(
-                                            playlist = item,
-                                            coroutineScope = coroutineScope,
-                                            onDismiss = menuState::dismiss,
-                                        )
+                                    is SongItem -> YouTubeSongMenu(
+                                        song = item,
+                                        navController = navController,
+                                        onDismiss = menuState::dismiss
+                                    )
+                                    is AlbumItem -> YouTubeAlbumMenu(
+                                        albumItem = item,
+                                        navController = navController,
+                                        onDismiss = menuState::dismiss
+                                    )
+                                    is ArtistItem -> YouTubeArtistMenu(
+                                        artist = item,
+                                        onDismiss = menuState::dismiss
+                                    )
+                                    is PlaylistItem -> YouTubePlaylistMenu(
+                                        playlist = item,
+                                        coroutineScope = coroutineScope,
+                                        onDismiss = menuState::dismiss
+                                    )
                                 }
                             }
-                        },
+                        }
                     )
-                    .animateItem(),
+                    .background(if (pureBlack) Color.Black else MaterialTheme.colorScheme.surface)
+                    .animateItem()
             )
         }
     }
@@ -299,23 +244,21 @@ fun SuggestionItem(
     onClick: () -> Unit,
     onDelete: () -> Unit = {},
     onFillTextField: () -> Unit,
+    pureBlack: Boolean
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier =
-        modifier
+        modifier = modifier
             .fillMaxWidth()
             .height(SuggestionItemHeight)
+            .background(if (pureBlack) Color.Black else MaterialTheme.colorScheme.surface)
             .clickable(onClick = onClick)
             .padding(end = SearchBarIconOffsetX),
     ) {
         Icon(
             painterResource(if (online) R.drawable.search else R.drawable.history),
             contentDescription = null,
-            modifier =
-            Modifier
-                .padding(horizontal = 16.dp)
-                .alpha(0.5f),
+            modifier = Modifier.padding(horizontal = 16.dp).alpha(0.5f)
         )
 
         Text(
