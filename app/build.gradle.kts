@@ -192,6 +192,7 @@ dependencies {
     implementation(projects.kizzy)
 
     implementation(libs.ktor.client.core)
+    implementation(libs.ktor.serialization.json)
 
     coreLibraryDesugaring(libs.desugaring)
 
