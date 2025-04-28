@@ -1,7 +1,6 @@
 package com.metrolist.music.utils
 
 import android.net.ConnectivityManager
-import android.util.Log
 import androidx.media3.common.PlaybackException
 import com.metrolist.music.constants.AudioQuality
 import com.metrolist.music.db.entities.FormatEntity
@@ -18,13 +17,9 @@ import okhttp3.OkHttpClient
 
 object YTPlayerUtils {
 
-    private const val TAG = "YTPlayerUtils"
-
     private val httpClient = OkHttpClient.Builder()
         .proxy(YouTube.proxy)
         .build()
-
-    private val poTokenGenerator = PoTokenGenerator()
 
     /**
      * The main client is used for metadata and initial streams.
@@ -66,7 +61,6 @@ object YTPlayerUtils {
         audioQuality: AudioQuality,
         connectivityManager: ConnectivityManager,
     ): Result<PlaybackData> = runCatching {
-        Log.d(TAG, "Playback info requested: $videoId")
 
         /**
          * This is required for some clients to get working streams however
@@ -85,14 +79,6 @@ object YTPlayerUtils {
                 // signed out sessions use visitorData as identifier
                 YouTube.visitorData
             }
-
-        Log.d(TAG, "[$videoId] signatureTimestamp: $signatureTimestamp, isLoggedIn: $isLoggedIn")
-
-        val (webPlayerPot, webStreamingPot) = getWebClientPoTokenOrNull(videoId, sessionId)?.let {
-            Pair(it.playerRequestPoToken, it.streamingDataPoToken)
-        } ?: Pair(null, null).also {
-            Log.w(TAG, "[$videoId] No po token")
-        }
 
         val mainPlayerResponse =
             YouTube.player(videoId, playlistId, MAIN_CLIENT, signatureTimestamp, webPlayerPot)
@@ -133,11 +119,6 @@ object YTPlayerUtils {
                         .getOrNull()
             }
 
-            Log.d(TAG, "[$videoId] stream client: ${client.clientName}, " +
-                    "playabilityStatus: ${streamPlayerResponse?.playabilityStatus?.let {
-                        it.status + (it.reason?.let { " - $it" } ?: "")
-                    }}")
-
             // process current client response
             if (streamPlayerResponse?.playabilityStatus?.status == "OK") {
                 format =
@@ -151,7 +132,7 @@ object YTPlayerUtils {
                 streamExpiresInSeconds =
                     streamPlayerResponse.streamingData?.expiresInSeconds ?: continue
 
-                if (client.useWebPoTokens && webStreamingPot != null) {
+                if (webStreamingPot != null) {
                     streamUrl += "&pot=$webStreamingPot";
                 }
 
@@ -162,8 +143,6 @@ object YTPlayerUtils {
                 if (validateStatus(streamUrl)) {
                     // working stream found
                     break
-                } else {
-                    Log.d(TAG, "[$videoId] [${client.clientName}] got bad http status code")
                 }
             }
         }
@@ -187,8 +166,6 @@ object YTPlayerUtils {
         if (streamUrl == null) {
             throw Exception("Could not find stream url")
         }
-
-        Log.d(TAG, "[$videoId] stream url: $streamUrl")
 
         PlaybackData(
             audioConfig,
@@ -220,7 +197,7 @@ object YTPlayerUtils {
             ?.filter { it.isAudio }
             ?.maxByOrNull {
                 it.bitrate * when (audioQuality) {
-                    AudioQuality.AUTO -> if (connectivityManager.isActiveNetworkMetered) -1 else 1
+                    AudioQuality.AUTO -> if (connectivityManager.isActiveNetworkMetered) -1 else 1 -
                     AudioQuality.HIGH -> 1
                     AudioQuality.LOW -> -1
                 } + (if (it.mimeType.startsWith("audio/webm")) 10240 else 0) // prefer opus stream
@@ -269,21 +246,5 @@ object YTPlayerUtils {
                 reportException(it)
             }
             .getOrNull()
-    }
-
-    /**
-     * Wrapper around the [PoTokenGenerator.getWebClientPoToken] function which reports exceptions
-     */
-    private fun getWebClientPoTokenOrNull(videoId: String, sessionId: String?): PoTokenResult? {
-        if (sessionId == null) {
-            Log.d(TAG, "[$videoId] Session identifier is null")
-            return null
-        }
-        try {
-            return poTokenGenerator.getWebClientPoToken(videoId, sessionId)
-        } catch (e: Exception) {
-            reportException(e)
-        }
-        return null
     }
 }
