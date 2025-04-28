@@ -49,6 +49,8 @@ import com.metrolist.music.constants.MiniPlayerHeight
 import com.metrolist.music.constants.ThumbnailCornerRadius
 import com.metrolist.music.extensions.togglePlayPause
 import com.metrolist.music.models.MediaMetadata
+import com.metrolist.music.utils.rememberPreference
+import com.metrolist.music.constants.PureBlackKey
 
 @Composable
 fun MiniPlayer(
@@ -56,6 +58,7 @@ fun MiniPlayer(
     duration: Long,
     modifier: Modifier = Modifier,
 ) {
+    val pureBlack by rememberPreference(PureBlackKey, defaultValue = false)
     val playerConnection = LocalPlayerConnection.current ?: return
     val isPlaying by playerConnection.isPlaying.collectAsState()
     val playbackState by playerConnection.playbackState.collectAsState()
@@ -68,7 +71,8 @@ fun MiniPlayer(
         modifier
             .fillMaxWidth()
             .height(MiniPlayerHeight)
-            .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Horizontal)),
+            .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Horizontal))
+            .background(if (pureBlack) Color.Black else Color.Transparent),
     ) {
         LinearProgressIndicator(
             progress = { (position.toFloat() / duration).coerceIn(0f, 1f) },
@@ -90,6 +94,7 @@ fun MiniPlayer(
                     MiniMediaInfo(
                         mediaMetadata = it,
                         error = error,
+                        pureBlack = pureBlack,
                         modifier = Modifier.padding(horizontal = 6.dp),
                     )
                 }
@@ -137,6 +142,7 @@ fun MiniPlayer(
 fun MiniMediaInfo(
     mediaMetadata: MediaMetadata,
     error: PlaybackException?,
+    pureBlack: Boolean,
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -184,7 +190,7 @@ fun MiniMediaInfo(
                     Modifier
                         .fillMaxSize()
                         .background(
-                            color = Color.Black.copy(alpha = 0.6f),
+                            color = if (pureBlack) Color.Black else Color.Black.copy(alpha = 0.6f),
                             shape = RoundedCornerShape(ThumbnailCornerRadius),
                         ),
                 ) {
