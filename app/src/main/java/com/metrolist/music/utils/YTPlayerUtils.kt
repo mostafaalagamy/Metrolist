@@ -8,7 +8,7 @@ import com.metrolist.innertube.models.YouTubeClient.Companion.IOS
 import com.metrolist.innertube.models.YouTubeClient.Companion.WEB_CREATOR
 import com.metrolist.innertube.models.YouTubeClient.Companion.WEB_REMIX
 import com.metrolist.innertube.models.response.PlayerResponse
-import com.metrolist.innertube.pages.NewPipeUtils
+import com.metrolist.innertube.NewPipeUtils
 import com.metrolist.music.constants.AudioQuality
 import com.metrolist.music.db.entities.FormatEntity
 import okhttp3.OkHttpClient
