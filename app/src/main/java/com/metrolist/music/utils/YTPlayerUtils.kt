@@ -11,8 +11,6 @@ import com.metrolist.innertube.models.YouTubeClient.Companion.IOS
 import com.metrolist.innertube.models.YouTubeClient.Companion.TVHTML5_SIMPLY_EMBEDDED_PLAYER
 import com.metrolist.innertube.models.YouTubeClient.Companion.WEB_REMIX
 import com.metrolist.innertube.models.response.PlayerResponse
-import com.metrolist.music.utils.potoken.PoTokenGenerator
-import com.metrolist.music.utils.potoken.PoTokenResult
 import okhttp3.OkHttpClient
 
 object YTPlayerUtils {
