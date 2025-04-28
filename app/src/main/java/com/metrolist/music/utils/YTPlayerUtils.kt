@@ -113,8 +113,7 @@ object YTPlayerUtils {
                 }
 
                 streamPlayerResponse =
-                    YouTube.player(videoId, playlistId, client, signatureTimestamp, webPlayerPot)
-                        .getOrNull()
+                    YouTube.player(videoId, playlistId, client, signatureTimestamp).getOrNull()
             }
 
             // process current client response
@@ -129,10 +128,6 @@ object YTPlayerUtils {
                 streamUrl = findUrlOrNull(format, videoId) ?: continue
                 streamExpiresInSeconds =
                     streamPlayerResponse.streamingData?.expiresInSeconds ?: continue
-
-                if (webStreamingPot != null) {
-                    streamUrl += "&pot=$webStreamingPot";
-                }
 
                 if (clientIndex == STREAM_FALLBACK_CLIENTS.size - 1) {
                     /** skip [validateStatus] for last client */
@@ -195,7 +190,7 @@ object YTPlayerUtils {
             ?.filter { it.isAudio }
             ?.maxByOrNull {
                 it.bitrate * when (audioQuality) {
-                    AudioQuality.AUTO -> if (connectivityManager.isActiveNetworkMetered) -1 else 1 -
+                    AudioQuality.AUTO -> if (connectivityManager.isActiveNetworkMetered) -1 else 1
                     AudioQuality.HIGH -> 1
                     AudioQuality.LOW -> -1
                 } + (if (it.mimeType.startsWith("audio/webm")) 10240 else 0) // prefer opus stream
