@@ -33,6 +33,18 @@
     <string name="last_week">Settimana scorsa</string>
     <string name="local_history">Locale</string>
     <string name="remote_history">Remoto</string>
+
+    <!-- Charts -->
+    <string name="charts">Classifiche</string>
+    <string name="back_button_desc">Indietro</string>
+    <string name="no_title">Nessun titolo</string>
+    <string name="unknown_artist">Artista sconosciuto</string>
+    <string name="unknown_item_type">Tipo dell\'elemento sconosciuto</string>
+    <string name="loading_charts">Caricamento della classifica...</string>
+    <string name="retry_button">Riprova</string>
+    <string name="album_cover_desc">Cover dell\'album</string>
+    <string name="top_music_videos">I migliori video musicali</string>
+    <string name="trending">Di tendenza</string>
     
     <!-- Stats -->
     <string name="most_played_songs">Brani più ascoltati</string>
@@ -71,6 +83,7 @@
     <string name="liked">Piaciuti</string>
     <string name="offline">Scaricati</string>
     <string name="my_top">I miei migliori</string>
+    <string name="cached_playlist">In cache</string>
     <string name="library_song_empty">I brani della libreria verranno mostrati qui</string>
     <string name="library_artist_empty">Gli artisti della libreria verranno mostrati qui</string>
     <string name="library_album_empty">Gli album della libreria verranno mostrati qui</string>
@@ -80,10 +93,11 @@
     <string name="liked_songs">Brani piaciuti</string>
     <string name="downloaded_songs">Brani scaricati</string>
     <string name="sync_playlist">Sincronizza playlist</string>
+    <string name="sync_disabled">Sincronizzazione disabilitata</string>
     <string name="playlist_is_empty">La playlist è vuota</string>
     <string name="remove_download_playlist_confirm">Vuoi veramente rimuovere tutti i brani della playlist \"%s\" dalla sezione dei brani scaricati?</string>
     <string name="delete_playlist_confirm">Vuoi veramente rimuovere la playlist \"%s\"?</string>
-    <string name="elements_selected">%d elemento selezionato</string>
+    <string name="elements_selected">%1$d elementi selezionati</string>
     <string name="allows_for_sync_witch_youtube">Nota: questo attiva la sincronizzazione con YouTube Music. Tale azione NON è modificabile successivamente.</string>
     
     <!-- Button -->
@@ -98,10 +112,14 @@
     <string name="start_radio">Avvia radio</string>
     <string name="play">Riproduci</string>
     <string name="play_next">Riproduci come successiva</string>
+    <string name="added_to_play_next">Aggiunto come prossimo brano</string>
+    
     <string name="add_to_queue">Metti in coda</string>
+    <string name="added_to_queue">Aggiunto alla coda</string>
     <string name="add_to_library">Aggiungi a libreria</string>
     <string name="remove_from_library">Rimuovi da libreria</string>
     <string name="remove_from_playlist">Rimuovi dalla playlist</string>
+    <string name="remove_from_cache">Rimuovi dalla cache</string>
     <string name="download">Scarica</string>
     <string name="downloading">In scaricamento</string>
     <string name="remove_download">Rimuovi scaricamento</string>
@@ -116,7 +134,7 @@
     <string name="remove_from_history">Rimuovi da cronologia</string>
     <string name="search_online">Cerca online</string>
     <string name="sync">Sincronizza</string>
-    <string name="advanced">Advanzate</string>
+    <string name="advanced">Avanzate</string>
     <string name="select">Seleziona tutti</string>
     <string name="like_all">Mi piace tutto</string>
     <string name="dislike_all">Togli Mi piace a tutto</string>
@@ -253,12 +271,11 @@
 
     <!-- Settings -->
     <string name="settings">Impostazioni</string>
-    <string name="login_settings">Login settings</string>
+    <string name="login_settings">Impostazioni dell\'accesso</string>
     <string name="use_login_for_browse">Accedi per il contenuto premium</string>
     <string name="use_login_for_browse_desc">Si possono visualizzare gli album esclusivi solo se accedi con un account premium</string>
 
     <string name="general_settings">Impostazioni generali</string>
-    
     
     <string name="appearance">Aspetto</string>
     <string name="theme">Tema</string>
@@ -271,8 +288,12 @@
     <string name="follow_theme">Segui il tema</string>
     <string name="gradient">Gradiente</string>
     <string name="player_background_blur">Sfuma</string>
+    <string name="player_buttons_style">Colori dei bottoni del riproduttore</string>
+    <string name="default_style">Predefiniti</string>
+    <string name="secondary_color_style">Secondari</string>
     <string name="enable_squiggly_slider">Abilita cursore ondulato</string>
     <string name="enable_swipe_thumbnail">Attiva la possibilità di cambiare brano scorrendo sulla copertina</string>
+    <string name="swipe_song_to_add">Scorri il brano verso destra per riprodurlo come successivo o verso destra per aggiungerlo alla coda</string>
     <string name="pure_black">Nero</string>
     <string name="customize_navigation_tabs">Personalizza le schede di navigazione</string>
     <string name="player">Lettore</string>
@@ -293,20 +314,24 @@
     <string name="misc">Vario</string>
     <string name="default_open_tab">Scheda principale predefinita</string>
     <string name="slim_navbar">Nascondi etichette della barra di navigazione</string>
+    <string name="auto_playlists">Playlist automatiche</string>
+    <string name="show_liked_playlist">Mostra la playlist dei brani piaciuti</string>
+    <string name="show_downloaded_playlist">Mostra la playlist dei brani scaricati</string>
+    <string name="show_top_playlist">Mostra la playlist dei migliori brani</string>
+    <string name="show_cached_playlist">Mostra la playlist dei brani in cache</string>
     
     <string name="content">Contenuti</string>
     <string name="google">Google</string>
     <string name="discord">Discord</string>
     <string name="login">Accedi</string>
-    <string name="advanced_login">Login avanzato (token)</string>
+    <string name="advanced_login">Accesso avanzato (token)</string>
     <string name="logout">Disconnetti</string>
     <string name="not_logged_in">Non connesso</string>
     <string name="token_hidden">Tocca per mostrare il token</string>
     <string name="token_shown">Tocca ancora per copiarlo o modificarlo</string>
-    <string name="token_adv_login_description">Questo è un metodo ADVANZATO per accedere. Come alternativa al portale web, puoi inserire o aggiornare direttamente il tuo token di accesso qui. Per esempio, questo può velocizzare l\'accesso su più dispositivi. Tieni presente che qualsiasi formato di token non valido che l\'app non riesce ad analizzare non sarà accettato</string>
+    <string name="token_adv_login_description">Questo è un metodo AVANZATO per fare l\'accesso a YouTube Music. Come alternativa al portale web, puoi inserire o aggiornare direttamente il tuo token di accesso qui. Per esempio, questo può velocizzare l\'accesso su più dispositivi. Tieni presente che qualsiasi formato di token non valido che l\'app non riesce ad analizzare non sarà accettato</string>
     <string name="ytm_sync">Sincronizza automaticamente il tuo account di YouTube Music</string>
     <string name="general">Generale</string>
-    
     <string name="content_language">Lingua predefinita dei contenuti</string>
     <string name="content_country">Paese predefinito dei contenuti</string>
     <string name="system_default">Predefinito di sistema</string>
@@ -347,7 +372,11 @@
     <string name="auto_skip_next_on_error_desc">Garantisci la tua esperienza continua di ascolto</string>
     <string name="stop_music_on_task_clear">Interrompi la musica per cancellare l\'attività</string>
     <string name="equalizer">Equalizzatore</string>
-
+    <string name="min_playback_duration_title">Durata minima della riproduzione</string>
+    <string name="min_playback_duration_description">La minima quantità di un brano che deve essere riprodotta prima di essere considerata come \"ascoltata\"</string>
+    <string name="percentage_format">%d%%</string>
+    <string name="minimum_playback_duration">Durata minima della riproduzione</string>
+    
     <string name="storage">Archiviazione</string>
     <string name="cache">Cache</string>
     <string name="image_cache">Cache delle immagini</string>
@@ -360,11 +389,16 @@
     <string name="max_song_cache_size">Grandezza massima della cache dei brani</string>
     <string name="clear_song_cache">Pulisci la cache dei brani</string>
     <string name="size_used">%s usati</string>
+    <string name="clear_song_cache_dialog">Sei sicuro di voler eliminare tutti i brani in cache?</string>
+    
+    <string name="clear_downloads_dialog">Sei sicuro di voler eliminare tutti i brani scaricati?</string>
+
     
     <string name="privacy">Privacy</string>
     <string name="listen_history">Cronologia degli ascolti</string>
     <string name="search_history">Cronologia delle ricerche</string>
     <string name="pause_listen_history">Sospendi la cronologia degli ascolti</string>
+    <string name="pause_remote_listen_history">Sospendi la condivisione della cronologia degli ascolti con YouTube Music</string>
     <string name="clear_listen_history">Cancella la cronologia degli ascolti</string>
     <string name="clear_listen_history_confirm">Sei sicuro di voler cancellare la cronologia degli ascolti?</string>
     <string name="pause_search_history">Sospendi la cronologia delle ricerche</string>
@@ -388,7 +422,8 @@
     <string name="options">Opzioni</string>
     <string name="preview">Anteprima</string>
     <string name="login_failed">Accesso non effettuato</string>
-
+    <string name="not_logged_in_youtube">Disconnesso da YouTube</string>
+    
     <string name="enable_discord_rpc">Attiva Rich Presence</string>
 
     <string name="default_links">Apri link supportati</string>
@@ -410,13 +445,13 @@
     <string name="past_year">Ultimo anno</string>
     <string name="top_length">La lunghezza della mia lista top</string>
     <string name="history_duration">Durata della cronologia</string>
-    <string name="information">Information</string>
-    <string name="description">Description</string>
-    <string name="numbers">Numbers</string>
-    <string name="subscribers">Subscribers</string>
-    <string name="views">Views</string>
-    <string name="likes">Likes</string>
-    <string name="dislikes">Dislikes</string>
+    <string name="information">Informazioni</string>
+    <string name="description">Descrizione</string>
+    <string name="numbers">Numeri</string>
+    <string name="subscribers">Iscritti</string>
+    <string name="views">Visualizzazioni</string>
+    <string name="likes">Mi piace</string>
+    <string name="dislikes">Non mi piace</string>
     <plurals name="seconds">
         <item quantity="one">1 secondo</item>
         <item quantity="other">%d secondi</item>
