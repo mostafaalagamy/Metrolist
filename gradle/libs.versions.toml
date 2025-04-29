@@ -3,7 +3,7 @@ androidGradlePlugin = "8.11.0-alpha07"
 annotation = "1.9.1"
 json = "20250107"
 kotlin = "2.1.20"
-compose = "1.7.8"
+compose = "1.9.0-alpha01"
 lifecycle = "2.9.0-rc01"
 material3 = "1.4.0-alpha13"
 materialKolor = "2.1.1"
@@ -31,7 +31,7 @@ compose-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "compos
 compose-ui-util = { group = "androidx.compose.ui", name = "ui-util", version.ref = "compose" }
 compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling", version.ref = "compose" }
 compose-animation = { group = "androidx.compose.animation", name = "animation-graphics", version.ref = "compose" }
-compose-reorderable = { group = "org.burnoutcrew.composereorderable", name = "reorderable", version = "0.9.6" }
+compose-reorderable = { module = "sh.calvin.reorderable:reorderable", version = "2.4.3" }
 
 squigglyslider = { group = "me.saket.squigglyslider", name = "squigglyslider", version = "1.0.0" }
 
