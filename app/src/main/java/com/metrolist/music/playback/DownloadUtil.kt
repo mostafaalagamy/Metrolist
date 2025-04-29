@@ -69,11 +69,9 @@ constructor(
                 return@Factory dataSpec.withUri(it.first.toUri())
             }
 
-            val playedFormat = runBlocking(Dispatchers.IO) { database.format(mediaId).first() }
             val playbackData = runBlocking(Dispatchers.IO) {
                 YTPlayerUtils.playerResponseForPlayback(
                     mediaId,
-                    playedFormat = playedFormat,
                     audioQuality = audioQuality,
                     connectivityManager = connectivityManager,
                 )

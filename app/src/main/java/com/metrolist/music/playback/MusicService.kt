@@ -791,13 +791,9 @@ class MusicService :
                 return@Factory dataSpec.withUri(it.first.toUri())
             }
 
-            // Check whether format exists so that users from older version can view format details
-            // There may be inconsistent between the downloaded file and the displayed info if user change audio quality frequently
-            val playedFormat = runBlocking(Dispatchers.IO) { database.format(mediaId).first() }
             val playbackData = runBlocking(Dispatchers.IO) {
                 YTPlayerUtils.playerResponseForPlayback(
                     mediaId,
-                    playedFormat = playedFormat,
                     audioQuality = audioQuality,
                     connectivityManager = connectivityManager,
                 )
