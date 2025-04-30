@@ -287,7 +287,7 @@ fun SongListItem(
         ListItem(
             title = song.song.title,
             subtitle = joinByBullet(
-                song.artists.joinToString { it.name },
+                song.song.artistName ?: song.artists.joinToString { it.name },
                 makeTimeString(song.song.duration * 1000L)
             ),
             badges = badges,
