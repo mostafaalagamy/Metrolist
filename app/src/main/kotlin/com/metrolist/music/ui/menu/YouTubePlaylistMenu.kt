@@ -294,7 +294,7 @@ fun YouTubePlaylistMenu(
                     supportingContent = {
                         Text(
                             text = joinByBullet(
-                                song.artistName ?: song.artists.joinToString { it.name },
+                                song.artists.joinToString { it.name },
                                 makeTimeString(song.duration * 1000L),
                             )
                         )
