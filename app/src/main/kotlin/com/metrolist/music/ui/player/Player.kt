@@ -972,6 +972,7 @@ fun BottomSheetPlayer(
             },
             onBackgroundColor = onBackgroundColor,
             TextBackgroundColor = TextBackgroundColor,
+            pureBlack: Boolean,
         )
     }
 }
