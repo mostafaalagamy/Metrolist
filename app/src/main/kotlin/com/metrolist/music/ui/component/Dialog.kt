@@ -248,25 +248,25 @@ fun TextFieldDialog(
     modifier: Modifier = Modifier,
     icon: (@Composable () -> Unit)? = null,
     title: (@Composable () -> Unit)? = null,
-    initialTextFieldValue: TextFieldValue = TextFieldValue(),
+    initialTextFieldValue: TextFieldValue = TextFieldValue(), // legacy
     placeholder: @Composable (() -> Unit)? = null,
     singleLine: Boolean = true,
     autoFocus: Boolean = true,
     maxLines: Int = if (singleLine) 1 else 10,
     isInputValid: (String) -> Boolean = { it.isNotEmpty() },
-    onDone: (String) -> Unit,
+    onDone: (String) -> Unit = {},
+
+    // new multi-field support
+    textFields: List<Pair<String, TextFieldValue>>? = null,
+    onTextFieldsChange: ((Int, TextFieldValue) -> Unit)? = null,
+    onDoneMultiple: ((List<String>) -> Unit)? = null,
+
     onDismiss: () -> Unit,
     extraContent: (@Composable () -> Unit)? = null,
 ) {
-    val (textFieldValue, onTextFieldValueChange) =
-        remember {
-            mutableStateOf(initialTextFieldValue)
-        }
+    val legacyFieldState = remember { mutableStateOf(initialTextFieldValue) }
 
-    val focusRequester =
-        remember {
-            FocusRequester()
-        }
+    val focusRequester = remember { FocusRequester() }
 
     LaunchedEffect(Unit) {
         if (autoFocus) {
@@ -285,38 +285,71 @@ fun TextFieldDialog(
                 Text(text = stringResource(android.R.string.cancel))
             }
 
+            val isValid = textFields?.all { isInputValid(it.second.text) }
+                ?: isInputValid(legacyFieldState.value.text)
+
             TextButton(
-                enabled = isInputValid(textFieldValue.text),
+                enabled = isValid,
                 onClick = {
                     onDismiss()
-                    onDone(textFieldValue.text)
+                    if (textFields != null && onDoneMultiple != null) {
+                        onDoneMultiple(textFields.map { it.second.text })
+                    } else {
+                        onDone(legacyFieldState.value.text)
+                    }
                 },
             ) {
                 Text(text = stringResource(android.R.string.ok))
             }
         },
     ) {
-        TextField(
-            value = textFieldValue,
-            onValueChange = onTextFieldValueChange,
-            placeholder = placeholder,
-            singleLine = singleLine,
-            maxLines = maxLines,
-            colors =
-            OutlinedTextFieldDefaults.colors(),
-            keyboardOptions = KeyboardOptions(imeAction = if (singleLine) ImeAction.Done else ImeAction.None),
-            keyboardActions =
-            KeyboardActions(
-                onDone = {
-                    onDone(textFieldValue.text)
-                    onDismiss()
-                },
-            ),
-            modifier =
-            Modifier
-                .weight(weight = 1f, fill = false)
-                .focusRequester(focusRequester),
-        )
-        extraContent?.invoke()
+        Column {
+            if (textFields != null) {
+                textFields.forEachIndexed { index, (label, value) ->
+                    TextField(
+                        value = value,
+                        onValueChange = { onTextFieldsChange?.invoke(index, it) },
+                        placeholder = { Text(label) },
+                        singleLine = singleLine,
+                        maxLines = maxLines,
+                        colors = OutlinedTextFieldDefaults.colors(),
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                        keyboardActions = KeyboardActions(
+                            onDone = {
+                                if (onDoneMultiple != null) {
+                                    onDoneMultiple(textFields.map { it.second.text })
+                                    onDismiss()
+                                }
+                            },
+                        ),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 12.dp)
+                            .then(if (index == 0) Modifier.focusRequester(focusRequester) else Modifier)
+                    )
+                }
+            } else {
+                TextField(
+                    value = legacyFieldState.value,
+                    onValueChange = { legacyFieldState.value = it },
+                    placeholder = placeholder,
+                    singleLine = singleLine,
+                    maxLines = maxLines,
+                    colors = OutlinedTextFieldDefaults.colors(),
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                    keyboardActions = KeyboardActions(
+                        onDone = {
+                            onDone(legacyFieldState.value.text)
+                            onDismiss()
+                        },
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .focusRequester(focusRequester)
+                )
+            }
+
+            extraContent?.invoke()
+        }
     }
 }
