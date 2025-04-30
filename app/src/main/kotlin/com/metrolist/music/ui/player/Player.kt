@@ -485,6 +485,7 @@ fun BottomSheetPlayer(
             MiniPlayer(
                 position = position,
                 duration = duration,
+                pureBlack = pureBlack,
             )
         },
     ) {
