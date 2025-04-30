@@ -266,14 +266,14 @@ fun SongMenu(
 
     val bottomSheetPageState = LocalBottomSheetPageState.current
 
-    // Row for "Play next", "Add to playlist", and "Share" buttons with grid-like background
+    // Row for "Edit", "Add to playlist", and "Share" buttons with grid-like background
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(start = 24.dp, end = 24.dp, top = 8.dp, bottom = 8.dp),
         horizontalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(8.dp),
     ) {
-        // Play next button
+        // Edit button
         Column(
             modifier = Modifier
                 .weight(1f)
@@ -283,19 +283,18 @@ fun SongMenu(
                 )
                 .clip(RoundedCornerShape(8.dp))
                 .clickable {
-                    onDismiss()
-                    playerConnection.playNext(song.toMediaItem())
+                    showEditDialog = true
                 }
                 .padding(12.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Icon(
-                painter = painterResource(R.drawable.playlist_play),
+                painter = painterResource(R.drawable.edit),
                 contentDescription = null,
                 modifier = Modifier.size(24.dp),
             )
             Text(
-                text = stringResource(R.string.play_next),
+                text = stringResource(R.string.edit),
                 style = MaterialTheme.typography.labelMedium,
                 textAlign = androidx.compose.ui.text.style.TextAlign.Center,
                 modifier = Modifier
@@ -396,15 +395,16 @@ fun SongMenu(
         }
         item {
             ListItem(
-                headlineContent = { Text(text = stringResource(R.string.edit)) },
+                headlineContent = { Text(text = stringResource(R.string.play_next)) },
                 leadingContent = {
                     Icon(
-                        painter = painterResource(R.drawable.edit),
+                        painter = painterResource(R.drawable.playlist_play),
                         contentDescription = null,
                     )
                 },
                 modifier = Modifier.clickable {
-                    showEditDialog = true
+                    onDismiss()
+                    playerConnection.playNext(song.toMediaItem())
                 }
             )
         }
