@@ -50,15 +50,14 @@ import com.metrolist.music.constants.ThumbnailCornerRadius
 import com.metrolist.music.extensions.togglePlayPause
 import com.metrolist.music.models.MediaMetadata
 import com.metrolist.music.utils.rememberPreference
-import com.metrolist.music.constants.PureBlackKey
 
 @Composable
 fun MiniPlayer(
     position: Long,
     duration: Long,
     modifier: Modifier = Modifier,
+    pureBlack: Boolean,
 ) {
-    val pureBlack by rememberPreference(PureBlackKey, defaultValue = false)
     val playerConnection = LocalPlayerConnection.current ?: return
     val isPlaying by playerConnection.isPlaying.collectAsState()
     val playbackState by playerConnection.playbackState.collectAsState()
