@@ -39,6 +39,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -115,25 +116,55 @@ fun SongMenu(
         label = "",
     )
 
+    val TextFieldValueSaver: Saver<TextFieldValue, *> = Saver(
+        save = { it.text },
+        restore = { text -> TextFieldValue(text, TextRange(text.length)) }
+    )
+
     var showEditDialog by rememberSaveable {
         mutableStateOf(false)
     }
 
+    var titleField by rememberSaveable(stateSaver = TextFieldValueSaver) {
+        mutableStateOf(TextFieldValue(song.song.title))
+    }
+
+    var artistField by rememberSaveable(stateSaver = TextFieldValueSaver) {
+        mutableStateOf(TextFieldValue(song.artists.firstOrNull()?.name.orEmpty()))
+    }
+
     if (showEditDialog) {
         TextFieldDialog(
-            icon = { Icon(painter = painterResource(R.drawable.edit), contentDescription = null) },
-            title = { Text(text = stringResource(R.string.edit_song)) },
-            onDismiss = { showEditDialog = false },
-            initialTextFieldValue = TextFieldValue(
-                song.song.title,
-                TextRange(song.song.title.length)
+            icon = {
+                Icon(
+                    painter = painterResource(R.drawable.edit),
+                    contentDescription = null
+                )
+            },
+            title = {
+                Text(text = stringResource(R.string.edit_song))
+            },
+            textFields = listOf(
+                "Song Title" to titleField,
+                "Artist Name" to artistField
             ),
-            onDone = { title ->
+            onTextFieldsChange = { index, newValue ->
+                if (index == 0) titleField = newValue
+                else artistField = newValue
+            },
+            onDoneMultiple = { values ->
+                val newTitle = values[0]
+                val newArtist = values[1]
                 onDismiss()
                 database.query {
-                    update(song.song.copy(title = title))
+                    update(song.song.copy(title = newTitle))
+                    val artist = song.artists.firstOrNull()
+                    if (artist != null) {
+                        update(artist.copy(name = newArtist))
+                    }
                 }
             },
+            onDismiss = { showEditDialog = false }
         )
     }
 
