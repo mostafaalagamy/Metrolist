@@ -34,6 +34,7 @@ import com.metrolist.music.extensions.togglePlayPause
 import com.metrolist.music.models.toMediaMetadata
 import com.metrolist.music.playback.queues.YouTubeQueue
 import com.metrolist.music.ui.component.LocalMenuState
+import com.metrolist.music.ui.component.IconButton
 import com.metrolist.music.ui.component.NavigationTitle
 import com.metrolist.music.ui.component.YouTubeGridItem
 import com.metrolist.music.ui.component.YouTubeListItem
@@ -41,6 +42,7 @@ import com.metrolist.music.ui.component.shimmer.GridItemPlaceHolder
 import com.metrolist.music.ui.component.shimmer.ShimmerHost
 import com.metrolist.music.ui.component.shimmer.TextPlaceholder
 import com.metrolist.music.ui.menu.YouTubeSongMenu
+import com.metrolist.music.ui.utils.backToMain
 import com.metrolist.music.ui.utils.SnapLayoutInfoProvider
 import com.metrolist.music.viewmodels.ChartsViewModel
 
@@ -73,7 +75,10 @@ fun ChartsScreen(
             TopAppBar(
                 title = { Text(stringResource(R.string.charts)) },
                 navigationIcon = {
-                    IconButton(onClick = { navController.navigateUp() }) {
+                    IconButton(
+                        onClick = { navController.navigateUp() },
+                        onLongClick = { navController.backToMain() }
+                    ) {
                         Icon(
                             painter = painterResource(R.drawable.arrow_back),
                             contentDescription = null,

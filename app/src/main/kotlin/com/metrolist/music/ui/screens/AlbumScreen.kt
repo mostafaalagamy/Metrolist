@@ -76,6 +76,7 @@ import com.metrolist.music.playback.ExoDownloadService
 import com.metrolist.music.playback.queues.LocalAlbumRadio
 import com.metrolist.music.ui.component.AutoResizeText
 import com.metrolist.music.ui.component.FontSizeRange
+import com.metrolist.music.ui.component.IconButton
 import com.metrolist.music.ui.component.LocalMenuState
 import com.metrolist.music.ui.component.NavigationTitle
 import com.metrolist.music.ui.component.SongListItem
@@ -88,6 +89,7 @@ import com.metrolist.music.ui.menu.AlbumMenu
 import com.metrolist.music.ui.menu.SelectionSongMenu
 import com.metrolist.music.ui.menu.SongMenu
 import com.metrolist.music.ui.menu.YouTubeAlbumMenu
+import com.metrolist.music.ui.utils.backToMain
 import com.metrolist.music.ui.utils.ItemWrapper
 import com.metrolist.music.viewmodels.AlbumViewModel
 
@@ -546,6 +548,11 @@ fun AlbumScreen(
                         navController.navigateUp()
                     }
                 },
+                onLongClick = {
+                    if (!selection) {
+                        navController.backToMain()
+                    }
+                }
             ) {
                 Icon(
                     painter = painterResource(
@@ -592,7 +599,6 @@ fun AlbumScreen(
                         contentDescription = null
                     )
                 }
-            } else {
             }
         }
     )
