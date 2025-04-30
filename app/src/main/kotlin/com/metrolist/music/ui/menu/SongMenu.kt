@@ -116,11 +116,6 @@ fun SongMenu(
         label = "",
     )
 
-    val TextFieldValueSaver: Saver<TextFieldValue, *> = Saver(
-        save = { it.text },
-        restore = { text -> TextFieldValue(text, TextRange(text.length)) }
-    )
-
     var showEditDialog by rememberSaveable {
         mutableStateOf(false)
     }
