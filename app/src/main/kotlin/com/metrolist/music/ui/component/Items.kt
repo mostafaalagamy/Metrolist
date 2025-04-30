@@ -731,7 +731,7 @@ fun MediaMetadataListItem(
     ListItem(
         title = mediaMetadata.title,
         subtitle = joinByBullet(
-            mediaMetadata.artists.joinToString { it.name },
+            mediaMetadata.artistName ?: mediaMetadata.artists.joinToString { it.name },
             makeTimeString(mediaMetadata.duration * 1000L)
         ),
         thumbnailContent = {
