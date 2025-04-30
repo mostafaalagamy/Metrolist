@@ -356,7 +356,7 @@ fun SongGridItem(
     subtitle = {
         Text(
             text = joinByBullet(
-                song.artists.joinToString { it.name },
+                song.song.artistName ?: song.artists.joinToString { it.name },
                 makeTimeString(song.song.duration * 1000L)
             ),
             style = MaterialTheme.typography.bodyMedium,
