@@ -94,6 +94,7 @@ import com.metrolist.music.models.toMediaMetadata
 import com.metrolist.music.playback.queues.YouTubeQueue
 import com.metrolist.music.ui.component.AutoResizeText
 import com.metrolist.music.ui.component.FontSizeRange
+import com.metrolist.music.ui.component.IconButton
 import com.metrolist.music.ui.component.LocalMenuState
 import com.metrolist.music.ui.component.YouTubeListItem
 import com.metrolist.music.ui.component.shimmer.ButtonPlaceholder
@@ -103,6 +104,7 @@ import com.metrolist.music.ui.component.shimmer.TextPlaceholder
 import com.metrolist.music.ui.menu.SelectionMediaMetadataMenu
 import com.metrolist.music.ui.menu.YouTubePlaylistMenu
 import com.metrolist.music.ui.menu.YouTubeSongMenu
+import com.metrolist.music.ui.utils.backToMain
 import com.metrolist.music.ui.utils.ItemWrapper
 import com.metrolist.music.utils.rememberPreference
 import com.metrolist.music.viewmodels.OnlinePlaylistViewModel
@@ -536,6 +538,11 @@ fun OnlinePlaylistScreen(
                             navController.navigateUp()
                         }
                     },
+                    onLongClick = {
+                        if (!isSearching && !selection) {
+                            navController.backToMain()
+                        }
+                    }
                 ) {
                     Icon(
                         painter = painterResource(
