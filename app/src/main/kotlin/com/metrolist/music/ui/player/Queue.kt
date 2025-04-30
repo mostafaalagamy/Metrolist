@@ -96,7 +96,6 @@ import androidx.navigation.NavController
 import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
 import com.metrolist.music.constants.ListItemHeight
-import com.metrolist.music.constants.PureBlackKey
 import com.metrolist.music.constants.QueueEditLockKey
 import com.metrolist.music.constants.ShowLyricsKey
 import com.metrolist.music.extensions.metadata
@@ -133,6 +132,7 @@ fun Queue(
     backgroundColor: Color,
     onBackgroundColor: Color,
     TextBackgroundColor: Color,
+    pureBlack: Boolean,
 ) {
     val context = LocalContext.current
     val haptic = LocalHapticFeedback.current
@@ -154,8 +154,6 @@ fun Queue(
     var selection by remember {
         mutableStateOf(false)
     }
-
-    val pureBlack by rememberPreference(PureBlackKey, defaultValue = false)
 
     var locked by rememberPreference(QueueEditLockKey, defaultValue = true)
 
