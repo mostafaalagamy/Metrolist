@@ -107,7 +107,7 @@ class MusicDatabase(
         AutoMigration(from = 15, to = 16),
         AutoMigration(from = 16, to = 17, spec = Migration16To17::class),
         AutoMigration(from = 17, to = 18),
-        AutoMigration(from = 18, to = 19, spec = Migration18To19::class),
+        AutoMigration(from = 18, to = 19),
     ],
 )
 @TypeConverters(Converters::class)
@@ -461,11 +461,5 @@ class Migration16To17 : AutoMigrationSpec {
     override fun onPostMigrate(db: SupportSQLiteDatabase) {
         db.execSQL("UPDATE playlist SET bookmarkedAt = lastUpdateTime")
         db.execSQL("UPDATE playlist SET isEditable = 1 WHERE browseId IS NOT NULL")
-    }
-}
-
-class Migration18To19 : AutoMigrationSpec {
-    override fun onPostMigrate(db: SupportSQLiteDatabase) {
-        db.execSQL("ALTER TABLE song ADD COLUMN artistName TEXT")
     }
 }
