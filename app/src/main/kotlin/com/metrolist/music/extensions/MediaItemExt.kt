@@ -41,8 +41,8 @@ fun SongItem.toMediaItem() =
             androidx.media3.common.MediaMetadata
                 .Builder()
                 .setTitle(title)
-                .setSubtitle(artistName ?: artists.joinToString { it.name })
-                .setArtist(artistName ?: artists.joinToString { it.name })
+                .setSubtitle(artists.joinToString { it.name })
+                .setArtist(artists.joinToString { it.name })
                 .setArtworkUri(thumbnail.toUri())
                 .setAlbumTitle(album?.name)
                 .setMediaType(MEDIA_TYPE_MUSIC)
