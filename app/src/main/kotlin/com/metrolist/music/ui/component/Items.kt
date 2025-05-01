@@ -1027,6 +1027,14 @@ fun ItemThumbnail(
             .aspectRatio(thumbnailRatio)
             .clip(shape)
     ) {
+        AsyncImage(
+            model = thumbnailUrl,
+            contentDescription = null,
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(shape)
+        )
+
         if (albumIndex != null) {
             AnimatedVisibility(
                 visible = !isActive,
@@ -1038,29 +1046,22 @@ fun ItemThumbnail(
                     style = MaterialTheme.typography.labelLarge
                 )
             }
-        } else {
-            if (isSelected) {
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .zIndex(1f)
-                        .clip(shape)
-                        .background(Color.Black.copy(alpha = 0.5f))
-                ) {
-                    Icon(
-                        painter = painterResource(R.drawable.done),
-                        contentDescription = null
-                    )
-                }
-            }
-            AsyncImage(
-                model = thumbnailUrl,
-                contentDescription = null,
+        }
+
+        if (isSelected) {
+            Box(
+                contentAlignment = Alignment.Center,
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .fillMaxSize()
+                    .zIndex(1f)
                     .clip(shape)
-            )
+                    .background(Color.Black.copy(alpha = 0.5f))
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.done),
+                    contentDescription = null
+                )
+            }
         }
 
         PlayingIndicatorBox(
