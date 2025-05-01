@@ -116,21 +116,21 @@ fun SongMenu(
         label = "",
     )
 
+    var showEditDialog by rememberSaveable {
+        mutableStateOf(false)
+    }
+
     val TextFieldValueSaver: Saver<TextFieldValue, *> = Saver(
         save = { it.text },
         restore = { text -> TextFieldValue(text, TextRange(text.length)) }
     )
-
-    var showEditDialog by rememberSaveable {
-        mutableStateOf(false)
-    }
 
     var titleField by rememberSaveable(stateSaver = TextFieldValueSaver) {
         mutableStateOf(TextFieldValue(song.song.title))
     }
 
     var artistField by rememberSaveable(stateSaver = TextFieldValueSaver) {
-        mutableStateOf(TextFieldValue(song.artists.firstOrNull()?.name.orEmpty()))
+        mutableStateOf(TextFieldValue(song.song.artistName ?: song.artists.firstOrNull()?.name.orEmpty()))
     }
 
     if (showEditDialog) {
@@ -157,11 +157,7 @@ fun SongMenu(
                 val newArtist = values[1]
                 onDismiss()
                 database.query {
-                    update(song.song.copy(title = newTitle))
-                    val artist = song.artists.firstOrNull()
-                    if (artist != null) {
-                        update(artist.copy(name = newArtist))
-                    }
+                    update(song.song.copy(title = newTitle, artistName = newArtist))
                 }
             },
             onDismiss = { showEditDialog = false }

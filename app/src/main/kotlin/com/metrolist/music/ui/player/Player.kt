@@ -535,12 +535,12 @@ fun BottomSheetPlayer(
                     ) {
                         mediaMetadata.artists.fastForEachIndexed { index, artist ->
                             AnimatedContent(
-                                targetState = artist.name,
+                                targetState = mediaMetadata.artistName ?: artist.name,
                                 transitionSpec = { fadeIn() togetherWith fadeOut() },
                                 label = "",
                             ) { name ->
                                 Text(
-                                    text = name,
+                                    text = mediaMetadata.artistName ?: name,
                                     style = MaterialTheme.typography.titleMedium,
                                     color = TextBackgroundColor,
                                     maxLines = 1,

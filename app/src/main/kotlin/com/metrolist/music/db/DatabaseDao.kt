@@ -98,9 +98,7 @@ interface DatabaseDao {
                 songs
                     .sortedWith(
                         compareBy(collator) { song ->
-                            song.artists.joinToString(
-                                "",
-                            ) { it.name }
+                            song.song.artistName ?: song.artists.joinToString("") { it.name }
                         },
                     ).groupBy { it.album?.title }
                     .flatMap { (_, songsByAlbum) ->
@@ -150,9 +148,7 @@ interface DatabaseDao {
                 songs
                     .sortedWith(
                         compareBy(collator) { song ->
-                            song.artists.joinToString(
-                                "",
-                            ) { it.name }
+                            song.song.artistName ?: song.artists.joinToString("") { it.name }
                         },
                     ).groupBy { it.album?.title }
                     .flatMap { (_, songsByAlbum) ->

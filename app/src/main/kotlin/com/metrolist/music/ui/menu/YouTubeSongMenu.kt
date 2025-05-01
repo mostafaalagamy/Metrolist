@@ -178,10 +178,10 @@ fun YouTubeSongMenu(
         },  
         supportingContent = {  
             Text(  
-                text = joinByBullet(  
-                    song.artists.joinToString { it.name },  
-                    song.duration?.let { makeTimeString(it * 1000L) },  
-                )  
+                text = joinByBullet(
+                    song.artists.joinToString { it.name },
+                    song.duration?.let { makeTimeString(it * 1000L) },
+                )
             )  
         },  
         leadingContent = {

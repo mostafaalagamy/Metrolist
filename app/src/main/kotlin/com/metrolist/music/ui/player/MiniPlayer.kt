@@ -228,12 +228,12 @@ fun MiniMediaInfo(
             }
 
             AnimatedContent(
-                targetState = mediaMetadata.artists.joinToString { it.name },
+                targetState = mediaMetadata.artistName ?: mediaMetadata.artists.joinToString { it.name },
                 transitionSpec = { fadeIn() togetherWith fadeOut() },
                 label = "",
             ) { artists ->
                 Text(
-                    text = artists,
+                    text = mediaMetadata.artistName ?: artists,
                     color = MaterialTheme.colorScheme.secondary,
                     fontSize = 12.sp,
                     maxLines = 1,
