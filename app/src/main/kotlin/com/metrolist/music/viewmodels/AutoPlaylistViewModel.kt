@@ -68,7 +68,7 @@ constructor(
 
                                     SongSortType.NAME -> songs.sortedBy { it.song.title }
                                     SongSortType.ARTIST -> songs.sortedBy { song ->
-                                        song.artists.joinToString(separator = "") { it.name }
+                                        song.song.artistName ?: song.artists.joinToString(separator = "") { it.name }
                                     }
 
                                     SongSortType.PLAY_TIME -> songs.sortedBy { it.song.totalPlayTime }
