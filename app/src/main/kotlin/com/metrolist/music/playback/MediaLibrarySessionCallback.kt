@@ -418,8 +418,8 @@ constructor(
                 MediaMetadata
                     .Builder()
                     .setTitle(song.title)
-                    .setSubtitle(artists.joinToString { it.name })
-                    .setArtist(artists.joinToString { it.name })
+                    .setSubtitle(song.artistName ?: artists.joinToString { it.name })
+                    .setArtist(song.artistName ?: artists.joinToString { it.name })
                     .setArtworkUri(song.thumbnailUrl?.toUri())
                     .setIsPlayable(true)
                     .setIsBrowsable(false)
