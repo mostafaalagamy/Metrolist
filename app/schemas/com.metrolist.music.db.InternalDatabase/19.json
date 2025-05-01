@@ -51,6 +51,13 @@
             "notNull": false
           },
           {
+            "fieldPath": "explicit",
+            "columnName": "explicit",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "0"
+          },
+          {
             "fieldPath": "year",
             "columnName": "year",
             "affinity": "INTEGER",

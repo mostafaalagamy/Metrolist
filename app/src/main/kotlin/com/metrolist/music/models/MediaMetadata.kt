@@ -38,6 +38,8 @@ data class MediaMetadata(
             thumbnailUrl = thumbnailUrl,
             albumId = album?.id,
             albumName = album?.title,
+            artistName = artistName,
+            explicit = explicit,
         )
 }
 

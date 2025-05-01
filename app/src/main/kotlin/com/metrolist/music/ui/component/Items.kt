@@ -266,6 +266,9 @@ fun SongListItem(
         if (showLikedIcon && song.song.liked) {
             Icon.Favorite()
         }
+        if (song.song.explicit) {
+            Icon.Explicit()
+        }
         if (showInLibraryIcon && song.song.inLibrary != null) {
             Icon.Library()
         }
