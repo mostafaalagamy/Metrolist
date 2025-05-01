@@ -29,7 +29,7 @@ data class SongEntity(
     val albumId: String? = null,
     val albumName: String? = null,
     val artistName: String? = null,
-    @ColumnInfo(defaultValue = "0"),
+    @ColumnInfo(defaultValue = "0")
     val explicit: Boolean = false,
     val year: Int? = null,
     val date: LocalDateTime? = null, // ID3 tag property
