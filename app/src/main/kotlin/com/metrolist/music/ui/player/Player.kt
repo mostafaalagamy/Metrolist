@@ -35,6 +35,7 @@ import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -51,6 +52,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -72,9 +74,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.fastForEachIndexed
 import androidx.compose.ui.window.DialogProperties
 import androidx.core.graphics.ColorUtils
@@ -93,13 +100,13 @@ import com.metrolist.music.R
 import com.metrolist.music.constants.DarkModeKey
 import com.metrolist.music.constants.PlayerBackgroundStyle
 import com.metrolist.music.constants.PlayerBackgroundStyleKey
+import com.metrolist.music.constants.PlayerButtonsStyle
+import com.metrolist.music.constants.PlayerButtonsStyleKey
 import com.metrolist.music.constants.PlayerHorizontalPadding
 import com.metrolist.music.constants.QueuePeekHeight
 import com.metrolist.music.constants.ShowLyricsKey
 import com.metrolist.music.constants.SliderStyle
 import com.metrolist.music.constants.SliderStyleKey
-import com.metrolist.music.constants.PlayerButtonsStyle
-import com.metrolist.music.constants.PlayerButtonsStyleKey
 import com.metrolist.music.extensions.togglePlayPause
 import com.metrolist.music.extensions.toggleRepeatMode
 import com.metrolist.music.models.MediaMetadata
@@ -117,7 +124,9 @@ import com.metrolist.music.ui.utils.ShowMediaInfo
 import com.metrolist.music.utils.makeTimeString
 import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
@@ -530,46 +539,55 @@ fun BottomSheetPlayer(
 
                     Spacer(Modifier.height(6.dp))
 
-                    Row(
-                        horizontalArrangement = Arrangement.Start,
-                    ) {
-                        mediaMetadata.artists.fastForEachIndexed { index, artist ->
-                            AnimatedContent(
-                                targetState = mediaMetadata.artistName ?: artist.name,
-                                transitionSpec = { fadeIn() togetherWith fadeOut() },
-                                label = "",
-                            ) { name ->
-                                Text(
-                                    text = mediaMetadata.artistName ?: name,
-                                    style = MaterialTheme.typography.titleMedium,
-                                    color = TextBackgroundColor,
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis,
-                                    modifier =
-                                    Modifier
-                                        .basicMarquee()
-                                        .clickable(enabled = artist.id != null) {
-                                            navController.navigate("artist/${artist.id}")
-                                            state.collapseSoft()
-                                        },
-                                )
-                            }
+                    val database = LocalDatabase.current
 
-                            if (index != mediaMetadata.artists.lastIndex) {
-                                AnimatedContent(
-                                    targetState = ", ",
-                                    transitionSpec = { fadeIn() togetherWith fadeOut() },
-                                    label = "",
-                                ) { comma ->
-                                    Text(
-                                        text = comma,
-                                        style = MaterialTheme.typography.titleMedium,
-                                        color = TextBackgroundColor,
-                                        maxLines = 1,
-                                    )
+                    val orderedMetadata by produceState(initialValue = mediaMetadata, mediaMetadata) {
+                        withContext(Dispatchers.IO) {
+                            val maps = database.songArtistMap(mediaMetadata.id)
+                            value = mediaMetadata.copy(
+                                artists = maps.sortedBy { it.position }.mapNotNull { map ->
+                                    mediaMetadata.artists.firstOrNull { it.id == map.artistId }
                                 }
-                            }
+                            )
                         }
+                    }
+
+                    val artistNames = orderedMetadata.artists
+
+                    val annotatedString = buildAnnotatedString {
+                        artistNames.forEachIndexed { index, artist ->
+                            val tag = "artist_${artist.id ?: index}"
+                            pushStringAnnotation(tag = tag, annotation = artist.id ?: "")
+                            withStyle(SpanStyle(color = TextBackgroundColor, fontSize = 16.sp)) {
+                                append(artist.name)
+                            }
+                            pop()
+                            if (index != artistNames.lastIndex) append(", ")
+                        }
+                    }
+
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .basicMarquee()
+                            .padding(end = 12.dp)
+                    ) {
+                        ClickableText(
+                            text = annotatedString,
+                            style = MaterialTheme.typography.titleMedium.copy(color = TextBackgroundColor),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            onClick = { offset ->
+                                annotatedString.getStringAnnotations(start = offset, end = offset)
+                                    .firstOrNull()?.let { annotation ->
+                                        val artistId = annotation.item
+                                        if (artistId.isNotBlank()) {
+                                            navController.navigate("artist/$artistId")
+                                            state.collapseSoft()
+                                        }
+                                    }
+                            }
+                        )
                     }
                 }
 
