@@ -36,6 +36,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -70,9 +71,12 @@ import com.metrolist.music.LocalSyncUtils
 import com.metrolist.music.R
 import com.metrolist.music.constants.ListItemHeight
 import com.metrolist.music.constants.ListThumbnailSize
+import com.metrolist.music.db.entities.ArtistEntity
 import com.metrolist.music.db.entities.Event
 import com.metrolist.music.db.entities.PlaylistSong
 import com.metrolist.music.db.entities.Song
+import com.metrolist.music.db.entities.SongArtistMap
+import com.metrolist.music.db.MusicDatabase
 import com.metrolist.music.extensions.toMediaItem
 import com.metrolist.music.models.toMediaMetadata
 import com.metrolist.music.playback.ExoDownloadService
@@ -83,8 +87,10 @@ import com.metrolist.music.ui.component.SongListItem
 import com.metrolist.music.ui.component.TextFieldDialog
 import com.metrolist.music.ui.utils.ShowMediaInfo
 import com.metrolist.music.viewmodels.CachePlaylistViewModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @Composable
 fun SongMenu(
@@ -116,6 +122,16 @@ fun SongMenu(
         label = "",
     )
 
+    val orderedArtists by produceState(initialValue = emptyList<ArtistEntity>(), song) {
+        withContext(Dispatchers.IO) {
+            val artistMaps = database.songArtistMap(song.id).sortedBy { it.position }
+            val sorted = artistMaps.mapNotNull { map ->
+                song.artists.firstOrNull { it.id == map.artistId }
+            }
+            value = sorted
+        }
+    }
+
     var showEditDialog by rememberSaveable {
         mutableStateOf(false)
     }
@@ -129,8 +145,12 @@ fun SongMenu(
         mutableStateOf(TextFieldValue(song.song.title))
     }
 
-    var artistField by rememberSaveable(stateSaver = TextFieldValueSaver) {
-        mutableStateOf(TextFieldValue(song.song.artistName ?: song.artists.firstOrNull()?.name.orEmpty()))
+    var artistField by rememberSaveable(orderedArtists, stateSaver = TextFieldValueSaver) {
+        mutableStateOf(
+            TextFieldValue(
+                orderedArtists.joinToString(", ") { it.name }
+            )
+        )
     }
 
     if (showEditDialog) {
@@ -145,8 +165,8 @@ fun SongMenu(
                 Text(text = stringResource(R.string.edit_song))
             },
             textFields = listOf(
-                "Song Title" to titleField,
-                "Artist Name" to artistField
+                stringResource(R.string.song_title) to titleField,
+                stringResource(R.string.artist_name) to artistField
             ),
             onTextFieldsChange = { index, newValue ->
                 if (index == 0) titleField = newValue
@@ -155,9 +175,47 @@ fun SongMenu(
             onDoneMultiple = { values ->
                 val newTitle = values[0]
                 val newArtist = values[1]
-                onDismiss()
-                database.query {
-                    update(song.song.copy(title = newTitle, artistName = newArtist))
+
+                coroutineScope.launch {
+                    val newArtistNames = newArtist
+                        .split(",")
+                        .map { it.trim() }
+                        .filter { it.isNotEmpty() }
+
+                    val oldArtistMaps = withContext(Dispatchers.IO) {
+                        database.songArtistMap(song.id).sortedBy { it.position }
+                    }
+
+                    val oldNames = oldArtistMaps.mapIndexed { index, map ->
+                        index to song.artists.firstOrNull { it.id == map.artistId }?.name.orEmpty()
+                    }
+
+                    database.transaction {
+                        update(song.song.copy(title = newTitle, artistName = newArtist))
+
+                        val namesChanged = oldNames.size != newArtistNames.size ||
+                            oldNames.any { it.second != newArtistNames.getOrNull(it.first) }
+
+                        if (namesChanged) {
+                            openHelper.writableDatabase.execSQL(
+                                "DELETE FROM song_artist_map WHERE songId = ?", arrayOf(song.id)
+                            )
+
+                            newArtistNames.forEachIndexed { index, name ->
+                                val existingArtist = artistByName(name)
+                                val artistId = existingArtist?.id ?: ArtistEntity.generateArtistId()
+
+                                if (existingArtist == null) {
+                                    insert(ArtistEntity(id = artistId, name = name))
+                                }
+
+                                insert(SongArtistMap(songId = song.id, artistId = artistId, position = index))
+                            }
+                        }
+                    }
+
+                    showEditDialog = false
+                    onDismiss()
                 }
             },
             onDismiss = { showEditDialog = false }

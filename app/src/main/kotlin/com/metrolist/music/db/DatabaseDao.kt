@@ -999,6 +999,9 @@ interface DatabaseDao {
     @Query("SELECT * FROM artist WHERE name = :name")
     fun artistByName(name: String): ArtistEntity?
 
+    @Query("SELECT * FROM artist WHERE id = :id LIMIT 1")
+    fun getArtistById(id: String): ArtistEntity?
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(song: SongEntity): Long
 
@@ -1041,21 +1044,26 @@ interface DatabaseDao {
         block: (SongEntity) -> SongEntity = { it },
     ) {
         if (insert(mediaMetadata.toSongEntity().let(block)) == -1L) return
+
         mediaMetadata.artists.forEachIndexed { index, artist ->
-            val artistId =
-                artist.id ?: artistByName(artist.name)?.id ?: ArtistEntity.generateArtistId()
-            insert(
-                ArtistEntity(
-                    id = artistId,
-                    name = artist.name,
-                ),
-            )
+            val existing = artist.id?.let { getArtistById(it) } ?: artistByName(artist.name)
+            val artistId = existing?.id ?: ArtistEntity.generateArtistId()
+
+            if (existing == null) {
+                insert(
+                    ArtistEntity(
+                        id = artistId,
+                        name = artist.name,
+                    )
+                )
+            }
+
             insert(
                 SongArtistMap(
                     songId = mediaMetadata.id,
                     artistId = artistId,
                     position = index,
-                ),
+                )
             )
         }
     }
