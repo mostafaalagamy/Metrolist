@@ -84,5 +84,14 @@ data class YouTubeClient(
             userAgent = "com.google.ios.youtube/20.10.4 (iPhone16,2; U; CPU iOS 18_3_2 like Mac OS X;)",
             osVersion = "18.3.2.22D82",
         )
+
+        val MOBILE = YouTubeClient(
+            clientName = "ANDROID",
+            clientVersion = "18.13.37",
+            clientId = "3",
+            userAgent = "com.google.android.youtube/18.13.37 (Linux; U; Android 13; Pixel 6)",
+            loginSupported = true,
+            useSignatureTimestamp = true
+        )
     }
 }
