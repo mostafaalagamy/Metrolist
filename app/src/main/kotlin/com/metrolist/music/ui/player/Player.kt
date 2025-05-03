@@ -52,7 +52,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -126,7 +125,6 @@ import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
@@ -539,30 +537,15 @@ fun BottomSheetPlayer(
 
                     Spacer(Modifier.height(6.dp))
 
-                    val database = LocalDatabase.current
-
-                    val orderedMetadata by produceState(initialValue = mediaMetadata, mediaMetadata) {
-                        withContext(Dispatchers.IO) {
-                            val maps = database.songArtistMap(mediaMetadata.id)
-                            value = mediaMetadata.copy(
-                                artists = maps.sortedBy { it.position }.mapNotNull { map ->
-                                    mediaMetadata.artists.firstOrNull { it.id == map.artistId }
-                                }
-                            )
-                        }
-                    }
-
-                    val artistNames = orderedMetadata.artists
-
                     val annotatedString = buildAnnotatedString {
-                        artistNames.forEachIndexed { index, artist ->
-                            val tag = "artist_${artist.id ?: index}"
-                            pushStringAnnotation(tag = tag, annotation = artist.id ?: "")
+                        mediaMetadata.artists.forEachIndexed { index, artist ->
+                            val tag = "artist_${artist.id.orEmpty()}"
+                            pushStringAnnotation(tag = tag, annotation = artist.id.orEmpty())
                             withStyle(SpanStyle(color = TextBackgroundColor, fontSize = 16.sp)) {
                                 append(artist.name)
                             }
                             pop()
-                            if (index != artistNames.lastIndex) append(", ")
+                            if (index != mediaMetadata.artists.lastIndex) append(", ")
                         }
                     }
 
@@ -578,9 +561,11 @@ fun BottomSheetPlayer(
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                             onClick = { offset ->
-                                annotatedString.getStringAnnotations(start = offset, end = offset)
-                                    .firstOrNull()?.let { annotation ->
-                                        val artistId = annotation.item
+                                annotatedString
+                                    .getStringAnnotations(start = offset, end = offset)
+                                    .firstOrNull()
+                                    ?.let { ann ->
+                                        val artistId = ann.item
                                         if (artistId.isNotBlank()) {
                                             navController.navigate("artist/$artistId")
                                             state.collapseSoft()
