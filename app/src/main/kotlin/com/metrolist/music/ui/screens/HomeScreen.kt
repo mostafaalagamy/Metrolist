@@ -73,7 +73,6 @@ import com.metrolist.music.LocalDatabase
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
-import com.metrolist.music.constants.AccountNameKey
 import com.metrolist.music.constants.GridThumbnailHeight
 import com.metrolist.music.constants.InnerTubeCookieKey
 import com.metrolist.music.constants.ListItemHeight
@@ -521,14 +520,14 @@ fun HomeScreen(
                                     contentDescription = null,
                                     contentScale = ContentScale.Crop,
                                     modifier = Modifier
-                                        .size(24.dp)
+                                        .size(ListThumbnailSize)
                                         .clip(CircleShape)
                                 )
                             } else {
                                 Icon(
                                     painter = painterResource(id = R.drawable.person),
                                     contentDescription = null,
-                                    modifier = Modifier.size(24.dp)
+                                    modifier = Modifier.size(ListThumbnailSize)
                                 )
                             }
                         },
