@@ -127,37 +127,33 @@ fun AccountSettings(
 
             PreferenceEntry(
                 title = {
-                    if (isLoggedIn) {
-                        Row {
-                            if (accountImageUrl != null) {
-                                AsyncImage(
-                                    model = accountImageUrl,
-                                    contentDescription = null,
-                                    modifier = Modifier
-                                        .size(24.dp)
-                                        .clip(CircleShape),
-                                    placeholder = painterResource(id = R.drawable.person),
-                                    error = painterResource(id = R.drawable.person),
-                                    contentScale = ContentScale.Crop
-                                )
-                            } else {
-                                Icon(painterResource(R.drawable.person), null)
-                            }
-                            Spacer(modifier = Modifier.padding(start = 8.dp))
-                            Text(accountName)
-                        }
-                    } else {
-                        Text(stringResource(R.string.login))
-                    }
+                    Text(
+                        text = if (isLoggedIn)
+                            accountName
+                        else
+                            stringResource(R.string.login)
+                    )
                 },
                 description = if (isLoggedIn) {
-                    accountEmail.takeIf { it.isNotEmpty() } ?: accountChannelHandle.takeIf { it.isNotEmpty() }
-                } else {
-                    null
-                },
+                    accountEmail.takeIf { it.isNotEmpty() }
+                        ?: accountChannelHandle.takeIf { it.isNotEmpty() }
+                } else null,
                 icon = {
-                    if (!isLoggedIn) {
-                        Icon(painterResource(R.drawable.login), null)
+                    if (isLoggedIn && accountImageUrl != null) {
+                        AsyncImage(
+                            model = accountImageUrl,
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .size(24.dp)
+                                .clip(CircleShape)
+                        )
+                    } else {
+                        Icon(
+                            painterResource(R.drawable.login),
+                            contentDescription = null,
+                            modifier = Modifier.size(24.dp)
+                        )
                     }
                 },
                 trailingContent = {
