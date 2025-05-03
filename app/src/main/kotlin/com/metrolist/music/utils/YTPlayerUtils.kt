@@ -23,10 +23,13 @@ object YTPlayerUtils {
     private val STREAM_FALLBACK_CLIENTS: Array<YouTubeClient> = arrayOf(
         TVHTML5_SIMPLY_EMBEDDED_PLAYER,
         IOS,
+        YouTubeClient.WEB,
+        YouTubeClient.MOBILE
     )
 
     data class PlaybackData(
         val audioConfig: PlayerResponse.PlayerConfig.AudioConfig?,
+        val videoDetails: PlayerResponse.VideoDetails?,
         val playbackTracking: PlayerResponse.PlaybackTracking?,
         val format: PlayerResponse.StreamingData.Format,
         val streamUrl: String,
@@ -40,12 +43,14 @@ object YTPlayerUtils {
         connectivityManager: ConnectivityManager,
     ): Result<PlaybackData> = runCatching {
         val signatureTimestamp = NewPipeUtils.getSignatureTimestamp(videoId).getOrNull()
+
         val isLoggedIn = YouTube.cookie != null
 
         val mainPlayerResponse =
             YouTube.player(videoId, playlistId, MAIN_CLIENT, signatureTimestamp).getOrThrow()
 
         val audioConfig = mainPlayerResponse.playerConfig?.audioConfig
+        val videoDetails = mainPlayerResponse.videoDetails
         val playbackTracking = mainPlayerResponse.playbackTracking
 
         var format: PlayerResponse.StreamingData.Format? = null
@@ -67,7 +72,6 @@ object YTPlayerUtils {
             if (streamPlayerResponse?.playabilityStatus?.status != "OK") continue
 
             val audioFormats = streamPlayerResponse.streamingData?.adaptiveFormats?.filter { it.isAudio } ?: continue
-
             val bestFormat = audioFormats.maxByOrNull {
                 it.bitrate * when (audioQuality) {
                     AudioQuality.AUTO -> if (connectivityManager.isActiveNetworkMetered) -1 else 1
@@ -90,12 +94,19 @@ object YTPlayerUtils {
 
         PlaybackData(
             audioConfig,
+            videoDetails,
             playbackTracking,
             format,
             streamUrl,
             streamExpiresInSeconds!!
         )
     }
+
+    suspend fun playerResponseForMetadata(
+        videoId: String,
+        playlistId: String? = null
+    ): Result<PlayerResponse> =
+        YouTube.player(videoId, playlistId, client = WEB_REMIX)
 
     private fun validateStatus(url: String): Boolean {
         return try {
