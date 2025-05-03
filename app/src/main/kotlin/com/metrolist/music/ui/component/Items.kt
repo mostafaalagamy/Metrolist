@@ -1030,13 +1030,15 @@ fun ItemThumbnail(
             .aspectRatio(thumbnailRatio)
             .clip(shape)
     ) {
-        AsyncImage(
-            model = thumbnailUrl,
-            contentDescription = null,
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(shape)
-        )
+        if (albumIndex == null) {
+            AsyncImage(
+                model = thumbnailUrl,
+                contentDescription = null,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(shape)
+            )
+        }
 
         if (albumIndex != null) {
             AnimatedVisibility(
