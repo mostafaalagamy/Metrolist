@@ -157,11 +157,11 @@ fun HomeScreen(
 
     val accountName by viewModel.accountName.collectAsState()
     val accountImageUrl by viewModel.accountImageUrl.collectAsState()
-    val url = if (isLoggedIn) accountImageUrl else null
     val innerTubeCookie by rememberPreference(InnerTubeCookieKey, "")
     val isLoggedIn = remember(innerTubeCookie) {
         "SAPISID" in parseCookieString(innerTubeCookie)
     }
+    val url = if (isLoggedIn) accountImageUrl else null
 
     val scope = rememberCoroutineScope()
     val lazylistState = rememberLazyListState()
