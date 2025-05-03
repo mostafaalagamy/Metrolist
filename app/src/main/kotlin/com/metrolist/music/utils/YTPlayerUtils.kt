@@ -12,7 +12,6 @@ import com.metrolist.innertube.models.response.PlayerResponse
 import com.metrolist.music.constants.AudioQuality
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import java.net.URLDecoder
 
 object YTPlayerUtils {
     private val httpClient = OkHttpClient.Builder()
@@ -28,7 +27,6 @@ object YTPlayerUtils {
 
     data class PlaybackData(
         val audioConfig: PlayerResponse.PlayerConfig.AudioConfig?,
-        val videoDetails: PlayerResponse.VideoDetails?,
         val playbackTracking: PlayerResponse.PlaybackTracking?,
         val format: PlayerResponse.StreamingData.Format,
         val streamUrl: String,
@@ -42,20 +40,12 @@ object YTPlayerUtils {
         connectivityManager: ConnectivityManager,
     ): Result<PlaybackData> = runCatching {
         val signatureTimestamp = NewPipeUtils.getSignatureTimestamp(videoId).getOrNull()
-
         val isLoggedIn = YouTube.cookie != null
-        val sessionId = if (isLoggedIn) YouTube.dataSyncId else YouTube.visitorData
-
-        val cpn = (1..16)
-            .map {
-                "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_".random()
-            }.joinToString("")
 
         val mainPlayerResponse =
-            YouTube.player(videoId, playlistId, MAIN_CLIENT, signatureTimestamp, cpn).getOrThrow()
+            YouTube.player(videoId, playlistId, MAIN_CLIENT, signatureTimestamp).getOrThrow()
 
         val audioConfig = mainPlayerResponse.playerConfig?.audioConfig
-        val videoDetails = mainPlayerResponse.videoDetails
         val playbackTracking = mainPlayerResponse.playbackTracking
 
         var format: PlayerResponse.StreamingData.Format? = null
@@ -71,12 +61,13 @@ object YTPlayerUtils {
             streamPlayerResponse = if (client == MAIN_CLIENT) {
                 mainPlayerResponse
             } else {
-                YouTube.player(videoId, playlistId, client, signatureTimestamp, cpn).getOrNull()
+                YouTube.player(videoId, playlistId, client, signatureTimestamp).getOrNull()
             }
 
             if (streamPlayerResponse?.playabilityStatus?.status != "OK") continue
 
             val audioFormats = streamPlayerResponse.streamingData?.adaptiveFormats?.filter { it.isAudio } ?: continue
+
             val bestFormat = audioFormats.maxByOrNull {
                 it.bitrate * when (audioQuality) {
                     AudioQuality.AUTO -> if (connectivityManager.isActiveNetworkMetered) -1 else 1
@@ -99,7 +90,6 @@ object YTPlayerUtils {
 
         PlaybackData(
             audioConfig,
-            videoDetails,
             playbackTracking,
             format,
             streamUrl,
