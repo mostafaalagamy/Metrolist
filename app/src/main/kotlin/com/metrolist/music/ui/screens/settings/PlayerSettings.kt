@@ -47,7 +47,7 @@ import com.metrolist.music.constants.SimilarContent
 import com.metrolist.music.constants.SkipSilenceKey
 import com.metrolist.music.constants.StopMusicOnTaskClearKey
 import com.metrolist.music.constants.HistoryDuration
-import com.metrolist.music.constants.JossRedMultimedia // Added import
+import com.metrolist.music.constants.JossRedMultimedia
 import com.metrolist.music.ui.component.EnumListPreference
 import com.metrolist.music.ui.component.IconButton
 import com.metrolist.music.ui.component.PreferenceGroupTitle
@@ -102,7 +102,7 @@ fun PlayerSettings(
     )
     val (useJossRed, onUseJossRedChange) = rememberPreference(
         key = JossRedMultimedia,
-        defaultValue = false
+        defaultValue = true
     )
 
     Column(
@@ -141,6 +141,14 @@ fun PlayerSettings(
             icon = { Icon(painterResource(R.drawable.history), null) },
             value = historyDuration,
             onValueChange = onHistoryDurationChange,
+        )
+
+        SwitchPreference(
+            title = { Text(stringResource(R.string.playSongJR)) },
+            description = stringResource(R.string.playSongJRDesc),
+            icon = { Icon(painterResource(R.drawable.play), null) },
+            checked = useJossRed,
+            onCheckedChange = onUseJossRedChange
         )
 
         SwitchPreference(
@@ -202,14 +210,6 @@ fun PlayerSettings(
             icon = { Icon(painterResource(R.drawable.clear_all), null) },
             checked = stopMusicOnTaskClear,
             onCheckedChange = onStopMusicOnTaskClearChange
-        )
-
-        SwitchPreference(
-            title = { Text("Use JossRed Alternative Source") }, // TODO: Add string resource
-            description = "Use JossRed service for streaming when available (Experimental)", // TODO: Add string resource
-            icon = { Icon(painterResource(R.drawable.settings), null) }, // Changed icon from public
-            checked = useJossRed,
-            onCheckedChange = onUseJossRedChange
         )
     }
 
