@@ -794,14 +794,14 @@ class MusicService :
                 return@Factory dataSpec.withUri(it.first.toUri())
             }
 
-            // 2. Consultar si se debe usar fuente alternativa
+            // Check whether to use an alternative source
             val useAlternativeSource = runBlocking {
                 dataStore.data.map { preferences ->
                     preferences[JossRedMultimedia] ?: false
                 }.first()
             }
 
-            // Fuente alternativa: JossRed
+            // Alternative source: JossRed
             if (useAlternativeSource) {
                 try {
                     val alternativeUrl = JossRedClient.getStreamingUrl(mediaId)
@@ -827,7 +827,7 @@ class MusicService :
                 }
             }
 
-            // 3. Fuente predeterminada: YouTube
+            // Default source: YouTube
             val playbackData = runBlocking(Dispatchers.IO) {
                 YTPlayerUtils.playerResponseForPlayback(
                     mediaId,
