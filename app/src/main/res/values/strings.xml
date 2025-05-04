@@ -376,6 +376,8 @@
     <string name="min_playback_duration_description">The minimum amount of a song that must be played before it is considered \"played\"</string>
     <string name="percentage_format">%d%%</string>
     <string name="minimum_playback_duration">Minimum playback duration</string>
+    <string name="playSongJR">Play music from Joss Red</string>
+     <string name="playSongJRDesc">Allows you to play any song without the need to login with high quality</string>
 
     <string name="storage">Storage</string>
     <string name="cache">Cache</string>
