@@ -36,3 +36,5 @@ include(":kizzy")
 //        substitute(module("com.github.teamnewpipe:NewPipeExtractor")).using(project(":extractor"))
 //    }
 //}
+
+include(":jossredconnect")

@@ -198,3 +198,5 @@ dependencies {
 
     implementation(libs.timber)
 }
+
+    implementation(project(":jossredconnect"))
