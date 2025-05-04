@@ -13,19 +13,19 @@ object JossRedClient {
         .readTimeout(10, TimeUnit.SECONDS)
         .build()
 
-    // Excepción personalizada para errores de JossRed
+    // Custom exception for JossRed errors
     class JossRedException(
         val statusCode: Int,
         message: String,
         cause: Throwable? = null
     ) : Exception(message, cause)
 
-    // Metodo para obtener la URL de streaming con manejo de errores
+    // Method to get the streaming URL with error handling
     fun getStreamingUrl(mediaId: String): String {
         val requestUrl = "$BASE_STREAM_URL$mediaId"
         val request = Request.Builder()
             .url(requestUrl)
-            .head() // Usamos HEAD para verificar sin descargar el contenido completo
+            .head() // We use HEAD to verify without downloading the full content
             .build()
 
         val response = try {
