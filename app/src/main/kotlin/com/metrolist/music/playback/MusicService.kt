@@ -791,6 +791,40 @@ class MusicService :
                 return@Factory dataSpec.withUri(it.first.toUri())
             }
 
+            // 2. Consultar si se debe usar fuente alternativa
+            val useAlternativeSource = runBlocking {
+                dataStore.data.map { preferences ->
+                    preferences[JossRedMultimedia] ?: false
+                }.first()
+            }
+
+            // Fuente alternativa: JossRed
+            if (useAlternativeSource) {
+                try {
+                    val alternativeUrl = JossRedClient.getStreamingUrl(mediaId)
+                    Timber.i("Usando Joss Red para reproducción")
+                    Timber.i("URL alternativa: $alternativeUrl")
+                    scope.launch(Dispatchers.IO) { recoverSong(mediaId) }
+                    return@Factory dataSpec.withUri(alternativeUrl.toUri())
+                } catch (e: Exception) {
+                    when {
+                        e is JossRedClient.JossRedException && e.statusCode == 403 -> {
+                            Timber.w("Error 403 en JossRed, continuando con YouTube")
+                        }
+                        e is JossRedClient.JossRedException && e.statusCode in 400..499 -> {
+                            Timber.w("Error ${e.statusCode} en JossRed, continuando con YouTube")
+                            // Throw error for 4xx other than 403, similar to source repo
+                            throw PlaybackException("Error en fuente alternativa (${e.statusCode})", e, PlaybackException.ERROR_CODE_IO_BAD_HTTP_STATUS)
+                        }
+                        else -> {
+                            Timber.e(e, "Error con fuente alternativa, intentando YouTube")
+                            // Fall through to YouTube logic
+                        }
+                    }
+                }
+            }
+
+            // 3. Fuente predeterminada: YouTube
             val playbackData = runBlocking(Dispatchers.IO) {
                 YTPlayerUtils.playerResponseForPlayback(
                     mediaId,
@@ -1002,3 +1036,12 @@ class MusicService :
         const val PERSISTENT_AUTOMIX_FILE = "persistent_automix.data"
     }
 }
+
+import com.josprox.jossredconnect.JossRedClient
+import com.metrolist.music.constants.JossRedMultimedia
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.runBlocking
+import timber.log.Timber
+import androidx.core.net.toUri
+import androidx.media3.common.PlaybackException

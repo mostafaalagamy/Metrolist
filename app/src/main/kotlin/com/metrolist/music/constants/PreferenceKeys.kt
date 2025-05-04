@@ -489,3 +489,5 @@ val CountryCodeToName =
         "YE" to "Yemen",
         "ZW" to "Zimbabwe",
     )
+
+val JossRedMultimedia = booleanPreferencesKey("JossRedMultimedia")

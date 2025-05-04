@@ -99,6 +99,10 @@ fun PlayerSettings(
         HistoryDuration,
         defaultValue = 30f
     )
+    val (useJossRed, onUseJossRedChange) = rememberPreference(
+        key = JossRedMultimedia,
+        defaultValue = false
+    )
 
     Column(
         Modifier
@@ -197,6 +201,14 @@ fun PlayerSettings(
             icon = { Icon(painterResource(R.drawable.clear_all), null) },
             checked = stopMusicOnTaskClear,
             onCheckedChange = onStopMusicOnTaskClearChange
+        )
+
+        SwitchPreference(
+            title = { Text("Use JossRed Alternative Source") }, // TODO: Add string resource
+            description = { Text("Use JossRed service for streaming when available (Experimental)") }, // TODO: Add string resource
+            icon = { Icon(painterResource(R.drawable.public), null) }, // TODO: Find better icon?
+            checked = useJossRed,
+            onCheckedChange = onUseJossRedChange
         )
     }
 
