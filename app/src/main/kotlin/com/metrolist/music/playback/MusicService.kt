@@ -23,7 +23,7 @@ import androidx.media3.common.Player.EVENT_TIMELINE_CHANGED
 import androidx.media3.common.Player.REPEAT_MODE_ALL
 import androidx.media3.common.Player.REPEAT_MODE_OFF
 import androidx.media3.common.Player.REPEAT_MODE_ONE
-import androidx.media3.common.Player.STATE_IDLE
+import androidx.media3.common.Player.STATE_IDimport androidx.media3.common.Player.STATE_IDLE
 import androidx.media3.common.Timeline
 import androidx.media3.common.audio.SonicAudioProcessor
 import androidx.media3.datasource.DataSource
@@ -52,6 +52,7 @@ import androidx.media3.session.MediaLibraryService
 import androidx.media3.session.MediaSession
 import androidx.media3.session.SessionToken
 import com.google.common.util.concurrent.MoreExecutors
+import com.josprox.jossredconnect.JossRedClient // Added
 import com.metrolist.innertube.YouTube
 import com.metrolist.innertube.models.SongItem
 import com.metrolist.innertube.models.WatchEndpoint
@@ -65,6 +66,7 @@ import com.metrolist.music.constants.DiscordTokenKey
 import com.metrolist.music.constants.EnableDiscordRPCKey
 import com.metrolist.music.constants.HideExplicitKey
 import com.metrolist.music.constants.HistoryDuration
+import com.metrolist.music.constants.JossRedMultimedia // Added
 import com.metrolist.music.constants.MediaSessionConstants.CommandToggleLike
 import com.metrolist.music.constants.MediaSessionConstants.CommandToggleRepeatMode
 import com.metrolist.music.constants.MediaSessionConstants.CommandToggleShuffle
@@ -121,16 +123,17 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.distinctUntilChangedBy
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.first // Added
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.map // Added
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.runBlocking // Added
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
+import timber.log.Timber // Added
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import java.net.ConnectException
@@ -140,6 +143,7 @@ import java.time.LocalDateTime
 import javax.inject.Inject
 import kotlin.math.min
 import kotlin.math.pow
+import kotlin.time.Duration.Companion.secondsort kotlin.math.pow
 import kotlin.time.Duration.Companion.seconds
 
 @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
@@ -1036,12 +1040,3 @@ class MusicService :
         const val PERSISTENT_AUTOMIX_FILE = "persistent_automix.data"
     }
 }
-
-import com.josprox.jossredconnect.JossRedClient
-import com.metrolist.music.constants.JossRedMultimedia
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.runBlocking
-import timber.log.Timber
-import androidx.core.net.toUri
-import androidx.media3.common.PlaybackException

@@ -197,6 +197,5 @@ dependencies {
     coreLibraryDesugaring(libs.desugaring)
 
     implementation(libs.timber)
+    implementation(project(":jossredconnect")) // Added project dependency
 }
-
-    implementation(project(":jossredconnect"))
