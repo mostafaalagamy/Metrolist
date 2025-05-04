@@ -36,6 +36,8 @@ val YtmSyncKey = booleanPreferencesKey("ytmSync")
 
 val AudioQualityKey = stringPreferencesKey("audioQuality")
 
+val JossRedMultimedia = booleanPreferencesKey("JossRedMultimedia")
+
 enum class AudioQuality {
     AUTO,
     HIGH,
@@ -489,5 +491,3 @@ val CountryCodeToName =
         "YE" to "Yemen",
         "ZW" to "Zimbabwe",
     )
-
-val JossRedMultimedia = booleanPreferencesKey("JossRedMultimedia")
