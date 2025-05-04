@@ -52,7 +52,7 @@ import androidx.media3.session.MediaLibraryService
 import androidx.media3.session.MediaSession
 import androidx.media3.session.SessionToken
 import com.google.common.util.concurrent.MoreExecutors
-import com.metrolist.JossRedClient
+import com.metrolist.jossredconnect.JossRedClient
 import com.metrolist.innertube.YouTube
 import com.metrolist.innertube.models.SongItem
 import com.metrolist.innertube.models.WatchEndpoint
