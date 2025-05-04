@@ -52,6 +52,7 @@ import androidx.media3.session.MediaLibraryService
 import androidx.media3.session.MediaSession
 import androidx.media3.session.SessionToken
 import com.google.common.util.concurrent.MoreExecutors
+import com.metrolist.jossredconnect.JossRedClient
 import com.metrolist.innertube.YouTube
 import com.metrolist.innertube.models.SongItem
 import com.metrolist.innertube.models.WatchEndpoint
@@ -65,6 +66,7 @@ import com.metrolist.music.constants.DiscordTokenKey
 import com.metrolist.music.constants.EnableDiscordRPCKey
 import com.metrolist.music.constants.HideExplicitKey
 import com.metrolist.music.constants.HistoryDuration
+import com.metrolist.music.constants.JossRedMultimedia
 import com.metrolist.music.constants.MediaSessionConstants.CommandToggleLike
 import com.metrolist.music.constants.MediaSessionConstants.CommandToggleRepeatMode
 import com.metrolist.music.constants.MediaSessionConstants.CommandToggleShuffle
@@ -131,6 +133,7 @@ import kotlinx.coroutines.plus
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
+import timber.log.Timber
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import java.net.ConnectException
@@ -791,6 +794,40 @@ class MusicService :
                 return@Factory dataSpec.withUri(it.first.toUri())
             }
 
+            // Check whether to use an alternative source
+            val useAlternativeSource = runBlocking {
+                dataStore.data.map { preferences ->
+                    preferences[JossRedMultimedia] ?: false
+                }.first()
+            }
+
+            // Alternative source: JossRed
+            if (useAlternativeSource) {
+                try {
+                    val alternativeUrl = JossRedClient.getStreamingUrl(mediaId)
+                    Timber.i("Usando Joss Red para reproducción")
+                    Timber.i("URL alternativa: $alternativeUrl")
+                    scope.launch(Dispatchers.IO) { recoverSong(mediaId) }
+                    return@Factory dataSpec.withUri(alternativeUrl.toUri())
+                } catch (e: Exception) {
+                    when {
+                        e is JossRedClient.JossRedException && e.statusCode == 403 -> {
+                            Timber.w("Error 403 en JossRed, continuando con YouTube")
+                        }
+                        e is JossRedClient.JossRedException && e.statusCode in 400..499 -> {
+                            Timber.w("Error ${e.statusCode} en JossRed, continuando con YouTube")
+                            // Throw error for 4xx other than 403, similar to source repo
+                            throw PlaybackException("Error en fuente alternativa (${e.statusCode})", e, PlaybackException.ERROR_CODE_IO_BAD_HTTP_STATUS)
+                        }
+                        else -> {
+                            Timber.e(e, "Error con fuente alternativa, intentando YouTube")
+                            // Fall through to YouTube logic
+                        }
+                    }
+                }
+            }
+
+            // Default source: YouTube
             val playbackData = runBlocking(Dispatchers.IO) {
                 YTPlayerUtils.playerResponseForPlayback(
                     mediaId,

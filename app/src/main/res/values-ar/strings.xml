@@ -422,6 +422,8 @@
     <string name="min_playback_duration_description">الحد الأدنى لمدة تشغيل الأغنية قبل اعتبارها مُشغّلة</string>
     <string name="percentage_format">%d%%</string>
     <string name="minimum_playback_duration">الحد الأدنى لمدة التشغيل</string>
+    <string name="playSongJR">تشغيل الموسيقى من جوس ريد</string>
+     <string name="playSongJRDesc">يتيح لك تشغيل أي أغنية دون الحاجة إلى تسجيل الدخول بجودة عالية</string>
 
     <string name="storage">التخزين</string>
     <string name="cache">التخزين المؤقت</string>
