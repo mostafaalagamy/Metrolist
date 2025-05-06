@@ -957,15 +957,14 @@ class MainActivity : ComponentActivity() {
                                             )
                                         }
                                     }
-                                    val showBlackInset = pureBlack && navigationBarHeight > 0.dp  
-                                    Box(  
-                                        modifier = Modifier  
-                                            .background(  
-                                                if (showBlackInset) Color.Black  
-                                                else Color.Transparent  
-                                            )  
-                                            .fillMaxWidth()  
-                                            .align(Alignment.BottomCenter)  
+                                    val baseBg = if (pureBlack) Color.Black else MaterialTheme.colorScheme.surfaceContainer
+                                    val insetBg = if (playerBottomSheetState.progress > 0f) Color.Transparent else baseBg
+
+                                    Box(
+                                        modifier = Modifier
+                                            .background(insetBg)
+                                            .fillMaxWidth()
+                                            .align(Alignment.BottomCenter)
                                             .height(bottomInsetDp)
                                     )
                                 }
