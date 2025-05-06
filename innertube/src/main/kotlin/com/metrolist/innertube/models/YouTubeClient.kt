@@ -93,5 +93,14 @@ data class YouTubeClient(
             loginSupported = true,
             useSignatureTimestamp = true
         )
+
+        val ANDROID_VR_NO_AUTH = YouTubeClient(
+            clientName = "ANDROID_VR",
+            clientVersion = "1.61.48",
+            clientId = "28",
+            userAgent = "com.google.android.apps.youtube.vr.oculus/1.61.48 (Linux; U; Android 12; en_US; Oculus Quest 3; Build/SQ3A.220605.009.A1; Cronet/132.0.6808.3)",
+            loginSupported = false,
+            useSignatureTimestamp = false
+        )
     }
 }
