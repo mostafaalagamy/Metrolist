@@ -957,15 +957,16 @@ class MainActivity : ComponentActivity() {
                                             )
                                         }
                                     }
-                                    Box(
-                                        modifier = Modifier
-                                           .background(
-                                               if (pureBlack) Color.Black
-                                               else MaterialTheme.colorScheme.surfaceContainer
-                                           )
-                                           .fillMaxWidth()
-                                           .align(Alignment.BottomCenter)
-                                           .height(bottomInsetDp)
+                                    val showBlackInset = pureBlack && navigationBarHeight > 0.dp  
+                                    Box(  
+                                        modifier = Modifier  
+                                            .background(  
+                                                if (showBlackInset) Color.Black  
+                                                else Color.Transparent  
+                                            )  
+                                            .fillMaxWidth()  
+                                            .align(Alignment.BottomCenter)  
+                                            .height(bottomInsetDp)
                                     )
                                 }
                             },
