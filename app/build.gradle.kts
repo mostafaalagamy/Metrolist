@@ -18,8 +18,8 @@ android {
         applicationId = "com.metrolist.music"
         minSdk = 21
         targetSdk = 36
-        versionCode = 119
-        versionName = "11.9.0"
+        versionCode = 120
+        versionName = "11.10.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
