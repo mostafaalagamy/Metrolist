@@ -819,7 +819,7 @@ class MusicService :
                             sampleRate = format.audioSampleRate,
                             contentLength = format.contentLength!!,
                             loudnessDb = playbackData.audioConfig?.loudnessDb,
-                            playbackTrackingUrl = playbackData.streamUrl
+                            playbackUrl = playbackData.streamUrl
                         )
                     )
                 }
