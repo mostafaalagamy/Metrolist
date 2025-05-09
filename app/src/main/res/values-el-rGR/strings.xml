@@ -23,7 +23,7 @@
     <string name="forgotten_favorites">Ξεχασμένα αγαπημένα</string>
     <string name="similar_to">Παρόμοια με</string>
     <string name="keep_listening">Συνεχίστε να ακούτε</string>
-    <string name="your_ytb_playlists">Ο λογαριασμός σας στο YouTube</string>
+    <string name="your_ytb_playlists">Ο λογαριασμός YouTube</string>
     <!-- History -->
     <string name="today">Σήμερα</string>
     <string name="yesterday">Χθές</string>
@@ -31,6 +31,17 @@
     <string name="last_week">Τελευταία εβδομάδα</string>
     <string name="local_history">Τοπικά</string>
     <string name="remote_history">Απομακρυσμένα</string>
+    <!-- Charts -->
+    <string name="charts">Διαγράμματα</string>
+    <string name="back_button_desc">Πίσω</string>
+    <string name="no_title">Χωρίς τίτλο</string>
+    <string name="unknown_artist">Άγνωστος καλλιτέχνης</string>
+    <string name="unknown_item_type">Άγνωστος τύπος στοιχείου</string>
+    <string name="loading_charts">Φόρτωση διαγραμμάτων...</string>
+    <string name="retry_button">Επανάληψη</string>
+    <string name="album_cover_desc">Εξώφυλλο άλμπουμ</string>
+    <string name="top_music_videos">Διάσημα Μουσικά Βίντεο</string>
+    <string name="trending">Δημοφιλή</string>
     <!-- Stats -->
     <string name="most_played_songs">Κορυφαία τραγούδια</string>
     <string name="most_played_artists">Κορυφαίοι καλλιτέχνες</string>
@@ -64,6 +75,7 @@
     <string name="liked">Αγαπημένα</string>
     <string name="offline">Κατεβασμένα</string>
     <string name="my_top">Τα Κορυφαία Μου</string>
+    <string name="cached_playlist">Στην κρυφή μνήμη</string>
     <string name="library_song_empty">Τα τραγούδια της βιβλιοθήκης θα εμφανίζονται εδώ</string>
     <string name="library_artist_empty">Οι καλλιτέχνες της βιβλιοθήκης θα εμφανίζονται εδώ</string>
     <string name="library_album_empty">Τα άλμπουμ της βιβλιοθήκης θα εμφανίζονται εδώ</string>
@@ -72,6 +84,7 @@
     <string name="liked_songs">Αγαπημένα τραγούδια</string>
     <string name="downloaded_songs">Κατεβασμένα τραγούδια</string>
     <string name="sync_playlist">Συγχρονισμό Λιστών</string>
+    <string name="sync_disabled">Συγχρονισμός ανενεργός</string>
     <string name="playlist_is_empty">Η λίστα είναι κενή</string>
     <string name="remove_download_playlist_confirm">Θέλετε πραγματικά να αφαιρέσετε όλα τα τραγούδια της λίστας \"%s\" από την αποθήκευση Κατεβασμένα Τραγούδια;</string>
     <string name="delete_playlist_confirm">Θέλετε πραγματικά να διαγράψετε τη λίστα \"%s\";</string>
@@ -88,10 +101,13 @@
     <string name="start_radio">Έναρξη ραδιοφώνου</string>
     <string name="play">Αναπαραγωγή</string>
     <string name="play_next">Αναπαραγωγή επόμενου</string>
+    <string name="added_to_play_next">Προστέθηκε για επόμενη αναπαραγωγή</string>
     <string name="add_to_queue">Προσθήκη στην ουρά</string>
+    <string name="added_to_queue">Προστέθηκε στην ουρά</string>
     <string name="add_to_library">Προσθήκη στη βιβλιοθήκη</string>
     <string name="remove_from_library">Αφαίρεση από τη βιβλιοθήκη</string>
     <string name="remove_from_playlist">Αφαίρεση από τη λίστα</string>
+    <string name="remove_from_cache">Αφαίρεση από την κρυφή μνήμη</string>
     <string name="download">Λήψη</string>
     <string name="downloading">Γίνετε λήψη</string>
     <string name="remove_download">Κατάργηση λήψης</string>
@@ -101,13 +117,15 @@
     <string name="view_album">Προβολή άλμπουμ</string>
     <string name="refetch">Ανάκτηση</string>
     <string name="share">Κοινοποίηση</string>
+    <string name="copy_link">Αντιγραφή συνδέσμου</string>
     <string name="delete">Διαγραφή</string>
     <string name="remove_from_history">Κατάργηση από το ιστορικό</string>
-    <string name="search_online">Αναζ. online</string>
+    <string name="search_online">Αναζήτηση online</string>
     <string name="sync">Συγχρονισμός</string>
     <string name="advanced">Για προχωρημένους</string>
     <string name="select">Επιλογή όλων</string>
     <string name="like_all">Αγαπημένα όλα</string>
+    <string name="dislike_all">Δε μ\' αρέσουν όλα</string>
     <string name="tempo_and_pitch">Ρυθμός και Τάση</string>
     <!-- Sort menu -->
     <string name="sort_by_create_date">Ημερομηνία προσθήκης</string>
@@ -130,6 +148,7 @@
     <string name="file_size">Μέγεθος αρχείου</string>
     <string name="unknown">Άγνωστο</string>
     <string name="copied">Αντιγράφηκε στο πρόχειρο</string>
+    <string name="link_copied">Η σύνδεση αντιγράφηκε στο πρόχειρο</string>
     <string name="edit_lyrics">Διαμόρφωση στίχων</string>
     <string name="search_lyrics">Αναζήτηση στίχων</string>
     <string name="lyrics">Στίχοι</string>
@@ -227,8 +246,8 @@
     <!-- Settings -->
     <string name="settings">Ρυθμίσεις</string>
     <string name="login_settings">Ρυθμίσεις σύνδεσης</string>
-    <string name="use_login_for_browse">Χρήση σύνδεσης για περιήγηση σε premium περιεχόμενο</string>
-    <string name="use_login_for_browse_desc">Αυτό μπορεί να εμφανίζει άλμπουμ μόνο για premium, αν έχετε συνδεθεί με λογαριασμό Premium</string>
+    <string name="use_login_for_browse">Χρήση της σύνδεσης για πλοήγηση σε περισσότερο περιεχόμενο</string>
+    <string name="use_login_for_browse_desc">Αυτό μπορεί να δείξει περισσότερο περιεχόμενο εάν ήστε συνδεδεμένος με YTMusic λογαριασμό</string>
     <string name="general_settings">Γενικές ρυθμίσεις</string>
     <string name="appearance">Εμφάνιση</string>
     <string name="theme">Θέμα</string>
@@ -241,8 +260,12 @@
     <string name="follow_theme">Βάση θέματος</string>
     <string name="gradient">Διαβάθμιση</string>
     <string name="player_background_blur">Θάμπωμα</string>
+    <string name="player_buttons_style">Χρώματα κουμπιού αναπαραγωγέα</string>
+    <string name="default_style">Προεπιλογή</string>
+    <string name="secondary_color_style">Δευτερεύον</string>
     <string name="enable_squiggly_slider">Ενεργοποίηση κυματιστού ολισθητήρα</string>
     <string name="enable_swipe_thumbnail">Ενεργοποίηση σάρωσης για αλλαγή τραγουδιού</string>
+    <string name="swipe_song_to_add">Σύρετε το τραγούδι προς τα δεξιά για αναπαραγωγή επόμενου ή προς τα αριστερά για προσθήκη στην ουρά</string>
     <string name="pure_black">Καθαρό μαύρο</string>
     <string name="customize_navigation_tabs">Διαμόρφωση καρτελών πλοήγησης</string>
     <string name="player">Αναπαραγωγέας</string>
@@ -263,10 +286,16 @@
     <string name="misc">Διάφορα</string>
     <string name="default_open_tab">Προεπιλεγμένη ανοιχτή ταμπέλα</string>
     <string name="slim_navbar">Απόκρυψη ετικετών της γραμμής πλοήγησης</string>
+    <string name="auto_playlists">Αυτόματες Λίστες Αναπαραγωγής</string>
+    <string name="show_liked_playlist">Εμφάνιση Αγαπημένων Λιστών</string>
+    <string name="show_downloaded_playlist">Εμφάνιση Κατεβασμένων Λιστών</string>
+    <string name="show_top_playlist">Εμφάνιση Κορυφαίων Λιστών</string>
+    <string name="show_cached_playlist">Εμφάνιση Λιστών στην Κρυφή Μνήμη</string>
     <string name="content">Περιεχόμενο</string>
     <string name="google">Google</string>
     <string name="discord">Discord</string>
     <string name="login">Σύνδεση</string>
+    <string name="advanced_login">Σύνθετη σύνδεση (token)</string>
     <string name="logout">Αποσυνδέση</string>
     <string name="not_logged_in">Δεν έχει γίνει είσοδος</string>
     <string name="token_hidden">Πατήστε για να εμφανιστεί το διακριτικό</string>
@@ -313,6 +342,12 @@
     <string name="auto_skip_next_on_error_desc">Εξασφαλίστε τη συνεχή εμπειρία αναπαραγωγής σας</string>
     <string name="stop_music_on_task_clear">Διακοπή μουσικής στην εντολή εκκαθάρισης</string>
     <string name="equalizer">Εξισορροπητής</string>
+    <string name="min_playback_duration_title">Ελάχιστη διάρκεια αναπαραγωγής</string>
+    <string name="min_playback_duration_description">Η ελάχιστη ποσότητα ενός τραγουδιού που πρέπει να αναπαραχθεί πριν θεωρηθεί ότι \"αναχαράχτηκε\"</string>
+    <string name="percentage_format">%d%%</string>
+    <string name="minimum_playback_duration">Ελάχιστη διάρκεια αναπαραγωγής</string>
+    <string name="playSongJR">Αναπαραγωγή μουσικής από τον Joss Red</string>
+    <string name="playSongJRDesc">Σας επιτρέπει να αναπαράγετε οποιοδήποτε τραγούδι χωρίς να χρειάζεται να συνδεθείτε με υψηλή ποιότητα</string>
     <string name="storage">Αποθήκευση</string>
     <string name="cache">Προσωρινή μνήμη</string>
     <string name="image_cache">Κρυφή Μνήμη Εικόνας</string>
@@ -325,10 +360,13 @@
     <string name="max_song_cache_size">Μέγιστο μέγεθος κρυφής μνήμης τραγουδιού</string>
     <string name="clear_song_cache">Εκκαθάριση προσωρινής μνήμης τραγουδιών</string>
     <string name="size_used">%s σε χρήση</string>
+    <string name="clear_song_cache_dialog">  Είστε σίγουροι ότι θέλετε να διαγράψετε όλα τα τραγούδια που είναι στην κρυφή μνήμη;</string>
+    <string name="clear_downloads_dialog">  Είστε σίγουροι ότι θέλετε να διαγράψετε όλες τις λήψεις;</string>
     <string name="privacy">Απόρρητο</string>
     <string name="listen_history">Ιστορικό Ακρόασης</string>
     <string name="search_history">Ιστορικό Αναζήτησης</string>
     <string name="pause_listen_history">Παύση ιστορικού ακρόασης</string>
+    <string name="pause_remote_listen_history">Παύση κοινής χρήσης ιστορικού ακρόασης με το YouTube Music</string>
     <string name="clear_listen_history">Εκκαθάριση ιστορικού ακρόασης</string>
     <string name="clear_listen_history_confirm">Είστε σίγουροι ότι θέλετε να διαγράψετε όλο το ιστορικό ακροάσεων;</string>
     <string name="pause_search_history">Παύση ιστορικού αναζήτησης</string>
@@ -349,6 +387,7 @@
     <string name="options">Επιλογές</string>
     <string name="preview">Προεπισκόπηση</string>
     <string name="login_failed">Αποτυχία σύνδεσης</string>
+    <string name="not_logged_in_youtube">Δεν έχετε συνδεθεί στο YouTube</string>
     <string name="enable_discord_rpc">Ενεργοποίηση Πλούσιας Παρουσίας</string>
     <string name="default_links">Άνοιγμα υποστηριζόμενων συνδέσμων</string>
     <string name="open_app_settings_error">Αδυναμία ανοίγματος των ρυθμίσεων της εφαρμογής</string>
@@ -365,13 +404,13 @@
     <string name="past_year">Προηγούμενο έτος</string>
     <string name="top_length">Μήκος της Κορυφαίας Λίστας Μου</string>
     <string name="history_duration">Διάρκεια ιστορικού</string>
-    <string name="information">Information</string>
-    <string name="description">Description</string>
-    <string name="numbers">Numbers</string>
-    <string name="subscribers">Subscribers</string>
-    <string name="views">Views</string>
-    <string name="likes">Likes</string>
-    <string name="dislikes">Dislikes</string>
+    <string name="information">Πληροφορίες</string>
+    <string name="description">Περιγραφή</string>
+    <string name="numbers">Αριθμοί</string>
+    <string name="subscribers">Συνδρομητές</string>
+    <string name="views">Προβολές</string>
+    <string name="likes">Μου αρέσει</string>
+    <string name="dislikes">Δεν μου αρέσει</string>
     <plurals name="seconds">
         <item quantity="one">1 δευτερόλεπτο</item>
         <item quantity="other">%d δευτερόλεπτα</item>
