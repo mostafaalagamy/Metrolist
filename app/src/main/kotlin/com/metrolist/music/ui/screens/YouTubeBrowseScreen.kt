@@ -1,5 +1,3 @@
-@file:Suppress("UNUSED_EXPRESSION")
-
 package com.metrolist.music.ui.screens
 
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -7,7 +5,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.asPaddingValues
@@ -15,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.only
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -47,6 +43,7 @@ import com.metrolist.innertube.models.AlbumItem
 import com.metrolist.innertube.models.ArtistItem
 import com.metrolist.innertube.models.PlaylistItem
 import com.metrolist.innertube.models.SongItem
+import com.metrolist.innertube.models.WatchEndpoint
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
@@ -59,9 +56,8 @@ import com.metrolist.music.ui.component.LocalMenuState
 import com.metrolist.music.ui.component.NavigationTitle
 import com.metrolist.music.ui.component.YouTubeGridItem
 import com.metrolist.music.ui.component.YouTubeListItem
-import com.metrolist.music.ui.component.shimmer.GridItemPlaceHolder
+import com.metrolist.music.ui.component.shimmer.ListItemPlaceHolder
 import com.metrolist.music.ui.component.shimmer.ShimmerHost
-import com.metrolist.music.ui.component.shimmer.TextPlaceholder
 import com.metrolist.music.ui.menu.YouTubeAlbumMenu
 import com.metrolist.music.ui.menu.YouTubeArtistMenu
 import com.metrolist.music.ui.menu.YouTubePlaylistMenu
@@ -86,37 +82,25 @@ fun YouTubeBrowseScreen(
 
     val coroutineScope = rememberCoroutineScope()
 
-    BoxWithConstraints(
+    val songsLazyGridState = rememberLazyGridState()
+
+    Box(
         modifier = Modifier.fillMaxSize(),
     ) {
-        val horizontalLazyGridItemWidthFactor = if (maxWidth * 0.475f >= 320.dp) 0.475f else 0.9f
-        val lazyGridState = rememberLazyGridState()
-        val snapLayoutInfoProvider = remember(lazyGridState) {
-            SnapLayoutInfoProvider(
-                lazyGridState = lazyGridState,
-                positionInLayout = { layoutSize, itemSize ->
-                    (layoutSize * horizontalLazyGridItemWidthFactor / 2f - itemSize / 2f)
-                }
-            )
-        }
+        val snapLayoutInfoProviderSongs =
+            remember(songsLazyGridState) {
+                SnapLayoutInfoProvider(
+                    lazyGridState = songsLazyGridState,
+                )
+            }
         LazyColumn(
             contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues(),
         ) {
             if (browseResult == null) {
                 item {
-                    ShimmerHost(
-                        modifier = Modifier.animateItem()
-                    ) {
-                        TextPlaceholder(
-                            height = 36.dp,
-                            modifier = Modifier
-                                .padding(12.dp)
-                                .width(250.dp),
-                        )
-                        LazyRow {
-                            items(4) {
-                                GridItemPlaceHolder()
-                            }
+                    ShimmerHost {
+                        repeat(8) {
+                            ListItemPlaceHolder()
                         }
                     }
                 }
@@ -129,19 +113,24 @@ fun YouTubeBrowseScreen(
                             NavigationTitle(title)
                         }
                     }
-                    if (it.items.all { item -> item is SongItem }) {
+
+                    if ((it.items.firstOrNull() as? SongItem)?.album != null) {
                         item {
                             LazyHorizontalGrid(
-                                state = lazyGridState,
-                                rows = GridCells.Fixed(4),
-                                flingBehavior = rememberSnapFlingBehavior(snapLayoutInfoProvider),
-                                contentPadding = WindowInsets.systemBars
+                                state = songsLazyGridState,
+                                rows = GridCells.Fixed(5),
+                                flingBehavior =
+                                rememberSnapFlingBehavior(
+                                    snapLayoutInfoProviderSongs,
+                                ),
+                                contentPadding =
+                                WindowInsets.systemBars
                                     .only(WindowInsetsSides.Horizontal)
                                     .asPaddingValues(),
-                                modifier = Modifier
+                                modifier =
+                                Modifier
                                     .fillMaxWidth()
-                                    .height(ListItemHeight * 4)
-                                    .animateItem()
+                                    .height(ListItemHeight * 5),
                             ) {
                                 items(
                                     items = it.items,
@@ -151,7 +140,6 @@ fun YouTubeBrowseScreen(
                                             item = song as SongItem,
                                             isActive = mediaMetadata?.id == song.id,
                                             isPlaying = isPlaying,
-                                            isSwipeable = false,
                                             trailingContent = {
                                                 IconButton(
                                                     onClick = {
@@ -162,7 +150,7 @@ fun YouTubeBrowseScreen(
                                                                 onDismiss = menuState::dismiss,
                                                             )
                                                         }
-                                                    }
+                                                    },
                                                 ) {
                                                     Icon(
                                                         painter = painterResource(R.drawable.more_vert),
@@ -177,13 +165,16 @@ fun YouTubeBrowseScreen(
                                                         playerConnection.player.togglePlayPause()
                                                     } else {
                                                         playerConnection.playQueue(
-                                                            YouTubeQueue.radio(
-                                                                song.toMediaMetadata()
-                                                            )
+                                                            YouTubeQueue(
+                                                                WatchEndpoint(
+                                                                    videoId = song.id,
+                                                                ),
+                                                                song.toMediaMetadata(),
+                                                            ),
                                                         )
                                                     }
                                                 }
-                                                .animateItem()
+                                                .animateItem(),
                                         )
                                     }
                                 }
@@ -199,6 +190,7 @@ fun YouTubeBrowseScreen(
                                         item = item,
                                         isActive =
                                         when (item) {
+                                            is SongItem -> mediaMetadata?.id == item.id
                                             is AlbumItem -> mediaMetadata?.album?.id == item.id
                                             else -> false
                                         },
@@ -209,10 +201,17 @@ fun YouTubeBrowseScreen(
                                             .combinedClickable(
                                                 onClick = {
                                                     when (item) {
+                                                        is SongItem ->
+                                                            playerConnection.playQueue(
+                                                                YouTubeQueue(
+                                                                    WatchEndpoint(videoId = item.id),
+                                                                    item.toMediaMetadata(),
+                                                                ),
+                                                            )
+
                                                         is AlbumItem -> navController.navigate("album/${item.id}")
                                                         is ArtistItem -> navController.navigate("artist/${item.id}")
                                                         is PlaylistItem -> navController.navigate("online_playlist/${item.id}")
-                                                        else -> item
                                                     }
                                                 },
                                                 onLongClick = {
@@ -247,9 +246,9 @@ fun YouTubeBrowseScreen(
                                                                 )
                                                         }
                                                     }
-                                                }
+                                                },
                                             )
-                                            .animateItem()
+                                            .animateItem(),
                                     )
                                 }
                             }
@@ -259,19 +258,18 @@ fun YouTubeBrowseScreen(
             }
         }
     }
-
     TopAppBar(
         title = { Text(browseResult?.title.orEmpty()) },
         navigationIcon = {
             IconButton(
                 onClick = navController::navigateUp,
-                onLongClick = navController::backToMain
+                onLongClick = navController::backToMain,
             ) {
                 Icon(
                     painterResource(R.drawable.arrow_back),
-                    contentDescription = null
+                    contentDescription = null,
                 )
             }
-        }
+        },
     )
 }
