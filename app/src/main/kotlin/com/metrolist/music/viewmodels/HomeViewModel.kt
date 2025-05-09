@@ -1,3 +1,4 @@
+
 package com.metrolist.music.viewmodels
 
 import android.content.Context
@@ -172,13 +173,20 @@ class HomeViewModel @Inject constructor(
                     }
                 }
             }
-            homePage.value = HomePageWithBrowseCheck(page.filterExplicit(hideExplicit), browseContentAvailable)
+            homePage.value = HomePageWithBrowseCheck(
+                page.copy(
+                    sections = page.sections.map { section ->
+                        section.copy(items = section.items.filterExplicit(hideExplicit))
+                    }
+                ),
+                browseContentAvailable
+            )
         }.onFailure {
             reportException(it)
         }
 
         YouTube.explore().onSuccess { page ->
-            explorePage.value = page.filterExplicit(hideExplicit)
+            explorePage.value = page
         }.onFailure {
             reportException(it)
         }
