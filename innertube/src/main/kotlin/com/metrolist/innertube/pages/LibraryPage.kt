@@ -134,7 +134,7 @@ data class LibraryPage(
                     if (run.navigationEndpoint != null) {
                         artists.add(
                             Artist(
-                                id = run.navigationEndpoint.browseEndpoint?.browseId ?: return null,
+                                id = run.navigationEndpoint.browseEndpoint?.browseId!!,
                                 name = run.text
                             )
                         )
