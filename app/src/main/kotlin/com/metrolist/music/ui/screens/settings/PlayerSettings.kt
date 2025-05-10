@@ -47,7 +47,6 @@ import com.metrolist.music.constants.SimilarContent
 import com.metrolist.music.constants.SkipSilenceKey
 import com.metrolist.music.constants.StopMusicOnTaskClearKey
 import com.metrolist.music.constants.HistoryDuration
-import com.metrolist.music.constants.JossRedMultimedia
 import com.metrolist.music.ui.component.EnumListPreference
 import com.metrolist.music.ui.component.IconButton
 import com.metrolist.music.ui.component.PreferenceGroupTitle
@@ -100,10 +99,6 @@ fun PlayerSettings(
         HistoryDuration,
         defaultValue = 30f
     )
-    val (useJossRed, onUseJossRedChange) = rememberPreference(
-        key = JossRedMultimedia,
-        defaultValue = true
-    )
 
     Column(
         Modifier
@@ -141,14 +136,6 @@ fun PlayerSettings(
             icon = { Icon(painterResource(R.drawable.history), null) },
             value = historyDuration,
             onValueChange = onHistoryDurationChange,
-        )
-
-        SwitchPreference(
-            title = { Text(stringResource(R.string.playSongJR)) },
-            description = stringResource(R.string.playSongJRDesc),
-            icon = { Icon(painterResource(R.drawable.play), null) },
-            checked = useJossRed,
-            onCheckedChange = onUseJossRedChange
         )
 
         SwitchPreference(

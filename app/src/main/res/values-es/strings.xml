@@ -1,5 +1,4 @@
 <resources>
-
     <!-- Navegación inferior -->
     <string name="home">Inicio</string>
     <string name="songs">Canciones</string>
@@ -377,8 +376,6 @@
     <string name="min_playback_duration_description">La cantidad mínima de una canción que debe reproducirse antes de que se considere "reproducida"</string>
     <string name="percentage_format">%d%%</string>
     <string name="minimum_playback_duration">Duración mínima de reproducción</string>
-    <string name="playSongJR">Reproducir música de Joss Red</string>
-    <string name="playSongJRDesc">Te permite reproducir cualquier canción sin necesidad de iniciar sesión con alta calidad</string>
 
     <string name="storage">Almacenamiento</string>
     <string name="cache">Caché</string>
