@@ -189,6 +189,10 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var syncUtils: SyncUtils
 
+    private lateinit var navController: NavHostController
+    private var pendingIntent: Intent? = null
+    private var latestVersionName by mutableStateOf(BuildConfig.VERSION_NAME)
+
     private var playerConnection by mutableStateOf<PlayerConnection?>(null)
     private val serviceConnection =
         object : ServiceConnection {
@@ -207,8 +211,6 @@ class MainActivity : ComponentActivity() {
                 playerConnection = null
             }
         }
-
-    private var latestVersionName by mutableStateOf(BuildConfig.VERSION_NAME)
 
     override fun onStart() {
         super.onStart()
@@ -238,6 +240,15 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        if (::navController.isInitialized) {
+            handleDeepLinkIntent(intent, navController)
+        } else {
+            pendingIntent = intent
+        }
+    }
+
     override fun attachBaseContext(newBase: Context) {
         super.attachBaseContext(LocaleManager.applySavedLocale(newBase))
     }
@@ -264,8 +275,6 @@ class MainActivity : ComponentActivity() {
                     }
                 }
         }
-
-        intent?.let { handlevideoIdIntent(it) }
 
         setContent {
             LaunchedEffect(Unit) {
@@ -558,64 +567,20 @@ class MainActivity : ComponentActivity() {
                     var sharedSong: SongItem? by remember {
                         mutableStateOf(null)
                     }
+
+                    LaunchedEffect(Unit) {
+                        if (pendingIntent != null) {
+                            handleDeepLinkIntent(pendingIntent!!, navController)
+                            pendingIntent = null
+                        } else {
+                            handleDeepLinkIntent(intent, navController)
+                        }
+                    }
+
                     DisposableEffect(Unit) {
-                        val listener =
-                            Consumer<Intent> { intent ->
-                                val uri = intent.data ?: intent.extras?.getString(Intent.EXTRA_TEXT)
-                                    ?.toUri() ?: return@Consumer
-                                when (val path = uri.pathSegments.firstOrNull()) {
-                                    "playlist" ->
-                                        uri.getQueryParameter("list")?.let { playlistId ->
-                                            if (playlistId.startsWith("OLAK5uy_")) {
-                                                coroutineScope.launch {
-                                                    YouTube
-                                                        .albumSongs(playlistId)
-                                                        .onSuccess { songs ->
-                                                            songs.firstOrNull()?.album?.id?.let { browseId ->
-                                                                navController.navigate("album/$browseId")
-                                                            }
-                                                        }.onFailure {
-                                                            reportException(it)
-                                                        }
-                                                }
-                                            } else {
-                                                navController.navigate("online_playlist/$playlistId")
-                                            }
-                                        }
-
-                                    "browse" ->
-                                        uri.lastPathSegment?.let { browseId ->
-                                            navController.navigate("album/$browseId")
-                                        }
-
-                                    "channel", "c" ->
-                                        uri.lastPathSegment?.let { artistId ->
-                                            navController.navigate("artist/$artistId")
-                                        }
-
-                                    else ->
-                                        when {
-                                            path == "watch" -> uri.getQueryParameter("v")
-                                            uri.host == "youtu.be" -> path
-                                            else -> null
-                                        }?.let { videoId ->
-                                            coroutineScope.launch {
-                                                withContext(Dispatchers.IO) {
-                                                    YouTube.queue(listOf(videoId))
-                                                }.onSuccess {
-                                                    playerConnection?.playQueue(
-                                                        YouTubeQueue(
-                                                            WatchEndpoint(videoId = it.firstOrNull()?.id),
-                                                            it.firstOrNull()?.toMediaMetadata()
-                                                        )
-                                                    )
-                                                }.onFailure {
-                                                    reportException(it)
-                                                }
-                                            }
-                                        }
-                                }
-                            }
+                        val listener = Consumer<Intent> { intent ->
+                            handleDeepLinkIntent(intent, navController)
+                        }
 
                         addOnNewIntentListener(listener)
                         onDispose { removeOnNewIntentListener(listener) }
@@ -1116,25 +1081,55 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun handlevideoIdIntent(intent: Intent) {
+    private fun handleDeepLinkIntent(intent: Intent, navController: NavHostController) {
         val uri = intent.data ?: intent.extras?.getString(Intent.EXTRA_TEXT)?.toUri() ?: return
-        when {
-            uri.pathSegments.firstOrNull() == "watch" -> uri.getQueryParameter("v")
-            uri.host == "youtu.be" -> uri.pathSegments.firstOrNull()
-            else -> null
-        }?.let { videoId ->
-            lifecycleScope.launch {
-                withContext(Dispatchers.IO) {
-                    YouTube.queue(listOf(videoId))
-                }.onSuccess {
-                    playerConnection?.playQueue(
-                        YouTubeQueue(
-                            WatchEndpoint(videoId = it.firstOrNull()?.id),
-                            it.firstOrNull()?.toMediaMetadata()
-                        )
-                    )
-                }.onFailure {
-                    reportException(it)
+        val coroutineScope = lifecycleScope
+
+        when (val path = uri.pathSegments.firstOrNull()) {
+            "playlist" -> uri.getQueryParameter("list")?.let { playlistId ->
+                if (playlistId.startsWith("OLAK5uy_")) {
+                    coroutineScope.launch {
+                        YouTube.albumSongs(playlistId).onSuccess { songs ->
+                            songs.firstOrNull()?.album?.id?.let { browseId ->
+                                navController.navigate("album/$browseId")
+                            }
+                        }.onFailure { reportException(it) }
+                    }
+                } else {
+                    navController.navigate("online_playlist/$playlistId")
+                }
+            }
+
+            "browse" -> uri.lastPathSegment?.let { browseId ->
+                navController.navigate("album/$browseId")
+            }
+
+            "channel", "c" -> uri.lastPathSegment?.let { artistId ->
+                navController.navigate("artist/$artistId")
+            }
+
+            else -> {
+                val videoId = when {
+                    path == "watch" -> uri.getQueryParameter("v")
+                    uri.host == "youtu.be" -> uri.pathSegments.firstOrNull()
+                    else -> null
+                }
+
+                videoId?.let {
+                    coroutineScope.launch {
+                        withContext(Dispatchers.IO) {
+                            YouTube.queue(listOf(it))
+                        }.onSuccess {
+                            playerConnection?.playQueue(
+                                YouTubeQueue(
+                                    WatchEndpoint(videoId = it.firstOrNull()?.id),
+                                    it.firstOrNull()?.toMediaMetadata()
+                                )
+                            )
+                        }.onFailure {
+                            reportException(it)
+                        }
+                    }
                 }
             }
         }
