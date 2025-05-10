@@ -444,6 +444,13 @@ fun SelectionMediaMetadataMenu(
         onGetSong = { playlist ->
             coroutineScope.launch(Dispatchers.IO) {
                 songSelection.forEach { song ->
+                    val exists = database.query { getSongByIdBlocking(song.id) }
+                    if (exists == null) {
+                        database.query {
+                            insert(song.toSongEntity())
+                        }
+                    }
+
                     playlist.playlist.browseId?.let { browseId ->
                         YouTube.addToPlaylist(browseId, song.id)
                     }
