@@ -43,8 +43,7 @@ src="https://github.com/mostafaalagamy/Metrolist/blob/main/fastlane/metadata/and
 - Reorder songs in playlist or queue 
 - Light - Dark - black - Dynamic theme
 - Sleep timer
-- Material 3 
-- etc.
+- Material 3
 
 <div align="center">
 <h1>Download Now</h1>
