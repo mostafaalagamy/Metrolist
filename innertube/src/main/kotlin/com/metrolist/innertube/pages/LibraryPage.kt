@@ -41,7 +41,7 @@ data class LibraryPage(
                     author = renderer.subtitle?.runs?.getOrNull(2)?.let {
                         Artist(
                             name = it.text,
-                            id = it.navigationEndpoint?.browseEndpoint?.browseId ?: return null
+                            id = it.navigationEndpoint?.browseEndpoint?.browseId
                         )
                     },
                     songCountText = renderer.subtitle?.runs?.lastOrNull()?.text,
@@ -88,7 +88,7 @@ data class LibraryPage(
                             ?.map {
                                 Artist(
                                     name = it.text,
-                                    id = it.navigationEndpoint?.browseEndpoint?.browseId ?: return null
+                                    id = it.navigationEndpoint?.browseEndpoint?.browseId
                                 )
                             } ?: emptyList(),
                         album = renderer.flexColumns.getOrNull(2)?.musicResponsiveListItemFlexColumnRenderer?.text?.runs?.firstOrNull()
@@ -126,7 +126,7 @@ data class LibraryPage(
             }
         }
 
-        private fun parseArtists(runs: List<Run>?): MutableList<Artist>? {
+        private fun parseArtists(runs: List<Run>?): List<Artist> {
             val artists = mutableListOf<Artist>()
 
             if (runs != null) {
@@ -134,7 +134,7 @@ data class LibraryPage(
                     if (run.navigationEndpoint != null) {
                         artists.add(
                             Artist(
-                                id = run.navigationEndpoint.browseEndpoint?.browseId ?: return null,
+                                id = run.navigationEndpoint.browseEndpoint?.browseId!!,
                                 name = run.text
                             )
                         )
