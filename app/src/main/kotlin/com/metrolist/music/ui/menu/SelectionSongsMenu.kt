@@ -441,26 +441,17 @@ fun SelectionMediaMetadataMenu(
 
     AddToPlaylistDialog(
         isVisible = showChoosePlaylistDialog,
-        onGetSong = { playlist ->
-            coroutineScope.launch(Dispatchers.IO) {
-                songSelection.forEach { song ->
-                    val exists = database.query { getSongByIdBlocking(song.id) }
-                    if (exists == null) {
-                        database.query {
-                            insert(song.toSongEntity())
-                        }
-                    }
-
-                    playlist.playlist.browseId?.let { browseId ->
-                        YouTube.addToPlaylist(browseId, song.id)
+        onGetSong = {
+            selection.map {
+                runBlocking {
+                    withContext(Dispatchers.IO) {
+                        database.insert(it)
                     }
                 }
+                it.id
             }
-            songSelection.map { it.id }
         },
-        onDismiss = {
-            showChoosePlaylistDialog = false
-        },
+        onDismiss = { showChoosePlaylistDialog = false }
     )
 
     var downloadState by remember {
