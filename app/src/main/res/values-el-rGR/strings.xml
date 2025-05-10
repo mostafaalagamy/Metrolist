@@ -346,8 +346,6 @@
     <string name="min_playback_duration_description">Η ελάχιστη ποσότητα ενός τραγουδιού που πρέπει να αναπαραχθεί πριν θεωρηθεί ότι \"αναχαράχτηκε\"</string>
     <string name="percentage_format">%d%%</string>
     <string name="minimum_playback_duration">Ελάχιστη διάρκεια αναπαραγωγής</string>
-    <string name="playSongJR">Αναπαραγωγή μουσικής από τον Joss Red</string>
-    <string name="playSongJRDesc">Σας επιτρέπει να αναπαράγετε οποιοδήποτε τραγούδι χωρίς να χρειάζεται να συνδεθείτε με υψηλή ποιότητα</string>
     <string name="storage">Αποθήκευση</string>
     <string name="cache">Προσωρινή μνήμη</string>
     <string name="image_cache">Κρυφή Μνήμη Εικόνας</string>
