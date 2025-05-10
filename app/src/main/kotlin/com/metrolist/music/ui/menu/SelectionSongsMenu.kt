@@ -51,6 +51,8 @@ import com.metrolist.music.playback.queues.ListQueue
 import com.metrolist.music.ui.component.DefaultDialog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import java.time.LocalDateTime
 
 @SuppressLint("MutableCollectionMutableState")
@@ -441,19 +443,17 @@ fun SelectionMediaMetadataMenu(
 
     AddToPlaylistDialog(
         isVisible = showChoosePlaylistDialog,
-        onGetSong = { playlist ->
-            coroutineScope.launch(Dispatchers.IO) {
-                songSelection.forEach { song ->
-                    playlist.playlist.browseId?.let { browseId ->
-                        YouTube.addToPlaylist(browseId, song.id)
+        onGetSong = {
+            songSelection.map {
+                runBlocking {
+                    withContext(Dispatchers.IO) {
+                        database.insert(it)
                     }
                 }
+                it.id
             }
-            songSelection.map { it.id }
         },
-        onDismiss = {
-            showChoosePlaylistDialog = false
-        },
+        onDismiss = { showChoosePlaylistDialog = false }
     )
 
     var downloadState by remember {
