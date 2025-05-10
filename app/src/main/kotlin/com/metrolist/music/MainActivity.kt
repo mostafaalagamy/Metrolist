@@ -189,6 +189,8 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var syncUtils: SyncUtils
 
+    private var pendingIntent: Intent? = null
+
     private var playerConnection by mutableStateOf<PlayerConnection?>(null)
     private val serviceConnection =
         object : ServiceConnection {
@@ -333,6 +335,7 @@ class MainActivity : ComponentActivity() {
                             if (pureBlack) Color.Black else MaterialTheme.colorScheme.surface
                         )
                 ) {
+                    val coroutineScope = rememberCoroutineScope()
                     val focusManager = LocalFocusManager.current
                     val density = LocalDensity.current
                     val windowsInsets = WindowInsets.systemBars
@@ -468,6 +471,53 @@ class MainActivity : ComponentActivity() {
                             },
                         )
 
+                        
+                    val activity = this@MainActivity
+                    val deepLink = activity.pendingIntent?.data
+
+                    LaunchedEffect(deepLink) {
+                        deepLink?.let { uri ->
+                            when (val path = uri.pathSegments.firstOrNull()) {
+                                "playlist" -> uri.getQueryParameter("list")?.let { playlistId ->
+                                    if (playlistId.startsWith("OLAK5uy_")) {
+                                        val songs = YouTube.albumSongs(playlistId).getOrNull() ?: return@LaunchedEffect
+                                        songs.firstOrNull()?.album?.id?.let { browseId ->
+                                            navController.navigate("album/$browseId")
+                                        }
+                                    } else {
+                                        navController.navigate("online_playlist/$playlistId")
+                                    }
+                                }
+                                "browse" -> uri.lastPathSegment?.let { browseId ->
+                                    navController.navigate("album/$browseId")
+                                }
+                                "channel", "c" -> uri.lastPathSegment?.let { artistId ->
+                                    navController.navigate("artist/$artistId")
+                                }
+                                else -> {
+                                    val videoId = when {
+                                        path == "watch" -> uri.getQueryParameter("v")
+                                        uri.host == "youtu.be" -> path
+                                        else -> null
+                                    }
+                                    videoId?.let {
+                                        coroutineScope.launch {
+                                            val queued = YouTube.queue(listOf(it)).getOrNull() ?: return@launch
+                                            playerConnection?.playQueue(
+                                                YouTubeQueue(
+                                                    WatchEndpoint(videoId = queued.firstOrNull()?.id),
+                                                    queued.firstOrNull()?.toMediaMetadata()
+                                                )
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                            activity.pendingIntent = null
+                        }
+                    }    
+                   
+
                     LaunchedEffect(navBackStackEntry) {
                         if (navBackStackEntry?.destination?.route?.startsWith("search/") == true) {
                             val searchQuery =
@@ -554,7 +604,6 @@ class MainActivity : ComponentActivity() {
                             !active && navBackStackEntry?.destination?.route in topLevelScreens && navBackStackEntry?.destination?.route != "settings"
                     }
 
-                    val coroutineScope = rememberCoroutineScope()
                     var sharedSong: SongItem? by remember {
                         mutableStateOf(null)
                     }
