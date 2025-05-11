@@ -5,6 +5,7 @@ import com.metrolist.innertube.models.Artist
 import com.metrolist.innertube.models.MusicResponsiveListItemRenderer
 import com.metrolist.innertube.models.MusicShelfRenderer
 import com.metrolist.innertube.models.SongItem
+import com.metrolist.innertube.models.getItems
 import com.metrolist.innertube.models.oddElements
 import com.metrolist.innertube.utils.parseTime
 
@@ -20,10 +21,8 @@ data class HistoryPage(
         fun fromMusicShelfRenderer(renderer: MusicShelfRenderer): HistorySection {
             return HistorySection(
                 title = renderer.title?.runs?.firstOrNull()?.text!!,
-                songs = renderer.contents?.mapNotNull {
-                    it.musicResponsiveListItemRenderer?.let { renderer ->
-                        fromMusicResponsiveListItemRenderer(renderer)
-                    }
+                songs = renderer.contents?.getItems()?.mapNotNull {
+                    fromMusicResponsiveListItemRenderer(it)
                 }!!
             )
         }
