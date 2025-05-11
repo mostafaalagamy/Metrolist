@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="songs">שירים</string>
+    <string name="history">היסטוריה</string>
+    <string name="home">בית</string>
+    <string name="artists">אמנים</string>
+    <string name="albums">אלבומים</string>
+    <string name="playlists">פלייליסטים</string>
+    <plurals name="n_selected">
+        <item quantity="one">%d נבחר</item>
+        <item quantity="two">%d נבחרו</item>
+        <item quantity="other">%d נבחרו</item>
+    </plurals>
+</resources>
