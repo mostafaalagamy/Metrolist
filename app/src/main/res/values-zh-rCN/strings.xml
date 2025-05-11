@@ -1,17 +1,18 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Bottom navigation -->
+<?xml version='1.0' encoding='utf-8'?>
+<resources xmlns:ns0="http://schemas.android.com/tools">
+    
     <string name="home">首页</string>
     <string name="songs">歌曲</string>
     <string name="artists">音乐人</string>
     <string name="albums">专辑</string>
     <string name="playlists">播放列表</string>
 
-    <!-- Top bar -->
+    
     <plurals name="n_selected">
         <item quantity="other">已选择 %d 个项目</item>
     </plurals>
 
-    <!-- Home -->
+    
     <string name="history">历史记录</string>
     <string name="stats">统计</string>
     <string name="mood_and_genres">Mood and Genres</string>
@@ -20,18 +21,18 @@
     <string name="quick_picks_empty">Listen to songs to generate your quick picks</string>
     <string name="new_release_albums">新专辑</string>
 
-    <!-- History -->
+    
     <string name="today">今天</string>
     <string name="yesterday">昨天</string>
     <string name="this_week">这周</string>
     <string name="last_week">上周</string>
 
-    <!-- Stats -->
+    
     <string name="most_played_songs">最常播放</string>
     <string name="most_played_artists">Most played artists</string>
     <string name="most_played_albums">Most played albums</string>
 
-    <!-- Search -->
+    
     <string name="search">搜索</string>
     <string name="search_yt_music">搜索 YouTube Music…</string>
     <string name="search_library">搜索媒体库…</string>
@@ -49,21 +50,21 @@
     <string name="filter_bookmarked">Bookmarked</string>
     <string name="no_results_found">找不到结果</string>
 
-    <!-- Artist screen -->
+    
     <string name="from_your_library">来自您的媒体库</string>
 
-    <!-- Playlist -->
+    
     <string name="liked_songs">喜欢的歌曲</string>
     <string name="downloaded_songs">已下载的歌曲</string>
     <string name="playlist_is_empty">播放列表为空</string>
 
-    <!-- Button -->
+    
     <string name="retry">重试</string>
     <string name="radio">电台</string>
     <string name="shuffle">随机播放</string>
     <string name="reset">Reset</string>
 
-    <!-- Menu -->
+    
     <string name="details">详情</string>
     <string name="edit">编辑</string>
     <string name="start_radio">收听电台</string>
@@ -87,7 +88,7 @@
     <string name="sync">同步</string>
     <string name="advanced">Advanced</string>
 
-    <!-- Sort menu -->
+    
     <string name="sort_by_create_date">新建时间</string>
     <string name="sort_by_name">名称</string>
     <string name="sort_by_artist">音乐人</string>
@@ -97,7 +98,7 @@
     <string name="sort_by_play_time">播放时间</string>
     <string name="sort_by_custom">Custom order</string>
 
-    <!-- Dialog -->
+    
     <string name="media_id">媒体 ID</string>
     <string name="mime_type">MIME 类型</string>
     <string name="codecs">编码</string>
@@ -129,7 +130,7 @@
     <string name="artist_name">音乐人名称</string>
     <string name="error_artist_name_empty">音乐人名称不能为空</string>
 
-    <!-- Noun -->
+    
     <plurals name="n_song">
         <item quantity="other">%d 首歌曲</item>
     </plurals>
@@ -142,7 +143,7 @@
     <plurals name="n_playlist">
         <item quantity="other">%d 个播放列表</item>
     </plurals>
-    <plurals name="n_week" tools:ignore="MissingQuantity">
+    <plurals name="n_week" ns0:ignore="MissingQuantity">
         <item quantity="other">%d weeks</item>
     </plurals>
     <plurals name="n_month">
@@ -152,13 +153,13 @@
         <item quantity="other">%d years</item>
     </plurals>
 
-    <!-- Snackbar -->
+    
     <string name="playlist_imported">已导入此播放列表</string>
     <string name="removed_song_from_playlist">Removed \"%s\" from playlist</string>
     <string name="playlist_synced">Playlist synced</string>
     <string name="undo">Undo</string>
 
-    <!-- Player -->
+    
     <string name="lyrics_not_found">没有歌词</string>
     <string name="sleep_timer">睡眠定时器</string>
     <string name="end_of_song">这首歌曲播放完毕</string>
@@ -170,7 +171,7 @@
     <string name="error_timeout">连接超时</string>
     <string name="error_unknown">未知错误</string>
 
-    <!-- Player action -->
+    
     <string name="action_like">喜欢</string>
     <string name="action_remove_like">取消喜欢</string>
     <string name="action_shuffle_on">Shuffle on</string>
@@ -179,14 +180,14 @@
     <string name="repeat_mode_one">Repeat current song</string>
     <string name="repeat_mode_all">Repeat queue</string>
 
-    <!-- Queue Title -->
+    
     <string name="queue_all_songs">全部歌曲</string>
     <string name="queue_searched_songs">搜索的歌曲</string>
 
-    <!-- Notification name -->
+    
     <string name="music_player">音乐播放器</string>
 
-    <!-- Settings -->
+    
     <string name="settings">设置</string>
     <string name="appearance">外观</string>
     <string name="enable_dynamic_theme">启用动态主题</string>
@@ -258,11 +259,4 @@
     <string name="new_version_available">New version available</string>
     <string name="translation_models">Translation Models</string>
     <string name="clear_translation_models">Clear translation models</string>
-    <string name="information">Information</string>
-    <string name="description">Description</string>
-    <string name="numbers">Numbers</string>
-    <string name="subscribers">Subscribers</string>
-    <string name="views">Views</string>
-    <string name="likes">Likes</string>
-    <string name="dislikes">Dislikes</string>
-</resources>
+    </resources>

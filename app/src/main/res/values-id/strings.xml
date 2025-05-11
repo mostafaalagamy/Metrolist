@@ -1,17 +1,18 @@
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <!-- Bottom navigation -->
+    
     <string name="home">Beranda</string>
     <string name="songs">Lagu</string>
     <string name="artists">Artis</string>
     <string name="albums">Album</string>
     <string name="playlists">Daftar putar</string>
 
-    <!-- Top bar -->
+    
     <plurals name="n_selected">
         <item quantity="other">%d dipilih</item>
     </plurals>
 
-    <!-- Home -->
+    
     <string name="history">Riwayat</string>
     <string name="stats">Statistik</string>
     <string name="mood_and_genres">Mood dan Genre</string>
@@ -20,18 +21,18 @@
     <string name="quick_picks_empty">Dengarkan lagu untuk menghasilkan pilihan cepat Anda</string>
     <string name="new_release_albums">Album baru dirilis</string>
 
-    <!-- History -->
+    
     <string name="today">Hari ini</string>
     <string name="yesterday">Kemarin</string>
     <string name="this_week">Minggu ini</string>
     <string name="last_week">Minggu lalu</string>
 
-    <!-- Stats -->
+    
     <string name="most_played_songs">Lagu yang paling sering dimainkan</string>
     <string name="most_played_artists">Artis yang paling sering dimainkan</string>
     <string name="most_played_albums">Album yang paling sering dimainkan</string>
 
-    <!-- Search -->
+    
     <string name="search">Cari</string>
     <string name="search_yt_music">Cari di YouTube Music…</string>
     <string name="search_library">Cari di perpustakaan…</string>
@@ -49,21 +50,21 @@
     <string name="filter_bookmarked">Ditandai</string>
     <string name="no_results_found">Tidak ada hasil</string>
 
-    <!-- Artist screen -->
+    
     <string name="from_your_library">Dari perpustakaan Anda</string>
 
-    <!-- Playlist -->
+    
     <string name="liked_songs">Lagu yang disukai</string>
     <string name="downloaded_songs">Lagu yang diunduh</string>
     <string name="playlist_is_empty">Playlist kosong</string>
 
-    <!-- Button -->
+    
     <string name="retry">Coba kembali</string>
     <string name="radio">Radio</string>
     <string name="shuffle">Acak</string>
     <string name="reset">Reset</string>
 
-    <!-- Menu -->
+    
     <string name="details">Rincian</string>
     <string name="edit">Sunting</string>
     <string name="start_radio">Putar radio</string>
@@ -87,7 +88,7 @@
     <string name="sync">Sinkron</string>
     <string name="advanced">Lanjutan</string>
 
-    <!-- Sort menu -->
+    
     <string name="sort_by_create_date">Tanggal ditambahkan</string>
     <string name="sort_by_name">Nama</string>
     <string name="sort_by_artist">Artis</string>
@@ -97,7 +98,7 @@
     <string name="sort_by_play_time">Waktu dimainkan</string>
     <string name="sort_by_custom">Urutan kustom</string>
 
-    <!-- Dialog -->
+    
     <string name="media_id">ID media</string>
     <string name="mime_type">Tipe MIME</string>
     <string name="codecs">Kodek</string>
@@ -129,7 +130,7 @@
     <string name="artist_name">Nama artis</string>
     <string name="error_artist_name_empty">Nama artis wajib diisi.</string>
 
-    <!-- Noun -->
+    
     <plurals name="n_song">
         <item quantity="other">%d lagu</item>
     </plurals>
@@ -152,13 +153,13 @@
         <item quantity="other">%d years</item>
     </plurals>
 
-    <!-- Snackbar -->
+    
     <string name="playlist_imported">Daftar putar dipindahkan</string>
     <string name="removed_song_from_playlist">\"%s\" dihapus dari daftar putar</string>
     <string name="playlist_synced">Daftar putar disinkronkan</string>
     <string name="undo">Urungkan</string>
 
-    <!-- Player -->
+    
     <string name="lyrics_not_found">Lirik tidak ditemukan</string>
     <string name="sleep_timer">Timer tidur</string>
     <string name="end_of_song">Akhir lagu</string>
@@ -170,7 +171,7 @@
     <string name="error_timeout">Waktu habis</string>
     <string name="error_unknown">Kesalahan yang tidak diketahui</string>
 
-    <!-- Player action -->
+    
     <string name="action_like">Suka</string>
     <string name="action_remove_like">Hapus suka</string>
     <string name="action_shuffle_on">Acak aktif</string>
@@ -179,14 +180,14 @@
     <string name="repeat_mode_one">Ulangi lagu ini</string>
     <string name="repeat_mode_all">Ulangi antrian</string>
 
-    <!-- Queue Title -->
+    
     <string name="queue_all_songs">Semua lagu</string>
     <string name="queue_searched_songs">Lagu yang telah dicari</string>
 
-    <!-- Notification name -->
+    
     <string name="music_player">Pemutar Musik</string>
 
-    <!-- Settings -->
+    
     <string name="settings">Pengaturan</string>
     <string name="appearance">Tampilan</string>
     <string name="enable_dynamic_theme">Aktifkan tema dinamis</string>
@@ -259,11 +260,4 @@
     <string name="new_version_available">Versi baru tersedia</string>
     <string name="translation_models">Model Terjemahan</string>
     <string name="clear_translation_models">Bersihkan model terjemahan</string>
-    <string name="information">Information</string>
-    <string name="description">Description</string>
-    <string name="numbers">Numbers</string>
-    <string name="subscribers">Subscribers</string>
-    <string name="views">Views</string>
-    <string name="likes">Likes</string>
-    <string name="dislikes">Dislikes</string>
-</resources>
+    </resources>

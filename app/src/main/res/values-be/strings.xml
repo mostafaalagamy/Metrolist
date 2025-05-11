@@ -1,12 +1,13 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Bottom navigation -->
+<?xml version='1.0' encoding='utf-8'?>
+<resources xmlns:ns0="http://schemas.android.com/tools">
+    
     <string name="home">Галоўнае</string>
     <string name="songs">Песні</string>
     <string name="artists">Выканаўцы</string>
     <string name="albums">Альбомы</string>
     <string name="playlists">Плэй-лісты</string>
 
-    <!-- Top bar -->
+    
     <plurals name="n_selected">
         <item quantity="one">%d абрана</item>
         <item quantity="few">%d абраны</item>
@@ -14,7 +15,7 @@
         <item quantity="other">%d абрана</item>
     </plurals>
 
-    <!-- Home -->
+    
     <string name="history">Гісторыя</string>
     <string name="stats">Статыстыка</string>
     <string name="mood_and_genres">Настроі і жанры</string>
@@ -23,18 +24,18 @@
     <string name="quick_picks_empty">Праслухайце якія-небудзь кампазіцыі, каб стварыць ваш хуткі выбар.</string>
     <string name="new_release_albums">Новыя рэлізы альбомаў</string>
 
-    <!-- History -->
+    
     <string name="today">Сёння</string>
     <string name="yesterday">Учора</string>
     <string name="this_week">На гэтым тыднія</string>
     <string name="last_week">На тым тыдні</string>
 
-    <!-- Stats -->
+    
     <string name="most_played_songs">Лепшыя кампазіцыі</string>
     <string name="most_played_artists">Лепшыя выканаўцы</string>
     <string name="most_played_albums">Most played albums</string>
 
-    <!-- Search -->
+    
     <string name="search">Пошук</string>
     <string name="search_yt_music">Пошук у YouTube Music…</string>
     <string name="search_library">Пошук у бібліятэцы…</string>
@@ -52,21 +53,21 @@
     <string name="filter_bookmarked">Bookmarked</string>
     <string name="no_results_found">Вынікі не знойдзены</string>
 
-    <!-- Artist screen -->
+    
     <string name="from_your_library">З вашай бібліятэкі</string>
 
-    <!-- Playlist -->
+    
     <string name="liked_songs">Упадабаныя кампазіцыi</string>
     <string name="downloaded_songs">Спампаваныя кампазіцыі</string>
     <string name="playlist_is_empty">Плай-ліст пусты</string>
 
-    <!-- Button -->
+    
     <string name="retry">Паўтарыць</string>
     <string name="radio">Радыё</string>
     <string name="shuffle">Перамяшаць</string>
     <string name="reset">Reset</string>
 
-    <!-- Menu -->
+    
     <string name="details">Падрабязнасці</string>
     <string name="edit">Змяніць</string>
     <string name="start_radio">Уключыць радыё</string>
@@ -90,7 +91,7 @@
     <string name="sync">Cінхранізацыя</string>
     <string name="advanced">Advanced</string>
 
-    <!-- Sort menu -->
+    
     <string name="sort_by_create_date">Нядаўна дададзена</string>
     <string name="sort_by_name">Назва</string>
     <string name="sort_by_artist">Выканаўца</string>
@@ -100,7 +101,7 @@
     <string name="sort_by_play_time">Колькасць прайграванняў</string>
     <string name="sort_by_custom">Уласны парадак</string>
 
-    <!-- Dialog -->
+    
     <string name="media_id">Iдэнтыфікатар медыя</string>
     <string name="mime_type">Тып MIME</string>
     <string name="codecs">Кодэкі</string>
@@ -132,7 +133,7 @@
     <string name="artist_name">Імя ваканаўца</string>
     <string name="error_artist_name_empty">Выканаўца павінен мець імя.</string>
 
-    <!-- Noun -->
+    
     <plurals name="n_song">
         <item quantity="one">%d песня</item>
         <item quantity="few">%d песні</item>
@@ -157,7 +158,7 @@
         <item quantity="many">%d плей-лістоў</item>
         <item quantity="other">%d плей-ліста</item>
     </plurals>
-    <plurals name="n_week" tools:ignore="MissingQuantity">
+    <plurals name="n_week" ns0:ignore="MissingQuantity">
         <item quantity="one">%d тыдзень</item>
         <item quantity="few">%d тыдні</item>
         <item quantity="many">%d тыдняў</item>
@@ -169,20 +170,20 @@
         <item quantity="many">%d месяцаў</item>
         <item quantity="other">%d месяцы</item>
     </plurals>
-    <plurals name="n_year" tools:ignore="MissingQuantity">
+    <plurals name="n_year" ns0:ignore="MissingQuantity">
         <item quantity="one">%d год</item>
         <item quantity="few">%d гады</item>
         <item quantity="many">%d raдоў</item>
         <item quantity="other">%d гады</item>
     </plurals>
 
-    <!-- Snackbar -->
+    
     <string name="playlist_imported">Плей-ліст імпартаваны</string>
     <string name="removed_song_from_playlist">\"%s\" выдалена з плей-ліста</string>
     <string name="playlist_synced">Плей-ліст сінхранізаваны</string>
     <string name="undo">Адрабіць</string>
 
-    <!-- Player -->
+    
     <string name="lyrics_not_found">Тэкст песні не знойдзены</string>
     <string name="sleep_timer">Таймер рэжыму сну</string>
     <string name="end_of_song">Канец песні</string>
@@ -197,7 +198,7 @@
     <string name="error_timeout">Час чакання</string>
     <string name="error_unknown">Невядомая памылка</string>
 
-    <!-- Player action -->
+    
     <string name="action_like">Упадабаць</string>
     <string name="action_remove_like">Выдаліць з упадабаных</string>
     <string name="action_shuffle_on">Уключыць перамешванне</string>
@@ -206,14 +207,14 @@
     <string name="repeat_mode_one">Паўтарыць бягучую песню</string>
     <string name="repeat_mode_all">Паўтарыць чаргу</string>
 
-    <!-- Queue Title -->
+    
     <string name="queue_all_songs">Усе песні</string>
     <string name="queue_searched_songs">Шуканыя кампазіцыі</string>
 
-    <!-- Notification name -->
+    
     <string name="music_player">Музычны прайгравальнік</string>
 
-    <!-- Settings -->
+    
     <string name="settings">Налады</string>
     <string name="appearance">Выгляд</string>
     <string name="enable_dynamic_theme">Уключыць дынамічную каляровую тэму</string>
@@ -285,11 +286,4 @@
     <string name="new_version_available">Даступная новая версія</string>
     <string name="translation_models">Мадэлі перакладу</string>
     <string name="clear_translation_models">Ачысціць мадэлі перакладу</string>
-    <string name="information">Information</string>
-    <string name="description">Description</string>
-    <string name="numbers">Numbers</string>
-    <string name="subscribers">Subscribers</string>
-    <string name="views">Views</string>
-    <string name="likes">Likes</string>
-    <string name="dislikes">Dislikes</string>
-</resources>
+    </resources>

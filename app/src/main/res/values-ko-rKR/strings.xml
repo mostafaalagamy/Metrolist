@@ -1,17 +1,18 @@
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <!-- Bottom navigation -->
+    
     <string name="home">홈</string>
     <string name="songs">노래</string>
     <string name="artists">아티스트</string>
     <string name="albums">앨범</string>
     <string name="playlists">플레이리스트</string>
 
-    <!-- Top bar -->
+    
     <plurals name="n_selected">
         <item quantity="other">%d 선택됨</item>
     </plurals>
 
-    <!-- Home -->
+    
     <string name="history">기록</string>
     <string name="stats">통계</string>
     <string name="mood_and_genres">분위기 및 장르</string>
@@ -20,18 +21,18 @@
     <string name="quick_picks_empty">Listen to songs to generate your quick picks</string>
     <string name="new_release_albums">새 앨범</string>
 
-    <!-- History -->
+    
     <string name="today">오늘</string>
     <string name="yesterday">어제</string>
     <string name="this_week">이번 주</string>
     <string name="last_week">지난 주</string>
 
-    <!-- Stats -->
+    
     <string name="most_played_songs">Most played songs</string>
     <string name="most_played_artists">Most played artists</string>
     <string name="most_played_albums">Most played albums</string>
 
-    <!-- Search -->
+    
     <string name="search">검색</string>
     <string name="search_yt_music">YouTube Music 검색…</string>
     <string name="search_library">라이브러리 검색…</string>
@@ -49,21 +50,21 @@
     <string name="filter_bookmarked">즐겨찾기</string>
     <string name="no_results_found">검색 결과 없음</string>
 
-    <!-- Artist screen -->
+    
     <string name="from_your_library">내 라이브러리에서</string>
 
-    <!-- Playlist -->
+    
     <string name="liked_songs">좋아요 표시된 곡</string>
     <string name="downloaded_songs">다운로드된 곡</string>
     <string name="playlist_is_empty">재생목록 비움</string>
 
-    <!-- Button -->
+    
     <string name="retry">다시</string>
     <string name="radio">라디오</string>
     <string name="shuffle">셔플</string>
     <string name="reset">재설정</string>
 
-    <!-- Menu -->
+    
     <string name="details">세부정보</string>
     <string name="edit">수정</string>
     <string name="start_radio">라디오 시작</string>
@@ -87,7 +88,7 @@
     <string name="sync">Sync</string>
     <string name="advanced">고급</string>
 
-    <!-- Sort menu -->
+    
     <string name="sort_by_create_date">추가된 날짜</string>
     <string name="sort_by_name">이름</string>
     <string name="sort_by_artist">아티스트</string>
@@ -97,7 +98,7 @@
     <string name="sort_by_play_time">Play time</string>
     <string name="sort_by_custom">Custom order</string>
 
-    <!-- Dialog -->
+    
     <string name="media_id">Media id</string>
     <string name="mime_type">MIME 유형</string>
     <string name="codecs">코덱</string>
@@ -129,7 +130,7 @@
     <string name="artist_name">아티스트 이름</string>
     <string name="error_artist_name_empty">아티스트 이름은 비워둘 수 없습니다.</string>
 
-    <!-- Noun -->
+    
     <plurals name="n_song">
         <item quantity="other">%d 노래</item>
     </plurals>
@@ -152,13 +153,13 @@
         <item quantity="other">%d 개년</item>
     </plurals>
 
-    <!-- Snackbar -->
+    
     <string name="playlist_imported">재생목록 가져왔습니다.</string>
     <string name="removed_song_from_playlist">\"%s\" 재생목록에서 삭제되었습니다.</string>
     <string name="playlist_synced">재생목록 동기화했습니다.</string>
     <string name="undo">실행 취소</string>
 
-    <!-- Player -->
+    
     <string name="lyrics_not_found">가사 찾을 수 없습니다.</string>
     <string name="sleep_timer">수면 타이머</string>
     <string name="end_of_song">음악의 끝</string>
@@ -170,7 +171,7 @@
     <string name="error_timeout">타임아웃</string>
     <string name="error_unknown">알 수 없는 오류</string>
 
-    <!-- Player action -->
+    
     <string name="action_like">좋아요 표시</string>
     <string name="action_remove_like">좋아요 삭재</string>
     <string name="action_shuffle_on">셔플 활성화</string>
@@ -179,14 +180,14 @@
     <string name="repeat_mode_one">현재 곡 반복</string>
     <string name="repeat_mode_all">재생목록 반복</string>
 
-    <!-- Queue Title -->
+    
     <string name="queue_all_songs">모두 음악</string>
     <string name="queue_searched_songs">검색한 음악</string>
 
-    <!-- Notification name -->
+    
     <string name="music_player">음악 플레이어</string>
 
-    <!-- Settings -->
+    
     <string name="settings">설정</string>
     <string name="appearance">모양</string>
     <string name="enable_dynamic_theme">동적 테마 활성화</string>
@@ -258,11 +259,4 @@
     <string name="new_version_available">새로운 버전 있습니다</string>
     <string name="translation_models">번역 모델</string>
     <string name="clear_translation_models">번역 모델 지우기</string>
-    <string name="information">Information</string>
-    <string name="description">Description</string>
-    <string name="numbers">Numbers</string>
-    <string name="subscribers">Subscribers</string>
-    <string name="views">Views</string>
-    <string name="likes">Likes</string>
-    <string name="dislikes">Dislikes</string>
-</resources>
+    </resources>

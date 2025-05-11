@@ -1,0 +1,151 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="explore">Esplora</string>
+
+
+    <string name="local_history">Locale</string>
+    <string name="remote_history">Remoto</string>
+
+
+    <string name="charts">Classifiche</string>
+    <string name="back_button_desc">Indietro</string>
+    <string name="no_title">Nessun titolo</string>
+    <string name="unknown_artist">Artista sconosciuto</string>
+    <string name="unknown_item_type">Tipo dell\'elemento sconosciuto</string>
+    <string name="loading_charts">Caricamento della classifica...</string>
+    <string name="retry_button">Riprova</string>
+    <string name="album_cover_desc">Cover dell\'album</string>
+    <string name="top_music_videos">I migliori video musicali</string>
+    <string name="trending">Di tendenza</string>
+
+
+    <string name="weeks">Settimane</string>
+    <string name="months">Mesi</string>
+    <string name="years">Anni</string>
+    <string name="continuous">Continuo</string>
+
+
+    <string name="liked">Piaciuti</string>
+    <string name="offline">Scaricati</string>
+    <string name="my_top">I miei migliori</string>
+    <string name="cached_playlist">In cache</string>
+    <string name="sync_playlist">Sincronizza playlist</string>
+    <string name="sync_disabled">Sincronizzazione disabilitata</string>
+    <string name="elements_selected">%1$d elementi selezionati</string>
+    <string name="allows_for_sync_witch_youtube">Nota: questo attiva la sincronizzazione con YouTube Music. Tale azione NON è modificabile successivamente.</string>
+
+
+    <string name="added_to_play_next">Aggiunto come prossimo brano</string>
+
+    <string name="added_to_queue">Aggiunto alla coda</string>
+    <string name="remove_from_cache">Rimuovi dalla cache</string>
+    <string name="copy_link">Copia link</string>
+    <string name="select">Seleziona tutti</string>
+    <string name="like_all">Mi piace tutto</string>
+    <string name="dislike_all">Togli Mi piace a tutto</string>
+    <string name="sort_by_last_updated">Data di aggiornamento</string>
+    <string name="link_copied">Link copiato negli appunti</string>
+
+    <string name="lyrics">Testo</string>
+
+    <string name="already_in_playlist">Già nella playlist:</string>
+
+    <plurals name="n_element">
+        <item quantity="one">%d elemento</item>
+        <item quantity="other">%d elementi</item>
+    </plurals>
+    <plurals name="n_time">
+        <item quantity="one">%d volta</item>
+        <item quantity="other">%d volte</item>
+    </plurals>
+
+
+    <string name="seek_backward">5 secondi indietro</string>
+    <string name="seek_forward">5 secondi avanti</string>
+
+
+    <string name="similar_content">Contenuto simile</string>
+
+
+    <string name="login_settings">Impostazioni dell\'accesso</string>
+    <string name="general_settings">Impostazioni generali</string>
+
+    <string name="player_background_style">Sfondo del lettore</string>
+    <string name="follow_theme">Segui il tema</string>
+    <string name="gradient">Gradiente</string>
+    <string name="player_background_blur">Sfuma</string>
+    <string name="player_buttons_style">Colori dei bottoni del riproduttore</string>
+    <string name="default_style">Predefiniti</string>
+    <string name="secondary_color_style">Secondari</string>
+    <string name="enable_squiggly_slider">Abilita cursore ondulato</string>
+    <string name="enable_swipe_thumbnail">Attiva la possibilità di cambiare brano scorrendo sulla copertina</string>
+    <string name="swipe_song_to_add">Scorri il brano verso destra per riprodurlo come successivo o verso destra per aggiungerlo alla coda</string>
+    <string name="lyrics_click_change">Cambia testi con il tocco</string>
+    <string name="slim">Sottile</string>
+    <string name="slim_navbar">Nascondi etichette della barra di navigazione</string>
+    <string name="auto_playlists">Playlist automatiche</string>
+    <string name="show_liked_playlist">Mostra la playlist dei brani piaciuti</string>
+    <string name="show_downloaded_playlist">Mostra la playlist dei brani scaricati</string>
+    <string name="show_top_playlist">Mostra la playlist dei migliori brani</string>
+    <string name="show_cached_playlist">Mostra la playlist dei brani in cache</string>
+
+    <string name="google">Google</string>
+    <string name="discord">Discord</string>
+    <string name="advanced_login">Accesso avanzato (token)</string>
+    <string name="token_hidden">Tocca per mostrare il token</string>
+    <string name="token_shown">Tocca ancora per copiarlo o modificarlo</string>
+    <string name="token_adv_login_description">Questo è un metodo AVANZATO per fare l\'accesso a YouTube Music. Come alternativa al portale web, puoi inserire o aggiornare direttamente il tuo token di accesso qui. Per esempio, questo può velocizzare l\'accesso su più dispositivi. Tieni presente che qualsiasi formato di token non valido che l\'app non riesce ad analizzare non sarà accettato</string>
+    <string name="ytm_sync">Sincronizza automaticamente il tuo account di YouTube Music</string>
+    <string name="general">Generale</string>
+    <string name="proxy">Proxy</string>
+    <string name="default_lib_chips">Cambia chip predefinito della libreria</string>
+    <string name="set_quick_picks">Imposta le scelte rapide</string>
+    <string name="last_song_listened">Basato sull\'ultimo brano ascoltato</string>
+    <string name="app_language">Lingua dell\'app</string>
+    <string name="configure_app_language">Imposta lingua dell\'app</string>
+    <string name="intent_app_language_not_found">È impossibile trovare le impostazioni per la lingua dell\'app. Per favore, impostala manualmente</string>
+    <string name="open_supported_links">Apri automaticamente i link supportati</string>
+    <string name="configure_supported_links">Imposta link supportati</string>
+    <string name="intent_supported_links_not_found">È impossibile trovare le impostazioni per i link supportati. Per favore, impostali manualmente</string>
+    <string name="set_first_lyrics_provider">Fornitore di testi preferito</string>
+
+    <string name="audio_quality_max">Massima (beta)</string>
+    <string name="enable_similar_content">Attiva Contenuto simile</string>
+    <string name="similar_content_desc">Automaticamente aggiunge altri brani simili quando la fine della coda viene raggiunta</string>
+    <string name="min_playback_duration_title">Durata minima della riproduzione</string>
+    <string name="min_playback_duration_description">La minima quantità di un brano che deve essere riprodotta prima di essere considerata come \"ascoltata\"</string>
+    <string name="percentage_format">%d%%</string>
+    <string name="minimum_playback_duration">Durata minima della riproduzione</string>
+
+    <string name="clear_song_cache_dialog">Sei sicuro di voler eliminare tutti i brani in cache?</string>
+
+    <string name="clear_downloads_dialog">Sei sicuro di voler eliminare tutti i brani scaricati?</string>
+
+
+    <string name="pause_remote_listen_history">Sospendi la condivisione della cronologia degli ascolti con YouTube Music</string>
+    <string name="not_logged_in_youtube">Disconnesso da YouTube</string>
+
+    <string name="default_links">Apri link supportati</string>
+    <string name="open_app_settings_error">Impossibile aprire le impostazioni dell\'app</string>
+
+    <string name="release_notes">Note di pubblicazione</string>
+
+    <string name="all_time">Da sempre</string>
+    <string name="past_24_hours">Ultime 24 ore</string>
+    <string name="past_week">Ultima settimana</string>
+    <string name="past_month">Ultimo mese</string>
+    <string name="past_year">Ultimo anno</string>
+    <string name="top_length">La lunghezza della mia lista top</string>
+    <string name="history_duration">Durata della cronologia</string>
+    <string name="information">Informazioni</string>
+    <string name="description">Descrizione</string>
+    <string name="numbers">Numeri</string>
+    <string name="subscribers">Iscritti</string>
+    <string name="views">Visualizzazioni</string>
+    <string name="likes">Mi piace</string>
+    <string name="dislikes">Non mi piace</string>
+    <plurals name="seconds">
+        <item quantity="one">1 secondo</item>
+        <item quantity="other">%d secondi</item>
+    </plurals>
+</resources>

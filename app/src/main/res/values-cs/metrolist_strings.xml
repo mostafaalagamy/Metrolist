@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="explore">Prozkoumat</string>
+
+
+    <string name="liked">Oblíbené</string>
+    <string name="offline">Offline</string>
+    <string name="my_top">Moje nej</string>
+
+
+
+    <string name="select">Vybrat vše</string>
+    <string name="like_all">Vše do oblíbených</string>
+
+
+    <string name="sort_by_last_updated">Datum změny</string>
+    <string name="already_in_playlist">Již v playlistu:</string>
+
+    <plurals name="n_element">
+        <item quantity="one">%d prvek</item>
+        <item quantity="few">%d prvky</item>
+        <item quantity="many">%d prvků</item>
+        <item quantity="other">%d prvků</item>
+    </plurals>
+
+
+    <string name="proxy">Proxy</string>
+    <string name="default_lib_chips">Změnit výchozí stránku knihovny</string>
+    <string name="set_quick_picks">Nastavit rychlý výběr</string>
+    <string name="last_song_listened">Podle poslední poslouchané skladby</string>
+    <string name="all_time">Za celou dobu</string>
+    <string name="past_24_hours">Posledních 24 hodin</string>
+    <string name="past_week">Poslední týden</string>
+    <string name="past_month">Poslední měsíc</string>
+    <string name="past_year">Poslední rok</string>
+    <string name="top_length">Délka mého Seznamu nejlepších</string>
+
+</resources>

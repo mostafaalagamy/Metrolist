@@ -1,18 +1,19 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Bottom navigation -->
+<?xml version='1.0' encoding='utf-8'?>
+<resources xmlns:ns0="http://schemas.android.com/tools">
+    
     <string name="home">ਘਰ</string>
     <string name="songs">ਗੀਤ</string>
     <string name="artists">ਕਲਾਕਾਰ</string>
     <string name="albums">ਐਲਬਮ</string>
     <string name="playlists">ਪਲੇਲਿਸਟ</string>
 
-    <!-- Top bar -->
+    
     <plurals name="n_selected">
         <item quantity="one">%d ਚੁਣਿਆ ਗਿਆ</item>
         <item quantity="other">%d ਚੁਣੇ ਗਏ</item>
     </plurals>
 
-    <!-- Home -->
+    
     <string name="history">ਅਤੀਤ</string>
     <string name="stats">ਅੰਕੜੇ</string>
     <string name="mood_and_genres">Mood and Genres</string>
@@ -21,18 +22,18 @@
     <string name="quick_picks_empty">Listen to songs to generate your quick picks</string>
     <string name="new_release_albums">ਨਵੀਆਂ ਜਾਰੀ ਐਲਬਮਾਂ</string>
 
-    <!-- History -->
+    
     <string name="today">ਅੱਜ</string>
     <string name="yesterday">ਕੱਲ੍ਹ</string>
     <string name="this_week">ਇਸ ਹਫਤੇ</string>
     <string name="last_week">ਪਿਛਲੇ ਹਫਤੇ</string>
 
-    <!-- Stats -->
+    
     <string name="most_played_songs">ਵੱਧ ਸੁਣੇ ਗਏ ਗੀਤ</string>
     <string name="most_played_artists">Most played artists</string>
     <string name="most_played_albums">Most played albums</string>
 
-    <!-- Search -->
+    
     <string name="search">ਖੋਜੋ</string>
     <string name="search_yt_music">ਯੂਟਿਊਬ ਮਿਊਜ਼ਿਕ ਖੋਜੋ…</string>
     <string name="search_library">ਲਾਇਬ੍ਰੇਰੀ ਖੋਜੋ…</string>
@@ -50,21 +51,21 @@
     <string name="filter_bookmarked">Bookmarked</string>
     <string name="no_results_found">ਕੋਈ ਨਤੀਜੇ ਨਹੀਂ ਲੱਭੇ</string>
 
-    <!-- Artist screen -->
+    
     <string name="from_your_library">ਤੁਹਾਡੀ ਲਾਇਬ੍ਰੇਰੀ ਤੋਂ</string>
 
-    <!-- Playlist -->
+    
     <string name="liked_songs">ਪਸੰਦ ਕੀਤੇ ਗੀਤ</string>
     <string name="downloaded_songs">ਡਾਊਨਲੋਡ ਕੀਤੇ ਗੀਤ</string>
     <string name="playlist_is_empty">ਪਲੇਲਿਸਟ ਖਾਲੀ ਹੈ</string>
 
-    <!-- Button -->
+    
     <string name="retry">ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ</string>
     <string name="radio">ਰੇਡੀਓ</string>
     <string name="shuffle">ਸ਼ਫਲ ਕਰੋ</string>
     <string name="reset">Reset</string>
 
-    <!-- Menu -->
+    
     <string name="details">ਵੇਰਵੇ</string>
     <string name="edit">ਸੰਪਾਦਿਤ ਕਰੋ</string>
     <string name="start_radio">ਰੇਡੀਓ ਸ਼ੁਰੂ ਕਰੋ</string>
@@ -88,7 +89,7 @@
     <string name="sync">ਸਿੰਕਰੋਨਾਈਜ਼ ਕਰੋ</string>
     <string name="advanced">Advanced</string>
 
-    <!-- Sort menu -->
+    
     <string name="sort_by_create_date">ਮਿਤੀ</string>
     <string name="sort_by_name">ਨਾਮ</string>
     <string name="sort_by_artist">ਕਲਾਕਾਰ</string>
@@ -98,7 +99,7 @@
     <string name="sort_by_play_time">ਚਲਾਉਣ ਦਾ ਸਮਾਂ</string>
     <string name="sort_by_custom">Custom order</string>
 
-    <!-- Dialog -->
+    
     <string name="media_id">ਮੀਡੀਆ ਆਈਡੀ</string>
     <string name="mime_type">ਮਾਈਮ ਪ੍ਰਕਾਰ</string>
     <string name="codecs">ਕੋਡੈਕਸ</string>
@@ -130,7 +131,7 @@
     <string name="artist_name">ਕਲਾਕਾਰ ਦਾ ਨਾਮ</string>
     <string name="error_artist_name_empty">ਕਲਾਕਾਰ ਦਾ ਨਾਮ ਖਾਲੀ ਨਹੀਂ ਹੋ ਸਕਦਾ।</string>
 
-    <!-- Noun -->
+    
     <plurals name="n_song">
         <item quantity="one">%d ਗੀਤ</item>
         <item quantity="other">%d ਗੀਤ</item>
@@ -147,31 +148,31 @@
         <item quantity="one">%d ਪਲੇਲਿਸਟ</item>
         <item quantity="other">%d ਪਲੇਲਿਸਟਾਂ</item>
     </plurals>
-    <plurals name="n_week" tools:ignore="MissingQuantity">
+    <plurals name="n_week" ns0:ignore="MissingQuantity">
         <item quantity="one">%d week</item>
         <item quantity="other">%d weeks</item>
     </plurals>
-    <plurals name="n_month" tools:ignore="MissingQuantity">
+    <plurals name="n_month" ns0:ignore="MissingQuantity">
         <item quantity="one">%d month</item>
         <item quantity="other">%d months</item>
     </plurals>
-    <plurals name="n_year" tools:ignore="MissingQuantity">
+    <plurals name="n_year" ns0:ignore="MissingQuantity">
         <item quantity="one">%d year</item>
         <item quantity="other">%d years</item>
     </plurals>
 
-    <!-- Snackbar -->
+    
     <string name="playlist_imported">ਪਲੇਲਿਸਟ ਅਯਾਤ ਕੀਤੀ ਗਈ</string>
     <string name="removed_song_from_playlist">Removed \"%s\" from playlist</string>
     <string name="playlist_synced">Playlist synced</string>
     <string name="undo">Undo</string>
 
-    <!-- Player -->
+    
     <string name="lyrics_not_found">ਬੋਲ ਨਹੀਂ ਮਿਲੇ</string>
     <string name="sleep_timer">ਸਲੀਪ ਟਾਈਮਰ</string>
     <string name="end_of_song">ਗੀਤ ਸਮਾਪਤ</string>
     <plurals name="minute">
-        <item quantity="one" tools:ignore="ImpliedQuantity">1 ਮਿੰਟ</item>
+        <item quantity="one" ns0:ignore="ImpliedQuantity">1 ਮਿੰਟ</item>
         <item quantity="other">%d ਮਿੰਟ</item>
     </plurals>
     <string name="error_no_stream">ਕੋਈ ਸਟ੍ਰੀਮ ਉਪਲਬਧ ਨਹੀਂ ਹੈ</string>
@@ -179,7 +180,7 @@
     <string name="error_timeout">ਸਮਾਂ ਸਮਾਪਤ</string>
     <string name="error_unknown">ਅਗਿਆਤ ਤਰੁੱਟੀ</string>
 
-    <!-- Player action -->
+    
     <string name="action_like">ਪਸੰਦ ਕਰੋ</string>
     <string name="action_remove_like">ਪਸੰਦ ਹਟਾਓ</string>
     <string name="action_shuffle_on">Shuffle on</string>
@@ -188,14 +189,14 @@
     <string name="repeat_mode_one">Repeat current song</string>
     <string name="repeat_mode_all">Repeat queue</string>
 
-    <!-- Queue Title -->
+    
     <string name="queue_all_songs">ਸਾਰੇ ਗੀਤ</string>
     <string name="queue_searched_songs">ਖੋਜੇ ਗਏ ਗੀਤ</string>
 
-    <!-- Notification name -->
+    
     <string name="music_player">ਸੰਗੀਤ ਪਲੇਅਰ</string>
 
-    <!-- Settings -->
+    
     <string name="settings">ਸੈਟਿੰਗਾਂ</string>
     <string name="appearance">ਦਿੱਖ</string>
     <string name="enable_dynamic_theme">ਡਾਇਨੈਮਿਕ ਥੀਮ ਚਾਲੂ ਕਰੋ</string>
@@ -267,11 +268,4 @@
     <string name="new_version_available">New version available</string>
     <string name="translation_models">Translation Models</string>
     <string name="clear_translation_models">Clear translation models</string>
-    <string name="information">Information</string>
-    <string name="description">Description</string>
-    <string name="numbers">Numbers</string>
-    <string name="subscribers">Subscribers</string>
-    <string name="views">Views</string>
-    <string name="likes">Likes</string>
-    <string name="dislikes">Dislikes</string>
-</resources>
+    </resources>
