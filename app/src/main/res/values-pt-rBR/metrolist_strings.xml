@@ -1,0 +1,93 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="explore">Explorar</string>
+
+
+    <string name="weeks">Semanas</string>
+    <string name="months">Meses</string>
+    <string name="years">Anos</string>
+    <string name="continuous">Contínuo</string>
+
+
+    <string name="liked">Curtidas</string>
+    <string name="offline">Baixadas</string>
+    <string name="my_top">Meu Top</string>
+
+
+
+    <string name="elements_selected">%1$d elementos selecionados</string>
+
+
+    <string name="select">Selecionar tudo</string>
+    <string name="like_all">Curtir tudo</string>
+    <string name="sort_by_last_updated">Data de atualização</string>
+    <string name="lyrics">Letra</string>
+
+    <string name="already_in_playlist">Já está na playlist:</string>
+
+    <plurals name="n_element">
+        <item quantity="one">%d elemento</item>
+        <item quantity="other">%d elementos</item>
+    </plurals>
+    <plurals name="n_time">
+        <item quantity="one">%d vez</item>
+        <item quantity="other">%d vezes</item>
+    </plurals>
+
+
+    <string name="seek_backward">Voltar 5 segundos</string>
+    <string name="seek_forward">Avançar 5 segundos</string>
+
+
+    <string name="similar_content">Conteúdo similar</string>
+
+
+    <string name="login_settings">Configurações de login</string>
+    <string name="general_settings">Configurações gerais</string>
+
+    <string name="player_background_style">Estilo de fundo do player</string>
+    <string name="follow_theme">Seguir tema</string>
+    <string name="gradient">Gradiente</string>
+    <string name="player_background_blur">Desfoque</string>
+    <string name="enable_squiggly_slider">Ativar controle deslizante ondulado</string>
+    <string name="enable_swipe_thumbnail">Ativar deslizar para trocar de música</string>
+    <string name="lyrics_click_change">Trocar letra ao clicar</string>
+    <string name="slim">Liso</string>
+    <string name="slim_navbar">Ocultar rótulos da barra de navegação inferior</string>
+
+    <string name="google">Google</string>
+    <string name="discord">Discord</string>
+    <string name="general">Geral</string>
+    <string name="proxy">Proxy</string>
+    <string name="default_lib_chips">Alterar biblioteca padrão</string>
+    <string name="set_quick_picks">Definir seleções rápidas</string>
+    <string name="last_song_listened">Com base na última música ouvida</string>
+    <string name="app_language">Idioma do app</string>
+    <string name="configure_app_language">Configurar idiomas do app</string>
+    <string name="intent_app_language_not_found">Não foi possível encontrar as configurações de idioma do app, por favor, configure manualmente</string>
+    <string name="open_supported_links">Abrir links suportados por padrão</string>
+    <string name="configure_supported_links">Configurar links suportados</string>
+    <string name="intent_supported_links_not_found">Não foi possível encontrar as configurações de links suportados, por favor, configure manualmente</string>
+    <string name="set_first_lyrics_provider">Provedor de letras preferido</string>
+
+    <string name="audio_quality_max">Máxima (beta)</string>
+    <string name="enable_similar_content">Ativar Conteúdo Similar</string>
+    <string name="similar_content_desc">Adicionar automaticamente mais músicas similares quando o final da fila for alcançado</string>
+    <string name="default_links">Abrir links suportados</string>
+    <string name="open_app_settings_error">Não foi possível abrir as configurações do app</string>
+
+    <string name="release_notes">Notas de versão</string>
+
+    <string name="all_time">De todos os tempos</string>
+    <string name="past_24_hours">Últimas 24 horas</string>
+    <string name="past_week">Última semana</string>
+    <string name="past_month">Último mês</string>
+    <string name="past_year">Último ano</string>
+    <string name="top_length">Comprimento da minha lista principal</string>
+    <string name="history_duration">Duração do histórico</string>
+
+    <plurals name="seconds">
+        <item quantity="one">1 segundo</item>
+        <item quantity="other">%d segundos</item>
+    </plurals>
+</resources>

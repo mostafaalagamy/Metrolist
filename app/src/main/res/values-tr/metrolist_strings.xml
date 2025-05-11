@@ -1,0 +1,137 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="explore">Keşfet</string>
+
+
+    <string name="local_history">Yerel</string>
+    <string name="remote_history">Uzak</string>
+
+
+    <string name="charts">Listeler</string>
+    <string name="back_button_desc">Geri</string>
+    <string name="no_title">Başlık yok</string>
+    <string name="unknown_artist">Bilinmeyen sanatçı</string>
+    <string name="unknown_item_type">Bilinmeyen öğe türü</string>
+    <string name="loading_charts">Listeler yükleniyor...</string>
+    <string name="retry_button">Tekrar dene</string>
+    <string name="album_cover_desc">Albüm kapağı</string>
+    <string name="top_music_videos">En Popüler Müzik Videoları</string>
+    <string name="trending">Trendler</string>
+
+
+    <string name="weeks">Haftalar</string>
+    <string name="months">Aylar</string>
+    <string name="years">Yıllar</string>
+    <string name="continuous">Sürekli</string>
+
+
+    <string name="liked">Beğenilen</string>
+    <string name="offline">İndirilen</string>
+    <string name="my_top">Benim En İyilerim</string>
+    <string name="cached_playlist">Önbelleğe Alınan</string>
+    <string name="sync_playlist">Çalma Listesini Senkronize Et</string>
+    <string name="sync_disabled">Senkronizasyon devre dışı</string>
+    <string name="elements_selected">%1$d Öğe seçildi</string>
+    <string name="allows_for_sync_witch_youtube">Not: Bu, YouTube Music ile senkronizasyona izin verir. Bu daha sonra DEĞİŞTİRİLEMEZ.</string>
+
+
+    <string name="added_to_play_next">Sonra çal listesine eklendi</string>
+    <string name="added_to_queue">Kuyruğa eklendi</string>
+    <string name="remove_from_cache">Önbellekten kaldır</string>
+    <string name="copy_link">Bağlantıyı kopyala</string>
+    <string name="select">Tümünü seç</string>
+    <string name="like_all">Tümünü beğen</string>
+    <string name="dislike_all">Tümünü beğenme</string>
+    <string name="sort_by_last_updated">Güncelleme tarihi</string>
+    <string name="link_copied">Bağlantı panoya kopyalandı</string>
+    <string name="lyrics">Şarkı sözleri</string>
+    <string name="already_in_playlist">Zaten çalma listesinde:</string>
+    <plurals name="n_element">
+        <item quantity="one">1 öğe</item>
+        <item quantity="other">%d öğe</item>
+    </plurals>
+    <plurals name="n_time">
+        <item quantity="one">1 kez</item>
+        <item quantity="other">%d kez</item>
+    </plurals>
+
+
+    <string name="seek_backward">5 saniye geri</string>
+    <string name="seek_forward">5 saniye ileri</string>
+
+
+    <string name="similar_content">Benzer içerik</string>
+
+
+    <string name="login_settings">Giriş ayarları</string>
+    <string name="general_settings">Genel ayarlar</string>
+    <string name="player_background_style">Oynatıcı arka plan stili</string>
+    <string name="follow_theme">Temayı takip et</string>
+    <string name="gradient">Gradyan</string>
+    <string name="player_background_blur">Bulanıklık</string>
+    <string name="player_buttons_style">Oynatıcı düğme renkleri</string>
+    <string name="default_style">Varsayılan</string>
+    <string name="secondary_color_style">İkincil</string>
+    <string name="enable_squiggly_slider">Dalgalı kaydırıcıyı etkinleştir</string>
+    <string name="enable_swipe_thumbnail">Şarkıyı değiştirmek için kaydırmayı etkinleştir</string>
+    <string name="swipe_song_to_add">Sonra çalmak için sağa, kuyruğa eklemek için sola kaydırın</string>
+    <string name="lyrics_click_change">Tıklama ile şarkı sözlerini değiştir</string>
+    <string name="slim">İnce</string>
+    <string name="slim_navbar">Alt gezinme çubuğu etiketlerini gizle</string>
+    <string name="auto_playlists">Otomatik Çalma Listeleri</string>
+    <string name="show_liked_playlist">Beğenilen Çalma Listesini Göster</string>
+    <string name="show_downloaded_playlist">İndirilen Çalma Listesini Göster</string>
+    <string name="show_top_playlist">En İyi Çalma Listesini Göster</string>
+    <string name="show_cached_playlist">Önbelleğe Alınan Çalma Listesini Göster</string>
+    <string name="google">Google</string>
+    <string name="discord">Discord</string>
+    <string name="advanced_login">Gelişmiş giriş (token)</string>
+    <string name="token_hidden">Tokeni göstermek için dokunun</string>
+    <string name="token_shown">Kopyalamak veya düzenlemek için tekrar dokunun</string>
+    <string name="token_adv_login_description">Bu, GELİŞMİŞ bir giriş yöntemidir. Web portalına alternatif olarak, giriş tokeninizi buraya doğrudan girebilir veya güncelleyebilirsiniz. Örneğin, bu, birden fazla cihazda girişi hızlandırabilir. Lütfen, uygulamanın ayrıştıramadığı geçersiz token formatlarının kabul edilmeyeceğini unutmayın</string>
+    <string name="ytm_sync">YouTube Music hesabınızla otomatik olarak senkronize et</string>
+    <string name="general">Genel</string>
+    <string name="proxy">Proxy</string>
+    <string name="default_lib_chips">Varsayılan kütüphane çipini değiştir</string>
+    <string name="set_quick_picks">Hızlı seçimleri ayarla</string>
+    <string name="last_song_listened">Son dinlenen şarkıya göre</string>
+    <string name="app_language">Uygulama dili</string>
+    <string name="configure_app_language">Uygulama dillerini yapılandır</string>
+    <string name="intent_app_language_not_found">Uygulama dili ayarları bulunamadı, lütfen manuel olarak yapılandırın</string>
+    <string name="open_supported_links">Desteklenen bağlantıları varsayılan olarak aç</string>
+    <string name="configure_supported_links">Desteklenen bağlantıları yapılandır</string>
+    <string name="intent_supported_links_not_found">Desteklenen bağlantı ayarları bulunamadı, lütfen manuel olarak yapılandırın</string>
+    <string name="set_first_lyrics_provider">Tercih edilen şarkı sözü sağlayıcısı</string>
+    <string name="audio_quality_max">Maksimum (beta)</string>
+    <string name="enable_similar_content">Benzer İçeriği Etkinleştir</string>
+    <string name="similar_content_desc">Kuyruğun sonuna ulaşıldığında otomatik olarak daha fazla benzer şarkı ekleyin</string>
+    <string name="min_playback_duration_title">Minimum çalma süresi</string>
+    <string name="min_playback_duration_description">Bir şarkının \"çalındı\" olarak kabul edilmesi için çalınması gereken minimum süre</string>
+    <string name="percentage_format">%d%%</string>
+    <string name="minimum_playback_duration">Minimum çalma süresi</string>
+    <string name="clear_song_cache_dialog">Tüm önbelleğe alınan şarkıları temizlemek istediğinizden emin misiniz?</string>
+    <string name="clear_downloads_dialog">Tüm indirmeleri temizlemek istediğinizden emin misiniz?</string>
+    <string name="pause_remote_listen_history">YouTube Music ile dinleme geçmişini paylaşmayı duraklat</string>
+    <string name="not_logged_in_youtube">YouTube\'a giriş yapılmadı</string>
+    <string name="default_links">Desteklenen bağlantıları aç</string>
+    <string name="open_app_settings_error">Uygulama ayarları açılamadı</string>
+    <string name="release_notes">Sürüm Notları</string>
+    <string name="all_time">Tüm zamanlar</string>
+    <string name="past_24_hours">Son 24 saat</string>
+    <string name="past_week">Son hafta</string>
+    <string name="past_month">Son ay</string>
+    <string name="past_year">Son yıl</string>
+    <string name="top_length">Benim En İyiler listesi uzunluğu</string>
+    <string name="history_duration">Geçmiş süresi</string>
+    <string name="information">Bilgi</string>
+    <string name="description">Açıklama</string>
+    <string name="numbers">Sayılar</string>
+    <string name="subscribers">Aboneler</string>
+    <string name="views">Görüntülemeler</string>
+    <string name="likes">Beğeniler</string>
+    <string name="dislikes">Beğenilmeyenler</string>
+    <plurals name="seconds">
+        <item quantity="one">1 saniye</item>
+        <item quantity="other">%d saniye</item>
+    </plurals>
+</resources>

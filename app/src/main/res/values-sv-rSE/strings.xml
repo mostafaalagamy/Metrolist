@@ -1,18 +1,19 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Bottom navigation -->
+<?xml version='1.0' encoding='utf-8'?>
+<resources xmlns:ns0="http://schemas.android.com/tools">
+    
     <string name="home">Home</string>
     <string name="songs">Låtar</string>
     <string name="artists">Artister</string>
     <string name="albums">Albums</string>
     <string name="playlists">Spellistor</string>
 
-    <!-- Top bar -->
+    
     <plurals name="n_selected">
         <item quantity="one">%d vald</item>
         <item quantity="other">%d valda</item>
     </plurals>
 
-    <!-- Home -->
+    
     <string name="history">History</string>
     <string name="stats">Stats</string>
     <string name="mood_and_genres">Mood and Genres</string>
@@ -21,18 +22,18 @@
     <string name="quick_picks_empty">Listen to songs to generate your quick picks</string>
     <string name="new_release_albums">New release albums</string>
 
-    <!-- History -->
+    
     <string name="today">Today</string>
     <string name="yesterday">Yesterday</string>
     <string name="this_week">This week</string>
     <string name="last_week">Last week</string>
 
-    <!-- Stats -->
+    
     <string name="most_played_songs">Most played songs</string>
     <string name="most_played_artists">Most played artists</string>
     <string name="most_played_albums">Most played albums</string>
 
-    <!-- Search -->
+    
     <string name="search">Sök</string>
     <string name="search_yt_music">Search YouTube Music…</string>
     <string name="search_library">Search library…</string>
@@ -50,21 +51,21 @@
     <string name="filter_bookmarked">Bookmarked</string>
     <string name="no_results_found">No results found</string>
 
-    <!-- Artist screen -->
+    
     <string name="from_your_library">From your library</string>
 
-    <!-- Playlist -->
+    
     <string name="liked_songs">Liked songs</string>
     <string name="downloaded_songs">Downloaded songs</string>
     <string name="playlist_is_empty">The playlist is empty</string>
 
-    <!-- Button -->
+    
     <string name="retry">Försök igen</string>
     <string name="radio">Radio</string>
     <string name="shuffle">Blanda</string>
     <string name="reset">Reset</string>
 
-    <!-- Menu -->
+    
     <string name="details">Details</string>
     <string name="edit">Redigera</string>
     <string name="start_radio">Start radio</string>
@@ -88,7 +89,7 @@
     <string name="sync">Sync</string>
     <string name="advanced">Advanced</string>
 
-    <!-- Sort menu -->
+    
     <string name="sort_by_create_date">Datum tillagd</string>
     <string name="sort_by_name">Namn</string>
     <string name="sort_by_artist">Artist</string>
@@ -98,7 +99,7 @@
     <string name="sort_by_play_time">Play time</string>
     <string name="sort_by_custom">Custom order</string>
 
-    <!-- Dialog -->
+    
     <string name="media_id">Media id</string>
     <string name="mime_type">MIME type</string>
     <string name="codecs">Codecs</string>
@@ -130,7 +131,7 @@
     <string name="artist_name">Artist namn</string>
     <string name="error_artist_name_empty">Artist namn kan inte vara tom.</string>
 
-    <!-- Noun -->
+    
     <plurals name="n_song">
         <item quantity="one">%d låt</item>
         <item quantity="other">%d låtar</item>
@@ -147,26 +148,26 @@
         <item quantity="one">%d playlist</item>
         <item quantity="other">%d playlists</item>
     </plurals>
-    <plurals name="n_week" tools:ignore="MissingQuantity">
+    <plurals name="n_week" ns0:ignore="MissingQuantity">
         <item quantity="one">%d week</item>
         <item quantity="other">%d weeks</item>
     </plurals>
-    <plurals name="n_month" tools:ignore="MissingQuantity">
+    <plurals name="n_month" ns0:ignore="MissingQuantity">
         <item quantity="one">%d month</item>
         <item quantity="other">%d months</item>
     </plurals>
-    <plurals name="n_year" tools:ignore="MissingQuantity">
+    <plurals name="n_year" ns0:ignore="MissingQuantity">
         <item quantity="one">%d year</item>
         <item quantity="other">%d years</item>
     </plurals>
 
-    <!-- Snackbar -->
+    
     <string name="playlist_imported">Playlist imported</string>
     <string name="removed_song_from_playlist">Removed \"%s\" from playlist</string>
     <string name="playlist_synced">Playlist synced</string>
     <string name="undo">Undo</string>
 
-    <!-- Player -->
+    
     <string name="lyrics_not_found">Lyrics not found</string>
     <string name="sleep_timer">Sleep timer</string>
     <string name="end_of_song">End of song</string>
@@ -179,7 +180,7 @@
     <string name="error_timeout">Timeout</string>
     <string name="error_unknown">Unknown error</string>
 
-    <!-- Player action -->
+    
     <string name="action_like">Like</string>
     <string name="action_remove_like">Remove like</string>
     <string name="action_shuffle_on">Shuffle on</string>
@@ -188,14 +189,14 @@
     <string name="repeat_mode_one">Repeat current song</string>
     <string name="repeat_mode_all">Repeat queue</string>
 
-    <!-- Queue Title -->
+    
     <string name="queue_all_songs">All songs</string>
     <string name="queue_searched_songs">Searched songs</string>
 
-    <!-- Notification name -->
+    
     <string name="music_player">Music Spelare</string>
 
-    <!-- Settings -->
+    
     <string name="settings">Inställningar</string>
     <string name="appearance">Utseende</string>
     <string name="enable_dynamic_theme">Enable dynamic theme</string>
@@ -267,11 +268,4 @@
     <string name="new_version_available">New version available</string>
     <string name="translation_models">Translation Models</string>
     <string name="clear_translation_models">Clear translation models</string>
-    <string name="information">Information</string>
-    <string name="description">Description</string>
-    <string name="numbers">Numbers</string>
-    <string name="subscribers">Subscribers</string>
-    <string name="views">Views</string>
-    <string name="likes">Likes</string>
-    <string name="dislikes">Dislikes</string>
-</resources>
+    </resources>

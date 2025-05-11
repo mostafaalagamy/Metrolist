@@ -1,18 +1,19 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Bottom navigation -->
+<?xml version='1.0' encoding='utf-8'?>
+<resources xmlns:ns0="http://schemas.android.com/tools">
+    
     <string name="home">Thuis</string>
     <string name="songs">Nummers</string>
     <string name="artists">Artiesten</string>
     <string name="albums">Albums</string>
     <string name="playlists">Afspeellijsten</string>
 
-    <!-- Top bar -->
+    
     <plurals name="n_selected">
         <item quantity="one">%d geselecteerd</item>
         <item quantity="other">%d geselecteerd</item>
     </plurals>
 
-    <!-- Home -->
+    
     <string name="history">Geschiedenis</string>
     <string name="stats">Statistieken</string>
     <string name="mood_and_genres">Stemmingen en genres</string>
@@ -21,18 +22,18 @@
     <string name="quick_picks_empty">Beluister een aantal nummers om je snelle keuzes te genereren</string>
     <string name="new_release_albums">Nieuwe albums</string>
 
-    <!-- History -->
+    
     <string name="today">Vandaag</string>
     <string name="yesterday">Gisteren</string>
     <string name="this_week">Deze week</string>
     <string name="last_week">Vorige week</string>
 
-    <!-- Stats -->
+    
     <string name="most_played_songs">Meest afgespeelde nummers</string>
     <string name="most_played_artists">Meest afgespeelde artiesten</string>
     <string name="most_played_albums">Meest afgespeelde artiesten</string>
 
-    <!-- Search -->
+    
     <string name="search">Zoeken</string>
     <string name="search_yt_music">Zoeken via YouTube Music…</string>
     <string name="search_library">Zoeken in bibliotheek</string>
@@ -50,21 +51,21 @@
     <string name="filter_bookmarked">Gebookmarked</string>
     <string name="no_results_found">Geen resultaten gevonden</string>
 
-    <!-- Artist screen -->
+    
     <string name="from_your_library">Verwijderen van bibliotheek</string>
 
-    <!-- Playlist -->
+    
     <string name="liked_songs">Favoriete nummers</string>
     <string name="downloaded_songs">Gedownloade nummers</string>
     <string name="playlist_is_empty">Afspeellijst is leeg</string>
 
-    <!-- Button -->
+    
     <string name="retry">Opnieuw</string>
     <string name="radio">Radio</string>
     <string name="shuffle">Shuffle</string>
     <string name="reset">Reset</string>
 
-    <!-- Menu -->
+    
     <string name="details">Details</string>
     <string name="edit">Bewerken</string>
     <string name="start_radio">Start radio</string>
@@ -88,7 +89,7 @@
     <string name="sync">Synchroniseer</string>
     <string name="advanced">Geavanceerd</string>
 
-    <!-- Sort menu -->
+    
     <string name="sort_by_create_date">Datum toegevoegd</string>
     <string name="sort_by_name">Naam</string>
     <string name="sort_by_artist">Artiest</string>
@@ -98,7 +99,7 @@
     <string name="sort_by_play_time">Speeltijd</string>
     <string name="sort_by_custom">Aangepaste volgorde</string>
 
-    <!-- Dialog -->
+    
     <string name="media_id">Media id</string>
     <string name="mime_type">MIME type</string>
     <string name="codecs">Codecs</string>
@@ -130,7 +131,7 @@
     <string name="artist_name">Artiest naam</string>
     <string name="error_artist_name_empty">Artiestennaam mag niet leeg zijn.</string>
 
-    <!-- Noun -->
+    
     <plurals name="n_song">
         <item quantity="one">%d nummer</item>
         <item quantity="other">%d nummers</item>
@@ -147,26 +148,26 @@
         <item quantity="one">%d afspeellijst</item>
         <item quantity="other">%d afspeellijsten</item>
     </plurals>
-    <plurals name="n_week" tools:ignore="MissingQuantity">
+    <plurals name="n_week" ns0:ignore="MissingQuantity">
         <item quantity="one">%d week</item>
         <item quantity="other">%d weeks</item>
     </plurals>
-    <plurals name="n_month" tools:ignore="MissingQuantity">
+    <plurals name="n_month" ns0:ignore="MissingQuantity">
         <item quantity="one">%d month</item>
         <item quantity="other">%d months</item>
     </plurals>
-    <plurals name="n_year" tools:ignore="MissingQuantity">
+    <plurals name="n_year" ns0:ignore="MissingQuantity">
         <item quantity="one">%d year</item>
         <item quantity="other">%d years</item>
     </plurals>
 
-    <!-- Snackbar -->
+    
     <string name="playlist_imported">Afspeellijst geimporteerd</string>
     <string name="removed_song_from_playlist">\"%s\" van afspeelijst verwijderd</string>
     <string name="playlist_synced">Playlist synced</string>
     <string name="undo">Ongedaan maken</string>
 
-    <!-- Player -->
+    
     <string name="lyrics_not_found">Songtekst niet gevonden</string>
     <string name="sleep_timer">Slaap timer</string>
     <string name="end_of_song">Einde van nummer</string>
@@ -179,7 +180,7 @@
     <string name="error_timeout">Timeout</string>
     <string name="error_unknown">Onbekende fout</string>
 
-    <!-- Player action -->
+    
     <string name="action_like">Like</string>
     <string name="action_remove_like">Verwijder like</string>
     <string name="action_shuffle_on">Shuffle on</string>
@@ -188,14 +189,14 @@
     <string name="repeat_mode_one">Repeat current song</string>
     <string name="repeat_mode_all">Repeat queue</string>
 
-    <!-- Queue Title -->
+    
     <string name="queue_all_songs">Alle nummers</string>
     <string name="queue_searched_songs">Opgezochte nummers</string>
 
-    <!-- Notification name -->
+    
     <string name="music_player">Muziekspeler</string>
 
-    <!-- Settings -->
+    
     <string name="settings">Instellingen</string>
     <string name="appearance">Uiterlijk</string>
     <string name="enable_dynamic_theme">Dynamisch thema inschakelen</string>
@@ -247,7 +248,7 @@
     <string name="privacy">Privacy</string>
     <string name="pause_listen_history">Pauzeer luistergeschiedenis</string>
     <string name="clear_listen_history">Luistergeschiedenis wisseny</string>
-    <string name="clear_listen_history_confirm">>Weet je zeker dat je de luistergeschiedenis wil wissen?</string>
+    <string name="clear_listen_history_confirm">&gt;Weet je zeker dat je de luistergeschiedenis wil wissen?</string>
     <string name="pause_search_history">Pauzeer zoekgeschiedenis</string>
     <string name="clear_search_history">Zoekgeschiedenis wissen</string>
     <string name="clear_search_history_confirm">Weet je zeker dat je de zoekgeschiedenis wil wissen?</string>
@@ -267,11 +268,4 @@
     <string name="new_version_available">Nieuwe versie beschikbaar</string>
     <string name="translation_models">Vertaalmodellen</string>
     <string name="clear_translation_models">Verwijder vertaalmodellen</string>
-    <string name="information">Information</string>
-    <string name="description">Description</string>
-    <string name="numbers">Numbers</string>
-    <string name="subscribers">Subscribers</string>
-    <string name="views">Views</string>
-    <string name="likes">Likes</string>
-    <string name="dislikes">Dislikes</string>
-</resources>
+    </resources>

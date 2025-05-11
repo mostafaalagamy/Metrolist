@@ -1,12 +1,13 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Bottom navigation -->
+<?xml version='1.0' encoding='utf-8'?>
+<resources xmlns:ns0="http://schemas.android.com/tools">
+    
     <string name="home">Главная</string>
     <string name="songs">Музыка</string>
     <string name="artists">Исполнители</string>
     <string name="albums">Альбомы</string>
     <string name="playlists">Плейлисты</string>
 
-    <!-- Top bar -->
+    
     <plurals name="n_selected">
         <item quantity="one">%d выбрано</item>
         <item quantity="few">%d выбрано</item>
@@ -14,7 +15,7 @@
         <item quantity="other">%d выбрано</item>
     </plurals>
 
-    <!-- Home -->
+    
     <string name="history">История</string>
     <string name="stats">Статистика</string>
     <string name="mood_and_genres">Настроение и жанры</string>
@@ -25,20 +26,20 @@
     <string name="forgotten_favorites">Забытые любимые песни</string>
     <string name="similar_to">Похожие на</string>
     <string name="keep_listening">Продолжайте слушать</string>
-    <string name="your_ytb_playlists">Ваши плейлисты на YouTube</string>
+    <string name="your_youtube_playlists">Ваши плейлисты на YouTube</string>
 
-    <!-- History -->
+    
     <string name="today">Сегодня</string>
     <string name="yesterday">Вчера</string>
     <string name="this_week">На этой неделе</string>
     <string name="last_week">На прошлой неделе</string>
 
-    <!-- Stats -->
+    
     <string name="most_played_songs">Самые популярные песни</string>
     <string name="most_played_artists">Самые популярные исполнители</string>
     <string name="most_played_albums">Самые популярные альбомы</string>
 
-    <!-- Search -->
+    
     <string name="search">Поиск</string>
     <string name="search_yt_music">Поиск в YouTube Music…</string>
     <string name="search_library">Поиск в библиотеке…</string>
@@ -56,21 +57,21 @@
     <string name="filter_bookmarked">Добавлено в закладки</string>
     <string name="no_results_found">Результаты не найдены</string>
 
-    <!-- Artist screen -->
+    
     <string name="from_your_library">Из вашей библиотеки</string>
 
-    <!-- Playlist -->
+    
     <string name="liked_songs">Любимые треки</string>
     <string name="downloaded_songs">Загруженная музыка</string>
     <string name="playlist_is_empty">Плейлист пуст</string>
 
-    <!-- Button -->
+    
     <string name="retry">Повторить</string>
     <string name="radio">Радио</string>
     <string name="shuffle">Перемешать</string>
     <string name="reset">Сбросить</string>
 
-    <!-- Menu -->
+    
     <string name="details">Подробнее</string>
     <string name="edit">Редактировать</string>
     <string name="start_radio">Запустить радио</string>
@@ -94,7 +95,7 @@
     <string name="sync">Синхронизация</string>
     <string name="advanced">Контроль аудио</string>
 
-    <!-- Sort menu -->
+    
     <string name="sort_by_create_date">Недавно добавленные</string>
     <string name="sort_by_name">Название</string>
     <string name="sort_by_artist">Исполнитель</string>
@@ -104,7 +105,7 @@
     <string name="sort_by_play_time">Количество воспр.</string>
     <string name="sort_by_custom">Польз. порядок</string>
 
-    <!-- Dialog -->
+    
     <string name="media_id">Идентификатор медиа</string>
     <string name="mime_type">Тип MIME</string>
     <string name="codecs">Кодеки</string>
@@ -136,7 +137,7 @@
     <string name="artist_name">Имя исполнителя</string>
     <string name="error_artist_name_empty">Укажите имя исполнителя</string>
 
-    <!-- Noun -->
+    
     <plurals name="n_song">
         <item quantity="one">%d композиция</item>
         <item quantity="few">%d композиции</item>
@@ -161,32 +162,32 @@
         <item quantity="many">%d плейлистов</item>
         <item quantity="other">%d плейлистов</item>
     </plurals>
-    <plurals name="n_week" tools:ignore="MissingQuantity">
+    <plurals name="n_week" ns0:ignore="MissingQuantity">
         <item quantity="one">%d неделя</item>
         <item quantity="few">%d недели</item>
         <item quantity="many">%d недель</item>
         <item quantity="other">%d недель</item>
     </plurals>
-    <plurals name="n_month" tools:ignore="MissingQuantity">
+    <plurals name="n_month" ns0:ignore="MissingQuantity">
         <item quantity="one">%d месяц</item>
         <item quantity="few">%d месяца</item>
         <item quantity="many">%d месяцев</item>
         <item quantity="other">%d месяцев</item>
     </plurals>
-    <plurals name="n_year" tools:ignore="MissingQuantity">
+    <plurals name="n_year" ns0:ignore="MissingQuantity">
         <item quantity="one">%d год</item>
         <item quantity="few">%d года</item>
         <item quantity="many">%d лет</item>
         <item quantity="other">%d лет</item>
     </plurals>
 
-    <!-- Snackbar -->
+    
     <string name="playlist_imported">Плейлист импортирован</string>
     <string name="removed_song_from_playlist">«%s» удалено из списка воспроизведения</string>
     <string name="playlist_synced">Плейлист синхронизирован</string>
     <string name="undo">Отменить</string>
 
-    <!-- Player -->
+    
     <string name="lyrics_not_found">Текст песни не найден</string>
     <string name="sleep_timer">Таймер сна</string>
     <string name="end_of_song">Конец песни</string>
@@ -201,7 +202,7 @@
     <string name="error_timeout">Тайм-аут</string>
     <string name="error_unknown">Неизвестная ошибка</string>
 
-    <!-- Player action -->
+    
     <string name="action_like">Поставить «Нравится»</string>
     <string name="action_remove_like">Убрать «Нравится»</string>
     <string name="action_shuffle_on">Включить перемешивание</string>
@@ -210,14 +211,14 @@
     <string name="repeat_mode_one">Повторить текущую песню</string>
     <string name="repeat_mode_all">Повторить очередь</string>
 
-    <!-- Queue Title -->
+    
     <string name="queue_all_songs">Все композиции</string>
     <string name="queue_searched_songs">Искомые композиции</string>
 
-    <!-- Notification name -->
+    
     <string name="music_player">Музыкальный плеер</string>
 
-    <!-- Settings -->
+    
     <string name="settings">Настройки</string>
     <string name="appearance">Внешний вид</string>
     <string name="enable_dynamic_theme">Включить динамическую тему</string>
@@ -289,11 +290,4 @@
     <string name="new_version_available">Доступна новая версия</string>
     <string name="translation_models">Модели перевода</string>
     <string name="clear_translation_models">Очистить модели перевода</string>
-    <string name="information">Information</string>
-    <string name="description">Description</string>
-    <string name="numbers">Numbers</string>
-    <string name="subscribers">Subscribers</string>
-    <string name="views">Views</string>
-    <string name="likes">Likes</string>
-    <string name="dislikes">Dislikes</string>
-</resources>
+    </resources>

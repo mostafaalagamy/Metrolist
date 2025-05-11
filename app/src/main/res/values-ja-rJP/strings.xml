@@ -1,17 +1,18 @@
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <!-- Bottom navigation -->
+    
     <string name="home">ホーム</string>
     <string name="songs">曲</string>
     <string name="artists">アーティスト</string>
     <string name="albums">アルバム</string>
     <string name="playlists">プレイリスト</string>
 
-    <!-- Top bar -->
+    
     <plurals name="n_selected">
         <item quantity="other">%dを選択済み</item>
     </plurals>
 
-    <!-- Home -->
+    
     <string name="history">履歴</string>
     <string name="stats">統計</string>
     <string name="mood_and_genres">ムードとジャンル</string>
@@ -20,18 +21,18 @@
     <string name="quick_picks_empty">何曲か再生するとおすすめを生成します</string>
     <string name="new_release_albums">新作アルバム</string>
 
-    <!-- History -->
+    
     <string name="today">今日</string>
     <string name="yesterday">昨日</string>
     <string name="this_week">今週</string>
     <string name="last_week">先週</string>
 
-    <!-- Stats -->
+    
     <string name="most_played_songs">最も再生された曲</string>
     <string name="most_played_artists">最も再生されたアーティスト</string>
     <string name="most_played_albums">最も再生されたアルバム</string>
 
-    <!-- Search -->
+    
     <string name="search">検索</string>
     <string name="search_yt_music">YouTube Musicを検索…</string>
     <string name="search_library">ライブラリを検索…</string>
@@ -49,21 +50,21 @@
     <string name="filter_bookmarked">Bookmarked</string>
     <string name="no_results_found">見つかりませんでした</string>
 
-    <!-- Artist screen -->
+    
     <string name="from_your_library">ライブラリから</string>
 
-    <!-- Playlist -->
+    
     <string name="liked_songs">いいねした曲</string>
     <string name="downloaded_songs">ダウンロードした曲</string>
     <string name="playlist_is_empty">プレイリストが空です</string>
 
-    <!-- Button -->
+    
     <string name="retry">再試行</string>
     <string name="radio">ラジオ</string>
     <string name="shuffle">シャッフル</string>
     <string name="reset">Reset</string>
 
-    <!-- Menu -->
+    
     <string name="details">詳細</string>
     <string name="edit">編集</string>
     <string name="start_radio">ラジオを再生</string>
@@ -87,7 +88,7 @@
     <string name="sync">同期</string>
     <string name="advanced">Advanced</string>
 
-    <!-- Sort menu -->
+    
     <string name="sort_by_create_date">追加日時</string>
     <string name="sort_by_name">曲名</string>
     <string name="sort_by_artist">アーティスト</string>
@@ -97,7 +98,7 @@
     <string name="sort_by_play_time">再生時間</string>
     <string name="sort_by_custom">カスタム</string>
 
-    <!-- Dialog -->
+    
     <string name="media_id">メディアID</string>
     <string name="mime_type">MIMEタイプ</string>
     <string name="codecs">コーデック</string>
@@ -129,7 +130,7 @@
     <string name="artist_name">アーティスト名</string>
     <string name="error_artist_name_empty">アーティスト名は空白にできません。</string>
 
-    <!-- Noun -->
+    
     <plurals name="n_song">
         <item quantity="other">%d曲</item>
     </plurals>
@@ -151,18 +152,12 @@
     <plurals name="n_year">
         <item quantity="other">%d年</item>
     </plurals>
-    <plurals name="n_element">
-
-        <item quantity="other">%d 要素</item>
-    </plurals>
-
-    <!-- Snackbar -->
     <string name="playlist_imported">プレイリストをインポートしました</string>
     <string name="removed_song_from_playlist">プレイリストから「%s」を削除しました</string>
     <string name="playlist_synced">プレイリストが同期されました</string>
     <string name="undo">元に戻す</string>
 
-    <!-- Player -->
+    
     <string name="lyrics_not_found">歌詞が見つかりません</string>
     <string name="sleep_timer">スリープタイマー</string>
     <string name="end_of_song">曲の終わり</string>
@@ -174,7 +169,7 @@
     <string name="error_timeout">タイムアウトしました</string>
     <string name="error_unknown">不明なエラー</string>
 
-    <!-- Player action -->
+    
     <string name="action_like">いいね</string>
     <string name="action_remove_like">いいねを削除</string>
     <string name="action_shuffle_on">Shuffle on</string>
@@ -183,14 +178,14 @@
     <string name="repeat_mode_one">Repeat current song</string>
     <string name="repeat_mode_all">Repeat queue</string>
 
-    <!-- Queue Title -->
+    
     <string name="queue_all_songs">すべての曲</string>
     <string name="queue_searched_songs">検索した曲</string>
 
-    <!-- Notification name -->
+    
     <string name="music_player">音楽プレイヤー</string>
 
-    <!-- Settings -->
+    
     <string name="settings">設定</string>
     <string name="appearance">外観</string>
     <string name="enable_dynamic_theme">動的なテーマを有効化</string>
@@ -262,11 +257,4 @@
     <string name="new_version_available">New version available</string>
     <string name="translation_models">Translation Models</string>
     <string name="clear_translation_models">Clear translation models</string>
-    <string name="information">Information</string>
-    <string name="description">Description</string>
-    <string name="numbers">Numbers</string>
-    <string name="subscribers">Subscribers</string>
-    <string name="views">Views</string>
-    <string name="likes">Likes</string>
-    <string name="dislikes">Dislikes</string>
-</resources>
+    </resources>

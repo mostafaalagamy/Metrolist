@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="liked">Aimées</string>
+    <string name="offline">Hors ligne</string>
+    <string name="my_top">Mon top</string>
+
+
+    <string name="select">Tout sélectionner</string>
+    <string name="like_all">Tout aimer</string>
+
+
+    <string name="sort_by_last_updated">Date de mise à jour</string>
+    <plurals name="n_element">
+        <item quantity="one">%d élément</item>
+        <item quantity="many">%d éléments</item>
+        <item quantity="other">%d éléments</item>
+    </plurals>
+
+
+    <string name="proxy">Proxy</string>
+    <string name="default_lib_chips">Choix de la bibliothèque par défaut</string>
+    <string name="set_quick_picks">Choix des sélections rapides</string>
+    <string name="last_song_listened">Basé sur la dernière chanson écoutée</string>
+    <string name="all_time">Tout le temps</string>
+    <string name="past_24_hours">Dernières 24 heures</string>
+    <string name="past_week">Semaine dernière</string>
+    <string name="past_month">Mois dernier</string>
+    <string name="past_year">L\’année dernière</string>
+    <string name="top_length">Longueur de ma Top liste</string>
+
+</resources>
