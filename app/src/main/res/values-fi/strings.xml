@@ -1,271 +1,243 @@
-<?xml version='1.0' encoding='utf-8'?>
-<resources xmlns:ns0="http://schemas.android.com/tools">
-    
-    <string name="home">Home</string>
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Bottom navigation -->
+    <string name="home">Koti</string>
     <string name="songs">Kappaleet</string>
     <string name="artists">Artistit</string>
-    <string name="albums">Albums</string>
+    <string name="albums">Albumit</string>
     <string name="playlists">Soittolistat</string>
-
-    
+    <!-- Top bar -->
     <plurals name="n_selected">
         <item quantity="one">%d valittu</item>
         <item quantity="other">%d kappaletta valittu</item>
     </plurals>
-
-    
-    <string name="history">History</string>
-    <string name="stats">Stats</string>
-    <string name="mood_and_genres">Mood and Genres</string>
-    <string name="account">Account</string>
-    <string name="quick_picks">Quick picks</string>
-    <string name="quick_picks_empty">Listen to songs to generate your quick picks</string>
-    <string name="new_release_albums">New release albums</string>
-
-    
-    <string name="today">Today</string>
-    <string name="yesterday">Yesterday</string>
-    <string name="this_week">This week</string>
-    <string name="last_week">Last week</string>
-
-    
-    <string name="most_played_songs">Most played songs</string>
-    <string name="most_played_artists">Most played artists</string>
-    <string name="most_played_albums">Most played albums</string>
-
-    
+    <!-- Home -->
+    <string name="history">Historia</string>
+    <string name="stats">Tilastot</string>
+    <string name="mood_and_genres">Mielialat ja genret</string>
+    <string name="account">Tili</string>
+    <string name="quick_picks">Pikalista</string>
+    <string name="quick_picks_empty">Kuuntele kappaleita luodaksesi pikavalintasi</string>
+    <string name="new_release_albums">Uusia julkaisuja albumeita</string>
+    <!-- History -->
+    <string name="today">Tänään</string>
+    <string name="yesterday">Eilen</string>
+    <string name="this_week">Tämä viikko</string>
+    <string name="last_week">Viime viikko</string>
+    <!-- Stats -->
+    <string name="most_played_songs">Eniten soitetut kappaleet</string>
+    <string name="most_played_artists">Eniten soitetut artistit</string>
+    <string name="most_played_albums">Eniten soitetut albumit</string>
+    <!-- Search -->
     <string name="search">Etsi</string>
-    <string name="search_yt_music">Search YouTube Music…</string>
-    <string name="search_library">Search library…</string>
-    <string name="filter_library">Library</string>
-    <string name="filter_liked">Liked</string>
-    <string name="filter_downloaded">Downloaded</string>
+    <string name="search_yt_music">Hae YouTube Musicista…</string>
+    <string name="search_library">Hae kirjastosta…</string>
+    <string name="filter_library">Kirjasto</string>
+    <string name="filter_liked">Tykätty</string>
+    <string name="filter_downloaded">Ladattu</string>
     <string name="filter_all">Kaikki</string>
     <string name="filter_songs">Kappaleet</string>
     <string name="filter_videos">Videot</string>
     <string name="filter_albums">Albumit</string>
     <string name="filter_artists">Artistit</string>
     <string name="filter_playlists">Soittolistat</string>
-    <string name="filter_community_playlists">Community playlists</string>
-    <string name="filter_featured_playlists">Featured playlists</string>
-    <string name="filter_bookmarked">Bookmarked</string>
-    <string name="no_results_found">No results found</string>
-
-    
-    <string name="from_your_library">From your library</string>
-
-    
-    <string name="liked_songs">Liked songs</string>
-    <string name="downloaded_songs">Downloaded songs</string>
-    <string name="playlist_is_empty">The playlist is empty</string>
-
-    
+    <string name="filter_community_playlists">Yhteisön soittolistat</string>
+    <string name="filter_featured_playlists">Suositellut soittolistat</string>
+    <string name="filter_bookmarked">Kirjanmerkkeihin lisätty</string>
+    <string name="no_results_found">Tuloksia ei löytynyt</string>
+    <!-- Artist screen -->
+    <string name="from_your_library">Kirjastostasi</string>
+    <!-- Playlist -->
+    <string name="liked_songs">Tykkätyt kappaleet</string>
+    <string name="downloaded_songs">Ladatut kappaleet</string>
+    <string name="playlist_is_empty">Soittolista on tyhjä</string>
+    <!-- Button -->
     <string name="retry">Toisto</string>
     <string name="radio">Radio</string>
     <string name="shuffle">Sekoita</string>
-    <string name="reset">Reset</string>
-
-    
-    <string name="details">Details</string>
+    <string name="reset">Nollaa</string>
+    <!-- Menu -->
+    <string name="details">Yksityiskohdat</string>
     <string name="edit">Muokkaa</string>
-    <string name="start_radio">Start radio</string>
-    <string name="play">Play</string>
+    <string name="start_radio">Käynnistä radio</string>
+    <string name="play">Toista</string>
     <string name="play_next">Toista seuraavaksi</string>
     <string name="add_to_queue">Lisää jonoon</string>
     <string name="add_to_library">Lisää kirjastoon</string>
-    <string name="remove_from_library">Remove from library</string>
+    <string name="remove_from_library">Poista kirjastosta</string>
     <string name="download">Lataa</string>
-    <string name="downloading">Downloading</string>
+    <string name="downloading">Lataamassa</string>
     <string name="remove_download">Poista lataus</string>
-    <string name="import_playlist">Import playlist</string>
+    <string name="import_playlist">Tuo soittolista</string>
     <string name="add_to_playlist">Lisää soittolistaan</string>
-    <string name="view_artist">View artist</string>
-    <string name="view_album">View album</string>
+    <string name="view_artist">Näytä artisti</string>
+    <string name="view_album">Näytä albumi</string>
     <string name="refetch">Refetch</string>
-    <string name="share">Share</string>
+    <string name="share">Jakaa</string>
     <string name="delete">Poista</string>
-    <string name="remove_from_history">Remove from history</string>
-    <string name="search_online">Search online</string>
-    <string name="sync">Sync</string>
-    <string name="advanced">Advanced</string>
-
-    
+    <string name="remove_from_history">Poista historiasta</string>
+    <string name="search_online">Etsi verkossa</string>
+    <string name="sync">Synkronoi</string>
+    <string name="advanced">Edistynyt</string>
+    <!-- Sort menu -->
     <string name="sort_by_create_date">Lisäyspäivä</string>
     <string name="sort_by_name">Nimi</string>
     <string name="sort_by_artist">Artisti</string>
-    <string name="sort_by_year">Year</string>
-    <string name="sort_by_song_count">Song count</string>
-    <string name="sort_by_length">Length</string>
-    <string name="sort_by_play_time">Play time</string>
-    <string name="sort_by_custom">Custom order</string>
-
-    
-    <string name="media_id">Media id</string>
-    <string name="mime_type">MIME type</string>
-    <string name="codecs">Codecs</string>
-    <string name="bitrate">Bitrate</string>
-    <string name="sample_rate">Sample rate</string>
-    <string name="loudness">Loudness</string>
-    <string name="volume">Volume</string>
-    <string name="file_size">File size</string>
-    <string name="unknown">Unknown</string>
-    <string name="copied">Copied to clipboard</string>
-
-    <string name="edit_lyrics">Edit lyrics</string>
-    <string name="search_lyrics">Search lyrics</string>
-
+    <string name="sort_by_year">Vuosi</string>
+    <string name="sort_by_song_count">Kappaleiden määrä</string>
+    <string name="sort_by_length">Pituus</string>
+    <string name="sort_by_play_time">Toistoaika</string>
+    <string name="sort_by_custom">Mukautettu tilaus</string>
+    <!-- Dialog -->
+    <string name="media_id">Mediatunnus</string>
+    <string name="mime_type">MIME-tyyppi</string>
+    <string name="codecs">Koodekit</string>
+    <string name="bitrate">Bittinopeus</string>
+    <string name="loudness">Äänekkyys</string>
+    <string name="volume">Voimakkuus</string>
+    <string name="file_size">Tiedoston koko</string>
+    <string name="unknown">Tuntematon</string>
+    <string name="copied">Kopioitu leikepöydälle</string>
+    <string name="edit_lyrics">Muokkaa sanoituksia</string>
+    <string name="search_lyrics">Hae sanoituksia</string>
     <string name="edit_song">Muokkaa kappaletta</string>
     <string name="song_title">Kappaleen nimi</string>
     <string name="song_artists">Artisti</string>
     <string name="error_song_title_empty">Kappaleen nimi ei voi olla tyhjä.</string>
     <string name="error_song_artist_empty">Artistin nimi ei voi olla tyhjä.</string>
     <string name="save">Tallenna</string>
-
     <string name="choose_playlist">Valitse soittolista</string>
     <string name="edit_playlist">Muokkaa soittolistaa</string>
     <string name="create_playlist">Luo soittolista</string>
     <string name="playlist_name">Soittolistan nimi</string>
     <string name="error_playlist_name_empty">Soittolistan nimi ei voi olla tyhjä.</string>
-
     <string name="edit_artist">Muokkaa artistia</string>
     <string name="artist_name">Artistin nimi</string>
     <string name="error_artist_name_empty">Artistin nimi ei voi olla tyhjä.</string>
-
-    
+    <!-- Noun -->
     <plurals name="n_song">
         <item quantity="one">%d kappale</item>
         <item quantity="other">%d kappaletta</item>
     </plurals>
     <plurals name="n_artist">
-        <item quantity="one">%d artist</item>
-        <item quantity="other">%d artists</item>
+        <item quantity="one">%d artisti</item>
+        <item quantity="other">%d artistia</item>
     </plurals>
     <plurals name="n_album">
-        <item quantity="one">%d album</item>
-        <item quantity="other">%d albums</item>
+        <item quantity="one">%d albumi</item>
+        <item quantity="other">%d albumia</item>
     </plurals>
     <plurals name="n_playlist">
-        <item quantity="one">%d playlist</item>
-        <item quantity="other">%d playlists</item>
+        <item quantity="one">%d soittolista</item>
+        <item quantity="other">%d soittolistaa</item>
     </plurals>
-    <plurals name="n_week" ns0:ignore="MissingQuantity">
-        <item quantity="one">%d week</item>
-        <item quantity="other">%d weeks</item>
+    <plurals name="n_week">
+        <item quantity="one">%d viikko</item>
+        <item quantity="other">%d viikkoa</item>
     </plurals>
-    <plurals name="n_month" ns0:ignore="MissingQuantity">
-        <item quantity="one">%d month</item>
-        <item quantity="other">%d months</item>
+    <plurals name="n_month">
+        <item quantity="one">%d kuukausi</item>
+        <item quantity="other">%d kuukautta</item>
     </plurals>
-    <plurals name="n_year" ns0:ignore="MissingQuantity">
-        <item quantity="one">%d year</item>
-        <item quantity="other">%d years</item>
+    <plurals name="n_year">
+        <item quantity="one">%d vuosi</item>
+        <item quantity="other">%d vuotta</item>
     </plurals>
-
-    
-    <string name="playlist_imported">Playlist imported</string>
-    <string name="removed_song_from_playlist">Removed \"%s\" from playlist</string>
-    <string name="playlist_synced">Playlist synced</string>
-    <string name="undo">Undo</string>
-
-    
-    <string name="lyrics_not_found">Lyrics not found</string>
-    <string name="sleep_timer">Sleep timer</string>
-    <string name="end_of_song">End of song</string>
+    <!-- Snackbar -->
+    <string name="playlist_imported">Soittolista tuotu</string>
+    <string name="removed_song_from_playlist">\"%s\" poistettiin soittolistasta</string>
+    <string name="playlist_synced">Soittolista synkronoitu</string>
+    <string name="undo">Kumoa</string>
+    <!-- Player -->
+    <string name="lyrics_not_found">Sanoitusta ei löytynyt</string>
+    <string name="sleep_timer">Uniajastin</string>
+    <string name="end_of_song">Laulun loppu</string>
     <plurals name="minute">
-        <item quantity="one">1 minute</item>
-        <item quantity="other">%d minutes</item>
+        <item quantity="one">%d minuutti</item>
+        <item quantity="other">%d minuuttia</item>
     </plurals>
-    <string name="error_no_stream">No stream available</string>
-    <string name="error_no_internet">No network connection</string>
-    <string name="error_timeout">Timeout</string>
-    <string name="error_unknown">Unknown error</string>
-
-    
-    <string name="action_like">Like</string>
-    <string name="action_remove_like">Remove like</string>
-    <string name="action_shuffle_on">Shuffle on</string>
-    <string name="action_shuffle_off">Shuffle off</string>
-    <string name="repeat_mode_off">Repeat mode off</string>
-    <string name="repeat_mode_one">Repeat current song</string>
-    <string name="repeat_mode_all">Repeat queue</string>
-
-    
-    <string name="queue_all_songs">All songs</string>
-    <string name="queue_searched_songs">Searched songs</string>
-
-    
+    <string name="error_no_stream">Suoratoistoa ei saatavilla</string>
+    <string name="error_no_internet">Ei verkkoyhteyttä</string>
+    <string name="error_timeout">Aikakatkaisu</string>
+    <string name="error_unknown">Tuntematon virhe</string>
+    <!-- Player action -->
+    <string name="action_like">Tykkää</string>
+    <string name="action_remove_like">Poista \"tykkää\"</string>
+    <string name="action_shuffle_on">Sekoitus päällä</string>
+    <string name="action_shuffle_off">Sekoitus pois päältä</string>
+    <string name="repeat_mode_off">Toistotila pois päältä</string>
+    <string name="repeat_mode_one">Toista nykyinen laulu</string>
+    <string name="repeat_mode_all">Toista jono</string>
+    <!-- Queue Title -->
+    <string name="queue_all_songs">Kaikki laulut</string>
+    <!-- Notification name -->
     <string name="music_player">Soitin</string>
-
-    
+    <!-- Settings -->
     <string name="settings">Asetukset</string>
     <string name="appearance">Ulkoasu</string>
-    <string name="enable_dynamic_theme">Enable dynamic theme</string>
     <string name="dark_theme">Tumma teema</string>
     <string name="dark_theme_on">Käytössä</string>
     <string name="dark_theme_off">Pois käytöstä</string>
     <string name="dark_theme_follow_system">Järjestelmän teeman mukainen</string>
-    <string name="pure_black">Pure black</string>
-    <string name="default_open_tab">Default open tab</string>
-    <string name="customize_navigation_tabs">Customize navigation tabs</string>
-    <string name="lyrics_text_position">Lyrics text position</string>
-    <string name="left">Left</string>
-    <string name="center">Center</string>
-    <string name="right">Right</string>
-
     <string name="content">Sisältö</string>
-    <string name="login">Login</string>
     <string name="content_language">Sisällön oletuskieli</string>
     <string name="content_country">Sisällön oletusmaa</string>
     <string name="system_default">Järjestelmän oletus</string>
-    <string name="enable_proxy">Enable proxy</string>
-    <string name="proxy_type">Proxy type</string>
-    <string name="proxy_url">Proxy URL</string>
-    <string name="restart_to_take_effect">Restart to take effect</string>
-
-    <string name="player_and_audio">Player and audio</string>
-    <string name="audio_quality">Audio quality</string>
-    <string name="audio_quality_auto">Auto</string>
-    <string name="audio_quality_high">High</string>
-    <string name="audio_quality_low">Low</string>
-    <string name="persistent_queue">Persistent queue</string>
-    <string name="skip_silence">Skip silence</string>
-    <string name="audio_normalization">Audio normalization</string>
-    <string name="equalizer">Equalizer</string>
-
-    <string name="storage">Storage</string>
-    <string name="cache">Cache</string>
-    <string name="image_cache">Image Cache</string>
-    <string name="song_cache">Song Cache</string>
-    <string name="max_cache_size">Max cache size</string>
-    <string name="unlimited">Unlimited</string>
-    <string name="clear_all_downloads">Clear all downloads</string>
-    <string name="max_image_cache_size">Max image cache size</string>
-    <string name="clear_image_cache">Clear image cache</string>
-    <string name="max_song_cache_size">Max song cache size</string>
-    <string name="clear_song_cache">Clear song cache</string>
-    <string name="size_used">%s used</string>
-
-    <string name="privacy">Privacy</string>
-    <string name="pause_listen_history">Pause listen history</string>
-    <string name="clear_listen_history">Clear listen history</string>
-    <string name="clear_listen_history_confirm">Are you sure to clear all listen history?</string>
-    <string name="pause_search_history">Pause search history</string>
-    <string name="clear_search_history">Clear search history</string>
-    <string name="clear_search_history_confirm">Are you sure to clear all search history?</string>
-    <string name="enable_kugou">Enable KuGou lyrics provider</string>
-
-    <string name="backup_restore">Backup and restore</string>
-    <string name="backup">Backup</string>
-    <string name="restore">Restore</string>
-    <string name="imported_playlist">Imported playlist</string>
-    <string name="backup_create_success">Backup created successfully</string>
-    <string name="backup_create_failed">Couldn\'t create backup</string>
-    <string name="restore_failed">Failed to restore backup</string>
-
     <string name="about">Tietoa</string>
     <string name="app_version">Sovelluksen versio</string>
-
-    <string name="new_version_available">New version available</string>
-    <string name="translation_models">Translation Models</string>
-    <string name="clear_translation_models">Clear translation models</string>
-    </resources>
+    <string name="add_all_to_library">Lisää kaikki kirjastoon</string>
+    <string name="remove_all_from_library">Poista kaikki kirjastosta</string>
+    <string name="remove_from_queue">Poista jonosta</string>
+    <string name="remove_from_playlist">Poista soittolistasta</string>
+    <string name="queue">Jono</string>
+    <string name="small">Pieni</string>
+    <string name="not_logged_in">Ei kirjautunut sisään</string>
+    <string name="similar_to">Samanlaisia kuin</string>
+    <string name="tempo_and_pitch">Tempo ja sävelkorkeus</string>
+    <string name="action_like_all">Tykkää kaikista</string>
+    <string name="action_remove_like_all">Poista kaikki tykkäykset</string>
+    <string name="theme">Teema</string>
+    <string name="player">Soitin</string>
+    <string name="sided">Sivulla</string>
+    <string name="auto_load_more">Automaattisesti lataa lisää kappaleita</string>
+    <string name="auto_load_more_desc">Automaattisesti lisää enemmän kappaleita, kun jonon loppu saavutetaan, jos mahdollista</string>
+    <string name="auto_skip_next_on_error">Automaattisesti ohita seuraavaan kappaleeseen, kun tapahtuu virhe</string>
+    <string name="listen_history">Kuunteluhistoria</string>
+    <string name="skip_duplicates">Ohita kaksoiskappaleet</string>
+    <string name="disable_screenshot">Poista kuvakaappaukset käytöstä</string>
+    <string name="discord_integration">Discord-integraatio</string>
+    <string name="big">Suuri</string>
+    <string name="library_artist_empty">Kirjaston artistit näkyvät täällä</string>
+    <string name="keep_listening">Jatka kuuntelemista</string>
+    <string name="your_youtube_playlists">YouTube-soittolistasi</string>
+    <string name="library_song_empty">Kirjaston kappaleet näkyvät täällä</string>
+    <string name="library_album_empty">Kirjaston albumit näkyvät täällä</string>
+    <string name="library_playlist_empty">Soittolistasi näkyvät täällä</string>
+    <string name="other_versions">Muita versioita</string>
+    <string name="remove_download_playlist_confirm">Haluatko varmasti poistaa kaikki \"%s\" soittolistan kappaleet Ladattujen kappaleiden tallennustilasta?</string>
+    <string name="delete_playlist_confirm">Haluatko varmasti poistaa soittolistan \"%s\"?</string>
+    <string name="duplicates">Kaksoiskappaleet</string>
+    <string name="add_anyway">Lisää silti</string>
+    <string name="duplicates_description_single">Laulu on jo soittolistassasi</string>
+    <string name="duplicates_description_multiple">%d kappaleet ovat jo soittolistassasi</string>
+    <string name="player_text_alignment">Soittimen tekstin tasaus</string>
+    <string name="player_slider_style">Soittimen liukusäätimen tyyli</string>
+    <string name="default_">Oletus</string>
+    <string name="squiggly">Koukeroinen</string>
+    <string name="grid_cell_size">Ruudukon solun koko</string>
+    <string name="persistent_queue_desc">Palauta viimeinen jonosi, kun sovellus käynnistyy</string>
+    <string name="auto_skip_next_on_error_desc">Varmista jatkuva toistokokemus</string>
+    <string name="stop_music_on_task_clear">Pysäytä musiikki, kun sovellus suljetaan</string>
+    <string name="search_history">Hakuhistoria</string>
+    <string name="disable_screenshot_desc">Kun tämä asetus on päällä, kuvakaappaukset ja sovelluksen näkyminen äskeisissä sovelluksissa poistetaan käytöstä.</string>
+    <string name="enable_lrclib">Ota LrcLib-lyriikantarjoaja käyttöön</string>
+    <string name="hide_explicit">Piilota sopimaton sisältö</string>
+    <string name="dismiss">Hylkää</string>
+    <string name="discord_information">Metrolist käyttää KizzyRPC-kirjastoa asettaaksesi Discord-tilisi tilan. Tämä edellyttää Discord Gateway-yhteyttä, jota voidaan katsoa Discordin käyttöehtojen rikkomuksena. Ei kuitenkaan ole tiedossa tapauksia, joissa käyttäjätilit olisi jäädytetty tästä syystä. Käytä omalla vastuullasi. \n \nMetrolist poimii ainoastaan tunnuksesi, ja kaikki muu säilytetään paikallisesti.</string>
+    <string name="options">Asetukset</string>
+    <string name="preview">Esikatselu</string>
+    <string name="login_failed">Kirjautuminen epäonnistui</string>
+    <string name="logout">Kirjaudu ulos</string>
+    <string name="enable_discord_rpc">Tämä on Discord-integraatio-ominaisuus, se tarkoittaa Metrolist-toiminnan näyttämistä Discord-tililläsi</string>
+    <string name="forgotten_favorites">Unohtuneet suosikit</string>
+</resources>
