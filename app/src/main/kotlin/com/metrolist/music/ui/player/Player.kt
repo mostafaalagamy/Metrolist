@@ -1,8 +1,12 @@
 package com.metrolist.music.ui.player
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.drawable.BitmapDrawable
+import android.widget.Toast
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.LinearEasing
@@ -15,6 +19,8 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -35,7 +41,6 @@ import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -60,28 +65,28 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.util.fastForEachIndexed
 import androidx.compose.ui.window.DialogProperties
 import androidx.core.graphics.ColorUtils
 import androidx.media3.common.C
@@ -92,7 +97,6 @@ import androidx.navigation.NavController
 import coil.ImageLoader
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.metrolist.music.LocalDatabase
 import com.metrolist.music.LocalDownloadUtil
 import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
@@ -123,7 +127,6 @@ import com.metrolist.music.ui.utils.ShowMediaInfo
 import com.metrolist.music.utils.makeTimeString
 import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
@@ -140,6 +143,7 @@ fun BottomSheetPlayer(
     pureBlack: Boolean,
 ) {
     val context = LocalContext.current
+    val clipboardManager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
     val menuState = LocalMenuState.current
 
     val bottomSheetPageState = LocalBottomSheetPageState.current
@@ -528,10 +532,23 @@ fun BottomSheetPlayer(
                             modifier =
                             Modifier
                                 .basicMarquee()
-                                .clickable(enabled = mediaMetadata.album != null) {
-                                    navController.navigate("album/${mediaMetadata.album!!.id}")
-                                    state.collapseSoft()
-                                },
+                                .combinedClickable(
+                                    enabled = true,
+                                    indication = null,
+                                    interactionSource = remember { MutableInteractionSource() },
+                                    onClick = {
+                                        if(mediaMetadata.album!=null){
+                                            navController.navigate("album/${mediaMetadata.album.id}")
+                                            state.collapseSoft()
+                                        }
+                                    },
+                                    onLongClick = {
+                                        val clip = ClipData.newPlainText("Copied Title", title)
+                                        clipboardManager.setPrimaryClip(clip)
+                                        Toast.makeText(context, "Copied Title", Toast.LENGTH_SHORT).show()
+                                    }
+                                )
+                            ,
                         )
                     }
 
@@ -555,23 +572,53 @@ fun BottomSheetPlayer(
                             .basicMarquee()
                             .padding(end = 12.dp)
                     ) {
-                        ClickableText(
+                        var layoutResult by remember { mutableStateOf<TextLayoutResult?>(null) }
+                        var clickOffset by remember { mutableStateOf<Offset?>(null) }
+                        Text(
                             text = annotatedString,
                             style = MaterialTheme.typography.titleMedium.copy(color = TextBackgroundColor),
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
-                            onClick = { offset ->
-                                annotatedString
-                                    .getStringAnnotations(start = offset, end = offset)
-                                    .firstOrNull()
-                                    ?.let { ann ->
-                                        val artistId = ann.item
-                                        if (artistId.isNotBlank()) {
-                                            navController.navigate("artist/$artistId")
-                                            state.collapseSoft()
+                            onTextLayout = { layoutResult = it },
+                            modifier = Modifier
+                                .pointerInput(Unit) {
+                                    awaitPointerEventScope {
+                                        while (true) {
+                                            val event = awaitPointerEvent()
+                                            val tapPosition = event.changes.firstOrNull()?.position
+                                            if (tapPosition != null) {
+                                                clickOffset = tapPosition
+                                            }
                                         }
                                     }
-                            }
+                                }
+                                .combinedClickable(
+                                enabled = true,
+                                indication = null,
+                                interactionSource = remember { MutableInteractionSource() },
+                                onClick = {
+                                    //moving to temp val to avoid changes mid operation.
+                                    val tapPosition = clickOffset
+                                    val layout = layoutResult
+                                    if(tapPosition!=null && layout!=null){
+                                        val offset = layout.getOffsetForPosition(tapPosition)
+                                        annotatedString.getStringAnnotations(offset, offset)
+                                            .firstOrNull()
+                                            ?.let { ann ->
+                                                val artistId = ann.item
+                                                if (artistId.isNotBlank()) {
+                                                    navController.navigate("artist/$artistId")
+                                                    state.collapseSoft()
+                                                }
+                                            }
+                                    }
+                                },
+                                onLongClick = {
+                                    val clip = ClipData.newPlainText("Copied Artist", annotatedString)
+                                    clipboardManager.setPrimaryClip(clip)
+                                    Toast.makeText(context, "Copied Artist", Toast.LENGTH_SHORT).show()
+                                }
+                            )
                         )
                     }
                 }
