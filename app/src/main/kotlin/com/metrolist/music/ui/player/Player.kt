@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.drawable.BitmapDrawable
+import android.widget.Toast
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.LinearEasing
@@ -544,6 +545,7 @@ fun BottomSheetPlayer(
                                     onLongClick = {
                                         val clip = ClipData.newPlainText("Copied Title", title)
                                         clipboardManager.setPrimaryClip(clip)
+                                        Toast.makeText(context, "Copied Title", Toast.LENGTH_SHORT).show()
                                     }
                                 )
                             ,
@@ -614,6 +616,7 @@ fun BottomSheetPlayer(
                                 onLongClick = {
                                     val clip = ClipData.newPlainText("Copied Artist", annotatedString)
                                     clipboardManager.setPrimaryClip(clip)
+                                    Toast.makeText(context, "Copied Artist", Toast.LENGTH_SHORT).show()
                                 }
                             )
                         )
