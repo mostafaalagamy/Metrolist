@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Bottom navigation -->
     <string name="home">ਘਰ</string>
@@ -5,40 +6,35 @@
     <string name="artists">ਕਲਾਕਾਰ</string>
     <string name="albums">ਐਲਬਮ</string>
     <string name="playlists">ਪਲੇਲਿਸਟ</string>
-
     <!-- Top bar -->
     <plurals name="n_selected">
         <item quantity="one">%d ਚੁਣਿਆ ਗਿਆ</item>
         <item quantity="other">%d ਚੁਣੇ ਗਏ</item>
     </plurals>
-
     <!-- Home -->
     <string name="history">ਅਤੀਤ</string>
     <string name="stats">ਅੰਕੜੇ</string>
-    <string name="mood_and_genres">Mood and Genres</string>
-    <string name="account">Account</string>
+    <string name="mood_and_genres">ਮੂਡ ਅਤੇ ਸ਼ੈਲੀ</string>
+    <string name="account">ਖਾਤਾ</string>
     <string name="quick_picks">ਉਂਗਲਾਂ ਤੇ ਚੁਣੇ ਗੀਤ</string>
-    <string name="quick_picks_empty">Listen to songs to generate your quick picks</string>
+    <string name="quick_picks_empty">ਉਂਗਲਾਂ ਤੇ ਚੁਣੇ ਗੀਤ ਪਾਉਣ ਲਈ ਗੀਤ ਸੁਣਨੇ ਆਰੰਭ ਕਰੋ</string>
     <string name="new_release_albums">ਨਵੀਆਂ ਜਾਰੀ ਐਲਬਮਾਂ</string>
-
     <!-- History -->
     <string name="today">ਅੱਜ</string>
     <string name="yesterday">ਕੱਲ੍ਹ</string>
-    <string name="this_week">ਇਸ ਹਫਤੇ</string>
-    <string name="last_week">ਪਿਛਲੇ ਹਫਤੇ</string>
-
+    <string name="this_week">ਇਸ ਹਫ਼ਤੇ</string>
+    <string name="last_week">ਪਿਛਲੇ ਹਫ਼ਤੇ</string>
     <!-- Stats -->
     <string name="most_played_songs">ਵੱਧ ਸੁਣੇ ਗਏ ਗੀਤ</string>
-    <string name="most_played_artists">Most played artists</string>
-    <string name="most_played_albums">Most played albums</string>
-
+    <string name="most_played_artists">ਵਧੇਰੇ ਸੁਣੇ ਗਏ ਕਲਾਕਾਰ</string>
+    <string name="most_played_albums">ਵਧੇਰੇ ਸੁਣੀਆਂ ਐਲਬਮਾਂ</string>
     <!-- Search -->
     <string name="search">ਖੋਜੋ</string>
     <string name="search_yt_music">ਯੂਟਿਊਬ ਮਿਊਜ਼ਿਕ ਖੋਜੋ…</string>
     <string name="search_library">ਲਾਇਬ੍ਰੇਰੀ ਖੋਜੋ…</string>
-    <string name="filter_library">Library</string>
-    <string name="filter_liked">Liked</string>
-    <string name="filter_downloaded">Downloaded</string>
+    <string name="filter_library">ਲਾਇਬ੍ਰੇਰੀ</string>
+    <string name="filter_liked">ਪਸੰਦ ਕੀਤੇ</string>
+    <string name="filter_downloaded">ਡਾਊਨਲੋਡ ਕੀਤੇ</string>
     <string name="filter_all">ਸਾਰੇ</string>
     <string name="filter_songs">ਗੀਤ</string>
     <string name="filter_videos">ਵੀਡੀਓ</string>
@@ -47,23 +43,19 @@
     <string name="filter_playlists">ਪਲੇਲਿਸਟਾਂ</string>
     <string name="filter_community_playlists">ਕਮਿਊਨਿਟੀ ਪਲੇਲਿਸਟਾਂ</string>
     <string name="filter_featured_playlists">ਪ੍ਰਦਰਸ਼ਿਤ ਪਲੇਲਿਸਟਾਂ</string>
-    <string name="filter_bookmarked">Bookmarked</string>
+    <string name="filter_bookmarked">ਬੁੱਕਮਾਰਕ ਕੀਤੇ</string>
     <string name="no_results_found">ਕੋਈ ਨਤੀਜੇ ਨਹੀਂ ਲੱਭੇ</string>
-
     <!-- Artist screen -->
     <string name="from_your_library">ਤੁਹਾਡੀ ਲਾਇਬ੍ਰੇਰੀ ਤੋਂ</string>
-
     <!-- Playlist -->
     <string name="liked_songs">ਪਸੰਦ ਕੀਤੇ ਗੀਤ</string>
     <string name="downloaded_songs">ਡਾਊਨਲੋਡ ਕੀਤੇ ਗੀਤ</string>
     <string name="playlist_is_empty">ਪਲੇਲਿਸਟ ਖਾਲੀ ਹੈ</string>
-
     <!-- Button -->
     <string name="retry">ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ</string>
     <string name="radio">ਰੇਡੀਓ</string>
     <string name="shuffle">ਸ਼ਫਲ ਕਰੋ</string>
-    <string name="reset">Reset</string>
-
+    <string name="reset">ਰੀਸੈੱਟ ਕਰੋ</string>
     <!-- Menu -->
     <string name="details">ਵੇਰਵੇ</string>
     <string name="edit">ਸੰਪਾਦਿਤ ਕਰੋ</string>
@@ -86,8 +78,7 @@
     <string name="remove_from_history">ਅਤੀਤ ਵਿੱਚੋਂ ਹਟਾਓ</string>
     <string name="search_online">ਆਨਲਾਈਨ ਖੋਜ ਕਰੋ</string>
     <string name="sync">ਸਿੰਕਰੋਨਾਈਜ਼ ਕਰੋ</string>
-    <string name="advanced">Advanced</string>
-
+    <string name="advanced">ਐਡਵਾਂਸਡ</string>
     <!-- Sort menu -->
     <string name="sort_by_create_date">ਮਿਤੀ</string>
     <string name="sort_by_name">ਨਾਮ</string>
@@ -96,8 +87,7 @@
     <string name="sort_by_song_count">ਗਿਣਤੀ</string>
     <string name="sort_by_length">ਲੰਬਾਈ</string>
     <string name="sort_by_play_time">ਚਲਾਉਣ ਦਾ ਸਮਾਂ</string>
-    <string name="sort_by_custom">Custom order</string>
-
+    <string name="sort_by_custom">ਅਨੁਕੂਲਿਤ ਕ੍ਰਮ</string>
     <!-- Dialog -->
     <string name="media_id">ਮੀਡੀਆ ਆਈਡੀ</string>
     <string name="mime_type">ਮਾਈਮ ਪ੍ਰਕਾਰ</string>
@@ -109,27 +99,22 @@
     <string name="file_size">ਫਾਈਲ ਆਕਾਰ</string>
     <string name="unknown">ਅਗਿਆਤ</string>
     <string name="copied">ਕਲਿੱਪਬੋਰਡ \'ਤੇ ਕਾਪੀ ਕੀਤਾ ਗਿਆ</string>
-
     <string name="edit_lyrics">ਬੋਲਾਂ ਨੂੰ ਸੰਪਾਦਿਤ ਕਰੋ</string>
     <string name="search_lyrics">ਬੋਲ ਖੋਜੋ</string>
-
     <string name="edit_song">ਗੀਤ ਸੰਪਾਦਿਤ ਕਰੋ</string>
     <string name="song_title">ਗੀਤ ਦਾ ਸਿਰਲੇਖ</string>
     <string name="song_artists">ਗੀਤ ਕਲਾਕਾਰ</string>
     <string name="error_song_title_empty">ਗੀਤ ਦਾ ਸਿਰਲੇਖ ਖਾਲੀ ਨਹੀਂ ਹੋ ਸਕਦਾ।</string>
     <string name="error_song_artist_empty">ਗੀਤ ਕਲਾਕਾਰ ਖਾਲੀ ਨਹੀਂ ਹੋ ਸਕਦਾ।</string>
     <string name="save">ਸਾਂਭੋ</string>
-
     <string name="choose_playlist">ਪਲੇਲਿਸਟ ਚੁਣੋ</string>
     <string name="edit_playlist">ਪਲੇਲਿਸਟ ਸੰਪਾਦਿਤ ਕਰੋ</string>
     <string name="create_playlist">ਪਲੇਲਿਸਟ ਬਣਾਓ</string>
     <string name="playlist_name">ਪਲੇਲਿਸਟ ਦਾ ਨਾਮ</string>
     <string name="error_playlist_name_empty">ਪਲੇਲਿਸਟ ਨਾਮ ਖਾਲੀ ਨਹੀਂ ਹੋ ਸਕਦਾ।</string>
-
     <string name="edit_artist">ਕਲਾਕਾਰ ਸੰਪਾਦਿਤ ਕਰੋ</string>
     <string name="artist_name">ਕਲਾਕਾਰ ਦਾ ਨਾਮ</string>
     <string name="error_artist_name_empty">ਕਲਾਕਾਰ ਦਾ ਨਾਮ ਖਾਲੀ ਨਹੀਂ ਹੋ ਸਕਦਾ।</string>
-
     <!-- Noun -->
     <plurals name="n_song">
         <item quantity="one">%d ਗੀਤ</item>
@@ -147,54 +132,48 @@
         <item quantity="one">%d ਪਲੇਲਿਸਟ</item>
         <item quantity="other">%d ਪਲੇਲਿਸਟਾਂ</item>
     </plurals>
-    <plurals name="n_week" tools:ignore="MissingQuantity">
-        <item quantity="one">%d week</item>
-        <item quantity="other">%d weeks</item>
+    <plurals name="n_week">
+        <item quantity="one">%d ਹਫ਼ਤਾ</item>
+        <item quantity="other">%d ਹਫ਼ਤੇ</item>
     </plurals>
-    <plurals name="n_month" tools:ignore="MissingQuantity">
-        <item quantity="one">%d month</item>
-        <item quantity="other">%d months</item>
+    <plurals name="n_month">
+        <item quantity="one">%d ਮਹੀਨਾ</item>
+        <item quantity="other">%d ਮਹੀਨੇ</item>
     </plurals>
-    <plurals name="n_year" tools:ignore="MissingQuantity">
-        <item quantity="one">%d year</item>
-        <item quantity="other">%d years</item>
+    <plurals name="n_year">
+        <item quantity="one">%d ਸਾਲ</item>
+        <item quantity="other">%d ਸਾਲ</item>
     </plurals>
-
     <!-- Snackbar -->
     <string name="playlist_imported">ਪਲੇਲਿਸਟ ਅਯਾਤ ਕੀਤੀ ਗਈ</string>
-    <string name="removed_song_from_playlist">Removed \"%s\" from playlist</string>
-    <string name="playlist_synced">Playlist synced</string>
-    <string name="undo">Undo</string>
-
+    <string name="removed_song_from_playlist">ਪਲੇਲਿਸਟ ਤੋਂ \"%s\" ਹਟਾਇਆ ਗਿਆ</string>
+    <string name="playlist_synced">ਪਲੇਲਿਸਟ ਸਿੰਕ ਹੋਈ</string>
+    <string name="undo">ਅਣਕੀਤਾ ਕਰੋ</string>
     <!-- Player -->
     <string name="lyrics_not_found">ਬੋਲ ਨਹੀਂ ਮਿਲੇ</string>
     <string name="sleep_timer">ਸਲੀਪ ਟਾਈਮਰ</string>
     <string name="end_of_song">ਗੀਤ ਸਮਾਪਤ</string>
     <plurals name="minute">
-        <item quantity="one" tools:ignore="ImpliedQuantity">1 ਮਿੰਟ</item>
+        <item quantity="one">%d ਮਿੰਟ</item>
         <item quantity="other">%d ਮਿੰਟ</item>
     </plurals>
     <string name="error_no_stream">ਕੋਈ ਸਟ੍ਰੀਮ ਉਪਲਬਧ ਨਹੀਂ ਹੈ</string>
     <string name="error_no_internet">ਕੋਈ ਨੈੱਟਵਰਕ ਕਨੈਕਸ਼ਨ ਨਹੀਂ</string>
     <string name="error_timeout">ਸਮਾਂ ਸਮਾਪਤ</string>
     <string name="error_unknown">ਅਗਿਆਤ ਤਰੁੱਟੀ</string>
-
     <!-- Player action -->
     <string name="action_like">ਪਸੰਦ ਕਰੋ</string>
     <string name="action_remove_like">ਪਸੰਦ ਹਟਾਓ</string>
-    <string name="action_shuffle_on">Shuffle on</string>
-    <string name="action_shuffle_off">Shuffle off</string>
-    <string name="repeat_mode_off">Repeat mode off</string>
-    <string name="repeat_mode_one">Repeat current song</string>
-    <string name="repeat_mode_all">Repeat queue</string>
-
+    <string name="action_shuffle_on">ਸ਼ਫ਼ਲ ਆਨ</string>
+    <string name="action_shuffle_off">ਸ਼ਫ਼ਲ ਆਫ</string>
+    <string name="repeat_mode_off">ਰਿਪੀਟ ਮੋਡ ਆਫ</string>
+    <string name="repeat_mode_one">ਮੌਜੂਦਾ ਗੀਤ ਦੁਹਰਾਓ</string>
+    <string name="repeat_mode_all">ਕਤਾਰ ਨੂੰ ਦੁਹਰਾਓ</string>
     <!-- Queue Title -->
     <string name="queue_all_songs">ਸਾਰੇ ਗੀਤ</string>
     <string name="queue_searched_songs">ਖੋਜੇ ਗਏ ਗੀਤ</string>
-
     <!-- Notification name -->
     <string name="music_player">ਸੰਗੀਤ ਪਲੇਅਰ</string>
-
     <!-- Settings -->
     <string name="settings">ਸੈਟਿੰਗਾਂ</string>
     <string name="appearance">ਦਿੱਖ</string>
@@ -210,7 +189,6 @@
     <string name="left">ਖੱਬੇ</string>
     <string name="center">ਵਿਚਕਾਰ</string>
     <string name="right">ਸੱਜੇ</string>
-
     <string name="content">ਸਮੱਗਰੀ</string>
     <string name="login">ਲਾਗ-ਇਨ</string>
     <string name="content_language">ਡੀਫ਼ਾਲਟ ਸਮੱਗਰੀ ਭਾਸ਼ਾ</string>
@@ -220,7 +198,6 @@
     <string name="proxy_type">ਪ੍ਰੌਕਸੀ ਕਿਸਮ</string>
     <string name="proxy_url">ਪ੍ਰੌਕਸੀ URL</string>
     <string name="restart_to_take_effect">ਪ੍ਰਭਾਵੀ ਹੋਣ ਲਈ ਮੁੜ-ਚਾਲੂ ਕਰੋ</string>
-
     <string name="player_and_audio">ਪਲੇਅਰ ਅਤੇ ਆਡੀਓ</string>
     <string name="audio_quality">ਆਡੀਓ ਕੁਆਲਿਟੀ</string>
     <string name="audio_quality_auto">ਆਟੋ</string>
@@ -230,7 +207,6 @@
     <string name="skip_silence">ਚੁੱਪ ਤੇ ਸਕਿੱਪ ਕਰੋ</string>
     <string name="audio_normalization">ਆਡੀਓ ਨਾਰਮਲਾਈਜ਼ੇਸ਼ਨ</string>
     <string name="equalizer">ਈਕੋਲਾਈਜ਼ਰ</string>
-
     <string name="storage">ਸਟੋਰੇਜ</string>
     <string name="cache">ਕੈਸ਼ੇ</string>
     <string name="image_cache">ਚਿੱਤਰ ਕੈਸ਼ੇ</string>
@@ -243,35 +219,24 @@
     <string name="max_song_cache_size">ਅਧਿਕਤਮ ਗੀਤ ਕੈਸ਼ੇ ਆਕਾਰ</string>
     <string name="clear_song_cache">ਗੀਤ ਕੈਸ਼ ਸਾਫ਼ ਕਰੋ</string>
     <string name="size_used">%s ਵਰਤਿਆ ਗਿਆ</string>
-
     <string name="privacy">ਗੋਪਨੀਯਤਾ</string>
     <string name="pause_listen_history">ਸੁਣਨ ਦਾ ਅਤੀਤ ਰੋਕੋ</string>
-    <string name="clear_listen_history">Clear listen history</string>
+    <string name="clear_listen_history">ਸੁਣੇ ਗੀਤਾਂ ਦੀ ਹਿਸਟਰੀ ਮਿਟਾਓ</string>
     <string name="clear_listen_history_confirm">Are you sure to clear all listen history?</string>
     <string name="pause_search_history">ਖੋਜ ਇਤਿਹਾਸ ਨੂੰ ਰੋਕੋ</string>
     <string name="clear_search_history">ਖੋਜ ਇਤਿਹਾਸ ਸਾਫ਼ ਕਰੋ</string>
     <string name="clear_search_history_confirm">ਕੀ ਤੁਸੀਂ ਸਾਰੇ ਖੋਜ ਇਤਿਹਾਸ ਨੂੰ ਸਾਫ਼ ਕਰਨ ਲਈ ਯਕੀਨੀ ਹੋ?</string>
     <string name="enable_kugou">KuGou ਬੋਲ ਪ੍ਰਦਾਤਾ ਨੂੰ ਸਮਰੱਥ ਬਣਾਓ</string>
-
     <string name="backup_restore">ਬੈਕਅੱਪ ਅਤੇ ਰੀਸਟੋਰ</string>
     <string name="backup">ਬੈਕਅੱਪ</string>
     <string name="restore">ਰੀਸਟੋਰ</string>
-    <string name="imported_playlist">Imported playlist</string>
+    <string name="imported_playlist">ਇੰਪੋਰਟ ਕੀਤੀ ਪਲੇਲਿਸਟ</string>
     <string name="backup_create_success">ਬੈਕਅੱਪ ਸਫਲਤਾਪੂਰਵਕ ਬਣਾਇਆ ਗਿਆ</string>
     <string name="backup_create_failed">ਬੈਕਅੱਪ ਨਹੀਂ ਬਣਾਇਆ ਜਾ ਸਕਿਆ</string>
     <string name="restore_failed">ਬੈਕਅੱਪ ਰੀਸਟੋਰ ਕਰਨਾ ਅਸਫਲ ਰਿਹਾ</string>
-
-    <string name="about">ਦੇ ਬਾਰੇ</string>
+    <string name="about">ਐਪ ਦੇ ਬਾਰੇ</string>
     <string name="app_version">ਐਪ ਸੰਸਕਰਣ</string>
-
-    <string name="new_version_available">New version available</string>
-    <string name="translation_models">Translation Models</string>
-    <string name="clear_translation_models">Clear translation models</string>
-    <string name="information">Information</string>
-    <string name="description">Description</string>
-    <string name="numbers">Numbers</string>
-    <string name="subscribers">Subscribers</string>
-    <string name="views">Views</string>
-    <string name="likes">Likes</string>
-    <string name="dislikes">Dislikes</string>
+    <string name="new_version_available">ਨਵਾਂ ਸੰਸਕਰਣ ਉਪਲੱਬਧ ਹੈ</string>
+    <string name="translation_models">ਆਨੁਵਾਦ ਦੇ ਮਾਡਲ</string>
+    <string name="clear_translation_models">ਅਨੁਵਾਦ ਦੇ ਮਾਡਲ ਮਿਟਾਓ</string>
 </resources>

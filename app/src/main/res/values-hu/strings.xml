@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Bottom navigation -->
     <string name="home">Kezdőlap</string>
@@ -5,13 +6,11 @@
     <string name="artists">Előadók</string>
     <string name="albums">Albumok</string>
     <string name="playlists">Listák</string>
-
     <!-- Top bar -->
     <plurals name="n_selected">
         <item quantity="one">%d kijelölve</item>
         <item quantity="other">%d kijelölve</item>
     </plurals>
-
     <!-- Home -->
     <string name="history">Előzmények</string>
     <string name="stats">Statisztika</string>
@@ -20,18 +19,15 @@
     <string name="quick_picks">Gyors választás</string>
     <string name="quick_picks_empty">Hallgasson meg néhány dalt a gyors választások elkészítéséhez</string>
     <string name="new_release_albums">Új kiadású albumok</string>
-
     <!-- History -->
     <string name="today">Ma</string>
     <string name="yesterday">Tegnap</string>
     <string name="this_week">A héten</string>
     <string name="last_week">Múlt héten</string>
-
     <!-- Stats -->
     <string name="most_played_songs">A legtöbbet játszott dalok</string>
     <string name="most_played_artists">A legtöbbet játszott előadók</string>
     <string name="most_played_albums">A legtöbbet játszott albumok</string>
-
     <!-- Search -->
     <string name="search">Keresés</string>
     <string name="search_yt_music">YouTube Music keresés…</string>
@@ -49,21 +45,17 @@
     <string name="filter_featured_playlists">Kiemelt lejátszási listák</string>
     <string name="filter_bookmarked">Könyvjelzőzött</string>
     <string name="no_results_found">Nincs találat</string>
-
     <!-- Artist screen -->
     <string name="from_your_library">Saját könyvtárból</string>
-
     <!-- Playlist -->
     <string name="liked_songs">Kedvelt dalok</string>
     <string name="downloaded_songs">Letöltött dalok</string>
     <string name="playlist_is_empty">A lejátszólista üres</string>
-
     <!-- Button -->
     <string name="retry">Újra</string>
     <string name="radio">Rádió</string>
     <string name="shuffle">Keverés</string>
     <string name="reset">Visszaállítás</string>
-
     <!-- Menu -->
     <string name="details">Részletek</string>
     <string name="edit">Szerkesztés</string>
@@ -87,7 +79,6 @@
     <string name="search_online">Keresés online</string>
     <string name="sync">Szinkronizálás</string>
     <string name="advanced">Haladó</string>
-
     <!-- Sort menu -->
     <string name="sort_by_create_date">Létrehozás dátuma</string>
     <string name="sort_by_name">Név</string>
@@ -97,7 +88,6 @@
     <string name="sort_by_length">Hossz</string>
     <string name="sort_by_play_time">Lejátszási idő</string>
     <string name="sort_by_custom">Egyéni sorrend</string>
-
     <!-- Dialog -->
     <string name="media_id">Média id</string>
     <string name="mime_type">MIME típus</string>
@@ -109,27 +99,22 @@
     <string name="file_size">Fájlméret</string>
     <string name="unknown">Ismeretlen</string>
     <string name="copied">Vágólapra másolva</string>
-
     <string name="edit_lyrics">Dalszöveg szerkesztése</string>
     <string name="search_lyrics">Dalszöveg keresése</string>
-
     <string name="edit_song">Dal szerkesztése</string>
     <string name="song_title">Dal címe</string>
     <string name="song_artists">Dal előadói</string>
     <string name="error_song_title_empty">A cím nem lehet üres.</string>
     <string name="error_song_artist_empty">Az előadó nem lehet üres.</string>
     <string name="save">Mentés</string>
-
     <string name="choose_playlist">Válasszon lejátszólistát</string>
     <string name="edit_playlist">Lejátszólista szerkesztése</string>
     <string name="create_playlist">Lista létrehozás</string>
     <string name="playlist_name">Lista neve</string>
     <string name="error_playlist_name_empty">A lejátszólista neve nem lehet üres.</string>
-
     <string name="edit_artist">Előadó szerkesztése</string>
     <string name="artist_name">Előadó neve</string>
     <string name="error_artist_name_empty">Az előadó neve nem lehet üres.</string>
-
     <!-- Noun -->
     <plurals name="n_song">
         <item quantity="one">%d dal</item>
@@ -147,25 +132,23 @@
         <item quantity="one">%d lejátszólista</item>
         <item quantity="other">%d lejátszólista</item>
     </plurals>
-    <plurals name="n_week" tools:ignore="MissingQuantity">
+    <plurals name="n_week">
         <item quantity="one">%d hét</item>
         <item quantity="other">%d hét</item>
     </plurals>
-    <plurals name="n_month" tools:ignore="MissingQuantity">
+    <plurals name="n_month">
         <item quantity="one">%d hónap</item>
         <item quantity="other">%d hónap</item>
     </plurals>
-    <plurals name="n_year" tools:ignore="MissingQuantity">
+    <plurals name="n_year">
         <item quantity="one">%d év</item>
         <item quantity="other">%d év</item>
     </plurals>
-
     <!-- Snackbar -->
     <string name="playlist_imported">Lista importálva</string>
     <string name="removed_song_from_playlist">\"%s\" eltávolítva a lejátszólistából</string>
     <string name="playlist_synced">Lejátszólista szinkronban</string>
     <string name="undo">Visszavonás</string>
-
     <!-- Player -->
     <string name="lyrics_not_found">A dalszöveg nem található</string>
     <string name="sleep_timer">Alvásidőzítő</string>
@@ -178,7 +161,6 @@
     <string name="error_no_internet">Nincs hálózati kapcsolat</string>
     <string name="error_timeout">Időtúllépés</string>
     <string name="error_unknown">Ismeretlen hiba</string>
-
     <!-- Player action -->
     <string name="action_like">Tetszik</string>
     <string name="action_remove_like">Lájk eltávolítása</string>
@@ -187,14 +169,11 @@
     <string name="repeat_mode_off">Ismétlő mód KI</string>
     <string name="repeat_mode_one">Aktuális dal ismétlése</string>
     <string name="repeat_mode_all">Várósor ismétlése</string>
-
     <!-- Queue Title -->
     <string name="queue_all_songs">Minden dal</string>
     <string name="queue_searched_songs">Keresett dalok</string>
-
     <!-- Notification name -->
     <string name="music_player">Zenelejátszó</string>
-
     <!-- Settings -->
     <string name="settings">Beállítások</string>
     <string name="appearance">Megjelenés</string>
@@ -210,7 +189,6 @@
     <string name="left">Balra</string>
     <string name="center">Középre</string>
     <string name="right">Jobbra</string>
-
     <string name="content">Tartalom</string>
     <string name="login">Bejelentkezés</string>
     <string name="content_language">A tartalom alapért. nyelve</string>
@@ -220,7 +198,6 @@
     <string name="proxy_type">Proxy típusa</string>
     <string name="proxy_url">Proxy URL</string>
     <string name="restart_to_take_effect">Indítsa újra, hogy életbe lépjen</string>
-
     <string name="player_and_audio">Lejátszó és hang</string>
     <string name="audio_quality">Hangminőség</string>
     <string name="audio_quality_auto">Auto</string>
@@ -230,7 +207,6 @@
     <string name="skip_silence">A csend átugrása</string>
     <string name="audio_normalization">Hang normalizálása</string>
     <string name="equalizer">Equalizer</string>
-
     <string name="storage">Tárhely</string>
     <string name="cache">Gyorsítótár</string>
     <string name="image_cache">Kép gyorsítótár</string>
@@ -243,7 +219,6 @@
     <string name="max_song_cache_size">Max. dal gyorsítótár</string>
     <string name="clear_song_cache">Dal gyorsítótár törlése</string>
     <string name="size_used">%s használva</string>
-
     <string name="privacy">Adatvédelem</string>
     <string name="pause_listen_history">A hallgatási előzmények szüneteltetése</string>
     <string name="clear_listen_history">Hallgatási előzmények törlése</string>
@@ -252,7 +227,6 @@
     <string name="clear_search_history">Keresési előzmények törlése</string>
     <string name="clear_search_history_confirm">Biztosan törli az összes keresési előzményt?</string>
     <string name="enable_kugou">A KuGou dalszöveg-szolgáltató engedélyezése</string>
-
     <string name="backup_restore">Bizt. mentés és visszaállítás</string>
     <string name="backup">Biztonsági mentés</string>
     <string name="restore">Visszaállítás</string>
@@ -260,18 +234,22 @@
     <string name="backup_create_success">A biztonsági mentés sikeresen létrehozva</string>
     <string name="backup_create_failed">Nem sikerült biztonsági mentést készíteni</string>
     <string name="restore_failed">Nem sikerült visszaállítani a biztonsági másolatot</string>
-
     <string name="about">Rólunk</string>
     <string name="app_version">Alkalmazásverzió</string>
-
     <string name="new_version_available">Új verzió érhető el</string>
     <string name="translation_models">Fordítási modellek</string>
     <string name="clear_translation_models">Fordítási modellek törlése</string>
-    <string name="information">Information</string>
-    <string name="description">Description</string>
-    <string name="numbers">Numbers</string>
-    <string name="subscribers">Subscribers</string>
-    <string name="views">Views</string>
-    <string name="likes">Likes</string>
-    <string name="dislikes">Dislikes</string>
+    <string name="forgotten_favorites">Elfelejtett kedvencek</string>
+    <string name="keep_listening">Folytasd a zenehallgatást</string>
+    <string name="similar_to">Hasonló, mint</string>
+    <string name="library_song_empty">A könyvtáradban szereplő zenék itt fognak megjelenni</string>
+    <string name="library_artist_empty">A könyvtárad előadói itt fognak megjelenni</string>
+    <string name="library_album_empty">A könyvtáradban szereplő albumok itt fognak megjelenni</string>
+    <string name="library_playlist_empty">A lejátszási listáid itt fognak megjelenni</string>
+    <string name="other_versions">Egyéb verziók</string>
+    <string name="remove_download_playlist_confirm">Biztosan el akarod távolítani mind a \"%s\" lejátszási listán szereplő zenét a Letöltött Zenék tárhelyről?</string>
+    <string name="delete_playlist_confirm">Biztosan törölni szeretnéd a következő lejátszási listát: \"%s\" ?</string>
+    <string name="remove_all_from_library">Az összes eltávolítása a könyvtárból</string>
+    <string name="your_youtube_playlists">YouTube lejátszási listáid</string>
+    <string name="add_all_to_library">Az összes hozzáadása a könyvtárhoz</string>
 </resources>

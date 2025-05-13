@@ -1,113 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Bottom navigation -->
     <string name="home">Trang chủ</string>
     <string name="songs">Bài hát</string>
-    <string name="artists">Tác giả</string>
-    <string name="albums">Albums</string>
+    <string name="artists">Nghệ sĩ</string>
+    <string name="albums">Album</string>
     <string name="playlists">Danh sách phát</string>
-    <string name="explore">Khám phá</string>
-
     <!-- Top bar -->
     <plurals name="n_selected">
-        <item quantity="one">Đã chọn %d</item>
         <item quantity="other">Đã chọn %d</item>
     </plurals>
-
     <!-- Home -->
     <string name="history">Lịch sử</string>
     <string name="stats">Thống kê</string>
     <string name="mood_and_genres">Tâm trạng và thể loại</string>
     <string name="account">Tài Khoản</string>
-    <string name="quick_picks">Chọn nhanh</string>
-    <string name="quick_picks_empty">Nghe các bài hát để tạo danh sách chọn nhanh của bạn</string>
-    <string name="new_release_albums">Các albums mới phát hành</string>
-    <string name="forgotten_favorites">Các mục yêu thích mà bạn bỏ sót</string>
-    <string name="similar_to">Tương tự</string>
-    <string name="keep_listening">Tiếp tục nghe</string>
-    <string name="your_ytb_playlists">Tài khoản YouTube của bạn</string>
-
+    <string name="quick_picks">Lựa chọn nhanh</string>
+    <string name="quick_picks_empty">Hãy nghe các bài hát để tạo danh sách chọn nhanh của bạn</string>
+    <string name="new_release_albums">Các album mới phát hành</string>
     <!-- History -->
     <string name="today">Hôm nay</string>
     <string name="yesterday">Hôm qua</string>
     <string name="this_week">Tuần này</string>
     <string name="last_week">Tuần trước</string>
-    <string name="local_history">Lịch sử nghe cục bộ</string>
-    <string name="remote_history">Lịch sử nghe từ xa</string>
-
     <!-- Stats -->
-    <string name="most_played_songs">Bài hát được nghe nhiều nhất</string>
-    <string name="most_played_artists">Tác giả được nghe nhiều nhất</string>
-    <string name="most_played_albums">Album được nghe nhiều nhất</string>
-    <string name="weeks">Tuần</string>
-    <string name="months">Tháng</string>
-    <string name="years">Năm</string>
-    <string name="continuous">Liên tục</string>
-
+    <string name="most_played_songs">Bài hát được phát nhiều nhất</string>
+    <string name="most_played_artists">Nghệ sĩ được phát nhiều nhất</string>
+    <string name="most_played_albums">Album được phát nhiều nhất</string>
     <!-- Search -->
     <string name="search">Tìm kiếm</string>
-    <string name="search_yt_music">Tìm kiếm YouTube Music…</string>
-    <string name="search_library">Tìm kiếm thư viện…</string>
+    <string name="search_yt_music">Tìm kiếm trên YouTube Music…</string>
+    <string name="search_library">Tìm kiếm trong thư viện…</string>
     <string name="filter_library">Thư viện</string>
     <string name="filter_liked">Đã thích</string>
     <string name="filter_downloaded">Đã tải xuống</string>
     <string name="filter_all">Tất cả</string>
     <string name="filter_songs">Bài hát</string>
-    <string name="filter_videos">Videos</string>
-    <string name="filter_albums">Albums</string>
-    <string name="filter_artists">Tác giả</string>
+    <string name="filter_videos">Video</string>
+    <string name="filter_albums">Album</string>
+    <string name="filter_artists">Nghệ sĩ</string>
     <string name="filter_playlists">Danh sách phát</string>
     <string name="filter_community_playlists">Danh sách phát cộng đồng</string>
-    <string name="filter_featured_playlists">Danh sách phát tiêu biểu</string>
+    <string name="filter_featured_playlists">Danh sách phát nổi bật</string>
     <string name="filter_bookmarked">Đã đánh dấu</string>
-    <string name="no_results_found">Không tìm thấy kết quả</string>
-
+    <string name="no_results_found">Không tìm thấy kết quả nào</string>
     <!-- Artist screen -->
     <string name="from_your_library">Từ thư viện của bạn</string>
-
-    <!-- Album screen -->
-    <string name="other_versions">Các bản khác</string>
-
-    <!-- Library -->
-    <string name="liked">Đã thích</string>
-    <string name="offline">Đã tải xuống</string>
-    <string name="my_top">Top nghe nhiều</string>
-    <string name="library_song_empty">Thư viện bài hát sẽ được hiển thị ở đây. Hiện đang trống ¯\_(ツ)_/¯</string>
-    <string name="library_artist_empty">Thư viện chứa các nghệ sĩ sẽ được hiển thị ở đây. Hiện đang trống ¯\_(ツ)_/¯</string>
-    <string name="library_album_empty">Thư viện chứa các Album sẽ được hiển thị ở đây. Hiện đang trống ¯\_(ツ)_/¯</string>
-    <string name="library_playlist_empty">Danh sách phát của bạn sẽ được hiển thị ở đây. Hiện đang trống ¯\_(ツ)_/¯</string>
-
     <!-- Playlist -->
     <string name="liked_songs">Bài hát được yêu thích</string>
-    <string name="downloaded_songs">Bài hát được tải về</string>
-    <string name="playlist_is_empty">Danh sách phát trống</string>
-    <string name="sync_playlist">Đồng bộ danh sách phát</string>
-    <string name="remove_download_playlist_confirm">Bạn có muốn xóa toàn bộ \"%s\" danh sách phát mà bạn đã tải về máy hay không?</string>
-    <string name="delete_playlist_confirm">Bạn có muốn xóa \"%s\" danh sách phát hay không?</string>
-    <string name="elements_selected">%1$d mục đã được chọn</string>
-    <string name="allows_for_sync_witch_youtube">Lưu ý: Hành động này sẽ cho phép ứng dụng đồng bộ với YouTube Music, và bạn sẽ không thể hủy bỏ hành động này.</string>
-
+    <string name="downloaded_songs">Bài hát được tải xuống</string>
+    <string name="playlist_is_empty">Danh sách phát đang trống</string>
     <!-- Button -->
     <string name="retry">Thử lại</string>
-    <string name="radio">Đài</string>
-    <string name="shuffle">Trộn</string>
-    <string name="reset">Reset</string>
-
+    <string name="radio">Đài phát</string>
+    <string name="shuffle">Trộn bài</string>
+    <string name="reset">Cài lại</string>
     <!-- Menu -->
     <string name="details">Chi tiết</string>
-    <string name="edit">Tuỳ chỉnh</string>
-    <string name="start_radio">Bắt đầu nghe đài</string>
-    <string name="play">Chạy</string>
-    <string name="play_next">Chạy bài tiếp theo</string>
+    <string name="edit">Chỉnh sửa</string>
+    <string name="start_radio">Bắt đầu đài phát</string>
+    <string name="play">Phát</string>
+    <string name="play_next">Phát bài tiếp theo</string>
     <string name="add_to_queue">Thêm vào hàng chờ</string>
     <string name="add_to_library">Thêm vào thư viện</string>
-    <string name="remove_from_library">Xóa khỏi thư viện</string>
-    <string name="remove_from_playlist">Xóa khỏi danh sách phát</string>
+    <string name="remove_from_library">Xoá khỏi thư viện</string>
     <string name="download">Tải xuống</string>
     <string name="downloading">Đang tải xuống</string>
-    <string name="remove_download">Xoá tải</string>
-    <string name="import_playlist">Thêm danh sách phát</string>
+    <string name="remove_download">Xoá mục đã tải xuống</string>
+    <string name="import_playlist">Nhập danh sách phát</string>
     <string name="add_to_playlist">Thêm vào danh sách phát</string>
-    <string name="view_artist">Xem tác giả</string>
+    <string name="view_artist">Xem nghệ sĩ</string>
     <string name="view_album">Xem album</string>
     <string name="refetch">Làm mới</string>
     <string name="share">Chia sẻ</string>
@@ -116,312 +78,214 @@
     <string name="search_online">Tìm kiếm trực tuyến</string>
     <string name="sync">Đồng bộ</string>
     <string name="advanced">Nâng cao</string>
-    <string name="select">Chọn tất cả</string>
-    <string name="like_all">Thích tất cả</string>
-    <string name="dislike_all">Không thích toàn bộ</string>
-    <string name="tempo_and_pitch">Nhịp độ và cao độ</string>
-
     <!-- Sort menu -->
     <string name="sort_by_create_date">Ngày thêm vào</string>
-    <string name="sort_by_last_updated">Ngày cập nhật</string>
     <string name="sort_by_name">Tên</string>
-    <string name="sort_by_artist">Tác giả</string>
+    <string name="sort_by_artist">Nghệ sĩ</string>
     <string name="sort_by_year">Năm</string>
     <string name="sort_by_song_count">Số lượng bài hát</string>
     <string name="sort_by_length">Độ dài</string>
     <string name="sort_by_play_time">Thời gian phát</string>
     <string name="sort_by_custom">Tuỳ chỉnh bộ lọc</string>
-
     <!-- Dialog -->
-    <string name="media_id">id nguồn</string>
-    <string name="mime_type">Loại MIME</string>
+    <string name="media_id">ID phương tiện</string>
+    <string name="mime_type">Định dạng</string>
     <string name="codecs">Bộ giải mã</string>
     <string name="bitrate">Tốc độ bit</string>
-    <string name="sample_rate">Tần số lấy mẫu</string>
+    <string name="sample_rate">Tỷ lệ mẫu</string>
     <string name="loudness">Độ ồn</string>
     <string name="volume">Âm lượng</string>
-    <string name="file_size">Kích thước tệp</string>
-    <string name="unknown">Không xác định</string>
-    <string name="copied">Đã sao chép vào bộ nhớ tạm</string>
-
+    <string name="file_size">Kích thước tệp tin</string>
+    <string name="unknown">Không rõ</string>
+    <string name="copied">Đã sao chép vào clipboard</string>
     <string name="edit_lyrics">Sửa lời bài hát</string>
     <string name="search_lyrics">Tìm kiếm lời bài hát</string>
-    <string name="lyrics">Lời bài hát</string>
-
     <string name="edit_song">Sửa bài hát</string>
-    <string name="song_title">Tiêu đề bài hát</string>
-    <string name="song_artists">Tác giả bài hát</string>
-    <string name="error_song_title_empty">Tiêu đề không được để trống.</string>
-    <string name="error_song_artist_empty">Tác giả không được để trống.</string>
-    <string name="save">Lưu lại</string>
-
-    <string name="choose_playlist">Lựa chọn danh sách phát</string>
-    <string name="edit_playlist">Tuỳ chọn danh sách phát</string>
+    <string name="song_title">Tên bài hát</string>
+    <string name="song_artists">Nghệ sĩ bài hát</string>
+    <string name="error_song_title_empty">Tên bài hát không được để trống.</string>
+    <string name="error_song_artist_empty">Nghệ sĩ bài hát không được để trống.</string>
+    <string name="save">Lưu</string>
+    <string name="choose_playlist">Chọn danh sách phát</string>
+    <string name="edit_playlist">Chỉnh sửa danh sách phát</string>
     <string name="create_playlist">Tạo danh sách phát</string>
     <string name="playlist_name">Tên danh sách phát</string>
     <string name="error_playlist_name_empty">Tên danh sách phát không được để trống.</string>
-    <string name="already_in_playlist">Đã tồn tại trong danh sách phát:</string>
-
-    <string name="edit_artist">Tuỳ chỉnh tác giả</string>
-    <string name="artist_name">Tên tác giả</string>
-    <string name="error_artist_name_empty">Tên tác giả không được để trống.</string>
-
-    <string name="duplicates">Có trùng lặp</string>
-    <string name="skip_duplicates">Bỏ qua trùng lặp</string>
-    <string name="add_anyway">Vẫn thêm vào</string>
-    <string name="duplicates_description_single">Bài hát đã có trong danh sách phát của bạn</string>
-    <string name="duplicates_description_multiple">%d bài hát đã có trong danh sách phát của bạn</string>
-
+    <string name="edit_artist">Chỉnh sửa nghệ sĩ</string>
+    <string name="artist_name">Tên nghệ sĩ</string>
+    <string name="error_artist_name_empty">Tên nghệ sĩ không được để trống.</string>
     <!-- Noun -->
     <plurals name="n_song">
-        <item quantity="one">%d bài hát</item>
-        <item quantity="other">Các bài hát %d </item>
+        <item quantity="other">%d bài hát</item>
     </plurals>
     <plurals name="n_artist">
-        <item quantity="one">%d tác giả</item>
-        <item quantity="other">Các tác giả %d</item>
+        <item quantity="other">%d nghệ sĩ</item>
     </plurals>
     <plurals name="n_album">
-        <item quantity="one">%d album</item>
-        <item quantity="other">%d albums</item>
+        <item quantity="other">%d album</item>
     </plurals>
     <plurals name="n_playlist">
-        <item quantity="one">%d danh sách phát</item>
         <item quantity="other">%d danh sách phát</item>
     </plurals>
     <plurals name="n_week">
-        <item quantity="one">%d tuần</item>
         <item quantity="other">%d tuần</item>
     </plurals>
     <plurals name="n_month">
-        <item quantity="one">%d tháng</item>
         <item quantity="other">%d tháng</item>
     </plurals>
     <plurals name="n_year">
-        <item quantity="one">%d năm</item>
         <item quantity="other">%d năm</item>
     </plurals>
-    <plurals name="n_element">
-        <item quantity="one">%d mục</item>
-        <item quantity="other">%d mục</item>
-    </plurals>
-    <plurals name="n_time">
-        <item quantity="one">%d lần</item>
-        <item quantity="other">%d lần</item>
-    </plurals>
-
     <!-- Snackbar -->
-    <string name="playlist_imported">Danh sách phát đã được thêm vào</string>
-    <string name="imported_playlist">Đã nhập danh sách phát</string>
-    <string name="removed_song_from_playlist">Đã xoá \"%s\" từ danh sách phát</string>
+    <string name="playlist_imported">Danh sách phát đã được nhập vào</string>
+    <string name="removed_song_from_playlist">Đã xoá \"%s\" khỏi danh sách phát</string>
     <string name="playlist_synced">Danh sách phát được đồng bộ</string>
-    <string name="undo">Làm lại</string>
-
+    <string name="undo">Hoàn tác</string>
     <!-- Player -->
     <string name="lyrics_not_found">Không tìm thấy lời bài hát</string>
-    <string name="sleep_timer">Hẹn giờ</string>
+    <string name="sleep_timer">Hẹn giờ ngủ</string>
     <string name="end_of_song">Kết thúc bài hát</string>
     <plurals name="minute">
-        <item quantity="one">1 phút</item>
         <item quantity="other">%d phút</item>
     </plurals>
-    <string name="error_no_stream">Không có stream</string>
+    <string name="error_no_stream">Không có luồng nào khả dụng</string>
     <string name="error_no_internet">Không có kết nối mạng</string>
     <string name="error_timeout">Hết giờ</string>
-    <string name="error_unknown">Lỗi không được xác định</string>
-    <string name="seek_backward">5 giây trước</string>
-    <string name="seek_forward">5 giây sau</string>
-
+    <string name="error_unknown">Lỗi không xác định</string>
     <!-- Player action -->
     <string name="action_like">Thích</string>
     <string name="action_remove_like">Bỏ thích</string>
-    <string name="action_shuffle_on">Shuffle on</string>
-    <string name="action_shuffle_off">Shuffle off</string>
-    <string name="repeat_mode_off">Repeat mode off</string>
-    <string name="repeat_mode_one">Repeat current song</string>
-    <string name="repeat_mode_all">Repeat queue</string>
-
+    <string name="action_shuffle_on">Bật trộn bài</string>
+    <string name="action_shuffle_off">Tắt trộn bài</string>
+    <string name="repeat_mode_off">Tắt lặp lại</string>
+    <string name="repeat_mode_one">Lặp lại bài hát này</string>
+    <string name="repeat_mode_all">Lặp lại hàng đợi</string>
     <!-- Queue Title -->
     <string name="queue_all_songs">Tất cả bài hát</string>
     <string name="queue_searched_songs">Những bài hát được tìm kiếm</string>
-    <string name="similar_content">Nội dung tương tự</string>
-
     <!-- Notification name -->
     <string name="music_player">Trình phát nhạc</string>
-
     <!-- Settings -->
     <string name="settings">Cài đặt</string>
-    <string name="login_settings">Cài đặt đăng nhập</string>
-    <string name="use_login_for_browse">Dùng đăng nhập để duyệt các nội dung Premium</string>
-    <string name="use_login_for_browse_desc">Điều này sẽ hiển thị những Album mà người dùng Premium có thể nhìn thấy nếu bạn đang đăng nhập tài khoản Premium</string>
-
-    <string name="general_settings">Cài đặt chung</string>
-
     <string name="appearance">Hiển thị</string>
-    <string name="theme">Chủ đề</string>
     <string name="enable_dynamic_theme">Bật chủ đề theo màu sắc</string>
     <string name="dark_theme">Chủ đề tối</string>
     <string name="dark_theme_on">Bật</string>
     <string name="dark_theme_off">Tắt</string>
     <string name="dark_theme_follow_system">Theo hệ thống</string>
-    <string name="follow_theme">Dựa theo chủ đề</string>
-    <string name="gradient">Độ phủ màu</string>
-    <string name="player_background_blur">Làm mờ</string>
-    <string name="enable_squiggly_slider">Dùng thanh trượt xoắn hình sóng</string>
-    <string name="enable_swipe_thumbnail">Bật lướt bìa để chuyển bài</string>
     <string name="pure_black">Tối hoàn toàn</string>
-    <string name="customize_navigation_tabs">Tuỳ chỉnh tab tuỳ biền</string>
-    <string name="player">Trình phát</string>
-    <string name="player_text_alignment">Căn chỉnh văn bản của trình phát</string>
-    <string name="lyrics_text_position">Vị trí văn bản của lời bài hát</string>
-    <string name="sided">Phẳng</string>
-    <string name="left">Trái</string>
-    <string name="center">Canh giữa</string>
-    <string name="right">Phải</string>
-    <string name="lyrics_click_change">Thay đổi lời bài hát khi nhấp</string>
-    <string name="grid_cell_size">Kích thước ô lưới</string>
-    <string name="small">Nhỏ</string>
-    <string name="big">Lớn</string>
-    <string name="player_slider_style">Kiểu thanh trượt trong trình phát</string>
-    <string name="default_">Mặc định</string>
-    <string name="squiggly">Dạng sóng</string>
-    <string name="slim">Dạng mỏng</string>
-    <string name="misc">Khác</string>
     <string name="default_open_tab">Tab mặc định</string>
-    <string name="slim_navbar">Ẩn nhãn của thanh điều hướng phía dưới</string>
-
+    <string name="customize_navigation_tabs">Tùy chỉnh thanh tab điều hướng</string>
+    <string name="lyrics_text_position">Vị trí lời bài hát</string>
+    <string name="left">Trái</string>
+    <string name="center">Giữa</string>
+    <string name="right">Phải</string>
     <string name="content">Nội dung</string>
-    <string name="google">Google</string>
-    <string name="discord">Discord</string>
     <string name="login">Đăng nhập</string>
-    <string name="advanced_login">Phương thức khác (Dùng token)</string>
-    <string name="logout">Đăng xuất</string>
-    <string name="not_logged_in">Bạn chưa đăng nhập</string>
-    <string name="token_hidden">Chạm để xem Token</string>
-    <string name="token_shown">Chạm lần nữa để sao chép hoặc chỉnh sửa</string>
-    <string name="token_adv_login_description">Đây là phương thức đăng nhập NÂNG CAO. Để thay thế cho web, bạn có thể trực tiếp nhập hoặc cập nhật mã Token của mình tại đây. Điều này có thể tăng tốc độ đăng nhập trên nhiều thiết bị. Xin lưu ý rằng mọi định dạng mã Token không hợp lệ mà ứng dụng không phân tích được sẽ không được chấp nhận</string>
-    <string name="ytm_sync">Tự động đồng bộ với tài khoản YouTube Music của bạn</string>
-    <string name="general">Nâng cao</string>
-    <string name="content_language">Ngôn ngữ nội dung mặc định</string>
-    <string name="content_country">Quốc gia nội dung mặc định</string>
-    <string name="system_default">Hệ thống mặc định</string>
-    <string name="proxy">Proxy</string>
-    <string name="enable_proxy">Bật proxy</string>
+    <string name="content_language">Nội dung ngôn ngữ mặc định</string>
+    <string name="content_country">Nội dung quốc gia mặc định</string>
+    <string name="system_default">Mặc định hệ thống</string>
+    <string name="enable_proxy">Bật Proxy</string>
     <string name="proxy_type">Loại Proxy</string>
     <string name="proxy_url">Liên kết Proxy</string>
-    <string name="default_lib_chips">Thay đổi thư viện mặc định</string>
-    <string name="set_quick_picks">Đặt lựa chọn nhanh</string>
-    <string name="last_song_listened">Dựa vào lần cuối bạn đã nghe</string>
     <string name="restart_to_take_effect">Khởi động lại để áp dụng</string>
-    <string name="app_language">Ngôn ngữ ứng dụng</string>
-    <string name="configure_app_language">Tùy chỉnh ngôn ngữ của ứng dụng</string>
-    <string name="intent_app_language_not_found">Không thể tìm thấy cài đặt ngôn ngữ ứng dụng, hãy tùy chỉnh chúng bằng cách thủ công</string>
-    <string name="open_supported_links">Mở liên kết được hỗ trợ theo mặc định</string>
-    <string name="configure_supported_links">Tùy chỉnh các liên kết được hỗ trợ</string>
-    <string name="intent_supported_links_not_found">Không thể tìm thấy cài đặt mở liên kết hỗ trợ, hãy tùy chỉnh chúng bằng cách thủ công</string>
-    <string name="enable_kugou">Kích hoạt lời bởi KuGou</string>
-    <string name="enable_lrclib">Kích hoạt lời bởi LrcLib</string>
-    <string name="set_first_lyrics_provider">Lựa chọn nhà cung cấp lời bài hát</string>
-
     <string name="player_and_audio">Trình phát và âm thanh</string>
     <string name="audio_quality">Chất lượng âm thanh</string>
-    <string name="audio_quality_max">Cao nhất (Beta)</string>
     <string name="audio_quality_auto">Tự động</string>
     <string name="audio_quality_high">Cao</string>
     <string name="audio_quality_low">Thấp</string>
-    <string name="queue">Hàng chờ</string>
-    <string name="persistent_queue">Hàng chờ liên tục</string>
-    <string name="persistent_queue_desc">Khôi phục hàng chờ gần đây nhất của bạn khi khởi động ứng dụng</string>
-    <string name="auto_load_more">Tự động tải trước nhiều bài hát</string>
-    <string name="auto_load_more_desc">Tự động thêm bài hát khi hàng chờ của bạn đã hết, nếu có thể</string>
-    <string name="enable_similar_content">Bật hiển thị nội dung tương tự</string>
-    <string name="similar_content_desc">Tự động thêm bài hát có nội dung tương tự khi hàng chờ của bạn đã hết</string>
-    <string name="skip_silence">bỏ qua đoạn im lặng</string>
-    <string name="audio_normalization">Chuẩn hoá âm thanh</string>
-    <string name="auto_skip_next_on_error">Tự động chuyển sang bài hát tiếp theo khi xảy ra lỗi</string>
-    <string name="auto_skip_next_on_error_desc">Đảm bảo trải nghiệm phát liên tục của bạn</string>
-    <string name="stop_music_on_task_clear">Kết thúc khi hàng chờ đã hết</string>
+    <string name="persistent_queue">Cố định hàng đợi</string>
+    <string name="skip_silence">Bỏ qua khoảng lặng</string>
+    <string name="audio_normalization">Chuẩn hoá âm lượng</string>
     <string name="equalizer">Bộ chỉnh âm</string>
-    <string name="min_playback_duration_title">Thời lượng nghe tối thiểu</string>
-    <string name="min_playback_duration_description">Thời lượng nghe tối thiểu của 1 bài hát trước khi nó được đánh dấu là \"đã phát\"</string>
-    <string name="percentage_format">%d%%</string>
-    <string name="minimum_playback_duration">Thời lượng nghe tối thiểu</string>
-
-    <string name="storage">Lưu trữ</string>
-    <string name="cache">Cache</string>
-    <string name="image_cache">Cache hình ảnh</string>
-    <string name="song_cache">Cache bài hát</string>
-    <string name="max_cache_size">Tối đa dung lượng cache</string>
+    <string name="storage">Bộ nhớ</string>
+    <string name="cache">Bộ nhớ đệm</string>
+    <string name="image_cache">Bộ nhớ đệm hình ảnh</string>
+    <string name="song_cache">Bộ nhớ đệm bài hát</string>
+    <string name="max_cache_size">Kích thước bộ nhớ đệm tối đa</string>
     <string name="unlimited">Không giới hạn</string>
-    <string name="clear_all_downloads">Xoá tất cả đã tải xuống</string>
-    <string name="max_image_cache_size">Dung lượng cache hình ảnh tối đa</string>
-    <string name="clear_image_cache">Xoá hết cache hình ảnh</string>
-    <string name="max_song_cache_size">Dung lượng cache bài hát tối đa</string>
-    <string name="clear_song_cache">Xoá hết cache nhạc</string>
+    <string name="clear_all_downloads">Xoá tất cả các mục đã tải xuống</string>
+    <string name="max_image_cache_size">Kích thước bộ nhớ đệm hình ảnh tối đa</string>
+    <string name="clear_image_cache">Xóa bộ nhớ đệm hình ảnh</string>
+    <string name="max_song_cache_size">Kích thước bộ nhớ đệm bài hát tối đa</string>
+    <string name="clear_song_cache">Xóa bộ nhớ đệm bài hát</string>
     <string name="size_used">Đã sử dụng %s</string>
-    <string name="clear_song_cache_dialog">  Bạn có muốn xóa tất cả bộ nhớ đệm (cache) liên quan đến nhạc?</string>
-    
-    <string name="clear_downloads_dialog">  Bạn có muốn xóa tất cả bài hát đã tải xuống?</string>
-
-    <string name="privacy">Riêng tư</string>
-    <string name="listen_history">Lịch sử nghe</string>
-    <string name="search_history">Lịch sử tìm kiếm</string>
-    <string name="pause_listen_history">Dừng lịch sử nghe</string>
-    <string name="clear_listen_history">Xoá hết lịch sử nghe</string>
-    <string name="clear_listen_history_confirm">Bạn có chắc muốn xoá hết lịch sử nghe?</string>
+    <string name="privacy">Quyền riêng tư</string>
+    <string name="pause_listen_history">Tạm dừng lịch sử nghe</string>
+    <string name="clear_listen_history">Xóa lịch sử nghe</string>
+    <string name="clear_listen_history_confirm">Bạn có chắc muốn xoá tất cả lịch sử nghe không?</string>
     <string name="pause_search_history">Tạm dừng lịch sử tìm kiếm</string>
-    <string name="clear_search_history">Xoá hết lịch sử tìm kiếm</string>
-    <string name="clear_search_history_confirm">Bạn có chắc muốn xoá hết lịch sử tìm kiếm?</string>
-    <string name="disable_screenshot">Ngăn chặn chụp ảnh màn hình</string>
-    <string name="disable_screenshot_desc">Khi bật lựa chọn này, bạn sẽ không thể chụp ảnh màn hình của ứng dụng này. Bật = Cấm chụp</string>
-
-    <string name="hide_explicit">Ẩn các nội dung thô tục, không phù hợp</string>
-
+    <string name="clear_search_history">Xóa lịch sử tìm kiếm</string>
+    <string name="clear_search_history_confirm">Bạn có chắc muốn xoá tất cả lịch sử tìm kiếm?</string>
+    <string name="enable_kugou">Bật nhà cung cấp lời bài hát KuGou</string>
     <string name="backup_restore">Sao lưu và khôi phục</string>
     <string name="backup">Sao lưu</string>
     <string name="restore">Khôi phục</string>
-    <string name="backup_create_success">Sao lưu thành công</string>
-    <string name="backup_create_failed">Không thể sao lưu</string>
-    <string name="restore_failed">Khôi phục thất bại</string>
-
-    <string name="discord_integration">Tích hợp vào Discord</string>
-    <string name="discord_information">Metrolist sử dụng thư viện KizzyRPC để thiết lập trạng thái hoạt động trên Discord. Điều này liên quan đến việc sử dụng kết nối đến cổng giao tiếp của Discord, có thể bị coi là vi phạm chính sách của Discord. Tuy nhiên, chưa có trường hợp nào bị đình chỉ tài khoản vì lý do này. Hãy dùng cẩn thận.\n\nMetrolist sẽ chỉ trích xuất mã Token của bạn, mọi thứ khác sẽ được lưu trữ cục bộ.</string>
-    <string name="dismiss">Bỏ lỡ</string>
-    <string name="options">Lựa chọn</string>
-    <string name="preview">Xem trước</string>
-    <string name="login_failed">Đăng nhập thất bại</string>
-    <string name="not_logged_in_youtube">Chưa đăng nhập vào YouTube</string>
-
-    <string name="enable_discord_rpc">Bật Discord Rich Presence</string>
-
-    <string name="default_links">Mở đường liên kết được hỗ trợ</string>
-    <string name="open_app_settings_error">Không thể mở ứng dụng cài đặt</string>
-
-    <string name="release_notes">Ghi chú của bản phát hành</string>
-
-    <string name="about">Tác giả</string>
+    <string name="imported_playlist">Đã nhập danh sách phát</string>
+    <string name="backup_create_success">Đã tạo bản sao lưu thành công</string>
+    <string name="backup_create_failed">Không thể tạo bản sao lưu</string>
+    <string name="restore_failed">Không thể khôi phục bản sao lưu</string>
+    <string name="about">Giới thiệu</string>
     <string name="app_version">Phiên bản ứng dụng</string>
-
-    <string name="new_version_available">Đã có phiên bản mới</string>
+    <string name="new_version_available">Phiên bản mới có sẵn</string>
     <string name="translation_models">Mô hình dịch thuật</string>
-    <string name="clear_translation_models">Xóa mô hình dịch thuật</string>
-
-    <string name="all_time">Mọi lúc</string>
-    <string name="past_24_hours">24 giờ trước</string>
-    <string name="past_week">Tuần trước</string>
-    <string name="past_month">Tháng trước</string>
-    <string name="past_year">Năm trước</string>
-    <string name="top_length">Độ dài danh sách Top của tôi</string>
-    <string name="history_duration">Thời lượng nghe</string>
-    <string name="information">Thông tin chi tiết</string>
-    <string name="description">Mô tả</string>
-    <string name="numbers">Numbers</string>
-    <string name="subscribers">Người đăng ký</string>
-    <string name="views">Lượt xem</string>
-    <string name="likes">Thích</string>
-    <string name="dislikes">Không thích</string>
-    <plurals name="seconds">
-        <item quantity="one">1 giây</item>
-        <item quantity="other">%d giây</item>
-    </plurals>
+    <string name="clear_translation_models">Xoá mô hình dịch thuật</string>
+    <string name="remove_from_playlist">Xoá khỏi danh sách phát</string>
+    <string name="duplicates">Bản sao</string>
+    <string name="skip_duplicates">Bỏ qua các bản sao</string>
+    <string name="add_anyway">Vẫn cứ thêm vào</string>
+    <string name="duplicates_description_single">Bài hát đã có trong danh sách phát của bạn</string>
+    <string name="duplicates_description_multiple">%d bài hát đã có trong danh sách phát của bạn</string>
+    <string name="remove_download_playlist_confirm">Bạn có thực sự muốn xóa tất cả \"%s\" bài hát trong danh sách phát khỏi bộ nhớ Bài hát được tải xuống không?</string>
+    <string name="delete_playlist_confirm">Bạn có thực sự muốn xóa \"%s\" danh sách phát không?</string>
+    <string name="not_logged_in">Chưa đăng nhập</string>
+    <string name="enable_lrclib">Bật nhà cung cấp lời bài hát LrcLib</string>
+    <string name="discord_integration">Tích hợp Discord</string>
+    <string name="dismiss">Bỏ qua</string>
+    <string name="options">Tùy chọn</string>
+    <string name="preview">Xem trước</string>
+    <string name="login_failed">Đăng nhập không thành công</string>
+    <string name="logout">Đăng xuất</string>
+    <string name="enable_discord_rpc">Kích hoạt Rich Presence</string>
+    <string name="sided">Cạnh bên</string>
+    <string name="player_text_alignment">Căn chỉnh văn bản của trình phát</string>
+    <string name="hide_explicit">Ẩn nội dung phản cảm</string>
+    <string name="forgotten_favorites">Những mục yêu thích bị lãng quên</string>
+    <string name="keep_listening">Tiếp tục nghe</string>
+    <string name="library_song_empty">Bài hát trong thư viện sẽ hiển thị ở đây</string>
+    <string name="library_artist_empty">Nghệ sĩ thư viện sẽ xuất hiện ở đây</string>
+    <string name="library_album_empty">Album thư viện sẽ hiển thị ở đây</string>
+    <string name="library_playlist_empty">Danh sách phát của bạn sẽ hiển thị ở đây</string>
+    <string name="other_versions">Các phiên bản khác</string>
+    <string name="tempo_and_pitch">Nhịp độ và Cao độ</string>
+    <string name="player">Trình phát</string>
+    <string name="player_slider_style">Kiểu thanh trượt của trình phát</string>
+    <string name="default_">Mặc định</string>
+    <string name="squiggly">Lượn sóng</string>
+    <string name="grid_cell_size">Kích thước ô lưới</string>
+    <string name="small">Nhỏ</string>
+    <string name="misc">Khác</string>
+    <string name="big">Lớn</string>
+    <string name="persistent_queue_desc">Khôi phục hàng đợi cuối cùng của bạn khi ứng dụng bắt đầu</string>
+    <string name="queue">Hàng đợi</string>
+    <string name="auto_load_more">Tự động tải thêm bài hát</string>
+    <string name="stop_music_on_task_clear">Dừng nhạc khi đóng ứng dụng</string>
+    <string name="disable_screenshot">Vô hiệu ảnh chụp màn hình</string>
+    <string name="auto_skip_next_on_error">Tự động chuyển sang bài hát tiếp theo khi xảy ra lỗi</string>
+    <string name="your_youtube_playlists">Danh sách phát YouTube của bạn</string>
+    <string name="similar_to">Tương tự</string>
+    <string name="auto_load_more_desc">Tự động thêm nhiều bài hát hơn khi hàng đợi kết thúc, nếu có thể</string>
+    <string name="add_all_to_library">Thêm tất cả vào thư viện</string>
+    <string name="remove_all_from_library">Xóa tất cả khỏi thư viện</string>
+    <string name="remove_from_queue">Xóa khỏi hàng đợi</string>
+    <string name="action_remove_like_all">Xóa tất cả lượt thích</string>
+    <string name="action_like_all">Thích tất cả</string>
+    <string name="listen_history">Lịch sử nghe</string>
+    <string name="theme">Chủ đề</string>
+    <string name="auto_skip_next_on_error_desc">Đảm bảo trải nghiệm phát lại liên tục của bạn</string>
+    <string name="search_history">Lịch sử tìm kiếm</string>
+    <string name="disable_screenshot_desc">Khi tùy chọn này được bật, ảnh chụp màn hình và chế độ xem ứng dụng trong mục Gần đây sẽ bị vô hiệu hóa.</string>
+    <string name="discord_information">Metrolist sử dụng thư viện KizzyRPC để thiết lập trạng thái tài khoản Discord của bạn. Điều này liên quan đến việc sử dụng kết nối Discord Gateway, có thể được coi là vi phạm TOS của Discord. Tuy nhiên, không có trường hợp nào được biết đến về việc tài khoản người dùng bị đình chỉ vì lý do này. Sử dụng theo rủi ro của riêng bạn. \n \nMetrolist sẽ chỉ trích xuất mã thông báo của bạn và mọi thứ khác được lưu trữ cục bộ.</string>
+    <string name="use_login_for_browse">Đăng nhập để xem nội dung</string>
+    <string name="use_login_for_browse_desc">Điều này có thể ảnh hưởng đến nội dung bạn nhìn thấy, ví dụ như hiện những album dành riêng cho premium nếu bạn đăng nhập với tài khoản Premium</string>
 </resources>

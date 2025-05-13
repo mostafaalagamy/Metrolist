@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Bottom navigation -->
     <string name="home">হোম</string>
@@ -5,13 +6,11 @@
     <string name="artists">শিল্পী</string>
     <string name="albums">অ্যালবাম</string>
     <string name="playlists">প্লেলিস্ট</string>
-
     <!-- Top bar -->
     <plurals name="n_selected">
         <item quantity="one">%d নির্বাচিত</item>
         <item quantity="other">%d নির্বাচিত</item>
     </plurals>
-
     <!-- Home -->
     <string name="history">ইতিহাস</string>
     <string name="stats">পরিসংখ্যান</string>
@@ -20,25 +19,19 @@
     <string name="quick_picks">দ্রুত পছন্দ</string>
     <string name="quick_picks_empty">আপনার নিজের শর্টকাট তৈরি করতে কিছু টিউন শুনুন</string>
     <string name="new_release_albums">নতুন অ্যালবাম ও সিঙ্গেল</string>
-
     <!-- History -->
     <string name="today">আজ</string>
     <string name="yesterday">গতকাল</string>
     <string name="this_week">এই সপ্তাহ</string>
     <string name="last_week">গত সপ্তাহ</string>
-
     <!-- Stats -->
     <string name="most_played_songs">সর্বাধিক শোনা গানগুলি</string>
     <string name="most_played_artists">সর্বাধিক শোনা শিল্পী</string>
     <string name="most_played_albums">সর্বাধিক শোনা অ্যালবাম</string>
-
     <!-- Search -->
     <string name="search">খুঁজুন</string>
     <string name="search_yt_music">খুঁজুন YouTube Music এ</string>
     <string name="search_library">খুঁজুন লাইব্রেরি তে</string>
-    <string name="filter_library">Library</string>
-    <string name="filter_liked">Liked</string>
-    <string name="filter_downloaded">Downloaded</string>
     <string name="filter_all">সব</string>
     <string name="filter_songs">সংগীত</string>
     <string name="filter_videos">ভিডিও</string>
@@ -47,23 +40,17 @@
     <string name="filter_playlists">প্লেলিস্ট</string>
     <string name="filter_community_playlists">প্লেলিস্ট ক্রম</string>
     <string name="filter_featured_playlists">বিশিষ্ট প্লেলিস্ট</string>
-    <string name="filter_bookmarked">Bookmarked</string>
     <string name="no_results_found">কিছু পাওয়া যায়নি</string>
-
     <!-- Artist screen -->
     <string name="from_your_library">আপনার লাইব্রেরি থেকে</string>
-
     <!-- Playlist -->
     <string name="liked_songs">আপনার পছন্দের গান</string>
     <string name="downloaded_songs">ডাউনলোড করা গান</string>
     <string name="playlist_is_empty">প্লেলিস্ট খালি</string>
-
     <!-- Button -->
     <string name="retry">পুনরায় চেষ্টা করুন</string>
     <string name="radio">বেতার</string>
     <string name="shuffle">এলোমেলো</string>
-    <string name="reset">Reset</string>
-
     <!-- Menu -->
     <string name="details">বিস্তারিত</string>
     <string name="edit">সম্পাদনা</string>
@@ -86,8 +73,6 @@
     <string name="remove_from_history">ইতিহাস থেকে অপসারণ</string>
     <string name="search_online">অনলাইন এ খুঁজুন</string>
     <string name="sync">সুসংগত</string>
-    <string name="advanced">Advanced</string>
-
     <!-- Sort menu -->
     <string name="sort_by_create_date">সময় সম্পাদনা করা হয়েছে</string>
     <string name="sort_by_name">নাম</string>
@@ -97,39 +82,28 @@
     <string name="sort_by_length">দৈর্ঘ্য</string>
     <string name="sort_by_play_time">বাজানো হয়েছে</string>
     <string name="sort_by_custom">অনুকুলিত</string>
-
     <!-- Dialog -->
-    <string name="media_id">Media ID</string>
-    <string name="mime_type">MIME Type</string>
-    <string name="codecs">Codec</string>
-    <string name="bitrate">Bitrate</string>
-    <string name="sample_rate">Sample Rate</string>
     <string name="loudness">শব্দের মাত্রা</string>
     <string name="volume">ধ্বনির মাত্রা</string>
     <string name="file_size">ফাইলের আকার</string>
     <string name="unknown">অজানা</string>
     <string name="copied">ক্লিপবোর্ডে কপি করা হয়েছে</string>
-
     <string name="edit_lyrics">গানের কথা সম্পাদনা</string>
     <string name="search_lyrics">গানের কথা অনুসন্ধান</string>
-
     <string name="edit_song">গান সম্পাদনা করুন</string>
     <string name="song_title">শিরোনাম</string>
     <string name="song_artists">শিল্পী</string>
     <string name="error_song_title_empty">গানের শিরোনাম খালি হতে পারে না।</string>
     <string name="error_song_artist_empty">গানের শিল্পী খালি থাকতে পারে না।</string>
     <string name="save">সংরক্ষণ</string>
-
     <string name="choose_playlist">একটি প্লেলিস্ট চয়ন করুন</string>
     <string name="edit_playlist">প্লেলিস্ট সম্পাদনা করুন</string>
     <string name="create_playlist">প্লেলিস্ট তৈরি করুন</string>
     <string name="playlist_name">প্লেলিস্টের নাম</string>
     <string name="error_playlist_name_empty">প্লেলিস্টের নাম খালি রাখা যাবে না।</string>
-
     <string name="edit_artist">শিল্পী সম্পাদনা করুন</string>
     <string name="artist_name">শিল্পীর নাম</string>
     <string name="error_artist_name_empty">শিল্পীর নাম খালি রাখা যাবে না।</string>
-
     <!-- Noun -->
     <plurals name="n_song">
         <item quantity="one">%d গান</item>
@@ -159,13 +133,11 @@
         <item quantity="one">%d বছর</item>
         <item quantity="other">%d বছর</item>
     </plurals>
-
     <!-- Snackbar -->
     <string name="playlist_imported">আমদানি করা প্লেলিস্ট</string>
     <string name="removed_song_from_playlist">প্লেলিস্ট থেকে \"%s\" সরানো হয়েছে</string>
     <string name="playlist_synced">সিঙ্ক্রোনাইজ করা প্লেলিস্ট</string>
     <string name="undo">বাতিল করুন</string>
-
     <!-- Player -->
     <string name="lyrics_not_found">গানের কথা পাওয়া যায়নি</string>
     <string name="sleep_timer">ঘুমের টাইমার</string>
@@ -178,23 +150,14 @@
     <string name="error_no_internet">নেটওয়ার্ক সংযোগ নেই</string>
     <string name="error_timeout">ত্রুটি সময়সীমা শেষ</string>
     <string name="error_unknown">অজানা ত্রুটি</string>
-
     <!-- Player action -->
     <string name="action_like">পছন্দ</string>
     <string name="action_remove_like">অপছন্দ</string>
-    <string name="action_shuffle_on">Shuffle on</string>
-    <string name="action_shuffle_off">Shuffle off</string>
-    <string name="repeat_mode_off">Repeat mode off</string>
-    <string name="repeat_mode_one">Repeat current song</string>
-    <string name="repeat_mode_all">Repeat queue</string>
-
     <!-- Queue Title -->
     <string name="queue_all_songs">সব গান</string>
     <string name="queue_searched_songs">অনুসন্ধান করা গান</string>
-
     <!-- Notification name -->
     <string name="music_player">প্লেয়ার</string>
-
     <!-- Settings -->
     <string name="settings">সেটিংস</string>
     <string name="appearance">দৃষ্টিগোচরতা</string>
@@ -210,7 +173,6 @@
     <string name="left">বাম</string>
     <string name="center">কেন্দ্র</string>
     <string name="right">ডান</string>
-
     <string name="content">কনটেন্ট</string>
     <string name="login">সাইন ইন</string>
     <string name="content_language">ডিফল্ট কন্টেন্টের ভাষা</string>
@@ -220,7 +182,6 @@
     <string name="proxy_type">প্রক্সি ধরণ</string>
     <string name="proxy_url">প্রক্সি URL</string>
     <string name="restart_to_take_effect">পরিবর্তনগুলি প্রয়োগ করতে অ্যাপটি পুনরায় চালু করুন</string>
-
     <string name="player_and_audio">প্লেয়ার এবং অডিও</string>
     <string name="audio_quality">অডিওর মান</string>
     <string name="audio_quality_auto">স্বয়ংক্রিয়</string>
@@ -230,7 +191,6 @@
     <string name="skip_silence">নীরবতা এড়িয়ে যান</string>
     <string name="audio_normalization">অডিও স্বাভাবিকীকরণ</string>
     <string name="equalizer">অডিও টিউনার</string>
-
     <string name="storage">স্টোরেজ</string>
     <string name="cache">ক্যাশে</string>
     <string name="image_cache">ইমেজ ক্যাশে</string>
@@ -243,7 +203,6 @@
     <string name="max_song_cache_size">অডিও ক্যাশে সর্বোচ্চ আকার</string>
     <string name="clear_song_cache">অডিও ক্যাশে সাফ করুন</string>
     <string name="size_used">%s ব্যবহৃত</string>
-
     <string name="privacy">গোপনীয়তা</string>
     <string name="pause_listen_history">আপনার শোনার ইতিহাস থামান</string>
     <string name="clear_listen_history">আপনার শোনার ইতিহাস সাফ করুন</string>
@@ -252,7 +211,6 @@
     <string name="clear_search_history">আপনার অনুসন্ধান ইতিহাস সাফ করুন</string>
     <string name="clear_search_history_confirm">আপনি কি আপনার অনুসন্ধান ইতিহাস মুছে ফেলার বিষয়ে নিশ্চিত?</string>
     <string name="enable_kugou">KuGou দ্বারা প্রদত্ত গানের কথা সক্রিয় করুন</string>
-
     <string name="backup_restore">ব্যাকআপ এবং পুনঃস্থাপন</string>
     <string name="backup">ব্যাকআপ</string>
     <string name="restore">পুনঃস্থাপন</string>
@@ -260,18 +218,6 @@
     <string name="backup_create_success">ব্যাকআপ সফলভাবে তৈরি করা হয়েছে</string>
     <string name="backup_create_failed">ব্যাকআপ করতে অক্ষম</string>
     <string name="restore_failed">ব্যাকআপ থেকে পুনরুদ্ধার করতে অক্ষম</string>
-
     <string name="about">সম্পর্কিত</string>
     <string name="app_version">অ্যাপ সংস্করণ</string>
-
-    <string name="new_version_available">New version available</string>
-    <string name="translation_models">Translation Models</string>
-    <string name="clear_translation_models">Clear translation models</string>
-    <string name="information">Information</string>
-    <string name="description">Description</string>
-    <string name="numbers">Numbers</string>
-    <string name="subscribers">Subscribers</string>
-    <string name="views">Views</string>
-    <string name="likes">Likes</string>
-    <string name="dislikes">Dislikes</string>
 </resources>

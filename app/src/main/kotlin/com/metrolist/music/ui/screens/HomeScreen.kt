@@ -504,7 +504,7 @@ fun HomeScreen(
             accountPlaylists?.takeIf { it.isNotEmpty() }?.let { accountPlaylists ->
                 item {
                     NavigationTitle(
-                        label = stringResource(R.string.your_ytb_playlists),
+                        label = stringResource(R.string.your_youtube_playlists),
                         title = accountName,
                         thumbnail = {
                             if (url != null) {
