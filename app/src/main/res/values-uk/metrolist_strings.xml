@@ -1,0 +1,106 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="explore">Навігація</string>
+
+
+    <string name="local_history">Локально</string>
+    <string name="remote_history">Віддалено</string>
+
+
+    <string name="weeks">Тижні</string>
+    <string name="months">Місяці</string>
+    <string name="years">Роки</string>
+    <string name="continuous">Безперервно</string>
+
+
+    <string name="liked">Вподобане</string>
+    <string name="offline">Завантажене</string>
+    <string name="my_top">Мій Топ</string>
+    <string name="sync_playlist">Синхронізувати плейлист</string>
+    <string name="elements_selected">%1$d Елементів обрано</string>
+    <string name="allows_for_sync_witch_youtube">Зауважте: Це дозволяє синхронізацію з YouTube Music. Це НЕ можна буде змінити пізніше.</string>
+
+
+    <string name="select">Обрати все</string>
+    <string name="like_all">Вподобати все</string>
+    <string name="dislike_all">Прибрати усі вподобання</string>
+    <string name="sort_by_last_updated">Нещодавно оновлені</string>
+    <string name="lyrics">Тексти</string>
+
+    <string name="already_in_playlist">Вже в плейлисті:</string>
+
+    <plurals name="n_element">
+        <item quantity="one">%d елемент</item>
+        <item quantity="few">%d елементи</item>
+        <item quantity="many">%d елементів</item>
+        <item quantity="other">%d елементів</item>
+    </plurals>
+    <plurals name="n_time">
+        <item quantity="one">%d раз</item>
+        <item quantity="few">%d рази</item>
+        <item quantity="many">%d разів</item>
+        <item quantity="other">%d разів</item>
+    </plurals>
+
+
+    <string name="seek_backward">5 секунд назад</string>
+    <string name="seek_forward">5 секунд вперед</string>
+
+
+    <string name="similar_content">Подібний контент</string>
+
+
+    <string name="login_settings">Параметри входу</string>
+    <string name="general_settings">Загальні параметри</string>
+
+    <string name="player_background_style">Стиль фону програвача</string>
+    <string name="follow_theme">Дотримуватись теми</string>
+    <string name="gradient">Градієнт</string>
+    <string name="player_background_blur">Розмиття</string>
+    <string name="enable_squiggly_slider">Увімкнути хвилястий повзунок</string>
+    <string name="enable_swipe_thumbnail">Перемикання пісень свайпом по обкладинці</string>
+    <string name="lyrics_click_change">Змінити текст пісні при натисканні</string>
+    <string name="slim_navbar">Приховати мітки нижньої панелі навігації</string>
+
+    <string name="google">Google</string>
+    <string name="discord">Discord</string>
+    <string name="advanced_login">Просунутий вхід (токен)</string>
+    <string name="token_hidden">Натисніть для показу токену</string>
+    <string name="token_shown">Повторно натисніть, щоб скопіювати або редагувати</string>
+    <string name="token_adv_login_description">Це ПРОСУНУТИЙ метод входу в систему. Альтернативно до веб-порталу, ви можете безпосередньо ввести або оновити свій токен для входу тут. Наприклад, це може прискорити вхід на декількох пристроях. Зверніть увагу, що будь-які недійсні формати токенів, які додаток не зможе розпізнати, не будуть прийняті</string>
+    <string name="ytm_sync">Автосинхронізація з вашим акаунтом YouTube Music</string>
+    <string name="general">Загальне</string>
+    <string name="default_lib_chips">Змінити головну сторінку бібліотеки</string>
+    <string name="set_quick_picks">Налаштувати швидкий вибір</string>
+    <string name="last_song_listened">На основі останньої прослуханої пісні</string>
+    <string name="app_language">Мова застосунку</string>
+    <string name="configure_app_language">Налаштування мови</string>
+    <string name="intent_app_language_not_found">Не вдалося знайти мовні налаштування, будь ласка, налаштуйте вручну</string>
+    <string name="open_supported_links">Відкривати підтримуване посилання за замовчуванням</string>
+    <string name="configure_supported_links">Налаштувати підтримувані посилання</string>
+    <string name="intent_supported_links_not_found">Не вдалося знайти налаштування підтримуваних посилань, будь ласка, налаштуйте їх вручну</string>
+    <string name="set_first_lyrics_provider">Призначити основний провайдер текстів</string>
+
+    <string name="audio_quality_max">Максимум (бета)</string>
+    <string name="enable_similar_content">Увімкнути подібний контент</string>
+    <string name="similar_content_desc">Автоматично додавати більше схожих пісень, коли буде досягнуто кінця черги</string>
+    <string name="default_links">Відкрити підтримувані посилання</string>
+    <string name="open_app_settings_error">Не вдалося відкрити налаштування застосунку</string>
+
+    <string name="release_notes">Примітки релізу</string>
+
+    <string name="all_time">Весь час</string>
+    <string name="past_24_hours">Минулі 24 години</string>
+    <string name="past_week">Минулий тиждень</string>
+    <string name="past_month">Минулий місяць</string>
+    <string name="past_year">Минулий рік</string>
+    <string name="top_length">Довжина мого топ-списку</string>
+    <string name="history_duration">Довжина історії</string>
+
+    <plurals name="seconds">
+        <item quantity="one">1 секунда</item>
+        <item quantity="few">%d секунди</item>
+        <item quantity="many">%d cекунд</item>
+        <item quantity="other">%d секунд</item>
+    </plurals>
+</resources>

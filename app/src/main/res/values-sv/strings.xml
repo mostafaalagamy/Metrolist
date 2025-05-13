@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Bottom navigation -->
+    <string name="songs">Låtar</string>
+    <string name="artists">Artister</string>
+    <string name="playlists">Spellistor</string>
+    <!-- Top bar -->
+    <plurals name="n_selected">
+        <item quantity="one">%d vald</item>
+        <item quantity="other">%d valda</item>
+    </plurals>
+    <!-- Search -->
+    <string name="search">Sök</string>
+    <string name="filter_all">Alla</string>
+    <string name="filter_songs">Låtar</string>
+    <string name="filter_videos">Videor</string>
+    <string name="filter_albums">Album</string>
+    <string name="filter_artists">Artister</string>
+    <string name="filter_playlists">Spellistor</string>
+    <!-- Button -->
+    <string name="retry">Försök igen</string>
+    <string name="shuffle">Blanda</string>
+    <!-- Menu -->
+    <string name="edit">Redigera</string>
+    <string name="play_next">Spela upp nästa</string>
+    <string name="add_to_queue">Lägg till i kön</string>
+    <string name="download">Ladda ned</string>
+    <string name="remove_download">Ta bort nedladdning</string>
+    <string name="import_playlist">Import playlist</string>
+    <string name="add_to_playlist">Lägg till i spellista</string>
+    <string name="delete">Ta bort</string>
+    <!-- Sort menu -->
+    <string name="sort_by_create_date">Datum tillagd</string>
+    <string name="sort_by_name">Namn</string>
+    <string name="edit_song">Redigera låten</string>
+    <string name="song_title">Låt titel</string>
+    <string name="song_artists">Låt artist</string>
+    <string name="error_song_title_empty">Låt titel kan inte vara tom.</string>
+    <string name="error_song_artist_empty">Låt artist kan inte vara tom.</string>
+    <string name="save">Spara</string>
+    <string name="choose_playlist">Välj spellista</string>
+    <string name="edit_playlist">Redigera spellista</string>
+    <string name="create_playlist">Skapa spellista</string>
+    <string name="playlist_name">Namn på spellista</string>
+    <string name="error_playlist_name_empty">Namnet på spellistan kan inte vara tom.</string>
+    <string name="edit_artist">Redigera artist</string>
+    <string name="artist_name">Artist namn</string>
+    <string name="error_artist_name_empty">Artist namn kan inte vara tom.</string>
+    <!-- Noun -->
+    <plurals name="n_song">
+        <item quantity="one">%d låt</item>
+        <item quantity="other">%d låtar</item>
+    </plurals>
+    <!-- Notification name -->
+    <string name="music_player">Music Spelare</string>
+    <!-- Settings -->
+    <string name="settings">Inställningar</string>
+    <string name="appearance">Utseende</string>
+    <string name="dark_theme">Mörkt tema</string>
+    <string name="dark_theme_on">På</string>
+    <string name="dark_theme_off">Av</string>
+    <string name="dark_theme_follow_system">Följ systemet</string>
+    <string name="content">Innehåll</string>
+    <string name="content_language">Standard innehållsspråk</string>
+    <string name="content_country">Standard innehållsland</string>
+    <string name="system_default">Systemets standardinställning</string>
+    <string name="about">Om</string>
+</resources>

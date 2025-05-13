@@ -1,0 +1,152 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="explore">الإستكشاف</string>
+
+
+    <string name="charts" />
+    <string name="back_button_desc">للخلف</string>
+    <string name="no_title">لا يوجد عنوان</string>
+    <string name="unknown_artist">فنان غير معروف</string>
+    <string name="unknown_item_type">نوع العنصر غير معروف</string>
+    <string name="loading_charts">جاري تحميل المخططات...</string>
+    <string name="retry_button">إعادة المحاولة</string>
+    <string name="album_cover_desc">غلاف الألبوم</string>
+    <string name="top_music_videos">أفضل مقاطع الفيديو الموسيقية</string>
+    <string name="trending">الأكثر رواجًا</string>
+
+
+    <string name="weeks">أسابيع</string>
+    <string name="months">شهور</string>
+    <string name="years">سنين</string>
+    <string name="continuous">مستمر</string>
+
+
+    <string name="liked">الأغاني المفضلة</string>
+    <string name="offline">التحميلات</string>
+    <string name="my_top">الأعلي إستماع : </string>
+    <string name="cached_playlist">الأغاني المخزنة مؤقتًا</string>
+    <string name="sync_playlist">مزامنة قائمة التشغيل</string>
+    <string name="sync_disabled">المزامنة غير مفعلة</string>
+    <string name="allows_for_sync_witch_youtube">ملاحظة: يسمح هذا بالمزامنة مع YouTube Music. لا يمكن تغيير هذا لاحقًا.</string>
+    <string name="elements_selected">%1$d عنصر محدد</string>
+
+
+    <string name="remove_from_cache">إزالة من التخزين المؤقت</string>
+    <string name="copy_link">نسخ الرابط</string>
+    <string name="select">تحديد الكل</string>
+    <string name="like_all">الإعجاب بالكل</string>
+    <string name="dislike_all">إلغاء الإعجاب بالكل</string>
+
+
+    <string name="sort_by_last_updated">تاريخ التحديث</string>
+    <string name="already_in_playlist">موجود بالفعل في قائمة التشغيل:</string>
+    <plurals name="n_element">
+        <item quantity="zero">لا عناصر</item>
+        <item quantity="one">%d عنصر</item>
+        <item quantity="two">%d عنصران</item>
+        <item quantity="few">%d عناصر</item>
+        <item quantity="many">%d عنصراً</item>
+        <item quantity="other">%d عنصراً</item>
+    </plurals>
+
+    <plurals name="n_time">
+        <item quantity="zero">لا مرات</item>
+        <item quantity="one">%d مرة</item>
+        <item quantity="two">%d مرتان</item>
+        <item quantity="few">%d مرات</item>
+        <item quantity="many">%d مرة</item>
+        <item quantity="other">%d مرة</item>
+    </plurals>
+
+    <plurals name="seconds">
+        <item quantity="zero">لا ثوانٍ</item>
+        <item quantity="one">%d ثانية</item>
+        <item quantity="two">%d ثانيتان</item>
+        <item quantity="few">%d ثوانٍ</item>
+        <item quantity="many">%d ثانية</item>
+        <item quantity="other">%d ثانية</item>
+    </plurals>
+
+
+    <string name="seek_backward">للخلف 5 ثواني</string>
+    <string name="seek_forward">للأمام 5 ثواني</string>
+
+
+    <string name="login_settings">إعدادات تسجيل الدخول</string>
+    <string name="general_settings">الإعدادات العامة</string>
+
+    <string name="player_background_style">نمط خلفية المشغل</string>
+    <string name="gradient">ألوان متدرجة</string>
+    <string name="player_background_blur">ضبابي</string>
+    <string name="follow_theme">اتباع السيم</string>
+    <string name="player_buttons_style">ألوان أزرار المشغل</string>
+    <string name="default_style">افتراضي</string>
+    <string name="secondary_color_style">اللون الثانوي للتطبيق</string>
+    <string name="enable_squiggly_slider">تمكين الشريط المتعرج</string>
+    <string name="enable_swipe_thumbnail">تمكين التمرير لتغيير الأغنية</string>
+    <string name="swipe_song_to_add">مرر الأغنية إلى اليمين لتشغيلها بعد الأغنية الحالية أو إلى اليسار لإضافتها إلى قائمة الانتظار</string>
+    <string name="lyrics_click_change">تغيير كلمات الأغنية عند النقر عليها</string>
+    <string name="slim">نحيل</string>
+    <string name="slim_navbar">إخفاء أسماء الصفحات من شريط التنقل السفلي</string>
+    <string name="auto_playlists">قوائم التشغيل التلقائية</string>
+    <string name="show_liked_playlist">إظهار قائمة المفضلة</string>
+    <string name="show_downloaded_playlist">إظهار قائمة التحميلات</string>
+    <string name="show_top_playlist">إظهار قائمة الأعلى أستماع</string>
+    <string name="show_cached_playlist">إظهار قائمة الأغاني المخزنة مؤقتًا</string>
+
+    <string name="google">جوجل</string>
+    <string name="discord">ديسكورد</string>
+    <string name="advanced_login">تسجيل الدخول المتقدم (token)</string>
+    <string name="token_hidden">اضغط لعرض ال Token</string>
+    <string name="token_shown">اضغط مرة أخرى للنسخ أو التعديل</string>
+    <string name="token_adv_login_description">هذه طريقة تسجيل دخول متقدمة. كبديل للبوابة الإلكترونية، يمكنك إدخال أو تحديث رمز تسجيل الدخول الخاص بك هنا مباشرة. على سبيل المثال، يمكن أن يسرع ذلك عملية تسجيل الدخول على أجهزة متعددة. يرجى ملاحظة أن أي صيغة رمز غير صالحة لا يستطيع التطبيق تحليلها لن يتم قبولها</string>
+    <string name="ytm_sync">مزامنة تلقائية مع حساب YouTube Music الخاص بك</string>
+    <string name="general">عام</string>
+    <string name="proxy">الوكيل</string>
+    <string name="default_lib_chips">تغيير الشريحة الافتراضية للمكتبة</string>
+    <string name="set_quick_picks">ضبط الاختيارات السريعة</string>
+    <string name="last_song_listened">بناءً على آخر أغنية تم الاستماع إليها</string>
+    <string name="app_language">لغة التطبيق</string>
+    <string name="configure_app_language">تكوين لغة التطبيق</string>
+    <string name="intent_app_language_not_found">لم يتمكن التطبيق من العثور على إعدادات لغة التطبيق، يرجى تكوينها يدويًا</string>
+    <string name="open_supported_links">فتح الروابط المدعومة</string>
+    <string name="configure_supported_links">تكوين الروابط المدعومة</string>
+    <string name="intent_supported_links_not_found">لم يتمكن التطبيق من العثور على الإعدادات ، يرجى تكوينها يدويًا</string>
+
+    <string name="audio_quality_max">أعلي إرتفاع (تجريبي)</string>
+    <string name="enable_similar_content">تمكين المحتوى المشابه</string>
+    <string name="similar_content_desc">إضافة المزيد من الأغاني المشابهة تلقائيًا عند الوصول إلى نهاية قائمة الانتظار</string>
+    <string name="min_playback_duration_title">الحد الأدنى لمدة التشغيل</string>
+    <string name="min_playback_duration_description">الحد الأدنى لمدة تشغيل الأغنية قبل اعتبارها مُشغّلة</string>
+    <string name="percentage_format">%d%%</string>
+    <string name="minimum_playback_duration">الحد الأدنى لمدة التشغيل</string>
+
+    <string name="clear_song_cache_dialog">هل أنت متأكد أنك تريد مسح كافة الأغاني المخزنة مؤقتًا؟</string>
+
+    <string name="clear_downloads_dialog">هل أنت متأكد أنك تريد مسح كافة التنزيلات؟</string>
+
+    <string name="pause_remote_listen_history">إيقاف مشاركة سجل الاستماع مع YouTube Music</string>
+    <string name="lyrics">الكلمات</string>
+    <string name="set_first_lyrics_provider">تعيين مزود كلمات الأغاني الإفتراضي</string>
+    string&gt;
+    <string name="not_logged_in_youtube">لم يتم تسجيل الدخول إلى يوتيوب</string>
+
+    <string name="default_links">فتح الروابط المدعومة افتراضيًا</string>
+    <string name="open_app_settings_error">لم يتمكن التطبيق من فتح إعدادات التطبيق</string>
+
+
+    <string name="all_time">طوال الوقت</string>
+    <string name="past_24_hours">آخر 24 ساعة</string>
+    <string name="past_week">الأسبوع الماضي</string>
+    <string name="past_month">الشهر الماضي</string>
+    <string name="past_year">السنة الماضية</string>
+    <string name="top_length">طول قائمة الأغاني المفضلة الخاصة بي</string>
+    <string name="history_duration">مدة التاريخ</string>
+    <string name="information">المعلومات</string>
+    <string name="description">الوصف</string>
+    <string name="numbers">الأرقام</string>
+    <string name="subscribers">المشتركين</string>
+    <string name="views">المشاهدات</string>
+    <string name="likes">الإعجابات</string>
+    <string name="dislikes">الغير محبوب</string>
+</resources>

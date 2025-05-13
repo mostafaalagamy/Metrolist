@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Bottom navigation -->
     <string name="home">Галоўнае</string>
@@ -5,7 +6,6 @@
     <string name="artists">Выканаўцы</string>
     <string name="albums">Альбомы</string>
     <string name="playlists">Плэй-лісты</string>
-
     <!-- Top bar -->
     <plurals name="n_selected">
         <item quantity="one">%d абрана</item>
@@ -13,7 +13,6 @@
         <item quantity="many">%d абрана</item>
         <item quantity="other">%d абрана</item>
     </plurals>
-
     <!-- Home -->
     <string name="history">Гісторыя</string>
     <string name="stats">Статыстыка</string>
@@ -22,25 +21,18 @@
     <string name="quick_picks">Хуткі выбар</string>
     <string name="quick_picks_empty">Праслухайце якія-небудзь кампазіцыі, каб стварыць ваш хуткі выбар.</string>
     <string name="new_release_albums">Новыя рэлізы альбомаў</string>
-
     <!-- History -->
     <string name="today">Сёння</string>
     <string name="yesterday">Учора</string>
     <string name="this_week">На гэтым тыднія</string>
     <string name="last_week">На тым тыдні</string>
-
     <!-- Stats -->
     <string name="most_played_songs">Лепшыя кампазіцыі</string>
     <string name="most_played_artists">Лепшыя выканаўцы</string>
-    <string name="most_played_albums">Most played albums</string>
-
     <!-- Search -->
     <string name="search">Пошук</string>
     <string name="search_yt_music">Пошук у YouTube Music…</string>
     <string name="search_library">Пошук у бібліятэцы…</string>
-    <string name="filter_library">Library</string>
-    <string name="filter_liked">Liked</string>
-    <string name="filter_downloaded">Downloaded</string>
     <string name="filter_all">Усе</string>
     <string name="filter_songs">Песні</string>
     <string name="filter_videos">Відэа</string>
@@ -49,23 +41,17 @@
     <string name="filter_playlists">Плэй-лісты</string>
     <string name="filter_community_playlists">Плэй-лісты aд cупольнасці</string>
     <string name="filter_featured_playlists">Вартыя ўвагі плэй-лісты</string>
-    <string name="filter_bookmarked">Bookmarked</string>
     <string name="no_results_found">Вынікі не знойдзены</string>
-
     <!-- Artist screen -->
     <string name="from_your_library">З вашай бібліятэкі</string>
-
     <!-- Playlist -->
     <string name="liked_songs">Упадабаныя кампазіцыi</string>
     <string name="downloaded_songs">Спампаваныя кампазіцыі</string>
     <string name="playlist_is_empty">Плай-ліст пусты</string>
-
     <!-- Button -->
     <string name="retry">Паўтарыць</string>
     <string name="radio">Радыё</string>
     <string name="shuffle">Перамяшаць</string>
-    <string name="reset">Reset</string>
-
     <!-- Menu -->
     <string name="details">Падрабязнасці</string>
     <string name="edit">Змяніць</string>
@@ -88,8 +74,6 @@
     <string name="remove_from_history">Выдаліць з гісторыі</string>
     <string name="search_online">Шукаць у сетцы</string>
     <string name="sync">Cінхранізацыя</string>
-    <string name="advanced">Advanced</string>
-
     <!-- Sort menu -->
     <string name="sort_by_create_date">Нядаўна дададзена</string>
     <string name="sort_by_name">Назва</string>
@@ -99,7 +83,6 @@
     <string name="sort_by_length">Працягласць</string>
     <string name="sort_by_play_time">Колькасць прайграванняў</string>
     <string name="sort_by_custom">Уласны парадак</string>
-
     <!-- Dialog -->
     <string name="media_id">Iдэнтыфікатар медыя</string>
     <string name="mime_type">Тып MIME</string>
@@ -111,77 +94,70 @@
     <string name="file_size">Памер файла</string>
     <string name="unknown">Невядомы</string>
     <string name="copied">Скапіявана</string>
-
     <string name="edit_lyrics">Змяниць тэкст песні</string>
     <string name="search_lyrics">Пошук тэкста песні</string>
-
     <string name="edit_song">Змяніць песню</string>
     <string name="song_title">Назва песні</string>
     <string name="song_artists">Выканаўца песні</string>
     <string name="error_song_title_empty">Песня павінна мець назву.</string>
     <string name="error_song_artist_empty">Песня павінна мець выканаўца.</string>
     <string name="save">Захаваць</string>
-
     <string name="choose_playlist">Выбраць плэй-ліст</string>
     <string name="edit_playlist">Змяніць плей-ліст</string>
     <string name="create_playlist">Стварыць плей-ліст</string>
     <string name="playlist_name">Назва плей-ліста</string>
     <string name="error_playlist_name_empty">Плей-ліст павінен мець назву.</string>
-
     <string name="edit_artist">Змяніць выканайца</string>
     <string name="artist_name">Імя ваканаўца</string>
     <string name="error_artist_name_empty">Выканаўца павінен мець імя.</string>
-
     <!-- Noun -->
     <plurals name="n_song">
         <item quantity="one">%d песня</item>
         <item quantity="few">%d песні</item>
         <item quantity="many">%d песен</item>
-        <item quantity="other">%d песні</item>
+        <item quantity="other">%d песен</item>
     </plurals>
     <plurals name="n_artist">
         <item quantity="one">%d выканаўца</item>
         <item quantity="few">%d выканаўцы</item>
         <item quantity="many">%d выканаўцаў</item>
-        <item quantity="other">%d выканаўцы</item>
+        <item quantity="other">%d выканаўцаў</item>
     </plurals>
     <plurals name="n_album">
         <item quantity="one">%d альбом</item>
         <item quantity="few">%d альбомы</item>
         <item quantity="many">%d альбомаў</item>
-        <item quantity="other">%d альбомы</item>
+        <item quantity="other">%d альбомаў</item>
     </plurals>
     <plurals name="n_playlist">
         <item quantity="one">%d плей-ліст</item>
         <item quantity="few">%d плей-ліста</item>
         <item quantity="many">%d плей-лістоў</item>
-        <item quantity="other">%d плей-ліста</item>
+        <item quantity="other">%d плей-лістоў</item>
     </plurals>
-    <plurals name="n_week" tools:ignore="MissingQuantity">
+    <plurals name="n_week">
         <item quantity="one">%d тыдзень</item>
         <item quantity="few">%d тыдні</item>
         <item quantity="many">%d тыдняў</item>
-        <item quantity="other">%d тыдні</item>
+        <item quantity="other">%d тыдняў</item>
     </plurals>
     <plurals name="n_month">
         <item quantity="one">%d месяц</item>
         <item quantity="few">%d месяцы</item>
         <item quantity="many">%d месяцаў</item>
-        <item quantity="other">%d месяцы</item>
+        <item quantity="other">%d месяцаў</item>
     </plurals>
-    <plurals name="n_year" tools:ignore="MissingQuantity">
+    <plurals name="n_year">
         <item quantity="one">%d год</item>
         <item quantity="few">%d гады</item>
         <item quantity="many">%d raдоў</item>
-        <item quantity="other">%d гады</item>
+        <item quantity="other">%d raдоў</item>
     </plurals>
-
     <!-- Snackbar -->
     <string name="playlist_imported">Плей-ліст імпартаваны</string>
     <string name="removed_song_from_playlist">\"%s\" выдалена з плей-ліста</string>
     <string name="playlist_synced">Плей-ліст сінхранізаваны</string>
     <string name="undo">Адрабіць</string>
-
     <!-- Player -->
     <string name="lyrics_not_found">Тэкст песні не знойдзены</string>
     <string name="sleep_timer">Таймер рэжыму сну</string>
@@ -196,7 +172,6 @@
     <string name="error_no_internet">Няма падлучэння да сеткі</string>
     <string name="error_timeout">Час чакання</string>
     <string name="error_unknown">Невядомая памылка</string>
-
     <!-- Player action -->
     <string name="action_like">Упадабаць</string>
     <string name="action_remove_like">Выдаліць з упадабаных</string>
@@ -205,14 +180,11 @@
     <string name="repeat_mode_off">Рэжым паўтору выключаны</string>
     <string name="repeat_mode_one">Паўтарыць бягучую песню</string>
     <string name="repeat_mode_all">Паўтарыць чаргу</string>
-
     <!-- Queue Title -->
     <string name="queue_all_songs">Усе песні</string>
     <string name="queue_searched_songs">Шуканыя кампазіцыі</string>
-
     <!-- Notification name -->
     <string name="music_player">Музычны прайгравальнік</string>
-
     <!-- Settings -->
     <string name="settings">Налады</string>
     <string name="appearance">Выгляд</string>
@@ -228,7 +200,6 @@
     <string name="left">Па левым краі</string>
     <string name="center">Па цэнтры</string>
     <string name="right">Па правым краі</string>
-
     <string name="content">Змесціва</string>
     <string name="login">Лагін</string>
     <string name="content_language">Мова змесціва</string>
@@ -238,7 +209,6 @@
     <string name="proxy_type">Тып проксі</string>
     <string name="proxy_url">URL проксі</string>
     <string name="restart_to_take_effect">Перазапусціць каб ужыць змяненні</string>
-
     <string name="player_and_audio">Прайгравальнік ды аўдыя</string>
     <string name="audio_quality">Якасць аўдыя</string>
     <string name="audio_quality_auto">Аўта</string>
@@ -248,7 +218,6 @@
     <string name="skip_silence">Прапусціць цішыню</string>
     <string name="audio_normalization">Нармалізацыя аўдыя</string>
     <string name="equalizer">Эквалайзер</string>
-
     <string name="storage">Сховішча</string>
     <string name="cache">Кеш</string>
     <string name="image_cache">Кеш выяў</string>
@@ -261,7 +230,6 @@
     <string name="max_song_cache_size">Максімальны памер кэшу песен</string>
     <string name="clear_song_cache">Ачысціць кэш песен</string>
     <string name="size_used">%s выкарыстоўваецца</string>
-
     <string name="privacy">Прыватнасць</string>
     <string name="pause_listen_history">Прыпыніць гісторыю праслухоўвання</string>
     <string name="clear_listen_history">Ачысціць гісторыю праслухоўвання</string>
@@ -270,26 +238,16 @@
     <string name="clear_search_history">Ачысціць гісторыю пошуку</string>
     <string name="clear_search_history_confirm">Сапраўды ачысціць гісторыю пошуку?</string>
     <string name="enable_kugou">Шукаць тэксты песен у KuGou</string>
-
-    <string name="backup_restore">Рэзервовае капіраванне ды аднеўленне </string>
+    <string name="backup_restore">Рэзервовае капіраванне ды аднеўленне</string>
     <string name="backup">Рэзервовае капіраванне</string>
     <string name="restore">Аднаўленне з рэзервовай копіі</string>
     <string name="imported_playlist">Імпартаваны плей-ліст</string>
     <string name="backup_create_success">Рэзервовная копія паспяхова створана</string>
     <string name="backup_create_failed">Немагчыма стапрыць рэзервовую копію</string>
     <string name="restore_failed">Немагчыма ужывіць рэзервовую копію</string>
-
     <string name="about">Аб праграме</string>
     <string name="app_version">Версія праграмы</string>
-
     <string name="new_version_available">Даступная новая версія</string>
     <string name="translation_models">Мадэлі перакладу</string>
     <string name="clear_translation_models">Ачысціць мадэлі перакладу</string>
-    <string name="information">Information</string>
-    <string name="description">Description</string>
-    <string name="numbers">Numbers</string>
-    <string name="subscribers">Subscribers</string>
-    <string name="views">Views</string>
-    <string name="likes">Likes</string>
-    <string name="dislikes">Dislikes</string>
 </resources>
