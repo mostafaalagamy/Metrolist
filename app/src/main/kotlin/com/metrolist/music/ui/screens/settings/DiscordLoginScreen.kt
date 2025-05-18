@@ -98,7 +98,7 @@ fun DiscordLoginScreen(navController: NavController) {
     )
 
     TopAppBar(
-        title = { Text(stringResource(R.string.login)) },
+        title = { Text(stringResource(R.string.action_login)) },
         navigationIcon = {
             IconButton(
                 onClick = navController::navigateUp,
