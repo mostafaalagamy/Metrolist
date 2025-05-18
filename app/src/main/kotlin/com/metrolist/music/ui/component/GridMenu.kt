@@ -144,7 +144,7 @@ fun LazyGridScope.DownloadGridMenu(
         else -> {
             GridMenuItem(
                 icon = R.drawable.download,
-                title = R.string.download,
+                title = R.string.action_download,
                 onClick = onDownload
             )
         }

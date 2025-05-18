@@ -65,7 +65,7 @@ fun BackupAndRestore(
         )
 
         PreferenceEntry(
-            title = { Text(stringResource(R.string.backup)) },
+            title = { Text(stringResource(R.string.action_backup)) },
             icon = { Icon(painterResource(R.drawable.backup), null) },
             onClick = {
                 val formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss")
@@ -77,7 +77,7 @@ fun BackupAndRestore(
             },
         )
         PreferenceEntry(
-            title = { Text(stringResource(R.string.restore)) },
+            title = { Text(stringResource(R.string.action_restore)) },
             icon = { Icon(painterResource(R.drawable.restore), null) },
             onClick = {
                 restoreLauncher.launch(arrayOf("application/octet-stream"))
