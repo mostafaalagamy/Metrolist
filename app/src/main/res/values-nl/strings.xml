@@ -65,7 +65,7 @@
     <string name="add_to_queue">Voeg toe aan wachtrij</string>
     <string name="add_to_library">Voeg toe aan bibliotheek</string>
     <string name="remove_from_library">Verwijderen van bibliotheek</string>
-    <string name="download">Downloaden</string>
+    <string name="action_download">Downloaden</string>
     <string name="downloading">Wordt gedownload</string>
     <string name="remove_download">Verwijder download</string>
     <string name="import_playlist">Importeer afspeellijst</string>
@@ -77,7 +77,7 @@
     <string name="delete">Verwijderen</string>
     <string name="remove_from_history">Verwijder uit geschiedenis</string>
     <string name="search_online">Zoek online</string>
-    <string name="sync">Synchroniseer</string>
+    <string name="action_sync">Synchroniseer</string>
     <string name="advanced">Geavanceerd</string>
     <!-- Sort menu -->
     <string name="sort_by_create_date">Datum toegevoegd</string>
@@ -228,8 +228,8 @@
     <string name="clear_search_history_confirm">Weet je zeker dat je de zoekgeschiedenis wil wissen?</string>
     <string name="enable_kugou">Schakel KuGou songtekst provider in</string>
     <string name="backup_restore">Backup en herstel</string>
-    <string name="backup">Reservekopie</string>
-    <string name="restore">Herstellen</string>
+    <string name="action_backup">Reservekopie</string>
+    <string name="action_restore">Herstellen</string>
     <string name="imported_playlist">Afspeellijst geimporteerd</string>
     <string name="backup_create_success">Reservekopie succesvol gemaakt</string>
     <string name="backup_create_failed">Reservekopie maken mislukt</string>
@@ -293,7 +293,7 @@
     <string name="options">Opties</string>
     <string name="preview">Voorbeeld</string>
     <string name="login_failed">Aanmelden mislukt</string>
-    <string name="logout">Afmelden</string>
+    <string name="action_logout">Afmelden</string>
     <string name="enable_discord_rpc">Rijke aanwezigheid inschakelen</string>
     <string name="use_login_for_browse_desc">Dit kan invloed hebben op welke inhoud u ziet en laat bijvoorbeeld alleen premium albums zien als u bent ingelogd met een Premium account</string>
     <string name="use_login_for_browse">Gebruik login om inhoud te bekijken</string>

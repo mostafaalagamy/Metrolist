@@ -56,7 +56,7 @@
     <string name="refetch">पुनः निकालें</string>
     <string name="delete">हटायें</string>
     <string name="search_online">ऑनलाइन खोजें</string>
-    <string name="sync">सिंक करें</string>
+    <string name="action_sync">सिंक करें</string>
     <string name="this_week">इस हफ्ते</string>
     <string name="new_release_albums">नईं रिलीज हुईं एलबम</string>
     <string name="last_week">पिछले हफ्ते</string>
@@ -74,7 +74,7 @@
     <string name="add_all_to_library">सभी को संग्रह में जोड़ें</string>
     <string name="remove_all_from_library">सभी को संग्रह से हटायें</string>
     <string name="remove_from_library">संग्रह से हटाएं</string>
-    <string name="download">डाउनलोड करें</string>
+    <string name="action_download">डाउनलोड करें</string>
     <string name="downloading">डाउनलोड हो रहा</string>
     <string name="remove_download">डाउनलोड हटाएँ</string>
     <string name="view_album">एलबम देखें</string>

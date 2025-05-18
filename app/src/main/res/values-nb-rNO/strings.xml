@@ -49,7 +49,7 @@
     <string name="add_all_to_library">Legg til alle i biblioteket</string>
     <string name="remove_from_library">Fjern fra biblioteket</string>
     <string name="remove_all_from_library">Fjern alle fra biblioteket</string>
-    <string name="download">Last ned</string>
+    <string name="action_download">Last ned</string>
     <string name="downloading">Laster ned</string>
     <string name="remove_download">Fjern nedlasting</string>
     <string name="import_playlist">Importer spilleliste</string>
@@ -62,7 +62,7 @@
     <string name="remove_from_playlist">Fjern fra spilleliste</string>
     <string name="remove_from_queue">Fjern fra køen</string>
     <string name="search_online">Søk på nettet</string>
-    <string name="sync">Synkroniser</string>
+    <string name="action_sync">Synkroniser</string>
     <string name="advanced">Avansert</string>
     <string name="tempo_and_pitch">Tempo og tonehøyde</string>
     <string name="sort_by_create_date">Dato tillagt</string>
@@ -163,7 +163,7 @@
     <string name="disable_screenshot_desc">Når dette er aktivert, kan skjermavbildninger ikke utføres i programmet, og «Nylig» i programmet er avslått</string>
     <string name="enable_lrclib">Slå på LrcLib-sangteksttilbyder</string>
     <string name="enable_kugou">Slå på KuGou-sangteksttilbyder</string>
-    <string name="backup">Sikkerhetskopier</string>
+    <string name="action_backup">Sikkerhetskopier</string>
     <string name="discord_integration">Discord-integrasjon</string>
     <string name="dismiss">Avvis</string>
     <string name="options">Innstillinger</string>
@@ -270,9 +270,9 @@
     <string name="backup_create_success">Sikkerhetskopi opprettet</string>
     <string name="backup_create_failed">Kunne ikke opprette sikkerhetskopi</string>
     <string name="restore_failed">Kunne ikke utføre gjenoppretting</string>
-    <string name="restore">Gjenopprett</string>
+    <string name="action_restore">Gjenopprett</string>
     <string name="imported_playlist">Spilleliste importert</string>
-    <string name="logout">Logg ut</string>
+    <string name="action_logout">Logg ut</string>
     <string name="discord_information">Metrolist bruker KizzyRPC for å stille inn statusen på Discord-kontoen din. Dette innebærer bruk ave Discord Gateway-portneren, som kan anses som et brudd på Discords tjenestevilkår. Det finnes dog ingen kjente tilfelle av suspenderte brukerkonter på denne grunnen. Bruk på egen risiko. \n \nMetrolist henter bare inn symbolet ditt, og alt annet blir lagret lokalt.</string>
     <string name="preview">Forhåndsvisning</string>
     <string name="about">Om</string>

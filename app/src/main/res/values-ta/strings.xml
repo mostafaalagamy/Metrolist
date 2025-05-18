@@ -24,7 +24,7 @@
     <string name="share">பங்கு</string>
     <string name="delete">நீக்கு</string>
     <string name="search_online">ஆன்லைனில் தேடுங்கள்</string>
-    <string name="sync">ஒத்திசைவு</string>
+    <string name="action_sync">ஒத்திசைவு</string>
     <string name="sort_by_artist">கலைஞர்</string>
     <string name="sort_by_year">ஆண்டு</string>
     <string name="sort_by_song_count">பாடல் எண்ணிக்கை</string>
@@ -98,7 +98,7 @@
     <string name="song_cache">பாடல் கேச்</string>
     <string name="max_cache_size">அதிகபட்ச கேச் அளவு</string>
     <string name="disable_screenshot">ச்கிரீன்சாட்டை முடக்கு</string>
-    <string name="restore">மீட்டமை</string>
+    <string name="action_restore">மீட்டமை</string>
     <string name="clear_translation_models">மொழிபெயர்ப்பு மாதிரிகளை அழிக்கவும்</string>
     <string name="albums">ஆல்பம்</string>
     <string name="playlists">பிளேலிச்ட்கள்</string>
@@ -148,7 +148,7 @@
     <string name="add_all_to_library">அனைத்தையும் நூலகத்தில் சேர்க்கவும்</string>
     <string name="remove_from_library">நூலகத்திலிருந்து அகற்று</string>
     <string name="remove_all_from_library">அனைத்தையும் நூலகத்திலிருந்து அகற்றவும்</string>
-    <string name="download">பதிவிறக்கம்</string>
+    <string name="action_download">பதிவிறக்கம்</string>
     <string name="downloading">பதிவிறக்குகிறது</string>
     <string name="remove_download">பதிவிறக்கத்தை அகற்று</string>
     <string name="remove_from_history">வரலாற்றிலிருந்து அகற்று</string>
@@ -257,7 +257,7 @@
     <string name="enable_kugou">குகோ பாடல் வழங்குநரை இயக்கு</string>
     <string name="hide_explicit">வெளிப்படையான உள்ளடக்கத்தை மறைக்கவும்</string>
     <string name="backup_restore">காப்புப்பிரதி மற்றும் மீட்டமை</string>
-    <string name="backup">காப்புப்பிரதி</string>
+    <string name="action_backup">காப்புப்பிரதி</string>
     <string name="imported_playlist">இறக்குமதி செய்யப்பட்ட பிளேலிச்ட்</string>
     <string name="backup_create_success">காப்புப்பிரதி வெற்றிகரமாக உருவாக்கப்பட்டது</string>
     <string name="backup_create_failed">காப்புப்பிரதியை உருவாக்க முடியவில்லை</string>
@@ -268,7 +268,7 @@
     <string name="options">விருப்பங்கள்</string>
     <string name="preview">முன்னோட்டம்</string>
     <string name="login_failed">உள்நுழைவு தோல்வியடைந்தது</string>
-    <string name="logout">வெளியேற்றம்</string>
+    <string name="action_logout">வெளியேற்றம்</string>
     <string name="enable_discord_rpc">பணக்கார இருப்பை இயக்கவும்</string>
     <string name="about">பற்றி</string>
     <string name="app_version">பயன்பாட்டு பதிப்பு</string>
