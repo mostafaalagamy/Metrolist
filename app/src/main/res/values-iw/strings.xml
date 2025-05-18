@@ -11,4 +11,7 @@
         <item quantity="two">%d נבחרו</item>
         <item quantity="other">%d נבחרו</item>
     </plurals>
+    <string name="stats">סטטיסטיקות</string>
+    <string name="mood_and_genres">מצב רוח וז\'אנרים</string>
+    <string name="account">חשבון</string>
 </resources>

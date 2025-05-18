@@ -66,7 +66,7 @@
     <string name="add_to_queue">Ajouter à la file d\'attente</string>
     <string name="add_to_library">Ajouter à la bibliothèque</string>
     <string name="remove_from_library">Supprimer de la bibliothèque</string>
-    <string name="download">Télécharger</string>
+    <string name="action_download">Télécharger</string>
     <string name="downloading">Téléchargement</string>
     <string name="remove_download">Supprimer le téléchargement</string>
     <string name="import_playlist">Importer une playlist</string>
@@ -78,7 +78,7 @@
     <string name="delete">Effacer</string>
     <string name="remove_from_history">Supprimer de l’historique</string>
     <string name="search_online">Rechercher en ligne</string>
-    <string name="sync">Synchroniser</string>
+    <string name="action_sync">Synchroniser</string>
     <string name="advanced">Avancé</string>
     <!-- Sort menu -->
     <string name="sort_by_create_date">Date d’ajout</string>
@@ -236,9 +236,9 @@
     <string name="clear_search_history">Effacer l\'historique de recherche</string>
     <string name="clear_search_history_confirm">Voulez-vous vraiment effacer tout l’historique des recherches ?</string>
     <string name="enable_kugou">Activer le fournisseur de paroles KuGou</string>
-    <string name="backup_restore">Sauvegarde et Restauration</string>
-    <string name="backup">Sauvegarder</string>
-    <string name="restore">Restaurer</string>
+    <string name="backup_restore">Sauvegarder et Restaurer</string>
+    <string name="action_backup">Sauvegarder</string>
+    <string name="action_restore">Restaurer</string>
     <string name="imported_playlist">Playlist importée</string>
     <string name="backup_create_success">Sauvegarde créée avec succès</string>
     <string name="backup_create_failed">Impossible de créer la sauvegarde</string>
@@ -263,7 +263,7 @@
     <string name="dismiss">Abandonner</string>
     <string name="options">Options</string>
     <string name="preview">Prévisualisation</string>
-    <string name="logout">Déconnexion</string>
+    <string name="action_logout">Se déconnecter</string>
     <string name="enable_discord_rpc">Activer la présence riche</string>
     <string name="login_failed">Échec de la connexion</string>
     <string name="delete_playlist_confirm">Souhaitez-vous vraiment supprimer la playlist « %s » ?</string>
@@ -306,4 +306,5 @@
     <string name="discord_information">Metrolist utilise la bibliothèque KizzyRPC pour définir le statut de votre compte Discord. Cela implique l\'utilisation de la connexion Discord Gateway, ce qui peut être considéré comme une violation des conditions d\'utilisation de Discord. Cependant, il n\'existe aucun cas connu de comptes d\'utilisateurs suspendus pour cette raison. Utilisez-le à vos propres risques. \n \nMetrolist extraira uniquement votre jeton, et tout le reste sera stocké localement.</string>
     <string name="use_login_for_browse">Utiliser le compte connecté pour parcourir le contenu</string>
     <string name="use_login_for_browse_desc">Ceci peut influencer le contenu que vous voyez et affiche par exemple les albums Premium si vous êtes connecté avec un compte Premium</string>
+    <string name="action_login">Se connecter</string>
 </resources>

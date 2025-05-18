@@ -64,7 +64,7 @@
     <string name="add_to_queue">Tambahkan ke antrean</string>
     <string name="add_to_library">Tambahkan ke pustaka</string>
     <string name="remove_from_library">Hapus dari pustaka</string>
-    <string name="download">Unduh</string>
+    <string name="action_download">Unduh</string>
     <string name="downloading">Mengunduh</string>
     <string name="remove_download">Hapus unduhan</string>
     <string name="import_playlist">Impor daftar putar</string>
@@ -76,7 +76,7 @@
     <string name="delete">Hapus</string>
     <string name="remove_from_history">Hapus dari riwayat</string>
     <string name="search_online">Cari online</string>
-    <string name="sync">Sinkronkan</string>
+    <string name="action_sync">Sinkronkan</string>
     <string name="advanced">Lanjutan</string>
     <!-- Sort menu -->
     <string name="sort_by_create_date">Tanggal ditambahkan</string>
@@ -219,8 +219,8 @@
     <string name="clear_search_history_confirm">Apakah anda yakin ingin menghapus semua riwayat pencarian?</string>
     <string name="enable_kugou">Aktifkan penyedia lirik KuGou</string>
     <string name="backup_restore">Cadangkan dan pulihkan</string>
-    <string name="backup">Cadangkan</string>
-    <string name="restore">Pulihkan</string>
+    <string name="action_backup">Cadangkan</string>
+    <string name="action_restore">Pulihkan</string>
     <string name="imported_playlist">Daftar putar yang diimpor</string>
     <string name="backup_create_success">Cadangan berhasil dibuat</string>
     <string name="backup_create_failed">Tidak dapat membuat cadangan</string>
@@ -253,7 +253,7 @@
     <string name="options">Pilihan</string>
     <string name="login_failed">Gagal masuk</string>
     <string name="add_anyway">Tambahkan saja</string>
-    <string name="logout">Keluar</string>
+    <string name="action_logout">Keluar</string>
     <string name="misc">Lainnya</string>
     <string name="tempo_and_pitch">Kecepatan dan Nada</string>
     <string name="duplicates">Duplikat</string>

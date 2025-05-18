@@ -65,7 +65,7 @@
     <string name="add_to_queue">ਕਤਾਰ ਵਿੱਚ ਜੋੜ੍ਹੋ</string>
     <string name="add_to_library">ਲਾਇਬ੍ਰੇਰੀ ਵਿੱਚ ਸ਼ਾਮਿਲ ਕਰੋ</string>
     <string name="remove_from_library">ਲਾਇਬ੍ਰੇਰੀ ਤੋਂ ਹਟਾਓ</string>
-    <string name="download">ਡਾਊਨਲੋਡ</string>
+    <string name="action_download">ਡਾਊਨਲੋਡ</string>
     <string name="downloading">ਡਾਊਨਲੋਡ ਹੋ ਰਿਹਾ</string>
     <string name="remove_download">ਡਾਊਨਲੋਡ ਹਟਾਓ</string>
     <string name="import_playlist">ਪਲੇਲਿਸਟ ਅਯਾਤ ਕਰੋ</string>
@@ -77,7 +77,7 @@
     <string name="delete">ਮਿਟਾਓ</string>
     <string name="remove_from_history">ਅਤੀਤ ਵਿੱਚੋਂ ਹਟਾਓ</string>
     <string name="search_online">ਆਨਲਾਈਨ ਖੋਜ ਕਰੋ</string>
-    <string name="sync">ਸਿੰਕਰੋਨਾਈਜ਼ ਕਰੋ</string>
+    <string name="action_sync">ਸਿੰਕਰੋਨਾਈਜ਼ ਕਰੋ</string>
     <string name="advanced">ਐਡਵਾਂਸਡ</string>
     <!-- Sort menu -->
     <string name="sort_by_create_date">ਮਿਤੀ</string>
@@ -228,8 +228,8 @@
     <string name="clear_search_history_confirm">ਕੀ ਤੁਸੀਂ ਸਾਰੇ ਖੋਜ ਇਤਿਹਾਸ ਨੂੰ ਸਾਫ਼ ਕਰਨ ਲਈ ਯਕੀਨੀ ਹੋ?</string>
     <string name="enable_kugou">KuGou ਬੋਲ ਪ੍ਰਦਾਤਾ ਨੂੰ ਸਮਰੱਥ ਬਣਾਓ</string>
     <string name="backup_restore">ਬੈਕਅੱਪ ਅਤੇ ਰੀਸਟੋਰ</string>
-    <string name="backup">ਬੈਕਅੱਪ</string>
-    <string name="restore">ਰੀਸਟੋਰ</string>
+    <string name="action_backup">ਬੈਕਅੱਪ</string>
+    <string name="action_restore">ਰੀਸਟੋਰ</string>
     <string name="imported_playlist">ਇੰਪੋਰਟ ਕੀਤੀ ਪਲੇਲਿਸਟ</string>
     <string name="backup_create_success">ਬੈਕਅੱਪ ਸਫਲਤਾਪੂਰਵਕ ਬਣਾਇਆ ਗਿਆ</string>
     <string name="backup_create_failed">ਬੈਕਅੱਪ ਨਹੀਂ ਬਣਾਇਆ ਜਾ ਸਕਿਆ</string>

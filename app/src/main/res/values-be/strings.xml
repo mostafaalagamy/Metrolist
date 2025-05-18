@@ -61,7 +61,7 @@
     <string name="add_to_queue">Дадаць у чаргу</string>
     <string name="add_to_library">Дадаць у бібліятэку</string>
     <string name="remove_from_library">Выдаліць з бібліятэкі</string>
-    <string name="download">Спампаваць</string>
+    <string name="action_download">Спампаваць</string>
     <string name="downloading">Спампоўка</string>
     <string name="remove_download">Выдаліць са спамповак</string>
     <string name="import_playlist">Імпартаваць плей-ліст</string>
@@ -73,7 +73,7 @@
     <string name="delete">Выдаліць</string>
     <string name="remove_from_history">Выдаліць з гісторыі</string>
     <string name="search_online">Шукаць у сетцы</string>
-    <string name="sync">Cінхранізацыя</string>
+    <string name="action_sync">Cінхранізацыя</string>
     <!-- Sort menu -->
     <string name="sort_by_create_date">Нядаўна дададзена</string>
     <string name="sort_by_name">Назва</string>
@@ -239,8 +239,8 @@
     <string name="clear_search_history_confirm">Сапраўды ачысціць гісторыю пошуку?</string>
     <string name="enable_kugou">Шукаць тэксты песен у KuGou</string>
     <string name="backup_restore">Рэзервовае капіраванне ды аднеўленне</string>
-    <string name="backup">Рэзервовае капіраванне</string>
-    <string name="restore">Аднаўленне з рэзервовай копіі</string>
+    <string name="action_backup">Рэзервовае капіраванне</string>
+    <string name="action_restore">Аднаўленне з рэзервовай копіі</string>
     <string name="imported_playlist">Імпартаваны плей-ліст</string>
     <string name="backup_create_success">Рэзервовная копія паспяхова створана</string>
     <string name="backup_create_failed">Немагчыма стапрыць рэзервовую копію</string>

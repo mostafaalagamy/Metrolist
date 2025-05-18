@@ -9,9 +9,9 @@
     <!-- Top bar -->
     <plurals name="n_selected">
         <item quantity="one">%d вибрано</item>
-        <item quantity="few">%d вибрано</item>
-        <item quantity="many">%d вибрано</item>
-        <item quantity="other">%d вибрано</item>
+        <item quantity="few">%d вибране</item>
+        <item quantity="many">%d вибрані</item>
+        <item quantity="other">%d вибрані</item>
     </plurals>
     <!-- Home -->
     <string name="history">Історія</string>
@@ -82,7 +82,7 @@
     <string name="add_all_to_library">Додати все до бібліотеки</string>
     <string name="remove_from_library">Видалити з бібліотеки</string>
     <string name="remove_all_from_library">Видалити все з бібліотеки</string>
-    <string name="download">Завантажити</string>
+    <string name="action_download">Завантаження</string>
     <string name="downloading">Завантаження</string>
     <string name="remove_download">Видалити із завантажених</string>
     <string name="import_playlist">Імпортувати плейлист</string>
@@ -96,7 +96,7 @@
     <string name="remove_from_playlist">Видалити з плейлиста</string>
     <string name="remove_from_queue">Видалити з черги</string>
     <string name="search_online">Пошук в Інтернеті</string>
-    <string name="sync">Синхронізувати</string>
+    <string name="action_sync">Синхронізація</string>
     <string name="advanced">Контроль аудіо</string>
     <string name="tempo_and_pitch">Темп і висота тону</string>
     <!-- Sort menu -->
@@ -124,17 +124,17 @@
     <string name="edit_song">Редагувати композицію</string>
     <string name="song_title">Назва композиції</string>
     <string name="song_artists">Виконавці композиції</string>
-    <string name="error_song_title_empty">Вкажіть назву композиції</string>
-    <string name="error_song_artist_empty">Вкажіть виконавців композиції</string>
+    <string name="error_song_title_empty">Назва пісні не може бути порожньою.</string>
+    <string name="error_song_artist_empty">Поле \"Виконавець пісні\" не може бути порожнім.</string>
     <string name="save">Зберегти</string>
     <string name="choose_playlist">Вибрати плейлист</string>
     <string name="edit_playlist">Редагувати плейлист</string>
     <string name="create_playlist">Створити плейлист</string>
     <string name="playlist_name">Назва плейлиста</string>
-    <string name="error_playlist_name_empty">Вкажіть назву плейлиста</string>
+    <string name="error_playlist_name_empty">Назва списку відтворення не може бути порожньою.</string>
     <string name="edit_artist">Редагувати виконавця</string>
     <string name="artist_name">Ім\'я виконавця</string>
-    <string name="error_artist_name_empty">Вкажіть ім\'я виконавця</string>
+    <string name="error_artist_name_empty">Ім\'я виконавця не може бути порожнім.</string>
     <string name="duplicates">Дублікати</string>
     <string name="skip_duplicates">Пропустити дублікати</string>
     <string name="add_anyway">Додати в будь-якому разі</string>
@@ -296,8 +296,8 @@
     <string name="enable_kugou">Увімкнути провайдера текстів KuGou</string>
     <string name="hide_explicit">Приховувати контент із нецензурною лексикою</string>
     <string name="backup_restore">Резервне копіювання</string>
-    <string name="backup">Створити резервну копію</string>
-    <string name="restore">Відновити з резервної копії</string>
+    <string name="action_backup">Резервне копіювання</string>
+    <string name="action_restore">Відновити</string>
     <string name="imported_playlist">Імпортований плейлист</string>
     <string name="backup_create_success">Резервну копію створено успішно</string>
     <string name="backup_create_failed">Не вдалося створити резервну копію</string>
@@ -308,7 +308,7 @@
     <string name="options">Налаштування</string>
     <string name="preview">Попередній перегляд</string>
     <string name="login_failed">Помилка входу</string>
-    <string name="logout">Вийти</string>
+    <string name="action_logout">Вийти</string>
     <string name="enable_discord_rpc">Увімкнути Rich Presenсe</string>
     <string name="about">Про програму</string>
     <string name="app_version">Версія застосунку</string>
@@ -317,4 +317,5 @@
     <string name="clear_translation_models">Очистити моделі перекладу</string>
     <string name="use_login_for_browse_desc">Це може вплинути на те, який вміст ви бачите, і, наприклад, показує лише платні альбоми, якщо ви ввійшли в обліковий запис Premium</string>
     <string name="use_login_for_browse">Використовуйте логін для перегляду вмісту</string>
+    <string name="action_login">Увійти</string>
 </resources>
