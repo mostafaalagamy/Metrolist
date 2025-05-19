@@ -37,7 +37,7 @@
     <string name="add_to_queue">ଧାଡିରେ ଯୋଡନ୍ତୁ</string>
     <string name="add_to_library">ଲାଇବ୍ରେରୀରେ ଯୋଡନ୍ତୁ</string>
     <string name="remove_from_library">ଲାଇବ୍ରେରୀରୁ ଅପସାରଣ କରନ୍ତୁ</string>
-    <string name="download">ଡାଉନଲୋଡ୍ କରନ୍ତୁ</string>
+    <string name="action_download">ଡାଉନଲୋଡ୍ କରନ୍ତୁ</string>
     <string name="downloading">Downloading</string>
     <string name="remove_download">ଡାଉନଲୋଡ୍ ଅପସାରଣ କରନ୍ତୁ</string>
     <string name="import_playlist">ପ୍ଲେଲିଷ୍ଟ ଆମଦାନୀ କରନ୍ତୁ</string>
@@ -142,8 +142,8 @@
     <string name="clear_search_history_confirm">ଆପଣ ସମସ୍ତ ସନ୍ଧାନ ଇତିହାସ ସଫା କରିବାକୁ ନିଶ୍ଚିତ କି?</string>
     <string name="enable_kugou">KuGou ଗୀତ ପ୍ରଦାନକାରୀକୁ ସକ୍ଷମ କରନ୍ତୁ</string>
     <string name="backup_restore">ନକଲ ସଂରକ୍ଷଣ ଏବଂ ପୁନରୁଦ୍ଧାର କରନ୍ତୁ</string>
-    <string name="backup">ନକଲ ସଂରକ୍ଷଣ</string>
-    <string name="restore">ପୁନରୁଦ୍ଧାର କରନ୍ତୁ</string>
+    <string name="action_backup">ନକଲ ସଂରକ୍ଷଣ</string>
+    <string name="action_restore">ପୁନରୁଦ୍ଧାର କରନ୍ତୁ</string>
     <string name="backup_create_success">ବ୍ୟାକଅପ୍ ସଫଳତାର ସହିତ ସୃଷ୍ଟି ହେଲା</string>
     <string name="backup_create_failed">ବ୍ୟାକଅପ୍ ସୃଷ୍ଟି କରିପାରିବ ନାହିଁ</string>
     <string name="restore_failed">ବ୍ୟାକଅପ୍ ପୁନରୁଦ୍ଧାର କରିବାରେ ବିଫଳ</string>

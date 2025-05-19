@@ -156,7 +156,7 @@ fun AccountSettings(
                             onInnerTubeCookieChange("")
                             forgetAccount(context)
                         }) {
-                            Text(stringResource(R.string.logout))
+                            Text(stringResource(R.string.action_logout))
                         }
                     }
                 },

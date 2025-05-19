@@ -79,7 +79,7 @@
     <string name="add_all_to_library">すべてライブラリに追加</string>
     <string name="remove_from_library">ライブラリから削除</string>
     <string name="remove_all_from_library">すべてライブラリから削除</string>
-    <string name="download">ダウンロード</string>
+    <string name="action_download">ダウンロード</string>
     <string name="downloading">ダウンロード中</string>
     <string name="remove_download">ダウンロードを削除</string>
     <string name="import_playlist">再生リストをインポート</string>
@@ -93,7 +93,7 @@
     <string name="remove_from_playlist">再生リストから削除</string>
     <string name="remove_from_queue">キューから削除</string>
     <string name="search_online">オンラインで検索</string>
-    <string name="sync">同期</string>
+    <string name="action_sync">同期</string>
     <string name="advanced">高度</string>
     <string name="tempo_and_pitch">速度とピッチ</string>
     <!-- Sort menu -->
@@ -269,8 +269,8 @@
     <string name="enable_kugou">KuGou での歌詞の取得を有効化</string>
     <string name="hide_explicit">露骨な内容のコンテンツを非表示</string>
     <string name="backup_restore">バックアップと復元</string>
-    <string name="backup">バックアップ</string>
-    <string name="restore">復元</string>
+    <string name="action_backup">バックアップ</string>
+    <string name="action_restore">復元</string>
     <string name="imported_playlist">インポートした再生リスト</string>
     <string name="backup_create_success">バックアップの作成に成功しました</string>
     <string name="backup_create_failed">バックアップを作成できませんでした</string>
@@ -281,7 +281,7 @@
     <string name="options">オプション</string>
     <string name="preview">プレビュー</string>
     <string name="login_failed">ログイン失敗</string>
-    <string name="logout">ログアウト</string>
+    <string name="action_logout">ログアウト</string>
     <string name="enable_discord_rpc">リッチプレゼンスを使用</string>
     <string name="about">アプリについて</string>
     <string name="app_version">アプリのバージョン</string>

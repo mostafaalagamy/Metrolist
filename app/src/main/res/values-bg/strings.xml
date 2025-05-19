@@ -71,7 +71,7 @@
     <string name="remove_from_history">Премахни от историята</string>
     <string name="copied">Копирано в клипборда</string>
     <string name="view_album">Вижте албум</string>
-    <string name="sync">Синхронизиране</string>
+    <string name="action_sync">Синхронизиране</string>
     <string name="add_all_to_library">Добави всички към библиотеката</string>
     <string name="media_id">ID на медия</string>
     <string name="search_lyrics">Търси текстове</string>
@@ -91,7 +91,7 @@
     <string name="remove_download">Премахни изтегляне</string>
     <string name="view_artist">Вижте изпълнител</string>
     <string name="remove_from_library">Премахни от библиотеката</string>
-    <string name="download">Изтегли</string>
+    <string name="action_download">Изтегляне</string>
     <string name="downloading">Изтегля се</string>
     <string name="import_playlist">Внасяне на плейлист</string>
     <string name="refetch">Повторно извличане</string>
@@ -177,7 +177,7 @@
     <string name="repeat_mode_one">Повтори текущата песен</string>
     <string name="repeat_mode_all">Повтори опашката</string>
     <string name="discord_information">Metrolist използва библиотеката KizzyRPC, за да зададе състоянието на профила ви в Discord. Това включва използването на връзката Discord Gateway, което може да се счита за нарушение на TOS на Discord. Въпреки това няма известни случаи на спиране на потребителски профили поради тази причина. Използвайте на свой собствен риск. \n \nMetrolist ще извлече само вашия токен, а всичко останало се съхранява локално.</string>
-    <string name="backup">Архивиране</string>
+    <string name="action_backup">Архивиране</string>
     <string name="translation_models">Модели за превод</string>
     <string name="clear_image_cache">Изчисти кеша на изображение</string>
     <string name="backup_create_failed">Неуспешно създаване на резервно копие</string>
@@ -205,7 +205,7 @@
     <string name="search_history">История на търсене</string>
     <string name="auto_skip_next_on_error">Автоматично премини към следваща песен, когато възникне грешка</string>
     <string name="settings">Настройки</string>
-    <string name="restore">Възстановяване</string>
+    <string name="action_restore">Възстановяване</string>
     <string name="player">Плейър</string>
     <string name="player_text_alignment">Подравняване текста на плейъра</string>
     <string name="clear_search_history_confirm">Сигурни ли сте, че искате да изчистите цялата история на търсене?</string>
@@ -273,9 +273,10 @@
     <string name="dismiss">Отхвърли</string>
     <string name="options">Опции</string>
     <string name="preview">Преглед</string>
-    <string name="logout">Изход</string>
+    <string name="action_logout">Изход</string>
     <string name="enable_discord_rpc">Активирай Rich Presence</string>
     <string name="new_version_available">Налична е нова версия</string>
     <string name="use_login_for_browse">Използвай вход за разглеждане на съдържание</string>
     <string name="use_login_for_browse_desc">Това може да повлияе какво съдържание виждате и например показва само премиум албуми, ако сте влезли с Премиум профил</string>
+    <string name="action_login">Вход</string>
 </resources>

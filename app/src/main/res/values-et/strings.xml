@@ -39,7 +39,7 @@
     <string name="add_all_to_library">Lisa kõik muusikakogusse</string>
     <string name="remove_from_library">Eemalda muusikakogust</string>
     <string name="remove_all_from_library">Eemalda kõik muusikakogust</string>
-    <string name="download">Laadi alla</string>
+    <string name="action_download">Laadi alla</string>
     <string name="downloading">Laadime alla</string>
     <string name="remove_download">Eemalda allalaaditu</string>
     <string name="import_playlist">Impordi esitusloend</string>
@@ -50,7 +50,7 @@
     <string name="remove_from_playlist">Eemalda esitusloendist</string>
     <string name="remove_from_queue">Eemalda esitusjärjekorrast</string>
     <string name="search_online">Otsi veebist</string>
-    <string name="sync">Sünkroniseeri</string>
+    <string name="action_sync">Sünkroniseeri</string>
     <string name="advanced">Lisavalikud</string>
     <string name="home">Avaleht</string>
     <string name="albums">Albumid</string>
@@ -265,8 +265,8 @@
     <string name="enable_kugou">Kasuta laulusõnade kuvamiseks teenusepakkujat KuGou</string>
     <string name="hide_explicit">Peida ebasobilik sisu</string>
     <string name="backup_restore">Varukoopia ja taastamine</string>
-    <string name="backup">Varunda</string>
-    <string name="restore">Taasta</string>
+    <string name="action_backup">Varunda</string>
+    <string name="action_restore">Taasta</string>
     <string name="imported_playlist">Imporditud esitusloend</string>
     <string name="backup_create_success">Varukoopia tegemine õnnestus</string>
     <string name="backup_create_failed">Varukoopia tegemine ei õnnestunud</string>
@@ -274,8 +274,9 @@
     <string name="discord_integration">Lõiming Discordiga</string>
     <string name="discord_information">Metrolist kasutab Discordi kasutajakonto oleku kuvamiseks KizzyRPC teeki. See eeldab Discord Gateway ühenduse kasutamist ja seda loetakse Discordi kasutustingimuste rikkumiseks. Aga pole teada ühtegi juhust, kus kasutajakonto oleks sel põhjusel keelatud. Kasuta seda teenust omal vastutsusel.\n\nMetrolist kasutab ainult sinu tunnusluba, kõike muud hoitakse kohalikus seadmes.</string>
     <string name="options">Valikud</string>
-    <string name="logout">Logi välja</string>
+    <string name="action_logout">Logi välja</string>
     <string name="login_failed">Sisselogimine ei õnnestunud</string>
     <string name="use_login_for_browse">Sisu sirvimiseks logi sisse</string>
     <string name="use_login_for_browse_desc">See võib mõjutada mis sisu sa näed, sealhulgas kui kasutad YouTube Premium-kontot, siis YouTube Premiumi jaoks mõeldud albumeid</string>
+    <string name="action_login">Logi sisse</string>
 </resources>

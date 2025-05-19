@@ -51,7 +51,7 @@
     <string name="play_next">Seguinte</string>
     <string name="add_to_queue">Adicionar à fila</string>
     <string name="remove_all_from_library">Remover tudo da biblioteca</string>
-    <string name="download">Descarregar</string>
+    <string name="action_download">Descarregar</string>
     <string name="downloading">A descarregar</string>
     <string name="remove_download">Remover descarregadas</string>
     <string name="import_playlist">Importar lista de reprodução</string>
@@ -63,7 +63,7 @@
     <string name="remove_from_history">Remover do histórico</string>
     <string name="remove_from_playlist">Remover da lista de reprodução</string>
     <string name="search_online">Pesquisa online</string>
-    <string name="sync">Sincronizar</string>
+    <string name="action_sync">Sincronizar</string>
     <string name="advanced">Avançadas</string>
     <string name="tempo_and_pitch">Batidas por minuto</string>
     <string name="sort_by_create_date">Data de adição</string>
@@ -232,7 +232,7 @@
     <string name="discord_integration">Integração Discord</string>
     <string name="dismiss">Descartar</string>
     <string name="login_failed">Falha ao iniciar sessão</string>
-    <string name="logout">Terminar sessão</string>
+    <string name="action_logout">Terminar sessão</string>
     <string name="enable_discord_rpc">Ativar Rich Presence</string>
     <string name="about">Acerca</string>
     <string name="app_version">Versão</string>
@@ -266,8 +266,8 @@
     <string name="default_">Padrão</string>
     <string name="misc">Outras</string>
     <string name="content_country">País padrão para conteúdo</string>
-    <string name="restore">Restauro</string>
-    <string name="backup">Backup</string>
+    <string name="action_restore">Restauro</string>
+    <string name="action_backup">Backup</string>
     <string name="backup_create_failed">Não foi possível criar o backup</string>
     <string name="options">Opções</string>
     <string name="preview">Antevisão</string>

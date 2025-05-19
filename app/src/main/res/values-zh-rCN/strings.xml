@@ -64,7 +64,7 @@
     <string name="add_to_queue">加入播放队列</string>
     <string name="add_to_library">加入媒体库</string>
     <string name="remove_from_library">从媒体库中移除</string>
-    <string name="download">下载</string>
+    <string name="action_download">下载</string>
     <string name="downloading">正在下载</string>
     <string name="remove_download">移除下载</string>
     <string name="import_playlist">导入播放列表</string>
@@ -76,7 +76,7 @@
     <string name="delete">删除</string>
     <string name="remove_from_history">从历史中移除</string>
     <string name="search_online">在线搜索</string>
-    <string name="sync">同步</string>
+    <string name="action_sync">同步</string>
     <string name="advanced">高级</string>
     <!-- Sort menu -->
     <string name="sort_by_create_date">添加日期</string>
@@ -219,8 +219,8 @@
     <string name="clear_search_history_confirm">是否确定要清除所有搜索历史？</string>
     <string name="enable_kugou">使用酷狗音乐提供歌词</string>
     <string name="backup_restore">备份与还原</string>
-    <string name="backup">备份</string>
-    <string name="restore">还原</string>
+    <string name="action_backup">备份</string>
+    <string name="action_restore">还原</string>
     <string name="imported_playlist">已导入的播放列表</string>
     <string name="backup_create_success">成功新建备份</string>
     <string name="backup_create_failed">无法新建备份</string>
@@ -255,7 +255,7 @@
     <string name="options">选项</string>
     <string name="preview">预览</string>
     <string name="login_failed">登录失败</string>
-    <string name="logout">登出</string>
+    <string name="action_logout">登出</string>
     <string name="discord_integration">Discord 集成</string>
     <string name="enable_discord_rpc">启用 Rich Presence</string>
     <string name="action_like_all">喜欢全部</string>
@@ -288,4 +288,5 @@
     <string name="discord_information">Metrolist 使用 KizzyRPC 库来设置您的 Discord 账号的状态。这会用到 Discord 网关连接，可能会违反 Discord 的服务条款。不过，目前还没有因此原因暂停用户账号的情况。使用风险自负。 \n \nMetrolist 只提取您的令牌，其他内容都存储在本地。</string>
     <string name="use_login_for_browse_desc">这可能会影响您看到的内容，例如，如果您使用会员账号登录，则会显示仅会员专辑</string>
     <string name="use_login_for_browse">登录账号浏览内容</string>
+    <string name="action_login">登录</string>
 </resources>

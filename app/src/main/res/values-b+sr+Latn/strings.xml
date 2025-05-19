@@ -58,7 +58,7 @@
     <string name="add_all_to_library">Dodaj u sve biblioteke</string>
     <string name="remove_from_library">Ukloni iz biblioteke</string>
     <string name="remove_all_from_library">Ukloni iz svih biblioteka</string>
-    <string name="download">Preuzmi</string>
+    <string name="action_download">Preuzmi</string>
     <string name="downloading">Preuzima se</string>
     <string name="remove_download">Ukloni preuzimanje</string>
     <string name="import_playlist">Uvezi plejlistu</string>
@@ -71,7 +71,7 @@
     <string name="remove_from_playlist">Ukloni iz plejliste</string>
     <string name="remove_from_queue">Ukloni iz reda</string>
     <string name="search_online">Pretraži preko mreže</string>
-    <string name="sync">Sinhronizuj</string>
+    <string name="action_sync">Sinhronizuj</string>
     <string name="advanced">Napredno</string>
     <string name="tempo_and_pitch">Tempo i Visina tona</string>
     <string name="sort_by_create_date">Datum dodavanja</string>
@@ -213,8 +213,8 @@
     <string name="enable_kugou">Omogući KuGou dobavljača teksta</string>
     <string name="hide_explicit">Sakrij eksplicitan sadržaj</string>
     <string name="backup_restore">Rezervne kopije i vraćanje</string>
-    <string name="backup">Rezervna kopija</string>
-    <string name="restore">Vraćanje</string>
+    <string name="action_backup">Rezervna kopija</string>
+    <string name="action_restore">Vraćanje</string>
     <string name="imported_playlist">Plejlista je uvezena</string>
     <string name="backup_create_success">Rezervna kopija je uspešno sagrađena</string>
     <string name="backup_create_failed">Nije moguće napraviti rezervnu kopiju</string>
@@ -284,7 +284,7 @@
     <string name="clear_image_cache">Obrišite keš slika</string>
     <string name="login_failed">Neuspešno ulogovanje</string>
     <string name="preview">Pregled</string>
-    <string name="logout">Izloguj se</string>
+    <string name="action_logout">Izloguj se</string>
     <string name="use_login_for_browse">Koristite prijavu za pregledanje sadržaja</string>
     <string name="use_login_for_browse_desc">Ovo može uticati na sadržaj koji vidite i, na primer, prikazivati albume koji su dostupni samo za Premium korisnike ako ste prijavljeni sa Premium nalogom</string>
 </resources>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <!-- Bottom navigation -->
     <string name="home">Domů</string>
     <string name="songs">Skladby</string>
@@ -7,7 +7,7 @@
     <string name="albums">Alba</string>
     <string name="playlists">Playlisty</string>
     <!-- Top bar -->
-    <plurals name="n_selected" tools:ignore="MissingQuantity">
+    <plurals name="n_selected">
         <item quantity="one">Vybrána %d</item>
         <item quantity="few">Vybrány %d</item>
         <item quantity="other">Vybráno %d</item>
@@ -66,7 +66,7 @@
     <string name="add_to_queue">Přidat do fronty</string>
     <string name="add_to_library">Přidat do knihovny</string>
     <string name="remove_from_library">Odebrat z knihovny</string>
-    <string name="download">Stáhnout</string>
+    <string name="action_download">Stáhnout</string>
     <string name="downloading">Stahování</string>
     <string name="remove_download">Odebrat stahování</string>
     <string name="import_playlist">Importovat playlist</string>
@@ -78,7 +78,7 @@
     <string name="delete">Odstranit</string>
     <string name="remove_from_history">Odstranit z historie</string>
     <string name="search_online">Hledat online</string>
-    <string name="sync">Synchronizace</string>
+    <string name="action_sync">Synchronizace</string>
     <string name="advanced">Pokročilé</string>
     <!-- Sort menu -->
     <string name="sort_by_create_date">Datum přidání</string>
@@ -117,37 +117,37 @@
     <string name="artist_name">Jméno umělce</string>
     <string name="error_artist_name_empty">Jméno umělce nemůže být prázdné.</string>
     <!-- Noun -->
-    <plurals name="n_song" tools:ignore="MissingQuantity">
+    <plurals name="n_song">
         <item quantity="one">%d skladba</item>
         <item quantity="few">%d skladby</item>
         <item quantity="other">%d skladeb</item>
     </plurals>
-    <plurals name="n_artist" tools:ignore="MissingQuantity">
+    <plurals name="n_artist">
         <item quantity="one">%d umělec</item>
         <item quantity="few">%d umělci</item>
         <item quantity="other">%d umělců</item>
     </plurals>
-    <plurals name="n_album" tools:ignore="MissingQuantity">
+    <plurals name="n_album">
         <item quantity="one">%d album</item>
         <item quantity="few">%d alba</item>
         <item quantity="other">%d alb</item>
     </plurals>
-    <plurals name="n_playlist" tools:ignore="MissingQuantity">
+    <plurals name="n_playlist">
         <item quantity="one">%d playlist</item>
         <item quantity="few">%d playlisty</item>
         <item quantity="other">%d playlistů</item>
     </plurals>
-    <plurals name="n_week" tools:ignore="MissingQuantity">
+    <plurals name="n_week">
         <item quantity="one">%d týden</item>
         <item quantity="few">%d týdny</item>
         <item quantity="other">%d týdnů</item>
     </plurals>
-    <plurals name="n_month" tools:ignore="MissingQuantity">
+    <plurals name="n_month">
         <item quantity="one">%d měsíc</item>
         <item quantity="few">%d měsíce</item>
         <item quantity="other">%d měsíců</item>
     </plurals>
-    <plurals name="n_year" tools:ignore="MissingQuantity">
+    <plurals name="n_year">
         <item quantity="one">%d rok</item>
         <item quantity="few">%d roky</item>
         <item quantity="other">%d let</item>
@@ -161,7 +161,7 @@
     <string name="lyrics_not_found">Texty nenalezeny</string>
     <string name="sleep_timer">Časovač spánku</string>
     <string name="end_of_song">Konec skladby</string>
-    <plurals name="minute" tools:ignore="MissingQuantity">
+    <plurals name="minute">
         <item quantity="one">1 minuta</item>
         <item quantity="few">%d minuty</item>
         <item quantity="other">%d minut</item>
@@ -175,7 +175,7 @@
     <string name="action_remove_like">Odebrat z oblíbených</string>
     <string name="action_shuffle_on">Náhodně zapnuto</string>
     <string name="action_shuffle_off">Náhodně vypnuto</string>
-    <string name="repeat_mode_off">Režim opakování zapnut</string>
+    <string name="repeat_mode_off">Režim opakování vypnut</string>
     <string name="repeat_mode_one">Opakovat aktuální skladbu</string>
     <string name="repeat_mode_all">Opakovat frontu</string>
     <!-- Queue Title -->
@@ -209,7 +209,7 @@
     <string name="restart_to_take_effect">Restartujte pro uplatnění změn</string>
     <string name="player_and_audio">Přehrávač a zvuk</string>
     <string name="audio_quality">Kvalita zvuku</string>
-    <string name="audio_quality_auto">Automaticky</string>
+    <string name="audio_quality_auto">Automatická</string>
     <string name="audio_quality_high">Vysoká</string>
     <string name="audio_quality_low">Nízká</string>
     <string name="persistent_queue">Ukládat frontu</string>
@@ -237,8 +237,8 @@
     <string name="clear_search_history_confirm">Opravdu chcete vymazat celou historii vyhledávání?</string>
     <string name="enable_kugou">Povolit poskytovatele textů KuGou</string>
     <string name="backup_restore">Záloha a obnovení</string>
-    <string name="backup">Zálohovat</string>
-    <string name="restore">Obnovit</string>
+    <string name="action_backup">Zálohovat</string>
+    <string name="action_restore">Obnovit</string>
     <string name="imported_playlist">Playlist importován</string>
     <string name="backup_create_success">Záloha úspěšně vytvořena</string>
     <string name="backup_create_failed">Nepodařilo se vytvořit zálohu</string>
@@ -303,7 +303,8 @@
     <string name="player_text_alignment">Zarovnání textu přehrávače</string>
     <string name="discord_information">Metrolist používá knihovnu KizzyRPC, aby mohl nastavit váš stav na Discordu. Tato funkce zahrnuje připojení k bráně Discord, což může být považováno za porušení podmínek společnosti Discord. Neexistují nicméně žádné známé případy uzamčení účtu z tohoto důvodu. Používejte na vlastní nebezpečí. \n \nMetrolist pouze extrahuje váš token, vše ostatní je uloženo lokálně.</string>
     <string name="enable_discord_rpc">Povolit stav na Discordu</string>
-    <string name="logout">Odhlásit se</string>
+    <string name="action_logout">Odhlásit se</string>
     <string name="use_login_for_browse">Použít účet pro procházení obsahu</string>
     <string name="use_login_for_browse_desc">Může ovlivnit obsah, který se vám zobrazí – při přihlášení například mohou být zobrazena například alba, která jsou dostupná pouze s Premium účtem</string>
+    <string name="action_login">Přihlásit se</string>
 </resources>

@@ -65,7 +65,7 @@
     <string name="add_to_queue">কিউতে অ্যাড করুন</string>
     <string name="add_to_library">লাইব্রেরি তে অ্যাড করুন</string>
     <string name="remove_from_library">লাইব্রেরি থেকে সরান</string>
-    <string name="download">ডাউনলোড</string>
+    <string name="action_download">ডাউনলোড</string>
     <string name="downloading">ডাউনলোড হচ্ছে</string>
     <string name="remove_download">ডাউনলোড থেকে সরান</string>
     <string name="import_playlist">প্লেলিস্ট ইমপোর্ট করুন</string>
@@ -77,7 +77,7 @@
     <string name="delete">ডিলিট</string>
     <string name="remove_from_history">হিস্ট্রি থেকে সরান</string>
     <string name="search_online">অনলাইন এ খুঁজুন</string>
-    <string name="sync">সিঙ্ক্রোনাইজ</string>
+    <string name="action_sync">সিঙ্ক্রোনাইজ</string>
     <string name="advanced">অ্যাডভান্স</string>
     <!-- Sort menu -->
     <string name="sort_by_create_date">দিন</string>
@@ -228,8 +228,8 @@
     <string name="clear_search_history_confirm">সার্চ হিস্ট্রি মুছে ফেলবেন?</string>
     <string name="enable_kugou">KuGou থেকে লিরিক নিন</string>
     <string name="backup_restore">ব্যাকআপ এবং রিস্টোর</string>
-    <string name="backup">ব্যাকআপ</string>
-    <string name="restore">রিস্টোর</string>
+    <string name="action_backup">ব্যাকআপ</string>
+    <string name="action_restore">রিস্টোর</string>
     <string name="imported_playlist">ইমপোর্টেড করা প্লেলিস্ট</string>
     <string name="backup_create_success">ব্যাকআপ তৈরি করা হয়েছে</string>
     <string name="backup_create_failed">ব্যাকআপ করতে বার্থ</string>

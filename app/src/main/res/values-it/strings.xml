@@ -66,7 +66,7 @@
     <string name="add_to_queue">Metti in coda</string>
     <string name="add_to_library">Aggiungi a libreria</string>
     <string name="remove_from_library">Rimuovi da libreria</string>
-    <string name="download">Scarica</string>
+    <string name="action_download">Scarica</string>
     <string name="downloading">In scaricamento</string>
     <string name="remove_download">Rimuovi download</string>
     <string name="import_playlist">Importa playlist</string>
@@ -78,7 +78,7 @@
     <string name="delete">Elimina</string>
     <string name="remove_from_history">Rimuovi da cronologia</string>
     <string name="search_online">Cerca online</string>
-    <string name="sync">Sincronizza</string>
+    <string name="action_sync">Sincronizza</string>
     <string name="advanced">Avanzate</string>
     <!-- Sort menu -->
     <string name="sort_by_create_date">Data di aggiunta</string>
@@ -239,8 +239,8 @@
     <string name="clear_search_history_confirm">Sei sicuro di voler cancellare la cronologia delle ricerche?</string>
     <string name="enable_kugou">Attiva i testi forniti da KuGou</string>
     <string name="backup_restore">Backup e ripristino</string>
-    <string name="backup">Backup</string>
-    <string name="restore">Ripristina</string>
+    <string name="action_backup">Backup</string>
+    <string name="action_restore">Ripristina</string>
     <string name="imported_playlist">Playlist importata</string>
     <string name="backup_create_success">Backup creato con successo</string>
     <string name="backup_create_failed">Impossibile eseguire il backup</string>
@@ -302,7 +302,7 @@
     <string name="use_login_for_browse">Usa il login per navigare nei contenuti</string>
     <string name="preview">Anteprima</string>
     <string name="login_failed">Login fallito</string>
-    <string name="logout">Logout</string>
+    <string name="action_logout">Logout</string>
     <string name="use_login_for_browse_desc">Ciò può influenzare il contenuto che vedi e ad esempio mostra album solo premium se hai effettuato l\'accesso con un account Premium</string>
     <string name="enable_discord_rpc">Abilita Rich Presence</string>
     <string name="dismiss">Ignorare</string>

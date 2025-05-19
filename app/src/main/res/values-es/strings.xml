@@ -34,7 +34,7 @@
     <string name="most_played_albums">Álbumes más reproducidos</string>
     <!-- Search -->
     <string name="search">Buscar</string>
-    <string name="search_yt_music">Buscar en Youtube Music…</string>
+    <string name="search_yt_music">Buscar en YouTube Music…</string>
     <string name="search_library">Buscar en la biblioteca…</string>
     <string name="filter_library">Biblioteca</string>
     <string name="filter_liked">Me gusta</string>
@@ -76,7 +76,7 @@
     <string name="add_to_queue">Añadir a la cola</string>
     <string name="add_to_library">Añadir a la biblioteca</string>
     <string name="remove_from_library">Eliminar de la biblioteca</string>
-    <string name="download">Descargar</string>
+    <string name="action_download">Descargar</string>
     <string name="downloading">Descargando</string>
     <string name="remove_download">Eliminar descarga</string>
     <string name="import_playlist">Importar lista de reproducción</string>
@@ -90,7 +90,7 @@
     <string name="remove_from_playlist">Quitar de la lista de reproducción</string>
     <string name="remove_from_queue">Quitar de la cola</string>
     <string name="search_online">Buscar online</string>
-    <string name="sync">Sincronizar</string>
+    <string name="action_sync">Sincronizar</string>
     <string name="advanced">Avanzado</string>
     <string name="tempo_and_pitch">Tempo y tono</string>
     <!-- Sort menu -->
@@ -276,8 +276,8 @@
     <string name="enable_kugou">Habilitar el proveedor de letras KuGou</string>
     <string name="hide_explicit">Ocultar contenido explícito</string>
     <string name="backup_restore">Copias de seguridad y restauración</string>
-    <string name="backup">Hacer copia de seguridad</string>
-    <string name="restore">Restaurar</string>
+    <string name="action_backup">Hacer copia de seguridad</string>
+    <string name="action_restore">Restaurar</string>
     <string name="imported_playlist">Lista de reproducción importada</string>
     <string name="backup_create_success">Copia de seguridad creada con éxito</string>
     <string name="backup_create_failed">No se ha podido crear la copia de seguridad</string>
@@ -288,7 +288,7 @@
     <string name="options">Opciones</string>
     <string name="preview">Vista previa</string>
     <string name="login_failed">Error al iniciar la sesión</string>
-    <string name="logout">Cerrar sesión</string>
+    <string name="action_logout">Cerrar sesión</string>
     <string name="enable_discord_rpc">Activar Rich Presence</string>
     <string name="about">Acerca de</string>
     <string name="app_version">Versión de la app</string>
@@ -307,4 +307,5 @@
     <string name="add_all_to_library">Añadir todo a la biblioteca</string>
     <string name="use_login_for_browse">Utilice el inicio de sesión para ver el contenido</string>
     <string name="use_login_for_browse_desc">Esto puede influir en el contenido que ve y, por ejemplo, muestra álbumes exclusivos si ha iniciado sesión con una cuenta Premium</string>
+    <string name="action_login">Iniciar Sesión</string>
 </resources>

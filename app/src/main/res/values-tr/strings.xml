@@ -65,7 +65,7 @@
     <string name="add_to_queue">Sıraya ekle</string>
     <string name="add_to_library">Kütüphaneye ekle</string>
     <string name="remove_from_library">Kütüphaneden kaldır</string>
-    <string name="download">İndir</string>
+    <string name="action_download">İndir</string>
     <string name="downloading">İndiriliyor</string>
     <string name="remove_download">İndirmeyi kaldır</string>
     <string name="import_playlist">Çalma listesini içe aktar</string>
@@ -77,7 +77,7 @@
     <string name="delete">Sil</string>
     <string name="remove_from_history">Geçmişten kaldır</string>
     <string name="search_online">Çevrim içi ara</string>
-    <string name="sync">Eşitle</string>
+    <string name="action_sync">Eşitle</string>
     <string name="advanced">Gelişmiş</string>
     <!-- Sort menu -->
     <string name="sort_by_create_date">Eklendiği tarih</string>
@@ -229,8 +229,8 @@
     <string name="enable_lrclib">LrcLib şarkı sözü sağlayıcısını etkinleştir</string>
     <string name="enable_kugou">KuGou şarkı sözü sağlayıcısını etkinleştir</string>
     <string name="backup_restore">Yedekleme ve geri yükleme</string>
-    <string name="backup">Yedekle</string>
-    <string name="restore">Geri yükle</string>
+    <string name="action_backup">Yedekle</string>
+    <string name="action_restore">Geri yükle</string>
     <string name="imported_playlist">Çalma listesi içe aktarıldı</string>
     <string name="backup_create_success">Yedekleme başarıyla oluşturuldu</string>
     <string name="backup_create_failed">Yedekleme oluşturulamadı</string>
@@ -293,7 +293,7 @@
     <string name="hide_explicit">Uygunsuz içeriği gizle</string>
     <string name="discord_integration">Discord Entegrasyonu</string>
     <string name="discord_information">Metrolist, Discord hesabınızın durumunu ayarlamak için KizzyRPC kütüphanesini kullanır. Bu, Discord\'un Hizmet Şartları\'nın ihlali olarak kabul edilebilecek Discord Geçit bağlantısının kullanılmasını gerektirir. Fakat kullanıcı hesaplarının bu nedenle askıya alındığı bilinen bir örnek yoktur. Riski size ait olmak üzere kullanın. \n \nMetrolist yalnızca belirtecinizi çıkarır ve diğer her şey yerel olarak saklanır.</string>
-    <string name="logout">Oturumu kapat</string>
+    <string name="action_logout">Oturumu kapat</string>
     <string name="enable_discord_rpc">Rich Presence\'ı etkinleştir</string>
     <string name="use_login_for_browse">İçerikleri görmek için Giriş yap\'ı kullanın</string>
     <string name="use_login_for_browse_desc">Bu gördüğünüz içerikleri etkileyebilir ve örnek olarak Premium\'a özel içerikleri Premium\'a sahip bir hesapla giriş yaptıysanız size sunabilir</string>

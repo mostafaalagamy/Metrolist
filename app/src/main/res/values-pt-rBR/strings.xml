@@ -5,7 +5,7 @@
     <string name="songs">Músicas</string>
     <string name="artists">Artistas</string>
     <string name="albums">Álbuns</string>
-    <string name="playlists">Playlists</string>
+    <string name="playlists">Listas</string>
     <!-- Top bar -->
     <plurals name="n_selected">
         <item quantity="one">%d selecionado</item>
@@ -41,9 +41,9 @@
     <string name="filter_videos">Vídeos</string>
     <string name="filter_albums">Álbuns</string>
     <string name="filter_artists">Artistas</string>
-    <string name="filter_playlists">Playlists</string>
-    <string name="filter_community_playlists">Playlists da comunidade</string>
-    <string name="filter_featured_playlists">Playlists em destaque</string>
+    <string name="filter_playlists">Listas</string>
+    <string name="filter_community_playlists">Listas da comunidade</string>
+    <string name="filter_featured_playlists">Listas em destaque</string>
     <string name="filter_bookmarked">Salvos</string>
     <string name="no_results_found">Nenhum resultado encontrado</string>
     <!-- Artist screen -->
@@ -51,7 +51,7 @@
     <!-- Playlist -->
     <string name="liked_songs">Músicas favoritas</string>
     <string name="downloaded_songs">Músicas baixadas</string>
-    <string name="playlist_is_empty">Esta playlist está vazia</string>
+    <string name="playlist_is_empty">Esta lista está vazia</string>
     <!-- Button -->
     <string name="retry">Tentar novamente</string>
     <string name="radio">Rádio</string>
@@ -66,11 +66,11 @@
     <string name="add_to_queue">Adicionar à fila</string>
     <string name="add_to_library">Adicionar à biblioteca</string>
     <string name="remove_from_library">Remover da biblioteca</string>
-    <string name="download">Baixar</string>
+    <string name="action_download">Baixar</string>
     <string name="downloading">Baixando</string>
     <string name="remove_download">Remover dos baixados</string>
-    <string name="import_playlist">Importar playlist</string>
-    <string name="add_to_playlist">Adicionar à playlist</string>
+    <string name="import_playlist">Importar lista</string>
+    <string name="add_to_playlist">Adicionar à lista</string>
     <string name="view_artist">Ver artista</string>
     <string name="view_album">Ver álbum</string>
     <string name="refetch">Recarregar</string>
@@ -78,7 +78,7 @@
     <string name="delete">Apagar</string>
     <string name="remove_from_history">Remover do histórico</string>
     <string name="search_online">Pesquisar online</string>
-    <string name="sync">Sincronizar</string>
+    <string name="action_sync">Sincronizar</string>
     <string name="advanced">Avançado</string>
     <!-- Sort menu -->
     <string name="sort_by_create_date">Quando adicionado</string>
@@ -100,19 +100,19 @@
     <string name="file_size">Tamanho do arquivo</string>
     <string name="unknown">Desconhecido</string>
     <string name="copied">Copiado para a área de transferência</string>
-    <string name="edit_lyrics">Editar letras</string>
-    <string name="search_lyrics">Pesquisar letras</string>
+    <string name="edit_lyrics">Editar letra</string>
+    <string name="search_lyrics">Pesquisar letra</string>
     <string name="edit_song">Editar música</string>
     <string name="song_title">Nome da música</string>
     <string name="song_artists">Artistas da música</string>
     <string name="error_song_title_empty">O nome da música não pode ser vazio.</string>
     <string name="error_song_artist_empty">O artista da música não pode ser vazio.</string>
     <string name="save">Salvar</string>
-    <string name="choose_playlist">Selecione a playlist</string>
-    <string name="edit_playlist">Editar playlist</string>
-    <string name="create_playlist">Criar playlist</string>
-    <string name="playlist_name">Nome da playlist</string>
-    <string name="error_playlist_name_empty">O nome da playlist não pode ser vazio.</string>
+    <string name="choose_playlist">Selecione a lista</string>
+    <string name="edit_playlist">Editar lista</string>
+    <string name="create_playlist">Criar lista</string>
+    <string name="playlist_name">Nome da lista</string>
+    <string name="error_playlist_name_empty">O nome da lista não pode ser vazio.</string>
     <string name="edit_artist">Editar artista</string>
     <string name="artist_name">Nome do artista</string>
     <string name="error_artist_name_empty">O nome do artista não pode ser vazio.</string>
@@ -133,9 +133,9 @@
         <item quantity="other">%d álbuns</item>
     </plurals>
     <plurals name="n_playlist">
-        <item quantity="one">%d playlist</item>
-        <item quantity="many">%d de playlists</item>
-        <item quantity="other">%d playlists</item>
+        <item quantity="one">%d lista</item>
+        <item quantity="many">%d de listas</item>
+        <item quantity="other">%d listas</item>
     </plurals>
     <plurals name="n_week">
         <item quantity="one">%d semana</item>
@@ -153,12 +153,12 @@
         <item quantity="other">%d anos</item>
     </plurals>
     <!-- Snackbar -->
-    <string name="playlist_imported">A playlist foi importada</string>
-    <string name="removed_song_from_playlist">\"%s\" foi removido da playlist</string>
+    <string name="playlist_imported">A lista foi importada</string>
+    <string name="removed_song_from_playlist">\"%s\" foi removido da lista</string>
     <string name="playlist_synced">A playlist foi sincronizada</string>
     <string name="undo">Desfazer</string>
     <!-- Player -->
-    <string name="lyrics_not_found">As letras não foram encontradas</string>
+    <string name="lyrics_not_found">A letra não foi encontrada</string>
     <string name="sleep_timer">Timer para dormir</string>
     <string name="end_of_song">Fim da música</string>
     <plurals name="minute">
@@ -194,7 +194,7 @@
     <string name="pure_black">Preto profundo</string>
     <string name="default_open_tab">Aba padrão ao abrir o app</string>
     <string name="customize_navigation_tabs">Customizar abas de navegação</string>
-    <string name="lyrics_text_position">Posição do texto das letras</string>
+    <string name="lyrics_text_position">Posição do texto da letra</string>
     <string name="left">Esquerda</string>
     <string name="center">Centro</string>
     <string name="right">Direita</string>
@@ -235,11 +235,11 @@
     <string name="pause_search_history">Pausar o histórico de pesquisa</string>
     <string name="clear_search_history">Limpar o histórico de pesquisa</string>
     <string name="clear_search_history_confirm">Você tem certeza que deseja limpar todo o histórico de pesquisa?</string>
-    <string name="enable_kugou">Ativar o fornecedor de letras KuGou</string>
+    <string name="enable_kugou">Ativar o provedor de letras KuGou</string>
     <string name="backup_restore">Backup e restauração</string>
-    <string name="backup">Fazer backup</string>
-    <string name="restore">Restaurar</string>
-    <string name="imported_playlist">Playlist importada</string>
+    <string name="action_backup">Fazer backup</string>
+    <string name="action_restore">Restaurar</string>
+    <string name="imported_playlist">A lista foi importada</string>
     <string name="backup_create_success">O backup foi criado com sucesso</string>
     <string name="backup_create_failed">Não foi possível criar o backup</string>
     <string name="restore_failed">Falha ao restaurar o backup</string>
@@ -248,21 +248,21 @@
     <string name="new_version_available">Há uma nova versão disponível</string>
     <string name="translation_models">Modelos de Tradução</string>
     <string name="clear_translation_models">Limpar os modelos de tradução</string>
-    <string name="remove_download_playlist_confirm">Você tem certeza que deseja remover todas as músicas da playlist \"%s\" do armazenamento de Músicas Baixadas?</string>
-    <string name="delete_playlist_confirm">Você tem certeza que deseja apagar a playlist \"%s\"?</string>
-    <string name="remove_from_playlist">Remover da playlist</string>
+    <string name="remove_download_playlist_confirm">Você tem certeza que deseja remover todas as músicas da lista \"%s\" do armazenamento de Músicas Baixadas?</string>
+    <string name="delete_playlist_confirm">Você tem certeza que deseja apagar a lista \"%s\"?</string>
+    <string name="remove_from_playlist">Remover da lista</string>
     <string name="skip_duplicates">Pular duplicados</string>
-    <string name="enable_lrclib">Ativar o fornecedor de letras LrcLib</string>
+    <string name="enable_lrclib">Ativar o provedor de letras LrcLib</string>
     <string name="duplicates">Duplicados</string>
     <string name="add_anyway">Adicionar mesmo assim</string>
-    <string name="duplicates_description_single">Esta música já está na sua playlist</string>
-    <string name="duplicates_description_multiple">%d músicas já estão na sua playlist</string>
+    <string name="duplicates_description_single">Esta música já está na sua lista</string>
+    <string name="duplicates_description_multiple">%d músicas já estão na sua lista</string>
     <string name="discord_integration">Integração com o Discord</string>
     <string name="dismiss">Ignorar</string>
     <string name="options">Opções</string>
     <string name="preview">Prévia</string>
     <string name="login_failed">O login falhou</string>
-    <string name="logout">Sair</string>
+    <string name="action_logout">Sair</string>
     <string name="enable_discord_rpc">Ativar o Rich Presence</string>
     <string name="not_logged_in">Não está conectado a uma conta</string>
     <string name="discord_information">O Metrolist usa a biblioteca KizzyRPC para definir o estado da sua conta do Discord. Isto envolve o uso da conexão do Discord Gateway, que pode ser considerado uma violação dos termos de serviço do Discord. Porém, não houve nenhum relato de usuários sendo banidos por esta razão. Use por sua própria conta e risco.\n\nO Metrolist extrairá somente o seu token, e todo o resto é armazenado localmente.</string>
@@ -272,7 +272,7 @@
     <string name="player_slider_style">Estilo do controle deslizante do reprodutor</string>
     <string name="default_">Padrão</string>
     <string name="squiggly">Cobrinha</string>
-    <string name="your_youtube_playlists">Suas playlists do YouTube</string>
+    <string name="your_youtube_playlists">Suas listas do YouTube</string>
     <string name="action_like_all">Favoritar tudo</string>
     <string name="action_remove_like_all">Remover todos os favoritos</string>
     <string name="grid_cell_size">Tamanho da célula da grade</string>
@@ -301,9 +301,10 @@
     <string name="search_history">Histórico de pesquisa</string>
     <string name="disable_screenshot_desc">Quando esta opção está ativada, as capturas de tela e a visualização do app nos recentes são desativadas.</string>
     <string name="forgotten_favorites">Favoritos esquecidos</string>
-    <string name="library_playlist_empty">Suas playlists aparecerão aqui</string>
+    <string name="library_playlist_empty">Suas listas aparecerão aqui</string>
     <string name="theme">Tema</string>
     <string name="remove_all_from_library">Remover tudo da biblioteca</string>
     <string name="use_login_for_browse">Usar o login para a navegação de conteúdo</string>
     <string name="use_login_for_browse_desc">Isto pode influenciar em que conteúdo você vê, e se você tiver Premium por exemplo, verá álbuns que só estão disponíveis com Premium</string>
+    <string name="action_login">Entrar</string>
 </resources>

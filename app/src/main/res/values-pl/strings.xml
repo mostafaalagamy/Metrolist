@@ -67,7 +67,7 @@
     <string name="add_to_queue">Dodaj do kolejki</string>
     <string name="add_to_library">Dodaj do biblioteki</string>
     <string name="remove_from_library">Usuń z biblioteki</string>
-    <string name="download">Pobierz</string>
+    <string name="action_download">Pobierz</string>
     <string name="downloading">Pobieranie</string>
     <string name="remove_download">Usuń z pobranych</string>
     <string name="import_playlist">Importuj playlistę</string>
@@ -79,7 +79,7 @@
     <string name="delete">Usuń</string>
     <string name="remove_from_history">Usuń z historii</string>
     <string name="search_online">Szukaj online</string>
-    <string name="sync">Synchronizuj</string>
+    <string name="action_sync">Synchronizuj</string>
     <string name="advanced">Zaawansowany</string>
     <!-- Sort menu -->
     <string name="sort_by_create_date">Data dodania</string>
@@ -246,8 +246,8 @@
     <string name="clear_search_history_confirm">Czy na pewno chcesz wyczyścić całą historię wyszukiwania?</string>
     <string name="enable_kugou">Pobieraj teksty utworów z KuGou</string>
     <string name="backup_restore">Kopia zapasowa i przywracanie</string>
-    <string name="backup">Utwórz kopię zapasową</string>
-    <string name="restore">Przywróć</string>
+    <string name="action_backup">Utwórz kopię zapasową</string>
+    <string name="action_restore">Przywróć</string>
     <string name="imported_playlist">Zaimportowane playlisty</string>
     <string name="backup_create_success">Kopia zapasowa utworzona pomyślnie</string>
     <string name="backup_create_failed">Nie udało się stworzyć kopii zapasowej</string>
@@ -312,7 +312,7 @@
     <string name="dismiss">Odrzuć</string>
     <string name="options">Opcje</string>
     <string name="preview">Podgląd</string>
-    <string name="logout">Wyloguj</string>
+    <string name="action_logout">Wyloguj</string>
     <string name="use_login_for_browse">Zaloguj się, aby przeglądać treści</string>
     <string name="use_login_for_browse_desc">Może to mieć wpływ na to, jaką zawartość widzisz, na przykład wyświetlanie albumów dostępnych tylko w wersji premium, jeśli jesteś zalogowany na koncie Premium</string>
 </resources>

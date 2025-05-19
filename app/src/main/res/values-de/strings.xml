@@ -64,7 +64,7 @@
     <string name="add_to_queue">Zur Warteschlange hinzufügen</string>
     <string name="add_to_library">Zur Bibliothek hinzufügen</string>
     <string name="remove_from_library">Aus der Bibliothek entfernen</string>
-    <string name="download">Herunterladen</string>
+    <string name="action_download">Herunterladen</string>
     <string name="downloading">Wird heruntergeladen</string>
     <string name="remove_download">Download entfernen</string>
     <string name="import_playlist">Wiedergabeliste importieren</string>
@@ -76,7 +76,7 @@
     <string name="delete">Löschen</string>
     <string name="remove_from_history">Aus dem Wiedergabeverlauf entfernen</string>
     <string name="search_online">Online-Suche</string>
-    <string name="sync">Synchronisieren</string>
+    <string name="action_sync">Synchronisieren</string>
     <string name="advanced">Erweitert</string>
     <!-- Sort menu -->
     <string name="sort_by_create_date">Datum hinzugefügt</string>
@@ -227,8 +227,8 @@
     <string name="clear_search_history_confirm">Sind Sie sicher, dass Sie den gesamten Suchverlauf löschen wollen?</string>
     <string name="enable_kugou">KuGou-Liedtextanbieter aktivieren</string>
     <string name="backup_restore">Sichern und Wiederherstellen</string>
-    <string name="backup">Datensicherung</string>
-    <string name="restore">Wiederherstellen</string>
+    <string name="action_backup">Datensicherung</string>
+    <string name="action_restore">Wiederherstellen</string>
     <string name="imported_playlist">Importierte Wiedergabeliste</string>
     <string name="backup_create_success">Sicherung erfolgreich erstellt</string>
     <string name="backup_create_failed">Konnte keine Sicherung erstellen</string>
@@ -242,7 +242,7 @@
     <string name="action_remove_like_all">Alle aus Favoriten entfernen</string>
     <string name="default_">Standard</string>
     <string name="auto_load_more">Automatisch mehr Lieder laden</string>
-    <string name="logout">Abmeldung</string>
+    <string name="action_logout">Abmeldung</string>
     <string name="theme">Thema</string>
     <string name="other_versions">Andere Versionen</string>
     <string name="stop_music_on_task_clear">Musik stoppen wenn die App aus dem Hintergrund gelöscht wird</string>

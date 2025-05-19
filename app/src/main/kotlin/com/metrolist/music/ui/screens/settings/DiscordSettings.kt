@@ -186,13 +186,13 @@ fun DiscordSettings(
                         discordToken = ""
                         discordUsername = ""
                     }) {
-                        Text(stringResource(R.string.logout))
+                        Text(stringResource(R.string.action_logout))
                     }
                 } else {
                     OutlinedButton(onClick = {
                         navController.navigate("settings/discord/login")
                     }) {
-                        Text(stringResource(R.string.login))
+                        Text(stringResource(R.string.action_login))
                     }
                 }
             },

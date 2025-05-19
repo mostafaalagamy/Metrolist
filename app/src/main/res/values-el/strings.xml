@@ -74,7 +74,7 @@
     <string name="add_to_queue">Προσθήκη στην ουρά</string>
     <string name="add_to_library">Προσθήκη στη βιβλιοθήκη</string>
     <string name="remove_from_library">Αφαίρεση από τη βιβλιοθήκη</string>
-    <string name="download">Λήψη</string>
+    <string name="action_download">Λήψη</string>
     <string name="downloading">Γίνεται λήψη</string>
     <string name="remove_download">Αφαίρεση λήψης</string>
     <string name="import_playlist">Εισαγωγή λίστας</string>
@@ -88,7 +88,7 @@
     <string name="remove_from_playlist">Αφαίρεση από λίστα</string>
     <string name="remove_from_queue">Αφαίρεση από την ουρά</string>
     <string name="search_online">Διαδίκτυο</string>
-    <string name="sync">Συγχρονισμός</string>
+    <string name="action_sync">Συγχρονισμός</string>
     <string name="advanced">Προχωρημένο</string>
     <string name="tempo_and_pitch">Τέμπο και Τάση</string>
     <!-- Sort menu -->
@@ -266,8 +266,8 @@
     <string name="enable_kugou">Ενεργοποίηση παρόχου στίχων KuGou</string>
     <string name="hide_explicit">Απόκρυψη ρητού περιεχομένου</string>
     <string name="backup_restore">Αντίγραφα ασφ. και επαναφορά</string>
-    <string name="backup">Αντίγραφο ασφαλείας</string>
-    <string name="restore">Επαναφορά</string>
+    <string name="action_backup">Αντίγραφο ασφαλείας</string>
+    <string name="action_restore">Επαναφορά</string>
     <string name="imported_playlist">Έγινε εισαγωγή της λίστας</string>
     <string name="backup_create_success">Δημιουργία αντιγράφου ασφ. με επιτυχία</string>
     <string name="backup_create_failed">Αδυναμία δημιουργίας αντιγράφων ασφαλείας</string>
@@ -278,7 +278,7 @@
     <string name="options">Επιλογές</string>
     <string name="preview">Προεπισκόπηση</string>
     <string name="login_failed">Η σύνδεση απέτυχε</string>
-    <string name="logout">Αποσύνδεση</string>
+    <string name="action_logout">Αποσύνδεση</string>
     <string name="enable_discord_rpc">Ενεργοποίηση Πλούσιας Παρουσίας</string>
     <string name="about">Σχετικά</string>
     <string name="app_version">Έκδοση εφαρμογής</string>

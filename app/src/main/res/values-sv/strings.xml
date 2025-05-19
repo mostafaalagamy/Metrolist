@@ -24,7 +24,7 @@
     <string name="edit">Redigera</string>
     <string name="play_next">Spela upp nästa</string>
     <string name="add_to_queue">Lägg till i kön</string>
-    <string name="download">Ladda ned</string>
+    <string name="action_download">Ladda ned</string>
     <string name="remove_download">Ta bort nedladdning</string>
     <string name="import_playlist">Import playlist</string>
     <string name="add_to_playlist">Lägg till i spellista</string>

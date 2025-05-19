@@ -60,7 +60,7 @@
     <string name="add_to_queue">পরবর্তী গান যোগ করুন</string>
     <string name="add_to_library">লাইব্রেরি তে যোগ করুন</string>
     <string name="remove_from_library">লাইব্রেরি থেকে সরান</string>
-    <string name="download">ডাউনলোড</string>
+    <string name="action_download">ডাউনলোড</string>
     <string name="downloading">ডাউনলোড হচ্ছে</string>
     <string name="remove_download">ডাউনলোড মুছে ফেলুন</string>
     <string name="import_playlist">প্লেলিস্ট আমদানি করুন</string>
@@ -72,7 +72,7 @@
     <string name="delete">মুছুন</string>
     <string name="remove_from_history">ইতিহাস থেকে অপসারণ</string>
     <string name="search_online">অনলাইন এ খুঁজুন</string>
-    <string name="sync">সুসংগত</string>
+    <string name="action_sync">সুসংগত</string>
     <!-- Sort menu -->
     <string name="sort_by_create_date">সময় সম্পাদনা করা হয়েছে</string>
     <string name="sort_by_name">নাম</string>
@@ -212,8 +212,8 @@
     <string name="clear_search_history_confirm">আপনি কি আপনার অনুসন্ধান ইতিহাস মুছে ফেলার বিষয়ে নিশ্চিত?</string>
     <string name="enable_kugou">KuGou দ্বারা প্রদত্ত গানের কথা সক্রিয় করুন</string>
     <string name="backup_restore">ব্যাকআপ এবং পুনঃস্থাপন</string>
-    <string name="backup">ব্যাকআপ</string>
-    <string name="restore">পুনঃস্থাপন</string>
+    <string name="action_backup">ব্যাকআপ</string>
+    <string name="action_restore">পুনঃস্থাপন</string>
     <string name="imported_playlist">আমদানি করা প্লেলিস্ট</string>
     <string name="backup_create_success">ব্যাকআপ সফলভাবে তৈরি করা হয়েছে</string>
     <string name="backup_create_failed">ব্যাকআপ করতে অক্ষম</string>

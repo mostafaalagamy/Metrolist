@@ -64,7 +64,7 @@
     <string name="add_to_queue">Thêm vào hàng chờ</string>
     <string name="add_to_library">Thêm vào thư viện</string>
     <string name="remove_from_library">Xoá khỏi thư viện</string>
-    <string name="download">Tải xuống</string>
+    <string name="action_download">Tải xuống</string>
     <string name="downloading">Đang tải xuống</string>
     <string name="remove_download">Xoá mục đã tải xuống</string>
     <string name="import_playlist">Nhập danh sách phát</string>
@@ -76,7 +76,7 @@
     <string name="delete">Xoá</string>
     <string name="remove_from_history">Xoá khỏi lịch sử</string>
     <string name="search_online">Tìm kiếm trực tuyến</string>
-    <string name="sync">Đồng bộ</string>
+    <string name="action_sync">Đồng bộ</string>
     <string name="advanced">Nâng cao</string>
     <!-- Sort menu -->
     <string name="sort_by_create_date">Ngày thêm vào</string>
@@ -219,8 +219,8 @@
     <string name="clear_search_history_confirm">Bạn có chắc muốn xoá tất cả lịch sử tìm kiếm?</string>
     <string name="enable_kugou">Bật nhà cung cấp lời bài hát KuGou</string>
     <string name="backup_restore">Sao lưu và khôi phục</string>
-    <string name="backup">Sao lưu</string>
-    <string name="restore">Khôi phục</string>
+    <string name="action_backup">Sao lưu</string>
+    <string name="action_restore">Khôi phục</string>
     <string name="imported_playlist">Đã nhập danh sách phát</string>
     <string name="backup_create_success">Đã tạo bản sao lưu thành công</string>
     <string name="backup_create_failed">Không thể tạo bản sao lưu</string>
@@ -245,7 +245,7 @@
     <string name="options">Tùy chọn</string>
     <string name="preview">Xem trước</string>
     <string name="login_failed">Đăng nhập không thành công</string>
-    <string name="logout">Đăng xuất</string>
+    <string name="action_logout">Đăng xuất</string>
     <string name="enable_discord_rpc">Kích hoạt Rich Presence</string>
     <string name="sided">Cạnh bên</string>
     <string name="player_text_alignment">Căn chỉnh văn bản của trình phát</string>
