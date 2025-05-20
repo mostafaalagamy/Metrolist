@@ -1,22 +1,16 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="liked">Aimées</string>
     <string name="offline">Hors ligne</string>
     <string name="my_top">Mon top</string>
-
-
     <string name="select">Tout sélectionner</string>
     <string name="like_all">Tout aimer</string>
-
-
     <string name="sort_by_last_updated">Date de mise à jour</string>
     <plurals name="n_element">
         <item quantity="one">%d élément</item>
         <item quantity="many">%d éléments</item>
         <item quantity="other">%d éléments</item>
     </plurals>
-
-
     <string name="proxy">Proxy</string>
     <string name="default_lib_chips">Choix de la bibliothèque par défaut</string>
     <string name="set_quick_picks">Choix des sélections rapides</string>
@@ -27,5 +21,104 @@
     <string name="past_month">Mois dernier</string>
     <string name="past_year">L\’année dernière</string>
     <string name="top_length">Longueur de ma Top liste</string>
-
+    <string name="explore">Explorer</string>
+    <string name="remote_history">À distance</string>
+    <string name="top_music_videos">Top vidéos musicales</string>
+    <string name="added_to_play_next">Ajouté à jouer après</string>
+    <string name="allows_for_sync_witch_youtube">Note : Ceci permet de synchroniser avec YouTube Music. Ce choix est définitif.</string>
+    <string name="copy_link">Copier le lien</string>
+    <string name="added_to_queue">Ajouté à la liste de lecture</string>
+    <string name="dislike_all">Ne pas aimer tout</string>
+    <string name="general_settings">Paramètres généraux</string>
+    <string name="remove_from_cache">Retirer du cache</string>
+    <string name="link_copied">Lien copié au presse-papier</string>
+    <string name="slim_navbar">Masquer les étiquettes de la barre de navigation du bas</string>
+    <string name="lyrics">Paroles</string>
+    <string name="already_in_playlist">Déjà dans la playlist :</string>
+    <string name="swipe_song_to_add">Balayer la chanson à droite pour la prochaine musique ou à gauche pour en ajouter une à la liste de lecture</string>
+    <string name="show_top_playlist">Afficher les premières playlists</string>
+    <string name="show_cached_playlist">Afficher les playlists en cache</string>
+    <string name="token_adv_login_description">Ceci est une méthode de connexion AVANCÉE. En tant qu\'alternative au portail web, vous devez directement entrer ou mettre à jour votre jeton de connexion ici. Par exemple, ceci peut accélérer la connexion sur plusieurs appareils. Veuillez noter que tout format de jeton invalide que l\'application ne parvient pas à analyser ne sera pas accepté</string>
+    <string name="intent_supported_links_not_found">Paramètres des liens supportés introuvables, configurez-les manuellement</string>
+    <plurals name="seconds">
+        <item quantity="one">%d seconde</item>
+        <item quantity="many">%d secondes</item>
+        <item quantity="other">%d secondes</item>
+    </plurals>
+    <string name="min_playback_duration_description">Le temps minimum d\'une chanson qui doit être lue avant d\'être considérée comme lue</string>
+    <string name="open_app_settings_error">Impossible d\'ouvrir les paramètres de l\'application</string>
+    <string name="local_history">Local</string>
+    <string name="charts">Graphiques</string>
+    <string name="back_button_desc">Retour</string>
+    <string name="no_title">Pas de titre</string>
+    <string name="unknown_artist">Artiste inconnu</string>
+    <string name="unknown_item_type">Type d\'élément inconnu</string>
+    <string name="loading_charts">Chargement des graphiques…</string>
+    <string name="retry_button">Réessayer</string>
+    <string name="album_cover_desc">Pochette d\'album</string>
+    <string name="trending">Tendance</string>
+    <string name="weeks">Semaines</string>
+    <string name="months">Mois</string>
+    <string name="years">Années</string>
+    <string name="continuous">Continu</string>
+    <string name="cached_playlist">En cache</string>
+    <string name="sync_playlist">Synchroniser la playlist</string>
+    <string name="sync_disabled">Synchronisation désactivée</string>
+    <string name="elements_selected">%1$d éléments sélectionnés</string>
+    <plurals name="n_time">
+        <item quantity="one">%d temps</item>
+        <item quantity="many">%d temps</item>
+        <item quantity="other">%d temps</item>
+    </plurals>
+    <string name="seek_backward">5 secondes en arrière</string>
+    <string name="seek_forward">5 secondes en avant</string>
+    <string name="similar_content">Contenu similaire</string>
+    <string name="login_settings">Paramètres de connexion</string>
+    <string name="player_background_style">Style de l\'arrière plan du lecteur</string>
+    <string name="follow_theme">Suivre le thème</string>
+    <string name="gradient">Dégradé</string>
+    <string name="player_background_blur">Flou</string>
+    <string name="player_buttons_style">Couleurs des boutons du lecteur</string>
+    <string name="default_style">Défaut</string>
+    <string name="secondary_color_style">Secondaire</string>
+    <string name="enable_squiggly_slider">Activer la barre de défilement</string>
+    <string name="enable_swipe_thumbnail">Activer le swipe pour changer de chanson</string>
+    <string name="lyrics_click_change">Changer les paroles avec un clic</string>
+    <string name="slim">Slim</string>
+    <string name="auto_playlists">Playlists automatiques</string>
+    <string name="show_liked_playlist">Afficher les playlists likées</string>
+    <string name="show_downloaded_playlist">Afficher les playlists téléchargées</string>
+    <string name="advanced_login">Connexion avancée (jeton)</string>
+    <string name="token_hidden">Cliquer pour afficher le jeton</string>
+    <string name="token_shown">Cliquer encore pour copier ou éditer</string>
+    <string name="google">Google</string>
+    <string name="discord">Discord</string>
+    <string name="ytm_sync">Synchronise automatiquement avec votre compte YouTube Music</string>
+    <string name="general">Général</string>
+    <string name="app_language">Langue de l\'application</string>
+    <string name="configure_app_language">Configurer les langues de l\'application</string>
+    <string name="intent_app_language_not_found">Paramètres des langues de l\'application introuvables, configurez-les manuellement</string>
+    <string name="open_supported_links">Ouvrir les liens supportés par défaut</string>
+    <string name="configure_supported_links">Configurer les liens supportés</string>
+    <string name="set_first_lyrics_provider">Fournisseur de paroles préférées</string>
+    <string name="audio_quality_max">Max (beta)</string>
+    <string name="enable_similar_content">Activer le contenu similaire</string>
+    <string name="similar_content_desc">Ajoute automatiquement des chansons similaires à de la file d\'attente quand la fin est atteinte</string>
+    <string name="min_playback_duration_title">Durée minimum de lecture</string>
+    <string name="percentage_format">%d%%</string>
+    <string name="minimum_playback_duration">Durée minimum de lecture</string>
+    <string name="clear_song_cache_dialog">Êtes-vous sûr·e de vouloir vider le cache des chansons ?</string>
+    <string name="clear_downloads_dialog">Êtes-vous sûr·e de vouloir supprimer tous les téléchargements ?</string>
+    <string name="pause_remote_listen_history">Pause partage de l\'historique de lecture avec YouTube Music</string>
+    <string name="not_logged_in_youtube">Non connecté à YouTube</string>
+    <string name="default_links">Ouvrir les liens supportés</string>
+    <string name="release_notes">Notes de publication</string>
+    <string name="history_duration">Durée de l\'historique</string>
+    <string name="information">Informations</string>
+    <string name="description">Description</string>
+    <string name="numbers">Nombres</string>
+    <string name="subscribers">Abonné·es</string>
+    <string name="views">Vues</string>
+    <string name="likes">J\'aimes</string>
+    <string name="dislikes">Je n\'aime pas</string>
 </resources>
