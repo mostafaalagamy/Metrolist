@@ -38,11 +38,11 @@ object YTPlayerUtils {
      */
     private val STREAM_FALLBACK_CLIENTS: Array<YouTubeClient> = arrayOf(
         ANDROID_VR_NO_AUTH,
+        MOBILE,
         TVHTML5_SIMPLY_EMBEDDED_PLAYER,
         IOS,
         WEB,
-        WEB_CREATOR,
-        MOBILE
+        WEB_CREATOR
     )
     data class PlaybackData(
         val audioConfig: PlayerResponse.PlayerConfig.AudioConfig?,
