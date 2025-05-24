@@ -87,9 +87,9 @@ data class YouTubeClient(
 
         val MOBILE = YouTubeClient(
             clientName = "ANDROID",
-            clientVersion = "18.13.37",
+            clientVersion = "20.10.38",
             clientId = "3",
-            userAgent = "com.google.android.youtube/18.13.37 (Linux; U; Android 13; Pixel 6)",
+            userAgent = "com.google.android.youtube/20.10.38 (Linux; U; Android 11) gzip",
             loginSupported = true,
             useSignatureTimestamp = true
         )
