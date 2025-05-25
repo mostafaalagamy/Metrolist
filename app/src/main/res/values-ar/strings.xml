@@ -81,7 +81,7 @@
     <string name="remove_from_history">امسح من التاريخ</string>
     <string name="remove_from_queue">امسح من قائمة الانتظار</string>
     <string name="search_online">ابحث على الإنترنت</string>
-    <string name="sync">تزامن</string>
+    <string name="action_sync">تزامن</string>
     <string name="tempo_and_pitch">سرعة الإيقاع والحدة</string>
     <string name="sort_by_name">الاسم</string>
     <string name="sort_by_artist">الفنان</string>
@@ -226,13 +226,13 @@
     <string name="clear_listen_history">مسح تاريخ الاستماع</string>
     <string name="enable_lrclib">فعل موفر الكلمات LrcLib</string>
     <string name="backup_restore">النسخ الاحتياطي والاستعادة</string>
-    <string name="restore">استعد</string>
+    <string name="action_restore">استعد</string>
     <string name="imported_playlist">قائمة أغاني مستوردة</string>
     <string name="hide_explicit">اخفي المحتوى الصريح</string>
     <string name="backup_create_failed">تعذر إنشاء نسخة احتياطية</string>
     <string name="discord_integration">التكامل مع Discord</string>
     <string name="add_all_to_library">ضف الكل إلى المكتبة</string>
-    <string name="download">تنزيل</string>
+    <string name="action_download">تنزيل</string>
     <string name="remove_all_from_library">امسح الكل من المكتبة</string>
     <string name="downloading">يتم التنزيل</string>
     <string name="sort_by_custom">ترتيب مخصص</string>
@@ -296,7 +296,7 @@
     <string name="enable_kugou">فعل موفر الكلمات KuGou</string>
     <string name="clear_search_history_confirm">هل أنت متأكد أنك تريد مسح كل سجل البحث؟</string>
     <string name="disable_screenshot">تعطيل قابلية اخذ لقطة للشاشة</string>
-    <string name="backup">انسخ احتياطيًا</string>
+    <string name="action_backup">انسخ احتياطيًا</string>
     <string name="backup_create_success">تم إنشاء النسخة الاحتياطية بنجاح</string>
     <string name="restore_failed">فشل في استعادة النسخة الاحتياطية</string>
     <string name="options">خيارات</string>
@@ -309,7 +309,7 @@
     <string name="about">حول</string>
     <string name="app_version">نسخة التطبيق</string>
     <string name="translation_models">نماذج الترجمة</string>
-    <string name="logout">تسجيل الخروج</string>
+    <string name="action_logout">تسجيل الخروج</string>
     <string name="clear_translation_models">مسح نماذج الترجمة</string>
     <string name="disable_screenshot_desc">عند تفعيل هذا الخيار، يتم تعطيل اخذ لقطات للشاشة وعدم اظهار محتوى التطبيق في التطبيقات الأخيرة.</string>
     <string name="use_login_for_browse">استخدم تسجيل الدخول لتصفح المحتوى</string>

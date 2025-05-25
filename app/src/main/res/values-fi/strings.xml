@@ -65,7 +65,7 @@
     <string name="add_to_queue">Lisää jonoon</string>
     <string name="add_to_library">Lisää kirjastoon</string>
     <string name="remove_from_library">Poista kirjastosta</string>
-    <string name="download">Lataa</string>
+    <string name="action_download">Lataa</string>
     <string name="downloading">Lataamassa</string>
     <string name="remove_download">Poista lataus</string>
     <string name="import_playlist">Tuo soittolista</string>
@@ -77,7 +77,7 @@
     <string name="delete">Poista</string>
     <string name="remove_from_history">Poista historiasta</string>
     <string name="search_online">Etsi verkossa</string>
-    <string name="sync">Synkronoi</string>
+    <string name="action_sync">Synkronoi</string>
     <string name="advanced">Edistynyt</string>
     <!-- Sort menu -->
     <string name="sort_by_create_date">Lisäyspäivä</string>
@@ -237,7 +237,7 @@
     <string name="options">Asetukset</string>
     <string name="preview">Esikatselu</string>
     <string name="login_failed">Kirjautuminen epäonnistui</string>
-    <string name="logout">Kirjaudu ulos</string>
+    <string name="action_logout">Kirjaudu ulos</string>
     <string name="enable_discord_rpc">Tämä on Discord-integraatio-ominaisuus, se tarkoittaa Metrolist-toiminnan näyttämistä Discord-tililläsi</string>
     <string name="forgotten_favorites">Unohtuneet suosikit</string>
 </resources>

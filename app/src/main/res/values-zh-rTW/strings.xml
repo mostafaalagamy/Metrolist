@@ -79,7 +79,7 @@
     <string name="add_all_to_library">全部加入媒體庫</string>
     <string name="remove_from_library">從音樂庫中移除</string>
     <string name="remove_all_from_library">全部從音樂庫中移除</string>
-    <string name="download">下載</string>
+    <string name="action_download">下載</string>
     <string name="downloading">下載中</string>
     <string name="remove_download">刪除下載</string>
     <string name="import_playlist">匯入播放清單</string>
@@ -93,7 +93,7 @@
     <string name="remove_from_playlist">從播放清單中移除</string>
     <string name="remove_from_queue">從播放佇列中移除</string>
     <string name="search_online">線上搜尋</string>
-    <string name="sync">同步</string>
+    <string name="action_sync">同步</string>
     <string name="advanced">進階</string>
     <string name="tempo_and_pitch">速度和音調</string>
     <!-- Sort menu -->
@@ -269,8 +269,8 @@
     <string name="enable_kugou">使用酷狗音樂提供歌詞</string>
     <string name="hide_explicit">移除不適當內容</string>
     <string name="backup_restore">備份與還原</string>
-    <string name="backup">備份</string>
-    <string name="restore">還原</string>
+    <string name="action_backup">備份</string>
+    <string name="action_restore">還原</string>
     <string name="imported_playlist">已匯入的播放清單</string>
     <string name="backup_create_success">成功建立備份</string>
     <string name="backup_create_failed">無法建立備份</string>
@@ -281,7 +281,7 @@
     <string name="options">選項</string>
     <string name="preview">預覽</string>
     <string name="login_failed">登入失敗</string>
-    <string name="logout">登出</string>
+    <string name="action_logout">登出</string>
     <string name="enable_discord_rpc">啟用 Rich Presence</string>
     <string name="about">關於</string>
     <string name="app_version">應用程式版本</string>

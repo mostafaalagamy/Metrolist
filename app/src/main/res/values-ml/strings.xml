@@ -40,7 +40,7 @@
     <string name="play_next">അടുത്തത് പ്ലേ ചെയ്യുക</string>
     <string name="add_to_queue">ക്യൂവിൽ ചേർക്കുക</string>
     <string name="add_to_library">ലൈബ്രറിയിലേക്ക് ചേർക്കുക</string>
-    <string name="download">ഡൗൺലോഡ്</string>
+    <string name="action_download">ഡൗൺലോഡ്</string>
     <string name="remove_download">ഡൗൺലോഡ് നീക്കം ചെയ്യുക</string>
     <string name="import_playlist">പ്ലേലിസ്റ്റ് ഇറക്കുമതി ചെയ്യുക</string>
     <string name="add_to_playlist">പ്ലേലിസ്റ്റിൽ ആഡ് ചെയ്യുക</string>
@@ -128,8 +128,8 @@
     <string name="clear_search_history">തിരയൽ ചരിത്രം മായ്‌ക്കുക</string>
     <string name="clear_search_history_confirm">എല്ലാ തിരയൽ ചരിത്രവും മായ്‌ക്കണമെന്ന് ഉറപ്പാണോ?</string>
     <string name="backup_restore">ബാക്കപ്പും വീണ്ടെടുക്കലും</string>
-    <string name="backup">ബാക്കപ്പ്</string>
-    <string name="restore">വീണ്ടെടുക്കൽ</string>
+    <string name="action_backup">ബാക്കപ്പ്</string>
+    <string name="action_restore">വീണ്ടെടുക്കൽ</string>
     <string name="backup_create_success">ബാക്കപ്പ് സൃഷ്‌ടിച്ചു</string>
     <string name="backup_create_failed">ബാക്കപ്പ് സൃഷ്ടിക്കാൻ കഴിഞ്ഞില്ല</string>
     <string name="restore_failed">ബാക്കപ്പ് പുനഃസ്ഥാപിക്കാൻ കഴിഞ്ഞില്ല</string>
@@ -185,6 +185,6 @@
     <string name="dismiss">പിരിച്ചുവിടുക</string>
     <string name="preview">പ്രിവ്യൂ</string>
     <string name="login_failed">Login പരാജയപ്പെട്ടു</string>
-    <string name="logout">Logout</string>
+    <string name="action_logout">Logout</string>
     <string name="discord_information">നിങ്ങളുടെ Discord അക്കൗണ്ടിന്റെ സ്റ്റാറ്റസ് സജ്ജീകരിക്കാൻ Metrolist KizzyRPC ലൈബ്രറി ഉപയോഗിക്കുന്നു. ഇതിൽ Discord ഗേറ്റ്‌വേ കണക്ഷൻ ഉപയോഗിക്കുന്നത് ഉൾപ്പെടുന്നു, ഇത് Discord-ന്റെ TOS-ന്റെ ലംഘനമായി കണക്കാക്കാം. എന്നിരുന്നാലും, ഈ കാരണത്താൽ ഉപയോക്തൃ അക്കൗണ്ടുകൾ താൽക്കാലികമായി നിർത്തിവച്ചതായി അറിയപ്പെടുന്ന കേസുകളൊന്നുമില്ല. നിങ്ങളുടെ സ്വന്തം ഉത്തരവാദിത്തത്തിൽ ഉപയോഗിക്കുക.\n\nMetrolist നിങ്ങളുടെ ടോക്കൺ മാത്രമേ എക്‌സ്‌ട്രാക്‌റ്റ് ചെയ്യുകയുള്ളൂ, മറ്റെല്ലാം പ്രാദേശികമായി സംഭരിക്കപ്പെടും.</string>
 </resources>

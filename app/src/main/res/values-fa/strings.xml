@@ -65,7 +65,7 @@
     <string name="add_to_queue">اضافه‌کردن به صف</string>
     <string name="add_to_library">اضافه‌کردن به کتاب‌خانه</string>
     <string name="remove_from_library">حذف از کتاب‌خانه</string>
-    <string name="download">بارگیری</string>
+    <string name="action_download">بارگیری</string>
     <string name="downloading">درحال بارگیری</string>
     <string name="remove_download">حذف بارگیری</string>
     <string name="import_playlist">واردکردن فهرست‌پخش</string>
@@ -77,7 +77,7 @@
     <string name="delete">حذف</string>
     <string name="remove_from_history">حذف از تاریخچه</string>
     <string name="search_online">جستجوی برخط</string>
-    <string name="sync">همگام‌سازی</string>
+    <string name="action_sync">همگام‌سازی</string>
     <string name="advanced">پیشرفته</string>
     <!-- Sort menu -->
     <string name="sort_by_create_date">تاریخ اضافه‌شده</string>
@@ -228,8 +228,8 @@
     <string name="clear_search_history_confirm">آیا برای پاک‌کردن تمام سابقه جستجو مطمئن هستید؟</string>
     <string name="enable_kugou">فعال‌کردن ارائه‌دهنده‌ی متن‌ترانه‌ی KuGou</string>
     <string name="backup_restore">پشتیبان‌گیری و بازگردانی</string>
-    <string name="backup">پشتیبان‌گیری</string>
-    <string name="restore">بازگردانی</string>
+    <string name="action_backup">پشتیبان‌گیری</string>
+    <string name="action_restore">بازگردانی</string>
     <string name="imported_playlist">فهرست‌پخش واردشد</string>
     <string name="backup_create_success">پشتیبان باموفقیت ایجادشد</string>
     <string name="backup_create_failed">پشتیبان ایجاد نشد</string>
