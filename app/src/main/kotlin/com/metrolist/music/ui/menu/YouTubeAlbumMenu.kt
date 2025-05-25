@@ -371,7 +371,7 @@ fun YouTubeAlbumMenu(
                 }
                 else -> {
                     ListItem(
-                        headlineContent = { Text(text = stringResource(R.string.download)) },
+                        headlineContent = { Text(text = stringResource(R.string.action_download)) },
                         leadingContent = {
                             Icon(
                                 painter = painterResource(R.drawable.download),

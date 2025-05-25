@@ -65,7 +65,7 @@
     <string name="add_to_queue">Várólistához ad</string>
     <string name="add_to_library">Könyvtárhoz ad</string>
     <string name="remove_from_library">Eltávolítás a könyvtárból</string>
-    <string name="download">Letöltés</string>
+    <string name="action_download">Letöltés</string>
     <string name="downloading">Letöltés</string>
     <string name="remove_download">Letöltés eltávolítása</string>
     <string name="import_playlist">Lista importálása</string>
@@ -77,7 +77,7 @@
     <string name="delete">Eltávolítás</string>
     <string name="remove_from_history">Eltávolítás az előzményekból</string>
     <string name="search_online">Keresés online</string>
-    <string name="sync">Szinkronizálás</string>
+    <string name="action_sync">Szinkronizálás</string>
     <string name="advanced">Haladó</string>
     <!-- Sort menu -->
     <string name="sort_by_create_date">Létrehozás dátuma</string>
@@ -228,8 +228,8 @@
     <string name="clear_search_history_confirm">Biztosan törli az összes keresési előzményt?</string>
     <string name="enable_kugou">A KuGou dalszöveg-szolgáltató engedélyezése</string>
     <string name="backup_restore">Bizt. mentés és visszaállítás</string>
-    <string name="backup">Biztonsági mentés</string>
-    <string name="restore">Visszaállítás</string>
+    <string name="action_backup">Biztonsági mentés</string>
+    <string name="action_restore">Visszaállítás</string>
     <string name="imported_playlist">Importált lejátszási lista</string>
     <string name="backup_create_success">A biztonsági mentés sikeresen létrehozva</string>
     <string name="backup_create_failed">Nem sikerült biztonsági mentést készíteni</string>

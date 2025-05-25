@@ -64,7 +64,7 @@
     <string name="add_to_queue">목록에 추가</string>
     <string name="add_to_library">보관함에 추가</string>
     <string name="remove_from_library">보관함에서 삭제</string>
-    <string name="download">다운로드</string>
+    <string name="action_download">다운로드</string>
     <string name="downloading">다운로드 중</string>
     <string name="remove_download">다운로드 제거</string>
     <string name="import_playlist">재생목록 불러오기</string>
@@ -76,7 +76,7 @@
     <string name="delete">삭제</string>
     <string name="remove_from_history">기록에서 제거</string>
     <string name="search_online">온라인 검색</string>
-    <string name="sync">동기화</string>
+    <string name="action_sync">동기화</string>
     <string name="advanced">고급</string>
     <!-- Sort menu -->
     <string name="sort_by_create_date">추가된 날짜</string>
@@ -219,8 +219,8 @@
     <string name="clear_search_history_confirm">모든 검색 기록을 지우시겠습니까?</string>
     <string name="enable_kugou">KuGou 가사 제공자 활성화</string>
     <string name="backup_restore">백업 및 복구</string>
-    <string name="backup">백업</string>
-    <string name="restore">복구</string>
+    <string name="action_backup">백업</string>
+    <string name="action_restore">복구</string>
     <string name="imported_playlist">가져온 재생목록</string>
     <string name="backup_create_success">백업이 성공적으로 생성되었습니다</string>
     <string name="backup_create_failed">백업을 생성할 수 없습니다</string>
@@ -272,7 +272,7 @@
     <string name="discord_integration">Discord 통합</string>
     <string name="discord_information">Metrolist은 KizzyRPC 라이브러리를 사용하여 Discord 계정의 상태를 설정합니다. 여기에는 Discord Gateway 연결을 사용하는 것이 포함되며, 이는 Discord의 TOS 위반으로 간주될 수 있습니다. 그러나 이러한 이유로 사용자 계정이 정지된 사례는 알려진 바가 없습니다. 사용에 따른 책임은 본인에게 있습니다. \n \nMetrolist은 토큰만 추출하며 그 밖의 모든 내용은 로컬에 저장됩니다.</string>
     <string name="options">옵션</string>
-    <string name="logout">로그아웃</string>
+    <string name="action_logout">로그아웃</string>
     <string name="action_like_all">모두 좋아요</string>
     <string name="action_remove_like_all">좋아요 모두 취소</string>
     <string name="squiggly">구불구불</string>

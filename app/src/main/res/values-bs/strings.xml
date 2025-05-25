@@ -136,7 +136,7 @@
     <string name="remove_from_playlist">Ukloni iz spiska</string>
     <string name="remove_from_library">Ukloni iz biblioteke</string>
     <string name="downloading">Preuzima se</string>
-    <string name="download">Preuzmi</string>
+    <string name="action_download">Preuzmi</string>
     <string name="remove_download">Ukloni preuzimanje</string>
     <string name="search_lyrics">Pretraži tekstove</string>
     <string name="import_playlist">Uvezi spisku</string>
@@ -154,7 +154,7 @@
     <string name="advanced">Napredno</string>
     <string name="sort_by_year">Godina</string>
     <string name="remove_from_history">Ukloni iz historije</string>
-    <string name="sync">Sinkronizuj</string>
+    <string name="action_sync">Sinkronizuj</string>
     <string name="sort_by_name">Ime</string>
     <string name="sort_by_custom">Posebni red</string>
     <string name="loudness">Glasnoća</string>
@@ -271,8 +271,8 @@
     <string name="enable_lrclib">Omogući LrcLib dobavljača teksta</string>
     <string name="hide_explicit">Sakrij eksplicitan sadržaj</string>
     <string name="backup_restore">Rezervne kopije i povratak</string>
-    <string name="backup">Rezervna kopija</string>
-    <string name="restore">Povratak</string>
+    <string name="action_backup">Rezervna kopija</string>
+    <string name="action_restore">Povratak</string>
     <string name="imported_playlist">Spiska je uvezena</string>
     <string name="discord_information">Metrolist koristi KizzyRPC biblioteku kako bi stavio tvoj Discord status. Ovo uključuje korištenje Discord Gateway spajanja, što bi se moglo smatrati prekršajem Discord-ovog TOS-a. Međutim nema poznatih slučajeva gdje su korisnički nalozi bili suspendovani zbog ovoga razloga. Korisite na svoju štetu.\n\nMetrolist će samo izvesti vaš žeton, i sve drugo je lokalno sklađeno.</string>
     <string name="login_failed">Neuspješno upisivanje</string>
@@ -280,7 +280,7 @@
     <string name="preview">Pregled</string>
     <string name="enable_discord_rpc">Omogući Bogatu Prisutnost</string>
     <string name="app_version">Verzija aplikacije</string>
-    <string name="logout">Izpiši se</string>
+    <string name="action_logout">Izpiši se</string>
     <string name="about">O Metrolist-u</string>
     <string name="clear_translation_models">Rasčisti modele prevođenja</string>
     <string name="new_version_available">Dostupna je nova verzija</string>

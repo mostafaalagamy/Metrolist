@@ -95,7 +95,7 @@
     <string name="add_all_to_library">Add all to library</string>
     <string name="remove_from_library">Remove from library</string>
     <string name="remove_all_from_library">Remove all from library</string>
-    <string name="download">Download</string>
+    <string name="action_download">Download</string>
     <string name="downloading">Downloading</string>
     <string name="remove_download">Remove download</string>
     <string name="import_playlist">Import playlist</string>
@@ -109,7 +109,7 @@
     <string name="remove_from_playlist">Remove from playlist</string>
     <string name="remove_from_queue">Remove from queue</string>
     <string name="search_online">Search online</string>
-    <string name="sync">Sync</string>
+    <string name="action_sync">Sync</string>
     <string name="advanced">Advanced</string>
     <string name="tempo_and_pitch">Tempo and Pitch</string>
 
@@ -256,8 +256,12 @@
     <string name="big">Big</string>
 
     <string name="content">Content</string>
+    <string name="action_logout">Log out</string>
+    <string name="action_login">Log in</string>
     <string name="login">Login</string>
     <string name="not_logged_in">Not logged in</string>
+    <string name="login_failed">Login failed</string>
+
     <string name="content_language">Default content language</string>
     <string name="content_country">Default content country</string>
     <string name="system_default">System default</string>
@@ -314,20 +318,18 @@
     <string name="hide_explicit">Hide explicit content</string>
 
     <string name="backup_restore">Backup and restore</string>
-    <string name="backup">Backup</string>
-    <string name="restore">Restore</string>
+    <string name="action_backup">Backup</string>
+    <string name="action_restore">Restore</string>
     <string name="imported_playlist">Imported playlist</string>
     <string name="backup_create_success">Backup created successfully</string>
     <string name="backup_create_failed">Couldn\'t create backup</string>
     <string name="restore_failed">Failed to restore backup</string>
 
     <string name="discord_integration">Discord Integration</string>
-    <string name="discord_information">Metrolist uses the KizzyRPC library to set your Discord account\'s status. This involves using the Discord Gateway connection, which may be considered a violation of Discord\'s TOS. However, there are no known cases of user accounts being suspended for this reason. Use at your own risk.\n\nMetrolist will only extract your token, and everything else is stored locally.</string>
+    <string name="discord_information">Metrolist uses the KizzyRPC library to set your Discord account\'s status. This involves using the Discord Gateway connection, which may be considered a violation of Discord\'s TOS. However, there are no known cases of user accounts being suspended for this reason. Use at your own risk.\n\Metrolist will only extract your token, and everything else is stored locally.</string>
     <string name="dismiss">Dismiss</string>
     <string name="options">Options</string>
     <string name="preview">Preview</string>
-    <string name="login_failed">Login failed</string>
-    <string name="logout">Logout</string>
     <string name="enable_discord_rpc">Enable Rich Presence</string>
 
     <string name="about">About</string>
