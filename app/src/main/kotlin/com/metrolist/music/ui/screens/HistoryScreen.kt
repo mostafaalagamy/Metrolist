@@ -200,7 +200,12 @@ fun HistoryScreen(
                         listOf(HistorySource.LOCAL to stringResource(R.string.local_history))
                     },
                     currentValue = historySource,
-                    onValueUpdate = { viewModel.historySource.value = it }
+                    onValueUpdate = {
+                        viewModel.historySource.value = it
+                        if (it == HistorySource.REMOTE){
+                            viewModel.fetchRemoteHistory()
+                        }
+                    }
                 )
             }
 
