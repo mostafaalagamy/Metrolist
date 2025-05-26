@@ -44,7 +44,7 @@ materialKolor = { module = "com.materialkolor:material-kolor", version.ref = "ma
 
 coil = { group = "io.coil-kt", name = "coil-compose", version = "2.7.0" }
 
-shimmer = { group = "com.valentinilk.shimmer", name = "compose-shimmer", version = "1.3.2" }
+shimmer = { group = "com.valentinilk.shimmer", name = "compose-shimmer", version = "1.3.3" }
 
 palette = { group = "androidx.palette", name = "palette", version = "1.0.0" }
 
