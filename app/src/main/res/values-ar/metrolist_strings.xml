@@ -94,6 +94,20 @@
     <string name="show_top_playlist">إظهار قائمة الأعلى أستماع</string>
     <string name="show_cached_playlist">إظهار قائمة الأغاني المخزنة مؤقتًا</string>
 
+    <string name="generating_image">جاري إنشاء الصورة</string>
+    <string name="please_wait">انتظر من فضلك</string>
+    <string name="cancel">إلغاء</string>
+    <string name="share_lyrics">شارك كلمات الأغاني</string>
+    <string name="share_as_text">المشاركة كنص</string>
+    <string name="share_as_image">المشاركة كصورة</string>
+    <string name="max_selection_limit">الحد الأقصى للاختيار</string>
+    <string name="share_selected">شارك العناصر المحدده</string>
+    <string name="customize_colors">تخصيص الألوان</string>
+    <string name="more_options">مزيد من الخيارات</string>
+    <string name="text_color">لون النص</string>
+    <string name="secondary_text_color">لون النص الثانوي</string>
+    <string name="background_color">لون الخلفية</string>
+
     <string name="google">جوجل</string>
     <string name="discord">ديسكورد</string>
     <string name="advanced_login">تسجيل الدخول المتقدم (token)</string>
