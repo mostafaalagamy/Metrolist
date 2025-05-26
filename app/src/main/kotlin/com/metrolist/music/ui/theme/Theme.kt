@@ -36,16 +36,14 @@ fun MetrolistTheme(
     themeColor: Color = DefaultThemeColor,
     content: @Composable () -> Unit,
 ) {
-    val context = LocalContext.current
-
     // Use rememberDynamicColorScheme from materialKolor v3.x
     // It should handle Android S+ dynamic color fallback when seed is default.
-    // Pass context for this purpose.
+    // The context parameter is removed as it's not expected in v3.x API based on error.
     val baseColorScheme = rememberDynamicColorScheme(
         seedColor = themeColor,
         isDark = darkTheme,
-        style = PaletteStyle.TonalSpot, // Keep existing style
-        context = context // Context is needed for system dynamic colors
+        style = PaletteStyle.TonalSpot // Keep existing style
+        // context = context // Removed: Context is not expected in this version's API
     )
 
     // Apply pureBlack modification if needed, similar to original logic
