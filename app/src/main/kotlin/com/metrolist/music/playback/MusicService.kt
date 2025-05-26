@@ -69,7 +69,6 @@ import com.metrolist.music.constants.MediaSessionConstants.CommandToggleLike
 import com.metrolist.music.constants.MediaSessionConstants.CommandToggleRepeatMode
 import com.metrolist.music.constants.MediaSessionConstants.CommandToggleShuffle
 import com.metrolist.music.constants.PauseListenHistoryKey
-import com.metrolist.music.constants.PauseRemoteListenHistoryKey
 import com.metrolist.music.constants.PersistentQueueKey
 import com.metrolist.music.constants.PlayerVolumeKey
 import com.metrolist.music.constants.RepeatModeKey
@@ -819,7 +818,7 @@ class MusicService :
                             sampleRate = format.audioSampleRate,
                             contentLength = format.contentLength!!,
                             loudnessDb = playbackData.audioConfig?.loudnessDb,
-                            playbackUrl = playbackData.streamUrl
+                            playbackUrl = playbackData.playbackTracking?.videostatsPlaybackUrl?.baseUrl
                         )
                     )
                 }
@@ -886,16 +885,15 @@ class MusicService :
                 } catch (_: SQLException) {
             }
         }
-        if (!dataStore.get(PauseRemoteListenHistoryKey, false)) {
-            CoroutineScope(Dispatchers.IO).launch {
-                val playbackUrl = database.format(mediaItem.mediaId).first()?.playbackUrl
-                    ?: YTPlayerUtils.playerResponseForMetadata(mediaItem.mediaId, null)
-                        .getOrNull()?.playbackTracking?.videostatsPlaybackUrl?.baseUrl
-                playbackUrl?.let {
-                    YouTube.registerPlayback(null, playbackUrl)
-                        .onFailure {
-                            reportException(it)
-                        }
+
+        CoroutineScope(Dispatchers.IO).launch {
+            val playbackUrl = database.format(mediaItem.mediaId).first()?.playbackUrl
+                ?: YTPlayerUtils.playerResponseForMetadata(mediaItem.mediaId, null)
+                    .getOrNull()?.playbackTracking?.videostatsPlaybackUrl?.baseUrl
+            playbackUrl?.let {
+                YouTube.registerPlayback(null, playbackUrl)
+                    .onFailure {
+                        reportException(it)
                     }
                 }
             }
