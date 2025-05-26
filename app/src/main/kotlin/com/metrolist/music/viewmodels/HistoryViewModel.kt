@@ -67,7 +67,7 @@ constructor(
     init {
         fetchRemoteHistory()
     }
-    
+
     fun fetchRemoteHistory() {
         viewModelScope.launch(Dispatchers.IO) {
             YouTube.musicHistory().onSuccess {
