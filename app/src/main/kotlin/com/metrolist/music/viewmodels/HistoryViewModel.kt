@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.metrolist.innertube.YouTube
 import com.metrolist.innertube.pages.HistoryPage
 import com.metrolist.music.constants.HistorySource
+import com.metrolist.music.utils.reportException
 import com.metrolist.music.db.MusicDatabase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -64,8 +65,16 @@ constructor(
             }.stateIn(viewModelScope, SharingStarted.Lazily, emptyMap())
 
     init {
+        fetchRemoteHistory()
+    }
+
+    fun fetchRemoteHistory() {
         viewModelScope.launch(Dispatchers.IO) {
-            historyPage.value = YouTube.musicHistory().getOrNull()
+            YouTube.musicHistory().onSuccess {
+                historyPage.value = it
+            }.onFailure {
+                reportException(it)
+            }
         }
     }
 }
