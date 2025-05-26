@@ -8,6 +8,8 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -56,10 +58,14 @@ private val popExitTransition: AnimatedContentTransitionScope<*>.() -> ExitTrans
             slideOutHorizontally(targetOffsetX = { it / 4 }, animationSpec = tween(NavTransitionDuration))
 }
 
+@OptIn(ExperimentalMaterial3Api::class) // Needed for SettingsScreen scrollBehavior
 fun NavGraphBuilder.navigationBuilder(
     navController: NavHostController,
     startDestination: String,
     pureBlack: Boolean,
+    // Add necessary parameters passed down from MainActivity
+    settingsScrollBehavior: TopAppBarScrollBehavior, // Example: Assuming SettingsScreen needs this
+    latestVersionName: String // Example: Assuming SettingsScreen needs this
 ) {
     // Main navigation graph
     composable(
@@ -70,13 +76,19 @@ fun NavGraphBuilder.navigationBuilder(
         popExitTransition = popExitTransition
     ) {
         val viewModel = hiltViewModel<HomeViewModel>()
-        val scrollToTop by viewModel.scrollToTop.collectAsState(initial = false)
+        // Assuming HomeViewModel has scrollToTop and resetScrollToTop
+        val scrollToTop by navController.currentBackStackEntry
+            ?.savedStateHandle
+            ?.getStateFlow("scrollToTop", false)
+            ?.collectAsState() ?: remember { mutableStateOf(false) }
+
         LaunchedEffect(scrollToTop) {
-            if (scrollToTop) {
-                // Reset scroll state or trigger scroll action here
-                viewModel.resetScrollToTop()
+            if (scrollToTop == true) {
+                // Reset scroll state or trigger scroll action here (logic might be in HomeScreen)
+                navController.currentBackStackEntry?.savedStateHandle?.set("scrollToTop", false)
             }
         }
+        // Pass necessary parameters to HomeScreen
         HomeScreen(navController = navController, viewModel = viewModel, pureBlack = pureBlack)
     }
     composable(
@@ -87,13 +99,19 @@ fun NavGraphBuilder.navigationBuilder(
         popExitTransition = popExitTransition
     ) {
         val viewModel = hiltViewModel<ExploreViewModel>()
-        val scrollToTop by viewModel.scrollToTop.collectAsState(initial = false)
+        // Assuming ExploreViewModel has scrollToTop and resetScrollToTop
+        val scrollToTop by navController.currentBackStackEntry
+            ?.savedStateHandle
+            ?.getStateFlow("scrollToTop", false)
+            ?.collectAsState() ?: remember { mutableStateOf(false) }
+
         LaunchedEffect(scrollToTop) {
-            if (scrollToTop) {
-                // Reset scroll state or trigger scroll action here
-                viewModel.resetScrollToTop()
+            if (scrollToTop == true) {
+                // Reset scroll state or trigger scroll action here (logic might be in ExploreScreen)
+                navController.currentBackStackEntry?.savedStateHandle?.set("scrollToTop", false)
             }
         }
+        // Pass necessary parameters to ExploreScreen
         ExploreScreen(navController = navController, viewModel = viewModel, pureBlack = pureBlack)
     }
     composable(
@@ -104,13 +122,19 @@ fun NavGraphBuilder.navigationBuilder(
         popExitTransition = popExitTransition
     ) {
         val viewModel = hiltViewModel<LibraryViewModel>()
-        val scrollToTop by viewModel.scrollToTop.collectAsState(initial = false)
+        // Assuming LibraryViewModel has scrollToTop and resetScrollToTop
+        val scrollToTop by navController.currentBackStackEntry
+            ?.savedStateHandle
+            ?.getStateFlow("scrollToTop", false)
+            ?.collectAsState() ?: remember { mutableStateOf(false) }
+
         LaunchedEffect(scrollToTop) {
-            if (scrollToTop) {
-                // Reset scroll state or trigger scroll action here
-                viewModel.resetScrollToTop()
+            if (scrollToTop == true) {
+                // Reset scroll state or trigger scroll action here (logic might be in LibraryScreen)
+                navController.currentBackStackEntry?.savedStateHandle?.set("scrollToTop", false)
             }
         }
+        // Pass necessary parameters to LibraryScreen
         LibraryScreen(navController = navController, viewModel = viewModel, pureBlack = pureBlack)
     }
 
@@ -125,27 +149,37 @@ fun NavGraphBuilder.navigationBuilder(
     ) { backStackEntry ->
         val query = remember { URLDecoder.decode(backStackEntry.arguments?.getString("query") ?: "", "UTF-8") }
         val viewModel = hiltViewModel<SearchViewModel>()
+        // Pass necessary parameters to SearchScreen
         SearchScreen(query = query, navController = navController, viewModel = viewModel, pureBlack = pureBlack)
     }
 
     // Settings Navigation Graph (Example of nested graph)
     navigation(
         startDestination = "settings_main",
-        route = "settings",
+        route = "settings", // Route for the nested graph
         enterTransition = { fadeIn(animationSpec = tween(NavTransitionDuration)) },
         exitTransition = { fadeOut(animationSpec = tween(NavTransitionDuration / 2)) }
     ) {
         composable(
-            route = "settings_main",
+            route = "settings_main", // Route for the main settings screen within the nested graph
             enterTransition = enterTransition,
             exitTransition = exitTransition,
             popEnterTransition = popEnterTransition,
             popExitTransition = popExitTransition
         ) {
             val viewModel = hiltViewModel<SettingsViewModel>()
-            SettingsScreen(navController = navController, viewModel = viewModel, pureBlack = pureBlack)
+            // Pass necessary parameters to SettingsScreen
+            SettingsScreen(
+                navController = navController,
+                viewModel = viewModel,
+                pureBlack = pureBlack,
+                scrollBehavior = settingsScrollBehavior, // Pass the scroll behavior
+                latestVersionName = latestVersionName // Pass the version name
+            )
         }
-        // Add other settings screens here if needed
+        // Add other settings screens here if needed, e.g.:
+        // composable("settings/appearance") { ... }
+        // composable("settings/storage") { ... } // Assuming StorageSettings is navigated to from SettingsScreen
     }
 }
 
