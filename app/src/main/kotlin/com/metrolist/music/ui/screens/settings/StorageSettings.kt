@@ -14,6 +14,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarScrollBehavior
@@ -25,6 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -86,14 +88,14 @@ fun StorageSettings(
     }
     val imageCacheProgress by animateFloatAsState(
         targetValue = (imageCacheSize.toFloat() / imageDiskCache.maxSize).coerceIn(0f, 1f),
-        label = "",
+        label = "imageCacheProgress",
     )
     val playerCacheProgress by animateFloatAsState(
         targetValue = (playerCacheSize.toFloat() / (maxSongCacheSize * 1024 * 1024L)).coerceIn(
             0f,
             1f
         ),
-        label = "",
+        label = "playerCacheProgress",
     )
 
     LaunchedEffect(imageDiskCache) {
@@ -174,12 +176,16 @@ fun StorageSettings(
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp),
             )
         } else {
+            // Use M3 LinearProgressIndicator with theme colors
             LinearProgressIndicator(
                 progress = { playerCacheProgress },
                 modifier =
                 Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp, vertical = 6.dp),
+                color = MaterialTheme.colorScheme.primary, // Explicitly use theme color
+                trackColor = MaterialTheme.colorScheme.surfaceVariant, // Use appropriate track color
+                strokeCap = StrokeCap.Round // M3 default style
             )
 
             Text(
@@ -239,12 +245,16 @@ fun StorageSettings(
             title = stringResource(R.string.image_cache),
         )
 
+        // Use M3 LinearProgressIndicator with theme colors
         LinearProgressIndicator(
             progress = { imageCacheProgress },
             modifier =
             Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 6.dp),
+            color = MaterialTheme.colorScheme.primary, // Explicitly use theme color
+            trackColor = MaterialTheme.colorScheme.surfaceVariant, // Use appropriate track color
+            strokeCap = StrokeCap.Round // M3 default style
         )
 
         Text(
@@ -289,3 +299,4 @@ fun StorageSettings(
         }
     )
 }
+
