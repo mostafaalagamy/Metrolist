@@ -6,6 +6,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -28,16 +30,24 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.BlurEffect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.media3.common.PlaybackException
@@ -49,7 +59,8 @@ import com.metrolist.music.constants.MiniPlayerHeight
 import com.metrolist.music.constants.ThumbnailCornerRadius
 import com.metrolist.music.extensions.togglePlayPause
 import com.metrolist.music.models.MediaMetadata
-import com.metrolist.music.utils.rememberPreference
+import kotlin.math.absoluteValue
+import kotlin.math.roundToInt
 
 @Composable
 fun MiniPlayer(
@@ -64,28 +75,59 @@ fun MiniPlayer(
     val error by playerConnection.error.collectAsState()
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
     val canSkipNext by playerConnection.canSkipNext.collectAsState()
+    val canSkipPrevious by playerConnection.canSkipPrevious.collectAsState()
+    
+    val currentView = LocalView.current
+    val layoutDirection = LocalLayoutDirection.current
+    
+    var offsetX by remember { mutableFloatStateOf(0f) }
 
     Box(
-        modifier =
-        modifier
+        modifier = modifier
             .fillMaxWidth()
             .height(MiniPlayerHeight)
             .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Horizontal))
-            .background(if (pureBlack) Color.Black else Color.Transparent),
+            .background(if (pureBlack) Color.Black else Color.Transparent)
+            .pointerInput(Unit) {
+                detectHorizontalDragGestures(
+                    onDragStart = {},
+                    onDragCancel = {
+                        offsetX = 0f
+                    },
+                    onHorizontalDrag = { _, dragAmount ->
+                        val adjustedDragAmount = 
+                            if (layoutDirection == LayoutDirection.Rtl) -dragAmount else dragAmount
+                        offsetX += adjustedDragAmount
+                    },
+                    onDragEnd = {
+                        val threshold = 0.15f * currentView.width // 15% of screen width
+                        
+                        when {
+                            offsetX > threshold && canSkipPrevious -> {
+                                playerConnection.player.seekToPreviousMediaItem()
+                            }
+                            offsetX < -threshold && canSkipNext -> {
+                                playerConnection.player.seekToNext()
+                            }
+                        }
+                        offsetX = 0f
+                    }
+                )
+            }
     ) {
         LinearProgressIndicator(
             progress = { (position.toFloat() / duration).coerceIn(0f, 1f) },
-            modifier =
-            Modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .height(2.dp)
                 .align(Alignment.BottomCenter),
         )
+        
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier =
-            modifier
+            modifier = Modifier
                 .fillMaxSize()
+                .offset { IntOffset(offsetX.roundToInt(), 0) }
                 .padding(end = 12.dp),
         ) {
             Box(Modifier.weight(1f)) {
@@ -110,8 +152,7 @@ fun MiniPlayer(
                 },
             ) {
                 Icon(
-                    painter =
-                    painterResource(
+                    painter = painterResource(
                         if (playbackState == Player.STATE_ENDED) {
                             R.drawable.replay
                         } else if (isPlaying) {
@@ -131,6 +172,26 @@ fun MiniPlayer(
                 Icon(
                     painter = painterResource(R.drawable.skip_next),
                     contentDescription = null,
+                )
+            }
+        }
+        
+        // Visual cloud indicator
+        if (offsetX.absoluteValue > 50f) {
+            Box(
+                modifier = Modifier
+                    .align(if (offsetX > 0) Alignment.CenterStart else Alignment.CenterEnd)
+                    .padding(horizontal = 16.dp)
+            ) {
+                Icon(
+                    painter = painterResource(
+                        if (offsetX > 0) R.drawable.skip_previous else R.drawable.skip_next
+                    ),
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary.copy(
+                        alpha = (offsetX.absoluteValue / 200f).coerceIn(0f, 1f)
+                    ),
+                    modifier = Modifier.size(24.dp)
                 )
             }
         }
@@ -197,17 +258,14 @@ fun MiniMediaInfo(
                         painter = painterResource(R.drawable.info),
                         contentDescription = null,
                         tint = MaterialTheme.colorScheme.error,
-                        modifier =
-                        Modifier
-                            .align(Alignment.Center),
+                        modifier = Modifier.align(Alignment.Center),
                     )
                 }
             }
         }
 
         Column(
-            modifier =
-            Modifier
+            modifier = Modifier
                 .weight(1f)
                 .padding(horizontal = 6.dp),
         ) {
