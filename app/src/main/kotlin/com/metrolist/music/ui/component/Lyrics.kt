@@ -303,12 +303,10 @@ fun Lyrics(
          * Calculate the lyric offset Based on how many lines (\n chars)
          */
         fun calculateOffset() = with(density) {
-            if (landscapeOffset) {
-                16.dp.toPx()
-                    .toInt() * countNewLine(lines[currentLineIndex].text) // landscape sits higher by default
-            } else {
-                20.dp.toPx().toInt() * countNewLine(lines[currentLineIndex].text)
-            }
+            if (currentLineIndex < 0 || currentLineIndex >= lines.size) return@with 0
+            val count = countNewLine(lines[currentLineIndex].text)
+            val dpValue = if (landscapeOffset) 16.dp else 20.dp
+            dpValue.toPx().toInt() * count
         }
 
         if (!isSynced) return@LaunchedEffect
