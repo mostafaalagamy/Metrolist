@@ -1,93 +1,124 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="explore">Explorar</string>
-
-
     <string name="weeks">Semanas</string>
     <string name="months">Meses</string>
     <string name="years">Anos</string>
     <string name="continuous">Contínuo</string>
-
-
-    <string name="liked">Curtidas</string>
+    <string name="liked">Favoritas</string>
     <string name="offline">Baixadas</string>
     <string name="my_top">Meu Top</string>
-
-
-
     <string name="elements_selected">%1$d elementos selecionados</string>
-
-
     <string name="select">Selecionar tudo</string>
-    <string name="like_all">Curtir tudo</string>
-    <string name="sort_by_last_updated">Data de atualização</string>
+    <string name="like_all">Favoritar tudo</string>
+    <string name="sort_by_last_updated">Quando atualizado</string>
     <string name="lyrics">Letra</string>
-
-    <string name="already_in_playlist">Já está na playlist:</string>
-
+    <string name="already_in_playlist">Já está na lista:</string>
     <plurals name="n_element">
         <item quantity="one">%d elemento</item>
+        <item quantity="many">%d de elementos</item>
         <item quantity="other">%d elementos</item>
     </plurals>
     <plurals name="n_time">
         <item quantity="one">%d vez</item>
+        <item quantity="many">%d de vezes</item>
         <item quantity="other">%d vezes</item>
     </plurals>
-
-
     <string name="seek_backward">Voltar 5 segundos</string>
     <string name="seek_forward">Avançar 5 segundos</string>
-
-
     <string name="similar_content">Conteúdo similar</string>
-
-
     <string name="login_settings">Configurações de login</string>
     <string name="general_settings">Configurações gerais</string>
-
-    <string name="player_background_style">Estilo de fundo do player</string>
-    <string name="follow_theme">Seguir tema</string>
+    <string name="player_background_style">Estilo do fundo do reprodutor</string>
+    <string name="follow_theme">Seguir o tema</string>
     <string name="gradient">Gradiente</string>
-    <string name="player_background_blur">Desfoque</string>
-    <string name="enable_squiggly_slider">Ativar controle deslizante ondulado</string>
-    <string name="enable_swipe_thumbnail">Ativar deslizar para trocar de música</string>
-    <string name="lyrics_click_change">Trocar letra ao clicar</string>
-    <string name="slim">Liso</string>
+    <string name="player_background_blur">Desfocado</string>
+    <string name="enable_squiggly_slider">Ativar controle deslizante cobrinha</string>
+    <string name="enable_swipe_thumbnail">Habilitar o deslizar para trocar de música</string>
+    <string name="lyrics_click_change">Alterar letra ao clicar</string>
+    <string name="slim">Pequeno</string>
     <string name="slim_navbar">Ocultar rótulos da barra de navegação inferior</string>
-
     <string name="google">Google</string>
     <string name="discord">Discord</string>
     <string name="general">Geral</string>
     <string name="proxy">Proxy</string>
-    <string name="default_lib_chips">Alterar biblioteca padrão</string>
-    <string name="set_quick_picks">Definir seleções rápidas</string>
+    <string name="default_lib_chips">Alterar tela da biblioteca padrão</string>
+    <string name="set_quick_picks">Definir escolhas rápidas</string>
     <string name="last_song_listened">Com base na última música ouvida</string>
     <string name="app_language">Idioma do app</string>
-    <string name="configure_app_language">Configurar idiomas do app</string>
-    <string name="intent_app_language_not_found">Não foi possível encontrar as configurações de idioma do app, por favor, configure manualmente</string>
+    <string name="configure_app_language">Configure os idiomas do app</string>
+    <string name="intent_app_language_not_found">Não foi possível encontrar as configurações de idioma do app, por favor, configure-as manualmente</string>
     <string name="open_supported_links">Abrir links suportados por padrão</string>
-    <string name="configure_supported_links">Configurar links suportados</string>
-    <string name="intent_supported_links_not_found">Não foi possível encontrar as configurações de links suportados, por favor, configure manualmente</string>
+    <string name="configure_supported_links">Configure os links suportados</string>
+    <string name="intent_supported_links_not_found">Não foi possível encontrar as configurações de links suportados, por favor, configure-os manualmente</string>
     <string name="set_first_lyrics_provider">Provedor de letras preferido</string>
-
     <string name="audio_quality_max">Máxima (beta)</string>
-    <string name="enable_similar_content">Ativar Conteúdo Similar</string>
+    <string name="enable_similar_content">Habilitar conteúdo similar</string>
     <string name="similar_content_desc">Adicionar automaticamente mais músicas similares quando o final da fila for alcançado</string>
     <string name="default_links">Abrir links suportados</string>
     <string name="open_app_settings_error">Não foi possível abrir as configurações do app</string>
-
     <string name="release_notes">Notas de versão</string>
-
-    <string name="all_time">De todos os tempos</string>
+    <string name="all_time">Desde sempre</string>
     <string name="past_24_hours">Últimas 24 horas</string>
     <string name="past_week">Última semana</string>
     <string name="past_month">Último mês</string>
     <string name="past_year">Último ano</string>
-    <string name="top_length">Comprimento da minha lista principal</string>
+    <string name="top_length">Comprimento da lista Meu Top</string>
     <string name="history_duration">Duração do histórico</string>
-
     <plurals name="seconds">
-        <item quantity="one">1 segundo</item>
+        <item quantity="one">%d segundo</item>
+        <item quantity="many">%d de segundos</item>
         <item quantity="other">%d segundos</item>
     </plurals>
+    <string name="local_history">Local</string>
+    <string name="cached_playlist">Em cache</string>
+    <string name="token_adv_login_description">Esse é um método avançado de login. Como uma alternativa ao portal web, você pode digitar ou atualizar o seu token diretamente por aqui. Como exemplo, isso pode fazer com que fazer login em vários dispositivos seja mais rápido. Observa que qualquer formato inválido do token que o app não consiga interpretar não será aceitado</string>
+    <string name="information">Informações</string>
+    <string name="allows_for_sync_witch_youtube">Observação: Isso permite a sincronização com o YouTube Music. Isso NÃO pode ser alterado mais tarde.</string>
+    <string name="swipe_song_to_add">Deslizar na música para direita para tocar a próxima ou para a esquerda para adicionar na fila</string>
+    <string name="show_top_playlist">Mostrar lista de Top</string>
+    <string name="show_cached_playlist">Mostrar lista de músicas em cache</string>
+    <string name="remote_history">Remoto</string>
+    <string name="charts">Rankings</string>
+    <string name="back_button_desc">Voltar</string>
+    <string name="no_title">Nenhum título</string>
+    <string name="unknown_artist">Artista desconhecido</string>
+    <string name="unknown_item_type">Tipo do item desconhecido</string>
+    <string name="loading_charts">Carregando rankings...</string>
+    <string name="retry_button">Repetir</string>
+    <string name="album_cover_desc">Arte do álbum</string>
+    <string name="top_music_videos">Vídeos de música populares</string>
+    <string name="trending">Em alta</string>
+    <string name="sync_disabled">Sincronização desativada</string>
+    <string name="added_to_play_next">Será tocado na próxima</string>
+    <string name="added_to_queue">Adicionado à fila</string>
+    <string name="remove_from_cache">Remover do cache</string>
+    <string name="copy_link">Copiar link</string>
+    <string name="link_copied">Link copiado para a área de transferência</string>
+    <string name="player_buttons_style">Cores dos botões do reprodutor</string>
+    <string name="default_style">Padrão</string>
+    <string name="secondary_color_style">Secundárias</string>
+    <string name="auto_playlists">Listas automáticas</string>
+    <string name="show_downloaded_playlist">Mostrar lista de baixados</string>
+    <string name="sync_playlist">Sincronizar lista</string>
+    <string name="dislike_all">Desfavoritar tudo</string>
+    <string name="show_liked_playlist">Mostrar lista de favoritos</string>
+    <string name="advanced_login">Login avançado (token)</string>
+    <string name="token_hidden">Toque para mostrar o token</string>
+    <string name="token_shown">Toque novamente para copiar ou editar</string>
+    <string name="ytm_sync">Sincronizar com a sua conta do YouTube Music automaticamente</string>
+    <string name="min_playback_duration_title">Duração de reprodução mínima</string>
+    <string name="min_playback_duration_description">O tempo mínimo que uma música deve ser tocada para que seja considerada \"tocada\"</string>
+    <string name="percentage_format">%d%%</string>
+    <string name="minimum_playback_duration">Duração de reprodução mínima</string>
+    <string name="clear_song_cache_dialog">Você tem certeza que quer limpar todas as músicas em cache?</string>
+    <string name="clear_downloads_dialog">Você tem certeza que você quer limpar todos os downloads?</string>
+    <string name="pause_remote_listen_history">Pausar o compartilhamento do histórico de reprodução com o YouTube Music</string>
+    <string name="not_logged_in_youtube">Não conectado ao YouTube</string>
+    <string name="description">Descrição</string>
+    <string name="numbers">Números</string>
+    <string name="subscribers">Inscritos</string>
+    <string name="views">Visualizações</string>
+    <string name="likes">Favoritos</string>
+    <string name="dislikes">Desgostados</string>
 </resources>
