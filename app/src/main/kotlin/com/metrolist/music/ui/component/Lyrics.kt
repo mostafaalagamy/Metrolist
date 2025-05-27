@@ -6,11 +6,11 @@ import android.content.res.Configuration
 import android.os.Build
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -33,7 +33,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -301,12 +303,10 @@ fun Lyrics(
          * Calculate the lyric offset Based on how many lines (\n chars)
          */
         fun calculateOffset() = with(density) {
-            if (landscapeOffset) {
-                16.dp.toPx()
-                    .toInt() * countNewLine(lines[currentLineIndex].text) // landscape sits higher by default
-            } else {
-                20.dp.toPx().toInt() * countNewLine(lines[currentLineIndex].text)
-            }
+            if (currentLineIndex < 0 || currentLineIndex >= lines.size) return@with 0
+            val count = countNewLine(lines[currentLineIndex].text)
+            val dpValue = if (landscapeOffset) 16.dp else 20.dp
+            dpValue.toPx().toInt() * count
         }
 
         if (!isSynced) return@LaunchedEffect
@@ -717,43 +717,36 @@ fun Lyrics(
     }
 
     if (showColorPickerDialog && shareDialogData != null) {
-        // 'lyricsText' now contains the potentially multi-line selected lyrics
         val (lyricsText, songTitle, artists) = shareDialogData!!
         val coverUrl = mediaMetadata?.thumbnailUrl
-        // context, density, configuration already defined above
         val paletteColors = remember { mutableStateListOf<Color>() }
 
-        // --- Font Size Calculation ---
-        // Calculate available dimensions for text fitting
         val previewCardWidth = configuration.screenWidthDp.dp * 0.90f
         val previewPadding = 20.dp * 2
         val previewBoxPadding = 28.dp * 2
         val previewAvailableWidth = previewCardWidth - previewPadding - previewBoxPadding
-
-        // Calculate height considerations
         val previewBoxHeight = 340.dp
         val headerFooterEstimate = (48.dp + 14.dp + 16.dp + 20.dp + 8.dp + 28.dp * 2)
-        val previewAvailableHeight = previewBoxHeight - headerFooterEstimate        // Define the base style for measurement
+        val previewAvailableHeight = previewBoxHeight - headerFooterEstimate
+
         val textStyleForMeasurement = TextStyle(
             color = previewTextColor,
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center
-        )        // Obtener textMeasurer en el contexto @Composable correcto
+        )
         val textMeasurer = rememberTextMeasurer()
 
-        // Calculate font size dynamically with more appropriate values
         val calculatedFontSize = rememberAdjustedFontSize(
             text = lyricsText,
             maxWidth = previewAvailableWidth,
             maxHeight = previewAvailableHeight,
             density = density,
-            initialFontSize = 50.sp,  // Larger initial size
-            minFontSize = 22.sp,      // Largest minimum size
+            initialFontSize = 50.sp,
+            minFontSize = 22.sp,
             style = textStyleForMeasurement,
             textMeasurer = textMeasurer
         )
 
-        // LaunchedEffect for palette extraction from cover art remains unchanged
         LaunchedEffect(coverUrl) {
             if (coverUrl != null) {
                 withContext(Dispatchers.IO) {
@@ -769,7 +762,7 @@ fun Lyrics(
                                 .filter { color ->
                                     val hsv = FloatArray(3)
                                     android.graphics.Color.colorToHSV(color.toArgb(), hsv)
-                                    hsv[1] > 0.2f // saturación
+                                    hsv[1] > 0.2f
                                 }
                             paletteColors.clear()
                             paletteColors.addAll(colors.take(5))
@@ -778,6 +771,7 @@ fun Lyrics(
                 }
             }
         }
+
         BasicAlertDialog(onDismissRequest = { showColorPickerDialog = false }) {
             Card(
                 shape = RoundedCornerShape(20.dp),
@@ -787,7 +781,9 @@ fun Lyrics(
             ) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.padding(20.dp)
+                    modifier = Modifier
+                        .verticalScroll(rememberScrollState())
+                        .padding(20.dp)
                 ) {
                     Text(
                         text = stringResource(id = R.string.customize_colors),
@@ -798,7 +794,6 @@ fun Lyrics(
 
                     Spacer(modifier = Modifier.height(12.dp))
 
-                    // Preview card with current color settings
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -811,21 +806,13 @@ fun Lyrics(
                             backgroundColor = previewBackgroundColor,
                             textColor = previewTextColor,
                             secondaryTextColor = previewSecondaryTextColor
-                            // No fontSize parameter needed as LyricsImageCard now calculates it internally
                         )
                     }
 
                     Spacer(modifier = Modifier.height(18.dp))
 
-                    // Color selection sections
-                    Text(
-                        text = stringResource(id = R.string.background_color),
-                        style = MaterialTheme.typography.titleMedium
-                    )
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        modifier = Modifier.padding(vertical = 8.dp)
-                    ) {
+                    Text(text = stringResource(id = R.string.background_color), style = MaterialTheme.typography.titleMedium)
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.padding(vertical = 8.dp)) {
                         (paletteColors + listOf(Color(0xFF242424), Color(0xFF121212), Color.White, Color.Black, Color(0xFFF5F5F5))).distinct().take(8).forEach { color ->
                             Box(
                                 modifier = Modifier
@@ -836,16 +823,9 @@ fun Lyrics(
                             )
                         }
                     }
-                    Spacer(modifier = Modifier.height(8.dp))
 
-                    Text(
-                        text = stringResource(id = R.string.text_color),
-                        style = MaterialTheme.typography.titleMedium
-                    )
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        modifier = Modifier.padding(vertical = 8.dp)
-                    ) {
+                    Text(text = stringResource(id = R.string.text_color), style = MaterialTheme.typography.titleMedium)
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.padding(vertical = 8.dp)) {
                         (paletteColors + listOf(Color.White, Color.Black, Color(0xFF1DB954))).distinct().take(8).forEach { color ->
                             Box(
                                 modifier = Modifier
@@ -856,16 +836,9 @@ fun Lyrics(
                             )
                         }
                     }
-                    Spacer(modifier = Modifier.height(8.dp))
 
-                    Text(
-                        text = stringResource(id = R.string.secondary_text_color),
-                        style = MaterialTheme.typography.titleMedium
-                    )
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        modifier = Modifier.padding(vertical = 8.dp)
-                    ) {
+                    Text(text = stringResource(id = R.string.secondary_text_color), style = MaterialTheme.typography.titleMedium)
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.padding(vertical = 8.dp)) {
                         (paletteColors.map { it.copy(alpha = 0.7f) } + listOf(Color.White.copy(alpha = 0.7f), Color.Black.copy(alpha = 0.7f), Color(0xFF1DB954))).distinct().take(8).forEach { color ->
                             Box(
                                 modifier = Modifier
@@ -876,16 +849,13 @@ fun Lyrics(
                             )
                         }
                     }
+
                     Spacer(modifier = Modifier.height(12.dp))
 
                     Button(
                         onClick = {
                             showColorPickerDialog = false
                             showProgressDialog = true
-                            // Aumentar ligeramente el tamaño de fuente para la imagen final para asegurar consistencia
-                            // con la vista previa y mejor legibilidad en distintos dispositivos
-                            calculatedFontSize.value * 1.1f // Aplicar un multiplicador
-
                             scope.launch {
                                 try {
                                     val screenWidth = configuration.screenWidthDp
