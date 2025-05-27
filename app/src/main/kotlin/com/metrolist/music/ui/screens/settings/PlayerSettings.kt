@@ -40,6 +40,7 @@ import com.metrolist.music.R
 import com.metrolist.music.constants.AudioNormalizationKey
 import com.metrolist.music.constants.AudioQuality
 import com.metrolist.music.constants.AudioQualityKey
+import com.metrolist.music.constants.AutoDownloadOnLikeKey
 import com.metrolist.music.constants.AutoLoadMoreKey
 import com.metrolist.music.constants.AutoSkipNextOnErrorKey
 import com.metrolist.music.constants.PersistentQueueKey
@@ -82,6 +83,10 @@ fun PlayerSettings(
     val (autoLoadMore, onAutoLoadMoreChange) = rememberPreference(
         AutoLoadMoreKey,
         defaultValue = true
+    )
+    val (autoDownloadOnLike, onAutoDownloadOnLikeChange) = rememberPreference(
+        AutoDownloadOnLikeKey,
+        defaultValue = false
     )
     val (similarContentEnabled, similarContentEnabledChange) = rememberPreference(
         key = SimilarContent,
@@ -170,6 +175,14 @@ fun PlayerSettings(
             icon = { Icon(painterResource(R.drawable.playlist_add), null) },
             checked = autoLoadMore,
             onCheckedChange = onAutoLoadMoreChange
+        )
+
+        SwitchPreference(
+            title = { Text(stringResource(R.string.auto_download_on_like)) },
+            description = stringResource(R.string.auto_download_on_like_desc),
+            icon = { Icon(painterResource(R.drawable.download), null) },
+            checked = autoDownloadOnLike,
+            onCheckedChange = onAutoDownloadOnLikeChange
         )
 
         SwitchPreference(

@@ -47,6 +47,7 @@ object YTPlayerUtils {
     data class PlaybackData(
         val audioConfig: PlayerResponse.PlayerConfig.AudioConfig?,
         val videoDetails: PlayerResponse.VideoDetails?,
+        val playbackTracking: PlayerResponse.PlaybackTracking?,
         val format: PlayerResponse.StreamingData.Format,
         val streamUrl: String,
         val streamExpiresInSeconds: Int,
@@ -88,6 +89,7 @@ object YTPlayerUtils {
             YouTube.player(videoId, playlistId, MAIN_CLIENT, signatureTimestamp).getOrThrow()
         val audioConfig = mainPlayerResponse.playerConfig?.audioConfig
         val videoDetails = mainPlayerResponse.videoDetails
+        val playbackTracking = mainPlayerResponse.playbackTracking
         var format: PlayerResponse.StreamingData.Format? = null
         var streamUrl: String? = null
         var streamExpiresInSeconds: Int? = null
@@ -206,6 +208,7 @@ object YTPlayerUtils {
         PlaybackData(
             audioConfig,
             videoDetails,
+            playbackTracking,
             format,
             streamUrl,
             streamExpiresInSeconds,

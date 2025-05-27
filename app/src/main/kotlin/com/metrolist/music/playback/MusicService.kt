@@ -60,6 +60,7 @@ import com.metrolist.music.R
 import com.metrolist.music.constants.AudioNormalizationKey
 import com.metrolist.music.constants.AudioQualityKey
 import com.metrolist.music.constants.AutoLoadMoreKey
+import com.metrolist.music.constants.AutoDownloadOnLikeKey
 import com.metrolist.music.constants.AutoSkipNextOnErrorKey
 import com.metrolist.music.constants.DiscordTokenKey
 import com.metrolist.music.constants.EnableDiscordRPCKey
@@ -69,7 +70,6 @@ import com.metrolist.music.constants.MediaSessionConstants.CommandToggleLike
 import com.metrolist.music.constants.MediaSessionConstants.CommandToggleRepeatMode
 import com.metrolist.music.constants.MediaSessionConstants.CommandToggleShuffle
 import com.metrolist.music.constants.PauseListenHistoryKey
-import com.metrolist.music.constants.PauseRemoteListenHistoryKey
 import com.metrolist.music.constants.PersistentQueueKey
 import com.metrolist.music.constants.PlayerVolumeKey
 import com.metrolist.music.constants.RepeatModeKey
@@ -636,6 +636,22 @@ class MusicService :
                  val song = it.song.toggleLike()
                  update(song)
                  syncUtils.likeSong(song)
+
+                 // Check if auto-download on like is enabled and the song is now liked
+                 if (dataStore.get(AutoDownloadOnLikeKey, false) && song.liked) {
+                     // Trigger download for the liked song
+                     val downloadRequest = androidx.media3.exoplayer.offline.DownloadRequest
+                         .Builder(song.id, song.id.toUri())
+                         .setCustomCacheKey(song.id)
+                         .setData(song.title.toByteArray())
+                         .build()
+                     androidx.media3.exoplayer.offline.DownloadService.sendAddDownload(
+                         this@MusicService,
+                         ExoDownloadService::class.java,
+                         downloadRequest,
+                         false
+                     )
+                 }
              }
          }
      }
@@ -819,7 +835,7 @@ class MusicService :
                             sampleRate = format.audioSampleRate,
                             contentLength = format.contentLength!!,
                             loudnessDb = playbackData.audioConfig?.loudnessDb,
-                            playbackUrl = playbackData.streamUrl
+                            playbackUrl = playbackData.playbackTracking?.videostatsPlaybackUrl?.baseUrl
                         )
                     )
                 }
@@ -886,16 +902,15 @@ class MusicService :
                 } catch (_: SQLException) {
             }
         }
-        if (!dataStore.get(PauseRemoteListenHistoryKey, false)) {
-            CoroutineScope(Dispatchers.IO).launch {
-                val playbackUrl = database.format(mediaItem.mediaId).first()?.playbackUrl
-                    ?: YTPlayerUtils.playerResponseForMetadata(mediaItem.mediaId, null)
-                        .getOrNull()?.playbackTracking?.videostatsPlaybackUrl?.baseUrl
-                playbackUrl?.let {
-                    YouTube.registerPlayback(null, playbackUrl)
-                        .onFailure {
-                            reportException(it)
-                        }
+
+        CoroutineScope(Dispatchers.IO).launch {
+            val playbackUrl = database.format(mediaItem.mediaId).first()?.playbackUrl
+                ?: YTPlayerUtils.playerResponseForMetadata(mediaItem.mediaId, null)
+                    .getOrNull()?.playbackTracking?.videostatsPlaybackUrl?.baseUrl
+            playbackUrl?.let {
+                YouTube.registerPlayback(null, playbackUrl)
+                    .onFailure {
+                        reportException(it)
                     }
                 }
             }
