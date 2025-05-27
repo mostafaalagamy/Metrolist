@@ -1,10 +1,23 @@
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:base"],
-  "ignoreUnstable": false,
-  "packageRules": [
-    {
-      "matchPackagePatterns": ["*"]
-    }
-  ]
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended"
+  ],
+  "ignoreUnstable": false,
+  "packageRules": [
+    {
+      "matchPackageNames": [
+        "*"
+      ]
+    },
+    {
+      "matchManagers": [
+        "gradle"
+      ],
+      "enabled": false,
+      "matchPackageNames": [
+        "/^com\\.github\\.libre\\-tube:NewPipeExtractor$/"
+      ]
+    }
+  ]
 }
