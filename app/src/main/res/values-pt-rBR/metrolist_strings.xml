@@ -121,4 +121,19 @@
     <string name="views">Visualizações</string>
     <string name="likes">Favoritos</string>
     <string name="dislikes">Desgostados</string>
+    <string name="cancel">Cancelar</string>
+    <string name="share_lyrics">Compartilhar letra</string>
+    <string name="share_as_text">Compartilhar como texto</string>
+    <string name="share_as_image">Compartilhar como imagem</string>
+    <string name="max_selection_limit">Limite máximo de seleção</string>
+    <string name="share_selected">Compartilhar selecionado</string>
+    <string name="customize_colors">Customizar cores</string>
+    <string name="more_options">Mais opções</string>
+    <string name="text_color">Cor do texto</string>
+    <string name="secondary_text_color">Cor secundária do texto</string>
+    <string name="background_color">Cor de fundo</string>
+    <string name="auto_download_on_like">Baixar automaticamente ao curtir</string>
+    <string name="auto_download_on_like_desc">Baixar músicas automaticamente quando você as curte</string>
+    <string name="please_wait">Por favor aguarde</string>
+    <string name="generating_image">Gerando imagem</string>
 </resources>
