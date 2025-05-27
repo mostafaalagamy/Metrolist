@@ -1,34 +1,24 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="explore">Навігація</string>
-
-
     <string name="local_history">Локально</string>
     <string name="remote_history">Віддалено</string>
-
-
     <string name="weeks">Тижні</string>
     <string name="months">Місяці</string>
     <string name="years">Роки</string>
     <string name="continuous">Безперервно</string>
-
-
     <string name="liked">Вподобане</string>
     <string name="offline">Завантажене</string>
     <string name="my_top">Мій Топ</string>
     <string name="sync_playlist">Синхронізувати плейлист</string>
     <string name="elements_selected">%1$d Елементів обрано</string>
     <string name="allows_for_sync_witch_youtube">Зауважте: Це дозволяє синхронізацію з YouTube Music. Це НЕ можна буде змінити пізніше.</string>
-
-
     <string name="select">Обрати все</string>
     <string name="like_all">Вподобати все</string>
     <string name="dislike_all">Прибрати усі вподобання</string>
     <string name="sort_by_last_updated">Нещодавно оновлені</string>
     <string name="lyrics">Тексти</string>
-
     <string name="already_in_playlist">Вже в плейлисті:</string>
-
     <plurals name="n_element">
         <item quantity="one">%d елемент</item>
         <item quantity="few">%d елементи</item>
@@ -41,18 +31,11 @@
         <item quantity="many">%d разів</item>
         <item quantity="other">%d разів</item>
     </plurals>
-
-
     <string name="seek_backward">5 секунд назад</string>
     <string name="seek_forward">5 секунд вперед</string>
-
-
     <string name="similar_content">Подібний контент</string>
-
-
     <string name="login_settings">Параметри входу</string>
     <string name="general_settings">Загальні параметри</string>
-
     <string name="player_background_style">Стиль фону програвача</string>
     <string name="follow_theme">Дотримуватись теми</string>
     <string name="gradient">Градієнт</string>
@@ -61,7 +44,6 @@
     <string name="enable_swipe_thumbnail">Перемикання пісень свайпом по обкладинці</string>
     <string name="lyrics_click_change">Змінити текст пісні при натисканні</string>
     <string name="slim_navbar">Приховати мітки нижньої панелі навігації</string>
-
     <string name="google">Google</string>
     <string name="discord">Discord</string>
     <string name="advanced_login">Просунутий вхід (токен)</string>
@@ -80,15 +62,12 @@
     <string name="configure_supported_links">Налаштувати підтримувані посилання</string>
     <string name="intent_supported_links_not_found">Не вдалося знайти налаштування підтримуваних посилань, будь ласка, налаштуйте їх вручну</string>
     <string name="set_first_lyrics_provider">Призначити основний провайдер текстів</string>
-
     <string name="audio_quality_max">Максимум (бета)</string>
     <string name="enable_similar_content">Увімкнути подібний контент</string>
     <string name="similar_content_desc">Автоматично додавати більше схожих пісень, коли буде досягнуто кінця черги</string>
     <string name="default_links">Відкрити підтримувані посилання</string>
     <string name="open_app_settings_error">Не вдалося відкрити налаштування застосунку</string>
-
     <string name="release_notes">Примітки релізу</string>
-
     <string name="all_time">Весь час</string>
     <string name="past_24_hours">Минулі 24 години</string>
     <string name="past_week">Минулий тиждень</string>
@@ -96,11 +75,10 @@
     <string name="past_year">Минулий рік</string>
     <string name="top_length">Довжина мого топ-списку</string>
     <string name="history_duration">Довжина історії</string>
-
     <plurals name="seconds">
-        <item quantity="one">1 секунда</item>
+        <item quantity="one">%d секунда</item>
         <item quantity="few">%d секунди</item>
         <item quantity="many">%d cекунд</item>
-        <item quantity="other">%d секунд</item>
+        <item quantity="other">%d cекунд</item>
     </plurals>
 </resources>
