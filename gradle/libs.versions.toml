@@ -23,7 +23,7 @@ gradle = { group = "com.android.tools.build", name = "gradle", version.ref = "an
 activity = { group = "androidx.activity", name = "activity-compose", version = "1.12.0-alpha01" }
 navigation = { group = "androidx.navigation", name = "navigation-compose", version = "2.9.0-rc01" }
 hilt-navigation = { group = "androidx.hilt", name = "hilt-navigation-compose", version = "1.2.0" }
-datastore = { group = "androidx.datastore", name = "datastore-preferences", version = "1.2.0-alpha01" }
+datastore = { group = "androidx.datastore", name = "datastore-preferences", version = "1.2.0-alpha02" }
 
 compose-runtime = { group = "androidx.compose.runtime", name = "runtime", version.ref = "compose" }
 compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "compose" }
