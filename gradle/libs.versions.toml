@@ -1,7 +1,7 @@
 [versions]
 androidGradlePlugin = "8.12.0-alpha02"
 annotation = "1.9.1"
-json = "20250107"
+json = "20250517"
 kotlin = "2.2.0-RC"
 compose = "1.9.0-alpha03"
 lifecycle = "2.9.0"
