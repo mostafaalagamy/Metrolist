@@ -18,7 +18,7 @@ permissions:
 
 jobs:
   build:
-    if: github.actor != 'dependabot[bot]'
+    if: github.actor != 'dependabot[bot]' && github.actor != 'renovate[bot]'
     runs-on: ubuntu-latest
 
     strategy:
@@ -70,7 +70,7 @@ jobs:
           path: app/build/outputs/apk/${{ matrix.abi }}/release/out/*
 
   build_debug:
-    if: github.actor != 'dependabot[bot]'
+    if: github.actor != 'dependabot[bot]' && github.actor != 'renovate[bot]'
     runs-on: ubuntu-latest
 
     steps:
