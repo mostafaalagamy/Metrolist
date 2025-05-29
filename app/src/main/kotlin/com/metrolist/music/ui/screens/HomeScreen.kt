@@ -1,6 +1,7 @@
 package com.metrolist.music.ui.screens
 
 import android.annotation.SuppressLint
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
@@ -93,6 +94,7 @@ import com.metrolist.music.playback.queues.YouTubeAlbumRadio
 import com.metrolist.music.playback.queues.YouTubeQueue
 import com.metrolist.music.ui.component.AlbumGridItem
 import com.metrolist.music.ui.component.ArtistGridItem
+import com.metrolist.music.ui.component.ChipsRow
 import com.metrolist.music.ui.component.HideOnScrollFAB
 import com.metrolist.music.ui.component.LocalBottomSheetPageState
 import com.metrolist.music.ui.component.LocalMenuState
@@ -149,6 +151,7 @@ fun HomeScreen(
 
     val allLocalItems by viewModel.allLocalItems.collectAsState()
     val allYtItems by viewModel.allYtItems.collectAsState()
+    val selectedChip by viewModel.selectedChip.collectAsState()
 
     val isLoading: Boolean by viewModel.isLoading.collectAsState()
     val isRefreshing by viewModel.isRefreshing.collectAsState()
@@ -188,7 +191,12 @@ fun HomeScreen(
             }
     }
 
-
+    if (selectedChip != null) {
+        BackHandler {
+            // if a chip is selected, go back to the normal homepage first
+            viewModel.toggleChip(selectedChip)
+        }
+    }
 
     val localGridItem: @Composable (LocalItem) -> Unit = {
         when (it) {
@@ -372,6 +380,16 @@ fun HomeScreen(
             state = lazylistState,
             contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues()
         ) {
+            item {
+                ChipsRow(
+                    chips = homePage?.originalPage?.chips?.mapNotNull { it to it.title } ?: emptyList(),
+                    currentValue = selectedChip,
+                    onValueUpdate = {
+                        viewModel.toggleChip(it)
+                    }
+                )
+            }
+
             quickPicks?.takeIf { it.isNotEmpty() }?.let { quickPicks ->
                 item {
                     NavigationTitle(
@@ -783,7 +801,7 @@ fun HomeScreen(
                     }
                 }
             }
-            if (isLoading || homePage?.originalPage?.continuation != null) {
+            if (isLoading || (homePage?.originalPage?.continuation != null && homePage?.originalPage?.sections?.isNotEmpty() == true)) {
                 item {
                     ShimmerHost(
                         modifier = Modifier.animateItem()
