@@ -1,6 +1,7 @@
 package com.metrolist.music.ui.screens
 
 import android.annotation.SuppressLint
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
@@ -148,6 +149,7 @@ fun HomeScreen(
 
     val allLocalItems by viewModel.allLocalItems.collectAsState()
     val allYtItems by viewModel.allYtItems.collectAsState()
+    val selectedChip by viewModel.selectedChip.collectAsState()
 
     val isLoading: Boolean by viewModel.isLoading.collectAsState()
     val isRefreshing by viewModel.isRefreshing.collectAsState()
@@ -187,7 +189,12 @@ fun HomeScreen(
             }
     }
 
-
+    if (selectedChip != null) {
+        BackHandler {
+            // if a chip is selected, go back to the normal homepage first
+            viewModel.toggleChip(selectedChip)
+        }
+    }
 
     val localGridItem: @Composable (LocalItem) -> Unit = {
         when (it) {
@@ -404,6 +411,16 @@ fun HomeScreen(
                         containerColor = MaterialTheme.colorScheme.surfaceContainer
                     )
                 }
+            }
+
+            item {
+                ChipsRow(
+                    chips = homePage?.originalPage?.chips?.mapNotNull { it to it.title } ?: emptyList(),
+                    currentValue = selectedChip,
+                    onValueUpdate = {
+                        viewModel.toggleChip(it)
+                    }
+                )
             }
 
             quickPicks?.takeIf { it.isNotEmpty() }?.let { quickPicks ->
@@ -748,7 +765,7 @@ fun HomeScreen(
                     }
                 }
             }
-            if (isLoading || homePage?.originalPage?.continuation != null) {
+            if (isLoading || (homePage?.originalPage?.continuation != null && homePage?.originalPage?.sections?.isNotEmpty() == true)) {
                 item {
                     ShimmerHost(
                         modifier = Modifier.animateItem()
