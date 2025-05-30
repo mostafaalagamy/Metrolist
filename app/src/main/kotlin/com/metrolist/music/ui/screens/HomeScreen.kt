@@ -379,41 +379,6 @@ fun HomeScreen(
             contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues()
         ) {
             item {
-                Row(
-                    modifier = Modifier
-                        .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Horizontal))
-                        .fillMaxWidth()
-                        .animateItem()
-                ) {
-                    ChipsRow(
-                        chips = listOfNotNull(
-                            Pair("history", stringResource(R.string.history)),
-                            Pair("stats", stringResource(R.string.stats)),
-                            Pair("liked", stringResource(R.string.liked)),
-                            Pair("downloads", stringResource(R.string.offline)),
-                            Pair("cache", stringResource(R.string.cached_playlist)),
-                            if (isLoggedIn) Pair(
-                                "account",
-                                stringResource(R.string.account)
-                            ) else null
-                        ),
-                        currentValue = "",
-                        onValueUpdate = { value ->
-                            when (value) {
-                                "history" -> navController.navigate("history")
-                                "stats" -> navController.navigate("stats")
-                                "liked" -> navController.navigate("auto_playlist/liked")
-                                "downloads" -> navController.navigate("auto_playlist/downloaded")
-                                "cache" -> navController.navigate("cache_playlist/cached")
-                                "account" -> if (isLoggedIn) navController.navigate("account")
-                            }
-                        },
-                        containerColor = MaterialTheme.colorScheme.surfaceContainer
-                    )
-                }
-            }
-
-            item {
                 ChipsRow(
                     chips = homePage?.originalPage?.chips?.mapNotNull { it to it.title } ?: emptyList(),
                     currentValue = selectedChip,
