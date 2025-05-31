@@ -28,6 +28,8 @@ fun LibraryScreen(navController: NavController) {
                     LibraryFilter.SONGS to stringResource(R.string.filter_songs),
                     LibraryFilter.ALBUMS to stringResource(R.string.filter_albums),
                     LibraryFilter.ARTISTS to stringResource(R.string.filter_artists),
+                    LibraryFilter.HISTORY to stringResource(R.string.history),
+                    LibraryFilter.STATS to stringResource(R.string.stats),
                 ),
                 currentValue = filterType,
                 onValueUpdate = {
@@ -60,6 +62,16 @@ fun LibraryScreen(navController: NavController) {
             LibraryFilter.ARTISTS -> LibraryArtistsScreen(
                 navController,
                 { filterType = LibraryFilter.LIBRARY })
+
+            LibraryFilter.HISTORY -> {
+                navController.navigate("history")
+                filterType = LibraryFilter.LIBRARY
+            }
+
+            LibraryFilter.STATS -> {
+                navController.navigate("stats")
+                filterType = LibraryFilter.LIBRARY
+            }
         }
     }
 }
