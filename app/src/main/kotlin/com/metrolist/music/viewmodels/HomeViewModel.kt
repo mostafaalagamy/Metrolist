@@ -51,11 +51,12 @@ class HomeViewModel @Inject constructor(
     val similarRecommendations = MutableStateFlow<List<SimilarRecommendation>?>(null)
     val accountPlaylists = MutableStateFlow<List<PlaylistItem>?>(null)
     val homePage = MutableStateFlow<HomePageWithBrowseCheck?>(null)
-    val selectedChip = MutableStateFlow<HomePage.Chip?>(null)
-    private val previousHomePage = MutableStateFlow<HomePageWithBrowseCheck?>(null)
     val explorePage = MutableStateFlow<ExplorePage?>(null)
     val recentActivity = MutableStateFlow<List<YTItem>?>(null)
     val recentPlaylistsDb = MutableStateFlow<List<Playlist>?>(null)
+
+    val selectedChip = MutableStateFlow<HomePage.Chip?>(null)
+    private val previousHomePage = MutableStateFlow<HomePageWithBrowseCheck?>(null)
 
     val allLocalItems = MutableStateFlow<List<LocalItem>>(emptyList())
     val allYtItems = MutableStateFlow<List<YTItem>>(emptyList())
@@ -255,31 +256,6 @@ class HomeViewModel @Inject constructor(
                 homePage.value?.browseContentAvailable ?: emptyMap(),
             )
             selectedChip.value = chip
-        }
-    }
-
-    private val _isLoadingMore = MutableStateFlow(false)
-    fun loadMoreYouTubeItems(continuation: String?) {
-        if (continuation == null || _isLoadingMore.value) return
-        val hideExplicit = context.dataStore.get(HideExplicitKey, false)
-
-        viewModelScope.launch(Dispatchers.IO) {
-            _isLoadingMore.value = true
-            val nextSections = YouTube.home(continuation).getOrNull() ?: run {
-                _isLoadingMore.value = false
-                return@launch
-            }
-
-            val page = homePage.value?.originalPage
-            homePage.value = HomePageWithBrowseCheck(
-                nextSections.copy(
-                    sections = (page?.sections.orEmpty() + nextSections.sections).map { section ->
-                        section.copy(items = section.items.filterExplicit(hideExplicit))
-                    }
-                ),
-                homePage.value?.browseContentAvailable ?: emptyMap()
-            )
-            _isLoadingMore.value = false
         }
     }
 
