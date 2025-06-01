@@ -31,6 +31,7 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
 import javax.inject.Inject
+import kotlin.collections.map
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
@@ -205,6 +206,31 @@ class HomeViewModel @Inject constructor(
                 val relatedSongs = database.getRelatedSongs(song.id).first().shuffled().take(20)
                 quickPicks.value = relatedSongs
             }
+        }
+    }
+
+    private val _isLoadingMore = MutableStateFlow(false)
+    fun loadMoreYouTubeItems(continuation: String?) {
+        if (continuation == null || _isLoadingMore.value) return
+        val hideExplicit = context.dataStore.get(HideExplicitKey, false)
+
+        viewModelScope.launch(Dispatchers.IO) {
+            _isLoadingMore.value = true
+            val nextSections = YouTube.home(continuation).getOrNull() ?: run {
+                _isLoadingMore.value = false
+                return@launch
+            }
+
+            val page = homePage.value?.originalPage
+            homePage.value = HomePageWithBrowseCheck(
+                nextSections.copy(
+                    sections = (page?.sections.orEmpty() + nextSections.sections).map { section ->
+                        section.copy(items = section.items.filterExplicit(hideExplicit))
+                    }
+                ),
+                homePage.value?.browseContentAvailable ?: emptyMap()
+            )
+            _isLoadingMore.value = false
         }
     }
 
