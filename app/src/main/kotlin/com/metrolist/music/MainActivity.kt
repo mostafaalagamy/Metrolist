@@ -647,6 +647,7 @@ class MainActivity : ComponentActivity() {
                                                                 Icon(
                                                                     painter = painterResource(id = R.drawable.history),
                                                                     contentDescription = null,
+                                                                    modifier = Modifier.size(18.dp)
                                                                 )
                                                             }
                                                         )
@@ -660,6 +661,7 @@ class MainActivity : ComponentActivity() {
                                                                 Icon(
                                                                     painter = painterResource(id = R.drawable.trending_up),
                                                                     contentDescription = null,
+                                                                    modifier = Modifier.size(18.dp)
                                                                 )
                                                             }
                                                         )
@@ -673,6 +675,7 @@ class MainActivity : ComponentActivity() {
                                                                 Icon(
                                                                     painter = painterResource(id = R.drawable.person),
                                                                     contentDescription = null,
+                                                                    modifier = Modifier.size(18.dp)
                                                                 )
                                                             }
                                                         )
