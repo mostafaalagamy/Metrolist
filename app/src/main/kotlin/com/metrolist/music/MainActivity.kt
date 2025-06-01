@@ -642,6 +642,12 @@ class MainActivity : ComponentActivity() {
                                                             onClick = {
                                                                 navController.navigate("history")
                                                                 showMenu = false
+                                                            },
+                                                            leadingIcon = {
+                                                                Icon(
+                                                                    painter = painterResource(id = R.drawable.history),
+                                                                    contentDescription = null,
+                                                                )
                                                             }
                                                         )
                                                         DropdownMenuItem(
@@ -649,6 +655,12 @@ class MainActivity : ComponentActivity() {
                                                             onClick = {
                                                                 navController.navigate("stats")
                                                                 showMenu = false
+                                                            },
+                                                            leadingIcon = {
+                                                                Icon(
+                                                                    painter = painterResource(id = R.drawable.trending_up),
+                                                                    contentDescription = null,
+                                                                )
                                                             }
                                                         )
                                                         DropdownMenuItem(
@@ -656,6 +668,12 @@ class MainActivity : ComponentActivity() {
                                                             onClick = {
                                                                 navController.navigate("account")
                                                                 showMenu = false
+                                                            },
+                                                            leadingIcon = {
+                                                                Icon(
+                                                                    painter = painterResource(id = R.drawable.person),
+                                                                    contentDescription = null,
+                                                                )
                                                             }
                                                         )
                                                     }
