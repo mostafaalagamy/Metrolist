@@ -1,4 +1,3 @@
-
 package com.metrolist.music.viewmodels
 
 import android.content.Context
@@ -52,15 +51,14 @@ class HomeViewModel @Inject constructor(
     val similarRecommendations = MutableStateFlow<List<SimilarRecommendation>?>(null)
     val accountPlaylists = MutableStateFlow<List<PlaylistItem>?>(null)
     val homePage = MutableStateFlow<HomePageWithBrowseCheck?>(null)
+    val selectedChip = MutableStateFlow<HomePage.Chip?>(null)
+    private val previousHomePage = MutableStateFlow<HomePageWithBrowseCheck?>(null)
     val explorePage = MutableStateFlow<ExplorePage?>(null)
     val recentActivity = MutableStateFlow<List<YTItem>?>(null)
     val recentPlaylistsDb = MutableStateFlow<List<Playlist>?>(null)
 
     val allLocalItems = MutableStateFlow<List<LocalItem>>(emptyList())
     val allYtItems = MutableStateFlow<List<YTItem>>(emptyList())
-
-    val selectedChip = MutableStateFlow<HomePage.Chip?>(null)
-    private val previousHomePage = MutableStateFlow<HomePageWithBrowseCheck?>(null)
 
     // Account display info
     val accountName = MutableStateFlow("Guest")
