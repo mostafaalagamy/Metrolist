@@ -22,6 +22,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.Box
@@ -39,11 +40,15 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialogDefaults
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -586,7 +591,7 @@ class MainActivity : ComponentActivity() {
                         onDispose { removeOnNewIntentListener(listener) }
                     }
 
-                    val currentTitle = remember(navBackStackEntry) {
+                    val currentTitleRes = remember(navBackStackEntry) {
                         when (navBackStackEntry?.destination?.route) {
                             Screens.Home.route -> R.string.home
                             Screens.Explore.route -> R.string.explore
@@ -594,6 +599,8 @@ class MainActivity : ComponentActivity() {
                             else -> null
                         }
                     }
+
+                    var showMenu by remember { mutableStateOf(false) }
 
                     CompositionLocalProvider(
                         LocalDatabase provides database,
@@ -609,11 +616,51 @@ class MainActivity : ComponentActivity() {
                                 if (shouldShowTopBar) {
                                     TopAppBar(
                                         title = {
-                                            Text(
-                                                text = currentTitle?.let { stringResource(it) }
-                                                    ?: "",
-                                                style = MaterialTheme.typography.titleLarge,
-                                            )
+                                            currentTitleRes?.let {
+                                                Row(
+                                                    verticalAlignment = Alignment.CenterVertically,
+                                                    modifier = Modifier.clickable { showMenu = !showMenu }
+                                                ) {
+                                                    Text(
+                                                        text = stringResource(it),
+                                                        style = MaterialTheme.typography.titleLarge,
+                                                        maxLines = 1,
+                                                        overflow = TextOverflow.Ellipsis
+                                                    )
+                                                    Spacer(Modifier.width(4.dp))
+                                                    Icon(
+                                                        painter = painterResource(id = R.drawable.drop_down),
+                                                        contentDescription = null,
+                                                        modifier = Modifier.size(24.dp)
+                                                    )
+                                                    DropdownMenu(
+                                                        expanded = showMenu,
+                                                        onDismissRequest = { showMenu = false }
+                                                    ) {
+                                                        DropdownMenuItem(
+                                                            text = { Text(stringResource(R.string.history)) },
+                                                            onClick = {
+                                                                navController.navigate("history")
+                                                                showMenu = false
+                                                            }
+                                                        )
+                                                        DropdownMenuItem(
+                                                            text = { Text(stringResource(R.string.stats)) },
+                                                            onClick = {
+                                                                navController.navigate("stats")
+                                                                showMenu = false
+                                                            }
+                                                        )
+                                                        DropdownMenuItem(
+                                                            text = { Text(stringResource(R.string.account)) },
+                                                            onClick = {
+                                                                navController.navigate("account")
+                                                                showMenu = false
+                                                            }
+                                                        )
+                                                    }
+                                                }
+                                            }
                                         },
                                         actions = {
                                             IconButton(onClick = { onActiveChange(true) }) {
