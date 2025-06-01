@@ -59,6 +59,9 @@ class HomeViewModel @Inject constructor(
     val allLocalItems = MutableStateFlow<List<LocalItem>>(emptyList())
     val allYtItems = MutableStateFlow<List<YTItem>>(emptyList())
 
+    val selectedChip = MutableStateFlow<HomePage.Chip?>(null)
+    private val previousHomePage = MutableStateFlow<HomePageWithBrowseCheck?>(null)
+
     // Account display info
     val accountName = MutableStateFlow("Guest")
     val accountImageUrl = MutableStateFlow<String?>(null)
@@ -206,6 +209,54 @@ class HomeViewModel @Inject constructor(
                 val relatedSongs = database.getRelatedSongs(song.id).first().shuffled().take(20)
                 quickPicks.value = relatedSongs
             }
+        }
+    }
+
+    private val _isLoadingMore = MutableStateFlow(false)
+    fun loadMoreYouTubeItems(continuation: String?) {
+        if (continuation == null || _isLoadingMore.value) return
+        val hideExplicit = context.dataStore.get(HideExplicitKey, false)
+
+        viewModelScope.launch(Dispatchers.IO) {
+            _isLoadingMore.value = true
+            val nextSections = YouTube.home(continuation).getOrNull() ?: run {
+                _isLoadingMore.value = false
+                return@launch
+            }
+
+            val page = homePage.value?.originalPage
+            homePage.value = HomePageWithBrowseCheck(
+                nextSections.copy(
+                    chips = homePage.value?.originalPage?.chips,
+                    sections = (page?.sections.orEmpty() + nextSections.sections).map { section ->
+                        section.copy(items = section.items.filterExplicit(hideExplicit))
+                    }
+                ),
+                homePage.value?.browseContentAvailable ?: emptyMap()
+            )
+            _isLoadingMore.value = false
+        }
+    }
+
+    fun toggleChip(chip: HomePage.Chip?) {
+        if (chip == null || chip == selectedChip.value && previousHomePage.value != null) {
+            homePage.value = previousHomePage.value
+            previousHomePage.value = null
+            selectedChip.value = null
+            return
+        }
+
+        if (selectedChip.value == null) {
+            // store the actual homepage for deselecting chips
+            previousHomePage.value = homePage.value
+        }
+        viewModelScope.launch(Dispatchers.IO) {
+            val nextSections = YouTube.home(params = chip.endpoint?.params).getOrNull() ?: return@launch
+            homePage.value = HomePageWithBrowseCheck(
+                nextSections.copy(chips = homePage.value?.originalPage?.chips),
+                homePage.value?.browseContentAvailable ?: emptyMap(),
+            )
+            selectedChip.value = chip
         }
     }
 
