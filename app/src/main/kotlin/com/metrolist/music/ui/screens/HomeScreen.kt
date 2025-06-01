@@ -91,7 +91,6 @@ import com.metrolist.music.playback.queues.YouTubeAlbumRadio
 import com.metrolist.music.playback.queues.YouTubeQueue
 import com.metrolist.music.ui.component.AlbumGridItem
 import com.metrolist.music.ui.component.ArtistGridItem
-import com.metrolist.music.ui.component.ChipsRow
 import com.metrolist.music.ui.component.HideOnScrollFAB
 import com.metrolist.music.ui.component.LocalBottomSheetPageState
 import com.metrolist.music.ui.component.LocalMenuState
@@ -358,41 +357,6 @@ fun HomeScreen(
             state = lazylistState,
             contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues()
         ) {
-            item {
-                Row(
-                    modifier = Modifier
-                        .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Horizontal))
-                        .fillMaxWidth()
-                        .animateItem()
-                ) {
-                    ChipsRow(
-                        chips = listOfNotNull(
-                            Pair("history", stringResource(R.string.history)),
-                            Pair("stats", stringResource(R.string.stats)),
-                            Pair("liked", stringResource(R.string.liked)),
-                            Pair("downloads", stringResource(R.string.offline)),
-                            Pair("cache", stringResource(R.string.cached_playlist)),
-                            if (isLoggedIn) Pair(
-                                "account",
-                                stringResource(R.string.account)
-                            ) else null
-                        ),
-                        currentValue = "",
-                        onValueUpdate = { value ->
-                            when (value) {
-                                "history" -> navController.navigate("history")
-                                "stats" -> navController.navigate("stats")
-                                "liked" -> navController.navigate("auto_playlist/liked")
-                                "downloads" -> navController.navigate("auto_playlist/downloaded")
-                                "cache" -> navController.navigate("cache_playlist/cached")
-                                "account" -> if (isLoggedIn) navController.navigate("account")
-                            }
-                        },
-                        containerColor = MaterialTheme.colorScheme.surfaceContainer
-                    )
-                }
-            }
-
             quickPicks?.takeIf { it.isNotEmpty() }?.let { quickPicks ->
                 item {
                     NavigationTitle(
