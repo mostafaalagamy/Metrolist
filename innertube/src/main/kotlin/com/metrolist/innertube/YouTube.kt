@@ -423,17 +423,17 @@ object YouTube {
             return@runCatching homeContinuation(continuation).getOrThrow()
         }
 
-        val response = innerTube.browse(WEB_REMIX, browseId = "FEmusic_home", params).body<BrowseResponse>()
+        val response = innerTube.browse(WEB_REMIX, browseId = "FEmusic_home", params = params).body<BrowseResponse>()
         val continuation = response.contents?.singleColumnBrowseResultsRenderer?.tabs?.firstOrNull()
             ?.tabRenderer?.content?.sectionListRenderer?.continuations?.getContinuation()
-        val sectionListRenderer = response.contents?.singleColumnBrowseResultsRenderer?.tabs?.firstOrNull()
+        val sectionListRender = response.contents?.singleColumnBrowseResultsRenderer?.tabs?.firstOrNull()
             ?.tabRenderer?.content?.sectionListRenderer
-        val sections = sectionListRenderer?.contents!!
+        val sections = sectionListRender?.contents!!
             .mapNotNull { it.musicCarouselShelfRenderer }
             .mapNotNull {
                 HomePage.Section.fromMusicCarouselShelfRenderer(it)
             }.toMutableList()
-        val chips = sectionListRenderer?.header?.chipCloudRenderer?.chips?.mapNotNull { HomePage.Chip.fromChipCloudChipRenderer(it) }
+        val chips = sectionListRender?.header?.chipCloudRenderer?.chips?.mapNotNull { HomePage.Chip.fromChipCloudChipRenderer(it) }
         HomePage(chips, sections, continuation)
     }
 
@@ -445,10 +445,10 @@ object YouTube {
         HomePage(
             null,
             response.continuationContents?.sectionListContinuation?.contents
-                ?.mapNotNull { it.musicCarouselShelfRenderer }
-                ?.mapNotNull {
-                    HomePage.Section.fromMusicCarouselShelfRenderer(it)
-                }.orEmpty(), continuation
+            ?.mapNotNull { it.musicCarouselShelfRenderer }
+            ?.mapNotNull {
+                HomePage.Section.fromMusicCarouselShelfRenderer(it)
+            }.orEmpty(), continuation
         )
     }
 
