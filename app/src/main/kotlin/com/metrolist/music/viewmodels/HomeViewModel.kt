@@ -52,6 +52,8 @@ class HomeViewModel @Inject constructor(
     val similarRecommendations = MutableStateFlow<List<SimilarRecommendation>?>(null)
     val accountPlaylists = MutableStateFlow<List<PlaylistItem>?>(null)
     val homePage = MutableStateFlow<HomePageWithBrowseCheck?>(null)
+    val selectedChip = MutableStateFlow<HomePage.Chip?>(null)
+    private val previousHomePage = MutableStateFlow<HomePageWithBrowseCheck?>(null)
     val explorePage = MutableStateFlow<ExplorePage?>(null)
     val recentActivity = MutableStateFlow<List<YTItem>?>(null)
     val recentPlaylistsDb = MutableStateFlow<List<Playlist>?>(null)
@@ -224,6 +226,7 @@ class HomeViewModel @Inject constructor(
             val page = homePage.value?.originalPage
             homePage.value = HomePageWithBrowseCheck(
                 nextSections.copy(
+                    chips = homePage.value?.originalPage?.chips,
                     sections = (page?.sections.orEmpty() + nextSections.sections).map { section ->
                         section.copy(items = section.items.filterExplicit(hideExplicit))
                     }
@@ -231,6 +234,29 @@ class HomeViewModel @Inject constructor(
                 homePage.value?.browseContentAvailable ?: emptyMap()
             )
             _isLoadingMore.value = false
+        }
+    }
+
+
+    fun toggleChip(chip: HomePage.Chip?) {
+        if (chip == null || chip == selectedChip.value && previousHomePage.value != null) {
+            homePage.value = previousHomePage.value
+            previousHomePage.value = null
+            selectedChip.value = null
+            return
+        }
+
+        if (selectedChip.value == null) {
+            // store the actual homepage for deselecting chips
+            previousHomePage.value = homePage.value
+        }
+        viewModelScope.launch(Dispatchers.IO) {
+            val nextSections = YouTube.home(params = chip.endpoint?.params).getOrNull() ?: return@launch
+            homePage.value = HomePageWithBrowseCheck(
+                nextSections.copy(chips = homePage.value?.originalPage?.chips),
+                homePage.value?.browseContentAvailable ?: emptyMap(),
+            )
+            selectedChip.value = chip
         }
     }
 
