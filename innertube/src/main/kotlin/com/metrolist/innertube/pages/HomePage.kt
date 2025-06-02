@@ -31,7 +31,7 @@ data class HomePage(
                 return Chip(
                     title = renderer.chipCloudChipRenderer.text?.runs?.firstOrNull()?.text ?: return null,
                     endpoint = renderer.chipCloudChipRenderer.navigationEndpoint.browseEndpoint,
-                    deselectEndPoint = renderer.chipCloudChipRenderer.onDeselectedCommand.browseEndpoint,
+                    deselectEndPoint = renderer.chipCloudChipRenderer.onDeselectedCommand?.browseEndpoint,
                 )
             }
         }
