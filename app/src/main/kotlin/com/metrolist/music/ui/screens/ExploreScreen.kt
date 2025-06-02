@@ -11,6 +11,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
@@ -22,6 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
@@ -114,9 +116,7 @@ fun ExploreScreen(
 
                         LazyHorizontalGrid(
                             rows = GridCells.Fixed(4),
-                            contentPadding = WindowInsets.systemBars
-                                .only(WindowInsetsSides.Horizontal)
-                                .asPaddingValues(),
+                            contentPadding = PaddingValues(start = 4.dp),
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(ListItemHeight * 4),
@@ -131,7 +131,8 @@ fun ExploreScreen(
                                     Box(
                                         modifier = Modifier
                                             .size(ListItemHeight - 16.dp)
-                                            .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f)),
+                                            .clip(RoundedCornerShape(4.dp))
+                                            .background(MaterialTheme.colorScheme.onSurface),
                                     )
                                     Spacer(modifier = Modifier.width(8.dp))
                                     Column(
@@ -142,14 +143,14 @@ fun ExploreScreen(
                                             modifier = Modifier
                                                 .height(16.dp)
                                                 .width(120.dp)
-                                                .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f)),
+                                                .background(MaterialTheme.colorScheme.onSurface),
                                         )
                                         Spacer(modifier = Modifier.height(8.dp))
                                         Box(
                                             modifier = Modifier
                                                 .height(12.dp)
                                                 .width(80.dp)
-                                                .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f)),
+                                                .background(MaterialTheme.colorScheme.onSurface),
                                         )
                                     }
                                 }
