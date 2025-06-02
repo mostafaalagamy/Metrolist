@@ -12,12 +12,10 @@ import android.text.StaticLayout
 import android.text.TextPaint
 import androidx.annotation.RequiresApi
 import androidx.core.content.FileProvider
-import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.createBitmap
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.graphics.withClip
 import androidx.core.graphics.withTranslation
-import androidx.palette.graphics.Palette
 import coil.ImageLoader
 import coil.request.ImageRequest
 import com.metrolist.music.R
@@ -25,7 +23,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
-import java.util.regex.Pattern
 
 object ComposeToImage {
 
@@ -92,29 +89,26 @@ object ComposeToImage {
 
         val titlePaint = TextPaint().apply {
             color = mainTextColor
-            textSize = cardSize * 0.045f
+            textSize = cardSize * 0.040f
             typeface = Typeface.DEFAULT_BOLD
             isAntiAlias = true
         }
         val artistPaint = TextPaint().apply {
             color = secondaryTxtColor
-            textSize = cardSize * 0.035f
+            textSize = cardSize * 0.030f
             typeface = Typeface.DEFAULT
             isAntiAlias = true
         }
 
         val textMaxWidth = cardSize - (padding * 2 + coverArtSize + 16f)
         val textStartX = padding + coverArtSize + 16f
-        
-        val titleAlignment = Layout.Alignment.ALIGN_NORMAL
-        val artistAlignment = Layout.Alignment.ALIGN_NORMAL
 
         val titleLayout = StaticLayout.Builder.obtain(songTitle, 0, songTitle.length, titlePaint, textMaxWidth.toInt())
-            .setAlignment(titleAlignment)
+            .setAlignment(Layout.Alignment.ALIGN_NORMAL)
             .setMaxLines(1)
             .build()
         val artistLayout = StaticLayout.Builder.obtain(artistName, 0, artistName.length, artistPaint, textMaxWidth.toInt())
-            .setAlignment(artistAlignment)
+            .setAlignment(Layout.Alignment.ALIGN_NORMAL)
             .setMaxLines(1)
             .build()
 
@@ -130,37 +124,38 @@ object ComposeToImage {
 
         val lyricsPaint = TextPaint().apply {
             color = mainTextColor
-            textSize = cardSize * 0.08f
-            typeface = Typeface.DEFAULT_BOLD
+            typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
             isAntiAlias = true
+            letterSpacing = 0.02f
         }
 
-        var lyricsTextSize = cardSize * 0.08f
-        var lyricsLayout: StaticLayout
         val lyricsMaxWidth = (cardSize * 0.85f).toInt()
-        
-        val lyricsAlignment = determineMixedTextAlignment(lyrics)
+        val logoBlockHeight = (cardSize * 0.08f).toInt()
+        val lyricsTop = cardSize * 0.18f
+        val lyricsBottom = cardSize - (logoBlockHeight + 32)
+        val availableLyricsHeight = lyricsBottom - lyricsTop
 
+        var lyricsTextSize = cardSize * 0.06f
+        var lyricsLayout: StaticLayout
         do {
             lyricsPaint.textSize = lyricsTextSize
-            lyricsLayout = StaticLayout.Builder.obtain(lyrics, 0, lyrics.length, lyricsPaint, lyricsMaxWidth)
-                .setAlignment(lyricsAlignment)
+            lyricsLayout = StaticLayout.Builder.obtain(
+                lyrics, 0, lyrics.length, lyricsPaint, lyricsMaxWidth
+            )
+                .setAlignment(Layout.Alignment.ALIGN_CENTER)
                 .setIncludePad(false)
-                .setLineSpacing(8f, 1.3f)
+                .setLineSpacing(10f, 1.3f)
+                .setMaxLines(10)
                 .build()
-            if (lyricsLayout.height > cardSize * 0.5f) {
-                lyricsTextSize -= 3f
-            } else break
-        } while (lyricsTextSize > 24f)
+            if (lyricsLayout.height > availableLyricsHeight) {
+                lyricsTextSize -= 2f
+            } else {
+                break
+            }
+        } while (lyricsTextSize > 26f)
+        val lyricsYOffset = lyricsTop + (availableLyricsHeight - lyricsLayout.height) / 2f
 
-        val headerHeight = padding + coverArtSize + 32f
-        val footerHeight = 80f
-        val availableHeight = cardSize - headerHeight - footerHeight
-        
-        val lyricsStartY = headerHeight + (availableHeight - lyricsLayout.height) / 2f
-        val lyricsStartX = (cardSize - lyricsLayout.width) / 2f
-
-        canvas.withTranslation(lyricsStartX, lyricsStartY) {
+        canvas.withTranslation((cardSize - lyricsMaxWidth) / 2f, lyricsYOffset) {
             lyricsLayout.draw(this)
         }
 
@@ -194,7 +189,7 @@ object ComposeToImage {
         val appName = context.getString(R.string.app_name)
         val appNamePaint = TextPaint().apply {
             color = secondaryTxtColor
-            textSize = cardSize * 0.042f
+            textSize = cardSize * 0.030f
             typeface = Typeface.create("sans-serif-medium", Typeface.NORMAL)
             isAntiAlias = true
             letterSpacing = 0.01f
@@ -220,51 +215,6 @@ object ComposeToImage {
         }
 
         canvas.drawText(appName, textX, textY, appNamePaint)
-    }
-
-    private fun determineMixedTextAlignment(text: String): Layout.Alignment {
-        val lines = text.split("\n")
-        var arabicLines = 0
-        var englishLines = 0
-        
-        for (line in lines) {
-            if (line.trim().isEmpty()) continue
-            
-            val arabicChars = countArabicCharacters(line)
-            val totalChars = line.replace("\\s".toRegex(), "").length
-            
-            if (totalChars == 0) continue
-            
-            val arabicRatio = arabicChars.toFloat() / totalChars
-            
-            when {
-                arabicRatio > 0.7 -> arabicLines++
-                arabicRatio < 0.3 -> englishLines++
-                else -> {
-                    englishLines++
-                }
-            }
-        }
-        
-        return when {
-            arabicLines > englishLines -> Layout.Alignment.ALIGN_OPPOSITE
-            else -> Layout.Alignment.ALIGN_NORMAL
-        }
-    }
-
-    private fun countArabicCharacters(text: String): Int {
-        val arabicPattern = Pattern.compile("[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]")
-        val matcher = arabicPattern.matcher(text)
-        var count = 0
-        while (matcher.find()) {
-            count++
-        }
-        return count
-    }
-
-    private fun isArabicText(text: String): Boolean {
-        val arabicPattern = Pattern.compile("[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFb50-\uFdff\uFE70-\uFEFF]")
-        return arabicPattern.matcher(text).find()
     }
 
     fun saveBitmapAsFile(context: Context, bitmap: Bitmap, fileName: String): Uri {
