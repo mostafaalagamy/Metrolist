@@ -801,6 +801,7 @@ fun HomeScreen(
                     }
                 }
             }
+
             if (isLoading || (homePage?.originalPage?.continuation != null && homePage?.originalPage?.sections?.isNotEmpty() == true)) {
                 item {
                     ShimmerHost(
