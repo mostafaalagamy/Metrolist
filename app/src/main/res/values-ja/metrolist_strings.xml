@@ -1,10 +1,103 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plurals name="n_element">
-
         <item quantity="other">%d 要素</item>
     </plurals>
-
-
-
+    <string name="explore">探索</string>
+    <string name="local_history">ローカル</string>
+    <string name="remote_history">リモート</string>
+    <string name="charts">チャート</string>
+    <string name="back_button_desc">戻る</string>
+    <string name="no_title">タイトルなし</string>
+    <string name="unknown_artist">不明なアーティスト</string>
+    <string name="unknown_item_type">不明な項目の種類</string>
+    <string name="loading_charts">チャートを読み込み中...</string>
+    <string name="retry_button">再試行</string>
+    <string name="album_cover_desc">アルバムカバー</string>
+    <string name="trending">急上昇</string>
+    <string name="weeks">週</string>
+    <string name="months">月</string>
+    <string name="years">年</string>
+    <string name="continuous">連続</string>
+    <string name="liked">高く評価した</string>
+    <string name="offline">ダウンロード済み</string>
+    <string name="top_music_videos">トップのミュージック ビデオ</string>
+    <string name="my_top">自分のトップ</string>
+    <string name="cached_playlist">キャッシュ済み</string>
+    <string name="sync_playlist">再生リストを同期</string>
+    <string name="sync_disabled">同期は無効</string>
+    <string name="generating_image">画像を生成中です</string>
+    <string name="please_wait">お待ちください</string>
+    <string name="cancel">キャンセル</string>
+    <string name="share_lyrics">歌詞を共有</string>
+    <string name="customize_colors">カラーをカスタマイズ</string>
+    <string name="more_options">その他のオプション</string>
+    <string name="text_color">テキストカラー</string>
+    <string name="secondary_text_color">セカンダリテキストカラー</string>
+    <string name="background_color">背景色</string>
+    <string name="remove_from_cache">キャッシュから削除</string>
+    <string name="copy_link">リンクをコピー</string>
+    <string name="select">すべて選択</string>
+    <string name="like_all">すべて高く評価</string>
+    <string name="link_copied">リンクをクリップボードにコピーしました</string>
+    <string name="lyrics">歌詞</string>
+    <string name="dislike_all">すべて低く評価</string>
+    <string name="share_as_text">テキストとして共有</string>
+    <string name="share_as_image">画像として共有</string>
+    <string name="max_selection_limit">選択の最大制限</string>
+    <string name="share_selected">選択済みを共有</string>
+    <string name="added_to_play_next">次に再生に追加しました</string>
+    <string name="added_to_queue">キューに追加しました</string>
+    <string name="already_in_playlist">再生リストに追加済みです:</string>
+    <string name="seek_backward">5 秒戻す</string>
+    <string name="seek_forward">5 秒進める</string>
+    <string name="login_settings">ログイン設定</string>
+    <string name="general_settings">一般設定</string>
+    <string name="lyrics_click_change">タップで歌詞を変更</string>
+    <string name="slim">スリム</string>
+    <string name="similar_content">似ているコンテンツ</string>
+    <string name="enable_squiggly_slider">波線のスライダーを有効化</string>
+    <string name="show_cached_playlist">キャッシュ済みの再生リストを表示</string>
+    <string name="google">Google</string>
+    <string name="discord">Discord</string>
+    <string name="auto_playlists">自動再生リスト</string>
+    <string name="show_liked_playlist">高く評価した音楽の再生リストを表示</string>
+    <string name="show_downloaded_playlist">ダウンロード済みの曲の再生リストを表示</string>
+    <string name="show_top_playlist">トップの再生リストを表示</string>
+    <string name="advanced_login">高度なログイン (トークン)</string>
+    <string name="token_hidden">タップでトークンを表示</string>
+    <string name="token_shown">再度タップでコピーまたは編集</string>
+    <string name="general">一般</string>
+    <string name="proxy">プロキシ</string>
+    <string name="app_language">アプリの言語</string>
+    <string name="configure_app_language">アプリの言語を設定します</string>
+    <string name="open_supported_links">デフォルトで開く対応リンク</string>
+    <string name="configure_supported_links">対応リンクを設定します</string>
+    <string name="ytm_sync">YouTube Music のアカウントと自動的に同期する</string>
+    <string name="slim_navbar">ボトムナビゲーションバーのラベルを非表示</string>
+    <string name="enable_similar_content">似ているコンテンツを有効化</string>
+    <string name="follow_theme">テーマに従う</string>
+    <string name="secondary_color_style">セカンダリ</string>
+    <string name="set_first_lyrics_provider">推奨の歌詞プロバイダー</string>
+    <plurals name="seconds">
+        <item quantity="other">%d 秒</item>
+    </plurals>
+    <string name="percentage_format">%d%%</string>
+    <string name="release_notes">リリースノート</string>
+    <string name="player_background_style">プレーヤーの背景スタイル</string>
+    <string name="numbers">番号</string>
+    <string name="player_background_blur">ぼかす</string>
+    <string name="player_buttons_style">プレーヤーボタンの色</string>
+    <string name="information">情報</string>
+    <string name="default_style">デフォルト</string>
+    <string name="enable_swipe_thumbnail">スワイプで曲の変更を有効化</string>
+    <string name="dislikes">低く評価</string>
+    <string name="audio_quality_max">最大 (Beta)</string>
+    <string name="auto_download_on_like">高く評価で自動ダウンロード</string>
+    <string name="description">説明</string>
+    <string name="not_logged_in_youtube">YouTube にログインしていません</string>
+    <string name="subscribers">チャンネル登録</string>
+    <string name="default_links">対応リンクを開く</string>
+    <string name="views">視聴</string>
+    <string name="likes">高く評価</string>
 </resources>
