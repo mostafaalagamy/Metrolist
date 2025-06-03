@@ -1,12 +1,8 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="explore">Explorar</string>
-
-
     <string name="local_history">Local</string>
     <string name="remote_history">Remoto</string>
-
-
     <string name="charts">Listas de éxitos</string>
     <string name="back_button_desc">Atrás</string>
     <string name="no_title">Sin título</string>
@@ -17,14 +13,10 @@
     <string name="album_cover_desc">Carátula del álbum</string>
     <string name="top_music_videos">Vídeos musicales más populares</string>
     <string name="trending">Tendencias</string>
-
-
     <string name="weeks">Semanas</string>
     <string name="months">Meses</string>
     <string name="years">Años</string>
     <string name="continuous">Continuo</string>
-
-
     <string name="liked">Me gusta</string>
     <string name="offline">Descargado</string>
     <string name="my_top">Mi Top</string>
@@ -33,10 +25,7 @@
     <string name="sync_disabled">Sincronización desactivada</string>
     <string name="elements_selected">%1$d Elementos seleccionados</string>
     <string name="allows_for_sync_witch_youtube">Nota: Esto permite la sincronización con YouTube Music. Esto NO se puede cambiar más tarde.</string>
-
-
     <string name="added_to_play_next">Añadido a reproducir a continuación</string>
-
     <string name="added_to_queue">Añadido a la cola</string>
     <string name="remove_from_cache">Eliminar de la caché</string>
     <string name="copy_link">Copiar enlace</string>
@@ -45,11 +34,8 @@
     <string name="dislike_all">Marcar todo como "No me gusta"</string>
     <string name="sort_by_last_updated">Fecha de actualización</string>
     <string name="link_copied">Enlace copiado al portapapeles</string>
-
     <string name="lyrics">Letra</string>
-
     <string name="already_in_playlist">Ya está en la lista de reproducción:</string>
-
     <plurals name="n_element">
         <item quantity="one">%d elemento</item>
         <item quantity="other">%d elementos</item>
@@ -58,18 +44,11 @@
         <item quantity="one">%d vez</item>
         <item quantity="other">%d veces</item>
     </plurals>
-
-
     <string name="seek_backward">Retroceder 5 segundos</string>
     <string name="seek_forward">Avanzar 5 segundos</string>
-
-
     <string name="similar_content">Contenido similar</string>
-
-
     <string name="login_settings">Ajustes de inicio de sesión</string>
     <string name="general_settings">Ajustes generales</string>
-
     <string name="player_background_style">Estilo de fondo del reproductor</string>
     <string name="follow_theme">Seguir tema</string>
     <string name="gradient">Gradiente</string>
@@ -88,7 +67,6 @@
     <string name="show_downloaded_playlist">Mostrar lista de reproducción "Descargadas"</string>
     <string name="show_top_playlist">Mostrar lista de reproducción "Top"</string>
     <string name="show_cached_playlist">Mostrar lista de reproducción "En caché"</string>
-
     <string name="google">Google</string>
     <string name="discord">Discord</string>
     <string name="advanced_login">Inicio de sesión avanzado (token)</string>
@@ -108,7 +86,6 @@
     <string name="configure_supported_links">Configurar enlaces compatibles</string>
     <string name="intent_supported_links_not_found">No se pudieron encontrar los ajustes de enlaces compatibles, por favor configúralos manualmente</string>
     <string name="set_first_lyrics_provider">Proveedor de letras preferido</string>
-
     <string name="audio_quality_max">Máxima (beta)</string>
     <string name="enable_similar_content">Activar contenido similar</string>
     <string name="similar_content_desc">Añadir automáticamente más canciones similares cuando se alcance el final de la cola</string>
@@ -116,19 +93,13 @@
     <string name="min_playback_duration_description">La cantidad mínima de una canción que debe reproducirse antes de que se considere "reproducida"</string>
     <string name="percentage_format">%d%%</string>
     <string name="minimum_playback_duration">Duración mínima de reproducción</string>
-
     <string name="clear_song_cache_dialog">¿Estás seguro de que quieres borrar todas las canciones en caché?</string>
-
     <string name="clear_downloads_dialog">¿Estás seguro de que quieres borrar todas las descargas?</string>
-
     <string name="pause_remote_listen_history">Pausar compartir historial de reproducción con YouTube Music</string>
     <string name="not_logged_in_youtube">No has iniciado sesión en YouTube</string>
-
     <string name="default_links">Abrir enlaces compatibles</string>
     <string name="open_app_settings_error">No se pudieron abrir los ajustes de la aplicación</string>
-
     <string name="release_notes">Notas de la versión</string>
-
     <string name="all_time">Desde siempre</string>
     <string name="past_24_hours">Últimas 24 horas</string>
     <string name="past_week">Semana pasada</string>
@@ -147,5 +118,16 @@
         <item quantity="one">1 segundo</item>
         <item quantity="other">%d segundos</item>
     </plurals>
-
+    <string name="please_wait">Por favor, espere</string>
+    <string name="cancel">Cancelar</string>
+    <string name="share_lyrics">Compartir letra</string>
+    <string name="share_as_text">Compartir como texto</string>
+    <string name="share_as_image">Compartir como imagen</string>
+    <string name="customize_colors">Personalizar colores</string>
+    <string name="more_options">Más opciones</string>
+    <string name="background_color">Color de fondo</string>
+    <string name="auto_download_on_like">Descarga automática al dar me gusta</string>
+    <string name="generating_image">Generando imagen</string>
+    <string name="text_color">Color del texto</string>
+    <string name="auto_download_on_like_desc">Descarga automáticamente canciones cuando des a me gusta</string>
 </resources>
