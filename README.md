@@ -17,6 +17,8 @@
 <img
 src="https://github.com/mostafaalagamy/Metrolist/blob/main/fastlane/metadata/android/en-US/images/featureGraphic.png" width="91%" />
 
+<a href="https://trendshift.io/repositories/13518" target="_blank"><img src="https://trendshift.io/api/badge/repositories/13518" alt="mostafaalagamy%2FMetrolist | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a>
+
 [![Latest release](https://img.shields.io/github/v/release/mostafaalagamy/Metrolist?style=for-the-badge)](https://github.com/mostafaalagamy/Metrolist/releases)
 [![GitHub license](https://img.shields.io/github/license/mostafaalagamy/metrolist?style=for-the-badge)](https://github.com/mostafaalagamy/Metrolist/blob/main/LICENSE)
 [![Downloads](https://img.shields.io/github/downloads/mostafaalagamy/Metrolist/total?style=for-the-badge)](https://github.com/mostafaalagamy/Metrolist/releases)
@@ -74,27 +76,46 @@ align="center">](https://belberi.com/metrolist/?fbclid=PAY2xjawJP5dlleHRuA2FlbQI
 ***unless*** you have a proxy or VPN to connect to a YTM supported region.
 
 <div align="center">
-<h1> Q: Why Metrolist isn't showing in Android Auto? </h1>
+<h1>Translations</h1>
+
+[![Translation status](https://img.shields.io/weblate/progress/metrolist?style=for-the-badge)](https://hosted.weblate.org/engage/metrolist/)
+
+We use Weblate to translate Metrolist. For more details or to get started, visit our [Weblate page](https://hosted.weblate.org/projects/Metrolist/).
+
+<a href="https://hosted.weblate.org/projects/Metrolist/">
+<img src="https://hosted.weblate.org/widget/Metrolist/multi-auto.svg" alt="Translation status" />
+</a>
+
+Thank you very much for helping to make Metrolist accessible to many people worldwide.
 </div>
+
+<div align="center">
+<h1>FAQ</h1>
+</div>
+
+<h3> Q: Why Metrolist isn't showing in Android Auto? </h3>
 
 1. Go to Android Auto's settings and tap multiple times on the version in the bottom to enable
    developer settings
 2. In the three dots menu at the top-right of the screen, click "Developer settings"
 3. Enable "Unknown sources"
 
+<h3> Q: How to scrobble music to LastFM, LibreFM, ListenBrainz or GNU FM? </h3>
+
+Use other music scrobbler apps, I recommend [Pano Scrobbler](https://play.google.com/store/apps/details?id=com.arn.scrobble).
+
 <div align="center">
 <h1>Special thanks</h1>
 
-(InnerTune)
+InnerTune:
 [Zion Huang](https://github.com/z-huang),
-[Malopieds](https://github.com/Malopieds)
-
-(OuterTune)
+[Malopieds](https://github.com/Malopieds),
+OuterTune:
 [Davide Garberi](https://github.com/DD3Boh),
-[Michael Zh](https://github.com/mikooomich)
-
-(Muzza)
+[Michael Zh](https://github.com/mikooomich),
+Muzza:
 [Maloy Android](https://github.com/Maloy-Android)
+
 </div>
 
 <div align="center">
