@@ -1,29 +1,19 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="explore">Odkrywaj</string>
-
-
     <string name="liked">Polubione</string>
     <string name="offline">Pobrane</string>
     <string name="my_top">Mój Top</string>
-
-
-
     <string name="select">Zaznacz wszystko</string>
     <string name="like_all">Polub wszystko</string>
-
-
     <string name="sort_by_last_updated">Data zaktualizowania</string>
     <string name="already_in_playlist">Już w playliście:</string>
-
     <plurals name="n_element">
         <item quantity="one">%d element</item>
         <item quantity="few">%d elementy</item>
         <item quantity="many">%d elementów</item>
         <item quantity="other">%d elementów</item>
     </plurals>
-
-
     <string name="player_background_style">Styl tła odtwarzacza</string>
     <string name="follow_theme">Zgodnie z motywem</string>
     <string name="gradient">Gradient</string>
@@ -38,5 +28,33 @@
     <string name="past_month">Ubiegły miesiąc</string>
     <string name="past_year">Ubiegły rok</string>
     <string name="top_length">Długość listy Mój Top</string>
-
+    <string name="remote_history">Zdalna</string>
+    <string name="back_button_desc">Wstecz</string>
+    <string name="weeks">Tygodnie</string>
+    <string name="months">Miesiące</string>
+    <string name="years">Lata</string>
+    <string name="continuous">Ciągły</string>
+    <string name="cached_playlist">W pamięci podręcznej</string>
+    <string name="cancel">Anuluj</string>
+    <string name="no_title">Brak tytułu</string>
+    <string name="unknown_artist">Nieznany wykonawca</string>
+    <string name="loading_charts">Ładowanie wykresów...</string>
+    <string name="album_cover_desc">Okładka albumu</string>
+    <string name="sync_playlist">Synchronizuj playlistę</string>
+    <string name="player_background_blur">Rozmycie</string>
+    <string name="default_style">Domyślny</string>
+    <string name="general">Ogólne</string>
+    <string name="percentage_format">%d%%</string>
+    <string name="information">Informacje</string>
+    <string name="numbers">Numery</string>
+    <string name="views">Wyświetleń</string>
+    <string name="likes">Polubień</string>
+    <string name="trending">Popularne</string>
+    <string name="lyrics">Tekst</string>
+    <string name="retry_button">Spróbuj ponownie</string>
+    <string name="local_history">Lokalna</string>
+    <string name="charts">Wykresy</string>
+    <string name="discord">Discord</string>
+    <string name="google">Google</string>
+    <string name="description">Opis</string>
 </resources>
