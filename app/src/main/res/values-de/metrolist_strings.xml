@@ -1,31 +1,20 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="explore">Entdecken</string>
-
-
     <string name="liked">Favoriten</string>
     <string name="offline">Heruntergeladen</string>
     <string name="my_top">Meine Top</string>
-
-
     <string name="select">Alles auswählen</string>
     <string name="like_all">Alles favorisieren</string>
-
-
     <string name="sort_by_last_updated">Datum aktualisiert</string>
     <string name="lyrics">Songtext</string>
-
     <string name="already_in_playlist">Bereits in Wiedergabeliste:</string>
-
     <plurals name="n_element">
         <item quantity="one">%d Element</item>
         <item quantity="other">%d Elemente</item>
     </plurals>
-
-
     <string name="login_settings">Anmeldeeinstellungen</string>
     <string name="general_settings">Allgemeine Einstellungen</string>
-
     <string name="player_background_style">Hintergrundstil des Players</string>
     <string name="follow_theme">Design folgen</string>
     <string name="gradient">Farbverlauf</string>
@@ -35,7 +24,6 @@
     <string name="lyrics_click_change">Songtext durch Klicken ändern</string>
     <string name="slim">Schlank</string>
     <string name="slim_navbar">Beschriftungen in der unteren Navigationsleiste ausblenden</string>
-
     <string name="google">Google</string>
     <string name="discord">Discord</string>
     <string name="advanced_login">Erweiterte Anmeldung (Token)</string>
@@ -55,16 +43,12 @@
     <string name="configure_supported_links">Unterstützte Links konfigurieren</string>
     <string name="intent_supported_links_not_found">Einstellungen für unterstützte Links nicht gefunden, bitte manuell konfigurieren</string>
     <string name="set_first_lyrics_provider">Bevorzugter Songtext-Anbieter</string>
-
     <string name="audio_quality_max">Maximal (Beta)</string>
     <string name="enable_similar_content">Ähnliche Inhalte aktivieren</string>
     <string name="similar_content_desc">Fügt automatisch weitere ähnliche Songs hinzu, wenn das Ende der Warteschlange erreicht ist</string>
     <string name="default_links">Unterstützte Links öffnen</string>
     <string name="open_app_settings_error">App-Einstellungen konnten nicht geöffnet werden</string>
-
     <string name="release_notes">Versionshinweise</string>
-
-
     <string name="all_time">Gesamte Zeit</string>
     <string name="past_24_hours">Letzte 24 Stunden</string>
     <string name="past_week">Letzte Woche</string>
@@ -128,4 +112,17 @@
     <string name="top_music_videos">Top Musikvideos</string>
     <string name="trending">Im Trend</string>
     <string name="swipe_song_to_add">Nach rechts wischen, um den nächsten Song abzuspielen, oder nach links um ihn zur Warteschlange hinzuzufügen.</string>
+    <string name="auto_playlists">Automatische Playlisten</string>
+    <string name="share_selected">Auswahl teilen</string>
+    <string name="customize_colors">Farben personalisieren</string>
+    <string name="more_options">Mehr optionen</string>
+    <string name="text_color">Textfarbe</string>
+    <string name="secondary_text_color">Sekundäre Textfarbe</string>
+    <string name="background_color">Hintergrundfarbe</string>
+    <string name="sync_disabled">Synchronisierung deaktiviert</string>
+    <string name="please_wait">Bitte warten</string>
+    <string name="cancel">Abbrechen</string>
+    <string name="share_lyrics">Songtext teilen</string>
+    <string name="share_as_text">Als Text teilen</string>
+    <string name="share_as_image">Als Bild teilen</string>
 </resources>
