@@ -37,12 +37,14 @@
     <string name="lyrics">Letra</string>
     <string name="already_in_playlist">Ya está en la lista de reproducción:</string>
     <plurals name="n_element">
-        <item quantity="one">%d elemento</item>
-        <item quantity="other">%d elementos</item>
+        <item quantity="one">%d elemento%d elementos</item>
+        <item quantity="many"></item>
+        <item quantity="other"></item>
     </plurals>
     <plurals name="n_time">
-        <item quantity="one">%d vez</item>
-        <item quantity="other">%d veces</item>
+        <item quantity="one">%d vez%d veces</item>
+        <item quantity="many"></item>
+        <item quantity="other"></item>
     </plurals>
     <string name="seek_backward">Retroceder 5 segundos</string>
     <string name="seek_forward">Avanzar 5 segundos</string>
@@ -115,8 +117,9 @@
     <string name="likes">Me gusta</string>
     <string name="dislikes">No me gusta</string>
     <plurals name="seconds">
-        <item quantity="one">1 segundo</item>
-        <item quantity="other">%d segundos</item>
+        <item quantity="one">1 segundo%d segundos</item>
+        <item quantity="many"></item>
+        <item quantity="other"></item>
     </plurals>
     <string name="please_wait">Por favor, espere</string>
     <string name="cancel">Cancelar</string>
