@@ -1,0 +1,23 @@
+Material 3 YouTube Music client pour Android
+
+Fonctionnalités :
+
+- Jouer n'importe quelle vidéo de YT Music
+- Lecture en arrière-plan
+- Choix rapides personnalisés
+- Gestion de la librairie
+- Téléchargement des musiques pour une écoute hors-ligne
+- Recherche de musiques, albums, artistes, vidéos et listes de lecture
+- Paroles en temps réel
+- Connexion possible avec YouTube Music
+- Synchronisation de chansons, artistes, albums et listes de lecture, de et vers votre compte
+- Passer les silences
+- Importer les listes de lecture
+- Normalisation audio
+- Ajuster le tempo et le pitch
+- Gestion de listes de lecture locales
+- Réarranger les chansons en listes de lecture ou en file d'attente
+- Clair - Sombre - Noir - Thème dynamique
+- Minuterie de sommeil
+- Material 3
+- etc.

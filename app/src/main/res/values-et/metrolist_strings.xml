@@ -1,2 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <plurals name="n_time">
+        <item quantity="one">%d kord</item>
+        <item quantity="other">%d korda</item>
+    </plurals>
+    <plurals name="seconds">
+        <item quantity="one">1 sekund</item>
+        <item quantity="other">%d sekundit</item>
+    </plurals>
+    <string name="please_wait">Palun oota</string>
+    <string name="cancel">Katkesta</string>
+    <string name="share_lyrics">Jaga laulusõnu</string>
+    <string name="share_as_text">Jaga tekstina</string>
+    <string name="share_as_image">Jaga pildina</string>
+    <string name="copy_link">Kopeeri link</string>
+    <string name="select">Vali kõik</string>
+    <string name="like_all">Märgi kõik meeldivaks</string>
+    <string name="dislike_all">Märgi kõik mittemeeldivaks</string>
+    <string name="sort_by_last_updated">Uuendamise kuupäev</string>
+    <string name="link_copied">Link on kopeeritud lõikelauale</string>
+    <string name="lyrics">Laulusõnad</string>
+    <string name="already_in_playlist">Juba on esitusloendis:</string>
+    <plurals name="n_element">
+        <item quantity="one">%d element</item>
+        <item quantity="other">%d elementi</item>
+    </plurals>
+    <string name="unknown_artist">Tundmatu esitaja</string>
+    <string name="unknown_item_type">Tundmatu objekti tüüp</string>
+    <string name="loading_charts">Laadin edetabeleid...</string>
+    <string name="retry_button">Proovi uuesti</string>
+    <string name="album_cover_desc">Albumi kaanepilt</string>
+    <string name="explore">Uuri ja tutvu</string>
+    <string name="local_history">Kohalik</string>
+    <string name="remote_history">Serveris</string>
+    <string name="charts">Edetabelid</string>
+    <string name="back_button_desc">Tagasi</string>
+    <string name="no_title">Pealkirja pole</string>
+</resources>
