@@ -122,7 +122,7 @@
         <item quantity="other">%d secondi</item>
     </plurals>
     <string name="generating_image">Generazione dell\'immagine</string>
-    <string name="please_wait">Per favore attendi</string>
+    <string name="please_wait">Si prega di attendere</string>
     <string name="cancel">Annulla</string>
     <string name="share_lyrics">Condividi testo</string>
     <string name="share_as_text">Condividi come testo</string>
