@@ -37,14 +37,14 @@
     <string name="lyrics">Letra</string>
     <string name="already_in_playlist">Ya está en la lista de reproducción:</string>
     <plurals name="n_element">
-        <item quantity="one">%d elemento%d elementos</item>
-        <item quantity="many"></item>
-        <item quantity="other"></item>
+        <item quantity="one">%d elemento</item>
+        <item quantity="many">%d de elementos</item>
+        <item quantity="other">%d elementos</item>
     </plurals>
     <plurals name="n_time">
-        <item quantity="one">%d vez%d veces</item>
-        <item quantity="many"></item>
-        <item quantity="other"></item>
+        <item quantity="one">%d vez</item>
+        <item quantity="many">%d de veces</item>
+        <item quantity="other">%d veces</item>
     </plurals>
     <string name="seek_backward">Retroceder 5 segundos</string>
     <string name="seek_forward">Avanzar 5 segundos</string>
@@ -117,9 +117,9 @@
     <string name="likes">Me gusta</string>
     <string name="dislikes">No me gusta</string>
     <plurals name="seconds">
-        <item quantity="one">1 segundo%d segundos</item>
-        <item quantity="many"></item>
-        <item quantity="other"></item>
+        <item quantity="one">1 segundo</item>
+        <item quantity="many">%d de segundos</item>
+        <item quantity="other">%d segundos</item>
     </plurals>
     <string name="please_wait">Por favor, espere</string>
     <string name="cancel">Cancelar</string>
@@ -133,4 +133,7 @@
     <string name="generating_image">Generando imagen</string>
     <string name="text_color">Color del texto</string>
     <string name="auto_download_on_like_desc">Descarga automáticamente canciones cuando des a me gusta</string>
+    <string name="max_selection_limit">Límite máximo de selección</string>
+    <string name="share_selected">Compartir lo seleccionado</string>
+    <string name="secondary_text_color">Color de texto secundario</string>
 </resources>
