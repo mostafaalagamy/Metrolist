@@ -1,2 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="unknown_artist">Неизвестный исполнитель</string>
+    <string name="back_button_desc">Назад</string>
+    <string name="please_wait">Пожалуйста подождите</string>
+    <string name="added_to_queue">Добавлено в очередь</string>
+    <string name="remove_from_cache">Удалить из кэша</string>
+    <string name="select">Выбрать всё</string>
+    <string name="link_copied">Ссылка скопирована в буфер обмена</string>
+    <string name="lyrics">Текст</string>
+    <string name="already_in_playlist">Уже в плейлисте:</string>
+    <string name="similar_content">Похожий контент</string>
+    <string name="general_settings">Основные настройки</string>
+    <string name="player_background_style">Стиль фона плеера</string>
+    <string name="follow_theme">Следовать теме</string>
+    <string name="gradient">Градиент</string>
+    <string name="player_buttons_style">Цвета кнопок плеера</string>
+    <string name="enable_squiggly_slider">Включить волнистый слайдер</string>
+    <string name="swipe_song_to_add">Свайп по треку вправо для перехода к следующему или влево для добавления в очередь</string>
+    <string name="slim">Тонкий</string>
+    <string name="google">Google</string>
+    <string name="discord">Discord</string>
+    <string name="token_hidden">Нажмите, чтобы показать токен</string>
+    <string name="token_shown">Нажмите еще раз, чтобы скопировать или изменить</string>
+    <string name="ytm_sync">Авто-синхронизация с аккаунтом YouTube Music</string>
+    <string name="proxy">Прокси</string>
+    <string name="last_song_listened">Основано на последнем прослушанном треке</string>
+    <string name="app_language">Язык приложения</string>
+    <string name="configure_app_language">Настроить язык приложения</string>
+    <string name="open_supported_links">Открывать поддерживаемые ссылки по умолчанию</string>
+    <string name="configure_supported_links">Настроить поддерживаемые ссылки</string>
+    <string name="audio_quality_max">Максимальное (бета)</string>
+    <string name="enable_similar_content">Показывать похожий контент</string>
+    <string name="similar_content_desc">Автоматически добавлять больше похожих треков при достижении конца очереди</string>
+    <string name="min_playback_duration_title">Минимальная длительность воспроизведения</string>
+    <string name="minimum_playback_duration">Минимальная длительность воспроизведения</string>
+    <string name="views">Просмотры</string>
+    <string name="subscribers">Подписчики</string>
+    <string name="enable_swipe_thumbnail">Включить переключение треков свайпом</string>
+    <string name="copy_link">Скопировать ссылку</string>
+    <plurals name="seconds">
+        <item quantity="one">%d секунда</item>
+        <item quantity="few">%d секунды</item>
+        <item quantity="many">%d секунд</item>
+        <item quantity="other">%d секунд</item>
+    </plurals>
+    <string name="allows_for_sync_witch_youtube">Примечание: Это позволит синхронизировать плейлист с YouTube Music. Этот параметр НЕЛЬЗЯ изменить позже.</string>
+    <string name="player_background_blur">Размытие</string>
+    <string name="slim_navbar">Убрать подписи с панели навигации</string>
+    <string name="min_playback_duration_description">Минимальное время воспроизведения песни, после которого она будет считаться \"проигранной\"</string>
+    <string name="dislikes">Дизлайки</string>
+    <string name="token_adv_login_description">Это ПРОДВИНУТЫЙ способ входа. Вместо использования веб-портала вы можете ввести или обновить токен для входа здесь. Это может быть полезно для быстрого входа на нескольких устройствах. Учтите, что приложение не примет токены с неверным форматом</string>
+    <string name="likes">Лайки</string>
+</resources>
