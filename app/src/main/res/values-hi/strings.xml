@@ -56,7 +56,7 @@
     <string name="refetch">पुनः निकालें</string>
     <string name="delete">हटायें</string>
     <string name="search_online">ऑनलाइन खोजें</string>
-    <string name="action_sync">सिंक करें</string>
+    <string name="action_sync">सिंक</string>
     <string name="this_week">इस हफ्ते</string>
     <string name="new_release_albums">नईं रिलीज हुईं एलबम</string>
     <string name="last_week">पिछले हफ्ते</string>
@@ -83,7 +83,7 @@
     <string name="remove_from_history">इतिहास से हटायें</string>
     <string name="remove_from_playlist">चाल सूची से हटायें</string>
     <string name="remove_from_queue">कतार से निकालें</string>
-    <string name="advanced">गहराई</string>
+    <string name="advanced">उन्नत</string>
     <string name="tempo_and_pitch">गति व स्वरमान</string>
     <string name="sort_by_create_date">जुडने की तारीख</string>
     <string name="sort_by_artist">कलाकार</string>
@@ -149,4 +149,36 @@
         <item quantity="other">%d महीने</item>
     </plurals>
     <string name="lyrics_not_found">गीतिकाव्य नहीं मिला</string>
+    <string name="queue_searched_songs">खोजे गए गाने</string>
+    <plurals name="n_year">
+        <item quantity="one">%d साल</item>
+        <item quantity="other">%d साल</item>
+    </plurals>
+    <string name="queue_all_songs">सभी गाने</string>
+    <string name="settings">सेटिंग्स</string>
+    <string name="theme">थीम</string>
+    <string name="dark_theme_off">बंद</string>
+    <string name="error_no_stream">कोई स्ट्रीम उपलब्ध नहीं है</string>
+    <plurals name="n_artist">
+        <item quantity="one">%d कलाकार</item>
+        <item quantity="other">%d कलाकार</item>
+    </plurals>
+    <string name="error_no_internet">कोई नेटवर्क कनेक्शन नहीं</string>
+    <string name="dark_theme_on">चालू</string>
+    <string name="sleep_timer">स्लीप टाइमर</string>
+    <string name="end_of_song">गाने का अंत</string>
+    <plurals name="minute">
+        <item quantity="one">%d मिनट</item>
+        <item quantity="other">%d मिनट</item>
+    </plurals>
+    <string name="error_timeout">समय सीमा</string>
+    <string name="error_unknown">अज्ञात त्रुटि</string>
+    <string name="action_like">पसंद</string>
+    <string name="action_like_all">सभी को पसंद करे</string>
+    <string name="action_remove_like">पसंदीदा से हटाएं</string>
+    <string name="action_remove_like_all">पसंदीदा से सभी को हटाएं</string>
+    <string name="action_shuffle_on">सफल चालू</string>
+    <string name="action_shuffle_off">सफल बंद</string>
+    <string name="repeat_mode_off">दोहराएं मोड बंद</string>
+    <string name="repeat_mode_all">कतार को दोहराएं</string>
 </resources>

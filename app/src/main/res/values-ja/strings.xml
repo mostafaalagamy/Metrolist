@@ -290,4 +290,5 @@
     <string name="clear_translation_models">翻訳モデルを消去</string>
     <string name="use_login_for_browse_desc">例えば、Premiumのアカウントでログインした時に、Premium限定のアルバムが表示されるようになります</string>
     <string name="use_login_for_browse">表示されるコンテンツをアカウントと結び付ける</string>
+    <string name="action_login">ログイン</string>
 </resources>
