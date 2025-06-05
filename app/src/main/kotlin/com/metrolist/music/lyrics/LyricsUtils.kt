@@ -138,4 +138,7 @@ object LyricsUtils {
             katakanaToRomaji(kana)
         }
     }
+    fun isJapanese(text: String): Boolean {
+        return text.any { it in '\u3040'..'\u309F' || it in '\u30A0'..'\u30FF' || it in '\u4E00'..'\u9FAF' }
+    }
 }
