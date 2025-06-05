@@ -181,7 +181,7 @@
     <string name="center">Giữa</string>
     <string name="right">Phải</string>
     <string name="content">Nội dung</string>
-    <string name="login">Đăng nhập</string>
+    <string name="login">Sự đăng nhập</string>
     <string name="content_language">Nội dung ngôn ngữ mặc định</string>
     <string name="content_country">Nội dung quốc gia mặc định</string>
     <string name="system_default">Mặc định hệ thống</string>
@@ -288,4 +288,5 @@
     <string name="discord_information">Metrolist sử dụng thư viện KizzyRPC để thiết lập trạng thái tài khoản Discord của bạn. Điều này liên quan đến việc sử dụng kết nối Discord Gateway, có thể được coi là vi phạm TOS của Discord. Tuy nhiên, không có trường hợp nào được biết đến về việc tài khoản người dùng bị đình chỉ vì lý do này. Sử dụng theo rủi ro của riêng bạn. \n \nMetrolist sẽ chỉ trích xuất mã thông báo của bạn và mọi thứ khác được lưu trữ cục bộ.</string>
     <string name="use_login_for_browse">Đăng nhập để xem nội dung</string>
     <string name="use_login_for_browse_desc">Điều này có thể ảnh hưởng đến nội dung bạn nhìn thấy, ví dụ như hiện những album dành riêng cho premium nếu bạn đăng nhập với tài khoản Premium</string>
+    <string name="action_login">Đăng nhập</string>
 </resources>

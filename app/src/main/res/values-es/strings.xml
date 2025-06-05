@@ -9,7 +9,7 @@
     <!-- Top bar -->
     <plurals name="n_selected">
         <item quantity="one">%d seleccionada</item>
-        <item quantity="many">%d seleccionadas</item>
+        <item quantity="many">%d de seleccionadas</item>
         <item quantity="other">%d seleccionadas</item>
     </plurals>
     <!-- Home -->
@@ -18,11 +18,11 @@
     <string name="mood_and_genres">Estado de ánimo y géneros</string>
     <string name="account">Cuenta</string>
     <string name="quick_picks">Selecciones rápidas</string>
-    <string name="quick_picks_empty">Escucha canciones para generar tus selecciones rápidas</string>
+    <string name="quick_picks_empty">Escuche canciones para generar sus selecciones rápidas</string>
     <string name="forgotten_favorites">Favoritos olvidados</string>
     <string name="keep_listening">Seguir escuchando</string>
     <string name="similar_to">Similar a</string>
-    <string name="new_release_albums">Nuevos lanzamientos</string>
+    <string name="new_release_albums">Álbumes recién lanzados</string>
     <!-- History -->
     <string name="today">Hoy</string>
     <string name="yesterday">Ayer</string>
@@ -35,8 +35,8 @@
     <!-- Search -->
     <string name="search">Buscar</string>
     <string name="search_yt_music">Buscar en YouTube Music…</string>
-    <string name="search_library">Buscar en la biblioteca…</string>
-    <string name="filter_library">Biblioteca</string>
+    <string name="search_library">Buscar en la fonoteca…</string>
+    <string name="filter_library">Fonoteca</string>
     <string name="filter_liked">Me gusta</string>
     <string name="filter_downloaded">Descargado</string>
     <string name="filter_all">Todo</string>
@@ -50,18 +50,18 @@
     <string name="filter_bookmarked">En marcadores</string>
     <string name="no_results_found">No se han encontrado resultados</string>
     <!-- Library -->
-    <string name="library_song_empty">Las canciones de la biblioteca aparecerán aquí</string>
-    <string name="library_artist_empty">Los artistas de la biblioteca aparecerán aquí</string>
-    <string name="library_album_empty">Los álbumes de la biblioteca aparecerán aquí</string>
+    <string name="library_song_empty">Las canciones de la fonoteca aparecerán aquí</string>
+    <string name="library_artist_empty">Los artistas de la fonoteca aparecerán aquí</string>
+    <string name="library_album_empty">Los álbumes de la fonoteca aparecerán aquí</string>
     <string name="library_playlist_empty">Tus listas de reproducción aparecerán aquí</string>
     <!-- Artist screen -->
-    <string name="from_your_library">Desde tu biblioteca</string>
+    <string name="from_your_library">Desde su fonoteca</string>
     <!-- Playlist -->
     <string name="liked_songs">Canciones que te gustan</string>
     <string name="downloaded_songs">Canciones descargadas</string>
     <string name="playlist_is_empty">La lista de reproducción está vacía</string>
-    <string name="remove_download_playlist_confirm">¿Estás seguro de que quieres eliminar todas las canciones de la lista de reproducción «%s» del almacenamiento de canciones descargadas?</string>
-    <string name="delete_playlist_confirm">¿Estás seguro de que quieres borrar la lista de reproducción «%s»?</string>
+    <string name="remove_download_playlist_confirm">¿Realmente quiere quitar todas las canciones de la lista de reproducción «%s» del almacenamiento de canciones descargadas?</string>
+    <string name="delete_playlist_confirm">¿Confirma que quiere eliminar la lista de reproducción «%s»?</string>
     <!-- Button -->
     <string name="retry">Reintentar</string>
     <string name="radio">Radio</string>
@@ -70,17 +70,17 @@
     <!-- Menu -->
     <string name="details">Detalles</string>
     <string name="edit">Editar</string>
-    <string name="start_radio">Comenzar radio</string>
+    <string name="start_radio">Iniciar radio</string>
     <string name="play">Reproducir</string>
-    <string name="play_next">Reproducir siguiente</string>
+    <string name="play_next">Reproducir a continuación</string>
     <string name="add_to_queue">Añadir a la cola</string>
-    <string name="add_to_library">Añadir a la biblioteca</string>
-    <string name="remove_from_library">Eliminar de la biblioteca</string>
+    <string name="add_to_library">Añadir a la fonoteca</string>
+    <string name="remove_from_library">Quitar de la fonoteca</string>
     <string name="action_download">Descargar</string>
     <string name="downloading">Descargando</string>
     <string name="remove_download">Eliminar descarga</string>
     <string name="import_playlist">Importar lista de reproducción</string>
-    <string name="add_to_playlist">Añadir a la playlist</string>
+    <string name="add_to_playlist">Añadir a lista de reproducción</string>
     <string name="view_artist">Ver artista</string>
     <string name="view_album">Ver álbum</string>
     <string name="refetch">Cargar de nuevo</string>
@@ -89,7 +89,7 @@
     <string name="remove_from_history">Eliminar del historial</string>
     <string name="remove_from_playlist">Quitar de la lista de reproducción</string>
     <string name="remove_from_queue">Quitar de la cola</string>
-    <string name="search_online">Buscar online</string>
+    <string name="search_online">Buscar en línea</string>
     <string name="action_sync">Sincronizar</string>
     <string name="advanced">Avanzado</string>
     <string name="tempo_and_pitch">Tempo y tono</string>
@@ -132,42 +132,42 @@
     <string name="duplicates">Duplicados</string>
     <string name="skip_duplicates">Saltar duplicados</string>
     <string name="add_anyway">Añadir de todas formas</string>
-    <string name="duplicates_description_single">Esta canción ya está en tu lista de reproducción</string>
-    <string name="duplicates_description_multiple">%d canciones ya están en tu lista de reproducción</string>
+    <string name="duplicates_description_single">Esta canción ya está en su lista de reproducción</string>
+    <string name="duplicates_description_multiple">%d canciones ya están en su lista de reproducción</string>
     <!-- Noun -->
     <plurals name="n_song">
         <item quantity="one">%d canción</item>
-        <item quantity="many">%d canciones</item>
+        <item quantity="many">%d de canciones</item>
         <item quantity="other">%d canciones</item>
     </plurals>
     <plurals name="n_artist">
         <item quantity="one">%d artista</item>
-        <item quantity="many">%d artistas</item>
+        <item quantity="many">%d de artistas</item>
         <item quantity="other">%d artistas</item>
     </plurals>
     <plurals name="n_album">
         <item quantity="one">%d álbum</item>
-        <item quantity="many">%d álbumes</item>
+        <item quantity="many">%d de álbumes</item>
         <item quantity="other">%d álbumes</item>
     </plurals>
     <plurals name="n_playlist">
         <item quantity="one">%d lista de reproducción</item>
-        <item quantity="many">%d listas de reproducción</item>
+        <item quantity="many">%d de listas de reproducción</item>
         <item quantity="other">%d listas de reproducción</item>
     </plurals>
     <plurals name="n_week">
         <item quantity="one">%d semana</item>
-        <item quantity="many">%d semanas</item>
+        <item quantity="many">%d de semanas</item>
         <item quantity="other">%d semanas</item>
     </plurals>
     <plurals name="n_month">
         <item quantity="one">%d mes</item>
-        <item quantity="many">%d meses</item>
+        <item quantity="many">%d de meses</item>
         <item quantity="other">%d meses</item>
     </plurals>
     <plurals name="n_year">
         <item quantity="one">%d año</item>
-        <item quantity="many">%d años</item>
+        <item quantity="many">%d de años</item>
         <item quantity="other">%d años</item>
     </plurals>
     <!-- Snackbar -->
@@ -181,7 +181,7 @@
     <string name="end_of_song">Al finalizar la canción</string>
     <plurals name="minute">
         <item quantity="one">1 minuto</item>
-        <item quantity="many">%d minutos</item>
+        <item quantity="many">%d de minutos</item>
         <item quantity="other">%d minutos</item>
     </plurals>
     <string name="error_no_stream">No hay un stream disponible</string>
@@ -222,32 +222,32 @@
     <string name="center">Centro</string>
     <string name="right">Derecha</string>
     <string name="player_slider_style">Estilo de la barra del reproductor</string>
-    <string name="default_">Por defecto</string>
+    <string name="default_">Predeterminado</string>
     <string name="squiggly">Ondulado</string>
     <string name="misc">Otros</string>
-    <string name="default_open_tab">Pestaña de inicio por defecto</string>
+    <string name="default_open_tab">Pestaña abierta predeterminada</string>
     <string name="grid_cell_size">Tamaño de la celda de la cuadrícula</string>
     <string name="small">Pequeño</string>
     <string name="big">Grande</string>
     <string name="content">Contenido</string>
-    <string name="login">Iniciar sesión</string>
+    <string name="login">Cuenta</string>
     <string name="not_logged_in">Sesión no iniciada</string>
     <string name="content_language">Idioma de contenido predeterminado</string>
     <string name="content_country">País de contenido predeterminado</string>
-    <string name="system_default">Por defecto del sistema</string>
-    <string name="enable_proxy">Habilitar proxy</string>
-    <string name="proxy_type">Tipo de proxy</string>
-    <string name="proxy_url">URL del proxy</string>
-    <string name="restart_to_take_effect">Reinicia para aplicar los cambios</string>
+    <string name="system_default">Predeterminado del sistema</string>
+    <string name="enable_proxy">Activar «proxy»</string>
+    <string name="proxy_type">Tipo de «proxy»</string>
+    <string name="proxy_url">URL del «proxy»</string>
+    <string name="restart_to_take_effect">Reinicie para aplicar los cambios</string>
     <string name="player_and_audio">Reproductor y sonido</string>
     <string name="audio_quality">Calidad de sonido</string>
-    <string name="audio_quality_auto">Automático</string>
+    <string name="audio_quality_auto">Automática</string>
     <string name="audio_quality_high">Alta</string>
     <string name="audio_quality_low">Baja</string>
     <string name="queue">Cola</string>
     <string name="persistent_queue">Cola persistente</string>
     <string name="persistent_queue_desc">Restaura tu última cola al iniciar la aplicación</string>
-    <string name="skip_silence">Omitir silencio</string>
+    <string name="skip_silence">Omitir silencios</string>
     <string name="audio_normalization">Normalización del audio</string>
     <string name="auto_skip_next_on_error">Saltar automáticamente a la siguiente canción cuando se produce un error</string>
     <string name="auto_skip_next_on_error_desc">Asegura una experiencia de reproducción continua</string>
@@ -268,27 +268,27 @@
     <string name="privacy">Privacidad</string>
     <string name="pause_listen_history">Pausar historial de reproducciones</string>
     <string name="clear_listen_history">Borrar historial de reproducciones</string>
-    <string name="clear_listen_history_confirm">¿Estás seguro de que quieres borrar todo el historial de reproducciones?</string>
+    <string name="clear_listen_history_confirm">¿Confirma que quiere borrar todo el historial de reproducciones?</string>
     <string name="pause_search_history">Pausar historial de búsquedas</string>
     <string name="clear_search_history">Borrar historial de búsquedas</string>
-    <string name="clear_search_history_confirm">¿Estás seguro de que quieres borrar todo el historial de búsquedas?</string>
-    <string name="enable_lrclib">Habilitar el proveedor de letras LrcLib</string>
-    <string name="enable_kugou">Habilitar el proveedor de letras KuGou</string>
+    <string name="clear_search_history_confirm">¿Confirma que quiere borrar todo el historial de búsquedas?</string>
+    <string name="enable_lrclib">Activar proveedor de letras LrcLib</string>
+    <string name="enable_kugou">Activar proveedor de letras KuGou</string>
     <string name="hide_explicit">Ocultar contenido explícito</string>
     <string name="backup_restore">Copias de seguridad y restauración</string>
-    <string name="action_backup">Hacer copia de seguridad</string>
+    <string name="action_backup">Respaldar</string>
     <string name="action_restore">Restaurar</string>
     <string name="imported_playlist">Lista de reproducción importada</string>
     <string name="backup_create_success">Copia de seguridad creada con éxito</string>
     <string name="backup_create_failed">No se ha podido crear la copia de seguridad</string>
     <string name="restore_failed">Error al restaurar la copia de seguridad</string>
     <string name="discord_integration">Integración con Discord</string>
-    <string name="discord_information">Metrolist utiliza la biblioteca KizzyRPC para establecer el estado de tu cuenta de Discord. Esto implica el uso de la conexión Discord Gateway, lo que podría considerarse una violación de las condiciones del servicio de Discord. Sin embargo, no se conocen casos de cuentas de usuario suspendidas por este motivo. Úsalo bajo tu propio riesgo.\n\nMetrolist solo extraerá tu token, todo lo demás se almacena localmente.</string>
+    <string name="discord_information">Metrolist utiliza la biblioteca KizzyRPC para establecer el estado de su cuenta de Discord. Esto implica el uso de la conexión Discord Gateway, lo que podría considerarse una violación de las condiciones del servicio de Discord. Sin embargo, no se conocen casos de cuentas de usuario suspendidas por este motivo. Úselo bajo su propio riesgo.\n\nMetrolist solo extraerá su ficha; todo lo demás se almacena localmente.</string>
     <string name="dismiss">Descartar</string>
     <string name="options">Opciones</string>
     <string name="preview">Vista previa</string>
-    <string name="login_failed">Error al iniciar la sesión</string>
-    <string name="action_logout">Cerrar sesión</string>
+    <string name="login_failed">Error al acceder a la cuenta</string>
+    <string name="action_logout">Finalizar sesión</string>
     <string name="enable_discord_rpc">Activar Rich Presence</string>
     <string name="about">Acerca de</string>
     <string name="app_version">Versión de la app</string>
@@ -296,16 +296,16 @@
     <string name="translation_models">Modelos de traducción</string>
     <string name="clear_translation_models">Borrar modelos de traducción</string>
     <string name="listen_history">Historial de reproducciones</string>
-    <string name="your_youtube_playlists">Tus listas de reproducción de YouTube</string>
-    <string name="remove_all_from_library">Eliminar todo de la biblioteca</string>
+    <string name="your_youtube_playlists">Sus listas de reproducción de YouTube</string>
+    <string name="remove_all_from_library">Quitar todo de la fonoteca</string>
     <string name="search_history">Historial de búsqueda</string>
     <string name="disable_screenshot">Desactivar captura de pantalla</string>
     <string name="auto_load_more">Cargar automáticamente más canciones</string>
     <string name="disable_screenshot_desc">Cuando esta opción está activada, las capturas de pantalla y la vista de la aplicación en Recientes estará deshabilitada.</string>
     <string name="auto_load_more_desc">Añade automáticamente más canciones cuando llegues al final de la cola, si es posible</string>
     <string name="other_versions">Otras versiones</string>
-    <string name="add_all_to_library">Añadir todo a la biblioteca</string>
+    <string name="add_all_to_library">Añadir todo a la fonoteca</string>
     <string name="use_login_for_browse">Utilice el inicio de sesión para ver el contenido</string>
     <string name="use_login_for_browse_desc">Esto puede influir en el contenido que ve y, por ejemplo, muestra álbumes exclusivos si ha iniciado sesión con una cuenta Premium</string>
-    <string name="action_login">Iniciar Sesión</string>
+    <string name="action_login">Acceder</string>
 </resources>
