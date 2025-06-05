@@ -51,7 +51,7 @@
     <string name="play_next">Seguinte</string>
     <string name="add_to_queue">Adicionar à fila</string>
     <string name="remove_all_from_library">Remover tudo da biblioteca</string>
-    <string name="action_download">Descarregar</string>
+    <string name="action_download">Baixar</string>
     <string name="downloading">A descarregar</string>
     <string name="remove_download">Remover descarregadas</string>
     <string name="import_playlist">Importar lista de reprodução</string>
@@ -287,4 +287,5 @@
     <string name="discord_information">Metrolist utiliza a biblioteca KizzyRPC para definir o estado da sua conta Discord. Isto envolve uma ligação ao Discord Gateway, que pode ser considerada uma violação dos termos do serviço Discord. Contudo ,não há casos conhecidos de contas suspensas por este motivo. Utilize por sua conta e risco.\n\nMetrolist apenas irá extrair o seu token e tudo o resto é armazenado localmente.</string>
     <string name="use_login_for_browse">Inicie sessão para ver o seu conteúdo</string>
     <string name="use_login_for_browse_desc">Influencia o conteúdo visível e permite, por exemplo, ver álbuns específicos, caso esteja a utilizar uma conta Premium</string>
+    <string name="action_login">Logar</string>
 </resources>

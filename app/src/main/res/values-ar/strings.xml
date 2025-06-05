@@ -2,11 +2,11 @@
 <resources>
     <string name="artists">فنانون</string>
     <string name="albums">ألبومات</string>
-    <string name="history">تاريخ</string>
+    <string name="history">السجل</string>
     <string name="stats">إحصائيات</string>
     <string name="account">حساب</string>
-    <string name="quick_picks">مختارات سريعة</string>
-    <string name="forgotten_favorites">مفضلات منسية</string>
+    <string name="quick_picks">إختيارات سريعة</string>
+    <string name="forgotten_favorites">مفضلات مهملة</string>
     <string name="your_youtube_playlists">قوائم أغانيك على YouTube</string>
     <string name="similar_to">تشبه</string>
     <string name="new_release_albums">ألبومات أصدرت حديثًا</string>
@@ -17,7 +17,7 @@
     <string name="most_played_albums">الألبومات الأكثر استماعًا</string>
     <string name="search_yt_music">ابحث في YouTube Music…</string>
     <string name="search_library">ابحث في المكتبة…</string>
-    <string name="filter_liked">مفضلة</string>
+    <string name="filter_liked">أعجبك</string>
     <string name="filter_downloaded">تم تنزيلها</string>
     <string name="filter_all">جميع</string>
     <string name="filter_songs">اغاني</string>
@@ -33,8 +33,8 @@
     <string name="other_versions">نسخ اخرى</string>
     <string name="songs">أغاني</string>
     <string name="playlists">قوائم الأغاني</string>
-    <string name="mood_and_genres">حالة وأنواع</string>
-    <string name="quick_picks_empty">استمع إلى الأغاني لتوليد مختاراتك السريعة</string>
+    <string name="mood_and_genres">الأوضاع والتصنيف</string>
+    <string name="quick_picks_empty">استمع إلى الأغاني لتوليد قائمة السريعة</string>
     <string name="search">ابحث</string>
     <string name="keep_listening">تابع الاستماع</string>
     <string name="this_week">الأسبوع الحالي</string>
@@ -81,7 +81,7 @@
     <string name="remove_from_history">امسح من التاريخ</string>
     <string name="remove_from_queue">امسح من قائمة الانتظار</string>
     <string name="search_online">ابحث على الإنترنت</string>
-    <string name="action_sync">تزامن</string>
+    <string name="action_sync">مزامنة</string>
     <string name="tempo_and_pitch">سرعة الإيقاع والحدة</string>
     <string name="sort_by_name">الاسم</string>
     <string name="sort_by_artist">الفنان</string>
@@ -226,7 +226,7 @@
     <string name="clear_listen_history">مسح تاريخ الاستماع</string>
     <string name="enable_lrclib">فعل موفر الكلمات LrcLib</string>
     <string name="backup_restore">النسخ الاحتياطي والاستعادة</string>
-    <string name="action_restore">استعد</string>
+    <string name="action_restore">استعادة</string>
     <string name="imported_playlist">قائمة أغاني مستوردة</string>
     <string name="hide_explicit">اخفي المحتوى الصريح</string>
     <string name="backup_create_failed">تعذر إنشاء نسخة احتياطية</string>
@@ -296,7 +296,7 @@
     <string name="enable_kugou">فعل موفر الكلمات KuGou</string>
     <string name="clear_search_history_confirm">هل أنت متأكد أنك تريد مسح كل سجل البحث؟</string>
     <string name="disable_screenshot">تعطيل قابلية اخذ لقطة للشاشة</string>
-    <string name="action_backup">انسخ احتياطيًا</string>
+    <string name="action_backup">نسخة احتياطيه</string>
     <string name="backup_create_success">تم إنشاء النسخة الاحتياطية بنجاح</string>
     <string name="restore_failed">فشل في استعادة النسخة الاحتياطية</string>
     <string name="options">خيارات</string>
@@ -314,4 +314,5 @@
     <string name="disable_screenshot_desc">عند تفعيل هذا الخيار، يتم تعطيل اخذ لقطات للشاشة وعدم اظهار محتوى التطبيق في التطبيقات الأخيرة.</string>
     <string name="use_login_for_browse">استخدم تسجيل الدخول لتصفح المحتوى</string>
     <string name="use_login_for_browse_desc">يمكن أن يؤثر ذلك على المحتوى الذي تراه، فعلى سبيل المثال، يعرض الألبومات المخصصة للمشتركين المميزين فقط إذا كنت مسجلاً الدخول باستخدام حساب مميز</string>
+    <string name="action_login">تسجيل دخول</string>
 </resources>
