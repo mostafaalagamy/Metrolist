@@ -16,7 +16,7 @@
     <string name="continuous">مستمر</string>
     <string name="liked">الأغاني المفضلة</string>
     <string name="offline">التحميلات</string>
-    <string name="my_top">الأعلي إستماع : </string>
+    <string name="my_top">الأعلي إستماع</string>
     <string name="cached_playlist">الأغاني المخزنة مؤقتًا</string>
     <string name="sync_playlist">مزامنة قائمة التشغيل</string>
     <string name="sync_disabled">المزامنة غير مفعلة</string>
@@ -75,7 +75,6 @@
     <string name="show_downloaded_playlist">إظهار قائمة التحميلات</string>
     <string name="show_top_playlist">إظهار قائمة الأعلى أستماع</string>
     <string name="show_cached_playlist">إظهار قائمة الأغاني المخزنة مؤقتًا</string>
-
     <string name="generating_image">جاري إنشاء الصورة</string>
     <string name="please_wait">انتظر من فضلك</string>
     <string name="cancel">إلغاء</string>
@@ -89,7 +88,6 @@
     <string name="text_color">لون النص</string>
     <string name="secondary_text_color">لون النص الثانوي</string>
     <string name="background_color">لون الخلفية</string>
-
     <string name="google">جوجل</string>
     <string name="discord">ديسكورد</string>
     <string name="advanced_login">تسجيل الدخول المتقدم (token)</string>
@@ -115,10 +113,8 @@
     <string name="min_playback_duration_description">الحد الأدنى لمدة تشغيل الأغنية قبل اعتبارها مُشغّلة</string>
     <string name="percentage_format">%d%%</string>
     <string name="minimum_playback_duration">الحد الأدنى لمدة التشغيل</string>
-
     <string name="auto_download_on_like">التنزيل التلقائي عند الإعجاب</string>
     <string name="auto_download_on_like_desc">تنزيل الأغاني تلقائيًا عند الاعجاب بها</string>
-
     <string name="clear_song_cache_dialog">هل أنت متأكد أنك تريد مسح كافة الأغاني المخزنة مؤقتًا؟</string>
     <string name="clear_downloads_dialog">هل أنت متأكد أنك تريد مسح كافة التنزيلات؟</string>
     <string name="pause_remote_listen_history">إيقاف مشاركة سجل الاستماع مع YouTube Music</string>
@@ -142,4 +138,12 @@
     <string name="views">المشاهدات</string>
     <string name="likes">الإعجابات</string>
     <string name="dislikes">الغير محبوب</string>
+    <string name="local_history">محلي</string>
+    <string name="remote_history">مزامن</string>
+    <string name="added_to_play_next">تمت إضافته للتشغيل التالي</string>
+    <string name="added_to_queue">تمت إضافته إلى قائمة الانتظار</string>
+    <string name="link_copied">تم نسخ الرابط</string>
+    <string name="similar_content">محتوى مشابه</string>
+    <string name="charts">المخططات</string>
+    <string name="release_notes">ملاحظات الإصدار الجديد</string>
 </resources>

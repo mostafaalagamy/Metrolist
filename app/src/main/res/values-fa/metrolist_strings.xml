@@ -71,8 +71,8 @@
     <string name="numbers">اعداد</string>
     <string name="likes">پسندها</string>
     <plurals name="seconds">
-        <item quantity="one">۱ ثانیه</item>
-        <item quantity="other">%d ثانیه</item>
+        <item quantity="one">۱ ثانیه%d ثانیه</item>
+        <item quantity="other"></item>
     </plurals>
     <string name="dislikes">نپسندیدن</string>
     <string name="explore">اکتشاف</string>
