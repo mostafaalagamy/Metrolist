@@ -112,9 +112,9 @@ android {
     }
 
     buildFeatures {
-         compose = true
-         buildConfig = true
-     }
+        compose = true
+        buildConfig = true
+    }
 
     dependenciesInfo {
         includeInApk = false
@@ -130,10 +130,13 @@ android {
     }
 
     packaging {
-         resources {
-             excludes += "/META-INF/{AL2.0,LGPL2.1}"
-         }
-     }
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes += "META-INF/NOTICE.md"
+            excludes += "META-INF/CONTRIBUTORS.md"
+            excludes += "META-INF/LICENSE.md"
+        }
+    }
 }
 
 ksp {
@@ -175,6 +178,7 @@ dependencies {
     implementation(libs.squigglyslider)
 
     implementation(libs.room.runtime)
+    implementation(libs.kuromoji.ipadic)
     ksp(libs.room.compiler)
     implementation(libs.room.ktx)
 
