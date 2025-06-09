@@ -1,5 +1,5 @@
 [versions]
-androidGradlePlugin = "8.12.0-alpha03"
+androidGradlePlugin = "8.12.0-alpha04"
 annotation = "1.9.1"
 json = "20250517"
 kotlin = "2.2.0-RC2"
@@ -11,7 +11,7 @@ media3 = "1.8.0-alpha01"
 room = "2.7.1"
 hilt = "2.56.2"
 ktor = "3.1.3"
-ksp = "2.2.0-RC-2.0.1"
+ksp = "2.2.0-RC2-2.0.1"
 kuromojiIpadic = "0.9.0"
 
 [libraries]
@@ -32,7 +32,7 @@ compose-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "compos
 compose-ui-util = { group = "androidx.compose.ui", name = "ui-util", version.ref = "compose" }
 compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling", version.ref = "compose" }
 compose-animation = { group = "androidx.compose.animation", name = "animation-graphics", version.ref = "compose" }
-compose-reorderable = { module = "sh.calvin.reorderable:reorderable", version = "2.4.3" }
+compose-reorderable = { module = "sh.calvin.reorderable:reorderable", version = "2.5.1" }
 
 squigglyslider = { group = "me.saket.squigglyslider", name = "squigglyslider", version = "1.0.0" }
 
