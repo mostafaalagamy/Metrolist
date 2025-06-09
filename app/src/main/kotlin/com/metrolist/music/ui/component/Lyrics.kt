@@ -100,7 +100,9 @@ import com.metrolist.music.db.entities.LyricsEntity.Companion.LYRICS_NOT_FOUND
 import com.metrolist.music.lyrics.LyricsEntry
 import com.metrolist.music.lyrics.LyricsEntry.Companion.HEAD_LYRICS_ENTRY
 import com.metrolist.music.lyrics.LyricsUtils.findCurrentLineIndex
+import com.metrolist.music.lyrics.LyricsUtils.isJapanese
 import com.metrolist.music.lyrics.LyricsUtils.parseLyrics
+import com.metrolist.music.lyrics.LyricsUtils.romanizeJapanese
 import com.metrolist.music.ui.component.shimmer.ShimmerHost
 import com.metrolist.music.ui.component.shimmer.TextPlaceholder
 import com.metrolist.music.ui.menu.LyricsMenu
@@ -159,9 +161,24 @@ fun Lyrics(
             if (lyrics == null || lyrics == LYRICS_NOT_FOUND) {
                 emptyList()
             } else if (lyrics.startsWith("[")) {
-                listOf(HEAD_LYRICS_ENTRY) + parseLyrics(lyrics)
+                val parsedLines = parseLyrics(lyrics)
+                parsedLines.map { entry ->
+                    val romanized: String? = when {
+                        isJapanese(entry.text) -> romanizeJapanese(entry.text) // Implemente isJapanese
+                        else -> null
+                    }
+                    LyricsEntry(entry.time, entry.text, romanized)
+                }.let {
+                    listOf(LyricsEntry.HEAD_LYRICS_ENTRY) + it
+                }
             } else {
-                lyrics.lines().mapIndexed { index, line -> LyricsEntry(index * 100L, line) }
+                lyrics.lines().mapIndexed { index, line ->
+                    val romanized: String? = when {
+                        isJapanese(line) -> romanizeJapanese(line)
+                        else -> null
+                    }
+                    LyricsEntry(index * 100L, line, romanized)
+                }
             }
         }
     val isSynced =
@@ -304,9 +321,14 @@ fun Lyrics(
          */
         fun calculateOffset() = with(density) {
             if (currentLineIndex < 0 || currentLineIndex >= lines.size) return@with 0
-            val count = countNewLine(lines[currentLineIndex].text)
+            val currentItem = lines[currentLineIndex]
+            var totalNewLines = currentItem.text.count { it == '\n' }
+            currentItem.romanizedText?.let {
+                totalNewLines += it.count { c -> c == '\n' }
+            }
+
             val dpValue = if (landscapeOffset) 16.dp else 20.dp
-            dpValue.toPx().toInt() * count
+            dpValue.toPx().toInt() * totalNewLines
         }
 
         if (!isSynced) return@LaunchedEffect
@@ -478,18 +500,43 @@ fun Lyrics(
                             else 0.5f
                         )
 
-                    Text(
-                        text = item.text,
-                        fontSize = 20.sp,
-                        color = textColor,
-                        textAlign = when (lyricsTextPosition) {
-                            LyricsPosition.LEFT -> TextAlign.Left
-                            LyricsPosition.CENTER -> TextAlign.Center
-                            LyricsPosition.RIGHT -> TextAlign.Right
-                        },
-                        fontWeight = FontWeight.Bold,
-                        modifier = itemModifier
-                    )
+                    Column(
+                        modifier = itemModifier,
+                        horizontalAlignment = when (lyricsTextPosition) {
+                            LyricsPosition.LEFT -> Alignment.Start
+                            LyricsPosition.CENTER -> Alignment.CenterHorizontally
+                            LyricsPosition.RIGHT -> Alignment.End
+                        }
+                    ) {
+                        Text(
+                            text = item.text,
+                            fontSize = 20.sp,
+                            color = textColor,
+                            textAlign = when (lyricsTextPosition) {
+                                LyricsPosition.LEFT -> TextAlign.Left
+                                LyricsPosition.CENTER -> TextAlign.Center
+                                LyricsPosition.RIGHT -> TextAlign.Right
+                            },
+                            fontWeight = FontWeight.Bold
+                            // Remova o modifier daqui se já aplicado na Column,
+                            // ou ajuste conforme necessário
+                        )
+                        // Exibe o texto romanizado se existir
+                        item.romanizedText?.let { romanized ->
+                            Text(
+                                text = romanized,
+                                fontSize = 16.sp, // Tamanho menor para a romanização
+                                color = textColor.copy(alpha = 0.8f), // Cor ligeiramente diferente
+                                textAlign = when (lyricsTextPosition) {
+                                    LyricsPosition.LEFT -> TextAlign.Left
+                                    LyricsPosition.CENTER -> TextAlign.Center
+                                    LyricsPosition.RIGHT -> TextAlign.Right
+                                },
+                                fontWeight = FontWeight.Normal, // Peso normal
+                                modifier = Modifier.padding(top = 2.dp) // Pequeno espaçamento
+                            )
+                        }
+                    }
                 }
             }
         }
