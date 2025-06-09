@@ -2,7 +2,7 @@
 <resources>
     <string name="unknown_artist">Неизвестный исполнитель</string>
     <string name="back_button_desc">Назад</string>
-    <string name="please_wait">Пожалуйста подождите</string>
+    <string name="please_wait">Пожалуйста, подождите</string>
     <string name="added_to_queue">Добавлено в очередь</string>
     <string name="remove_from_cache">Удалить из кэша</string>
     <string name="select">Выбрать всё</string>
@@ -51,4 +51,23 @@
     <string name="dislikes">Дизлайки</string>
     <string name="token_adv_login_description">Это ПРОДВИНУТЫЙ способ входа. Вместо использования веб-портала вы можете ввести или обновить токен для входа здесь. Это может быть полезно для быстрого входа на нескольких устройствах. Учтите, что приложение не примет токены с неверным форматом</string>
     <string name="likes">Лайки</string>
+    <string name="explore">Обзор</string>
+    <string name="charts">Чарты</string>
+    <string name="no_title">Без названия</string>
+    <string name="unknown_item_type">Неизвестный тип элементов</string>
+    <string name="loading_charts">Загрузка чартов...</string>
+    <string name="album_cover_desc">Обложка альбома</string>
+    <string name="top_music_videos">Лучшие музыкальные видео</string>
+    <string name="weeks">Недели</string>
+    <string name="months">Месяцы</string>
+    <string name="years">Годы</string>
+    <string name="liked">Понравившееся</string>
+    <string name="offline">Скачанное</string>
+    <string name="my_top">Мой топ</string>
+    <string name="cached_playlist">Кешированное</string>
+    <string name="sync_playlist">Синхронизировать плейлист</string>
+    <string name="sync_disabled">Синхронизация выключена</string>
+    <string name="elements_selected">%1$d Элементов выбрано</string>
+    <string name="cancel">Отмена</string>
+    <string name="share_lyrics">Поделится текстом</string>
 </resources>
