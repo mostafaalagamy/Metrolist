@@ -81,4 +81,20 @@
         <item quantity="many">%d cекунд</item>
         <item quantity="other">%d cекунд</item>
     </plurals>
+    <string name="unknown_artist">Невідомий виконавець</string>
+    <string name="charts">Чарти</string>
+    <string name="back_button_desc">Назад</string>
+    <string name="no_title">Без назви</string>
+    <string name="unknown_item_type">Невідомий тип елементів</string>
+    <string name="loading_charts">Завантаження чартів...</string>
+    <string name="retry_button">Спробуй ще раз</string>
+    <string name="album_cover_desc">Обкладинка альбому</string>
+    <string name="top_music_videos">Найкращі музичні відео</string>
+    <string name="trending">Тренди</string>
+    <string name="cached_playlist">Кешовано</string>
+    <string name="generating_image">Генерація зображення</string>
+    <string name="sync_disabled">Синхронізація вимкнена</string>
+    <string name="please_wait">Зачекайте, будь ласка</string>
+    <string name="cancel">Скасувати</string>
+    <string name="share_lyrics">Поділитися текстом</string>
 </resources>
