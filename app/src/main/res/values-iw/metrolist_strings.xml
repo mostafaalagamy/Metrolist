@@ -1,2 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="weeks">שבועות</string>
+    <string name="months">חודשים</string>
+    <string name="background_color">צבע רקע</string>
+    <string name="local_history">מקומי</string>
+    <string name="remote_history">מרוחק</string>
+    <string name="charts">טבלאות</string>
+    <string name="back_button_desc">אחורה</string>
+    <string name="no_title">אין כותרת</string>
+    <string name="unknown_artist">אמן לא ידוע</string>
+    <string name="unknown_item_type">סוג פריט לא ידוע</string>
+    <string name="loading_charts">טוען טבלאות...</string>
+    <string name="retry_button">נסה שוב</string>
+    <string name="album_cover_desc">כיסוי אלבום</string>
+    <string name="top_music_videos">סרטוני מוזיקה מובילים</string>
+    <string name="trending">טרנדינג</string>
+    <string name="years">שנים</string>
+    <string name="continuous">מתמשך</string>
+    <string name="liked">אהוב</string>
+    <string name="offline">הורד</string>
+    <string name="added_to_play_next">נוסף לבאים בתור</string>
+</resources>
