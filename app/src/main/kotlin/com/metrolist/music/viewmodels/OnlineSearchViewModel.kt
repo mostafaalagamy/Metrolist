@@ -10,8 +10,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.metrolist.innertube.YouTube
 import com.metrolist.innertube.models.filterExplicit
+import com.metrolist.innertube.models.filterVideos
 import com.metrolist.innertube.pages.SearchSummaryPage
 import com.metrolist.music.constants.HideExplicitKey
+import com.metrolist.music.constants.HideVideosKey
 import com.metrolist.music.models.ItemsPage
 import com.metrolist.music.utils.dataStore
 import com.metrolist.music.utils.get
@@ -48,7 +50,16 @@ constructor(
                                             HideExplicitKey,
                                             false,
                                         ),
-                                    )
+                                    ).let { page ->
+                                        page.copy(
+                                            items = page.items.filterVideos(
+                                                context.dataStore.get(
+                                                    HideVideosKey,
+                                                    false,
+                                                )
+                                            )
+                                        )
+                                    }
                             }.onFailure {
                                 reportException(it)
                             }
@@ -65,6 +76,12 @@ constructor(
                                             .filterExplicit(
                                                 context.dataStore.get(
                                                     HideExplicitKey,
+                                                    false
+                                                )
+                                            )
+                                            .filterVideos(
+                                                context.dataStore.get(
+                                                    HideVideosKey,
                                                     false
                                                 )
                                             ),
@@ -89,7 +106,20 @@ constructor(
                 val searchResult =
                     YouTube.searchContinuation(continuation).getOrNull() ?: return@launch
                 viewStateMap[filter] = ItemsPage(
-                    (viewState.items + searchResult.items).distinctBy { it.id },
+                    (viewState.items + searchResult.items)
+                        .distinctBy { it.id }
+                        .filterExplicit(
+                            context.dataStore.get(
+                                HideExplicitKey,
+                                false
+                            )
+                        )
+                        .filterVideos(
+                            context.dataStore.get(
+                                HideVideosKey,
+                                false
+                            )
+                        ),
                     searchResult.continuation
                 )
             }
