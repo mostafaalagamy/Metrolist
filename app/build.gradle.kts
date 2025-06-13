@@ -16,7 +16,7 @@ android {
 
     defaultConfig {
         applicationId = "com.metrolist.music"
-        minSdk = 21
+        minSdk = 26
         targetSdk = 36
         versionCode = 121
         versionName = "12.0.0"
