@@ -33,6 +33,7 @@ val ProxyEnabledKey = booleanPreferencesKey("proxyEnabled")
 val ProxyUrlKey = stringPreferencesKey("proxyUrl")
 val ProxyTypeKey = stringPreferencesKey("proxyType")
 val YtmSyncKey = booleanPreferencesKey("ytmSync")
+val HideVideosKey = booleanPreferencesKey("hideVideos")
 
 val AudioQualityKey = stringPreferencesKey("audioQuality")
 
