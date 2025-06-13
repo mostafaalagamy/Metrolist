@@ -3,11 +3,59 @@ package com.metrolist.music.lyrics
 import android.text.format.DateUtils
 import com.atilika.kuromoji.ipadic.Tokenizer
 import com.metrolist.music.ui.component.ANIMATE_SCROLL_DURATION
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 @Suppress("RegExpRedundantEscape")
 object LyricsUtils {
     val LINE_REGEX = "((\\[\\d\\d:\\d\\d\\.\\d{2,3}\\] ?)+)(.+)".toRegex()
     val TIME_REGEX = "\\[(\\d\\d):(\\d\\d)\\.(\\d{2,3})\\]".toRegex()
+
+    private val KANA_ROMAJI_MAP: Map<String, String> = mapOf(
+        // Digraphs (Yōon - combinations like kya, sho)
+        "キャ" to "kya", "キュ" to "kyu", "キョ" to "kyo",
+        "シャ" to "sha", "シュ" to "shu", "ショ" to "sho",
+        "チャ" to "cha", "チュ" to "chu", "チョ" to "cho",
+        "ニャ" to "nya", "ニュ" to "nyu", "ニョ" to "nyo",
+        "ヒャ" to "hya", "ヒュ" to "hyu", "ヒョ" to "hyo",
+        "ミャ" to "mya", "ミュ" to "myu", "ミョ" to "myo",
+        "リャ" to "rya", "リュ" to "ryu", "リョ" to "ryo",
+        "ギャ" to "gya", "ギュ" to "gyu", "ギョ" to "gyo",
+        "ジャ" to "ja", "ジュ" to "ju", "ジョ" to "jo",
+        "ヂャ" to "ja", "ヂュ" to "ju", "ヂョ" to "jo", // ヂ variants, also commonly 'ja', 'ju', 'jo'
+        "ビャ" to "bya", "ビュ" to "byu", "ビョ" to "byo",
+        "ピャ" to "pya", "ピュ" to "pyu", "ピョ" to "pyo",
+
+        // Basic Katakana Characters
+        "ア" to "a", "イ" to "i", "ウ" to "u", "エ" to "e", "オ" to "o",
+        "カ" to "ka", "キ" to "ki", "ク" to "ku", "ケ" to "ke", "コ" to "ko",
+        "サ" to "sa", "シ" to "shi", "ス" to "su", "セ" to "se", "ソ" to "so",
+        "タ" to "ta", "チ" to "chi", "ツ" to "tsu", "テ" to "te", "ト" to "to",
+        "ナ" to "na", "ニ" to "ni", "ヌ" to "nu", "ネ" to "ne", "ノ" to "no",
+        "ハ" to "ha", "ヒ" to "hi", "フ" to "fu", "ヘ" to "he", "ホ" to "ho",
+        "マ" to "ma", "ミ" to "mi", "ム" to "mu", "メ" to "me", "モ" to "mo",
+        "ヤ" to "ya", "ユ" to "yu", "ヨ" to "yo",
+        "ラ" to "ra", "リ" to "ri", "ル" to "ru", "レ" to "re", "ロ" to "ro",
+        "ワ" to "wa", "ヲ" to "o", // ヲ is pronounced 'o'
+        "ン" to "n",
+
+        // Dakuten (voiced consonants)
+        "ガ" to "ga", "ギ" to "gi", "グ" to "gu", "ゲ" to "ge", "ゴ" to "go",
+        "ザ" to "za", "ジ" to "ji", "ズ" to "zu", "ゼ" to "ze", "ゾ" to "zo",
+        "ダ" to "da", "ヂ" to "ji", "ヅ" to "zu", "デ" to "de", "ド" to "do", // ヂ and ヅ are often 'ji' and 'zu'
+
+        // Handakuten (p-sounds for 'h' group) / Dakuten for 'h' group
+        "バ" to "ba", "ビ" to "bi", "ブ" to "bu", "ベ" to "be", "ボ" to "bo", // Dakuten for ハ행 (ha-row)
+        "パ" to "pa", "ピ" to "pi", "プ" to "pu", "ペ" to "pe", "ポ" to "po", // Handakuten for ハ행 (ha-row)
+
+        // Chōonpu (long vowel mark) - removed as per original logic
+        "ー" to ""
+    )
+
+    // Lazy initialized Tokenizer
+    private val kuromojiTokenizer: Tokenizer by lazy {
+        Tokenizer()
+    }
 
     fun parseLyrics(lyrics: String): List<LyricsEntry> =
         lyrics
@@ -51,94 +99,77 @@ object LyricsUtils {
         return lines.lastIndex
     }
 
+    /**
+     * Converts a Katakana string to Romaji.
+     * This optimized version uses a pre-defined map and StringBuilder for better performance
+     * compared to chained regex replacements.
+     * Expected impact: Significant reduction in object creation (Regex, String) and faster execution.
+     */
     fun katakanaToRomaji(katakana: String?): String {
-        if (katakana == null) return ""
+        if (katakana.isNullOrEmpty()) return ""
 
-        var romaji: String? = katakana
+        val romajiBuilder = StringBuilder(katakana.length) // Initial capacity
+        var i = 0
+        val n = katakana.length
+        while (i < n) {
+            var consumed = false
+            // Prioritize 2-character sequences from the map (e.g., "キャ" before "キ")
+            if (i + 1 < n) {
+                val twoCharCandidate = katakana.substring(i, i + 2)
+                val mappedTwoChar = KANA_ROMAJI_MAP[twoCharCandidate]
+                if (mappedTwoChar != null) {
+                    romajiBuilder.append(mappedTwoChar)
+                    i += 2
+                    consumed = true
+                }
+            }
 
-        romaji = romaji!!.replace("キャ".toRegex(), "kya").replace("キュ".toRegex(), "kyu")
-            .replace("キョ".toRegex(), "kyo")
-        romaji = romaji.replace("シャ".toRegex(), "sha").replace("シュ".toRegex(), "shu")
-            .replace("ショ".toRegex(), "sho")
-        romaji = romaji.replace("チャ".toRegex(), "cha").replace("チュ".toRegex(), "chu")
-            .replace("チョ".toRegex(), "cho")
-        romaji = romaji.replace("ニャ".toRegex(), "nya").replace("ニュ".toRegex(), "nyu")
-            .replace("ニョ".toRegex(), "nyo")
-        romaji = romaji.replace("ヒャ".toRegex(), "hya").replace("ヒュ".toRegex(), "hyu")
-            .replace("ヒョ".toRegex(), "hyo")
-        romaji = romaji.replace("ミャ".toRegex(), "mya").replace("ミュ".toRegex(), "myu")
-            .replace("ミョ".toRegex(), "myo")
-        romaji = romaji.replace("リャ".toRegex(), "rya").replace("リュ".toRegex(), "ryu")
-            .replace("リョ".toRegex(), "ryo")
-        romaji = romaji.replace("ギャ".toRegex(), "gya").replace("ギュ".toRegex(), "gyu")
-            .replace("ギョ".toRegex(), "gyo")
-        romaji = romaji.replace("ジャ".toRegex(), "ja").replace("ジュ".toRegex(), "ju")
-            .replace("ジョ".toRegex(), "jo")
-        romaji = romaji.replace("ビャ".toRegex(), "bya").replace("ビュ".toRegex(), "byu")
-            .replace("ビョ".toRegex(), "byo")
-        romaji = romaji.replace("ピャ".toRegex(), "pya").replace("ピュ".toRegex(), "pyu")
-            .replace("ピョ".toRegex(), "pyo")
-
-        romaji = romaji.replace("ア".toRegex(), "a").replace("イ".toRegex(), "i")
-            .replace("ウ".toRegex(), "u")
-            .replace("エ".toRegex(), "e").replace("オ".toRegex(), "o")
-        romaji = romaji.replace("カ".toRegex(), "ka").replace("キ".toRegex(), "ki")
-            .replace("ク".toRegex(), "ku")
-            .replace("ケ".toRegex(), "ke").replace("コ".toRegex(), "ko")
-        romaji = romaji.replace("サ".toRegex(), "sa").replace("シ".toRegex(), "shi")
-            .replace("ス".toRegex(), "su")
-            .replace("セ".toRegex(), "se").replace("ソ".toRegex(), "so")
-        romaji = romaji.replace("タ".toRegex(), "ta").replace("チ".toRegex(), "chi")
-            .replace("ツ".toRegex(), "tsu")
-            .replace("テ".toRegex(), "te").replace("ト".toRegex(), "to")
-        romaji = romaji.replace("ナ".toRegex(), "na").replace("ニ".toRegex(), "ni")
-            .replace("ヌ".toRegex(), "nu")
-            .replace("ネ".toRegex(), "ne").replace("ノ".toRegex(), "no")
-        romaji = romaji.replace("ハ".toRegex(), "ha").replace("ヒ".toRegex(), "hi")
-            .replace("フ".toRegex(), "fu")
-            .replace("ヘ".toRegex(), "he").replace("ホ".toRegex(), "ho")
-        romaji = romaji.replace("マ".toRegex(), "ma").replace("ミ".toRegex(), "mi")
-            .replace("ム".toRegex(), "mu")
-            .replace("メ".toRegex(), "me").replace("モ".toRegex(), "mo")
-        romaji = romaji.replace("ヤ".toRegex(), "ya").replace("ユ".toRegex(), "yu")
-            .replace("ヨ".toRegex(), "yo")
-        romaji = romaji.replace("ラ".toRegex(), "ra").replace("リ".toRegex(), "ri")
-            .replace("ル".toRegex(), "ru")
-            .replace("レ".toRegex(), "re").replace("ロ".toRegex(), "ro")
-        romaji = romaji.replace("ワ".toRegex(), "wa").replace("ヲ".toRegex(), "o")
-            .replace("ン".toRegex(), "n")
-        romaji = romaji.replace("ガ".toRegex(), "ga").replace("ギ".toRegex(), "gi")
-            .replace("グ".toRegex(), "gu")
-            .replace("ゲ".toRegex(), "ge").replace("ゴ".toRegex(), "go")
-        romaji = romaji.replace("ザ".toRegex(), "za").replace("ジ".toRegex(), "ji")
-            .replace("ズ".toRegex(), "zu")
-            .replace("ゼ".toRegex(), "ze").replace("ゾ".toRegex(), "zo")
-        romaji = romaji.replace("ダ".toRegex(), "da").replace("ヂ".toRegex(), "ji")
-            .replace("ヅ".toRegex(), "zu")
-            .replace("デ".toRegex(), "de").replace("ド".toRegex(), "do")
-        romaji = romaji.replace("バ".toRegex(), "ba").replace("ビ".toRegex(), "bi")
-            .replace("ブ".toRegex(), "bu")
-            .replace("ベ".toRegex(), "be").replace("ボ".toRegex(), "bo")
-        romaji = romaji.replace("パ".toRegex(), "pa").replace("ピ".toRegex(), "pi")
-            .replace("プ".toRegex(), "pu")
-            .replace("ペ".toRegex(), "pe").replace("ポ".toRegex(), "po")
-
-        romaji = romaji.replace("ー".toRegex(), "")
-
-        return romaji.lowercase()
+            if (!consumed) {
+                // If no 2-character sequence matched, try 1-character
+                val oneCharCandidate = katakana[i].toString()
+                val mappedOneChar = KANA_ROMAJI_MAP[oneCharCandidate]
+                if (mappedOneChar != null) {
+                    romajiBuilder.append(mappedOneChar)
+                } else {
+                    // If the character is not in Katakana map, append it as is.
+                    romajiBuilder.append(oneCharCandidate)
+                }
+                i += 1
+            }
+        }
+        return romajiBuilder.toString().lowercase()
     }
 
-    fun romanizeJapanese(text: String): String {
-        val tokenizer = Tokenizer()
-        val tokens = tokenizer.tokenize(text)
+    /**
+     * Romanizes Japanese text using Kuromoji Tokenizer and the optimized katakanaToRomaji function.
+     * Runs on Dispatchers.Default for CPU-intensive work.
+     * Expected impact: Faster tokenization due to reused Tokenizer instance and faster
+     * per-token romanization.
+     */
+    suspend fun romanizeJapanese(text: String): String = withContext(Dispatchers.Default) {
+        // Use the lazily initialized tokenizer
+        val tokens = kuromojiTokenizer.tokenize(text)
 
-        return tokens.joinToString(" ") { token ->
-            val reading = token.reading
-            val kana = if (reading == null || reading == "*") token.surface else reading
-            katakanaToRomaji(kana)
+        tokens.joinToString(" ") { token ->
+            val kanaToConvert = if (token.reading.isNullOrEmpty() || token.reading == "*") {
+                token.surface
+            } else {
+                token.reading
+            }
+            katakanaToRomaji(kanaToConvert)
         }
     }
+
+    /**
+     * Checks if the given text contains any Japanese characters (Hiragana, Katakana, or common Kanji).
+     * This function is generally efficient due to '.any' and early exit.
+     * No major performance bottlenecks expected here for typical inputs.
+     */
     fun isJapanese(text: String): Boolean {
-        return text.any { it in '\u3040'..'\u309F' || it in '\u30A0'..'\u30FF' || it in '\u4E00'..'\u9FAF' }
+        return text.any { char ->
+            (char in '\u3040'..'\u309F') || // Hiragana
+            (char in '\u30A0'..'\u30FF') || // Katakana
+            (char in '\u4E00'..'\u9FAF')    // Common Kanji (CJK Unified Ideographs)
+        }
     }
 }
