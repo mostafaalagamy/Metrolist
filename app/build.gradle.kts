@@ -16,7 +16,7 @@ android {
 
     defaultConfig {
         applicationId = "com.metrolist.music"
-        minSdk = 21
+        minSdk = 26
         targetSdk = 36
         versionCode = 121
         versionName = "12.0.0"
@@ -97,18 +97,18 @@ android {
     }
 
     compileOptions {
-        isCoreLibraryDesugaringEnabled = true
-        sourceCompatibility = JavaVersion.VERSION_21
-        targetCompatibility = JavaVersion.VERSION_21
+        isCoreLibraryDesugaringEnabled = false
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     kotlin {
-        jvmToolchain(21)
+        jvmToolchain(17)
     }
 
     kotlinOptions {
-        jvmTarget = "21"
-        freeCompilerArgs = freeCompilerArgs + "-Xcontext-receivers"
+        jvmTarget = "17"
+        freeCompilerArgs = freeCompilerArgs + "-Xcontext-parameters"
     }
 
     buildFeatures {
@@ -195,8 +195,6 @@ dependencies {
 
     implementation(libs.ktor.client.core)
     implementation(libs.ktor.serialization.json)
-
-    coreLibraryDesugaring(libs.desugaring)
 
     implementation(libs.timber)
 }
