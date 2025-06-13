@@ -33,6 +33,9 @@ data class SongItem(
 ) : YTItem() {
     override val shareLink: String
         get() = "https://music.youtube.com/watch?v=$id"
+    
+    val videoType: String?
+        get() = endpoint?.watchEndpointMusicSupportedConfigs?.watchEndpointMusicConfig?.musicVideoType
 }
 
 data class AlbumItem(
@@ -83,6 +86,22 @@ data class ArtistItem(
 fun <T : YTItem> List<T>.filterExplicit(enabled: Boolean = true) =
     if (enabled) {
         filter { !it.explicit }
+    } else {
+        this
+    }
+
+fun <T : YTItem> List<T>.filterVideos(hideVideos: Boolean = false): List<T> =
+    if (hideVideos) {
+        filter { item ->
+            when (item) {
+                is SongItem -> {
+                    // Keep ATV (audio with cover image), filter out OMV, UGC
+                    val videoType = item.videoType
+                    videoType == "MUSIC_VIDEO_TYPE_ATV" || videoType == null
+                }
+                else -> true // Keep non-song items (albums, artists, playlists)
+            }
+        }
     } else {
         this
     }
