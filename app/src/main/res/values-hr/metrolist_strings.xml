@@ -1,2 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="no_title">Bez naslova</string>
+    <string name="unknown_artist">Nepoznati izvođač</string>
+    <string name="elements_selected">elementi odabrani</string>
+    <string name="explore">Istraži</string>
+    <string name="charts">Liste</string>
+    <string name="back_button_desc">Natrag</string>
+    <string name="unknown_item_type">Nepoznati tip artikla</string>
+    <string name="loading_charts">Učitavam ljestvice pjesama...</string>
+    <string name="retry_button">Pokušaj ponovno</string>
+    <string name="album_cover_desc">Naslovnica albuma</string>
+    <string name="top_music_videos">Top Spotovi</string>
+    <string name="trending">Trending</string>
+    <string name="weeks">Tjedni</string>
+    <string name="months">Mjeseci</string>
+    <string name="years">Godine</string>
+    <string name="continuous">Stalno</string>
+    <string name="liked">Lajkano</string>
+    <string name="offline">Skinuto</string>
+    <string name="my_top">Moj Top</string>
+    <string name="cached_playlist">Predmemorirano</string>
+    <string name="sync_playlist">Sync Playlista</string>
+    <string name="sync_disabled">Sync onemogućen</string>
+    <string name="allows_for_sync_witch_youtube">Napomena: ovo omogućuje sinkronizaciju sa Youtube Music. Ovo NIJE kasnije promjenjivo-</string>
+    <string name="generating_image">Generiram sliku</string>
+    <string name="please_wait">Molim pričekajte</string>
+    <string name="cancel">Odustani</string>
+    <string name="share_lyrics">Podijeli tekst pjesme</string>
+    <string name="share_as_text">Podijeli kao tekst</string>
+    <string name="share_as_image">Podijeli kao sliku</string>
+</resources>
