@@ -121,4 +121,13 @@
     <string name="numbers">数字</string>
     <string name="information">信息</string>
     <string name="subscribers">订阅者</string>
+    <string name="dislike_all">倒赞所有</string>
+    <string name="sort_by_last_updated">更新日期</string>
+    <string name="lyrics_click_change">点击更换歌词</string>
+    <string name="auto_playlists">自动播放列表</string>
+    <string name="show_liked_playlist">显示已点赞列表</string>
+    <string name="default_lib_chips">更改默认库标签</string>
+    <string name="history_duration">历史持续长度</string>
+    <string name="likes">点赞</string>
+    <string name="dislikes">倒赞</string>
 </resources>
