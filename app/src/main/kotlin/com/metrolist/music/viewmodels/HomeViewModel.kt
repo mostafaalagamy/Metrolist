@@ -8,10 +8,12 @@ import com.metrolist.innertube.models.PlaylistItem
 import com.metrolist.innertube.models.WatchEndpoint
 import com.metrolist.innertube.models.YTItem
 import com.metrolist.innertube.models.filterExplicit
+import com.metrolist.innertube.models.filterVideos
 import com.metrolist.innertube.pages.ExplorePage
 import com.metrolist.innertube.pages.HomePage
 import com.metrolist.innertube.utils.completed
 import com.metrolist.music.constants.HideExplicitKey
+import com.metrolist.music.constants.HideVideosKey
 import com.metrolist.music.constants.QuickPicks
 import com.metrolist.music.constants.QuickPicksKey
 import com.metrolist.music.constants.YtmSyncKey
@@ -80,6 +82,7 @@ class HomeViewModel @Inject constructor(
         isLoading.value = true
 
         val hideExplicit = context.dataStore.get(HideExplicitKey, false)
+        val hideVideos = context.dataStore.get(HideVideosKey, false)
 
         getQuickPicks()
 
@@ -133,7 +136,7 @@ class HomeViewModel @Inject constructor(
                 }
                 SimilarRecommendation(
                     title = it,
-                    items = items.filterExplicit(hideExplicit).shuffled().ifEmpty { return@mapNotNull null }
+                    items = items.filterExplicit(hideExplicit).filterVideos(hideVideos).shuffled().ifEmpty { return@mapNotNull null }
                 )
             }
 
@@ -152,6 +155,7 @@ class HomeViewModel @Inject constructor(
                             page.artists.shuffled().take(4) +
                             page.playlists.shuffled().take(4))
                         .filterExplicit(hideExplicit)
+                        .filterVideos(hideVideos)
                         .shuffled()
                         .ifEmpty { return@mapNotNull null }
                 )
@@ -178,7 +182,7 @@ class HomeViewModel @Inject constructor(
             homePage.value = HomePageWithBrowseCheck(
                 page.copy(
                     sections = page.sections.map { section ->
-                        section.copy(items = section.items.filterExplicit(hideExplicit))
+                        section.copy(items = section.items.filterExplicit(hideExplicit).filterVideos(hideVideos))
                     }
                 ),
                 browseContentAvailable
