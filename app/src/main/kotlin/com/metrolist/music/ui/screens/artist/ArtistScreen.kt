@@ -150,19 +150,23 @@ fun ArtistScreen(
                             modifier =
                             Modifier
                                 .fillMaxWidth()
-                                .aspectRatio(1.2f / 1),
+                                .then(
+                                    if (thumbnail != null) Modifier.aspectRatio(1.2f / 1) else Modifier
+                                ),
                         ) {
-                            AsyncImage(
-                                model = thumbnail.resize(1200, 1000),
-                                contentDescription = null,
-                                modifier =
-                                Modifier
-                                    .fillMaxWidth()
-                                    .align(Alignment.TopCenter)
-                                    .fadingEdge(
-                                        bottom = 400.dp,
-                                    ),
-                            )
+                            if (thumbnail != null) {
+                                AsyncImage(
+                                    model = thumbnail.resize(1200, 1000),
+                                    contentDescription = null,
+                                    modifier =
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .align(Alignment.TopCenter)
+                                        .fadingEdge(
+                                            bottom = 400.dp,
+                                        ),
+                                )
+                            }
                             AutoResizeText(
                                 text = artistName ?: "Unknown",
                                 style = MaterialTheme.typography.displayLarge,
