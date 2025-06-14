@@ -1,18 +1,16 @@
 package com.metrolist.innertube.pages
 
-import com.metrolist.innertube.YouTube
 import com.metrolist.innertube.models.Album
 import com.metrolist.innertube.models.AlbumItem
 import com.metrolist.innertube.models.Artist
 import com.metrolist.innertube.models.MusicResponsiveHeaderRenderer
 import com.metrolist.innertube.models.MusicResponsiveListItemRenderer
 import com.metrolist.innertube.models.SongItem
-import com.metrolist.innertube.models.oddElements
-import com.metrolist.innertube.utils.parseTime
 import com.metrolist.innertube.models.getItems
 import com.metrolist.innertube.models.oddElements
 import com.metrolist.innertube.models.response.BrowseResponse
 import com.metrolist.innertube.models.splitBySeparator
+import com.metrolist.innertube.utils.parseTime
 
 data class AlbumPage(
     val album: AlbumItem,
@@ -20,57 +18,29 @@ data class AlbumPage(
     val otherVersions: List<AlbumItem>,
 ) {
     companion object {
-        fun fromMusicResponsiveListItemRenderer(renderer: MusicResponsiveListItemRenderer): SongItem? {
-            return SongItem(
-                id = renderer.playlistItemData?.videoId ?: return null,
-                title =
-                    renderer.flexColumns
-                        .firstOrNull()
-                        ?.musicResponsiveListItemFlexColumnRenderer
-                        ?.text
-                        ?.runs
-                        ?.firstOrNull()
-                        ?.text ?: return null,
-                artists =
-                    renderer.flexColumns.getOrNull(1)?.musicResponsiveListItemFlexColumnRenderer?.text?.runs?.oddElements()?.map {
-                        Artist(
-                            name = it.text,
-                            id = it.navigationEndpoint?.browseEndpoint?.browseId,
-                        )
-                    } ?: return null,
-                album =
-                    renderer.flexColumns.getOrNull(2)?.musicResponsiveListItemFlexColumnRenderer?.text?.runs?.firstOrNull()?.let {
-                        Album(
-                            name = it.text,
-                            id = it.navigationEndpoint?.browseEndpoint?.browseId!!,
-                        )
-                    } ?: return null,
-                duration =
-                    renderer.fixedColumns
-                        ?.firstOrNull()
-                        ?.musicResponsiveListItemFlexColumnRenderer
-                        ?.text
-                        ?.runs
-                        ?.firstOrNull()
-                        ?.text
-                        ?.parseTime() ?: return null,
-                thumbnail = renderer.thumbnail?.musicThumbnailRenderer?.getThumbnailUrl() ?: return null,
-                explicit =
-                    renderer.badges?.find {
-                        it.musicInlineBadgeRenderer?.icon?.iconType == "MUSIC_EXPLICIT_BADGE"
-                    } != null,
-            )
+        fun getPlaylistId(response: BrowseResponse): String? {
+            var playlistId = response.microformat?.microformatDataRenderer?.urlCanonical?.substringAfterLast('=')
+            if (playlistId == null)
+            {
+                playlistId = response.header?.musicDetailHeaderRenderer?.menu?.menuRenderer?.topLevelButtons?.firstOrNull()
+                    ?.buttonRenderer?.navigationEndpoint?.watchPlaylistEndpoint?.playlistId
+            }
+            return playlistId
         }
 
-        fun getSongs(response: BrowseResponse, album: AlbumItem): List<SongItem> {
-            val tabs = response.contents?.singleColumnBrowseResultsRenderer?.tabs ?: response.contents?.twoColumnBrowseResultsRenderer?.tabs
-            val shelfRenderer = tabs?.firstOrNull()?.tabRenderer?.content?.sectionListRenderer?.contents?.firstOrNull()?.musicShelfRenderer ?:
-            response.contents?.twoColumnBrowseResultsRenderer?.secondaryContents?.sectionListRenderer?.contents?.firstOrNull()?.musicShelfRenderer
+        fun getTitle(response: BrowseResponse): String? {
+            val title = getHeader(response)?.title ?: response.header?.musicDetailHeaderRenderer?.title
+            return title?.runs?.firstOrNull()?.text
+        }
 
-            val songs = shelfRenderer?.contents?.getItems()?.mapNotNull {
-                getSong(response, it, album)
-            }
-            return songs ?: emptyList()
+        fun getYear(response: BrowseResponse): Int? {
+            val title = getHeader(response)?.subtitle ?: response.header?.musicDetailHeaderRenderer?.subtitle
+            return title?.runs?.lastOrNull()?.text?.toIntOrNull()
+        }
+
+        fun getThumbnail(response: BrowseResponse): String? {
+            return response.background?.musicThumbnailRenderer?.getThumbnailUrl() ?: response.header?.musicDetailHeaderRenderer?.thumbnail
+                ?.croppedSquareThumbnailRenderer?.getThumbnailUrl()
         }
 
         fun getArtists(response: BrowseResponse): List<Artist> {
@@ -89,7 +59,7 @@ data class AlbumPage(
             return artists
         }
 
-        private fun getHeader(response: BrowseResponse): BrowseResponse.Header.MusicHeaderRenderer? {
+        private fun getHeader(response: BrowseResponse): MusicResponsiveHeaderRenderer? {
             val tabs = response.contents?.singleColumnBrowseResultsRenderer?.tabs
                 ?: response.contents?.twoColumnBrowseResultsRenderer?.tabs
             val section =
@@ -98,11 +68,27 @@ data class AlbumPage(
             return header
         }
 
-        fun getSong(response: BrowseResponse, renderer: MusicResponsiveListItemRenderer, album: AlbumItem? = null): SongItem? {
+        fun getSongs(response: BrowseResponse, album: AlbumItem): List<SongItem> {
+            val tabs = response.contents?.singleColumnBrowseResultsRenderer?.tabs ?: response.contents?.twoColumnBrowseResultsRenderer?.tabs
+            val shelfRenderer = tabs?.firstOrNull()?.tabRenderer?.content?.sectionListRenderer?.contents?.firstOrNull()?.musicShelfRenderer ?:
+                response.contents?.twoColumnBrowseResultsRenderer?.secondaryContents?.sectionListRenderer?.contents?.firstOrNull()?.musicShelfRenderer
+
+            val songs = shelfRenderer?.contents?.getItems()?.mapNotNull {
+                getSong(it, album)
+            }
+            return songs ?: emptyList()
+        }
+
+        fun getSong(renderer: MusicResponsiveListItemRenderer, album: AlbumItem? = null): SongItem? {
             return SongItem(
                 id = renderer.playlistItemData?.videoId ?: return null,
                 title = PageHelper.extractRuns(renderer.flexColumns, "MUSIC_VIDEO").firstOrNull()?.text ?: return null,
-                artists = album?.artists ?: getArtists(response),
+                artists = PageHelper.extractRuns(renderer.flexColumns, "MUSIC_PAGE_TYPE_ARTIST").map{
+                    Artist(
+                        name = it.text,
+                        id = it.navigationEndpoint?.browseEndpoint?.browseId
+                    )
+                },
                 album = album?.let {
                     Album(it.title, it.browseId)
                 } ?: renderer.flexColumns.getOrNull(2)?.musicResponsiveListItemFlexColumnRenderer?.text?.runs?.firstOrNull()?.let {
