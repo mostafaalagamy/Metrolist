@@ -203,36 +203,28 @@ object YouTube {
         )
     }
 
-    suspend fun albumSongs(playlistId: String): Result<List<SongItem>> =
-        runCatching {
-            var query = "VL$playlistId"
-            var response = innerTube.browse(WEB_REMIX, query).body<BrowseResponse>()
-            var songs: List<SongItem>  = mutableListOf();
-            var continuation: String? = ""
-                songs = response.contents?.twoColumnBrowseResultsRenderer
-                    ?.secondaryContents
-                    ?.sectionListRenderer
-                    ?.contents
-                    ?.firstOrNull()
-                    ?.musicPlaylistShelfRenderer
-                    ?.contents
-                    ?.getItems()
-                    ?.mapNotNull {
-                        AlbumPage.fromMusicResponsiveListItemRenderer(it)
-                    }!!
-                    .toMutableList()
-                continuation = response.contents?.twoColumnBrowseResultsRenderer?.secondaryContents?.sectionListRenderer
-                    ?.contents?.firstOrNull()?.musicPlaylistShelfRenderer?.contents?.getContinuation()
-                while (continuation != null) {
-                    response = innerTube.browse(
-                        client = WEB_REMIX,
-                        continuation = continuation,
-                    ).body<BrowseResponse>()
-                    songs += response.continuationContents?.musicPlaylistShelfContinuation?.contents?.getItems()?.mapNotNull {
-                        AlbumPage.fromMusicResponsiveListItemRenderer(it)
-                    }.orEmpty()
-                    continuation = response.continuationContents?.musicPlaylistShelfContinuation?.continuations?.getContinuation()
-                }
+    suspend fun albumSongs(playlistId: String): Result<List<SongItem>> = runCatching {
+        var response = innerTube.browse(WEB_REMIX, "VL$playlistId").body<BrowseResponse>()
+        val songs = response.contents?.twoColumnBrowseResultsRenderer
+            ?.secondaryContents?.sectionListRenderer
+            ?.contents?.firstOrNull()
+            ?.musicPlaylistShelfRenderer?.contents?.getItems()
+            ?.mapNotNull {
+                AlbumPage.getSong(it)
+            }!!
+            .toMutableList()
+        var continuation = response.contents?.twoColumnBrowseResultsRenderer?.secondaryContents?.sectionListRenderer
+            ?.contents?.firstOrNull()?.musicPlaylistShelfRenderer?.contents?.getContinuation()
+        while (continuation != null) {
+            response = innerTube.browse(
+                client = WEB_REMIX,
+                continuation = continuation,
+            ).body<BrowseResponse>()
+            songs += response.continuationContents?.musicPlaylistShelfContinuation?.contents?.getItems()?.mapNotNull {
+                AlbumPage.getSong(it)
+            }.orEmpty()
+            continuation = response.continuationContents?.musicPlaylistShelfContinuation?.continuations?.getContinuation()
+        }
         songs
     }
 
