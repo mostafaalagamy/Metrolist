@@ -714,7 +714,7 @@ fun HomeScreen(
                             } else {
                                 null
                             }
-                        }
+                        },
                         modifier = Modifier.animateItem()
                     )
                 }
