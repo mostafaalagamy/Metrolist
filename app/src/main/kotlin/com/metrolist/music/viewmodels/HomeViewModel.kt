@@ -12,8 +12,6 @@ import com.metrolist.innertube.pages.ExplorePage
 import com.metrolist.innertube.pages.HomePage
 import com.metrolist.innertube.utils.completed
 import com.metrolist.music.constants.HideExplicitKey
-import com.metrolist.music.constants.PlaylistFilter
-import com.metrolist.music.constants.PlaylistSortType
 import com.metrolist.music.constants.QuickPicks
 import com.metrolist.music.constants.QuickPicksKey
 import com.metrolist.music.constants.YtmSyncKey
