@@ -57,11 +57,7 @@ class HomeViewModel @Inject constructor(
     private val previousHomePage = MutableStateFlow<HomePage?>(null)
     val explorePage = MutableStateFlow<ExplorePage?>(null)
 
-    val playlists = database.playlists(PlaylistFilter.LIBRARY, PlaylistSortType.NAME, true)
-        .stateIn(viewModelScope, SharingStarted.Lazily, null)
-    val recentActivity = database.recentActivity()
-        .stateIn(viewModelScope, SharingStarted.Lazily, null)
-    
+    val recentActivity = MutableStateFlow<List<YTItem>?>(null)
     val recentPlaylistsDb = MutableStateFlow<List<Playlist>?>(null)
 
     val allLocalItems = MutableStateFlow<List<LocalItem>>(emptyList())
