@@ -703,18 +703,18 @@ fun HomeScreen(
                             }
                         },
                         onClick = it.endpoint?.browseId?.let { browseId ->
-                            if (homePage?.sections?.any { section -> 
-                                section.endpoint?.browseId == browseId && section.items.isNotEmpty() 
-                            } == true) {
-                                when (browseId) {
-                                    "FEmusic_moods_and_genres" -> navController.navigate("mood_and_genres")
-                                    "FEmusic_charts" -> navController.navigate("charts_screen")
-                                    else -> navController.navigate("browse/$browseId")
+                            if (homePage != null) {
+                                {
+                                    when (browseId) {
+                                        "FEmusic_moods_and_genres" -> navController.navigate("mood_and_genres")
+                                        "FEmusic_charts" -> navController.navigate("charts_screen")
+                                        else -> navController.navigate("browse/$browseId")
+                                    }
                                 }
                             } else {
                                 null
                             }
-                        },
+                        }
                         modifier = Modifier.animateItem()
                     )
                 }
