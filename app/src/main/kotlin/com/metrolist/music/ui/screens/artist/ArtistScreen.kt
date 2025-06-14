@@ -139,18 +139,23 @@ fun ArtistScreen(
             )
             .asPaddingValues(),
     ) {
-        artistPage.let {
-            if (artistPage != null) {
-                item(key = "header") {
-                    Column {
-                        Box(
-                            modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .aspectRatio(1.2f / 1),
-                        ) {
+        artistPage?.let {
+            item(key = "header") {
+                val thumbnail = artistPage.artist.thumbnail
+                val artistName = artistPage.artist.title
+
+                Column {
+                    Box(
+                        modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .then(
+                                if (thumbnail != null) Modifier.aspectRatio(1.2f / 1) else Modifier
+                            ),
+                    ) {
+                        if (thumbnail != null) {
                             AsyncImage(
-                                model = artistPage.artist.thumbnail.resize(1200, 1000),
+                                model = thumbnail.resize(1200, 1000),
                                 contentDescription = null,
                                 modifier =
                                 Modifier
@@ -160,20 +165,22 @@ fun ArtistScreen(
                                         bottom = 400.dp,
                                     ),
                             )
-                            AutoResizeText(
-                                text = artistPage.artist.title,
-                                style = MaterialTheme.typography.displayLarge,
-                                fontSizeRange = FontSizeRange(32.sp, 58.sp),
-                                fontWeight = FontWeight.Bold,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                                textAlign = TextAlign.Center,
-                                modifier =
-                                Modifier
-                                    .align(Alignment.BottomCenter)
-                                    .padding(horizontal = 48.dp),
-                            )
                         }
+
+                        AutoResizeText(
+                            text = artistName ?: "Unknown",
+                            style = MaterialTheme.typography.displayLarge,
+                            fontSizeRange = FontSizeRange(32.sp, 58.sp),
+                            fontWeight = FontWeight.Bold,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            textAlign = TextAlign.Center,
+                            modifier =
+                            Modifier
+                                .align(Alignment.BottomCenter)
+                                .padding(horizontal = 48.dp),
+                        )
+                    }
 
                         Row(
                             horizontalArrangement = Arrangement.spacedBy(12.dp),
