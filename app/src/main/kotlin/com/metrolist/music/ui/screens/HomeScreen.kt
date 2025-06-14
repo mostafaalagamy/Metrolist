@@ -186,7 +186,7 @@ fun HomeScreen(
             .collect { lastVisibleIndex ->
                 val len = lazylistState.layoutInfo.totalItemsCount
                 if (lastVisibleIndex != null && lastVisibleIndex >= len - 3) {
-                    viewModel.loadMoreYouTubeItems(homePage?.originalPage?.continuation)
+                    viewModel.loadMoreYouTubeItems(homePage?.continuation)
                 }
             }
     }
