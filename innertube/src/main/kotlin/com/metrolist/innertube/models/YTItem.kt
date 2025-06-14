@@ -24,6 +24,8 @@ data class SongItem(
     val artists: List<Artist>,
     val album: Album? = null,
     val duration: Int? = null,
+    val chartPosition: Int? = null,
+    val chartChange: String? = null,
     override val thumbnail: String,
     override val explicit: Boolean = false,
     val endpoint: WatchEndpoint? = null,
