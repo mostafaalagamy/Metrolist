@@ -299,7 +299,7 @@ fun ArtistScreen(
             }
         }
 
-        artistPage.sections.fastForEach { section ->
+        artistPage?.sections?.fastForEach { section ->
             if (section.items.isNotEmpty()) {
                 item {
                     NavigationTitle(
