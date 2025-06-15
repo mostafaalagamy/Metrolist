@@ -10,7 +10,7 @@ materialKolor = "3.0.0-beta05"
 media3 = "1.8.0-alpha01"
 room = "2.7.1"
 hilt = "2.56.2"
-ktor = "3.1.3"
+ktor = "2.3.12"
 ksp = "2.2.0-RC2-2.0.2"
 kuromojiIpadic = "0.9.0"
 
@@ -47,7 +47,7 @@ coil = { group = "io.coil-kt", name = "coil-compose", version = "2.7.0" }
 
 shimmer = { group = "com.valentinilk.shimmer", name = "compose-shimmer", version = "1.3.3" }
 
-palette = { group = "androidx.palette", name = "palette", version = "1.0.0" }
+palette = { group = "androidx.palette", name = "palette-ktx", version = "1.0.0" }
 
 media3 = { group = "androidx.media3", name = "media3-exoplayer", version.ref = "media3" }
 media3-okhttp = { group = "androidx.media3", name = "media3-datasource-okhttp", version.ref = "media3" }
@@ -63,7 +63,7 @@ hilt = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt
 hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
 
 ktor-client-core = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor" }
-ktor_client_cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor" }
+ktor-client-cio = { group = "io.ktor", name = "ktor-client-cio", version.ref = "ktor" }
 ktor-client-okhttp = { group = "io.ktor", name = "ktor-client-okhttp", version.ref = "ktor" }
 ktor-client-content-negotiation = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktor" }
 ktor-client-encoding = { group = "io.ktor", name = "ktor-client-encoding", version.ref = "ktor" }
