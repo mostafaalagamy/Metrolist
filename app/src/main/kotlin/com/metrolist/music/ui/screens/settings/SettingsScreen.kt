@@ -29,7 +29,7 @@ import com.metrolist.music.ui.component.PreferenceEntry
 import com.metrolist.music.ui.component.ReleaseNotesCard
 import com.metrolist.music.ui.utils.backToMain
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun SettingsScreen(
     navController: NavController,
