@@ -3,7 +3,7 @@ package com.metrolist.innertube.models
 sealed class YTItem {
     abstract val id: String
     abstract val title: String
-    abstract val thumbnail: String
+    abstract val thumbnail: String?
     abstract val explicit: Boolean
     abstract val shareLink: String
 }
@@ -24,12 +24,12 @@ data class SongItem(
     val artists: List<Artist>,
     val album: Album? = null,
     val duration: Int? = null,
-    val setVideoId: String? = null,
     val chartPosition: Int? = null,
     val chartChange: String? = null,
     override val thumbnail: String,
     override val explicit: Boolean = false,
     val endpoint: WatchEndpoint? = null,
+    val setVideoId: String? = null,
 ) : YTItem() {
     override val shareLink: String
         get() = "https://music.youtube.com/watch?v=$id"
@@ -52,9 +52,9 @@ data class AlbumItem(
 data class PlaylistItem(
     override val id: String,
     override val title: String,
-    var author: Artist?, // changed to var for Home Playlists
+    val author: Artist?,
     val songCountText: String?,
-    override val thumbnail: String,
+    override val thumbnail: String?,
     val playEndpoint: WatchEndpoint?,
     val shuffleEndpoint: WatchEndpoint?,
     val radioEndpoint: WatchEndpoint?,
@@ -69,8 +69,9 @@ data class PlaylistItem(
 data class ArtistItem(
     override val id: String,
     override val title: String,
-    override val thumbnail: String,
+    override val thumbnail: String?,
     val channelId: String? = null,
+    val playEndpoint: WatchEndpoint? = null,
     val shuffleEndpoint: WatchEndpoint?,
     val radioEndpoint: WatchEndpoint?,
 ) : YTItem() {

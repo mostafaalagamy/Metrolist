@@ -186,7 +186,7 @@ fun HomeScreen(
             .collect { lastVisibleIndex ->
                 val len = lazylistState.layoutInfo.totalItemsCount
                 if (lastVisibleIndex != null && lastVisibleIndex >= len - 3) {
-                    viewModel.loadMoreYouTubeItems(homePage?.originalPage?.continuation)
+                    viewModel.loadMoreYouTubeItems(homePage?.continuation)
                 }
             }
     }
@@ -382,7 +382,7 @@ fun HomeScreen(
         ) {
             item {
                 ChipsRow(
-                    chips = homePage?.originalPage?.chips?.mapNotNull { it to it.title } ?: emptyList(),
+                    chips = homePage?.chips?.mapNotNull { it to it.title } ?: emptyList(),
                     currentValue = selectedChip,
                     onValueUpdate = {
                         viewModel.toggleChip(it)
@@ -682,7 +682,7 @@ fun HomeScreen(
                 }
             }
 
-            homePage?.originalPage?.sections?.forEach {
+            homePage?.sections?.forEach {
                 item {
                     NavigationTitle(
                         title = it.title,
@@ -703,7 +703,7 @@ fun HomeScreen(
                             }
                         },
                         onClick = it.endpoint?.browseId?.let { browseId ->
-                            if (homePage?.browseContentAvailable?.get(browseId) == true) {
+                            if (homePage != null) {
                                 {
                                     when (browseId) {
                                         "FEmusic_moods_and_genres" -> navController.navigate("mood_and_genres")
@@ -720,89 +720,20 @@ fun HomeScreen(
                 }
 
                 item {
-                    when (it.sectionType) {
-                        HomePage.SectionType.LIST -> {
-                            LazyRow(
-                                contentPadding = WindowInsets.systemBars
-                                    .only(WindowInsetsSides.Horizontal)
-                                    .asPaddingValues(),
-                                modifier = Modifier.animateItem()
-                            ) {
-                                items(it.items) { item ->
-                                    ytGridItem(item)
-                                }
-                            }
-                        }
-
-                        HomePage.SectionType.GRID -> {
-                            val lazyGridState = rememberLazyGridState()
-                            val snapLayoutInfoProvider = remember(lazyGridState) {
-                                SnapLayoutInfoProvider(
-                                    lazyGridState = lazyGridState,
-                                    positionInLayout = { layoutSize, itemSize ->
-                                        (layoutSize * horizontalLazyGridItemWidthFactor / 2f - itemSize / 2f)
-                                    }
-                                )
-                            }
-                            LazyHorizontalGrid(
-                                state = lazyGridState,
-                                rows = GridCells.Fixed(4),
-                                flingBehavior = rememberSnapFlingBehavior(snapLayoutInfoProvider),
-                                contentPadding = WindowInsets.systemBars
-                                    .only(WindowInsetsSides.Horizontal)
-                                    .asPaddingValues(),
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(ListItemHeight * 4)
-                                    .animateItem()
-                            ) {
-                                items(
-                                    // ensure that always the grids are fully filled (i.e. for items per 'page')
-                                    items = it.items.filterIsInstance<SongItem>()
-                                        .take(it.items.size and -4),
-                                    key = { it.id }
-                                ) { song ->
-                                    YouTubeListItem(
-                                        item = song,
-                                        isSelected = false,
-                                        modifier = Modifier
-                                            .width(horizontalLazyGridItemWidth)
-                                            .combinedClickable(
-                                                onClick = {
-                                                    playerConnection.playQueue(
-                                                        YouTubeQueue.radio(
-                                                            song.toMediaMetadata()
-                                                        )
-                                                    )
-                                                }
-                                            ),
-                                        trailingContent = {
-                                            IconButton(
-                                                onClick = {
-                                                    menuState.show {
-                                                        YouTubeSongMenu(
-                                                            song = song,
-                                                            navController = navController,
-                                                            onDismiss = menuState::dismiss,
-                                                        )
-                                                    }
-                                                },
-                                            ) {
-                                                Icon(
-                                                    painter = painterResource(R.drawable.more_vert),
-                                                    contentDescription = null,
-                                                )
-                                            }
-                                        },
-                                    )
-                                }
-                            }
+                    LazyRow(
+                        contentPadding = WindowInsets.systemBars
+                            .only(WindowInsetsSides.Horizontal)
+                            .asPaddingValues(),
+                        modifier = Modifier.animateItem()
+                    ) {
+                        items(it.items) { item ->
+                            ytGridItem(item)
                         }
                     }
                 }
             }
 
-            if (isLoading || (homePage?.originalPage?.continuation != null && homePage?.originalPage?.sections?.isNotEmpty() == true)) {
+            if (isLoading || homePage?.continuation != null && homePage?.sections?.isNotEmpty() == true) {
                 item {
                     ShimmerHost(
                         modifier = Modifier.animateItem()
