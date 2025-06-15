@@ -42,13 +42,11 @@ package com.metrolist.music.ui.screens
  @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
  @Composable
  fun BrowseScreen(
-     navController: NavController,
-     scrollBehavior: TopAppBarScrollBehavior,
-     browseId: String?,
-     viewModel: BrowseViewModel = hiltViewModel(
-         key = browseId,
-     ),
- ) {
+    navController: NavController,
+    scrollBehavior: TopAppBarScrollBehavior,
+    browseId: String?,
+    viewModel: BrowseViewModel = hiltViewModel(),
+) {
      val menuState = LocalMenuState.current
      val playerConnection = LocalPlayerConnection.current ?: return
      val isPlaying by playerConnection.isPlaying.collectAsState()

@@ -16,7 +16,7 @@ android {
 
     defaultConfig {
         applicationId = "com.metrolist.music"
-        minSdk = 21
+        minSdk = 26
         targetSdk = 36
         versionCode = 121
         versionName = "12.0.0"
@@ -97,18 +97,17 @@ android {
     }
 
     compileOptions {
-        isCoreLibraryDesugaringEnabled = true
+        isCoreLibraryDesugaringEnabled = false
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
     }
 
     kotlin {
         jvmToolchain(21)
-    }
-
-    kotlinOptions {
-        jvmTarget = "21"
-        freeCompilerArgs = freeCompilerArgs + "-Xcontext-receivers"
+        compilerOptions {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21)
+            freeCompilerArgs.add("-Xcontext-receivers")
+        }
     }
 
     buildFeatures {
