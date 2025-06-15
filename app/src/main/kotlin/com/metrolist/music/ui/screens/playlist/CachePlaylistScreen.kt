@@ -55,7 +55,7 @@ import com.metrolist.music.utils.rememberPreference
 import com.metrolist.music.viewmodels.CachePlaylistViewModel
 import java.time.LocalDateTime
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun CachePlaylistScreen(
     navController: NavController,
