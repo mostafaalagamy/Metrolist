@@ -126,4 +126,10 @@
     <string name="share_as_text">Als Text teilen</string>
     <string name="share_as_image">Als Bild teilen</string>
     <string name="generating_image">Generiere Bild</string>
+    <string name="max_selection_limit">Höchstgrenze der Auswahl</string>
+    <string name="show_liked_playlist">\"Gefällt mir\"-Wiedergabeliste anzeigen</string>
+    <string name="show_downloaded_playlist">Heruntergeladene Wiedergabeliste anzeigen</string>
+    <string name="show_top_playlist">\"Top\"-Wiedergabeliste anzeigen</string>
+    <string name="show_cached_playlist">Zwischengespeicherte Wiedergabeliste anzeigen</string>
+    <string name="auto_download_on_like">Automatisches herunterladen bei \"Gefällt mir\"</string>
 </resources>
