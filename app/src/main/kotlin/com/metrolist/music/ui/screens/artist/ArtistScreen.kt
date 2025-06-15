@@ -78,6 +78,7 @@ import com.metrolist.music.db.entities.ArtistEntity
 import com.metrolist.music.extensions.togglePlayPause
 import com.metrolist.music.models.toMediaMetadata
 import com.metrolist.music.playback.queues.YouTubeQueue
+import com.metrolist.music.ui.component.AlbumGridItem
 import com.metrolist.music.ui.component.AutoResizeText
 import com.metrolist.music.ui.component.FontSizeRange
 import com.metrolist.music.ui.component.HideOnScrollFAB
@@ -91,8 +92,8 @@ import com.metrolist.music.ui.component.shimmer.ButtonPlaceholder
 import com.metrolist.music.ui.component.shimmer.ListItemPlaceHolder
 import com.metrolist.music.ui.component.shimmer.ShimmerHost
 import com.metrolist.music.ui.component.shimmer.TextPlaceholder
-import com.metrolist.music.ui.menu.SongMenu
 import com.metrolist.music.ui.menu.AlbumMenu
+import com.metrolist.music.ui.menu.SongMenu
 import com.metrolist.music.ui.menu.YouTubeAlbumMenu
 import com.metrolist.music.ui.menu.YouTubeArtistMenu
 import com.metrolist.music.ui.menu.YouTubePlaylistMenu
@@ -281,7 +282,7 @@ fun ArtistScreen(
                 }
 
                 if (showLocal.value) {
-                    // local
+                    // عرض المحتوى المحلي فقط
                     if (librarySongs.isNotEmpty()) {
                         item {
                             NavigationTitle(
@@ -351,7 +352,7 @@ fun ArtistScreen(
                         }
                     }
 
-                    // local albums
+                    // عرض الألبومات المحلية
                     if (libraryAlbums.isNotEmpty()) {
                         item {
                             NavigationTitle(
@@ -365,11 +366,10 @@ fun ArtistScreen(
                                     items = libraryAlbums,
                                     key = { "local_album_${it.id}" }
                                 ) { album ->
-                                    YouTubeGridItem(
-                                        item = album,
+                                    AlbumGridItem(
+                                        album = album,
                                         isActive = mediaMetadata?.album?.id == album.id,
                                         isPlaying = isPlaying,
-                                        coroutineScope = coroutineScope,
                                         modifier = Modifier
                                             .combinedClickable(
                                                 onClick = {
@@ -393,7 +393,7 @@ fun ArtistScreen(
                         }
                     }
                 } else {
-                    // remote content 
+                    // عرض المحتوى من الإنترنت فقط
                     artistPage?.sections?.fastForEach { section ->
                         if (section.items.isNotEmpty()) {
                             item {
@@ -543,7 +543,7 @@ fun ArtistScreen(
             }
         }
 
-        // FAB
+        // الزر العائم
         HideOnScrollFAB(
             lazyListState = lazyListState,
             icon = if (showLocal.value) R.drawable.language else R.drawable.library_music,
