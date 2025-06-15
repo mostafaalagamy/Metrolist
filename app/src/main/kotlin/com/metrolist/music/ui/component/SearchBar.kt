@@ -78,7 +78,7 @@ import androidx.compose.ui.unit.lerp
 import androidx.compose.ui.util.lerp
 import kotlin.math.max
 
-@ExperimentalMaterial3Api
+@ExperimentalMaterial3ExpressiveApi
 @Composable
 fun TopSearch(
     query: TextFieldValue,
