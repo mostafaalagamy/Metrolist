@@ -67,7 +67,7 @@ fun MetrolistTheme(
 
     // Use the defined M3 Expressive Typography
     // TODO: Define M3 Expressive Shapes instance if needed
-    MaterialTheme(
+    MaterialExpressiveTheme(
         colorScheme = colorScheme,
         typography = AppTypography, // Use the defined AppTypography
         // shapes = MaterialTheme.shapes, // Placeholder - Needs update (Shapes not used in original)
