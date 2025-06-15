@@ -13,10 +13,12 @@ import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
@@ -103,8 +105,8 @@ fun ChartsScreen(
                         TextPlaceholder(
                             height = 36.dp,
                             modifier = Modifier
-                                .padding(vertical = 12.dp, horizontal = 12.dp)
-                                .width(250.dp),
+                                .padding(12.dp)
+                                .fillMaxWidth(0.5f),
                         )
                         BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
                             val horizontalLazyGridItemWidthFactor = if (maxWidth * 0.475f >= 320.dp) 0.475f else 0.9f
@@ -112,9 +114,7 @@ fun ChartsScreen(
 
                             LazyHorizontalGrid(
                                 rows = GridCells.Fixed(4),
-                                contentPadding = WindowInsets.systemBars
-                                    .only(WindowInsetsSides.Horizontal)
-                                    .asPaddingValues(),
+                                contentPadding = PaddingValues(start = 4.dp),
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .height(ListItemHeight * 4),
@@ -129,7 +129,8 @@ fun ChartsScreen(
                                         Box(
                                             modifier = Modifier
                                                 .size(ListItemHeight - 16.dp)
-                                                .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f)),
+                                                .clip(RoundedCornerShape(4.dp))
+                                                .background(MaterialTheme.colorScheme.onSurface),
                                         )
                                         Spacer(modifier = Modifier.width(8.dp))
                                         Column(
@@ -140,14 +141,14 @@ fun ChartsScreen(
                                                 modifier = Modifier
                                                     .height(16.dp)
                                                     .width(120.dp)
-                                                    .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f)),
+                                                    .background(MaterialTheme.colorScheme.onSurface),
                                             )
                                             Spacer(modifier = Modifier.height(8.dp))
                                             Box(
                                                 modifier = Modifier
                                                     .height(12.dp)
                                                     .width(80.dp)
-                                                    .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f)),
+                                                    .background(MaterialTheme.colorScheme.onSurface),
                                             )
                                         }
                                     }
@@ -160,11 +161,8 @@ fun ChartsScreen(
                                 .padding(vertical = 12.dp, horizontal = 12.dp)
                                 .width(250.dp),
                         )
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            modifier = Modifier.padding(horizontal = 12.dp),
-                        ) {
-                            repeat(3) {
+                        Row {
+                            repeat(2) {
                                 GridItemPlaceHolder()
                             }
                         }
