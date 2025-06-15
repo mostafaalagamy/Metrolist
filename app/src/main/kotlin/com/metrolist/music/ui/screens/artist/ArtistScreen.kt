@@ -280,7 +280,7 @@ fun ArtistScreen(
                 }
 
                 if (showLocal.value) {
-                    // local content 
+                    // عرض المحتوى المحلي
                     if (librarySongs.isNotEmpty()) {
                         item {
                             NavigationTitle(
@@ -351,7 +351,7 @@ fun ArtistScreen(
                         }
                     }
                 } else {
-                    // remote content
+                    // عرض المحتوى من الإنترنت
                     if (librarySongs.isNotEmpty()) {
                         item {
                             NavigationTitle(
@@ -571,17 +571,9 @@ fun ArtistScreen(
             }
         }
 
-        // floating button
         HideOnScrollFAB(
             lazyListState = lazyListState,
-            icon = {
-                Icon(
-                    painter = painterResource(
-                        if (showLocal.value) R.drawable.language else R.drawable.library_music
-                    ),
-                    contentDescription = null
-                )
-            },
+            icon = if (showLocal.value) R.drawable.language else R.drawable.library_music,
             onClick = {
                 showLocal.value = !showLocal.value
             }
