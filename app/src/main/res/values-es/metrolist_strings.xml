@@ -23,7 +23,7 @@
     <string name="cached_playlist">En caché</string>
     <string name="sync_playlist">Sincronizar lista de reproducción</string>
     <string name="sync_disabled">Sincronización desactivada</string>
-    <string name="elements_selected">%1$d Elementos seleccionados</string>
+    <string name="elements_selected">%1$d elementos seleccionados</string>
     <string name="allows_for_sync_witch_youtube">Nota: Esto permite la sincronización con YouTube Music. Esto NO se puede cambiar más tarde.</string>
     <string name="added_to_play_next">Añadido a reproducir a continuación</string>
     <string name="added_to_queue">Añadido a la cola</string>
@@ -38,12 +38,12 @@
     <string name="already_in_playlist">Ya está en la lista de reproducción:</string>
     <plurals name="n_element">
         <item quantity="one">%d elemento</item>
-        <item quantity="many">%d de elementos</item>
+        <item quantity="many">%d elementos</item>
         <item quantity="other">%d elementos</item>
     </plurals>
     <plurals name="n_time">
         <item quantity="one">%d vez</item>
-        <item quantity="many">%d de veces</item>
+        <item quantity="many">%d veces</item>
         <item quantity="other">%d veces</item>
     </plurals>
     <string name="seek_backward">Retroceder 5 segundos</string>
@@ -118,7 +118,7 @@
     <string name="dislikes">No me gusta</string>
     <plurals name="seconds">
         <item quantity="one">1 segundo</item>
-        <item quantity="many">%d de segundos</item>
+        <item quantity="many">%d segundos</item>
         <item quantity="other">%d segundos</item>
     </plurals>
     <string name="please_wait">Por favor, espere</string>
@@ -135,5 +135,5 @@
     <string name="auto_download_on_like_desc">Descarga automáticamente canciones cuando des a me gusta</string>
     <string name="max_selection_limit">Límite máximo de selección</string>
     <string name="share_selected">Compartir lo seleccionado</string>
-    <string name="secondary_text_color">Color de texto secundario</string>
+    <string name="secondary_text_color">Color del texto secundario</string>
 </resources>
