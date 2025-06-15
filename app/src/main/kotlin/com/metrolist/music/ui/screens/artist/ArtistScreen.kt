@@ -370,6 +370,7 @@ fun ArtistScreen(
                                         album = album,
                                         isActive = mediaMetadata?.album?.id == album.id,
                                         isPlaying = isPlaying,
+                                        coroutineScope = coroutineScope,
                                         modifier = Modifier
                                             .combinedClickable(
                                                 onClick = {
