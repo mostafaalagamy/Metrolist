@@ -92,6 +92,7 @@ import com.metrolist.music.ui.component.shimmer.ListItemPlaceHolder
 import com.metrolist.music.ui.component.shimmer.ShimmerHost
 import com.metrolist.music.ui.component.shimmer.TextPlaceholder
 import com.metrolist.music.ui.menu.SongMenu
+import com.metrolist.music.ui.menu.AlbumMenu
 import com.metrolist.music.ui.menu.YouTubeAlbumMenu
 import com.metrolist.music.ui.menu.YouTubeArtistMenu
 import com.metrolist.music.ui.menu.YouTubePlaylistMenu
@@ -280,24 +281,23 @@ fun ArtistScreen(
                 }
 
                 if (showLocal.value) {
-                    // عرض المحتوى المحلي
+                    // local
                     if (librarySongs.isNotEmpty()) {
                         item {
                             NavigationTitle(
-                                title = stringResource(R.string.from_your_library),
+                                title = stringResource(R.string.songs),
                                 onClick = {
                                     navController.navigate("artist/${viewModel.artistId}/songs")
-                                },
+                                }
                             )
                         }
 
                         itemsIndexed(
                             items = librarySongs,
-                            key = { _, item -> "local_${item.id}" },
+                            key = { _, item -> "local_song_${item.id}" }
                         ) { index, song ->
                             SongListItem(
                                 song = song,
-                                showInLibraryIcon = true,
                                 isActive = song.id == mediaMetadata?.id,
                                 isPlaying = isPlaying,
                                 trailingContent = {
@@ -348,80 +348,52 @@ fun ArtistScreen(
                                     )
                                     .animateItem(),
                             )
+                        }
+                    }
+
+                    // local albums
+                    if (libraryAlbums.isNotEmpty()) {
+                        item {
+                            NavigationTitle(
+                                title = stringResource(R.string.albums)
+                            )
+                        }
+
+                        item {
+                            LazyRow {
+                                items(
+                                    items = libraryAlbums,
+                                    key = { "local_album_${it.id}" }
+                                ) { album ->
+                                    YouTubeGridItem(
+                                        item = album,
+                                        isActive = mediaMetadata?.album?.id == album.id,
+                                        isPlaying = isPlaying,
+                                        coroutineScope = coroutineScope,
+                                        modifier = Modifier
+                                            .combinedClickable(
+                                                onClick = {
+                                                    navController.navigate("album/${album.id}")
+                                                },
+                                                onLongClick = {
+                                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                                    menuState.show {
+                                                        AlbumMenu(
+                                                            originalAlbum = album,
+                                                            navController = navController,
+                                                            onDismiss = menuState::dismiss
+                                                        )
+                                                    }
+                                                }
+                                            )
+                                            .animateItem()
+                                    )
+                                }
+                            }
                         }
                     }
                 } else {
-                    // عرض المحتوى من الإنترنت
-                    if (librarySongs.isNotEmpty()) {
-                        item {
-                            NavigationTitle(
-                                title = stringResource(R.string.from_your_library),
-                                onClick = {
-                                    navController.navigate("artist/${viewModel.artistId}/songs")
-                                },
-                            )
-                        }
-
-                        items(
-                            items = librarySongs,
-                            key = { "local_${it.id}" },
-                        ) { song ->
-                            SongListItem(
-                                song = song,
-                                showInLibraryIcon = true,
-                                isActive = song.id == mediaMetadata?.id,
-                                isPlaying = isPlaying,
-                                trailingContent = {
-                                    IconButton(
-                                        onClick = {
-                                            menuState.show {
-                                                SongMenu(
-                                                    originalSong = song,
-                                                    navController = navController,
-                                                    onDismiss = menuState::dismiss,
-                                                )
-                                            }
-                                        },
-                                    ) {
-                                        Icon(
-                                            painter = painterResource(R.drawable.more_vert),
-                                            contentDescription = null,
-                                        )
-                                    }
-                                },
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .combinedClickable(
-                                        onClick = {
-                                            if (song.id == mediaMetadata?.id) {
-                                                playerConnection.player.togglePlayPause()
-                                            } else {
-                                                playerConnection.playQueue(
-                                                    YouTubeQueue(
-                                                        WatchEndpoint(
-                                                            videoId = song.id,
-                                                        ),
-                                                        song.toMediaMetadata(),
-                                                    ),
-                                                )
-                                            }
-                                        },
-                                        onLongClick = {
-                                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                            menuState.show {
-                                                SongMenu(
-                                                    originalSong = song,
-                                                    navController = navController,
-                                                    onDismiss = menuState::dismiss,
-                                                )
-                                            }
-                                        },
-                                    )
-                                    .animateItem(),
-                            )
-                        }
-                    }
-
+                    // remote content 
                     artistPage?.sections?.fastForEach { section ->
                         if (section.items.isNotEmpty()) {
                             item {
@@ -571,6 +543,7 @@ fun ArtistScreen(
             }
         }
 
+        // FAB
         HideOnScrollFAB(
             lazyListState = lazyListState,
             icon = if (showLocal.value) R.drawable.language else R.drawable.library_music,
