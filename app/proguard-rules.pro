@@ -20,6 +20,20 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
+## Ktor Client Rules
+-keep class io.ktor.** { *; }
+-dontwarn io.ktor.**
+-keep class kotlinx.coroutines.** { *; }
+-dontwarn kotlinx.coroutines.**
+-keepclassmembers class io.ktor.** {
+    volatile <fields>;
+}
+-keepclassmembers class io.ktor.** {
+    private <fields>;
+}
+-keep class kotlin.reflect.jvm.internal.** { *; }
+-dontwarn kotlin.reflect.jvm.internal.**
+
 ## Kotlin Serialization
 # Keep `Companion` object fields of serializable classes.
 # This avoids serializer lookup through `getDeclaredClasses` as done for named companion objects.
