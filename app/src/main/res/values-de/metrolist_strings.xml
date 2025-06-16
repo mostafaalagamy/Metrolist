@@ -29,7 +29,7 @@
     <string name="advanced_login">Erweiterte Anmeldung (Token)</string>
     <string name="token_hidden">Tippen, um Token anzuzeigen</string>
     <string name="token_shown">Tippen, um zu kopieren oder zu bearbeiten</string>
-    <string name="token_adv_login_description">Dies ist eine ERWEITERTE Anmeldemethode. Als Alternative zum Webportal können Sie hier direkt Ihren Anmelde-Token eingeben oder aktualisieren. Dies kann beispielsweise das Anmelden auf mehreren Geräten beschleunigen. Bitte beachten Sie, dass ungültige Token-Formate, die die App nicht verarbeiten kann, nicht akzeptiert werden.</string>
+    <string name="token_adv_login_description">Dies ist eine ERWEITERTE Anmeldemethode. Als Alternative zum Webportal können Sie hier direkt Ihren Anmelde-Token eingeben oder aktualisieren. Dies kann beispielsweise das Anmelden auf mehreren Geräten beschleunigen. Bitte beachten Sie, dass ungültige Token-Formate, welche die App nicht verarbeiten kann, nicht akzeptiert werden.</string>
     <string name="ytm_sync">Automatische Synchronisierung mit Ihrem YouTube Music-Account</string>
     <string name="general">Allgemein</string>
     <string name="proxy">Proxy</string>
@@ -92,7 +92,7 @@
     <string name="secondary_color_style">Sekundär</string>
     <string name="unknown_item_type">Unbekannter Typ</string>
     <string name="seek_backward">5 Sekunden zurück</string>
-    <string name="min_playback_duration_description">Die Mindestspieldauer muss erreicht werden bevor ein Song als \"gehört\" gilt.</string>
+    <string name="min_playback_duration_description">Die Mindestspieldauer, welche erreicht werden muss, bevor ein Song als \"gehört\" gilt</string>
     <string name="unknown_artist">Unbekannter Künstler</string>
     <string name="years">Jahre</string>
     <string name="weeks">Wochen</string>
@@ -111,7 +111,7 @@
     <string name="remove_from_cache">Aus Cache entfernen</string>
     <string name="top_music_videos">Top Musikvideos</string>
     <string name="trending">Im Trend</string>
-    <string name="swipe_song_to_add">Nach rechts wischen, um den nächsten Song abzuspielen, oder nach links um ihn zur Warteschlange hinzuzufügen.</string>
+    <string name="swipe_song_to_add">Den Song nach rechts wischen, um ihn als nächstes abzuspielen, oder nach links, um ihn zur Warteschlange hinzuzufügen</string>
     <string name="auto_playlists">Automatische Playlisten</string>
     <string name="share_selected">Auswahl teilen</string>
     <string name="customize_colors">Farben personalisieren</string>
@@ -125,4 +125,11 @@
     <string name="share_lyrics">Songtext teilen</string>
     <string name="share_as_text">Als Text teilen</string>
     <string name="share_as_image">Als Bild teilen</string>
+    <string name="generating_image">Generiere Bild</string>
+    <string name="max_selection_limit">Höchstgrenze der Auswahl</string>
+    <string name="show_liked_playlist">\"Gefällt mir\"-Wiedergabeliste anzeigen</string>
+    <string name="show_downloaded_playlist">Heruntergeladene Wiedergabeliste anzeigen</string>
+    <string name="show_top_playlist">\"Top\"-Wiedergabeliste anzeigen</string>
+    <string name="show_cached_playlist">Zwischengespeicherte Wiedergabeliste anzeigen</string>
+    <string name="auto_download_on_like">Automatisches herunterladen bei \"Gefällt mir\"</string>
 </resources>
