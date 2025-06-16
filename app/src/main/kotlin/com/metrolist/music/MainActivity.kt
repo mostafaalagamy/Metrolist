@@ -22,7 +22,6 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.Box
@@ -40,15 +39,11 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialogDefaults
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -600,8 +595,6 @@ class MainActivity : ComponentActivity() {
                         }
                     }
 
-                    var showMenu by remember { mutableStateOf(false) }
-
                     CompositionLocalProvider(
                         LocalDatabase provides database,
                         LocalContentColor provides if (pureBlack) Color.White else contentColorFor(MaterialTheme.colorScheme.surface),
@@ -616,53 +609,29 @@ class MainActivity : ComponentActivity() {
                                 if (shouldShowTopBar) {
                                     TopAppBar(
                                         title = {
-                                            currentTitleRes?.let {
-                                                Row(
-                                                    verticalAlignment = Alignment.CenterVertically,
-                                                    modifier = Modifier.clickable { showMenu = !showMenu }
-                                                ) {
-                                                    Text(
-                                                        text = stringResource(it),
-                                                        style = MaterialTheme.typography.titleLarge,
-                                                        maxLines = 1,
-                                                        overflow = TextOverflow.Ellipsis
-                                                    )
-                                                    Spacer(Modifier.width(4.dp))
-                                                    Icon(
-                                                        painter = painterResource(id = R.drawable.drop_down),
-                                                        contentDescription = null,
-                                                        modifier = Modifier.size(24.dp)
-                                                    )
-                                                    DropdownMenu(
-                                                        expanded = showMenu,
-                                                        onDismissRequest = { showMenu = false }
-                                                    ) {
-                                                        DropdownMenuItem(
-                                                            text = { Text(stringResource(R.string.history)) },
-                                                            onClick = {
-                                                                navController.navigate("history")
-                                                                showMenu = false
-                                                            }
-                                                        )
-                                                        DropdownMenuItem(
-                                                            text = { Text(stringResource(R.string.stats)) },
-                                                            onClick = {
-                                                                navController.navigate("stats")
-                                                                showMenu = false
-                                                            }
-                                                        )
-                                                        DropdownMenuItem(
-                                                            text = { Text(stringResource(R.string.account)) },
-                                                            onClick = {
-                                                                navController.navigate("account")
-                                                                showMenu = false
-                                                            }
-                                                        )
-                                                    }
-                                                }
-                                            }
+                                            Text(
+                                                text = currentTitleRes?.let { stringResource(it) }
+                                                    ?: "",
+                                                style = MaterialTheme.typography.titleLarge,
+                                            )
                                         },
                                         actions = {
+                                            if (navBackStackEntry?.destination?.route == Screens.Library.route) {
+                                                IconButton(onClick = { navController.navigate("history") }) {
+                                                    Icon(
+                                                        painter = painterResource(R.drawable.history),
+                                                        contentDescription = stringResource(R.string.history)
+                                                    )
+                                                }
+                                            }
+                                            if (navBackStackEntry?.destination?.route == Screens.Library.route) {
+                                                IconButton(onClick = { navController.navigate("stats") }) {
+                                                    Icon(
+                                                        painter = painterResource(R.drawable.stats),
+                                                        contentDescription = stringResource(R.string.stats)
+                                                    )
+                                                }
+                                            }
                                             IconButton(onClick = { onActiveChange(true) }) {
                                                 Icon(
                                                     painter = painterResource(R.drawable.search),
