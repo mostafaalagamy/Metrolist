@@ -27,6 +27,8 @@ class ArtistViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.Lazily, null)
     val librarySongs = database.artistSongsPreview(artistId)
         .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
+    val libraryAlbums = database.artistAlbumsPreview(artistId)
+        .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
     init {
         fetchArtistsFromYTM()

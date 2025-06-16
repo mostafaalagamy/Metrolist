@@ -44,6 +44,7 @@ import com.metrolist.music.ui.component.BottomSheetMenu
 import com.metrolist.music.ui.component.LocalMenuState
 import com.metrolist.music.ui.component.rememberBottomSheetState
 import com.metrolist.music.ui.screens.BrowseScreen
+import com.metrolist.music.ui.screens.artist.ArtistAlbumsScreen
 import com.metrolist.music.ui.screens.artist.ArtistItemsScreen
 import com.metrolist.music.ui.screens.artist.ArtistScreen
 import com.metrolist.music.ui.screens.artist.ArtistSongsScreen
@@ -169,13 +170,8 @@ fun NavGraphBuilder.navigationBuilder(
                 type = NavType.StringType
             },
         ),
-    ) { backStackEntry ->
-        val artistId = backStackEntry.arguments?.getString("artistId")!!
-        if (artistId.startsWith("LA")) {
-            ArtistSongsScreen(navController, scrollBehavior)
-        } else {
-            ArtistScreen(navController, scrollBehavior)
-        }
+    ) {
+        ArtistScreen(navController, scrollBehavior)
     }
     composable(
         route = "artist/{artistId}/songs",
@@ -187,6 +183,16 @@ fun NavGraphBuilder.navigationBuilder(
         ),
     ) {
         ArtistSongsScreen(navController, scrollBehavior)
+    }
+    composable(
+        route = "artist/{artistId}/albums",
+        arguments = listOf(
+            navArgument("artistId") {
+                type = NavType.StringType
+            }
+        )
+    ) {
+        ArtistAlbumsScreen(navController, scrollBehavior)
     }
     composable(
         route = "artist/{artistId}/items?browseId={browseId}?params={params}",
