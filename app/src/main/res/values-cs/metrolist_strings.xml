@@ -58,15 +58,15 @@
     <string name="secondary_color_style">Sekundární</string>
     <string name="enable_squiggly_slider">Povolit klikatou lištu přehrávače</string>
     <string name="enable_swipe_thumbnail">Povolit posunutí pro změnu skladby</string>
-    <string name="swipe_song_to_add">Posuňte skladbu doprava pro přehrání další nebo doleva pro přidání do fronty</string>
+    <string name="swipe_song_to_add">Posuňte skladbu doleva pro přidání do fronty nebo doprava pro přehrání jako další</string>
     <string name="lyrics_click_change">Změnit texty po klepnutí</string>
     <string name="slim">Úzká</string>
     <string name="slim_navbar">Skrýt popisky navigačního panelu</string>
     <string name="auto_playlists">Automatické playlisty</string>
-    <string name="show_liked_playlist">Zobrazit oblíbený playlist</string>
-    <string name="show_downloaded_playlist">Zobrazit stažený playlist</string>
-    <string name="show_top_playlist">Zobrazit nejlepší playlist</string>
-    <string name="show_cached_playlist">Zobrazit playlist v mezipaměti</string>
+    <string name="show_liked_playlist">Zobrazit playlist „Oblíbené“</string>
+    <string name="show_downloaded_playlist">Zobrazit playlist „Stažené“</string>
+    <string name="show_top_playlist">Zobrazit playlist „Nejlepší“</string>
+    <string name="show_cached_playlist">Zobrazit playlist „V mezipaměti“</string>
     <string name="google">Google</string>
     <string name="discord">Discord</string>
     <string name="advanced_login">Pokročilé přihlášení (token)</string>
@@ -137,4 +137,5 @@
         <item quantity="few">%d sekundy</item>
         <item quantity="other">%d sekund</item>
     </plurals>
+    <string name="lyrics_auto_scroll">Automaticky posouvat texty</string>
 </resources>
