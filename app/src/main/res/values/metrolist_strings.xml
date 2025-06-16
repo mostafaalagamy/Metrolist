@@ -92,6 +92,7 @@
     <string name="enable_swipe_thumbnail">Enable swipe to change song</string>
     <string name="swipe_song_to_add">Swipe song to right for play next or left for adding to queue</string>
     <string name="lyrics_click_change">Change lyrics on click</string>
+    <string name="lyrics_auto_scroll">Auto scroll lyrics</string>
     <string name="slim">Slim</string>
     <string name="slim_navbar">Hide bottom navigation bar labels</string>
     <string name="auto_playlists">Auto Playlists</string>
