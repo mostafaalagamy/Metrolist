@@ -46,6 +46,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -131,7 +133,7 @@ fun ArtistScreen(
 
     val lazyListState = rememberLazyListState()
     val snackbarHostState = remember { SnackbarHostState() }
-    val showLocal = remember { mutableStateOf(false) }
+    var showLocal by rememberSaveable { mutableStateOf(false) }
 
     val transparentAppBar by remember {
         derivedStateOf {
@@ -153,7 +155,7 @@ fun ArtistScreen(
                 )
                 .asPaddingValues(),
         ) {
-            if (artistPage == null && !showLocal.value) {
+            if (artistPage == null && !showLocal) {
                 item(key = "shimmer") {
                     ShimmerHost {
                         Box(
@@ -281,8 +283,7 @@ fun ArtistScreen(
                     }
                 }
 
-                if (showLocal.value) {
-                    // عرض المحتوى المحلي فقط
+                if (showLocal) {
                     if (librarySongs.isNotEmpty()) {
                         item {
                             NavigationTitle(
@@ -394,7 +395,6 @@ fun ArtistScreen(
                         }
                     }
                 } else {
-                    // عرض المحتوى من الإنترنت فقط
                     artistPage?.sections?.fastForEach { section ->
                         if (section.items.isNotEmpty()) {
                             item {
@@ -544,16 +544,14 @@ fun ArtistScreen(
             }
         }
 
-        // الزر العائم
         HideOnScrollFAB(
             lazyListState = lazyListState,
-            icon = if (showLocal.value) R.drawable.language else R.drawable.library_music,
+            icon = if (showLocal) R.drawable.language else R.drawable.library_music,
             onClick = {
-                showLocal.value = !showLocal.value
+                showLocal = !showLocal
             }
         )
 
-        // SnackbarHost
         SnackbarHost(
             hostState = snackbarHostState,
             modifier = Modifier
