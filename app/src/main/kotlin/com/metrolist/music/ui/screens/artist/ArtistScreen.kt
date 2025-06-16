@@ -80,6 +80,7 @@ import com.metrolist.music.db.entities.ArtistEntity
 import com.metrolist.music.extensions.togglePlayPause
 import com.metrolist.music.models.toMediaMetadata
 import com.metrolist.music.playback.queues.YouTubeQueue
+import com.metrolist.music.playback.queues.ListQueue
 import com.metrolist.music.ui.component.AlbumGridItem
 import com.metrolist.music.ui.component.AutoResizeText
 import com.metrolist.music.ui.component.FontSizeRange
@@ -236,7 +237,7 @@ fun ArtistScreen(
                             )
                         }
 
-                        if (artistPage?.artist != null) {
+                        if (!showLocal && artistPage?.artist != null) {
                             Row(
                                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                                 modifier = Modifier.padding(12.dp),
@@ -277,6 +278,39 @@ fun ArtistScreen(
                                         Spacer(Modifier.size(ButtonDefaults.IconSpacing))
                                         Text(stringResource(R.string.radio))
                                     }
+                                }
+                            }
+                        }
+
+                        if (showLocal && librarySongs.isNotEmpty()) {
+                            Row(
+                                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                                modifier = Modifier.padding(12.dp),
+                            ) {
+                                Button(
+                                    onClick = {
+                                        val shuffledSongs = librarySongs.shuffled()
+                                        if (shuffledSongs.isNotEmpty()) {
+                                            playerConnection.playQueue(
+                                                ListQueue(
+                                                    title = libraryArtist?.artist?.name ?: "Unknown Artist",
+                                                    items = shuffledSongs.map { it.toMediaMetadata() }
+                                                )
+                                            )
+                                        }
+                                    },
+                                    contentPadding = ButtonDefaults.ButtonWithIconContentPadding,
+                                    modifier = Modifier.weight(1f),
+                                ) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.shuffle),
+                                        contentDescription = null,
+                                        modifier = Modifier.size(ButtonDefaults.IconSize),
+                                    )
+                                    Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+                                    Text(
+                                        text = stringResource(R.string.shuffle),
+                                    )
                                 }
                             }
                         }
@@ -328,12 +362,11 @@ fun ArtistScreen(
                                                 playerConnection.player.togglePlayPause()
                                             } else {
                                                 playerConnection.playQueue(
-                                                    YouTubeQueue(
-                                                        WatchEndpoint(
-                                                            videoId = song.id,
-                                                        ),
-                                                        song.toMediaMetadata(),
-                                                    ),
+                                                    ListQueue(
+                                                        title = libraryArtist?.artist?.name ?: "Unknown Artist",
+                                                        items = librarySongs.map { it.toMediaMetadata() },
+                                                        startIndex = index
+                                                    )
                                                 )
                                             }
                                         },
@@ -353,11 +386,13 @@ fun ArtistScreen(
                         }
                     }
 
-                    // عرض الألبومات المحلية
                     if (libraryAlbums.isNotEmpty()) {
                         item {
                             NavigationTitle(
-                                title = stringResource(R.string.albums)
+                                title = stringResource(R.string.albums),
+                                onClick = {
+                                    navController.navigate("artist/${viewModel.artistId}/albums")
+                                }
                             )
                         }
 
