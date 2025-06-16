@@ -9,6 +9,9 @@ import com.metrolist.music.MainActivity
 import com.metrolist.music.R
 import com.metrolist.music.db.InternalDatabase
 import com.metrolist.music.db.MusicDatabase
+import com.metrolist.music.db.entities.ArtistEntity
+import com.metrolist.music.db.entities.Song
+import com.metrolist.music.db.entities.SongEntity
 import com.metrolist.music.extensions.div
 import com.metrolist.music.extensions.tryOrNull
 import com.metrolist.music.extensions.zipInputStream
@@ -91,6 +94,48 @@ class BackupRestoreViewModel @Inject constructor(
             reportException(it)
             Toast.makeText(context, R.string.restore_failed, Toast.LENGTH_SHORT).show()
         }
+    }
+
+    fun loadM3UOnline(Add commentMore actions
+        context: Context,
+        uri: Uri,
+    ): ArrayList<Song> {
+        val songs = ArrayList<Song>()
+
+        runCatching {
+            context.applicationContext.contentResolver.openInputStream(uri)?.use { stream ->
+                val lines = stream.bufferedReader().readLines()
+                if (lines.first().startsWith("#EXTM3U")) {
+                    lines.forEachIndexed { index, rawLine ->
+                        if (rawLine.startsWith("#EXTINF:")) {
+                            // maybe later write this to be more efficient
+                            val artists =
+                                rawLine.substringAfter("#EXTINF:").substringAfter(',').substringBefore(" - ").split(';')
+                            val title = rawLine.substringAfter("#EXTINF:").substringAfter(',').substringAfter(" - ")
+
+                            val mockSong = Song(
+                                song = SongEntity(
+                                    id = "",
+                                    title = title,
+                                ),
+                                artists = artists.map { ArtistEntity("", it) },
+                            )
+                            songs.add(mockSong)
+
+                        }
+                    }
+                }
+            }
+        }
+
+        if (songs.isEmpty()) {
+            Toast.makeText(
+                context,
+                "No songs found. Invalid file, or perhaps no song matches were found.",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+        return songs
     }
 
     companion object {
