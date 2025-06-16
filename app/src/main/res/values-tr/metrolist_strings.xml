@@ -1,12 +1,8 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="explore">Keşfet</string>
-
-
     <string name="local_history">Yerel</string>
     <string name="remote_history">Uzak</string>
-
-
     <string name="charts">Listeler</string>
     <string name="back_button_desc">Geri</string>
     <string name="no_title">Başlık yok</string>
@@ -17,14 +13,10 @@
     <string name="album_cover_desc">Albüm kapağı</string>
     <string name="top_music_videos">En Popüler Müzik Videoları</string>
     <string name="trending">Trendler</string>
-
-
     <string name="weeks">Haftalar</string>
     <string name="months">Aylar</string>
     <string name="years">Yıllar</string>
     <string name="continuous">Sürekli</string>
-
-
     <string name="liked">Beğenilen</string>
     <string name="offline">İndirilen</string>
     <string name="my_top">Benim En İyilerim</string>
@@ -33,8 +25,6 @@
     <string name="sync_disabled">Senkronizasyon devre dışı</string>
     <string name="elements_selected">%1$d Öğe seçildi</string>
     <string name="allows_for_sync_witch_youtube">Not: Bu, YouTube Music ile senkronizasyona izin verir. Bu daha sonra DEĞİŞTİRİLEMEZ.</string>
-
-
     <string name="added_to_play_next">Sonra çal listesine eklendi</string>
     <string name="added_to_queue">Kuyruğa eklendi</string>
     <string name="remove_from_cache">Önbellekten kaldır</string>
@@ -54,15 +44,9 @@
         <item quantity="one">1 kez</item>
         <item quantity="other">%d kez</item>
     </plurals>
-
-
     <string name="seek_backward">5 saniye geri</string>
     <string name="seek_forward">5 saniye ileri</string>
-
-
     <string name="similar_content">Benzer içerik</string>
-
-
     <string name="login_settings">Giriş ayarları</string>
     <string name="general_settings">Genel ayarlar</string>
     <string name="player_background_style">Oynatıcı arka plan stili</string>
