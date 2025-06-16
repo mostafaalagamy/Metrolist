@@ -664,11 +664,12 @@ class MainActivity : ComponentActivity() {
                                         },
                                         actions = {
                                             if (navBackStackEntry?.destination?.route == Screens.Library.route) {
-                                            IconButton(onClick = { navController.navigate("history") }) {
-                                                Icon(
-                                                    painter = painterResource(R.drawable.history),
-                                                    contentDescription = stringResource(R.string.history)
-                                                )
+                                                IconButton(onClick = { navController.navigate("history") }) {
+                                                    Icon(
+                                                        painter = painterResource(R.drawable.history),
+                                                        contentDescription = stringResource(R.string.history)
+                                                    )
+                                                }
                                             }
                                             IconButton(onClick = { onActiveChange(true) }) {
                                                 Icon(
