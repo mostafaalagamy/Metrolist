@@ -617,18 +617,18 @@ class MainActivity : ComponentActivity() {
                                         },
                                         actions = {
                                             if (navBackStackEntry?.destination?.route == Screens.Library.route) {
-                                                IconButton(onClick = { navController.navigate("stats") }) {
-                                                    Icon(
-                                                        painter = painterResource(R.drawable.stats),
-                                                        contentDescription = stringResource(R.string.stats)
-                                                    )
-                                                }
-                                            }
-                                            if (navBackStackEntry?.destination?.route == Screens.Library.route) {
                                                 IconButton(onClick = { navController.navigate("history") }) {
                                                     Icon(
                                                         painter = painterResource(R.drawable.history),
                                                         contentDescription = stringResource(R.string.history)
+                                                    )
+                                                }
+                                            }
+                                            if (navBackStackEntry?.destination?.route == Screens.Library.route) {
+                                                IconButton(onClick = { navController.navigate("stats") }) {
+                                                    Icon(
+                                                        painter = painterResource(R.drawable.stats),
+                                                        contentDescription = stringResource(R.string.stats)
                                                     )
                                                 }
                                             }
