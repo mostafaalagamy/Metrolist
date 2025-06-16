@@ -96,10 +96,10 @@
     <string name="slim">Slim</string>
     <string name="slim_navbar">Hide bottom navigation bar labels</string>
     <string name="auto_playlists">Auto playlists</string>
-    <string name="show_liked_playlist">Show "Liked" playlist</string>
-    <string name="show_downloaded_playlist">Show "Downloaded" playlist</string>
-    <string name="show_top_playlist">Show "Top" playlist</string>
-    <string name="show_cached_playlist">Show "Cached" playlist</string>
+    <string name="show_liked_playlist">Show \"Liked\" playlist</string>
+    <string name="show_downloaded_playlist">Show \"Downloaded\" playlist</string>
+    <string name="show_top_playlist">Show \"Top\" playlist</string>
+    <string name="show_cached_playlist">Show \"Cached\" playlist</string>
 
     <string name="google">Google</string>
     <string name="discord">Discord</string>
