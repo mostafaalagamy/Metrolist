@@ -194,8 +194,10 @@ fun ContentSettings(
             selectedValue = preferredProvider,
             values = listOf(PreferredLyricsProvider.LRCLIB, PreferredLyricsProvider.KUGOU),
             valueText = {
-                it.name.toLowerCase(androidx.compose.ui.text.intl.Locale.current)
-                    .capitalize(androidx.compose.ui.text.intl.Locale.current)
+                when (it) {
+                    PreferredLyricsProvider.LRCLIB -> "LrcLib"
+                    PreferredLyricsProvider.KUGOU -> "KuGou"
+                }
             },
             onValueSelected = onPreferredProviderChange,
         )
