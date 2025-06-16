@@ -8,7 +8,7 @@
     <string name="loading_charts">جاري تحميل المخططات...</string>
     <string name="retry_button">إعادة المحاولة</string>
     <string name="album_cover_desc">غلاف الألبوم</string>
-    <string name="top_music_videos">أفضل مقاطع الفيديو الموسيقية</string>
+    <string name="top_music_videos">أفضل مقاطع الفيديو الموسيقيه</string>
     <string name="trending">الأكثر رواجًا</string>
     <string name="weeks">أسابيع</string>
     <string name="months">شهور</string>
@@ -16,7 +16,7 @@
     <string name="continuous">مستمر</string>
     <string name="liked">الأغاني المفضلة</string>
     <string name="offline">التحميلات</string>
-    <string name="my_top">الأعلي إستماع</string>
+    <string name="my_top">الأعلي استماع</string>
     <string name="cached_playlist">الأغاني المخزنة مؤقتًا</string>
     <string name="sync_playlist">مزامنة قائمة التشغيل</string>
     <string name="sync_disabled">المزامنة غير مفعلة</string>
@@ -66,15 +66,15 @@
     <string name="secondary_color_style">اللون الثانوي للتطبيق</string>
     <string name="enable_squiggly_slider">تمكين الشريط المتعرج</string>
     <string name="enable_swipe_thumbnail">تمكين التمرير لتغيير الأغنية</string>
-    <string name="swipe_song_to_add">مرر الأغنية إلى اليمين لتشغيلها بعد الأغنية الحالية أو إلى اليسار لإضافتها إلى قائمة الانتظار</string>
+    <string name="swipe_song_to_add">مرر الأغنية إلى اليسار لإضافتها إلى قائمة الانتظار أو إلى اليمين لتشغيلها بعد الأغنية الحالية</string>
     <string name="lyrics_click_change">تغيير كلمات الأغنية عند النقر عليها</string>
     <string name="slim">نحيل</string>
     <string name="slim_navbar">إخفاء أسماء الصفحات من شريط التنقل السفلي</string>
-    <string name="auto_playlists">قوائم التشغيل التلقائية</string>
-    <string name="show_liked_playlist">إظهار قائمة المفضلة</string>
-    <string name="show_downloaded_playlist">إظهار قائمة التحميلات</string>
-    <string name="show_top_playlist">إظهار قائمة الأعلى أستماع</string>
-    <string name="show_cached_playlist">إظهار قائمة الأغاني المخزنة مؤقتًا</string>
+    <string name="auto_playlists">قوائم التشغيل التلقائيه</string>
+    <string name="show_liked_playlist">إظهار قائمة \"الاعجابات\"</string>
+    <string name="show_downloaded_playlist">إظهار قائمة \"التحميلات\"</string>
+    <string name="show_top_playlist">إظهار قائمة \"الأعلى أستماع\"</string>
+    <string name="show_cached_playlist">إظهار قائمة \"الأغاني المخزنة مؤقتًا\'</string>
     <string name="generating_image">جاري إنشاء الصورة</string>
     <string name="please_wait">انتظر من فضلك</string>
     <string name="cancel">إلغاء</string>
@@ -107,7 +107,7 @@
     <string name="configure_supported_links">تكوين الروابط المدعومة</string>
     <string name="intent_supported_links_not_found">لم يتمكن التطبيق من العثور على الإعدادات ، يرجى تكوينها يدويًا</string>
     <string name="audio_quality_max">أعلي إرتفاع (تجريبي)</string>
-    <string name="enable_similar_content">تمكين المحتوى المشابه</string>
+    <string name="enable_similar_content">تفعيل المحتوى المشابه</string>
     <string name="similar_content_desc">إضافة المزيد من الأغاني المشابهة تلقائيًا عند الوصول إلى نهاية قائمة الانتظار</string>
     <string name="min_playback_duration_title">الحد الأدنى لمدة التشغيل</string>
     <string name="min_playback_duration_description">الحد الأدنى لمدة تشغيل الأغنية قبل اعتبارها مُشغّلة</string>
@@ -145,5 +145,6 @@
     <string name="link_copied">تم نسخ الرابط</string>
     <string name="similar_content">محتوى مشابه</string>
     <string name="charts">المخططات</string>
-    <string name="release_notes">ملاحظات الإصدار الجديد</string>
+    <string name="release_notes">ملاحظات الاصدار الجديد</string>
+    <string name="lyrics_auto_scroll">تمرير كلمات الأغاني تلقائياً</string>
 </resources>
