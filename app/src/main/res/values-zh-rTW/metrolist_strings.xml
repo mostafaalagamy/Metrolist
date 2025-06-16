@@ -1,37 +1,26 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="explore">探索</string>
-
-
     <string name="local_history">本地</string>
     <string name="remote_history">雲端</string>
-
-
     <string name="weeks">週</string>
     <string name="months">月</string>
     <string name="years">年</string>
     <string name="continuous">連續</string>
-
-
     <string name="liked">喜歡的歌曲</string>
     <string name="offline">已下載</string>
     <string name="my_top">我的 Top</string>
     <string name="sync_playlist">同步播放清單</string>
     <string name="elements_selected">%1$d 個項目已選取</string>
     <string name="allows_for_sync_witch_youtube">注意:這允許與Youtube Music同步，之後無法更改。</string>
-
-
     <string name="copy_link">複製連結</string>
     <string name="select">全選</string>
     <string name="like_all">全部喜歡</string>
     <string name="dislike_all">全部不喜歡</string>
     <string name="sort_by_last_updated">上次更新</string>
     <string name="link_copied">連結已複製至剪貼簿</string>
-
     <string name="lyrics">歌詞</string>
-
     <string name="already_in_playlist">已在播放清單中:</string>
-
     <plurals name="n_element">
         <item quantity="one">%d 個項目</item>
         <item quantity="other">%d 個項目</item>
@@ -40,18 +29,11 @@
         <item quantity="one">%d 次</item>
         <item quantity="other">%d 次</item>
     </plurals>
-
-
     <string name="seek_backward">向後 5 秒 </string>
     <string name="seek_forward">向前 5 秒</string>
-
-
     <string name="similar_content">相似內容</string>
-
-
     <string name="login_settings">登入設定</string>
     <string name="general_settings">一般設定</string>
-
     <string name="player_background_style">播放器背景樣式</string>
     <string name="follow_theme">跟隨主題</string>
     <string name="gradient">漸層</string>
@@ -64,7 +46,6 @@
     <string name="lyrics_click_change">點擊以切換歌詞</string>
     <string name="slim">細</string>
     <string name="slim_navbar">隱藏底部導覽列標籤</string>
-
     <string name="google">Google</string>
     <string name="discord">Discord</string>
     <string name="advanced_login">進階登入 (token)</string>
@@ -84,7 +65,6 @@
     <string name="configure_supported_links">設定支援的連結</string>
     <string name="intent_supported_links_not_found">找不到支援的連結設定，請手動設定</string>
     <string name="set_first_lyrics_provider">偏好的歌詞提供者</string>
-
     <string name="audio_quality_max">最高 (beta)</string>
     <string name="enable_similar_content">啟用相似內容</string>
     <string name="similar_content_desc">當播放佇列快結束時，自動加入更多相似歌曲</string>
@@ -92,12 +72,9 @@
     <string name="min_playback_duration_description">The minimum amount of a song that must be played before it is considered \"played\"</string>
     <string name="percentage_format">%d%%</string>
     <string name="minimum_playback_duration">Minimum playback duration</string>
-
     <string name="default_links">開啟支援的連結</string>
     <string name="open_app_settings_error">無法開啟應用設定</string>
-
     <string name="release_notes">更新記錄</string>
-
     <string name="all_time">所有時間</string>
     <string name="past_24_hours">過去 24 小時</string>
     <string name="past_week">過去一週</string>
@@ -105,7 +82,6 @@
     <string name="past_year">過去一年</string>
     <string name="top_length">我的熱門清單長度</string>
     <string name="history_duration">History duration</string>
-
     <plurals name="seconds">
         <item quantity="one">1 秒</item>
         <item quantity="other">%d 秒</item>
