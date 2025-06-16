@@ -170,7 +170,7 @@ fun BackupAndRestore(
         onPercentageChange = { newPercentage -> progressPercentage = newPercentage }
     )
 
-    LaunchedEffect(progressPercentage, isProgressStarted) {Add commentMore actions
+    LaunchedEffect(progressPercentage, isProgressStarted) {
         if (isProgressStarted && progressPercentage == 99) {
             delay(10000)
             if (progressPercentage == 99) {
