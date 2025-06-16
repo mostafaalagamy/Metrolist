@@ -192,7 +192,7 @@ fun ContentSettings(
             title = { Text(stringResource(R.string.set_first_lyrics_provider)) },
             icon = { Icon(painterResource(R.drawable.lyrics), null) },
             selectedValue = preferredProvider,
-            values = listOf(PreferredLyricsProvider.KUGOU, PreferredLyricsProvider.LRCLIB),
+            values = listOf(PreferredLyricsProvider.LRCLIB, PreferredLyricsProvider.KUGOU),
             valueText = {
                 it.name.toLowerCase(androidx.compose.ui.text.intl.Locale.current)
                     .capitalize(androidx.compose.ui.text.intl.Locale.current)
