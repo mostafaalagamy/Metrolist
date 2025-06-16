@@ -96,6 +96,44 @@ class BackupRestoreViewModel @Inject constructor(
         }
     }
 
+    fun importPlaylistFromCsv(context: Context, uri: Uri): ArrayList<Song> {Add commentMore actions
+        val songs = arrayListOf<Song>()
+        runCatching {
+            context.contentResolver.openInputStream(uri)?.use { stream ->
+                val lines = stream.bufferedReader().readLines()
+                lines.forEachIndexed { _, line ->
+                    val parts = line.split(",").map { it.trim() }
+                    val title = parts[0]
+                    val artistStr = parts[1]
+
+                    val artists = artistStr.split(";").map { it.trim() }.map {
+                   ArtistEntity(
+                            id = "",
+                            name = it,
+                        )
+                    }
+                    val mockSong = Song(
+                        song = SongEntity(
+                            id = "",
+                            title = title,
+                        ),
+                        artists = artists,
+                    )
+                    songs.add(mockSong)
+                }
+            }
+        }
+
+        if (songs.isEmpty()) {
+            Toast.makeText(
+                context,
+                "No songs found. Invalid file, or perhaps no song matches were found.",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+        return songs
+    }
+
     fun loadM3UOnline(Add commentMore actions
         context: Context,
         uri: Uri,
@@ -106,7 +144,7 @@ class BackupRestoreViewModel @Inject constructor(
             context.applicationContext.contentResolver.openInputStream(uri)?.use { stream ->
                 val lines = stream.bufferedReader().readLines()
                 if (lines.first().startsWith("#EXTM3U")) {
-                    lines.forEachIndexed { index, rawLine ->
+                    lines.forEachIndexed { _, rawLine ->
                         if (rawLine.startsWith("#EXTINF:")) {
                             // maybe later write this to be more efficient
                             val artists =
