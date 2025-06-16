@@ -93,6 +93,7 @@ import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
 import com.metrolist.music.constants.DarkModeKey
 import com.metrolist.music.constants.LyricsClickKey
+import com.metrolist.music.constants.LyricsScrollKey
 import com.metrolist.music.constants.LyricsTextPositionKey
 import com.metrolist.music.constants.PlayerBackgroundStyle
 import com.metrolist.music.constants.PlayerBackgroundStyleKey
@@ -138,6 +139,7 @@ fun Lyrics(
 
     val lyricsTextPosition by rememberEnumPreference(LyricsTextPositionKey, LyricsPosition.CENTER)
     val changeLyrics by rememberPreference(LyricsClickKey, true)
+    val scrollLyrics by rememberPreference(LyricsScrollKey, true)
     val scope = rememberCoroutineScope()
 
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
@@ -345,7 +347,7 @@ fun Lyrics(
                 val visibleItemsInfo = lazyListState.layoutInfo.visibleItemsInfo
                 val isCurrentLineVisible = visibleItemsInfo.any { it.index == currentLineIndex }
 
-                if (isCurrentLineVisible) {
+                if (scrollLyrics || isCurrentLineVisible) {
                     val viewportStartOffset = lazyListState.layoutInfo.viewportStartOffset
                     val viewportEndOffset = lazyListState.layoutInfo.viewportEndOffset
                     val currentLineOffset = visibleItemsInfo.find { it.index == currentLineIndex }?.offset ?: 0
