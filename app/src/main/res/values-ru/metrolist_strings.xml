@@ -70,4 +70,6 @@
     <string name="elements_selected">%1$d Элементов выбрано</string>
     <string name="cancel">Отмена</string>
     <string name="share_lyrics">Поделится текстом</string>
+    <string name="trending">Тренды</string>
+    <string name="generating_image">Генерация изображения</string>
 </resources>
