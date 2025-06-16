@@ -15,7 +15,7 @@
     <string name="loading_charts">Loading charts...</string>
     <string name="retry_button">Retry</string>
     <string name="album_cover_desc">Album cover</string>
-    <string name="top_music_videos">Top Music Videos</string>
+    <string name="top_music_videos">Top music videos</string>
     <string name="trending">Trending</string>
 
 
@@ -27,9 +27,9 @@
 
     <string name="liked">Liked</string>
     <string name="offline">Downloaded</string>
-    <string name="my_top">My Top</string>
+    <string name="my_top">My top</string>
     <string name="cached_playlist">Cached</string>
-    <string name="sync_playlist">Sync Playlist</string>
+    <string name="sync_playlist">Sync playlist</string>
     <string name="sync_disabled">Sync disabled</string>
     <string name="elements_selected">%1$d Elements selected</string>
     <string name="allows_for_sync_witch_youtube">Note: This allows for syncing with YouTube Music. This is NOT changeable later.</string>
@@ -90,16 +90,16 @@
     <string name="secondary_color_style">Secondary</string>
     <string name="enable_squiggly_slider">Enable squiggly slider</string>
     <string name="enable_swipe_thumbnail">Enable swipe to change song</string>
-    <string name="swipe_song_to_add">Swipe song to right for play next or left for adding to queue</string>
+    <string name="swipe_song_to_add">Swipe song to the left to add it to the queue or to the right to play it next</string>
     <string name="lyrics_click_change">Change lyrics on click</string>
     <string name="lyrics_auto_scroll">Auto scroll lyrics</string>
     <string name="slim">Slim</string>
     <string name="slim_navbar">Hide bottom navigation bar labels</string>
-    <string name="auto_playlists">Auto Playlists</string>
-    <string name="show_liked_playlist">Show Liked Playlist</string>
-    <string name="show_downloaded_playlist">Show Downloaded Playlist</string>
-    <string name="show_top_playlist">Show Top Playlist</string>
-    <string name="show_cached_playlist">Show Cached Playlist</string>
+    <string name="auto_playlists">Auto playlists</string>
+    <string name="show_liked_playlist">Show \"Liked\" playlist</string>
+    <string name="show_downloaded_playlist">Show \"Downloaded\" playlist</string>
+    <string name="show_top_playlist">Show \"Top\" playlist</string>
+    <string name="show_cached_playlist">Show \"Cached\" playlist</string>
 
     <string name="google">Google</string>
     <string name="discord">Discord</string>
@@ -122,7 +122,7 @@
     <string name="set_first_lyrics_provider">Preferred lyrics provider</string>
 
     <string name="audio_quality_max">Max (beta)</string>
-    <string name="enable_similar_content">Enable Similar Content</string>
+    <string name="enable_similar_content">Enable similar content</string>
     <string name="similar_content_desc">Automatically add more similar songs when the end of the queue is reached</string>
     <string name="min_playback_duration_title">Minimum playback duration</string>
     <string name="min_playback_duration_description">The minimum amount of a song that must be played before it is considered \"played\"</string>
@@ -143,7 +143,7 @@
     <string name="default_links">Open supported links</string>
     <string name="open_app_settings_error">Couldn\'t open app settings</string>
 
-    <string name="release_notes">Release Notes</string>
+    <string name="release_notes">Release notes</string>
 
     <string name="all_time">All time</string>
     <string name="past_24_hours">Past 24 hours</string>
