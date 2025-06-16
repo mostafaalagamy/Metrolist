@@ -47,7 +47,7 @@ fun BackupAndRestore(
     scrollBehavior: TopAppBarScrollBehavior,
     viewModel: BackupRestoreViewModel = hiltViewModel(),
 ) {
-    var importedTitle by remember { mutableStateOf("") }Add commentMore actions
+    var importedTitle by remember { mutableStateOf("") }
     val importedSongs = remember { mutableStateListOf<Song>() }
     var showChoosePlaylistDialogOnline by rememberSaveable {
         mutableStateOf(false)
@@ -73,7 +73,18 @@ fun BackupAndRestore(
                 viewModel.restore(context, uri)
             }
         }
-    val importM3uLauncherOnline = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->Add commentMore actions
+    val importPlaylistFromCsv =
+        rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+            if (uri == null) return@rememberLauncherForActivityResult
+            val result = viewModel.importPlaylistFromCsv(context, uri)
+            importedSongs.clear()
+            importedSongs.addAll(result)
+
+            if (importedSongs.isNotEmpty()) {
+                showChoosePlaylistDialogOnline = true
+            }
+        }
+    val importM3uLauncherOnline = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         if (uri == null) return@rememberLauncherForActivityResult
         val result = viewModel.loadM3UOnline(context, uri)
         importedSongs.clear()
@@ -83,7 +94,6 @@ fun BackupAndRestore(
         if (importedSongs.isNotEmpty()) {
             showChoosePlaylistDialogOnline = true
         }
-
     }
 
     Column(
@@ -118,11 +128,18 @@ fun BackupAndRestore(
                 restoreLauncher.launch(arrayOf("application/octet-stream"))
             },
         )
-        PreferenceEntry(Add commentMore actions
+        PreferenceEntry(
             title = {Text(stringResource(R.string.import_online))},
             icon = { Icon(painterResource(R.drawable.add), null) },
             onClick = {
                 importM3uLauncherOnline.launch(arrayOf("audio/*"))
+            }
+        )
+        PreferenceEntry(
+            title = { Text(stringResource(R.string.import_csv)) },
+            icon = { Icon(painterResource(R.drawable.add), null) },
+            onClick = {
+                importPlaylistFromCsv.launch(arrayOf("text/csv"))
             }
         )
     }
@@ -141,7 +158,7 @@ fun BackupAndRestore(
             }
         }
     )
-    AddToPlaylistDialogOnline(Add commentMore actions
+    AddToPlaylistDialogOnline(
         isVisible = showChoosePlaylistDialogOnline,
         allowSyncing = false,
         initialTextFieldValue = importedTitle,
