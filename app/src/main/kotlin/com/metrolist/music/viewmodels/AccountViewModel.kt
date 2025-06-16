@@ -32,7 +32,7 @@ class AccountViewModel @Inject constructor() : ViewModel() {
             }.onFailure {
                 reportException(it)
             }
-            YouTube.library("FEmusic_library_corpus_artists").completed().onSuccess {
+            YouTube.library("FEmusic_library_corpus_track_artists").completed().onSuccess {
                 artists.value = it.items.filterIsInstance<ArtistItem>()
             }.onFailure {
                 reportException(it)
