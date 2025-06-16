@@ -65,10 +65,10 @@
     <string name="slim">Delgado</string>
     <string name="slim_navbar">Ocultar etiquetas de la barra de navegación inferior</string>
     <string name="auto_playlists">Listas de reproducción automáticas</string>
-    <string name="show_liked_playlist">Mostrar lista de reproducción "Me gusta"</string>
-    <string name="show_downloaded_playlist">Mostrar lista de reproducción "Descargadas"</string>
-    <string name="show_top_playlist">Mostrar lista de reproducción "Top"</string>
-    <string name="show_cached_playlist">Mostrar lista de reproducción "En caché"</string>
+    <string name="show_liked_playlist">Mostrar lista de reproducción Me gusta</string>
+    <string name="show_downloaded_playlist">Mostrar lista de reproducción Descargadas</string>
+    <string name="show_top_playlist">Mostrar lista de reproducción Top</string>
+    <string name="show_cached_playlist">Mostrar lista de reproducción En caché</string>
     <string name="google">Google</string>
     <string name="discord">Discord</string>
     <string name="advanced_login">Inicio de sesión avanzado (token)</string>
