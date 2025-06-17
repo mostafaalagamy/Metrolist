@@ -9,6 +9,9 @@ import com.metrolist.music.MainActivity
 import com.metrolist.music.R
 import com.metrolist.music.db.InternalDatabase
 import com.metrolist.music.db.MusicDatabase
+import com.metrolist.music.db.entities.ArtistEntity
+import com.metrolist.music.db.entities.Song
+import com.metrolist.music.db.entities.SongEntity
 import com.metrolist.music.extensions.div
 import com.metrolist.music.extensions.tryOrNull
 import com.metrolist.music.extensions.zipInputStream
@@ -91,6 +94,86 @@ class BackupRestoreViewModel @Inject constructor(
             reportException(it)
             Toast.makeText(context, R.string.restore_failed, Toast.LENGTH_SHORT).show()
         }
+    }
+
+    fun importPlaylistFromCsv(context: Context, uri: Uri): ArrayList<Song> {
+        val songs = arrayListOf<Song>()
+        runCatching {
+            context.contentResolver.openInputStream(uri)?.use { stream ->
+                val lines = stream.bufferedReader().readLines()
+                lines.forEachIndexed { _, line ->
+                    val parts = line.split(",").map { it.trim() }
+                    val title = parts[0]
+                    val artistStr = parts[1]
+
+                    val artists = artistStr.split(";").map { it.trim() }.map {
+                   ArtistEntity(
+                            id = "",
+                            name = it,
+                        )
+                    }
+                    val mockSong = Song(
+                        song = SongEntity(
+                            id = "",
+                            title = title,
+                        ),
+                        artists = artists,
+                    )
+                    songs.add(mockSong)
+                }
+            }
+        }
+
+        if (songs.isEmpty()) {
+            Toast.makeText(
+                context,
+                "No songs found. Invalid file, or perhaps no song matches were found.",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+        return songs
+    }
+
+    fun loadM3UOnline(
+        context: Context,
+        uri: Uri,
+    ): ArrayList<Song> {
+        val songs = ArrayList<Song>()
+
+        runCatching {
+            context.applicationContext.contentResolver.openInputStream(uri)?.use { stream ->
+                val lines = stream.bufferedReader().readLines()
+                if (lines.first().startsWith("#EXTM3U")) {
+                    lines.forEachIndexed { _, rawLine ->
+                        if (rawLine.startsWith("#EXTINF:")) {
+                            // maybe later write this to be more efficient
+                            val artists =
+                                rawLine.substringAfter("#EXTINF:").substringAfter(',').substringBefore(" - ").split(';')
+                            val title = rawLine.substringAfter("#EXTINF:").substringAfter(',').substringAfter(" - ")
+
+                            val mockSong = Song(
+                                song = SongEntity(
+                                    id = "",
+                                    title = title,
+                                ),
+                                artists = artists.map { ArtistEntity("", it) },
+                            )
+                            songs.add(mockSong)
+
+                        }
+                    }
+                }
+            }
+        }
+
+        if (songs.isEmpty()) {
+            Toast.makeText(
+                context,
+                "No songs found. Invalid file, or perhaps no song matches were found.",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+        return songs
     }
 
     companion object {

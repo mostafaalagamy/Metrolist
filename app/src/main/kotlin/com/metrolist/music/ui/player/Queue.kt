@@ -42,8 +42,6 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.AlertDialogDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -103,6 +101,7 @@ import com.metrolist.music.extensions.move
 import com.metrolist.music.extensions.togglePlayPause
 import com.metrolist.music.extensions.toggleRepeatMode
 import com.metrolist.music.models.MediaMetadata
+import com.metrolist.music.ui.component.ActionPromptDialog
 import com.metrolist.music.ui.component.BottomSheet
 import com.metrolist.music.ui.component.BottomSheetState
 import com.metrolist.music.ui.component.LocalBottomSheetPageState
@@ -184,8 +183,6 @@ fun Queue(
             }
         }
     }
-
-
 
     BottomSheet(
         state = state,
@@ -309,34 +306,32 @@ fun Queue(
             }
 
             if (showSleepTimerDialog) {
-                AlertDialog(
-                    properties = DialogProperties(usePlatformDefaultWidth = false),
-                    onDismissRequest = { showSleepTimerDialog = false },
-                    icon = {
-                        Icon(
-                            painter = painterResource(R.drawable.bedtime),
-                            contentDescription = null
-                        )
-                    },
-                    title = { Text(stringResource(R.string.sleep_timer)) },
-                    confirmButton = {
-                        TextButton(
-                            onClick = {
-                                showSleepTimerDialog = false
-                                playerConnection.service.sleepTimer.start(sleepTimerValue.roundToInt())
-                            }
+                ActionPromptDialog(
+                    titleBar = {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center
                         ) {
-                            Text(stringResource(android.R.string.ok))
+                            Text(
+                                text = stringResource(R.string.sleep_timer),
+                                overflow = TextOverflow.Ellipsis,
+                                maxLines = 1,
+                                style = MaterialTheme.typography.headlineSmall,
+                            )
                         }
                     },
-                    dismissButton = {
-                        TextButton(
-                            onClick = { showSleepTimerDialog = false }
-                        ) {
-                            Text(stringResource(android.R.string.cancel))
-                        }
+                    onDismiss = { showSleepTimerDialog = false },
+                    onConfirm = {
+                        showSleepTimerDialog = false
+                        playerConnection.service.sleepTimer.start(sleepTimerValue.roundToInt())
                     },
-                    text = {
+                    onCancel = {
+                        showSleepTimerDialog = false
+                    },
+                    onReset = {
+                        sleepTimerValue = 30f // Default value
+                    },
+                    content = {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Text(
                                 text = pluralStringResource(
@@ -344,15 +339,20 @@ fun Queue(
                                     sleepTimerValue.roundToInt(),
                                     sleepTimerValue.roundToInt()
                                 ),
-                                style = MaterialTheme.typography.bodyLarge
+                                style = MaterialTheme.typography.bodyLarge,
                             )
+
+                            Spacer(Modifier.height(16.dp))
 
                             Slider(
                                 value = sleepTimerValue,
                                 onValueChange = { sleepTimerValue = it },
                                 valueRange = 5f..120f,
-                                steps = (120 - 5) / 5 - 1
+                                steps = (120 - 5) / 5 - 1,
+                                modifier = Modifier.fillMaxWidth()
                             )
+
+                            Spacer(Modifier.height(8.dp))
 
                             OutlinedButton(
                                 onClick = {
