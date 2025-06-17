@@ -138,4 +138,7 @@
         <item quantity="other">%d sekund</item>
     </plurals>
     <string name="lyrics_auto_scroll">Automaticky posouvat texty</string>
+    <string name="import_csv">Importovat playlist „csv“</string>
+    <string name="import_online">Importovat playlist „m3u“</string>
+    <string name="playlist_add_local_to_synced_note">Upozornění: přidávání místních skladeb do synchronizovaných/vzdálených playlistů není podporováno. Jakákoli jiná kombinace je platná</string>
 </resources>
