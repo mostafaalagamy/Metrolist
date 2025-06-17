@@ -110,7 +110,7 @@ class SyncUtils @Inject constructor(
     }
 
     suspend fun syncArtistsSubscriptions() = coroutineScope {
-        YouTube.library("FEmusic_library_corpus_track_artists").completed().onSuccess { page ->
+        YouTube.library("FEmusic_library_corpus_artists").completed().onSuccess { page ->
             val remoteArtists = page.items.filterIsInstance<ArtistItem>()
             val remoteIds = remoteArtists.map { it.id }.toSet()
             val localArtists = database.artistsBookmarkedByNameAsc().first()
