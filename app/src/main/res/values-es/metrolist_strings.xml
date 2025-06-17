@@ -137,4 +137,7 @@
     <string name="share_selected">Compartir lo seleccionado</string>
     <string name="secondary_text_color">Color del texto secundario</string>
     <string name="lyrics_auto_scroll">Desplazamiento automático de letras</string>
+    <string name="import_csv">Importar una lista de reproducción \"csv\"</string>
+    <string name="import_online">Importar una lista de reproducción \"m3u\"</string>
+    <string name="playlist_add_local_to_synced_note">Nota: No se permite agregar canciones locales a listas de reproducción sincronizadas o remotas. Cualquier otra combinación es válida</string>
 </resources>
