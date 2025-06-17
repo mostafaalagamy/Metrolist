@@ -137,4 +137,7 @@
     <string name="auto_download_on_like">Scarica automaticamente quando si mette Mi piace</string>
     <string name="auto_download_on_like_desc">Scarica automaticamente i brani quando si mette Mi piace</string>
     <string name="lyrics_auto_scroll">Scorri testi automaticamente</string>
+    <string name="import_csv">Importa una playlist in formato \"csv\"</string>
+    <string name="playlist_add_local_to_synced_note">Nota: non è supportata l\'importazione di brani locali in una playlist sincronizzata o remota. Qualsiasi altra combinazione è valida</string>
+    <string name="import_online">Importa una playlist in formato \"m3u\"</string>
 </resources>
