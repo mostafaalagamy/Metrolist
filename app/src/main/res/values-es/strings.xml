@@ -65,7 +65,7 @@
     <!-- Button -->
     <string name="retry">Reintentar</string>
     <string name="radio">Radio</string>
-    <string name="shuffle">Mezclar</string>
+    <string name="shuffle">Aleatorio</string>
     <string name="reset">Restablecer</string>
     <!-- Menu -->
     <string name="details">Detalles</string>
@@ -152,7 +152,7 @@
     </plurals>
     <plurals name="n_playlist">
         <item quantity="one">%d lista de reproducción</item>
-        <item quantity="many">%d de listas de reproducción</item>
+        <item quantity="many">%d listas de reproducción</item>
         <item quantity="other">%d listas de reproducción</item>
     </plurals>
     <plurals name="n_week">
