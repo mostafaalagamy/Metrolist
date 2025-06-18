@@ -52,4 +52,5 @@
     <string name="seek_forward">5 sekundi unaprijed</string>
     <string name="local_history">Lokalno</string>
     <string name="months">Mjeseci</string>
+    <string name="advanced_login">Napredni login(token)</string>
 </resources>
