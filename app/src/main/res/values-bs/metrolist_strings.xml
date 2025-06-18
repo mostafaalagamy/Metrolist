@@ -1,2 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="lyrics_auto_scroll">Automatsko pomjeranje stihova</string>
+    <string name="google">Google</string>
+    <string name="discord">Discord</string>
+    <string name="show_cached_playlist">Prikaži \"Keširanu\" plejlistu</string>
+    <string name="explore">Istraži</string>
+    <string name="remote_history">Udaljen</string>
+    <string name="no_title">Nema naziv</string>
+    <string name="unknown_artist">Nepoznati umjetnik</string>
+    <string name="retry_button">Pokužaj ponovo</string>
+    <string name="back_button_desc">Nazad</string>
+    <string name="trending">U trendu</string>
+    <string name="weeks">Sedmice</string>
+    <string name="years">Godina</string>
+    <string name="continuous">Kontinuirano</string>
+    <string name="offline">Skinuto</string>
+    <string name="sync_playlist">Sinhronizovana plejlista</string>
+    <string name="please_wait">Molimo vas sačekajte</string>
+    <string name="select">Izaberi sve</string>
+    <plurals name="n_element">
+        <item quantity="one">element</item>
+        <item quantity="few">elementa</item>
+        <item quantity="other">elementi</item>
+    </plurals>
+    <string name="seek_backward">5 sekundi unazad</string>
+    <string name="similar_content">#Sličan #sadržaj</string>
+    <string name="login_settings">Login podešavanja</string>
+    <string name="general_settings">Opšta podešavanja</string>
+    <plurals name="n_time">
+        <item quantity="one">put</item>
+        <item quantity="few">puta</item>
+        <item quantity="other">puta</item>
+    </plurals>
+    <string name="follow_theme">Zaprati temu</string>
+    <string name="gradient">Gradijent</string>
+    <string name="player_background_blur">Zamućenje</string>
+    <string name="player_buttons_style">Boje dugmadi igrača</string>
+    <string name="player_background_style">#Igrač #pozadina #stil</string>
+    <string name="default_style">Podrazumevani stil</string>
+    <string name="secondary_color_style">Sekundarno</string>
+    <string name="enable_squiggly_slider">Omogući valoviti klizač</string>
+    <string name="enable_swipe_thumbnail">Omogući promjenu pjesme prevlačenjem</string>
+    <string name="swipe_song_to_add">Prevucite pjesmu ulijevo da biste je dodali u red čekanja ili udesno da biste je pustili sljedeću</string>
+    <string name="lyrics_click_change">Promijenite stihove klikom</string>
+    <string name="slim_navbar">Sakrij oznake donje navigacijske trake</string>
+    <string name="auto_playlists">Automatske plejliste</string>
+    <string name="slim">Usko</string>
+    <string name="show_liked_playlist">Prikaži plejliste \"Sviđa mi se\"</string>
+    <string name="show_downloaded_playlist">Prikaži plejlistu “Preuzeto”</string>
+    <string name="show_top_playlist">Prikaži \"Najbolju\" plejlistu</string>
+    <string name="seek_forward">5 sekundi unaprijed</string>
+    <string name="local_history">Lokalno</string>
+    <string name="months">Mjeseci</string>
+</resources>
