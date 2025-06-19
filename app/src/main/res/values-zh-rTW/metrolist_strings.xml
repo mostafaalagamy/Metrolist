@@ -81,7 +81,7 @@
     <string name="past_month">過去一個月</string>
     <string name="past_year">過去一年</string>
     <string name="top_length">我的熱門清單長度</string>
-    <string name="history_duration">播放歷史紀錄保留時長</string>
+    <string name="history_duration">加入歷史紀錄的播放時長</string>
     <plurals name="seconds">
         <item quantity="one">1 秒</item>
         <item quantity="other">%d 秒</item>
@@ -122,7 +122,7 @@
     <string name="added_to_play_next">已加入下首播放</string>
     <string name="remove_from_cache">從快取中移除</string>
     <string name="added_to_queue">已加入播放佇列</string>
-    <string name="auto_playlists">自動播放清單</string>
+    <string name="auto_playlists">自動生成播放清單</string>
     <string name="swipe_song_to_add">向左滑動歌曲加入播放佇列，或向右滑動加入下首播放</string>
     <string name="auto_download_on_like">自動下載喜歡的歌曲</string>
     <string name="auto_download_on_like_desc">當你點擊喜歡某首歌曲時，將自動下載該歌曲</string>
