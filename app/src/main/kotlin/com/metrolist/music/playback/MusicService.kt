@@ -434,6 +434,12 @@ class MusicService :
             }
 
         crossfadeJob = scope.launch {
+            val startTime = System.currentTimeMillis()
+            while (crossfadePlayer?.playbackState != Player.STATE_READY && 
+                   System.currentTimeMillis() - startTime < 2000) {
+                delay(50)
+            }
+
             val fadeSteps = (crossfadeDurationMs / 50L).toInt().coerceAtLeast(1)
             for (step in 0..fadeSteps) {
                 val progress = step.toFloat() / fadeSteps
