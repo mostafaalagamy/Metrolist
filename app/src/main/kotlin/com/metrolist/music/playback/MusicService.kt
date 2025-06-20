@@ -995,7 +995,9 @@ class MusicService :
         stopSelf()
     }
 
-    override fun onGetSession(controllerInfo: MediaSession.ControllerInfo) = mediaSession
+    override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaLibrarySession? {
+        return mediaSession
+    }
 
     inner class MusicBinder : Binder() {
         val service: MusicService
