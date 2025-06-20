@@ -50,7 +50,6 @@ import androidx.media3.session.DefaultMediaNotificationProvider
 import androidx.media3.session.MediaController
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaLibraryService
-import androidx.media3.session.MediaLibrarySession
 import androidx.media3.session.SessionToken
 import com.google.common.util.concurrent.MoreExecutors
 import com.metrolist.innertube.YouTube
@@ -995,9 +994,7 @@ class MusicService :
         stopSelf()
     }
 
-    override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaLibrarySession? {
-        return mediaSession
-    }
+    override fun onGetSession(controllerInfo: MediaSession.ControllerInfo) = mediaSession
 
     inner class MusicBinder : Binder() {
         val service: MusicService
