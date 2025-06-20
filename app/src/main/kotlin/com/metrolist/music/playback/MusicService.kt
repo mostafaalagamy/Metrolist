@@ -425,13 +425,7 @@ class MusicService :
         isCrossfading = true
 
         crossfadePlayer = ExoPlayer.Builder(this)
-            .setAudioAttributes(
-                AudioAttributes.Builder()
-                    .setUsage(C.USAGE_MEDIA)
-                    .setContentType(C.AUDIO_CONTENT_TYPE_MUSIC)
-                    .build(),
-                true
-            )
+            .setAudioAttributes(player.audioAttributes, true)
             .build().apply {
                 setMediaItem(player.getMediaItemAt(nextIndex))
                 volume = 0f
@@ -440,7 +434,7 @@ class MusicService :
             }
 
         crossfadeJob = scope.launch {
-            val fadeSteps = max(1, (crossfadeDurationMs / 50L).toInt())
+            val fadeSteps = (crossfadeDurationMs / 50L).toInt().coerceAtLeast(1)
             for (step in 0..fadeSteps) {
                 val progress = step.toFloat() / fadeSteps
                 player.volume = 1f - progress
@@ -850,6 +844,10 @@ class MusicService :
                 settings[RepeatModeKey] = repeatMode
             }
         }
+    }
+
+    override fun onPositionDiscontinuity(reason: Int) {
+        cancelCrossfade()
     }
 
     override fun onPlayerError(error: PlaybackException) {
