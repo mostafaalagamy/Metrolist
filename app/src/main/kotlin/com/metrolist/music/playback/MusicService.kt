@@ -49,7 +49,7 @@ import androidx.media3.session.CommandButton
 import androidx.media3.session.DefaultMediaNotificationProvider
 import androidx.media3.session.MediaController
 import androidx.media3.session.MediaLibraryService
-import androidx.media3.session.MediaSession
+import androidx.media3.session.MediaLibrarySession
 import androidx.media3.session.SessionToken
 import com.google.common.util.concurrent.MoreExecutors
 import com.metrolist.innertube.YouTube
@@ -206,6 +206,12 @@ class MusicService :
     private var discordRpc: DiscordRPC? = null
 
     val automixItems = MutableStateFlow<List<MediaItem>>(emptyList())
+
+    // Crossfade properties
+    private var crossfadePlayer: ExoPlayer? = null
+    private var crossfadeJob: Job? = null
+    private var isCrossfading = false
+    private val crossfadeDurationMs = 5000L // 5 seconds
 
     override fun onCreate() {
         super.onCreate()
@@ -697,6 +703,13 @@ class MusicService :
                 }
             }
         }
+
+        // Crossfade logic
+        if (reason == Player.MEDIA_ITEM_TRANSITION_REASON_AUTO) {
+            startCrossfadeIfNeeded()
+        } else {
+            cancelCrossfade()
+        }
     }
 
     override fun onPlaybackStateChanged(
@@ -754,6 +767,7 @@ class MusicService :
     }
 
     override fun onPlayerError(error: PlaybackException) {
+        cancelCrossfade()
         if (dataStore.get(AutoSkipNextOnErrorKey, false) &&
             isInternetAvailable(this) &&
             player.hasNextMediaItem()
@@ -969,6 +983,7 @@ class MusicService :
         player.removeListener(this)
         player.removeListener(sleepTimer)
         player.release()
+        cancelCrossfade()
         super.onDestroy()
     }
 
@@ -984,6 +999,56 @@ class MusicService :
     inner class MusicBinder : Binder() {
         val service: MusicService
             get() = this@MusicService
+    }
+
+    // Crossfade implementation
+    private fun startCrossfadeIfNeeded() {
+        if (isCrossfading) return
+        val nextIndex = player.currentMediaItemIndex + 1
+        if (nextIndex >= player.mediaItemCount) return
+
+        isCrossfading = true
+
+        crossfadePlayer = ExoPlayer.Builder(this)
+            .setAudioAttributes(
+                AudioAttributes.Builder()
+                    .setUsage(C.USAGE_MEDIA)
+                    .setContentType(C.AUDIO_CONTENT_TYPE_MUSIC)
+                    .build(),
+                true
+            )
+            .build().apply {
+                setMediaItem(player.getMediaItemAt(nextIndex))
+                volume = 0f
+                prepare()
+                playWhenReady = true
+            }
+
+        crossfadeJob = scope.launch {
+            val fadeSteps = (crossfadeDurationMs / 50L).toInt()
+            for (step in 0..fadeSteps) {
+                val progress = step.toFloat() / fadeSteps
+                player.volume = 1f - progress
+                crossfadePlayer?.volume = progress
+                delay(50L)
+            }
+            player.pause()
+            player.seekTo(nextIndex, 0)
+            player.playWhenReady = true
+            crossfadePlayer?.release()
+            crossfadePlayer = null
+            isCrossfading = false
+            player.volume = 1f
+        }
+    }
+
+    private fun cancelCrossfade() {
+        crossfadeJob?.cancel()
+        crossfadeJob = null
+        crossfadePlayer?.release()
+        crossfadePlayer = null
+        isCrossfading = false
+        player.volume = 1f
     }
 
     companion object {
