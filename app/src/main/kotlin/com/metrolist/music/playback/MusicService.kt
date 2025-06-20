@@ -787,14 +787,16 @@ class MusicService :
         }
 
         // Crossfade: عند الانتقال التلقائي، أكمل عملية crossfade
-        if (isCrossfading) {
+        if (isCrossfading && crossfadePlayer != null) {
             finishCrossfadeIfNeeded()
         }
     }
 
     override fun onPlaybackStateChanged(playbackState: Int) {
         if (playbackState == STATE_IDLE) {
-            if (!isCrossfading && player.hasNextMediaItem()) {
+            if (isCrossfading && crossfadePlayer != null) {
+                finishCrossfadeIfNeeded()
+            } else if (player.hasNextMediaItem()) {
                 player.seekToNext()
                 player.prepare()
                 player.playWhenReady = true
