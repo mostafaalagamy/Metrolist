@@ -792,13 +792,17 @@ class MusicService :
         }
     }
 
-    override fun onPlaybackStateChanged(
-        @Player.State playbackState: Int,
-    ) {
+    override fun onPlaybackStateChanged(playbackState: Int) {
         if (playbackState == STATE_IDLE) {
-            currentQueue = EmptyQueue
-            player.shuffleModeEnabled = false
-            queueTitle = null
+            if (!isCrossfading && player.hasNextMediaItem()) {
+                player.seekToNext()
+                player.prepare()
+                player.playWhenReady = true
+            } else {
+                currentQueue = EmptyQueue
+                player.shuffleModeEnabled = false
+                queueTitle = null
+            }
         }
     }
 
