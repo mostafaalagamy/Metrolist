@@ -7,7 +7,7 @@
     <string name="continuous">Contínuo</string>
     <string name="liked">Favoritas</string>
     <string name="offline">Baixadas</string>
-    <string name="my_top">Meu Top</string>
+    <string name="my_top">Meu top</string>
     <string name="elements_selected">%1$d elementos selecionados</string>
     <string name="select">Selecionar tudo</string>
     <string name="like_all">Favoritar tudo</string>
@@ -57,7 +57,7 @@
     <string name="similar_content_desc">Adicionar automaticamente mais músicas similares quando o final da fila for alcançado</string>
     <string name="default_links">Abrir links suportados</string>
     <string name="open_app_settings_error">Não foi possível abrir as configurações do app</string>
-    <string name="release_notes">Notas de versão</string>
+    <string name="release_notes">Registro de mudanças</string>
     <string name="all_time">Desde sempre</string>
     <string name="past_24_hours">Últimas 24 horas</string>
     <string name="past_week">Última semana</string>
@@ -75,8 +75,8 @@
     <string name="token_adv_login_description">Esse é um método avançado de login. Como uma alternativa ao portal web, você pode digitar ou atualizar o seu token diretamente por aqui. Como exemplo, isso pode fazer com que fazer login em vários dispositivos seja mais rápido. Observa que qualquer formato inválido do token que o app não consiga interpretar não será aceitado</string>
     <string name="information">Informações</string>
     <string name="allows_for_sync_witch_youtube">Observação: Isso permite a sincronização com o YouTube Music. Isso NÃO pode ser alterado mais tarde.</string>
-    <string name="swipe_song_to_add">Deslizar na música para direita para tocar a próxima ou para a esquerda para adicionar na fila</string>
-    <string name="show_top_playlist">Mostrar lista de Top</string>
+    <string name="swipe_song_to_add">Deslizar na música para esquerda para adicionar na fila ou para a direita para tocá-la em seguida</string>
+    <string name="show_top_playlist">Mostrar lista de top</string>
     <string name="show_cached_playlist">Mostrar lista de músicas em cache</string>
     <string name="remote_history">Remoto</string>
     <string name="charts">Rankings</string>
@@ -136,4 +136,8 @@
     <string name="auto_download_on_like_desc">Baixar músicas automaticamente quando você as curte</string>
     <string name="please_wait">Por favor aguarde</string>
     <string name="generating_image">Gerando imagem</string>
+    <string name="lyrics_auto_scroll">Rolar letra automaticamente</string>
+    <string name="import_online">Importar uma lista \"m3u\"</string>
+    <string name="import_csv">Importar uma lista \"csv\"</string>
+    <string name="playlist_add_local_to_synced_note">Observação: Não há suporte para adicionar músicas locais em listas sincronizadas/remotas. Qualquer outra combinação é válida</string>
 </resources>

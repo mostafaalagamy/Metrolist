@@ -11,13 +11,13 @@
     <string name="loading_charts">Cargando listas de éxitos...</string>
     <string name="retry_button">Reintentar</string>
     <string name="album_cover_desc">Carátula del álbum</string>
-    <string name="top_music_videos">Vídeos musicales más populares</string>
+    <string name="top_music_videos">Top Vídeos musicales</string>
     <string name="trending">Tendencias</string>
     <string name="weeks">Semanas</string>
     <string name="months">Meses</string>
     <string name="years">Años</string>
     <string name="continuous">Continuo</string>
-    <string name="liked">Me gusta</string>
+    <string name="liked">Me gustas</string>
     <string name="offline">Descargado</string>
     <string name="my_top">Mi Top</string>
     <string name="cached_playlist">En caché</string>
@@ -38,12 +38,12 @@
     <string name="already_in_playlist">Ya está en la lista de reproducción:</string>
     <plurals name="n_element">
         <item quantity="one">%d elemento</item>
-        <item quantity="many">%d elementos</item>
+        <item quantity="many">%d de elementos</item>
         <item quantity="other">%d elementos</item>
     </plurals>
     <plurals name="n_time">
         <item quantity="one">%d vez</item>
-        <item quantity="many">%d veces</item>
+        <item quantity="many">%d de veces</item>
         <item quantity="other">%d veces</item>
     </plurals>
     <string name="seek_backward">Retroceder 5 segundos</string>
@@ -64,11 +64,11 @@
     <string name="lyrics_click_change">Cambiar letra al hacer clic</string>
     <string name="slim">Delgado</string>
     <string name="slim_navbar">Ocultar etiquetas de la barra de navegación inferior</string>
-    <string name="auto_playlists">Listas de reproducción automáticas</string>
-    <string name="show_liked_playlist">Mostrar lista de reproducción "Me gusta"</string>
-    <string name="show_downloaded_playlist">Mostrar lista de reproducción "Descargadas"</string>
-    <string name="show_top_playlist">Mostrar lista de reproducción "Top"</string>
-    <string name="show_cached_playlist">Mostrar lista de reproducción "En caché"</string>
+    <string name="auto_playlists">Auto-Listas de reproducción</string>
+    <string name="show_liked_playlist">Ver tu playlist de \'Me gusta\'</string>
+    <string name="show_downloaded_playlist">Ver tu playlist de \'Descargas\'</string>
+    <string name="show_top_playlist">Ver tu playlist de \'Top\'</string>
+    <string name="show_cached_playlist">Ver tu playlist en caché</string>
     <string name="google">Google</string>
     <string name="discord">Discord</string>
     <string name="advanced_login">Inicio de sesión avanzado (token)</string>
@@ -118,7 +118,7 @@
     <string name="dislikes">No me gusta</string>
     <plurals name="seconds">
         <item quantity="one">1 segundo</item>
-        <item quantity="many">%d segundos</item>
+        <item quantity="many">%d de segundos</item>
         <item quantity="other">%d segundos</item>
     </plurals>
     <string name="please_wait">Por favor, espere</string>
@@ -134,6 +134,10 @@
     <string name="text_color">Color del texto</string>
     <string name="auto_download_on_like_desc">Descarga automáticamente canciones cuando des a me gusta</string>
     <string name="max_selection_limit">Límite máximo de selección</string>
-    <string name="share_selected">Compartir lo seleccionado</string>
+    <string name="share_selected">Compartir selección</string>
     <string name="secondary_text_color">Color del texto secundario</string>
+    <string name="lyrics_auto_scroll">Desplazamiento automático de letras</string>
+    <string name="import_csv">Importar una lista de reproducción \"csv\"</string>
+    <string name="import_online">Importar una lista de reproducción \"m3u\"</string>
+    <string name="playlist_add_local_to_synced_note">Nota: No se permite agregar canciones locales a listas de reproducción sincronizadas o remotas. Cualquier otra combinación es válida</string>
 </resources>
