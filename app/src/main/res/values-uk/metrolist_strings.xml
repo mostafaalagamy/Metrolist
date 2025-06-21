@@ -11,7 +11,7 @@
     <string name="offline">Завантажене</string>
     <string name="my_top">Мій Топ</string>
     <string name="sync_playlist">Синхронізувати список відтворення</string>
-    <string name="elements_selected">%1$d Елементів обрано</string>
+    <string name="elements_selected">%1$d елементів обрано</string>
     <string name="allows_for_sync_witch_youtube">Зауважте: Це дозволяє синхронізацію з YouTube Music. Це НЕ можна буде змінити пізніше.</string>
     <string name="select">Обрати все</string>
     <string name="like_all">Вподобати все</string>
@@ -140,4 +140,7 @@
     <string name="likes">Вподобання</string>
     <string name="dislikes">Невподобання</string>
     <string name="lyrics_auto_scroll">Автопрокрутка тексту пісні</string>
+    <string name="import_online">Імпортувати список відтворення у форматі \"m3u\"</string>
+    <string name="import_csv">Імпортувати список відтворення у форматі \"csv\"</string>
+    <string name="playlist_add_local_to_synced_note">Примітка: додавання локальних пісень до синхронізованих або віддалених списків відтворення не підтримується. Усі інші комбінації можливі</string>
 </resources>
