@@ -31,7 +31,7 @@
     <string name="cached_playlist">Cached</string>
     <string name="sync_playlist">Sync playlist</string>
     <string name="sync_disabled">Sync disabled</string>
-    <string name="elements_selected">%1$d Elements selected</string>
+    <string name="elements_selected">%1$d elements selected</string>
     <string name="allows_for_sync_witch_youtube">Note: This allows for syncing with YouTube Music. This is NOT changeable later.</string>
     <string name="generating_image">Generating image</string>
     <string name="please_wait">Please wait</string>
