@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Build
+import android.provider.Settings
 import android.os.LocaleList
 import android.util.Log
 import android.widget.Toast
@@ -35,11 +36,11 @@ import com.metrolist.music.R
 import com.metrolist.music.constants.*
 import com.metrolist.music.ui.component.*
 import com.metrolist.music.ui.utils.backToMain
-import com.metrolist.music.utils.LocaleManager
 import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
 import java.net.Proxy
 import java.util.Locale
+import androidx.core.net.toUri
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -48,12 +49,9 @@ fun ContentSettings(
     scrollBehavior: TopAppBarScrollBehavior,
 ) {
     val context = LocalContext.current
-    val localeManager = remember { LocaleManager(context) }
-    val languages = listOf(SYSTEM_DEFAULT) + LanguageCodeToName.keys.toList()
 
     val (contentLanguage, onContentLanguageChange) = rememberPreference(key = ContentLanguageKey, defaultValue = "system")
     val (contentCountry, onContentCountryChange) = rememberPreference(key = ContentCountryKey, defaultValue = "system")
-    val (selectedLanguage, setSelectedLanguage) = rememberPreference(stringPreferencesKey("app_language"), "en")
     val (hideExplicit, onHideExplicitChange) = rememberPreference(key = HideExplicitKey, defaultValue = false)
     val (proxyEnabled, onProxyEnabledChange) = rememberPreference(key = ProxyEnabledKey, defaultValue = false)
     val (proxyType, onProxyTypeChange) = rememberEnumPreference(key = ProxyTypeKey, defaultValue = Proxy.Type.HTTP)
@@ -125,31 +123,20 @@ fun ContentSettings(
         )
 
         PreferenceGroupTitle(title = stringResource(R.string.app_language))
-        ListPreference(
-            title = { Text(stringResource(R.string.app_language)) },
-            icon = { Icon(painterResource(R.drawable.language), null) },
-            selectedValue = selectedLanguage,
-            values = languages,
-            valueText = { code ->
-                LanguageCodeToName[code] ?: stringResource(R.string.system_default)
-            },
-            onValueSelected = { newLanguage ->
-                if (localeManager.updateLocale(newLanguage)) {
-                    setSelectedLanguage(newLanguage)
-
-                    val intent = context.packageManager
-                        .getLaunchIntentForPackage(context.packageName)
-                        ?.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
-                    context.startActivity(intent)
-                } else {
-                    Toast.makeText(
-                        context,
-                        "Failed to update language. Please try again.",
-                        Toast.LENGTH_SHORT
-                    ).show()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            PreferenceEntry(
+                title = { Text(stringResource(R.string.app_language)) },
+                icon = { Icon(painterResource(R.drawable.language), null) },
+                onClick = {
+                    context.startActivity(
+                        Intent(
+                            Settings.ACTION_APP_LOCALE_SETTINGS,
+                            "package:${context.packageName}".toUri()
+                        )
+                    )
                 }
-            }
-        )
+            )
+        }
 
         PreferenceGroupTitle(title = stringResource(R.string.proxy))
         SwitchPreference(
