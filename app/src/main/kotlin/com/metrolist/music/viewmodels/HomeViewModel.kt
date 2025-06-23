@@ -30,7 +30,6 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
 import javax.inject.Inject
-import kotlin.collections.map
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
@@ -51,9 +50,9 @@ class HomeViewModel @Inject constructor(
     val similarRecommendations = MutableStateFlow<List<SimilarRecommendation>?>(null)
     val accountPlaylists = MutableStateFlow<List<PlaylistItem>?>(null)
     val homePage = MutableStateFlow<HomePage?>(null)
+    val explorePage = MutableStateFlow<ExplorePage?>(null)
     val selectedChip = MutableStateFlow<HomePage.Chip?>(null)
     private val previousHomePage = MutableStateFlow<HomePage?>(null)
-    val explorePage = MutableStateFlow<ExplorePage?>(null)
 
     val recentActivity = MutableStateFlow<List<YTItem>?>(null)
     val recentPlaylistsDb = MutableStateFlow<List<Playlist>?>(null)
@@ -74,13 +73,11 @@ class HomeViewModel @Inject constructor(
 
     private suspend fun load() {
         isLoading.value = true
-
         val hideExplicit = context.dataStore.get(HideExplicitKey, false)
 
         getQuickPicks()
 
-        forgottenFavorites.value = database.forgottenFavorites()
-            .first().shuffled().take(20)
+        forgottenFavorites.value = database.forgottenFavorites().first().shuffled().take(20)
 
         val fromTimeStamp = System.currentTimeMillis() - 86400000 * 7 * 2
 
@@ -94,12 +91,10 @@ class HomeViewModel @Inject constructor(
             .first().filter { it.artist.isYouTubeArtist && it.artist.thumbnailUrl != null }
             .shuffled().take(5)
 
-        keepListening.value =
-            (keepListeningSongs + keepListeningAlbums + keepListeningArtists).shuffled()
+        keepListening.value = (keepListeningSongs + keepListeningAlbums + keepListeningArtists).shuffled()
 
-        allLocalItems.value =
-            (quickPicks.value.orEmpty() + forgottenFavorites.value.orEmpty() + keepListening.value.orEmpty())
-                .filter { it is Song || it is Album }
+        allLocalItems.value = (quickPicks.value.orEmpty() + forgottenFavorites.value.orEmpty() + keepListening.value.orEmpty())
+            .filter { it is Song || it is Album }
 
         if (YouTube.cookie != null) {
             YouTube.accountInfo().onSuccess { info ->
@@ -110,8 +105,7 @@ class HomeViewModel @Inject constructor(
             }
 
             YouTube.library("FEmusic_liked_playlists").completed().onSuccess {
-                val lists = it.items.filterIsInstance<PlaylistItem>()
-                    .filterNot { it.id == "SE" }
+                val lists = it.items.filterIsInstance<PlaylistItem>().filterNot { it.id == "SE" }
                 accountPlaylists.value = lists
             }.onFailure {
                 reportException(it)
@@ -137,9 +131,8 @@ class HomeViewModel @Inject constructor(
             .filter { it.album != null }
             .shuffled().take(2)
             .mapNotNull { song ->
-                val endpoint =
-                    YouTube.next(WatchEndpoint(videoId = song.id)).getOrNull()?.relatedEndpoint
-                        ?: return@mapNotNull null
+                val endpoint = YouTube.next(WatchEndpoint(videoId = song.id)).getOrNull()?.relatedEndpoint
+                    ?: return@mapNotNull null
                 val page = YouTube.related(endpoint).getOrNull() ?: return@mapNotNull null
                 SimilarRecommendation(
                     title = song,
@@ -165,8 +158,34 @@ class HomeViewModel @Inject constructor(
             reportException(it)
         }
 
+        // Explore section with sorting by favorite artist
         YouTube.explore().onSuccess { page ->
-            explorePage.value = page
+            val artists: MutableMap<Int, String> = mutableMapOf()
+            val favouriteArtists: MutableMap<Int, String> = mutableMapOf()
+            database.allArtistsByPlayTime().first().let { list ->
+                var favIndex = 0
+                for ((artistsIndex, artist) in list.withIndex()) {
+                    artists[artistsIndex] = artist.id
+                    if (artist.artist.bookmarkedAt != null) {
+                        favouriteArtists[favIndex] = artist.id
+                        favIndex++
+                    }
+                }
+            }
+            explorePage.value = page.copy(
+                newReleaseAlbums = page.newReleaseAlbums
+                    .sortedBy { album ->
+                        val artistIds = album.artists.orEmpty().mapNotNull { it.id }
+                        val firstArtistKey = artistIds.firstNotNullOfOrNull { artistId ->
+                            if (artistId in favouriteArtists.values) {
+                                favouriteArtists.entries.firstOrNull { it.value == artistId }?.key
+                            } else {
+                                artists.entries.firstOrNull { it.value == artistId }?.key
+                            }
+                        } ?: Int.MAX_VALUE
+                        firstArtistKey
+                    }.filterExplicit(hideExplicit)
+            )
         }.onFailure {
             reportException(it)
         }
@@ -177,11 +196,10 @@ class HomeViewModel @Inject constructor(
         isLoading.value = false
     }
 
-    private suspend fun songLoad(){
+    private suspend fun songLoad() {
         val song = database.events().first().firstOrNull()?.song
         if (song != null) {
-            println(song.song.title)
-            if (database.hasRelatedSongs(song.id)){
+            if (database.hasRelatedSongs(song.id)) {
                 val relatedSongs = database.getRelatedSongs(song.id).first().shuffled().take(20)
                 quickPicks.value = relatedSongs
             }
@@ -219,9 +237,9 @@ class HomeViewModel @Inject constructor(
         }
 
         if (selectedChip.value == null) {
-            // store the actual homepage for deselecting chips
             previousHomePage.value = homePage.value
         }
+
         viewModelScope.launch(Dispatchers.IO) {
             val hideExplicit = context.dataStore.get(HideExplicitKey, false)
             val nextSections = YouTube.home(params = chip?.endpoint?.params).getOrNull() ?: return@launch

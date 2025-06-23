@@ -5,7 +5,9 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
@@ -148,6 +150,7 @@ fun HomeScreen(
     val similarRecommendations by viewModel.similarRecommendations.collectAsState()
     val accountPlaylists by viewModel.accountPlaylists.collectAsState()
     val homePage by viewModel.homePage.collectAsState()
+    val explorePage by viewModel.explorePage.collectAsState()
 
     val allLocalItems by viewModel.allLocalItems.collectAsState()
     val allYtItems by viewModel.allYtItems.collectAsState()
@@ -747,6 +750,68 @@ fun HomeScreen(
                         LazyRow {
                             items(4) {
                                 GridItemPlaceHolder()
+                            }
+                        }
+                    }
+                }
+            }
+
+            explorePage?.moodAndGenres?.let { moodAndGenres ->
+                item {
+                    NavigationTitle(
+                        title = stringResource(R.string.mood_and_genres),
+                        onClick = {
+                            navController.navigate("mood_and_genres")
+                        },
+                        modifier = Modifier.animateItem()
+                    )
+                }
+                item {
+                    LazyHorizontalGrid(
+                        rows = GridCells.Fixed(4),
+                        contentPadding = PaddingValues(6.dp),
+                        modifier = Modifier
+                            .height((MoodAndGenresButtonHeight + 12.dp) * 4 + 12.dp)
+                            .animateItem()
+                    ) {
+                        items(moodAndGenres) {
+                            MoodAndGenresButton(
+                                title = it.title,
+                                onClick = {
+                                    navController.navigate("youtube_browse/${it.endpoint.browseId}?params=${it.endpoint.params}")
+                                },
+                                modifier = Modifier
+                                    .padding(6.dp)
+                                    .width(180.dp)
+                            )
+                        }
+                    }
+                }
+            }
+
+            if (isLoading) {
+                item {
+                    ShimmerHost(
+                        modifier = Modifier.animateItem()
+                    ) {
+                        TextPlaceholder(
+                            height = 36.dp,
+                            modifier = Modifier
+                                .padding(vertical = 12.dp, horizontal = 12.dp)
+                                .width(250.dp),
+                        )
+
+                        repeat(4) {
+                            Row {
+                                repeat(2) {
+                                    TextPlaceholder(
+                                        height = MoodAndGenresButtonHeight,
+                                        shape = RoundedCornerShape(6.dp),
+                                        modifier = Modifier
+                                            .padding(horizontal = 12.dp)
+                                            .width(200.dp)
+                                    )
+                                }
                             }
                         }
                     }
