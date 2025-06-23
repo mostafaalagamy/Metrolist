@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Build
+import android.provider.Settings
 import android.os.LocaleList
 import android.util.Log
 import android.widget.Toast
@@ -35,11 +36,11 @@ import com.metrolist.music.R
 import com.metrolist.music.constants.*
 import com.metrolist.music.ui.component.*
 import com.metrolist.music.ui.utils.backToMain
-import com.metrolist.music.utils.LocaleManager
 import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
 import java.net.Proxy
 import java.util.Locale
+import androidx.core.net.toUri
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -48,8 +49,6 @@ fun ContentSettings(
     scrollBehavior: TopAppBarScrollBehavior,
 ) {
     val context = LocalContext.current
-    val localeManager = remember { LocaleManager(context) }
-    val languages = listOf(SYSTEM_DEFAULT) + LanguageCodeToName.keys.toList()
 
     val (contentLanguage, onContentLanguageChange) = rememberPreference(key = ContentLanguageKey, defaultValue = "system")
     val (contentCountry, onContentCountryChange) = rememberPreference(key = ContentCountryKey, defaultValue = "system")
@@ -127,12 +126,12 @@ fun ContentSettings(
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             PreferenceEntry(
                 title = { Text(stringResource(R.string.app_language)) },
-                icon = { Icon(painterResource(R.drawable.translate), null) },
+                icon = { Icon(painterResource(R.drawable.language), null) },
                 onClick = {
                     context.startActivity(
                         Intent(
                             Settings.ACTION_APP_LOCALE_SETTINGS,
-                            Uri.parse("package:${context.packageName}")
+                            "package:${context.packageName}".toUri()
                         )
                     )
                 }
