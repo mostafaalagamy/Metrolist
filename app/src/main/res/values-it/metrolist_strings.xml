@@ -21,7 +21,7 @@
     <string name="offline">Scaricati</string>
     <string name="my_top">I miei migliori</string>
     <string name="cached_playlist">In cache</string>
-    <string name="sync_playlist">Sincronizza playlist</string>
+    <string name="sync_playlist">Sincronizza Playlist</string>
     <string name="sync_disabled">Sincronizzazione disabilitata</string>
     <string name="elements_selected">%1$d elementi selezionati</string>
     <string name="allows_for_sync_witch_youtube">Nota: questo attiva la sincronizzazione con YouTube Music. Tale azione NON è modificabile successivamente.</string>
@@ -60,15 +60,15 @@
     <string name="secondary_color_style">Secondari</string>
     <string name="enable_squiggly_slider">Abilita cursore ondulato</string>
     <string name="enable_swipe_thumbnail">Attiva la possibilità di cambiare brano scorrendo sulla copertina</string>
-    <string name="swipe_song_to_add">Scorri il brano verso destra per riprodurlo come successivo o verso destra per aggiungerlo alla coda</string>
+    <string name="swipe_song_to_add">Scorri il brano verso sinistra aggiungerlo alla coda o verso destra per riprodurlo come successivo</string>
     <string name="lyrics_click_change">Cambia testi con il tocco</string>
     <string name="slim">Sottile</string>
     <string name="slim_navbar">Nascondi etichette della barra di navigazione</string>
     <string name="auto_playlists">Playlist automatiche</string>
-    <string name="show_liked_playlist">Mostra la playlist dei brani piaciuti</string>
-    <string name="show_downloaded_playlist">Mostra la playlist dei brani scaricati</string>
-    <string name="show_top_playlist">Mostra la playlist dei migliori brani</string>
-    <string name="show_cached_playlist">Mostra la playlist dei brani in cache</string>
+    <string name="show_liked_playlist">Mostra la Playlist dei brani piaciuti</string>
+    <string name="show_downloaded_playlist">Mostra la Playlist dei brani scaricati</string>
+    <string name="show_top_playlist">Mostra la Playlist dei migliori brani</string>
+    <string name="show_cached_playlist">Mostra la Playlist dei brani in cache</string>
     <string name="google">Google</string>
     <string name="discord">Discord</string>
     <string name="advanced_login">Accesso avanzato (token)</string>
@@ -136,4 +136,8 @@
     <string name="background_color">Colore dello sfondo</string>
     <string name="auto_download_on_like">Scarica automaticamente quando si mette Mi piace</string>
     <string name="auto_download_on_like_desc">Scarica automaticamente i brani quando si mette Mi piace</string>
+    <string name="lyrics_auto_scroll">Scorri testi automaticamente</string>
+    <string name="import_csv">Importa una playlist in formato \"csv\"</string>
+    <string name="playlist_add_local_to_synced_note">Nota: non è supportata l\'importazione di brani locali in una playlist sincronizzata o remota. Qualsiasi altra combinazione è valida</string>
+    <string name="import_online">Importa una playlist in formato \"m3u\"</string>
 </resources>

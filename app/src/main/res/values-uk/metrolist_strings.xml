@@ -10,15 +10,15 @@
     <string name="liked">Вподобане</string>
     <string name="offline">Завантажене</string>
     <string name="my_top">Мій Топ</string>
-    <string name="sync_playlist">Синхронізувати плейлист</string>
-    <string name="elements_selected">%1$d Елементів обрано</string>
+    <string name="sync_playlist">Синхронізувати список відтворення</string>
+    <string name="elements_selected">%1$d елементів обрано</string>
     <string name="allows_for_sync_witch_youtube">Зауважте: Це дозволяє синхронізацію з YouTube Music. Це НЕ можна буде змінити пізніше.</string>
     <string name="select">Обрати все</string>
     <string name="like_all">Вподобати все</string>
-    <string name="dislike_all">Прибрати усі вподобання</string>
+    <string name="dislike_all">Позначити все як не вподобане</string>
     <string name="sort_by_last_updated">Нещодавно оновлені</string>
-    <string name="lyrics">Тексти</string>
-    <string name="already_in_playlist">Вже в плейлисті:</string>
+    <string name="lyrics">Текст пісні</string>
+    <string name="already_in_playlist">Вже в списку відтворення:</string>
     <plurals name="n_element">
         <item quantity="one">%d елемент</item>
         <item quantity="few">%d елементи</item>
@@ -41,7 +41,7 @@
     <string name="gradient">Градієнт</string>
     <string name="player_background_blur">Розмиття</string>
     <string name="enable_squiggly_slider">Увімкнути хвилястий повзунок</string>
-    <string name="enable_swipe_thumbnail">Перемикання пісень свайпом по обкладинці</string>
+    <string name="enable_swipe_thumbnail">Перемикання пісень проведенням по обкладинці</string>
     <string name="lyrics_click_change">Змінити текст пісні при натисканні</string>
     <string name="slim_navbar">Приховати мітки нижньої панелі навігації</string>
     <string name="google">Google</string>
@@ -53,7 +53,7 @@
     <string name="ytm_sync">Автосинхронізація з вашим акаунтом YouTube Music</string>
     <string name="general">Загальне</string>
     <string name="default_lib_chips">Змінити головну сторінку бібліотеки</string>
-    <string name="set_quick_picks">Налаштувати швидкий вибір</string>
+    <string name="set_quick_picks">Налаштувати швидкі добірки</string>
     <string name="last_song_listened">На основі останньої прослуханої пісні</string>
     <string name="app_language">Мова застосунку</string>
     <string name="configure_app_language">Налаштування мови</string>
@@ -61,7 +61,7 @@
     <string name="open_supported_links">Відкривати підтримуване посилання за замовчуванням</string>
     <string name="configure_supported_links">Налаштувати підтримувані посилання</string>
     <string name="intent_supported_links_not_found">Не вдалося знайти налаштування підтримуваних посилань, будь ласка, налаштуйте їх вручну</string>
-    <string name="set_first_lyrics_provider">Призначити основний провайдер текстів</string>
+    <string name="set_first_lyrics_provider">Вибрати основне джерело текстів пісень</string>
     <string name="audio_quality_max">Максимум (бета)</string>
     <string name="enable_similar_content">Увімкнути подібний контент</string>
     <string name="similar_content_desc">Автоматично додавати більше схожих пісень, коли буде досягнуто кінця черги</string>
@@ -115,8 +115,8 @@
     <string name="default_style">За замовчуванням</string>
     <string name="secondary_color_style">Вторинний</string>
     <string name="show_downloaded_playlist">Показати список відтворення \"Завантажене\"</string>
-    <string name="swipe_song_to_add">Проведіть пісню вправо, щоб відтворити її наступною, або вліво — щоб додати до черги</string>
-    <string name="slim">Вузький / Тонкий</string>
+    <string name="swipe_song_to_add">Проведіть пісню вліво, щоб додати її до черги, або вправо — щоб відтворити наступною</string>
+    <string name="slim">Тонкий</string>
     <string name="auto_playlists">Автоматичні списки відтворення</string>
     <string name="show_top_playlist">Показати список відтворення \"Топ\"</string>
     <string name="show_cached_playlist">Показати кешований список відтворення</string>
@@ -139,4 +139,8 @@
     <string name="views">Перегляди</string>
     <string name="likes">Вподобання</string>
     <string name="dislikes">Невподобання</string>
+    <string name="lyrics_auto_scroll">Автопрокрутка тексту пісні</string>
+    <string name="import_online">Імпортувати список відтворення у форматі \"m3u\"</string>
+    <string name="import_csv">Імпортувати список відтворення у форматі \"csv\"</string>
+    <string name="playlist_add_local_to_synced_note">Примітка: додавання локальних пісень до синхронізованих або віддалених списків відтворення не підтримується. Усі інші комбінації можливі</string>
 </resources>
