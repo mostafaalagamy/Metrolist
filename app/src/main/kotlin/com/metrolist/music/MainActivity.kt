@@ -14,6 +14,7 @@ import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
@@ -21,6 +22,8 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.asPaddingValues
@@ -64,7 +67,6 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -362,7 +364,7 @@ class MainActivity : ComponentActivity() {
                         remember {
                             when (intent?.action) {
                                 ACTION_LIBRARY -> NavigationTab.LIBRARY
-                                ACTION_EXPLORE -> NavigationTab.EXPLORE
+                                ACTION_SEARCH -> NavigationTab.SEARCH
                                 else -> null
                             }
                         }
@@ -370,7 +372,7 @@ class MainActivity : ComponentActivity() {
                     val topLevelScreens =
                         listOf(
                             Screens.Home.route,
-                            Screens.Explore.route,
+                            Screens.Search.route,
                             Screens.Library.route,
                             "settings",
                         )
@@ -589,7 +591,7 @@ class MainActivity : ComponentActivity() {
                     val currentTitleRes = remember(navBackStackEntry) {
                         when (navBackStackEntry?.destination?.route) {
                             Screens.Home.route -> R.string.home
-                            Screens.Explore.route -> R.string.explore
+                            Screens.Search.route -> R.string.search
                             Screens.Library.route -> R.string.filter_library
                             else -> null
                         }
@@ -616,26 +618,16 @@ class MainActivity : ComponentActivity() {
                                             )
                                         },
                                         actions = {
-                                            if (navBackStackEntry?.destination?.route == Screens.Library.route) {
-                                                IconButton(onClick = { navController.navigate("history") }) {
-                                                    Icon(
-                                                        painter = painterResource(R.drawable.history),
-                                                        contentDescription = stringResource(R.string.history)
-                                                    )
-                                                }
-                                            }
-                                            if (navBackStackEntry?.destination?.route == Screens.Library.route) {
-                                                IconButton(onClick = { navController.navigate("stats") }) {
-                                                    Icon(
-                                                        painter = painterResource(R.drawable.stats),
-                                                        contentDescription = stringResource(R.string.stats)
-                                                    )
-                                                }
-                                            }
-                                            IconButton(onClick = { onActiveChange(true) }) {
+                                            IconButton(onClick = { navController.navigate("history") }) {
                                                 Icon(
-                                                    painter = painterResource(R.drawable.search),
-                                                    contentDescription = stringResource(R.string.search)
+                                                    painter = painterResource(R.drawable.history),
+                                                    contentDescription = stringResource(R.string.history)
+                                                )
+                                            }
+                                            IconButton(onClick = { navController.navigate("stats") }) {
+                                                Icon(
+                                                    painter = painterResource(R.drawable.stats),
+                                                    contentDescription = stringResource(R.string.stats)
                                                 )
                                             }
                                             IconButton(onClick = { navController.navigate("settings") }) {
@@ -663,9 +655,10 @@ class MainActivity : ComponentActivity() {
                                         )
                                     )
                                 }
-                                if (active || navBackStackEntry?.destination?.route?.startsWith(
-                                        "search/"
-                                    ) == true
+                                AnimatedVisibility(
+                                    visible = active || navBackStackEntry?.destination?.route?.startsWith("search/") == true,
+                                    enter = fadeIn(animationSpec = tween(durationMillis = 300)),
+                                    exit = fadeOut(animationSpec = tween(durationMillis = 200))
                                 ) {
                                     TopSearch(
                                         query = query,
@@ -701,7 +694,6 @@ class MainActivity : ComponentActivity() {
                                                         !navigationItems.fastAny { it.route == navBackStackEntry?.destination?.route } -> {
                                                             navController.backToMain()
                                                         }
-
                                                         else -> {}
                                                     }
                                                 },
@@ -730,7 +722,7 @@ class MainActivity : ComponentActivity() {
                                                                     TextFieldValue(
                                                                         ""
                                                                     )
-                                                                )
+                                                               )
                                                             },
                                                         ) {
                                                             Icon(
@@ -824,8 +816,8 @@ class MainActivity : ComponentActivity() {
                                                         onDismiss = { onActiveChange(false) },
                                                         pureBlack = pureBlack
                                                     )
-                                            }
-                                        }
+                                           }
+                                       }
                                     }
                                 }
                             },
@@ -863,9 +855,6 @@ class MainActivity : ComponentActivity() {
                                         containerColor = if (pureBlack) Color.Black else MaterialTheme.colorScheme.surfaceContainer,
                                         contentColor = if (pureBlack) Color.White else MaterialTheme.colorScheme.onSurfaceVariant
                                     ) {
-                                        var lastTapTime by remember { mutableLongStateOf(0L) }
-                                        var lastTappedIcon by remember { mutableStateOf<Int?>(null) }
-                                        var navigateToExplore by remember { mutableStateOf(false) }
                                         navigationItems.fastForEach { screen ->
                                             val isSelected =
                                                 navBackStackEntry?.destination?.hierarchy?.any { it.route == screen.route } == true
@@ -890,48 +879,20 @@ class MainActivity : ComponentActivity() {
                                                     }
                                                 },
                                                 onClick = {
-                                                    val currentTapTime = System.currentTimeMillis()
-                                                    val timeSinceLastTap =
-                                                        currentTapTime - lastTapTime
-                                                    val isDoubleTap =
-                                                        screen.titleId == R.string.explore &&
-                                                                lastTappedIcon == R.string.explore &&
-                                                                timeSinceLastTap < 300
-
-                                                    lastTapTime = currentTapTime
-                                                    lastTappedIcon = screen.titleId
-
-                                                    if (screen.titleId == R.string.explore) {
-                                                        if (isDoubleTap) {
-                                                            onActiveChange(true)
-                                                            navigateToExplore = false
-                                                        } else {
-                                                            navigateToExplore = true
-                                                            coroutineScope.launch {
-                                                                delay(100)
-                                                                if (navigateToExplore) {
-                                                                        if (isSelected) {
-                                                                            navController.currentBackStackEntry?.savedStateHandle?.set(
-                                                                                "scrollToTop",
-                                                                                true
-                                                                            )
-                                                                        } else {
-                                                                            navigateToScreen(navController, screen)
-                                                                        }
-                                                                    }
-                                                                }
+                                                    if (screen.route == Screens.Search.route) {
+                                                        onActiveChange(true)
+                                                    } else if (isSelected) {
+                                                        navController.currentBackStackEntry?.savedStateHandle?.set("scrollToTop", true)
+                                                        coroutineScope.launch {
+                                                            searchBarScrollBehavior.state.resetHeightOffset()
+                                                        }
+                                                    } else {
+                                                        navController.navigate(screen.route) {
+                                                            popUpTo(navController.graph.startDestinationId) {
+                                                                saveState = true
                                                             }
-                                                        } else {
-                                                        if (isSelected) {
-                                                            navController.currentBackStackEntry?.savedStateHandle?.set(
-                                                                "scrollToTop",
-                                                                true
-                                                            )
-                                                            coroutineScope.launch {
-                                                                searchBarScrollBehavior.state.resetHeightOffset()
-                                                            }
-                                                        } else {
-                                                            navigateToScreen(navController, screen)
+                                                            launchSingleTop = true
+                                                            restoreState = true
                                                         }
                                                     }
                                                 },
@@ -982,8 +943,8 @@ class MainActivity : ComponentActivity() {
                                 navController = navController,
                                 startDestination = when (tabOpenedFromShortcut ?: defaultOpenTab) {
                                     NavigationTab.HOME -> Screens.Home
-                                    NavigationTab.EXPLORE -> Screens.Explore
                                     NavigationTab.LIBRARY -> Screens.Library
+                                    else -> Screens.Home
                                 }.route,
                                 enterTransition = {
                                     if (initialState.destination.route in topLevelScreens && targetState.destination.route in topLevelScreens) {
@@ -1084,19 +1045,6 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun navigateToScreen(
-        navController: NavHostController,
-        screen: Screens
-    ) {
-        navController.navigate(screen.route) {
-            popUpTo(navController.graph.startDestinationId) {
-                saveState = true
-            }
-            launchSingleTop = true
-            restoreState = true
-        }
-    }
-
     private fun handleDeepLinkIntent(intent: Intent, navController: NavHostController) {
         val uri = intent.data ?: intent.extras?.getString(Intent.EXTRA_TEXT)?.toUri() ?: return
         val coroutineScope = lifecycleScope
@@ -1169,7 +1117,6 @@ class MainActivity : ComponentActivity() {
 
     companion object {
         const val ACTION_SEARCH = "com.metrolist.music.action.SEARCH"
-        const val ACTION_EXPLORE = "com.metrolist.music.action.EXPLORE"
         const val ACTION_LIBRARY = "com.metrolist.music.action.LIBRARY"
     }
 }
