@@ -184,7 +184,7 @@ dependencies {
     implementation(libs.apache.lang3)
 
     implementation(libs.hilt)
-    implementation("org.jsoup:jsoup:1.20.1")
+    implementation("org.jsoup:jsoup:1.21.1")
     kapt(libs.hilt.compiler)
 
     implementation(projects.innertube)
