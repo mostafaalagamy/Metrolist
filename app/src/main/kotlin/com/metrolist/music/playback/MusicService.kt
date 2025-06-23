@@ -67,6 +67,7 @@ import com.metrolist.music.constants.EnableDiscordRPCKey
 import com.metrolist.music.constants.HideExplicitKey
 import com.metrolist.music.constants.HistoryDuration
 import com.metrolist.music.constants.MediaSessionConstants.CommandToggleLike
+import com.metrolist.music.constants.MediaSessionConstants.CommandToggleStartRadio
 import com.metrolist.music.constants.MediaSessionConstants.CommandToggleRepeatMode
 import com.metrolist.music.constants.MediaSessionConstants.CommandToggleShuffle
 import com.metrolist.music.constants.PauseListenHistoryKey
@@ -245,6 +246,7 @@ class MusicService :
                 }
         mediaLibrarySessionCallback.apply {
             toggleLike = ::toggleLike
+            toggleStartRadio = ::toggleStartRadio
             toggleLibrary = ::toggleLibrary
         }
         mediaSession =
@@ -409,6 +411,12 @@ class MusicService :
                     )
                     .setIconResId(if (currentSong.value?.song?.liked == true) R.drawable.favorite else R.drawable.favorite_border)
                     .setSessionCommand(CommandToggleLike)
+                    .setEnabled(currentSong.value != null)
+                    .build(),
+                CommandButton.Builder()
+                    .setDisplayName(getString(R.string.start_radio))
+                    .setIconResId(R.drawable.radio)
+                    .setSessionCommand(CommandToggleStartRadio)
                     .setEnabled(currentSong.value != null)
                     .build(),
                 CommandButton
@@ -655,6 +663,10 @@ class MusicService :
              }
          }
      }
+
+    fun toggleStartRadio() {
+        startRadioSeamlessly()
+    }
 
     private fun openAudioEffectSession() {
         if (isAudioEffectSessionOpened) return
