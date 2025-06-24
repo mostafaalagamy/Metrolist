@@ -1,4 +1,4 @@
-@file:Suppress("UnstableApiUsage")
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     id("com.android.application")
@@ -12,7 +12,6 @@ plugins {
 android {
     namespace = "com.metrolist.music"
     compileSdk = 36
-    ndkVersion = "25.1.8937393"
 
     defaultConfig {
         applicationId = "com.metrolist.music"
@@ -20,6 +19,8 @@ android {
         targetSdk = 36
         versionCode = 121
         versionName = "12.0.0"
+
+        multiDexEnabled = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
@@ -104,9 +105,10 @@ android {
 
     kotlin {
         jvmToolchain(21)
+
         compilerOptions {
-            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21)
-            freeCompilerArgs.add("-Xcontext-receivers")
+            freeCompilerArgs.add("-Xannotation-default-target=param-property")
+            jvmTarget.set(JvmTarget.JVM_21)
         }
     }
 
@@ -184,7 +186,7 @@ dependencies {
     implementation(libs.apache.lang3)
 
     implementation(libs.hilt)
-    implementation("org.jsoup:jsoup:1.21.1")
+    implementation(libs.jsoup)
     kapt(libs.hilt.compiler)
 
     implementation(projects.innertube)
@@ -196,6 +198,8 @@ dependencies {
     implementation(libs.ktor.serialization.json)
 
     coreLibraryDesugaring(libs.desugaring)
+
+    implementation(libs.multidex)
 
     implementation(libs.timber)
 }

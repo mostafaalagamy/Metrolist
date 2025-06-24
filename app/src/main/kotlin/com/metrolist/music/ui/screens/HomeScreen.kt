@@ -157,6 +157,7 @@ fun HomeScreen(
     val selectedChip by viewModel.selectedChip.collectAsState()
 
     val isLoading: Boolean by viewModel.isLoading.collectAsState()
+    val isMoodAndGenresLoading = isLoading && explorePage?.moodAndGenres == null
     val isRefreshing by viewModel.isRefreshing.collectAsState()
     val pullRefreshState = rememberPullToRefreshState()
 
@@ -789,7 +790,7 @@ fun HomeScreen(
                 }
             }
 
-            if (isLoading) {
+            if (isMoodAndGenresLoading) {
                 item {
                     ShimmerHost(
                         modifier = Modifier.animateItem()

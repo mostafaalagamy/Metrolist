@@ -12,7 +12,9 @@ room = "2.7.2"
 hilt = "2.56.2"
 ktor = "3.1.3"
 ksp = "2.2.0-RC3-2.0.2"
+jsoup = "1.21.1"
 kuromojiIpadic = "0.9.0"
+multidex = "2.0.1"
 
 [libraries]
 annotation = { module = "androidx.annotation:annotation", version.ref = "annotation" }
@@ -71,6 +73,8 @@ ktor-serialization-json = { group = "io.ktor", name = "ktor-serialization-kotlin
 
 json = { module = "org.json:json", version.ref = "json" }
 
+jsoup = { module = "org.jsoup:jsoup", version.ref = "jsoup" }
+
 brotli = { group = "org.brotli", name = "dec", version = "0.1.2" }
 
 desugaring = { group = "com.android.tools", name = "desugar_jdk_libs", version = "2.1.5" }
@@ -78,6 +82,8 @@ desugaring = { group = "com.android.tools", name = "desugar_jdk_libs", version =
 junit = { group = "junit", name = "junit", version = "4.13.2" }
 
 timber = { group = "com.jakewharton.timber", name = "timber", version = "5.0.1" }
+
+multidex = { group = "androidx.multidex", name = "multidex", version.ref = "multidex" }
 
 newpipe-extractor = { group = "com.github.libre-tube", name = "NewPipeExtractor", version = "bcb7705" }
 kuromoji-ipadic = { group = "com.atilika.kuromoji", name = "kuromoji-ipadic", version.ref = "kuromojiIpadic" }
