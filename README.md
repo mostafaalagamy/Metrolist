@@ -17,8 +17,6 @@
 <img
 src="https://github.com/mostafaalagamy/Metrolist/blob/main/fastlane/metadata/android/en-US/images/featureGraphic.png" width="91%" />
 
-<a href="https://trendshift.io/repositories/13518" target="_blank"><img src="https://trendshift.io/api/badge/repositories/13518" alt="mostafaalagamy%2FMetrolist | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a>
-
 [![Latest release](https://img.shields.io/github/v/release/mostafaalagamy/Metrolist?style=for-the-badge)](https://github.com/mostafaalagamy/Metrolist/releases)
 [![GitHub license](https://img.shields.io/github/license/mostafaalagamy/metrolist?style=for-the-badge)](https://github.com/mostafaalagamy/Metrolist/blob/main/LICENSE)
 [![Downloads](https://img.shields.io/github/downloads/mostafaalagamy/Metrolist/total?style=for-the-badge)](https://github.com/mostafaalagamy/Metrolist/releases)
