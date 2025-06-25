@@ -12,16 +12,6 @@
     </shortcut>
     <shortcut
         android:enabled="true"
-        android:icon="@drawable/shortcut_explore"
-        android:shortcutId="explore"
-        android:shortcutShortLabel="@string/explore">
-        <intent
-            android:action="com.metrolist.music.action.EXPLORE"
-            android:targetClass="com.metrolist.music.MainActivity"
-            android:targetPackage="com.metrolist.music" />
-    </shortcut>
-    <shortcut
-        android:enabled="true"
         android:icon="@drawable/shortcut_library"
         android:shortcutId="library"
         android:shortcutShortLabel="@string/filter_library">
