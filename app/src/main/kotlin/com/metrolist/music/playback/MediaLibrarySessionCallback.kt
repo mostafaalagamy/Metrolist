@@ -4,10 +4,8 @@ import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import androidx.annotation.DrawableRes
 import androidx.core.net.toUri
-import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.exoplayer.offline.Download
@@ -29,7 +27,6 @@ import com.metrolist.music.db.entities.PlaylistEntity
 import com.metrolist.music.db.entities.Song
 import com.metrolist.music.extensions.toMediaItem
 import com.metrolist.music.extensions.toggleRepeatMode
-import com.metrolist.music.utils.reportException
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -37,12 +34,8 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.guava.future
 import kotlinx.coroutines.plus
-import kotlin.collections.distinctBy
-import kotlin.collections.map
-import kotlin.collections.plus
 import javax.inject.Inject
 
 class MediaLibrarySessionCallback
@@ -52,7 +45,6 @@ constructor(
     val database: MusicDatabase,
     val downloadUtil: DownloadUtil,
 ) : MediaLibrarySession.Callback {
-    private val TAG = MediaLibrarySessionCallback::class.simpleName.toString()
     private val scope = CoroutineScope(Dispatchers.Main) + Job()
     var toggleLike: () -> Unit = {}
     var toggleStartRadio: () -> Unit = {}
@@ -88,7 +80,6 @@ constructor(
             MediaSessionConstants.ACTION_TOGGLE_LIBRARY -> toggleLibrary()
             MediaSessionConstants.ACTION_TOGGLE_SHUFFLE -> session.player.shuffleModeEnabled =
                 !session.player.shuffleModeEnabled
-
             MediaSessionConstants.ACTION_TOGGLE_REPEAT_MODE -> session.player.toggleRepeatMode()
         }
         return Futures.immediateFuture(SessionResult(SessionResult.RESULT_SUCCESS))
@@ -108,7 +99,7 @@ constructor(
                         MediaMetadata
                             .Builder()
                             .setIsPlayable(false)
-                            .setIsBrowsable(false)
+                            .setIsBrowsable(true) // Allow browsing from root
                             .setMediaType(MediaMetadata.MEDIA_TYPE_FOLDER_MIXED)
                             .build(),
                     ).build(),
@@ -157,10 +148,18 @@ constructor(
                                 drawableUri(R.drawable.queue_music),
                                 MediaMetadata.MEDIA_TYPE_FOLDER_PLAYLISTS,
                             ),
+                            // Add search node under root
+                            browsableMediaItem(
+                                MusicService.SEARCH,
+                                context.getString(R.string.search),
+                                null,
+                                drawableUri(R.drawable.search),
+                                MediaMetadata.MEDIA_TYPE_FOLDER_MIXED,
+                            ),
                         )
 
                     MusicService.SONG -> database.songsByCreateDateAsc().first()
-                        .map { song: Song -> song.toMediaItem(parentId) }
+                        .map { it.toMediaItem(parentId) }
 
                     MusicService.ARTIST ->
                         database.artistsByCreateDateAsc().first().map { artist ->
@@ -230,23 +229,79 @@ constructor(
                                 }
                     }
 
+                    MusicService.SEARCH ->
+                        listOf(
+                            browsableMediaItem(
+                                MusicService.SEARCH_RESULT,
+                                context.getString(R.string.search_results),
+                                null,
+                                null,
+                                MediaMetadata HX
+Metadata.MEDIA_TYPE_FOLDER_MIXED,
+                            )
+                        )
+
+                    MusicService.SEARCH_RESULT -> {
+                        // Fetch the stored search query
+                        val query = database.getSearchQuery().first() ?: ""
+                        if (query.isBlank()) {
+                            emptyList()
+                        } else {
+                            // Combine search results for songs, artists, albums, and playlists
+                            val songs = database.searchSongs(query).first().take(20).map { song ->
+                                song.toMediaItem(MusicService.SONG)
+                            }
+                            val artists = database.searchArtists(query).first().take(20).map { artist ->
+                                browsableMediaItem(
+                                    "${MusicService.ARTIST}/${artist.id}",
+                                    artist.artist.name,
+                                    context.resources.getQuantityString(
+                                        R.plurals.n_song,
+                                        artist.songCount,
+                                        artist.songCount
+                                    ),
+                                    artist.artist.thumbnailUrl?.toUri(),
+                                    MediaMetadata.MEDIA_TYPE_ARTIST,
+                                )
+                            }
+                            val albums = database.searchAlbums(query).first().take(20).map { album ->
+                                browsableMediaItem(
+                                    "${MusicService.ALBUM}/${album.id}",
+                                    album.album.title,
+                                    album.artists.joinToString { it.name },
+                                    album.album.thumbnailUrl?.toUri(),
+                                    MediaMetadata.MEDIA_TYPE_ALBUM,
+                                )
+                            }
+                            val playlists = database.searchPlaylists(query).first().take(20).map { playlist ->
+                                browsableMediaItem(
+                                    "${MusicService.PLAYLIST}/${playlist.id}",
+                                    playlist.playlist.name,
+                                    context.resources.getQuantityString(
+                                        R.plurals.n_song,
+                                        playlist.songCount,
+                                        playlist.songCount
+                                    ),
+                                    playlist.thumbnails.firstOrNull()?.toUri(),
+                                    MediaMetadata.MEDIA_TYPE_PLAYLIST,
+                                )
+                            }
+                            (songs + artists + albums + playlists)
+                        }
+                    }
+
                     else ->
                         when {
                             parentId.startsWith("${MusicService.ARTIST}/") ->
                                 database.artistSongsByCreateDateAsc(parentId.removePrefix("${MusicService.ARTIST}/"))
-                                    .first().map { song: Song ->
-                                    song.toMediaItem(parentId)
-                                }
+                                    .first().map { it.toMediaItem(parentId) }
 
                             parentId.startsWith("${MusicService.ALBUM}/") ->
                                 database.albumSongs(parentId.removePrefix("${MusicService.ALBUM}/"))
-                                    .first().map { song: Song ->
-                                    song.toMediaItem(parentId)
-                                }
+                                    .first().map { it.toMediaItem(parentId) }
 
                             parentId.startsWith("${MusicService.PLAYLIST}/") ->
-                                when (val playlistId =
-                                    parentId.removePrefix("${MusicService.PLAYLIST}/")) {
+                                when (val playlistId = parentId.removePrefix("${MusicService.PLAYLIST}/")) {
                                     PlaylistEntity.LIKED_PLAYLIST_ID -> database.likedSongs(
                                         SongSortType.CREATE_DATE,
                                         true
@@ -257,25 +312,23 @@ constructor(
                                         database
                                             .allSongs()
                                             .flowOn(Dispatchers.IO)
-                                            .map { songs: List<Song> ->
-                                                songs.filter { song: Song ->
-                                                    downloads[song.id]?.state == Download.STATE_COMPLETED
+                                            .map { songs ->
+                                                songs.filter {
+                                                    downloads[it.id]?.state == Download.STATE_COMPLETED
                                                 }
-                                            }.map { songs: List<Song> ->
+                                            }.map { songs ->
                                                 songs
-                                                    .map { song: Song -> song to downloads[song.id] }
-                                                    .sortedBy { pair -> pair.second?.updateTimeMs ?: 0L }
-                                                    .map { pair -> pair.first }
+                                                    .map { it to downloads[it.id] }
+                                                    .sortedBy { it.second?.updateTimeMs ?: 0L }
+                                                    .map { it.first }
                                             }
                                     }
 
                                     else ->
                                         database.playlistSongs(playlistId).map { list ->
-                                            list.map { playlistSong -> playlistSong.song }
+                                            list.map { it.song }
                                         }
-                                }.first().map { song: Song ->
-                                    song.toMediaItem(parentId)
-                                }
+                                }.first().map { it.toMediaItem(parentId) }
 
                             else -> emptyList()
                         }
@@ -284,14 +337,86 @@ constructor(
             )
         }
 
+    override fun onSearch(
+        session: MediaLibrarySession,
+        browser: MediaSession.ControllerInfo,
+        query: String,
+        params: MediaLibraryService.LibraryParams?,
+    ): ListenableFuture<SessionResult> =
+        scope.future(Dispatchers.IO) {
+            // Store the search query in the database
+            database.setSearchQuery(query)
+            // Notify that the search results are available under SEARCH_RESULT
+            session.notifyChildrenChanged(MusicService.SEARCH_RESULT, 0, null)
+            SessionResult(SessionResult.RESULT_SUCCESS)
+        }
+
+    override fun onGetSearchResult(
+        session: MediaLibrarySession,
+        browser: MediaSession.ControllerInfo,
+        query: String,
+        page: Int,
+        pageSize: Int,
+        params: MediaLibraryService.LibraryParams?,
+    ): ListenableFuture<LibraryResult<ImmutableList<MediaItem>>> =
+        scope.future(Dispatchers.IO) {
+            if (query.isBlank()) {
+                LibraryResult.ofItemList(ImmutableList.of(), params)
+            } else {
+                // Same search logic as in onGetChildren for SEARCH_RESULT
+                val songs = database.search Poems(query).first().take(20).map { song ->
+                    song.toMediaItem(MusicService.SONG)
+                }
+                val artists = database.searchArtists(query).first().take(20).map { artist ->
+                    browsableMediaItem(
+                        "${MusicService.ARTIST}/${artist.id}",
+                        artist.artist.name,
+                        context.resources.getQuantityString(
+                            R.plurals.n_song,
+                            artist.songCount,
+                            artist.songCount
+                        ),
+                        artist.artist.thumbnailUrl?.toUri(),
+                        MediaMetadata.MEDIA_TYPE_ARTIST,
+                    )
+                }
+                val albums = database.searchAlbums(query).first().take(20).map { album ->
+                    browsableMediaItem(
+                        "${MusicService.ALBUM}/${album.id}",
+                        album.album.title,
+                        album.artists.joinToString { it.name },
+                        album.album.thumbnailUrl?.toUri(),
+                        MediaMetadata.MEDIA_TYPE_ALBUM,
+                    )
+                }
+                val playlists = database.searchPlaylists(query).first().take(20).map { playlist ->
+                    browsableMediaItem(
+                        "${MusicService.PLAYLIST}/${playlist.id}",
+                        playlist.playlist.name,
+                        context.resources.getQuantityString(
+                            R.plurals.n_song,
+                            playlist.songCount,
+                            playlist.songCount
+                        ),
+                        playlist.thumbnails.firstOrNull()?.toUri(),
+                        MediaMetadata.MEDIA_TYPE_PLAYLIST,
+                    )
+                }
+                LibraryResult.ofItemList(
+                    ImmutableList.copyOf(songs + artists + albums + playlists),
+                    params
+                )
+            }
+        }
+
     override fun onGetItem(
         session: MediaLibrarySession,
         browser: MediaSession.ControllerInfo,
         mediaId: String,
     ): ListenableFuture<LibraryResult<MediaItem>> =
         scope.future(Dispatchers.IO) {
-            database.song(mediaId).first()?.toMediaItem()?.let { mediaItem: MediaItem ->
-                LibraryResult.ofItem(mediaItem, null)
+            database.song(mediaId).first()?.toMediaItem()?.let {
+                LibraryResult.ofItem(it, null)
             } ?: LibraryResult.ofError(SessionError.ERROR_UNKNOWN)
         }
 
@@ -304,20 +429,18 @@ constructor(
     ): ListenableFuture<MediaSession.MediaItemsWithStartPosition> =
         scope.future {
             // Play from Android Auto
-            Log.d(TAG, "MediaLibrarySessionCallback.onSetMediaItems")
             val defaultResult =
                 MediaSession.MediaItemsWithStartPosition(emptyList(), startIndex, startPositionMs)
             val path =
                 mediaItems.firstOrNull()?.mediaId?.split("/")
                     ?: return@future defaultResult
-            Log.d(TAG, "Path: " + path.joinToString(";"))
-            val queue: Triple<List<MediaItem>, Int, Long> = when (path.firstOrNull()) {
+            when (path.firstOrNull()) {
                 MusicService.SONG -> {
                     val songId = path.getOrNull(1) ?: return@future defaultResult
                     val allSongs = database.songsByCreateDateAsc().first()
-                    Triple(
-                        allSongs.map { song: Song -> song.toMediaItem() },
-                        allSongs.indexOfFirst { song: Song -> song.id == songId }.takeIf { index: Int -> index != -1 } ?: 0,
+                    MediaSession.MediaItemsWithStartPosition(
+                        allSongs.map { it.toMediaItem() },
+                        allSongs.indexOfFirst { it.id == songId }.takeIf { it != -1 } ?: 0,
                         startPositionMs,
                     )
                 }
@@ -326,9 +449,9 @@ constructor(
                     val songId = path.getOrNull(2) ?: return@future defaultResult
                     val artistId = path.getOrNull(1) ?: return@future defaultResult
                     val songs = database.artistSongsByCreateDateAsc(artistId).first()
-                    Triple(
-                        songs.map { song: Song -> song.toMediaItem() },
-                        songs.indexOfFirst { song: Song -> song.id == songId }.takeIf { index: Int -> index != -1 } ?: 0,
+                    MediaSession.MediaItemsWithStartPosition(
+                        songs.map { it.toMediaItem() },
+                        songs.indexOfFirst { it.id == songId }.takeIf { it != -1 } ?: 0,
                         startPositionMs,
                     )
                 }
@@ -338,9 +461,9 @@ constructor(
                     val albumId = path.getOrNull(1) ?: return@future defaultResult
                     val albumWithSongs =
                         database.albumWithSongs(albumId).first() ?: return@future defaultResult
-                    Triple(
-                        albumWithSongs.songs.map { song: Song -> song.toMediaItem() },
-                        albumWithSongs.songs.indexOfFirst { song: Song -> song.id == songId }.takeIf { index: Int -> index != -1 }
+                    MediaSession.MediaItemsWithStartPosition(
+                        albumWithSongs.songs.map { it.toMediaItem() },
+                        albumWithSongs.songs.indexOfFirst { it.id == songId }.takeIf { it != -1 }
                             ?: 0,
                         startPositionMs,
                     )
@@ -361,94 +484,33 @@ constructor(
                                 database
                                     .allSongs()
                                     .flowOn(Dispatchers.IO)
-                                    .map { songs: List<Song> ->
-                                        songs.filter { song: Song ->
-                                            downloads[song.id]?.state == Download.STATE_COMPLETED
+                                    .map { songs ->
+                                        songs.filter {
+                                            downloads[it.id]?.state == Download.STATE_COMPLETED
                                         }
-                                    }.map { songs: List<Song> ->
+                                    }.map { songs ->
                                         songs
-                                            .map { song: Song -> song to downloads[song.id] }
-                                            .sortedBy { pair -> pair.second?.updateTimeMs ?: 0L }
-                                            .map { pair -> pair.first }
+                                            .map { it to downloads[it.id] }
+                                            .sortedBy { it.second?.updateTimeMs ?: 0L }
+                                            .map { it.first }
                                     }
                             }
 
                             else ->
                                 database.playlistSongs(playlistId).map { list ->
-                                    list.map { playlistSong -> playlistSong.song }
+                                    list.map { it.song }
                                 }
                         }.first()
-                    Triple(
-                        songs.map { song: Song -> song.toMediaItem() },
-                        songs.indexOfFirst { song: Song -> song.id == songId }.takeIf { index: Int -> index != -1 } ?: 0,
+                    MediaSession.MediaItemsWithStartPosition(
+                        songs.map { it.toMediaItem() },
+                        songs.indexOfFirst { it.id == songId }.takeIf { it != -1 } ?: 0,
                         startPositionMs,
                     )
                 }
 
-                MusicService.SEARCH -> {
-                    val songId = path.getOrNull(2) ?: return@future defaultResult
-                    val searchQuery = path.getOrNull(1) ?: return@future defaultResult
-
-                    val results = combine(
-                        database.searchSongs(searchQuery),
-                        database.searchArtists(searchQuery),
-                    ) { songs: List<Song>, artistSongs: List<Song> ->
-                        (songs + artistSongs).distinctBy { song: Song -> song.id }
-                    }
-
-                    val items = results.first().map { song: Song -> song.toMediaItem() }
-                    val index = items.indexOfFirst { mediaItem: MediaItem -> mediaItem.mediaId == songId }.takeIf { index: Int -> index != -1 } ?: 0
-                    Triple(items, index, C.TIME_UNSET)
-                }
-
-                else -> Triple(emptyList<MediaItem>(), startIndex, startPositionMs)
-            }
-            MediaSession.MediaItemsWithStartPosition(queue.first, queue.second, queue.third)
-        }
-
-    override fun onSearch(
-        session: MediaLibrarySession,
-        browser: MediaSession.ControllerInfo,
-        query: String,
-        params: MediaLibraryService.LibraryParams?
-    ): ListenableFuture<LibraryResult<Void>> {
-        Log.d(TAG, "MediaLibrarySessionCallback.onSearch: $query")
-        session.notifySearchResultChanged(browser, query, 1, params)
-        return Futures.immediateFuture(LibraryResult.ofVoid())
-    }
-
-    override fun onGetSearchResult(
-        session: MediaLibrarySession,
-        browser: MediaSession.ControllerInfo,
-        query: String,
-        page: Int,
-        pageSize: Int,
-        params: MediaLibraryService.LibraryParams?
-    ): ListenableFuture<LibraryResult<ImmutableList<MediaItem>>> {
-        Log.d(TAG, "MediaLibrarySessionCallback.onGetSearchResult: $query")
-        return scope.future {
-            if (query.isEmpty()) {
-                return@future LibraryResult.ofItemList(emptyList(), params)
-            }
-
-            try {
-                val results = combine(
-                    database.searchSongs(query),
-                    database.searchArtists(query),
-                ) { songs: List<Song>, artistSongs: List<Song> ->
-                    (songs + artistSongs).distinctBy { song: Song -> song.id }
-                }
-
-                val items = results.first()
-                    .map { song: Song -> song.toMediaItem(path = "${MusicService.SEARCH}/$query", isPlayable = true, isBrowsable = true) }
-                LibraryResult.ofItemList(items, params)
-            } catch (e: Exception) {
-                Log.d(TAG, "Could not get search results")
-                reportException(e)
-                LibraryResult.ofItemList(emptyList(), params)
+                else -> defaultResult
             }
         }
-    }
 
     private fun drawableUri(
         @DrawableRes id: Int,
@@ -480,12 +542,14 @@ constructor(
                 .setIsBrowsable(true)
                 .setMediaType(mediaType)
                 .build(),
+
+
         ).build()
 
-    private fun Song.toMediaItem(path: String, isPlayable: Boolean = true, isBrowsable: Boolean = false) =
+    private fun Song.toMediaItem(path: String = MusicService.SONG) =
         MediaItem
             .Builder()
-            .setMediaId("$path/$id")
+            .setMediaId(if (path.isEmpty()) id else "$path/$id")
             .setMediaMetadata(
                 MediaMetadata
                     .Builder()
@@ -493,8 +557,8 @@ constructor(
                     .setSubtitle(artists.joinToString { it.name })
                     .setArtist(artists.joinToString { it.name })
                     .setArtworkUri(song.thumbnailUrl?.toUri())
-                    .setIsPlayable(isPlayable)
-                    .setIsBrowsable(isBrowsable)
+                    .setIsPlayable(true)
+                    .setIsBrowsable(false)
                     .setMediaType(MediaMetadata.MEDIA_TYPE_MUSIC)
                     .build(),
             ).build()
