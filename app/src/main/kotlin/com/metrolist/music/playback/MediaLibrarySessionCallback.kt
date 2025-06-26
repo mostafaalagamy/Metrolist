@@ -444,7 +444,7 @@ constructor(
                 }
 
                 val items = results.first()
-                    .map { it.toMediaItem("${MusicService.SEARCH}/$query") }
+                    .map { it.toMediaItem(path = "${MusicService.SEARCH}/$query", isPlayable = true, isBrowsable = true) }
                 LibraryResult.ofItemList(items, params)
             } catch (e: Exception) {
                 Log.d(TAG, "Could not get search results")
@@ -486,31 +486,20 @@ constructor(
                 .build(),
         ).build()
 
-    private fun Song.toMediaItem(path: String): MediaItem = MediaItem.Builder()
-        .setMediaId("$path/$id")
-        .setMediaMetadata(
-            MediaMetadata.Builder()
-                .setTitle(song.title)
-                .setSubtitle(artists.joinToString { it.name })
-                .setArtist(artists.joinToString { it.name })
-                .setArtworkUri(song.thumbnailUrl?.toUri())
-                .setIsPlayable(true)
-                .setIsBrowsable(false)
-                .setMediaType(MediaMetadata.MEDIA_TYPE_MUSIC)
-                .build()
-        ).build()
-
-    private fun Song.toMediaItem(): MediaItem = MediaItem.Builder()
-        .setMediaId(id)
-        .setMediaMetadata(
-            MediaMetadata.Builder()
-                .setTitle(song.title)
-                .setSubtitle(artists.joinToString { it.name })
-                .setArtist(artists.joinToString { it.name })
-                .setArtworkUri(song.thumbnailUrl?.toUri())
-                .setIsPlayable(true)
-                .setIsBrowsable(false)
-                .setMediaType(MediaMetadata.MEDIA_TYPE_MUSIC)
-                .build()
-        ).build()
+    private fun Song.toMediaItem(path: String, isPlayable: Boolean = true, isBrowsable: Boolean = false) =
+        MediaItem
+            .Builder()
+            .setMediaId("$path/$id")
+            .setMediaMetadata(
+                MediaMetadata
+                    .Builder()
+                    .setTitle(song.title)
+                    .setSubtitle(artists.joinToString { it.name })
+                    .setArtist(artists.joinToString { it.name })
+                    .setArtworkUri(song.thumbnailUrl?.toUri())
+                    .setIsPlayable(isPlayable)
+                    .setIsBrowsable(isBrowsable)
+                    .setMediaType(MediaMetadata.MEDIA_TYPE_MUSIC)
+                    .build(),
+            ).build()
 }
