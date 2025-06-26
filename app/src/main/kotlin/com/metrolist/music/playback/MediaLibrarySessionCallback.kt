@@ -160,7 +160,7 @@ constructor(
                         )
 
                     MusicService.SONG -> database.songsByCreateDateAsc().first()
-                        .map { it.toMediaItem(parentId) }
+                        .map { song: Song -> song.toMediaItem(parentId) }
 
                     MusicService.ARTIST ->
                         database.artistsByCreateDateAsc().first().map { artist ->
@@ -182,9 +182,7 @@ constructor(
                             browsableMediaItem(
                                 "${MusicService.ALBUM}/${album.id}",
                                 album.album.title,
-                                album.artists.joinToString {
-                                    it.name
-                                },
+                                album.artists.joinToString { it.name },
                                 album.album.thumbnailUrl?.toUri(),
                                 MediaMetadata.MEDIA_TYPE_ALBUM,
                             )
@@ -236,14 +234,14 @@ constructor(
                         when {
                             parentId.startsWith("${MusicService.ARTIST}/") ->
                                 database.artistSongsByCreateDateAsc(parentId.removePrefix("${MusicService.ARTIST}/"))
-                                    .first().map {
-                                    it.toMediaItem(parentId)
+                                    .first().map { song: Song ->
+                                    song.toMediaItem(parentId)
                                 }
 
                             parentId.startsWith("${MusicService.ALBUM}/") ->
                                 database.albumSongs(parentId.removePrefix("${MusicService.ALBUM}/"))
-                                    .first().map {
-                                    it.toMediaItem(parentId)
+                                    .first().map { song: Song ->
+                                    song.toMediaItem(parentId)
                                 }
 
                             parentId.startsWith("${MusicService.PLAYLIST}/") ->
@@ -259,24 +257,24 @@ constructor(
                                         database
                                             .allSongs()
                                             .flowOn(Dispatchers.IO)
-                                            .map { songs ->
-                                                songs.filter {
-                                                    downloads[it.id]?.state == Download.STATE_COMPLETED
+                                            .map { songs: List<Song> ->
+                                                songs.filter { song: Song ->
+                                                    downloads[song.id]?.state == Download.STATE_COMPLETED
                                                 }
-                                            }.map { songs ->
+                                            }.map { songs: List<Song> ->
                                                 songs
-                                                    .map { it to downloads[it.id] }
-                                                    .sortedBy { it.second?.updateTimeMs ?: 0L }
-                                                    .map { it.first }
+                                                    .map { song: Song -> song to downloads[song.id] }
+                                                    .sortedBy { pair -> pair.second?.updateTimeMs ?: 0L }
+                                                    .map { pair -> pair.first }
                                             }
                                     }
 
                                     else ->
                                         database.playlistSongs(playlistId).map { list ->
-                                            list.map { it.song }
+                                            list.map { playlistSong -> playlistSong.song }
                                         }
-                                }.first().map {
-                                    it.toMediaItem(parentId)
+                                }.first().map { song: Song ->
+                                    song.toMediaItem(parentId)
                                 }
 
                             else -> emptyList()
@@ -292,8 +290,8 @@ constructor(
         mediaId: String,
     ): ListenableFuture<LibraryResult<MediaItem>> =
         scope.future(Dispatchers.IO) {
-            database.song(mediaId).first()?.toMediaItem()?.let {
-                LibraryResult.ofItem(it, null)
+            database.song(mediaId).first()?.toMediaItem()?.let { mediaItem: MediaItem ->
+                LibraryResult.ofItem(mediaItem, null)
             } ?: LibraryResult.ofError(SessionError.ERROR_UNKNOWN)
         }
 
@@ -318,8 +316,8 @@ constructor(
                     val songId = path.getOrNull(1) ?: return@future defaultResult
                     val allSongs = database.songsByCreateDateAsc().first()
                     Triple(
-                        allSongs.map { it.toMediaItem() },
-                        allSongs.indexOfFirst { it.id == songId }.takeIf { it != -1 } ?: 0,
+                        allSongs.map { song: Song -> song.toMediaItem() },
+                        allSongs.indexOfFirst { song: Song -> song.id == songId }.takeIf { index: Int -> index != -1 } ?: 0,
                         startPositionMs,
                     )
                 }
@@ -329,8 +327,8 @@ constructor(
                     val artistId = path.getOrNull(1) ?: return@future defaultResult
                     val songs = database.artistSongsByCreateDateAsc(artistId).first()
                     Triple(
-                        songs.map { it.toMediaItem() },
-                        songs.indexOfFirst { it.id == songId }.takeIf { it != -1 } ?: 0,
+                        songs.map { song: Song -> song.toMediaItem() },
+                        songs.indexOfFirst { song: Song -> song.id == songId }.takeIf { index: Int -> index != -1 } ?: 0,
                         startPositionMs,
                     )
                 }
@@ -341,8 +339,8 @@ constructor(
                     val albumWithSongs =
                         database.albumWithSongs(albumId).first() ?: return@future defaultResult
                     Triple(
-                        albumWithSongs.songs.map { it.toMediaItem() },
-                        albumWithSongs.songs.indexOfFirst { it.id == songId }.takeIf { it != -1 }
+                        albumWithSongs.songs.map { song: Song -> song.toMediaItem() },
+                        albumWithSongs.songs.indexOfFirst { song: Song -> song.id == songId }.takeIf { index: Int -> index != -1 }
                             ?: 0,
                         startPositionMs,
                     )
@@ -363,26 +361,26 @@ constructor(
                                 database
                                     .allSongs()
                                     .flowOn(Dispatchers.IO)
-                                    .map { songs ->
-                                        songs.filter {
-                                            downloads[it.id]?.state == Download.STATE_COMPLETED
+                                    .map { songs: List<Song> ->
+                                        songs.filter { song: Song ->
+                                            downloads[song.id]?.state == Download.STATE_COMPLETED
                                         }
-                                    }.map { songs ->
+                                    }.map { songs: List<Song> ->
                                         songs
-                                            .map { it to downloads[it.id] }
-                                            .sortedBy { it.second?.updateTimeMs ?: 0L }
-                                            .map { it.first }
+                                            .map { song: Song -> song to downloads[song.id] }
+                                            .sortedBy { pair -> pair.second?.updateTimeMs ?: 0L }
+                                            .map { pair -> pair.first }
                                     }
                             }
 
                             else ->
                                 database.playlistSongs(playlistId).map { list ->
-                                    list.map { it.song }
+                                    list.map { playlistSong -> playlistSong.song }
                                 }
                         }.first()
                     Triple(
-                        songs.map { it.toMediaItem() },
-                        songs.indexOfFirst { it.id == songId }.takeIf { it != -1 } ?: 0,
+                        songs.map { song: Song -> song.toMediaItem() },
+                        songs.indexOfFirst { song: Song -> song.id == songId }.takeIf { index: Int -> index != -1 } ?: 0,
                         startPositionMs,
                     )
                 }
@@ -391,15 +389,15 @@ constructor(
                     val songId = path.getOrNull(2) ?: return@future defaultResult
                     val searchQuery = path.getOrNull(1) ?: return@future defaultResult
 
-                    val results = combine<List<Song>, List<Song>, List<Song>>(
+                    val results = combine(
                         database.searchSongs(searchQuery),
                         database.searchArtists(searchQuery),
-                    ) { songs, artistSongs ->
-                        (songs + artistSongs).distinctBy { it.id }
+                    ) { songs: List<Song>, artistSongs: List<Song> ->
+                        (songs + artistSongs).distinctBy { song: Song -> song.id }
                     }
 
-                    val items = results.first().map { it.toMediaItem() }
-                    val index = items.indexOfFirst { it.mediaId == songId }.takeIf { it != -1 } ?: 0
+                    val items = results.first().map { song: Song -> song.toMediaItem() }
+                    val index = items.indexOfFirst { mediaItem: MediaItem -> mediaItem.mediaId == songId }.takeIf { index: Int -> index != -1 } ?: 0
                     Triple(items, index, C.TIME_UNSET)
                 }
 
@@ -434,15 +432,15 @@ constructor(
             }
 
             try {
-                var results = combine(
+                val results = combine(
                     database.searchSongs(query),
                     database.searchArtists(query),
-                ) { songs, artistSongs ->
-                    (songs + artistSongs).distinctBy { it.id }
+                ) { songs: List<Song>, artistSongs: List<Song> ->
+                    (songs + artistSongs).distinctBy { song: Song -> song.id }
                 }
 
                 val items = results.first()
-                    .map { it.toMediaItem(path = "${MusicService.SEARCH}/$query", isPlayable = true, isBrowsable = true) }
+                    .map { song: Song -> song.toMediaItem(path = "${MusicService.SEARCH}/$query", isPlayable = true, isBrowsable = true) }
                 LibraryResult.ofItemList(items, params)
             } catch (e: Exception) {
                 Log.d(TAG, "Could not get search results")
