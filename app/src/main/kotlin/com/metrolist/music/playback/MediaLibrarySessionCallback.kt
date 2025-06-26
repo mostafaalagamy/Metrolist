@@ -391,7 +391,7 @@ constructor(
                     val songId = path.getOrNull(2) ?: return@future defaultResult
                     val searchQuery = path.getOrNull(1) ?: return@future defaultResult
 
-                    val results = combine<List<Song>, List<Song>, List<Song>>(
+                    val results = combine(
                         database.searchSongs(searchQuery),
                         database.searchArtists(searchQuery),
                     ) { songs, artistSongs ->
