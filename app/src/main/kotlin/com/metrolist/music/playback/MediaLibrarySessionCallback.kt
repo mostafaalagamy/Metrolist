@@ -159,7 +159,7 @@ constructor(
                         )
 
                     MusicService.SONG -> database.songsByCreateDateAsc().first()
-                        .map { song: Song -> song.toMediaItem(path = parentId) }
+                        .map { it.toMediaItem(parentId) }
 
                     MusicService.ARTIST ->
                         database.artistsByCreateDateAsc().first().map { artist ->
@@ -181,7 +181,9 @@ constructor(
                             browsableMediaItem(
                                 "${MusicService.ALBUM}/${album.id}",
                                 album.album.title,
-                                album.artists.joinToString { it.name },
+                                album.artists.joinToString {
+                                    it.name
+                                },
                                 album.album.thumbnailUrl?.toUri(),
                                 MediaMetadata.MEDIA_TYPE_ALBUM,
                             )
@@ -229,48 +231,55 @@ constructor(
                                 }
                     }
 
-                    else -> when {
-                        parentId.startsWith("${MusicService.ARTIST}/") ->
-                            database.artistSongsByCreateDateAsc(parentId.removePrefix("${MusicService.ARTIST}/"))
-                                .first()
-                                .map { song: Song -> song.toMediaItem(path = parentId) }
+                    else ->
+                        when {
+                            parentId.startsWith("${MusicService.ARTIST}/") ->
+                                database.artistSongsByCreateDateAsc(parentId.removePrefix("${MusicService.ARTIST}/"))
+                                    .first().map {
+                                    it.toMediaItem(parentId)
+                                }
 
-                        parentId.startsWith("${MusicService.ALBUM}/") ->
-                            database.albumSongs(parentId.removePrefix("${MusicService.ALBUM}/"))
-                                .first()
-                                .map { song: Song -> song.toMediaItem(path = parentId) }
+                            parentId.startsWith("${MusicService.ALBUM}/") ->
+                                database.albumSongs(parentId.removePrefix("${MusicService.ALBUM}/"))
+                                    .first().map {
+                                    it.toMediaItem(parentId)
+                                }
 
-                        parentId.startsWith("${MusicService.PLAYLIST}/") -> {
-                            val playlistId = parentId.removePrefix("${MusicService.PLAYLIST}/")
-                            val songs = when (playlistId) {
-                                PlaylistEntity.LIKED_PLAYLIST_ID -> database.likedSongs(
-                                    SongSortType.CREATE_DATE,
-                                    true
-                                )
-                                PlaylistEntity.DOWNLOADED_PLAYLIST_ID -> {
-                                    val downloads = downloadUtil.downloads.value
-                                    database.allSongs()
-                                        .flowOn(Dispatchers.IO)
-                                        .map { songs ->
-                                            songs.filter {
-                                                downloads[it.id]?.state == Download.STATE_COMPLETED
+                            parentId.startsWith("${MusicService.PLAYLIST}/") ->
+                                when (val playlistId =
+                                    parentId.removePrefix("${MusicService.PLAYLIST}/")) {
+                                    PlaylistEntity.LIKED_PLAYLIST_ID -> database.likedSongs(
+                                        SongSortType.CREATE_DATE,
+                                        true
+                                    )
+
+                                    PlaylistEntity.DOWNLOADED_PLAYLIST_ID -> {
+                                        val downloads = downloadUtil.downloads.value
+                                        database
+                                            .allSongs()
+                                            .flowOn(Dispatchers.IO)
+                                            .map { songs ->
+                                                songs.filter {
+                                                    downloads[it.id]?.state == Download.STATE_COMPLETED
+                                                }
+                                            }.map { songs ->
+                                                songs
+                                                    .map { it to downloads[it.id] }
+                                                    .sortedBy { it.second?.updateTimeMs ?: 0L }
+                                                    .map { it.first }
                                             }
-                                        }.map { songs ->
-                                            songs
-                                                .map { it to downloads[it.id] }
-                                                .sortedBy { it.second?.updateTimeMs ?: 0L }
-                                                .map { it.first }
-                                        }
-                                }
-                                else -> database.playlistSongs(playlistId).map { list ->
-                                    list.map { it.song }
-                                }
-                            }.first()
-                            songs.map { song -> song.toMediaItem(path = parentId) }
-                        }
+                                    }
 
-                        else -> emptyList()
-                    }
+                                    else ->
+                                        database.playlistSongs(playlistId).map { list ->
+                                            list.map { it.song }
+                                        }
+                                }.first().map {
+                                    it.toMediaItem(parentId)
+                                }
+
+                            else -> emptyList()
+                        }
                 },
                 params,
             )
@@ -282,8 +291,8 @@ constructor(
         mediaId: String,
     ): ListenableFuture<LibraryResult<MediaItem>> =
         scope.future(Dispatchers.IO) {
-            database.song(mediaId).first()?.let { song ->
-                LibraryResult.ofItem(song.toMediaItem(), null)
+            database.song(mediaId).first()?.toMediaItem()?.let {
+                LibraryResult.ofItem(it, null)
             } ?: LibraryResult.ofError(SessionError.ERROR_UNKNOWN)
         }
 
@@ -295,6 +304,7 @@ constructor(
         startPositionMs: Long,
     ): ListenableFuture<MediaSession.MediaItemsWithStartPosition> =
         scope.future {
+            // Play from Android Auto
             Log.d(TAG, "MediaLibrarySessionCallback.onSetMediaItems")
             val defaultResult =
                 MediaSession.MediaItemsWithStartPosition(emptyList(), startIndex, startPositionMs)
@@ -388,10 +398,11 @@ constructor(
                         (songs + artistSongs).distinctBy { it.id }
                     }
 
-                    val songs = results.first()
+                    val items = results.first().map { it.toMediaItem() }
+                    val index = items.indexOfFirst { it.mediaId == songId }
                     MediaSession.MediaItemsWithStartPosition(
-                        songs.map { it.toMediaItem() },
-                        songs.indexOfFirst { it.id == songId }.takeIf { it != -1 } ?: 0,
+                        items,
+                        if (index > 0) index else 0,
                         startPositionMs,
                     )
                 }
@@ -426,7 +437,7 @@ constructor(
             }
 
             try {
-                val results = combine(
+                var results = combine(
                     database.searchSongs(query),
                     database.searchArtists(query),
                 ) { songs, artistSongs ->
@@ -434,7 +445,7 @@ constructor(
                 }
 
                 val items = results.first()
-                    .map { song -> song.toMediaItem(path = "${MusicService.SEARCH}/$query", isPlayable = true, isBrowsable = true) }
+                    .map { it.toMediaItem(path = "${MusicService.SEARCH}/$query", isPlayable = true, isBrowsable = true) }
                 LibraryResult.ofItemList(items, params)
             } catch (e: Exception) {
                 Log.d(TAG, "Could not get search results")
@@ -476,21 +487,20 @@ constructor(
                 .build(),
         ).build()
 
-    private fun Song.toMediaItem(
-        path: String = "",
-        isPlayable: Boolean = true,
-        isBrowsable: Boolean = false
-    ): MediaItem = MediaItem.Builder()
-        .setMediaId(if (path.isNotEmpty()) "$path/$id" else id)
-        .setMediaMetadata(
-            MediaMetadata.Builder()
-                .setTitle(song.title)
-                .setSubtitle(artists.joinToString { it.name })
-                .setArtist(artists.joinToString { it.name })
-                .setArtworkUri(song.thumbnailUrl?.toUri())
-                .setIsPlayable(isPlayable)
-                .setIsBrowsable(isBrowsable)
-                .setMediaType(MediaMetadata.MEDIA_TYPE_MUSIC)
-                .build()
-        ).build()
+    private fun Song.toMediaItem(path: String, isPlayable: Boolean = true, isBrowsable: Boolean = false) =
+        MediaItem
+            .Builder()
+            .setMediaId("$path/$id")
+            .setMediaMetadata(
+                MediaMetadata
+                    .Builder()
+                    .setTitle(song.title)
+                    .setSubtitle(artists.joinToString { it.name })
+                    .setArtist(artists.joinToString { it.name })
+                    .setArtworkUri(song.thumbnailUrl?.toUri())
+                    .setIsPlayable(isPlayable)
+                    .setIsBrowsable(isBrowsable)
+                    .setMediaType(MediaMetadata.MEDIA_TYPE_MUSIC)
+                    .build(),
+            ).build()
 }
