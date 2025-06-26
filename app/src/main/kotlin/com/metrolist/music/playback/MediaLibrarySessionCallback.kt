@@ -486,20 +486,31 @@ constructor(
                 .build(),
         ).build()
 
-    private fun Song.toMediaItem(path: String) =
-        MediaItem
-            .Builder()
-            .setMediaId("$path/$id")
-            .setMediaMetadata(
-                MediaMetadata
-                    .Builder()
-                    .setTitle(song.title)
-                    .setSubtitle(artists.joinToString { it.name })
-                    .setArtist(artists.joinToString { it.name })
-                    .setArtworkUri(song.thumbnailUrl?.toUri())
-                    .setIsPlayable(true)
-                    .setIsBrowsable(false)
-                    .setMediaType(MediaMetadata.MEDIA_TYPE_MUSIC)
-                    .build(),
-            ).build()
+    private fun Song.toMediaItem(path: String): MediaItem = MediaItem.Builder()
+        .setMediaId("$path/$id")
+        .setMediaMetadata(
+            MediaMetadata.Builder()
+                .setTitle(song.title)
+                .setSubtitle(artists.joinToString { it.name })
+                .setArtist(artists.joinToString { it.name })
+                .setArtworkUri(song.thumbnailUrl?.toUri())
+                .setIsPlayable(true)
+                .setIsBrowsable(false)
+                .setMediaType(MediaMetadata.MEDIA_TYPE_MUSIC)
+                .build()
+        ).build()
+
+    private fun Song.toMediaItem(): MediaItem = MediaItem.Builder()
+        .setMediaId(id)
+        .setMediaMetadata(
+            MediaMetadata.Builder()
+                .setTitle(song.title)
+                .setSubtitle(artists.joinToString { it.name })
+                .setArtist(artists.joinToString { it.name })
+                .setArtworkUri(song.thumbnailUrl?.toUri())
+                .setIsPlayable(true)
+                .setIsBrowsable(false)
+                .setMediaType(MediaMetadata.MEDIA_TYPE_MUSIC)
+                .build()
+        ).build()
 }
