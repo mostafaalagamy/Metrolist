@@ -51,6 +51,7 @@ constructor(
     val database: MusicDatabase,
     val downloadUtil: DownloadUtil,
 ) : MediaLibrarySession.Callback {
+    private val TAG = MediaLibrarySessionCallback::class.simpleName.toString()
     private val scope = CoroutineScope(Dispatchers.Main) + Job()
     var toggleLike: () -> Unit = {}
     var toggleStartRadio: () -> Unit = {}
@@ -390,9 +391,9 @@ constructor(
                     val songId = path.getOrNull(2) ?: return@future defaultResult
                     val searchQuery = path.getOrNull(1) ?: return@future defaultResult
 
-                    val results = combine(
+                    val results = combine<List<Song>, List<Song>, List<Song>>(
                         database.searchSongs(searchQuery),
-                        database.searchArtistSongs(searchQuery),
+                        database.searchArtists(searchQuery),
                     ) { songs, artistSongs ->
                         (songs + artistSongs).distinctBy { it.id }
                     }
@@ -437,7 +438,7 @@ constructor(
             try {
                 var results = combine(
                     database.searchSongs(query),
-                    database.searchArtistSongs(query),
+                    database.searchArtists(query),
                 ) { songs, artistSongs ->
                     (songs + artistSongs).distinctBy { it.id }
                 }
