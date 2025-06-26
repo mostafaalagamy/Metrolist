@@ -444,7 +444,7 @@ constructor(
                 }
 
                 val items = results.first()
-                    .map { it.toMediaItem(path = "${MusicService.SEARCH}/$query", isPlayable = true, isBrowsable = true) }
+                    .map { it.toMediaItem("${MusicService.SEARCH}/$query") }
                 LibraryResult.ofItemList(items, params)
             } catch (e: Exception) {
                 Log.d(TAG, "Could not get search results")
