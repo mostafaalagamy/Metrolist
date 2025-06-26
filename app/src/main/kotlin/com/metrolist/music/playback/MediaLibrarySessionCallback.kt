@@ -29,7 +29,6 @@ import com.metrolist.music.db.entities.PlaylistEntity
 import com.metrolist.music.db.entities.Song
 import com.metrolist.music.extensions.toMediaItem
 import com.metrolist.music.extensions.toggleRepeatMode
-import com.metrolist.music.extensions.toggleShuffleMode
 import com.metrolist.music.utils.reportException
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
@@ -391,16 +390,17 @@ constructor(
                 MusicService.SEARCH -> {
                     val songId = path.getOrNull(2) ?: return@future defaultResult
                     val searchQuery = path.getOrNull(1) ?: return@future defaultResult
-                    var results = combine(
+
+                    val results = combine<List<Song>, List<Song>, List<Song>>(
                         database.searchSongs(searchQuery),
-                        database.searchArtistSongs(searchQuery),
+                        database.searchArtists(searchQuery),
                     ) { songs, artistSongs ->
                         (songs + artistSongs).distinctBy { it.id }
                     }
 
                     val items = results.first().map { it.toMediaItem() }
-                    val index = items.indexOfFirst { it.mediaId == songId }
-                    Triple(items, if (index > 0) index else 0, C.TIME_UNSET)
+                    val index = items.indexOfFirst { it.mediaId == songId }.takeIf { it != -1 } ?: 0
+                    Triple(items, index, C.TIME_UNSET)
                 }
 
                 else -> Triple(emptyList<MediaItem>(), startIndex, startPositionMs)
@@ -436,7 +436,7 @@ constructor(
             try {
                 var results = combine(
                     database.searchSongs(query),
-                    database.searchArtistSongs(query),
+                    database.searchArtists(query),
                 ) { songs, artistSongs ->
                     (songs + artistSongs).distinctBy { it.id }
                 }
