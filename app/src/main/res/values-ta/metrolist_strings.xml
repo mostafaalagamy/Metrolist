@@ -1,2 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="explore">ஆராய்</string>
+    <string name="charts">பட்டியல்கள்</string>
+    <string name="back_button_desc">பின்செல்</string>
+    <string name="no_title">தலைப்பு இல்லை</string>
+    <string name="unknown_artist">தெரியாத கலைஞர்</string>
+    <string name="unknown_item_type">தெரியாத பாடல் வகை</string>
+    <string name="loading_charts">பட்டியல்கள் பெறுகிறது...</string>
+    <string name="retry_button">மீண்டும் முயற்சி செய்</string>
+    <string name="album_cover_desc">ஆல்பம் கவர்</string>
+    <string name="top_music_videos">சிறந்த இசை வீடியோக்கள்</string>
+    <string name="trending">டிரெண்டிங்</string>
+    <string name="offline">பதிவிறக்கம் செய்யப்பட்டது</string>
+    <string name="months">மாதங்கள்</string>
+    <string name="weeks">வாரங்கள்</string>
+    <string name="years">ஆண்டுகள்</string>
+    <string name="continuous">தொடர்ச்சி</string>
+    <string name="liked">பிடித்திருந்தது</string>
+</resources>
