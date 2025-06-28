@@ -343,11 +343,12 @@ fun Lyrics(
                 lazyListState.scrollToItem(
                     currentLineIndex,
                     with(density) { 36.dp.toPx().toInt() } + calculateOffset())
-            } else if (lastPreviewTime == 0L || currentLineIndex != previousLineIndex) {
+            } else if ((lastPreviewTime == 0L || currentLineIndex != previousLineIndex) && scrollLyrics) {
                 val visibleItemsInfo = lazyListState.layoutInfo.visibleItemsInfo
                 val isCurrentLineVisible = visibleItemsInfo.any { it.index == currentLineIndex }
+                val isPreviousLineVisible = visibleItemsInfo.any { it.index == previousLineIndex }
 
-                if (scrollLyrics || isCurrentLineVisible) {
+                if (isCurrentLineVisible && isPreviousLineVisible) {
                     val viewportStartOffset = lazyListState.layoutInfo.viewportStartOffset
                     val viewportEndOffset = lazyListState.layoutInfo.viewportEndOffset
                     val currentLineOffset = visibleItemsInfo.find { it.index == currentLineIndex }?.offset ?: 0
