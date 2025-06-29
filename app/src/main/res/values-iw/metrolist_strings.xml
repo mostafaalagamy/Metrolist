@@ -20,4 +20,10 @@
     <string name="liked">אהוב</string>
     <string name="offline">הורד</string>
     <string name="added_to_play_next">נוסף לבאים בתור</string>
+    <string name="explore">מצא עוד</string>
+    <string name="my_top">הנשמעים ביותר שלי</string>
+    <string name="cached_playlist">נשמר</string>
+    <string name="sync_playlist">סנכרן את הפלייליסט</string>
+    <string name="sync_disabled">סינכרון מכובה</string>
+    <string name="elements_selected">%1$d איברים מסומנים</string>
 </resources>

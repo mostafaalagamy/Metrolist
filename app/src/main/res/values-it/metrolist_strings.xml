@@ -19,7 +19,7 @@
     <string name="continuous">Continuo</string>
     <string name="liked">Piaciuti</string>
     <string name="offline">Scaricati</string>
-    <string name="my_top">I miei migliori</string>
+    <string name="my_top">I miei Top</string>
     <string name="cached_playlist">In cache</string>
     <string name="sync_playlist">Sincronizza Playlist</string>
     <string name="sync_disabled">Sincronizzazione disabilitata</string>
@@ -107,7 +107,7 @@
     <string name="past_week">Ultima settimana</string>
     <string name="past_month">Ultimo mese</string>
     <string name="past_year">Ultimo anno</string>
-    <string name="top_length">La lunghezza della mia lista top</string>
+    <string name="top_length">Lunghezza della mia Top list</string>
     <string name="history_duration">Durata della cronologia</string>
     <string name="information">Informazioni</string>
     <string name="description">Descrizione</string>

@@ -17,7 +17,7 @@
     <string name="like_all">Вподобати все</string>
     <string name="dislike_all">Позначити все як не вподобане</string>
     <string name="sort_by_last_updated">Нещодавно оновлені</string>
-    <string name="lyrics">Текст пісні</string>
+    <string name="lyrics">Текст</string>
     <string name="already_in_playlist">Вже в списку відтворення:</string>
     <plurals name="n_element">
         <item quantity="one">%d елемент</item>
