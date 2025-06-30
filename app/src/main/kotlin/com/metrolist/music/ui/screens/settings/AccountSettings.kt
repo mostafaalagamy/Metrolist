@@ -139,7 +139,7 @@ fun AccountSettings(
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(16.dp))
                 .background(MaterialTheme.colorScheme.surface)
-                .padding(12.dp)
+                .padding(horizontal = 18.dp, vertical = 12.dp)
         ) {
             if (isLoggedIn && accountImageUrl != null) {
                 AsyncImage(
@@ -149,7 +149,11 @@ fun AccountSettings(
                     modifier = Modifier.size(40.dp).clip(CircleShape)
                 )
             } else {
-                Icon(painterResource(R.drawable.login), contentDescription = null)
+                Icon(
+                    painter = painterResource(R.drawable.login),
+                    contentDescription = null,
+                    modifier = Modifier.size(24.dp)
+                )
             }
 
             Spacer(Modifier.width(12.dp))
@@ -158,7 +162,8 @@ fun AccountSettings(
                 Text(
                     text = if (isLoggedIn) accountName else stringResource(R.string.login),
                     color = MaterialTheme.colorScheme.primary,
-                    style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
+                    style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
+                    modifier = Modifier.padding(start = 5.dp)
                 )
             }
 
