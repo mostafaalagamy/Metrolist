@@ -181,4 +181,20 @@
     <string name="action_shuffle_off">सफल बंद</string>
     <string name="repeat_mode_off">दोहराएं मोड बंद</string>
     <string name="repeat_mode_all">कतार को दोहराएं</string>
+    <string name="player_text_alignment">प्लेयर टेक्स्ट की स्थिति</string>
+    <string name="music_player">संगीत प्लेयर</string>
+    <string name="appearance">प्रदर्शन</string>
+    <string name="dark_theme">डार्क थीम</string>
+    <string name="dark_theme_follow_system">सिस्टम के अनुसार</string>
+    <string name="pure_black">शुद्ध काला</string>
+    <string name="customize_navigation_tabs">नेविगेशन टैब्स सेट करें</string>
+    <string name="repeat_mode_one">वर्तमान गीत दोहराएं</string>
+    <string name="enable_dynamic_theme">डायनामिक थीम सक्षम करें</string>
+    <string name="player">संगीत प्लेयर</string>
+    <string name="lyrics_text_position">गीतिकाव्य पाठ की स्थिति</string>
+    <string name="sided">दो पक्षीय</string>
+    <string name="left">बाएं</string>
+    <string name="center">मध्य</string>
+    <string name="right">दायाँ</string>
+    <string name="player_slider_style">प्लेयर स्लाइडर का प्रकार</string>
 </resources>

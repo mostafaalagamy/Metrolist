@@ -288,4 +288,5 @@
     <string name="auto_skip_next_on_error_desc">끊김 없는 재생 경험 보장</string>
     <string name="disable_screenshot_desc">이 설정을 켜면, 스크린샷이 비활성화되고 최근 앱에서 보이는 앱 화면이 숨겨집니다.</string>
     <string name="enable_discord_rpc">활동 상태 공유</string>
+    <string name="action_login">로그인</string>
 </resources>

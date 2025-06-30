@@ -199,7 +199,7 @@
     <string name="center">Centro</string>
     <string name="right">Direita</string>
     <string name="content">Conteúdo</string>
-    <string name="login">Login</string>
+    <string name="login">Conectar-se</string>
     <string name="content_language">Idioma padrão do conteúdo</string>
     <string name="content_country">País padrão do conteúdo</string>
     <string name="system_default">Padrão do sistema</string>
@@ -261,10 +261,10 @@
     <string name="dismiss">Ignorar</string>
     <string name="options">Opções</string>
     <string name="preview">Prévia</string>
-    <string name="login_failed">O login falhou</string>
-    <string name="action_logout">Sair</string>
+    <string name="login_failed">Ocorreu algum problema ao conectar-se</string>
+    <string name="action_logout">Desconectar-se</string>
     <string name="enable_discord_rpc">Ativar o Rich Presence</string>
-    <string name="not_logged_in">Não está conectado a uma conta</string>
+    <string name="not_logged_in">Não está conectado à uma conta</string>
     <string name="discord_information">O Metrolist usa a biblioteca KizzyRPC para definir o estado da sua conta do Discord. Isto envolve o uso da conexão do Discord Gateway, que pode ser considerado uma violação dos termos de serviço do Discord. Porém, não houve nenhum relato de usuários sendo banidos por esta razão. Use por sua própria conta e risco.\n\nO Metrolist extrairá somente o seu token, e todo o resto é armazenado localmente.</string>
     <string name="sided">Ao lado</string>
     <string name="hide_explicit">Ocultar conteúdo explícito</string>
@@ -304,7 +304,7 @@
     <string name="library_playlist_empty">Suas listas aparecerão aqui</string>
     <string name="theme">Tema</string>
     <string name="remove_all_from_library">Remover tudo da biblioteca</string>
-    <string name="use_login_for_browse">Usar o login para a navegação de conteúdo</string>
+    <string name="use_login_for_browse">Usar a conta para a navegação de conteúdo</string>
     <string name="use_login_for_browse_desc">Isto pode influenciar em que conteúdo você vê, e se você tiver Premium por exemplo, verá álbuns que só estão disponíveis com Premium</string>
-    <string name="action_login">Entrar</string>
+    <string name="action_login">Conectar-se</string>
 </resources>
