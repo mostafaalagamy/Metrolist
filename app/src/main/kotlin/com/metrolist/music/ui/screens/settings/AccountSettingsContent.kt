@@ -60,7 +60,7 @@ fun AccountSettingsContent(
 
     Column(
         modifier = Modifier
-            .background(MaterialTheme.colorScheme.background)
+            .background(MaterialTheme.colorScheme.surfaceContainer)
             .padding(16.dp)
             .verticalScroll(rememberScrollState())
     ) {
@@ -90,7 +90,7 @@ fun AccountSettingsContent(
             modifier = accountSectionModifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(16.dp))
-                .background(MaterialTheme.colorScheme.surfaceVariant)
+                .background(MaterialTheme.colorScheme.surface)
                 .padding(12.dp)
         ) {
             if (isLoggedIn && accountImageUrl != null) {
@@ -111,22 +111,25 @@ fun AccountSettingsContent(
                     text = if (isLoggedIn) accountName else stringResource(R.string.login),
                     color = MaterialTheme.colorScheme.primary
                 )
-                if (isLoggedIn) {
-                    Text(accountEmail.ifEmpty { accountChannelHandle }, style = MaterialTheme.typography.bodySmall)
-                }
             }
 
             if (isLoggedIn) {
-                OutlinedButton(onClick = {
-                    onInnerTubeCookieChange("")
-                    forgetAccount(context)
-                }) {
+                OutlinedButton(
+                    onClick = {
+                        onInnerTubeCookieChange("")
+                        forgetAccount(context)
+                    },
+                    colors = ButtonDefaults.outlinedButtonColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                        contentColor = MaterialTheme.colorScheme.onSurface
+                    )
+                ) {
                     Text(stringResource(R.string.action_logout))
                 }
             }
         }
 
-        Spacer(Modifier.height(8.dp))
+        Spacer(Modifier.height(4.dp))
 
         if (showTokenEditor) {
             val text = """
@@ -183,13 +186,15 @@ fun AccountSettingsContent(
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(16.dp))
-                .background(MaterialTheme.colorScheme.surfaceVariant)
+                .background(MaterialTheme.colorScheme.surface)
         )
+
+        Spacer(Modifier.height(4.dp))
 
         if (isLoggedIn) {
             SwitchPreference(
                 title = { Text(stringResource(R.string.use_login_for_browse)) },
-                description = stringResource(R.string.use_login_for_browse_desc),
+                description = null,
                 icon = { Icon(painterResource(R.drawable.person), null) },
                 checked = useLoginForBrowse,
                 onCheckedChange = {
@@ -199,8 +204,10 @@ fun AccountSettingsContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(16.dp))
-                    .background(MaterialTheme.colorScheme.surfaceVariant)
+                    .background(MaterialTheme.colorScheme.surface)
             )
+
+            Spacer(Modifier.height(4.dp))
 
             SwitchPreference(
                 title = { Text(stringResource(R.string.ytm_sync)) },
@@ -210,7 +217,7 @@ fun AccountSettingsContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(16.dp))
-                    .background(MaterialTheme.colorScheme.surfaceVariant)
+                    .background(MaterialTheme.colorScheme.surface)
             )
         }
 
@@ -219,7 +226,7 @@ fun AccountSettingsContent(
         Column(
             modifier = Modifier
                 .clip(RoundedCornerShape(16.dp))
-                .background(MaterialTheme.colorScheme.surfaceVariant)
+                .background(MaterialTheme.colorScheme.surfaceContainer)
                 .padding(8.dp)
         ) {
             PreferenceEntry(
@@ -231,7 +238,7 @@ fun AccountSettingsContent(
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.background)
+                    .background(MaterialTheme.colorScheme.surfaceContainer)
             )
 
             Spacer(modifier = Modifier.height(4.dp))
@@ -245,7 +252,7 @@ fun AccountSettingsContent(
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.background)
+                    .background(MaterialTheme.colorScheme.surfaceContainer)
             )
         }
     }
