@@ -35,6 +35,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.res.painterResource
@@ -45,7 +46,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.navigation.NavController
 import com.metrolist.music.R
+import com.metrolist.music.ui.screens.settings.AccountSettings
 import kotlinx.coroutines.delay
 
 @Composable
@@ -117,6 +120,30 @@ fun DefaultDialog(
                     }
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun AccountSettingsDialog(
+    navController: NavController,
+    onDismiss: () -> Unit,
+    latestVersionName: String
+) {
+    Dialog(onDismissRequest = onDismiss) {
+        Surface(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 32.dp)
+                .clip(RoundedCornerShape(28.dp)),
+            color = MaterialTheme.colorScheme.surface,
+            tonalElevation = 8.dp
+        ) {
+            AccountSettings(
+                navController = navController,
+                onClose = onDismiss,
+                latestVersionName = latestVersionName
+            )
         }
     }
 }
