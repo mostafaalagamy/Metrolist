@@ -105,4 +105,29 @@
     <string name="codecs">Codecs</string>
     <string name="bitrate">Tasa de bits</string>
     <string name="sample_rate">Frecuencia de muestreo</string>
+    <string name="song_artists">Artista/s de la canción</string>
+    <string name="playlist_name">Nombre para la lista de reproducción</string>
+    <string name="error_song_title_empty">El título de la canción no puede estar vacío.</string>
+    <string name="create_playlist">Crear lista de reproducción</string>
+    <string name="error_playlist_name_empty">Debes poner un nombre a la lista de reproducción.</string>
+    <string name="error_song_artist_empty">No puede estar vacío el artista de la canción.</string>
+    <string name="song_title">Título de la canción</string>
+    <string name="save">Guardar</string>
+    <string name="choose_playlist">Escoger lista de reproducción</string>
+    <string name="edit_playlist">Editar lista de reproducción</string>
+    <string name="search_lyrics">Buscar letra</string>
+    <string name="edit_song">Editar canción</string>
+    <string name="edit_artist">Editar artista</string>
+    <string name="artist_name">Nombre del artista</string>
+    <string name="error_artist_name_empty">Debe haber un nombre para el artista.</string>
+    <string name="duplicates">Duplicados</string>
+    <string name="skip_duplicates">Saltar duplicados</string>
+    <string name="add_anyway">Agregar de todos modos</string>
+    <string name="duplicates_description_single">Esta canción ya está en tu lista de reproducción</string>
+    <string name="duplicates_description_multiple">%d canciones ya están en tu lista de reproducción</string>
+    <plurals name="n_song">
+        <item quantity="one">%d canción</item>
+        <item quantity="many">%d canciones</item>
+        <item quantity="other">%d canciones</item>
+    </plurals>
 </resources>
