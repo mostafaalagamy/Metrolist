@@ -249,7 +249,7 @@ fun AccountSettings(
             SwitchPreference(
                 title = { Text(stringResource(R.string.more_content)) },
                 description = null,
-                icon = { Icon(painterResource(R.drawable.add), null) },
+                icon = { Icon(painterResource(R.drawable.add_circle), null) },
                 checked = useLoginForBrowse,
                 onCheckedChange = {
                     YouTube.useLoginForBrowse = it
