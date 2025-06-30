@@ -138,6 +138,7 @@ import com.metrolist.music.playback.MusicService
 import com.metrolist.music.playback.MusicService.MusicBinder
 import com.metrolist.music.playback.PlayerConnection
 import com.metrolist.music.playback.queues.YouTubeQueue
+import com.metrolist.music.ui.component.AccountSettingsDialog
 import com.metrolist.music.ui.component.BottomSheetMenu
 import com.metrolist.music.ui.component.BottomSheetPage
 import com.metrolist.music.ui.component.IconButton
@@ -601,7 +602,6 @@ class MainActivity : ComponentActivity() {
                     }
 
                     var showAccountDialog by remember { mutableStateOf(false) }
-                    val accountImageUrl by hiltViewModel<HomeViewModel>().accountImageUrl.collectAsState()
 
                     CompositionLocalProvider(
                         LocalDatabase provides database,
