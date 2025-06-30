@@ -121,6 +121,28 @@ fun DefaultDialog(
     }
 }
 
+@Composable
+fun AccountSettingsDialog(
+    navController: NavController,
+    onDismiss: () -> Unit
+) {
+    Dialog(onDismissRequest = onDismiss) {
+        Surface(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 32.dp)
+                .clip(RoundedCornerShape(28.dp)),
+            color = MaterialTheme.colorScheme.surface,
+            tonalElevation = 8.dp
+        ) {
+            AccountSettingsContent(
+                navController = navController,
+                onClose = onDismiss
+            )
+        }
+    }
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ActionPromptDialog(
