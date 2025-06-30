@@ -645,15 +645,15 @@ class MainActivity : ComponentActivity() {
                                                     if (accountImageUrl != null) {
                                                         AsyncImage(
                                                             model = accountImageUrl,
-                                                            contentDescription = stringResource(R.string.settings),
+                                                            contentDescription = stringResource(R.string.account),
                                                             modifier = Modifier
                                                                 .size(24.dp)
                                                                 .clip(CircleShape)
                                                         )
                                                     } else {
                                                         Icon(
-                                                            painter = painterResource(R.drawable.settings),
-                                                            contentDescription = stringResource(R.string.settings),
+                                                            painter = painterResource(R.drawable.account),
+                                                            contentDescription = stringResource(R.string.account),
                                                             modifier = Modifier.size(24.dp)
                                                         )
                                                     }
