@@ -16,6 +16,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -59,73 +60,82 @@ fun AccountSettingsContent(
 
     Column(
         modifier = Modifier
+            .background(MaterialTheme.colorScheme.background)
             .padding(16.dp)
             .verticalScroll(rememberScrollState())
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Text("Metrolist", style = MaterialTheme.typography.titleMedium)
+            Text(
+                text = "Metrolist",
+                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
+            )
             IconButton(onClick = onClose) {
                 Icon(painterResource(R.drawable.close), contentDescription = "Close")
             }
         }
 
-        Spacer(Modifier.height(8.dp))
+        Spacer(Modifier.height(12.dp))
 
-        PreferenceEntry(
-            title = {
+        val accountSectionModifier = if (isLoggedIn) Modifier.clickable {
+            onClose()
+            navController.navigate("account")
+        } else Modifier
+
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = accountSectionModifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(16.dp))
+                .background(MaterialTheme.colorScheme.surfaceVariant)
+                .padding(12.dp)
+        ) {
+            if (isLoggedIn && accountImageUrl != null) {
+                AsyncImage(
+                    model = accountImageUrl,
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.size(40.dp).clip(CircleShape)
+                )
+            } else {
+                Icon(painterResource(R.drawable.login), contentDescription = null)
+            }
+
+            Spacer(Modifier.width(12.dp))
+
+            Column(Modifier.weight(1f)) {
+                Text(
+                    text = if (isLoggedIn) accountName else stringResource(R.string.login),
+                    color = MaterialTheme.colorScheme.primary
+                )
                 if (isLoggedIn) {
-                    Text(
-                        text = accountName,
-                        color = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.clickable {
-                            navController.navigate("account")
-                        }
-                    )
-                } else {
-                    Text(stringResource(R.string.login))
+                    Text(accountEmail.ifEmpty { accountChannelHandle }, style = MaterialTheme.typography.bodySmall)
                 }
-            },
-            description = if (isLoggedIn) {
-                accountEmail.ifEmpty { accountChannelHandle }
-            } else null,
-            icon = {
-                if (isLoggedIn && accountImageUrl != null) {
-                    AsyncImage(
-                        model = accountImageUrl,
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier.size(36.dp).clip(CircleShape)
-                    )
-                } else {
-                    Icon(painterResource(R.drawable.login), contentDescription = null)
+            }
+
+            if (isLoggedIn) {
+                OutlinedButton(onClick = {
+                    onInnerTubeCookieChange("")
+                    forgetAccount(context)
+                }) {
+                    Text(stringResource(R.string.action_logout))
                 }
-            },
-            trailingContent = {
-                if (isLoggedIn) {
-                    OutlinedButton(onClick = {
-                        onInnerTubeCookieChange("")
-                        forgetAccount(context)
-                    }) {
-                        Text(stringResource(R.string.action_logout))
-                    }
-                }
-            },
-            onClick = { if (!isLoggedIn) navController.navigate("login") }
-        )
+            }
+        }
 
         Spacer(Modifier.height(8.dp))
 
         if (showTokenEditor) {
             val text = """
-                ***INNERTUBE COOKIE*** =${innerTubeCookie}
-                ***VISITOR DATA*** =${visitorData}
-                ***DATASYNC ID*** =${dataSyncId}
-                ***ACCOUNT NAME*** =${accountNamePref}
-                ***ACCOUNT EMAIL*** =${accountEmail}
-                ***ACCOUNT CHANNEL HANDLE*** =${accountChannelHandle}
+                ***INNERTUBE COOKIE*** =$innerTubeCookie
+                ***VISITOR DATA*** =$visitorData
+                ***DATASYNC ID*** =$dataSyncId
+                ***ACCOUNT NAME*** =$accountNamePref
+                ***ACCOUNT EMAIL*** =$accountEmail
+                ***ACCOUNT CHANNEL HANDLE*** =$accountChannelHandle
             """.trimIndent()
 
             TextFieldDialog(
@@ -169,7 +179,11 @@ fun AccountSettingsContent(
                 if (!isLoggedIn) showTokenEditor = true
                 else if (!showToken) showToken = true
                 else showTokenEditor = true
-            }
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(16.dp))
+                .background(MaterialTheme.colorScheme.surfaceVariant)
         )
 
         if (isLoggedIn) {
@@ -181,14 +195,22 @@ fun AccountSettingsContent(
                 onCheckedChange = {
                     YouTube.useLoginForBrowse = it
                     onUseLoginForBrowseChange(it)
-                }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(MaterialTheme.colorScheme.surfaceVariant)
             )
 
             SwitchPreference(
                 title = { Text(stringResource(R.string.ytm_sync)) },
                 icon = { Icon(painterResource(R.drawable.cached), null) },
                 checked = ytmSync,
-                onCheckedChange = onYtmSyncChange
+                onCheckedChange = onYtmSyncChange,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(MaterialTheme.colorScheme.surfaceVariant)
             )
         }
 
@@ -203,7 +225,13 @@ fun AccountSettingsContent(
             PreferenceEntry(
                 title = { Text(stringResource(R.string.discord_integration)) },
                 icon = { Icon(painterResource(R.drawable.discord), null) },
-                onClick = { navController.navigate("settings/discord") }
+                onClick = {
+                    onClose()
+                    navController.navigate("settings/discord")
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.background)
             )
 
             Spacer(modifier = Modifier.height(4.dp))
@@ -211,7 +239,13 @@ fun AccountSettingsContent(
             PreferenceEntry(
                 title = { Text(stringResource(R.string.settings)) },
                 icon = { Icon(painterResource(R.drawable.settings), null) },
-                onClick = { navController.navigate("settings") }
+                onClick = {
+                    onClose()
+                    navController.navigate("settings")
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.background)
             )
         }
     }
