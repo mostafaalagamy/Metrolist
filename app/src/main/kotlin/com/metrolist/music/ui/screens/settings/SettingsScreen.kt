@@ -59,11 +59,6 @@ fun SettingsScreen(
             onClick = { navController.navigate("settings/appearance") }
         )
         PreferenceEntry(
-            title = { Text(stringResource(R.string.account)) },
-            icon = { Icon(painterResource(R.drawable.account), null) },
-            onClick = { navController.navigate("settings/account") }
-        )
-        PreferenceEntry(
             title = { Text(stringResource(R.string.content)) },
             icon = { Icon(painterResource(R.drawable.language), null) },
             onClick = { navController.navigate("settings/content") }
