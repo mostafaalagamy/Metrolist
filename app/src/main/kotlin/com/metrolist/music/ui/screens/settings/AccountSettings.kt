@@ -62,7 +62,7 @@ fun AccountSettings(
                 title = { Text("Settings") },
                 navigationIcon = {
                     IconButton(onClick = navController::navigateUp) {
-                        Icon(painterResource(R.drawable.ic_close), contentDescription = "Close")
+                        Icon(painterResource(R.drawable.close), contentDescription = "Close")
                     }
                 }
             )
