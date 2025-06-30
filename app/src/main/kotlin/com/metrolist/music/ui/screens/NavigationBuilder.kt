@@ -287,9 +287,6 @@ fun NavGraphBuilder.navigationBuilder(
     composable("settings/appearance") {
         AppearanceSettings(navController, scrollBehavior)
     }
-    composable("settings/account") {
-        AccountSettings(navController, scrollBehavior)
-    }
     composable("settings/content") {
         ContentSettings(navController, scrollBehavior)
     }
