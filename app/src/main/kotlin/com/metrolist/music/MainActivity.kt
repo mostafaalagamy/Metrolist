@@ -633,7 +633,7 @@ class MainActivity : ComponentActivity() {
                                                     contentDescription = stringResource(R.string.stats)
                                                 )
                                             }
-                                            IconButton(onClick = { navController.navigate("settings") }) {
+                                            IconButton(onClick = { navController.navigate("settings/account") }) {
                                                 BadgedBox(badge = {
                                                     if (latestVersionName != BuildConfig.VERSION_NAME) {
                                                         Badge()
