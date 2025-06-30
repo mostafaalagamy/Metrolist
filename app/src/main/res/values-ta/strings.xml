@@ -24,12 +24,12 @@
     <string name="share">பங்கு</string>
     <string name="delete">நீக்கு</string>
     <string name="search_online">ஆன்லைனில் தேடுங்கள்</string>
-    <string name="action_sync">ஒத்திசைவு</string>
+    <string name="action_sync">ஒத்திசை</string>
     <string name="sort_by_artist">கலைஞர்</string>
     <string name="sort_by_year">ஆண்டு</string>
     <string name="sort_by_song_count">பாடல் எண்ணிக்கை</string>
     <string name="sort_by_length">நீளம்</string>
-    <string name="sort_by_play_time">நேரம் நேரம்</string>
+    <string name="sort_by_play_time">விளையாடும் நேரம்</string>
     <string name="sample_rate">மாதிரி வீதம்</string>
     <string name="loudness">உரித்தல்</string>
     <string name="volume">தொகுதி</string>
@@ -98,7 +98,7 @@
     <string name="song_cache">பாடல் கேச்</string>
     <string name="max_cache_size">அதிகபட்ச கேச் அளவு</string>
     <string name="disable_screenshot">ச்கிரீன்சாட்டை முடக்கு</string>
-    <string name="action_restore">மீட்டமை</string>
+    <string name="action_restore">மீட்டெடு</string>
     <string name="clear_translation_models">மொழிபெயர்ப்பு மாதிரிகளை அழிக்கவும்</string>
     <string name="albums">ஆல்பம்</string>
     <string name="playlists">பிளேலிச்ட்கள்</string>
@@ -268,10 +268,15 @@
     <string name="options">விருப்பங்கள்</string>
     <string name="preview">முன்னோட்டம்</string>
     <string name="login_failed">உள்நுழைவு தோல்வியடைந்தது</string>
-    <string name="action_logout">வெளியேற்றம்</string>
+    <string name="action_logout">வெளியேறு</string>
     <string name="enable_discord_rpc">பணக்கார இருப்பை இயக்கவும்</string>
     <string name="about">பற்றி</string>
     <string name="app_version">பயன்பாட்டு பதிப்பு</string>
     <string name="new_version_available">புதிய பதிப்பு கிடைக்கிறது</string>
     <string name="translation_models">மொழிபெயர்ப்பு மாதிரிகள்</string>
+    <plurals name="n_selected">
+        <item quantity="one">%d தேர்ந்தெடுக்கப்பட்டது</item>
+        <item quantity="other">%d தேர்ந்தெடுக்கப்பட்டன</item>
+    </plurals>
+    <string name="action_login">புகுபதிகை</string>
 </resources>
