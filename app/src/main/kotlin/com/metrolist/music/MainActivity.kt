@@ -600,6 +600,9 @@ class MainActivity : ComponentActivity() {
                         }
                     }
 
+                    var showAccountDialog by remember { mutableStateOf(false) }
+                    val accountImageUrl by hiltViewModel<HomeViewModel>().accountImageUrl.collectAsState()
+
                     CompositionLocalProvider(
                         LocalDatabase provides database,
                         LocalContentColor provides if (pureBlack) Color.White else contentColorFor(MaterialTheme.colorScheme.surface),
@@ -633,7 +636,7 @@ class MainActivity : ComponentActivity() {
                                                     contentDescription = stringResource(R.string.stats)
                                                 )
                                             }
-                                            IconButton(onClick = { navController.navigate("settings/account") }) {
+                                            IconButton(onClick = { showAccountDialog = true }) {
                                                 BadgedBox(badge = {
                                                     if (latestVersionName != BuildConfig.VERSION_NAME) {
                                                         Badge()
@@ -1014,6 +1017,13 @@ class MainActivity : ComponentActivity() {
                             state = LocalBottomSheetPageState.current,
                             modifier = Modifier.align(Alignment.BottomCenter)
                         )
+
+                        if (showAccountDialog) {
+                            AccountSettingsDialog(
+                                navController = navController,
+                                onDismiss = { showAccountDialog = false }
+                            )
+                        }
 
                         sharedSong?.let { song ->
                             playerConnection?.let {
