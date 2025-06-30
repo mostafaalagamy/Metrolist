@@ -85,9 +85,6 @@ fun NavGraphBuilder.navigationBuilder(
     ) {
         LibraryScreen(navController)
     }
-    composable(Screens.Explore.route) {
-        ExploreScreen(navController)
-    }
     composable("history") {
         HistoryScreen(navController)
     }

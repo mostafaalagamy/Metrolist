@@ -176,8 +176,8 @@
     <!-- Settings -->
     <string name="settings">Einstellungen</string>
     <string name="appearance">Erscheinungsbild</string>
-    <string name="enable_dynamic_theme">Dynamisches Design aktivieren</string>
-    <string name="dark_theme">Dunkles Design</string>
+    <string name="enable_dynamic_theme">Dynamisches Farbschema aktivieren</string>
+    <string name="dark_theme">Dunkles Farbschema</string>
     <string name="dark_theme_on">An</string>
     <string name="dark_theme_off">Aus</string>
     <string name="dark_theme_follow_system">System folgen</string>
@@ -227,7 +227,7 @@
     <string name="clear_search_history_confirm">Sind Sie sicher, dass Sie den gesamten Suchverlauf löschen wollen?</string>
     <string name="enable_kugou">KuGou-Liedtextanbieter aktivieren</string>
     <string name="backup_restore">Sichern und Wiederherstellen</string>
-    <string name="action_backup">Datensicherung</string>
+    <string name="action_backup">Sichern</string>
     <string name="action_restore">Wiederherstellen</string>
     <string name="imported_playlist">Importierte Wiedergabeliste</string>
     <string name="backup_create_success">Sicherung erfolgreich erstellt</string>
@@ -242,7 +242,7 @@
     <string name="action_remove_like_all">Alle aus Favoriten entfernen</string>
     <string name="default_">Standard</string>
     <string name="auto_load_more">Automatisch mehr Lieder laden</string>
-    <string name="action_logout">Abmeldung</string>
+    <string name="action_logout">Abmelden</string>
     <string name="theme">Thema</string>
     <string name="other_versions">Andere Versionen</string>
     <string name="stop_music_on_task_clear">Musik stoppen wenn die App aus dem Hintergrund gelöscht wird</string>
@@ -256,7 +256,7 @@
     <string name="auto_skip_next_on_error">Automatisch zum nächsten Lied springen, wenn ein Fehler auftritt</string>
     <string name="sided">Seite</string>
     <string name="library_artist_empty">Künstler aus der Bibliothek werden hier angezeigt</string>
-    <string name="player">Music Spieler</string>
+    <string name="player">Player</string>
     <string name="preview">Vorschau</string>
     <string name="misc">Sonstiges</string>
     <string name="add_anyway">Trotzdem hinzufügen</string>
@@ -297,4 +297,5 @@
     <string name="filter_bookmarked">Lesezeichen</string>
     <string name="use_login_for_browse">Anmeldung zum Durchsuchen von Inhalten verwenden</string>
     <string name="use_login_for_browse_desc">Dies kann Einfluss darauf haben, welche Inhalte Sie sehen und zeigt zum Beispiel nur Premium-Alben an, wenn Sie mit einem Premium-Konto angemeldet sind</string>
+    <string name="action_login">Anmelden</string>
 </resources>

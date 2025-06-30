@@ -3,7 +3,7 @@
     <string name="explore">Odkrywaj</string>
     <string name="liked">Polubione</string>
     <string name="offline">Pobrane</string>
-    <string name="my_top">Mój Top</string>
+    <string name="my_top">Moja topka</string>
     <string name="select">Zaznacz wszystko</string>
     <string name="like_all">Polub wszystko</string>
     <string name="sort_by_last_updated">Data zaktualizowania</string>
@@ -69,7 +69,7 @@
     <string name="clear_downloads_dialog">Czy na pewno chcesz wyczyścić wszystkie pobrane pliki?</string>
     <string name="top_music_videos">Najlepsze teledyski</string>
     <string name="sync_disabled">Synchronizacja wyłączona</string>
-    <string name="elements_selected">%1$d Wybranych elementów</string>
+    <string name="elements_selected">%1$d elementów wybranych</string>
     <string name="allows_for_sync_witch_youtube">Uwaga: Umożliwia to synchronizację z YouTube Music. Nie można tego zmienić później.</string>
     <string name="generating_image">Generowanie obrazu</string>
     <string name="please_wait">Proszę czekać</string>
@@ -89,10 +89,10 @@
     <string name="general_settings">Ustawienia ogólne</string>
     <string name="link_copied">Link skopiowany do schowka</string>
     <plurals name="n_time">
-        <item quantity="one">%d czas</item>
-        <item quantity="few">%d czasów</item>
-        <item quantity="many">%d czasów</item>
-        <item quantity="other">%d czasów</item>
+        <item quantity="one">%d raz</item>
+        <item quantity="few">%d razy</item>
+        <item quantity="many">%d razy</item>
+        <item quantity="other">%d razy</item>
     </plurals>
     <string name="seek_backward">5 sekund do tyłu</string>
     <string name="seek_forward">5 sekund do przodu</string>
@@ -104,8 +104,8 @@
     <string name="slim">Wąski / Smukły</string>
     <string name="slim_navbar">Ukryj etykiety dolnego paska nawigacji</string>
     <string name="auto_playlists">Automatyczna lista odtwarzania</string>
-    <string name="show_liked_playlist">Pokaż playlistę \"polubione\"</string>
-    <string name="show_top_playlist">Pokaż playlistę \"top\"</string>
+    <string name="show_liked_playlist">Pokaż playlistę \"Polubione\"</string>
+    <string name="show_top_playlist">Pokaż playlistę \"Top\"</string>
     <string name="advanced_login">Zaawansowane logowanie (token)</string>
     <string name="token_hidden">Stuknij, aby wyświetlić token</string>
     <string name="token_shown">Naciśnij ponownie, aby skopiować lub edytować</string>
@@ -139,4 +139,8 @@
         <item quantity="many">%d sekund</item>
         <item quantity="other">%d sekund</item>
     </plurals>
+    <string name="lyrics_auto_scroll">Automatyczne przwijanie tekstu</string>
+    <string name="import_online">Dodaj listę odtworzeń \"m3u\"</string>
+    <string name="import_csv">Dodaj listę odtworzeń \"csv\"</string>
+    <string name="playlist_add_local_to_synced_note">Notatka: Dodawanie lokalnej muzyki do synchronizowanej/zewnętrznej listy odtworzeń nie jest wspierane. Wszelkie inne kombinacje są poprawne</string>
 </resources>
