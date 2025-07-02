@@ -64,7 +64,7 @@ data class HomePage(
                         SongItem(
                             id = renderer.navigationEndpoint.watchEndpoint?.videoId ?: return null,
                             title = renderer.title.runs?.firstOrNull()?.text ?: return null,
-                            artists = listOfNotNull(renderer.subtitle?.runs?.firstOrNull()?.let {
+                            artists = listOfNotNull(renderer.subtitle?.runs?.oddElements()?.drop(1)?.firstOrNull()?.let {
                                 Artist(
                                     name = it.text,
                                     id = it.navigationEndpoint?.browseEndpoint?.browseId
