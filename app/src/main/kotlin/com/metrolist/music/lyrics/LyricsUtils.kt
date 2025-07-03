@@ -169,7 +169,35 @@ object LyricsUtils {
         return text.any { char ->
             (char in '\u3040'..'\u309F') || // Hiragana
             (char in '\u30A0'..'\u30FF') || // Katakana
-            (char in '\u4E00'..'\u9FAF')    // Common Kanji (CJK Unified Ideographs)
+            // CJK Unified Ideographs (covers most common Kanji)
+            // Note: This range also includes many Chinese Hanzi.
+            // Differentiating Japanese Kanji from Chinese Hanzi solely based on Unicode
+            // ranges is challenging as they share many characters.
+            // For more accurate Japanese detection, one might need to analyze
+            // the presence of Hiragana/Katakana alongside Kanji.
+            (char in '\u4E00'..'\u9FFF')
         }
+    }
+
+    /**
+     * Checks if the given text contains any Chinese characters (common Hanzi).
+     * This function is generally efficient due to '.any' and early exit.
+     * To improve accuracy in distinguishing between Chinese and Japanese (which shares Kanji),
+     * this function now checks if the text *predominantly* consists of CJK Unified Ideographs
+     * and *lacks* significant amounts of Hiragana or Katakana.
+     *
+     * A simple threshold is used here. More sophisticated methods (e.g., frequency analysis,
+     * dictionaries, or machine learning models) would be needed for higher accuracy.
+     */
+    fun isChinese(text: String): Boolean {
+        if (text.isEmpty()) return false
+
+        val cjkCharCount = text.count { char -> char in '\u4E00'..'\u9FFF' }
+        val hiraganaKatakanaCount = text.count { char -> (char in '\u3040'..'\u309F') || (char in '\u30A0'..'\u30FF') }
+
+        // Heuristic: If CJK characters are present and there are very few or no Hiragana/Katakana,
+        // it's more likely to be Chinese.
+        // The threshold (e.g., 0.1) can be adjusted based on desired sensitivity.
+        return cjkCharCount > 0 && (hiraganaKatakanaCount.toDouble() / text.length.toDouble()) < 0.1
     }
 }
