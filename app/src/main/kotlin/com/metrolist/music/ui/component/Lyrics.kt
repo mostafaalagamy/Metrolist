@@ -100,6 +100,7 @@ import com.metrolist.music.constants.PlayerBackgroundStyle
 import com.metrolist.music.constants.PlayerBackgroundStyleKey
 import com.metrolist.music.db.entities.LyricsEntity.Companion.LYRICS_NOT_FOUND
 import com.metrolist.music.lyrics.LyricsEntry
+import com.metrolist.music.lyrics.LyricsUtils.isChinese
 import com.metrolist.music.lyrics.LyricsUtils.findCurrentLineIndex
 import com.metrolist.music.lyrics.LyricsUtils.isJapanese
 import com.metrolist.music.lyrics.LyricsUtils.parseLyrics
@@ -167,7 +168,7 @@ fun Lyrics(
             parsedLines.map { entry ->
                 val newEntry = LyricsEntry(entry.time, entry.text)
                 if (romanizeJapaneseLyrics) {
-                    if (isJapanese(entry.text)) {
+                    if (isJapanese(entry.text) && !isChinese(entry.text)) {
                         scope.launch {
                             newEntry.romanizedTextFlow.value = romanizeJapanese(entry.text)
                         }
@@ -181,7 +182,7 @@ fun Lyrics(
             lyrics.lines().mapIndexed { index, line ->
                 val newEntry = LyricsEntry(index * 100L, line)
                 if (romanizeJapaneseLyrics) {
-                    if (isJapanese(line)) {
+                    if (isJapanese(line) && !isChinese(line)) {
                         scope.launch {
                             newEntry.romanizedTextFlow.value = romanizeJapanese(line)
                         }
