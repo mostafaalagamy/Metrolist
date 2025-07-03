@@ -52,19 +52,21 @@ object LyricsUtils {
         "ー" to ""
     )
 
-    private val KANA_ROMAJA_MAP: Map<String, Map<String, String>> = mapOf(
+    private val HANGUL_ROMAJI_MAP: Map<String, Map<String, String>> = mapOf(
         "cho" to mapOf(
-            "ᄀ" to "g", "ᄁ" to "kk", "ᄂ" to "n", "ᄃ" to "d", "ᄄ" to "tt",
-            "ᄅ" to "r", "ᄆ" to "m", "ᄇ" to "b", "ᄈ" to "pp", "ᄉ" to "s",
-            "ᄊ" to "ss", "ᄋ" to "", "ᄌ" to "j", "ᄍ" to "jj", "ᄎ" to "ch",
-            "ᄏ" to "k", "ᄐ" to "t", "ᄑ" to "p", "ᄒ" to "h"
+            "ᄀ" to "g",  "ᄁ" to "kk", "ᄂ" to "n",  "ᄃ" to "d", 
+            "ᄄ" to "tt", "ᄅ" to "r",  "ᄆ" to "m",  "ᄇ" to "b",
+            "ᄈ" to "pp", "ᄉ" to "s",  "ᄊ" to "ss", "ᄋ" to "",
+            "ᄌ" to "j",  "ᄍ" to "jj", "ᄎ" to "ch", "ᄏ" to "k",
+            "ᄐ" to "t", "ᄑ" to "p", "ᄒ" to "h"
         ),
         "jung" to mapOf(
-            "ᅡ" to "a", "ᅢ" to "ae", "ᅣ" to "ya", "ᅤ" to "yae", "ᅥ" to "eo",
-            "ᅦ" to "e", "ᅧ" to "yeo", "ᅨ" to "ye", "ᅩ" to "o", 
-            "ᅪ" to "wa", "ᅫ" to "wae", "ᅬ" to "oe", "ᅭ" to "yo", "ᅮ" to "u", 
-            "ᅯ" to "wo", "ᅰ" to "we", "ᅱ" to "wi", "ᅲ" to "yu", "ᅳ" to "eu",
-            "ᅴ" to "eui", "ᅵ" to "i"
+            "ᅡ" to "a",  "ᅢ" to "ae", "ᅣ" to "ya",  "ᅤ" to "yae", 
+            "ᅥ" to "eo", "ᅦ" to "e",  "ᅧ" to "yeo", "ᅨ" to "ye", 
+            "ᅩ" to "o",  "ᅪ" to "wa", "ᅫ" to "wae", "ᅬ" to "oe",
+            "ᅭ" to "yo", "ᅮ" to "u",  "ᅯ" to "wo",  "ᅰ" to "we",
+            "ᅱ" to "wi", "ᅲ" to "yu", "ᅳ" to "eu",  "ᅴ" to "eui",
+            "ᅵ" to "i"
         ),
         "jong" to mapOf(
             "ᆨ" to "k", "ᆨᄋ" to "g", "ᆨᄂ" to "ngn", "ᆨᄅ" to "ngn", "ᆨᄆ" to "ngm", "ᆨᄒ" to "kh",
@@ -205,7 +207,6 @@ object LyricsUtils {
         }
     }
 
-
     suspend fun romanizeKorean(text: String): String = withContext(Dispatchers.Default) {
         val sb = StringBuilder()
         var prevFinal: String? = null
@@ -215,6 +216,7 @@ object LyricsUtils {
 
             if (char in '\uAC00'..'\uD7A3') {
                 val syllableIndex = char.code - 0xAC00
+                
                 val choIndex = syllableIndex / (21 * 28)
                 val jungIndex = (syllableIndex % (21 * 28)) / 28
                 val jongIndex = syllableIndex % 28
@@ -225,20 +227,20 @@ object LyricsUtils {
 
                 if (prevFinal != null) {
                     val contextKey = prevFinal + choChar
-                    val jong = KANA_ROMAJA_MAP["jong"]?.get(contextKey)
-                        ?: KANA_ROMAJA_MAP["jong"]?.get(prevFinal)
+                    val jong = HANGUL_ROMAJA_MAP["jong"]?.get(contextKey)
+                        ?: HANGUL_ROMAJA_MAP["jong"]?.get(prevFinal)
                         ?: prevFinal
                     sb.append(jong)
                 }
 
-                val cho = KANA_ROMAJA_MAP["cho"]?.get(choChar) ?: choChar
-                val jung = KANA_ROMAJA_MAP["jung"]?.get(jungChar) ?: jungChar
+                val cho = HANGUL_ROMAJA_MAP["cho"]?.get(choChar) ?: choChar
+                val jung = HANGUL_ROMAJA_MAP["jung"]?.get(jungChar) ?: jungChar
                 sb.append(cho).append(jung)
 
                 prevFinal = jongChar
             } else {
                 if (prevFinal != null) {
-                    val jong = KANA_ROMAJA_MAP["jong"]?.get(prevFinal) ?: prevFinal
+                    val jong = HANGUL_ROMAJA_MAP["jong"]?.get(prevFinal) ?: prevFinal
                     sb.append(jong)
                     prevFinal = null
                 }
@@ -247,12 +249,13 @@ object LyricsUtils {
         }
 
         if (prevFinal != null) {
-            val jong = KANA_ROMAJA_MAP["jong"]?.get(prevFinal) ?: prevFinal
+            val jong = HANGUL_ROMAJA_MAP["jong"]?.get(prevFinal) ?: prevFinal
             sb.append(jong)
         }
 
         sb.toString()
     }
+
     /**
      * Checks if the given text contains any Japanese characters (Hiragana, Katakana, or common Kanji).
      * This function is generally efficient due to '.any' and early exit.
@@ -266,9 +269,12 @@ object LyricsUtils {
         }
     }
 
+    /**
+     * Checks if the given text contains any Korean characters (Hangul Syllables, Jamo, etc.).
+     */
     fun isKorean(text: String): Boolean {
         return text.any { char ->
-            (char in '\uAC00'..'\uD7A3')
+            (char in '\uAC00'..'\uD7A3') // Hangul Syllables
         }
     }
 }
