@@ -52,7 +52,7 @@ object LyricsUtils {
         "ー" to ""
     )
 
-    private val HANGUL_ROMAJI_MAP: Map<String, Map<String, String>> = mapOf(
+    private val HANGUL_ROMAJA_MAP: Map<String, Map<String, String>> = mapOf(
         "cho" to mapOf(
             "ᄀ" to "g",  "ᄁ" to "kk", "ᄂ" to "n",  "ᄃ" to "d", 
             "ᄄ" to "tt", "ᄅ" to "r",  "ᄆ" to "m",  "ᄇ" to "b",
