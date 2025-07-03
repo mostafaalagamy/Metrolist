@@ -7,6 +7,9 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.database.SQLException
+import android.media.AudioManager
+import android.media.AudioFocusRequest
+import android.media.AudioAttributes as LegacyAudioAttributes
 import android.media.audiofx.AudioEffect
 import android.net.ConnectivityManager
 import android.os.Binder
@@ -154,12 +157,15 @@ class MusicService :
 
     @Inject
     lateinit var lyricsHelper: LyricsHelper
-    
+
     @Inject
     lateinit var syncUtils: SyncUtils
 
     @Inject
     lateinit var mediaLibrarySessionCallback: MediaLibrarySessionCallback
+
+    private lateinit var audioManager: AudioManager
+    private var audioFocusRequest: AudioFocusRequest? = null
 
     private var scope = CoroutineScope(Dispatchers.Main) + Job()
     private val binder = MusicBinder()
@@ -234,7 +240,7 @@ class MusicService :
                         .setUsage(C.USAGE_MEDIA)
                         .setContentType(C.AUDIO_CONTENT_TYPE_MUSIC)
                         .build(),
-                    true,
+                    false,
                 ).setSeekBackIncrementMs(5000)
                 .setSeekForwardIncrementMs(5000)
                 .build()
@@ -244,6 +250,10 @@ class MusicService :
                     addListener(sleepTimer)
                     addAnalyticsListener(PlaybackStatsListener(false, this@MusicService))
                 }
+
+        audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        requestAudioFocus()
+
         mediaLibrarySessionCallback.apply {
             toggleLike = ::toggleLike
             toggleStartRadio = ::toggleStartRadio
@@ -969,6 +979,39 @@ class MusicService :
         }
     }
 
+    private fun requestAudioFocus(): Boolean {
+        val legacyAttributes = LegacyAudioAttributes.Builder()
+            .setUsage(LegacyAudioAttributes.USAGE_MEDIA)
+            .setContentType(LegacyAudioAttributes.CONTENT_TYPE_MUSIC)
+            .build()
+
+        val focusRequest = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
+            .setAudioAttributes(legacyAttributes)
+            .setAcceptsDelayedFocusGain(false)
+            .setWillPauseWhenDucked(false)
+            .setOnAudioFocusChangeListener { focusChange ->
+                when (focusChange) {
+                    AudioManager.AUDIOFOCUS_LOSS -> player.pause()
+                    AudioManager.AUDIOFOCUS_LOSS_TRANSIENT -> player.pause()
+                    AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK -> player.volume = 0.2f
+                    AudioManager.AUDIOFOCUS_GAIN -> {
+                        player.volume = playerVolume.value
+                        if (!player.isPlaying) player.play()
+                    }
+                }
+            }.build()
+
+        audioFocusRequest = focusRequest
+        val result = audioManager.requestAudioFocus(focusRequest)
+        return result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED
+    }
+
+    private fun abandonAudioFocus() {
+        audioFocusRequest?.let {
+            audioManager.abandonAudioFocusRequest(it)
+        }
+    }
+
     override fun onDestroy() {
         if (dataStore.get(PersistentQueueKey, true)) {
             saveQueueToDisk()
@@ -977,6 +1020,7 @@ class MusicService :
             discordRpc?.closeRPC()
         }
         discordRpc = null
+        abandonAudioFocus()
         mediaSession.release()
         player.removeListener(this)
         player.removeListener(sleepTimer)
