@@ -6,11 +6,8 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialExpressiveTheme
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
-// Import rememberDynamicColorScheme from materialKolor
-import com.materialkolor.rememberDynamicColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.Saver
@@ -21,13 +18,9 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.palette.graphics.Palette
 import com.materialkolor.PaletteStyle
+import com.materialkolor.dynamiccolor.ColorSpec
+import com.materialkolor.rememberDynamicColorScheme
 import com.materialkolor.score.Score
-
-// Import the defined M3 Expressive Typography
-import com.metrolist.music.ui.theme.AppTypography
-
-// TODO: Define M3 Expressive Shapes if needed
-// import androidx.compose.material3.Shapes
 
 val DefaultThemeColor = Color(0xFFED5564)
 
@@ -52,6 +45,7 @@ fun MetrolistTheme(
         rememberDynamicColorScheme(
             seedColor = themeColor, // themeColor is guaranteed non-default here
             isDark = darkTheme,
+            specVersion = ColorSpec.SpecVersion.SPEC_2025,
             style = PaletteStyle.TonalSpot // Keep existing style
         )
     }
@@ -75,10 +69,9 @@ fun MetrolistTheme(
     )
 }
 
-// Keep helper functions as they are likely still needed
 fun Bitmap.extractThemeColor(): Color {
     val colorsToPopulation = Palette.from(this)
-        .maximumColorCount(64)
+        .maximumColorCount(8)
         .generate()
         .swatches
         .associate { it.rgb to it.population }
