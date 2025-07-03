@@ -52,6 +52,7 @@ import com.metrolist.music.constants.GridItemsSizeKey
 import com.metrolist.music.constants.LibraryFilter
 import com.metrolist.music.constants.LyricsClickKey
 import com.metrolist.music.constants.LyricsScrollKey
+import com.metrolist.music.constants.LyricsRomanizeJapaneseKey
 import com.metrolist.music.constants.LyricsTextPositionKey
 import com.metrolist.music.constants.PlayerBackgroundStyle
 import com.metrolist.music.constants.PlayerBackgroundStyleKey
@@ -114,6 +115,7 @@ fun AppearanceSettings(
     )
     val (lyricsClick, onLyricsClickChange) = rememberPreference(LyricsClickKey, defaultValue = true)
     val (lyricsScroll, onLyricsScrollChange) = rememberPreference(LyricsScrollKey, defaultValue = true)
+    val (lyricsRomanizeJapanese, onLyricsRomanizeJapaneseChange) = rememberPreference(LyricsRomanizeJapaneseKey, defaultValue = true)
     val (sliderStyle, onSliderStyleChange) = rememberEnumPreference(
         SliderStyleKey,
         defaultValue = SliderStyle.DEFAULT
@@ -426,6 +428,13 @@ fun AppearanceSettings(
             icon = { Icon(painterResource(R.drawable.lyrics), null) },
             checked = lyricsScroll,
             onCheckedChange = onLyricsScrollChange,
+        )
+
+        SwitchPreference(
+            title = { Text(stringResource(R.string.lyrics_romanize_japanese)) },
+            icon = { Icon(painterResource(R.drawable.lyrics), null) },
+            checked = lyricsRomanizeJapanese,
+            onCheckedChange = onLyricsRomanizeJapaneseChange,
         )
 
         PreferenceGroupTitle(
