@@ -150,14 +150,79 @@ object LyricsUtils {
         // Use the lazily initialized tokenizer
         val tokens = kuromojiTokenizer.tokenize(text)
 
-        tokens.joinToString(" ") { token ->
-            val kanaToConvert = if (token.reading.isNullOrEmpty() || token.reading == "*") {
+        val romanizedTokens = tokens.mapIndexed { index, token ->
+            val currentReading = if (token.reading.isNullOrEmpty() || token.reading == "*") {
                 token.surface
             } else {
                 token.reading
             }
-            katakanaToRomaji(kanaToConvert)
+
+            // Pass the next token's reading for sokuon handling if applicable
+            val nextTokenReading = if (index + 1 < tokens.size) {
+                tokens[index + 1].reading?.takeIf { it.isNotEmpty() && it != "*" } ?: tokens[index + 1].surface
+            } else {
+                null
+            }
+            katakanaToRomaji(currentReading, nextTokenReading)
         }
+        romanizedTokens.joinToString(" ")
+    }
+
+    /**
+     * Converts a Katakana string to Romaji.
+     * This optimized version uses a pre-defined map and StringBuilder for better performance
+     * compared to chained regex replacements.
+     * Expected impact: Significant reduction in object creation (Regex, String) and faster execution.
+     * @param katakana The Katakana string to convert.
+     * @param nextKatakana Optional: The next Katakana string (from the next token) to help with sokuon (ッ) gemination.
+     */
+    fun katakanaToRomaji(katakana: String?, nextKatakana: String? = null): String {
+        if (katakana.isNullOrEmpty()) return ""
+
+        val romajiBuilder = StringBuilder(katakana.length) // Initial capacity
+        var i = 0
+        val n = katakana.length
+        while (i < n) {
+            var consumed = false
+            // Prioritize 2-character sequences from the map (e.g., "キャ" before "キ")
+            if (i + 1 < n) {
+                val twoCharCandidate = katakana.substring(i, i + 2)
+                val mappedTwoChar = KANA_ROMAJI_MAP[twoCharCandidate]
+                if (mappedTwoChar != null) {
+                    romajiBuilder.append(mappedTwoChar)
+                    i += 2
+                    consumed = true
+                }
+            }
+
+            // Handle sokuon (ッ) - gemination
+            if (!consumed && katakana[i] == 'ッ') {
+                val nextCharToDouble = nextKatakana?.getOrNull(0)
+                if (nextCharToDouble != null) {
+                    val nextCharRomaji = KANA_ROMAJI_MAP[nextCharToDouble.toString()]?.getOrNull(0)?.toString()
+                        ?: nextCharToDouble.toString()
+                    romajiBuilder.append(nextCharRomaji.lowercase().trim())
+                }
+                // Sokuon itself doesn't have a direct romaji representation other than geminating the next consonant.
+                // We just consume 'ッ' and let the next character (if any within the current token) be processed normally.
+                i += 1 // Consume the 'ッ'
+                consumed = true
+            }
+
+            if (!consumed) {
+                // If no 2-character sequence matched, try 1-character
+                val oneCharCandidate = katakana[i].toString()
+                val mappedOneChar = KANA_ROMAJI_MAP[oneCharCandidate]
+                if (mappedOneChar != null) {
+                    romajiBuilder.append(mappedOneChar)
+                } else {
+                    // If the character is not in Katakana map, append it as is.
+                    romajiBuilder.append(oneCharCandidate)
+                }
+                i += 1
+            }
+        }
+        return romajiBuilder.toString().lowercase()
     }
 
     /**
@@ -169,7 +234,35 @@ object LyricsUtils {
         return text.any { char ->
             (char in '\u3040'..'\u309F') || // Hiragana
             (char in '\u30A0'..'\u30FF') || // Katakana
-            (char in '\u4E00'..'\u9FAF')    // Common Kanji (CJK Unified Ideographs)
+            // CJK Unified Ideographs (covers most common Kanji)
+            // Note: This range also includes many Chinese Hanzi.
+            // Differentiating Japanese Kanji from Chinese Hanzi solely based on Unicode
+            // ranges is challenging as they share many characters.
+            // For more accurate Japanese detection, one might need to analyze
+            // the presence of Hiragana/Katakana alongside Kanji.
+            (char in '\u4E00'..'\u9FFF')
         }
+    }
+
+    /**
+     * Checks if the given text contains any Chinese characters (common Hanzi).
+     * This function is generally efficient due to '.any' and early exit.
+     * To improve accuracy in distinguishing between Chinese and Japanese (which shares Kanji),
+     * this function now checks if the text *predominantly* consists of CJK Unified Ideographs
+     * and *lacks* significant amounts of Hiragana or Katakana.
+     *
+     * A simple threshold is used here. More sophisticated methods (e.g., frequency analysis,
+     * dictionaries, or machine learning models) would be needed for higher accuracy.
+     */
+    fun isChinese(text: String): Boolean {
+        if (text.isEmpty()) return false
+
+        val cjkCharCount = text.count { char -> char in '\u4E00'..'\u9FFF' }
+        val hiraganaKatakanaCount = text.count { char -> (char in '\u3040'..'\u309F') || (char in '\u30A0'..'\u30FF') }
+
+        // Heuristic: If CJK characters are present and there are very few or no Hiragana/Katakana,
+        // it's more likely to be Chinese.
+        // The threshold (e.g., 0.1) can be adjusted based on desired sensitivity.
+        return cjkCharCount > 0 && (hiraganaKatakanaCount.toDouble() / text.length.toDouble()) < 0.1
     }
 }
