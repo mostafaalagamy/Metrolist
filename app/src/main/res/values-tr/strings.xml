@@ -297,4 +297,5 @@
     <string name="enable_discord_rpc">Rich Presence\'ı etkinleştir</string>
     <string name="use_login_for_browse">İçerikleri görmek için Giriş yap\'ı kullanın</string>
     <string name="use_login_for_browse_desc">Bu gördüğünüz içerikleri etkileyebilir ve örnek olarak Premium\'a özel içerikleri Premium\'a sahip bir hesapla giriş yaptıysanız size sunabilir</string>
+    <string name="action_login">Giriş Yap</string>
 </resources>

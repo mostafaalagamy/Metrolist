@@ -13,6 +13,7 @@ hilt = "2.56.2"
 ktor = "3.1.3"
 ksp = "2.2.0-2.0.2"
 jsoup = "1.21.1"
+newpipe = "dev-SNAPSHOT"
 kuromojiIpadic = "0.9.0"
 multidex = "2.0.1"
 
@@ -85,7 +86,9 @@ timber = { group = "com.jakewharton.timber", name = "timber", version = "5.0.1" 
 
 multidex = { group = "androidx.multidex", name = "multidex", version.ref = "multidex" }
 
-newpipe-extractor = { group = "com.github.libre-tube", name = "NewPipeExtractor", version = "bcb7705" }
+newpipe-extractor = { group = "com.github.libre-tube", name = "NewPipeExtractor", version.ref = "newpipe" }
+#newpipe-extractor = { group = "com.github.TeamNewPipe", name = "NewPipeExtractor", version = "v0.24.6" }
+
 kuromoji-ipadic = { group = "com.atilika.kuromoji", name = "kuromoji-ipadic", version.ref = "kuromojiIpadic" }
 
 [plugins]

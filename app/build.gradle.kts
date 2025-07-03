@@ -189,10 +189,10 @@ dependencies {
     implementation(libs.jsoup)
     kapt(libs.hilt.compiler)
 
-    implementation(projects.innertube)
-    implementation(projects.kugou)
-    implementation(projects.lrclib)
-    implementation(projects.kizzy)
+    implementation(project(":innertube"))
+    implementation(project(":kugou"))
+    implementation(project(":lrclib"))
+    implementation(project(":kizzy"))
 
     implementation(libs.ktor.client.core)
     implementation(libs.ktor.serialization.json)

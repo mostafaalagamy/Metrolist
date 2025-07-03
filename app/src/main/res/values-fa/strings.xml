@@ -46,15 +46,15 @@
     <string name="filter_bookmarked">نشانک‌گذاری‌شده</string>
     <string name="no_results_found">نتیجه‌ای پیدا نشد</string>
     <!-- Artist screen -->
-    <string name="from_your_library">از کتاب‌خانه شما</string>
+    <string name="from_your_library">از کتابخانه شما</string>
     <!-- Playlist -->
-    <string name="liked_songs">ترانه‌های موردپسند</string>
-    <string name="downloaded_songs">ترانه‌های بارگیری‌شده</string>
-    <string name="playlist_is_empty">فهرست‌پخش خالی است</string>
+    <string name="liked_songs">آهنگ های پسندیده شده</string>
+    <string name="downloaded_songs">آهنگ های دانلود شده</string>
+    <string name="playlist_is_empty">فهرست‌ پخش خالی است</string>
     <!-- Button -->
-    <string name="retry">تلاش‌مجدد</string>
+    <string name="retry">تلاش‌ مجدد</string>
     <string name="radio">رادیو</string>
-    <string name="shuffle">بُرزدن</string>
+    <string name="shuffle">مخلوط</string>
     <string name="reset">بازنشانی</string>
     <!-- Menu -->
     <string name="details">جزئیات</string>
@@ -64,14 +64,14 @@
     <string name="play_next">پخش بعدی</string>
     <string name="add_to_queue">اضافه‌کردن به صف</string>
     <string name="add_to_library">اضافه‌کردن به کتاب‌خانه</string>
-    <string name="remove_from_library">حذف از کتاب‌خانه</string>
-    <string name="action_download">بارگیری</string>
-    <string name="downloading">درحال بارگیری</string>
-    <string name="remove_download">حذف بارگیری</string>
-    <string name="import_playlist">واردکردن فهرست‌پخش</string>
-    <string name="add_to_playlist">اضافه‌کردن به فهرست‌پخش</string>
-    <string name="view_artist">مشاهده‌ی هنرمند</string>
-    <string name="view_album">مشاهده‌ی مجموعه</string>
+    <string name="remove_from_library">حذف از کتاب‌ خانه</string>
+    <string name="action_download">دانلود</string>
+    <string name="downloading">درحال دانلود</string>
+    <string name="remove_download">لغو دانلود</string>
+    <string name="import_playlist">واردکردن فهرست‌ پخش</string>
+    <string name="add_to_playlist">اضافه‌کردن به فهرست‌ پخش</string>
+    <string name="view_artist">مشاهده‌ هنرمند</string>
+    <string name="view_album">مشاهده‌ مجموعه</string>
     <string name="refetch">نوسازی</string>
     <string name="share">هم‌رسانی</string>
     <string name="delete">حذف</string>
@@ -84,7 +84,7 @@
     <string name="sort_by_name">نام</string>
     <string name="sort_by_artist">هنرمند</string>
     <string name="sort_by_year">سال</string>
-    <string name="sort_by_song_count">تعداد ترانه</string>
+    <string name="sort_by_song_count">تعداد آهنگ</string>
     <string name="sort_by_length">طول</string>
     <string name="sort_by_play_time">زمان پخش</string>
     <string name="sort_by_custom">ترتیب سفارشی</string>
@@ -239,4 +239,20 @@
     <string name="new_version_available">نسخه‌ی جدید دردسترس‌است</string>
     <string name="translation_models">نمونه‌های ترجمه</string>
     <string name="clear_translation_models">پاک‌کردن نمونه‌های ترجمه</string>
+    <string name="forgotten_favorites">موارد دلخواه فراموش شده</string>
+    <string name="keep_listening">به گوش دادن ادامه بده</string>
+    <string name="your_youtube_playlists">لیست های پخش یوتیوب شما</string>
+    <string name="similar_to">شبیه به</string>
+    <string name="library_song_empty">آهنگ‌ های کتابخانه اینجا نمایش داده می‌ شوند</string>
+    <string name="library_artist_empty">هنرمندان کتابخانه اینجا نمایش داده می شوند</string>
+    <string name="library_album_empty">آلبوم‌ های کتابخانه اینجا نمایش داده می‌ شوند</string>
+    <string name="library_playlist_empty">لیست‌های پخش شما اینجا نمایش داده می‌ شوند</string>
+    <string name="other_versions">نسخه های دیگر</string>
+    <string name="remove_download_playlist_confirm">آیا واقعاً می‌ خواهید همه آهنگ‌های لیست پخش «%s» را از حافظه آهنگ‌ های دانلود شده حذف کنید؟</string>
+    <string name="delete_playlist_confirm">آیا واقعاً می‌ خواهید لیست پخش «%s» را حذف کنید؟</string>
+    <string name="add_all_to_library">همه را به کتابخانه اضافه کنید</string>
+    <string name="remove_all_from_library">همه را از کتابخانه حذف کنید</string>
+    <string name="remove_from_playlist">حذف از لیست پخش</string>
+    <string name="remove_from_queue">حذف از صف</string>
+    <string name="tempo_and_pitch">تمپو و زیر و بمی صدا</string>
 </resources>
