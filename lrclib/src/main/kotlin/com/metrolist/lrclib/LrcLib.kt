@@ -10,6 +10,7 @@ import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 import io.ktor.serialization.kotlinx.json.json
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
 import kotlinx.serialization.json.Json
 import kotlin.math.abs
@@ -101,7 +102,7 @@ object LrcLib {
         }
 
         sortedTracks.forEach { track ->
-            ensureActive() // Add this line for cooperative cancellation
+            currentCoroutineContext().ensureActive() // Corrected usage
             if (count <= 4) {
                 if (track.syncedLyrics != null && duration == -1) {
                     count++
