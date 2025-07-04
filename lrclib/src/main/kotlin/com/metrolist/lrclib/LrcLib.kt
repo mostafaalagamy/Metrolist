@@ -52,8 +52,7 @@ object LrcLib {
         album: String? = null,
     ) = runCatching {
         val tracks = queryLyrics(artist, title, album)
-
-        val res = if (duration != -1) tracks.bestMatchingFor(duration)?.syncedLyrics?.let(LrcLib::Lyrics) else tracks.firstOrNull()?.syncedLyrics?.let(LrcLib::Lyrics)
+        val res = if (duration != -1) tracks.bestMatchingFor(track, duration)?.syncedLyrics?.let(LrcLib::Lyrics) else tracks.firstOrNull()?.syncedLyrics?.let(LrcLib::Lyrics)
         if (res != null) {
             return@runCatching res.text
         } else {
