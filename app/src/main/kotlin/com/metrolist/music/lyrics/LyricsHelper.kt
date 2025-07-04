@@ -17,6 +17,9 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 
 class LyricsHelper
@@ -31,6 +34,7 @@ constructor(
             YouTubeSubtitleLyricsProvider,
             YouTubeLyricsProvider
         )
+
     val preferred =
         context.dataStore.data
             .map {
@@ -54,34 +58,41 @@ constructor(
                         )
                     }
             }
+
     private val cache = LruCache<String, List<LyricsResult>>(MAX_CACHE_SIZE)
     private var currentLyricsJob: Job? = null
 
     suspend fun getLyrics(mediaMetadata: MediaMetadata): String {
-        currentLyricsJob?.cancel() // Cancel any ongoing job
+        currentLyricsJob?.cancel()
+
         val cached = cache.get(mediaMetadata.id)?.firstOrNull()
         if (cached != null) {
             return cached.lyrics
         }
-        return CoroutineScope(SupervisorJob()).launch {
-            lyricsProviders.forEach { provider ->
+
+        val scope = CoroutineScope(SupervisorJob())
+        val deferred = scope.async {
+            for (provider in lyricsProviders) {
                 if (provider.isEnabled(context)) {
-                    provider
-                        .getLyrics(
-                            mediaMetadata.id,
-                            mediaMetadata.title,
-                            mediaMetadata.artists.joinToString { it.name },
-                            mediaMetadata.duration,
-                        ).onSuccess { lyrics ->
-                            currentLyricsJob?.cancel() // Cancel job on success
-                            return@launch lyrics
-                        }.onFailure {
-                            reportException(it)
-                        }
+                    val result = provider.getLyrics(
+                        mediaMetadata.id,
+                        mediaMetadata.title,
+                        mediaMetadata.artists.joinToString { it.name },
+                        mediaMetadata.duration,
+                    )
+                    result.onSuccess { lyrics ->
+                        return@async lyrics
+                    }.onFailure {
+                        reportException(it)
+                    }
                 }
             }
-            return@launch LYRICS_NOT_FOUND
-        }.join() as String // Wait for the job to complete and return its result
+            return@async LYRICS_NOT_FOUND
+        }
+
+        val lyrics = deferred.await()
+        scope.cancel()
+        return lyrics
     }
 
     suspend fun getAllLyrics(
@@ -91,7 +102,8 @@ constructor(
         duration: Int,
         callback: (LyricsResult) -> Unit,
     ) {
-        currentLyricsJob?.cancel() // Cancel any ongoing job
+        currentLyricsJob?.cancel()
+
         val cacheKey = "$songArtists-$songTitle".replace(" ", "")
         cache.get(cacheKey)?.let { results ->
             results.forEach {
@@ -99,6 +111,7 @@ constructor(
             }
             return
         }
+
         val allResult = mutableListOf<LyricsResult>()
         currentLyricsJob = CoroutineScope(SupervisorJob()).launch {
             lyricsProviders.forEach { provider ->
@@ -112,6 +125,7 @@ constructor(
             }
             cache.put(cacheKey, allResult)
         }
+
         currentLyricsJob?.join()
     }
 
@@ -129,5 +143,3 @@ data class LyricsResult(
     val providerName: String,
     val lyrics: String,
 )
-
-
