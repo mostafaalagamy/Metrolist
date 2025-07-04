@@ -344,6 +344,7 @@ object LyricsUtils {
     fun isKorean(text: String): Boolean {
         return text.any { char ->
             (char in '\uAC00'..'\uD7A3') // Hangul Syllables
+        }
     }
         
     /**
