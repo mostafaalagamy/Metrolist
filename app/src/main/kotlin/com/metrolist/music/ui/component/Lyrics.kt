@@ -94,6 +94,7 @@ import com.metrolist.music.R
 import com.metrolist.music.constants.DarkModeKey
 import com.metrolist.music.constants.LyricsClickKey
 import com.metrolist.music.constants.LyricsRomanizeJapaneseKey
+import com.metrolist.music.constants.LyricsRomanizeKoreanKey
 import com.metrolist.music.constants.LyricsScrollKey
 import com.metrolist.music.constants.LyricsTextPositionKey
 import com.metrolist.music.constants.PlayerBackgroundStyle
@@ -145,6 +146,7 @@ fun Lyrics(
     val changeLyrics by rememberPreference(LyricsClickKey, true)
     val scrollLyrics by rememberPreference(LyricsScrollKey, true)
     val romanizeJapaneseLyrics by rememberPreference(LyricsRomanizeJapaneseKey, true)
+    val romanizeKoreanLyrics by rememberPreference(LyricsRomanizeKoreanKey, true)
     val scope = rememberCoroutineScope()
 
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
@@ -176,9 +178,11 @@ fun Lyrics(
                         }
                     }
                 }
-                else if (isKorean(entry.text)) {
-                    scope.launch {
-                        newEntry.romanizedTextFlow.value = romanizeKorean(entry.text)
+                if (romanizeKoreanLyrics) {
+                    if (isKorean(entry.text)) {
+                        scope.launch {
+                            newEntry.romanizedTextFlow.value = romanizeKorean(entry.text)
+                        }
                     }
                 }
                 newEntry
@@ -195,9 +199,11 @@ fun Lyrics(
                         }
                     }
                 }
-                else if (isKorean(line)) {
-                    scope.launch {
-                        newEntry.romanizedTextFlow.value = romanizeKorean(line)
+                if (romanizeKoreanLyrics) {
+                    if (isKorean(line)) {
+                        scope.launch {
+                            newEntry.romanizedTextFlow.value = romanizeKorean(line)
+                        }
                     }
                 }
                 newEntry
@@ -536,8 +542,8 @@ fun Lyrics(
                             },
                             fontWeight = FontWeight.Bold
                         )
-                        if (romanizeJapaneseLyrics) {
-                            // Show japanese romanized text if available
+                        if (romanizeJapaneseLyrics || romanizeKoreanLyrics) {
+                            // Show romanized text if available
                             val romanizedText by item.romanizedTextFlow.collectAsState()
                             romanizedText?.let { romanized ->
                                 Text(
