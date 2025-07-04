@@ -53,7 +53,7 @@ object LrcLib {
     ) = runCatching {
         val tracks = queryLyrics(artist, title, album)
 
-        val res = tracks.bestMatchingFor(duration)?.syncedLyrics?.let(LrcLib::Lyrics)
+        val res = if (duration != -1) tracks.bestMatchingFor(duration)?.syncedLyrics?.let(LrcLib::Lyrics) else tracks.firstOrNull()?.syncedLyrics?.let(LrcLib::Lyrics)
         if (res != null) {
             return@runCatching res.text
         } else {
@@ -77,8 +77,7 @@ object LrcLib {
                     {
                         count++
                         it.syncedLyrics.let(callback)
-                    } else {
-                    if (it.syncedLyrics != null && abs(it.duration - duration) <= 2) {
+                    } else if (it.syncedLyrics != null && abs(it.duration - duration) <= 2) {
                         count++
                         it.syncedLyrics.let(callback)
                     }
@@ -87,7 +86,6 @@ object LrcLib {
                         plain++
                         it.plainLyrics.let(callback)
                     }
-                }
             }
         }
     }
