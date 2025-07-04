@@ -10,8 +10,13 @@ import com.metrolist.music.models.MediaMetadata
 import com.metrolist.music.utils.dataStore
 import com.metrolist.music.utils.reportException
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class LyricsHelper
@@ -50,28 +55,33 @@ constructor(
                     }
             }
     private val cache = LruCache<String, List<LyricsResult>>(MAX_CACHE_SIZE)
+    private var currentLyricsJob: Job? = null
 
     suspend fun getLyrics(mediaMetadata: MediaMetadata): String {
+        currentLyricsJob?.cancel() // Cancel any ongoing job
         val cached = cache.get(mediaMetadata.id)?.firstOrNull()
         if (cached != null) {
             return cached.lyrics
         }
-        lyricsProviders.forEach { provider ->
-            if (provider.isEnabled(context)) {
-                provider
-                    .getLyrics(
-                        mediaMetadata.id,
-                        mediaMetadata.title,
-                        mediaMetadata.artists.joinToString { it.name },
-                        mediaMetadata.duration,
-                    ).onSuccess { lyrics ->
-                        return lyrics
-                    }.onFailure {
-                        reportException(it)
-                    }
+        return CoroutineScope(SupervisorJob()).launch {
+            lyricsProviders.forEach { provider ->
+                if (provider.isEnabled(context)) {
+                    provider
+                        .getLyrics(
+                            mediaMetadata.id,
+                            mediaMetadata.title,
+                            mediaMetadata.artists.joinToString { it.name },
+                            mediaMetadata.duration,
+                        ).onSuccess { lyrics ->
+                            currentLyricsJob?.cancel() // Cancel job on success
+                            return@launch lyrics
+                        }.onFailure {
+                            reportException(it)
+                        }
+                }
             }
-        }
-        return LYRICS_NOT_FOUND
+            return@launch LYRICS_NOT_FOUND
+        }.join() as String // Wait for the job to complete and return its result
     }
 
     suspend fun getAllLyrics(
@@ -81,6 +91,7 @@ constructor(
         duration: Int,
         callback: (LyricsResult) -> Unit,
     ) {
+        currentLyricsJob?.cancel() // Cancel any ongoing job
         val cacheKey = "$songArtists-$songTitle".replace(" ", "")
         cache.get(cacheKey)?.let { results ->
             results.forEach {
@@ -89,16 +100,24 @@ constructor(
             return
         }
         val allResult = mutableListOf<LyricsResult>()
-        lyricsProviders.forEach { provider ->
-            if (provider.isEnabled(context)) {
-                provider.getAllLyrics(mediaId, songTitle, songArtists, duration) { lyrics ->
-                    val result = LyricsResult(provider.name, lyrics)
-                    allResult += result
-                    callback(result)
+        currentLyricsJob = CoroutineScope(SupervisorJob()).launch {
+            lyricsProviders.forEach { provider ->
+                if (provider.isEnabled(context)) {
+                    provider.getAllLyrics(mediaId, songTitle, songArtists, duration) { lyrics ->
+                        val result = LyricsResult(provider.name, lyrics)
+                        allResult += result
+                        callback(result)
+                    }
                 }
             }
+            cache.put(cacheKey, allResult)
         }
-        cache.put(cacheKey, allResult)
+        currentLyricsJob?.join()
+    }
+
+    fun cancelCurrentLyricsJob() {
+        currentLyricsJob?.cancel()
+        currentLyricsJob = null
     }
 
     companion object {
@@ -110,3 +129,5 @@ data class LyricsResult(
     val providerName: String,
     val lyrics: String,
 )
+
+
