@@ -13,4 +13,4 @@ data class Track(
     val syncedLyrics: String?,
 )
 
-internal fun List<Track>.bestMatchingFor(duration: Int) = firstOrNull { abs(it.duration.toInt() - duration) <= 2 }
+internal fun List<Track>.bestMatchingFor(track: Track, duration: Int) = firstOrNull { abs(it.duration - duration) < 2 }
