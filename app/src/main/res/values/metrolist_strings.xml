@@ -93,6 +93,7 @@
     <string name="swipe_song_to_add">Swipe song to the left to add it to the queue or to the right to play it next</string>
     <string name="lyrics_click_change">Change lyrics on click</string>
     <string name="lyrics_auto_scroll">Auto scroll lyrics</string>
+    <string name="lyrics_romanize_japanese">Romanize japanese lyrics</string>
     <string name="slim">Slim</string>
     <string name="slim_navbar">Hide bottom navigation bar labels</string>
     <string name="auto_playlists">Auto playlists</string>

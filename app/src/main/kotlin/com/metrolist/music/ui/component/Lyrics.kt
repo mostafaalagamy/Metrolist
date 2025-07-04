@@ -93,12 +93,14 @@ import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
 import com.metrolist.music.constants.DarkModeKey
 import com.metrolist.music.constants.LyricsClickKey
+import com.metrolist.music.constants.LyricsRomanizeJapaneseKey
 import com.metrolist.music.constants.LyricsScrollKey
 import com.metrolist.music.constants.LyricsTextPositionKey
 import com.metrolist.music.constants.PlayerBackgroundStyle
 import com.metrolist.music.constants.PlayerBackgroundStyleKey
 import com.metrolist.music.db.entities.LyricsEntity.Companion.LYRICS_NOT_FOUND
 import com.metrolist.music.lyrics.LyricsEntry
+import com.metrolist.music.lyrics.LyricsUtils.isChinese
 import com.metrolist.music.lyrics.LyricsUtils.findCurrentLineIndex
 import com.metrolist.music.lyrics.LyricsUtils.isJapanese
 import com.metrolist.music.lyrics.LyricsUtils.isKorean
@@ -142,6 +144,7 @@ fun Lyrics(
     val lyricsTextPosition by rememberEnumPreference(LyricsTextPositionKey, LyricsPosition.CENTER)
     val changeLyrics by rememberPreference(LyricsClickKey, true)
     val scrollLyrics by rememberPreference(LyricsScrollKey, true)
+    val romanizeJapaneseLyrics by rememberPreference(LyricsRomanizeJapaneseKey, true)
     val scope = rememberCoroutineScope()
 
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
@@ -166,9 +169,11 @@ fun Lyrics(
             val parsedLines = parseLyrics(lyrics)
             parsedLines.map { entry ->
                 val newEntry = LyricsEntry(entry.time, entry.text)
-                if (isJapanese(entry.text)) {
-                    scope.launch {
-                        newEntry.romanizedTextFlow.value = romanizeJapanese(entry.text)
+                if (romanizeJapaneseLyrics) {
+                    if (isJapanese(entry.text) && !isChinese(entry.text)) {
+                        scope.launch {
+                            newEntry.romanizedTextFlow.value = romanizeJapanese(entry.text)
+                        }
                     }
                 }
                 else if (isKorean(entry.text)) {
@@ -183,9 +188,11 @@ fun Lyrics(
         } else {
             lyrics.lines().mapIndexed { index, line ->
                 val newEntry = LyricsEntry(index * 100L, line)
-                if (isJapanese(line)) {
-                    scope.launch {
-                        newEntry.romanizedTextFlow.value = romanizeJapanese(line)
+                if (romanizeJapaneseLyrics) {
+                    if (isJapanese(line) && !isChinese(line)) {
+                        scope.launch {
+                            newEntry.romanizedTextFlow.value = romanizeJapanese(line)
+                        }
                     }
                 }
                 else if (isKorean(line)) {
@@ -529,21 +536,23 @@ fun Lyrics(
                             },
                             fontWeight = FontWeight.Bold
                         )
-                        // Show japanese romanized text if available
-                        val romanizedText by item.romanizedTextFlow.collectAsState()
-                        romanizedText?.let { romanized ->
-                            Text(
-                                text = romanized,
-                                fontSize = 16.sp,
-                                color = textColor.copy(alpha = 0.8f),
-                                textAlign = when (lyricsTextPosition) {
-                                    LyricsPosition.LEFT -> TextAlign.Left
-                                    LyricsPosition.CENTER -> TextAlign.Center
-                                    LyricsPosition.RIGHT -> TextAlign.Right
-                                },
-                                fontWeight = FontWeight.Normal,
-                                modifier = Modifier.padding(top = 2.dp)
-                            )
+                        if (romanizeJapaneseLyrics) {
+                            // Show japanese romanized text if available
+                            val romanizedText by item.romanizedTextFlow.collectAsState()
+                            romanizedText?.let { romanized ->
+                                Text(
+                                    text = romanized,
+                                    fontSize = 16.sp,
+                                    color = textColor.copy(alpha = 0.8f),
+                                    textAlign = when (lyricsTextPosition) {
+                                        LyricsPosition.LEFT -> TextAlign.Left
+                                        LyricsPosition.CENTER -> TextAlign.Center
+                                        LyricsPosition.RIGHT -> TextAlign.Right
+                                    },
+                                    fontWeight = FontWeight.Normal,
+                                    modifier = Modifier.padding(top = 2.dp)
+                                )
+                            }
                         }
                     }
                 }

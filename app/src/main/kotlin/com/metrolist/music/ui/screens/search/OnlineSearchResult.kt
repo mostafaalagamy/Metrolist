@@ -274,8 +274,7 @@ fun OnlineSearchResult(
         modifier =
         Modifier
             .background(MaterialTheme.colorScheme.surface)
-            .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Top))
-            .padding(top = AppBarHeight)
+            .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Top).add(WindowInsets(top = AppBarHeight)))
             .fillMaxWidth()
     )
 }
