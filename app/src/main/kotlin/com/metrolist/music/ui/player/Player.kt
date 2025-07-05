@@ -627,13 +627,13 @@ fun BottomSheetPlayer(
                 Spacer(modifier = Modifier.width(12.dp))
 
                 val shareShape = RoundedCornerShape(
-                    topStart = 20.dp, bottomStart = 20.dp,
-                    topEnd = 8.dp, bottomEnd = 8.dp
+                    topStart = 50.dp, bottomStart = 50.dp,
+                    topEnd = 10.dp, bottomEnd = 10.dp
                 )
 
                 val favShape = RoundedCornerShape(
-                    topStart = 8.dp, bottomStart = 8.dp,
-                    topEnd = 20.dp, bottomEnd = 20.dp  
+                    topStart = 10.dp, bottomStart = 10.dp,
+                    topEnd = 50.dp, bottomEnd = 50.dp  
                 )
 
                 Row(
@@ -642,7 +642,7 @@ fun BottomSheetPlayer(
                 ) {
                     Box(
                         modifier = Modifier
-                            .size(48.dp)
+                            .size(42.dp)
                             .clip(shareShape)
                             .background(textButtonColor)
                             .clickable {
@@ -669,7 +669,7 @@ fun BottomSheetPlayer(
 
                     Box(
                         modifier = Modifier
-                            .size(48.dp)
+                            .size(42.dp)
                             .clip(favShape)
                             .background(textButtonColor)
                             .clickable {
