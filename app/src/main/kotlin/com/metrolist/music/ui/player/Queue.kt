@@ -282,7 +282,9 @@ fun Queue(
                     Icon(
                         painter = painterResource(id = R.drawable.lyrics),
                         contentDescription = null,
-                        modifier = Modifier.size(iconSize),
+                        modifier = Modifier
+                            .size(iconSize)
+                            .alpha(if (showLyrics) 1f else 0.5f),
                         tint = TextBackgroundColor
                     )
                 }
