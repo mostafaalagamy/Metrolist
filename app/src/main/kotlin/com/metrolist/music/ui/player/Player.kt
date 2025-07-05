@@ -809,7 +809,7 @@ fun BottomSheetPlayer(
             ) {
                 val maxW = maxWidth
                 val playButtonHeight = maxW / 6f
-                val playButtonWidth = playButtonHeight * 1.5f
+                val playButtonWidth = playButtonHeight * 1.6f
                 val sideButtonHeight = playButtonHeight * 0.8f
                 val sideButtonWidth = sideButtonHeight * 1.3f
 
@@ -865,7 +865,7 @@ fun BottomSheetPlayer(
                                 }
                             ),
                             contentDescription = null,
-                            modifier = Modifier.size(38.dp)
+                            modifier = Modifier.size(42.dp)
                         )
                     }
 
