@@ -87,8 +87,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.fastForEachReversed
 import androidx.compose.ui.window.DialogProperties
 import androidx.media3.common.Player
@@ -261,12 +263,31 @@ fun Queue(
                         },
                     contentAlignment = Alignment.Center
                 ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.bedtime),
-                        contentDescription = null,
-                        modifier = Modifier.size(iconSize),
-                        tint = TextBackgroundColor
-                    )
+                    AnimatedContent(
+                        label = "sleepTimer",
+                        targetState = sleepTimerEnabled,
+                    ) { enabled ->
+                        if (enabled) {
+                            Text(
+                                text = makeTimeString(sleepTimerTimeLeft),
+                                color = TextBackgroundColor,
+                                fontSize = 12.sp,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .basicMarquee()
+                            )
+                        } else {
+                            Icon(
+                                painter = painterResource(id = R.drawable.bedtime),
+                                contentDescription = null,
+                                modifier = Modifier.size(iconSize),
+                                tint = TextBackgroundColor
+                            )
+                        }
+                    }
                 }
 
                 Box(
