@@ -140,4 +140,6 @@
     <string name="import_online">Importar uma lista \"m3u\"</string>
     <string name="import_csv">Importar uma lista \"csv\"</string>
     <string name="playlist_add_local_to_synced_note">Observação: Não há suporte para adicionar músicas locais em listas sincronizadas/remotas. Qualquer outra combinação é válida</string>
+    <string name="lyrics_romanize_japanese">Romanizar letras japonesas</string>
+    <string name="lyrics_romanize_korean">Romanizar letras em coreano</string>
 </resources>
