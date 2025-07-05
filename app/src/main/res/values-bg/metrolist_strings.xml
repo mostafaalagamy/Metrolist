@@ -95,5 +95,24 @@
     <string name="past_year">Последната година</string>
     <string name="information">Информация</string>
     <string name="description">Описание</string>
-    <string name="numbers">Числа</string>
+    <string name="numbers">Брой</string>
+    <string name="subscribers">Последователи</string>
+    <string name="views">Гледания</string>
+    <string name="likes">Харесвания</string>
+    <string name="dislikes">Нехаресвания</string>
+    <plurals name="seconds">
+        <item quantity="one">1 секунда</item>
+        <item quantity="other">%d секунди</item>
+    </plurals>
+    <string name="local_history">Локални</string>
+    <string name="remote_history">Дистанционно</string>
+    <string name="continuous">Продължаващо</string>
+    <string name="my_top">Мойте топ</string>
+    <string name="sync_disabled">Синхронизирането е изключено</string>
+    <string name="max_selection_limit">Максимален лимит за избиране</string>
+    <string name="added_to_play_next">Добавено към следващи за изпълнение</string>
+    <string name="enable_squiggly_slider">Активиране на подвижния плъзгач</string>
+    <string name="enable_swipe_thumbnail">Разреши плъзгането за смяна на песента</string>
+    <string name="swipe_song_to_add">Плъзнете песента наляво, за да я добавите към опашката, или надясно, за да я пуснете следваща</string>
+    <string name="slim">Тесен</string>
 </resources>
