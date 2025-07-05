@@ -86,5 +86,14 @@
     <string name="set_quick_picks">Задайте бързи избори</string>
     <string name="last_song_listened">На база последно слушана песен</string>
     <string name="app_language">Език на приложението</string>
-    <string name="configure_app_language">Конфигурирай езици на приложението</string>
+    <string name="configure_app_language">Конфигурирай език на приложението</string>
+    <string name="intent_app_language_not_found">Не успяхме да намерим езиковите настройки на приложението, моля конфигурирайте ги ръчно</string>
+    <string name="audio_quality_max">Максимално (бета)</string>
+    <string name="percentage_format">%d%%</string>
+    <string name="past_week">Последната седмица</string>
+    <string name="past_month">Последния месец</string>
+    <string name="past_year">Последната година</string>
+    <string name="information">Информация</string>
+    <string name="description">Описание</string>
+    <string name="numbers">Числа</string>
 </resources>
