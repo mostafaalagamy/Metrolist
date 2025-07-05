@@ -808,9 +808,10 @@ fun BottomSheetPlayer(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 val maxW = maxWidth
-                val buttonHeight = maxW / 6f
-                val sideButtonWidth = buttonHeight * 1.1f
-                val playButtonWidth = buttonHeight * 2f
+                val playButtonHeight = maxW / 6f
+                val playButtonWidth = playButtonHeight * 1.5f
+                val sideButtonHeight = playButtonHeight * 0.8f
+                val sideButtonWidth = sideButtonHeight * 1.3f
 
                 Row(
                     horizontalArrangement = Arrangement.Center,
@@ -825,15 +826,18 @@ fun BottomSheetPlayer(
                             containerColor = textButtonColor,
                             contentColor = iconButtonColor
                         ),
-                        modifier = Modifier.size(buttonHeight)
+                        modifier = Modifier
+                            .size(width = sideButtonWidth, height = sideButtonHeight)
+                            .clip(RoundedCornerShape(32.dp))
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.skip_previous),
-                            contentDescription = null
+                            contentDescription = null,
+                            modifier = Modifier.size(32.dp)
                         )
                     }
 
-                    Spacer(modifier = Modifier.width(12.dp))
+                    Spacer(modifier = Modifier.width(16.dp))
 
                     FilledIconButton(
                         onClick = {
@@ -849,8 +853,8 @@ fun BottomSheetPlayer(
                             contentColor = iconButtonColor
                         ),
                         modifier = Modifier
-                            .size(width = playButtonWidth, height = buttonHeight)
-                            .clip(RoundedCornerShape(100.dp))
+                            .size(width = playButtonWidth, height = playButtonHeight)
+                            .clip(RoundedCornerShape(32.dp))
                     ) {
                         Icon(
                             painter = painterResource(
@@ -861,11 +865,11 @@ fun BottomSheetPlayer(
                                 }
                             ),
                             contentDescription = null,
-                            modifier = Modifier.size(32.dp)
+                            modifier = Modifier.size(38.dp)
                         )
                     }
 
-                    Spacer(modifier = Modifier.width(12.dp))
+                    Spacer(modifier = Modifier.width(16.dp))
 
                     FilledTonalIconButton(
                         onClick = playerConnection::seekToNext,
@@ -874,11 +878,14 @@ fun BottomSheetPlayer(
                             containerColor = textButtonColor,
                             contentColor = iconButtonColor
                         ),
-                        modifier = Modifier.size(buttonHeight)
+                        modifier = Modifier
+                            .size(width = sideButtonWidth, height = sideButtonHeight)
+                            .clip(RoundedCornerShape(32.dp))
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.skip_next),
-                            contentDescription = null
+                            contentDescription = null,
+                            modifier = Modifier.size(32.dp)
                         )
                     }      
                 }
@@ -921,7 +928,7 @@ fun BottomSheetPlayer(
                 )
             }
         }
-//
+// distance
         when (LocalConfiguration.current.orientation) {
             Configuration.ORIENTATION_LANDSCAPE -> {
                 Row(
