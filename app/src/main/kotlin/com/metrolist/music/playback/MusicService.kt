@@ -195,6 +195,9 @@ class MusicService :
     private val normalizeFactor = MutableStateFlow(1f)
     val playerVolume = MutableStateFlow(dataStore.get(PlayerVolumeKey, 1f).coerceIn(0f, 1f))
 
+    private var wasPlayingBeforeFocusLoss = false
+    private var pausedByUser = false
+
     lateinit var sleepTimer: SleepTimer
 
     @Inject
@@ -753,6 +756,21 @@ class MusicService :
         }
     }
 
+    override fun onIsPlayingChanged(isPlaying: Boolean) {
+        super.onIsPlayingChanged(isPlaying)
+
+        // Track if user manually paused/played
+        if (!isPlaying && player.playbackState != Player.STATE_IDLE) {
+            // Check if this pause was not caused by audio focus loss
+            if (!wasPlayingBeforeFocusLoss) {
+                pausedByUser = true
+            }
+        } else if (isPlaying) {
+            pausedByUser = false
+            wasPlayingBeforeFocusLoss = false
+        }
+    }
+
     override fun onShuffleModeEnabledChanged(shuffleModeEnabled: Boolean) {
         updateNotification()
         if (shuffleModeEnabled) {
@@ -991,12 +1009,24 @@ class MusicService :
             .setWillPauseWhenDucked(false)
             .setOnAudioFocusChangeListener { focusChange ->
                 when (focusChange) {
-                    AudioManager.AUDIOFOCUS_LOSS -> player.pause()
-                    AudioManager.AUDIOFOCUS_LOSS_TRANSIENT -> player.pause()
-                    AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK -> player.volume = 0.2f
+                    AudioManager.AUDIOFOCUS_LOSS -> {
+                        wasPlayingBeforeFocusLoss = player.isPlaying
+                        player.pause()
+                    }
+                    AudioManager.AUDIOFOCUS_LOSS_TRANSIENT -> {
+                        wasPlayingBeforeFocusLoss = player.isPlaying
+                        player.pause()
+                    }
+                    AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK -> {
+                        player.volume = 0.2f
+                    }
                     AudioManager.AUDIOFOCUS_GAIN -> {
                         player.volume = playerVolume.value
-                        if (!player.isPlaying) player.play()
+                        // Only resume if music was playing before focus loss and not paused by user
+                        if (wasPlayingBeforeFocusLoss && !pausedByUser) {
+                            player.play()
+                        }
+                        wasPlayingBeforeFocusLoss = false
                     }
                 }
             }.build()
@@ -1010,6 +1040,12 @@ class MusicService :
         audioFocusRequest?.let {
             audioManager.abandonAudioFocusRequest(it)
         }
+    }
+
+    // Optional: Add this method to reset the state when needed
+    private fun resetAudioFocusState() {
+        wasPlayingBeforeFocusLoss = false
+        pausedByUser = false
     }
 
     override fun onDestroy() {
