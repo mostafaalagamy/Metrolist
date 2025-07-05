@@ -213,8 +213,8 @@ fun Queue(
                         ),
                     ),
             ) {
-                val buttonSize = 48.dp
-                val iconSize = 22.dp
+                val buttonSize = 42.dp
+                val iconSize = 24.dp
                 val borderColor = TextBackgroundColor.copy(alpha = 0.35f)
 
                 Box(
