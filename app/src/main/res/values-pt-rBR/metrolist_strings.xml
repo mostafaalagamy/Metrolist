@@ -142,6 +142,6 @@
     <string name="playlist_add_local_to_synced_note">Observação: Não há suporte para adicionar músicas locais em listas sincronizadas/remotas. Qualquer outra combinação é válida</string>
     <string name="lyrics_romanize_japanese">Romanizar letras em japonês</string>
     <string name="lyrics_romanize_korean">Romanizar letras em coreano</string>
-    <string name="yt_sync">Sincronização automática com a conta</string>
+    <string name="yt_sync">Sincronizar automaticamente com a conta</string>
     <string name="more_content">Mais conteúdo</string>
 </resources>
