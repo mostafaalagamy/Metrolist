@@ -103,7 +103,7 @@
     <string name="sync_playlist">Sincronizar lista</string>
     <string name="dislike_all">Desfavoritar tudo</string>
     <string name="show_liked_playlist">Mostrar lista de favoritos</string>
-    <string name="advanced_login">Login avançado (token)</string>
+    <string name="advanced_login">Login com token</string>
     <string name="token_hidden">Toque para mostrar o token</string>
     <string name="token_shown">Toque novamente para copiar ou editar</string>
     <string name="ytm_sync">Sincronizar com a sua conta do YouTube Music automaticamente</string>
@@ -140,6 +140,8 @@
     <string name="import_online">Importar uma lista \"m3u\"</string>
     <string name="import_csv">Importar uma lista \"csv\"</string>
     <string name="playlist_add_local_to_synced_note">Observação: Não há suporte para adicionar músicas locais em listas sincronizadas/remotas. Qualquer outra combinação é válida</string>
-    <string name="lyrics_romanize_japanese">Romanizar letras japonesas</string>
+    <string name="lyrics_romanize_japanese">Romanizar letras em japonês</string>
     <string name="lyrics_romanize_korean">Romanizar letras em coreano</string>
+    <string name="yt_sync">Sincronização automática com a conta</string>
+    <string name="more_content">Mais conteúdo</string>
 </resources>
