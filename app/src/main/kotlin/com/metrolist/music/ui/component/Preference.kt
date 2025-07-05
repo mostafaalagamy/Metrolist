@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.AlertDialog
@@ -20,6 +21,7 @@ import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -197,10 +199,20 @@ fun SwitchPreference(
             Switch(
                 checked = checked,
                 onCheckedChange = onCheckedChange,
+                enabled = isEnabled,
+                thumbContent = {
+                    Icon(
+                        painter = painterResource(
+                            id = if (checked) R.drawable.check else R.drawable.close
+                        ),
+                        contentDescription = null,
+                        modifier = Modifier.size(SwitchDefaults.IconSize),
+                    )
+                }
             )
         },
         onClick = { onCheckedChange(!checked) },
-        isEnabled = isEnabled,
+        isEnabled = isEnabled
     )
 }
 
