@@ -123,7 +123,7 @@ android {
     }
 
     lint {
-        lintConfig = file("app/lint.xml")
+        lintConfig = file("lint.xml")
     }
 
     androidResources {
