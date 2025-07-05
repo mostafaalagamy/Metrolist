@@ -642,7 +642,7 @@ fun BottomSheetPlayer(
                 ) {
                     Box(
                         modifier = Modifier
-                            .size(48.dp)
+                            .size(42.dp)
                             .clip(shareShape)
                             .background(textButtonColor)
                             .clickable {
@@ -669,7 +669,7 @@ fun BottomSheetPlayer(
 
                     Box(
                         modifier = Modifier
-                            .size(48.dp)
+                            .size(42.dp)
                             .clip(favShape)
                             .background(textButtonColor)
                             .clickable {
