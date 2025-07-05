@@ -199,19 +199,20 @@ fun SwitchPreference(
             Switch(
                 checked = checked,
                 onCheckedChange = onCheckedChange,
+                enabled = isEnabled,
+                thumbContent = {
+                    Icon(
+                        painter = painterResource(
+                            id = if (checked) R.drawable.check else R.drawable.close
+                        ),
+                        contentDescription = null,
+                        modifier = Modifier.size(SwitchDefaults.IconSize),
+                    )
+                }
             )
         },
         onClick = { onCheckedChange(!checked) },
-        enabled = isEnabled,
-            thumbContent = {
-                Icon(
-                    painter = painterResource(
-                        id = if (checked) R.drawable.check else R.drawable.close
-                    ),
-                    contentDescription = null,
-                    modifier = Modifier.size(SwitchDefaults.IconSize),
-                )
-            }
+        isEnabled = isEnabled
     )
 }
 
