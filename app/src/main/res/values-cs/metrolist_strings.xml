@@ -69,7 +69,7 @@
     <string name="show_cached_playlist">Zobrazit playlist „V mezipaměti“</string>
     <string name="google">Google</string>
     <string name="discord">Discord</string>
-    <string name="advanced_login">Pokročilé přihlášení (token)</string>
+    <string name="advanced_login">Přihlásit se pomocí tokenu</string>
     <string name="token_hidden">Klepněte pro zobrazení tokenu</string>
     <string name="token_shown">Klepněte znovu pro kopírování nebo úpravu</string>
     <string name="lyrics">Texty</string>
@@ -141,4 +141,8 @@
     <string name="import_csv">Importovat playlist „csv“</string>
     <string name="import_online">Importovat playlist „m3u“</string>
     <string name="playlist_add_local_to_synced_note">Upozornění: přidávání místních skladeb do synchronizovaných/vzdálených playlistů není podporováno. Jakákoli jiná kombinace je platná</string>
+    <string name="lyrics_romanize_japanese">Přepsat japonské texty do latinky</string>
+    <string name="lyrics_romanize_korean">Přepsat korejské texty do latinky</string>
+    <string name="yt_sync">Automaticky synchronizovat s účtem</string>
+    <string name="more_content">Další obsah</string>
 </resources>
