@@ -72,4 +72,11 @@
     <string name="share_lyrics">Поделится текстом</string>
     <string name="trending">Тренды</string>
     <string name="generating_image">Генерация изображения</string>
+    <string name="local_history">Локальный</string>
+    <string name="remote_history">Удаленный</string>
+    <string name="retry_button">Повторить</string>
+    <string name="text_color">Цвет текста</string>
+    <string name="background_color">Цвет фона</string>
+    <string name="added_to_play_next">Добавить в очередь</string>
+    <string name="more_options">Больше настроек</string>
 </resources>
