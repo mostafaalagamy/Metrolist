@@ -88,7 +88,7 @@
     <string name="auto_playlists">Playlists Automatiques</string>
     <string name="show_liked_playlist">Afficher la playlist « Aimé »</string>
     <string name="show_downloaded_playlist">Afficher la playlist « Téléchargé »</string>
-    <string name="advanced_login">Connexion avancée (jeton)</string>
+    <string name="advanced_login">Connexion avec un jeton</string>
     <string name="token_hidden">Cliquer pour afficher le jeton</string>
     <string name="token_shown">Cliquer encore pour copier ou éditer</string>
     <string name="google">Google</string>
@@ -140,4 +140,8 @@
     <string name="playlist_add_local_to_synced_note">Remarque : L\'ajout de titres locaux aux playlists synchronisées/distantes n\'est pas pris en charge. Toute autre combinaison est valide.</string>
     <string name="import_online">Importer une playlist « m3u »</string>
     <string name="import_csv">Importer une playlist « csv »</string>
+    <string name="lyrics_romanize_japanese">Romaniser les paroles japonaises</string>
+    <string name="lyrics_romanize_korean">Romaniser les paroles coréennes</string>
+    <string name="yt_sync">Synchronisation automatique avec le compte</string>
+    <string name="more_content">Plus de contenu</string>
 </resources>
