@@ -103,6 +103,29 @@ Thank you very much for helping to make Metrolist accessible to many people worl
 Use other music scrobbler apps, I recommend [Pano Scrobbler](https://play.google.com/store/apps/details?id=com.arn.scrobble).
 
 <div align="center">
+<h1>Support Me</h1>
+
+If you'd like to support my work, you can send a donation to the following address:
+
+44XjSELSWcgJTZiCKzjpCQWyXhokrH9RqH3rpp35FkSKi57T25hniHWHQNhLeXyFn3DDYqufmfRB1iEtENerZpJc7xJCcqt
+
+scan this QR code:
+
+<img src="https://github.com/mostafaalagamy/Metrolist/blob/main/assets/XMR.png" alt="QR Code" width="200" height="200" />
+<br />
+
+<a href="https://www.buymeacoffee.com/mostafaalagamy">
+  <img src="https://github.com/mostafaalagamy/Metrolist/blob/main/assets/buymeacoffee.png?raw=true" alt="Buy Me a Coffee" width="150" height="150" />
+</a>
+
+<br />
+
+<a href="https://liberapay.com/mostafaalagamy/donate">
+  <img src="https://liberapay.com/assets/widgets/donate.svg" alt="Donate" width="100" height="100" />
+</a>
+
+
+<div align="center">
 <h1>Special thanks</h1>
 
 InnerTune:
