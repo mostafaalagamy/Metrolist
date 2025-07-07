@@ -71,7 +71,7 @@
     <string name="show_cached_playlist">Ver tu playlist en caché</string>
     <string name="google">Google</string>
     <string name="discord">Discord</string>
-    <string name="advanced_login">Inicio de sesión avanzado (token)</string>
+    <string name="advanced_login">Iniciar sesión con token</string>
     <string name="token_hidden">Toca para mostrar el token</string>
     <string name="token_shown">Toca de nuevo para copiar o editar</string>
     <string name="token_adv_login_description">Este es un método de inicio de sesión AVANZADO. Como alternativa al portal web, puedes introducir o actualizar directamente tu token de inicio de sesión aquí. Por ejemplo, esto puede acelerar el inicio de sesión en múltiples dispositivos. Ten en cuenta que cualquier formato de token inválido que la aplicación no pueda analizar no será aceptado</string>
@@ -140,4 +140,9 @@
     <string name="import_csv">Importar una lista de reproducción \"csv\"</string>
     <string name="import_online">Importar una lista de reproducción \"m3u\"</string>
     <string name="playlist_add_local_to_synced_note">Nota: No se permite agregar canciones locales a listas de reproducción sincronizadas o remotas. Cualquier otra combinación es válida</string>
+    <string name="new_player_design">Nuevo diseño del reproductor</string>
+    <string name="lyrics_romanize_japanese">Romanizar letras japonesas</string>
+    <string name="lyrics_romanize_korean">Romanizar letras coreanas</string>
+    <string name="yt_sync">Sincronización automática con la cuenta</string>
+    <string name="more_content">Más contenido</string>
 </resources>
