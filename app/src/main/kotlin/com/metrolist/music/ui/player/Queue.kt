@@ -100,6 +100,7 @@ import androidx.navigation.NavController
 import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
 import com.metrolist.music.constants.ListItemHeight
+import com.metrolist.music.constants.UseNewPlayerDesignKey
 import com.metrolist.music.constants.PlayerButtonsStyle
 import com.metrolist.music.constants.PlayerButtonsStyleKey
 import com.metrolist.music.constants.QueueEditLockKey
@@ -168,6 +169,11 @@ fun Queue(
 
     var showLyrics by rememberPreference(ShowLyricsKey, defaultValue = false)
 
+    val (useNewPlayerDesign, onUseNewPlayerDesignChange) = rememberPreference(
+        UseNewPlayerDesignKey,
+        defaultValue = true
+    )
+
     val snackbarHostState = remember { SnackbarHostState() }
     var dismissJob: Job? by remember { mutableStateOf(null) }
 
@@ -201,189 +207,281 @@ fun Queue(
         ),
         modifier = modifier,
         collapsedContent = {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 30.dp)
-                    .windowInsetsPadding(
-                        WindowInsets.systemBars.only(
-                            WindowInsetsSides.Bottom + WindowInsetsSides.Horizontal
+            if (useNewPlayerDesign) {
+                // New design
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 30.dp)
+                        .windowInsetsPadding(
+                            WindowInsets.systemBars.only(
+                                WindowInsetsSides.Bottom + WindowInsetsSides.Horizontal
+                            ),
                         ),
-                    ),
-            ) {
-                val buttonSize = 42.dp
-                val iconSize = 24.dp
-                val borderColor = TextBackgroundColor.copy(alpha = 0.35f)
-
-                Box(
-                    modifier = Modifier
-                        .size(buttonSize)
-                        .clip(
-                            RoundedCornerShape(
-                                topStart = 50.dp,
-                                bottomStart = 50.dp,
-                                topEnd = 10.dp,
-                                bottomEnd = 10.dp
-                            )
-                        )
-                        .border(
-                            1.dp,
-                            borderColor,
-                            RoundedCornerShape(
-                                topStart = 50.dp,
-                                bottomStart = 50.dp,
-                                topEnd = 10.dp,
-                                bottomEnd = 10.dp
-                            )
-                        )
-                        .clickable { state.expandSoft() },
-                    contentAlignment = Alignment.Center
                 ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.queue_music),
-                        contentDescription = null,
-                        modifier = Modifier.size(iconSize),
-                        tint = TextBackgroundColor
-                    )
-                }
+                    val buttonSize = 42.dp
+                    val iconSize = 24.dp
+                    val borderColor = TextBackgroundColor.copy(alpha = 0.35f)
 
-                Box(
+                    Box(
+                        modifier = Modifier
+                            .size(buttonSize)
+                            .clip(
+                                RoundedCornerShape(
+                                    topStart = 50.dp,
+                                    bottomStart = 50.dp,
+                                    topEnd = 10.dp,
+                                    bottomEnd = 10.dp
+                                )
+                            )
+                            .border(
+                                1.dp,
+                                borderColor,
+                                RoundedCornerShape(
+                                    topStart = 50.dp,
+                                    bottomStart = 50.dp,
+                                    topEnd = 10.dp,
+                                    bottomEnd = 10.dp
+                                )
+                            )
+                            .clickable { state.expandSoft() },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.queue_music),
+                            contentDescription = null,
+                            modifier = Modifier.size(iconSize),
+                            tint = TextBackgroundColor
+                        )
+                    }
+
+                    Box(
+                        modifier = Modifier
+                            .size(buttonSize)
+                            .clip(RoundedCornerShape(10.dp))
+                            .border(1.dp, borderColor, RoundedCornerShape(10.dp))
+                            .clickable {
+                                if (sleepTimerEnabled) {
+                                    playerConnection.service.sleepTimer.clear()
+                                } else {
+                                    showSleepTimerDialog = true
+                                }
+                            },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        AnimatedContent(
+                            label = "sleepTimer",
+                            targetState = sleepTimerEnabled,
+                        ) { enabled ->
+                            if (enabled) {
+                                Text(
+                                    text = makeTimeString(sleepTimerTimeLeft),
+                                    color = TextBackgroundColor,
+                                    fontSize = 10.sp,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                    textAlign = TextAlign.Center,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .basicMarquee()
+                                )
+                            } else {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.bedtime),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(iconSize),
+                                    tint = TextBackgroundColor
+                                )
+                            }
+                        }
+                    }
+
+                    Box(
+                        modifier = Modifier
+                            .size(buttonSize)
+                            .clip(RoundedCornerShape(10.dp))
+                            .border(1.dp, borderColor, RoundedCornerShape(10.dp))
+                            .clickable {
+                                showLyrics = !showLyrics
+                            },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.lyrics),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(iconSize)
+                                .alpha(if (showLyrics) 1f else 0.5f),
+                            tint = TextBackgroundColor
+                        )
+                    }
+
+                    Box(
+                        modifier = Modifier
+                            .size(buttonSize)
+                            .clip(
+                                RoundedCornerShape(
+                                    topStart = 10.dp,
+                                    bottomStart = 10.dp,
+                                    topEnd = 50.dp,
+                                    bottomEnd = 50.dp
+                                )
+                            )
+                            .border(
+                                1.dp,
+                                borderColor,
+                                RoundedCornerShape(
+                                    topStart = 10.dp,
+                                    bottomStart = 10.dp,
+                                    topEnd = 50.dp,
+                                    bottomEnd = 50.dp
+                                )
+                            )
+                            .clickable {
+                                playerConnection.player.toggleRepeatMode()
+                            },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            painter = painterResource(
+                                id = when (repeatMode) {
+                                    Player.REPEAT_MODE_OFF, Player.REPEAT_MODE_ALL -> R.drawable.repeat
+                                    Player.REPEAT_MODE_ONE -> R.drawable.repeat_one
+                                    else -> R.drawable.repeat
+                                }
+                            ),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(iconSize)
+                                .alpha(if (repeatMode == Player.REPEAT_MODE_OFF) 0.5f else 1f),
+                            tint = TextBackgroundColor
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.weight(1f))
+
+                    Box(
+                        modifier = Modifier
+                            .size(buttonSize)
+                            .clip(CircleShape)
+                            .background(textButtonColor)
+                            .clickable {
+                                menuState.show {
+                                    PlayerMenu(
+                                        mediaMetadata = mediaMetadata,
+                                        navController = navController,
+                                        playerBottomSheetState = state,
+                                        onShowDetailsDialog = {
+                                            mediaMetadata?.id?.let {
+                                                bottomSheetPageState.show {
+                                                    ShowMediaInfo(it)
+                                                }
+                                            }
+                                        },
+                                        onDismiss = menuState::dismiss
+                                    )
+                                }
+                            },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.more_vert),
+                            contentDescription = null,
+                            modifier = Modifier.size(iconSize),
+                            tint = iconButtonColor
+                        )
+                    }
+                }
+            } else {
+                // Old design
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
-                        .size(buttonSize)
-                        .clip(RoundedCornerShape(10.dp))
-                        .border(1.dp, borderColor, RoundedCornerShape(10.dp))
-                        .clickable {
+                        .fillMaxWidth()
+                        .padding(horizontal = 30.dp)
+                        .windowInsetsPadding(
+                            WindowInsets.systemBars
+                                .only(WindowInsetsSides.Bottom + WindowInsetsSides.Horizontal),
+                        ),
+                ) {
+                    TextButton(onClick = { state.expandSoft() }) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Text(
+                                text = stringResource(id = R.string.queue),
+                                color = TextBackgroundColor,
+                                maxLines = 2,
+                                overflow = TextOverflow.Ellipsis,
+                                modifier = Modifier
+                                    .sizeIn(maxWidth = 80.dp)
+                                    .basicMarquee()
+                            )
+                        }
+                    }
+
+                    TextButton(
+                        onClick = {
                             if (sleepTimerEnabled) {
                                 playerConnection.service.sleepTimer.clear()
                             } else {
                                 showSleepTimerDialog = true
                             }
-                        },
-                    contentAlignment = Alignment.Center
-                ) {
-                    AnimatedContent(
-                        label = "sleepTimer",
-                        targetState = sleepTimerEnabled,
-                    ) { enabled ->
-                        if (enabled) {
+                        }
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            AnimatedContent(
+                                label = "sleepTimer",
+                                targetState = sleepTimerEnabled,
+                            ) { enabled ->
+                                if (enabled) {
+                                    Text(
+                                        text = makeTimeString(sleepTimerTimeLeft),
+                                        color = TextBackgroundColor,
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis,
+                                        modifier = Modifier
+                                            .sizeIn(maxWidth = 80.dp)
+                                            .basicMarquee()
+                                    )
+                                } else {
+                                    Text(
+                                        text = stringResource(id = R.string.sleep_timer),
+                                        color = TextBackgroundColor,
+                                        maxLines = 2,
+                                        overflow = TextOverflow.Ellipsis,
+                                        modifier = Modifier
+                                            .sizeIn(maxWidth = 80.dp)
+                                            .basicMarquee()
+                                    )
+                                }
+                            }
+                        }
+                    }
+
+                    TextButton(onClick = { showLyrics = !showLyrics }) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
+                        ) {
                             Text(
-                                text = makeTimeString(sleepTimerTimeLeft),
+                                text = stringResource(id = R.string.lyrics),
                                 color = TextBackgroundColor,
-                                fontSize = 12.sp,
-                                maxLines = 1,
+                                maxLines = 2,
                                 overflow = TextOverflow.Ellipsis,
-                                textAlign = TextAlign.Center,
                                 modifier = Modifier
-                                    .fillMaxWidth()
+                                    .sizeIn(maxWidth = 80.dp)
                                     .basicMarquee()
-                            )
-                        } else {
-                            Icon(
-                                painter = painterResource(id = R.drawable.bedtime),
-                                contentDescription = null,
-                                modifier = Modifier.size(iconSize),
-                                tint = TextBackgroundColor
                             )
                         }
                     }
-                }
-
-                Box(
-                    modifier = Modifier
-                        .size(buttonSize)
-                        .clip(RoundedCornerShape(10.dp))
-                        .border(1.dp, borderColor, RoundedCornerShape(10.dp))
-                        .clickable {
-                            showLyrics = !showLyrics
-                        },
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.lyrics),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(iconSize)
-                            .alpha(if (showLyrics) 1f else 0.5f),
-                        tint = TextBackgroundColor
-                    )
-                }
-
-                Box(
-                    modifier = Modifier
-                        .size(buttonSize)
-                        .clip(
-                            RoundedCornerShape(
-                                topStart = 10.dp,
-                                bottomStart = 10.dp,
-                                topEnd = 50.dp,
-                                bottomEnd = 50.dp
-                            )
-                        )
-                        .border(
-                            1.dp,
-                            borderColor,
-                            RoundedCornerShape(
-                                topStart = 10.dp,
-                                bottomStart = 10.dp,
-                                topEnd = 50.dp,
-                                bottomEnd = 50.dp
-                            )
-                        )
-                        .clickable {
-                            playerConnection.player.toggleRepeatMode()
-                        },
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        painter = painterResource(
-                            id = when (repeatMode) {
-                                Player.REPEAT_MODE_OFF, Player.REPEAT_MODE_ALL -> R.drawable.repeat
-                                Player.REPEAT_MODE_ONE -> R.drawable.repeat_one
-                                else -> R.drawable.repeat
-                            }
-                        ),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(iconSize)
-                            .alpha(if (repeatMode == Player.REPEAT_MODE_OFF) 0.5f else 1f),
-                        tint = TextBackgroundColor
-                    )
-                }
-
-                Spacer(modifier = Modifier.weight(1f))
-
-                Box(
-                    modifier = Modifier
-                        .size(buttonSize)
-                        .clip(CircleShape)
-                        .background(textButtonColor)
-                        .clickable {
-                            menuState.show {
-                                PlayerMenu(
-                                    mediaMetadata = mediaMetadata,
-                                    navController = navController,
-                                    playerBottomSheetState = state,
-                                    onShowDetailsDialog = {
-                                        mediaMetadata?.id?.let {
-                                            bottomSheetPageState.show {
-                                                ShowMediaInfo(it)
-                                            }
-                                        }
-                                    },
-                                    onDismiss = menuState::dismiss
-                                )
-                            }
-                        },
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.more_vert),
-                        contentDescription = null,
-                        modifier = Modifier.size(iconSize),
-                        tint = iconButtonColor
-                    )
                 }
             }
 
