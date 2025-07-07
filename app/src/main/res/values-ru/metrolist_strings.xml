@@ -63,11 +63,11 @@
     <string name="years">Годы</string>
     <string name="liked">Понравившееся</string>
     <string name="offline">Скачанное</string>
-    <string name="my_top">Мой топ</string>
+    <string name="my_top">Моя подборка</string>
     <string name="cached_playlist">Кешированное</string>
     <string name="sync_playlist">Синхронизировать плейлист</string>
     <string name="sync_disabled">Синхронизация выключена</string>
-    <string name="elements_selected">%1$d Элементов выбрано</string>
+    <string name="elements_selected">%1$d элементов выбрано</string>
     <string name="cancel">Отмена</string>
     <string name="share_lyrics">Поделится текстом</string>
     <string name="trending">Тренды</string>
@@ -79,4 +79,20 @@
     <string name="background_color">Цвет фона</string>
     <string name="added_to_play_next">Добавить в очередь</string>
     <string name="more_options">Больше настроек</string>
+    <string name="continuous">Непрерывно</string>
+    <string name="share_as_text">Поделиться как текст</string>
+    <string name="share_as_image">Поделиться как изображение</string>
+    <string name="max_selection_limit">Максимальный лимит выделения</string>
+    <string name="share_selected">Поделиться выделенным</string>
+    <string name="customize_colors">Настроить цвета</string>
+    <string name="secondary_text_color">Цвет вторичного текста</string>
+    <string name="like_all">Нравится всё</string>
+    <string name="dislike_all">Не нравится всё</string>
+    <string name="sort_by_last_updated">Дата обновления</string>
+    <plurals name="n_element">
+        <item quantity="one">%d элемент</item>
+        <item quantity="few">%d элемента</item>
+        <item quantity="many">%d элементов</item>
+        <item quantity="other">%d элементов</item>
+    </plurals>
 </resources>
