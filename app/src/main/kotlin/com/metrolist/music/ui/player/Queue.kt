@@ -279,7 +279,7 @@ fun Queue(
                                 Text(
                                     text = makeTimeString(sleepTimerTimeLeft),
                                     color = TextBackgroundColor,
-                                    fontSize = 11.sp,
+                                    fontSize = 9.sp,
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis,
                                     textAlign = TextAlign.Center,
