@@ -1,6 +1,5 @@
 package com.metrolist.music.ui.screens
 
-import android.annotation.SuppressLint
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
@@ -128,7 +127,6 @@ import kotlinx.coroutines.withContext
 import kotlin.math.min
 import kotlin.random.Random
 
-@SuppressLint("UnusedBoxWithConstraintsScope")
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
@@ -386,7 +384,7 @@ fun HomeScreen(
         ) {
             item {
                 ChipsRow(
-                    chips = homePage?.chips?.mapNotNull { it to it.title } ?: emptyList(),
+                    chips = homePage?.chips?.map { it to it.title } ?: emptyList(),
                     currentValue = selectedChip,
                     onValueUpdate = {
                         viewModel.toggleChip(it)
@@ -707,16 +705,11 @@ fun HomeScreen(
                             }
                         },
                         onClick = it.endpoint?.browseId?.let { browseId ->
-                            if (homePage != null) {
-                                {
-                                    when (browseId) {
-                                        "FEmusic_moods_and_genres" -> navController.navigate("mood_and_genres")
-                                        "FEmusic_charts" -> navController.navigate("charts_screen")
-                                        else -> navController.navigate("browse/$browseId")
-                                    }
-                                }
-                            } else {
-                                null
+                            {
+                                if (browseId == "FEmusic_moods_and_genres")
+                                    navController.navigate("mood_and_genres")
+                                else
+                                    navController.navigate("browse/$browseId")
                             }
                         },
                         modifier = Modifier.animateItem()
