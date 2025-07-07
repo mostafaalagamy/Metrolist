@@ -195,6 +195,7 @@ class MusicService :
     private val normalizeFactor = MutableStateFlow(1f)
     val playerVolume = MutableStateFlow(dataStore.get(PlayerVolumeKey, 1f).coerceIn(0f, 1f))
 
+    private var shouldRequestAudioFocus = false
     private var wasPlayingBeforeFocusLoss = false
     private var pausedByUser = false
 
@@ -255,7 +256,6 @@ class MusicService :
                 }
 
         audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
-        requestAudioFocus()
 
         mediaLibrarySessionCallback.apply {
             toggleLike = ::toggleLike
@@ -758,6 +758,12 @@ class MusicService :
 
     override fun onIsPlayingChanged(isPlaying: Boolean) {
         super.onIsPlayingChanged(isPlaying)
+
+        // Allow other audio apps to continue playing when MetroList opens   
+        if (isPlaying && !shouldRequestAudioFocus) {
+            shouldRequestAudioFocus = true
+            requestAudioFocus()
+        }
 
         // Track if user manually paused/played
         if (!isPlaying && player.playbackState != Player.STATE_IDLE) {
