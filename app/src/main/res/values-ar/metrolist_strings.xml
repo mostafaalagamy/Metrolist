@@ -90,7 +90,7 @@
     <string name="background_color">لون الخلفية</string>
     <string name="google">جوجل</string>
     <string name="discord">ديسكورد</string>
-    <string name="advanced_login">تسجيل الدخول المتقدم (token)</string>
+    <string name="advanced_login">تسجيل الدخول باستخدام token</string>
     <string name="token_hidden">اضغط لعرض ال Token</string>
     <string name="token_shown">اضغط مرة أخرى للنسخ أو التعديل</string>
     <string name="token_adv_login_description">هذه طريقة تسجيل دخول متقدمة. كبديل للبوابة الإلكترونية، يمكنك إدخال أو تحديث رمز تسجيل الدخول الخاص بك هنا مباشرة. على سبيل المثال، يمكن أن يسرع ذلك عملية تسجيل الدخول على أجهزة متعددة. يرجى ملاحظة أن أي صيغة رمز غير صالحة لا يستطيع التطبيق تحليلها لن يتم قبولها</string>
@@ -150,4 +150,9 @@
     <string name="playlist_add_local_to_synced_note">ملاحظة: إضافة الأغاني المحلية إلى قوائم التشغيل المتزامنة / قوائم التشغيل عن بعد غير مدعومة. أي نوع آخر منها صالح.</string>
     <string name="import_csv">استيراد قوائم التشغيل من نوع \"csv\"</string>
     <string name="import_online">استيراد قوائم التشغيل من نوع \"m3u\"</string>
+    <string name="lyrics_romanize_japanese">كلمات الأغاني اليابانية الرومانية</string>
+    <string name="lyrics_romanize_korean">كلمات الأغاني الكورية الرومانية</string>
+    <string name="yt_sync">المزامنة التلقائية مع الحساب</string>
+    <string name="more_content">المزيد من المحتوي</string>
+    <string name="new_player_design">تصميم المشغل الجديد</string>
 </resources>

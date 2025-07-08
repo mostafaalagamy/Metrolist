@@ -26,7 +26,7 @@
     <string name="continuous">Terus-menerus</string>
     <string name="liked">Disukai</string>
     <string name="offline">Diunduh</string>
-    <string name="sync_playlist">Sinkron Playlist</string>
+    <string name="sync_playlist">Sinkronisasi Daftar Putar</string>
     <string name="elements_selected">%1$d Elemen terpilih</string>
     <string name="allows_for_sync_witch_youtube">Catatan: Mengizinkan sinkronisasi dengan YouTube Music. Ini TIDAK dapat diubah suatu hari nanti.</string>
     <string name="share_lyrics">Berbagi lirik</string>
