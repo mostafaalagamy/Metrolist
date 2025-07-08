@@ -71,7 +71,7 @@
     <string name="show_cached_playlist">Mostra la Playlist dei brani in cache</string>
     <string name="google">Google</string>
     <string name="discord">Discord</string>
-    <string name="advanced_login">Accesso avanzato (token)</string>
+    <string name="advanced_login">Login con il token</string>
     <string name="token_hidden">Tocca per mostrare il token</string>
     <string name="token_shown">Tocca ancora per copiarlo o modificarlo</string>
     <string name="token_adv_login_description">Questo è un metodo AVANZATO per fare l\'accesso a YouTube Music. Come alternativa al portale web, puoi inserire o aggiornare direttamente il tuo token di accesso qui. Per esempio, questo può velocizzare l\'accesso su più dispositivi. Tieni presente che qualsiasi formato di token non valido che l\'app non riesce ad analizzare non sarà accettato</string>
@@ -140,4 +140,8 @@
     <string name="import_csv">Importa una playlist in formato \"csv\"</string>
     <string name="playlist_add_local_to_synced_note">Nota: non è supportata l\'importazione di brani locali in una playlist sincronizzata o remota. Qualsiasi altra combinazione è valida</string>
     <string name="import_online">Importa una playlist in formato \"m3u\"</string>
+    <string name="more_content">Altri contenuti</string>
+    <string name="lyrics_romanize_japanese">Romanizza testo in giapponese</string>
+    <string name="lyrics_romanize_korean">Romanizza testo in coreano</string>
+    <string name="yt_sync">Sincronizza automaticamente con l\'account</string>
 </resources>
