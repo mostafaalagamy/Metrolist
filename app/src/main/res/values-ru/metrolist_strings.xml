@@ -107,5 +107,11 @@
     <string name="new_player_design">Новый дизайн игрока</string>
     <string name="default_style">По умолчанию</string>
     <string name="secondary_color_style">Вторичный</string>
-    <string name="lyrics_click_change">Изменение текста песни по щелчку мыши</string>
+    <string name="lyrics_click_change">Изменение текста песни по клику</string>
+    <string name="lyrics_auto_scroll">Автоматическая прокрутка текстов песен</string>
+    <string name="lyrics_romanize_japanese">Латинизация японской лирики</string>
+    <string name="lyrics_romanize_korean">Романизировать корейскую лирику</string>
+    <string name="auto_playlists">Автоматические списки воспроизведения</string>
+    <string name="show_liked_playlist">Показать список воспроизведения \"Понравилось\"</string>
+    <string name="show_downloaded_playlist">Показать список воспроизведения \"Загруженные\"</string>
 </resources>
