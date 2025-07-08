@@ -88,3 +88,6 @@ lint/tmp/
 .kotlin
 app/release
 output-metadata.json
+
+# VS Code
+.vscode/

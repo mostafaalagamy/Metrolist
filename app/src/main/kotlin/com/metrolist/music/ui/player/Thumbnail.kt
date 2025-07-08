@@ -1,6 +1,9 @@
 package com.metrolist.music.ui.player
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.Spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
@@ -21,8 +24,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -51,6 +56,7 @@ import com.metrolist.music.constants.ThumbnailCornerRadius
 import com.metrolist.music.ui.component.Lyrics
 import com.metrolist.music.utils.rememberPreference
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.math.absoluteValue
 import kotlin.math.roundToInt
 
@@ -69,6 +75,14 @@ fun Thumbnail(
     val showLyrics by rememberPreference(ShowLyricsKey, false)
     val swipeThumbnail by rememberPreference(SwipeThumbnailKey, true)
 
+    val coroutineScope = rememberCoroutineScope()
+    val offsetXAnimatable = remember { Animatable(0f) }
+
+    val animationSpec = spring<Float>(
+        dampingRatio = Spring.DampingRatioNoBouncy,
+        stiffness = Spring.StiffnessLow
+    )
+
     DisposableEffect(showLyrics) {
         currentView.keepScreenOn = showLyrics
         onDispose {
@@ -81,6 +95,104 @@ fun Thumbnail(
     var previewImage by remember { mutableStateOf<String?>(null) }
     var showSeekEffect by remember { mutableStateOf(false) }
     var seekDirection by remember { mutableStateOf("") }
+    var dragStartTime by remember { mutableStateOf(0L) }
+    var totalDragDistance by remember { mutableFloatStateOf(0f) }
+
+    var displayedThumbnailUrl by remember { mutableStateOf(mediaMetadata?.thumbnailUrl) }
+    var nextThumbnailUrl by remember { mutableStateOf<String?>(null) }
+    var isAnimatingTransition by remember { mutableStateOf(false) }
+    var lastMediaId by remember { mutableStateOf(mediaMetadata?.id) }
+    var lastQueueIndex by remember { mutableIntStateOf(playerConnection.player.currentMediaItemIndex) }
+    var swipeTriggeredChange by remember { mutableStateOf(false) }
+    var animationDirection by remember { mutableStateOf(true) } 
+
+    LaunchedEffect(mediaMetadata?.id) {
+        val currentMediaId = mediaMetadata?.id
+        val currentQueueIndex = playerConnection.player.currentMediaItemIndex
+
+        if (lastMediaId != null && currentMediaId != null && lastMediaId != currentMediaId) {
+
+            if (!swipeTriggeredChange && !isAnimatingTransition) {
+                isAnimatingTransition = true
+
+                nextThumbnailUrl = mediaMetadata?.thumbnailUrl
+
+                animationDirection = if (currentQueueIndex > lastQueueIndex) {
+                    false 
+                } else if (currentQueueIndex < lastQueueIndex) {
+                    true 
+                } else {
+
+                    true 
+                }
+
+                val targetX = if (animationDirection) currentView.width.toFloat() else -currentView.width.toFloat()
+
+                coroutineScope.launch {
+
+                    offsetXAnimatable.snapTo(0f)
+                    offsetX = 0f
+
+                    offsetXAnimatable.animateTo(
+                        targetValue = targetX,
+                        animationSpec = animationSpec
+                    )
+
+                    displayedThumbnailUrl = nextThumbnailUrl
+                    nextThumbnailUrl = null
+
+                    offsetXAnimatable.snapTo(0f)
+                    offsetX = 0f
+
+                    isAnimatingTransition = false
+                }
+            } else if (swipeTriggeredChange) {
+
+                swipeTriggeredChange = false
+            } else if (isAnimatingTransition) {
+
+                nextThumbnailUrl = mediaMetadata?.thumbnailUrl
+            }
+        } else if (lastMediaId == null) {
+
+            displayedThumbnailUrl = mediaMetadata?.thumbnailUrl
+        }
+        lastMediaId = currentMediaId
+        lastQueueIndex = currentQueueIndex
+    }
+
+    fun animateThumbnailSwitch(direction: Boolean) { 
+        if (isAnimatingTransition) return
+
+        val nextUrl = if (direction) {
+            playerConnection.player.previousMediaItemIndex.takeIf { it != -1 }?.let {
+                playerConnection.player.getMediaItemAt(it).mediaMetadata.artworkUri?.toString()
+            }
+        } else {
+            playerConnection.player.nextMediaItemIndex.takeIf { it != -1 }?.let {
+                playerConnection.player.getMediaItemAt(it).mediaMetadata.artworkUri?.toString()
+            }
+        }
+
+        nextThumbnailUrl = nextUrl
+        animationDirection = direction
+        isAnimatingTransition = true
+
+        coroutineScope.launch {
+            val targetX = if (direction) currentView.width.toFloat() else -currentView.width.toFloat()
+            offsetXAnimatable.animateTo(
+                targetValue = targetX,
+                animationSpec = animationSpec
+            )
+
+            displayedThumbnailUrl = nextThumbnailUrl
+            nextThumbnailUrl = null
+
+            offsetXAnimatable.snapTo(0f)
+            offsetX = 0f
+            isAnimatingTransition = false
+        }
+    }
 
     val layoutDirection = LocalLayoutDirection.current
 
@@ -123,51 +235,124 @@ fun Thumbnail(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(horizontal = PlayerHorizontalPadding)
-                    .pointerInput(Unit) {
-                        detectHorizontalDragGestures(
+                    .pointerInput(swipeThumbnail) {
+                        if (swipeThumbnail) {
+                            detectHorizontalDragGestures(
                             onDragStart = {
                                 isPreviewingNextSong = true
+                                dragStartTime = System.currentTimeMillis()
+                                totalDragDistance = 0f
+
+                                offsetX = offsetXAnimatable.value
                             },
                             onDragCancel = {
-                                offsetX = 0f
-                                isPreviewingNextSong = false
-                                previewImage = null
+                                coroutineScope.launch {
+                                    offsetXAnimatable.animateTo(
+                                        targetValue = 0f,
+                                        animationSpec = animationSpec
+                                    )
+                                    offsetX = 0f
+                                    isPreviewingNextSong = false
+                                    previewImage = null
+                                }
                             },
                             onHorizontalDrag = { _, dragAmount ->
                                 if (swipeThumbnail) {
                                     val adjustedDragAmount =
                                         if (layoutDirection == LayoutDirection.Rtl) -dragAmount else dragAmount
                                     offsetX += adjustedDragAmount
+                                    totalDragDistance += kotlin.math.abs(adjustedDragAmount)
+
+                                    coroutineScope.launch {
+                                        offsetXAnimatable.snapTo(offsetX)
+                                    }
                                     updateImagePreview(offsetX)
                                 }
                             },
                             onDragEnd = {
-                                val threshold = 0.10f * currentView.width
+                                val dragDuration = System.currentTimeMillis() - dragStartTime
+                                val velocity = if (dragDuration > 0) totalDragDistance / dragDuration else 0f
 
-                                if (offsetX.absoluteValue > threshold) {
-                                    if (offsetX > 0 && playerConnection.player.previousMediaItemIndex != -1) {
+                                val minDistanceThreshold = 50f
+                                val velocityThreshold = 2.1f
+
+                                val shouldChangeSong = kotlin.math.abs(offsetX) > minDistanceThreshold && 
+                                                      velocity > velocityThreshold
+
+                                if (shouldChangeSong) {
+
+                                    swipeTriggeredChange = true
+
+                                    animationDirection = offsetX > 0
+                                    val isRightSwipe = offsetX > 0 
+
+                                    val targetThumbnailUrl = if (isRightSwipe) {
+                                        playerConnection.player.previousMediaItemIndex.takeIf { it != -1 }?.let {
+                                            playerConnection.player.getMediaItemAt(it).mediaMetadata.artworkUri?.toString()
+                                        }
+                                    } else {
+                                        playerConnection.player.nextMediaItemIndex.takeIf { it != -1 }?.let {
+                                            playerConnection.player.getMediaItemAt(it).mediaMetadata.artworkUri?.toString()
+                                        }
+                                    }
+
+                                    nextThumbnailUrl = targetThumbnailUrl
+
+                                    if (isRightSwipe && playerConnection.player.previousMediaItemIndex != -1) {
                                         playerConnection.player.seekToPreviousMediaItem()
-                                    } else if (offsetX < 0 && playerConnection.player.nextMediaItemIndex != -1) {
+                                    } else if (!isRightSwipe && playerConnection.player.nextMediaItemIndex != -1) {
                                         playerConnection.player.seekToNext()
                                     }
+
+                                    isAnimatingTransition = true
+
+                                    coroutineScope.launch {
+                                        val targetX = if (isRightSwipe) currentView.width.toFloat() else -currentView.width.toFloat()
+
+                                        offsetXAnimatable.animateTo(
+                                            targetValue = targetX,
+                                            animationSpec = animationSpec
+                                        )
+
+                                        displayedThumbnailUrl = nextThumbnailUrl
+                                        nextThumbnailUrl = null
+
+                                        offsetXAnimatable.snapTo(0f)
+                                        offsetX = 0f
+
+                                        isAnimatingTransition = false
+                                        swipeTriggeredChange = false
+                                    }
+
+                                    isPreviewingNextSong = false
+                                    previewImage = null
+                                } else {
+                                    coroutineScope.launch {
+                                        offsetXAnimatable.animateTo(
+                                            targetValue = 0f,
+                                            animationSpec = animationSpec
+                                        )
+                                        offsetX = 0f
+                                        isPreviewingNextSong = false
+                                        previewImage = null
+                                    }
                                 }
-                                offsetX = 0f
-                                isPreviewingNextSong = false
-                                previewImage = null
                             },
                         )
+                        }
                     },
             ) {
+
                 Box(
                     modifier = Modifier
-                        .offset { IntOffset(offsetX.roundToInt(), 0) }
+                        .offset { IntOffset(offsetXAnimatable.value.roundToInt(), 0) }
                         .fillMaxWidth()
                         .aspectRatio(1f)
                         .clip(RoundedCornerShape(ThumbnailCornerRadius * 2))
                 ) {
-                    // Blurred background layer
+
                     AsyncImage(
-                        model = mediaMetadata?.thumbnailUrl,
+                        model = displayedThumbnailUrl,
                         contentDescription = null,
                         contentScale = ContentScale.FillBounds,
                         modifier = Modifier
@@ -181,9 +366,8 @@ fun Thumbnail(
                             )
                     )
 
-                    // Main thumbnail image
                     AsyncImage(
-                        model = mediaMetadata?.thumbnailUrl,
+                        model = displayedThumbnailUrl,
                         contentDescription = null,
                         contentScale = ContentScale.Fit,
                         modifier = Modifier
@@ -218,6 +402,49 @@ fun Thumbnail(
                     )
                 }
 
+                nextThumbnailUrl?.let { nextUrl ->
+                    Box(
+                        modifier = Modifier
+                            .offset {
+
+                                val nextThumbnailOffset = if (animationDirection) {
+
+                                    offsetXAnimatable.value - currentView.width.toFloat()
+                                } else {
+
+                                    offsetXAnimatable.value + currentView.width.toFloat()
+                                }
+                                IntOffset(nextThumbnailOffset.roundToInt(), 0)
+                            }
+                            .fillMaxWidth()
+                            .aspectRatio(1f)
+                            .clip(RoundedCornerShape(ThumbnailCornerRadius * 2))
+                    ) {
+
+                        AsyncImage(
+                            model = nextUrl,
+                            contentDescription = null,
+                            contentScale = ContentScale.FillBounds,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .graphicsLayer(
+                                    renderEffect = BlurEffect(
+                                        radiusX = 75f,
+                                        radiusY = 75f
+                                    ),
+                                    alpha = 0.5f
+                                )
+                        )
+
+                        AsyncImage(
+                            model = nextUrl,
+                            contentDescription = null,
+                            contentScale = ContentScale.Fit,
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    }
+                }
+
                 LaunchedEffect(showSeekEffect) {
                     if (showSeekEffect) {
                         delay(1000)
@@ -248,15 +475,15 @@ fun Thumbnail(
                         modifier = Modifier
                             .offset {
                                 IntOffset(
-                                    if (offsetX > 0) (offsetX - currentView.width).roundToInt()
-                                    else (offsetX + currentView.width).roundToInt(), 0
+                                    if (offsetXAnimatable.value > 0) (offsetXAnimatable.value - currentView.width).roundToInt()
+                                    else (offsetXAnimatable.value + currentView.width).roundToInt(), 0
                                 )
                             }
                             .fillMaxWidth()
                             .aspectRatio(1f)
                             .clip(RoundedCornerShape(ThumbnailCornerRadius * 2))
                     ) {
-                        // Blurred background for preview image
+
                         AsyncImage(
                             model = it,
                             contentDescription = null,
@@ -272,7 +499,6 @@ fun Thumbnail(
                                 )
                         )
 
-                        // Preview image
                         AsyncImage(
                             model = it,
                             contentDescription = null,
