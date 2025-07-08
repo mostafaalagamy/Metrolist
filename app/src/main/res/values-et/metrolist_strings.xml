@@ -70,4 +70,13 @@
     <string name="follow_theme">Järgi kujundust</string>
     <string name="discord">Discord</string>
     <string name="google">Google</string>
+    <string name="player_background_blur">Hägustatud taust</string>
+    <string name="new_player_design">Meediaesitaja uus kujundus</string>
+    <string name="gradient">Gradient</string>
+    <string name="player_buttons_style">Meediaesitaja nuppude värvid</string>
+    <string name="enable_swipe_thumbnail">Kasuta loo vahetamisel viipamist</string>
+    <string name="swipe_song_to_add">Vasakule viibates saa lisada loo esitusjärjekorda ning paremale viibates esitatakse teda järgmisena</string>
+    <string name="default_style">Vaikimisi</string>
+    <string name="secondary_color_style">Teisane</string>
+    <string name="enable_squiggly_slider">Kasuta vingerdavat</string>
 </resources>
