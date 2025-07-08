@@ -181,7 +181,7 @@
     <string name="center">Tengah</string>
     <string name="right">Kanan</string>
     <string name="content">Konten</string>
-    <string name="login">Masuk</string>
+    <string name="login">Terdaftar</string>
     <string name="content_language">Bahasa konten bawaan</string>
     <string name="content_country">Negara konten bawaan</string>
     <string name="system_default">Bawaan sistem</string>
@@ -288,4 +288,5 @@
     <string name="enable_discord_rpc">Aktifkan Rich Presence</string>
     <string name="use_login_for_browse">Masuk untuk menjelajahi konten</string>
     <string name="use_login_for_browse_desc">Hal ini dapat memengaruhi konten yang Anda lihat dan misalnya menampilkan album khusus premium jika Anda masuk dengan akun Premium</string>
+    <string name="action_login">Masuk</string>
 </resources>

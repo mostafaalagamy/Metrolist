@@ -31,9 +31,9 @@
     <string name="this_week">На этой неделе</string>
     <string name="last_week">На прошлой неделе</string>
     <!-- Stats -->
-    <string name="most_played_songs">Самые популярные песни</string>
-    <string name="most_played_artists">Самые популярные исполнители</string>
-    <string name="most_played_albums">Самые популярные альбомы</string>
+    <string name="most_played_songs">Самые прослушиваемые песни</string>
+    <string name="most_played_artists">Самые прослушиваемые исполнители</string>
+    <string name="most_played_albums">Самые прослушиваемые альбомы</string>
     <!-- Search -->
     <string name="search">Поиск</string>
     <string name="search_yt_music">Поиск в YouTube Music…</string>
@@ -75,7 +75,7 @@
     <string name="details">Подробнее</string>
     <string name="edit">Редактировать</string>
     <string name="start_radio">Запустить радио</string>
-    <string name="play">Воспоизвести</string>
+    <string name="play">Воспроизвести</string>
     <string name="play_next">Воспроизвести следующим</string>
     <string name="add_to_queue">Добавить в очередь</string>
     <string name="add_to_library">Добавить в библиотеку</string>
@@ -118,7 +118,7 @@
     <string name="volume">Уровень громкости</string>
     <string name="file_size">Размер файла</string>
     <string name="unknown">Неизвестно</string>
-    <string name="copied">Скопировано</string>
+    <string name="copied">Скопировано в буфер обмена</string>
     <string name="edit_lyrics">Редактировать текст песни</string>
     <string name="search_lyrics">Поиск текста песни</string>
     <string name="edit_song">Редактировать композицию</string>
@@ -252,7 +252,7 @@
     <string name="enable_proxy">Включить прокси</string>
     <string name="proxy_type">Тип прокси</string>
     <string name="proxy_url">URL прокси</string>
-    <string name="restart_to_take_effect">Перезапуск приложения</string>
+    <string name="restart_to_take_effect">Требуется перезапуск</string>
     <string name="player_and_audio">Плеер и аудио</string>
     <string name="audio_quality">Качество аудио</string>
     <string name="audio_quality_auto">Авто</string>
@@ -317,4 +317,5 @@
     <string name="clear_translation_models">Очистить модели перевода</string>
     <string name="use_login_for_browse">Авторизуйтесь для просмотра контента</string>
     <string name="use_login_for_browse_desc">Это влияет на отображение контента и, в частности, открывает доступ к премиум-альбомам при входе с премиум-учётной записью</string>
+    <string name="action_login">Войти</string>
 </resources>
