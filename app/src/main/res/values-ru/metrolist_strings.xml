@@ -30,7 +30,7 @@
     <string name="open_supported_links">Открывать поддерживаемые ссылки по умолчанию</string>
     <string name="configure_supported_links">Настроить поддерживаемые ссылки</string>
     <string name="audio_quality_max">Максимальное (бета)</string>
-    <string name="enable_similar_content">Показывать похожий контент</string>
+    <string name="enable_similar_content">Включить похожий контент</string>
     <string name="similar_content_desc">Автоматически добавлять больше похожих треков при достижении конца очереди</string>
     <string name="min_playback_duration_title">Минимальная длительность воспроизведения</string>
     <string name="minimum_playback_duration">Минимальная длительность воспроизведения</string>
@@ -96,10 +96,10 @@
         <item quantity="other">%d элементов</item>
     </plurals>
     <plurals name="n_time">
-        <item quantity="one">%d время</item>
-        <item quantity="few">%d times</item>
-        <item quantity="many"></item>
-        <item quantity="other"></item>
+        <item quantity="one">%d час</item>
+        <item quantity="few">%d часа</item>
+        <item quantity="many">%d часов</item>
+        <item quantity="other">%d часов</item>
     </plurals>
     <string name="seek_backward">5 секунд назад</string>
     <string name="seek_forward">5 секунд вперед</string>
@@ -112,6 +112,40 @@
     <string name="lyrics_romanize_japanese">Латинизация японской лирики</string>
     <string name="lyrics_romanize_korean">Романизировать корейскую лирику</string>
     <string name="auto_playlists">Автоматические списки воспроизведения</string>
-    <string name="show_liked_playlist">Показать список воспроизведения \"Понравилось\"</string>
-    <string name="show_downloaded_playlist">Показать список воспроизведения \"Загруженные\"</string>
+    <string name="show_liked_playlist">Показать плейлист \"Понравилось\"</string>
+    <string name="show_downloaded_playlist">Показать плейлист \"Загруженные\"</string>
+    <string name="show_top_playlist">Показать плейлист \"Топ\"</string>
+    <string name="show_cached_playlist">Показать \"Кэшированный\" плейлист</string>
+    <string name="advanced_login">Вход в систему с помощью токена</string>
+    <string name="yt_sync">Автоматическая синхронизация с учетной записью</string>
+    <string name="more_content">Доп. содержание</string>
+    <string name="general">Общие</string>
+    <string name="default_lib_chips">Изменение чипа библиотеки (по умолчанию)</string>
+    <string name="set_quick_picks">Установите быстрый выбор</string>
+    <string name="intent_app_language_not_found">Не удалось найти языковые настройки приложения, пожалуйста, настройте их вручную</string>
+    <string name="intent_supported_links_not_found">Не удалось найти поддерживаемые параметры ссылок, пожалуйста, настройте их вручную</string>
+    <string name="set_first_lyrics_provider">Предпочитаемый поставщик текстов песен</string>
+    <string name="percentage_format">%d%%</string>
+    <string name="import_online">Импорт списков воспроизведения в формате \"m3u\"</string>
+    <string name="import_csv">Импорт плейлиста в формате \"csv\"</string>
+    <string name="playlist_add_local_to_synced_note">Примечание: Добавление локальных композиций в синхронизированные/удаленные списки воспроизведения не поддерживается. Любая другая комбинация допустима</string>
+    <string name="auto_download_on_like">Автозагрузка по понравившимся</string>
+    <string name="auto_download_on_like_desc">Автоматически загружайте песни, когда они вам нравятся</string>
+    <string name="clear_song_cache_dialog">Вы уверены, что хотите очистить все кэшированные песни?</string>
+    <string name="clear_downloads_dialog">Вы уверены, что хотите очистить все загрузки?</string>
+    <string name="pause_remote_listen_history">Приостановить совместное прослушивание истории с YouTube Music</string>
+    <string name="not_logged_in_youtube">Не вошел в систему YouTube</string>
+    <string name="default_links">Открыть поддерживаемые ссылки</string>
+    <string name="open_app_settings_error">Невозможно открыть настройки приложения</string>
+    <string name="release_notes">Примечания к выпуску</string>
+    <string name="all_time">Все время</string>
+    <string name="past_24_hours">Последние 24 часа</string>
+    <string name="past_week">Прошедшую неделю</string>
+    <string name="past_month">Последний месяц</string>
+    <string name="past_year">Прошлый год</string>
+    <string name="top_length">Длина моего топ-листа</string>
+    <string name="history_duration">Продолжительность истории</string>
+    <string name="information">Информация</string>
+    <string name="description">Описание</string>
+    <string name="numbers">Номера</string>
 </resources>
