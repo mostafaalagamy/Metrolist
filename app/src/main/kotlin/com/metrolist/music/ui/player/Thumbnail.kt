@@ -52,6 +52,7 @@ import com.metrolist.music.R
 import com.metrolist.music.constants.PlayerHorizontalPadding
 import com.metrolist.music.constants.ShowLyricsKey
 import com.metrolist.music.constants.SwipeThumbnailKey
+import com.metrolist.music.constants.SwipeSensitivityKey
 import com.metrolist.music.constants.ThumbnailCornerRadius
 import com.metrolist.music.ui.component.Lyrics
 import com.metrolist.music.utils.rememberPreference
@@ -74,6 +75,7 @@ fun Thumbnail(
 
     val showLyrics by rememberPreference(ShowLyricsKey, false)
     val swipeThumbnail by rememberPreference(SwipeThumbnailKey, true)
+    val swipeSensitivity by rememberPreference(SwipeSensitivityKey, 0.73f)
 
     val coroutineScope = rememberCoroutineScope()
     val offsetXAnimatable = remember { Animatable(0f) }
@@ -274,7 +276,7 @@ fun Thumbnail(
                                 val velocity = if (dragDuration > 0) totalDragDistance / dragDuration else 0f
 
                                 val minDistanceThreshold = 50f
-                                val velocityThreshold = 2.1f
+                                val velocityThreshold = (swipeSensitivity * -8.25f) + 8.5 // 0 = 0.25, 1 = 8.5
 
                                 val shouldChangeSong = kotlin.math.abs(offsetX) > minDistanceThreshold && 
                                                       velocity > velocityThreshold
