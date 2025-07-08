@@ -144,4 +144,5 @@
     <string name="lyrics_romanize_japanese">Romanizza testo in giapponese</string>
     <string name="lyrics_romanize_korean">Romanizza testo in coreano</string>
     <string name="yt_sync">Sincronizza automaticamente con l\'account</string>
+    <string name="new_player_design">Nuovo design del lettore</string>
 </resources>
