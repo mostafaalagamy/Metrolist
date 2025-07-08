@@ -16,7 +16,7 @@
     <string name="gradient">Градиент</string>
     <string name="player_buttons_style">Цвета кнопок плеера</string>
     <string name="enable_squiggly_slider">Включить волнистый слайдер</string>
-    <string name="swipe_song_to_add">Свайп по треку вправо для перехода к следующему или влево для добавления в очередь</string>
+    <string name="swipe_song_to_add">Проведите пальцем по песне влево, чтобы добавить ее в очередь, или вправо, чтобы воспроизвести ее следующей</string>
     <string name="slim">Тонкий</string>
     <string name="google">Google</string>
     <string name="discord">Discord</string>
@@ -95,4 +95,17 @@
         <item quantity="many">%d элементов</item>
         <item quantity="other">%d элементов</item>
     </plurals>
+    <plurals name="n_time">
+        <item quantity="one">%d время</item>
+        <item quantity="few">%d times</item>
+        <item quantity="many"></item>
+        <item quantity="other"></item>
+    </plurals>
+    <string name="seek_backward">5 секунд назад</string>
+    <string name="seek_forward">5 секунд вперед</string>
+    <string name="login_settings">Настройки логина</string>
+    <string name="new_player_design">Новый дизайн игрока</string>
+    <string name="default_style">По умолчанию</string>
+    <string name="secondary_color_style">Вторичный</string>
+    <string name="lyrics_click_change">Изменение текста песни по щелчку мыши</string>
 </resources>
