@@ -288,7 +288,10 @@ class MusicService :
         val controllerFuture = MediaController.Builder(this, sessionToken).buildAsync()
         controllerFuture.addListener({ controllerFuture.get() }, MoreExecutors.directExecutor())
 
-        connectivityManager = getSystemServi        connectivityObserver = NetworkConnectivity(this)       scope.launch {
+        connectivityManager = getSystemService()!!
+        connectivityObserver = NetworkConnectivity(this)
+
+        scope.launch {
             connectivityObserver.networkStatus.collect { isConnected ->
                 isNetworkConnected.value = isConnected
                 if (isConnected && waitingForNetworkConnection.value) {
@@ -1162,7 +1165,3 @@ class MusicService :
         const val MAX_CONSECUTIVE_ERR = 5
     }
 }
-
-
-
-
