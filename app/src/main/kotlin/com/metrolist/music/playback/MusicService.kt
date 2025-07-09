@@ -146,7 +146,6 @@ import javax.inject.Inject
 import kotlin.math.min
 import kotlin.math.pow
 import kotlin.time.Duration.Companion.seconds
-import android.widget.Toast
 
 @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
 @AndroidEntryPoint
@@ -426,7 +425,6 @@ class MusicService :
 
     private fun waitOnNetworkError() {
         waitingForNetworkConnection.value = true
-        Toast.makeText(this@MusicService, getString(R.string.wait_to_reconnect), Toast.LENGTH_LONG).show()
     }
 
     private fun skipOnError() {
@@ -443,19 +441,15 @@ class MusicService :
             player.seekTo(nextWindowIndex, C.TIME_UNSET)
             player.prepare()
             player.play()
-
-            Toast.makeText(this@MusicService, getString(R.string.err_play_next_on_error), Toast.LENGTH_SHORT).show()
             return
         }
 
         player.pause()
-        Toast.makeText(this@MusicService, getString(R.string.err_stop_on_too_many_errors), Toast.LENGTH_LONG).show()
         consecutivePlaybackErr = 0
     }
 
     private fun stopOnError() {
         player.pause()
-        Toast.makeText(this@MusicService, getString(R.string.err_stop_on_error), Toast.LENGTH_LONG).show()
     }
 
     private fun updateNotification() {
@@ -898,12 +892,6 @@ class MusicService :
         } else {
             stopOnError()
         }
-
-        Toast.makeText(
-            this@MusicService,
-            "Error: ${error.message} (${error.errorCode}): ${error.cause?.message?: "No further errors."}",
-            Toast.LENGTH_LONG
-        ).show()
     }
 
     private fun createCacheDataSource(): CacheDataSource.Factory =
