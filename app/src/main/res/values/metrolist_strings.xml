@@ -74,11 +74,6 @@
     <string name="seek_backward">5 seconds backward</string>
     <string name="seek_forward">5 seconds forward</string>
 
-    <string name="wait_to_reconnect">Waiting for network connection to resume playback...</string>
-    <string name="err_play_next_on_error">Skipping to next song due to error.</string>
-    <string name="err_stop_on_too_many_errors">Too many consecutive errors. Playback stopped.</string>
-    <string name="err_stop_on_error">Playback stopped due to an error.</string>
-
     <string name="similar_content">Similar content</string>
 
 
