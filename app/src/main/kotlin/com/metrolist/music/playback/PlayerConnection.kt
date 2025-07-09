@@ -71,6 +71,7 @@ class PlayerConnection(
     val canSkipNext = MutableStateFlow(true)
 
     val error = MutableStateFlow<PlaybackException?>(null)
+    val waitingForNetworkConnection = service.waitingForNetworkConnection
 
     init {
         player.addListener(this)
@@ -190,3 +191,5 @@ class PlayerConnection(
         player.removeListener(this)
     }
 }
+
+
