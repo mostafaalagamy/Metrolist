@@ -1,2 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="explore">Felfedezés</string>
+    <string name="local_history">Helyi</string>
+    <string name="remote_history">Távoli</string>
+    <string name="charts">Slágerlisták</string>
+    <string name="back_button_desc">Vissza</string>
+    <string name="no_title">Nincs cím</string>
+    <string name="unknown_artist">Ismeretlen előadó</string>
+    <string name="unknown_item_type">Ismeretlen elem típus</string>
+    <string name="loading_charts">Slágerlisták betöltése...</string>
+    <string name="retry_button">Újra</string>
+    <string name="album_cover_desc">Album borító</string>
+    <string name="top_music_videos">Top zene klippek</string>
+    <string name="trending">Felkapott</string>
+    <string name="weeks">Hetek</string>
+    <string name="months">Hónapok</string>
+    <string name="years">Évek</string>
+    <string name="continuous">Folyamatos</string>
+    <string name="liked">Kedvelt</string>
+    <string name="offline">Letöltött</string>
+    <string name="my_top">Saját top</string>
+    <string name="cached_playlist">Cache-lt</string>
+    <string name="sync_playlist">Lejátszólista szinkronizálás</string>
+</resources>
