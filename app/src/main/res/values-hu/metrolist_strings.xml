@@ -21,5 +21,14 @@
     <string name="offline">Letöltött</string>
     <string name="my_top">Saját top</string>
     <string name="cached_playlist">Cache-lt</string>
-    <string name="sync_playlist">Lejátszólista szinkronizálás</string>
+    <string name="sync_playlist">Lejátszásilista szinkronizálás</string>
+    <string name="sync_disabled">Szinkronizálás kikapcsolva</string>
+    <string name="elements_selected">%1$d elem kijelölve</string>
+    <string name="allows_for_sync_witch_youtube">Figyelem: Ez lehetővé teszi a YouTube Zenével való szinkronizálást. Ez később nem megváltoztatható.</string>
+    <string name="generating_image">Kép generálása</string>
+    <string name="please_wait">Kérem várjon</string>
+    <string name="cancel">Mégse</string>
+    <string name="share_lyrics">Dalszöveg megosztása</string>
+    <string name="share_as_text">Megosztás mint szöveg</string>
+    <string name="share_as_image">Megosztás mint kép</string>
 </resources>
