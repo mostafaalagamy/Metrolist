@@ -163,7 +163,7 @@ object YouTube {
                 }.orEmpty(),
             continuation = response.contents?.tabbedSearchResultsRenderer?.tabs?.firstOrNull()
                 ?.tabRenderer?.content?.sectionListRenderer?.contents?.lastOrNull()
-                ?.musicShelfRenderer?.contents?.getContinuation()
+                ?.musicShelfRenderer?.continuations?.getContinuation()
         )
     }
 
