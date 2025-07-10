@@ -19,5 +19,12 @@
     <string name="cached_playlist">Cached</string>
     <string name="sync_playlist">Playlist synchroniseren</string>
     <string name="sync_disabled">Synchroniseren uitgeschakeld</string>
-    <string name="elements_selected">Elementen geselecteerd</string>
+    <string name="elements_selected">%1$d elementen geselecteerd</string>
+    <string name="allows_for_sync_witch_youtube">Opmerking: Dit activeert synchronisatie met YouTube Music. Dit kan later NIET worden gewijzigd.</string>
+    <string name="generating_image">Aan het genereren</string>
+    <string name="please_wait">Wacht aub</string>
+    <string name="cancel">Annuleren</string>
+    <string name="share_lyrics">Liedtekst delen</string>
+    <string name="share_as_text">Delen als tekst</string>
+    <string name="share_as_image">Delen als afbeelding</string>
 </resources>
