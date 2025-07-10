@@ -29,6 +29,20 @@
     <string name="please_wait">Kérem várjon</string>
     <string name="cancel">Mégse</string>
     <string name="share_lyrics">Dalszöveg megosztása</string>
-    <string name="share_as_text">Megosztás mint szöveg</string>
-    <string name="share_as_image">Megosztás mint kép</string>
+    <string name="share_as_text">Szövegként megosztás</string>
+    <string name="share_as_image">Képként megosztás</string>
+    <string name="max_selection_limit">Max kiválasztási határ</string>
+    <string name="share_selected">Kiválasztott megosztása</string>
+    <string name="customize_colors">Színek testreszabása</string>
+    <string name="more_options">Több opció</string>
+    <string name="text_color">Szöveg szín</string>
+    <string name="secondary_text_color">Másodlagos szöveg szín</string>
+    <string name="background_color">Háttér szín</string>
+    <string name="added_to_play_next">Hozzáadva következőként</string>
+    <string name="added_to_queue">Hozzáadva a listához</string>
+    <string name="remove_from_cache">Cashe-ltből eltávolítás</string>
+    <string name="copy_link">Hivatkozás másolása</string>
+    <string name="select">Összes kijelölése</string>
+    <string name="like_all">Összes kedvelése</string>
+    <string name="dislike_all">Összes nem kedvelése</string>
 </resources>
