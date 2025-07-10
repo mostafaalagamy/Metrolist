@@ -167,9 +167,9 @@ class MusicService :
 
     private lateinit var audioManager: AudioManager
     private var audioFocusRequest: AudioFocusRequest? = null
+    private var lastAudioFocusState = AudioManager.AUDIOFOCUS_NONE
+    private var wasPlayingBeforeAudioFocusLoss = false
     private var hasAudioFocus = false
-    private var wasPlayingBeforeFocusLoss = false
-    private var pausedByUser = false
 
     private var scope = CoroutineScope(Dispatchers.Main) + Job()
     private val binder = MusicBinder()
@@ -261,6 +261,7 @@ class MusicService :
                 }
 
         audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        setupAudioFocusRequest()
 
         mediaLibrarySessionCallback.apply {
             toggleLike = ::toggleLike
@@ -423,6 +424,121 @@ class MusicService :
         }
     }
 
+    private fun setupAudioFocusRequest() {
+        audioFocusRequest = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
+            .setAudioAttributes(
+                android.media.AudioAttributes.Builder()
+                    .setUsage(android.media.AudioAttributes.USAGE_MEDIA)
+                    .setContentType(android.media.AudioAttributes.CONTENT_TYPE_MUSIC)
+                    .build()
+            )
+            .setOnAudioFocusChangeListener { focusChange ->
+                handleAudioFocusChange(focusChange)
+            }
+            .setAcceptsDelayedFocusGain(true)
+            .build()
+    }
+
+    private fun handleAudioFocusChange(focusChange: Int) {
+        when (focusChange) {
+            AudioManager.AUDIOFOCUS_GAIN -> {
+                hasAudioFocus = true
+
+                if (wasPlayingBeforeAudioFocusLoss) {
+                    player.play()
+                    wasPlayingBeforeAudioFocusLoss = false
+                }
+
+                player.volume = (playerVolume.value * normalizeFactor.value)
+
+                lastAudioFocusState = focusChange
+            }
+
+            AudioManager.AUDIOFOCUS_LOSS -> {
+                hasAudioFocus = false
+                wasPlayingBeforeAudioFocusLoss = false
+
+                if (player.isPlaying) {
+                    player.pause()
+                }
+
+                abandonAudioFocus()
+
+                lastAudioFocusState = focusChange
+            }
+
+            AudioManager.AUDIOFOCUS_LOSS_TRANSIENT -> {
+                hasAudioFocus = false
+                wasPlayingBeforeAudioFocusLoss = player.isPlaying
+
+                if (player.isPlaying) {
+                    player.pause()
+                }
+
+                lastAudioFocusState = focusChange
+            }
+
+            AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK -> {
+
+                hasAudioFocus = false
+
+                wasPlayingBeforeAudioFocusLoss = player.isPlaying
+
+                if (player.isPlaying) {
+                    player.volume = (playerVolume.value * normalizeFactor.value * 0.2f) // خفض إلى 20%
+                }
+
+                lastAudioFocusState = focusChange
+            }
+
+            AudioManager.AUDIOFOCUS_GAIN_TRANSIENT -> {
+
+                hasAudioFocus = true
+
+                if (wasPlayingBeforeAudioFocusLoss) {
+                    player.play()
+                    wasPlayingBeforeAudioFocusLoss = false
+                }
+
+                player.volume = (playerVolume.value * normalizeFactor.value)
+        
+                lastAudioFocusState = focusChange
+            }
+
+            AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK -> {
+                hasAudioFocus = true
+
+                player.volume = (playerVolume.value * normalizeFactor.value)
+
+                lastAudioFocusState = focusChange
+            }
+        }
+    }
+
+    private fun requestAudioFocus(): Boolean {
+        if (hasAudioFocus) return true
+    
+        audioFocusRequest?.let { request ->
+            val result = audioManager.requestAudioFocus(request)
+            hasAudioFocus = result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED
+            return hasAudioFocus
+        }
+        return false
+    }
+
+    private fun abandonAudioFocus() {
+        if (hasAudioFocus) {
+            audioFocusRequest?.let { request ->
+                audioManager.abandonAudioFocusRequest(request)
+                hasAudioFocus = false
+            }
+        }
+    }
+
+    fun hasAudioFocusForPlayback(): Boolean {
+        return hasAudioFocus
+    }
+
     private fun waitOnNetworkError() {
         waitingForNetworkConnection.value = true
     }
@@ -550,12 +666,6 @@ class MusicService :
         playWhenReady: Boolean = true,
     ) {
         if (!scope.isActive) scope = CoroutineScope(Dispatchers.Main) + Job()
-        if (playWhenReady && !hasAudioFocus) {
-            hasAudioFocus = requestAudioFocus()
-            if (!hasAudioFocus) {
-                return
-            }
-        }
         currentQueue = queue
         queueTitle = null
         player.shuffleModeEnabled = false
@@ -760,10 +870,6 @@ class MusicService :
         mediaItem: MediaItem?,
         reason: Int,
     ) {
-        if (player.isPlaying && !hasAudioFocus) {
-            hasAudioFocus = requestAudioFocus()
-        }
-
         // Auto load more songs
         if (dataStore.get(AutoLoadMoreKey, true) &&
             reason != Player.MEDIA_ITEM_TRANSITION_REASON_REPEAT &&
@@ -802,56 +908,16 @@ class MusicService :
             val isBufferingOrReady =
                 player.playbackState == Player.STATE_BUFFERING || player.playbackState == Player.STATE_READY
             if (isBufferingOrReady && player.playWhenReady) {
-                openAudioEffectSession()
+                val focusGranted = requestAudioFocus()
+                if (focusGranted) {
+                    openAudioEffectSession()
+                }
             } else {
                 closeAudioEffectSession()
             }
         }
         if (events.containsAny(EVENT_TIMELINE_CHANGED, EVENT_POSITION_DISCONTINUITY)) {
             currentMediaMetadata.value = player.currentMetadata
-        }
-    }
-
-    override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
-        super.onPlayWhenReadyChanged(playWhenReady, reason)
-
-        if (playWhenReady) {
-            if (!hasAudioFocus) {
-                val focusResult = requestAudioFocus()
-                if (!focusResult) {
-                    player.pause()
-                    return
-                }
-                hasAudioFocus = true
-            }
-        } else {
-            if (hasAudioFocus && reason == Player.PLAY_WHEN_READY_CHANGE_REASON_USER_REQUEST) {
-                abandonAudioFocus()
-                hasAudioFocus = false
-            }
-        }
-    }
-
-    override fun onIsPlayingChanged(isPlaying: Boolean) {
-        super.onIsPlayingChanged(isPlaying)
-
-        if (isPlaying && !hasAudioFocus) {
-            hasAudioFocus = requestAudioFocus()
-            if (!hasAudioFocus) {
-                player.pause()
-                return
-            }
-        }
-
-        // Track if user manually paused/played
-        if (!isPlaying && player.playbackState != Player.STATE_IDLE) {
-            // Check if this pause was not caused by audio focus loss
-            if (!wasPlayingBeforeFocusLoss) {
-                pausedByUser = true
-            }
-        } else if (isPlaying) {
-            pausedByUser = false
-            wasPlayingBeforeFocusLoss = false
         }
     }
 
@@ -1087,68 +1153,6 @@ class MusicService :
         }
     }
 
-    private fun requestAudioFocus(): Boolean {
-        val legacyAttributes = LegacyAudioAttributes.Builder()
-            .setUsage(LegacyAudioAttributes.USAGE_MEDIA)
-            .setContentType(LegacyAudioAttributes.CONTENT_TYPE_MUSIC)
-            .build()
-
-        val focusRequest = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
-            .setAudioAttributes(legacyAttributes)
-            .setAcceptsDelayedFocusGain(true)
-            .setWillPauseWhenDucked(false)
-            .setOnAudioFocusChangeListener { focusChange ->
-                when (focusChange) {
-                    AudioManager.AUDIOFOCUS_LOSS -> {
-                        wasPlayingBeforeFocusLoss = player.isPlaying
-                        hasAudioFocus = false
-                        player.pause()
-                    }
-                    AudioManager.AUDIOFOCUS_LOSS_TRANSIENT -> {
-                        wasPlayingBeforeFocusLoss = player.isPlaying
-                        player.pause()
-                    }
-                    AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK -> {
-                        player.volume = 0.2f
-                    }
-                    AudioManager.AUDIOFOCUS_GAIN -> {
-                        hasAudioFocus = true
-                        player.volume = playerVolume.value
-                        // Only resume if music was playing before focus loss and not paused by user
-                        if (wasPlayingBeforeFocusLoss && !pausedByUser) {
-                            player.play()
-                        }
-                        wasPlayingBeforeFocusLoss = false
-                    }
-                    AudioManager.AUDIOFOCUS_GAIN_TRANSIENT -> {
-                        hasAudioFocus = true
-                        player.volume = playerVolume.value
-                        if (!pausedByUser) {
-                            player.play()
-                        }
-                    }
-                }
-            }.build()
-
-        audioFocusRequest = focusRequest
-        val result = audioManager.requestAudioFocus(focusRequest)
-        return result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED || 
-            result == AudioManager.AUDIOFOCUS_REQUEST_DELAYED
-    }
-
-    private fun abandonAudioFocus() {
-        audioFocusRequest?.let {
-            audioManager.abandonAudioFocusRequest(it)
-        }
-        hasAudioFocus = false
-    }
-
-    // Optional: Add this method to reset the state when needed
-    private fun resetAudioFocusState() {
-        wasPlayingBeforeFocusLoss = false
-        pausedByUser = false
-    }
-
     override fun onDestroy() {
         if (dataStore.get(PersistentQueueKey, true)) {
             saveQueueToDisk()
@@ -1195,3 +1199,4 @@ class MusicService :
         const val MAX_CONSECUTIVE_ERR = 5
     }
 }
+
