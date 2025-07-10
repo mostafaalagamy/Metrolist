@@ -1,2 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="explore">Ontdekken</string>
+    <string name="charts">Hitlijsten</string>
+    <string name="back_button_desc">Terug</string>
+    <string name="no_title">Geen titel</string>
+    <string name="unknown_artist">Artiest onbekend</string>
+    <string name="loading_charts">Hitlijsten laden...</string>
+    <string name="retry_button">Opnieuw proberen</string>
+    <string name="album_cover_desc">Albumhoes</string>
+    <string name="trending">Trending</string>
+    <string name="weeks">Weken</string>
+    <string name="months">Maanden</string>
+    <string name="years">Jaar</string>
+    <string name="continuous">Voortdurend</string>
+    <string name="liked">Geliket</string>
+    <string name="offline">Gedownload</string>
+    <string name="my_top">Mijn meest geluisterd</string>
+    <string name="cached_playlist">Cached</string>
+    <string name="sync_playlist">Playlist synchroniseren</string>
+    <string name="sync_disabled">Synchroniseren uitgeschakeld</string>
+    <string name="elements_selected">Elementen geselecteerd</string>
+</resources>
