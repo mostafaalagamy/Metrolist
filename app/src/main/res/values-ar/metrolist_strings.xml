@@ -157,4 +157,5 @@
     <string name="new_player_design">تصميم المشغل الجديد</string>
     <string name="swipe_sensitivity">حساسية السحب</string>
     <string name="swipe_sensitivity_desc">ضبط مدى حساسية إيماءات التمرير لتغيير الأغاني</string>
+    <string name="clear_image_cache_dialog">هل أنت متأكد أنك تريد مسح كافة الأغاني المخزنة مؤقتًا؟</string>
 </resources>
