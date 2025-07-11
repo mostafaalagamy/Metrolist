@@ -89,6 +89,7 @@ fun MiniPlayer(
     val layoutDirection = LocalLayoutDirection.current
     val coroutineScope = rememberCoroutineScope()
     val swipeSensitivity by rememberPreference(SwipeSensitivityKey, 0.73f)
+    val swipeThumbnail by rememberPreference(com.metrolist.music.constants.SwipeThumbnailKey, true)
     
     val offsetXAnimatable = remember { Animatable(0f) }
     var dragStartTime by remember { mutableStateOf(0L) }
@@ -109,60 +110,71 @@ fun MiniPlayer(
             .height(MiniPlayerHeight)
             .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Horizontal))
             .background(if (pureBlack) Color.Black else Color.Transparent)
-            .pointerInput(Unit) {
-                detectHorizontalDragGestures(
-                    onDragStart = {
-                        dragStartTime = System.currentTimeMillis()
-                        totalDragDistance = 0f
-                    },
-                    onDragCancel = {
-                        coroutineScope.launch {
-                            offsetXAnimatable.animateTo(
-                                targetValue = 0f,
-                                animationSpec = animationSpec
-                            )
-                        }
-                    },
-                    onHorizontalDrag = { _, dragAmount ->
-                        val adjustedDragAmount = 
-                            if (layoutDirection == LayoutDirection.Rtl) -dragAmount else dragAmount
-                        totalDragDistance += kotlin.math.abs(adjustedDragAmount)
-                        
-                        coroutineScope.launch {
-                            offsetXAnimatable.snapTo(offsetXAnimatable.value + adjustedDragAmount)
-                        }
-                    },
-                    onDragEnd = {
-                        val dragDuration = System.currentTimeMillis() - dragStartTime
-                        val velocity = if (dragDuration > 0) totalDragDistance / dragDuration else 0f
-                        val currentOffset = offsetXAnimatable.value
-                        
-                        val minDistanceThreshold = 50f
-                        val velocityThreshold = (swipeSensitivity * -8.25f) + 8.5f
+            .let { baseModifier ->
+                if (swipeThumbnail) {
+                    baseModifier.pointerInput(Unit) {
+                        detectHorizontalDragGestures(
+                            onDragStart = {
+                                dragStartTime = System.currentTimeMillis()
+                                totalDragDistance = 0f
+                            },
+                            onDragCancel = {
+                                coroutineScope.launch {
+                                    offsetXAnimatable.animateTo(
+                                        targetValue = 0f,
+                                        animationSpec = animationSpec
+                                    )
+                                }
+                            },
+                            onHorizontalDrag = { _, dragAmount ->
+                                val adjustedDragAmount =
+                                    if (layoutDirection == LayoutDirection.Rtl) -dragAmount else dragAmount
+                                val canSkipPrevious = playerConnection.player.previousMediaItemIndex != -1
+                                val canSkipNext = playerConnection.player.nextMediaItemIndex != -1
+                                val allowLeft = adjustedDragAmount < 0 && canSkipNext
+                                val allowRight = adjustedDragAmount > 0 && canSkipPrevious
+                                if (allowLeft || allowRight) {
+                                    totalDragDistance += kotlin.math.abs(adjustedDragAmount)
+                                    coroutineScope.launch {
+                                        offsetXAnimatable.snapTo(offsetXAnimatable.value + adjustedDragAmount)
+                                    }
+                                }
+                            },
+                            onDragEnd = {
+                                val dragDuration = System.currentTimeMillis() - dragStartTime
+                                val velocity = if (dragDuration > 0) totalDragDistance / dragDuration else 0f
+                                val currentOffset = offsetXAnimatable.value
+                                
+                                val minDistanceThreshold = 50f
+                                val velocityThreshold = (swipeSensitivity * -8.25f) + 8.5f
 
-                        val shouldChangeSong = (
-                            kotlin.math.abs(currentOffset) > minDistanceThreshold &&
-                            velocity > velocityThreshold
-                        ) || (kotlin.math.abs(currentOffset) > autoSwipeThreshold)
-                        
-                        if (shouldChangeSong) {
-                            val isRightSwipe = currentOffset > 0
-                            
-                            if (isRightSwipe && canSkipPrevious) {
-                                playerConnection.player.seekToPreviousMediaItem()
-                            } else if (!isRightSwipe && canSkipNext) {
-                                playerConnection.player.seekToNext()
+                                val shouldChangeSong = (
+                                    kotlin.math.abs(currentOffset) > minDistanceThreshold &&
+                                    velocity > velocityThreshold
+                                ) || (kotlin.math.abs(currentOffset) > autoSwipeThreshold)
+                                
+                                if (shouldChangeSong) {
+                                    val isRightSwipe = currentOffset > 0
+                                    
+                                    if (isRightSwipe && canSkipPrevious) {
+                                        playerConnection.player.seekToPreviousMediaItem()
+                                    } else if (!isRightSwipe && canSkipNext) {
+                                        playerConnection.player.seekToNext()
+                                    }
+                                }
+                                
+                                coroutineScope.launch {
+                                    offsetXAnimatable.animateTo(
+                                        targetValue = 0f,
+                                        animationSpec = animationSpec
+                                    )
+                                }
                             }
-                        }
-                        
-                        coroutineScope.launch {
-                            offsetXAnimatable.animateTo(
-                                targetValue = 0f,
-                                animationSpec = animationSpec
-                            )
-                        }
+                        )
                     }
-                )
+                } else {
+                    baseModifier
+                }
             }
     ) {
         LinearProgressIndicator(
