@@ -76,6 +76,7 @@ fun StorageSettings(
     )
     var clearCacheDialog by remember { mutableStateOf(false) }
     var clearDownloads by remember { mutableStateOf(false) }
+    var clearImageCacheDialog by remember { mutableStateOf(false) }
 
     var imageCacheSize by remember {
         mutableStateOf(imageDiskCache.size)
@@ -97,6 +98,23 @@ fun StorageSettings(
         ),
         label = "playerCacheProgress",
     )
+
+    LaunchedEffect(maxImageCacheSize) {
+        if (maxImageCacheSize == 0) {
+            coroutineScope.launch(Dispatchers.IO) {
+                imageDiskCache.clear()
+            }
+        }
+    }
+    LaunchedEffect(maxSongCacheSize) {
+        if (maxSongCacheSize == 0) {
+            coroutineScope.launch(Dispatchers.IO) {
+                playerCache.keys.forEach { key ->
+                    playerCache.removeResource(key)
+                }
+            }
+        }
+    }
 
     LaunchedEffect(imageDiskCache) {
         while (isActive) {
@@ -169,46 +187,52 @@ fun StorageSettings(
             title = stringResource(R.string.song_cache),
         )
 
-        if (maxSongCacheSize == -1) {
-            Text(
-                text = stringResource(R.string.size_used, formatFileSize(playerCacheSize)),
-                style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp),
-            )
-        } else {
-            // Use M3 LinearProgressIndicator with theme colors
-            LinearProgressIndicator(
-                progress = { playerCacheProgress },
-                modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 6.dp),
-                color = MaterialTheme.colorScheme.primary, // Explicitly use theme color
-                trackColor = MaterialTheme.colorScheme.surfaceVariant, // Use appropriate track color
-                strokeCap = StrokeCap.Round // M3 default style
-            )
+        if (maxSongCacheSize != 0) {
+            if (maxSongCacheSize == -1) {
+                Text(
+                    text = stringResource(R.string.size_used, formatFileSize(playerCacheSize)),
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp),
+                )
+            } else {
+                // Use M3 LinearProgressIndicator with theme colors
+                LinearProgressIndicator(
+                    progress = { playerCacheProgress },
+                    modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 6.dp),
+                    color = MaterialTheme.colorScheme.primary, // Explicitly use theme color
+                    trackColor = MaterialTheme.colorScheme.surfaceVariant, // Use appropriate track color
+                    strokeCap = StrokeCap.Round // M3 default style
+                )
 
-            Text(
-                text =
-                stringResource(
-                    R.string.size_used,
-                    "${formatFileSize(playerCacheSize)} / ${
-                        formatFileSize(
-                            maxSongCacheSize * 1024 * 1024L,
-                        )
-                    }",
-                ),
-                style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp),
-            )
+                Text(
+                    text =
+                    stringResource(
+                        R.string.size_used,
+                        "${formatFileSize(playerCacheSize)} / ${
+                            formatFileSize(
+                                maxSongCacheSize * 1024 * 1024L,
+                            )
+                        }",
+                    ),
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp),
+                )
+            }
         }
 
         ListPreference(
             title = { Text(stringResource(R.string.max_cache_size)) },
             selectedValue = maxSongCacheSize,
-            values = listOf(128, 256, 512, 1024, 2048, 4096, 8192, -1),
+            values = listOf(0, 128, 256, 512, 1024, 2048, 4096, 8192, -1),
             valueText = {
-                if (it == -1) stringResource(R.string.unlimited) else formatFileSize(it * 1024 * 1024L)
+                when (it) {
+                    0 -> stringResource(R.string.disable)
+                    -1 -> stringResource(R.string.unlimited)
+                    else -> formatFileSize(it * 1024 * 1024L)
+                }
             },
             onValueSelected = onMaxSongCacheSizeChange,
         )
@@ -238,50 +262,68 @@ fun StorageSettings(
             )
         }
 
-
-
-
         PreferenceGroupTitle(
             title = stringResource(R.string.image_cache),
         )
 
-        // Use M3 LinearProgressIndicator with theme colors
-        LinearProgressIndicator(
-            progress = { imageCacheProgress },
-            modifier =
-            Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 6.dp),
-            color = MaterialTheme.colorScheme.primary, // Explicitly use theme color
-            trackColor = MaterialTheme.colorScheme.surfaceVariant, // Use appropriate track color
-            strokeCap = StrokeCap.Round // M3 default style
-        )
+        if (maxImageCacheSize > 0) {
+            // Use M3 LinearProgressIndicator with theme colors
+            LinearProgressIndicator(
+                progress = { imageCacheProgress },
+                modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 6.dp),
+                color = MaterialTheme.colorScheme.primary, // Explicitly use theme color
+                trackColor = MaterialTheme.colorScheme.surfaceVariant, // Use appropriate track color
+                strokeCap = StrokeCap.Round // M3 default style
+            )
 
-        Text(
-            text = stringResource(
-                R.string.size_used,
-                "${formatFileSize(imageCacheSize)} / ${formatFileSize(imageDiskCache.maxSize)}"
-            ),
-            style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp),
-        )
+            Text(
+                text = stringResource(
+                    R.string.size_used,
+                    "${formatFileSize(imageCacheSize)} / ${formatFileSize(imageDiskCache.maxSize)}"
+                ),
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp),
+            )
+        }
 
         ListPreference(
             title = { Text(stringResource(R.string.max_cache_size)) },
             selectedValue = maxImageCacheSize,
-            values = listOf(128, 256, 512, 1024, 2048, 4096, 8192),
-            valueText = { formatFileSize(it * 1024 * 1024L) },
+            values = listOf(0, 128, 256, 512, 1024, 2048, 4096, 8192),
+            valueText = {
+                when (it) {
+                    0 -> stringResource(R.string.disable)
+                    else -> formatFileSize(it * 1024 * 1024L)
+                }
+            },
             onValueSelected = onMaxImageCacheSizeChange,
         )
 
         PreferenceEntry(
             title = { Text(stringResource(R.string.clear_image_cache)) },
-            onClick = {
-                coroutineScope.launch(Dispatchers.IO) {
-                    imageDiskCache.clear()
-                }
+            onClick = { clearImageCacheDialog = true
             },
         )
+
+        if (clearImageCacheDialog) {
+            ActionPromptDialog(
+                title = stringResource(R.string.clear_image_cache),
+                onDismiss = { clearImageCacheDialog = false },
+                onConfirm = {
+                    coroutineScope.launch(Dispatchers.IO) {
+                        imageDiskCache.clear()
+                    }
+                    clearImageCacheDialog = false
+                },
+                onCancel = { clearImageCacheDialog = false },
+                content = {
+                    Text(text = stringResource(R.string.clear_image_cache_dialog))
+                }
+            )
+        }
     }
 
     TopAppBar(
@@ -299,4 +341,3 @@ fun StorageSettings(
         }
     )
 }
-

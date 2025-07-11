@@ -144,9 +144,10 @@
     <string name="swipe_sensitivity_desc">Adjust how sensitive swipe gestures are for changing songs</string>
 
     <string name="clear_song_cache_dialog">  Are you sure you want to clear all cached songs?</string>
-
+    <string name="clear_image_cache_dialog">  Are you sure you want to clear all cached image?</string>
     <string name="clear_downloads_dialog">  Are you sure you want to clear all downloads?</string>
 
+    <string name="disable">Disable</string>
 
     <string name="pause_remote_listen_history">Pause share listen history with YouTube Music</string>
     <string name="not_logged_in_youtube">Not logged in to YouTube</string>
