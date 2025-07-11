@@ -37,7 +37,7 @@ class OnlinePlaylistViewModel @Inject constructor(
             YouTube.playlist(playlistId)
                 .onSuccess { playlistPage ->
                     playlist.value = playlistPage.playlist
-                    playlistSongs.value = playlistPage.songs
+                    playlistSongs.value = playlistPage.songs.distinctBy { it.id }
                     continuation = playlistPage.songsContinuation
                 }.onFailure {
                     reportException(it)
@@ -50,7 +50,9 @@ class OnlinePlaylistViewModel @Inject constructor(
             viewModelScope.launch(Dispatchers.IO) {
                 YouTube.playlistContinuation(it)
                     .onSuccess { playlistContinuationPage ->
-                        playlistSongs.value = playlistSongs.value + playlistContinuationPage.songs
+                        val currentSongs = playlistSongs.value.toMutableList()
+                        currentSongs.addAll(playlistContinuationPage.songs)
+                        playlistSongs.value = currentSongs.distinctBy { it.id }
                         continuation = playlistContinuationPage.continuation
                     }.onFailure {
                         reportException(it)
