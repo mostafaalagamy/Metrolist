@@ -1,2 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="explore">Ontdekken</string>
+    <string name="charts">Hitlijsten</string>
+    <string name="back_button_desc">Terug</string>
+    <string name="no_title">Geen titel</string>
+    <string name="unknown_artist">Artiest onbekend</string>
+    <string name="loading_charts">Hitlijsten laden...</string>
+    <string name="retry_button">Opnieuw proberen</string>
+    <string name="album_cover_desc">Albumhoes</string>
+    <string name="trending">Trending</string>
+    <string name="weeks">Weken</string>
+    <string name="months">Maanden</string>
+    <string name="years">Jaar</string>
+    <string name="continuous">Voortdurend</string>
+    <string name="liked">Geliket</string>
+    <string name="offline">Gedownload</string>
+    <string name="my_top">Mijn meest geluisterd</string>
+    <string name="cached_playlist">Cached</string>
+    <string name="sync_playlist">Playlist synchroniseren</string>
+    <string name="sync_disabled">Synchroniseren uitgeschakeld</string>
+    <string name="elements_selected">%1$d elementen geselecteerd</string>
+    <string name="allows_for_sync_witch_youtube">Opmerking: Dit activeert synchronisatie met YouTube Music. Dit kan later NIET worden gewijzigd.</string>
+    <string name="generating_image">Afbeelding genereren</string>
+    <string name="please_wait">Wacht aub</string>
+    <string name="cancel">Annuleren</string>
+    <string name="share_lyrics">Liedtekst delen</string>
+    <string name="share_as_text">Delen als tekst</string>
+    <string name="share_as_image">Delen als afbeelding</string>
+    <string name="max_selection_limit">Max. selectie limiet</string>
+    <string name="share_selected">Deel geselecteerden</string>
+    <string name="customize_colors">Kleuren personaliseren</string>
+    <string name="more_options">Meer opties</string>
+    <string name="text_color">Tekstkleur</string>
+    <string name="secondary_text_color">Secundaire tekstkleur</string>
+    <string name="background_color">Achtergrondkleur</string>
+</resources>
