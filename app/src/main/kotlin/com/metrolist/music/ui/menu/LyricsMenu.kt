@@ -2,6 +2,7 @@ package com.metrolist.music.ui.menu
 
 import android.app.SearchManager
 import android.content.Intent
+import android.widget.Toast
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -119,6 +120,8 @@ fun LyricsMenu(
             )
         }
 
+    val isNetworkAvailable by viewModel.isNetworkAvailable.collectAsState()
+
     if (showSearchDialog) {
         DefaultDialog(
             modifier = Modifier.verticalScroll(rememberScrollState()),
@@ -163,13 +166,17 @@ fun LyricsMenu(
 
                 TextButton(
                     onClick = {
-                        viewModel.search(
-                            searchMediaMetadata.id,
-                            titleField.text,
-                            artistField.text,
-                            searchMediaMetadata.duration
-                        )
-                        showSearchResultDialog = true
+                        if (isNetworkAvailable) {
+                            viewModel.search(
+                                searchMediaMetadata.id,
+                                titleField.text,
+                                artistField.text,
+                                searchMediaMetadata.duration
+                            )
+                            showSearchResultDialog = true
+                        } else {
+                            Toast.makeText(context, context.getString(R.string.error_no_internet), Toast.LENGTH_SHORT).show()
+                        }
                     },
                 ) {
                     Text(stringResource(android.R.string.ok))
