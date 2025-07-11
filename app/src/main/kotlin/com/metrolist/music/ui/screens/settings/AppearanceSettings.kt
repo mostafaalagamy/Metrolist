@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.windowInsetsPadding
@@ -67,6 +68,7 @@ import com.metrolist.music.constants.ShowDownloadedPlaylistKey
 import com.metrolist.music.constants.ShowTopPlaylistKey
 import com.metrolist.music.constants.ShowCachedPlaylistKey
 import com.metrolist.music.constants.SwipeThumbnailKey
+import com.metrolist.music.constants.SwipeSensitivityKey
 import com.metrolist.music.constants.SwipeToSongKey
 import com.metrolist.music.ui.component.DefaultDialog
 import com.metrolist.music.ui.component.EnumListPreference
@@ -80,6 +82,7 @@ import com.metrolist.music.ui.utils.backToMain
 import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
 import me.saket.squiggles.SquigglySlider
+import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -127,6 +130,10 @@ fun AppearanceSettings(
     val (swipeThumbnail, onSwipeThumbnailChange) = rememberPreference(
         SwipeThumbnailKey,
         defaultValue = true
+    )
+    val (swipeSensitivity, onSwipeSensitivityChange) = rememberPreference(
+        SwipeSensitivityKey,
+        defaultValue = 0.73f
     )
     val (gridItemSize, onGridItemSizeChange) = rememberEnumPreference(
         GridItemsSizeKey,
@@ -412,6 +419,80 @@ fun AppearanceSettings(
             checked = swipeThumbnail,
             onCheckedChange = onSwipeThumbnailChange,
         )
+
+        AnimatedVisibility(swipeThumbnail) {
+            var showSensitivityDialog by rememberSaveable { mutableStateOf(false) }
+            
+            if (showSensitivityDialog) {
+                var tempSensitivity by remember { mutableFloatStateOf(swipeSensitivity) }
+                
+                DefaultDialog(
+                    onDismiss = { 
+                        tempSensitivity = swipeSensitivity
+                        showSensitivityDialog = false 
+                    },
+                    buttons = {
+                        TextButton(
+                            onClick = { 
+                                tempSensitivity = 0.73f
+                            }
+                        ) {
+                            Text(stringResource(R.string.reset))
+                        }
+                        
+                        Spacer(modifier = Modifier.weight(1f))
+                        
+                        TextButton(
+                            onClick = { 
+                                tempSensitivity = swipeSensitivity
+                                showSensitivityDialog = false 
+                            }
+                        ) {
+                            Text(stringResource(android.R.string.cancel))
+                        }
+                        TextButton(
+                            onClick = { 
+                                onSwipeSensitivityChange(tempSensitivity)
+                                showSensitivityDialog = false 
+                            }
+                        ) {
+                            Text(stringResource(android.R.string.ok))
+                        }
+                    }
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.padding(16.dp)
+                    ) {
+                        Text(
+                            text = stringResource(R.string.swipe_sensitivity),
+                            style = MaterialTheme.typography.headlineSmall,
+                            modifier = Modifier.padding(bottom = 16.dp)
+                        )
+                        
+                        Text(
+                            text = "${(tempSensitivity * 100).roundToInt()}%",
+                            style = MaterialTheme.typography.bodyLarge,
+                            modifier = Modifier.padding(bottom = 16.dp)
+                        )
+                        
+                        Slider(
+                            value = tempSensitivity,
+                            onValueChange = { tempSensitivity = it },
+                            valueRange = 0f..1f,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+                }
+            }
+            
+            PreferenceEntry(
+                title = { Text(stringResource(R.string.swipe_sensitivity)) },
+                description = "${(swipeSensitivity * 100).roundToInt()}%",
+                icon = { Icon(painterResource(R.drawable.tune), null) },
+                onClick = { showSensitivityDialog = true }
+            )
+        }
 
         EnumListPreference(
             title = { Text(stringResource(R.string.lyrics_text_position)) },
