@@ -50,6 +50,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -177,6 +178,15 @@ fun OnlinePlaylistScreen(
         derivedStateOf {
             lazyListState.firstVisibleItemIndex > 0
         }
+    }
+
+    LaunchedEffect(lazyListState) {
+        snapshotFlow { lazyListState.layoutInfo.visibleItemsInfo.lastOrNull()?.index }
+            .collect { lastVisibleIndex ->
+                if (lastVisibleIndex != null && lastVisibleIndex >= songs.size - 5) {
+                    viewModel.loadMoreSongs()
+                }
+            }
     }
 
     Box(
@@ -446,6 +456,17 @@ fun OnlinePlaylistScreen(
                                 .animateItem(),
                         )
                     }
+
+                    if (viewModel.continuation != null && songs.isNotEmpty()) {
+                        item {
+                            ShimmerHost {
+                                repeat(2) {
+                                    ListItemPlaceHolder()
+                                }
+                            }
+                        }
+                    }
+
                 } else {
                     item {
                         ShimmerHost {
