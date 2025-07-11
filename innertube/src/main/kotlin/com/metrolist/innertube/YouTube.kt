@@ -366,52 +366,52 @@ object YouTube {
         )
     }
 
-    suspend fun playlistContinuation(continuation: String) = runCatching {
+    suspend fun playlistContinuation(continuation: String): Result<PlaylistContinuationPage> = runCatching {
         val response = innerTube.browse(
             client = WEB_REMIX,
             continuation = continuation,
+            browseId = "",
             setLogin = true
         ).body<BrowseResponse>()
 
-        when {
-            response.continuationContents?.musicPlaylistShelfContinuation != null -> {
-                val shelf = response.continuationContents.musicPlaylistShelfContinuation
-                PlaylistContinuationPage(
-                    songs = shelf.contents?.mapNotNull { content ->
-                        content.musicResponsiveListItemRenderer?.let {
-                            PlaylistPage.fromMusicResponsiveListItemRenderer(it)
-                        }
-                    } ?: emptyList(),
-                    continuation = shelf.continuations?.getContinuation()
-                )
-            }
+        val mainContents = response.continuationContents?.sectionListContinuation?.contents
+            ?.flatMap { it.musicPlaylistShelfRenderer?.contents.orEmpty() }
+            ?: emptyList()
 
-            response.continuationContents?.musicShelfContinuation != null -> {
-                val shelf = response.continuationContents.musicShelfContinuation
-                PlaylistContinuationPage(
-                    songs = shelf.contents?.mapNotNull { content ->
-                        content.musicResponsiveListItemRenderer?.let {
-                            PlaylistPage.fromMusicResponsiveListItemRenderer(it)
-                        }
-                    } ?: emptyList(),
-                    continuation = shelf.continuations?.getContinuation()
-                )
-            }
+        val appendedContents = response.onResponseReceivedActions
+            ?.firstOrNull()
+            ?.appendContinuationItemsAction
+            ?.continuationItems
+            .orEmpty()
 
-            else -> {
-                val continuationItems = response.onResponseReceivedActions?.firstOrNull()
-                    ?.appendContinuationItemsAction?.continuationItems
-            
-                PlaylistContinuationPage(
-                    songs = continuationItems?.mapNotNull { item ->
-                        item.musicResponsiveListItemRenderer?.let {
-                            PlaylistPage.fromMusicResponsiveListItemRenderer(it)
-                        }
-                    } ?: emptyList(),
-                    continuation = continuationItems?.getContinuation()
-                )
-            }
-        }
+        val allContents = mainContents + appendedContents
+
+        val songs = allContents
+            .mapNotNull { it.musicResponsiveListItemRenderer }
+            .mapNotNull { PlaylistPage.fromMusicResponsiveListItemRenderer(it) }
+
+        val nextContinuation = response.continuationContents
+            ?.sectionListContinuation
+            ?.continuations
+            ?.getContinuation()
+            ?: response.continuationContents
+                ?.musicPlaylistShelfContinuation
+                ?.continuations
+                ?.getContinuation()
+            ?: response.continuationContents
+                ?.musicShelfContinuation
+                ?.continuations
+                ?.getContinuation()
+            ?: response.onResponseReceivedActions
+                ?.firstOrNull()
+                ?.appendContinuationItemsAction
+                ?.continuationItems
+                ?.getContinuation()
+
+        PlaylistContinuationPage(
+            songs = songs,
+            continuation = nextContinuation
+        )
     }
 
     suspend fun home(continuation: String? = null, params: String? = null): Result<HomePage> = runCatching {
