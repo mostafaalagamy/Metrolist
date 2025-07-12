@@ -137,7 +137,7 @@
     <string name="share_as_image">Partager comme image</string>
     <string name="please_wait">Veuillez patienter</string>
     <string name="lyrics_auto_scroll">Défilement automatique des paroles</string>
-    <string name="playlist_add_local_to_synced_note">Remarque : L\'ajout de titres locaux aux playlists synchronisées/distantes n\'est pas pris en charge. Toute autre combinaison est valide.</string>
+    <string name="playlist_add_local_to_synced_note">Remarque : L\'ajout de chansons locales aux playlists synchronisées/distantes n\'est pas pris en charge. Toute autre combinaison est valide.</string>
     <string name="import_online">Importer une playlist « m3u »</string>
     <string name="import_csv">Importer une playlist « csv »</string>
     <string name="lyrics_romanize_japanese">Romaniser les paroles japonaises</string>
