@@ -507,7 +507,9 @@ fun Queue(
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis,
                                 textAlign = TextAlign.Center,
-                                modifier = Modifier.basicMarquee()
+                                modifier = Modifier
+                                    .basicMarquee()
+                                    .alpha(if (showLyrics) 1f else 0.5f)
                             )
                         }
                     }
