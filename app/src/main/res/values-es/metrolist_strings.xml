@@ -145,4 +145,8 @@
     <string name="lyrics_romanize_korean">Romanizar letras coreanas</string>
     <string name="yt_sync">Sincronización automática con la cuenta</string>
     <string name="more_content">Más contenido</string>
+    <string name="swipe_sensitivity">Sensibilidad al deslizar</string>
+    <string name="swipe_sensitivity_desc">Ajusta la sensibilidad de los gestos de deslizamiento para cambiar de canción</string>
+    <string name="clear_image_cache_dialog">¿Estás seguro de que deseas borrar todas las imágenes almacenadas en caché?</string>
+    <string name="disable">Desactivar</string>
 </resources>

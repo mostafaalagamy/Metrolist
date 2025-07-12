@@ -1,2 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="explore">Felfedezés</string>
+    <string name="local_history">Helyi</string>
+    <string name="remote_history">Távoli</string>
+    <string name="charts">Slágerlisták</string>
+    <string name="back_button_desc">Vissza</string>
+    <string name="no_title">Nincs cím</string>
+    <string name="unknown_artist">Ismeretlen előadó</string>
+    <string name="unknown_item_type">Ismeretlen elem típus</string>
+    <string name="loading_charts">Slágerlisták betöltése...</string>
+    <string name="retry_button">Újra</string>
+    <string name="album_cover_desc">Album borító</string>
+    <string name="top_music_videos">Top zene klippek</string>
+    <string name="trending">Felkapott</string>
+    <string name="weeks">Hetek</string>
+    <string name="months">Hónapok</string>
+    <string name="years">Évek</string>
+    <string name="continuous">Folyamatos</string>
+    <string name="liked">Kedvelt</string>
+    <string name="offline">Letöltött</string>
+    <string name="my_top">Saját top</string>
+    <string name="cached_playlist">Cache-lt</string>
+    <string name="sync_playlist">Lejátszásilista szinkronizálás</string>
+    <string name="sync_disabled">Szinkronizálás kikapcsolva</string>
+    <string name="elements_selected">%1$d elem kijelölve</string>
+    <string name="allows_for_sync_witch_youtube">Figyelem: Ez lehetővé teszi a YouTube Zenével való szinkronizálást. Ez később nem megváltoztatható.</string>
+    <string name="generating_image">Kép generálása</string>
+    <string name="please_wait">Kérem várjon</string>
+    <string name="cancel">Mégse</string>
+    <string name="share_lyrics">Dalszöveg megosztása</string>
+    <string name="share_as_text">Szövegként megosztás</string>
+    <string name="share_as_image">Képként megosztás</string>
+    <string name="max_selection_limit">Max kiválasztási határ</string>
+    <string name="share_selected">Kiválasztott megosztása</string>
+    <string name="customize_colors">Színek testreszabása</string>
+    <string name="more_options">Több opció</string>
+    <string name="text_color">Szöveg szín</string>
+    <string name="secondary_text_color">Másodlagos szöveg szín</string>
+    <string name="background_color">Háttér szín</string>
+    <string name="added_to_play_next">Hozzáadva következőként</string>
+    <string name="added_to_queue">Hozzáadva a listához</string>
+    <string name="remove_from_cache">Cashe-ltből eltávolítás</string>
+    <string name="copy_link">Hivatkozás másolása</string>
+    <string name="select">Összes kijelölése</string>
+    <string name="like_all">Összes kedvelése</string>
+    <string name="dislike_all">Összes nem kedvelése</string>
+</resources>
