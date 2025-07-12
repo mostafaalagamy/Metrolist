@@ -100,9 +100,21 @@ fun MiniPlayer(
         stiffness = Spring.StiffnessLow
     )
 
-    // secret formula (don't question it)
-    val autoSwipeThreshold = (600 / (1f + kotlin.math.exp(-(-11.44748 * swipeSensitivity + 9.04945)))).roundToInt()  // 400px at 0.73 sensitivity
-    // val autoSwipeThreshold = (-550f*swipeSensitivity+600f).roundToInt().toFloat()  // 200px at 0.73 sensitivity
+    /**
+     * Calculates the auto-swipe threshold based on swipe sensitivity.
+     * The formula uses a sigmoid function to determine the threshold dynamically.
+     * Constants:
+     * - -11.44748: Controls the steepness of the sigmoid curve.
+     * - 9.04945: Adjusts the midpoint of the curve.
+     * - 600: Base threshold value in pixels.
+     *
+     * @param swipeSensitivity The sensitivity value (typically between 0 and 1).
+     * @return The calculated auto-swipe threshold in pixels.
+     */
+    fun calculateAutoSwipeThreshold(swipeSensitivity: Float): Int {
+        return (600 / (1f + kotlin.math.exp(-(-11.44748 * swipeSensitivity + 9.04945)))).roundToInt()
+    }
+    val autoSwipeThreshold = calculateAutoSwipeThreshold(swipeSensitivity)
 
     Box(
         modifier = modifier

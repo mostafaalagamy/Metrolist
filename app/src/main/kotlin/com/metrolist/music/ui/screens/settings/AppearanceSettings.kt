@@ -469,13 +469,13 @@ fun AppearanceSettings(
                             style = MaterialTheme.typography.headlineSmall,
                             modifier = Modifier.padding(bottom = 16.dp)
                         )
-                        
+    
                         Text(
-                            text = "${(tempSensitivity * 100).roundToInt()}%",
+                            text = stringResource(R.string.sensitivity_percentage, (tempSensitivity * 100).roundToInt()),
                             style = MaterialTheme.typography.bodyLarge,
                             modifier = Modifier.padding(bottom = 16.dp)
                         )
-                        
+    
                         Slider(
                             value = tempSensitivity,
                             onValueChange = { tempSensitivity = it },
@@ -488,7 +488,7 @@ fun AppearanceSettings(
             
             PreferenceEntry(
                 title = { Text(stringResource(R.string.swipe_sensitivity)) },
-                description = "${(swipeSensitivity * 100).roundToInt()}%",
+                description = stringResource(R.string.sensitivity_percentage, (swipeSensitivity * 100).roundToInt()),
                 icon = { Icon(painterResource(R.drawable.tune), null) },
                 onClick = { showSensitivityDialog = true }
             )
