@@ -414,9 +414,7 @@ fun Queue(
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.Center,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 8.dp, vertical = 4.dp)
+                            modifier = Modifier.fillMaxWidth()
                         ) {
                             Icon(
                                 painter = painterResource(id = R.drawable.queue_music),
@@ -449,9 +447,7 @@ fun Queue(
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.Center,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 2.dp, vertical = 4.dp)
+                            modifier = Modifier.fillMaxWidth()
                         ) {
                             Icon(
                                 painter = painterResource(id = R.drawable.bedtime),
@@ -494,9 +490,7 @@ fun Queue(
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.Center,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 8.dp, vertical = 4.dp)
+                            modifier = Modifier.fillMaxWidth()
                         ) {
                             Icon(
                                 painter = painterResource(id = R.drawable.lyrics),
