@@ -409,7 +409,7 @@ fun Queue(
                 ) {
                     TextButton(
                         onClick = { state.expandSoft() },
-                        modifier = Modifier.weight(0.8f)
+                        modifier = Modifier.weight(1.2f)
                     ) {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
@@ -444,7 +444,7 @@ fun Queue(
                                 showSleepTimerDialog = true
                             }
                         },
-                        modifier = Modifier.weight(1.4f)
+                        modifier = Modifier.weight(1.2f)
                     ) {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
@@ -489,7 +489,7 @@ fun Queue(
 
                     TextButton(
                         onClick = { showLyrics = !showLyrics },
-                        modifier = Modifier.weight(0.8f)
+                        modifier = Modifier.weight(1.2f)
                     ) {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
