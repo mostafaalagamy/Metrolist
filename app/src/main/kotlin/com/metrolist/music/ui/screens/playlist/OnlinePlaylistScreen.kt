@@ -183,7 +183,7 @@ fun OnlinePlaylistScreen(
     LaunchedEffect(lazyListState) {
         snapshotFlow { lazyListState.layoutInfo.visibleItemsInfo.lastOrNull()?.index }
             .collect { lastVisibleIndex ->
-                if (lastVisibleIndex != null && lastVisibleIndex >= songs.size - 5) {
+                if (songs.size >= 5 && lastVisibleIndex != null && lastVisibleIndex >= songs.size - 5) {
                     viewModel.loadMoreSongs()
                 }
             }
