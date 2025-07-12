@@ -141,4 +141,5 @@
     <string name="auto_download_on_like">Tự động tải xuống khi thích</string>
     <string name="auto_download_on_like_desc">Tự động tải xuống các bài hát khi bạn thích</string>
     <string name="pause_remote_listen_history">Tạm dừng chia sẻ lịch sử nghe nhạc với YouTube Music</string>
+    <string name="new_player_design">Thiết kế trình phát mới</string>
 </resources>

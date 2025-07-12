@@ -144,4 +144,9 @@
     <string name="lyrics_romanize_japanese">Romanizza testo in giapponese</string>
     <string name="lyrics_romanize_korean">Romanizza testo in coreano</string>
     <string name="yt_sync">Sincronizza automaticamente con l\'account</string>
+    <string name="new_player_design">Nuovo design del lettore</string>
+    <string name="disable">Disabilita</string>
+    <string name="swipe_sensitivity_desc">Imposta quanto sensibile deve essere il gesto per cambiare la canzone</string>
+    <string name="clear_image_cache_dialog">Sei sicuro di voler cancellare tutte le immagini in cache?</string>
+    <string name="swipe_sensitivity">Sensibilità del gesto per cambiare brano</string>
 </resources>
