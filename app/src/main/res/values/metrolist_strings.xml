@@ -2,10 +2,8 @@
 <resources>
     <string name="explore">Explore</string>
 
-
     <string name="local_history">Local</string>
     <string name="remote_history">Remote</string>
-
 
     <string name="charts">Charts</string>
     <string name="back_button_desc">Back</string>
@@ -18,12 +16,10 @@
     <string name="top_music_videos">Top music videos</string>
     <string name="trending">Trending</string>
 
-
     <string name="weeks">Weeks</string>
     <string name="months">Months</string>
     <string name="years">Years</string>
     <string name="continuous">Continuous</string>
-
 
     <string name="liked">Liked</string>
     <string name="offline">Downloaded</string>
@@ -70,12 +66,10 @@
         <item quantity="other">%d times</item>
     </plurals>
 
-
     <string name="seek_backward">5 seconds backward</string>
     <string name="seek_forward">5 seconds forward</string>
 
     <string name="similar_content">Similar content</string>
-
 
     <string name="login_settings">Login settings</string>
     <string name="general_settings">General settings</string>
@@ -142,6 +136,7 @@
 
     <string name="swipe_sensitivity">Swipe sensitivity</string>
     <string name="swipe_sensitivity_desc">Adjust how sensitive swipe gestures are for changing songs</string>
+    <string name="sensitivity_percentage">%1$d%%</string>
 
     <string name="clear_song_cache_dialog">  Are you sure you want to clear all cached songs?</string>
     <string name="clear_image_cache_dialog">  Are you sure you want to clear all cached image?</string>
