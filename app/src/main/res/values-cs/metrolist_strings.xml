@@ -146,4 +146,6 @@
     <string name="yt_sync">Automaticky synchronizovat s účtem</string>
     <string name="more_content">Další obsah</string>
     <string name="new_player_design">Nový vzhled přehrávače</string>
+    <string name="swipe_sensitivity">Citlivost posunutí</string>
+    <string name="swipe_sensitivity_desc">Upravte, jak moc mají být citlivá gesta posunutí při změně skladeb</string>
 </resources>
