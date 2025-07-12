@@ -411,6 +411,13 @@ fun Queue(
                         onClick = { state.expandSoft() },
                         modifier = Modifier.weight(1f)
                     ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.queue_music),
+                            contentDescription = null,
+                            modifier = Modifier.size(20.dp),
+                            tint = TextBackgroundColor
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
                         Text(
                             text = stringResource(id = R.string.queue),
                             color = TextBackgroundColor,
@@ -431,6 +438,14 @@ fun Queue(
                         },
                         modifier = Modifier.weight(1f)
                     ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.bedtime),
+                            contentDescription = null,
+                            modifier = Modifier.size(20.dp),
+                            tint = TextBackgroundColor
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+
                         AnimatedContent(
                             label = "sleepTimer",
                             targetState = sleepTimerEnabled,
@@ -461,6 +476,13 @@ fun Queue(
                         onClick = { showLyrics = !showLyrics },
                         modifier = Modifier.weight(1f)
                     ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.lyrics),
+                            contentDescription = null,
+                            modifier = Modifier.size(20.dp),
+                            tint = TextBackgroundColor
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
                         Text(
                             text = stringResource(id = R.string.lyrics),
                             color = TextBackgroundColor,
