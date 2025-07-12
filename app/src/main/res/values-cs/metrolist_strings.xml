@@ -147,5 +147,7 @@
     <string name="more_content">Další obsah</string>
     <string name="new_player_design">Nový vzhled přehrávače</string>
     <string name="swipe_sensitivity">Citlivost posunutí</string>
-    <string name="swipe_sensitivity_desc">Upravte, jak moc mají být citlivá gesta posunutí při změně skladeb</string>
+    <string name="swipe_sensitivity_desc">Upravte, jak moc mají být citlivá gesta posunutí pro změnu skladeb</string>
+    <string name="clear_image_cache_dialog">Opravdu chcete vymazat všechny obrázky v mezipaměti?</string>
+    <string name="disable">Zakázat</string>
 </resources>
