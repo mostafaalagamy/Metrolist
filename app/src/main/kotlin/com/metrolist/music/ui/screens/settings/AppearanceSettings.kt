@@ -133,7 +133,7 @@ fun AppearanceSettings(
     )
     val (swipeSensitivity, onSwipeSensitivityChange) = rememberPreference(
         SwipeSensitivityKey,
-        defaultValue = 0.73f
+        defaultValue = 0.85f
     )
     val (gridItemSize, onGridItemSizeChange) = rememberEnumPreference(
         GridItemsSizeKey,
