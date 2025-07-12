@@ -409,7 +409,7 @@ fun Queue(
                 ) {
                     TextButton(
                         onClick = { state.expandSoft() },
-                        modifier = Modifier.weight(1.2f)
+                        modifier = Modifier.weight(1f)
                     ) {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
@@ -451,7 +451,7 @@ fun Queue(
                             horizontalArrangement = Arrangement.Center,
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(horizontal = 8.dp, vertical = 4.dp)
+                                .padding(horizontal = 2.dp, vertical = 4.dp)
                         ) {
                             Icon(
                                 painter = painterResource(id = R.drawable.bedtime),
@@ -489,7 +489,7 @@ fun Queue(
 
                     TextButton(
                         onClick = { showLyrics = !showLyrics },
-                        modifier = Modifier.weight(1.2f)
+                        modifier = Modifier.weight(1f)
                     ) {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
