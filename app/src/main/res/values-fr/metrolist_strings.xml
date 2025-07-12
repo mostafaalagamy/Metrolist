@@ -147,4 +147,6 @@
     <string name="new_player_design">Nouveau design du lecteur</string>
     <string name="swipe_sensitivity">Sensibilité du balayage</string>
     <string name="swipe_sensitivity_desc">Ajuster la sensibilité des gestes de balayage pour changer de titre</string>
+    <string name="clear_image_cache_dialog">Êtes-vous sûr de vouloir effacer toutes les images mises en cache ?</string>
+    <string name="disable">Désactiver</string>
 </resources>
