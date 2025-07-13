@@ -150,4 +150,6 @@
     <string name="clear_image_cache_dialog">Tem certeza que quer apagar todas as imagens no cache?</string>
     <string name="disable">Desativar</string>
     <string name="sensitivity_percentage">%1$d%%</string>
+    <string name="subscribe">Inscrever-se</string>
+    <string name="subscribed">Inscrito</string>
 </resources>
