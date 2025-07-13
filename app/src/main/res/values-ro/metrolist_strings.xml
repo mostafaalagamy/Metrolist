@@ -20,4 +20,10 @@
     <string name="my_top">Topul meu</string>
     <string name="cached_playlist">În cache</string>
     <string name="sync_playlist">Sincronizează playlist-ul</string>
+    <string name="sync_disabled">Sincronizare dezactivată</string>
+    <string name="elements_selected">%1$d (de) elemente selectate</string>
+    <string name="allows_for_sync_witch_youtube">Notă: Această setare permite sincronizarea cu YouTube Music. NU poate fi schimbată mai târziu.</string>
+    <string name="generating_image">Se generează imaginea</string>
+    <string name="please_wait">Așteaptă</string>
+    <string name="cancel">Anulează</string>
 </resources>
