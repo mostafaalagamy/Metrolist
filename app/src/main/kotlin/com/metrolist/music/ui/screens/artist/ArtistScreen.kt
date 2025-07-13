@@ -177,7 +177,7 @@ fun ArtistScreen(
                                         top = WindowInsets.systemBars
                                             .asPaddingValues()
                                             .calculateTopPadding() + AppBarHeight,
-                                        bottom = 108.dp,
+                                        bottom = 200.dp,
                                     ),
                             )
                         }
@@ -262,7 +262,7 @@ fun ArtistScreen(
                                         .fillMaxWidth()
                                         .align(Alignment.TopCenter)
                                         .fadingEdge(
-                                            bottom = 400.dp,
+                                            bottom = 200.dp,
                                         ),
                                 )
                             }
@@ -347,7 +347,7 @@ fun ArtistScreen(
                                                 Icon(
                                                     painter = painterResource(R.drawable.radio),
                                                     contentDescription = null,
-                                                    modifier = Modifier.size(16.dp)
+                                                    modifier = Modifier.size(20.dp)
                                                 )
                                                 Spacer(modifier = Modifier.width(8.dp))
                                                 Text(
@@ -411,6 +411,7 @@ fun ArtistScreen(
                                 }
                             }
                         }
+                        Spacer(modifier = Modifier.height(16.dp))
                     }
                 }
 
