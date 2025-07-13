@@ -1,12 +1,23 @@
 package com.metrolist.music.ui.menu
 
 import android.content.Intent
+import androidx.compose.foundation.background
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -18,10 +29,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.metrolist.innertube.models.ArtistItem
 import com.metrolist.music.LocalDatabase
@@ -44,9 +58,150 @@ fun YouTubeArtistMenu(
 
     YouTubeListItem(
         item = artist,
-        trailingContent = {
-            IconButton(
-                onClick = {
+        trailingContent = {},
+    )
+
+    HorizontalDivider()
+
+    Spacer(modifier = Modifier.height(12.dp))
+
+    // Row for "Start Radio", "Shuffle", and "Share" buttons with grid-like background
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 24.dp, end = 24.dp, top = 8.dp, bottom = 8.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        // Start Radio button
+        artist.radioEndpoint?.let { watchEndpoint ->
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .background(
+                        color = MaterialTheme.colorScheme.surfaceVariant,
+                        shape = RoundedCornerShape(8.dp)
+                    )
+                    .clip(RoundedCornerShape(8.dp))
+                    .clickable {
+                        playerConnection.playQueue(YouTubeQueue(watchEndpoint))
+                        onDismiss()
+                    }
+                    .padding(12.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.radio),
+                    contentDescription = null,
+                    modifier = Modifier.size(24.dp),
+                )
+                Text(
+                    text = stringResource(R.string.start_radio),
+                    style = MaterialTheme.typography.labelMedium,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .basicMarquee()
+                        .padding(top = 4.dp),
+                )
+            }
+        }
+
+        // Shuffle button
+        artist.shuffleEndpoint?.let { watchEndpoint ->
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .background(
+                        color = MaterialTheme.colorScheme.surfaceVariant,
+                        shape = RoundedCornerShape(8.dp)
+                    )
+                    .clip(RoundedCornerShape(8.dp))
+                    .clickable {
+                        playerConnection.playQueue(YouTubeQueue(watchEndpoint))
+                        onDismiss()
+                    }
+                    .padding(12.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.shuffle),
+                    contentDescription = null,
+                    modifier = Modifier.size(24.dp),
+                )
+                Text(
+                    text = stringResource(R.string.shuffle),
+                    style = MaterialTheme.typography.labelMedium,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .basicMarquee()
+                        .padding(top = 4.dp),
+                )
+            }
+        }
+
+        // Share button
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .background(
+                    color = MaterialTheme.colorScheme.surfaceVariant,
+                    shape = RoundedCornerShape(8.dp)
+                )
+                .clip(RoundedCornerShape(8.dp))
+                .clickable {
+                    val intent = Intent().apply {
+                        action = Intent.ACTION_SEND
+                        type = "text/plain"
+                        putExtra(Intent.EXTRA_TEXT, artist.shareLink)
+                    }
+                    context.startActivity(Intent.createChooser(intent, null))
+                    onDismiss()
+                }
+                .padding(12.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.share),
+                contentDescription = null,
+                modifier = Modifier.size(24.dp),
+            )
+            Text(
+                text = stringResource(R.string.share),
+                style = MaterialTheme.typography.labelMedium,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .basicMarquee()
+                    .padding(top = 4.dp),
+            )
+        }
+    }
+
+    LazyColumn(
+        contentPadding = PaddingValues(
+            start = 8.dp,
+            top = 8.dp,
+            end = 8.dp,
+            bottom = 8.dp + WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
+        ),
+    ) {
+        // Subscribe/Subscribed button
+        item {
+            ListItem(
+                headlineContent = { 
+                    Text(text = if (libraryArtist?.artist?.bookmarkedAt != null) stringResource(R.string.subscribed) else stringResource(R.string.subscribe))
+                },
+                leadingContent = {
+                    Icon(
+                        painter = painterResource(
+                            if (libraryArtist?.artist?.bookmarkedAt != null) {
+                                R.drawable.subscribed
+                            } else {
+                                R.drawable.subscribe
+                            }
+                        ),
+                        contentDescription = null,
+                    )
+                },
+                modifier = Modifier.clickable {
                     database.query {
                         val libraryArtist = libraryArtist
                         if (libraryArtist != null) {
@@ -62,84 +217,6 @@ fun YouTubeArtistMenu(
                             )
                         }
                     }
-                },
-            ) {
-                Icon(
-                    painter = painterResource(
-                        if (libraryArtist?.artist?.bookmarkedAt != null) {
-                            R.drawable.favorite
-                        } else {
-                            R.drawable.favorite_border
-                        },
-                    ),
-                    tint = if (libraryArtist?.artist?.bookmarkedAt != null) MaterialTheme.colorScheme.error else LocalContentColor.current,
-                    contentDescription = null,
-                )
-            }
-        },
-    )
-
-    HorizontalDivider()
-
-    LazyColumn(
-        contentPadding = PaddingValues(
-            start = 8.dp,
-            top = 8.dp,
-            end = 8.dp,
-            bottom = 8.dp + WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
-        ),
-    ) {
-        artist.radioEndpoint?.let { watchEndpoint ->
-            item {
-                ListItem(
-                    headlineContent = { Text(text = stringResource(R.string.start_radio)) },
-                    leadingContent = {
-                        Icon(
-                            painter = painterResource(R.drawable.radio),
-                            contentDescription = null,
-                        )
-                    },
-                    modifier = Modifier.clickable {
-                        playerConnection.playQueue(YouTubeQueue(watchEndpoint))
-                        onDismiss()
-                    }
-                )
-            }
-        }
-        artist.shuffleEndpoint?.let { watchEndpoint ->
-            item {
-                ListItem(
-                    headlineContent = { Text(text = stringResource(R.string.shuffle)) },
-                    leadingContent = {
-                        Icon(
-                            painter = painterResource(R.drawable.shuffle),
-                            contentDescription = null,
-                        )
-                    },
-                    modifier = Modifier.clickable {
-                        playerConnection.playQueue(YouTubeQueue(watchEndpoint))
-                        onDismiss()
-                    }
-                )
-            }
-        }
-        item {
-            ListItem(
-                headlineContent = { Text(text = stringResource(R.string.share)) },
-                leadingContent = {
-                    Icon(
-                        painter = painterResource(R.drawable.share),
-                        contentDescription = null,
-                    )
-                },
-                modifier = Modifier.clickable {
-                    val intent = Intent().apply {
-                        action = Intent.ACTION_SEND
-                        type = "text/plain"
-                        putExtra(Intent.EXTRA_TEXT, artist.shareLink)
-                    }
-                    context.startActivity(Intent.createChooser(intent, null))
-                    onDismiss()
                 }
             )
         }
