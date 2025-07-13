@@ -1,3 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="explore">Explorează</string>
+    <string name="local_history">Local</string>
+    <string name="remote_history">La distanță</string>
+    <string name="back_button_desc">Înapoi</string>
+    <string name="no_title">Fără titlu</string>
+    <string name="unknown_artist">Artist necunoscut</string>
+    <string name="unknown_item_type">Tip de element necunoscut</string>
+    <string name="retry_button">Reîncearcă</string>
+    <string name="album_cover_desc">Copertă album</string>
+    <string name="top_music_videos">Top videoclipuri muzicale</string>
+    <string name="trending">Tendințe</string>
+    <string name="weeks">Săptămâni</string>
+    <string name="months">Luni</string>
+    <string name="years">Ani</string>
+    <string name="continuous">Continuu</string>
+    <string name="liked">Apreciate</string>
+    <string name="offline">Descărcate</string>
+    <string name="my_top">Topul meu</string>
+    <string name="cached_playlist">În cache</string>
+    <string name="sync_playlist">Sincronizează playlist-ul</string>
 </resources>
