@@ -166,6 +166,8 @@
     <string name="views">Views</string>
     <string name="likes">Likes</string>
     <string name="dislikes">Dislikes</string>
+    <string name="subscribe">Subscribe</string>
+    <string name="subscribed">Subscribed</string>
     <plurals name="seconds">
         <item quantity="one">1 second</item>
         <item quantity="other">%d seconds</item>
