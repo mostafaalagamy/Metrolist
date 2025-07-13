@@ -160,4 +160,6 @@
     <string name="clear_image_cache_dialog">هل أنت متأكد أنك تريد مسح كافة الصور المخزنة مؤقتًا؟</string>
     <string name="disable">تعطيل</string>
     <string name="sensitivity_percentage">%1$d%%</string>
+    <string name="subscribe">اشتراك</string>
+    <string name="subscribed">مشترك</string>
 </resources>
