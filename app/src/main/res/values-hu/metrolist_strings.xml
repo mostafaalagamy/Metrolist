@@ -100,6 +100,15 @@
     <string name="last_song_listened">Vegye alapul a legutolsó listázott számot</string>
     <string name="app_language">App nyelve</string>
     <string name="configure_app_language">App nyelvezet beállítása</string>
-    <string name="intent_app_language_not_found">Nem található az app nyelv beállítás, kérem állítsa be azt kézzel</string>
-    <string name="open_supported_links">Alapból nyissa meg a támogatott linkeket</string>
+    <string name="intent_app_language_not_found">Nincs app nyelv beállítás, kérem állítsa be azt kézzel</string>
+    <string name="open_supported_links">Alapból nyissa meg a támogatott hivatkozásokat</string>
+    <string name="configure_supported_links">Támogatott hivatkozások beállítása</string>
+    <string name="intent_supported_links_not_found">Nincs támogatott hivatkozások beállítás, kérem állítsa be azt kézzel</string>
+    <string name="set_first_lyrics_provider">Preferált dalszöveg szolgáltató</string>
+    <string name="audio_quality_max">Max (béta)</string>
+    <string name="enable_similar_content">Hasonló tartalom engedélyezése</string>
+    <string name="similar_content_desc">Automatikusan hozzáad hasonló zenéket ha a lista a végéhez ért</string>
+    <string name="min_playback_duration_title">Minimum lejátszási hossz</string>
+    <string name="min_playback_duration_description">A minimális számú lejátszott zene, amitől \"lejátszottnak\" tekinthető a lista</string>
+    <string name="percentage_format">%d%%</string>
 </resources>
