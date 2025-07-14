@@ -111,4 +111,6 @@
     <string name="min_playback_duration_title">Minimum lejátszási hossz</string>
     <string name="min_playback_duration_description">A minimális számú lejátszott zene, amitől \"lejátszottnak\" tekinthető a lista</string>
     <string name="percentage_format">%d%%</string>
+    <string name="minimum_playback_duration">Minimum lejátszási hossz</string>
+    <string name="import_online">\"m3u\" lejázsázilista importálása</string>
 </resources>
