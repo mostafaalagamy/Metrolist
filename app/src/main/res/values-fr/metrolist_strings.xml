@@ -14,7 +14,7 @@
     <string name="proxy">Proxy</string>
     <string name="default_lib_chips">Choix de la bibliothèque par défaut</string>
     <string name="set_quick_picks">Choix des sélections rapides</string>
-    <string name="last_song_listened">Basé sur la dernière chanson écoutée</string>
+    <string name="last_song_listened">Basé sur le dernier titre écouté</string>
     <string name="all_time">Tout le temps</string>
     <string name="past_24_hours">Dernières 24 heures</string>
     <string name="past_week">Semaine dernière</string>
@@ -27,15 +27,15 @@
     <string name="added_to_play_next">Ajouté à jouer après</string>
     <string name="allows_for_sync_witch_youtube">Note : Ceci permet de synchroniser avec YouTube Music. Ce choix est définitif.</string>
     <string name="copy_link">Copier le lien</string>
-    <string name="added_to_queue">Ajouté à la liste de lecture</string>
+    <string name="added_to_queue">Ajouté à la file d\'attente</string>
     <string name="dislike_all">Ne pas aimer tout</string>
     <string name="general_settings">Paramètres généraux</string>
     <string name="remove_from_cache">Retirer du cache</string>
     <string name="link_copied">Lien copié au presse-papier</string>
     <string name="slim_navbar">Masquer les étiquettes de la barre de navigation du bas</string>
     <string name="lyrics">Paroles</string>
-    <string name="already_in_playlist">Déjà dans la liste de lecture :</string>
-    <string name="swipe_song_to_add">Faites glisser la chanson vers la gauche pour l\'ajouter à la file d\'attente ou vers la droite pour la lire ensuite</string>
+    <string name="already_in_playlist">Déjà dans la playlist :</string>
+    <string name="swipe_song_to_add">Faites glisser le titre vers la gauche pour l\'ajouter à la file d\'attente ou vers la droite pour le lire ensuite</string>
     <string name="show_top_playlist">Afficher la playlist « Top »</string>
     <string name="show_cached_playlist">Afficher la playlist « Mise en cache »</string>
     <string name="token_adv_login_description">Ceci est une méthode de connexion AVANCÉE. En tant qu\'alternative au portail web, vous devez directement entrer ou mettre à jour votre jeton de connexion ici. Par exemple, ceci peut accélérer la connexion sur plusieurs appareils. Veuillez noter que tout format de jeton invalide que l\'application ne parvient pas à analyser ne sera pas accepté</string>
@@ -45,7 +45,7 @@
         <item quantity="many">%d secondes</item>
         <item quantity="other">%d secondes</item>
     </plurals>
-    <string name="min_playback_duration_description">Le temps minimum d\'une chanson qui doit être lue avant d\'être considérée comme lue</string>
+    <string name="min_playback_duration_description">Le temps minimum d\'un titre qui doit être lu avant d\'être considéré comme \"lu\"</string>
     <string name="open_app_settings_error">Impossible d\'ouvrir les paramètres de l\'application</string>
     <string name="local_history">Local</string>
     <string name="charts">Graphiques</string>
@@ -82,7 +82,7 @@
     <string name="default_style">Défaut</string>
     <string name="secondary_color_style">Secondaire</string>
     <string name="enable_squiggly_slider">Activer la barre de défilement</string>
-    <string name="enable_swipe_thumbnail">Activer le swipe pour changer de chanson</string>
+    <string name="enable_swipe_thumbnail">Activer le glissement pour changer de titre</string>
     <string name="lyrics_click_change">Changer les paroles avec un clic</string>
     <string name="slim">Subtil</string>
     <string name="auto_playlists">Playlists Automatiques</string>
@@ -103,13 +103,13 @@
     <string name="set_first_lyrics_provider">Fournisseur de paroles préférées</string>
     <string name="audio_quality_max">Max (beta)</string>
     <string name="enable_similar_content">Activer le contenu similaire</string>
-    <string name="similar_content_desc">Ajoute automatiquement des chansons similaires à de la file d\'attente quand la fin est atteinte</string>
+    <string name="similar_content_desc">Ajoutez automatiquement d\'autres titres similaires lorsque la fin de la file d\'attente est atteinte</string>
     <string name="min_playback_duration_title">Durée minimum de lecture</string>
     <string name="percentage_format">%d%%</string>
     <string name="minimum_playback_duration">Durée minimum de lecture</string>
-    <string name="clear_song_cache_dialog">Êtes-vous sûr·e de vouloir vider le cache des chansons ?</string>
+    <string name="clear_song_cache_dialog">Êtes-vous sûr de vouloir effacer tous les titres en cache ?</string>
     <string name="clear_downloads_dialog">Êtes-vous sûr·e de vouloir supprimer tous les téléchargements ?</string>
-    <string name="pause_remote_listen_history">Pause partage de l\'historique de lecture avec YouTube Music</string>
+    <string name="pause_remote_listen_history">Mettre en pause et partager l\'historique d\'écoute avec YouTube Music</string>
     <string name="not_logged_in_youtube">Non connecté à YouTube</string>
     <string name="default_links">Ouvrir les liens supportés</string>
     <string name="release_notes">Notes de version</string>
@@ -132,12 +132,12 @@
     <string name="secondary_text_color">Couleur secondaire du texte</string>
     <string name="background_color">Couleur d\'arrière-plan</string>
     <string name="auto_download_on_like">Télécharger automatiquement quand on aime</string>
-    <string name="auto_download_on_like_desc">Téléchargez automatiquement les chansons quand vous les aimez</string>
+    <string name="auto_download_on_like_desc">Téléchargez automatiquement les titres quand vous les aimez</string>
     <string name="generating_image">Génération de l\'image</string>
     <string name="share_as_image">Partager comme image</string>
     <string name="please_wait">Veuillez patienter</string>
     <string name="lyrics_auto_scroll">Défilement automatique des paroles</string>
-    <string name="playlist_add_local_to_synced_note">Remarque: L\'ajout de chansons locales aux playlists synchronisées/distantes n\'est pas pris en charge. Toute autre combinaison est valide.</string>
+    <string name="playlist_add_local_to_synced_note">Remarque : L\'ajout de titres locaux aux playlists synchronisées/distantes n\'est pas pris en charge. Toute autre combinaison est valide.</string>
     <string name="import_online">Importer une playlist « m3u »</string>
     <string name="import_csv">Importer une playlist « csv »</string>
     <string name="lyrics_romanize_japanese">Romaniser les paroles japonaises</string>
