@@ -45,4 +45,26 @@
     <string name="select">Összes kijelölése</string>
     <string name="like_all">Összes kedvelése</string>
     <string name="dislike_all">Összes nem kedvelése</string>
+    <string name="sort_by_last_updated">Dátum frissítve</string>
+    <string name="link_copied">Hivatkozás másolva a vágólapra</string>
+    <string name="lyrics">Dalszöveg</string>
+    <string name="already_in_playlist">Már a lejátszásilistában:</string>
+    <plurals name="n_element">
+        <item quantity="one">elem</item>
+        <item quantity="other">elem</item>
+    </plurals>
+    <plurals name="n_time">
+        <item quantity="one">alkalom</item>
+        <item quantity="other">alkalom</item>
+    </plurals>
+    <string name="seek_backward">5 mp visszafelé</string>
+    <string name="seek_forward">5 mp előrefelé</string>
+    <string name="similar_content">Hasonló tartalom</string>
+    <string name="login_settings">Belépési beállítások</string>
+    <string name="general_settings">Általános beállítások</string>
+    <string name="player_background_style">Lejátszó háttér stílus</string>
+    <string name="follow_theme">Téma követése</string>
+    <string name="gradient">Átmenet</string>
+    <string name="new_player_design">Új lejátszó design</string>
+    <string name="player_background_blur">Elmosás</string>
 </resources>
