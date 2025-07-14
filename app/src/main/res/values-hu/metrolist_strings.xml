@@ -74,5 +74,20 @@
     <string name="enable_swipe_thumbnail">Bekapcsolja a húzással való váltást</string>
     <string name="swipe_song_to_add">Húzza a számot balra a listához való hozzáadáshoz, vagy jobbra hogy következőnek azt játssza</string>
     <string name="lyrics_click_change">Dalszövegek váltása koppintásra</string>
-    <string name="lyrics_auto_scroll">Dalszovegek automata görgetése</string>
+    <string name="lyrics_auto_scroll">Dalszövegek automata görgetése</string>
+    <string name="lyrics_romanize_japanese">Japán dalszövegek latin betűsítése</string>
+    <string name="lyrics_romanize_korean">Kóreai dalszövegek latin betűsítése</string>
+    <string name="slim">Vékony</string>
+    <string name="slim_navbar">Alsó navigációs sáv feliratok elrejtése</string>
+    <string name="auto_playlists">Automata lejátszásilisták</string>
+    <string name="show_liked_playlist">\"Kedvelt\" lejátszásilista megjelenítése</string>
+    <string name="show_downloaded_playlist">\"Letöltött\" lejátszásilista megjelenítése</string>
+    <string name="show_top_playlist">\"Top\" lejátszásilista megjelenítése</string>
+    <string name="show_cached_playlist">\"Gyorsítótárazott\" lejátszásilista megjelenítése</string>
+    <string name="google">Google</string>
+    <string name="discord">Discord</string>
+    <string name="advanced_login">Bejelentkezés tokennel</string>
+    <string name="token_hidden">Koppintson a token megjelenítéséhez</string>
+    <string name="token_shown">Koppintson még egyszer a másoláshoz vagy szerkesztéshez</string>
+    <string name="token_adv_login_description">Ez egy ÖSSZETETTEBB belépési módszer. A webes portálhoz képest itt közvetlen adhatja vagy frissítheti a belépési tokenjét. Például: ha egyszerre több eszközön akar belépni, ezzel felgyorsíthatja. Vegye azonban figyelembe, hogy minden token visszautasításra kerül, amit az app nem tud visszaigazolni.</string>
 </resources>
