@@ -142,4 +142,10 @@
     <string name="auto_download_on_like_desc">Tự động tải xuống các bài hát khi bạn thích</string>
     <string name="pause_remote_listen_history">Tạm dừng chia sẻ lịch sử nghe nhạc với YouTube Music</string>
     <string name="new_player_design">Thiết kế trình phát mới</string>
+    <string name="swipe_sensitivity">Độ nhạy vuốt</string>
+    <string name="swipe_sensitivity_desc">Điều chỉnh độ nhạy của cử chỉ vuốt để thay đổi bài hát</string>
+    <string name="clear_image_cache_dialog">Bạn có chắc chắn muốn xóa toàn bộ hình ảnh đã lưu trong bộ nhớ đệm không?</string>
+    <string name="disable">Vô hiệu hóa</string>
+    <string name="subscribe">Đăng ký</string>
+    <string name="subscribed">Đã đăng ký</string>
 </resources>

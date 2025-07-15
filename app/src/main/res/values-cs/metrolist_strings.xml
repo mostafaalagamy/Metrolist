@@ -150,4 +150,7 @@
     <string name="swipe_sensitivity_desc">Upravte, jak moc mají být citlivá gesta posunutí pro změnu skladeb</string>
     <string name="clear_image_cache_dialog">Opravdu chcete vymazat všechny obrázky v mezipaměti?</string>
     <string name="disable">Zakázat</string>
+    <string name="sensitivity_percentage">%1$d%%</string>
+    <string name="subscribe">Odebírat</string>
+    <string name="subscribed">Odebíráno</string>
 </resources>
