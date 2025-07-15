@@ -139,9 +139,11 @@ fun OnlinePlaylistScreen(
     val snackbarHostState = remember { SnackbarHostState() }
 
     var isSearching by rememberSaveable { mutableStateOf(false) }
+
     var query by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(TextFieldValue())
     }
+
     val filteredSongs =
         remember(songs, query) {
             if (query.text.isEmpty()) {
@@ -160,16 +162,22 @@ fun OnlinePlaylistScreen(
                     }
             }
         }
+
     val focusRequester = remember { FocusRequester() }
     LaunchedEffect(isSearching) {
         if (isSearching) {
             focusRequester.requestFocus()
         }
     }
+
     if (isSearching) {
         BackHandler {
             isSearching = false
             query = TextFieldValue()
+        }
+    } else if (selection) {
+        BackHandler {
+            selection = false
         }
     }
 
