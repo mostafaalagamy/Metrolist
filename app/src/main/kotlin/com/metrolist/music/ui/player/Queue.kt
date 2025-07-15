@@ -165,16 +165,6 @@ fun Queue(
     val selectedItems = remember { mutableStateListOf<Timeline.Window>() }
     var selection by remember { mutableStateOf(false) }
 
-    LaunchedEffect(queueWindows) {
-        val currentMetadata = queueWindows.map { it.mediaItem.metadata!! }
-        selectedSongs.removeAll { it !in currentMetadata }
-        selectedItems.removeAll { it !in queueWindows }
-
-        if (selectedSongs.isEmpty() && selection) {
-            selection = false
-        }
-    }
-
     if (selection) {
         BackHandler {
             selection = false
