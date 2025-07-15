@@ -115,7 +115,7 @@
     <string name="playlist_add_local_to_synced_note">Notă: Adăugarea de melodii locale la playlist-urile sincronizate/de la distanță nu este suportată. Orice altă combinație este validă</string>
     <string name="auto_download_on_like">Descarcă automat la apreciere</string>
     <string name="auto_download_on_like_desc">Descarcă melodiile automat atunci când le apreciezi</string>
-    <string name="swipe_sensitivity">Sensibilitate glisare</string>
+    <string name="swipe_sensitivity">Sensibilitate glisare mini player</string>
     <string name="swipe_sensitivity_desc">Ajustează cât de sensibile sunt gesturile de glisare pentru schimbarea melodiei</string>
     <string name="sensitivity_percentage">%1$d%%</string>
     <string name="clear_song_cache_dialog">Sigur vrei să ștergi toate melodiile din cache?</string>
