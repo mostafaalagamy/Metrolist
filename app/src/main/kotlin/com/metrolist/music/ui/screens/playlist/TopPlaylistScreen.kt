@@ -128,6 +128,9 @@ fun TopPlaylistScreen(
     var searchQuery by remember {
         mutableStateOf(TextFieldValue(""))
     }
+    var query by rememberSaveable(stateSaver = TextFieldValue.Saver) {
+        mutableStateOf(TextFieldValue())
+    }
     var isSearching by remember { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
     val focusRequester = remember { FocusRequester() }
@@ -143,6 +146,7 @@ fun TopPlaylistScreen(
     if (isSearching) {
         BackHandler {
             isSearching = false
+            query = TextFieldValue()
         }
     } else if (selection) {
         BackHandler {
