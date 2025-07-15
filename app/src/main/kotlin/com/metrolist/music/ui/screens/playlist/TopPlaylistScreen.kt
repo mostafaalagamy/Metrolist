@@ -1,5 +1,6 @@
 package com.metrolist.music.ui.screens.playlist
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
@@ -137,6 +138,17 @@ fun TopPlaylistScreen(
     }
     var selection by remember {
         mutableStateOf(false)
+    }
+
+    if (isSearching) {
+        BackHandler {
+            isSearching = false
+            query = TextFieldValue()
+        }
+    } else if (selection) {
+        BackHandler {
+            selection = false
+        }
     }
 
     val sortType by viewModel.topPeriod.collectAsState()
