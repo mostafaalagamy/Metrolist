@@ -15,6 +15,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
+import androidx.compose.animation.with
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
@@ -1079,30 +1080,46 @@ fun BottomSheetPlayer(
 
         AnimatedVisibility(
             visible = state.isExpanded,
-            enter = fadeIn(tween(1000)),
-            exit = fadeOut()
+            enter = fadeIn(tween(500)),
+            exit = fadeOut(tween(500))
         ) {
-            if (playerBackground == PlayerBackgroundStyle.BLUR) {
-                AsyncImage(
-                    model = mediaMetadata?.thumbnailUrl,
-                    contentDescription = null,
-                    contentScale = ContentScale.FillBounds,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .blur(150.dp)
-                )
+            AnimatedContent(
+                targetState = mediaMetadata,
+                transitionSpec = {
+                    fadeIn(tween(1000)).togetherWith(fadeOut(tween(1000)))
+                }
+            ) { mediaMetadata ->
+                if (playerBackground == PlayerBackgroundStyle.BLUR) {
+                    AsyncImage(
+                        model = mediaMetadata?.thumbnailUrl,
+                        contentDescription = null,
+                        contentScale = ContentScale.FillBounds,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .blur(150.dp)
+                    )
 
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(Color.Black.copy(alpha = 0.3f))
-                )
-            } else if (playerBackground == PlayerBackgroundStyle.GRADIENT && gradientColors.size >= 2) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(Brush.verticalGradient(gradientColors))
-                )
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color.Black.copy(alpha = 0.3f))
+                    )
+                }
+            }
+
+            AnimatedContent(
+                targetState = gradientColors,
+                transitionSpec = {
+                    fadeIn(tween(1000)) togetherWith fadeOut(tween(1000))
+                }
+            ) { colors ->
+                if (playerBackground == PlayerBackgroundStyle.GRADIENT && colors.size >= 2) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Brush.verticalGradient(colors))
+                    )
+                }
             }
 
             if (playerBackground != PlayerBackgroundStyle.DEFAULT && showLyrics) {
@@ -1113,7 +1130,9 @@ fun BottomSheetPlayer(
                 )
             }
         }
+
 // distance
+
         when (LocalConfiguration.current.orientation) {
             Configuration.ORIENTATION_LANDSCAPE -> {
                 Row(
