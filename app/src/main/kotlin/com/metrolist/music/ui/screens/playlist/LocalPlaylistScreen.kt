@@ -162,9 +162,6 @@ fun LocalPlaylistScreen(
 
     val playlist by viewModel.playlist.collectAsState()
     val songs by viewModel.playlistSongs.collectAsState()
-    var query by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue())
-    }
     val mutableSongs = remember { mutableStateListOf<PlaylistSong>() }
     val playlistLength =
         remember(songs) {
@@ -210,17 +207,6 @@ fun LocalPlaylistScreen(
         }
     }
 
-    if (isSearching) {
-        BackHandler {
-            isSearching = false
-            query = TextFieldValue()
-        }
-    } else if (selection) {
-        BackHandler {
-            selection = false
-        }
-    }
-
     var selection by remember {
         mutableStateOf(false)
     }
@@ -228,6 +214,16 @@ fun LocalPlaylistScreen(
     val wrappedSongs = remember(filteredSongs) {
         filteredSongs.map { item -> ItemWrapper(item) }
     }.toMutableStateList()
+
+    if (isSearching) {
+        BackHandler {
+            isSearching = false
+        }
+    } else if (selection) {
+        BackHandler {
+            selection = false
+        }
+    }
 
     val downloadUtil = LocalDownloadUtil.current
     var downloadState by remember {
