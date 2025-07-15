@@ -40,6 +40,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
@@ -129,6 +130,9 @@ fun AutoPlaylistScreen(
     var searchQuery by remember {
         mutableStateOf(TextFieldValue(""))
     }
+    var query by rememberSaveable(stateSaver = TextFieldValue.Saver) {
+        mutableStateOf(TextFieldValue())
+    }
 
     var isSearching by remember { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
@@ -165,6 +169,7 @@ fun AutoPlaylistScreen(
     if (isSearching) {
         BackHandler {
             isSearching = false
+            query = TextFieldValue()
         }
     } else if (selection) {
         BackHandler {
