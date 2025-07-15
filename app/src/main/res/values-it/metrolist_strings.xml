@@ -148,7 +148,7 @@
     <string name="disable">Disabilita</string>
     <string name="swipe_sensitivity_desc">Imposta quanto sensibile deve essere il gesto per cambiare la canzone</string>
     <string name="clear_image_cache_dialog">Sei sicuro di voler cancellare tutte le immagini in cache?</string>
-    <string name="swipe_sensitivity">Sensibilità del gesto per cambiare brano</string>
+    <string name="swipe_sensitivity">Sensibilità del gesto per cambiare brano nel minilettore</string>
     <string name="sensitivity_percentage">%1$d%%</string>
     <string name="subscribe">Iscriviti</string>
     <string name="subscribed">Iscritto</string>
