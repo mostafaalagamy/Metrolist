@@ -121,8 +121,8 @@ fun TopPlaylistScreen(
         }
 
     val wrappedSongs = remember(songs) {
-        songs?.map { item -> ItemWrapper(item) }
-    }.toMutableStateList()
+        songs?.map { item -> ItemWrapper(item) }?.toMutableStateList() ?: mutableStateListOf()
+    }
 
     var searchQuery by remember {
         mutableStateOf(TextFieldValue(""))
