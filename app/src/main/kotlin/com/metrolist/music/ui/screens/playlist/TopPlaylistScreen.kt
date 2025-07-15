@@ -143,7 +143,6 @@ fun TopPlaylistScreen(
     if (isSearching) {
         BackHandler {
             isSearching = false
-            query = TextFieldValue()
         }
     } else if (selection) {
         BackHandler {
