@@ -121,6 +121,9 @@ fun AutoPlaylistScreen(
         if (viewModel.playlist == "liked") stringResource(R.string.liked) else stringResource(R.string.offline)
 
     val songs by viewModel.likedSongs.collectAsState(null)
+    var query by rememberSaveable(stateSaver = TextFieldValue.Saver) {
+        mutableStateOf(TextFieldValue())
+    }
     val mutableSongs =
         remember {
             mutableStateListOf<Song>()
