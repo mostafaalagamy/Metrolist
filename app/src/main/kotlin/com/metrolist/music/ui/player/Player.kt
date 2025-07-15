@@ -1079,8 +1079,8 @@ fun BottomSheetPlayer(
 
         AnimatedVisibility(
             visible = state.isExpanded,
-            enter = fadeIn(tween(1000)),
-            exit = fadeOut()
+            enter = fadeIn(tween(500)),
+            exit = fadeOut(tween(500))
         ) {
             if (playerBackground == PlayerBackgroundStyle.BLUR) {
                 AsyncImage(
