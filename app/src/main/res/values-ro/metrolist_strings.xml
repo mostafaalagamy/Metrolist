@@ -67,8 +67,8 @@
     <string name="new_player_design">Designul nou al player-ului</string>
     <string name="player_background_blur">Blur</string>
     <string name="player_buttons_style">Culorile butoanelor player-ului</string>
-    <string name="default_style">Prestabilit</string>
-    <string name="secondary_color_style">Secundar</string>
+    <string name="default_style">Prestabilită</string>
+    <string name="secondary_color_style">Secundară</string>
     <string name="enable_squiggly_slider">Activează slider-ul ondulat</string>
     <string name="enable_swipe_thumbnail">Activează glisarea pentru a schimba melodia</string>
     <string name="swipe_song_to_add">Glisează melodia la stânga pentru a o adăuga la coadă sau la dreapta pentru a o reda următoarea</string>
