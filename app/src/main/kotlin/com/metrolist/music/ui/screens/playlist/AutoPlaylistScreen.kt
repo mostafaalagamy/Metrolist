@@ -121,9 +121,6 @@ fun AutoPlaylistScreen(
         if (viewModel.playlist == "liked") stringResource(R.string.liked) else stringResource(R.string.offline)
 
     val songs by viewModel.likedSongs.collectAsState(null)
-    var query by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue())
-    }
     val mutableSongs =
         remember {
             mutableStateListOf<Song>()
@@ -140,17 +137,6 @@ fun AutoPlaylistScreen(
     LaunchedEffect(isSearching) {
         if (isSearching) {
             focusRequester.requestFocus()
-        }
-    }
-
-    if (isSearching) {
-        BackHandler {
-            isSearching = false
-            query = TextFieldValue()
-        }
-    } else if (selection) {
-        BackHandler {
-            selection = false
         }
     }
 
@@ -174,6 +160,16 @@ fun AutoPlaylistScreen(
 
     var selection by remember {
         mutableStateOf(false)
+    }
+
+    if (isSearching) {
+        BackHandler {
+            isSearching = false
+        }
+    } else if (selection) {
+        BackHandler {
+            selection = false
+        }
     }
 
     val (sortType, onSortTypeChange) = rememberEnumPreference(
