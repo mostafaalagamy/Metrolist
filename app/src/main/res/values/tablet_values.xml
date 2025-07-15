@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Default phone values -->
+    <bool name="use_side_navigation">false</bool>
+    <dimen name="navigation_rail_width">0dp</dimen>
+    <dimen name="content_horizontal_padding">16dp</dimen>
+    <dimen name="grid_columns">2</dimen>
+</resources>

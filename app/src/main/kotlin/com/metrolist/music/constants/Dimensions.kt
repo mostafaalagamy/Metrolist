@@ -13,6 +13,8 @@ const val CONTENT_TYPE_ALBUM = 4
 const val CONTENT_TYPE_PLAYLIST = 5
 
 val NavigationBarHeight = 80.dp
+val NavigationRailWidth = 80.dp
+val NavigationRailWidthCompact = 72.dp
 val MiniPlayerHeight = 64.dp
 val QueuePeekHeight = 64.dp
 val AppBarHeight = 64.dp

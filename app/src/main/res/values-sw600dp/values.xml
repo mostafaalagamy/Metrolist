@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Tablet-specific values -->
+    <bool name="use_side_navigation">true</bool>
+    <dimen name="navigation_rail_width">80dp</dimen>
+    <dimen name="content_horizontal_padding">24dp</dimen>
+    <dimen name="grid_columns">4</dimen>
+</resources>
