@@ -1,5 +1,6 @@
 package com.metrolist.music.ui.screens.playlist
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -102,6 +103,17 @@ fun CachePlaylistScreen(
     LaunchedEffect(isSearching) {
         if (isSearching) {
             focusRequester.requestFocus()
+        }
+    }
+
+    if (isSearching) {
+        BackHandler {
+            isSearching = false
+            query = TextFieldValue()
+        }
+    } else if (selection) {
+        BackHandler {
+            selection = false
         }
     }
 
