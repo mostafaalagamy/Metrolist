@@ -80,19 +80,17 @@ fun CachePlaylistScreen(
     val (sortDescending, onSortDescendingChange) = rememberPreference(SongSortDescendingKey, true)
 
     val wrappedSongs = remember(cachedSongs, sortType, sortDescending) {
-        mutableStateListOf<ItemWrapper<Song>>().apply {
-            val sortedSongs = when (sortType) {
-                SongSortType.CREATE_DATE -> cachedSongs.sortedBy { it.song.dateDownload ?: LocalDateTime.MIN }
-                SongSortType.NAME -> cachedSongs.sortedBy { it.song.title }
-                SongSortType.ARTIST -> cachedSongs.sortedBy { song ->
-                    song.song.artistName ?: song.artists.joinToString(separator = "") { it.name }
-                }
-                SongSortType.PLAY_TIME -> cachedSongs.sortedBy { it.song.totalPlayTime }
-            }.let { if (sortDescending) it.reversed() else it }
-        
-            addAll(sortedSongs.map { song -> ItemWrapper(song) })
-        }
-    }
+        val sortedSongs = when (sortType) {
+            SongSortType.CREATE_DATE -> cachedSongs.sortedBy { it.song.dateDownload ?: LocalDateTime.MIN }
+            SongSortType.NAME -> cachedSongs.sortedBy { it.song.title }
+            SongSortType.ARTIST -> cachedSongs.sortedBy { song ->
+                song.song.artistName ?: song.artists.joinToString(separator = "") { it.name }
+            }
+            SongSortType.PLAY_TIME -> cachedSongs.sortedBy { it.song.totalPlayTime }
+        }.let { if (sortDescending) it.reversed() else it }
+
+        sortedSongs.map { song -> ItemWrapper(song) }
+    }.toMutableStateList()
 
     var selection by remember { mutableStateOf(false) }
     var isSearching by remember { mutableStateOf(false) }
