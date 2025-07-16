@@ -39,7 +39,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.platform.LocalClipboard
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -83,7 +83,7 @@ fun ShowMediaInfo(videoId: String) {
 
     val playerConnection = LocalPlayerConnection.current
     val context = LocalContext.current
-    val clipboard = LocalClipboard.current
+    val clipboardManager = LocalClipboardManager.current
 
     LaunchedEffect(Unit, videoId) {
         info = YouTube.getMediaInfo(videoId).getOrNull()
@@ -178,7 +178,7 @@ fun ShowMediaInfo(videoId: String) {
                                     interactionSource = remember { MutableInteractionSource() },
                                     indication = null,
                                     onClick = {
-                                        clipboard.setText(AnnotatedString(displayText))
+                                        clipboardManager.setText(AnnotatedString(displayText))
                                         Toast.makeText(
                                             context,
                                             R.string.copied,
