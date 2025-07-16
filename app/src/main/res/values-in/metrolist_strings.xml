@@ -45,7 +45,7 @@
     <string name="select">Pilih semua</string>
     <string name="cancel">Batal</string>
     <string name="discord">Discord</string>
-    <string name="advanced_login">Login (dengan token)</string>
+    <string name="advanced_login">Login dengan token</string>
     <string name="token_hidden">Ketuk untuk menampilkan token</string>
     <string name="token_shown">Ketuk lagi untuk menyalin atau mengedit</string>
     <string name="ytm_sync">Sinkron secara otomatis dengan akun YouTube Music anda</string>
@@ -79,7 +79,7 @@
     <string name="player_background_style">Model latar belakang player</string>
     <string name="configure_supported_links">Ubah tautan yang didukung</string>
     <string name="intent_supported_links_not_found">Tidak dapat menemukan link yang didukung, setel konfigurasi secara manual</string>
-    <string name="set_first_lyrics_provider">Prioritas provider lirik</string>
+    <string name="set_first_lyrics_provider">Penyedia lirik pilihan</string>
     <string name="my_top">Teratas</string>
     <string name="cached_playlist">Di-cache</string>
     <string name="sync_disabled">Sinkron dimatikan</string>
@@ -140,10 +140,10 @@
     <string name="disable">Nonaktifkan</string>
     <string name="pause_remote_listen_history">Jeda berbagi riwayat mendengarkan dengan YouTube Music</string>
     <string name="top_length">Panjang daftar teratas</string>
-    <string name="subscribers">Subscribers</string>
-    <string name="subscribe">Subscribe</string>
-    <string name="subscribed">Subscribed</string>
+    <string name="subscribers">Pelanggan</string>
+    <string name="subscribe">Berlangganan</string>
+    <string name="subscribed">Berlangganan</string>
     <plurals name="seconds">
-        <item quantity="other">1 detik\n%d detik</item>
+        <item quantity="other">Singular \n1 detik\n\nPlural\n%d detik</item>
     </plurals>
 </resources>
