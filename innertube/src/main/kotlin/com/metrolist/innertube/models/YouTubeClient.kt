@@ -133,6 +133,25 @@ data class YouTubeClient(
             useSignatureTimestamp = false
         )
 
+        // العملاء الأكثر فعالية لتجاوز قيود العمر
+        val TVHTML5_SIMPLY_EMBEDDED_PLAYER = YouTubeClient(
+            clientName = "TVHTML5_SIMPLY_EMBEDDED_PLAYER",
+            clientVersion = "2.0",
+            clientId = "85",
+            userAgent = USER_AGENT_WEB,
+            loginSupported = false,
+            useSignatureTimestamp = false
+        )
+
+        val ANDROID_EMBEDDED_PLAYER = YouTubeClient(
+            clientName = "ANDROID_EMBEDDED_PLAYER", 
+            clientVersion = "19.13.36",
+            clientId = "55",
+            userAgent = "com.google.android.youtube/19.13.36 (Linux; U; Android 11) gzip",
+            loginSupported = false,
+            useSignatureTimestamp = false
+        )
+
         val WEB_EMBEDDED = YouTubeClient(
             clientName = "WEB",
             clientVersion = "2.20250312.04.00",

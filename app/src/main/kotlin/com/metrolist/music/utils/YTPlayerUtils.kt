@@ -18,6 +18,8 @@ import com.metrolist.innertube.models.YouTubeClient.Companion.ANDROID_TESTSUITE
 import com.metrolist.innertube.models.YouTubeClient.Companion.TVHTML5
 import com.metrolist.innertube.models.YouTubeClient.Companion.WEB_MUSIC_ANALYTICS
 import com.metrolist.innertube.models.YouTubeClient.Companion.WEB_EMBEDDED
+import com.metrolist.innertube.models.YouTubeClient.Companion.TVHTML5_SIMPLY_EMBEDDED_PLAYER
+import com.metrolist.innertube.models.YouTubeClient.Companion.ANDROID_EMBEDDED_PLAYER
 import okhttp3.OkHttpClient
 import timber.log.Timber
 
@@ -41,10 +43,10 @@ object YTPlayerUtils {
      * Clients used for fallback streams in case the streams of the main client do not work.
      */
     private val STREAM_FALLBACK_CLIENTS: Array<YouTubeClient> = arrayOf(
-        WEB_EMBEDDED,           // Often bypasses restrictions
+        TVHTML5_SIMPLY_EMBEDDED_PLAYER, // أقوى عميل للتجاوز
+        WEB_EMBEDDED,                   // عميل مدمج فعال
         ANDROID_VR_NO_AUTH,
         MOBILE,
-        TVHTML5_SIMPLY_EMBEDDED_PLAYER,
         IOS,
         WEB,
         WEB_CREATOR
@@ -52,14 +54,16 @@ object YTPlayerUtils {
     /**
      * Clients specifically designed to bypass age restrictions.
      * These clients are used when regular clients fail due to age verification requirements.
-     * Ordered by effectiveness in bypassing age restrictions.
+     * Ordered by effectiveness in bypassing age restrictions based on YouTube-Internal-Clients research.
      */
     private val AGE_RESTRICTION_BYPASS_CLIENTS: Array<YouTubeClient> = arrayOf(
-        WEB_EMBEDDED,        // Embedded player - most effective for age bypass
-        ANDROID_TESTSUITE,   // Testing client with special privileges
-        TVHTML5,            // TV clients often have fewer restrictions
-        WEB_MUSIC_ANALYTICS, // Analytics client with different rules
-        ANDROID_VR_NO_AUTH   // VR client as additional fallback
+        TVHTML5_SIMPLY_EMBEDDED_PLAYER, // أقوى عميل لتجاوز قيود العمر
+        ANDROID_EMBEDDED_PLAYER,        // عميل مدمج أندرويد فعال جداً
+        ANDROID_TESTSUITE,              // عميل اختبار أندرويد
+        WEB_EMBEDDED,                   // عميل ويب مدمج
+        TVHTML5,                       // عميل تلفاز HTML5
+        WEB_MUSIC_ANALYTICS,           // عميل التحليلات
+        ANDROID_VR_NO_AUTH             // عميل VR كاحتياطي
     )
     data class PlaybackData(
         val audioConfig: PlayerResponse.PlayerConfig.AudioConfig?,
@@ -231,8 +235,12 @@ object YTPlayerUtils {
             val errorReason = streamPlayerResponse.playabilityStatus.reason
             Timber.tag(logTag).d("Playability check failed - Status: ${streamPlayerResponse.playabilityStatus.status}, Reason: $errorReason")
             
-            // Check if this is an age restriction error
+            // Check if this is an age restriction error - النص المحدد والأخطاء الشائعة
             val isAgeRestricted = errorReason?.let { reason ->
+                // النص المحدد الذي ذكره المستخدم
+                reason.contains("this video can be inapropriate for some users", ignoreCase = true) ||
+                reason.contains("this video may be inappropriate for some users", ignoreCase = true) ||
+                // أخطاء قيود العمر الشائعة
                 reason.contains("age", ignoreCase = true) ||
                 reason.contains("sign in", ignoreCase = true) ||
                 reason.contains("restricted", ignoreCase = true) ||
@@ -245,6 +253,7 @@ object YTPlayerUtils {
                 reason.contains("mature content", ignoreCase = true) ||
                 reason.contains("adult content", ignoreCase = true) ||
                 reason.contains("explicit content", ignoreCase = true) ||
+                // حالات الحالة المختلفة
                 streamPlayerResponse.playabilityStatus.status.equals("LOGIN_REQUIRED", ignoreCase = true) ||
                 streamPlayerResponse.playabilityStatus.status.equals("UNPLAYABLE", ignoreCase = true) ||
                 streamPlayerResponse.playabilityStatus.status.equals("CONTENT_CHECK_REQUIRED", ignoreCase = true)
