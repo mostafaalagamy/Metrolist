@@ -1,5 +1,6 @@
 package com.metrolist.music.ui.player
 
+import androidx.activity.compose.BackHandler
 import android.annotation.SuppressLint
 import android.text.format.Formatter
 import android.widget.Toast
@@ -72,6 +73,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -159,10 +161,14 @@ fun Queue(
 
     val currentFormat by playerConnection.currentFormat.collectAsState(initial = null)
 
-    val selectedSongs: MutableList<MediaMetadata> = mutableStateListOf()
-    val selectedItems: MutableList<Timeline.Window> = mutableStateListOf()
-    var selection by remember {
-        mutableStateOf(false)
+    val selectedSongs = remember { mutableStateListOf<MediaMetadata>() }
+    val selectedItems = remember { mutableStateListOf<Timeline.Window>() }
+    var selection by remember { mutableStateOf(false) }
+
+    if (selection) {
+        BackHandler {
+            selection = false
+        }
     }
 
     var locked by rememberPreference(QueueEditLockKey, defaultValue = true)
