@@ -133,16 +133,7 @@ data class YouTubeClient(
             useSignatureTimestamp = false
         )
 
-        // العملاء الأكثر فعالية لتجاوز قيود العمر
-        val TVHTML5_SIMPLY_EMBEDDED_PLAYER = YouTubeClient(
-            clientName = "TVHTML5_SIMPLY_EMBEDDED_PLAYER",
-            clientVersion = "2.0",
-            clientId = "85",
-            userAgent = USER_AGENT_WEB,
-            loginSupported = false,
-            useSignatureTimestamp = false
-        )
-
+        // العملاء الأكثر فعالية لتجاوز قيود العمر - تم إزالة التعريف المكرر
         val ANDROID_EMBEDDED_PLAYER = YouTubeClient(
             clientName = "ANDROID_EMBEDDED_PLAYER", 
             clientVersion = "19.13.36",

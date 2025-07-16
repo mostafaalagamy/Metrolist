@@ -18,7 +18,6 @@ import com.metrolist.innertube.models.YouTubeClient.Companion.ANDROID_TESTSUITE
 import com.metrolist.innertube.models.YouTubeClient.Companion.TVHTML5
 import com.metrolist.innertube.models.YouTubeClient.Companion.WEB_MUSIC_ANALYTICS
 import com.metrolist.innertube.models.YouTubeClient.Companion.WEB_EMBEDDED
-import com.metrolist.innertube.models.YouTubeClient.Companion.TVHTML5_SIMPLY_EMBEDDED_PLAYER
 import com.metrolist.innertube.models.YouTubeClient.Companion.ANDROID_EMBEDDED_PLAYER
 import okhttp3.OkHttpClient
 import timber.log.Timber
