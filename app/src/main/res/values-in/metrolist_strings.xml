@@ -87,7 +87,7 @@
     <string name="like_all">Suka semuanya</string>
     <string name="dislike_all">Tidak suka semuanya</string>
     <plurals name="n_element">
-        <item quantity="other">Singular\n%d elemen\n\nPlural\n%d elemen-elemen</item>
+        <item quantity="other">Elemen</item>
     </plurals>
     <string name="login_settings">Pengaturan masuk</string>
     <string name="follow_theme">Ikuti tema</string>
