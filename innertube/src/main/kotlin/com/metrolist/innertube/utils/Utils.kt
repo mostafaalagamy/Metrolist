@@ -10,7 +10,18 @@ suspend fun Result<PlaylistPage>.completed(): Result<PlaylistPage> = runCatching
     val page = getOrThrow()
     val songs = page.songs.toMutableList()
     var continuation = page.songsContinuation
-    while (continuation != null) {
+    val seenContinuations = mutableSetOf<String>()
+    var requestCount = 0
+    val maxRequests = 50 // Prevent excessive API calls
+    
+    while (continuation != null && requestCount < maxRequests) {
+        // Prevent infinite loops by tracking seen continuations
+        if (continuation in seenContinuations) {
+            break
+        }
+        seenContinuations.add(continuation)
+        requestCount++
+        
         val continuationPage = YouTube.playlistContinuation(continuation).getOrThrow()
         songs += continuationPage.songs
         continuation = continuationPage.continuation
@@ -28,7 +39,18 @@ suspend fun Result<LibraryPage>.completed(): Result<LibraryPage> = runCatching {
     val page = getOrThrow()
     val items = page.items.toMutableList()
     var continuation = page.continuation
-    while (continuation != null) {
+    val seenContinuations = mutableSetOf<String>()
+    var requestCount = 0
+    val maxRequests = 50 // Prevent excessive API calls
+    
+    while (continuation != null && requestCount < maxRequests) {
+        // Prevent infinite loops by tracking seen continuations
+        if (continuation in seenContinuations) {
+            break
+        }
+        seenContinuations.add(continuation)
+        requestCount++
+        
         val continuationPage = YouTube.libraryContinuation(continuation).getOrThrow()
         items += continuationPage.items
         continuation = continuationPage.continuation
@@ -46,10 +68,12 @@ fun sha1(str: String): String = MessageDigest.getInstance("SHA-1").digest(str.to
 fun parseCookieString(cookie: String): Map<String, String> =
     cookie.split("; ")
         .filter { it.isNotEmpty() }
-        .associate {
-            val (key, value) = it.split("=")
-            key to value
+        .mapNotNull { part ->
+            val splitIndex = part.indexOf('=')
+            if (splitIndex == -1) null
+            else part.substring(0, splitIndex) to part.substring(splitIndex + 1)
         }
+        .toMap()
 
 fun String.parseTime(): Int? {
     try {

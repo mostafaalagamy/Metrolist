@@ -22,6 +22,8 @@ import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -33,6 +35,9 @@ import java.util.*
 
 @HiltAndroidApp
 class App : Application(), ImageLoaderFactory {
+    // Create a proper application scope that will be cancelled when the app is destroyed
+    private val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
+    
     @OptIn(DelicateCoroutinesApi::class)
     override fun onCreate() {
         super.onCreate()
@@ -70,7 +75,7 @@ class App : Application(), ImageLoaderFactory {
             YouTube.useLoginForBrowse = true
         }
 
-        GlobalScope.launch {
+        applicationScope.launch {
             dataStore.data
                 .map { it[VisitorDataKey] }
                 .distinctUntilChanged()
@@ -89,7 +94,7 @@ class App : Application(), ImageLoaderFactory {
                         }
                 }
         }
-        GlobalScope.launch {
+        applicationScope.launch {
             dataStore.data
                 .map { it[DataSyncIdKey] }
                 .distinctUntilChanged()
@@ -110,7 +115,7 @@ class App : Application(), ImageLoaderFactory {
                     }
                 }
         }
-        GlobalScope.launch {
+        applicationScope.launch {
             dataStore.data
                 .map { it[InnerTubeCookieKey] }
                 .distinctUntilChanged()
