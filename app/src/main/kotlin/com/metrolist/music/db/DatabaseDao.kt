@@ -423,6 +423,7 @@ interface DatabaseDao {
         toTimeStamp: Long? = LocalDateTime.now().toInstant(ZoneOffset.UTC).toEpochMilli(),
     ): Flow<List<Album>>
 
+    @Transaction
     @Query("""
         SELECT album.*, count(song.dateDownload) downloadCount
         FROM album_artist_map 

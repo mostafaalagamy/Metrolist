@@ -80,7 +80,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
@@ -146,7 +146,7 @@ fun Queue(
 ) {
     val context = LocalContext.current
     val haptic = LocalHapticFeedback.current
-    val clipboardManager = LocalClipboardManager.current
+    val clipboard = LocalClipboard.current
     val menuState = LocalMenuState.current
     val bottomSheetPageState = LocalBottomSheetPageState.current
 
@@ -693,16 +693,18 @@ fun Queue(
                             rememberSwipeToDismissBoxState(
                                 positionalThreshold = { totalDistance ->
                                     totalDistance
-                                },
-                                confirmValueChange = { dismissValue ->
-                                    if (dismissValue == SwipeToDismissBoxValue.StartToEnd ||
-                                        dismissValue == SwipeToDismissBoxValue.EndToStart
-                                    ) {
-                                        playerConnection.player.removeMediaItem(currentItem.firstPeriodIndex)
-                                        dismissJob?.cancel()
-                                        dismissJob =
-                                            coroutineScope.launch {
-                                                val snackbarResult =
+                                }
+                            )
+                        
+                        LaunchedEffect(dismissBoxState.targetValue) {
+                            if (dismissBoxState.targetValue == SwipeToDismissBoxValue.StartToEnd ||
+                                dismissBoxState.targetValue == SwipeToDismissBoxValue.EndToStart
+                            ) {
+                                playerConnection.player.removeMediaItem(currentItem.firstPeriodIndex)
+                                dismissJob?.cancel()
+                                dismissJob =
+                                    coroutineScope.launch {
+                                        val snackbarResult =
                                                     snackbarHostState.showSnackbar(
                                                         message =
                                                         context.getString(

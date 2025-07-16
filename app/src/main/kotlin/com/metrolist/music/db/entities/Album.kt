@@ -2,6 +2,7 @@ package com.metrolist.music.db.entities
 
 import androidx.compose.runtime.Immutable
 import androidx.room.Embedded
+import androidx.room.Ignore
 import androidx.room.Junction
 import androidx.room.Relation
 
@@ -21,7 +22,9 @@ data class Album(
         ),
     )
     val artists: List<ArtistEntity>,
+    @Ignore
     val songCountListened: Int? = 0,
+    @Ignore
     val timeListened: Int? = 0,
 ) : LocalItem() {
     override val id: String

@@ -84,7 +84,7 @@ import androidx.compose.ui.util.fastAny
 import androidx.compose.ui.util.fastForEachIndexed
 import androidx.compose.ui.util.fastSumBy
 import androidx.core.net.toUri
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.exoplayer.offline.Download
 import androidx.media3.exoplayer.offline.DownloadRequest
@@ -534,16 +534,16 @@ fun LocalPlaylistScreen(
                             rememberSwipeToDismissBoxState(
                                 positionalThreshold = { totalDistance ->
                                     totalDistance
-                                },
-                                confirmValueChange = { dismissValue ->
-                                    if (dismissValue == SwipeToDismissBoxValue.StartToEnd ||
-                                        dismissValue == SwipeToDismissBoxValue.EndToStart
-                                    ) {
-                                        deleteFromPlaylist()
-                                    }
-                                    true
-                                },
+                                }
                             )
+                        
+                        LaunchedEffect(dismissBoxState.targetValue) {
+                            if (dismissBoxState.targetValue == SwipeToDismissBoxValue.StartToEnd ||
+                                dismissBoxState.targetValue == SwipeToDismissBoxValue.EndToStart
+                            ) {
+                                deleteFromPlaylist()
+                            }
+                        }
 
                         val content: @Composable () -> Unit = {
                             SongListItem(
@@ -672,16 +672,16 @@ fun LocalPlaylistScreen(
                             rememberSwipeToDismissBoxState(
                                 positionalThreshold = { totalDistance ->
                                     totalDistance
-                                },
-                                confirmValueChange = { dismissValue ->
-                                    if (dismissValue == SwipeToDismissBoxValue.StartToEnd ||
-                                        dismissValue == SwipeToDismissBoxValue.EndToStart
-                                    ) {
-                                        deleteFromPlaylist()
-                                    }
-                                    true
-                                },
+                                }
                             )
+                        
+                        LaunchedEffect(dismissBoxState.targetValue) {
+                            if (dismissBoxState.targetValue == SwipeToDismissBoxValue.StartToEnd ||
+                                dismissBoxState.targetValue == SwipeToDismissBoxValue.EndToStart
+                            ) {
+                                deleteFromPlaylist()
+                            }
+                        }
 
                         val content: @Composable () -> Unit = {
                             SongListItem(
