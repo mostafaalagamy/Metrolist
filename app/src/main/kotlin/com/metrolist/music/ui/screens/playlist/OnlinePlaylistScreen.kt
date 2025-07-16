@@ -50,6 +50,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -138,9 +139,11 @@ fun OnlinePlaylistScreen(
     val snackbarHostState = remember { SnackbarHostState() }
 
     var isSearching by rememberSaveable { mutableStateOf(false) }
+
     var query by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(TextFieldValue())
     }
+
     val filteredSongs =
         remember(songs, query) {
             if (query.text.isEmpty()) {
@@ -159,20 +162,28 @@ fun OnlinePlaylistScreen(
                     }
             }
         }
+
     val focusRequester = remember { FocusRequester() }
     LaunchedEffect(isSearching) {
         if (isSearching) {
             focusRequester.requestFocus()
         }
     }
+
     if (isSearching) {
         BackHandler {
             isSearching = false
             query = TextFieldValue()
         }
+    } else if (selection) {
+        BackHandler {
+            selection = false
+        }
     }
 
-    val wrappedSongs = filteredSongs.map { item -> ItemWrapper(item) }.toMutableList()
+    val wrappedSongs = remember(filteredSongs) {
+        filteredSongs.map { item -> ItemWrapper(item) }
+    }.toMutableStateList()
 
     val showTopBarTitle by remember {
         derivedStateOf {
