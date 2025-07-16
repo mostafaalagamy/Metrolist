@@ -212,21 +212,7 @@ object YTPlayerUtils {
                                 format = bypassFormat
                                 streamUrl = bypassUrl
                                 streamExpiresInSeconds = bypassExpires
-                                
-                                // استخدم metadata من main client إذا كان متاحاً
-                                val finalAudioConfig = audioConfig
-                                val finalVideoDetails = videoDetails
-                                val finalPlaybackTracking = playbackTracking
-                                
-                                Timber.tag(logTag).d("Last resort success - returning playback data")
-                                return PlaybackData(
-                                    finalAudioConfig,
-                                    finalVideoDetails,
-                                    finalPlaybackTracking,
-                                    format,
-                                    streamUrl,
-                                    streamExpiresInSeconds,
-                                )
+                                break
                             }
                         }
                     }
@@ -235,8 +221,10 @@ object YTPlayerUtils {
                 }
             }
             
-            Timber.tag(logTag).e("All clients failed including last resort attempts")
-            throw Exception("Bad stream player response - all clients failed")
+            if (streamPlayerResponse == null) {
+                Timber.tag(logTag).e("All clients failed including last resort attempts")
+                throw Exception("Bad stream player response - all clients failed")
+            }
         }
 
         if (streamPlayerResponse.playabilityStatus.status != "OK") {
