@@ -54,6 +54,8 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.fastForEach
+import androidx.media3.common.C
+import androidx.media3.common.Player
 import coil.compose.AsyncImage
 import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
@@ -89,19 +91,31 @@ fun Thumbnail(
     // Grid state
     val thumbnailLazyGridState = rememberLazyGridState()
     
-    // Create a playlist
-    val previousMediaMetadata = if (swipeThumbnail && playerConnection.player.hasPreviousMediaItem()) {
-        val previousIndex = playerConnection.player.currentMediaItemIndex - 1
-        if (previousIndex >= 0) {
+    // Create a playlist using correct shuffle-aware logic
+    val timeline = playerConnection.player.currentTimeline
+    val currentIndex = playerConnection.player.currentMediaItemIndex
+    val shuffleModeEnabled = playerConnection.player.shuffleModeEnabled
+    
+    val previousMediaMetadata = if (swipeThumbnail && !timeline.isEmpty) {
+        val previousIndex = timeline.getPreviousWindowIndex(
+            currentIndex,
+            Player.REPEAT_MODE_OFF,
+            shuffleModeEnabled
+        )
+        if (previousIndex != C.INDEX_UNSET) {
             try {
                 playerConnection.player.getMediaItemAt(previousIndex)
             } catch (e: Exception) { null }
         } else null
     } else null
 
-    val nextMediaMetadata = if (swipeThumbnail && playerConnection.player.hasNextMediaItem()) {
-        val nextIndex = playerConnection.player.currentMediaItemIndex + 1
-        if (nextIndex < playerConnection.player.mediaItemCount) {
+    val nextMediaMetadata = if (swipeThumbnail && !timeline.isEmpty) {
+        val nextIndex = timeline.getNextWindowIndex(
+            currentIndex,
+            Player.REPEAT_MODE_OFF,
+            shuffleModeEnabled
+        )
+        if (nextIndex != C.INDEX_UNSET) {
             try {
                 playerConnection.player.getMediaItemAt(nextIndex)
             } catch (e: Exception) { null }
