@@ -145,5 +145,8 @@
     <string name="swipe_sensitivity">Mini-Player-Wischsensitivität</string>
     <string name="swipe_sensitivity_desc">Passe an, wie empfindlich die Wischgeste für den Songwechsel ist</string>
     <string name="sensitivity_percentage">%1$d%%</string>
-    <string name="clear_image_cache_dialog">Bist du sicher, dass du die Bild-Cache leeren willst?</string>
+    <string name="clear_image_cache_dialog">Bist du sicher, dass du den Bild-Cache leeren willst?</string>
+    <string name="disable">Deaktivieren</string>
+    <string name="subscribe">Abonnieren</string>
+    <string name="subscribed">Abonniert</string>
 </resources>
