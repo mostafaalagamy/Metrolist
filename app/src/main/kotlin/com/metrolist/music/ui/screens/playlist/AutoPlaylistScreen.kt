@@ -115,6 +115,7 @@ fun AutoPlaylistScreen(
     val context = LocalContext.current
     val menuState = LocalMenuState.current
     val haptic = LocalHapticFeedback.current
+    val focusManager = LocalFocusManager.current
     val playerConnection = LocalPlayerConnection.current ?: return
     val isPlaying by playerConnection.isPlaying.collectAsState()
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
@@ -127,15 +128,8 @@ fun AutoPlaylistScreen(
             mutableStateListOf<Song>()
         }
 
-    var searchQuery by remember {
-        mutableStateOf(TextFieldValue(""))
-    }
-    var query by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue())
-    }
-
     var isSearching by remember { mutableStateOf(false) }
-    val focusManager = LocalFocusManager.current
+    var query by remember { mutableStateOf(TextFieldValue()) }
     val focusRequester = remember { FocusRequester() }
 
     LaunchedEffect(isSearching) {
@@ -257,6 +251,15 @@ fun AutoPlaylistScreen(
                 }
             },
         )
+    }
+
+    val filteredSongs = remember(wrappedSongs, query) {
+        if (query.text.isEmpty()) wrappedSongs
+        else wrappedSongs?.filter { wrapper ->
+            val song = wrapper.item
+            song.song.title.contains(query.text, true) ||
+                song.artists.any { it.name.contains(query.text, true) }
+        }
     }
 
     val state = rememberLazyListState()
@@ -484,18 +487,6 @@ fun AutoPlaylistScreen(
                     }
                 }
 
-                val searchQueryStr = (searchQuery.text.trim())
-                val filteredSongs = if (searchQuery.text.isEmpty()) {
-                    wrappedSongs
-                } else {
-                    wrappedSongs?.filter {
-                        (it.item.song.title).contains(searchQueryStr, ignoreCase = true) or
-                                (it.item.artists.joinToString("")).contains(
-                                    searchQueryStr,
-                                    ignoreCase = true
-                                )
-                    }
-                }
                 if (filteredSongs != null) {
                     itemsIndexed(
                         items = filteredSongs,
@@ -537,8 +528,8 @@ fun AutoPlaylistScreen(
                                                 playerConnection.playQueue(
                                                     ListQueue(
                                                         title = playlist,
-                                                        items = songs!!.map { it.toMediaItem() },
-                                                        startIndex = songs!!.indexOfFirst { it.id == songWrapper.item.id }
+                                                        items = filteredSongs.map { it.item.toMediaItem() },
+                                                        startIndex = index,
                                                     ),
                                                 )
                                             }
@@ -550,9 +541,9 @@ fun AutoPlaylistScreen(
                                         haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                                         if (!selection) {
                                             selection = true
+                                            wrappedSongs?.forEach { it.isSelected = false }
+                                            songWrapper.isSelected = true
                                         }
-                                        wrappedSongs?.forEach { it.isSelected = false }
-                                        songWrapper.isSelected = true
                                     },
                                 )
                                 .animateItem()
@@ -564,57 +555,66 @@ fun AutoPlaylistScreen(
 
         TopAppBar(
             title = {
-                if (selection) {
-                    val count = wrappedSongs?.count { it.isSelected } ?: 0
-                    Text(
-                        text = pluralStringResource(R.plurals.n_song, count, count),
-                        style = MaterialTheme.typography.titleLarge
-                    )
-                } else if (isSearching) {
-                    TextField(
-                        value = searchQuery,
-                        onValueChange = { searchQuery = it },
-                        placeholder = {
-                            Text(
-                                text = stringResource(R.string.search),
-                                style = MaterialTheme.typography.titleLarge
-                            )
-                        },
-                        singleLine = true,
-                        textStyle = MaterialTheme.typography.titleLarge,
-                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-                        colors = TextFieldDefaults.colors(
-                            focusedContainerColor = Color.Transparent,
-                            unfocusedContainerColor = Color.Transparent,
-                            focusedIndicatorColor = Color.Transparent,
-                            unfocusedIndicatorColor = Color.Transparent,
-                            disabledIndicatorColor = Color.Transparent,
-                        ),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .focusRequester(focusRequester)
-                    )
-                } else {
-                    Text(
-                        text = playlist,
-                        style = MaterialTheme.typography.titleLarge
-                    )
+                when {
+                    selection -> {
+                        val count = wrappedSongs?.count { it.isSelected } ?: 0
+                        Text(
+                            text = pluralStringResource(R.plurals.n_song, count, count),
+                            style = MaterialTheme.typography.titleLarge
+                        )
+                    }
+                    isSearching -> {
+                        TextField(
+                            value = query,
+                            onValueChange = { query = it },
+                            placeholder = {
+                                Text(
+                                    text = stringResource(R.string.search),
+                                    style = MaterialTheme.typography.titleLarge
+                                )
+                            },
+                            singleLine = true,
+                            textStyle = MaterialTheme.typography.titleLarge,
+                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+                            colors = TextFieldDefaults.colors(
+                                focusedContainerColor = Color.Transparent,
+                                unfocusedContainerColor = Color.Transparent,
+                                focusedIndicatorColor = Color.Transparent,
+                                unfocusedIndicatorColor = Color.Transparent,
+                                disabledIndicatorColor = Color.Transparent,
+                            ),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .focusRequester(focusRequester)
+                        )
+                    }
+                    else -> {
+                        Text(
+                            text = playlist,
+                            style = MaterialTheme.typography.titleLarge
+                        )
+                    }
                 }
             },
             navigationIcon = {
                 IconButton(
                     onClick = {
-                        if (isSearching) {
-                            isSearching = false
-                            searchQuery = TextFieldValue()
-                        } else if (selection) {
-                            selection = false
-                        } else {
-                            navController.navigateUp()
+                        when {
+                            isSearching -> {
+                                isSearching = false
+                                query = TextFieldValue()
+                                focusManager.clearFocus()
+                            }
+                            selection -> {
+                                selection = false
+                            }
+                            else -> {
+                                navController.navigateUp()
+                            }
                         }
                     },
                     onLongClick = {
-                        if (!isSearching) {
+                        if (!isSearching && !selection) {
                             navController.backToMain()
                         }
                     }
