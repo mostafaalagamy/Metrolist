@@ -17,6 +17,7 @@ import com.metrolist.innertube.models.YouTubeClient.Companion.WEB_CREATOR
 import com.metrolist.innertube.models.YouTubeClient.Companion.ANDROID_TESTSUITE
 import com.metrolist.innertube.models.YouTubeClient.Companion.TVHTML5
 import com.metrolist.innertube.models.YouTubeClient.Companion.WEB_MUSIC_ANALYTICS
+import com.metrolist.innertube.models.YouTubeClient.Companion.WEB_EMBEDDED
 import okhttp3.OkHttpClient
 import timber.log.Timber
 
@@ -40,6 +41,7 @@ object YTPlayerUtils {
      * Clients used for fallback streams in case the streams of the main client do not work.
      */
     private val STREAM_FALLBACK_CLIENTS: Array<YouTubeClient> = arrayOf(
+        WEB_EMBEDDED,           // Often bypasses restrictions
         ANDROID_VR_NO_AUTH,
         MOBILE,
         TVHTML5_SIMPLY_EMBEDDED_PLAYER,
@@ -50,10 +52,12 @@ object YTPlayerUtils {
     /**
      * Clients specifically designed to bypass age restrictions.
      * These clients are used when regular clients fail due to age verification requirements.
+     * Ordered by effectiveness in bypassing age restrictions.
      */
     private val AGE_RESTRICTION_BYPASS_CLIENTS: Array<YouTubeClient> = arrayOf(
-        ANDROID_TESTSUITE,  // Primary age bypass client
-        TVHTML5,           // TV clients often have fewer restrictions
+        WEB_EMBEDDED,        // Embedded player - most effective for age bypass
+        ANDROID_TESTSUITE,   // Testing client with special privileges
+        TVHTML5,            // TV clients often have fewer restrictions
         WEB_MUSIC_ANALYTICS, // Analytics client with different rules
         ANDROID_VR_NO_AUTH   // VR client as additional fallback
     )
@@ -188,8 +192,51 @@ object YTPlayerUtils {
         }
 
         if (streamPlayerResponse == null) {
-            Timber.tag(logTag).e("Bad stream player response - all clients failed")
-            throw Exception("Bad stream player response")
+            Timber.tag(logTag).e("Bad stream player response - all regular clients failed, trying age bypass clients as last resort")
+            
+            // محاولة أخيرة: جرب عملاء تجاوز قيود العمر حتى لو لم نكتشف قيد العمر صراحة
+            for (bypassClient in AGE_RESTRICTION_BYPASS_CLIENTS) {
+                try {
+                    Timber.tag(logTag).d("Last resort attempt with bypass client: ${bypassClient.clientName}")
+                    val bypassResponse = YouTube.player(videoId, playlistId, bypassClient, signatureTimestamp).getOrNull()
+                    
+                    if (bypassResponse?.playabilityStatus?.status == "OK") {
+                        val bypassFormat = findFormat(bypassResponse, audioQuality, connectivityManager)
+                        if (bypassFormat != null) {
+                            val bypassUrl = findUrlOrNull(bypassFormat, videoId)
+                            val bypassExpires = bypassResponse.streamingData?.expiresInSeconds
+                            
+                            if (bypassUrl != null && bypassExpires != null && validateStatus(bypassUrl)) {
+                                Timber.tag(logTag).d("Last resort bypass successful with ${bypassClient.clientName}")
+                                streamPlayerResponse = bypassResponse
+                                format = bypassFormat
+                                streamUrl = bypassUrl
+                                streamExpiresInSeconds = bypassExpires
+                                
+                                // استخدم metadata من main client إذا كان متاحاً
+                                val finalAudioConfig = audioConfig
+                                val finalVideoDetails = videoDetails
+                                val finalPlaybackTracking = playbackTracking
+                                
+                                Timber.tag(logTag).d("Last resort success - returning playback data")
+                                return PlaybackData(
+                                    finalAudioConfig,
+                                    finalVideoDetails,
+                                    finalPlaybackTracking,
+                                    format,
+                                    streamUrl,
+                                    streamExpiresInSeconds,
+                                )
+                            }
+                        }
+                    }
+                } catch (e: Exception) {
+                    Timber.tag(logTag).d("Last resort failed with ${bypassClient.clientName}: ${e.message}")
+                }
+            }
+            
+            Timber.tag(logTag).e("All clients failed including last resort attempts")
+            throw Exception("Bad stream player response - all clients failed")
         }
 
         if (streamPlayerResponse.playabilityStatus.status != "OK") {
@@ -204,12 +251,26 @@ object YTPlayerUtils {
                 reason.contains("verification", ignoreCase = true) ||
                 reason.contains("confirm your age", ignoreCase = true) ||
                 reason.contains("inappropriate", ignoreCase = true) ||
+                reason.contains("inapropriate", ignoreCase = true) ||  // خطأ إملائي في YouTube
                 reason.contains("content warning", ignoreCase = true) ||
+                reason.contains("some users", ignoreCase = true) ||
+                reason.contains("mature content", ignoreCase = true) ||
+                reason.contains("adult content", ignoreCase = true) ||
+                reason.contains("explicit content", ignoreCase = true) ||
                 streamPlayerResponse.playabilityStatus.status.equals("LOGIN_REQUIRED", ignoreCase = true) ||
-                streamPlayerResponse.playabilityStatus.status.equals("UNPLAYABLE", ignoreCase = true)
-            } == true
+                streamPlayerResponse.playabilityStatus.status.equals("UNPLAYABLE", ignoreCase = true) ||
+                streamPlayerResponse.playabilityStatus.status.equals("CONTENT_CHECK_REQUIRED", ignoreCase = true)
+            } == true || 
+            // أيضاً تحقق من حالة playability status فقط بدون reason
+            streamPlayerResponse.playabilityStatus.status.let { status ->
+                status.equals("LOGIN_REQUIRED", ignoreCase = true) ||
+                status.equals("UNPLAYABLE", ignoreCase = true) ||
+                status.equals("CONTENT_CHECK_REQUIRED", ignoreCase = true)
+            }
             
             Timber.tag(logTag).d("Age restriction detection result: $isAgeRestricted")
+            Timber.tag(logTag).d("Error reason: '$errorReason'")
+            Timber.tag(logTag).d("Playability status: '${streamPlayerResponse.playabilityStatus.status}'")
             
             if (isAgeRestricted) {
                 Timber.tag(logTag).d("Age restriction detected: $errorReason. Trying bypass clients...")

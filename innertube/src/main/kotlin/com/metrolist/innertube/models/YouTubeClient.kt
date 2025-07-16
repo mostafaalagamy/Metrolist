@@ -132,5 +132,15 @@ data class YouTubeClient(
             loginSupported = false,
             useSignatureTimestamp = false
         )
+
+        val WEB_EMBEDDED = YouTubeClient(
+            clientName = "WEB",
+            clientVersion = "2.20250312.04.00",
+            clientId = "1",
+            userAgent = USER_AGENT_WEB,
+            loginSupported = false,
+            useSignatureTimestamp = false,
+            isEmbedded = true
+        )
     }
 }
