@@ -194,17 +194,28 @@ object YTPlayerUtils {
 
         if (streamPlayerResponse.playabilityStatus.status != "OK") {
             val errorReason = streamPlayerResponse.playabilityStatus.reason
+            Timber.tag(logTag).d("Playability check failed - Status: ${streamPlayerResponse.playabilityStatus.status}, Reason: $errorReason")
             
             // Check if this is an age restriction error
-            val isAgeRestricted = errorReason?.contains("age", ignoreCase = true) == true ||
-                    errorReason?.contains("sign in", ignoreCase = true) == true ||
-                    errorReason?.contains("restricted", ignoreCase = true) == true ||
-                    errorReason?.contains("verification", ignoreCase = true) == true
+            val isAgeRestricted = errorReason?.let { reason ->
+                reason.contains("age", ignoreCase = true) ||
+                reason.contains("sign in", ignoreCase = true) ||
+                reason.contains("restricted", ignoreCase = true) ||
+                reason.contains("verification", ignoreCase = true) ||
+                reason.contains("confirm your age", ignoreCase = true) ||
+                reason.contains("inappropriate", ignoreCase = true) ||
+                reason.contains("content warning", ignoreCase = true) ||
+                streamPlayerResponse.playabilityStatus.status.equals("LOGIN_REQUIRED", ignoreCase = true) ||
+                streamPlayerResponse.playabilityStatus.status.equals("UNPLAYABLE", ignoreCase = true)
+            } == true
+            
+            Timber.tag(logTag).d("Age restriction detection result: $isAgeRestricted")
             
             if (isAgeRestricted) {
                 Timber.tag(logTag).d("Age restriction detected: $errorReason. Trying bypass clients...")
                 
                 // Try age restriction bypass clients
+                var bypassSuccessful = false
                 for (bypassClient in AGE_RESTRICTION_BYPASS_CLIENTS) {
                     try {
                         Timber.tag(logTag).d("Attempting age bypass with client: ${bypassClient.clientName}")
@@ -217,14 +228,29 @@ object YTPlayerUtils {
                             val bypassFormat = findFormat(bypassResponse, audioQuality, connectivityManager)
                             if (bypassFormat != null) {
                                 val bypassUrl = findUrlOrNull(bypassFormat, videoId)
-                                if (bypassUrl != null) {
-                                    Timber.tag(logTag).d("Working bypass stream found with format: ${bypassFormat.mimeType}")
-                                    streamPlayerResponse = bypassResponse
-                                    format = bypassFormat
-                                    streamUrl = bypassUrl
-                                    streamExpiresInSeconds = bypassResponse.streamingData?.expiresInSeconds
-                                    break
+                                val bypassExpires = bypassResponse.streamingData?.expiresInSeconds
+                                
+                                if (bypassUrl != null && bypassExpires != null) {
+                                    Timber.tag(logTag).d("Working bypass stream found with format: ${bypassFormat.mimeType}, expires in: $bypassExpires seconds")
+                                    
+                                    // Validate the stream URL if it's not the last client
+                                    val shouldValidate = bypassClient != AGE_RESTRICTION_BYPASS_CLIENTS.last()
+                                    if (!shouldValidate || validateStatus(bypassUrl)) {
+                                        streamPlayerResponse = bypassResponse
+                                        format = bypassFormat
+                                        streamUrl = bypassUrl
+                                        streamExpiresInSeconds = bypassExpires
+                                        bypassSuccessful = true
+                                        Timber.tag(logTag).d("Age restriction bypass successful with ${bypassClient.clientName}")
+                                        break
+                                    } else {
+                                        Timber.tag(logTag).d("Bypass stream validation failed for ${bypassClient.clientName}")
+                                    }
+                                } else {
+                                    Timber.tag(logTag).d("Bypass client ${bypassClient.clientName} missing URL or expiration")
                                 }
+                            } else {
+                                Timber.tag(logTag).d("No suitable format found for bypass client ${bypassClient.clientName}")
                             }
                         } else {
                             Timber.tag(logTag).d("Bypass client ${bypassClient.clientName} failed: ${bypassResponse?.playabilityStatus?.reason}")
@@ -235,7 +261,7 @@ object YTPlayerUtils {
                 }
                 
                 // Check if bypass was successful
-                if (streamPlayerResponse?.playabilityStatus?.status != "OK") {
+                if (!bypassSuccessful) {
                     Timber.tag(logTag).e("All age restriction bypass attempts failed")
                     throw PlaybackException(
                         "Age-restricted content could not be accessed: $errorReason",
