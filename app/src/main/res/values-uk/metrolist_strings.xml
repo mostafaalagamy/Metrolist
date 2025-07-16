@@ -154,4 +154,5 @@
     <string name="clear_image_cache_dialog">Ви дійсно хочете очистити всі кешовані зображення?</string>
     <string name="disable">Вимкнути</string>
     <string name="subscribe">Підписатися</string>
+    <string name="subscribed">Підписані</string>
 </resources>
