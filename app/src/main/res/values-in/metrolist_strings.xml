@@ -20,7 +20,7 @@
     <string name="loading_charts">Memuat grafik...</string>
     <string name="retry_button">Ulangi</string>
     <string name="album_cover_desc">Foto album</string>
-    <string name="top_music_videos">Musik Teratas</string>
+    <string name="top_music_videos">Musik Video Teratas</string>
     <string name="trending">Sedang Tren</string>
     <string name="weeks">Minggu</string>
     <string name="continuous">Terus-menerus</string>
@@ -80,4 +80,22 @@
     <string name="configure_supported_links">Ubah tautan yang didukung</string>
     <string name="intent_supported_links_not_found">Tidak dapat menemukan link yang didukung, setel konfigurasi secara manual</string>
     <string name="set_first_lyrics_provider">Prioritas provider lirik</string>
+    <string name="my_top">Teratas</string>
+    <string name="cached_playlist">Di-cache</string>
+    <string name="sync_disabled">Sinkron dimatikan</string>
+    <string name="copy_link">Salin tautan</string>
+    <string name="like_all">Suka semuanya</string>
+    <string name="dislike_all">Tidak suka semuanya</string>
+    <plurals name="n_element">
+        <item quantity="other">Singular\n%d elemen\n\nPlural\n%d elemen-elemen</item>
+    </plurals>
+    <string name="login_settings">Pengaturan masuk</string>
+    <string name="follow_theme">Ikuti tema</string>
+    <string name="gradient">Gradien</string>
+    <string name="new_player_design">Desain baru pemutar</string>
+    <string name="player_background_blur">Kabur</string>
+    <string name="player_buttons_style">Warna tombol pemutar</string>
+    <string name="default_style">Bawaan</string>
+    <string name="secondary_color_style">Sekunder</string>
+    <string name="enable_squiggly_slider">Aktifkan squiggly slider</string>
 </resources>
