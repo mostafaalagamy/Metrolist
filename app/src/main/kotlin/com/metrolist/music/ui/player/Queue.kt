@@ -705,24 +705,25 @@ fun Queue(
                                 dismissJob =
                                     coroutineScope.launch {
                                         val snackbarResult =
-                                                    snackbarHostState.showSnackbar(
-                                                        message =
-                                                        context.getString(
-                                                            R.string.removed_song_from_playlist,
-                                                            currentItem.mediaItem.metadata?.title,
-                                                        ),
-                                                        actionLabel = context.getString(R.string.undo),
-                                                        duration = SnackbarDuration.Short,
-                                                    )
-                                                if (snackbarResult == SnackbarResult.ActionPerformed) {
-                                                    playerConnection.player.addMediaItem(currentItem.mediaItem)
-                                                    playerConnection.player.moveMediaItem(
-                                                        mutableQueueWindows.size,
-                                                        currentItem.firstPeriodIndex,
-                                                    )
-                                                }
-                                            }
+                                            snackbarHostState.showSnackbar(
+                                                message =
+                                                context.getString(
+                                                    R.string.removed_song_from_playlist,
+                                                    currentItem.mediaItem.metadata?.title,
+                                                ),
+                                                actionLabel = context.getString(R.string.undo),
+                                                duration = SnackbarDuration.Short,
+                                            )
+                                        if (snackbarResult == SnackbarResult.ActionPerformed) {
+                                            playerConnection.player.addMediaItem(currentItem.mediaItem)
+                                            playerConnection.player.moveMediaItem(
+                                                mutableQueueWindows.size,
+                                                currentItem.firstPeriodIndex,
+                                            )
+                                        }
                                     }
+                            }
+                        }
 
                         val content: @Composable () -> Unit = {
                             Row(
