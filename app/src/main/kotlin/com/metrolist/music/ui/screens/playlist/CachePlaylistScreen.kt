@@ -163,15 +163,24 @@ fun CachePlaylistScreen(
             state = lazyListState,
             contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues(),
         ) {
-            if (filteredSongs.isEmpty()) {
+            if (filteredSongs.isEmpty() && !isSearching) {
                 item {
                     EmptyPlaceholder(
                         icon = R.drawable.music_note,
                         text = stringResource(R.string.playlist_is_empty)
                     )
                 }
+            }
+
+            if (filteredSongs.isEmpty() && isSearching) {
+                item {
+                    EmptyPlaceholder(
+                        icon = R.drawable.search,
+                        text = stringResource(R.string.no_results_found)
+                    )
+                }
             } else {
-                if (!isSearching) {
+                if (filteredSongs.isNotEmpty() && !isSearching) {
                     item {
                         Column(
                             verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -261,7 +270,9 @@ fun CachePlaylistScreen(
                             }
                         }
                     }
+                }
 
+                if (filteredSongs.isNotEmpty()) {
                     item {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
