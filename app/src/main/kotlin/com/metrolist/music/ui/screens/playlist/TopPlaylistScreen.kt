@@ -1,5 +1,6 @@
 package com.metrolist.music.ui.screens.playlist
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
@@ -39,6 +40,8 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.toMutableStateList
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -103,46 +106,51 @@ fun TopPlaylistScreen(
     val context = LocalContext.current
     val menuState = LocalMenuState.current
     val haptic = LocalHapticFeedback.current
+    val focusManager = LocalFocusManager.current
     val playerConnection = LocalPlayerConnection.current ?: return
     val isPlaying by playerConnection.isPlaying.collectAsState()
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
     val maxSize = viewModel.top
 
     val songs by viewModel.topSongs.collectAsState(null)
-    val mutableSongs =
-        remember {
-            mutableStateListOf<Song>()
-        }
+    val mutableSongs = remember { mutableStateListOf<Song>() }
 
-    val likeLength =
-        remember(songs) {
-            songs?.fastSumBy { it.song.duration } ?: 0
-        }
-
-    val wrappedSongs = songs?.map { item -> ItemWrapper(item) }?.toMutableList()
-
-    var searchQuery by remember {
-        mutableStateOf(TextFieldValue(""))
+    val likeLength = remember(songs) {
+        songs?.fastSumBy { it.song.duration } ?: 0
     }
+
+    val wrappedSongs = remember(songs) {
+        songs?.map { item -> ItemWrapper(item) }?.toMutableStateList() ?: mutableStateListOf()
+    }
+
     var isSearching by remember { mutableStateOf(false) }
-    val focusManager = LocalFocusManager.current
+    var query by remember { mutableStateOf(TextFieldValue()) }
     val focusRequester = remember { FocusRequester() }
+    
     LaunchedEffect(isSearching) {
         if (isSearching) {
             focusRequester.requestFocus()
         }
     }
-    var selection by remember {
-        mutableStateOf(false)
+    
+    var selection by remember { mutableStateOf(false) }
+
+    if (isSearching) {
+        BackHandler {
+            isSearching = false
+            query = TextFieldValue()
+        }
+    } else if (selection) {
+        BackHandler {
+            selection = false
+        }
     }
 
     val sortType by viewModel.topPeriod.collectAsState()
     val name = stringResource(R.string.my_top) + " $maxSize"
 
     val downloadUtil = LocalDownloadUtil.current
-    var downloadState by remember {
-        mutableStateOf(Download.STATE_STOPPED)
-    }
+    var downloadState by remember { mutableStateOf(Download.STATE_STOPPED) }
 
     LaunchedEffect(songs) {
         mutableSongs.apply {
@@ -167,9 +175,7 @@ fun TopPlaylistScreen(
         }
     }
 
-    var showRemoveDownloadDialog by remember {
-        mutableStateOf(false)
-    }
+    var showRemoveDownloadDialog by remember { mutableStateOf(false) }
 
     if (showRemoveDownloadDialog) {
         DefaultDialog(
@@ -207,6 +213,15 @@ fun TopPlaylistScreen(
         )
     }
 
+    val filteredSongs = remember(wrappedSongs, query) {
+        if (query.text.isEmpty()) wrappedSongs
+        else wrappedSongs?.filter { wrapper ->
+            val song = wrapper.item
+            song.song.title.contains(query.text, true) ||
+                song.artists.any { it.name.contains(query.text, true) }
+        }
+    }
+
     val state = rememberLazyListState()
 
     Box(
@@ -236,18 +251,18 @@ fun TopPlaylistScreen(
                                     verticalAlignment = Alignment.CenterVertically,
                                 ) {
                                     Box(
-                                    contentAlignment = Alignment.Center,
-                                    modifier = Modifier
-                                        .size(AlbumThumbnailSize)
-                                        .clip(RoundedCornerShape(ThumbnailCornerRadius))
-                                        .fillMaxWidth(),
-                                ) {
-                                    AsyncImage(
-                                        model = songs!![0].song.thumbnailUrl,
-                                        contentDescription = null,
+                                        contentAlignment = Alignment.Center,
                                         modifier = Modifier
-                                            .fillMaxWidth()
-                                            .clip(RoundedCornerShape(ThumbnailCornerRadius)),
+                                            .size(AlbumThumbnailSize)
+                                            .clip(RoundedCornerShape(ThumbnailCornerRadius))
+                                            .fillMaxWidth(),
+                                    ) {
+                                        AsyncImage(
+                                            model = songs!![0].song.thumbnailUrl,
+                                            contentDescription = null,
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .clip(RoundedCornerShape(ThumbnailCornerRadius)),
                                         )
                                     }
                                     Column(
@@ -262,8 +277,7 @@ fun TopPlaylistScreen(
                                         )
 
                                         Text(
-                                            text =
-                                            pluralStringResource(
+                                            text = pluralStringResource(
                                                 R.plurals.n_song,
                                                 songs!!.size,
                                                 songs!!.size,
@@ -435,19 +449,6 @@ fun TopPlaylistScreen(
                     }
                 }
 
-                val searchQueryStr = (searchQuery.text.trim())
-                val filteredSongs = if (searchQueryStr.isEmpty()) {
-                    wrappedSongs
-                } else {
-                    wrappedSongs?.filter {
-                        (it.item.song.title).contains(searchQueryStr, ignoreCase = true) or
-                                (it.item.artists.joinToString("").trim()).contains(
-                                    searchQueryStr,
-                                    ignoreCase = true
-                                )
-                    }
-                }
-
                 if (filteredSongs != null) {
                     itemsIndexed(
                         items = filteredSongs,
@@ -459,7 +460,6 @@ fun TopPlaylistScreen(
                             isActive = songWrapper.item.song.id == mediaMetadata?.id,
                             isPlaying = isPlaying,
                             showInLibraryIcon = true,
-
                             trailingContent = {
                                 IconButton(
                                     onClick = {
@@ -479,8 +479,7 @@ fun TopPlaylistScreen(
                                 }
                             },
                             isSelected = songWrapper.isSelected && selection,
-                            modifier =
-                            Modifier
+                            modifier = Modifier
                                 .fillMaxWidth()
                                 .combinedClickable(
                                     onClick = {
@@ -491,8 +490,8 @@ fun TopPlaylistScreen(
                                                 playerConnection.playQueue(
                                                     ListQueue(
                                                         title = name,
-                                                        items = filteredSongs.map { it.item.toMediaItem() },
-                                                        startIndex = index,
+                                                        items = songs!!.map { it.toMediaItem() },
+                                                        startIndex = songs!!.indexOfFirst { it.id == songWrapper.item.id }
                                                     ),
                                                 )
                                             }
@@ -504,9 +503,9 @@ fun TopPlaylistScreen(
                                         haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                                         if (!selection) {
                                             selection = true
+                                            wrappedSongs?.forEach { it.isSelected = false }
+                                            songWrapper.isSelected = true
                                         }
-                                        wrappedSongs?.forEach { it.isSelected = false }
-                                        songWrapper.isSelected = true
                                     },
                                 )
                                 .animateItem()
@@ -518,56 +517,63 @@ fun TopPlaylistScreen(
 
         TopAppBar(
             title = {
-                if (selection) {
-                    val count = wrappedSongs?.count { it.isSelected } ?: 0
-                    Text(
-                        text = pluralStringResource(R.plurals.n_song, count, count),
-                        style = MaterialTheme.typography.titleLarge
-                    )
-                } else if (isSearching) {
-                    TextField(
-                        value = searchQuery,
-                        onValueChange = { searchQuery = it },
-                        placeholder = {
-                            Text(
-                                text = stringResource(R.string.search),
-                                style = MaterialTheme.typography.titleLarge
-                            )
-                        },
-                        singleLine = true,
-                        textStyle = MaterialTheme.typography.titleLarge,
-                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-                        colors = TextFieldDefaults.colors(
-                            focusedContainerColor = Color.Transparent,
-                            unfocusedContainerColor = Color.Transparent,
-                            focusedIndicatorColor = Color.Transparent,
-                            unfocusedIndicatorColor = Color.Transparent,
-                            disabledIndicatorColor = Color.Transparent,
-                        ),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .focusRequester(focusRequester)
-                    )
-                } else {
-                    Text(
-                        text = name,
-                    )
+                when {
+                    selection -> {
+                        val count = wrappedSongs?.count { it.isSelected } ?: 0
+                        Text(
+                            text = pluralStringResource(R.plurals.n_song, count, count),
+                            style = MaterialTheme.typography.titleLarge
+                        )
+                    }
+                    isSearching -> {
+                        TextField(
+                            value = query,
+                            onValueChange = { query = it },
+                            placeholder = {
+                                Text(
+                                    text = stringResource(R.string.search),
+                                    style = MaterialTheme.typography.titleLarge
+                                )
+                            },
+                            singleLine = true,
+                            textStyle = MaterialTheme.typography.titleLarge,
+                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+                            colors = TextFieldDefaults.colors(
+                                focusedContainerColor = Color.Transparent,
+                                unfocusedContainerColor = Color.Transparent,
+                                focusedIndicatorColor = Color.Transparent,
+                                unfocusedIndicatorColor = Color.Transparent,
+                                disabledIndicatorColor = Color.Transparent,
+                            ),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .focusRequester(focusRequester)
+                        )
+                    }
+                    else -> {
+                        Text(text = name)
+                    }
                 }
             },
             navigationIcon = {
                 IconButton(
                     onClick = {
-                        if (isSearching) {
-                            isSearching = false
-                            searchQuery = TextFieldValue()
-                        } else if (selection) {
-                            selection = false
-                        } else {
-                            navController.navigateUp()
+                        when {
+                            isSearching -> {
+                                isSearching = false
+                                query = TextFieldValue()
+                                focusManager.clearFocus()
+                            }
+                            selection -> {
+                                selection = false
+                            }
+                            else -> {
+                                navController.navigateUp()
+                            }
                         }
                     },
                     onLongClick = {
-                        if (!isSearching) {
+                        if (!isSearching && !selection) {
                             navController.backToMain()
                         }
                     }
