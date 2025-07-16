@@ -33,6 +33,7 @@ import com.metrolist.music.ui.utils.backToMain
 import com.metrolist.music.utils.rememberPreference
 import com.metrolist.music.utils.reportException
 import com.metrolist.innertube.YouTube
+import androidx.compose.runtime.rememberCoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -43,6 +44,7 @@ import kotlinx.coroutines.launch
 fun LoginScreen(
     navController: NavController,
 ) {
+    val coroutineScope = rememberCoroutineScope()
     var visitorData by rememberPreference(VisitorDataKey, "")
     var dataSyncId by rememberPreference(DataSyncIdKey, "")
     var innerTubeCookie by rememberPreference(InnerTubeCookieKey, "")
@@ -65,7 +67,7 @@ fun LoginScreen(
 
                         if (url?.startsWith("https://music.youtube.com") == true) {
                             innerTubeCookie = CookieManager.getInstance().getCookie(url)
-                            GlobalScope.launch {
+                            coroutineScope.launch {
                                 YouTube.accountInfo().onSuccess {
                                     accountName = it.name
                                     accountEmail = it.email.orEmpty()

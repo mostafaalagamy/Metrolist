@@ -215,7 +215,18 @@ object YouTube {
             .toMutableList()
         var continuation = response.contents?.twoColumnBrowseResultsRenderer?.secondaryContents?.sectionListRenderer
             ?.contents?.firstOrNull()?.musicPlaylistShelfRenderer?.contents?.getContinuation()
-        while (continuation != null) {
+        val seenContinuations = mutableSetOf<String>()
+        var requestCount = 0
+        val maxRequests = 50 // Prevent excessive API calls
+        
+        while (continuation != null && requestCount < maxRequests) {
+            // Prevent infinite loops by tracking seen continuations
+            if (continuation in seenContinuations) {
+                break
+            }
+            seenContinuations.add(continuation)
+            requestCount++
+            
             response = innerTube.browse(
                 client = WEB_REMIX,
                 continuation = continuation,
