@@ -6,13 +6,13 @@
     </plurals>
     <string name="seek_backward">5 detik mundur</string>
     <string name="similar_content">Konten serupa</string>
-    <string name="remote_history">Remote</string>
+    <string name="remote_history">Histori jarak jauh</string>
     <string name="years">Tahun</string>
     <string name="months">Bulan</string>
     <string name="please_wait">Tunggu sebentar</string>
     <string name="generating_image">Membuat gambar</string>
     <string name="explore">Jelajah</string>
-    <string name="charts">Grafik</string>
+    <string name="charts">Bagan</string>
     <string name="back_button_desc">Kembali</string>
     <string name="no_title">Tanpa judul</string>
     <string name="unknown_artist">Artis tak dikenal</string>
@@ -87,7 +87,7 @@
     <string name="like_all">Suka semuanya</string>
     <string name="dislike_all">Tidak suka semuanya</string>
     <plurals name="n_element">
-        <item quantity="other">Elemen</item>
+        <item quantity="other">%d Elemen</item>
     </plurals>
     <string name="login_settings">Pengaturan masuk</string>
     <string name="follow_theme">Ikuti tema</string>
