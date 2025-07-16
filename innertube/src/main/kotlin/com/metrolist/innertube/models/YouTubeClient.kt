@@ -102,5 +102,35 @@ data class YouTubeClient(
             loginSupported = false,
             useSignatureTimestamp = false
         )
+
+        /**
+         * Age-restriction bypassing clients based on YouTube-Internal-Clients research
+         */
+        val ANDROID_TESTSUITE = YouTubeClient(
+            clientName = "ANDROID_TESTSUITE",
+            clientVersion = "1.9",
+            clientId = "30",
+            userAgent = "com.google.android.youtube/",
+            loginSupported = false,
+            useSignatureTimestamp = false
+        )
+
+        val TVHTML5 = YouTubeClient(
+            clientName = "TVHTML5",
+            clientVersion = "7.20220918",
+            clientId = "7",
+            userAgent = "Mozilla/5.0 (SMART-TV; LINUX; Tizen 2.4.0) AppleWebKit/538.1 (KHTML, like Gecko) Version/2.4.0 TV Safari/538.1",
+            loginSupported = false,
+            useSignatureTimestamp = false
+        )
+
+        val WEB_MUSIC_ANALYTICS = YouTubeClient(
+            clientName = "WEB_MUSIC_ANALYTICS",
+            clientVersion = "0.2",
+            clientId = "31",
+            userAgent = USER_AGENT_WEB,
+            loginSupported = false,
+            useSignatureTimestamp = false
+        )
     }
 }

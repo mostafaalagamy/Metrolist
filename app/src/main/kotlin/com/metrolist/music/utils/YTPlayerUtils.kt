@@ -14,6 +14,9 @@ import com.metrolist.innertube.models.YouTubeClient.Companion.ANDROID_VR_NO_AUTH
 import com.metrolist.innertube.models.YouTubeClient.Companion.MOBILE
 import com.metrolist.innertube.models.YouTubeClient.Companion.WEB
 import com.metrolist.innertube.models.YouTubeClient.Companion.WEB_CREATOR
+import com.metrolist.innertube.models.YouTubeClient.Companion.ANDROID_TESTSUITE
+import com.metrolist.innertube.models.YouTubeClient.Companion.TVHTML5
+import com.metrolist.innertube.models.YouTubeClient.Companion.WEB_MUSIC_ANALYTICS
 import okhttp3.OkHttpClient
 import timber.log.Timber
 
@@ -43,6 +46,16 @@ object YTPlayerUtils {
         IOS,
         WEB,
         WEB_CREATOR
+    )
+    /**
+     * Clients specifically designed to bypass age restrictions.
+     * These clients are used when regular clients fail due to age verification requirements.
+     */
+    private val AGE_RESTRICTION_BYPASS_CLIENTS: Array<YouTubeClient> = arrayOf(
+        ANDROID_TESTSUITE,  // Primary age bypass client
+        TVHTML5,           // TV clients often have fewer restrictions
+        WEB_MUSIC_ANALYTICS, // Analytics client with different rules
+        ANDROID_VR_NO_AUTH   // VR client as additional fallback
     )
     data class PlaybackData(
         val audioConfig: PlayerResponse.PlayerConfig.AudioConfig?,
@@ -181,12 +194,63 @@ object YTPlayerUtils {
 
         if (streamPlayerResponse.playabilityStatus.status != "OK") {
             val errorReason = streamPlayerResponse.playabilityStatus.reason
-            Timber.tag(logTag).e("Playability status not OK: $errorReason")
-            throw PlaybackException(
-                errorReason,
-                null,
-                PlaybackException.ERROR_CODE_REMOTE_ERROR
-            )
+            
+            // Check if this is an age restriction error
+            val isAgeRestricted = errorReason?.contains("age", ignoreCase = true) == true ||
+                    errorReason?.contains("sign in", ignoreCase = true) == true ||
+                    errorReason?.contains("restricted", ignoreCase = true) == true ||
+                    errorReason?.contains("verification", ignoreCase = true) == true
+            
+            if (isAgeRestricted) {
+                Timber.tag(logTag).d("Age restriction detected: $errorReason. Trying bypass clients...")
+                
+                // Try age restriction bypass clients
+                for (bypassClient in AGE_RESTRICTION_BYPASS_CLIENTS) {
+                    try {
+                        Timber.tag(logTag).d("Attempting age bypass with client: ${bypassClient.clientName}")
+                        val bypassResponse = YouTube.player(videoId, playlistId, bypassClient, signatureTimestamp).getOrNull()
+                        
+                        if (bypassResponse?.playabilityStatus?.status == "OK") {
+                            Timber.tag(logTag).d("Age restriction bypassed successfully with client: ${bypassClient.clientName}")
+                            
+                            // Find a working format from the bypass response
+                            val bypassFormat = findFormat(bypassResponse, audioQuality, connectivityManager)
+                            if (bypassFormat != null) {
+                                val bypassUrl = findUrlOrNull(bypassFormat, videoId)
+                                if (bypassUrl != null) {
+                                    Timber.tag(logTag).d("Working bypass stream found with format: ${bypassFormat.mimeType}")
+                                    streamPlayerResponse = bypassResponse
+                                    format = bypassFormat
+                                    streamUrl = bypassUrl
+                                    streamExpiresInSeconds = bypassResponse.streamingData?.expiresInSeconds
+                                    break
+                                }
+                            }
+                        } else {
+                            Timber.tag(logTag).d("Bypass client ${bypassClient.clientName} failed: ${bypassResponse?.playabilityStatus?.reason}")
+                        }
+                    } catch (e: Exception) {
+                        Timber.tag(logTag).d("Exception with bypass client ${bypassClient.clientName}: ${e.message}")
+                    }
+                }
+                
+                // Check if bypass was successful
+                if (streamPlayerResponse?.playabilityStatus?.status != "OK") {
+                    Timber.tag(logTag).e("All age restriction bypass attempts failed")
+                    throw PlaybackException(
+                        "Age-restricted content could not be accessed: $errorReason",
+                        null,
+                        PlaybackException.ERROR_CODE_REMOTE_ERROR
+                    )
+                }
+            } else {
+                Timber.tag(logTag).e("Playability status not OK: $errorReason")
+                throw PlaybackException(
+                    errorReason,
+                    null,
+                    PlaybackException.ERROR_CODE_REMOTE_ERROR
+                )
+            }
         }
 
         if (streamExpiresInSeconds == null) {
