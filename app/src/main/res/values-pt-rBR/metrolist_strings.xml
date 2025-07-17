@@ -145,7 +145,7 @@
     <string name="yt_sync">Sincronizar automaticamente com a conta</string>
     <string name="more_content">Mais conteúdo</string>
     <string name="new_player_design">Novo design do reprodutor</string>
-    <string name="swipe_sensitivity">Sensibilidade do gesto de deslizar</string>
+    <string name="swipe_sensitivity">Sensibilidade do gesto de deslizar no mini reprodutor</string>
     <string name="swipe_sensitivity_desc">Ajuste o quanto você precisa deslizar para mudar de música</string>
     <string name="clear_image_cache_dialog">Tem certeza que quer apagar todas as imagens no cache?</string>
     <string name="disable">Desativar</string>
