@@ -2,4 +2,5 @@
 <resources>
     <string name="forgotten_favorites">Forgotten favourites</string>
     <string name="center">Centre</string>
+    <string name="home">Home</string>
 </resources>
