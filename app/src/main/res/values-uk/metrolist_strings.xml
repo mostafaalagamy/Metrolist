@@ -46,7 +46,7 @@
     <string name="slim_navbar">Приховати мітки нижньої панелі навігації</string>
     <string name="google">Google</string>
     <string name="discord">Discord</string>
-    <string name="advanced_login">Просунутий вхід (токен)</string>
+    <string name="advanced_login">Вхід через токен</string>
     <string name="token_hidden">Натисніть для показу токену</string>
     <string name="token_shown">Повторно натисніть, щоб скопіювати або редагувати</string>
     <string name="token_adv_login_description">Це ПРОСУНУТИЙ метод входу в систему. Альтернативно до веб-порталу, ви можете безпосередньо ввести або оновити свій токен для входу тут. Наприклад, це може прискорити вхід на декількох пристроях. Зверніть увагу, що будь-які недійсні формати токенів, які додаток не зможе розпізнати, не будуть прийняті</string>
@@ -143,4 +143,16 @@
     <string name="import_online">Імпортувати список відтворення у форматі \"m3u\"</string>
     <string name="import_csv">Імпортувати список відтворення у форматі \"csv\"</string>
     <string name="playlist_add_local_to_synced_note">Примітка: додавання локальних пісень до синхронізованих або віддалених списків відтворення не підтримується. Усі інші комбінації можливі</string>
+    <string name="new_player_design">Новий дизайн програвача</string>
+    <string name="lyrics_romanize_japanese">Транслітерувати японські тексти пісень</string>
+    <string name="lyrics_romanize_korean">Транслітерувати корейські тексти пісень</string>
+    <string name="yt_sync">Автосинхронізація з акаунтом</string>
+    <string name="more_content">Більше контенту</string>
+    <string name="swipe_sensitivity">Чутливість проведення по мініпрогравачу</string>
+    <string name="swipe_sensitivity_desc">Налаштувати чутливість жестів для перемикання пісень</string>
+    <string name="sensitivity_percentage">%1$d%%</string>
+    <string name="clear_image_cache_dialog">Ви дійсно хочете очистити всі кешовані зображення?</string>
+    <string name="disable">Вимкнути</string>
+    <string name="subscribe">Підписатися</string>
+    <string name="subscribed">Підписані</string>
 </resources>
