@@ -7,15 +7,15 @@ Caracteristici:
 - Alegeri rapide personalizate 
 - Gestionarea bibliotecii 
 - Descarcă și pune în cache melodii pentru redare offline
-- Caută melodii, albume, artiști, videoclipuri și playlist-uri
+- Caută melodii, albume, artiști, videoclipuri și playlisturi
 - Versuri live 
 - Suport pentru autentificarea la contul de YouTube Music
-- Sincronizarea melodiilor, artiștilor, albumelor și playlist-urilor de pe contul tău și pe contul tău
+- Sincronizarea melodiilor, artiștilor, albumelor și playlisturilor de pe contul tău și pe contul tău
 - Omite momentele de liniște 
-- Importă playlist-uri 
+- Importă playlisturi 
 - Normalizare audio 
 - Ajustează tempo-ul/înălțimea 
-- Gestionarea locală a playlist-urilor
+- Gestionarea locală a playlisturilor
 - Reordonează melodiile în playlist sau coadă 
 - Temă luminoasă, întunecată, neagră și dinamică
 - Temporizator de somn
