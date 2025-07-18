@@ -317,10 +317,8 @@ fun Queue(
                         Icon(
                             painter = painterResource(id = R.drawable.lyrics),
                             contentDescription = null,
-                            modifier = Modifier
-                                .size(iconSize)
-                                .alpha(if (showLyrics) 1f else 0.5f),
-                            tint = TextBackgroundColor
+                            modifier = Modifier.size(iconSize),
+                            tint = TextBackgroundColor.copy(alpha = if (showLyrics) 1f else 0.5f)
                         )
                     }
 
@@ -501,21 +499,17 @@ fun Queue(
                             Icon(
                                 painter = painterResource(id = R.drawable.lyrics),
                                 contentDescription = null,
-                                modifier = Modifier
-                                    .size(20.dp)
-                                    .alpha(if (showLyrics) 1f else 0.5f),
-                                tint = TextBackgroundColor
+                                modifier = Modifier.size(20.dp),
+                                tint = TextBackgroundColor.copy(alpha = if (showLyrics) 1f else 0.5f)
                             )
                             Spacer(modifier = Modifier.width(6.dp))
                             Text(
                                 text = stringResource(id = R.string.lyrics),
-                                color = TextBackgroundColor,
+                                color = TextBackgroundColor.copy(alpha = if (showLyrics) 1f else 0.5f),
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis,
                                 textAlign = TextAlign.Center,
-                                modifier = Modifier
-                                    .basicMarquee()
-                                    .alpha(if (showLyrics) 1f else 0.5f)
+                                modifier = Modifier.basicMarquee()
                             )
                         }
                     }

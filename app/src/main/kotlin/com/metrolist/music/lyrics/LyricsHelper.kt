@@ -9,6 +9,7 @@ import com.metrolist.music.extensions.toEnum
 import com.metrolist.music.models.MediaMetadata
 import com.metrolist.music.utils.dataStore
 import com.metrolist.music.utils.reportException
+import com.metrolist.music.utils.NetworkConnectivity
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -16,6 +17,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -26,6 +28,7 @@ class LyricsHelper
 @Inject
 constructor(
     @ApplicationContext private val context: Context,
+    private val networkConnectivity: NetworkConnectivity,
 ) {
     private var lyricsProviders =
         listOf(
@@ -70,20 +73,31 @@ constructor(
             return cached.lyrics
         }
 
+        // Check network connectivity before making network requests
+        val isNetworkAvailable = networkConnectivity.networkStatus.first()
+        if (!isNetworkAvailable) {
+            return LYRICS_NOT_FOUND
+        }
+
         val scope = CoroutineScope(SupervisorJob())
         val deferred = scope.async {
             for (provider in lyricsProviders) {
                 if (provider.isEnabled(context)) {
-                    val result = provider.getLyrics(
-                        mediaMetadata.id,
-                        mediaMetadata.title,
-                        mediaMetadata.artists.joinToString { it.name },
-                        mediaMetadata.duration,
-                    )
-                    result.onSuccess { lyrics ->
-                        return@async lyrics
-                    }.onFailure {
-                        reportException(it)
+                    try {
+                        val result = provider.getLyrics(
+                            mediaMetadata.id,
+                            mediaMetadata.title,
+                            mediaMetadata.artists.joinToString { it.name },
+                            mediaMetadata.duration,
+                        )
+                        result.onSuccess { lyrics ->
+                            return@async lyrics
+                        }.onFailure {
+                            reportException(it)
+                        }
+                    } catch (e: Exception) {
+                        // Catch network-related exceptions like UnresolvedAddressException
+                        reportException(e)
                     }
                 }
             }
@@ -112,14 +126,25 @@ constructor(
             return
         }
 
+        // Check network connectivity before making network requests
+        val isNetworkAvailable = networkConnectivity.networkStatus.first()
+        if (!isNetworkAvailable) {
+            return
+        }
+
         val allResult = mutableListOf<LyricsResult>()
         currentLyricsJob = CoroutineScope(SupervisorJob()).launch {
             lyricsProviders.forEach { provider ->
                 if (provider.isEnabled(context)) {
-                    provider.getAllLyrics(mediaId, songTitle, songArtists, duration) { lyrics ->
-                        val result = LyricsResult(provider.name, lyrics)
-                        allResult += result
-                        callback(result)
+                    try {
+                        provider.getAllLyrics(mediaId, songTitle, songArtists, duration) { lyrics ->
+                            val result = LyricsResult(provider.name, lyrics)
+                            allResult += result
+                            callback(result)
+                        }
+                    } catch (e: Exception) {
+                        // Catch network-related exceptions like UnresolvedAddressException
+                        reportException(e)
                     }
                 }
             }
