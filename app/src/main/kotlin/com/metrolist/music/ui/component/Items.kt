@@ -1337,7 +1337,7 @@ fun SwipeToSongBox(
             )
     ) {
         if (offset.value != 0f) {
-            val (iconRes, bg, tint, align) = if (offset.value > 0)
+            val (iconVector, bg, tint, align) = if (offset.value > 0)
                 Quadruple(
                     Icons.Filled.PlaylistPlay,
                     MaterialTheme.colorScheme.secondary,
@@ -1360,7 +1360,7 @@ fun SwipeToSongBox(
                 contentAlignment = align
             ) {
                 Icon(
-                    painter = painterResource(id = iconRes),
+                    imageVector = iconVector,
                     contentDescription = null,
                     modifier = Modifier
                         .padding(horizontal = 24.dp)

@@ -195,13 +195,11 @@ fun YouTubeArtistMenu(
                 },
                 leadingContent = {
                     Icon(
-                        painter = painterResource(
-                            if (libraryArtist?.artist?.bookmarkedAt != null) {
+                        imageVector = if (libraryArtist?.artist?.bookmarkedAt != null) {
                                 Icons.Filled.PersonAddDisabled
                             } else {
                                 Icons.Filled.PersonAdd
-                            }
-                        ),
+                            },
                         contentDescription = null,
                     )
                 },

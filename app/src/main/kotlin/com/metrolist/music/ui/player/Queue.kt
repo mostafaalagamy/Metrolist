@@ -353,13 +353,11 @@ fun Queue(
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
-                            painter = painterResource(
-                                id = when (repeatMode) {
-                                    Player.REPEAT_MODE_OFF, Player.REPEAT_MODE_ALL -> Icons.Filled.Repeat
-                                    Player.REPEAT_MODE_ONE -> Icons.Filled.RepeatOne
-                                    else -> Icons.Filled.Repeat
-                                }
-                            ),
+                            imageVector = when (repeatMode) {
+                                Player.REPEAT_MODE_OFF, Player.REPEAT_MODE_ALL -> Icons.Filled.Repeat
+                                Player.REPEAT_MODE_ONE -> Icons.Filled.RepeatOne
+                                else -> Icons.Filled.Repeat
+                            },
                             contentDescription = null,
                             modifier = Modifier
                                 .size(iconSize)
@@ -1018,14 +1016,11 @@ fun Queue(
                         },
                     ) {
                         Icon(
-                            painter =
-                            painterResource(
-                                if (count == mutableQueueWindows.size) {
+                            imageVector = if (count == mutableQueueWindows.size) {
                                     Icons.Filled.CheckBoxOutlineBlank
                                 } else {
                                     Icons.Filled.CheckBox
                                 },
-                            ),
                             contentDescription = null,
                         )
                     }

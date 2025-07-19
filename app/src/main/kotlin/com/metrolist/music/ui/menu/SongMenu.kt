@@ -524,10 +524,8 @@ fun SongMenu(
                 },
                 leadingContent = {
                     Icon(
-                        painter = painterResource(
-                            if (song.song.inLibrary == null) Icons.Filled.LibraryAdd
-                            else Icons.Filled.LibraryAddCheck
-                        ),
+                        imageVector = if (song.song.inLibrary == null) Icons.Filled.LibraryAdd
+                            else Icons.Filled.LibraryAddCheck,
                         contentDescription = null,
                     )
                 },

@@ -271,9 +271,7 @@ fun SelectionSongMenu(
                 },
                 leadingContent = {
                     Icon(
-                        painter = painterResource(
-                            if (allInLibrary) Icons.Filled.LibraryAddCheck else Icons.Filled.LibraryAdd
-                        ),
+                        imageVector = if (allInLibrary) Icons.Filled.LibraryAddCheck else Icons.Filled.LibraryAdd,
                         contentDescription = null,
                     )
                 },
@@ -370,9 +368,7 @@ fun SelectionSongMenu(
                 },
                 leadingContent = {
                     Icon(
-                        painter = painterResource(
-                            if (allLiked) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder
-                        ),
+                        imageVector = if (allLiked) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
                         contentDescription = null,
                     )
                 },
@@ -637,9 +633,7 @@ fun SelectionMediaMetadataMenu(
                 },
                 leadingContent = {
                     Icon(
-                        painter = painterResource(
-                            if (allLiked) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder
-                        ),
+                        imageVector = if (allLiked) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
                         contentDescription = null,
                     )
                 },
