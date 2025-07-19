@@ -136,13 +136,6 @@ object AppIcons {
     // Small icon (using a generic icon)
     val SmallIcon = Icons.Filled.MusicNote
 
-    // Launcher icons (these might need special handling)
-    val LauncherForeground = Icons.Filled.MusicNote
-    val LauncherMonochrome = Icons.Filled.MusicNote
-    val LauncherBackgroundV31 = Icons.Filled.MusicNote
-    val LauncherForegroundV31 = Icons.Filled.MusicNote
-    val AboutSplash = Icons.Filled.MusicNote
-
     // Discover and special features
     val DiscoverTune = Icons.Filled.Explore
 }

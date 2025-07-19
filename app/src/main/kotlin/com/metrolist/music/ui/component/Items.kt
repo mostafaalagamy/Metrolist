@@ -392,7 +392,7 @@ fun ArtistListItem(
     badges: @Composable RowScope.() -> Unit = {
         if (artist.artist.bookmarkedAt != null) {
             Icon(
-                painter = painterResource(R.drawable.favorite),
+                imageVector = Icons.Filled.Favorite,
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.error,
                 modifier = Modifier
@@ -624,14 +624,14 @@ fun PlaylistListItem(
             thumbnails = playlist.thumbnails,
             size = ListThumbnailSize,
             placeHolder = {
-                val painter = when (playlist.playlist.name) {
-                    stringResource(R.string.liked) -> R.drawable.favorite_border
-                    stringResource(R.string.offline) -> R.drawable.offline
-                    stringResource(R.string.cached_playlist) -> R.drawable.cached
-                    else -> if (autoPlaylist) R.drawable.trending_up else R.drawable.queue_music
+                val icon = when (playlist.playlist.name) {
+                    stringResource(R.string.liked) -> Icons.Filled.FavoriteBorder
+                    stringResource(R.string.offline) -> Icons.Filled.OfflinePin
+                    stringResource(R.string.cached_playlist) -> Icons.Filled.Cached
+                    else -> if (autoPlaylist) Icons.Filled.TrendingUp else Icons.Filled.QueueMusic
                 }
                 Icon(
-                    painter = painterResource(painter),
+                    imageVector = icon,
                     contentDescription = null,
                     tint = LocalContentColor.current.copy(alpha = 0.8f),
                     modifier = Modifier.size(ListThumbnailSize / 2)
@@ -695,18 +695,18 @@ fun PlaylistGridItem(
             thumbnails = playlist.thumbnails,
             size = width,
             placeHolder = {
-                val painter = when (playlist.playlist.name) {
-                    stringResource(R.string.liked) -> R.drawable.favorite_border
-                    stringResource(R.string.offline) -> R.drawable.offline
-                    stringResource(R.string.cached_playlist) -> R.drawable.cached
-                    else -> if (autoPlaylist) R.drawable.trending_up else R.drawable.queue_music
+                val icon = when (playlist.playlist.name) {
+                    stringResource(R.string.liked) -> Icons.Filled.FavoriteBorder
+                    stringResource(R.string.offline) -> Icons.Filled.OfflinePin
+                    stringResource(R.string.cached_playlist) -> Icons.Filled.Cached
+                    else -> if (autoPlaylist) Icons.Filled.TrendingUp else Icons.Filled.QueueMusic
                 }
                 Box(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier.fillMaxSize()
                 ) {
                     Icon(
-                        painter = painterResource(painter),
+                        imageVector = icon,
                         contentDescription = null,
                         tint = LocalContentColor.current.copy(alpha = 0.8f),
                         modifier = Modifier.size(width / 2)

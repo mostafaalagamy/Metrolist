@@ -202,7 +202,7 @@ fun SwitchPreference(
                 enabled = isEnabled,
                 thumbContent = {
                     Icon(
-                        imageVector = if (checked) AppIcons.Check else AppIcons.Close,
+                        imageVector = if (checked) Icons.Filled.Check else Icons.Filled.Close,
                         contentDescription = null,
                         modifier = Modifier.size(SwitchDefaults.IconSize),
                     )
