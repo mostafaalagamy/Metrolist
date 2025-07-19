@@ -77,16 +77,12 @@ inline fun <reified T : Enum<T>> SortHeader(
                     },
                     trailingIcon = {
                         Icon(
-                            painter =
-                            painterResource(
-                                if (sortType ==
-                                    type
-                                ) {
+                            imageVector =
+                                if (sortType == type) {
                                     Icons.Filled.RadioButtonChecked
                                 } else {
                                     Icons.Filled.RadioButtonUnchecked
                                 },
-                            ),
                             contentDescription = null,
                         )
                     },

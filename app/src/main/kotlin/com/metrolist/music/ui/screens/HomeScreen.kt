@@ -34,6 +34,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -518,8 +519,8 @@ fun HomeScreen(
                                         .diskCacheKey(url)
                                         .crossfade(true)
                                         .build(),
-                                    placeholder = Icons.Filled.Person,
-                                    error = Icons.Filled.Person,
+                                    placeholder = rememberVectorPainter(Icons.Filled.Person),
+                                    error = rememberVectorPainter(Icons.Filled.Person),
                                     contentDescription = null,
                                     contentScale = ContentScale.Crop,
                                     modifier = Modifier

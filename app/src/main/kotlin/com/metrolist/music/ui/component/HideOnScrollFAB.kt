@@ -17,6 +17,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.metrolist.music.LocalPlayerAwareWindowInsets
@@ -111,6 +112,68 @@ fun BoxScope.HideOnScrollFAB(
         ) {
             Icon(
                 painter = painterResource(icon),
+                contentDescription = null,
+            )
+        }
+    }
+}
+
+@Composable
+fun BoxScope.HideOnScrollFAB(
+    visible: Boolean = true,
+    lazyListState: LazyListState,
+    icon: ImageVector,
+    onClick: () -> Unit,
+) {
+    AnimatedVisibility(
+        visible = visible && lazyListState.isScrollingUp(),
+        enter = slideInVertically { it },
+        exit = slideOutVertically { it },
+        modifier =
+        Modifier
+            .align(Alignment.BottomEnd)
+            .windowInsetsPadding(
+                LocalPlayerAwareWindowInsets.current
+                    .only(WindowInsetsSides.Bottom + WindowInsetsSides.Horizontal),
+            ),
+    ) {
+        FloatingActionButton(
+            modifier = Modifier.padding(16.dp),
+            onClick = onClick,
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+            )
+        }
+    }
+}
+
+@Composable
+fun BoxScope.HideOnScrollFAB(
+    visible: Boolean = true,
+    lazyListState: LazyGridState,
+    icon: ImageVector,
+    onClick: () -> Unit,
+) {
+    AnimatedVisibility(
+        visible = visible && lazyListState.isScrollingUp(),
+        enter = slideInVertically { it },
+        exit = slideOutVertically { it },
+        modifier =
+        Modifier
+            .align(Alignment.BottomEnd)
+            .windowInsetsPadding(
+                LocalPlayerAwareWindowInsets.current
+                    .only(WindowInsetsSides.Bottom + WindowInsetsSides.Horizontal),
+            ),
+    ) {
+        FloatingActionButton(
+            modifier = Modifier.padding(16.dp),
+            onClick = onClick,
+        ) {
+            Icon(
+                imageVector = icon,
                 contentDescription = null,
             )
         }
