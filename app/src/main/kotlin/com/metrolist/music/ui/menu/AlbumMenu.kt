@@ -72,6 +72,7 @@ import com.metrolist.music.ui.component.AlbumListItem
 import com.metrolist.music.ui.component.ListDialog
 import com.metrolist.music.ui.component.ListItem
 import com.metrolist.music.ui.component.SongListItem
+import com.metrolist.music.ui.theme.AppIcons
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -176,10 +177,10 @@ fun AlbumMenu(
                 ListItem(
                     title = stringResource(R.string.already_in_playlist),
                     thumbnailContent = {
-                        Image(
-                            painter = painterResource(R.drawable.close),
+                        Icon(
+                            imageVector = AppIcons.Close,
                             contentDescription = null,
-                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
+                            tint = MaterialTheme.colorScheme.onBackground,
                             modifier = Modifier.size(ListThumbnailSize),
                         )
                     },
@@ -257,7 +258,7 @@ fun AlbumMenu(
                 },
             ) {
                 Icon(
-                    painter = painterResource(if (album.album.bookmarkedAt != null) R.drawable.favorite else R.drawable.favorite_border),
+                                            imageVector = if (album.album.bookmarkedAt != null) AppIcons.Favorite else AppIcons.FavoriteBorder,
                     tint = if (album.album.bookmarkedAt != null) MaterialTheme.colorScheme.error else LocalContentColor.current,
                     contentDescription = null,
                 )
@@ -280,7 +281,7 @@ fun AlbumMenu(
                 headlineContent = { Text(text = stringResource(R.string.play_next)) },
                 leadingContent = {
                     Icon(
-                        painter = painterResource(R.drawable.playlist_play),
+                        imageVector = AppIcons.PlaylistPlay,
                         contentDescription = null,
                     )
                 },
@@ -295,7 +296,7 @@ fun AlbumMenu(
                 headlineContent = { Text(text = stringResource(R.string.add_to_queue)) },
                 leadingContent = {
                     Icon(
-                        painter = painterResource(R.drawable.queue_music),
+                        imageVector = AppIcons.QueueMusic,
                         contentDescription = null,
                     )
                 },
@@ -310,7 +311,7 @@ fun AlbumMenu(
                 headlineContent = { Text(text = stringResource(R.string.add_to_playlist)) },
                 leadingContent = {
                     Icon(
-                        painter = painterResource(R.drawable.playlist_add),
+                        imageVector = AppIcons.PlaylistAdd,
                         contentDescription = null,
                     )
                 },
@@ -331,7 +332,7 @@ fun AlbumMenu(
                         },
                         leadingContent = {
                             Icon(
-                                painter = painterResource(R.drawable.offline),
+                                imageVector = AppIcons.Offline,
                                 contentDescription = null,
                             )
                         },
@@ -373,7 +374,7 @@ fun AlbumMenu(
                         headlineContent = { Text(text = stringResource(R.string.action_download)) },
                         leadingContent = {
                             Icon(
-                                painter = painterResource(R.drawable.download),
+                                imageVector = AppIcons.Download,
                                 contentDescription = null,
                             )
                         },
@@ -402,7 +403,7 @@ fun AlbumMenu(
                 headlineContent = { Text(text = stringResource(R.string.view_artist)) },
                 leadingContent = {
                     Icon(
-                        painter = painterResource(R.drawable.artist),
+                        imageVector = AppIcons.Artist,
                         contentDescription = null,
                     )
                 },
@@ -421,7 +422,7 @@ fun AlbumMenu(
                 headlineContent = { Text(text = stringResource(R.string.refetch)) },
                 leadingContent = {
                     Icon(
-                        painter = painterResource(R.drawable.sync),
+                        imageVector = AppIcons.Sync,
                         contentDescription = null,
                         modifier = Modifier.graphicsLayer(rotationZ = rotationAnimation),
                     )
@@ -443,7 +444,7 @@ fun AlbumMenu(
                 headlineContent = { Text(text = stringResource(R.string.share)) },
                 leadingContent = {
                     Icon(
-                        painter = painterResource(R.drawable.share),
+                        imageVector = AppIcons.Share,
                         contentDescription = null,
                     )
                 },

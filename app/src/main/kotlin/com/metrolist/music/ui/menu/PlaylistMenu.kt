@@ -53,6 +53,7 @@ import com.metrolist.music.playback.queues.YouTubeQueue
 import com.metrolist.music.ui.component.DefaultDialog
 import com.metrolist.music.ui.component.PlaylistListItem
 import com.metrolist.music.ui.component.TextFieldDialog
+import com.metrolist.music.ui.theme.AppIcons
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -120,7 +121,7 @@ fun PlaylistMenu(
 
     if (showEditDialog) {
         TextFieldDialog(
-            icon = { Icon(painter = painterResource(R.drawable.edit), contentDescription = null) },
+            icon = { Icon(imageVector = AppIcons.Edit, contentDescription = null) },
             title = { Text(text = stringResource(R.string.edit_playlist)) },
             onDismiss = { showEditDialog = false },
             initialTextFieldValue =
@@ -250,7 +251,7 @@ fun PlaylistMenu(
                     }
                 ) {
                     Icon(
-                        painter = painterResource(if (dbPlaylist?.playlist?.bookmarkedAt != null) R.drawable.favorite else R.drawable.favorite_border),
+                        imageVector = if (dbPlaylist?.playlist?.bookmarkedAt != null) AppIcons.Favorite else AppIcons.FavoriteBorder,
                         tint = if (dbPlaylist?.playlist?.bookmarkedAt != null) MaterialTheme.colorScheme.error else LocalContentColor.current,
                         contentDescription = null
                     )
@@ -275,7 +276,7 @@ fun PlaylistMenu(
                     headlineContent = { Text(text = stringResource(R.string.start_radio)) },
                     leadingContent = {
                         Icon(
-                            painter = painterResource(R.drawable.radio),
+                            imageVector = AppIcons.Radio,
                             contentDescription = null,
                         )
                     },
@@ -299,7 +300,7 @@ fun PlaylistMenu(
                 headlineContent = { Text(text = stringResource(R.string.play)) },
                 leadingContent = {
                     Icon(
-                        painter = painterResource(R.drawable.play),
+                        imageVector = AppIcons.Play,
                         contentDescription = null,
                     )
                 },
@@ -319,7 +320,7 @@ fun PlaylistMenu(
                 headlineContent = { Text(text = stringResource(R.string.play_next)) },
                 leadingContent = {
                     Icon(
-                        painter = painterResource(R.drawable.playlist_play),
+                        imageVector = AppIcons.PlaylistPlay,
                         contentDescription = null,
                     )
                 },
@@ -336,7 +337,7 @@ fun PlaylistMenu(
                 headlineContent = { Text(text = stringResource(R.string.add_to_queue)) },
                 leadingContent = {
                     Icon(
-                        painter = painterResource(R.drawable.queue_music),
+                        imageVector = AppIcons.QueueMusic,
                         contentDescription = null,
                     )
                 },
@@ -351,7 +352,7 @@ fun PlaylistMenu(
                 headlineContent = { Text(text = stringResource(R.string.shuffle)) },
                 leadingContent = {
                     Icon(
-                        painter = painterResource(R.drawable.shuffle),
+                        imageVector = AppIcons.Shuffle,
                         contentDescription = null,
                     )
                 },
@@ -372,7 +373,7 @@ fun PlaylistMenu(
                     headlineContent = { Text(text = stringResource(R.string.edit)) },
                     leadingContent = {
                         Icon(
-                            painter = painterResource(R.drawable.edit),
+                            imageVector = AppIcons.Edit,
                             contentDescription = null,
                         )
                     },
@@ -395,7 +396,7 @@ fun PlaylistMenu(
                             },
                             leadingContent = {
                                 Icon(
-                                    painter = painterResource(R.drawable.offline),
+                                    imageVector = AppIcons.Offline,
                                     contentDescription = null,
                                 )
                             },
@@ -423,7 +424,7 @@ fun PlaylistMenu(
                             headlineContent = { Text(text = stringResource(R.string.action_download)) },
                             leadingContent = {
                                 Icon(
-                                    painter = painterResource(R.drawable.download),
+                                    imageVector = AppIcons.Download,
                                     contentDescription = null,
                                 )
                             },
@@ -454,7 +455,7 @@ fun PlaylistMenu(
                     headlineContent = { Text(text = stringResource(R.string.delete)) },
                     leadingContent = {
                         Icon(
-                            painter = painterResource(R.drawable.delete),
+                            imageVector = AppIcons.Delete,
                             contentDescription = null,
                         )
                     },
@@ -470,7 +471,7 @@ fun PlaylistMenu(
                     headlineContent = { Text(text = stringResource(R.string.share)) },
                     leadingContent = {
                         Icon(
-                            painter = painterResource(R.drawable.share),
+                            imageVector = AppIcons.Share,
                             contentDescription = null,
                         )
                     },

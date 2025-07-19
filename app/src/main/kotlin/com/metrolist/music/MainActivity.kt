@@ -157,6 +157,7 @@ import com.metrolist.music.ui.screens.settings.DarkMode
 import com.metrolist.music.ui.screens.settings.NavigationTab
 import com.metrolist.music.ui.theme.ColorSaver
 import com.metrolist.music.ui.theme.DefaultThemeColor
+import com.metrolist.music.ui.theme.AppIcons
 import com.metrolist.music.ui.theme.MetrolistTheme
 import com.metrolist.music.ui.theme.extractThemeColor
 import com.metrolist.music.ui.utils.appBarScrollBehavior
@@ -626,13 +627,13 @@ class MainActivity : ComponentActivity() {
                                         actions = {
                                             IconButton(onClick = { navController.navigate("history") }) {
                                                 Icon(
-                                                    painter = painterResource(R.drawable.history),
+                                                    imageVector = AppIcons.History,
                                                     contentDescription = stringResource(R.string.history)
                                                 )
                                             }
                                             IconButton(onClick = { navController.navigate("stats") }) {
                                                 Icon(
-                                                    painter = painterResource(R.drawable.stats),
+                                                    imageVector = AppIcons.Stats,
                                                     contentDescription = stringResource(R.string.stats)
                                                 )
                                             }
@@ -652,7 +653,7 @@ class MainActivity : ComponentActivity() {
                                                         )
                                                     } else {
                                                         Icon(
-                                                            painter = painterResource(R.drawable.account),
+                                                            imageVector = AppIcons.Account,
                                                             contentDescription = stringResource(R.string.account),
                                                             modifier = Modifier.size(24.dp)
                                                         )
@@ -715,15 +716,13 @@ class MainActivity : ComponentActivity() {
                                                 },
                                             ) {
                                                 Icon(
-                                                    painterResource(
-                                                        if (active ||
-                                                            !navigationItems.fastAny { it.route == navBackStackEntry?.destination?.route }
-                                                        ) {
-                                                            R.drawable.arrow_back
-                                                        } else {
-                                                            R.drawable.search
-                                                        },
-                                                    ),
+                                                    imageVector = if (active ||
+                                                        !navigationItems.fastAny { it.route == navBackStackEntry?.destination?.route }
+                                                    ) {
+                                                        AppIcons.ArrowBack
+                                                    } else {
+                                                        AppIcons.Search
+                                                    },
                                                     contentDescription = null,
                                                 )
                                             }
@@ -742,7 +741,7 @@ class MainActivity : ComponentActivity() {
                                                             },
                                                         ) {
                                                             Icon(
-                                                                painter = painterResource(R.drawable.close),
+                                                                imageVector = AppIcons.Close,
                                                                 contentDescription = null,
                                                             )
                                                         }
@@ -754,12 +753,10 @@ class MainActivity : ComponentActivity() {
                                                         },
                                                     ) {
                                                         Icon(
-                                                            painter = painterResource(
-                                                                when (searchSource) {
-                                                                    SearchSource.LOCAL -> R.drawable.library_music
-                                                                    SearchSource.ONLINE -> R.drawable.language
-                                                                },
-                                                            ),
+                                                            imageVector = when (searchSource) {
+                                                                SearchSource.LOCAL -> AppIcons.LibraryMusic
+                                                                SearchSource.ONLINE -> AppIcons.Language
+                                                            },
                                                             contentDescription = null,
                                                         )
                                                     }

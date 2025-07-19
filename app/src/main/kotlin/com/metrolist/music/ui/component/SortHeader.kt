@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.metrolist.music.R
 import com.metrolist.music.constants.PlaylistSongSortType
+import com.metrolist.music.ui.theme.AppIcons
 
 @Composable
 inline fun <reified T : Enum<T>> SortHeader(
@@ -73,16 +74,11 @@ inline fun <reified T : Enum<T>> SortHeader(
                     },
                     trailingIcon = {
                         Icon(
-                            painter =
-                            painterResource(
-                                if (sortType ==
-                                    type
-                                ) {
-                                    R.drawable.radio_button_checked
-                                } else {
-                                    R.drawable.radio_button_unchecked
-                                },
-                            ),
+                            imageVector = if (sortType == type) {
+                                AppIcons.Check
+                            } else {
+                                AppIcons.Deselect
+                            },
                             contentDescription = null,
                         )
                     },
@@ -96,7 +92,7 @@ inline fun <reified T : Enum<T>> SortHeader(
 
         if (sortType != PlaylistSongSortType.CUSTOM && showDescending == true) {
             ResizableIconButton(
-                icon = if (sortDescending) R.drawable.arrow_downward else R.drawable.arrow_upward,
+                icon = if (sortDescending) AppIcons.ArrowDownward else AppIcons.ArrowUpward,
                 color = MaterialTheme.colorScheme.primary,
                 modifier =
                 Modifier

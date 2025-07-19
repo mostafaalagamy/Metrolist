@@ -28,6 +28,7 @@ import com.metrolist.music.R
 import com.metrolist.music.db.entities.PlaylistEntity
 import com.metrolist.music.constants.InnerTubeCookieKey
 import com.metrolist.music.extensions.isSyncEnabled
+import com.metrolist.music.ui.theme.AppIcons
 import com.metrolist.music.utils.rememberPreference
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -50,7 +51,7 @@ fun CreatePlaylistDialog(
     val isSignedIn = innerTubeCookie.isNotEmpty()
 
     TextFieldDialog(
-        icon = { Icon(painter = painterResource(R.drawable.add), contentDescription = null) },
+        icon = { Icon(imageVector = AppIcons.Add, contentDescription = null) },
         title = { Text(text = stringResource(R.string.create_playlist)) },
         initialTextFieldValue = TextFieldValue(initialTextFieldValue ?: ""),
         onDismiss = onDismiss,

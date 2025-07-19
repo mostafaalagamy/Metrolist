@@ -120,6 +120,7 @@ import com.metrolist.music.ui.component.LocalMenuState
 import com.metrolist.music.ui.component.MediaMetadataListItem
 import com.metrolist.music.ui.menu.PlayerMenu
 import com.metrolist.music.ui.menu.SelectionMediaMetadataMenu
+import com.metrolist.music.ui.theme.AppIcons
 import com.metrolist.music.ui.utils.ShowMediaInfo
 import com.metrolist.music.utils.makeTimeString
 import com.metrolist.music.utils.rememberPreference
@@ -256,7 +257,7 @@ fun Queue(
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
-                            painter = painterResource(id = R.drawable.queue_music),
+                            imageVector = AppIcons.QueueMusic,
                             contentDescription = null,
                             modifier = Modifier.size(iconSize),
                             tint = TextBackgroundColor
@@ -295,7 +296,7 @@ fun Queue(
                                 )
                             } else {
                                 Icon(
-                                    painter = painterResource(id = R.drawable.bedtime),
+                                    imageVector = AppIcons.Bedtime,
                                     contentDescription = null,
                                     modifier = Modifier.size(iconSize),
                                     tint = TextBackgroundColor
@@ -315,7 +316,7 @@ fun Queue(
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
-                            painter = painterResource(id = R.drawable.lyrics),
+                            imageVector = AppIcons.Lyrics,
                             contentDescription = null,
                             modifier = Modifier.size(iconSize),
                             tint = TextBackgroundColor.copy(alpha = if (showLyrics) 1f else 0.5f)
@@ -349,13 +350,11 @@ fun Queue(
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
-                            painter = painterResource(
-                                id = when (repeatMode) {
-                                    Player.REPEAT_MODE_OFF, Player.REPEAT_MODE_ALL -> R.drawable.repeat
-                                    Player.REPEAT_MODE_ONE -> R.drawable.repeat_one
-                                    else -> R.drawable.repeat
-                                }
-                            ),
+                            imageVector = when (repeatMode) {
+                                Player.REPEAT_MODE_OFF, Player.REPEAT_MODE_ALL -> AppIcons.Repeat
+                                Player.REPEAT_MODE_ONE -> AppIcons.RepeatOne
+                                else -> AppIcons.Repeat
+                            },
                             contentDescription = null,
                             modifier = Modifier
                                 .size(iconSize)
@@ -391,7 +390,7 @@ fun Queue(
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
-                            painter = painterResource(id = R.drawable.more_vert),
+                            imageVector = AppIcons.MoreVert,
                             contentDescription = null,
                             modifier = Modifier.size(iconSize),
                             tint = iconButtonColor
@@ -421,7 +420,7 @@ fun Queue(
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             Icon(
-                                painter = painterResource(id = R.drawable.queue_music),
+                                imageVector = AppIcons.QueueMusic,
                                 contentDescription = null,
                                 modifier = Modifier.size(20.dp),
                                 tint = TextBackgroundColor
@@ -454,7 +453,7 @@ fun Queue(
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             Icon(
-                                painter = painterResource(id = R.drawable.bedtime),
+                                imageVector = AppIcons.Bedtime,
                                 contentDescription = null,
                                 modifier = Modifier.size(20.dp),
                                 tint = TextBackgroundColor
@@ -497,7 +496,7 @@ fun Queue(
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             Icon(
-                                painter = painterResource(id = R.drawable.lyrics),
+                                imageVector = AppIcons.Lyrics,
                                 contentDescription = null,
                                 modifier = Modifier.size(20.dp),
                                 tint = TextBackgroundColor.copy(alpha = if (showLyrics) 1f else 0.5f)
@@ -756,7 +755,7 @@ fun Queue(
                                             },
                                         ) {
                                             Icon(
-                                                painter = painterResource(R.drawable.more_vert),
+                                                imageVector = AppIcons.MoreVert,
                                                 contentDescription = null,
                                             )
                                         }
@@ -765,10 +764,10 @@ fun Queue(
                                                 onClick = { },
                                                 modifier = Modifier.draggableHandle()
                                             ) {
-                                                Icon(
-                                                    painter = painterResource(R.drawable.drag_handle),
-                                                    contentDescription = null,
-                                                )
+                                                                                            Icon(
+                                                imageVector = AppIcons.DragHandle,
+                                                contentDescription = null,
+                                            )
                                             }
                                         }
                                     },
@@ -854,7 +853,7 @@ fun Queue(
                                         },
                                     ) {
                                         Icon(
-                                            painter = painterResource(R.drawable.playlist_play),
+                                            imageVector = AppIcons.PlaylistPlay,
                                             contentDescription = null,
                                         )
                                     }
@@ -867,7 +866,7 @@ fun Queue(
                                         },
                                     ) {
                                         Icon(
-                                            painter = painterResource(R.drawable.queue_music),
+                                            imageVector = AppIcons.QueueMusic,
                                             contentDescription = null,
                                         )
                                     }
@@ -945,7 +944,7 @@ fun Queue(
                             modifier = Modifier.padding(horizontal = 6.dp),
                         ) {
                             Icon(
-                                painter = painterResource(if (locked) R.drawable.lock else R.drawable.lock_open),
+                                imageVector = if (locked) AppIcons.Lock else AppIcons.LockOpen,
                                 contentDescription = null,
                             )
                         }
@@ -990,7 +989,7 @@ fun Queue(
                         },
                     ) {
                         Icon(
-                            painter = painterResource(R.drawable.close),
+                            imageVector = AppIcons.Close,
                             contentDescription = null,
                         )
                     }
@@ -1014,14 +1013,11 @@ fun Queue(
                         },
                     ) {
                         Icon(
-                            painter =
-                            painterResource(
-                                if (count == mutableQueueWindows.size) {
-                                    R.drawable.deselect
-                                } else {
-                                    R.drawable.select_all
-                                },
-                            ),
+                            imageVector = if (count == mutableQueueWindows.size) {
+                                AppIcons.Deselect
+                            } else {
+                                AppIcons.SelectAll
+                            },
                             contentDescription = null,
                         )
                     }
@@ -1042,7 +1038,7 @@ fun Queue(
                         },
                     ) {
                         Icon(
-                            painter = painterResource(R.drawable.more_vert),
+                            imageVector = AppIcons.MoreVert,
                             contentDescription = null,
                             tint = LocalContentColor.current,
                         )
@@ -1097,14 +1093,14 @@ fun Queue(
                 },
             ) {
                 Icon(
-                    painter = painterResource(R.drawable.shuffle),
+                    imageVector = AppIcons.Shuffle,
                     contentDescription = null,
                     modifier = Modifier.alpha(if (shuffleModeEnabled) 1f else 0.5f),
                 )
             }
 
             Icon(
-                painter = painterResource(R.drawable.expand_more),
+                imageVector = AppIcons.ExpandMore,
                 contentDescription = null,
                 modifier = Modifier.align(Alignment.Center),
             )
@@ -1114,14 +1110,11 @@ fun Queue(
                 onClick = playerConnection.player::toggleRepeatMode,
             ) {
                 Icon(
-                    painter =
-                    painterResource(
-                        when (repeatMode) {
-                            Player.REPEAT_MODE_OFF, Player.REPEAT_MODE_ALL -> R.drawable.repeat
-                            Player.REPEAT_MODE_ONE -> R.drawable.repeat_one
-                            else -> throw IllegalStateException()
-                        },
-                    ),
+                    imageVector = when (repeatMode) {
+                        Player.REPEAT_MODE_OFF, Player.REPEAT_MODE_ALL -> AppIcons.Repeat
+                        Player.REPEAT_MODE_ONE -> AppIcons.RepeatOne
+                        else -> throw IllegalStateException()
+                    },
                     contentDescription = null,
                     modifier = Modifier.alpha(if (repeatMode == Player.REPEAT_MODE_OFF) 0.5f else 1f),
                 )

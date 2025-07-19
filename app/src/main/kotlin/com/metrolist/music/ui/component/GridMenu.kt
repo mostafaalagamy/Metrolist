@@ -33,6 +33,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.media3.exoplayer.offline.Download
 import com.metrolist.music.R
+import com.metrolist.music.ui.theme.AppIcons
 import com.metrolist.music.utils.makeTimeString
 
 val GridMenuItemHeight = 108.dp
@@ -122,7 +123,12 @@ fun LazyGridScope.DownloadGridMenu(
     when (state) {
         Download.STATE_COMPLETED -> {
             GridMenuItem(
-                icon = R.drawable.offline,
+                icon = {
+                    Icon(
+                        imageVector = AppIcons.Offline,
+                        contentDescription = null
+                    )
+                },
                 title = R.string.remove_download,
                 onClick = onRemoveDownload
             )
@@ -143,7 +149,12 @@ fun LazyGridScope.DownloadGridMenu(
 
         else -> {
             GridMenuItem(
-                icon = R.drawable.download,
+                icon = {
+                    Icon(
+                        imageVector = AppIcons.Download,
+                        contentDescription = null
+                    )
+                },
                 title = R.string.action_download,
                 onClick = onDownload
             )
@@ -174,7 +185,7 @@ fun LazyGridScope.SleepTimerGridMenu(
                 contentAlignment = Alignment.Center,
                 content = {
                     Icon(
-                        painterResource(R.drawable.bedtime),
+                        AppIcons.Bedtime,
                         contentDescription = null,
                         modifier = Modifier.alpha(if (enabled) 1f else 0.5f)
                     )

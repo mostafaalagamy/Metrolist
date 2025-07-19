@@ -27,6 +27,7 @@ import com.metrolist.music.R
 import com.metrolist.music.ui.component.IconButton
 import com.metrolist.music.ui.component.PreferenceEntry
 import com.metrolist.music.ui.component.ReleaseNotesCard
+import com.metrolist.music.ui.theme.AppIcons
 import com.metrolist.music.ui.utils.backToMain
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -55,38 +56,38 @@ fun SettingsScreen(
 
         PreferenceEntry(
             title = { Text(stringResource(R.string.appearance)) },
-            icon = { Icon(painterResource(R.drawable.palette), null) },
+            icon = { Icon(AppIcons.Palette, null) },
             onClick = { navController.navigate("settings/appearance") }
         )
         PreferenceEntry(
             title = { Text(stringResource(R.string.content)) },
-            icon = { Icon(painterResource(R.drawable.language), null) },
+            icon = { Icon(AppIcons.Language, null) },
             onClick = { navController.navigate("settings/content") }
         )
         PreferenceEntry(
             title = { Text(stringResource(R.string.privacy)) },
-            icon = { Icon(painterResource(R.drawable.security), null) },
+            icon = { Icon(AppIcons.Security, null) },
             onClick = { navController.navigate("settings/privacy") }
         )
         PreferenceEntry(
             title = { Text(stringResource(R.string.player_and_audio)) },
-            icon = { Icon(painterResource(R.drawable.play), null) },
+            icon = { Icon(AppIcons.Play, null) },
             onClick = { navController.navigate("settings/player") }
         )
         PreferenceEntry(
             title = { Text(stringResource(R.string.storage)) },
-            icon = { Icon(painterResource(R.drawable.storage), null) },
+            icon = { Icon(AppIcons.Storage, null) },
             onClick = { navController.navigate("settings/storage") }
         )
         PreferenceEntry(
             title = { Text(stringResource(R.string.backup_restore)) },
-            icon = { Icon(painterResource(R.drawable.restore), null) },
+            icon = { Icon(AppIcons.Restore, null) },
             onClick = { navController.navigate("settings/backup_restore") }
         )
         if (isAndroid12OrLater) {
             PreferenceEntry(
                 title = { Text(stringResource(R.string.default_links)) },
-                icon = { Icon(painterResource(R.drawable.link), null) },
+                icon = { Icon(AppIcons.Link, null) },
                 onClick = {
                     try {
                         val intent = Intent(
@@ -127,7 +128,7 @@ fun SettingsScreen(
         }
         PreferenceEntry(
             title = { Text(stringResource(R.string.about)) },
-            icon = { Icon(painterResource(R.drawable.info), null) },
+            icon = { Icon(AppIcons.Info, null) },
             onClick = { navController.navigate("settings/about") }
         )
         if (latestVersionName != BuildConfig.VERSION_NAME) {
@@ -142,7 +143,7 @@ fun SettingsScreen(
                     BadgedBox(
                         badge = { Badge() }
                     ) {
-                        Icon(painterResource(R.drawable.update), null)
+                        Icon(AppIcons.Update, null)
                     }
                 },
                 onClick = {
@@ -161,7 +162,7 @@ fun SettingsScreen(
                 onLongClick = navController::backToMain
             ) {
                 Icon(
-                    painterResource(R.drawable.arrow_back),
+                    AppIcons.ArrowBack,
                     contentDescription = null
                 )
             }

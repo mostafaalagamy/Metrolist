@@ -32,6 +32,7 @@ import com.metrolist.music.ui.component.DefaultDialog
 import com.metrolist.music.ui.component.ListDialog
 import com.metrolist.music.ui.component.ListItem
 import com.metrolist.music.ui.component.PlaylistListItem
+import com.metrolist.music.ui.theme.AppIcons
 import com.metrolist.music.utils.rememberPreference
 import com.metrolist.innertube.YouTube
 import kotlinx.coroutines.Dispatchers
@@ -85,10 +86,10 @@ fun AddToPlaylistDialog(
                 ListItem(
                     title = stringResource(R.string.create_playlist),
                     thumbnailContent = {
-                        Image(
-                            painter = painterResource(R.drawable.add),
+                        Icon(
+                            imageVector = AppIcons.Add,
                             contentDescription = null,
-                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
+                            tint = MaterialTheme.colorScheme.onBackground,
                             modifier = Modifier.size(ListThumbnailSize)
                         )
                     },
