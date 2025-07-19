@@ -11,6 +11,7 @@ class DiscordRPC(
     token: String,
 ) : KizzyRPC(token) {
     suspend fun updateSong(song: Song) = runCatching {
+        val currentTime = System.currentTimeMillis()
         setActivity(
             name = context.getString(R.string.app_name).removeSuffix(" Debug"),
             details = song.song.title,
@@ -24,7 +25,9 @@ class DiscordRPC(
                 "Visit Metrolist" to "https://github.com/mostafaalagamy/Metrolist"
             ),
             type = Type.LISTENING,
-            since = System.currentTimeMillis(),
+            since = currentTime,
+            startTime = currentTime,
+            endTime = currentTime + song.song.duration * 1000L,
             applicationId = APPLICATION_ID
         )
     }
