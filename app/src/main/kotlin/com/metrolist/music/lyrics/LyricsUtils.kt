@@ -6,6 +6,8 @@ import com.metrolist.music.ui.component.ANIMATE_SCROLL_DURATION
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
+
+
 @Suppress("RegExpRedundantEscape")
 object LyricsUtils {
     val LINE_REGEX = "((\\[\\d\\d:\\d\\d\\.\\d{2,3}\\] ?)+)(.+)".toRegex()

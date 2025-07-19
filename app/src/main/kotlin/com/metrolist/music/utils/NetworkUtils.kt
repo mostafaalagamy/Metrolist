@@ -5,6 +5,8 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import androidx.core.content.getSystemService
 
+
+
 fun isInternetAvailable(context: Context): Boolean {
     val connectivityManager = context.getSystemService<ConnectivityManager>() ?: return false
     val activeNetwork = connectivityManager.activeNetwork ?: return false

@@ -22,6 +22,8 @@ import com.materialkolor.dynamiccolor.ColorSpec
 import com.materialkolor.rememberDynamicColorScheme
 import com.materialkolor.score.Score
 
+
+
 val DefaultThemeColor = Color(0xFFED5564)
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)

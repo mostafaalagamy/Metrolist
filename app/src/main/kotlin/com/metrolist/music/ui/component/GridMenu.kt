@@ -18,20 +18,10 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Icon
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.LocalContentColor
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.ShapeDefaults
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,6 +36,8 @@ import androidx.compose.ui.unit.dp
 import androidx.media3.exoplayer.offline.Download
 import com.metrolist.music.R
 import com.metrolist.music.utils.makeTimeString
+
+
 
 val GridMenuItemHeight = 108.dp
 
@@ -134,7 +126,12 @@ fun LazyGridScope.DownloadGridMenu(
     when (state) {
         Download.STATE_COMPLETED -> {
             GridMenuItem(
-                icon = Icons.Filled.CloudOff,
+                icon = {
+                    Icon(
+                        imageVector = Icons.Filled.CloudOff,
+                        contentDescription = null
+                    )
+                },
                 title = R.string.remove_download,
                 onClick = onRemoveDownload
             )
@@ -155,7 +152,12 @@ fun LazyGridScope.DownloadGridMenu(
 
         else -> {
             GridMenuItem(
-                icon = Icons.Filled.Download,
+                icon = {
+                    Icon(
+                        imageVector = Icons.Filled.Download,
+                        contentDescription = null
+                    )
+                },
                 title = R.string.action_download,
                 onClick = onDownload
             )

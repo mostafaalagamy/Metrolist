@@ -1,5 +1,5 @@
 package com.metrolist.music.ui.screens
- 
+
  import androidx.compose.foundation.ExperimentalFoundationApi
  import androidx.compose.foundation.combinedClickable
  import androidx.compose.foundation.layout.asPaddingValues
@@ -10,17 +10,9 @@ package com.metrolist.music.ui.screens
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
  import androidx.compose.material3.Icon
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
  import androidx.compose.material3.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
  import androidx.compose.material3.TopAppBar
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
  import androidx.compose.material3.TopAppBarScrollBehavior
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
  import androidx.compose.runtime.Composable
  import androidx.compose.runtime.collectAsState
  import androidx.compose.runtime.getValue
@@ -48,6 +40,8 @@ import androidx.compose.material.icons.filled.*
  import com.metrolist.innertube.models.AlbumItem
  import com.metrolist.innertube.models.ArtistItem
  import com.metrolist.innertube.models.PlaylistItem
+
+ 
  
  @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
  @Composable

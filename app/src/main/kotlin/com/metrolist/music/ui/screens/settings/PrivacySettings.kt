@@ -41,6 +41,8 @@ import com.metrolist.music.ui.component.SwitchPreference
 import com.metrolist.music.ui.utils.backToMain
 import com.metrolist.music.utils.rememberPreference
 
+
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PrivacySettings(

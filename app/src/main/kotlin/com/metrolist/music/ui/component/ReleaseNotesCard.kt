@@ -24,6 +24,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
 
+
+
 @Composable
 fun ReleaseNotesCard() {
     var releaseNotes by remember { mutableStateOf<List<String>>(emptyList()) }

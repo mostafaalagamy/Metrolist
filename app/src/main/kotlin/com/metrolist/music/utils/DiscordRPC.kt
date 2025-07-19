@@ -6,6 +6,8 @@ import com.metrolist.music.db.entities.Song
 import com.my.kizzy.rpc.KizzyRPC
 import com.my.kizzy.rpc.RpcImage
 
+
+
 class DiscordRPC(
     val context: Context,
     token: String,

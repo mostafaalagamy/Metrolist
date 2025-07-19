@@ -10,6 +10,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 
+
+
 @Composable
 fun LazyListState.isScrollingUp(): Boolean {
     var previousIndex by remember(this) { mutableStateOf(firstVisibleItemIndex) }

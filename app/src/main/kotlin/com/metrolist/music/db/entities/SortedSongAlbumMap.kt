@@ -3,6 +3,8 @@ package com.metrolist.music.db.entities
 import androidx.room.ColumnInfo
 import androidx.room.DatabaseView
 
+
+
 @DatabaseView(
     viewName = "sorted_song_album_map",
     value = "SELECT * FROM song_album_map ORDER BY `index`",

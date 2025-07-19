@@ -2,6 +2,8 @@ package com.metrolist.music.lyrics
 
 import kotlinx.coroutines.flow.MutableStateFlow
 
+
+
 data class LyricsEntry(
     val time: Long,
     val text: String,

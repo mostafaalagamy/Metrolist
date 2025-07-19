@@ -7,6 +7,8 @@ import com.metrolist.music.db.entities.SongEntity
 import com.metrolist.music.ui.utils.resize
 import java.io.Serializable
 
+
+
 @Immutable
 data class MediaMetadata(
     val id: String,

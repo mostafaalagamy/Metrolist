@@ -4,6 +4,8 @@ import androidx.sqlite.db.SimpleSQLiteQuery
 import java.net.InetSocketAddress
 import java.net.InetSocketAddress.createUnresolved
 
+
+
 inline fun <reified T : Enum<T>> String?.toEnum(defaultValue: T): T =
     if (this == null) {
         defaultValue

@@ -8,6 +8,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.Dp
 
+
+
 fun Modifier.fadingEdge(
     left: Dp? = null,
     top: Dp? = null,

@@ -15,6 +15,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.guava.future
 import java.util.concurrent.ExecutionException
 
+
+
 class CoilBitmapLoader(
     private val context: Context,
     private val scope: CoroutineScope,

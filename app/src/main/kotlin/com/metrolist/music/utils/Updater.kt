@@ -5,6 +5,8 @@ import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsText
 import org.json.JSONObject
 
+
+
 object Updater {
     private val client = HttpClient()
     var lastCheckTime = -1L

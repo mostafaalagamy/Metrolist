@@ -3,6 +3,8 @@ package com.metrolist.music.utils
 import java.math.BigInteger
 import java.security.MessageDigest
 
+
+
 fun makeTimeString(duration: Long?): String {
     if (duration == null || duration < 0) return ""
     var sec = duration / 1000

@@ -10,6 +10,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+
+
 @HiltViewModel
 class ChartsViewModel @Inject constructor() : ViewModel() {
     private val _chartsPage = MutableStateFlow<ChartsPage?>(null)

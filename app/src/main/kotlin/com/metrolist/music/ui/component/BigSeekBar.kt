@@ -18,6 +18,8 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.unit.dp
 
+
+
 @Composable
 fun BigSeekBar(
     progressProvider: () -> Float,

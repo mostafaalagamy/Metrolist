@@ -72,6 +72,8 @@ import com.metrolist.music.ui.component.TextFieldDialog
 import com.metrolist.music.utils.rememberPreference
 import com.metrolist.music.viewmodels.HomeViewModel
 
+
+
 @Composable
 fun AccountSettings(
     navController: NavController,
@@ -267,7 +269,7 @@ fun AccountSettings(
 
             SwitchPreference(
                 title = { Text(stringResource(R.string.yt_sync)) },
-                icon = { Icon(Icons.Filled.Cache, null) },
+                icon = { Icon(Icons.Filled.Storage, null) },
                 checked = ytmSync,
                 onCheckedChange = onYtmSyncChange,
                 modifier = Modifier

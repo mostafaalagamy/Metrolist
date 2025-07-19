@@ -33,6 +33,8 @@ import timber.log.Timber
 import java.net.Proxy
 import java.util.*
 
+
+
 @HiltAndroidApp
 class App : Application(), ImageLoaderFactory {
     // Create a proper application scope that will be cancelled when the app is destroyed

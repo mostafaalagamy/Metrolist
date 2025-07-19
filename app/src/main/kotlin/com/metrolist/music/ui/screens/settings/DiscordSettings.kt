@@ -72,6 +72,8 @@ import com.my.kizzy.rpc.KizzyRPC
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DiscordSettings(

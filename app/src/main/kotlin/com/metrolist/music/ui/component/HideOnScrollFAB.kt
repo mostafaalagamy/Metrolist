@@ -22,6 +22,8 @@ import androidx.compose.ui.unit.dp
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.ui.utils.isScrollingUp
 
+
+
 @Composable
 fun BoxScope.HideOnScrollFAB(
     visible: Boolean = true,

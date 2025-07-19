@@ -29,29 +29,13 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Icon
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.IconButton
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.TextButton
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.ListItem
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -97,6 +81,8 @@ import kotlinx.coroutines.launch
 import kotlin.math.log2
 import kotlin.math.pow
 import kotlin.math.round
+
+
 
 @Composable
 fun PlayerMenu(
@@ -576,7 +562,55 @@ fun TempoPitchDialog(onDismiss: () -> Unit) {
 
 @Composable
 fun <T> ValueAdjuster(
+    icon: ImageVector,
+    currentValue: T,
+    values: List<T>,
+    onValueUpdate: (T) -> Unit,
+    valueText: (T) -> String,
+    modifier: Modifier = Modifier,
+) {
+    ValueAdjuster(
+        iconComposable = {
+            Icon(
+                imageVector = icon,
+                contentDescription = null
+            )
+        },
+        currentValue = currentValue,
+        values = values,
+        onValueUpdate = onValueUpdate,
+        valueText = valueText,
+        modifier = modifier
+    )
+}
+
+@Composable
+fun <T> ValueAdjuster(
     @DrawableRes icon: Int,
+    currentValue: T,
+    values: List<T>,
+    onValueUpdate: (T) -> Unit,
+    valueText: (T) -> String,
+    modifier: Modifier = Modifier,
+) {
+    ValueAdjuster(
+        iconComposable = {
+            Icon(
+                painter = painterResource(icon),
+                contentDescription = null
+            )
+        },
+        currentValue = currentValue,
+        values = values,
+        onValueUpdate = onValueUpdate,
+        valueText = valueText,
+        modifier = modifier
+    )
+}
+
+@Composable
+private fun <T> ValueAdjuster(
+    iconComposable: @Composable () -> Unit,
     currentValue: T,
     values: List<T>,
     onValueUpdate: (T) -> Unit,
@@ -588,11 +622,9 @@ fun <T> ValueAdjuster(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier,
     ) {
-        Icon(
-            painter = painterResource(icon),
-            contentDescription = null,
-            modifier = Modifier.size(28.dp),
-        )
+        Box(modifier = Modifier.size(28.dp)) {
+            iconComposable()
+        }
 
         IconButton(
             enabled = currentValue != values.first(),

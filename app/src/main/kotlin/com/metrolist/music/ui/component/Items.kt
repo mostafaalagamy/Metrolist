@@ -38,29 +38,13 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.LocalContentColor
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Icon
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.rememberSwipeToDismissBoxState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.SwipeToDismissBox
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.SwipeToDismissBoxValue
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -135,6 +119,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.logging.Logger
 import kotlin.math.roundToInt
+
+
 
 const val ActiveBoxAlpha = 0.6f
 
@@ -642,14 +628,14 @@ fun PlaylistListItem(
             thumbnails = playlist.thumbnails,
             size = ListThumbnailSize,
             placeHolder = {
-                val painter = when (playlist.playlist.name) {
+                val iconVector = when (playlist.playlist.name) {
                     stringResource(R.string.liked) -> Icons.Filled.FavoriteBorder
                     stringResource(R.string.offline) -> Icons.Filled.CloudOff
-                    stringResource(R.string.cached_playlist) -> Icons.Filled.Cache
+                    stringResource(R.string.cached_playlist) -> Icons.Filled.Storage
                     else -> if (autoPlaylist) Icons.Filled.TrendingUp else Icons.Filled.QueueMusic
                 }
                 Icon(
-                    painter = painterResource(painter),
+                    imageVector = iconVector,
                     contentDescription = null,
                     tint = LocalContentColor.current.copy(alpha = 0.8f),
                     modifier = Modifier.size(ListThumbnailSize / 2)
@@ -713,10 +699,10 @@ fun PlaylistGridItem(
             thumbnails = playlist.thumbnails,
             size = width,
             placeHolder = {
-                val painter = when (playlist.playlist.name) {
+                val iconVector = when (playlist.playlist.name) {
                     stringResource(R.string.liked) -> Icons.Filled.FavoriteBorder
                     stringResource(R.string.offline) -> Icons.Filled.CloudOff
-                    stringResource(R.string.cached_playlist) -> Icons.Filled.Cache
+                    stringResource(R.string.cached_playlist) -> Icons.Filled.Storage
                     else -> if (autoPlaylist) Icons.Filled.TrendingUp else Icons.Filled.QueueMusic
                 }
                 Box(
@@ -724,7 +710,7 @@ fun PlaylistGridItem(
                     modifier = Modifier.fillMaxSize()
                 ) {
                     Icon(
-                        painter = painterResource(painter),
+                        imageVector = iconVector,
                         contentDescription = null,
                         tint = LocalContentColor.current.copy(alpha = 0.8f),
                         modifier = Modifier.size(width / 2)

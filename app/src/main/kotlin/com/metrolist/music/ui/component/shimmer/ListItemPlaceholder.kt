@@ -19,6 +19,8 @@ import com.metrolist.music.constants.ListItemHeight
 import com.metrolist.music.constants.ListThumbnailSize
 import com.metrolist.music.constants.ThumbnailCornerRadius
 
+
+
 @Composable
 fun ListItemPlaceHolder(
     modifier: Modifier = Modifier,

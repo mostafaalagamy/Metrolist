@@ -69,6 +69,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.math.abs
 
+
+
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun Thumbnail(

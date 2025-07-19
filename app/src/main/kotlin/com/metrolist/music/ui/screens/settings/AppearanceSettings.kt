@@ -86,6 +86,8 @@ import com.metrolist.music.utils.rememberPreference
 import me.saket.squiggles.SquigglySlider
 import kotlin.math.roundToInt
 
+
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppearanceSettings(
@@ -616,7 +618,7 @@ fun AppearanceSettings(
 
         SwitchPreference(
             title = { Text(stringResource(R.string.show_cached_playlist)) },
-            icon = { Icon(Icons.Filled.Cache, null) },
+            icon = { Icon(Icons.Filled.Storage, null) },
             checked = showCachedPlaylist,
             onCheckedChange = onShowCachedPlaylistChange
         )

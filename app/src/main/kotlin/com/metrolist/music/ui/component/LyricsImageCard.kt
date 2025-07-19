@@ -26,7 +26,11 @@ import androidx.compose.ui.unit.*
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.metrolist.music.R
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import com.metrolist.music.models.MediaMetadata
+
+
 
 @Composable
 fun rememberAdjustedFontSize(

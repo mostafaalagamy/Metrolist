@@ -18,6 +18,8 @@ import androidx.compose.ui.graphics.graphicsLayer
 import com.valentinilk.shimmer.defaultShimmerTheme
 import com.valentinilk.shimmer.shimmer
 
+
+
 @Composable
 fun ShimmerHost(
     modifier: Modifier = Modifier,

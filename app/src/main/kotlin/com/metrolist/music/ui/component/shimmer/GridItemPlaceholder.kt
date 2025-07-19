@@ -18,6 +18,8 @@ import androidx.compose.ui.unit.dp
 import com.metrolist.music.constants.GridThumbnailHeight
 import com.metrolist.music.constants.ThumbnailCornerRadius
 
+
+
 @Composable
 fun GridItemPlaceHolder(
     modifier: Modifier = Modifier,

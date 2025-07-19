@@ -7,6 +7,8 @@ import androidx.compose.foundation.lazy.grid.LazyGridItemInfo
 import androidx.compose.foundation.lazy.grid.LazyGridLayoutInfo
 import androidx.compose.foundation.lazy.grid.LazyGridState
 
+
+
 @ExperimentalFoundationApi
 fun SnapLayoutInfoProvider(
     lazyGridState: LazyGridState,

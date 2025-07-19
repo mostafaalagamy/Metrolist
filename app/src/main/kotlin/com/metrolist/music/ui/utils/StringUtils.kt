@@ -3,6 +3,8 @@ package com.metrolist.music.ui.utils
 import java.text.DecimalFormat
 import kotlin.math.absoluteValue
 
+
+
 fun formatFileSize(sizeBytes: Long): String {
     val prefix = if (sizeBytes < 0) "-" else ""
     var result: Long = sizeBytes.absoluteValue

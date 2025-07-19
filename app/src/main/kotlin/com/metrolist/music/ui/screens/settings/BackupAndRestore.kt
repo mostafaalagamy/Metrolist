@@ -43,6 +43,14 @@ import com.metrolist.music.viewmodels.BackupRestoreViewModel
 import kotlinx.coroutines.delay
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+            importedSongs.clear()
+            importedSongs.addAll(result)
+        importedSongs.clear()
+        importedSongs.addAll(result)
+                importM3uLauncherOnline.launch(arrayOf("audio/*"))
+                importPlaylistFromCsv.launch(arrayOf("text/csv"))
+
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -81,8 +89,6 @@ fun BackupAndRestore(
         rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
             if (uri == null) return@rememberLauncherForActivityResult
             val result = viewModel.importPlaylistFromCsv(context, uri)
-            importedSongs.clear()
-            importedSongs.addAll(result)
 
             if (importedSongs.isNotEmpty()) {
                 showChoosePlaylistDialogOnline = true
@@ -91,8 +97,6 @@ fun BackupAndRestore(
     val importM3uLauncherOnline = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         if (uri == null) return@rememberLauncherForActivityResult
         val result = viewModel.loadM3UOnline(context, uri)
-        importedSongs.clear()
-        importedSongs.addAll(result)
 
 
         if (importedSongs.isNotEmpty()) {
@@ -136,14 +140,12 @@ fun BackupAndRestore(
             title = {Text(stringResource(R.string.import_online))},
             icon = { Icon(Icons.Filled.PlaylistAdd, null) },
             onClick = {
-                importM3uLauncherOnline.launch(arrayOf("audio/*"))
             }
         )
         PreferenceEntry(
             title = { Text(stringResource(R.string.import_csv)) },
             icon = { Icon(Icons.Filled.PlaylistAdd, null) },
             onClick = {
-                importPlaylistFromCsv.launch(arrayOf("text/csv"))
             }
         )
     }
