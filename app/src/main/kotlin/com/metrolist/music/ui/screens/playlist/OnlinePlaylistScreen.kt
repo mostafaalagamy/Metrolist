@@ -323,9 +323,7 @@ fun OnlinePlaylistScreen(
                                                     }
                                                 ) {
                                                     Icon(
-                                                        painter = painterResource(
-                                                            if (dbPlaylist?.playlist?.bookmarkedAt != null) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder
-                                                        ),
+                                                        imageVector = if (dbPlaylist?.playlist?.bookmarkedAt != null) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
                                                         contentDescription = null,
                                                         tint = if (dbPlaylist?.playlist?.bookmarkedAt != null) MaterialTheme.colorScheme.error else LocalContentColor.current
                                                     )
@@ -581,9 +579,7 @@ fun OnlinePlaylistScreen(
                     }
                 ) {
                     Icon(
-                        painter = painterResource(
-                            if (selection) Icons.Filled.Close else Icons.Filled.ArrowBack
-                        ),
+                        imageVector = if (selection) Icons.Filled.Close else Icons.Filled.ArrowBack,
                         contentDescription = null
                     )
                 }
@@ -601,9 +597,7 @@ fun OnlinePlaylistScreen(
                         },
                     ) {
                         Icon(
-                            painter = painterResource(
-                                if (count == wrappedSongs.size) Icons.Filled.CheckBoxOutlineBlank else Icons.Filled.CheckBox
-                            ),
+                            imageVector = if (count == wrappedSongs.size) Icons.Filled.CheckBoxOutlineBlank else Icons.Filled.CheckBox,
                             contentDescription = null
                         )
                     }

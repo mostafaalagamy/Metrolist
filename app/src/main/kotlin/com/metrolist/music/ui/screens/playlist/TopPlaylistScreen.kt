@@ -583,9 +583,7 @@ fun TopPlaylistScreen(
                     }
                 ) {
                     Icon(
-                        painter = painterResource(
-                            if (selection) Icons.Filled.Close else Icons.Filled.ArrowBack
-                        ),
+                        imageVector = if (selection) Icons.Filled.Close else Icons.Filled.ArrowBack,
                         contentDescription = null
                     )
                 }
@@ -603,9 +601,7 @@ fun TopPlaylistScreen(
                         },
                     ) {
                         Icon(
-                            painter = painterResource(
-                                if (count == wrappedSongs?.size) Icons.Filled.CheckBoxOutlineBlank else Icons.Filled.CheckBox
-                            ),
+                            imageVector = if (count == wrappedSongs?.size) Icons.Filled.CheckBoxOutlineBlank else Icons.Filled.CheckBox,
                             contentDescription = null
                         )
                     }

@@ -1113,14 +1113,11 @@ fun Queue(
                 onClick = playerConnection.player::toggleRepeatMode,
             ) {
                 Icon(
-                    painter =
-                    painterResource(
-                        when (repeatMode) {
+                    imageVector = when (repeatMode) {
                             Player.REPEAT_MODE_OFF, Player.REPEAT_MODE_ALL -> Icons.Filled.Repeat
                             Player.REPEAT_MODE_ONE -> Icons.Filled.RepeatOne
                             else -> throw IllegalStateException()
                         },
-                    ),
                     contentDescription = null,
                     modifier = Modifier.alpha(if (repeatMode == Player.REPEAT_MODE_OFF) 0.5f else 1f),
                 )

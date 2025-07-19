@@ -189,13 +189,10 @@ fun LibraryAlbumsScreen(
                 modifier = Modifier.padding(start = 6.dp, end = 6.dp),
             ) {
                 Icon(
-                    painter =
-                    painterResource(
-                        when (viewType) {
+                    imageVector = when (viewType) {
                             LibraryViewType.LIST -> Icons.Filled.List
                             LibraryViewType.GRID -> Icons.Filled.GridView
                         },
-                    ),
                     contentDescription = null,
                 )
             }

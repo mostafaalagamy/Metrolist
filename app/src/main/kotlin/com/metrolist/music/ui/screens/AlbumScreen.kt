@@ -233,16 +233,11 @@ fun AlbumScreen(
                                     },
                                 ) {
                                     Icon(
-                                        painter =
-                                        painterResource(
-                                            if (albumWithSongs.album.bookmarkedAt !=
-                                                null
-                                            ) {
+                                        imageVector = if (albumWithSongs.album.bookmarkedAt != null) {
                                                 Icons.Filled.Favorite
                                             } else {
                                                 Icons.Filled.FavoriteBorder
                                             },
-                                        ),
                                         contentDescription = null,
                                         tint =
                                         if (albumWithSongs.album.bookmarkedAt !=
@@ -570,9 +565,7 @@ fun AlbumScreen(
                 }
             ) {
                 Icon(
-                    painter = painterResource(
-                        if (selection) Icons.Filled.Close else Icons.Filled.ArrowBack
-                    ),
+                    imageVector = if (selection) Icons.Filled.Close else Icons.Filled.ArrowBack,
                     contentDescription = null
                 )
             }
@@ -590,9 +583,7 @@ fun AlbumScreen(
                     },
                 ) {
                     Icon(
-                        painter = painterResource(
-                            if (count == wrappedSongs?.size) Icons.Filled.CheckBoxOutlineBlank else Icons.Filled.CheckBox
-                        ),
+                        imageVector = if (count == wrappedSongs?.size) Icons.Filled.CheckBoxOutlineBlank else Icons.Filled.CheckBox,
                         contentDescription = null
                     )
                 }
