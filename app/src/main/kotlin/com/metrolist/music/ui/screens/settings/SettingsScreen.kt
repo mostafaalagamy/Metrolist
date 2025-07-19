@@ -67,7 +67,7 @@ fun SettingsScreen(
         )
         PreferenceEntry(
             title = { Text(stringResource(R.string.privacy)) },
-            icon = { Icon(Icons.Filled.Security, null) },
+            icon = { Icon(Icons.Filled.Lock, null) },
             onClick = { navController.navigate("settings/privacy") }
         )
         PreferenceEntry(
@@ -77,12 +77,12 @@ fun SettingsScreen(
         )
         PreferenceEntry(
             title = { Text(stringResource(R.string.storage)) },
-            icon = { Icon(Icons.Filled.Storage, null) },
+            icon = { Icon(Icons.Filled.Folder, null) },
             onClick = { navController.navigate("settings/storage") }
         )
         PreferenceEntry(
             title = { Text(stringResource(R.string.backup_restore)) },
-            icon = { Icon(Icons.Filled.Restore, null) },
+            icon = { Icon(Icons.Filled.Backup, null) },
             onClick = { navController.navigate("settings/backup_restore") }
         )
         if (isAndroid12OrLater) {
@@ -144,7 +144,7 @@ fun SettingsScreen(
                     BadgedBox(
                         badge = { Badge() }
                     ) {
-                        Icon(Icons.Filled.Update, null)
+                        Icon(Icons.Filled.GetApp, null)
                     }
                 },
                 onClick = {
