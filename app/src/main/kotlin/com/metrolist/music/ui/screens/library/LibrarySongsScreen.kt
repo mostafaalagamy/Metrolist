@@ -204,7 +204,7 @@ fun LibrarySongsScreen(
                             },
                         ) {
                             Icon(
-                                painter = if (count == wrappedSongs.size) Icons.Filled.Deselect else Icons.Filled.SelectAll,
+                                imageVector = if (count == wrappedSongs.size) Icons.Filled.CheckBoxOutlineBlank else Icons.Filled.CheckBox,
                                 contentDescription = null,
                             )
                         }

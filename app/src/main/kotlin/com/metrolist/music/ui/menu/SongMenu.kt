@@ -353,7 +353,7 @@ fun SongMenu(
                 },
             ) {
                 Icon(
-                    painter = if (song.song.liked) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                    imageVector = if (song.song.liked) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
                     tint = if (song.song.liked) MaterialTheme.colorScheme.error else LocalContentColor.current,
                     contentDescription = null,
                 )

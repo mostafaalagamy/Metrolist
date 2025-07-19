@@ -645,7 +645,7 @@ fun PlaylistListItem(
                 val painter = when (playlist.playlist.name) {
                     stringResource(R.string.liked) -> Icons.Filled.FavoriteBorder
                     stringResource(R.string.offline) -> Icons.Filled.CloudOff
-                    stringResource(R.string.cached_playlist) -> Icons.Filled.Cached
+                    stringResource(R.string.cached_playlist) -> Icons.Filled.Cache
                     else -> if (autoPlaylist) Icons.Filled.TrendingUp else Icons.Filled.QueueMusic
                 }
                 Icon(
@@ -716,7 +716,7 @@ fun PlaylistGridItem(
                 val painter = when (playlist.playlist.name) {
                     stringResource(R.string.liked) -> Icons.Filled.FavoriteBorder
                     stringResource(R.string.offline) -> Icons.Filled.CloudOff
-                    stringResource(R.string.cached_playlist) -> Icons.Filled.Cached
+                    stringResource(R.string.cached_playlist) -> Icons.Filled.Cache
                     else -> if (autoPlaylist) Icons.Filled.TrendingUp else Icons.Filled.QueueMusic
                 }
                 Box(

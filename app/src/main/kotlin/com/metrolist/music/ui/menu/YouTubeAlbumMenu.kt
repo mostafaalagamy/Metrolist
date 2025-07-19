@@ -255,7 +255,7 @@ fun YouTubeAlbumMenu(
                 },
             ) {
                 Icon(
-                    painter = if (album?.album?.bookmarkedAt != null) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                    imageVector = if (album?.album?.bookmarkedAt != null) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
                     tint = if (album?.album?.bookmarkedAt != null) MaterialTheme.colorScheme.error else LocalContentColor.current,
                     contentDescription = null,
                 )

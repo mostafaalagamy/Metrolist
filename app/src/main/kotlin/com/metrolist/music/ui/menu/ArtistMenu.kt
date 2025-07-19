@@ -231,7 +231,7 @@ fun ArtistMenu(
                 },
                 leadingContent = {
                     Icon(
-                        imageVector = if (artist.artist.bookmarkedAt != null) Icons.Filled.PersonAdd else Icons.Filled.PersonAddAlt1,
+                        imageVector = if (artist.artist.bookmarkedAt != null) Icons.Filled.PersonAdd else Icons.Filled.PersonAddAlt,
                         contentDescription = null,
                     )
                 },

@@ -184,7 +184,7 @@ fun YouTubePlaylistMenu(
                     }
                 ) {
                     Icon(
-                        painter = if (dbPlaylist?.playlist?.bookmarkedAt != null) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                        imageVector = if (dbPlaylist?.playlist?.bookmarkedAt != null) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
                         tint = if (dbPlaylist?.playlist?.bookmarkedAt != null) MaterialTheme.colorScheme.error else LocalContentColor.current,
                         contentDescription = null
                     )
@@ -548,7 +548,7 @@ fun YouTubePlaylistMenu(
                     headlineContent = { Text(text = stringResource(R.string.select)) },
                     leadingContent = {
                         Icon(
-                            imageVector = Icons.Filled.SelectAll,
+                            imageVector = Icons.Filled.CheckBox,
                             contentDescription = null,
                         )
                     },

@@ -288,7 +288,7 @@ fun Queue(
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
-                            painter = Icons.Filled.QueueMusic,
+                            imageVector = Icons.Filled.QueueMusic,
                             contentDescription = null,
                             modifier = Modifier.size(iconSize),
                             tint = TextBackgroundColor
@@ -327,7 +327,7 @@ fun Queue(
                                 )
                             } else {
                                 Icon(
-                                    painter = Icons.Filled.Bedtime,
+                                    imageVector = Icons.Filled.Bedtime,
                                     contentDescription = null,
                                     modifier = Modifier.size(iconSize),
                                     tint = TextBackgroundColor
@@ -347,7 +347,7 @@ fun Queue(
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
-                            painter = Icons.Filled.Lyrics,
+                            imageVector = Icons.Filled.Lyrics,
                             contentDescription = null,
                             modifier = Modifier.size(iconSize),
                             tint = TextBackgroundColor.copy(alpha = if (showLyrics) 1f else 0.5f)
@@ -423,7 +423,7 @@ fun Queue(
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
-                            painter = Icons.Filled.MoreVert,
+                            imageVector = Icons.Filled.MoreVert,
                             contentDescription = null,
                             modifier = Modifier.size(iconSize),
                             tint = iconButtonColor
@@ -453,7 +453,7 @@ fun Queue(
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             Icon(
-                                painter = Icons.Filled.QueueMusic,
+                                imageVector = Icons.Filled.QueueMusic,
                                 contentDescription = null,
                                 modifier = Modifier.size(20.dp),
                                 tint = TextBackgroundColor
@@ -486,7 +486,7 @@ fun Queue(
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             Icon(
-                                painter = Icons.Filled.Bedtime,
+                                imageVector = Icons.Filled.Bedtime,
                                 contentDescription = null,
                                 modifier = Modifier.size(20.dp),
                                 tint = TextBackgroundColor
@@ -529,7 +529,7 @@ fun Queue(
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             Icon(
-                                painter = Icons.Filled.Lyrics,
+                                imageVector = Icons.Filled.Lyrics,
                                 contentDescription = null,
                                 modifier = Modifier.size(20.dp),
                                 tint = TextBackgroundColor.copy(alpha = if (showLyrics) 1f else 0.5f)
@@ -977,7 +977,7 @@ fun Queue(
                             modifier = Modifier.padding(horizontal = 6.dp),
                         ) {
                             Icon(
-                                painter = if (locked) Icons.Filled.Lock else Icons.Filled.LockOpen,
+                                imageVector = if (locked) Icons.Filled.Lock else Icons.Filled.LockOpen,
                                 contentDescription = null,
                             )
                         }
@@ -1049,9 +1049,9 @@ fun Queue(
                             painter =
                             painterResource(
                                 if (count == mutableQueueWindows.size) {
-                                    Icons.Filled.Deselect
+                                    Icons.Filled.CheckBoxOutlineBlank
                                 } else {
-                                    Icons.Filled.SelectAll
+                                    Icons.Filled.CheckBox
                                 },
                             ),
                             contentDescription = null,

@@ -480,7 +480,7 @@ fun HistoryScreen(
                 ) {
                     Icon(
                         painter = painterResource(
-                            if (count == wrappedItems.size) Icons.Filled.Deselect else Icons.Filled.SelectAll
+                            if (count == wrappedItems.size) Icons.Filled.CheckBoxOutlineBlank else Icons.Filled.CheckBox
                         ),
                         contentDescription = null
                     )

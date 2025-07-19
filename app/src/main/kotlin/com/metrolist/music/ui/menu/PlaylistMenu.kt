@@ -268,7 +268,7 @@ fun PlaylistMenu(
                     }
                 ) {
                     Icon(
-                        painter = if (dbPlaylist?.playlist?.bookmarkedAt != null) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                        imageVector = if (dbPlaylist?.playlist?.bookmarkedAt != null) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
                         tint = if (dbPlaylist?.playlist?.bookmarkedAt != null) MaterialTheme.colorScheme.error else LocalContentColor.current,
                         contentDescription = null
                     )

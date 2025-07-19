@@ -32,7 +32,7 @@ sealed class Screens(
     object Library : Screens(
         titleId = R.string.filter_library,
         iconInactive = Icons.Outlined.LibraryMusic,
-        iconActive = Icons.Filled.LibraryMusic,
+        iconActive = Icons.Filled.LibraryBooks,
         route = "library"
     )
 

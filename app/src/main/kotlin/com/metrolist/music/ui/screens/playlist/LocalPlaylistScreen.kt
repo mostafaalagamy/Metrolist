@@ -481,7 +481,7 @@ fun LocalPlaylistScreen(
                                     modifier = Modifier.padding(horizontal = 6.dp),
                                 ) {
                                     Icon(
-                                        painter = if (locked) Icons.Filled.Lock else Icons.Filled.LockOpen,
+                                        imageVector = if (locked) Icons.Filled.Lock else Icons.Filled.LockOpen,
                                         contentDescription = null,
                                     )
                                 }
@@ -856,7 +856,7 @@ fun LocalPlaylistScreen(
                         },
                     ) {
                         Icon(
-                            imageVector = if (count == wrappedSongs.size) Icons.Filled.Deselect else Icons.Filled.SelectAll,
+                            imageVector = if (count == wrappedSongs.size) Icons.Filled.CheckBoxOutlineBlank else Icons.Filled.CheckBox,
                             contentDescription = null
                         )
                     }
@@ -1066,7 +1066,7 @@ fun LocalPlaylistHeader(
                             modifier = Modifier.size(40.dp)
                         ) {
                             Icon(
-                                painter = if (liked) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                                imageVector = if (liked) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
                                 contentDescription = null,
                                 tint = if (liked) MaterialTheme.colorScheme.error else LocalContentColor.current,
                                 modifier = Modifier.size(24.dp)

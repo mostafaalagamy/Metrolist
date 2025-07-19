@@ -235,7 +235,7 @@ fun YouTubeSongMenu(
                 },  
             ) {  
                 Icon(  
-                    painter = if (librarySong?.song?.liked == true) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,  
+                    imageVector = if (librarySong?.song?.liked == true) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,  
                     tint = if (librarySong?.song?.liked == true) MaterialTheme.colorScheme.error else LocalContentColor.current,  
                     contentDescription = null,  
                 )  
@@ -399,7 +399,7 @@ fun YouTubeSongMenu(
                 },
                 leadingContent = {
                     Icon(
-                        painter = if (librarySong?.song?.inLibrary != null) Icons.Filled.LibraryAddCheck else Icons.Filled.LibraryAdd,
+                        imageVector = if (librarySong?.song?.inLibrary != null) Icons.Filled.LibraryAddCheck else Icons.Filled.LibraryAdd,
                         contentDescription = null,
                     )
                 },

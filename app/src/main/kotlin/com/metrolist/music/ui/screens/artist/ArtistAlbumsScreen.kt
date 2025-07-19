@@ -139,7 +139,7 @@ fun ArtistAlbumsScreen(
                     onLongClick = navController::backToMain
                 ) {
                     Icon(
-                        painter = Icons.Filled.ArrowBack,
+                        imageVector = Icons.Filled.ArrowBack,
                         contentDescription = null
                     )
                 }

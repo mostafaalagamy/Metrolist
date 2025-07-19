@@ -265,7 +265,7 @@ fun LyricsImageCard(
                         contentAlignment = Alignment.Center
                     ) {
                         Image(
-                            painter = Icons.Filled.MusicNote,
+                            imageVector = Icons.Filled.MusicNote,
                             contentDescription = null,
                             modifier = Modifier
                                 .size(16.dp),

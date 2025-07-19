@@ -100,7 +100,7 @@ fun AddToPlaylistDialogOnline(
                     title = stringResource(R.string.create_playlist),
                     thumbnailContent = {
                         Image(
-                            painter = Icons.Filled.PlaylistAdd,
+                            imageVector = Icons.Filled.PlaylistAdd,
                             contentDescription = null,
                             colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
                             modifier = Modifier.size(ListThumbnailSize)
@@ -240,7 +240,7 @@ fun AddToPlaylistDialogOnline(
                     title = stringResource(R.string.liked_songs),
                     thumbnailContent = {
                         Image(
-                            painter = Icons.Filled.Favorite, // The XML image
+                            imageVector = Icons.Filled.Favorite, // The XML image
                             contentDescription = null,
                             modifier = Modifier.size(40.dp), // Adjust size as needed
                             colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground) // Optional tinting

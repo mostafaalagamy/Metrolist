@@ -628,7 +628,7 @@ fun TopPlaylistScreen(
                     ) {
                         Icon(
                             painter = painterResource(
-                                if (count == wrappedSongs?.size) Icons.Filled.Deselect else Icons.Filled.SelectAll
+                                if (count == wrappedSongs?.size) Icons.Filled.CheckBoxOutlineBlank else Icons.Filled.CheckBox
                             ),
                             contentDescription = null
                         )

@@ -708,7 +708,7 @@ fun ArtistScreen(
 
         HideOnScrollFAB(
             lazyListState = lazyListState,
-            icon = if (showLocal) Icons.Filled.Language else Icons.Filled.LibraryMusic,
+            icon = if (showLocal) Icons.Filled.Translate else Icons.Filled.LibraryBooks,
             onClick = {
                 showLocal = !showLocal
             }

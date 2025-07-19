@@ -14,8 +14,6 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -62,7 +60,7 @@ fun SettingsScreen(
         )
         PreferenceEntry(
             title = { Text(stringResource(R.string.content)) },
-            icon = { Icon(Icons.Filled.Language, null) },
+            icon = { Icon(Icons.Filled.Translate, null) },
             onClick = { navController.navigate("settings/content") }
         )
         PreferenceEntry(
@@ -144,7 +142,7 @@ fun SettingsScreen(
                     BadgedBox(
                         badge = { Badge() }
                     ) {
-                        Icon(Icons.Filled.GetApp, null)
+                        Icon(Icons.Filled.Download, null)
                     }
                 },
                 onClick = {

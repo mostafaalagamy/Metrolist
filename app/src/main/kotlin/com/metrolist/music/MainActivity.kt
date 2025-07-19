@@ -634,7 +634,7 @@ class MainActivity : ComponentActivity() {
                                             }
                                             IconButton(onClick = { navController.navigate("stats") }) {
                                                 Icon(
-                                                    imageVector = Icons.Filled.BarChart,
+                                                    imageVector = Icons.Filled.Analytics,
                                                     contentDescription = stringResource(R.string.stats)
                                                 )
                                             }
@@ -755,8 +755,8 @@ class MainActivity : ComponentActivity() {
                                                     ) {
                                                         Icon(
                                                             imageVector = when (searchSource) {
-                                                                SearchSource.LOCAL -> Icons.Filled.LibraryMusic
-                                                                SearchSource.ONLINE -> Icons.Filled.Language
+                                                                SearchSource.LOCAL -> Icons.Filled.LibraryBooks
+                                                                SearchSource.ONLINE -> Icons.Filled.Translate
                                                             },
                                                             contentDescription = null,
                                                         )

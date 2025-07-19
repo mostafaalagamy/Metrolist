@@ -13,21 +13,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Icon
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.TopAppBarScrollBehavior
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -86,7 +78,7 @@ fun ContentSettings(
         PreferenceGroupTitle(title = stringResource(R.string.general))
         ListPreference(
             title = { Text(stringResource(R.string.content_language)) },
-            icon = { Icon(Icons.Filled.Language, null) },
+            icon = { Icon(Icons.Filled.Translate, null) },
             selectedValue = contentLanguage,
             values = listOf(SYSTEM_DEFAULT) + LanguageCodeToName.keys.toList(),
             valueText = {
@@ -138,7 +130,7 @@ fun ContentSettings(
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             PreferenceEntry(
                 title = { Text(stringResource(R.string.app_language)) },
-                icon = { Icon(Icons.Filled.Language, null) },
+                icon = { Icon(Icons.Filled.Translate, null) },
                 onClick = {
                     context.startActivity(
                         Intent(

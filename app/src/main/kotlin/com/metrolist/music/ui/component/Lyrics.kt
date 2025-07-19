@@ -599,7 +599,7 @@ fun Lyrics(
                         }
                     ) {
                         Icon(
-                            painter = Icons.Filled.Close,
+                            imageVector = Icons.Filled.Close,
                             contentDescription = stringResource(R.string.cancel),
                             tint = textColor
                         )
@@ -629,7 +629,7 @@ fun Lyrics(
                         enabled = selectedIndices.isNotEmpty() // Disable if nothing selected
                     ) {
                         Icon(
-                            painter = Icons.Filled.Share,
+                            imageVector = Icons.Filled.Share,
                             contentDescription = stringResource(R.string.share_selected),
                             tint = if (selectedIndices.isNotEmpty()) textColor else textColor.copy(alpha = 0.5f)
                         )
@@ -648,7 +648,7 @@ fun Lyrics(
                         }
                     ) {
                         Icon(
-                            painter = Icons.Filled.MoreHoriz,
+                            imageVector = Icons.Filled.MoreHoriz,
                             contentDescription = stringResource(R.string.more_options),
                             tint = textColor
                         )
@@ -716,7 +716,7 @@ fun Lyrics(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Icon(
-                            painter = Icons.Filled.Share, // Consistent share icon
+                            imageVector = Icons.Filled.Share, // Consistent share icon
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.primary
                         )
@@ -743,7 +743,7 @@ fun Lyrics(
                     ) {
                         Icon(
                             // Changed icon to represent image sharing better
-                            painter = Icons.Filled.Share, // Use a relevant icon
+                            imageVector = Icons.Filled.Share, // Use a relevant icon
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.primary
                         )
@@ -776,7 +776,7 @@ fun Lyrics(
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             Icon(
-                                painter = Icons.Filled.Close,
+                                imageVector = Icons.Filled.Close,
                                 contentDescription = null, // Description is handled by Text
                                 tint = MaterialTheme.colorScheme.error
                             )

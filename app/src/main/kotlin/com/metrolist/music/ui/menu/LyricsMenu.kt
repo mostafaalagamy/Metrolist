@@ -290,7 +290,7 @@ fun LyricsMenu(
                         },
                     ) {
                         Icon(
-                            painter = if (index == expandedItemIndex) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore,
+                            imageVector = if (index == expandedItemIndex) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore,
                             contentDescription = null,
                         )
                     }
@@ -349,7 +349,7 @@ fun LyricsMenu(
                 headlineContent = { Text(text = stringResource(R.string.refetch)) },
                 leadingContent = {
                     Icon(
-                        imageVector = Icons.Filled.Cached,
+                        imageVector = Icons.Filled.Cache,
                         contentDescription = null,
                     )
                 },

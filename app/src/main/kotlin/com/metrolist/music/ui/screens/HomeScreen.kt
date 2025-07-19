@@ -540,7 +540,7 @@ fun HomeScreen(
                                 )
                             } else {
                                 Icon(
-                                    painter = Icons.Filled.Person,
+                                    imageVector = Icons.Filled.Person,
                                     contentDescription = null,
                                     modifier = Modifier.size(ListThumbnailSize)
                                 )
