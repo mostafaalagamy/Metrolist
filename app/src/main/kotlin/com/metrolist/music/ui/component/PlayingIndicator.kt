@@ -21,7 +21,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import com.metrolist.music.constants.AppIcons
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.metrolist.music.R
@@ -103,7 +104,7 @@ fun PlayingIndicatorBox(
                 )
             } else {
                 Icon(
-                    imageVector = AppIcons.Play,
+                    imageVector = Icons.Filled.PlayArrow,
                     contentDescription = null,
                     tint = color,
                 )

@@ -54,7 +54,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.metrolist.music.constants.AppIcons
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -520,8 +521,8 @@ fun SongMenu(
                 },
                 leadingContent = {
                     Icon(
-                        imageVector = if (song.song.inLibrary == null) AppIcons.LibraryAdd
-                            else AppIcons.LibraryAddCheck,
+                                        imageVector = if (song.song.inLibrary == null) Icons.Filled.LibraryAdd
+                else Icons.Filled.LibraryAddCheck,
                         contentDescription = null,
                     )
                 },

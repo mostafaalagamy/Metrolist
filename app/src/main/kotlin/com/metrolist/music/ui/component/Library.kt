@@ -8,7 +8,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
-import com.metrolist.music.constants.AppIcons
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import com.metrolist.innertube.models.PlaylistItem
 import com.metrolist.innertube.models.WatchEndpoint
 import com.metrolist.music.R
@@ -43,7 +44,7 @@ fun LibraryArtistListItem(
             }
         ) {
             Icon(
-                imageVector = AppIcons.MoreVert,
+                imageVector = Icons.Filled.MoreVert,
                 contentDescription = null
             )
         }
@@ -109,7 +110,7 @@ fun LibraryAlbumListItem(
             }
         ) {
             Icon(
-                imageVector = AppIcons.MoreVert,
+                imageVector = Icons.Filled.MoreVert,
                 contentDescription = null
             )
         }
@@ -206,7 +207,7 @@ fun LibraryPlaylistListItem(
             }
         ) {
             Icon(
-                imageVector = AppIcons.MoreVert,
+                imageVector = Icons.Filled.MoreVert,
                 contentDescription = null
             )
         }

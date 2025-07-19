@@ -41,7 +41,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import com.metrolist.music.constants.AppIcons
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -77,6 +78,21 @@ import com.metrolist.music.utils.makeTimeString
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.PlaylistPlay
+import androidx.compose.material.icons.filled.PlaylistAdd
+import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.Radio
+import androidx.compose.material.icons.filled.QueueMusic
+import androidx.compose.material.icons.filled.LibraryAdd
+import androidx.compose.material.icons.filled.LibraryAddCheck
+import androidx.compose.material.icons.filled.OfflinePin
+import androidx.compose.material.icons.filled.Download
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Album
+import androidx.compose.material.icons.filled.Info
 
 @SuppressLint("MutableCollectionMutableState")
 @Composable
@@ -219,7 +235,7 @@ fun YouTubeSongMenu(
                 },  
             ) {  
                 Icon(  
-                    imageVector = if (librarySong?.song?.liked == true) AppIcons.Favorite else AppIcons.FavoriteBorder,  
+                    imageVector = if (librarySong?.song?.liked == true) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,  
                     tint = if (librarySong?.song?.liked == true) MaterialTheme.colorScheme.error else LocalContentColor.current,  
                     contentDescription = null,  
                 )  
@@ -257,7 +273,7 @@ fun YouTubeSongMenu(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Icon(
-                imageVector = AppIcons.PlaylistPlay,
+                imageVector = Icons.Filled.PlaylistPlay,
                 contentDescription = null,
                 modifier = Modifier.size(24.dp),
             )
@@ -287,7 +303,7 @@ fun YouTubeSongMenu(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Icon(
-                imageVector = AppIcons.PlaylistAdd,
+                imageVector = Icons.Filled.PlaylistAdd,
                 contentDescription = null,
                 modifier = Modifier.size(24.dp),
             )
@@ -323,7 +339,7 @@ fun YouTubeSongMenu(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Icon(
-                imageVector = AppIcons.Share,
+                imageVector = Icons.Filled.Share,
                 contentDescription = null,
                 modifier = Modifier.size(24.dp),
             )
@@ -351,7 +367,7 @@ fun YouTubeSongMenu(
                 headlineContent = { Text(text = stringResource(R.string.start_radio)) },
                 leadingContent = {
                     Icon(
-                        imageVector = AppIcons.Radio,
+                        imageVector = Icons.Filled.Radio,
                         contentDescription = null,
                     )
                 },
@@ -366,7 +382,7 @@ fun YouTubeSongMenu(
                 headlineContent = { Text(text = stringResource(R.string.add_to_queue)) },
                 leadingContent = {
                     Icon(
-                        imageVector = AppIcons.QueueMusic,
+                        imageVector = Icons.Filled.QueueMusic,
                         contentDescription = null,
                     )
                 },
@@ -383,7 +399,7 @@ fun YouTubeSongMenu(
                 },
                 leadingContent = {
                     Icon(
-                        imageVector = if (librarySong?.song?.inLibrary != null) AppIcons.LibraryAddCheck else AppIcons.LibraryAdd,
+                        imageVector = if (librarySong?.song?.inLibrary != null) Icons.Filled.LibraryAddCheck else Icons.Filled.LibraryAdd,
                         contentDescription = null,
                     )
                 },
@@ -413,7 +429,7 @@ fun YouTubeSongMenu(
                         },
                         leadingContent = {
                             Icon(
-                                imageVector = AppIcons.Offline,
+                                imageVector = Icons.Filled.OfflinePin,
                                 contentDescription = null,
                             )
                         },
@@ -451,7 +467,7 @@ fun YouTubeSongMenu(
                         headlineContent = { Text(text = stringResource(R.string.action_download)) },
                         leadingContent = {
                             Icon(
-                                imageVector = AppIcons.Download,
+                                imageVector = Icons.Filled.Download,
                                 contentDescription = null,
                             )
                         },
@@ -481,7 +497,7 @@ fun YouTubeSongMenu(
                     headlineContent = { Text(text = stringResource(R.string.view_artist)) },
                     leadingContent = {
                         Icon(
-                            imageVector = AppIcons.Artist,
+                            imageVector = Icons.Filled.Person,
                             contentDescription = null,
                         )
                     },
@@ -502,7 +518,7 @@ fun YouTubeSongMenu(
                     headlineContent = { Text(text = stringResource(R.string.view_album)) },
                     leadingContent = {
                         Icon(
-                            imageVector = AppIcons.Album,
+                            imageVector = Icons.Filled.Album,
                             contentDescription = null,
                         )
                     },
@@ -518,7 +534,7 @@ fun YouTubeSongMenu(
                  headlineContent = { Text(text = stringResource(R.string.details)) },
                  leadingContent = {
                      Icon(
-                         imageVector = AppIcons.Info,
+                         imageVector = Icons.Filled.Info,
                          contentDescription = null,
                      )
                  },

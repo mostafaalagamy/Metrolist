@@ -32,9 +32,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalHapticFeedback
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.filled.GridView
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -183,13 +186,10 @@ fun LibraryArtistsScreen(
                 modifier = Modifier.padding(start = 6.dp, end = 6.dp),
             ) {
                 Icon(
-                    painter =
-                    painterResource(
-                        when (viewType) {
-                            LibraryViewType.LIST -> R.drawable.list
-                            LibraryViewType.GRID -> R.drawable.grid_view
-                        },
-                    ),
+                    imageVector = when (viewType) {
+                        LibraryViewType.LIST -> Icons.Filled.List
+                        LibraryViewType.GRID -> Icons.Filled.GridView
+                    },
                     contentDescription = null,
                 )
             }
@@ -223,7 +223,7 @@ fun LibraryArtistsScreen(
                         if (artists.isEmpty()) {
                             item {
                                 EmptyPlaceholder(
-                                    icon = R.drawable.artist,
+                                    icon = Icons.Filled.Person,
                                     text = stringResource(R.string.library_artist_empty),
                                     modifier = Modifier.animateItem()
                                 )
@@ -275,7 +275,7 @@ fun LibraryArtistsScreen(
                         if (artists.isEmpty()) {
                             item(span = { GridItemSpan(maxLineSpan) }) {
                                 EmptyPlaceholder(
-                                    icon = R.drawable.artist,
+                                    icon = Icons.Filled.Person,
                                     text = stringResource(R.string.library_artist_empty),
                                     modifier = Modifier.animateItem()
                                 )

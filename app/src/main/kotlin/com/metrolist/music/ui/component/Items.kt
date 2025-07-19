@@ -63,7 +63,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
-import com.metrolist.music.constants.AppIcons
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -1060,7 +1061,7 @@ fun ItemThumbnail(
                     .background(Color.Black.copy(alpha = 0.5f))
             ) {
                             Icon(
-                imageVector = AppIcons.Done,
+                imageVector = Icons.Filled.Done,
                 contentDescription = null
             )
             }
@@ -1124,7 +1125,7 @@ fun LocalThumbnail(
                     )
                 } else {
                     Icon(
-                        imageVector = AppIcons.Play,
+                        imageVector = Icons.Filled.PlayArrow,
                         contentDescription = null,
                         tint = Color.White
                     )
@@ -1149,7 +1150,7 @@ fun LocalThumbnail(
                         .background(Color.Black.copy(alpha = 0.6f))
                 ) {
                     Icon(
-                        imageVector = AppIcons.Play,
+                        imageVector = Icons.Filled.PlayArrow,
                         contentDescription = null,
                         tint = Color.White
                     )
@@ -1174,7 +1175,7 @@ fun LocalThumbnail(
                         .background(Color.Black.copy(alpha = ActiveBoxAlpha))
                 ) {
                     Icon(
-                        imageVector = AppIcons.Play,
+                        imageVector = Icons.Filled.PlayArrow,
                         contentDescription = null,
                         tint = Color.White
                     )
@@ -1252,7 +1253,7 @@ fun BoxScope.OverlayPlayButton(
                 .background(Color.Black.copy(alpha = ActiveBoxAlpha))
         ) {
             Icon(
-                imageVector = AppIcons.Play,
+                imageVector = Icons.Filled.PlayArrow,
                 contentDescription = null,
                 tint = Color.White,
                 modifier = Modifier.size(20.dp)
@@ -1283,7 +1284,7 @@ fun BoxScope.AlbumPlayButton(
                 .clickable(onClick = onClick)
         ) {
             Icon(
-                imageVector = AppIcons.Play,
+                imageVector = Icons.Filled.PlayArrow,
                 contentDescription = null,
                 tint = Color.White
             )
@@ -1335,13 +1336,13 @@ fun SwipeToSongBox(
         if (offset.value != 0f) {
             val (icon, bg, tint, align) = if (offset.value > 0)
                 Quadruple(
-                    AppIcons.PlaylistPlay,
+                    Icons.Filled.PlaylistPlay,
                     MaterialTheme.colorScheme.secondary,
                     MaterialTheme.colorScheme.onSecondary,
                     Alignment.CenterStart
                 ) else
                 Quadruple(
-                    AppIcons.QueueMusic,
+                    Icons.Filled.QueueMusic,
                     MaterialTheme.colorScheme.primary,
                     MaterialTheme.colorScheme.onPrimary,
                     Alignment.CenterEnd
@@ -1400,7 +1401,7 @@ private object Icon {
     @Composable
     fun Favorite() {
         Icon(
-            imageVector = AppIcons.Favorite,
+            imageVector = Icons.Filled.Favorite,
             contentDescription = null,
             tint = MaterialTheme.colorScheme.error,
             modifier = Modifier
@@ -1412,7 +1413,7 @@ private object Icon {
     @Composable
     fun Library() {
         Icon(
-            imageVector = AppIcons.LibraryAddCheck,
+            imageVector = Icons.Filled.LibraryAddCheck,
             contentDescription = null,
             modifier = Modifier
                 .size(18.dp)
@@ -1424,7 +1425,7 @@ private object Icon {
     fun Download(state: Int?) {
         when (state) {
             STATE_COMPLETED -> Icon(
-                imageVector = AppIcons.Offline,
+                imageVector = Icons.Filled.Offline,
                 contentDescription = null,
                 modifier = Modifier
                     .size(18.dp)
@@ -1443,7 +1444,7 @@ private object Icon {
     @Composable
     fun Explicit() {
         Icon(
-            imageVector = AppIcons.Explicit,
+            imageVector = Icons.Filled.Explicit,
             contentDescription = null,
             modifier = Modifier
                 .size(18.dp)

@@ -71,9 +71,19 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MusicNote
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.LockOpen
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.DragHandle
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.SelectAll
+import androidx.compose.material.icons.filled.Deselect
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -433,7 +443,7 @@ fun LocalPlaylistScreen(
                 if (playlist.songCount == 0 && playlist.playlist.remoteSongCount == 0) {
                     item {
                         EmptyPlaceholder(
-                            icon = R.drawable.music_note,
+                            icon = Icons.Filled.MusicNote,
                             text = stringResource(R.string.playlist_is_empty),
                         )
                     }
@@ -479,7 +489,7 @@ fun LocalPlaylistScreen(
                                     modifier = Modifier.padding(horizontal = 6.dp),
                                 ) {
                                     Icon(
-                                        painter = painterResource(if (locked) R.drawable.lock else R.drawable.lock_open),
+                                        imageVector = if (locked) Icons.Filled.Lock else Icons.Filled.LockOpen,
                                         contentDescription = null,
                                     )
                                 }
@@ -578,7 +588,7 @@ fun LocalPlaylistScreen(
                                         },
                                     ) {
                                         Icon(
-                                            painter = painterResource(R.drawable.more_vert),
+                                            imageVector = Icons.Filled.MoreVert,
                                             contentDescription = null,
                                         )
                                     }
@@ -589,7 +599,7 @@ fun LocalPlaylistScreen(
                                             modifier = Modifier.draggableHandle(),
                                         ) {
                                             Icon(
-                                                painter = painterResource(R.drawable.drag_handle),
+                                                imageVector = Icons.Filled.DragHandle,
                                                 contentDescription = null,
                                             )
                                         }
@@ -716,7 +726,7 @@ fun LocalPlaylistScreen(
                                         },
                                     ) {
                                         Icon(
-                                            painter = painterResource(R.drawable.more_vert),
+                                            imageVector = Icons.Filled.MoreVert,
                                             contentDescription = null,
                                         )
                                     }
@@ -726,7 +736,7 @@ fun LocalPlaylistScreen(
                                             modifier = Modifier.draggableHandle(),
                                         ) {
                                             Icon(
-                                                painter = painterResource(R.drawable.drag_handle),
+                                                imageVector = Icons.Filled.DragHandle,
                                                 contentDescription = null,
                                             )
                                         }
@@ -836,9 +846,7 @@ fun LocalPlaylistScreen(
                     }
                 ) {
                     Icon(
-                        painter = painterResource(
-                            if (selection) R.drawable.close else R.drawable.arrow_back
-                        ),
+                        imageVector = if (selection) Icons.Filled.Close else Icons.Filled.ArrowBack,
                         contentDescription = null
                     )
                 }
@@ -856,9 +864,7 @@ fun LocalPlaylistScreen(
                         },
                     ) {
                         Icon(
-                            painter = painterResource(
-                                if (count == wrappedSongs.size) R.drawable.deselect else R.drawable.select_all
-                            ),
+                            imageVector = if (count == wrappedSongs.size) Icons.Filled.Deselect else Icons.Filled.SelectAll,
                             contentDescription = null
                         )
                     }
@@ -881,7 +887,7 @@ fun LocalPlaylistScreen(
                         },
                     ) {
                         Icon(
-                            painter = painterResource(R.drawable.more_vert),
+                            imageVector = Icons.Filled.MoreVert,
                             contentDescription = null
                         )
                     }
@@ -890,7 +896,7 @@ fun LocalPlaylistScreen(
                         onClick = { isSearching = true }
                     ) {
                         Icon(
-                            painter = painterResource(R.drawable.search),
+                            imageVector = Icons.Filled.Search,
                             contentDescription = null
                         )
                     }

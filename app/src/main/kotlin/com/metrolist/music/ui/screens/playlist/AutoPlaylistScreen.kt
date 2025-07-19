@@ -53,9 +53,15 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalHapticFeedback
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MusicNote
+import androidx.compose.material.icons.filled.OfflinePin
+import androidx.compose.material.icons.filled.Download
+import androidx.compose.material.icons.filled.QueueMusic
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Shuffle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
@@ -275,7 +281,7 @@ fun AutoPlaylistScreen(
                 if (songs!!.isEmpty()) {
                     item {
                         EmptyPlaceholder(
-                            icon = R.drawable.music_note,
+                            icon = Icons.Filled.MusicNote,
                             text = stringResource(R.string.playlist_is_empty),
                         )
                     }
@@ -343,7 +349,7 @@ fun AutoPlaylistScreen(
                                                         },
                                                     ) {
                                                         Icon(
-                                                            painter = painterResource(R.drawable.offline),
+                                                            imageVector = Icons.Filled.OfflinePin,
                                                             contentDescription = null,
                                                         )
                                                     }
@@ -392,7 +398,7 @@ fun AutoPlaylistScreen(
                                                         },
                                                     ) {
                                                         Icon(
-                                                            painter = painterResource(R.drawable.download),
+                                                            imageVector = Icons.Filled.Download,
                                                             contentDescription = null,
                                                         )
                                                     }
@@ -407,7 +413,7 @@ fun AutoPlaylistScreen(
                                                 },
                                             ) {
                                                 Icon(
-                                                    painter = painterResource(R.drawable.queue_music),
+                                                    imageVector = Icons.Filled.QueueMusic,
                                                     contentDescription = null,
                                                 )
                                             }
@@ -429,7 +435,7 @@ fun AutoPlaylistScreen(
                                         modifier = Modifier.weight(1f),
                                     ) {
                                         Icon(
-                                            painter = painterResource(R.drawable.play),
+                                            imageVector = Icons.Filled.PlayArrow,
                                             contentDescription = null,
                                             modifier = Modifier.size(ButtonDefaults.IconSize),
                                         )
@@ -451,7 +457,7 @@ fun AutoPlaylistScreen(
                                         modifier = Modifier.weight(1f),
                                     ) {
                                         Icon(
-                                            painter = painterResource(R.drawable.shuffle),
+                                            imageVector = Icons.Filled.Shuffle,
                                             contentDescription = null,
                                             modifier = Modifier.size(ButtonDefaults.IconSize),
                                         )

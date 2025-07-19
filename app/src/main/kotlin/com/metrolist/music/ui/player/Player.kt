@@ -81,9 +81,18 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Repeat
+import androidx.compose.material.icons.filled.RepeatOne
+import androidx.compose.material.icons.filled.SkipPrevious
+import androidx.compose.material.icons.filled.SkipNext
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Pause
+import androidx.compose.material.icons.filled.Replay
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.buildAnnotatedString
@@ -979,8 +988,8 @@ fun BottomSheetPlayer(
                     Box(modifier = Modifier.weight(1f)) {
                         ResizableIconButton(
                             icon = when (repeatMode) {
-                                Player.REPEAT_MODE_OFF, Player.REPEAT_MODE_ALL -> R.drawable.repeat
-                                Player.REPEAT_MODE_ONE -> R.drawable.repeat_one
+                                Player.REPEAT_MODE_OFF, Player.REPEAT_MODE_ALL -> Icons.Filled.Repeat
+                                Player.REPEAT_MODE_ONE -> Icons.Filled.RepeatOne
                                 else -> throw IllegalStateException()
                             },
                             color = TextBackgroundColor,
@@ -997,7 +1006,7 @@ fun BottomSheetPlayer(
 
                     Box(modifier = Modifier.weight(1f)) {
                         ResizableIconButton(
-                            icon = R.drawable.skip_previous,
+                            icon = Icons.Filled.SkipPrevious,
                             enabled = canSkipPrevious,
                             color = TextBackgroundColor,
                             modifier =
@@ -1025,21 +1034,18 @@ fun BottomSheetPlayer(
                                 }
                             },
                     ) {
-                        Image(
-                            painter =
-                            painterResource(
-                                if (playbackState ==
-                                    STATE_ENDED
-                                ) {
-                                    R.drawable.replay
-                                } else if (isPlaying) {
-                                    R.drawable.pause
-                                } else {
-                                    R.drawable.play
-                                },
-                            ),
+                        Icon(
+                            imageVector = if (playbackState ==
+                                STATE_ENDED
+                            ) {
+                                Icons.Filled.Replay
+                            } else if (isPlaying) {
+                                Icons.Filled.Pause
+                            } else {
+                                Icons.Filled.PlayArrow
+                            },
                             contentDescription = null,
-                            colorFilter = ColorFilter.tint(iconButtonColor),
+                            tint = iconButtonColor,
                             modifier =
                             Modifier
                                 .align(Alignment.Center)
@@ -1051,7 +1057,7 @@ fun BottomSheetPlayer(
 
                     Box(modifier = Modifier.weight(1f)) {
                         ResizableIconButton(
-                            icon = R.drawable.skip_next,
+                            icon = Icons.Filled.SkipNext,
                             enabled = canSkipNext,
                             color = TextBackgroundColor,
                             modifier =
@@ -1064,7 +1070,7 @@ fun BottomSheetPlayer(
 
                     Box(modifier = Modifier.weight(1f)) {
                         ResizableIconButton(
-                            icon = if (currentSong?.song?.liked == true) R.drawable.favorite else R.drawable.favorite_border,
+                            icon = if (currentSong?.song?.liked == true) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
                             color = if (currentSong?.song?.liked == true) MaterialTheme.colorScheme.error else TextBackgroundColor,
                             modifier =
                             Modifier

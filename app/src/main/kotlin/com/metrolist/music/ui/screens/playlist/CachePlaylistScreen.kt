@@ -52,9 +52,14 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalHapticFeedback
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MusicNote
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Shuffle
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
@@ -166,7 +171,7 @@ fun CachePlaylistScreen(
             if (filteredSongs.isEmpty() && !isSearching) {
                 item {
                     EmptyPlaceholder(
-                        icon = R.drawable.music_note,
+                        icon = Icons.Filled.MusicNote,
                         text = stringResource(R.string.playlist_is_empty)
                     )
                 }
@@ -175,7 +180,7 @@ fun CachePlaylistScreen(
             if (filteredSongs.isEmpty() && isSearching) {
                 item {
                     EmptyPlaceholder(
-                        icon = R.drawable.search,
+                        icon = Icons.Filled.Search,
                         text = stringResource(R.string.no_results_found)
                     )
                 }
@@ -238,7 +243,7 @@ fun CachePlaylistScreen(
                                     modifier = Modifier.weight(1f),
                                 ) {
                                     Icon(
-                                        painter = painterResource(R.drawable.play),
+                                        imageVector = Icons.Filled.PlayArrow,
                                         contentDescription = null,
                                         modifier = Modifier.size(ButtonDefaults.IconSize),
                                     )
@@ -260,7 +265,7 @@ fun CachePlaylistScreen(
                                     modifier = Modifier.weight(1f),
                                 ) {
                                     Icon(
-                                        painter = painterResource(R.drawable.shuffle),
+                                        imageVector = Icons.Filled.Shuffle,
                                         contentDescription = null,
                                         modifier = Modifier.size(ButtonDefaults.IconSize),
                                     )
@@ -316,7 +321,7 @@ fun CachePlaylistScreen(
                                 }
                             }) {
                                 Icon(
-                                    painter = painterResource(R.drawable.more_vert),
+                                    imageVector = Icons.Filled.MoreVert,
                                     contentDescription = null
                                 )
                             }

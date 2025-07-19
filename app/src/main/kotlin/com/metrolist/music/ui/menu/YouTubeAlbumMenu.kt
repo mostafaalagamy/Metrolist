@@ -39,7 +39,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import com.metrolist.music.constants.AppIcons
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -67,6 +68,18 @@ import com.metrolist.music.ui.component.YouTubeListItem
 import com.metrolist.music.utils.reportException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.Radio
+import androidx.compose.material.icons.filled.PlaylistPlay
+import androidx.compose.material.icons.filled.QueueMusic
+import androidx.compose.material.icons.filled.PlaylistAdd
+import androidx.compose.material.icons.filled.OfflinePin
+import androidx.compose.material.icons.filled.Download
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Share
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("MutableCollectionMutableState")
@@ -161,7 +174,7 @@ fun YouTubeAlbumMenu(
                     headlineContent = { Text(text = stringResource(R.string.already_in_playlist)) },
                     leadingContent = {
                         Icon(
-                            imageVector = AppIcons.Close,
+                            imageVector = Icons.Filled.Close,
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.onBackground,
                             modifier = Modifier.size(ListThumbnailSize),
@@ -237,7 +250,7 @@ fun YouTubeAlbumMenu(
                 },
             ) {
                 Icon(
-                    imageVector = if (album?.album?.bookmarkedAt != null) AppIcons.Favorite else AppIcons.FavoriteBorder,
+                    imageVector = if (album?.album?.bookmarkedAt != null) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
                     tint = if (album?.album?.bookmarkedAt != null) MaterialTheme.colorScheme.error else LocalContentColor.current,
                     contentDescription = null,
                 )
@@ -260,7 +273,7 @@ fun YouTubeAlbumMenu(
                 headlineContent = { Text(text = stringResource(R.string.start_radio)) },
                 leadingContent = {
                     Icon(
-                        imageVector = AppIcons.Radio,
+                        imageVector = Icons.Filled.Radio,
                         contentDescription = null,
                     )
                 },
@@ -275,7 +288,7 @@ fun YouTubeAlbumMenu(
                 headlineContent = { Text(text = stringResource(R.string.play_next)) },
                 leadingContent = {
                     Icon(
-                        imageVector = AppIcons.PlaylistPlay,
+                        imageVector = Icons.Filled.PlaylistPlay,
                         contentDescription = null,
                     )
                 },
@@ -293,7 +306,7 @@ fun YouTubeAlbumMenu(
                 headlineContent = { Text(text = stringResource(R.string.add_to_queue)) },
                 leadingContent = {
                     Icon(
-                        imageVector = AppIcons.QueueMusic,
+                        imageVector = Icons.Filled.QueueMusic,
                         contentDescription = null,
                     )
                 },
@@ -311,7 +324,7 @@ fun YouTubeAlbumMenu(
                 headlineContent = { Text(text = stringResource(R.string.add_to_playlist)) },
                 leadingContent = {
                     Icon(
-                        imageVector = AppIcons.PlaylistAdd,
+                        imageVector = Icons.Filled.PlaylistAdd,
                         contentDescription = null,
                     )
                 },
@@ -332,7 +345,7 @@ fun YouTubeAlbumMenu(
                         },
                         leadingContent = {
                             Icon(
-                                imageVector = AppIcons.Offline,
+                                imageVector = Icons.Filled.OfflinePin,
                                 contentDescription = null,
                             )
                         },
@@ -374,7 +387,7 @@ fun YouTubeAlbumMenu(
                         headlineContent = { Text(text = stringResource(R.string.action_download)) },
                         leadingContent = {
                             Icon(
-                                imageVector = AppIcons.Download,
+                                imageVector = Icons.Filled.Download,
                                 contentDescription = null,
                             )
                         },
@@ -404,7 +417,7 @@ fun YouTubeAlbumMenu(
                     headlineContent = { Text(text = stringResource(R.string.view_artist)) },
                     leadingContent = {
                         Icon(
-                            imageVector = AppIcons.Artist,
+                            imageVector = Icons.Filled.Person,
                             contentDescription = null,
                         )
                     },
@@ -424,7 +437,7 @@ fun YouTubeAlbumMenu(
                 headlineContent = { Text(text = stringResource(R.string.share)) },
                 leadingContent = {
                     Icon(
-                        imageVector = AppIcons.Share,
+                        imageVector = Icons.Filled.Share,
                         contentDescription = null,
                     )
                 },
