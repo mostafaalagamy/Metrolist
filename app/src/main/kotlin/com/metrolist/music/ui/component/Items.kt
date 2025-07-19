@@ -35,14 +35,32 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.LocalContentColor
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Icon
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.rememberSwipeToDismissBoxState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.SwipeToDismissBox
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.SwipeToDismissBoxValue
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -392,7 +410,7 @@ fun ArtistListItem(
     badges: @Composable RowScope.() -> Unit = {
         if (artist.artist.bookmarkedAt != null) {
             Icon(
-                painter = painterResource(R.drawable.favorite),
+                imageVector = Icons.Filled.Favorite,
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.error,
                 modifier = Modifier
@@ -625,10 +643,10 @@ fun PlaylistListItem(
             size = ListThumbnailSize,
             placeHolder = {
                 val painter = when (playlist.playlist.name) {
-                    stringResource(R.string.liked) -> R.drawable.favorite_border
-                    stringResource(R.string.offline) -> R.drawable.offline
-                    stringResource(R.string.cached_playlist) -> R.drawable.cached
-                    else -> if (autoPlaylist) R.drawable.trending_up else R.drawable.queue_music
+                    stringResource(R.string.liked) -> Icons.Filled.FavoriteBorder
+                    stringResource(R.string.offline) -> Icons.Filled.CloudOff
+                    stringResource(R.string.cached_playlist) -> Icons.Filled.Cached
+                    else -> if (autoPlaylist) Icons.Filled.TrendingUp else Icons.Filled.QueueMusic
                 }
                 Icon(
                     painter = painterResource(painter),
@@ -696,10 +714,10 @@ fun PlaylistGridItem(
             size = width,
             placeHolder = {
                 val painter = when (playlist.playlist.name) {
-                    stringResource(R.string.liked) -> R.drawable.favorite_border
-                    stringResource(R.string.offline) -> R.drawable.offline
-                    stringResource(R.string.cached_playlist) -> R.drawable.cached
-                    else -> if (autoPlaylist) R.drawable.trending_up else R.drawable.queue_music
+                    stringResource(R.string.liked) -> Icons.Filled.FavoriteBorder
+                    stringResource(R.string.offline) -> Icons.Filled.CloudOff
+                    stringResource(R.string.cached_playlist) -> Icons.Filled.Cached
+                    else -> if (autoPlaylist) Icons.Filled.TrendingUp else Icons.Filled.QueueMusic
                 }
                 Box(
                     contentAlignment = Alignment.Center,
@@ -1060,7 +1078,7 @@ fun ItemThumbnail(
                     .background(Color.Black.copy(alpha = 0.5f))
             ) {
                 Icon(
-                    painter = painterResource(R.drawable.done),
+                    imageVector = Icons.Filled.Done,
                     contentDescription = null
                 )
             }
@@ -1124,7 +1142,7 @@ fun LocalThumbnail(
                     )
                 } else {
                     Icon(
-                        painter = painterResource(R.drawable.play),
+                        imageVector = Icons.Filled.PlayArrow,
                         contentDescription = null,
                         tint = Color.White
                     )
@@ -1149,7 +1167,7 @@ fun LocalThumbnail(
                         .background(Color.Black.copy(alpha = 0.6f))
                 ) {
                     Icon(
-                        painter = painterResource(R.drawable.play),
+                        imageVector = Icons.Filled.PlayArrow,
                         contentDescription = null,
                         tint = Color.White
                     )
@@ -1174,7 +1192,7 @@ fun LocalThumbnail(
                         .background(Color.Black.copy(alpha = ActiveBoxAlpha))
                 ) {
                     Icon(
-                        painter = painterResource(R.drawable.play),
+                        imageVector = Icons.Filled.PlayArrow,
                         contentDescription = null,
                         tint = Color.White
                     )
@@ -1252,7 +1270,7 @@ fun BoxScope.OverlayPlayButton(
                 .background(Color.Black.copy(alpha = ActiveBoxAlpha))
         ) {
             Icon(
-                painter = painterResource(R.drawable.play),
+                imageVector = Icons.Filled.PlayArrow,
                 contentDescription = null,
                 tint = Color.White,
                 modifier = Modifier.size(20.dp)
@@ -1283,7 +1301,7 @@ fun BoxScope.AlbumPlayButton(
                 .clickable(onClick = onClick)
         ) {
             Icon(
-                painter = painterResource(R.drawable.play),
+                imageVector = Icons.Filled.PlayArrow,
                 contentDescription = null,
                 tint = Color.White
             )
@@ -1335,13 +1353,13 @@ fun SwipeToSongBox(
         if (offset.value != 0f) {
             val (iconRes, bg, tint, align) = if (offset.value > 0)
                 Quadruple(
-                    R.drawable.playlist_play,
+                    Icons.Filled.PlaylistPlay,
                     MaterialTheme.colorScheme.secondary,
                     MaterialTheme.colorScheme.onSecondary,
                     Alignment.CenterStart
                 ) else
                 Quadruple(
-                    R.drawable.queue_music,
+                    Icons.Filled.QueueMusic,
                     MaterialTheme.colorScheme.primary,
                     MaterialTheme.colorScheme.onPrimary,
                     Alignment.CenterEnd
@@ -1400,7 +1418,7 @@ private object Icon {
     @Composable
     fun Favorite() {
         Icon(
-            painter = painterResource(R.drawable.favorite),
+            imageVector = Icons.Filled.Favorite,
             contentDescription = null,
             tint = MaterialTheme.colorScheme.error,
             modifier = Modifier
@@ -1412,7 +1430,7 @@ private object Icon {
     @Composable
     fun Library() {
         Icon(
-            painter = painterResource(R.drawable.library_add_check),
+            imageVector = Icons.Filled.LibraryAddCheck,
             contentDescription = null,
             modifier = Modifier
                 .size(18.dp)
@@ -1424,7 +1442,7 @@ private object Icon {
     fun Download(state: Int?) {
         when (state) {
             STATE_COMPLETED -> Icon(
-                painter = painterResource(R.drawable.offline),
+                imageVector = Icons.Filled.CloudOff,
                 contentDescription = null,
                 modifier = Modifier
                     .size(18.dp)
@@ -1443,7 +1461,7 @@ private object Icon {
     @Composable
     fun Explicit() {
         Icon(
-            painter = painterResource(R.drawable.explicit),
+            imageVector = Icons.Filled.Explicit,
             contentDescription = null,
             modifier = Modifier
                 .size(18.dp)

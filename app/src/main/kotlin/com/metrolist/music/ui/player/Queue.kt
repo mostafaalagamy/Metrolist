@@ -47,21 +47,53 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Icon
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.IconButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.LocalContentColor
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Slider
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.SnackbarHost
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.SnackbarResult
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.SwipeToDismissBox
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.SwipeToDismissBoxValue
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.TextButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.rememberSwipeToDismissBoxState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -256,7 +288,7 @@ fun Queue(
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
-                            painter = painterResource(id = R.drawable.queue_music),
+                            painter = Icons.Filled.QueueMusic,
                             contentDescription = null,
                             modifier = Modifier.size(iconSize),
                             tint = TextBackgroundColor
@@ -295,7 +327,7 @@ fun Queue(
                                 )
                             } else {
                                 Icon(
-                                    painter = painterResource(id = R.drawable.bedtime),
+                                    painter = Icons.Filled.Bedtime,
                                     contentDescription = null,
                                     modifier = Modifier.size(iconSize),
                                     tint = TextBackgroundColor
@@ -315,7 +347,7 @@ fun Queue(
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
-                            painter = painterResource(id = R.drawable.lyrics),
+                            painter = Icons.Filled.Lyrics,
                             contentDescription = null,
                             modifier = Modifier.size(iconSize),
                             tint = TextBackgroundColor.copy(alpha = if (showLyrics) 1f else 0.5f)
@@ -351,9 +383,9 @@ fun Queue(
                         Icon(
                             painter = painterResource(
                                 id = when (repeatMode) {
-                                    Player.REPEAT_MODE_OFF, Player.REPEAT_MODE_ALL -> R.drawable.repeat
-                                    Player.REPEAT_MODE_ONE -> R.drawable.repeat_one
-                                    else -> R.drawable.repeat
+                                    Player.REPEAT_MODE_OFF, Player.REPEAT_MODE_ALL -> Icons.Filled.Repeat
+                                    Player.REPEAT_MODE_ONE -> Icons.Filled.RepeatOne
+                                    else -> Icons.Filled.Repeat
                                 }
                             ),
                             contentDescription = null,
@@ -391,7 +423,7 @@ fun Queue(
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
-                            painter = painterResource(id = R.drawable.more_vert),
+                            painter = Icons.Filled.MoreVert,
                             contentDescription = null,
                             modifier = Modifier.size(iconSize),
                             tint = iconButtonColor
@@ -421,7 +453,7 @@ fun Queue(
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             Icon(
-                                painter = painterResource(id = R.drawable.queue_music),
+                                painter = Icons.Filled.QueueMusic,
                                 contentDescription = null,
                                 modifier = Modifier.size(20.dp),
                                 tint = TextBackgroundColor
@@ -454,7 +486,7 @@ fun Queue(
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             Icon(
-                                painter = painterResource(id = R.drawable.bedtime),
+                                painter = Icons.Filled.Bedtime,
                                 contentDescription = null,
                                 modifier = Modifier.size(20.dp),
                                 tint = TextBackgroundColor
@@ -497,7 +529,7 @@ fun Queue(
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             Icon(
-                                painter = painterResource(id = R.drawable.lyrics),
+                                painter = Icons.Filled.Lyrics,
                                 contentDescription = null,
                                 modifier = Modifier.size(20.dp),
                                 tint = TextBackgroundColor.copy(alpha = if (showLyrics) 1f else 0.5f)
@@ -756,7 +788,7 @@ fun Queue(
                                             },
                                         ) {
                                             Icon(
-                                                painter = painterResource(R.drawable.more_vert),
+                                                imageVector = Icons.Filled.MoreVert,
                                                 contentDescription = null,
                                             )
                                         }
@@ -766,7 +798,7 @@ fun Queue(
                                                 modifier = Modifier.draggableHandle()
                                             ) {
                                                 Icon(
-                                                    painter = painterResource(R.drawable.drag_handle),
+                                                    imageVector = Icons.Filled.DragHandle,
                                                     contentDescription = null,
                                                 )
                                             }
@@ -854,7 +886,7 @@ fun Queue(
                                         },
                                     ) {
                                         Icon(
-                                            painter = painterResource(R.drawable.playlist_play),
+                                            imageVector = Icons.Filled.PlaylistPlay,
                                             contentDescription = null,
                                         )
                                     }
@@ -867,7 +899,7 @@ fun Queue(
                                         },
                                     ) {
                                         Icon(
-                                            painter = painterResource(R.drawable.queue_music),
+                                            imageVector = Icons.Filled.QueueMusic,
                                             contentDescription = null,
                                         )
                                     }
@@ -945,7 +977,7 @@ fun Queue(
                             modifier = Modifier.padding(horizontal = 6.dp),
                         ) {
                             Icon(
-                                painter = painterResource(if (locked) R.drawable.lock else R.drawable.lock_open),
+                                painter = if (locked) Icons.Filled.Lock else Icons.Filled.LockOpen,
                                 contentDescription = null,
                             )
                         }
@@ -990,7 +1022,7 @@ fun Queue(
                         },
                     ) {
                         Icon(
-                            painter = painterResource(R.drawable.close),
+                            imageVector = Icons.Filled.Close,
                             contentDescription = null,
                         )
                     }
@@ -1017,9 +1049,9 @@ fun Queue(
                             painter =
                             painterResource(
                                 if (count == mutableQueueWindows.size) {
-                                    R.drawable.deselect
+                                    Icons.Filled.Deselect
                                 } else {
-                                    R.drawable.select_all
+                                    Icons.Filled.SelectAll
                                 },
                             ),
                             contentDescription = null,
@@ -1042,7 +1074,7 @@ fun Queue(
                         },
                     ) {
                         Icon(
-                            painter = painterResource(R.drawable.more_vert),
+                            imageVector = Icons.Filled.MoreVert,
                             contentDescription = null,
                             tint = LocalContentColor.current,
                         )
@@ -1097,14 +1129,14 @@ fun Queue(
                 },
             ) {
                 Icon(
-                    painter = painterResource(R.drawable.shuffle),
+                    imageVector = Icons.Filled.Shuffle,
                     contentDescription = null,
                     modifier = Modifier.alpha(if (shuffleModeEnabled) 1f else 0.5f),
                 )
             }
 
             Icon(
-                painter = painterResource(R.drawable.expand_more),
+                imageVector = Icons.Filled.ExpandMore,
                 contentDescription = null,
                 modifier = Modifier.align(Alignment.Center),
             )
@@ -1117,8 +1149,8 @@ fun Queue(
                     painter =
                     painterResource(
                         when (repeatMode) {
-                            Player.REPEAT_MODE_OFF, Player.REPEAT_MODE_ALL -> R.drawable.repeat
-                            Player.REPEAT_MODE_ONE -> R.drawable.repeat_one
+                            Player.REPEAT_MODE_OFF, Player.REPEAT_MODE_ALL -> Icons.Filled.Repeat
+                            Player.REPEAT_MODE_ONE -> Icons.Filled.RepeatOne
                             else -> throw IllegalStateException()
                         },
                     ),

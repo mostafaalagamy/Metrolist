@@ -166,6 +166,7 @@ dependencies {
     implementation(libs.viewmodel.compose)
 
     implementation(libs.material3)
+    implementation(libs.material.icons.extended)
     implementation(libs.palette)
     implementation(libs.materialKolor)
 

@@ -139,7 +139,7 @@ fun ArtistAlbumsScreen(
                     onLongClick = navController::backToMain
                 ) {
                     Icon(
-                        painter = painterResource(id = R.drawable.arrow_back),
+                        painter = Icons.Filled.ArrowBack,
                         contentDescription = null
                     )
                 }

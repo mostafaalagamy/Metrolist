@@ -17,9 +17,17 @@ import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Icon
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.IconButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -151,7 +159,7 @@ fun OnlineSearchResult(
                     onClick = longClick,
                 ) {
                     Icon(
-                        painter = painterResource(R.drawable.more_vert),
+                        imageVector = Icons.Filled.MoreVert,
                         contentDescription = null,
                     )
                 }
@@ -208,7 +216,7 @@ fun OnlineSearchResult(
             if (searchSummary?.summaries?.isEmpty() == true) {
                 item {
                     EmptyPlaceholder(
-                        icon = R.drawable.search,
+                        icon = Icons.Filled.Search,
                         text = stringResource(R.string.no_results_found),
                     )
                 }
@@ -233,7 +241,7 @@ fun OnlineSearchResult(
             if (itemsPage?.items?.isEmpty() == true) {
                 item {
                     EmptyPlaceholder(
-                        icon = R.drawable.search,
+                        icon = Icons.Filled.Search,
                         text = stringResource(R.string.no_results_found),
                     )
                 }

@@ -23,14 +23,32 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Icon
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.IconButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.TextButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.ListItem
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -75,7 +93,7 @@ fun LyricsMenu(
     if (showEditDialog) {
         TextFieldDialog(
             onDismiss = { showEditDialog = false },
-            icon = { Icon(painter = painterResource(R.drawable.edit), contentDescription = null) },
+            icon = { Icon(imageVector = Icons.Filled.Edit, contentDescription = null) },
             title = { Text(text = mediaMetadataProvider().title) },
             initialTextFieldValue = TextFieldValue(lyricsProvider()?.lyrics.orEmpty()),
             singleLine = false,
@@ -128,7 +146,7 @@ fun LyricsMenu(
             onDismiss = { showSearchDialog = false },
             icon = {
                 Icon(
-                    painter = painterResource(R.drawable.search),
+                    imageVector = Icons.Filled.Search,
                     contentDescription = null
                 )
             },
@@ -254,7 +272,7 @@ fun LyricsMenu(
                             )
                             if (result.lyrics.startsWith("[")) {
                                 Icon(
-                                    painter = painterResource(R.drawable.sync),
+                                    imageVector = Icons.Filled.Sync,
                                     contentDescription = null,
                                     tint = MaterialTheme.colorScheme.secondary,
                                     modifier =
@@ -272,7 +290,7 @@ fun LyricsMenu(
                         },
                     ) {
                         Icon(
-                            painter = painterResource(if (index == expandedItemIndex) R.drawable.expand_less else R.drawable.expand_more),
+                            painter = if (index == expandedItemIndex) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore,
                             contentDescription = null,
                         )
                     }
@@ -317,7 +335,7 @@ fun LyricsMenu(
                 headlineContent = { Text(text = stringResource(R.string.edit)) },
                 leadingContent = {
                     Icon(
-                        painter = painterResource(R.drawable.edit),
+                        imageVector = Icons.Filled.Edit,
                         contentDescription = null,
                     )
                 },
@@ -331,7 +349,7 @@ fun LyricsMenu(
                 headlineContent = { Text(text = stringResource(R.string.refetch)) },
                 leadingContent = {
                     Icon(
-                        painter = painterResource(R.drawable.cached),
+                        imageVector = Icons.Filled.Cached,
                         contentDescription = null,
                     )
                 },
@@ -346,7 +364,7 @@ fun LyricsMenu(
                 headlineContent = { Text(text = stringResource(R.string.search)) },
                 leadingContent = {
                     Icon(
-                        painter = painterResource(R.drawable.search),
+                        imageVector = Icons.Filled.Search,
                         contentDescription = null,
                     )
                 },

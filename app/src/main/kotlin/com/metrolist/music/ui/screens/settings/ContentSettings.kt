@@ -14,10 +14,20 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Icon
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.TopAppBarScrollBehavior
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -76,7 +86,7 @@ fun ContentSettings(
         PreferenceGroupTitle(title = stringResource(R.string.general))
         ListPreference(
             title = { Text(stringResource(R.string.content_language)) },
-            icon = { Icon(painterResource(R.drawable.language), null) },
+            icon = { Icon(Icons.Filled.Language, null) },
             selectedValue = contentLanguage,
             values = listOf(SYSTEM_DEFAULT) + LanguageCodeToName.keys.toList(),
             valueText = {
@@ -98,7 +108,7 @@ fun ContentSettings(
         )
         ListPreference(
             title = { Text(stringResource(R.string.content_country)) },
-            icon = { Icon(painterResource(R.drawable.location_on), null) },
+            icon = { Icon(Icons.Filled.LocationOn, null) },
             selectedValue = contentCountry,
             values = listOf(SYSTEM_DEFAULT) + CountryCodeToName.keys.toList(),
             valueText = {
@@ -119,7 +129,7 @@ fun ContentSettings(
 
         SwitchPreference(
             title = { Text(stringResource(R.string.hide_explicit)) },
-            icon = { Icon(painterResource(R.drawable.explicit), null) },
+            icon = { Icon(Icons.Filled.Explicit, null) },
             checked = hideExplicit,
             onCheckedChange = onHideExplicitChange,
         )
@@ -128,7 +138,7 @@ fun ContentSettings(
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             PreferenceEntry(
                 title = { Text(stringResource(R.string.app_language)) },
-                icon = { Icon(painterResource(R.drawable.language), null) },
+                icon = { Icon(Icons.Filled.Language, null) },
                 onClick = {
                     context.startActivity(
                         Intent(
@@ -143,7 +153,7 @@ fun ContentSettings(
         PreferenceGroupTitle(title = stringResource(R.string.proxy))
         SwitchPreference(
             title = { Text(stringResource(R.string.enable_proxy)) },
-            icon = { Icon(painterResource(R.drawable.wifi_proxy), null) },
+            icon = { Icon(Icons.Filled.Wifi, null) },
             checked = proxyEnabled,
             onCheckedChange = onProxyEnabledChange,
         )
@@ -167,19 +177,19 @@ fun ContentSettings(
         PreferenceGroupTitle(title = stringResource(R.string.lyrics))
         SwitchPreference(
             title = { Text(stringResource(R.string.enable_lrclib)) },
-            icon = { Icon(painterResource(R.drawable.lyrics), null) },
+            icon = { Icon(Icons.Filled.Lyrics, null) },
             checked = enableLrclib,
             onCheckedChange = onEnableLrclibChange,
         )
         SwitchPreference(
             title = { Text(stringResource(R.string.enable_kugou)) },
-            icon = { Icon(painterResource(R.drawable.lyrics), null) },
+            icon = { Icon(Icons.Filled.Lyrics, null) },
             checked = enableKugou,
             onCheckedChange = onEnableKugouChange,
         )
         ListPreference(
             title = { Text(stringResource(R.string.set_first_lyrics_provider)) },
-            icon = { Icon(painterResource(R.drawable.lyrics), null) },
+            icon = { Icon(Icons.Filled.Lyrics, null) },
             selectedValue = preferredProvider,
             values = listOf(PreferredLyricsProvider.LRCLIB, PreferredLyricsProvider.KUGOU),
             valueText = {
@@ -192,14 +202,14 @@ fun ContentSettings(
         )
         SwitchPreference(
             title = { Text(stringResource(R.string.lyrics_romanize_japanese)) },
-            icon = { Icon(painterResource(R.drawable.lyrics), null) },
+            icon = { Icon(Icons.Filled.Lyrics, null) },
             checked = lyricsRomanizeJapanese,
             onCheckedChange = onLyricsRomanizeJapaneseChange,
         )
 
         SwitchPreference(
             title = { Text(stringResource(R.string.lyrics_romanize_korean)) },
-            icon = { Icon(painterResource(R.drawable.lyrics), null) },
+            icon = { Icon(Icons.Filled.Lyrics, null) },
             checked = lyricsRomanizeKorean,
             onCheckedChange = onLyricsRomanizeKoreanChange,
         )
@@ -207,14 +217,14 @@ fun ContentSettings(
         PreferenceGroupTitle(title = stringResource(R.string.misc))
         EditTextPreference(
             title = { Text(stringResource(R.string.top_length)) },
-            icon = { Icon(painterResource(R.drawable.trending_up), null) },
+            icon = { Icon(Icons.Filled.TrendingUp, null) },
             value = lengthTop,
             isInputValid = { it.toIntOrNull()?.let { num -> num > 0 } == true },
             onValueChange = onLengthTopChange,
         )
         ListPreference(
             title = { Text(stringResource(R.string.set_quick_picks)) },
-            icon = { Icon(painterResource(R.drawable.home_outlined), null) },
+            icon = { Icon(Icons.Filled.Home, null) },
             selectedValue = quickPicks,
             values = listOf(QuickPicks.QUICK_PICKS, QuickPicks.LAST_LISTEN),
             valueText = {
@@ -235,7 +245,7 @@ fun ContentSettings(
                 onLongClick = navController::backToMain,
             ) {
                 Icon(
-                    painterResource(R.drawable.arrow_back),
+                    Icons.Filled.ArrowBack,
                     contentDescription = null,
                 )
             }

@@ -78,9 +78,9 @@ inline fun <reified T : Enum<T>> SortHeader(
                                 if (sortType ==
                                     type
                                 ) {
-                                    R.drawable.radio_button_checked
+                                    Icons.Filled.RadioButtonChecked
                                 } else {
-                                    R.drawable.radio_button_unchecked
+                                    Icons.Filled.RadioButtonUnchecked
                                 },
                             ),
                             contentDescription = null,
@@ -96,7 +96,7 @@ inline fun <reified T : Enum<T>> SortHeader(
 
         if (sortType != PlaylistSongSortType.CUSTOM && showDescending == true) {
             ResizableIconButton(
-                icon = if (sortDescending) R.drawable.arrow_downward else R.drawable.arrow_upward,
+                icon = if (sortDescending) Icons.Filled.ArrowDownward else Icons.Filled.ArrowUpward,
                 color = MaterialTheme.colorScheme.primary,
                 modifier =
                 Modifier

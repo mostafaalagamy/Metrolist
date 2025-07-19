@@ -1,35 +1,38 @@
 package com.metrolist.music.ui.screens
 
-import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Immutable
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.outlined.*
 import com.metrolist.music.R
 
 @Immutable
 sealed class Screens(
     @StringRes val titleId: Int,
-    @DrawableRes val iconIdInactive: Int,
-    @DrawableRes val iconIdActive: Int,
+    val iconInactive: ImageVector,
+    val iconActive: ImageVector,
     val route: String,
 ) {
     object Home : Screens(
         titleId = R.string.home,
-        iconIdInactive = R.drawable.home_outlined,
-        iconIdActive = R.drawable.home_filled,
+        iconInactive = Icons.Outlined.Home,
+        iconActive = Icons.Filled.Home,
         route = "home"
     )
 
     object Search : Screens(
         titleId = R.string.search,
-        iconIdInactive = R.drawable.search,
-        iconIdActive = R.drawable.search,
+        iconInactive = Icons.Filled.Search,
+        iconActive = Icons.Filled.Search,
         route = "search"
     )
 
     object Library : Screens(
         titleId = R.string.filter_library,
-        iconIdInactive = R.drawable.library_music_outlined,
-        iconIdActive = R.drawable.library_music_filled,
+        iconInactive = Icons.Outlined.LibraryMusic,
+        iconActive = Icons.Filled.LibraryMusic,
         route = "library"
     )
 

@@ -15,6 +15,8 @@ import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -82,7 +84,7 @@ fun ChartsScreen(
                         onLongClick = { navController.backToMain() }
                     ) {
                         Icon(
-                            painter = painterResource(R.drawable.arrow_back),
+                            imageVector = Icons.Filled.ArrowBack,
                             contentDescription = null,
                         )
                     }
@@ -234,7 +236,7 @@ fun ChartsScreen(
                                                     },
                                                 ) {
                                                     Icon(
-                                                        painter = painterResource(R.drawable.more_vert),
+                                                        imageVector = Icons.Filled.MoreVert,
                                                         contentDescription = null,
                                                     )
                                                 }

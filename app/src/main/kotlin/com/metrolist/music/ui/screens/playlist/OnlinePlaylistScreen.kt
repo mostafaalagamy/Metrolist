@@ -26,20 +26,50 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Icon
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.IconButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.LocalContentColor
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.SnackbarHost
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.TextField
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.TopAppBarScrollBehavior
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -320,7 +350,7 @@ fun OnlinePlaylistScreen(
                                                 ) {
                                                     Icon(
                                                         painter = painterResource(
-                                                            if (dbPlaylist?.playlist?.bookmarkedAt != null) R.drawable.favorite else R.drawable.favorite_border
+                                                            if (dbPlaylist?.playlist?.bookmarkedAt != null) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder
                                                         ),
                                                         contentDescription = null,
                                                         tint = if (dbPlaylist?.playlist?.bookmarkedAt != null) MaterialTheme.colorScheme.error else LocalContentColor.current
@@ -343,7 +373,7 @@ fun OnlinePlaylistScreen(
                                                 },
                                             ) {
                                                 Icon(
-                                                    painter = painterResource(R.drawable.more_vert),
+                                                    imageVector = Icons.Filled.MoreVert,
                                                     contentDescription = null,
                                                 )
                                             }
@@ -367,7 +397,7 @@ fun OnlinePlaylistScreen(
                                             modifier = Modifier.weight(1f)
                                         ) {
                                             Icon(
-                                                painter = painterResource(R.drawable.shuffle),
+                                                imageVector = Icons.Filled.Shuffle,
                                                 contentDescription = null,
                                                 modifier = Modifier.size(ButtonDefaults.IconSize)
                                             )
@@ -389,7 +419,7 @@ fun OnlinePlaylistScreen(
                                             modifier = Modifier.weight(1f),
                                         ) {
                                             Icon(
-                                                painter = painterResource(R.drawable.radio),
+                                                imageVector = Icons.Filled.Radio,
                                                 contentDescription = null,
                                                 modifier = Modifier.size(ButtonDefaults.IconSize),
                                             )
@@ -423,7 +453,7 @@ fun OnlinePlaylistScreen(
                                     },
                                 ) {
                                     Icon(
-                                        painter = painterResource(R.drawable.more_vert),
+                                        imageVector = Icons.Filled.MoreVert,
                                         contentDescription = null,
                                     )
                                 }
@@ -578,7 +608,7 @@ fun OnlinePlaylistScreen(
                 ) {
                     Icon(
                         painter = painterResource(
-                            if (selection) R.drawable.close else R.drawable.arrow_back
+                            if (selection) Icons.Filled.Close else Icons.Filled.ArrowBack
                         ),
                         contentDescription = null
                     )
@@ -598,7 +628,7 @@ fun OnlinePlaylistScreen(
                     ) {
                         Icon(
                             painter = painterResource(
-                                if (count == wrappedSongs.size) R.drawable.deselect else R.drawable.select_all
+                                if (count == wrappedSongs.size) Icons.Filled.Deselect else Icons.Filled.SelectAll
                             ),
                             contentDescription = null
                         )
@@ -617,7 +647,7 @@ fun OnlinePlaylistScreen(
                         },
                     ) {
                         Icon(
-                            painter = painterResource(R.drawable.more_vert),
+                            imageVector = Icons.Filled.MoreVert,
                             contentDescription = null
                         )
                     }
@@ -627,7 +657,7 @@ fun OnlinePlaylistScreen(
                             onClick = { isSearching = true }
                         ) {
                             Icon(
-                                painter = painterResource(R.drawable.search),
+                                imageVector = Icons.Filled.Search,
                                 contentDescription = null
                             )
                         }

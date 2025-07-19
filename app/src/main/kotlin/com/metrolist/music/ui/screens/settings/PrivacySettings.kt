@@ -9,12 +9,26 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Icon
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.TextButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.TopAppBarScrollBehavior
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -148,13 +162,13 @@ fun PrivacySettings(
 
         SwitchPreference(
             title = { Text(stringResource(R.string.pause_listen_history)) },
-            icon = { Icon(painterResource(R.drawable.history), null) },
+            icon = { Icon(Icons.Filled.History, null) },
             checked = pauseListenHistory,
             onCheckedChange = onPauseListenHistoryChange,
         )
         PreferenceEntry(
             title = { Text(stringResource(R.string.clear_listen_history)) },
-            icon = { Icon(painterResource(R.drawable.delete_history), null) },
+            icon = { Icon(Icons.Filled.DeleteSweep, null) },
             onClick = { showClearListenHistoryDialog = true },
         )
 
@@ -164,13 +178,13 @@ fun PrivacySettings(
 
         SwitchPreference(
             title = { Text(stringResource(R.string.pause_search_history)) },
-            icon = { Icon(painterResource(R.drawable.search_off), null) },
+            icon = { Icon(Icons.Filled.SearchOff, null) },
             checked = pauseSearchHistory,
             onCheckedChange = onPauseSearchHistoryChange,
         )
         PreferenceEntry(
             title = { Text(stringResource(R.string.clear_search_history)) },
-            icon = { Icon(painterResource(R.drawable.clear_all), null) },
+            icon = { Icon(Icons.Filled.ClearAll, null) },
             onClick = { showClearSearchHistoryDialog = true },
         )
 
@@ -181,7 +195,7 @@ fun PrivacySettings(
         SwitchPreference(
             title = { Text(stringResource(R.string.disable_screenshot)) },
             description = stringResource(R.string.disable_screenshot_desc),
-            icon = { Icon(painterResource(R.drawable.screenshot), null) },
+            icon = { Icon(Icons.Filled.Screenshot, null) },
             checked = disableScreenshot,
             onCheckedChange = onDisableScreenshotChange,
         )
@@ -195,7 +209,7 @@ fun PrivacySettings(
                 onLongClick = navController::backToMain,
             ) {
                 Icon(
-                    painterResource(R.drawable.arrow_back),
+                    Icons.Filled.ArrowBack,
                     contentDescription = null,
                 )
             }

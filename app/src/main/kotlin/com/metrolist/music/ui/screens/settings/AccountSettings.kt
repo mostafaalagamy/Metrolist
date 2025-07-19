@@ -21,14 +21,32 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Badge
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.BadgedBox
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Icon
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.IconButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Surface
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -118,7 +136,7 @@ fun AccountSettings(
             )
             Spacer(modifier = Modifier.weight(1f))
             IconButton(onClick = onClose) {
-                Icon(painterResource(R.drawable.close), contentDescription = null)
+                Icon(Icons.Filled.Close, contentDescription = null)
             }
         }
 
@@ -150,7 +168,7 @@ fun AccountSettings(
                 )
             } else {
                 Icon(
-                    painter = painterResource(R.drawable.login),
+                    imageVector = Icons.Filled.Login,
                     contentDescription = null,
                     modifier = Modifier.size(24.dp)
                 )
@@ -231,7 +249,7 @@ fun AccountSettings(
                     }
                 )
             },
-            icon = { Icon(painterResource(R.drawable.token), null) },
+            icon = { Icon(Icons.Filled.Token, null) },
             onClick = {
                 if (!isLoggedIn) showTokenEditor = true
                 else if (!showToken) showToken = true
@@ -249,7 +267,7 @@ fun AccountSettings(
             SwitchPreference(
                 title = { Text(stringResource(R.string.more_content)) },
                 description = null,
-                icon = { Icon(painterResource(R.drawable.add_circle), null) },
+                icon = { Icon(Icons.Filled.AddCircle, null) },
                 checked = useLoginForBrowse,
                 onCheckedChange = {
                     YouTube.useLoginForBrowse = it
@@ -265,7 +283,7 @@ fun AccountSettings(
 
             SwitchPreference(
                 title = { Text(stringResource(R.string.yt_sync)) },
-                icon = { Icon(painterResource(R.drawable.cached), null) },
+                icon = { Icon(Icons.Filled.Cached, null) },
                 checked = ytmSync,
                 onCheckedChange = onYtmSyncChange,
                 modifier = Modifier
@@ -284,7 +302,7 @@ fun AccountSettings(
         ) {
             PreferenceEntry(
                 title = { Text(stringResource(R.string.discord_integration)) },
-                icon = { Icon(painterResource(R.drawable.discord), null) },
+                icon = { Icon(Icons.Filled.Message, null) },
                 onClick = {
                     onClose()
                     navController.navigate("settings/discord")
@@ -306,7 +324,7 @@ fun AccountSettings(
                             }
                         }
                     ) {
-                        Icon(painterResource(R.drawable.settings), contentDescription = null)
+                        Icon(Icons.Filled.Settings, contentDescription = null)
                     }
                 },
                 onClick = {
@@ -328,7 +346,7 @@ fun AccountSettings(
                     description = latestVersionName,
                     icon = {
                         BadgedBox(badge = { Badge() }) {
-                            Icon(painterResource(R.drawable.update), null)
+                            Icon(Icons.Filled.Update, null)
                         }
                     },
                     onClick = {

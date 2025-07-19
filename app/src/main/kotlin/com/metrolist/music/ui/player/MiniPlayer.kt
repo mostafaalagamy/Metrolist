@@ -26,10 +26,20 @@ import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.IconButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -226,15 +236,13 @@ fun MiniPlayer(
                 },
             ) {
                 Icon(
-                    painter = painterResource(
-                        if (playbackState == Player.STATE_ENDED) {
-                            R.drawable.replay
-                        } else if (isPlaying) {
-                            R.drawable.pause
-                        } else {
-                            R.drawable.play
-                        },
-                    ),
+                    imageVector = if (playbackState == Player.STATE_ENDED) {
+                        Icons.Filled.Replay
+                    } else if (isPlaying) {
+                        Icons.Filled.Pause
+                    } else {
+                        Icons.Filled.PlayArrow
+                    },
                     contentDescription = null,
                 )
             }
@@ -244,7 +252,7 @@ fun MiniPlayer(
                 onClick = playerConnection::seekToNext,
             ) {
                 Icon(
-                    painter = painterResource(R.drawable.skip_next),
+                    imageVector = Icons.Filled.SkipNext,
                     contentDescription = null,
                 )
             }
@@ -258,9 +266,7 @@ fun MiniPlayer(
                     .padding(horizontal = 16.dp)
             ) {
                 Icon(
-                    painter = painterResource(
-                        if (offsetXAnimatable.value > 0) R.drawable.skip_previous else R.drawable.skip_next
-                    ),
+                    imageVector = if (offsetXAnimatable.value > 0) Icons.Filled.SkipPrevious else Icons.Filled.SkipNext,
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.primary.copy(
                         alpha = (offsetXAnimatable.value.absoluteValue / autoSwipeThreshold).coerceIn(0f, 1f)
@@ -329,7 +335,7 @@ fun MiniMediaInfo(
                         ),
                 ) {
                     Icon(
-                        painter = painterResource(R.drawable.info),
+                        imageVector = Icons.Filled.Info,
                         contentDescription = null,
                         tint = MaterialTheme.colorScheme.error,
                         modifier = Modifier.align(Alignment.Center),

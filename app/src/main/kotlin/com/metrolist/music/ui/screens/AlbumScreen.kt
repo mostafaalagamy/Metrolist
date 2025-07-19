@@ -20,17 +20,41 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Icon
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.IconButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.LocalContentColor
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.TopAppBarScrollBehavior
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -234,9 +258,9 @@ fun AlbumScreen(
                                             if (albumWithSongs.album.bookmarkedAt !=
                                                 null
                                             ) {
-                                                R.drawable.favorite
+                                                Icons.Filled.Favorite
                                             } else {
-                                                R.drawable.favorite_border
+                                                Icons.Filled.FavoriteBorder
                                             },
                                         ),
                                         contentDescription = null,
@@ -266,7 +290,7 @@ fun AlbumScreen(
                                             },
                                         ) {
                                             Icon(
-                                                painter = painterResource(R.drawable.offline),
+                                                imageVector = Icons.Filled.CloudOff,
                                                 contentDescription = null,
                                             )
                                         }
@@ -312,7 +336,7 @@ fun AlbumScreen(
                                             },
                                         ) {
                                             Icon(
-                                                painter = painterResource(R.drawable.download),
+                                                imageVector = Icons.Filled.Download,
                                                 contentDescription = null,
                                             )
                                         }
@@ -334,7 +358,7 @@ fun AlbumScreen(
                                     }
                                 ) {
                                     Icon(
-                                        painter = painterResource(R.drawable.more_vert),
+                                        imageVector = Icons.Filled.MoreVert,
                                         contentDescription = null,
                                     )
                                 }
@@ -356,7 +380,7 @@ fun AlbumScreen(
                             modifier = Modifier.weight(1f),
                         ) {
                             Icon(
-                                painter = painterResource(R.drawable.play),
+                                imageVector = Icons.Filled.PlayArrow,
                                 contentDescription = null,
                                 modifier = Modifier.size(ButtonDefaults.IconSize),
                             )
@@ -377,7 +401,7 @@ fun AlbumScreen(
                             modifier = Modifier.weight(1f),
                         ) {
                             Icon(
-                                painter = painterResource(R.drawable.shuffle),
+                                imageVector = Icons.Filled.Shuffle,
                                 contentDescription = null,
                                 modifier = Modifier.size(ButtonDefaults.IconSize),
                             )
@@ -413,7 +437,7 @@ fun AlbumScreen(
                                 },
                             ) {
                                 Icon(
-                                    painter = painterResource(R.drawable.more_vert),
+                                    imageVector = Icons.Filled.MoreVert,
                                     contentDescription = null,
                                 )
                             }
@@ -567,7 +591,7 @@ fun AlbumScreen(
             ) {
                 Icon(
                     painter = painterResource(
-                        if (selection) R.drawable.close else R.drawable.arrow_back
+                        if (selection) Icons.Filled.Close else Icons.Filled.ArrowBack
                     ),
                     contentDescription = null
                 )
@@ -587,7 +611,7 @@ fun AlbumScreen(
                 ) {
                     Icon(
                         painter = painterResource(
-                            if (count == wrappedSongs?.size) R.drawable.deselect else R.drawable.select_all
+                            if (count == wrappedSongs?.size) Icons.Filled.Deselect else Icons.Filled.SelectAll
                         ),
                         contentDescription = null
                     )
@@ -606,7 +630,7 @@ fun AlbumScreen(
                     },
                 ) {
                     Icon(
-                        painter = painterResource(R.drawable.more_vert),
+                        imageVector = Icons.Filled.MoreVert,
                         contentDescription = null
                     )
                 }

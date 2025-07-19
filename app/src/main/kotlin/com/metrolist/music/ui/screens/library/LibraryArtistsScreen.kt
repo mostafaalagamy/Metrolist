@@ -18,11 +18,23 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.FilterChip
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.FilterChipDefaults
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Icon
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.IconButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -97,7 +109,7 @@ fun LibraryArtistsScreen(
                 onClick = onDeselect,
                 shape = RoundedCornerShape(16.dp),
                 leadingIcon = {
-                    Icon(painter = painterResource(R.drawable.close), contentDescription = "")
+                    Icon(imageVector = Icons.Filled.Close, contentDescription = "")
                 },
             )
             ChipsRow(
@@ -186,8 +198,8 @@ fun LibraryArtistsScreen(
                     painter =
                     painterResource(
                         when (viewType) {
-                            LibraryViewType.LIST -> R.drawable.list
-                            LibraryViewType.GRID -> R.drawable.grid_view
+                            LibraryViewType.LIST -> Icons.Filled.List
+                            LibraryViewType.GRID -> Icons.Filled.GridView
                         },
                     ),
                     contentDescription = null,
@@ -223,7 +235,7 @@ fun LibraryArtistsScreen(
                         if (artists.isEmpty()) {
                             item {
                                 EmptyPlaceholder(
-                                    icon = R.drawable.artist,
+                                    icon = Icons.Filled.Person,
                                     text = stringResource(R.string.library_artist_empty),
                                     modifier = Modifier.animateItem()
                                 )
@@ -275,7 +287,7 @@ fun LibraryArtistsScreen(
                         if (artists.isEmpty()) {
                             item(span = { GridItemSpan(maxLineSpan) }) {
                                 EmptyPlaceholder(
-                                    icon = R.drawable.artist,
+                                    icon = Icons.Filled.Person,
                                     text = stringResource(R.string.library_artist_empty),
                                     modifier = Modifier.animateItem()
                                 )

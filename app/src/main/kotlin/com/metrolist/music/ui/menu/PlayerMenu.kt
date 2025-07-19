@@ -26,14 +26,32 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Icon
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.IconButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.TextButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.ListItem
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -183,7 +201,7 @@ fun PlayerMenu(
                 .padding(top = 24.dp, bottom = 6.dp),
         ) {
             Icon(
-                painter = painterResource(R.drawable.volume_up),
+                imageVector = Icons.Filled.VolumeUp,
                 contentDescription = null,
                 modifier = Modifier.size(28.dp),
             )
@@ -231,7 +249,7 @@ fun PlayerMenu(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Icon(
-                painter = painterResource(R.drawable.radio),
+                imageVector = Icons.Filled.Radio,
                 contentDescription = null,
                 modifier = Modifier.size(24.dp)
             )
@@ -260,7 +278,7 @@ fun PlayerMenu(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Icon(
-                painter = painterResource(R.drawable.playlist_add),
+                imageVector = Icons.Filled.PlaylistAdd,
                 contentDescription = null,
                 modifier = Modifier.size(24.dp)
             )
@@ -292,7 +310,7 @@ fun PlayerMenu(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Icon(
-                painter = painterResource(R.drawable.link),
+                imageVector = Icons.Filled.Link,
                 contentDescription = null,
                 modifier = Modifier.size(24.dp)
             )
@@ -321,7 +339,7 @@ fun PlayerMenu(
                     headlineContent = { Text(text = stringResource(R.string.view_artist)) },
                     leadingContent = {
                         Icon(
-                            painter = painterResource(R.drawable.artist),
+                            imageVector = Icons.Filled.Person,
                             contentDescription = null,
                         )
                     },
@@ -343,7 +361,7 @@ fun PlayerMenu(
                     headlineContent = { Text(text = stringResource(R.string.view_album)) },
                     leadingContent = {
                         Icon(
-                            painter = painterResource(R.drawable.album),
+                            imageVector = Icons.Filled.Album,
                             contentDescription = null,
                         )
                     },
@@ -367,7 +385,7 @@ fun PlayerMenu(
                         },
                         leadingContent = {
                             Icon(
-                                painter = painterResource(R.drawable.offline),
+                                imageVector = Icons.Filled.CloudOff,
                                 contentDescription = null,
                             )
                         },
@@ -405,7 +423,7 @@ fun PlayerMenu(
                         headlineContent = { Text(text = stringResource(R.string.action_download)) },
                         leadingContent = {
                             Icon(
-                                painter = painterResource(R.drawable.download),
+                                imageVector = Icons.Filled.Download,
                                 contentDescription = null,
                             )
                         },
@@ -435,7 +453,7 @@ fun PlayerMenu(
                 headlineContent = { Text(text = stringResource(R.string.details)) },
                 leadingContent = {
                     Icon(
-                        painter = painterResource(R.drawable.info),
+                        imageVector = Icons.Filled.Info,
                         contentDescription = null,
                     )
                 },
@@ -451,7 +469,7 @@ fun PlayerMenu(
                     headlineContent = { Text(text = stringResource(R.string.equalizer)) },
                     leadingContent = {
                         Icon(
-                            painter = painterResource(R.drawable.equalizer),
+                            imageVector = Icons.Filled.Equalizer,
                             contentDescription = null,
                         )
                     },
@@ -477,7 +495,7 @@ fun PlayerMenu(
                     headlineContent = { Text(text = stringResource(R.string.advanced)) },
                     leadingContent = {
                         Icon(
-                            painter = painterResource(R.drawable.tune),
+                            imageVector = Icons.Filled.Tune,
                             contentDescription = null,
                         )
                     },
@@ -531,7 +549,7 @@ fun TempoPitchDialog(onDismiss: () -> Unit) {
         text = {
             Column {
                 ValueAdjuster(
-                    icon = R.drawable.speed,
+                    icon = Icons.Filled.Speed,
                     currentValue = tempo,
                     values = (0..35).map { round((0.25f + it * 0.05f) * 100) / 100 },
                     onValueUpdate = {
@@ -542,7 +560,7 @@ fun TempoPitchDialog(onDismiss: () -> Unit) {
                     modifier = Modifier.padding(bottom = 12.dp),
                 )
                 ValueAdjuster(
-                    icon = R.drawable.discover_tune,
+                    icon = Icons.Filled.Tune,
                     currentValue = transposeValue,
                     values = (-12..12).toList(),
                     onValueUpdate = {
@@ -583,7 +601,7 @@ fun <T> ValueAdjuster(
             },
         ) {
             Icon(
-                painter = painterResource(R.drawable.remove),
+                imageVector = Icons.Filled.Remove,
                 contentDescription = null,
             )
         }
@@ -602,7 +620,7 @@ fun <T> ValueAdjuster(
             },
         ) {
             Icon(
-                painter = painterResource(R.drawable.add),
+                imageVector = Icons.Filled.Add,
                 contentDescription = null,
             )
         }

@@ -18,12 +18,26 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Icon
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.IconButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.TopAppBarScrollBehavior
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -68,7 +82,7 @@ fun AboutScreen(
         Spacer(Modifier.height(4.dp))
 
         Image(
-            painter = painterResource(R.drawable.about_splash),
+            imageVector = Icons.Filled.Info,
             contentDescription = null,
             colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground, BlendMode.SrcIn),
             modifier = Modifier
@@ -161,7 +175,7 @@ fun AboutScreen(
                 onClick = { uriHandler.openUri("https://github.com/mostafaalagamy/metrolist") },
             ) {
                 Icon(
-                    painter = painterResource(R.drawable.github),
+                    imageVector = Icons.Filled.Code,
                     contentDescription = null
                 )
             }
@@ -170,7 +184,7 @@ fun AboutScreen(
                 onClick = { uriHandler.openUri("https://www.instagram.com/mostafaalagamy") }
             ) {
                 Icon(
-                    painter = painterResource(R.drawable.instagram),
+                    imageVector = Icons.Filled.Photo,
                     contentDescription = null
                 )
             }
@@ -185,7 +199,7 @@ fun AboutScreen(
                 onLongClick = navController::backToMain,
             ) {
                 Icon(
-                    painterResource(R.drawable.arrow_back),
+                    Icons.Filled.ArrowBack,
                     contentDescription = null,
                 )
             }

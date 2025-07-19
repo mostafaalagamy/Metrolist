@@ -24,13 +24,29 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Icon
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.IconButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.LocalContentColor
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.ListItem
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -157,7 +173,7 @@ fun SongMenu(
         TextFieldDialog(
             icon = {
                 Icon(
-                    painter = painterResource(R.drawable.edit),
+                    imageVector = Icons.Filled.Edit,
                     contentDescription = null
                 )
             },
@@ -257,7 +273,7 @@ fun SongMenu(
                     headlineContent = { Text(text = stringResource(R.string.already_in_playlist)) },
                     leadingContent = {
                         Image(
-                            painter = painterResource(R.drawable.close),
+                            imageVector = Icons.Filled.Close,
                             contentDescription = null,
                             colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
                             modifier = Modifier.size(ListThumbnailSize),
@@ -337,7 +353,7 @@ fun SongMenu(
                 },
             ) {
                 Icon(
-                    painter = painterResource(if (song.song.liked) R.drawable.favorite else R.drawable.favorite_border),
+                    painter = if (song.song.liked) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
                     tint = if (song.song.liked) MaterialTheme.colorScheme.error else LocalContentColor.current,
                     contentDescription = null,
                 )
@@ -374,7 +390,7 @@ fun SongMenu(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Icon(
-                painter = painterResource(R.drawable.edit),
+                imageVector = Icons.Filled.Edit,
                 contentDescription = null,
                 modifier = Modifier.size(24.dp),
             )
@@ -404,7 +420,7 @@ fun SongMenu(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Icon(
-                painter = painterResource(R.drawable.playlist_add),
+                imageVector = Icons.Filled.PlaylistAdd,
                 contentDescription = null,
                 modifier = Modifier.size(24.dp),
             )
@@ -440,7 +456,7 @@ fun SongMenu(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Icon(
-                painter = painterResource(R.drawable.share),
+                imageVector = Icons.Filled.Share,
                 contentDescription = null,
                 modifier = Modifier.size(24.dp),
             )
@@ -468,7 +484,7 @@ fun SongMenu(
                 headlineContent = { Text(text = stringResource(R.string.start_radio)) },
                 leadingContent = {
                     Icon(
-                        painter = painterResource(R.drawable.radio),
+                        imageVector = Icons.Filled.Radio,
                         contentDescription = null,
                     )
                 },
@@ -483,7 +499,7 @@ fun SongMenu(
                 headlineContent = { Text(text = stringResource(R.string.play_next)) },
                 leadingContent = {
                     Icon(
-                        painter = painterResource(R.drawable.playlist_play),
+                        imageVector = Icons.Filled.PlaylistPlay,
                         contentDescription = null,
                     )
                 },
@@ -498,7 +514,7 @@ fun SongMenu(
                 headlineContent = { Text(text = stringResource(R.string.add_to_queue)) },
                 leadingContent = {
                     Icon(
-                        painter = painterResource(R.drawable.queue_music),
+                        imageVector = Icons.Filled.QueueMusic,
                         contentDescription = null,
                     )
                 },
@@ -521,8 +537,8 @@ fun SongMenu(
                 leadingContent = {
                     Icon(
                         painter = painterResource(
-                            if (song.song.inLibrary == null) R.drawable.library_add
-                            else R.drawable.library_add_check
+                            if (song.song.inLibrary == null) Icons.Filled.LibraryAdd
+                            else Icons.Filled.LibraryAddCheck
                         ),
                         contentDescription = null,
                     )
@@ -540,7 +556,7 @@ fun SongMenu(
                     headlineContent = { Text(text = stringResource(R.string.remove_from_history)) },
                     leadingContent = {
                         Icon(
-                            painter = painterResource(R.drawable.delete),
+                            imageVector = Icons.Filled.Delete,
                             contentDescription = null,
                         )
                     },
@@ -559,7 +575,7 @@ fun SongMenu(
                     headlineContent = { Text(text = stringResource(R.string.remove_from_playlist)) },
                     leadingContent = {
                         Icon(
-                            painter = painterResource(R.drawable.delete),
+                            imageVector = Icons.Filled.Delete,
                             contentDescription = null,
                         )
                     },
@@ -588,7 +604,7 @@ fun SongMenu(
                     headlineContent = { Text(text = stringResource(R.string.remove_from_cache)) },
                     leadingContent = {
                         Icon(
-                            painter = painterResource(R.drawable.delete),
+                            imageVector = Icons.Filled.Delete,
                             contentDescription = null,
                         )
                     },
@@ -611,7 +627,7 @@ fun SongMenu(
                         },
                         leadingContent = {
                             Icon(
-                                painter = painterResource(R.drawable.offline),
+                                imageVector = Icons.Filled.CloudOff,
                                 contentDescription = null,
                             )
                         },
@@ -649,7 +665,7 @@ fun SongMenu(
                         headlineContent = { Text(text = stringResource(R.string.action_download)) },
                         leadingContent = {
                             Icon(
-                                painter = painterResource(R.drawable.download),
+                                imageVector = Icons.Filled.Download,
                                 contentDescription = null,
                             )
                         },
@@ -676,7 +692,7 @@ fun SongMenu(
                 headlineContent = { Text(text = stringResource(R.string.view_artist)) },
                 leadingContent = {
                     Icon(
-                        painter = painterResource(R.drawable.artist),
+                        imageVector = Icons.Filled.Person,
                         contentDescription = null,
                     )
                 },
@@ -696,7 +712,7 @@ fun SongMenu(
                     headlineContent = { Text(text = stringResource(R.string.view_album)) },
                     leadingContent = {
                         Icon(
-                            painter = painterResource(R.drawable.album),
+                            imageVector = Icons.Filled.Album,
                             contentDescription = null,
                         )
                     },
@@ -712,7 +728,7 @@ fun SongMenu(
                 headlineContent = { Text(text = stringResource(R.string.refetch)) },
                 leadingContent = {
                     Icon(
-                        painter = painterResource(R.drawable.sync),
+                        imageVector = Icons.Filled.Sync,
                         contentDescription = null,
                         modifier = Modifier.graphicsLayer(rotationZ = rotationAnimation),
                     )
@@ -737,7 +753,7 @@ fun SongMenu(
                 headlineContent = { Text(text = stringResource(R.string.details)) },
                 leadingContent = {
                     Icon(
-                        painter = painterResource(R.drawable.info),
+                        imageVector = Icons.Filled.Info,
                         contentDescription = null,
                     )
                 },

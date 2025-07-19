@@ -63,6 +63,8 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.contentColorFor
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.DisposableEffect
@@ -626,13 +628,13 @@ class MainActivity : ComponentActivity() {
                                         actions = {
                                             IconButton(onClick = { navController.navigate("history") }) {
                                                 Icon(
-                                                    painter = painterResource(R.drawable.history),
+                                                    imageVector = Icons.Filled.History,
                                                     contentDescription = stringResource(R.string.history)
                                                 )
                                             }
                                             IconButton(onClick = { navController.navigate("stats") }) {
                                                 Icon(
-                                                    painter = painterResource(R.drawable.stats),
+                                                    imageVector = Icons.Filled.BarChart,
                                                     contentDescription = stringResource(R.string.stats)
                                                 )
                                             }
@@ -652,7 +654,7 @@ class MainActivity : ComponentActivity() {
                                                         )
                                                     } else {
                                                         Icon(
-                                                            painter = painterResource(R.drawable.account),
+                                                            imageVector = Icons.Filled.AccountCircle,
                                                             contentDescription = stringResource(R.string.account),
                                                             modifier = Modifier.size(24.dp)
                                                         )
@@ -715,15 +717,13 @@ class MainActivity : ComponentActivity() {
                                                 },
                                             ) {
                                                 Icon(
-                                                    painterResource(
-                                                        if (active ||
-                                                            !navigationItems.fastAny { it.route == navBackStackEntry?.destination?.route }
-                                                        ) {
-                                                            R.drawable.arrow_back
-                                                        } else {
-                                                            R.drawable.search
-                                                        },
-                                                    ),
+                                                    imageVector = if (active ||
+                                                        !navigationItems.fastAny { it.route == navBackStackEntry?.destination?.route }
+                                                    ) {
+                                                        Icons.Filled.ArrowBack
+                                                    } else {
+                                                        Icons.Filled.Search
+                                                    },
                                                     contentDescription = null,
                                                 )
                                             }
@@ -742,7 +742,7 @@ class MainActivity : ComponentActivity() {
                                                             },
                                                         ) {
                                                             Icon(
-                                                                painter = painterResource(R.drawable.close),
+                                                                imageVector = Icons.Filled.Close,
                                                                 contentDescription = null,
                                                             )
                                                         }
@@ -754,12 +754,10 @@ class MainActivity : ComponentActivity() {
                                                         },
                                                     ) {
                                                         Icon(
-                                                            painter = painterResource(
-                                                                when (searchSource) {
-                                                                    SearchSource.LOCAL -> R.drawable.library_music
-                                                                    SearchSource.ONLINE -> R.drawable.language
-                                                                },
-                                                            ),
+                                                            imageVector = when (searchSource) {
+                                                                SearchSource.LOCAL -> Icons.Filled.LibraryMusic
+                                                                SearchSource.ONLINE -> Icons.Filled.Language
+                                                            },
                                                             contentDescription = null,
                                                         )
                                                     }
@@ -879,9 +877,7 @@ class MainActivity : ComponentActivity() {
                                                 selected = isSelected,
                                                 icon = {
                                                     Icon(
-                                                        painter = painterResource(
-                                                            id = if (isSelected) screen.iconIdActive else screen.iconIdInactive
-                                                        ),
+                                                        imageVector = if (isSelected) screen.iconActive else screen.iconInactive,
                                                         contentDescription = null,
                                                     )
                                                 },

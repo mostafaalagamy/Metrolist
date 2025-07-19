@@ -19,14 +19,32 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Icon
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Slider
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.SliderDefaults
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.TextButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.TopAppBarScrollBehavior
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -333,14 +351,14 @@ fun AppearanceSettings(
 
         SwitchPreference(
             title = { Text(stringResource(R.string.enable_dynamic_theme)) },
-            icon = { Icon(painterResource(R.drawable.palette), null) },
+            icon = { Icon(Icons.Filled.Palette, null) },
             checked = dynamicTheme,
             onCheckedChange = onDynamicThemeChange,
         )
 
         EnumListPreference(
             title = { Text(stringResource(R.string.dark_theme)) },
-            icon = { Icon(painterResource(R.drawable.dark_mode), null) },
+            icon = { Icon(Icons.Filled.DarkMode, null) },
             selectedValue = darkMode,
             onValueSelected = onDarkModeChange,
             valueText = {
@@ -355,7 +373,7 @@ fun AppearanceSettings(
         AnimatedVisibility(useDarkTheme) {
             SwitchPreference(
                 title = { Text(stringResource(R.string.pure_black)) },
-                icon = { Icon(painterResource(R.drawable.contrast), null) },
+                icon = { Icon(Icons.Filled.Contrast, null) },
                 checked = pureBlack,
                 onCheckedChange = onPureBlackChange,
             )
@@ -367,14 +385,14 @@ fun AppearanceSettings(
 
         SwitchPreference(
             title = { Text(stringResource(R.string.new_player_design)) },
-            icon = { Icon(painterResource(R.drawable.palette), null) },
+            icon = { Icon(Icons.Filled.Palette, null) },
             checked = useNewPlayerDesign,
             onCheckedChange = onUseNewPlayerDesignChange,
         )
 
         EnumListPreference(
             title = { Text(stringResource(R.string.player_background_style)) },
-            icon = { Icon(painterResource(R.drawable.gradient), null) },
+            icon = { Icon(Icons.Filled.Gradient, null) },
             selectedValue = playerBackground,
             onValueSelected = onPlayerBackgroundChange,
             valueText = {
@@ -388,7 +406,7 @@ fun AppearanceSettings(
 
         EnumListPreference(
             title = { Text(stringResource(R.string.player_buttons_style)) },
-            icon = { Icon(painterResource(R.drawable.palette), null) },
+            icon = { Icon(Icons.Filled.Palette, null) },
             selectedValue = playerButtonsStyle,
             onValueSelected = onPlayerButtonsStyleChange,
             valueText = {
@@ -407,7 +425,7 @@ fun AppearanceSettings(
                     SliderStyle.SQUIGGLY -> stringResource(R.string.squiggly)
                     SliderStyle.SLIM -> stringResource(R.string.slim)
                 },
-            icon = { Icon(painterResource(R.drawable.sliders), null) },
+            icon = { Icon(Icons.Filled.Tune, null) },
             onClick = {
                 showSliderOptionDialog = true
             },
@@ -415,7 +433,7 @@ fun AppearanceSettings(
 
         SwitchPreference(
             title = { Text(stringResource(R.string.enable_swipe_thumbnail)) },
-            icon = { Icon(painterResource(R.drawable.swipe), null) },
+            icon = { Icon(Icons.Filled.Swipe, null) },
             checked = swipeThumbnail,
             onCheckedChange = onSwipeThumbnailChange,
         )
@@ -489,14 +507,14 @@ fun AppearanceSettings(
             PreferenceEntry(
                 title = { Text(stringResource(R.string.swipe_sensitivity)) },
                 description = stringResource(R.string.sensitivity_percentage, (swipeSensitivity * 100).roundToInt()),
-                icon = { Icon(painterResource(R.drawable.tune), null) },
+                icon = { Icon(Icons.Filled.Tune, null) },
                 onClick = { showSensitivityDialog = true }
             )
         }
 
         EnumListPreference(
             title = { Text(stringResource(R.string.lyrics_text_position)) },
-            icon = { Icon(painterResource(R.drawable.lyrics), null) },
+            icon = { Icon(Icons.Filled.Lyrics, null) },
             selectedValue = lyricsPosition,
             onValueSelected = onLyricsPositionChange,
             valueText = {
@@ -510,14 +528,14 @@ fun AppearanceSettings(
 
         SwitchPreference(
             title = { Text(stringResource(R.string.lyrics_click_change)) },
-            icon = { Icon(painterResource(R.drawable.lyrics), null) },
+            icon = { Icon(Icons.Filled.Lyrics, null) },
             checked = lyricsClick,
             onCheckedChange = onLyricsClickChange,
         )
 
         SwitchPreference(
             title = { Text(stringResource(R.string.lyrics_auto_scroll)) },
-            icon = { Icon(painterResource(R.drawable.lyrics), null) },
+            icon = { Icon(Icons.Filled.Lyrics, null) },
             checked = lyricsScroll,
             onCheckedChange = onLyricsScrollChange,
         )
@@ -528,7 +546,7 @@ fun AppearanceSettings(
 
         EnumListPreference(
             title = { Text(stringResource(R.string.default_open_tab)) },
-            icon = { Icon(painterResource(R.drawable.nav_bar), null) },
+            icon = { Icon(Icons.Filled.MusicNote, null) },
             selectedValue = defaultOpenTab,
             onValueSelected = onDefaultOpenTabChange,
             valueText = {
@@ -542,7 +560,7 @@ fun AppearanceSettings(
 
         ListPreference(
             title = { Text(stringResource(R.string.default_lib_chips)) },
-            icon = { Icon(painterResource(R.drawable.tab), null) },
+            icon = { Icon(Icons.Filled.Tab, null) },
             selectedValue = defaultChip,
             values = listOf(
                 LibraryFilter.LIBRARY, LibraryFilter.PLAYLISTS, LibraryFilter.SONGS,
@@ -562,21 +580,21 @@ fun AppearanceSettings(
 
         SwitchPreference(
             title = { Text(stringResource(R.string.swipe_song_to_add)) },
-            icon = { Icon(painterResource(R.drawable.swipe), null) },
+            icon = { Icon(Icons.Filled.Swipe, null) },
             checked = swipeToSong,
             onCheckedChange = onSwipeToSongChange
         )
 
         SwitchPreference(
             title = { Text(stringResource(R.string.slim_navbar)) },
-            icon = { Icon(painterResource(R.drawable.nav_bar), null) },
+            icon = { Icon(Icons.Filled.MusicNote, null) },
             checked = slimNav,
             onCheckedChange = onSlimNavChange
         )
 
         EnumListPreference(
             title = { Text(stringResource(R.string.grid_cell_size)) },
-            icon = { Icon(painterResource(R.drawable.grid_view), null) },
+            icon = { Icon(Icons.Filled.GridView, null) },
             selectedValue = gridItemSize,
             onValueSelected = onGridItemSizeChange,
             valueText = {
@@ -593,28 +611,28 @@ fun AppearanceSettings(
 
         SwitchPreference(
             title = { Text(stringResource(R.string.show_liked_playlist)) },
-            icon = { Icon(painterResource(R.drawable.favorite), null) },
+            icon = { Icon(Icons.Filled.Favorite, null) },
             checked = showLikedPlaylist,
             onCheckedChange = onShowLikedPlaylistChange
         )
 
         SwitchPreference(
             title = { Text(stringResource(R.string.show_downloaded_playlist)) },
-            icon = { Icon(painterResource(R.drawable.offline), null) },
+            icon = { Icon(Icons.Filled.CloudOff, null) },
             checked = showDownloadedPlaylist,
             onCheckedChange = onShowDownloadedPlaylistChange
         )
 
         SwitchPreference(
             title = { Text(stringResource(R.string.show_top_playlist)) },
-            icon = { Icon(painterResource(R.drawable.trending_up), null) },
+            icon = { Icon(Icons.Filled.TrendingUp, null) },
             checked = showTopPlaylist,
             onCheckedChange = onShowTopPlaylistChange
         )
 
         SwitchPreference(
             title = { Text(stringResource(R.string.show_cached_playlist)) },
-            icon = { Icon(painterResource(R.drawable.cached), null) },
+            icon = { Icon(Icons.Filled.Cached, null) },
             checked = showCachedPlaylist,
             onCheckedChange = onShowCachedPlaylistChange
         )
@@ -628,7 +646,7 @@ fun AppearanceSettings(
                 onLongClick = navController::backToMain,
             ) {
                 Icon(
-                    painterResource(R.drawable.arrow_back),
+                    Icons.Filled.ArrowBack,
                     contentDescription = null,
                 )
             }

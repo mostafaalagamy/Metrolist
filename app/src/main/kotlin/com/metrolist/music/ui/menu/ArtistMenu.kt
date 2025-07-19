@@ -25,6 +25,8 @@ import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.ListItem
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
@@ -109,7 +111,7 @@ fun ArtistMenu(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Icon(
-                    painter = painterResource(R.drawable.play),
+                    imageVector = Icons.Filled.PlayArrow,
                     contentDescription = null,
                     modifier = Modifier.size(24.dp),
                 )
@@ -156,7 +158,7 @@ fun ArtistMenu(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Icon(
-                    painter = painterResource(R.drawable.shuffle),
+                    imageVector = Icons.Filled.Shuffle,
                     contentDescription = null,
                     modifier = Modifier.size(24.dp),
                 )
@@ -197,7 +199,7 @@ fun ArtistMenu(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Icon(
-                    painter = painterResource(R.drawable.share),
+                    imageVector = Icons.Filled.Share,
                     contentDescription = null,
                     modifier = Modifier.size(24.dp),
                 )
@@ -229,7 +231,7 @@ fun ArtistMenu(
                 },
                 leadingContent = {
                     Icon(
-                        painter = painterResource(if (artist.artist.bookmarkedAt != null) R.drawable.subscribed else R.drawable.subscribe),
+                        imageVector = if (artist.artist.bookmarkedAt != null) Icons.Filled.PersonAdd else Icons.Filled.PersonAddAlt1,
                         contentDescription = null,
                     )
                 },

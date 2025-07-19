@@ -265,7 +265,7 @@ fun LyricsImageCard(
                         contentAlignment = Alignment.Center
                     ) {
                         Image(
-                            painter = painterResource(id = R.drawable.small_icon),
+                            painter = Icons.Filled.MusicNote,
                             contentDescription = null,
                             modifier = Modifier
                                 .size(16.dp),

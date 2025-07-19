@@ -44,17 +44,41 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.FilledIconButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.FilledTonalIconButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Icon
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.OutlinedIconButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Slider
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.SliderDefaults
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.TextButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -391,7 +415,7 @@ fun BottomSheetPlayer(
             onDismissRequest = { showSleepTimerDialog = false },
             icon = {
                 Icon(
-                    painter = painterResource(R.drawable.bedtime),
+                    imageVector = Icons.Filled.Bedtime,
                     contentDescription = null
                 )
             },
@@ -670,7 +694,7 @@ fun BottomSheetPlayer(
                                 }
                         ) {
                             Image(
-                                painter = painterResource(R.drawable.share),
+                                imageVector = Icons.Filled.Share,
                                 contentDescription = null,
                                 colorFilter = ColorFilter.tint(iconButtonColor),
                                 modifier = Modifier
@@ -688,14 +712,12 @@ fun BottomSheetPlayer(
                                     playerConnection.toggleLike()
                                 }
                         ) {
-                            Image(
-                                painter = painterResource(
-                                    if (currentSong?.song?.liked == true)
-                                        R.drawable.favorite
-                                    else R.drawable.favorite_border
-                                ),
+                            Icon(
+                                imageVector = if (currentSong?.song?.liked == true)
+                                    Icons.Filled.Favorite
+                                else Icons.Filled.FavoriteBorder,
                                 contentDescription = null,
-                                colorFilter = ColorFilter.tint(iconButtonColor),
+                                tint = iconButtonColor,
                                 modifier = Modifier
                                     .align(Alignment.Center)
                                     .size(24.dp)
@@ -723,7 +745,7 @@ fun BottomSheetPlayer(
                             },
                     ) {
                         Image(
-                            painter = painterResource(R.drawable.share),
+                            imageVector = Icons.Filled.Share,
                             contentDescription = null,
                             colorFilter = ColorFilter.tint(iconButtonColor),
                             modifier =
@@ -761,7 +783,7 @@ fun BottomSheetPlayer(
                             },
                     ) {
                         Image(
-                            painter = painterResource(R.drawable.more_horiz),
+                            imageVector = Icons.Filled.MoreHoriz,
                             contentDescription = null,
                             colorFilter = ColorFilter.tint(iconButtonColor),
                         )
@@ -909,7 +931,7 @@ fun BottomSheetPlayer(
                                 .clip(RoundedCornerShape(32.dp))
                         ) {
                             Icon(
-                                painter = painterResource(R.drawable.skip_previous),
+                                imageVector = Icons.Filled.SkipPrevious,
                                 contentDescription = null,
                                 modifier = Modifier.size(32.dp)
                             )
@@ -935,13 +957,11 @@ fun BottomSheetPlayer(
                                 .clip(RoundedCornerShape(32.dp))
                         ) {
                             Icon(
-                                painter = painterResource(
-                                    when {
-                                        playbackState == STATE_ENDED -> R.drawable.replay
-                                        isPlaying -> R.drawable.pause
-                                        else -> R.drawable.play
-                                    }
-                                ),
+                                imageVector = when {
+                                    playbackState == STATE_ENDED -> Icons.Filled.Replay
+                                    isPlaying -> Icons.Filled.Pause
+                                    else -> Icons.Filled.PlayArrow
+                                },
                                 contentDescription = null,
                                 modifier = Modifier.size(42.dp)
                             )
@@ -961,7 +981,7 @@ fun BottomSheetPlayer(
                                 .clip(RoundedCornerShape(32.dp))
                         ) {
                             Icon(
-                                painter = painterResource(R.drawable.skip_next),
+                                imageVector = Icons.Filled.SkipNext,
                                 contentDescription = null,
                                 modifier = Modifier.size(32.dp)
                             )
@@ -979,8 +999,8 @@ fun BottomSheetPlayer(
                     Box(modifier = Modifier.weight(1f)) {
                         ResizableIconButton(
                             icon = when (repeatMode) {
-                                Player.REPEAT_MODE_OFF, Player.REPEAT_MODE_ALL -> R.drawable.repeat
-                                Player.REPEAT_MODE_ONE -> R.drawable.repeat_one
+                                Player.REPEAT_MODE_OFF, Player.REPEAT_MODE_ALL -> Icons.Filled.Repeat
+                                Player.REPEAT_MODE_ONE -> Icons.Filled.RepeatOne
                                 else -> throw IllegalStateException()
                             },
                             color = TextBackgroundColor,
@@ -997,7 +1017,7 @@ fun BottomSheetPlayer(
 
                     Box(modifier = Modifier.weight(1f)) {
                         ResizableIconButton(
-                            icon = R.drawable.skip_previous,
+                            icon = Icons.Filled.SkipPrevious,
                             enabled = canSkipPrevious,
                             color = TextBackgroundColor,
                             modifier =
@@ -1025,21 +1045,16 @@ fun BottomSheetPlayer(
                                 }
                             },
                     ) {
-                        Image(
-                            painter =
-                            painterResource(
-                                if (playbackState ==
-                                    STATE_ENDED
-                                ) {
-                                    R.drawable.replay
-                                } else if (isPlaying) {
-                                    R.drawable.pause
-                                } else {
-                                    R.drawable.play
-                                },
-                            ),
+                        Icon(
+                            imageVector = if (playbackState == STATE_ENDED) {
+                                Icons.Filled.Replay
+                            } else if (isPlaying) {
+                                Icons.Filled.Pause
+                            } else {
+                                Icons.Filled.PlayArrow
+                            },
                             contentDescription = null,
-                            colorFilter = ColorFilter.tint(iconButtonColor),
+                            tint = iconButtonColor,
                             modifier =
                             Modifier
                                 .align(Alignment.Center)
@@ -1051,7 +1066,7 @@ fun BottomSheetPlayer(
 
                     Box(modifier = Modifier.weight(1f)) {
                         ResizableIconButton(
-                            icon = R.drawable.skip_next,
+                            icon = Icons.Filled.SkipNext,
                             enabled = canSkipNext,
                             color = TextBackgroundColor,
                             modifier =
@@ -1064,7 +1079,7 @@ fun BottomSheetPlayer(
 
                     Box(modifier = Modifier.weight(1f)) {
                         ResizableIconButton(
-                            icon = if (currentSong?.song?.liked == true) R.drawable.favorite else R.drawable.favorite_border,
+                            icon = if (currentSong?.song?.liked == true) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
                             color = if (currentSong?.song?.liked == true) MaterialTheme.colorScheme.error else TextBackgroundColor,
                             modifier =
                             Modifier

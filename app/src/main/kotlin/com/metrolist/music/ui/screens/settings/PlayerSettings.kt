@@ -12,16 +12,38 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Button
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.FilledTonalIconButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Icon
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Slider
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.TextButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.TopAppBarScrollBehavior
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -124,7 +146,7 @@ fun PlayerSettings(
 
         EnumListPreference(
             title = { Text(stringResource(R.string.audio_quality)) },
-            icon = { Icon(painterResource(R.drawable.graphic_eq), null) },
+            icon = { Icon(Icons.Filled.GraphicEq, null) },
             selectedValue = audioQuality,
             onValueSelected = onAudioQualityChange,
             valueText = {
@@ -138,21 +160,21 @@ fun PlayerSettings(
 
         SliderPreference(
             title = { Text(stringResource(R.string.history_duration)) },
-            icon = { Icon(painterResource(R.drawable.history), null) },
+            icon = { Icon(Icons.Filled.History, null) },
             value = historyDuration,
             onValueChange = onHistoryDurationChange,
         )
 
         SwitchPreference(
             title = { Text(stringResource(R.string.skip_silence)) },
-            icon = { Icon(painterResource(R.drawable.fast_forward), null) },
+            icon = { Icon(Icons.Filled.FastForward, null) },
             checked = skipSilence,
             onCheckedChange = onSkipSilenceChange
         )
 
         SwitchPreference(
             title = { Text(stringResource(R.string.audio_normalization)) },
-            icon = { Icon(painterResource(R.drawable.volume_up), null) },
+            icon = { Icon(Icons.Filled.VolumeUp, null) },
             checked = audioNormalization,
             onCheckedChange = onAudioNormalizationChange
         )
@@ -164,7 +186,7 @@ fun PlayerSettings(
         SwitchPreference(
             title = { Text(stringResource(R.string.persistent_queue)) },
             description = stringResource(R.string.persistent_queue_desc),
-            icon = { Icon(painterResource(R.drawable.queue_music), null) },
+            icon = { Icon(Icons.Filled.QueueMusic, null) },
             checked = persistentQueue,
             onCheckedChange = onPersistentQueueChange
         )
@@ -172,7 +194,7 @@ fun PlayerSettings(
         SwitchPreference(
             title = { Text(stringResource(R.string.auto_load_more)) },
             description = stringResource(R.string.auto_load_more_desc),
-            icon = { Icon(painterResource(R.drawable.playlist_add), null) },
+            icon = { Icon(Icons.Filled.PlaylistAdd, null) },
             checked = autoLoadMore,
             onCheckedChange = onAutoLoadMoreChange
         )
@@ -180,7 +202,7 @@ fun PlayerSettings(
         SwitchPreference(
             title = { Text(stringResource(R.string.auto_download_on_like)) },
             description = stringResource(R.string.auto_download_on_like_desc),
-            icon = { Icon(painterResource(R.drawable.download), null) },
+            icon = { Icon(Icons.Filled.Download, null) },
             checked = autoDownloadOnLike,
             onCheckedChange = onAutoDownloadOnLikeChange
         )
@@ -188,7 +210,7 @@ fun PlayerSettings(
         SwitchPreference(
             title = { Text(stringResource(R.string.enable_similar_content)) },
             description = stringResource(R.string.similar_content_desc),
-            icon = { Icon(painterResource(R.drawable.similar), null) },
+            icon = { Icon(Icons.Filled.Similar, null) },
             checked = similarContentEnabled,
             onCheckedChange = similarContentEnabledChange,
         )
@@ -196,7 +218,7 @@ fun PlayerSettings(
         SwitchPreference(
             title = { Text(stringResource(R.string.auto_skip_next_on_error)) },
             description = stringResource(R.string.auto_skip_next_on_error_desc),
-            icon = { Icon(painterResource(R.drawable.skip_next), null) },
+            icon = { Icon(Icons.Filled.SkipNext, null) },
             checked = autoSkipNextOnError,
             onCheckedChange = onAutoSkipNextOnErrorChange
         )
@@ -207,7 +229,7 @@ fun PlayerSettings(
 
         SwitchPreference(
             title = { Text(stringResource(R.string.stop_music_on_task_clear)) },
-            icon = { Icon(painterResource(R.drawable.clear_all), null) },
+            icon = { Icon(Icons.Filled.ClearAll, null) },
             checked = stopMusicOnTaskClear,
             onCheckedChange = onStopMusicOnTaskClearChange
         )
@@ -221,7 +243,7 @@ fun PlayerSettings(
                 onLongClick = navController::backToMain
             ) {
                 Icon(
-                    painterResource(R.drawable.arrow_back),
+                    Icons.Filled.ArrowBack,
                     contentDescription = null
                 )
             }

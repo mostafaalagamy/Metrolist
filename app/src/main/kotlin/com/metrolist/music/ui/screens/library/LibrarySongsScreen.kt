@@ -15,11 +15,23 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.FilterChip
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.FilterChipDefaults
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Icon
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.IconButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -140,7 +152,7 @@ fun LibrarySongsScreen(
                         shape = RoundedCornerShape(16.dp),
                         leadingIcon = {
                             Icon(
-                                painter = painterResource(R.drawable.close),
+                                imageVector = Icons.Filled.Close,
                                 contentDescription = ""
                             )
                         },
@@ -174,7 +186,7 @@ fun LibrarySongsScreen(
                             onClick = { selection = false },
                         ) {
                             Icon(
-                                painter = painterResource(R.drawable.close),
+                                imageVector = Icons.Filled.Close,
                                 contentDescription = null,
                             )
                         }
@@ -192,7 +204,7 @@ fun LibrarySongsScreen(
                             },
                         ) {
                             Icon(
-                                painter = painterResource(if (count == wrappedSongs.size) R.drawable.deselect else R.drawable.select_all),
+                                painter = if (count == wrappedSongs.size) Icons.Filled.Deselect else Icons.Filled.SelectAll,
                                 contentDescription = null,
                             )
                         }
@@ -210,7 +222,7 @@ fun LibrarySongsScreen(
                             },
                         ) {
                             Icon(
-                                painter = painterResource(R.drawable.more_vert),
+                                imageVector = Icons.Filled.MoreVert,
                                 contentDescription = null,
                             )
                         }
@@ -274,7 +286,7 @@ fun LibrarySongsScreen(
                             },
                         ) {
                             Icon(
-                                painter = painterResource(R.drawable.more_vert),
+                                imageVector = Icons.Filled.MoreVert,
                                 contentDescription = null,
                             )
                         }
@@ -320,7 +332,7 @@ fun LibrarySongsScreen(
         HideOnScrollFAB(
             visible = songs.isNotEmpty() == true,
             lazyListState = lazyListState,
-            icon = R.drawable.shuffle,
+            icon = Icons.Filled.Shuffle,
             onClick = {
                 playerConnection.playQueue(
                     ListQueue(

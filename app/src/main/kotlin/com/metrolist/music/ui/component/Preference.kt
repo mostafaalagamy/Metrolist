@@ -203,7 +203,7 @@ fun SwitchPreference(
                 thumbContent = {
                     Icon(
                         painter = painterResource(
-                            id = if (checked) R.drawable.check else R.drawable.close
+                            id = if (checked) Icons.Filled.Check else Icons.Filled.Close
                         ),
                         contentDescription = null,
                         modifier = Modifier.size(SwitchDefaults.IconSize),

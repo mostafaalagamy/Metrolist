@@ -10,11 +10,23 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Icon
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.TextButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.ListItem
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -189,7 +201,7 @@ fun SelectionSongMenu(
                 headlineContent = { Text(text = stringResource(R.string.play)) },
                 leadingContent = {
                     Icon(
-                        painter = painterResource(R.drawable.play),
+                        imageVector = Icons.Filled.PlayArrow,
                         contentDescription = null,
                     )
                 },
@@ -210,7 +222,7 @@ fun SelectionSongMenu(
                 headlineContent = { Text(text = stringResource(R.string.shuffle)) },
                 leadingContent = {
                     Icon(
-                        painter = painterResource(R.drawable.shuffle),
+                        imageVector = Icons.Filled.Shuffle,
                         contentDescription = null,
                     )
                 },
@@ -231,7 +243,7 @@ fun SelectionSongMenu(
                 headlineContent = { Text(text = stringResource(R.string.add_to_queue)) },
                 leadingContent = {
                     Icon(
-                        painter = painterResource(R.drawable.queue_music),
+                        imageVector = Icons.Filled.QueueMusic,
                         contentDescription = null,
                     )
                 },
@@ -247,7 +259,7 @@ fun SelectionSongMenu(
                 headlineContent = { Text(text = stringResource(R.string.add_to_playlist)) },
                 leadingContent = {
                     Icon(
-                        painter = painterResource(R.drawable.playlist_add),
+                        imageVector = Icons.Filled.PlaylistAdd,
                         contentDescription = null,
                     )
                 },
@@ -268,7 +280,7 @@ fun SelectionSongMenu(
                 leadingContent = {
                     Icon(
                         painter = painterResource(
-                            if (allInLibrary) R.drawable.library_add_check else R.drawable.library_add
+                            if (allInLibrary) Icons.Filled.LibraryAddCheck else Icons.Filled.LibraryAdd
                         ),
                         contentDescription = null,
                     )
@@ -303,7 +315,7 @@ fun SelectionSongMenu(
                         },
                         leadingContent = {
                             Icon(
-                                painter = painterResource(R.drawable.offline),
+                                imageVector = Icons.Filled.CloudOff,
                                 contentDescription = null,
                             )
                         },
@@ -331,7 +343,7 @@ fun SelectionSongMenu(
                         headlineContent = { Text(text = stringResource(R.string.action_download)) },
                         leadingContent = {
                             Icon(
-                                painter = painterResource(R.drawable.download),
+                                imageVector = Icons.Filled.Download,
                                 contentDescription = null,
                             )
                         },
@@ -367,7 +379,7 @@ fun SelectionSongMenu(
                 leadingContent = {
                     Icon(
                         painter = painterResource(
-                            if (allLiked) R.drawable.favorite else R.drawable.favorite_border
+                            if (allLiked) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder
                         ),
                         contentDescription = null,
                     )
@@ -393,7 +405,7 @@ fun SelectionSongMenu(
                     headlineContent = { Text(text = stringResource(R.string.delete)) },
                     leadingContent = {
                         Icon(
-                            painter = painterResource(R.drawable.delete),
+                            imageVector = Icons.Filled.Delete,
                             contentDescription = null,
                         )
                     },
@@ -535,7 +547,7 @@ fun SelectionMediaMetadataMenu(
                     headlineContent = { Text(text = stringResource(R.string.delete)) },
                     leadingContent = {
                         Icon(
-                            painter = painterResource(R.drawable.delete),
+                            imageVector = Icons.Filled.Delete,
                             contentDescription = null,
                         )
                     },
@@ -557,7 +569,7 @@ fun SelectionMediaMetadataMenu(
                 headlineContent = { Text(text = stringResource(R.string.play)) },
                 leadingContent = {
                     Icon(
-                        painter = painterResource(R.drawable.play),
+                        imageVector = Icons.Filled.PlayArrow,
                         contentDescription = null,
                     )
                 },
@@ -578,7 +590,7 @@ fun SelectionMediaMetadataMenu(
                 headlineContent = { Text(text = stringResource(R.string.shuffle)) },
                 leadingContent = {
                     Icon(
-                        painter = painterResource(R.drawable.shuffle),
+                        imageVector = Icons.Filled.Shuffle,
                         contentDescription = null,
                     )
                 },
@@ -599,7 +611,7 @@ fun SelectionMediaMetadataMenu(
                 headlineContent = { Text(text = stringResource(R.string.add_to_queue)) },
                 leadingContent = {
                     Icon(
-                        painter = painterResource(R.drawable.queue_music),
+                        imageVector = Icons.Filled.QueueMusic,
                         contentDescription = null,
                     )
                 },
@@ -615,7 +627,7 @@ fun SelectionMediaMetadataMenu(
                 headlineContent = { Text(text = stringResource(R.string.add_to_playlist)) },
                 leadingContent = {
                     Icon(
-                        painter = painterResource(R.drawable.playlist_add),
+                        imageVector = Icons.Filled.PlaylistAdd,
                         contentDescription = null,
                     )
                 },
@@ -634,7 +646,7 @@ fun SelectionMediaMetadataMenu(
                 leadingContent = {
                     Icon(
                         painter = painterResource(
-                            if (allLiked) R.drawable.favorite else R.drawable.favorite_border
+                            if (allLiked) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder
                         ),
                         contentDescription = null,
                     )
@@ -666,7 +678,7 @@ fun SelectionMediaMetadataMenu(
                         },
                         leadingContent = {
                             Icon(
-                                painter = painterResource(R.drawable.offline),
+                                imageVector = Icons.Filled.CloudOff,
                                 contentDescription = null,
                             )
                         },
@@ -694,7 +706,7 @@ fun SelectionMediaMetadataMenu(
                         headlineContent = { Text(text = stringResource(R.string.action_download)) },
                         leadingContent = {
                             Icon(
-                                painter = painterResource(R.drawable.download),
+                                imageVector = Icons.Filled.Download,
                                 contentDescription = null,
                             )
                         },

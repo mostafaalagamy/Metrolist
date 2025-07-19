@@ -239,8 +239,8 @@ fun LibraryPlaylistsScreen(
                     painter =
                     painterResource(
                         when (viewType) {
-                            LibraryViewType.LIST -> R.drawable.list
-                            LibraryViewType.GRID -> R.drawable.grid_view
+                            LibraryViewType.LIST -> Icons.Filled.List
+                            LibraryViewType.GRID -> Icons.Filled.GridView
                         },
                     ),
                     contentDescription = null,
@@ -372,7 +372,7 @@ fun LibraryPlaylistsScreen(
 
                 HideOnScrollFAB(
                     lazyListState = lazyListState,
-                    icon = R.drawable.add,
+                    icon = Icons.Filled.Add,
                     onClick = {
                         showCreatePlaylistDialog = true
                     },
@@ -516,7 +516,7 @@ fun LibraryPlaylistsScreen(
 
                 HideOnScrollFAB(
                     lazyListState = lazyGridState,
-                    icon = R.drawable.add,
+                    icon = Icons.Filled.Add,
                     onClick = {
                         showCreatePlaylistDialog = true
                     },

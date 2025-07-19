@@ -1,7 +1,11 @@
 package com.metrolist.music.ui.menu
 
 import androidx.compose.material3.Icon
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -36,7 +40,7 @@ fun ImportPlaylistDialog(
 
     if (isVisible) {
         TextFieldDialog(
-            icon = { Icon(painter = painterResource(R.drawable.add), contentDescription = null) },
+            icon = { Icon(imageVector = Icons.Filled.Add, contentDescription = null) },
             title = { Text(text = stringResource(R.string.import_playlist)) },
             initialTextFieldValue = textFieldValue,
             autoFocus = false,

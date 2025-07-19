@@ -28,19 +28,47 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Icon
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.IconButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.LocalContentColor
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.SnackbarHost
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.TopAppBarScrollBehavior
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
@@ -345,7 +373,7 @@ fun ArtistScreen(
                                                 modifier = Modifier.height(40.dp)
                                             ) {
                                                 Icon(
-                                                    painter = painterResource(R.drawable.radio),
+                                                    imageVector = Icons.Filled.Radio,
                                                     contentDescription = null,
                                                     modifier = Modifier.size(20.dp)
                                                 )
@@ -373,7 +401,7 @@ fun ArtistScreen(
                                                     )
                                             ) {
                                                 Icon(
-                                                    painter = painterResource(R.drawable.shuffle),
+                                                    imageVector = Icons.Filled.Shuffle,
                                                     contentDescription = "Shuffle",
                                                     tint = MaterialTheme.colorScheme.onPrimary,
                                                     modifier = Modifier.size(20.dp)
@@ -401,7 +429,7 @@ fun ArtistScreen(
                                                 )
                                         ) {
                                             Icon(
-                                                painter = painterResource(R.drawable.shuffle),
+                                                imageVector = Icons.Filled.Shuffle,
                                                 contentDescription = "Shuffle",
                                                 tint = MaterialTheme.colorScheme.onPrimary,
                                                 modifier = Modifier.size(20.dp)
@@ -448,7 +476,7 @@ fun ArtistScreen(
                                         },
                                     ) {
                                         Icon(
-                                            painter = painterResource(R.drawable.more_vert),
+                                            imageVector = Icons.Filled.MoreVert,
                                             contentDescription = null,
                                         )
                                     }
@@ -567,7 +595,7 @@ fun ArtistScreen(
                                             },
                                         ) {
                                             Icon(
-                                                painter = painterResource(R.drawable.more_vert),
+                                                imageVector = Icons.Filled.MoreVert,
                                                 contentDescription = null,
                                             )
                                         }
@@ -680,7 +708,7 @@ fun ArtistScreen(
 
         HideOnScrollFAB(
             lazyListState = lazyListState,
-            icon = if (showLocal) R.drawable.language else R.drawable.library_music,
+            icon = if (showLocal) Icons.Filled.Language else Icons.Filled.LibraryMusic,
             onClick = {
                 showLocal = !showLocal
             }
@@ -702,7 +730,7 @@ fun ArtistScreen(
                 onLongClick = navController::backToMain,
             ) {
                 Icon(
-                    painterResource(R.drawable.arrow_back),
+                    Icons.Filled.ArrowBack,
                     contentDescription = null,
                 )
             }
@@ -719,7 +747,7 @@ fun ArtistScreen(
                 },
             ) {
                 Icon(
-                    painterResource(R.drawable.link),
+                    Icons.Filled.Link,
                     contentDescription = null,
                 )
             }

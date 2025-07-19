@@ -19,19 +19,47 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Icon
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.IconButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.TextButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.TextField
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.TopAppBarScrollBehavior
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -275,7 +303,7 @@ fun AutoPlaylistScreen(
                 if (songs!!.isEmpty()) {
                     item {
                         EmptyPlaceholder(
-                            icon = R.drawable.music_note,
+                            icon = Icons.Filled.MusicNote,
                             text = stringResource(R.string.playlist_is_empty),
                         )
                     }
@@ -343,7 +371,7 @@ fun AutoPlaylistScreen(
                                                         },
                                                     ) {
                                                         Icon(
-                                                            painter = painterResource(R.drawable.offline),
+                                                            imageVector = Icons.Filled.CloudOff,
                                                             contentDescription = null,
                                                         )
                                                     }
@@ -392,7 +420,7 @@ fun AutoPlaylistScreen(
                                                         },
                                                     ) {
                                                         Icon(
-                                                            painter = painterResource(R.drawable.download),
+                                                            imageVector = Icons.Filled.Download,
                                                             contentDescription = null,
                                                         )
                                                     }
@@ -407,7 +435,7 @@ fun AutoPlaylistScreen(
                                                 },
                                             ) {
                                                 Icon(
-                                                    painter = painterResource(R.drawable.queue_music),
+                                                    imageVector = Icons.Filled.QueueMusic,
                                                     contentDescription = null,
                                                 )
                                             }
@@ -429,7 +457,7 @@ fun AutoPlaylistScreen(
                                         modifier = Modifier.weight(1f),
                                     ) {
                                         Icon(
-                                            painter = painterResource(R.drawable.play),
+                                            imageVector = Icons.Filled.PlayArrow,
                                             contentDescription = null,
                                             modifier = Modifier.size(ButtonDefaults.IconSize),
                                         )
@@ -451,7 +479,7 @@ fun AutoPlaylistScreen(
                                         modifier = Modifier.weight(1f),
                                     ) {
                                         Icon(
-                                            painter = painterResource(R.drawable.shuffle),
+                                            imageVector = Icons.Filled.Shuffle,
                                             contentDescription = null,
                                             modifier = Modifier.size(ButtonDefaults.IconSize),
                                         )
@@ -510,7 +538,7 @@ fun AutoPlaylistScreen(
                                     },
                                 ) {
                                     Icon(
-                                        painter = painterResource(R.drawable.more_vert),
+                                        imageVector = Icons.Filled.MoreVert,
                                         contentDescription = null,
                                     )
                                 }
@@ -621,7 +649,7 @@ fun AutoPlaylistScreen(
                 ) {
                     Icon(
                         painter = painterResource(
-                            if (selection) R.drawable.close else R.drawable.arrow_back
+                            if (selection) Icons.Filled.Close else Icons.Filled.ArrowBack
                         ),
                         contentDescription = null
                     )
@@ -641,7 +669,7 @@ fun AutoPlaylistScreen(
                     ) {
                         Icon(
                             painter = painterResource(
-                                if (count == wrappedSongs?.size) R.drawable.deselect else R.drawable.select_all
+                                if (count == wrappedSongs?.size) Icons.Filled.Deselect else Icons.Filled.SelectAll
                             ),
                             contentDescription = null
                         )
@@ -660,7 +688,7 @@ fun AutoPlaylistScreen(
                         },
                     ) {
                         Icon(
-                            painter = painterResource(R.drawable.more_vert),
+                            imageVector = Icons.Filled.MoreVert,
                             contentDescription = null
                         )
                     }
@@ -669,7 +697,7 @@ fun AutoPlaylistScreen(
                         onClick = { isSearching = true }
                     ) {
                         Icon(
-                            painter = painterResource(R.drawable.search),
+                            imageVector = Icons.Filled.Search,
                             contentDescription = null
                         )
                     }

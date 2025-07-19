@@ -10,10 +10,20 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Icon
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.TopAppBarScrollBehavior
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -113,7 +123,7 @@ fun BackupAndRestore(
 
         PreferenceEntry(
             title = { Text(stringResource(R.string.action_backup)) },
-            icon = { Icon(painterResource(R.drawable.backup), null) },
+            icon = { Icon(Icons.Filled.Backup, null) },
             onClick = {
                 val formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss")
                 backupLauncher.launch(
@@ -125,21 +135,21 @@ fun BackupAndRestore(
         )
         PreferenceEntry(
             title = { Text(stringResource(R.string.action_restore)) },
-            icon = { Icon(painterResource(R.drawable.restore), null) },
+            icon = { Icon(Icons.Filled.Restore, null) },
             onClick = {
                 restoreLauncher.launch(arrayOf("application/octet-stream"))
             },
         )
         PreferenceEntry(
             title = {Text(stringResource(R.string.import_online))},
-            icon = { Icon(painterResource(R.drawable.playlist_add), null) },
+            icon = { Icon(Icons.Filled.PlaylistAdd, null) },
             onClick = {
                 importM3uLauncherOnline.launch(arrayOf("audio/*"))
             }
         )
         PreferenceEntry(
             title = { Text(stringResource(R.string.import_csv)) },
-            icon = { Icon(painterResource(R.drawable.playlist_add), null) },
+            icon = { Icon(Icons.Filled.PlaylistAdd, null) },
             onClick = {
                 importPlaylistFromCsv.launch(arrayOf("text/csv"))
             }
@@ -154,7 +164,7 @@ fun BackupAndRestore(
                 onLongClick = navController::backToMain,
             ) {
                 Icon(
-                    painterResource(R.drawable.arrow_back),
+                    Icons.Filled.ArrowBack,
                     contentDescription = null,
                 )
             }

@@ -9,6 +9,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -169,7 +171,7 @@ fun OnlineSearchScreen(
                         }
                     ) {
                         Icon(
-                            painter = painterResource(R.drawable.more_vert),
+                            imageVector = Icons.Filled.MoreVert,
                             contentDescription = null
                         )
                     }
@@ -256,7 +258,7 @@ fun SuggestionItem(
             .padding(end = SearchBarIconOffsetX),
     ) {
         Icon(
-            painterResource(if (online) R.drawable.search else R.drawable.history),
+            if (online) Icons.Filled.Search else Icons.Filled.History,
             contentDescription = null,
             modifier = Modifier.padding(horizontal = 16.dp).alpha(0.5f)
         )
@@ -274,7 +276,7 @@ fun SuggestionItem(
                 modifier = Modifier.alpha(0.5f),
             ) {
                 Icon(
-                    painter = painterResource(R.drawable.close),
+                    imageVector = Icons.Filled.Close,
                     contentDescription = null,
                 )
             }
@@ -285,7 +287,7 @@ fun SuggestionItem(
             modifier = Modifier.alpha(0.5f),
         ) {
             Icon(
-                painter = painterResource(R.drawable.arrow_top_left),
+                imageVector = Icons.Filled.ArrowBackIos,
                 contentDescription = null,
             )
         }

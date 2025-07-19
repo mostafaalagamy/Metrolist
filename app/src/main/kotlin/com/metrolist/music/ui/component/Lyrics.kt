@@ -599,7 +599,7 @@ fun Lyrics(
                         }
                     ) {
                         Icon(
-                            painter = painterResource(id = R.drawable.close),
+                            painter = Icons.Filled.Close,
                             contentDescription = stringResource(R.string.cancel),
                             tint = textColor
                         )
@@ -629,7 +629,7 @@ fun Lyrics(
                         enabled = selectedIndices.isNotEmpty() // Disable if nothing selected
                     ) {
                         Icon(
-                            painter = painterResource(id = R.drawable.media3_icon_share),
+                            painter = Icons.Filled.Share,
                             contentDescription = stringResource(R.string.share_selected),
                             tint = if (selectedIndices.isNotEmpty()) textColor else textColor.copy(alpha = 0.5f)
                         )
@@ -648,7 +648,7 @@ fun Lyrics(
                         }
                     ) {
                         Icon(
-                            painter = painterResource(id = R.drawable.more_horiz),
+                            painter = Icons.Filled.MoreHoriz,
                             contentDescription = stringResource(R.string.more_options),
                             tint = textColor
                         )
@@ -716,7 +716,7 @@ fun Lyrics(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Icon(
-                            painter = painterResource(id = R.drawable.media3_icon_share), // Consistent share icon
+                            painter = Icons.Filled.Share, // Consistent share icon
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.primary
                         )
@@ -743,7 +743,7 @@ fun Lyrics(
                     ) {
                         Icon(
                             // Changed icon to represent image sharing better
-                            painter = painterResource(id = R.drawable.media3_icon_share), // Use a relevant icon
+                            painter = Icons.Filled.Share, // Use a relevant icon
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.primary
                         )
@@ -776,7 +776,7 @@ fun Lyrics(
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             Icon(
-                                painter = painterResource(id = R.drawable.close),
+                                painter = Icons.Filled.Close,
                                 contentDescription = null, // Description is handled by Text
                                 tint = MaterialTheme.colorScheme.error
                             )

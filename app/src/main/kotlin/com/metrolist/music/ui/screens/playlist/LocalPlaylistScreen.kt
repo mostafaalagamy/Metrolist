@@ -26,27 +26,71 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Icon
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.IconButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.LocalContentColor
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.SnackbarHost
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.SnackbarResult
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.SwipeToDismissBox
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.SwipeToDismissBoxValue
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.TextButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.TextField
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.TopAppBarScrollBehavior
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.rememberSwipeToDismissBoxState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -265,7 +309,7 @@ fun LocalPlaylistScreen(
             TextFieldDialog(
                 icon = {
                     Icon(
-                        painter = painterResource(R.drawable.edit),
+                        imageVector = Icons.Filled.Edit,
                         contentDescription = null
                     )
                 },
@@ -433,7 +477,7 @@ fun LocalPlaylistScreen(
                 if (playlist.songCount == 0 && playlist.playlist.remoteSongCount == 0) {
                     item {
                         EmptyPlaceholder(
-                            icon = R.drawable.music_note,
+                            icon = Icons.Filled.MusicNote,
                             text = stringResource(R.string.playlist_is_empty),
                         )
                     }
@@ -479,7 +523,7 @@ fun LocalPlaylistScreen(
                                     modifier = Modifier.padding(horizontal = 6.dp),
                                 ) {
                                     Icon(
-                                        painter = painterResource(if (locked) R.drawable.lock else R.drawable.lock_open),
+                                        painter = if (locked) Icons.Filled.Lock else Icons.Filled.LockOpen,
                                         contentDescription = null,
                                     )
                                 }
@@ -578,7 +622,7 @@ fun LocalPlaylistScreen(
                                         },
                                     ) {
                                         Icon(
-                                            painter = painterResource(R.drawable.more_vert),
+                                            imageVector = Icons.Filled.MoreVert,
                                             contentDescription = null,
                                         )
                                     }
@@ -589,7 +633,7 @@ fun LocalPlaylistScreen(
                                             modifier = Modifier.draggableHandle(),
                                         ) {
                                             Icon(
-                                                painter = painterResource(R.drawable.drag_handle),
+                                                imageVector = Icons.Filled.DragHandle,
                                                 contentDescription = null,
                                             )
                                         }
@@ -716,7 +760,7 @@ fun LocalPlaylistScreen(
                                         },
                                     ) {
                                         Icon(
-                                            painter = painterResource(R.drawable.more_vert),
+                                            imageVector = Icons.Filled.MoreVert,
                                             contentDescription = null,
                                         )
                                     }
@@ -726,7 +770,7 @@ fun LocalPlaylistScreen(
                                             modifier = Modifier.draggableHandle(),
                                         ) {
                                             Icon(
-                                                painter = painterResource(R.drawable.drag_handle),
+                                                imageVector = Icons.Filled.DragHandle,
                                                 contentDescription = null,
                                             )
                                         }
@@ -837,7 +881,7 @@ fun LocalPlaylistScreen(
                 ) {
                     Icon(
                         painter = painterResource(
-                            if (selection) R.drawable.close else R.drawable.arrow_back
+                            if (selection) Icons.Filled.Close else Icons.Filled.ArrowBack
                         ),
                         contentDescription = null
                     )
@@ -857,7 +901,7 @@ fun LocalPlaylistScreen(
                     ) {
                         Icon(
                             painter = painterResource(
-                                if (count == wrappedSongs.size) R.drawable.deselect else R.drawable.select_all
+                                if (count == wrappedSongs.size) Icons.Filled.Deselect else Icons.Filled.SelectAll
                             ),
                             contentDescription = null
                         )
@@ -881,7 +925,7 @@ fun LocalPlaylistScreen(
                         },
                     ) {
                         Icon(
-                            painter = painterResource(R.drawable.more_vert),
+                            imageVector = Icons.Filled.MoreVert,
                             contentDescription = null
                         )
                     }
@@ -890,7 +934,7 @@ fun LocalPlaylistScreen(
                         onClick = { isSearching = true }
                     ) {
                         Icon(
-                            painter = painterResource(R.drawable.search),
+                            imageVector = Icons.Filled.Search,
                             contentDescription = null
                         )
                     }
@@ -1053,7 +1097,7 @@ fun LocalPlaylistHeader(
                             modifier = Modifier.size(40.dp)
                         ) {
                             Icon(
-                                painter = painterResource(R.drawable.delete),
+                                imageVector = Icons.Filled.Delete,
                                 contentDescription = null,
                                 modifier = Modifier.size(24.dp)
                             )
@@ -1068,7 +1112,7 @@ fun LocalPlaylistHeader(
                             modifier = Modifier.size(40.dp)
                         ) {
                             Icon(
-                                painter = painterResource(if (liked) R.drawable.favorite else R.drawable.favorite_border),
+                                painter = if (liked) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
                                 contentDescription = null,
                                 tint = if (liked) MaterialTheme.colorScheme.error else LocalContentColor.current,
                                 modifier = Modifier.size(24.dp)
@@ -1082,7 +1126,7 @@ fun LocalPlaylistHeader(
                             modifier = Modifier.size(40.dp)
                         ) {
                             Icon(
-                                painter = painterResource(R.drawable.edit),
+                                imageVector = Icons.Filled.Edit,
                                 contentDescription = null,
                                 modifier = Modifier.size(24.dp)
                             )
@@ -1118,7 +1162,7 @@ fun LocalPlaylistHeader(
                             modifier = Modifier.size(40.dp)
                         ) {
                             Icon(
-                                painter = painterResource(R.drawable.sync),
+                                imageVector = Icons.Filled.Sync,
                                 contentDescription = null,
                                 modifier = Modifier.size(24.dp)
                             )
@@ -1132,7 +1176,7 @@ fun LocalPlaylistHeader(
                                 modifier = Modifier.size(40.dp)
                             ) {
                                 Icon(
-                                    painter = painterResource(R.drawable.offline),
+                                    imageVector = Icons.Filled.CloudOff,
                                     contentDescription = null,
                                     modifier = Modifier.size(24.dp)
                                 )
@@ -1182,7 +1226,7 @@ fun LocalPlaylistHeader(
                                 modifier = Modifier.size(40.dp)
                             ) {
                                 Icon(
-                                    painter = painterResource(R.drawable.download),
+                                    imageVector = Icons.Filled.Download,
                                     contentDescription = null,
                                     modifier = Modifier.size(24.dp)
                                 )
@@ -1199,7 +1243,7 @@ fun LocalPlaylistHeader(
                         modifier = Modifier.size(40.dp)
                     ) {
                         Icon(
-                            painter = painterResource(R.drawable.queue_music),
+                            imageVector = Icons.Filled.QueueMusic,
                             contentDescription = null,
                             modifier = Modifier.size(24.dp)
                         )
@@ -1222,7 +1266,7 @@ fun LocalPlaylistHeader(
                 modifier = Modifier.weight(1f),
             ) {
                 Icon(
-                    painter = painterResource(R.drawable.play),
+                    imageVector = Icons.Filled.PlayArrow,
                     contentDescription = null,
                     modifier = Modifier.size(ButtonDefaults.IconSize),
                 )
@@ -1243,7 +1287,7 @@ fun LocalPlaylistHeader(
                 modifier = Modifier.weight(1f),
             ) {
                 Icon(
-                    painter = painterResource(R.drawable.shuffle),
+                    imageVector = Icons.Filled.Shuffle,
                     contentDescription = null,
                     modifier = Modifier.size(ButtonDefaults.IconSize),
                 )

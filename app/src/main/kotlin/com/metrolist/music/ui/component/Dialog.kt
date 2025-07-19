@@ -282,7 +282,7 @@ fun InfoLabel(
     modifier = Modifier.padding(horizontal = 8.dp)
 ) {
     Icon(
-        painter = painterResource(id = R.drawable.info),
+        painter = Icons.Filled.Info,
         contentDescription = null,
         tint = MaterialTheme.colorScheme.secondary,
         modifier = Modifier.padding(4.dp)
