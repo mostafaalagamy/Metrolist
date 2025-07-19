@@ -21,6 +21,9 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.Icon
 import com.metrolist.innertube.utils.parseCookieString
 import com.metrolist.music.LocalDatabase
 import com.metrolist.music.R
@@ -32,7 +35,6 @@ import com.metrolist.music.ui.component.DefaultDialog
 import com.metrolist.music.ui.component.ListDialog
 import com.metrolist.music.ui.component.ListItem
 import com.metrolist.music.ui.component.PlaylistListItem
-import com.metrolist.music.ui.theme.AppIcons
 import com.metrolist.music.utils.rememberPreference
 import com.metrolist.innertube.YouTube
 import kotlinx.coroutines.Dispatchers
@@ -87,7 +89,7 @@ fun AddToPlaylistDialog(
                     title = stringResource(R.string.create_playlist),
                     thumbnailContent = {
                         Icon(
-                            imageVector = AppIcons.Add,
+                            imageVector = Icons.Filled.Add,
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.onBackground,
                             modifier = Modifier.size(ListThumbnailSize)

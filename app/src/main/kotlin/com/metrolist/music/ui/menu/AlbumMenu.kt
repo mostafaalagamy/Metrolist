@@ -47,6 +47,18 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.PlaylistPlay
+import androidx.compose.material.icons.filled.QueueMusic
+import androidx.compose.material.icons.filled.PlaylistAdd
+import androidx.compose.material.icons.filled.OfflinePin
+import androidx.compose.material.icons.filled.Download
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Sync
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
 import androidx.media3.exoplayer.offline.Download.STATE_COMPLETED
@@ -72,7 +84,6 @@ import com.metrolist.music.ui.component.AlbumListItem
 import com.metrolist.music.ui.component.ListDialog
 import com.metrolist.music.ui.component.ListItem
 import com.metrolist.music.ui.component.SongListItem
-import com.metrolist.music.ui.theme.AppIcons
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -178,7 +189,7 @@ fun AlbumMenu(
                     title = stringResource(R.string.already_in_playlist),
                     thumbnailContent = {
                         Icon(
-                            imageVector = AppIcons.Close,
+                            imageVector = Icons.Filled.Close,
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.onBackground,
                             modifier = Modifier.size(ListThumbnailSize),
@@ -258,7 +269,7 @@ fun AlbumMenu(
                 },
             ) {
                 Icon(
-                                            imageVector = if (album.album.bookmarkedAt != null) AppIcons.Favorite else AppIcons.FavoriteBorder,
+                                                                                         imageVector = if (album.album.bookmarkedAt != null) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
                     tint = if (album.album.bookmarkedAt != null) MaterialTheme.colorScheme.error else LocalContentColor.current,
                     contentDescription = null,
                 )
@@ -281,7 +292,7 @@ fun AlbumMenu(
                 headlineContent = { Text(text = stringResource(R.string.play_next)) },
                 leadingContent = {
                     Icon(
-                        imageVector = AppIcons.PlaylistPlay,
+                                                 imageVector = Icons.Filled.PlaylistPlay,
                         contentDescription = null,
                     )
                 },
@@ -296,7 +307,7 @@ fun AlbumMenu(
                 headlineContent = { Text(text = stringResource(R.string.add_to_queue)) },
                 leadingContent = {
                     Icon(
-                        imageVector = AppIcons.QueueMusic,
+                                                 imageVector = Icons.Filled.QueueMusic,
                         contentDescription = null,
                     )
                 },
@@ -311,7 +322,7 @@ fun AlbumMenu(
                 headlineContent = { Text(text = stringResource(R.string.add_to_playlist)) },
                 leadingContent = {
                     Icon(
-                        imageVector = AppIcons.PlaylistAdd,
+                                                 imageVector = Icons.Filled.PlaylistAdd,
                         contentDescription = null,
                     )
                 },
@@ -332,7 +343,7 @@ fun AlbumMenu(
                         },
                         leadingContent = {
                             Icon(
-                                imageVector = AppIcons.Offline,
+                                                                 imageVector = Icons.Filled.OfflinePin,
                                 contentDescription = null,
                             )
                         },
@@ -374,7 +385,7 @@ fun AlbumMenu(
                         headlineContent = { Text(text = stringResource(R.string.action_download)) },
                         leadingContent = {
                             Icon(
-                                imageVector = AppIcons.Download,
+                                                                 imageVector = Icons.Filled.Download,
                                 contentDescription = null,
                             )
                         },
@@ -403,7 +414,7 @@ fun AlbumMenu(
                 headlineContent = { Text(text = stringResource(R.string.view_artist)) },
                 leadingContent = {
                     Icon(
-                        imageVector = AppIcons.Artist,
+                        imageVector = Icons.Filled.Person,
                         contentDescription = null,
                     )
                 },
@@ -422,7 +433,7 @@ fun AlbumMenu(
                 headlineContent = { Text(text = stringResource(R.string.refetch)) },
                 leadingContent = {
                     Icon(
-                        imageVector = AppIcons.Sync,
+                        imageVector = Icons.Filled.Sync,
                         contentDescription = null,
                         modifier = Modifier.graphicsLayer(rotationZ = rotationAnimation),
                     )
@@ -444,7 +455,7 @@ fun AlbumMenu(
                 headlineContent = { Text(text = stringResource(R.string.share)) },
                 leadingContent = {
                     Icon(
-                        imageVector = AppIcons.Share,
+                        imageVector = Icons.Filled.Share,
                         contentDescription = null,
                     )
                 },

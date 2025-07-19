@@ -1,7 +1,7 @@
 package com.metrolist.music.ui.component
 
-import androidx.annotation.DrawableRes
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.ScrollState
@@ -17,7 +17,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
+import com.metrolist.music.constants.AppIcons
 import androidx.compose.ui.unit.dp
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.ui.utils.isScrollingUp
@@ -26,7 +26,7 @@ import com.metrolist.music.ui.utils.isScrollingUp
 fun BoxScope.HideOnScrollFAB(
     visible: Boolean = true,
     lazyListState: LazyListState,
-    @DrawableRes icon: Int,
+    icon: ImageVector,
     onClick: () -> Unit,
 ) {
     AnimatedVisibility(
@@ -46,7 +46,7 @@ fun BoxScope.HideOnScrollFAB(
             onClick = onClick,
         ) {
             Icon(
-                painter = painterResource(icon),
+                imageVector = icon,
                 contentDescription = null,
             )
         }
@@ -57,7 +57,7 @@ fun BoxScope.HideOnScrollFAB(
 fun BoxScope.HideOnScrollFAB(
     visible: Boolean = true,
     lazyListState: LazyGridState,
-    @DrawableRes icon: Int,
+    icon: ImageVector,
     onClick: () -> Unit,
 ) {
     AnimatedVisibility(
@@ -77,7 +77,7 @@ fun BoxScope.HideOnScrollFAB(
             onClick = onClick,
         ) {
             Icon(
-                painter = painterResource(icon),
+                imageVector = icon,
                 contentDescription = null,
             )
         }
@@ -88,7 +88,7 @@ fun BoxScope.HideOnScrollFAB(
 fun BoxScope.HideOnScrollFAB(
     visible: Boolean = true,
     scrollState: ScrollState,
-    @DrawableRes icon: Int,
+    icon: ImageVector,
     onClick: () -> Unit,
 ) {
     AnimatedVisibility(
@@ -108,7 +108,7 @@ fun BoxScope.HideOnScrollFAB(
             onClick = onClick,
         ) {
             Icon(
-                painter = painterResource(icon),
+                imageVector = icon,
                 contentDescription = null,
             )
         }

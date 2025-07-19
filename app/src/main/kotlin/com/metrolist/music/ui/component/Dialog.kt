@@ -42,8 +42,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import com.metrolist.music.constants.AppIcons
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
@@ -282,7 +282,7 @@ fun InfoLabel(
     modifier = Modifier.padding(horizontal = 8.dp)
 ) {
     Icon(
-        painter = painterResource(id = R.drawable.info),
+        imageVector = AppIcons.Info,
         contentDescription = null,
         tint = MaterialTheme.colorScheme.secondary,
         modifier = Modifier.padding(4.dp)

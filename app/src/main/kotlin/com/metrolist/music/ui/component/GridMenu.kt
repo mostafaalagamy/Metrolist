@@ -1,8 +1,8 @@
 package com.metrolist.music.ui.component
 
-import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
@@ -27,13 +27,16 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import com.metrolist.music.constants.AppIcons
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.media3.exoplayer.offline.Download
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.OfflinePin
+import androidx.compose.material.icons.filled.Download
+import androidx.compose.material.icons.filled.Bedtime
 import com.metrolist.music.R
-import com.metrolist.music.ui.theme.AppIcons
 import com.metrolist.music.utils.makeTimeString
 
 val GridMenuItemHeight = 108.dp
@@ -54,7 +57,7 @@ fun GridMenu(
 
 fun LazyGridScope.GridMenuItem(
     modifier: Modifier = Modifier,
-    @DrawableRes icon: Int,
+    icon: ImageVector,
     tint: @Composable () -> Color = { LocalContentColor.current },
     @StringRes title: Int,
     enabled: Boolean = true,
@@ -63,7 +66,7 @@ fun LazyGridScope.GridMenuItem(
     modifier = modifier,
     icon = {
         Icon(
-            painter = painterResource(icon),
+            imageVector = icon,
             tint = tint(),
             contentDescription = null
         )
@@ -125,7 +128,7 @@ fun LazyGridScope.DownloadGridMenu(
             GridMenuItem(
                 icon = {
                     Icon(
-                        imageVector = AppIcons.Offline,
+                        imageVector = Icons.Filled.OfflinePin,
                         contentDescription = null
                     )
                 },
@@ -151,7 +154,7 @@ fun LazyGridScope.DownloadGridMenu(
             GridMenuItem(
                 icon = {
                     Icon(
-                        imageVector = AppIcons.Download,
+                        imageVector = Icons.Filled.Download,
                         contentDescription = null
                     )
                 },
@@ -185,7 +188,7 @@ fun LazyGridScope.SleepTimerGridMenu(
                 contentAlignment = Alignment.Center,
                 content = {
                     Icon(
-                        AppIcons.Bedtime,
+                        Icons.Filled.Bedtime,
                         contentDescription = null,
                         modifier = Modifier.alpha(if (enabled) 1f else 0.5f)
                     )

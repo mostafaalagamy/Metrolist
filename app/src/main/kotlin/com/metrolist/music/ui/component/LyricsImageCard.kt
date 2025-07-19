@@ -1,9 +1,9 @@
 package com.metrolist.music.ui.component
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.material3.Icon
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
@@ -15,7 +15,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.painterResource
+import com.metrolist.music.constants.AppIcons
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -264,12 +264,12 @@ fun LyricsImageCard(
                             .background(secondaryColor),
                         contentAlignment = Alignment.Center
                     ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.small_icon),
+                        Icon(
+                            imageVector = AppIcons.SmallIcon,
                             contentDescription = null,
                             modifier = Modifier
                                 .size(16.dp),
-                            colorFilter = androidx.compose.ui.graphics.ColorFilter.tint(backgroundGradient) // الرمز بلون الخلفية
+                            tint = backgroundGradient // الرمز بلون الخلفية
                         )
                     }
 

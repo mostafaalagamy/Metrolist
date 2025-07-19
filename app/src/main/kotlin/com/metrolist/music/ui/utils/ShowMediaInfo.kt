@@ -47,6 +47,8 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.ui.window.DialogProperties
 import androidx.media3.common.util.UnstableApi
 import com.metrolist.innertube.YouTube
@@ -63,7 +65,6 @@ import com.metrolist.music.ui.component.MenuState
 import com.metrolist.music.ui.component.shimmer.ShimmerHost
 import com.metrolist.music.ui.component.shimmer.TextPlaceholder
 import com.metrolist.music.ui.screens.settings.DarkMode
-import com.metrolist.music.ui.theme.AppIcons
 import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
 
@@ -119,7 +120,7 @@ fun ShowMediaInfo(videoId: String) {
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Icon(
-                        painter = painterResource(R.drawable.info),
+                        imageVector = Icons.Filled.Info,
                         contentDescription = null,
                         tint = MaterialTheme.colorScheme.onBackground,
                         modifier = Modifier.padding(end = 8.dp)

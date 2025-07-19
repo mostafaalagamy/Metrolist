@@ -7,8 +7,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavController
+import com.metrolist.music.constants.AppIcons
 import com.metrolist.innertube.models.PlaylistItem
 import com.metrolist.innertube.models.WatchEndpoint
 import com.metrolist.music.R
@@ -43,7 +43,7 @@ fun LibraryArtistListItem(
             }
         ) {
             Icon(
-                painter = painterResource(R.drawable.more_vert),
+                imageVector = AppIcons.MoreVert,
                 contentDescription = null
             )
         }
@@ -109,7 +109,7 @@ fun LibraryAlbumListItem(
             }
         ) {
             Icon(
-                painter = painterResource(R.drawable.more_vert),
+                imageVector = AppIcons.MoreVert,
                 contentDescription = null
             )
         }
@@ -206,7 +206,7 @@ fun LibraryPlaylistListItem(
             }
         ) {
             Icon(
-                painter = painterResource(R.drawable.more_vert),
+                imageVector = AppIcons.MoreVert,
                 contentDescription = null
             )
         }

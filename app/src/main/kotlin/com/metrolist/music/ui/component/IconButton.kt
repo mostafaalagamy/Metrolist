@@ -1,9 +1,9 @@
 package com.metrolist.music.ui.component
 
-import androidx.annotation.DrawableRes
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.Indication
+import androidx.compose.material3.Icon
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
@@ -27,23 +27,23 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.res.painterResource
+import com.metrolist.music.constants.AppIcons
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 
 @Composable
 fun ResizableIconButton(
-    @DrawableRes icon: Int,
+    icon: ImageVector,
     modifier: Modifier = Modifier,
     color: Color = MaterialTheme.colorScheme.onSurface,
     enabled: Boolean = true,
     indication: Indication? = null,
     onClick: () -> Unit = {},
 ) {
-    Image(
-        painter = painterResource(icon),
+    Icon(
+        imageVector = icon,
         contentDescription = null,
-        colorFilter = ColorFilter.tint(color),
+        tint = color,
         modifier = modifier
             .clickable(
                 indication = indication ?: ripple(bounded = false),

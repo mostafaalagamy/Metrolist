@@ -1,25 +1,26 @@
 package com.metrolist.music.ui.component
 
 import androidx.annotation.DrawableRes
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.res.painterResource
+import com.metrolist.music.constants.AppIcons
 import androidx.compose.ui.unit.dp
 
 @Composable
 fun EmptyPlaceholder(
-    @DrawableRes icon: Int,
+    icon: ImageVector,
     text: String,
     modifier: Modifier = Modifier,
 ) {
@@ -30,10 +31,10 @@ fun EmptyPlaceholder(
             .fillMaxSize()
             .padding(12.dp),
     ) {
-        Image(
-            painter = painterResource(icon),
+        Icon(
+            imageVector = icon,
             contentDescription = null,
-            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
+            tint = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier.size(64.dp),
         )
 

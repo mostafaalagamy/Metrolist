@@ -85,7 +85,6 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
@@ -95,6 +94,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastAny
 import androidx.compose.ui.util.fastFirstOrNull
 import androidx.compose.ui.util.fastForEach
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.LibraryMusic
+import androidx.compose.material.icons.filled.Language
+import androidx.compose.material.icons.filled.History
+import androidx.compose.material.icons.filled.Analytics
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.core.net.toUri
@@ -157,7 +165,6 @@ import com.metrolist.music.ui.screens.settings.DarkMode
 import com.metrolist.music.ui.screens.settings.NavigationTab
 import com.metrolist.music.ui.theme.ColorSaver
 import com.metrolist.music.ui.theme.DefaultThemeColor
-import com.metrolist.music.ui.theme.AppIcons
 import com.metrolist.music.ui.theme.MetrolistTheme
 import com.metrolist.music.ui.theme.extractThemeColor
 import com.metrolist.music.ui.utils.appBarScrollBehavior
@@ -627,13 +634,13 @@ class MainActivity : ComponentActivity() {
                                         actions = {
                                             IconButton(onClick = { navController.navigate("history") }) {
                                                 Icon(
-                                                    imageVector = AppIcons.History,
+                                                    imageVector = Icons.Filled.History,
                                                     contentDescription = stringResource(R.string.history)
                                                 )
                                             }
                                             IconButton(onClick = { navController.navigate("stats") }) {
                                                 Icon(
-                                                    imageVector = AppIcons.Stats,
+                                                    imageVector = Icons.Filled.Analytics,
                                                     contentDescription = stringResource(R.string.stats)
                                                 )
                                             }
@@ -653,7 +660,7 @@ class MainActivity : ComponentActivity() {
                                                         )
                                                     } else {
                                                         Icon(
-                                                            imageVector = AppIcons.Account,
+                                                            imageVector = Icons.Filled.AccountCircle,
                                                             contentDescription = stringResource(R.string.account),
                                                             modifier = Modifier.size(24.dp)
                                                         )
@@ -719,9 +726,9 @@ class MainActivity : ComponentActivity() {
                                                     imageVector = if (active ||
                                                         !navigationItems.fastAny { it.route == navBackStackEntry?.destination?.route }
                                                     ) {
-                                                        AppIcons.ArrowBack
+                                                        Icons.Filled.ArrowBack
                                                     } else {
-                                                        AppIcons.Search
+                                                        Icons.Filled.Search
                                                     },
                                                     contentDescription = null,
                                                 )
@@ -741,7 +748,7 @@ class MainActivity : ComponentActivity() {
                                                             },
                                                         ) {
                                                             Icon(
-                                                                imageVector = AppIcons.Close,
+                                                                imageVector = Icons.Filled.Close,
                                                                 contentDescription = null,
                                                             )
                                                         }
@@ -754,8 +761,8 @@ class MainActivity : ComponentActivity() {
                                                     ) {
                                                         Icon(
                                                             imageVector = when (searchSource) {
-                                                                SearchSource.LOCAL -> AppIcons.LibraryMusic
-                                                                SearchSource.ONLINE -> AppIcons.Language
+                                                                SearchSource.LOCAL -> Icons.Filled.LibraryMusic
+                                                                SearchSource.ONLINE -> Icons.Filled.Language
                                                             },
                                                             contentDescription = null,
                                                         )
@@ -876,9 +883,7 @@ class MainActivity : ComponentActivity() {
                                                 selected = isSelected,
                                                 icon = {
                                                     Icon(
-                                                        painter = painterResource(
-                                                            id = if (isSelected) screen.iconIdActive else screen.iconIdInactive
-                                                        ),
+                                                        imageVector = if (isSelected) screen.iconIdActive else screen.iconIdInactive,
                                                         contentDescription = null,
                                                     )
                                                 },

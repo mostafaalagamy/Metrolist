@@ -25,8 +25,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.metrolist.music.R
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.CheckBoxOutlineBlank
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import com.metrolist.music.constants.PlaylistSongSortType
-import com.metrolist.music.ui.theme.AppIcons
 
 @Composable
 inline fun <reified T : Enum<T>> SortHeader(
@@ -75,9 +79,9 @@ inline fun <reified T : Enum<T>> SortHeader(
                     trailingIcon = {
                         Icon(
                             imageVector = if (sortType == type) {
-                                AppIcons.Check
+                                Icons.Filled.Check
                             } else {
-                                AppIcons.Deselect
+                                Icons.Filled.CheckBoxOutlineBlank
                             },
                             contentDescription = null,
                         )
@@ -92,7 +96,7 @@ inline fun <reified T : Enum<T>> SortHeader(
 
         if (sortType != PlaylistSongSortType.CUSTOM && showDescending == true) {
             ResizableIconButton(
-                icon = if (sortDescending) AppIcons.ArrowDownward else AppIcons.ArrowUpward,
+                icon = if (sortDescending) Icons.Filled.KeyboardArrowDown else Icons.Filled.KeyboardArrowUp,
                 color = MaterialTheme.colorScheme.primary,
                 modifier =
                 Modifier

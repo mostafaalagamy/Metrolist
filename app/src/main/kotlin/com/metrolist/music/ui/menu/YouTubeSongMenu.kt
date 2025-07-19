@@ -40,8 +40,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import com.metrolist.music.constants.AppIcons
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -219,7 +219,7 @@ fun YouTubeSongMenu(
                 },  
             ) {  
                 Icon(  
-                    painter = painterResource(if (librarySong?.song?.liked == true) R.drawable.favorite else R.drawable.favorite_border),  
+                    imageVector = if (librarySong?.song?.liked == true) AppIcons.Favorite else AppIcons.FavoriteBorder,  
                     tint = if (librarySong?.song?.liked == true) MaterialTheme.colorScheme.error else LocalContentColor.current,  
                     contentDescription = null,  
                 )  
@@ -257,7 +257,7 @@ fun YouTubeSongMenu(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Icon(
-                painter = painterResource(R.drawable.playlist_play),
+                imageVector = AppIcons.PlaylistPlay,
                 contentDescription = null,
                 modifier = Modifier.size(24.dp),
             )
@@ -287,7 +287,7 @@ fun YouTubeSongMenu(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Icon(
-                painter = painterResource(R.drawable.playlist_add),
+                imageVector = AppIcons.PlaylistAdd,
                 contentDescription = null,
                 modifier = Modifier.size(24.dp),
             )
@@ -323,7 +323,7 @@ fun YouTubeSongMenu(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Icon(
-                painter = painterResource(R.drawable.share),
+                imageVector = AppIcons.Share,
                 contentDescription = null,
                 modifier = Modifier.size(24.dp),
             )
@@ -351,7 +351,7 @@ fun YouTubeSongMenu(
                 headlineContent = { Text(text = stringResource(R.string.start_radio)) },
                 leadingContent = {
                     Icon(
-                        painter = painterResource(R.drawable.radio),
+                        imageVector = AppIcons.Radio,
                         contentDescription = null,
                     )
                 },
@@ -366,7 +366,7 @@ fun YouTubeSongMenu(
                 headlineContent = { Text(text = stringResource(R.string.add_to_queue)) },
                 leadingContent = {
                     Icon(
-                        painter = painterResource(R.drawable.queue_music),
+                        imageVector = AppIcons.QueueMusic,
                         contentDescription = null,
                     )
                 },
@@ -383,7 +383,7 @@ fun YouTubeSongMenu(
                 },
                 leadingContent = {
                     Icon(
-                        painter = painterResource(if (librarySong?.song?.inLibrary != null) R.drawable.library_add_check else R.drawable.library_add),
+                        imageVector = if (librarySong?.song?.inLibrary != null) AppIcons.LibraryAddCheck else AppIcons.LibraryAdd,
                         contentDescription = null,
                     )
                 },
@@ -413,7 +413,7 @@ fun YouTubeSongMenu(
                         },
                         leadingContent = {
                             Icon(
-                                painter = painterResource(R.drawable.offline),
+                                imageVector = AppIcons.Offline,
                                 contentDescription = null,
                             )
                         },
@@ -451,7 +451,7 @@ fun YouTubeSongMenu(
                         headlineContent = { Text(text = stringResource(R.string.action_download)) },
                         leadingContent = {
                             Icon(
-                                painter = painterResource(R.drawable.download),
+                                imageVector = AppIcons.Download,
                                 contentDescription = null,
                             )
                         },
@@ -481,7 +481,7 @@ fun YouTubeSongMenu(
                     headlineContent = { Text(text = stringResource(R.string.view_artist)) },
                     leadingContent = {
                         Icon(
-                            painter = painterResource(R.drawable.artist),
+                            imageVector = AppIcons.Artist,
                             contentDescription = null,
                         )
                     },
@@ -502,7 +502,7 @@ fun YouTubeSongMenu(
                     headlineContent = { Text(text = stringResource(R.string.view_album)) },
                     leadingContent = {
                         Icon(
-                            painter = painterResource(R.drawable.album),
+                            imageVector = AppIcons.Album,
                             contentDescription = null,
                         )
                     },
@@ -518,7 +518,7 @@ fun YouTubeSongMenu(
                  headlineContent = { Text(text = stringResource(R.string.details)) },
                  leadingContent = {
                      Icon(
-                         painter = painterResource(R.drawable.info),
+                         imageVector = AppIcons.Info,
                          contentDescription = null,
                      )
                  },

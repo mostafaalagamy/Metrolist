@@ -21,13 +21,23 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Palette
+import androidx.compose.material.icons.filled.Language
+import androidx.compose.material.icons.filled.Security
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Storage
+import androidx.compose.material.icons.filled.Restore
+import androidx.compose.material.icons.filled.Link
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Update
+import androidx.compose.material.icons.filled.ArrowBack
 import com.metrolist.music.BuildConfig
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.R
 import com.metrolist.music.ui.component.IconButton
 import com.metrolist.music.ui.component.PreferenceEntry
 import com.metrolist.music.ui.component.ReleaseNotesCard
-import com.metrolist.music.ui.theme.AppIcons
 import com.metrolist.music.ui.utils.backToMain
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -56,38 +66,38 @@ fun SettingsScreen(
 
         PreferenceEntry(
             title = { Text(stringResource(R.string.appearance)) },
-            icon = { Icon(AppIcons.Palette, null) },
+            icon = { Icon(Icons.Filled.Palette, null) },
             onClick = { navController.navigate("settings/appearance") }
         )
         PreferenceEntry(
             title = { Text(stringResource(R.string.content)) },
-            icon = { Icon(AppIcons.Language, null) },
+            icon = { Icon(Icons.Filled.Language, null) },
             onClick = { navController.navigate("settings/content") }
         )
         PreferenceEntry(
             title = { Text(stringResource(R.string.privacy)) },
-            icon = { Icon(AppIcons.Security, null) },
+            icon = { Icon(Icons.Filled.Security, null) },
             onClick = { navController.navigate("settings/privacy") }
         )
         PreferenceEntry(
             title = { Text(stringResource(R.string.player_and_audio)) },
-            icon = { Icon(AppIcons.Play, null) },
+            icon = { Icon(Icons.Filled.PlayArrow, null) },
             onClick = { navController.navigate("settings/player") }
         )
         PreferenceEntry(
             title = { Text(stringResource(R.string.storage)) },
-            icon = { Icon(AppIcons.Storage, null) },
+            icon = { Icon(Icons.Filled.Storage, null) },
             onClick = { navController.navigate("settings/storage") }
         )
         PreferenceEntry(
             title = { Text(stringResource(R.string.backup_restore)) },
-            icon = { Icon(AppIcons.Restore, null) },
+            icon = { Icon(Icons.Filled.Restore, null) },
             onClick = { navController.navigate("settings/backup_restore") }
         )
         if (isAndroid12OrLater) {
             PreferenceEntry(
                 title = { Text(stringResource(R.string.default_links)) },
-                icon = { Icon(AppIcons.Link, null) },
+                icon = { Icon(Icons.Filled.Link, null) },
                 onClick = {
                     try {
                         val intent = Intent(
@@ -128,7 +138,7 @@ fun SettingsScreen(
         }
         PreferenceEntry(
             title = { Text(stringResource(R.string.about)) },
-            icon = { Icon(AppIcons.Info, null) },
+            icon = { Icon(Icons.Filled.Info, null) },
             onClick = { navController.navigate("settings/about") }
         )
         if (latestVersionName != BuildConfig.VERSION_NAME) {
@@ -143,7 +153,7 @@ fun SettingsScreen(
                     BadgedBox(
                         badge = { Badge() }
                     ) {
-                        Icon(AppIcons.Update, null)
+                        Icon(Icons.Filled.Update, null)
                     }
                 },
                 onClick = {
@@ -162,7 +172,7 @@ fun SettingsScreen(
                 onLongClick = navController::backToMain
             ) {
                 Icon(
-                    AppIcons.ArrowBack,
+                    Icons.Filled.ArrowBack,
                     contentDescription = null
                 )
             }

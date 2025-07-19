@@ -61,9 +61,9 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import com.metrolist.music.constants.AppIcons
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -1059,10 +1059,10 @@ fun ItemThumbnail(
                     .clip(shape)
                     .background(Color.Black.copy(alpha = 0.5f))
             ) {
-                Icon(
-                    painter = painterResource(R.drawable.done),
-                    contentDescription = null
-                )
+                            Icon(
+                imageVector = AppIcons.Done,
+                contentDescription = null
+            )
             }
         }
 
@@ -1124,7 +1124,7 @@ fun LocalThumbnail(
                     )
                 } else {
                     Icon(
-                        painter = painterResource(R.drawable.play),
+                        imageVector = AppIcons.Play,
                         contentDescription = null,
                         tint = Color.White
                     )
@@ -1149,7 +1149,7 @@ fun LocalThumbnail(
                         .background(Color.Black.copy(alpha = 0.6f))
                 ) {
                     Icon(
-                        painter = painterResource(R.drawable.play),
+                        imageVector = AppIcons.Play,
                         contentDescription = null,
                         tint = Color.White
                     )
@@ -1174,7 +1174,7 @@ fun LocalThumbnail(
                         .background(Color.Black.copy(alpha = ActiveBoxAlpha))
                 ) {
                     Icon(
-                        painter = painterResource(R.drawable.play),
+                        imageVector = AppIcons.Play,
                         contentDescription = null,
                         tint = Color.White
                     )
@@ -1252,7 +1252,7 @@ fun BoxScope.OverlayPlayButton(
                 .background(Color.Black.copy(alpha = ActiveBoxAlpha))
         ) {
             Icon(
-                painter = painterResource(R.drawable.play),
+                imageVector = AppIcons.Play,
                 contentDescription = null,
                 tint = Color.White,
                 modifier = Modifier.size(20.dp)
@@ -1283,7 +1283,7 @@ fun BoxScope.AlbumPlayButton(
                 .clickable(onClick = onClick)
         ) {
             Icon(
-                painter = painterResource(R.drawable.play),
+                imageVector = AppIcons.Play,
                 contentDescription = null,
                 tint = Color.White
             )
@@ -1333,15 +1333,15 @@ fun SwipeToSongBox(
             )
     ) {
         if (offset.value != 0f) {
-            val (iconRes, bg, tint, align) = if (offset.value > 0)
+            val (icon, bg, tint, align) = if (offset.value > 0)
                 Quadruple(
-                    R.drawable.playlist_play,
+                    AppIcons.PlaylistPlay,
                     MaterialTheme.colorScheme.secondary,
                     MaterialTheme.colorScheme.onSecondary,
                     Alignment.CenterStart
                 ) else
                 Quadruple(
-                    R.drawable.queue_music,
+                    AppIcons.QueueMusic,
                     MaterialTheme.colorScheme.primary,
                     MaterialTheme.colorScheme.onPrimary,
                     Alignment.CenterEnd
@@ -1356,7 +1356,7 @@ fun SwipeToSongBox(
                 contentAlignment = align
             ) {
                 Icon(
-                    painter = painterResource(id = iconRes),
+                    imageVector = icon,
                     contentDescription = null,
                     modifier = Modifier
                         .padding(horizontal = 24.dp)
@@ -1400,7 +1400,7 @@ private object Icon {
     @Composable
     fun Favorite() {
         Icon(
-            painter = painterResource(R.drawable.favorite),
+            imageVector = AppIcons.Favorite,
             contentDescription = null,
             tint = MaterialTheme.colorScheme.error,
             modifier = Modifier
@@ -1412,7 +1412,7 @@ private object Icon {
     @Composable
     fun Library() {
         Icon(
-            painter = painterResource(R.drawable.library_add_check),
+            imageVector = AppIcons.LibraryAddCheck,
             contentDescription = null,
             modifier = Modifier
                 .size(18.dp)
@@ -1424,7 +1424,7 @@ private object Icon {
     fun Download(state: Int?) {
         when (state) {
             STATE_COMPLETED -> Icon(
-                painter = painterResource(R.drawable.offline),
+                imageVector = AppIcons.Offline,
                 contentDescription = null,
                 modifier = Modifier
                     .size(18.dp)
@@ -1443,7 +1443,7 @@ private object Icon {
     @Composable
     fun Explicit() {
         Icon(
-            painter = painterResource(R.drawable.explicit),
+            imageVector = AppIcons.Explicit,
             contentDescription = null,
             modifier = Modifier
                 .size(18.dp)

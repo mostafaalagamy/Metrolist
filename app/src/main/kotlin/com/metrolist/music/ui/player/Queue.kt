@@ -95,6 +95,22 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.fastForEachReversed
 import androidx.compose.ui.window.DialogProperties
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.QueueMusic
+import androidx.compose.material.icons.filled.Bedtime
+import androidx.compose.material.icons.filled.Lyrics
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.DragHandle
+import androidx.compose.material.icons.filled.PlaylistPlay
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.LockOpen
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.CheckBox
+import androidx.compose.material.icons.filled.SelectAll
+import androidx.compose.material.icons.filled.Shuffle
+import androidx.compose.material.icons.filled.ExpandMore
+import androidx.compose.material.icons.filled.Repeat
+import androidx.compose.material.icons.filled.RepeatOne
 import androidx.media3.common.Player
 import androidx.media3.common.Timeline
 import androidx.media3.exoplayer.source.ShuffleOrder.DefaultShuffleOrder
@@ -120,7 +136,6 @@ import com.metrolist.music.ui.component.LocalMenuState
 import com.metrolist.music.ui.component.MediaMetadataListItem
 import com.metrolist.music.ui.menu.PlayerMenu
 import com.metrolist.music.ui.menu.SelectionMediaMetadataMenu
-import com.metrolist.music.ui.theme.AppIcons
 import com.metrolist.music.ui.utils.ShowMediaInfo
 import com.metrolist.music.utils.makeTimeString
 import com.metrolist.music.utils.rememberPreference
@@ -257,7 +272,7 @@ fun Queue(
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
-                            imageVector = AppIcons.QueueMusic,
+                            imageVector = Icons.Filled.QueueMusic,
                             contentDescription = null,
                             modifier = Modifier.size(iconSize),
                             tint = TextBackgroundColor
@@ -296,7 +311,7 @@ fun Queue(
                                 )
                             } else {
                                 Icon(
-                                    imageVector = AppIcons.Bedtime,
+                                    imageVector = Icons.Filled.Bedtime,
                                     contentDescription = null,
                                     modifier = Modifier.size(iconSize),
                                     tint = TextBackgroundColor
@@ -316,7 +331,7 @@ fun Queue(
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
-                            imageVector = AppIcons.Lyrics,
+                            imageVector = Icons.Filled.Lyrics,
                             contentDescription = null,
                             modifier = Modifier.size(iconSize),
                             tint = TextBackgroundColor.copy(alpha = if (showLyrics) 1f else 0.5f)
@@ -351,9 +366,9 @@ fun Queue(
                     ) {
                         Icon(
                             imageVector = when (repeatMode) {
-                                Player.REPEAT_MODE_OFF, Player.REPEAT_MODE_ALL -> AppIcons.Repeat
-                                Player.REPEAT_MODE_ONE -> AppIcons.RepeatOne
-                                else -> AppIcons.Repeat
+                                Player.REPEAT_MODE_OFF, Player.REPEAT_MODE_ALL -> Icons.Filled.Repeat
+                                Player.REPEAT_MODE_ONE -> Icons.Filled.RepeatOne
+                                else -> Icons.Filled.Repeat
                             },
                             contentDescription = null,
                             modifier = Modifier
@@ -390,7 +405,7 @@ fun Queue(
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
-                            imageVector = AppIcons.MoreVert,
+                            imageVector = Icons.Filled.MoreVert,
                             contentDescription = null,
                             modifier = Modifier.size(iconSize),
                             tint = iconButtonColor
@@ -420,7 +435,7 @@ fun Queue(
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             Icon(
-                                imageVector = AppIcons.QueueMusic,
+                                imageVector = Icons.Filled.QueueMusic,
                                 contentDescription = null,
                                 modifier = Modifier.size(20.dp),
                                 tint = TextBackgroundColor
@@ -453,7 +468,7 @@ fun Queue(
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             Icon(
-                                imageVector = AppIcons.Bedtime,
+                                imageVector = Icons.Filled.Bedtime,
                                 contentDescription = null,
                                 modifier = Modifier.size(20.dp),
                                 tint = TextBackgroundColor
@@ -496,7 +511,7 @@ fun Queue(
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             Icon(
-                                imageVector = AppIcons.Lyrics,
+                                imageVector = Icons.Filled.Lyrics,
                                 contentDescription = null,
                                 modifier = Modifier.size(20.dp),
                                 tint = TextBackgroundColor.copy(alpha = if (showLyrics) 1f else 0.5f)
@@ -755,7 +770,7 @@ fun Queue(
                                             },
                                         ) {
                                             Icon(
-                                                imageVector = AppIcons.MoreVert,
+                                                imageVector = Icons.Filled.MoreVert,
                                                 contentDescription = null,
                                             )
                                         }
@@ -765,7 +780,7 @@ fun Queue(
                                                 modifier = Modifier.draggableHandle()
                                             ) {
                                                                                             Icon(
-                                                imageVector = AppIcons.DragHandle,
+                                                imageVector = Icons.Filled.DragHandle,
                                                 contentDescription = null,
                                             )
                                             }
@@ -853,7 +868,7 @@ fun Queue(
                                         },
                                     ) {
                                         Icon(
-                                            imageVector = AppIcons.PlaylistPlay,
+                                            imageVector = Icons.Filled.PlaylistPlay,
                                             contentDescription = null,
                                         )
                                     }
@@ -866,7 +881,7 @@ fun Queue(
                                         },
                                     ) {
                                         Icon(
-                                            imageVector = AppIcons.QueueMusic,
+                                            imageVector = Icons.Filled.QueueMusic,
                                             contentDescription = null,
                                         )
                                     }
@@ -944,7 +959,7 @@ fun Queue(
                             modifier = Modifier.padding(horizontal = 6.dp),
                         ) {
                             Icon(
-                                imageVector = if (locked) AppIcons.Lock else AppIcons.LockOpen,
+                                imageVector = if (locked) Icons.Filled.Lock else Icons.Filled.LockOpen,
                                 contentDescription = null,
                             )
                         }
@@ -989,7 +1004,7 @@ fun Queue(
                         },
                     ) {
                         Icon(
-                            imageVector = AppIcons.Close,
+                            imageVector = Icons.Filled.Close,
                             contentDescription = null,
                         )
                     }
@@ -1014,9 +1029,9 @@ fun Queue(
                     ) {
                         Icon(
                             imageVector = if (count == mutableQueueWindows.size) {
-                                AppIcons.Deselect
+                                Icons.Filled.CheckBox
                             } else {
-                                AppIcons.SelectAll
+                                Icons.Filled.SelectAll
                             },
                             contentDescription = null,
                         )
@@ -1038,7 +1053,7 @@ fun Queue(
                         },
                     ) {
                         Icon(
-                            imageVector = AppIcons.MoreVert,
+                            imageVector = Icons.Filled.MoreVert,
                             contentDescription = null,
                             tint = LocalContentColor.current,
                         )
@@ -1093,14 +1108,14 @@ fun Queue(
                 },
             ) {
                 Icon(
-                    imageVector = AppIcons.Shuffle,
+                    imageVector = Icons.Filled.Shuffle,
                     contentDescription = null,
                     modifier = Modifier.alpha(if (shuffleModeEnabled) 1f else 0.5f),
                 )
             }
 
             Icon(
-                imageVector = AppIcons.ExpandMore,
+                imageVector = Icons.Filled.ExpandMore,
                 contentDescription = null,
                 modifier = Modifier.align(Alignment.Center),
             )
@@ -1111,8 +1126,8 @@ fun Queue(
             ) {
                 Icon(
                     imageVector = when (repeatMode) {
-                        Player.REPEAT_MODE_OFF, Player.REPEAT_MODE_ALL -> AppIcons.Repeat
-                        Player.REPEAT_MODE_ONE -> AppIcons.RepeatOne
+                        Player.REPEAT_MODE_OFF, Player.REPEAT_MODE_ALL -> Icons.Filled.Repeat
+                        Player.REPEAT_MODE_ONE -> Icons.Filled.RepeatOne
                         else -> throw IllegalStateException()
                     },
                     contentDescription = null,

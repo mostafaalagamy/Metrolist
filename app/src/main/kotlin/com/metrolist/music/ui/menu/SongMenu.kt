@@ -48,13 +48,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.metrolist.music.constants.AppIcons
 import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -85,7 +85,6 @@ import com.metrolist.music.ui.component.ListDialog
 import com.metrolist.music.ui.component.LocalBottomSheetPageState
 import com.metrolist.music.ui.component.SongListItem
 import com.metrolist.music.ui.component.TextFieldDialog
-import com.metrolist.music.ui.theme.AppIcons
 import com.metrolist.music.ui.utils.ShowMediaInfo
 import com.metrolist.music.viewmodels.CachePlaylistViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -158,7 +157,7 @@ fun SongMenu(
         TextFieldDialog(
             icon = {
                 Icon(
-                    imageVector = AppIcons.Edit,
+                    imageVector = Icons.Filled.Edit,
                     contentDescription = null
                 )
             },
@@ -258,7 +257,7 @@ fun SongMenu(
                     headlineContent = { Text(text = stringResource(R.string.already_in_playlist)) },
                     leadingContent = {
                         Image(
-                            imageVector = AppIcons.Close,
+                            imageVector = Icons.Filled.Close,
                             contentDescription = null,
                             colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
                             modifier = Modifier.size(ListThumbnailSize),
@@ -338,7 +337,7 @@ fun SongMenu(
                 },
             ) {
                 Icon(
-                                            imageVector = if (song.song.liked) AppIcons.Favorite else AppIcons.FavoriteBorder,
+                                                                                         imageVector = if (song.song.liked) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
                     tint = if (song.song.liked) MaterialTheme.colorScheme.error else LocalContentColor.current,
                     contentDescription = null,
                 )
@@ -375,7 +374,7 @@ fun SongMenu(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Icon(
-                                        imageVector = AppIcons.Edit,
+                                                                                 imageVector = Icons.Filled.Edit,
                 contentDescription = null,
                 modifier = Modifier.size(24.dp),
             )
@@ -405,7 +404,7 @@ fun SongMenu(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Icon(
-                                        imageVector = AppIcons.PlaylistAdd,
+                                                                                 imageVector = Icons.Filled.PlaylistAdd,
                 contentDescription = null,
                 modifier = Modifier.size(24.dp),
             )
@@ -441,7 +440,7 @@ fun SongMenu(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Icon(
-                                        imageVector = AppIcons.Share,
+                                                                                 imageVector = Icons.Filled.Share,
                 contentDescription = null,
                 modifier = Modifier.size(24.dp),
             )
@@ -469,7 +468,7 @@ fun SongMenu(
                 headlineContent = { Text(text = stringResource(R.string.start_radio)) },
                 leadingContent = {
                     Icon(
-                        imageVector = AppIcons.Radio,
+                                                 imageVector = Icons.Filled.Radio,
                         contentDescription = null,
                     )
                 },
@@ -484,7 +483,7 @@ fun SongMenu(
                 headlineContent = { Text(text = stringResource(R.string.play_next)) },
                 leadingContent = {
                     Icon(
-                        imageVector = AppIcons.PlaylistPlay,
+                                                 imageVector = Icons.Filled.PlaylistPlay,
                         contentDescription = null,
                     )
                 },
@@ -499,7 +498,7 @@ fun SongMenu(
                 headlineContent = { Text(text = stringResource(R.string.add_to_queue)) },
                 leadingContent = {
                     Icon(
-                        imageVector = AppIcons.QueueMusic,
+                                                 imageVector = Icons.Filled.QueueMusic,
                         contentDescription = null,
                     )
                 },
@@ -521,10 +520,8 @@ fun SongMenu(
                 },
                 leadingContent = {
                     Icon(
-                        painter = painterResource(
-                            if (song.song.inLibrary == null) R.drawable.library_add
-                            else R.drawable.library_add_check
-                        ),
+                        imageVector = if (song.song.inLibrary == null) AppIcons.LibraryAdd
+                            else AppIcons.LibraryAddCheck,
                         contentDescription = null,
                     )
                 },
@@ -541,7 +538,7 @@ fun SongMenu(
                     headlineContent = { Text(text = stringResource(R.string.remove_from_history)) },
                     leadingContent = {
                         Icon(
-                            imageVector = AppIcons.Delete,
+                            imageVector = Icons.Filled.Delete,
                             contentDescription = null,
                         )
                     },
@@ -560,7 +557,7 @@ fun SongMenu(
                     headlineContent = { Text(text = stringResource(R.string.remove_from_playlist)) },
                     leadingContent = {
                         Icon(
-                            imageVector = AppIcons.Delete,
+                            imageVector = Icons.Filled.Delete,
                             contentDescription = null,
                         )
                     },
@@ -589,7 +586,7 @@ fun SongMenu(
                     headlineContent = { Text(text = stringResource(R.string.remove_from_cache)) },
                     leadingContent = {
                         Icon(
-                            imageVector = AppIcons.Delete,
+                            imageVector = Icons.Filled.Delete,
                             contentDescription = null,
                         )
                     },
@@ -612,7 +609,7 @@ fun SongMenu(
                         },
                         leadingContent = {
                             Icon(
-                                imageVector = AppIcons.Offline,
+                                imageVector = Icons.Filled.OfflinePin,
                                 contentDescription = null,
                             )
                         },
@@ -650,7 +647,7 @@ fun SongMenu(
                         headlineContent = { Text(text = stringResource(R.string.action_download)) },
                         leadingContent = {
                             Icon(
-                                imageVector = AppIcons.Download,
+                                imageVector = Icons.Filled.Download,
                                 contentDescription = null,
                             )
                         },
@@ -677,7 +674,7 @@ fun SongMenu(
                 headlineContent = { Text(text = stringResource(R.string.view_artist)) },
                 leadingContent = {
                     Icon(
-                        imageVector = AppIcons.Artist,
+                        imageVector = Icons.Filled.Person,
                         contentDescription = null,
                     )
                 },
@@ -697,7 +694,7 @@ fun SongMenu(
                                     headlineContent = { Text(text = stringResource(R.string.view_album)) },
                 leadingContent = {
                     Icon(
-                        imageVector = AppIcons.Album,
+                        imageVector = Icons.Filled.Album,
                         contentDescription = null,
                     )
                 },
@@ -713,7 +710,7 @@ fun SongMenu(
                 headlineContent = { Text(text = stringResource(R.string.refetch)) },
                 leadingContent = {
                     Icon(
-                        imageVector = AppIcons.Sync,
+                        imageVector = Icons.Filled.Sync,
                         contentDescription = null,
                         modifier = Modifier.graphicsLayer(rotationZ = rotationAnimation),
                     )
@@ -738,7 +735,7 @@ fun SongMenu(
                 headlineContent = { Text(text = stringResource(R.string.details)) },
                 leadingContent = {
                     Icon(
-                        imageVector = AppIcons.Info,
+                        imageVector = Icons.Filled.Info,
                         contentDescription = null,
                     )
                 },

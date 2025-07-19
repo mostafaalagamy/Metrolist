@@ -4,7 +4,10 @@ import androidx.annotation.StringRes
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.metrolist.music.R
-import com.metrolist.music.ui.theme.AppIcons
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.LibraryMusic
 
 @Immutable
 sealed class Screens(
@@ -15,22 +18,22 @@ sealed class Screens(
 ) {
     object Home : Screens(
         titleId = R.string.home,
-        iconIdInactive = AppIcons.HomeOutlined,
-        iconIdActive = AppIcons.HomeFilled,
+        iconIdInactive = Icons.Filled.Home,
+        iconIdActive = Icons.Filled.Home,
         route = "home"
     )
 
     object Search : Screens(
         titleId = R.string.search,
-        iconIdInactive = AppIcons.Search,
-        iconIdActive = AppIcons.Search,
+        iconIdInactive = Icons.Filled.Search,
+        iconIdActive = Icons.Filled.Search,
         route = "search"
     )
 
     object Library : Screens(
         titleId = R.string.filter_library,
-        iconIdInactive = AppIcons.LibraryMusicOutlined,
-        iconIdActive = AppIcons.LibraryMusicFilled,
+        iconIdInactive = Icons.Filled.LibraryMusic,
+        iconIdActive = Icons.Filled.LibraryMusic,
         route = "library"
     )
 
