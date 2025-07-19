@@ -43,14 +43,6 @@ import com.metrolist.music.viewmodels.BackupRestoreViewModel
 import kotlinx.coroutines.delay
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-            importedSongs.clear()
-            importedSongs.addAll(result)
-        importedSongs.clear()
-        importedSongs.addAll(result)
-                importM3uLauncherOnline.launch(arrayOf("audio/*"))
-                importPlaylistFromCsv.launch(arrayOf("text/csv"))
-
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
