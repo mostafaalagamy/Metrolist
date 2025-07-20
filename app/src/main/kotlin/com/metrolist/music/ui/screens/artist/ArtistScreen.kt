@@ -1,6 +1,10 @@
 package com.metrolist.music.ui.screens.artist
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.Intent
+import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
@@ -42,6 +46,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -68,6 +73,7 @@ import androidx.compose.ui.util.fastForEach
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import coil.util.Logger
 import com.metrolist.innertube.models.AlbumItem
 import com.metrolist.innertube.models.ArtistItem
 import com.metrolist.innertube.models.PlaylistItem
@@ -78,12 +84,13 @@ import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
 import com.metrolist.music.constants.AppBarHeight
+import com.metrolist.music.constants.HideExplicitKey
 import com.metrolist.music.db.entities.ArtistEntity
 import com.metrolist.music.extensions.togglePlayPause
 import com.metrolist.music.extensions.toMediaItem
 import com.metrolist.music.models.toMediaMetadata
-import com.metrolist.music.playback.queues.YouTubeQueue
 import com.metrolist.music.playback.queues.ListQueue
+import com.metrolist.music.playback.queues.YouTubeQueue
 import com.metrolist.music.ui.component.AlbumGridItem
 import com.metrolist.music.ui.component.AutoResizeText
 import com.metrolist.music.ui.component.FontSizeRange
@@ -106,14 +113,10 @@ import com.metrolist.music.ui.menu.YouTubePlaylistMenu
 import com.metrolist.music.ui.menu.YouTubeSongMenu
 import com.metrolist.music.ui.utils.backToMain
 import com.metrolist.music.ui.utils.fadingEdge
+import com.metrolist.music.utils.rememberPreference
 import com.metrolist.music.ui.utils.resize
 import com.metrolist.music.viewmodels.ArtistViewModel
 import com.valentinilk.shimmer.shimmer
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
-import android.widget.Toast
-import coil.util.Logger
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -134,6 +137,7 @@ fun ArtistScreen(
     val libraryArtist by viewModel.libraryArtist.collectAsState()
     val librarySongs by viewModel.librarySongs.collectAsState()
     val libraryAlbums by viewModel.libraryAlbums.collectAsState()
+    val hideExplicit by rememberPreference(key = HideExplicitKey, defaultValue = false)
 
     val lazyListState = rememberLazyListState()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -143,6 +147,11 @@ fun ArtistScreen(
         derivedStateOf {
             lazyListState.firstVisibleItemIndex <= 1
         }
+    }
+
+    // Reload artist data when hide explicit setting changes
+    LaunchedEffect(hideExplicit) {
+        viewModel.fetchArtistsFromYTM()
     }
 
     Box(
@@ -426,8 +435,13 @@ fun ArtistScreen(
                             )
                         }
 
+                        val filteredLibrarySongs = if (hideExplicit) {
+                            librarySongs.filter { !it.song.explicit }
+                        } else {
+                            librarySongs
+                        }
                         itemsIndexed(
-                            items = librarySongs,
+                            items = filteredLibrarySongs,
                             key = { _, item -> "local_song_${item.id}" }
                         ) { index, song ->
                             SongListItem(
@@ -496,9 +510,14 @@ fun ArtistScreen(
                         }
 
                         item {
+                            val filteredLibraryAlbums = if (hideExplicit) {
+                                libraryAlbums.filter { !it.album.explicit }
+                            } else {
+                                libraryAlbums
+                            }
                             LazyRow {
                                 items(
-                                    items = libraryAlbums,
+                                    items = filteredLibraryAlbums,
                                     key = { "local_album_${it.id}" }
                                 ) { album ->
                                     AlbumGridItem(

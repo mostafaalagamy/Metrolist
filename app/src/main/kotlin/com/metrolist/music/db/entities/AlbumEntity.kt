@@ -1,6 +1,7 @@
 package com.metrolist.music.db.entities
 
 import androidx.compose.runtime.Immutable
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.metrolist.innertube.YouTube
@@ -21,6 +22,8 @@ data class AlbumEntity(
     val themeColor: Int? = null,
     val songCount: Int,
     val duration: Int,
+    @ColumnInfo(defaultValue = "0")
+    val explicit: Boolean = false,
     val lastUpdateTime: LocalDateTime = LocalDateTime.now(),
     val bookmarkedAt: LocalDateTime? = null,
     val likedDate: LocalDateTime? = null,

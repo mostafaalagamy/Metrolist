@@ -1090,6 +1090,7 @@ interface DatabaseDao {
                     thumbnailUrl = albumPage.album.thumbnail,
                     songCount = albumPage.songs.size,
                     duration = albumPage.songs.sumOf { it.duration ?: 0 },
+                    explicit = albumPage.album.explicit || albumPage.songs.any { it.explicit },
                 ),
             ) == -1L
         ) {
@@ -1205,6 +1206,7 @@ interface DatabaseDao {
                 thumbnailUrl = albumPage.album.thumbnail,
                 songCount = albumPage.songs.size,
                 duration = albumPage.songs.sumOf { it.duration ?: 0 },
+                explicit = albumPage.album.explicit || albumPage.songs.any { it.explicit },
             ),
         )
         if (artists?.size != albumPage.album.artists?.size) {

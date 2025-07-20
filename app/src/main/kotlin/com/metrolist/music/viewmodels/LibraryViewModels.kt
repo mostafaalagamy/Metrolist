@@ -23,6 +23,7 @@ import com.metrolist.music.constants.ArtistSongSortTypeKey
 import com.metrolist.music.constants.ArtistSortDescendingKey
 import com.metrolist.music.constants.ArtistSortType
 import com.metrolist.music.constants.ArtistSortTypeKey
+import com.metrolist.music.constants.HideExplicitKey
 import com.metrolist.music.constants.LibraryFilter
 import com.metrolist.music.constants.PlaylistSortDescendingKey
 import com.metrolist.music.constants.PlaylistSortType
@@ -34,11 +35,14 @@ import com.metrolist.music.constants.SongSortType
 import com.metrolist.music.constants.SongSortTypeKey
 import com.metrolist.music.constants.TopSize
 import com.metrolist.music.db.MusicDatabase
+import com.metrolist.music.extensions.filterExplicit
+import com.metrolist.music.extensions.filterExplicitAlbums
 import com.metrolist.music.extensions.reversed
 import com.metrolist.music.extensions.toEnum
 import com.metrolist.music.playback.DownloadUtil
 import com.metrolist.music.utils.SyncUtils
 import com.metrolist.music.utils.dataStore
+import com.metrolist.music.utils.get
 import com.metrolist.music.utils.reportException
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -69,16 +73,20 @@ constructor(
     val allSongs =
         context.dataStore.data
             .map {
-                Triple(
-                    it[SongFilterKey].toEnum(SongFilter.LIKED),
-                    it[SongSortTypeKey].toEnum(SongSortType.CREATE_DATE),
-                    (it[SongSortDescendingKey] ?: true),
+                Pair(
+                    Triple(
+                        it[SongFilterKey].toEnum(SongFilter.LIKED),
+                        it[SongSortTypeKey].toEnum(SongSortType.CREATE_DATE),
+                        (it[SongSortDescendingKey] ?: true),
+                    ),
+                    it[HideExplicitKey] ?: false
                 )
             }.distinctUntilChanged()
-            .flatMapLatest { (filter, sortType, descending) ->
+            .flatMapLatest { (filterSort, hideExplicit) ->
+                val (filter, sortType, descending) = filterSort
                 when (filter) {
-                    SongFilter.LIBRARY -> database.songs(sortType, descending)
-                    SongFilter.LIKED -> database.likedSongs(sortType, descending)
+                    SongFilter.LIBRARY -> database.songs(sortType, descending).map { it.filterExplicit(hideExplicit) }
+                    SongFilter.LIKED -> database.likedSongs(sortType, descending).map { it.filterExplicit(hideExplicit) }
                     SongFilter.DOWNLOADED ->
                         downloadUtil.downloads.flatMapLatest { downloads ->
                             database
@@ -115,7 +123,7 @@ constructor(
                                         }
 
                                         SongSortType.PLAY_TIME -> songs.sortedBy { it.song.totalPlayTime }
-                                    }.reversed(descending)
+                                    }.reversed(descending).filterExplicit(hideExplicit)
                                 }
                         }
                 }
@@ -191,16 +199,20 @@ constructor(
     val allAlbums =
         context.dataStore.data
             .map {
-                Triple(
-                    it[AlbumFilterKey].toEnum(AlbumFilter.LIKED),
-                    it[AlbumSortTypeKey].toEnum(AlbumSortType.CREATE_DATE),
-                    it[AlbumSortDescendingKey] ?: true,
+                Pair(
+                    Triple(
+                        it[AlbumFilterKey].toEnum(AlbumFilter.LIKED),
+                        it[AlbumSortTypeKey].toEnum(AlbumSortType.CREATE_DATE),
+                        it[AlbumSortDescendingKey] ?: true,
+                    ),
+                    it[HideExplicitKey] ?: false
                 )
             }.distinctUntilChanged()
-            .flatMapLatest { (filter, sortType, descending) ->
+            .flatMapLatest { (filterSort, hideExplicit) ->
+                val (filter, sortType, descending) = filterSort
                 when (filter) {
-                    AlbumFilter.LIBRARY -> database.albums(sortType, descending)
-                    AlbumFilter.LIKED -> database.albumsLiked(sortType, descending)
+                    AlbumFilter.LIBRARY -> database.albums(sortType, descending).map { it.filterExplicitAlbums(hideExplicit) }
+                    AlbumFilter.LIKED -> database.albumsLiked(sortType, descending).map { it.filterExplicitAlbums(hideExplicit) }
                 }
             }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
@@ -280,11 +292,15 @@ constructor(
     val songs =
         context.dataStore.data
             .map {
-                it[ArtistSongSortTypeKey].toEnum(ArtistSongSortType.CREATE_DATE) to (it[ArtistSongSortDescendingKey]
-                    ?: true)
+                Pair(
+                    it[ArtistSongSortTypeKey].toEnum(ArtistSongSortType.CREATE_DATE) to (it[ArtistSongSortDescendingKey]
+                        ?: true),
+                    it[HideExplicitKey] ?: false
+                )
             }.distinctUntilChanged()
-            .flatMapLatest { (sortType, descending) ->
-                database.artistSongs(artistId, sortType, descending)
+            .flatMapLatest { (sortDesc, hideExplicit) ->
+                val (sortType, descending) = sortDesc
+                database.artistSongs(artistId, sortType, descending).map { it.filterExplicit(hideExplicit) }
             }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 }
 
@@ -315,8 +331,12 @@ constructor(
                 ArtistSortType.CREATE_DATE,
                 true,
             ).stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
-    var albums = database.albumsLiked(AlbumSortType.CREATE_DATE, true)
-        .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
+    var albums = context.dataStore.data
+        .map { it[HideExplicitKey] ?: false }
+        .distinctUntilChanged()
+        .flatMapLatest { hideExplicit ->
+            database.albumsLiked(AlbumSortType.CREATE_DATE, true).map { it.filterExplicitAlbums(hideExplicit) }
+        }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
     var playlists = database.playlists(PlaylistSortType.CREATE_DATE, true)
         .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 

@@ -92,6 +92,7 @@ import com.metrolist.music.LocalDatabase
 import com.metrolist.music.LocalDownloadUtil
 import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
+import com.metrolist.music.constants.HideExplicitKey
 import com.metrolist.music.constants.ListItemHeight
 import com.metrolist.music.constants.GridThumbnailHeight
 import com.metrolist.music.constants.ListThumbnailSize
@@ -99,6 +100,7 @@ import com.metrolist.music.constants.ThumbnailCornerRadius
 import com.metrolist.music.constants.SwipeToSongKey
 import com.metrolist.music.db.entities.Song
 import com.metrolist.music.db.entities.Album
+import com.metrolist.music.db.entities.AlbumEntity
 import com.metrolist.music.db.entities.Artist
 import com.metrolist.music.db.entities.Playlist
 import com.metrolist.music.extensions.toMediaItem
@@ -483,7 +485,9 @@ fun AlbumListItem(
         if (showLikedIcon && album.album.bookmarkedAt != null) {
             Icon.Favorite()
         }
-
+        if (album.album.explicit) {
+            Icon.Explicit()
+        }
         Icon.Download(downloadState)
     },
     isActive: Boolean = false,
@@ -539,6 +543,9 @@ fun AlbumGridItem(
 
         if (album.album.bookmarkedAt != null) {
             Icon.Favorite()
+        }
+        if (album.album.explicit) {
+            Icon.Explicit()
         }
         Icon.Download(downloadState)
     },
@@ -879,6 +886,7 @@ fun YouTubeGridItem(
             )
         }
     },
+    badges = badges,
     thumbnailContent = {
         val database = LocalDatabase.current
         val playerConnection = LocalPlayerConnection.current ?: return@GridItem

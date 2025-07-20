@@ -463,7 +463,6 @@ fun OnlinePlaylistScreen(
                                         song.isSelected = true
                                     },
                                 )
-                                .alpha(if (hideExplicit && song.item.second.explicit) 0.3f else 1f)
                                 .animateItem(),
                         )
                     }

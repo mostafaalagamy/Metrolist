@@ -5,15 +5,18 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.exoplayer.offline.Download
+import com.metrolist.music.constants.HideExplicitKey
 import com.metrolist.music.constants.SongSortDescendingKey
 import com.metrolist.music.constants.SongSortType
 import com.metrolist.music.constants.SongSortTypeKey
 import com.metrolist.music.db.MusicDatabase
+import com.metrolist.music.extensions.filterExplicit
 import com.metrolist.music.extensions.reversed
 import com.metrolist.music.extensions.toEnum
 import com.metrolist.music.playback.DownloadUtil
 import com.metrolist.music.utils.SyncUtils
 import com.metrolist.music.utils.dataStore
+import com.metrolist.music.utils.get
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -45,13 +48,17 @@ constructor(
     val likedSongs =
         context.dataStore.data
             .map {
-                it[SongSortTypeKey].toEnum(SongSortType.CREATE_DATE) to (it[SongSortDescendingKey]
-                    ?: true)
+                Pair(
+                    it[SongSortTypeKey].toEnum(SongSortType.CREATE_DATE) to (it[SongSortDescendingKey]
+                        ?: true),
+                    it[HideExplicitKey] ?: false
+                )
             }
             .distinctUntilChanged()
-            .flatMapLatest { (sortType, descending) ->
+            .flatMapLatest { (sortDesc, hideExplicit) ->
+                val (sortType, descending) = sortDesc
                 when (playlist) {
-                    "liked" -> database.likedSongs(sortType, descending)
+                    "liked" -> database.likedSongs(sortType, descending).map { it.filterExplicit(hideExplicit) }
                     "downloaded" -> downloadUtil.downloads.flatMapLatest { downloads ->
                         database.allSongs()
                             .flowOn(Dispatchers.IO)
@@ -72,7 +79,7 @@ constructor(
                                     }
 
                                     SongSortType.PLAY_TIME -> songs.sortedBy { it.song.totalPlayTime }
-                                }.reversed(descending)
+                                }.reversed(descending).filterExplicit(hideExplicit)
                             }
                     }
 
