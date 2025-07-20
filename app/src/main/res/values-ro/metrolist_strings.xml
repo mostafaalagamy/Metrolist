@@ -95,7 +95,7 @@
     <string name="general">General</string>
     <string name="proxy">Proxy</string>
     <string name="set_quick_picks">Setează alegerile rapide</string>
-    <string name="last_song_listened">Bazat pe ultima melodie ascultată</string>
+    <string name="last_song_listened">Bazate pe ultima melodie ascultată</string>
     <string name="app_language">Limba aplicației</string>
     <string name="configure_app_language">Configurează limbile aplicației</string>
     <string name="intent_app_language_not_found">Nu s-au putut găsi setările de limbă ale aplicației, te rugăm să le configurezi manual</string>
