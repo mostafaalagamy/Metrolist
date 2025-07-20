@@ -17,6 +17,8 @@ class DiscordRPC(
             name = context.getString(R.string.app_name).removeSuffix(" Debug"),
             details = song.song.title,
             state = song.song.artistName ?: song.artists.joinToString { it.name },
+            detailsUrl = "https://music.youtube.com/watch?v=${song.song.id}",
+            stateUrl = "https://music.youtube.com/channel/${song.artists.firstOrNull()?.channelId}",
             largeImage = song.song.thumbnailUrl?.let { RpcImage.ExternalImage(it) },
             smallImage = song.artists.firstOrNull()?.thumbnailUrl?.let { RpcImage.ExternalImage(it) },
             largeText = song.album?.title,
@@ -26,6 +28,7 @@ class DiscordRPC(
                 "Visit Metrolist" to "https://github.com/mostafaalagamy/Metrolist"
             ),
             type = Type.LISTENING,
+            statusDisplayType = StatusDisplayType.STATE,
             since = currentTime,
             startTime = calculatedStartTime,
             endTime = currentTime + (song.song.duration * 1000L - currentPlaybackTimeMillis),
