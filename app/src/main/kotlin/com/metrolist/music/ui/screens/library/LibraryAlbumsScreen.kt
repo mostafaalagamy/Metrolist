@@ -31,6 +31,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
@@ -53,6 +54,7 @@ import com.metrolist.music.constants.CONTENT_TYPE_HEADER
 import com.metrolist.music.constants.GridItemSize
 import com.metrolist.music.constants.GridItemsSizeKey
 import com.metrolist.music.constants.GridThumbnailHeight
+import com.metrolist.music.constants.HideExplicitKey
 import com.metrolist.music.constants.LibraryViewType
 import com.metrolist.music.constants.YtmSyncKey
 import com.metrolist.music.ui.component.ChipsRow
@@ -90,6 +92,7 @@ fun LibraryAlbumsScreen(
     val gridItemSize by rememberEnumPreference(GridItemsSizeKey, GridItemSize.BIG)
 
     val (ytmSync) = rememberPreference(YtmSyncKey, true)
+    val hideExplicit by rememberPreference(key = HideExplicitKey, defaultValue = false)
 
     val filterContent = @Composable {
         Row {
@@ -232,8 +235,13 @@ fun LibraryAlbumsScreen(
                             }
                         }
 
+                        val filteredAlbumsForList = if (hideExplicit) {
+                            albums.filter { !it.album.explicit }
+                        } else {
+                            albums
+                        }
                         items(
-                            items = albums,
+                            items = filteredAlbumsForList,
                             key = { it.id },
                             contentType = { CONTENT_TYPE_ALBUM },
                         ) { album ->
@@ -243,7 +251,8 @@ fun LibraryAlbumsScreen(
                                 album = album,
                                 isActive = album.id == mediaMetadata?.album?.id,
                                 isPlaying = isPlaying,
-                                modifier = Modifier.animateItem()
+                                modifier = Modifier
+                                    .animateItem()
                             )
                         }
                     }
@@ -285,8 +294,13 @@ fun LibraryAlbumsScreen(
                             }
                         }
 
+                        val filteredAlbumsForGrid = if (hideExplicit) {
+                            albums.filter { !it.album.explicit }
+                        } else {
+                            albums
+                        }
                         items(
-                            items = albums,
+                            items = filteredAlbumsForGrid,
                             key = { it.id },
                             contentType = { CONTENT_TYPE_ALBUM },
                         ) { album ->
@@ -297,7 +311,8 @@ fun LibraryAlbumsScreen(
                                 album = album,
                                 isActive = album.id == mediaMetadata?.album?.id,
                                 isPlaying = isPlaying,
-                                modifier = Modifier.animateItem()
+                                modifier = Modifier
+                                    .animateItem()
                             )
                         }
                     }

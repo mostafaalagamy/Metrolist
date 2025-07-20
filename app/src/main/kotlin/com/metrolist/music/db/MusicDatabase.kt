@@ -88,7 +88,7 @@ class MusicDatabase(
         SortedSongAlbumMap::class,
         PlaylistSongMapPreview::class,
     ],
-    version = 19,
+    version = 20,
     exportSchema = true,
     autoMigrations = [
         AutoMigration(from = 2, to = 3),
@@ -108,6 +108,7 @@ class MusicDatabase(
         AutoMigration(from = 16, to = 17, spec = Migration16To17::class),
         AutoMigration(from = 17, to = 18),
         AutoMigration(from = 18, to = 19, spec = Migration18To19::class),
+        AutoMigration(from = 19, to = 20, spec = Migration19To20::class),
     ],
 )
 @TypeConverters(Converters::class)
@@ -467,5 +468,11 @@ class Migration16To17 : AutoMigrationSpec {
 class Migration18To19 : AutoMigrationSpec {
     override fun onPostMigrate(db: SupportSQLiteDatabase) {
         db.execSQL("UPDATE song SET explicit = 0 WHERE explicit IS NULL")
+    }
+}
+
+class Migration19To20 : AutoMigrationSpec {
+    override fun onPostMigrate(db: SupportSQLiteDatabase) {
+        db.execSQL("UPDATE album SET explicit = 0 WHERE explicit IS NULL")
     }
 }

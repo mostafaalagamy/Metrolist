@@ -43,6 +43,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
@@ -72,6 +73,7 @@ import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
 import com.metrolist.music.constants.AlbumThumbnailSize
+import com.metrolist.music.constants.HideExplicitKey
 import com.metrolist.music.constants.ThumbnailCornerRadius
 import com.metrolist.music.db.entities.Album
 import com.metrolist.music.extensions.togglePlayPause
@@ -94,6 +96,7 @@ import com.metrolist.music.ui.menu.SongMenu
 import com.metrolist.music.ui.menu.YouTubeAlbumMenu
 import com.metrolist.music.ui.utils.backToMain
 import com.metrolist.music.ui.utils.ItemWrapper
+import com.metrolist.music.utils.rememberPreference
 import com.metrolist.music.viewmodels.AlbumViewModel
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
@@ -118,9 +121,15 @@ fun AlbumScreen(
     val playlistId by viewModel.playlistId.collectAsState()
     val albumWithSongs by viewModel.albumWithSongs.collectAsState()
     val otherVersions by viewModel.otherVersions.collectAsState()
+    val hideExplicit by rememberPreference(key = HideExplicitKey, defaultValue = false)
 
-    val wrappedSongs = remember(albumWithSongs) {
-        albumWithSongs?.songs?.map { item -> ItemWrapper(item) }?.toMutableStateList() ?: mutableStateListOf()
+    val wrappedSongs = remember(albumWithSongs, hideExplicit) {
+        val filteredSongs = if (hideExplicit) {
+            albumWithSongs?.songs?.filter { !it.song.explicit } ?: emptyList()
+        } else {
+            albumWithSongs?.songs ?: emptyList()
+        }
+        filteredSongs.map { item -> ItemWrapper(item) }.toMutableStateList()
     }
     var selection by remember {
         mutableStateOf(false)
