@@ -315,7 +315,7 @@ class MusicService :
 
         currentSong.debounce(1000).collect(scope) { song ->
             updateNotification()
-            if (song != null) {
+            if (song != null && player.playWhenReady && player.playbackState == Player.STATE_READY) {
                 discordRpc?.updateSong(song, player.currentPosition)
             } else {
                 discordRpc?.closeRPC()
@@ -377,8 +377,10 @@ class MusicService :
                 discordRpc = null
                 if (key != null && enabled) {
                     discordRpc = DiscordRPC(this, key)
-                    currentSong.value?.let {
-                        discordRpc?.updateSong(it, player.currentPosition)
+                    if (player.playbackState == Player.STATE_READY && player.playWhenReady) {
+                        currentSong.value?.let {
+                            discordRpc?.updateSong(it, player.currentPosition)
+                        }
                     }
                 }
             }
@@ -912,8 +914,16 @@ class MusicService :
                 if (focusGranted) {
                     openAudioEffectSession()
                 }
+                currentSong.value?.let { song ->
+                    scope.launch {
+                        discordRpc?.updateSong(song, player.currentPosition)
+                    }
+                }
             } else {
                 closeAudioEffectSession()
+                scope.launch {
+                    discordRpc?.stopRPC()
+                }
             }
         }
         if (events.containsAny(EVENT_TIMELINE_CHANGED, EVENT_POSITION_DISCONTINUITY)) {

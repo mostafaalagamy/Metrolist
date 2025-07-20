@@ -40,6 +40,16 @@ open class KizzyRPC(token: String) {
         return discordWebSocket.isWebSocketConnected()
     }
 
+    suspend fun stopRPC() {
+        if (!isRpcRunning()) {
+            discordWebSocket.connect()
+        }
+        val presence = Presence(
+            activities = emptyList()
+        )
+        discordWebSocket.sendActivity(presence)
+    }
+
     suspend fun setActivity(
         name: String,
         state: String?,
