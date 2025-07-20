@@ -10,8 +10,9 @@ class DiscordRPC(
     val context: Context,
     token: String,
 ) : KizzyRPC(token) {
-    suspend fun updateSong(song: Song) = runCatching {
+    suspend fun updateSong(song: Song, currentPlaybackTimeMillis: Long) = runCatching {
         val currentTime = System.currentTimeMillis()
+        val calculatedStartTime = currentTime - currentPlaybackTimeMillis
         setActivity(
             name = context.getString(R.string.app_name).removeSuffix(" Debug"),
             details = song.song.title,
@@ -26,8 +27,8 @@ class DiscordRPC(
             ),
             type = Type.LISTENING,
             since = currentTime,
-            startTime = currentTime,
-            endTime = currentTime + song.song.duration * 1000L,
+            startTime = calculatedStartTime,
+            endTime = currentTime + (song.song.duration * 1000L - currentPlaybackTimeMillis),
             applicationId = APPLICATION_ID
         )
     }

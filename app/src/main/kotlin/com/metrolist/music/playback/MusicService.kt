@@ -316,7 +316,7 @@ class MusicService :
         currentSong.debounce(1000).collect(scope) { song ->
             updateNotification()
             if (song != null) {
-                discordRpc?.updateSong(song)
+                discordRpc?.updateSong(song, player.currentPosition)
             } else {
                 discordRpc?.closeRPC()
             }
@@ -378,7 +378,7 @@ class MusicService :
                 if (key != null && enabled) {
                     discordRpc = DiscordRPC(this, key)
                     currentSong.value?.let {
-                        discordRpc?.updateSong(it)
+                        discordRpc?.updateSong(it, player.currentPosition)
                     }
                 }
             }
