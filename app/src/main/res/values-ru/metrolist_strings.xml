@@ -148,4 +148,9 @@
     <string name="information">Информация</string>
     <string name="description">Описание</string>
     <string name="numbers">Номера</string>
+    <string name="sensitivity_percentage">%1$d%%</string>
+    <string name="disable">Отключить</string>
+    <string name="subscribe">Подписаться</string>
+    <string name="subscribed">Вы подписаны</string>
+    <string name="clear_image_cache_dialog">Вы уверены, что хотите очистить все кэшированные изображения?</string>
 </resources>
