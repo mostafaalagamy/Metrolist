@@ -88,6 +88,15 @@ data class AlbumPage(
                         name = it.text,
                         id = it.navigationEndpoint?.browseEndpoint?.browseId
                     )
+                }.ifEmpty {
+                    // Fallback: try to extract from flexColumns position 1
+                    renderer.flexColumns.getOrNull(1)?.musicResponsiveListItemFlexColumnRenderer?.text?.runs?.mapNotNull { run ->
+                        run.navigationEndpoint?.browseEndpoint?.browseId?.let { browseId ->
+                            if (browseId.startsWith("UC") || browseId.startsWith("MPLA")) {
+                                Artist(name = run.text, id = browseId)
+                            } else null
+                        }
+                    } ?: emptyList()
                 },
                 album = album?.let {
                     Album(it.title, it.browseId)
