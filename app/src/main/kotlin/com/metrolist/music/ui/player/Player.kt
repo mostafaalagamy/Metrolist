@@ -193,7 +193,10 @@ fun BottomSheetPlayer(
     val backgroundColor = if (useBlackBackground && state.value > state.collapsedBound) {
         lerp(MaterialTheme.colorScheme.surfaceContainer, Color.Black, state.progress)
     } else {
-        MaterialTheme.colorScheme.surfaceContainer
+        // Make background transparent when collapsed, gradually show when pulled up
+        val progress = ((state.value - state.collapsedBound) / (state.expandedBound - state.collapsedBound))
+            .coerceIn(0f, 1f)
+        MaterialTheme.colorScheme.surfaceContainer.copy(alpha = progress)
     }
 
     val playbackState by playerConnection.playbackState.collectAsState()
@@ -477,23 +480,28 @@ fun BottomSheetPlayer(
                 )
             )
         } else {
+            // Calculate transparency progress
+            val progress = ((state.value - state.collapsedBound) / (state.expandedBound - state.collapsedBound))
+                .coerceIn(0f, 1f)
+            
             if (state.value > changeBound) {
                 Brush.verticalGradient(
                     listOf(
-                        MaterialTheme.colorScheme.surfaceContainer,
+                        MaterialTheme.colorScheme.surfaceContainer.copy(alpha = progress),
                         backgroundColor
                     )
                 )
-            } else if (gradientColors.size >=
-                2 &&
-                state.value > changeBound
-            ) {
-                Brush.verticalGradient(gradientColors)
+            } else if (gradientColors.size >= 2 && state.value > changeBound) {
+                // Apply transparency to gradient colors
+                val transparentGradientColors = gradientColors.map { color ->
+                    color.copy(alpha = color.alpha * progress)
+                }
+                Brush.verticalGradient(transparentGradientColors)
             } else {
                 Brush.verticalGradient(
                     listOf(
-                        MaterialTheme.colorScheme.surfaceContainer,
-                        MaterialTheme.colorScheme.surfaceContainer,
+                        MaterialTheme.colorScheme.surfaceContainer.copy(alpha = progress),
+                        MaterialTheme.colorScheme.surfaceContainer.copy(alpha = progress),
                     )
                 )
             }
