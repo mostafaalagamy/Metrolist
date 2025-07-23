@@ -131,6 +131,7 @@ fun MiniPlayer(
             .height(MiniPlayerHeight + 20.dp) // Height for floating above nav bar
             .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Horizontal))
             .padding(horizontal = 16.dp, vertical = 10.dp)
+            // Remove any background - make completely transparent
     ) {
         // Fully circular MiniPlayer matching the reference images
         Box(
@@ -203,12 +204,12 @@ fun MiniPlayer(
                         baseModifier
                     }
                 }
+                .clip(RoundedCornerShape(32.dp)) // Clip first for perfect rounded corners
                 .background(
                     color = if (pureBlack) 
                         Color.Black.copy(alpha = 0.8f) 
                     else 
-                        MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.85f),
-                    shape = RoundedCornerShape(32.dp) // Fully rounded like reference image
+                        MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.85f)
                 )
                 .offset { IntOffset(offsetXAnimatable.value.roundToInt(), 0) }
         ) {
