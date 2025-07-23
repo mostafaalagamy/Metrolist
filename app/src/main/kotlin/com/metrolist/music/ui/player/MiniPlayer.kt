@@ -133,17 +133,16 @@ fun MiniPlayer(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .height(MiniPlayerHeight + 40.dp) // Increased height significantly for higher positioning
+            .height(MiniPlayerHeight) // Back to normal height without extra space
             .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Horizontal))
-            .padding(horizontal = 16.dp, vertical = 4.dp) // Reduced bottom padding significantly
-            // Remove any background - make completely transparent
+            // No padding - start from the beginning of the sheet
     ) {
         // Fully circular MiniPlayer matching the reference images
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(64.dp) // Circular height
-                .padding(top = 16.dp) // Move the box up significantly more
+                .height(MiniPlayerHeight) // Use full height
+                .padding(horizontal = 16.dp, vertical = 8.dp) // Only internal padding for the rounded box
                 .let { baseModifier ->
                     if (swipeThumbnail) {
                         baseModifier.pointerInput(Unit) {
