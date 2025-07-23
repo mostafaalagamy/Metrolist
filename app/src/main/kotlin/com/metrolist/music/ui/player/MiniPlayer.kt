@@ -128,17 +128,17 @@ fun MiniPlayer(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .height(MiniPlayerHeight + 24.dp) // Increased total height for larger circular box
+            .height(MiniPlayerHeight + 20.dp) // Height for floating above nav bar
             .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Horizontal))
-            // No padding - start from the beginning of the sheet
+            // Remove any background - make completely transparent
     ) {
         // Fully circular MiniPlayer matching the reference images
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(72.dp) // Increased box height for full circular design
-                .padding(horizontal = 16.dp) // Only horizontal padding, no vertical padding
-                .padding(bottom = 16.dp) // Add bottom padding below the box
+                .height(64.dp) // Circular height
+                .padding(horizontal = 16.dp)
+                .padding(bottom = 12.dp) // Add bottom padding below the box
                 .let { baseModifier ->
                     if (swipeThumbnail) {
                         baseModifier.pointerInput(Unit) {
@@ -205,12 +205,12 @@ fun MiniPlayer(
                         baseModifier
                     }
                 }
-                .clip(RoundedCornerShape(36.dp)) // Increased corner radius for larger circular design
+                .clip(RoundedCornerShape(32.dp)) // Clip first for perfect rounded corners
                 .background(
                     color = if (pureBlack) 
-                        Color.Black // No transparency - solid color
+                        Color.Black.copy(alpha = 0.8f) 
                     else 
-                        MaterialTheme.colorScheme.surfaceVariant // No transparency - solid color
+                        MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.85f)
                 )
                 .offset { IntOffset(offsetXAnimatable.value.roundToInt(), 0) }
         ) {
@@ -218,7 +218,7 @@ fun MiniPlayer(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(horizontal = 12.dp, vertical = 12.dp), // Increased padding for larger box
+                    .padding(horizontal = 8.dp, vertical = 8.dp),
             ) {
                 // Play/Pause button with circular progress indicator (left side)
                 Box(
@@ -341,7 +341,7 @@ fun MiniPlayer(
                         Box(
                             contentAlignment = Alignment.Center,
                             modifier = Modifier
-                                .size(40.dp) // Increased size to align with CircularProgressIndicator
+                                .size(36.dp)
                                 .background(
                                     color = if (isSubscribed) 
                                         MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
@@ -378,7 +378,7 @@ fun MiniPlayer(
                                     MaterialTheme.colorScheme.primary 
                                 else 
                                     if (pureBlack) Color.White.copy(alpha = 0.7f) else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
-                                modifier = Modifier.size(20.dp) // Increased icon size
+                                modifier = Modifier.size(18.dp)
                             )
                         }
                     }
@@ -394,7 +394,7 @@ fun MiniPlayer(
                     Box(
                         contentAlignment = Alignment.Center,
                         modifier = Modifier
-                            .size(40.dp) // Increased size to align with CircularProgressIndicator
+                            .size(36.dp)
                             .background(
                                 color = if (isLiked) 
                                     MaterialTheme.colorScheme.error.copy(alpha = 0.1f)
@@ -415,46 +415,30 @@ fun MiniPlayer(
                                 MaterialTheme.colorScheme.error 
                             else 
                                 if (pureBlack) Color.White.copy(alpha = 0.7f) else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
-                            modifier = Modifier.size(20.dp) // Increased icon size
+                            modifier = Modifier.size(18.dp)
                         )
                     }
                 }
             }
         }
         
-        // Visual indicator for swipe - now aligned with the main row
+        // Visual indicator for swipe
         if (offsetXAnimatable.value.absoluteValue > 50f) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
+            Box(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 40.dp) // Adjusted padding to align with content
+                    .align(if (offsetXAnimatable.value > 0) Alignment.CenterStart else Alignment.CenterEnd)
+                    .padding(horizontal = 32.dp)
             ) {
-                // Left swipe indicator
-                if (offsetXAnimatable.value > 0) {
-                    Icon(
-                        painter = painterResource(R.drawable.skip_previous),
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primary.copy(
-                            alpha = (offsetXAnimatable.value.absoluteValue / autoSwipeThreshold).coerceIn(0f, 1f)
-                        ),
-                        modifier = Modifier.size(28.dp) // Increased size to match other elements
-                    )
-                }
-                
-                Spacer(modifier = Modifier.weight(1f))
-                
-                // Right swipe indicator
-                if (offsetXAnimatable.value < 0) {
-                    Icon(
-                        painter = painterResource(R.drawable.skip_next),
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primary.copy(
-                            alpha = (offsetXAnimatable.value.absoluteValue / autoSwipeThreshold).coerceIn(0f, 1f)
-                        ),
-                        modifier = Modifier.size(28.dp) // Increased size to match other elements
-                    )
-                }
+                Icon(
+                    painter = painterResource(
+                        if (offsetXAnimatable.value > 0) R.drawable.skip_previous else R.drawable.skip_next
+                    ),
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary.copy(
+                        alpha = (offsetXAnimatable.value.absoluteValue / autoSwipeThreshold).coerceIn(0f, 1f)
+                    ),
+                    modifier = Modifier.size(24.dp)
+                )
             }
         }
     }
