@@ -125,7 +125,7 @@ import com.metrolist.music.ui.component.shimmer.ShimmerHost
 import com.metrolist.music.ui.component.shimmer.TextPlaceholder
 import com.metrolist.music.ui.menu.YouTubePlaylistMenu
 import com.metrolist.music.ui.menu.YouTubeSongMenu
-import com.metrolist.music.ui.menu.SelectionSongMenu
+import com.metrolist.music.ui.menu.SelectionMediaMetadataMenu
 import com.metrolist.music.ui.utils.backToMain
 import com.metrolist.music.utils.rememberPreference
 import com.metrolist.music.viewmodels.OnlinePlaylistViewModel
@@ -334,10 +334,11 @@ fun OnlinePlaylistScreen(
             },
             onSelectionMenuClick = {
                 menuState.show {
-                    SelectionSongMenu(
-                        songSelection = selection.mapNotNull { songs.getOrNull(it)?.toMediaMetadata() },
+                    SelectionMediaMetadataMenu(
+                        songSelection = selection.mapNotNull { songs.getOrNull(it)?.toMediaItem()?.metadata },
                         onDismiss = menuState::dismiss,
-                        clearAction = onExitSelectionMode
+                        clearAction = onExitSelectionMode,
+                        currentItems = emptyList()
                     )
                 }
             }
