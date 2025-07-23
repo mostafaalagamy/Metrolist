@@ -127,9 +127,9 @@ fun MiniPlayer(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .height(MiniPlayerHeight + 16.dp) // Extra height for floating effect
+            .height(MiniPlayerHeight + 24.dp) // Extra height for floating effect and nav bar spacing
             .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Horizontal))
-            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .padding(horizontal = 16.dp, vertical = 4.dp) // Reduced vertical padding for closer to nav bar
     ) {
         Surface(
             modifier = Modifier
@@ -200,141 +200,179 @@ fun MiniPlayer(
                         baseModifier
                     }
                 },
-            shape = RoundedCornerShape(28.dp),
-            color = if (pureBlack) Color.Black.copy(alpha = 0.9f) else MaterialTheme.colorScheme.surface.copy(alpha = 0.95f),
-            shadowElevation = 8.dp,
-            tonalElevation = 4.dp
+            shape = RoundedCornerShape(32.dp), // Increased corner radius for more circular appearance
+            color = Color.Transparent, // Transparent background
+            shadowElevation = 0.dp, // Remove shadow for transparent effect
+            tonalElevation = 0.dp, // Remove tonal elevation
+            border = null // No border
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
+            // Add a subtle background with blur effect
+            Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .offset { IntOffset(offsetXAnimatable.value.roundToInt(), 0) }
-                    .padding(horizontal = 12.dp, vertical = 8.dp),
-            ) {
-                // Play/Pause button with circular progress indicator
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier.size(48.dp)
-                ) {
-                    // Circular progress indicator
-                    CircularProgressIndicator(
-                        progress = { (position.toFloat() / duration).coerceIn(0f, 1f) },
-                        modifier = Modifier.size(48.dp),
-                        color = MaterialTheme.colorScheme.primary,
-                        strokeWidth = 2.dp,
-                        trackColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
+                    .background(
+                        color = if (pureBlack) 
+                            Color.Black.copy(alpha = 0.3f) 
+                        else 
+                            MaterialTheme.colorScheme.surface.copy(alpha = 0.15f),
+                        shape = RoundedCornerShape(32.dp)
                     )
-                    
-                    // Play/Pause button
-                    IconButton(
-                        onClick = {
-                            if (playbackState == Player.STATE_ENDED) {
-                                playerConnection.player.seekTo(0, 0)
-                                playerConnection.player.playWhenReady = true
-                            } else {
-                                playerConnection.player.togglePlayPause()
-                            }
-                        },
-                        modifier = Modifier
-                            .size(40.dp)
-                            .background(
-                                color = MaterialTheme.colorScheme.primary,
-                                shape = CircleShape
-                            )
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .offset { IntOffset(offsetXAnimatable.value.roundToInt(), 0) }
+                        .padding(horizontal = 12.dp, vertical = 8.dp),
+                ) {
+                    // Play/Pause button with circular progress indicator
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier.size(52.dp) // Slightly larger for better visibility
                     ) {
-                        Icon(
-                            painter = painterResource(
-                                if (playbackState == Player.STATE_ENDED) {
-                                    R.drawable.replay
-                                } else if (isPlaying) {
-                                    R.drawable.pause
-                                } else {
-                                    R.drawable.play
-                                },
-                            ),
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onPrimary,
-                            modifier = Modifier.size(20.dp)
-                        )
-                    }
-                }
-
-                Spacer(modifier = Modifier.width(12.dp))
-
-                // Song info
-                Box(Modifier.weight(1f)) {
-                    mediaMetadata?.let {
-                        MiniMediaInfo(
-                            mediaMetadata = it,
-                            error = error,
-                            pureBlack = pureBlack,
-                            modifier = Modifier.fillMaxWidth(),
-                        )
-                    }
-                }
-
-                Spacer(modifier = Modifier.width(8.dp))
-
-                // Subscribe/Subscribed button
-                mediaMetadata?.let { metadata ->
-                    metadata.artists.firstOrNull()?.id?.let { artistId ->
-                        val libraryArtist by database.artist(artistId).collectAsState(initial = null)
-                        val isSubscribed = libraryArtist?.artist?.bookmarkedAt != null
+                        // Circular progress indicator - ensure it's visible
+                        if (duration > 0) {
+                            CircularProgressIndicator(
+                                progress = { (position.toFloat() / duration).coerceIn(0f, 1f) },
+                                modifier = Modifier.size(52.dp),
+                                color = MaterialTheme.colorScheme.primary,
+                                strokeWidth = 3.dp, // Increased stroke width
+                                trackColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.4f) // More visible track
+                            )
+                        }
                         
+                        // Play/Pause button
                         IconButton(
                             onClick = {
-                                database.transaction {
-                                    val artist = libraryArtist?.artist
-                                    if (artist != null) {
-                                        update(artist.toggleLike())
-                                    } else {
-                                        metadata.artists.firstOrNull()?.let { artistInfo ->
-                                            insert(
-                                                ArtistEntity(
-                                                    id = artistInfo.id ?: "",
-                                                    name = artistInfo.name,
-                                                    channelId = null,
-                                                    thumbnailUrl = null,
-                                                ).toggleLike()
-                                            )
-                                        }
-                                    }
+                                if (playbackState == Player.STATE_ENDED) {
+                                    playerConnection.player.seekTo(0, 0)
+                                    playerConnection.player.playWhenReady = true
+                                } else {
+                                    playerConnection.player.togglePlayPause()
                                 }
                             },
-                            modifier = Modifier.size(40.dp)
+                            modifier = Modifier
+                                .size(44.dp) // Slightly larger button
+                                .background(
+                                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.9f), // Slightly transparent
+                                    shape = CircleShape
+                                )
                         ) {
                             Icon(
                                 painter = painterResource(
-                                    if (isSubscribed) R.drawable.subscribed else R.drawable.subscribe
+                                    if (playbackState == Player.STATE_ENDED) {
+                                        R.drawable.replay
+                                    } else if (isPlaying) {
+                                        R.drawable.pause
+                                    } else {
+                                        R.drawable.play
+                                    },
                                 ),
                                 contentDescription = null,
-                                tint = if (isSubscribed) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
-                                modifier = Modifier.size(20.dp)
+                                tint = MaterialTheme.colorScheme.onPrimary,
+                                modifier = Modifier.size(22.dp)
                             )
                         }
                     }
-                }
 
-                // Favorite button
-                mediaMetadata?.let { metadata ->
-                    val librarySong by database.song(metadata.id).collectAsState(initial = null)
-                    val isLiked = librarySong?.song?.liked == true
-                    
-                    IconButton(
-                        onClick = {
-                            playerConnection.service.toggleLike()
-                        },
-                        modifier = Modifier.size(40.dp)
-                    ) {
-                        Icon(
-                            painter = painterResource(
-                                if (isLiked) R.drawable.favorite else R.drawable.favorite_border
-                            ),
-                            contentDescription = null,
-                            tint = if (isLiked) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.size(20.dp)
-                        )
+                    Spacer(modifier = Modifier.width(12.dp))
+
+                    // Song info
+                    Box(Modifier.weight(1f)) {
+                        mediaMetadata?.let {
+                            MiniMediaInfo(
+                                mediaMetadata = it,
+                                error = error,
+                                pureBlack = pureBlack,
+                                modifier = Modifier.fillMaxWidth(),
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    // Subscribe/Subscribed button
+                    mediaMetadata?.let { metadata ->
+                        metadata.artists.firstOrNull()?.id?.let { artistId ->
+                            val libraryArtist by database.artist(artistId).collectAsState(initial = null)
+                            val isSubscribed = libraryArtist?.artist?.bookmarkedAt != null
+                            
+                            IconButton(
+                                onClick = {
+                                    database.transaction {
+                                        val artist = libraryArtist?.artist
+                                        if (artist != null) {
+                                            update(artist.toggleLike())
+                                        } else {
+                                            metadata.artists.firstOrNull()?.let { artistInfo ->
+                                                insert(
+                                                    ArtistEntity(
+                                                        id = artistInfo.id ?: "",
+                                                        name = artistInfo.name,
+                                                        channelId = null,
+                                                        thumbnailUrl = null,
+                                                    ).toggleLike()
+                                                )
+                                            }
+                                        }
+                                    }
+                                },
+                                modifier = Modifier
+                                    .size(40.dp)
+                                    .background(
+                                        color = if (isSubscribed) 
+                                            MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)
+                                        else 
+                                            Color.Transparent,
+                                        shape = CircleShape
+                                    )
+                            ) {
+                                Icon(
+                                    painter = painterResource(
+                                        if (isSubscribed) R.drawable.subscribed else R.drawable.subscribe
+                                    ),
+                                    contentDescription = null,
+                                    tint = if (isSubscribed) 
+                                        MaterialTheme.colorScheme.primary 
+                                    else 
+                                        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f),
+                                    modifier = Modifier.size(20.dp)
+                                )
+                            }
+                        }
+                    }
+
+                    // Favorite button
+                    mediaMetadata?.let { metadata ->
+                        val librarySong by database.song(metadata.id).collectAsState(initial = null)
+                        val isLiked = librarySong?.song?.liked == true
+                        
+                        IconButton(
+                            onClick = {
+                                playerConnection.service.toggleLike()
+                            },
+                            modifier = Modifier
+                                .size(40.dp)
+                                .background(
+                                    color = if (isLiked) 
+                                        MaterialTheme.colorScheme.error.copy(alpha = 0.2f)
+                                    else 
+                                        Color.Transparent,
+                                    shape = CircleShape
+                                )
+                        ) {
+                            Icon(
+                                painter = painterResource(
+                                    if (isLiked) R.drawable.favorite else R.drawable.favorite_border
+                                ),
+                                contentDescription = null,
+                                tint = if (isLiked) 
+                                    MaterialTheme.colorScheme.error 
+                                else 
+                                    MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f),
+                                modifier = Modifier.size(20.dp)
+                            )
+                        }
                     }
                 }
             }
@@ -380,7 +418,7 @@ fun MiniMediaInfo(
         ) { title ->
             Text(
                 text = title,
-                color = MaterialTheme.colorScheme.onSurface,
+                color = if (pureBlack) Color.White else MaterialTheme.colorScheme.onSurface,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Medium,
                 maxLines = 1,
@@ -396,7 +434,7 @@ fun MiniMediaInfo(
         ) { artists ->
             Text(
                 text = mediaMetadata.artistName ?: artists,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                color = if (pureBlack) Color.White.copy(alpha = 0.8f) else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f),
                 fontSize = 12.sp,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
