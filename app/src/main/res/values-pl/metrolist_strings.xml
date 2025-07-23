@@ -151,4 +151,6 @@
     <string name="swipe_sensitivity_desc">Dostosowanie czułości gestów przesuwania podczas zmiany utworów</string>
     <string name="clear_image_cache_dialog">Czy na pewno chcesz wyczyścić wszystkie obrazy z pamięci podręcznej?</string>
     <string name="new_player_design">Nowy wygląd odtwarzacza</string>
+    <string name="sensitivity_percentage">%1$d%%</string>
+    <string name="disable">Wyłączyć</string>
 </resources>
