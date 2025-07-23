@@ -128,7 +128,7 @@ fun MiniPlayer(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .height(MiniPlayerHeight + 20.dp) // Height for floating above nav bar
+            .height(MiniPlayerHeight + 64.dp) // Height for floating above nav bar
             .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Horizontal))
             // Remove any background - make completely transparent
     ) {
@@ -137,8 +137,6 @@ fun MiniPlayer(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(64.dp) // Circular height
-                .padding(horizontal = 16.dp)
-                .padding(bottom = 12.dp) // Add bottom padding below the box
                 .let { baseModifier ->
                     if (swipeThumbnail) {
                         baseModifier.pointerInput(Unit) {
