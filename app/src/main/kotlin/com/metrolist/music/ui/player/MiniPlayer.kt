@@ -137,8 +137,8 @@ fun MiniPlayer(
             .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Horizontal))
             // No padding - start from the beginning of the sheet
     ) {
-        // Fully circular MiniPlayer matching the reference images
-        Box(
+        // Restore the original Surface design
+        Surface(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(MiniPlayerHeight) // Use full height
@@ -209,14 +209,14 @@ fun MiniPlayer(
                         baseModifier
                     }
                 }
-                .clip(RoundedCornerShape(32.dp)) // Clip first for perfect rounded corners
-                .background(
-                    color = if (pureBlack) 
-                        Color.Black // Normal color without transparency
-                    else 
-                        MaterialTheme.colorScheme.surfaceVariant // Normal color without transparency
-                )
-                .offset { IntOffset(offsetXAnimatable.value.roundToInt(), 0) }
+                .offset { IntOffset(offsetXAnimatable.value.roundToInt(), 0) },
+            shape = RoundedCornerShape(32.dp),
+            color = if (pureBlack) 
+                Color.Black.copy(alpha = 0.9f) 
+            else 
+                MaterialTheme.colorScheme.surface.copy(alpha = 0.95f),
+            shadowElevation = 8.dp,
+            tonalElevation = 4.dp
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
