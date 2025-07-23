@@ -56,6 +56,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -173,7 +174,10 @@ fun AlbumScreen(
 
     var inSelectMode by rememberSaveable { mutableStateOf(false) }
     val selection = rememberSaveable(
-        saver = listSaver<MutableList<Int>, Int>({ it.toList() }, { it.toMutableStateList() })
+        saver = listSaver<MutableList<Int>, Int>(
+            save = { it.toList() }, 
+            restore = { it.toMutableStateList() }
+        )
     ) { mutableStateListOf() }
     val onExitSelectionMode = { inSelectMode = false; selection.clear() }
     if (inSelectMode) { BackHandler(onBack = onExitSelectionMode) }
@@ -287,7 +291,9 @@ fun AlbumScreen(
                 // Songs list
                 if (wrappedSongs.isNotEmpty()) {
                     itemsIndexed(items = wrappedSongs, key = { _, song -> song.item.id }) { index, songWrapper ->
-                        val onCheckedChange: (Boolean) -> Unit = { if (it) selection.add(index) else selection.remove(index) }
+                        val onCheckedChange: (Boolean) -> Unit = { checked -> 
+                            if (checked) selection.add(index) else selection.remove(index) 
+                        }
                         SongListItem(
                             song = songWrapper.item,
                             albumIndex = index + 1,

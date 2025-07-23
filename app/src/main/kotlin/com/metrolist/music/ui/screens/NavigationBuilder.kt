@@ -157,7 +157,7 @@ fun NavGraphBuilder.navigationBuilder(
             },
         ),
     ) {
-        AlbumScreen(navController, scrollBehavior)
+        AlbumScreen(navController)
     }
     composable(
         route = "artist/{artistId}",
@@ -219,7 +219,7 @@ fun NavGraphBuilder.navigationBuilder(
             },
         ),
     ) {
-        OnlinePlaylistScreen(navController, scrollBehavior)
+        OnlinePlaylistScreen(navController)
     }
     composable(
         route = "local_playlist/{playlistId}",
@@ -241,7 +241,7 @@ fun NavGraphBuilder.navigationBuilder(
             },
         ),
     ) {
-        AutoPlaylistScreen(navController, scrollBehavior)
+        AutoPlaylistScreen(navController)
     }
     composable(
         route = "cache_playlist/{playlist}",
@@ -252,7 +252,7 @@ fun NavGraphBuilder.navigationBuilder(
             },
         ),
     ) {
-        CachePlaylistScreen(navController, scrollBehavior)
+        CachePlaylistScreen(navController)
     }
     composable(
         route = "top_playlist/{top}",
@@ -263,7 +263,7 @@ fun NavGraphBuilder.navigationBuilder(
             },
         ),
     ) {
-        TopPlaylistScreen(navController, scrollBehavior)
+        TopPlaylistScreen(navController)
     }
     composable(
         route = "youtube_browse/{browseId}?params={params}",

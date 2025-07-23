@@ -49,12 +49,13 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.TopAppBarScrollBehavior
+
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -118,14 +119,13 @@ import com.metrolist.music.ui.component.FontSizeRange
 import com.metrolist.music.ui.component.IconButton
 import com.metrolist.music.ui.component.LocalMenuState
 import com.metrolist.music.ui.component.NavigationTitle
-import com.metrolist.music.ui.component.TopAppBarMinimalTitle
 import com.metrolist.music.ui.component.YouTubeListItem
 import com.metrolist.music.ui.component.shimmer.ListItemPlaceHolder
 import com.metrolist.music.ui.component.shimmer.ShimmerHost
 import com.metrolist.music.ui.component.shimmer.TextPlaceholder
 import com.metrolist.music.ui.menu.YouTubePlaylistMenu
 import com.metrolist.music.ui.menu.YouTubeSongMenu
-import com.metrolist.music.ui.menu.YouTubeSongSelectionMenu
+import com.metrolist.music.ui.menu.SelectionSongMenu
 import com.metrolist.music.ui.utils.backToMain
 import com.metrolist.music.utils.rememberPreference
 import com.metrolist.music.viewmodels.OnlinePlaylistViewModel
@@ -191,7 +191,10 @@ fun OnlinePlaylistScreen(
     }
     var inSelectMode by rememberSaveable { mutableStateOf(false) }
     val selection = rememberSaveable(
-        saver = listSaver<MutableList<Int>, Int>({ it.toList() }, { it.toMutableStateList() })
+        saver = listSaver<MutableList<Int>, Int>(
+            save = { it.toList() }, 
+            restore = { it.toMutableStateList() }
+        )
     ) { mutableStateListOf() }
     val onExitSelectionMode = { inSelectMode = false; selection.clear() }
     if (inSelectMode) { BackHandler(onBack = onExitSelectionMode) }
@@ -331,10 +334,10 @@ fun OnlinePlaylistScreen(
             },
             onSelectionMenuClick = {
                 menuState.show {
-                    YouTubeSongSelectionMenu(
-                        selection = selection.mapNotNull { songs.getOrNull(it) },
+                    SelectionSongMenu(
+                        songSelection = selection.mapNotNull { songs.getOrNull(it) },
                         onDismiss = menuState::dismiss,
-                        onExitSelectionMode = onExitSelectionMode
+                        clearAction = onExitSelectionMode
                     )
                 }
             }
