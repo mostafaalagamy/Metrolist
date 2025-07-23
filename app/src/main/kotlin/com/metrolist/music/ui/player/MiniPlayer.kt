@@ -128,16 +128,16 @@ fun MiniPlayer(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .height(MiniPlayerHeight + 20.dp) // Height for floating above nav bar
+            .height(MiniPlayerHeight) // Normal height without extra space
             .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Horizontal))
-            .padding(horizontal = 16.dp, vertical = 10.dp)
-            // Remove any background - make completely transparent
+            // No padding - start from the beginning of the sheet
     ) {
         // Fully circular MiniPlayer matching the reference images
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(64.dp) // Circular height
+                .height(MiniPlayerHeight) // Use full MiniPlayerHeight
+                .padding(horizontal = 16.dp, vertical = 8.dp) // Only internal padding for spacing
                 .let { baseModifier ->
                     if (swipeThumbnail) {
                         baseModifier.pointerInput(Unit) {
@@ -207,9 +207,9 @@ fun MiniPlayer(
                 .clip(RoundedCornerShape(32.dp)) // Clip first for perfect rounded corners
                 .background(
                     color = if (pureBlack) 
-                        Color.Black.copy(alpha = 0.8f) 
+                        Color.Black // No transparency - solid color
                     else 
-                        MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.85f)
+                        MaterialTheme.colorScheme.surfaceVariant // No transparency - solid color
                 )
                 .offset { IntOffset(offsetXAnimatable.value.roundToInt(), 0) }
         ) {
