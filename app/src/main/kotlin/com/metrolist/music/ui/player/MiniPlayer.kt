@@ -70,6 +70,7 @@ import com.metrolist.music.constants.MiniPlayerHeight
 import com.metrolist.music.constants.SwipeSensitivityKey
 import com.metrolist.music.constants.ThumbnailCornerRadius
 import com.metrolist.music.db.entities.ArtistEntity
+import com.metrolist.music.ui.component.BottomSheetState
 import com.metrolist.music.extensions.togglePlayPause
 import com.metrolist.music.models.MediaMetadata
 import com.metrolist.music.utils.rememberPreference
@@ -84,6 +85,7 @@ fun MiniPlayer(
     duration: Long,
     modifier: Modifier = Modifier,
     pureBlack: Boolean,
+    state: BottomSheetState? = null, // Add BottomSheetState parameter
 ) {
     val playerConnection = LocalPlayerConnection.current ?: return
     val database = LocalDatabase.current
@@ -125,12 +127,21 @@ fun MiniPlayer(
     }
     val autoSwipeThreshold = calculateAutoSwipeThreshold(swipeSensitivity)
 
+    // Calculate background alpha based on bottom sheet state
+    val backgroundAlpha = if (state != null) {
+        val progress = ((state.value - state.collapsedBound) / (state.expandedBound - state.collapsedBound))
+            .coerceIn(0f, 1f)
+        0.3f + (progress * 0.55f) // Start from 30% opacity, reach 85% when fully expanded
+    } else {
+        0.85f // Default opacity when no state provided
+    }
+
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .height(MiniPlayerHeight + 20.dp) // Height for floating above nav bar
+            .height(MiniPlayerHeight + 24.dp) // Increased height for better positioning
             .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Horizontal))
-            .padding(horizontal = 16.dp, vertical = 10.dp)
+            .padding(horizontal = 16.dp, vertical = 8.dp) // Reduced bottom padding to move up
             // Remove any background - make completely transparent
     ) {
         // Fully circular MiniPlayer matching the reference images
@@ -138,6 +149,7 @@ fun MiniPlayer(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(64.dp) // Circular height
+                .padding(top = 4.dp) // Move the box up slightly
                 .let { baseModifier ->
                     if (swipeThumbnail) {
                         baseModifier.pointerInput(Unit) {
@@ -207,9 +219,9 @@ fun MiniPlayer(
                 .clip(RoundedCornerShape(32.dp)) // Clip first for perfect rounded corners
                 .background(
                     color = if (pureBlack) 
-                        Color.Black.copy(alpha = 0.8f) 
+                        Color.Black.copy(alpha = backgroundAlpha) 
                     else 
-                        MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.85f)
+                        MaterialTheme.colorScheme.surfaceVariant.copy(alpha = backgroundAlpha)
                 )
                 .offset { IntOffset(offsetXAnimatable.value.roundToInt(), 0) }
         ) {
