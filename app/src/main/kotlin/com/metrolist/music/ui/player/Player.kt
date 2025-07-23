@@ -516,7 +516,6 @@ fun BottomSheetPlayer(
                 position = position,
                 duration = duration,
                 pureBlack = pureBlack,
-                state = state, // Pass the BottomSheetState
             )
         },
     ) {
