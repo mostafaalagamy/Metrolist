@@ -268,6 +268,7 @@ private fun NewMiniPlayer(
                         contentAlignment = Alignment.Center,
                         modifier = Modifier
                             .size(40.dp)
+                            .clip(CircleShape)
                             .background(
                                 color = MaterialTheme.colorScheme.primary,
                                 shape = CircleShape
@@ -369,6 +370,7 @@ private fun NewMiniPlayer(
                             contentAlignment = Alignment.Center,
                             modifier = Modifier
                                 .size(40.dp)
+                                .clip(CircleShape)
                                 .background(
                                     color = if (isSubscribed) 
                                         MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
@@ -422,6 +424,7 @@ private fun NewMiniPlayer(
                         contentAlignment = Alignment.Center,
                         modifier = Modifier
                             .size(40.dp)
+                            .clip(CircleShape)
                             .background(
                                 color = if (isLiked) 
                                     MaterialTheme.colorScheme.error.copy(alpha = 0.1f)
