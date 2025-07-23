@@ -127,21 +127,15 @@ fun MiniPlayer(
     }
     val autoSwipeThreshold = calculateAutoSwipeThreshold(swipeSensitivity)
 
-    // Calculate background alpha based on bottom sheet state
-    val backgroundAlpha = if (state != null) {
-        val progress = ((state.value - state.collapsedBound) / (state.expandedBound - state.collapsedBound))
-            .coerceIn(0f, 1f)
-        0.3f + (progress * 0.55f) // Start from 30% opacity, reach 85% when fully expanded
-    } else {
-        0.85f // Default opacity when no state provided
-    }
+    // Remove the background alpha calculation since we want normal colors
+    // val backgroundAlpha = if (state != null) { ... }
 
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .height(MiniPlayerHeight + 24.dp) // Increased height for better positioning
+            .height(MiniPlayerHeight + 40.dp) // Increased height significantly for higher positioning
             .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Horizontal))
-            .padding(horizontal = 16.dp, vertical = 8.dp) // Reduced bottom padding to move up
+            .padding(horizontal = 16.dp, vertical = 4.dp) // Reduced bottom padding significantly
             // Remove any background - make completely transparent
     ) {
         // Fully circular MiniPlayer matching the reference images
@@ -149,7 +143,7 @@ fun MiniPlayer(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(64.dp) // Circular height
-                .padding(top = 4.dp) // Move the box up slightly
+                .padding(top = 16.dp) // Move the box up significantly more
                 .let { baseModifier ->
                     if (swipeThumbnail) {
                         baseModifier.pointerInput(Unit) {
@@ -219,9 +213,9 @@ fun MiniPlayer(
                 .clip(RoundedCornerShape(32.dp)) // Clip first for perfect rounded corners
                 .background(
                     color = if (pureBlack) 
-                        Color.Black.copy(alpha = backgroundAlpha) 
+                        Color.Black // Normal color without transparency
                     else 
-                        MaterialTheme.colorScheme.surfaceVariant.copy(alpha = backgroundAlpha)
+                        MaterialTheme.colorScheme.surfaceVariant // Normal color without transparency
                 )
                 .offset { IntOffset(offsetXAnimatable.value.roundToInt(), 0) }
         ) {
