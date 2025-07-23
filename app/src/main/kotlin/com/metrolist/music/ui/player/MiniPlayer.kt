@@ -128,7 +128,7 @@ fun MiniPlayer(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .height(MiniPlayerHeight) // Normal height without extra space
+            .height(MiniPlayerHeight + 16.dp) // Increased total height
             .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Horizontal))
             // No padding - start from the beginning of the sheet
     ) {
@@ -136,8 +136,9 @@ fun MiniPlayer(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(MiniPlayerHeight) // Use full MiniPlayerHeight
-                .padding(horizontal = 16.dp, vertical = 8.dp) // Only internal padding for spacing
+                .height(64.dp) // Keep original box height
+                .padding(horizontal = 16.dp) // Only horizontal padding, no vertical padding
+                .padding(bottom = 12.dp) // Add bottom padding below the box
                 .let { baseModifier ->
                     if (swipeThumbnail) {
                         baseModifier.pointerInput(Unit) {
