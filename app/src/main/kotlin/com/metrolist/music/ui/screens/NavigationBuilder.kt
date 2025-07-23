@@ -230,7 +230,7 @@ fun NavGraphBuilder.navigationBuilder(
             },
         ),
     ) {
-        LocalPlaylistScreen(navController, scrollBehavior)
+        LocalPlaylistScreen(navController)
     }
     composable(
         route = "auto_playlist/{playlist}",

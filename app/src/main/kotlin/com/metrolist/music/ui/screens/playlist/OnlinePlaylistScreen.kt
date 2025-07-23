@@ -335,7 +335,7 @@ fun OnlinePlaylistScreen(
             onSelectionMenuClick = {
                 menuState.show {
                     SelectionSongMenu(
-                        songSelection = selection.mapNotNull { songs.getOrNull(it) },
+                        songSelection = selection.mapNotNull { songs.getOrNull(it)?.toMediaMetadata() },
                         onDismiss = menuState::dismiss,
                         clearAction = onExitSelectionMode
                     )
