@@ -76,6 +76,7 @@ import com.metrolist.music.utils.rememberPreference
 import kotlinx.coroutines.launch
 import kotlin.math.absoluteValue
 import kotlin.math.roundToInt
+import androidx.compose.foundation.clickable
 
 @Composable
 fun MiniPlayer(
@@ -127,15 +128,15 @@ fun MiniPlayer(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .height(MiniPlayerHeight + 32.dp) // More height for proper spacing above nav bar
+            .height(MiniPlayerHeight + 20.dp) // Height for floating above nav bar
             .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Horizontal))
-            .padding(horizontal = 12.dp, vertical = 16.dp) // More padding for floating effect
+            .padding(horizontal = 16.dp, vertical = 10.dp)
     ) {
-        // Fully rounded MiniPlayer with transparent background
+        // Fully circular MiniPlayer matching the reference images
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(56.dp) // Fixed height for pill shape
+                .height(64.dp) // Circular height
                 .let { baseModifier ->
                     if (swipeThumbnail) {
                         baseModifier.pointerInput(Unit) {
@@ -204,10 +205,10 @@ fun MiniPlayer(
                 }
                 .background(
                     color = if (pureBlack) 
-                        Color.Black.copy(alpha = 0.85f) 
+                        Color.Black.copy(alpha = 0.8f) 
                     else 
-                        MaterialTheme.colorScheme.surface.copy(alpha = 0.9f),
-                    shape = RoundedCornerShape(28.dp) // Full rounded corners like a pill
+                        MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.85f),
+                    shape = RoundedCornerShape(32.dp) // Fully rounded like reference image
                 )
                 .offset { IntOffset(offsetXAnimatable.value.roundToInt(), 0) }
         ) {
@@ -215,40 +216,41 @@ fun MiniPlayer(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(horizontal = 8.dp, vertical = 6.dp),
+                    .padding(horizontal = 8.dp, vertical = 8.dp),
             ) {
-                // Play/Pause button with circular progress indicator
+                // Play/Pause button with circular progress indicator (left side)
                 Box(
                     contentAlignment = Alignment.Center,
-                    modifier = Modifier.size(44.dp)
+                    modifier = Modifier.size(48.dp)
                 ) {
-                    // Circular progress indicator
+                    // Circular progress indicator around the play button
                     if (duration > 0) {
                         CircularProgressIndicator(
                             progress = { (position.toFloat() / duration).coerceIn(0f, 1f) },
-                            modifier = Modifier.size(44.dp),
+                            modifier = Modifier.size(48.dp),
                             color = MaterialTheme.colorScheme.primary,
-                            strokeWidth = 2.5.dp,
-                            trackColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
+                            strokeWidth = 3.dp,
+                            trackColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f)
                         )
                     }
                     
                     // Play/Pause button
-                    IconButton(
-                        onClick = {
-                            if (playbackState == Player.STATE_ENDED) {
-                                playerConnection.player.seekTo(0, 0)
-                                playerConnection.player.playWhenReady = true
-                            } else {
-                                playerConnection.player.togglePlayPause()
-                            }
-                        },
+                    Box(
+                        contentAlignment = Alignment.Center,
                         modifier = Modifier
-                            .size(36.dp)
+                            .size(40.dp)
                             .background(
                                 color = MaterialTheme.colorScheme.primary,
                                 shape = CircleShape
                             )
+                            .clickable {
+                                if (playbackState == Player.STATE_ENDED) {
+                                    playerConnection.player.seekTo(0, 0)
+                                    playerConnection.player.playWhenReady = true
+                                } else {
+                                    playerConnection.player.togglePlayPause()
+                                }
+                            }
                     ) {
                         Icon(
                             painter = painterResource(
@@ -262,26 +264,71 @@ fun MiniPlayer(
                             ),
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.onPrimary,
-                            modifier = Modifier.size(18.dp)
+                            modifier = Modifier.size(20.dp)
                         )
+                    }
+                }
+
+                Spacer(modifier = Modifier.width(16.dp))
+
+                // Song info - takes most space in the middle
+                Column(
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    mediaMetadata?.let { metadata ->
+                        AnimatedContent(
+                            targetState = metadata.title,
+                            transitionSpec = { fadeIn() togetherWith fadeOut() },
+                            label = "",
+                        ) { title ->
+                            Text(
+                                text = title,
+                                color = if (pureBlack) Color.White else MaterialTheme.colorScheme.onSurface,
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Medium,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                modifier = Modifier.basicMarquee(),
+                            )
+                        }
+
+                        AnimatedContent(
+                            targetState = metadata.artistName ?: metadata.artists.joinToString { it.name },
+                            transitionSpec = { fadeIn() togetherWith fadeOut() },
+                            label = "",
+                        ) { artists ->
+                            Text(
+                                text = metadata.artistName ?: artists,
+                                color = if (pureBlack) 
+                                    Color.White.copy(alpha = 0.7f) 
+                                else 
+                                    MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+                                fontSize = 12.sp,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                modifier = Modifier.basicMarquee(),
+                            )
+                        }
+                        
+                        // Error indicator
+                        androidx.compose.animation.AnimatedVisibility(
+                            visible = error != null,
+                            enter = fadeIn(),
+                            exit = fadeOut(),
+                        ) {
+                            Text(
+                                text = "Error playing",
+                                color = MaterialTheme.colorScheme.error,
+                                fontSize = 10.sp,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                            )
+                        }
                     }
                 }
 
                 Spacer(modifier = Modifier.width(12.dp))
-
-                // Song info - takes most of the space
-                Box(Modifier.weight(1f)) {
-                    mediaMetadata?.let {
-                        MiniMediaInfo(
-                            mediaMetadata = it,
-                            error = error,
-                            pureBlack = pureBlack,
-                            modifier = Modifier.fillMaxWidth(),
-                        )
-                    }
-                }
-
-                Spacer(modifier = Modifier.width(8.dp))
 
                 // Subscribe/Subscribed button
                 mediaMetadata?.let { metadata ->
@@ -289,27 +336,36 @@ fun MiniPlayer(
                         val libraryArtist by database.artist(artistId).collectAsState(initial = null)
                         val isSubscribed = libraryArtist?.artist?.bookmarkedAt != null
                         
-                        IconButton(
-                            onClick = {
-                                database.transaction {
-                                    val artist = libraryArtist?.artist
-                                    if (artist != null) {
-                                        update(artist.toggleLike())
-                                    } else {
-                                        metadata.artists.firstOrNull()?.let { artistInfo ->
-                                            insert(
-                                                ArtistEntity(
-                                                    id = artistInfo.id ?: "",
-                                                    name = artistInfo.name,
-                                                    channelId = null,
-                                                    thumbnailUrl = null,
-                                                ).toggleLike()
-                                            )
+                        Box(
+                            contentAlignment = Alignment.Center,
+                            modifier = Modifier
+                                .size(36.dp)
+                                .background(
+                                    color = if (isSubscribed) 
+                                        MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
+                                    else 
+                                        Color.Transparent,
+                                    shape = CircleShape
+                                )
+                                .clickable {
+                                    database.transaction {
+                                        val artist = libraryArtist?.artist
+                                        if (artist != null) {
+                                            update(artist.toggleLike())
+                                        } else {
+                                            metadata.artists.firstOrNull()?.let { artistInfo ->
+                                                insert(
+                                                    ArtistEntity(
+                                                        id = artistInfo.id ?: "",
+                                                        name = artistInfo.name,
+                                                        channelId = null,
+                                                        thumbnailUrl = null,
+                                                    ).toggleLike()
+                                                )
+                                            }
                                         }
                                     }
                                 }
-                            },
-                            modifier = Modifier.size(36.dp)
                         ) {
                             Icon(
                                 painter = painterResource(
@@ -319,23 +375,34 @@ fun MiniPlayer(
                                 tint = if (isSubscribed) 
                                     MaterialTheme.colorScheme.primary 
                                 else 
-                                    MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+                                    if (pureBlack) Color.White.copy(alpha = 0.7f) else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
                                 modifier = Modifier.size(18.dp)
                             )
                         }
                     }
                 }
 
-                // Favorite button
+                Spacer(modifier = Modifier.width(8.dp))
+
+                // Favorite button (right side)
                 mediaMetadata?.let { metadata ->
                     val librarySong by database.song(metadata.id).collectAsState(initial = null)
                     val isLiked = librarySong?.song?.liked == true
                     
-                    IconButton(
-                        onClick = {
-                            playerConnection.service.toggleLike()
-                        },
-                        modifier = Modifier.size(36.dp)
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .size(36.dp)
+                            .background(
+                                color = if (isLiked) 
+                                    MaterialTheme.colorScheme.error.copy(alpha = 0.1f)
+                                else 
+                                    Color.Transparent,
+                                shape = CircleShape
+                            )
+                            .clickable {
+                                playerConnection.service.toggleLike()
+                            }
                     ) {
                         Icon(
                             painter = painterResource(
@@ -345,7 +412,7 @@ fun MiniPlayer(
                             tint = if (isLiked) 
                                 MaterialTheme.colorScheme.error 
                             else 
-                                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+                                if (pureBlack) Color.White.copy(alpha = 0.7f) else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
                             modifier = Modifier.size(18.dp)
                         )
                     }
@@ -371,65 +438,6 @@ fun MiniPlayer(
                     modifier = Modifier.size(24.dp)
                 )
             }
-        }
-    }
-}
-
-@Composable
-fun MiniMediaInfo(
-    mediaMetadata: MediaMetadata,
-    error: PlaybackException?,
-    pureBlack: Boolean,
-    modifier: Modifier = Modifier,
-) {
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.Center
-    ) {
-        AnimatedContent(
-            targetState = mediaMetadata.title,
-            transitionSpec = { fadeIn() togetherWith fadeOut() },
-            label = "",
-        ) { title ->
-            Text(
-                text = title,
-                color = if (pureBlack) Color.White else MaterialTheme.colorScheme.onSurface,
-                fontSize = 13.sp,
-                fontWeight = FontWeight.Medium,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.basicMarquee(),
-            )
-        }
-
-        AnimatedContent(
-            targetState = mediaMetadata.artistName ?: mediaMetadata.artists.joinToString { it.name },
-            transitionSpec = { fadeIn() togetherWith fadeOut() },
-            label = "",
-        ) { artists ->
-            Text(
-                text = mediaMetadata.artistName ?: artists,
-                color = if (pureBlack) Color.White.copy(alpha = 0.75f) else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.75f),
-                fontSize = 11.sp,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.basicMarquee(),
-            )
-        }
-        
-        // Error indicator
-        androidx.compose.animation.AnimatedVisibility(
-            visible = error != null,
-            enter = fadeIn(),
-            exit = fadeOut(),
-        ) {
-            Text(
-                text = "Error playing",
-                color = MaterialTheme.colorScheme.error,
-                fontSize = 9.sp,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
         }
     }
 }
