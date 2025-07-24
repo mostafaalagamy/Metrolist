@@ -120,7 +120,6 @@ import kotlinx.coroutines.withContext
 import java.util.logging.Logger
 import kotlin.math.roundToInt
 
-
 const val ActiveBoxAlpha = 0.6f
 
 @Composable
@@ -854,7 +853,7 @@ fun YouTubeGridItem(
             Icon.Download(downloads[item.id]?.state)
         }
     },
-    thumbnailRatio: Float = 1f,
+    thumbnailRatio: Float = if (item is SongItem) 16f / 9 else 1f,
     isActive: Boolean = false,
     isPlaying: Boolean = false,
     fillMaxWidth: Boolean = false,
@@ -898,7 +897,6 @@ fun YouTubeGridItem(
             isActive = isActive,
             isPlaying = isPlaying,
             shape = if (item is ArtistItem) CircleShape else RoundedCornerShape(ThumbnailCornerRadius),
-            thumbnailRatio = 1f
         )
 
         if (item is SongItem && !isActive) {
@@ -1041,9 +1039,8 @@ fun ItemThumbnail(
             AsyncImage(
                 model = thumbnailUrl,
                 contentDescription = null,
-                contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .fillMaxSize()
+                    .fillMaxWidth()
                     .clip(shape)
             )
         }
@@ -1114,7 +1111,6 @@ fun LocalThumbnail(
         AsyncImage(
             model = thumbnailUrl,
             contentDescription = null,
-            contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize()
         )
 
