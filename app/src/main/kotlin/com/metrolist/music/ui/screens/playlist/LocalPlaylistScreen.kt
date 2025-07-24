@@ -1038,14 +1038,18 @@ private fun LocalPlaylistActionControls(
     val playlistLength = remember(songs) { songs.fastSumBy { it.song.song.duration } }
     
     Column(modifier = Modifier.padding(12.dp)) {
-        // Row of action buttons (like original)
+        // Row of action buttons - Left side controls  
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .horizontalScroll(rememberScrollState()),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
+            // Left side - action buttons
+            Row(
+                modifier = Modifier.horizontalScroll(rememberScrollState()),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
             if (isEditable) {
                 IconButton(
                     onClick = onShowDeleteDialog,
@@ -1137,48 +1141,35 @@ private fun LocalPlaylistActionControls(
                 }
             }
 
-            IconButton(
-                onClick = onQueueClick,
-                modifier = Modifier.size(40.dp)
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.queue_music),
-                    contentDescription = null,
-                    modifier = Modifier.size(24.dp)
-                )
+                IconButton(
+                    onClick = onQueueClick,
+                    modifier = Modifier.size(40.dp)
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.queue_music),
+                        contentDescription = null,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
             }
-        }
-
-        Spacer(Modifier.height(12.dp))
-
-        // Play and Shuffle buttons (like original)
-        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            Button(
-                onClick = onPlayClick,
-                contentPadding = ButtonDefaults.ButtonWithIconContentPadding,
-                modifier = Modifier.weight(1f),
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.play),
-                    contentDescription = null,
-                    modifier = Modifier.size(ButtonDefaults.IconSize),
-                )
-                Spacer(Modifier.size(ButtonDefaults.IconSpacing))
-                Text(stringResource(R.string.play))
-            }
-
-            OutlinedButton(
-                onClick = onShuffleClick,
-                contentPadding = ButtonDefaults.ButtonWithIconContentPadding,
-                modifier = Modifier.weight(1f),
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.shuffle),
-                    contentDescription = null,
-                    modifier = Modifier.size(ButtonDefaults.IconSize),
-                )
-                Spacer(Modifier.size(ButtonDefaults.IconSpacing))
-                Text(stringResource(R.string.shuffle))
+            
+            // Right side - circular play and shuffle buttons (larger for 2 buttons)
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                val buttonSize = 56.dp // Larger buttons when only 2
+                FloatingActionButton(
+                    onClick = onShuffleClick,
+                    elevation = FloatingActionButtonDefaults.elevation(0.dp, 0.dp),
+                    modifier = Modifier.size(buttonSize)
+                ) {
+                    Icon(painterResource(R.drawable.shuffle), "Shuffle")
+                }
+                
+                FloatingActionButton(
+                    onClick = onPlayClick,
+                    modifier = Modifier.size(buttonSize)
+                ) {
+                    Icon(painterResource(R.drawable.play), "Play")
+                }
             }
         }
     }
