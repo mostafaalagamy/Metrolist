@@ -1005,28 +1005,17 @@ fun Queue(
                         text = stringResource(R.string.elements_selected, count),
                         modifier = Modifier.weight(1f)
                     )
-                    IconButton(
-                        onClick = {
+                    Checkbox(
+                        checked = count == queueWindows.size && count > 0,
+                        onCheckedChange = { 
                             if (count == queueWindows.size && count > 0) {
                                 selection.clear()
                             } else {
                                 selection.clear()
                                 selection.addAll(queueWindows.indices)
                             }
-                        },
-                    ) {
-                        Icon(
-                            painter =
-                            painterResource(
-                                if (count == queueWindows.size && count > 0) {
-                                    R.drawable.uncheck_box
-                                } else {
-                                    R.drawable.check_box
-                                },
-                            ),
-                            contentDescription = null,
-                        )
-                    }
+                        }
+                    )
 
                     IconButton(
                         onClick = {

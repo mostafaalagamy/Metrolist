@@ -457,8 +457,9 @@ fun HistoryScreen(
         actions = {
             if (inSelectMode) {
                 val allSelected = selection.size == allItems.size && selection.isNotEmpty()
-                IconButton(
-                    onClick = {
+                Checkbox(
+                    checked = allSelected, 
+                    onCheckedChange = { 
                         if (allSelected) {
                             selection.clear()
                         } else {
@@ -466,14 +467,7 @@ fun HistoryScreen(
                             selection.addAll(allItems.map { it.song.id })
                         }
                     }
-                ) {
-                    Icon(
-                        painter = painterResource(
-                            if (allSelected) R.drawable.uncheck_box else R.drawable.check_box
-                        ),
-                        contentDescription = null
-                    )
-                }
+                )
                 IconButton(
                     onClick = {
                         menuState.show {

@@ -912,23 +912,17 @@ fun LocalPlaylistScreen(
             actions = {
                 if (inSelectMode) {
                     val allSelected = selection.size == filteredSongs.size && selection.isNotEmpty()
-                    IconButton(
-                        onClick = {
+                    Checkbox(
+                        checked = allSelected,
+                        onCheckedChange = { 
                             if (allSelected) {
                                 selection.clear()
                             } else {
                                 selection.clear()
                                 selection.addAll(filteredSongs.indices)
                             }
-                        },
-                    ) {
-                        Icon(
-                            painter = painterResource(
-                                if (allSelected) R.drawable.uncheck_box else R.drawable.check_box
-                            ),
-                            contentDescription = null
-                        )
-                    }
+                        }
+                    )
 
                     IconButton(
                         onClick = {

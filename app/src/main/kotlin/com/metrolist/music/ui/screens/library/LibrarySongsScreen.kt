@@ -196,21 +196,17 @@ fun LibrarySongsScreen(
                             text = pluralStringResource(R.plurals.n_selected, count, count),
                             modifier = Modifier.weight(1f)
                         )
-                        IconButton(
-                            onClick = {
+                        Checkbox(
+                            checked = count == songs.size && count > 0,
+                            onCheckedChange = { 
                                 if (count == songs.size && count > 0) {
                                     selection.clear()
                                 } else {
                                     selection.clear()
                                     selection.addAll(songs.indices)
                                 }
-                            },
-                        ) {
-                            Icon(
-                                painter = painterResource(if (count == songs.size && count > 0) R.drawable.uncheck_box else R.drawable.check_box),
-                                contentDescription = null,
-                            )
-                        }
+                            }
+                        )
 
                         IconButton(
                             onClick = {
