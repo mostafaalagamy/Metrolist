@@ -198,7 +198,7 @@ fun LibrarySongsScreen(
                         )
                         IconButton(
                             onClick = {
-                                if (count == songs.size) {
+                                if (count == songs.size && count > 0) {
                                     selection.clear()
                                 } else {
                                     selection.clear()
@@ -207,7 +207,7 @@ fun LibrarySongsScreen(
                             },
                         ) {
                             Icon(
-                                painter = painterResource(if (count == songs.size) R.drawable.uncheck_box else R.drawable.check_box),
+                                painter = painterResource(if (count == songs.size && count > 0) R.drawable.uncheck_box else R.drawable.check_box),
                                 contentDescription = null,
                             )
                         }
@@ -309,7 +309,7 @@ fun LibrarySongsScreen(
                             }
                         }
                     },
-                    isSelected = index in selection && inSelectMode,
+                    isSelected = false,
                     modifier =
                     Modifier
                         .fillMaxWidth()

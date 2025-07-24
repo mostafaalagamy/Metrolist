@@ -1007,7 +1007,7 @@ fun Queue(
                     )
                     IconButton(
                         onClick = {
-                            if (count == queueWindows.size) {
+                            if (count == queueWindows.size && count > 0) {
                                 selection.clear()
                             } else {
                                 selection.clear()
@@ -1018,7 +1018,7 @@ fun Queue(
                         Icon(
                             painter =
                             painterResource(
-                                if (count == queueWindows.size) {
+                                if (count == queueWindows.size && count > 0) {
                                     R.drawable.uncheck_box
                                 } else {
                                     R.drawable.check_box
