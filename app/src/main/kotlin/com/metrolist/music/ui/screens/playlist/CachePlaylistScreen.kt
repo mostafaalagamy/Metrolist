@@ -265,8 +265,6 @@ fun CachePlaylistScreen(
                                 onSortDescendingChange = onSortDescendingChange
                             )
                         }
-                        
-
                     }
 
                     // Songs list
