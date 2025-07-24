@@ -996,6 +996,7 @@ private fun LocalPlaylistHeader(
             AsyncImage(
                 model = playlist.thumbnails[0],
                 contentDescription = "Playlist Thumbnail",
+                contentScale = ContentScale.Crop,
                 modifier = Modifier.size(200.dp).clip(RoundedCornerShape(12.dp)).shadow(16.dp, RoundedCornerShape(12.dp))
             )
         } else if (playlist.thumbnails.size > 1) {
