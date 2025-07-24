@@ -473,8 +473,8 @@ fun LocalPlaylistScreen(
     var dominantColor by remember { mutableStateOf(defaultColor) }
     val animatedBackgroundColor by animateColorAsState(dominantColor, tween(500), label = "background_color")
 
-    LaunchedEffect(playlist?.playlist?.thumbnailUrl) {
-        dominantColor = fetchDominantColor(context, playlist?.playlist?.thumbnailUrl, defaultColor)
+    LaunchedEffect(playlist?.thumbnails?.firstOrNull()) {
+        dominantColor = fetchDominantColor(context, playlist?.thumbnails?.firstOrNull(), defaultColor)
     }
 
     Box(

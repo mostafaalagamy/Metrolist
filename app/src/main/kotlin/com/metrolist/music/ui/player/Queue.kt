@@ -785,10 +785,11 @@ fun Queue(
                                         .fillMaxWidth()
                                         .background(backgroundColor)
                                         .combinedClickable(
+                                            interactionSource = remember { MutableInteractionSource() },
+                                            indication = null,
                                             onClick = {
                                                 if (inSelectMode) {
                                                     onCheckedChange(index !in selection)
-                                                    }
                                                 } else {
                                                     if (index == currentWindowIndex) {
                                                         playerConnection.player.togglePlayPause()
@@ -878,6 +879,8 @@ fun Queue(
                                 Modifier
                                     .fillMaxWidth()
                                     .combinedClickable(
+                                        interactionSource = remember { MutableInteractionSource() },
+                                        indication = null,
                                         onClick = {},
                                         onLongClick = {
                                             menuState.show {
