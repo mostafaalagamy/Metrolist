@@ -1,11 +1,9 @@
 package com.metrolist.music.ui.component.shimmer
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -15,8 +13,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
 import com.metrolist.music.constants.GridThumbnailHeight
@@ -40,7 +36,7 @@ fun GridItemPlaceHolder(
                 .width(GridThumbnailHeight)
         },
     ) {
-        Box(
+        Spacer(
             modifier =
             if (fillMaxWidth) {
                 Modifier.fillMaxWidth()
@@ -48,31 +44,12 @@ fun GridItemPlaceHolder(
                 Modifier.height(GridThumbnailHeight)
             }.aspectRatio(1f)
                 .clip(thumbnailShape)
-        ) {
-            // Enhanced background fill that simulates cropped content with more realistic appearance
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(
-                        brush = Brush.linearGradient(
-                            colors = listOf(
-                                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
-                                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
-                                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
-                                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f),
-                                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.45f),
-                                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.25f)
-                            )
-                        )
-                    )
-            )
-        }
+                .background(MaterialTheme.colorScheme.onSurface),
+        )
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(6.dp))
 
         TextPlaceholder()
-
-        Spacer(modifier = Modifier.height(2.dp))
 
         TextPlaceholder()
     }
