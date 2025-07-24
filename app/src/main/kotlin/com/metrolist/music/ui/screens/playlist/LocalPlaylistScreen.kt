@@ -155,6 +155,8 @@ import com.metrolist.music.ui.component.DefaultDialog
 import com.metrolist.music.ui.component.EmptyPlaceholder
 import com.metrolist.music.ui.component.FontSizeRange
 import com.metrolist.music.ui.component.IconButton
+import com.metrolist.music.ui.component.BorderedIconButton
+import com.metrolist.music.ui.component.BorderedFloatingActionButton
 import com.metrolist.music.ui.component.LocalMenuState
 import com.metrolist.music.ui.component.SongListItem
 import com.metrolist.music.ui.component.SortHeader
@@ -1064,7 +1066,7 @@ private fun LocalPlaylistActionControls(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
             if (isEditable) {
-                IconButton(
+                BorderedIconButton(
                     onClick = onShowDeleteDialog,
                     modifier = Modifier.size(40.dp)
                 ) {
@@ -1075,7 +1077,7 @@ private fun LocalPlaylistActionControls(
                     )
                 }
             } else {
-                IconButton(
+                BorderedIconButton(
                     onClick = onLikeClick,
                     modifier = Modifier.size(40.dp)
                 ) {
@@ -1089,7 +1091,7 @@ private fun LocalPlaylistActionControls(
             }
 
             if (isEditable) {
-                IconButton(
+                BorderedIconButton(
                     onClick = onShowEditDialog,
                     modifier = Modifier.size(40.dp)
                 ) {
@@ -1102,7 +1104,7 @@ private fun LocalPlaylistActionControls(
             }
 
             if (playlist.playlist.browseId != null) {
-                IconButton(
+                BorderedIconButton(
                     onClick = onSyncClick,
                     modifier = Modifier.size(40.dp)
                 ) {
@@ -1116,7 +1118,7 @@ private fun LocalPlaylistActionControls(
 
             when (downloadState) {
                 Download.STATE_COMPLETED -> {
-                    IconButton(
+                    BorderedIconButton(
                         onClick = onDownloadClick,
                         modifier = Modifier.size(40.dp)
                     ) {
@@ -1129,7 +1131,7 @@ private fun LocalPlaylistActionControls(
                 }
 
                 Download.STATE_DOWNLOADING -> {
-                    IconButton(
+                    BorderedIconButton(
                         onClick = onDownloadClick,
                         modifier = Modifier.size(40.dp)
                     ) {
@@ -1141,7 +1143,7 @@ private fun LocalPlaylistActionControls(
                 }
 
                 else -> {
-                    IconButton(
+                    BorderedIconButton(
                         onClick = onDownloadClick,
                         modifier = Modifier.size(40.dp)
                     ) {
@@ -1154,7 +1156,7 @@ private fun LocalPlaylistActionControls(
                 }
             }
 
-                IconButton(
+                BorderedIconButton(
                     onClick = onQueueClick,
                     modifier = Modifier.size(40.dp)
                 ) {
@@ -1173,15 +1175,14 @@ private fun LocalPlaylistActionControls(
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 val shuffleButtonSize = 50.dp // أصغر قليلاً
                 val playButtonSize = 56.dp // Play يبقى كبير
-                FloatingActionButton(
+                BorderedFloatingActionButton(
                     onClick = onShuffleClick,
-                    elevation = FloatingActionButtonDefaults.elevation(0.dp, 0.dp),
                     modifier = Modifier.size(shuffleButtonSize)
                 ) {
                     Icon(painterResource(R.drawable.shuffle), "Shuffle")
                 }
                 
-                FloatingActionButton(
+                BorderedFloatingActionButton(
                     onClick = onPlayClick,
                     modifier = Modifier.size(playButtonSize)
                 ) {

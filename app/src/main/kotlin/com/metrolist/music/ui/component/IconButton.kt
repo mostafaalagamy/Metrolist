@@ -5,6 +5,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.Indication
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -12,6 +13,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.FloatingActionButtonDefaults
+import androidx.compose.material3.FloatingActionButtonElevation
 import androidx.compose.material3.IconButtonColors
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.LocalContentColor
@@ -27,8 +30,10 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -86,6 +91,84 @@ fun IconButton(
         contentAlignment = Alignment.Center,
     ) {
         val contentColor = colors.contentColor
+        CompositionLocalProvider(LocalContentColor provides contentColor, content = content)
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun BorderedIconButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    onLongClick: () -> Unit = {},
+    enabled: Boolean = true,
+    colors: IconButtonColors = IconButtonDefaults.iconButtonColors(),
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    borderWidth: Dp = 1.dp,
+    borderColor: Color = MaterialTheme.colorScheme.outline,
+    shape: Shape = CircleShape,
+    content: @Composable () -> Unit,
+) {
+    Box(
+        modifier = modifier
+            .minimumInteractiveComponentSize()
+            .sizeIn(minWidth = 48.dp, minHeight = 48.dp)
+            .border(
+                width = borderWidth,
+                color = borderColor,
+                shape = shape
+            )
+            .clip(shape)
+            .background(color = colors.containerColor)
+            .combinedClickable(
+                onClick = onClick,
+                onLongClick = onLongClick,
+                enabled = enabled,
+                role = Role.Button,
+                interactionSource = interactionSource,
+                indication = ripple(
+                    bounded = false,
+                    radius = 24.dp
+                ),
+            ),
+        contentAlignment = Alignment.Center,
+    ) {
+        val contentColor = colors.contentColor
+        CompositionLocalProvider(LocalContentColor provides contentColor, content = content)
+    }
+}
+
+@Composable
+fun BorderedFloatingActionButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    containerColor: Color = MaterialTheme.colorScheme.primaryContainer,
+    contentColor: Color = MaterialTheme.colorScheme.onPrimaryContainer,
+    elevation: FloatingActionButtonElevation = FloatingActionButtonDefaults.elevation(),
+    borderWidth: Dp = 1.dp,
+    borderColor: Color = MaterialTheme.colorScheme.outline,
+    shape: Shape = CircleShape,
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    content: @Composable () -> Unit,
+) {
+    Box(
+        modifier = modifier
+            .sizeIn(minWidth = 56.dp, minHeight = 56.dp)
+            .border(
+                width = borderWidth,
+                color = borderColor,
+                shape = shape
+            )
+            .clip(shape)
+            .background(color = containerColor)
+            .clickable(
+                onClick = onClick,
+                role = Role.Button,
+                interactionSource = interactionSource,
+                indication = ripple(bounded = false)
+            ),
+        contentAlignment = Alignment.Center,
+    ) {
         CompositionLocalProvider(LocalContentColor provides contentColor, content = content)
     }
 }
