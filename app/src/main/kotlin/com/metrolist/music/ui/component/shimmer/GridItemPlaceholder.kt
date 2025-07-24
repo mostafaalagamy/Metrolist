@@ -23,6 +23,7 @@ fun GridItemPlaceHolder(
     modifier: Modifier = Modifier,
     thumbnailShape: Shape = RoundedCornerShape(ThumbnailCornerRadius),
     fillMaxWidth: Boolean = false,
+    isPlaylistThumbnail: Boolean = false,
 ) {
     Column(
         modifier =
@@ -42,7 +43,7 @@ fun GridItemPlaceHolder(
                 Modifier.fillMaxWidth()
             } else {
                 Modifier.height(GridThumbnailHeight)
-            }.aspectRatio(1f)
+            }.aspectRatio(if (isPlaylistThumbnail) 16f / 9f else 1f)
                 .clip(thumbnailShape)
                 .background(MaterialTheme.colorScheme.onSurface),
         )

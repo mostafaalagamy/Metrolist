@@ -119,6 +119,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.logging.Logger
 import kotlin.math.roundToInt
+import androidx.compose.foundation.border
 
 const val ActiveBoxAlpha = 0.6f
 
@@ -1039,8 +1040,9 @@ fun ItemThumbnail(
             AsyncImage(
                 model = thumbnailUrl,
                 contentDescription = null,
+                contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .fillMaxSize()
                     .clip(shape)
             )
         }
@@ -1111,6 +1113,7 @@ fun LocalThumbnail(
         AsyncImage(
             model = thumbnailUrl,
             contentDescription = null,
+            contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize()
         )
 
@@ -1407,55 +1410,110 @@ data class Quadruple<A, B, C, D>(
 private object Icon {
     @Composable
     fun Favorite() {
-        Icon(
-            painter = painterResource(R.drawable.favorite),
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.error,
+        Box(
             modifier = Modifier
-                .size(18.dp)
+                .size(22.dp)
                 .padding(end = 2.dp)
-        )
+                .border(
+                    width = 1.dp,
+                    color = MaterialTheme.colorScheme.outline,
+                    shape = CircleShape
+                )
+                .padding(2.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.favorite),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.error,
+                modifier = Modifier.size(14.dp)
+            )
+        }
     }
 
     @Composable
     fun Library() {
-        Icon(
-            painter = painterResource(R.drawable.library_add_check),
-            contentDescription = null,
+        Box(
             modifier = Modifier
-                .size(18.dp)
+                .size(22.dp)
                 .padding(end = 2.dp)
-        )
+                .border(
+                    width = 1.dp,
+                    color = MaterialTheme.colorScheme.outline,
+                    shape = CircleShape
+                )
+                .padding(2.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.library_add_check),
+                contentDescription = null,
+                modifier = Modifier.size(14.dp)
+            )
+        }
     }
 
     @Composable
     fun Download(state: Int?) {
         when (state) {
-            STATE_COMPLETED -> Icon(
-                painter = painterResource(R.drawable.offline),
-                contentDescription = null,
+            STATE_COMPLETED -> Box(
                 modifier = Modifier
-                    .size(18.dp)
+                    .size(22.dp)
                     .padding(end = 2.dp)
-            )
-            STATE_QUEUED, STATE_DOWNLOADING -> CircularProgressIndicator(
-                strokeWidth = 2.dp,
+                    .border(
+                        width = 1.dp,
+                        color = MaterialTheme.colorScheme.outline,
+                        shape = CircleShape
+                    )
+                    .padding(2.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.offline),
+                    contentDescription = null,
+                    modifier = Modifier.size(14.dp)
+                )
+            }
+            STATE_QUEUED, STATE_DOWNLOADING -> Box(
                 modifier = Modifier
-                    .size(16.dp)
+                    .size(22.dp)
                     .padding(end = 2.dp)
-            )
+                    .border(
+                        width = 1.dp,
+                        color = MaterialTheme.colorScheme.outline,
+                        shape = CircleShape
+                    )
+                    .padding(2.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(
+                    strokeWidth = 2.dp,
+                    modifier = Modifier.size(12.dp)
+                )
+            }
             else -> { /* no icon */ }
         }
     }
 
     @Composable
     fun Explicit() {
-        Icon(
-            painter = painterResource(R.drawable.explicit),
-            contentDescription = null,
+        Box(
             modifier = Modifier
-                .size(18.dp)
+                .size(22.dp)
                 .padding(end = 2.dp)
-        )
+                .border(
+                    width = 1.dp,
+                    color = MaterialTheme.colorScheme.outline,
+                    shape = CircleShape
+                )
+                .padding(2.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.explicit),
+                contentDescription = null,
+                modifier = Modifier.size(14.dp)
+            )
+        }
     }
 }

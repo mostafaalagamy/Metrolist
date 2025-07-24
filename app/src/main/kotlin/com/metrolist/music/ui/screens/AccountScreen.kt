@@ -140,7 +140,7 @@ fun AccountScreen(
         if (playlists == null) {
             items(8) {
                 ShimmerHost {
-                    GridItemPlaceHolder(fillMaxWidth = true)
+                    GridItemPlaceHolder(fillMaxWidth = true, isPlaylistThumbnail = true)
                 }
             }
         }
