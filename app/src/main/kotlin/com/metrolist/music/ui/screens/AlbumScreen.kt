@@ -527,7 +527,7 @@ private fun AlbumActionControls(
             FloatingActionButton(
                 onClick = onShuffleClick,
                 elevation = FloatingActionButtonDefaults.elevation(0.dp, 0.dp),
-                modifier = Modifier.size(48.dp)
+                modifier = Modifier.size(56.dp)
             ) {
                 Icon(painterResource(R.drawable.shuffle), "Shuffle")
             }
