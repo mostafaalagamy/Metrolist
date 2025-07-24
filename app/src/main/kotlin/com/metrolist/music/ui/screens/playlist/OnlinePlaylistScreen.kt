@@ -423,35 +423,8 @@ private fun PlaylistActionControls(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        // Left side: Import and Menu buttons  
+        // Left side: Menu and Import buttons  
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .size(40.dp)
-                    .clip(CircleShape)
-                    .border(
-                        width = 1.dp,
-                        color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
-                        shape = CircleShape
-                    )
-                    .background(
-                        color = Color.Transparent,
-                        shape = CircleShape
-                    )
-            ) {
-                IconButton(
-                    onClick = onImportClick,
-                    modifier = Modifier.size(40.dp)
-                ) { 
-                    Icon(
-                        painterResource(R.drawable.input), 
-                        "Import",
-                        modifier = Modifier.size(20.dp)
-                    ) 
-                }
-            }
-            
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
@@ -474,6 +447,33 @@ private fun PlaylistActionControls(
                     Icon(
                         painterResource(R.drawable.more_vert), 
                         "Menu",
+                        modifier = Modifier.size(20.dp)
+                    ) 
+                }
+            }
+            
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(CircleShape)
+                    .border(
+                        width = 1.dp,
+                        color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
+                        shape = CircleShape
+                    )
+                    .background(
+                        color = Color.Transparent,
+                        shape = CircleShape
+                    )
+            ) {
+                IconButton(
+                    onClick = onImportClick,
+                    modifier = Modifier.size(40.dp)
+                ) { 
+                    Icon(
+                        painterResource(R.drawable.input), 
+                        "Import",
                         modifier = Modifier.size(20.dp)
                     ) 
                 }
