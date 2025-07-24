@@ -19,7 +19,6 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
 import com.valentinilk.shimmer.defaultShimmerTheme
 import com.valentinilk.shimmer.shimmer
-import com.valentinilk.shimmer.ShimmerBounds
 
 @Composable
 fun ShimmerHost(
@@ -35,9 +34,7 @@ fun ShimmerHost(
         verticalArrangement = verticalArrangement,
         modifier =
         modifier
-            .shimmer(
-                shimmerBounds = if (isRtl) ShimmerBounds.Custom else ShimmerBounds.View
-            )
+            .shimmer()
             .graphicsLayer(
                 alpha = 0.99f,
                 scaleX = if (isRtl) -1f else 1f

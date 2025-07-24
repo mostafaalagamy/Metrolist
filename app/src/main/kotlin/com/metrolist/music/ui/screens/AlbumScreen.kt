@@ -102,6 +102,8 @@ import com.metrolist.music.extensions.togglePlayPause
 import com.metrolist.music.playback.ExoDownloadService
 import com.metrolist.music.playback.queues.LocalAlbumRadio
 import com.metrolist.music.ui.component.IconButton
+import com.metrolist.music.ui.component.BorderedIconButton
+import com.metrolist.music.ui.component.BorderedFloatingActionButton
 import com.metrolist.music.ui.component.LocalMenuState
 import com.metrolist.music.ui.component.NavigationTitle
 import com.metrolist.music.ui.component.SongListItem
@@ -491,21 +493,21 @@ private fun AlbumActionControls(
     ) {
         // Left side - more, download and like buttons (reversed order)
         Row {
-            IconButton(onClick = onMenuClick) {
+            BorderedIconButton(onClick = onMenuClick) {
                 Icon(painterResource(R.drawable.more_vert), "More options")
             }
             when (downloadState) {
-                Download.STATE_COMPLETED -> IconButton(onClick = onRemoveDownloadClick) {
+                Download.STATE_COMPLETED -> BorderedIconButton(onClick = onRemoveDownloadClick) {
                     Icon(painterResource(R.drawable.offline), "Downloaded", tint = MaterialTheme.colorScheme.primary)
                 }
-                Download.STATE_DOWNLOADING -> IconButton(onClick = onRemoveDownloadClick) {
+                Download.STATE_DOWNLOADING -> BorderedIconButton(onClick = onRemoveDownloadClick) {
                     CircularProgressIndicator(modifier = Modifier.size(24.dp), strokeWidth = 2.dp)
                 }
-                else -> IconButton(onClick = onDownloadClick) {
+                else -> BorderedIconButton(onClick = onDownloadClick) {
                     Icon(painterResource(R.drawable.download), "Download")
                 }
             }
-            IconButton(onClick = onLikeClick) {
+            BorderedIconButton(onClick = onLikeClick) {
                 Icon(
                     painter = painterResource(if (isLiked) R.drawable.favorite else R.drawable.favorite_border),
                     contentDescription = "Like",
@@ -516,23 +518,21 @@ private fun AlbumActionControls(
 
         // Right side - circular radio, shuffle and play buttons
         Row(verticalAlignment = Alignment.CenterVertically) {
-            FloatingActionButton(
+            BorderedFloatingActionButton(
                 onClick = onRadioClick,
-                elevation = FloatingActionButtonDefaults.elevation(0.dp, 0.dp),
                 modifier = Modifier.size(48.dp)
             ) {
                 Icon(painterResource(R.drawable.radio), "Radio")
             }
             Spacer(Modifier.width(12.dp))
-            FloatingActionButton(
+            BorderedFloatingActionButton(
                 onClick = onShuffleClick,
-                elevation = FloatingActionButtonDefaults.elevation(0.dp, 0.dp),
                 modifier = Modifier.size(48.dp)
             ) {
                 Icon(painterResource(R.drawable.shuffle), "Shuffle")
             }
             Spacer(Modifier.width(16.dp))
-            FloatingActionButton(onClick = onPlayClick) {
+            BorderedFloatingActionButton(onClick = onPlayClick) {
                 Icon(painterResource(R.drawable.play), "Play")
             }
         }

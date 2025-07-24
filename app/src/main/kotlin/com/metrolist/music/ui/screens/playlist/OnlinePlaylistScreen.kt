@@ -117,6 +117,8 @@ import com.metrolist.music.playback.queues.YouTubeQueue
 import com.metrolist.music.ui.component.AutoResizeText
 import com.metrolist.music.ui.component.FontSizeRange
 import com.metrolist.music.ui.component.IconButton
+import com.metrolist.music.ui.component.BorderedIconButton
+import com.metrolist.music.ui.component.BorderedFloatingActionButton
 import com.metrolist.music.ui.component.LocalMenuState
 import com.metrolist.music.ui.component.NavigationTitle
 import com.metrolist.music.ui.component.YouTubeListItem
@@ -420,8 +422,8 @@ private fun PlaylistActionControls(
     ) {
         // Left side: Import and Menu buttons  
         Row {
-            IconButton(onClick = onImportClick) { Icon(painterResource(R.drawable.input), "Import") }
-            IconButton(onClick = onMenuClick) { Icon(painterResource(R.drawable.more_vert), "Menu") }
+            BorderedIconButton(onClick = onImportClick) { Icon(painterResource(R.drawable.input), "Import") }
+            BorderedIconButton(onClick = onMenuClick) { Icon(painterResource(R.drawable.more_vert), "Menu") }
         }
         
         // Right side: Radio and Shuffle as circular buttons
@@ -429,17 +431,15 @@ private fun PlaylistActionControls(
             val radioButtonSize = if (playlist.radioEndpoint != null) 48.dp else 0.dp
             val shuffleButtonSize = if (playlist.radioEndpoint != null) 52.dp else 60.dp // أكبر قليلاً
             playlist.radioEndpoint?.let {
-                FloatingActionButton(
+                BorderedFloatingActionButton(
                     onClick = onRadioClick,
-                    elevation = FloatingActionButtonDefaults.elevation(0.dp, 0.dp),
                     modifier = Modifier.size(radioButtonSize)
                 ) { 
                     Icon(painterResource(R.drawable.radio), "Radio") 
                 }
             }
-            FloatingActionButton(
+            BorderedFloatingActionButton(
                 onClick = onShuffleClick, 
-                elevation = FloatingActionButtonDefaults.elevation(0.dp, 0.dp), 
                 modifier = Modifier.size(shuffleButtonSize)
             ) {
                 Icon(painterResource(R.drawable.shuffle), "Shuffle")

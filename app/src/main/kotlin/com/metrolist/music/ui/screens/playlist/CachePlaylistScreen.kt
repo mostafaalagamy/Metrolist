@@ -97,6 +97,8 @@ import com.metrolist.music.extensions.togglePlayPause
 import com.metrolist.music.playback.queues.ListQueue
 import com.metrolist.music.ui.component.EmptyPlaceholder
 import com.metrolist.music.ui.component.IconButton
+import com.metrolist.music.ui.component.BorderedIconButton
+import com.metrolist.music.ui.component.BorderedFloatingActionButton
 import com.metrolist.music.ui.component.LocalMenuState
 import com.metrolist.music.ui.component.SongListItem
 import com.metrolist.music.ui.component.SortHeader
@@ -436,15 +438,14 @@ private fun CachePlaylistActionControls(
         
         // Right side - circular shuffle and play buttons
         Row(verticalAlignment = Alignment.CenterVertically) {
-            FloatingActionButton(
+            BorderedFloatingActionButton(
                 onClick = onShuffleClick,
-                elevation = FloatingActionButtonDefaults.elevation(0.dp, 0.dp),
                 modifier = Modifier.size(48.dp)
             ) {
                 Icon(painterResource(R.drawable.shuffle), "Shuffle")
             }
             Spacer(Modifier.width(16.dp))
-            FloatingActionButton(onClick = onPlayClick) { 
+            BorderedFloatingActionButton(onClick = onPlayClick) { 
                 Icon(painterResource(R.drawable.play), "Play") 
             }
         }

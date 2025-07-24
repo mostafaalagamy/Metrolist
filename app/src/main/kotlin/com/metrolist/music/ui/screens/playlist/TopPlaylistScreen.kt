@@ -102,6 +102,8 @@ import com.metrolist.music.playback.ExoDownloadService
 import com.metrolist.music.playback.queues.ListQueue
 import com.metrolist.music.ui.component.EmptyPlaceholder
 import com.metrolist.music.ui.component.IconButton
+import com.metrolist.music.ui.component.BorderedIconButton
+import com.metrolist.music.ui.component.BorderedFloatingActionButton
 import com.metrolist.music.ui.component.LocalMenuState
 import com.metrolist.music.ui.component.SongListItem
 import com.metrolist.music.ui.component.SortHeader
@@ -492,15 +494,15 @@ private fun TopPlaylistActionControls(
     ) {
         // Left side - queue and download buttons
         Row {
-            IconButton(onClick = onQueueClick) { Icon(painterResource(R.drawable.queue_music), "Queue") }
+            BorderedIconButton(onClick = onQueueClick) { Icon(painterResource(R.drawable.queue_music), "Queue") }
             when (downloadState) {
-                Download.STATE_COMPLETED -> IconButton(onClick = onDownloadClick) {
+                Download.STATE_COMPLETED -> BorderedIconButton(onClick = onDownloadClick) {
                     Icon(painterResource(R.drawable.offline), "Downloaded", tint = MaterialTheme.colorScheme.primary)
                 }
-                Download.STATE_DOWNLOADING -> IconButton(onClick = onDownloadClick) {
+                Download.STATE_DOWNLOADING -> BorderedIconButton(onClick = onDownloadClick) {
                     CircularProgressIndicator(modifier = Modifier.size(24.dp), strokeWidth = 2.dp)
                 }
-                else -> IconButton(onClick = onDownloadClick) {
+                else -> BorderedIconButton(onClick = onDownloadClick) {
                     Icon(painterResource(R.drawable.download), "Download")
                 }
             }
@@ -508,15 +510,14 @@ private fun TopPlaylistActionControls(
         
         // Right side - circular radio and shuffle buttons
         Row(verticalAlignment = Alignment.CenterVertically) {
-            FloatingActionButton(
+            BorderedFloatingActionButton(
                 onClick = onShuffleClick,
-                elevation = FloatingActionButtonDefaults.elevation(0.dp, 0.dp),
                 modifier = Modifier.size(48.dp)
             ) {
                 Icon(painterResource(R.drawable.shuffle), "Shuffle")
             }
             Spacer(Modifier.width(16.dp))
-            FloatingActionButton(onClick = onPlayClick) { 
+            BorderedFloatingActionButton(onClick = onPlayClick) { 
                 Icon(painterResource(R.drawable.play), "Play") 
             }
         }
