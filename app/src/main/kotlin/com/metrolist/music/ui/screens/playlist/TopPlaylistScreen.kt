@@ -321,14 +321,14 @@ fun TopPlaylistScreen(
                                 onPlayClick = {
                                     if (songs?.isNotEmpty() == true) {
                                         playerConnection.playQueue(
-                                            ListQueue(title = name, items = songs!!.map { it.toMediaItem() })
+                                            ListQueue(title = name, items = songs!!.map { it.song.toMediaItem() })
                                         )
                                     }
                                 },
                                 onShuffleClick = {
                                     if (songs?.isNotEmpty() == true) {
                                         playerConnection.playQueue(
-                                            ListQueue(title = name, items = songs!!.shuffled().map { it.toMediaItem() })
+                                            ListQueue(title = name, items = songs!!.shuffled().map { it.song.toMediaItem() })
                                         )
                                     }
                                 },
