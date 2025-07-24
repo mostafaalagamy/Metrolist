@@ -239,35 +239,35 @@ fun CachePlaylistScreen(
                     }
                 }
             } else {
-                    // Header (only shown when not searching)
-                    if (!isSearching) {
-                        item {
-                            CachePlaylistHeader(
-                                songs = filteredSongs.map { it.second },
-                                listState = lazyListState
-                            )
-                        }
-                        item {
-                            CachePlaylistActionControls(
-                                onPlayClick = {
-                                    playerConnection.playQueue(
-                                        ListQueue(title = "Cache Songs", items = filteredSongs.map { it.second.toMediaItem() })
-                                    )
-                                },
-                                onShuffleClick = {
-                                    playerConnection.playQueue(
-                                        ListQueue(title = "Cache Songs", items = filteredSongs.shuffled().map { it.second.toMediaItem() })
-                                    )
-                                },
-                                sortType = sortType,
-                                sortDescending = sortDescending,
-                                onSortTypeChange = onSortTypeChange,
-                                onSortDescendingChange = onSortDescendingChange
-                            )
-                        }
+                // Header (only shown when not searching)
+                if (!isSearching) {
+                    item {
+                        CachePlaylistHeader(
+                            songs = filteredSongs.map { it.second },
+                            listState = lazyListState
+                        )
                     }
+                    item {
+                        CachePlaylistActionControls(
+                            onPlayClick = {
+                                playerConnection.playQueue(
+                                    ListQueue(title = "Cache Songs", items = filteredSongs.map { it.second.toMediaItem() })
+                                )
+                            },
+                            onShuffleClick = {
+                                playerConnection.playQueue(
+                                    ListQueue(title = "Cache Songs", items = filteredSongs.shuffled().map { it.second.toMediaItem() })
+                                )
+                            },
+                            sortType = sortType,
+                            sortDescending = sortDescending,
+                            onSortTypeChange = onSortTypeChange,
+                            onSortDescendingChange = onSortDescendingChange
+                        )
+                    }
+                }
 
-                    // Songs list
+                // Songs list
                     itemsIndexed(filteredSongs, key = { _, (originalIndex, _) -> originalIndex }) { index, (originalIndex, song) ->
                         val onCheckedChange: (Boolean) -> Unit = { if (it) selection.add(originalIndex) else selection.remove(originalIndex) }
                         SongListItem(
