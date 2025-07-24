@@ -678,7 +678,7 @@ fun Queue(
                         modifier =
                         Modifier
                             .animateContentSize()
-                            .height(if (selection) 48.dp else 0.dp),
+                            .height(if (inSelectMode) 48.dp else 0.dp),
                     )
                 }
 
@@ -731,12 +731,17 @@ fun Queue(
                             Row(
                                 horizontalArrangement = Arrangement.Center,
                             ) {
+                                val onCheckedChange: (Boolean) -> Unit = { checked -> 
+                                    if (checked) selection.add(index) else selection.remove(index) 
+                                }
                                 MediaMetadataListItem(
                                     mediaMetadata = window.mediaItem.metadata!!,
-                                    isSelected = selection && window.mediaItem.metadata!! in selectedSongs,
                                     isActive = index == currentWindowIndex,
                                     isPlaying = isPlaying,
                                     trailingContent = {
+                                        if (inSelectMode) {
+                                            Checkbox(checked = index in selection, onCheckedChange = onCheckedChange)
+                                        } else {
                                         IconButton(
                                             onClick = {
                                                 menuState.show {
@@ -762,7 +767,8 @@ fun Queue(
                                                 contentDescription = null,
                                             )
                                         }
-                                        if (!locked) {
+                                        }
+                                        if (!locked && !inSelectMode) {
                                             IconButton(
                                                 onClick = { },
                                                 modifier = Modifier.draggableHandle()
@@ -780,13 +786,8 @@ fun Queue(
                                         .background(backgroundColor)
                                         .combinedClickable(
                                             onClick = {
-                                                if (selection) {
-                                                    if (window.mediaItem.metadata!! in selectedSongs) {
-                                                        selectedSongs.remove(window.mediaItem.metadata!!)
-                                                        selectedItems.remove(currentItem)
-                                                    } else {
-                                                        selectedSongs.add(window.mediaItem.metadata!!)
-                                                        selectedItems.add(currentItem)
+                                                if (inSelectMode) {
+                                                    onCheckedChange(index !in selection)
                                                     }
                                                 } else {
                                                     if (index == currentWindowIndex) {
@@ -974,7 +975,7 @@ fun Queue(
             }
 
             AnimatedVisibility(
-                visible = selection,
+                visible = inSelectMode,
                 enter = fadeIn() + expandVertically(),
                 exit = fadeOut() + shrinkVertically(),
             ) {
@@ -984,7 +985,7 @@ fun Queue(
                         .height(48.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    val count = selectedSongs.size
+                    val count = selection.size
                     IconButton(
                         onClick = onExitSelectionMode,
                     ) {
@@ -1000,15 +1001,10 @@ fun Queue(
                     IconButton(
                         onClick = {
                             if (count == mutableQueueWindows.size) {
-                                selectedSongs.clear()
-                                selectedItems.clear()
+                                selection.clear()
                             } else {
-                                queueWindows
-                                    .filter { it.mediaItem.metadata!! !in selectedSongs }
-                                    .forEach {
-                                        selectedSongs.add(it.mediaItem.metadata!!)
-                                        selectedItems.add(it)
-                                    }
+                                selection.clear()
+                                selection.addAll(queueWindows.indices)
                             }
                         },
                     ) {
@@ -1029,13 +1025,14 @@ fun Queue(
                         onClick = {
                             menuState.show {
                                 SelectionMediaMetadataMenu(
-                                    songSelection = selectedSongs,
-                                    onDismiss = menuState::dismiss,
-                                    clearAction = {
-                                        selectedSongs.clear()
-                                        selectedItems.clear()
+                                    songSelection = selection.mapNotNull { index -> 
+                                        queueWindows.getOrNull(index)?.mediaItem?.metadata
                                     },
-                                    currentItems = selectedItems,
+                                    onDismiss = menuState::dismiss,
+                                    clearAction = onExitSelectionMode,
+                                    currentItems = selection.mapNotNull { index -> 
+                                        queueWindows.getOrNull(index)
+                                    },
                                 )
                             }
                         },
