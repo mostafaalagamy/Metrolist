@@ -36,6 +36,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -1019,44 +1020,162 @@ private fun LocalPlaylistHeader(
 private fun LocalPlaylistActionControls(
     playlist: Playlist,
     songs: List<PlaylistSong>,
-    onShuffleClick: () -> Unit,
-    onRadioClick: () -> Unit,
-    onMenuClick: () -> Unit,
+    onShowEditDialog: () -> Unit,
+    onShowDeleteDialog: () -> Unit,
+    onSyncClick: () -> Unit,
+    onLikeClick: () -> Unit,
     onDownloadClick: () -> Unit,
     onQueueClick: () -> Unit,
-    showDownload: Boolean = true,
-    showRadio: Boolean = true
+    onPlayClick: () -> Unit,
+    onShuffleClick: () -> Unit,
+    downloadState: Int,
+    isLiked: Boolean,
+    isEditable: Boolean
 ) {
-    Row(
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        // Left side: Radio and Shuffle as circular buttons
-        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-            FloatingActionButton(
-                onClick = onShuffleClick, 
-                elevation = FloatingActionButtonDefaults.elevation(0.dp, 0.dp), 
-                modifier = Modifier.size(48.dp)
-            ) {
-                Icon(painterResource(R.drawable.shuffle), "Shuffle")
-            }
-            if (showRadio) {
-                FloatingActionButton(
-                    onClick = onRadioClick,
-                    elevation = FloatingActionButtonDefaults.elevation(0.dp, 0.dp),
-                    modifier = Modifier.size(48.dp)
-                ) { 
-                    Icon(painterResource(R.drawable.radio), "Radio") 
+    val playlistLength = remember(songs) { songs.fastSumBy { it.song.song.duration } }
+    
+    Column(modifier = Modifier.padding(12.dp)) {
+        // Row of action buttons (like original)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .horizontalScroll(rememberScrollState()),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            if (isEditable) {
+                IconButton(
+                    onClick = onShowDeleteDialog,
+                    modifier = Modifier.size(40.dp)
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.delete),
+                        contentDescription = null,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+            } else {
+                IconButton(
+                    onClick = onLikeClick,
+                    modifier = Modifier.size(40.dp)
+                ) {
+                    Icon(
+                        painter = painterResource(if (isLiked) R.drawable.favorite else R.drawable.favorite_border),
+                        contentDescription = null,
+                        tint = if (isLiked) MaterialTheme.colorScheme.error else LocalContentColor.current,
+                        modifier = Modifier.size(24.dp)
+                    )
                 }
             }
+
+            if (isEditable) {
+                IconButton(
+                    onClick = onShowEditDialog,
+                    modifier = Modifier.size(40.dp)
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.edit),
+                        contentDescription = null,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+            }
+
+            if (playlist.playlist.browseId != null) {
+                IconButton(
+                    onClick = onSyncClick,
+                    modifier = Modifier.size(40.dp)
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.sync),
+                        contentDescription = null,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+            }
+
+            when (downloadState) {
+                Download.STATE_COMPLETED -> {
+                    IconButton(
+                        onClick = onDownloadClick,
+                        modifier = Modifier.size(40.dp)
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.offline),
+                            contentDescription = null,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
+                }
+
+                Download.STATE_DOWNLOADING -> {
+                    IconButton(
+                        onClick = onDownloadClick,
+                        modifier = Modifier.size(40.dp)
+                    ) {
+                        CircularProgressIndicator(
+                            strokeWidth = 2.dp,
+                            modifier = Modifier.size(24.dp),
+                        )
+                    }
+                }
+
+                else -> {
+                    IconButton(
+                        onClick = onDownloadClick,
+                        modifier = Modifier.size(40.dp)
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.download),
+                            contentDescription = null,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
+                }
+            }
+
+            IconButton(
+                onClick = onQueueClick,
+                modifier = Modifier.size(40.dp)
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.queue_music),
+                    contentDescription = null,
+                    modifier = Modifier.size(24.dp)
+                )
+            }
         }
-        // Right side: More, Queue and Download buttons
-        Row {
-            IconButton(onClick = onMenuClick) { Icon(painterResource(R.drawable.more_vert), "Menu") }
-            IconButton(onClick = onQueueClick) { Icon(painterResource(R.drawable.queue_music), "Queue") }
-            if (showDownload) {
-                IconButton(onClick = onDownloadClick) { Icon(painterResource(R.drawable.download), "Download") }
+
+        Spacer(Modifier.height(12.dp))
+
+        // Play and Shuffle buttons (like original)
+        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            Button(
+                onClick = onPlayClick,
+                contentPadding = ButtonDefaults.ButtonWithIconContentPadding,
+                modifier = Modifier.weight(1f),
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.play),
+                    contentDescription = null,
+                    modifier = Modifier.size(ButtonDefaults.IconSize),
+                )
+                Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+                Text(stringResource(R.string.play))
+            }
+
+            OutlinedButton(
+                onClick = onShuffleClick,
+                contentPadding = ButtonDefaults.ButtonWithIconContentPadding,
+                modifier = Modifier.weight(1f),
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.shuffle),
+                    contentDescription = null,
+                    modifier = Modifier.size(ButtonDefaults.IconSize),
+                )
+                Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+                Text(stringResource(R.string.shuffle))
             }
         }
     }
@@ -1106,23 +1225,40 @@ fun LocalPlaylistHeader(
         // Use the new header design
         LocalPlaylistHeader(playlist = playlist, listState = rememberLazyListState())
         
-        // Use the new action controls design
+        // Use the original action controls design
         LocalPlaylistActionControls(
             playlist = playlist,
             songs = songs,
-            onShuffleClick = {
-                playerConnection.playQueue(
-                    ListQueue(
-                        title = playlist.playlist.name,
-                        items = songs.shuffled().map { it.song.toMediaItem() },
-                    ),
-                )
+            onShowEditDialog = onShowEditDialog,
+            onShowDeleteDialog = onshowDeletePlaylistDialog,
+            onSyncClick = {
+                scope.launch(Dispatchers.IO) {
+                    val playlistPage = YouTube.playlist(playlist.playlist.browseId!!)
+                        .completed()
+                        .getOrNull() ?: return@launch
+                    database.transaction {
+                        clearPlaylist(playlist.id)
+                        playlistPage.songs
+                            .map(SongItem::toMediaMetadata)
+                            .onEach(::insert)
+                            .mapIndexed { position, song ->
+                                PlaylistSongMap(
+                                    songId = song.id,
+                                    playlistId = playlist.id,
+                                    position = position
+                                )
+                            }
+                            .forEach(::insert)
+                    }
+                }
+                scope.launch(Dispatchers.Main) {
+                    snackbarHostState.showSnackbar(context.getString(R.string.playlist_synced))
+                }
             },
-            onRadioClick = {
-                // Add radio functionality if needed
-            },
-            onMenuClick = {
-                // Handle menu click for additional options
+            onLikeClick = {
+                database.transaction {
+                    update(playlist.playlist.toggleLike())
+                }
             },
             onDownloadClick = {
                 when (downloadState) {
@@ -1156,7 +1292,25 @@ fun LocalPlaylistHeader(
             onQueueClick = {
                 playerConnection.addToQueue(items = songs.map { it.song.toMediaItem() })
             },
-            showRadio = false // Local playlists don't have radio functionality
+            onPlayClick = {
+                playerConnection.playQueue(
+                    ListQueue(
+                        title = playlist.playlist.name,
+                        items = songs.map { it.song.toMediaItem() },
+                    ),
+                )
+            },
+            onShuffleClick = {
+                playerConnection.playQueue(
+                    ListQueue(
+                        title = playlist.playlist.name,
+                        items = songs.shuffled().map { it.song.toMediaItem() },
+                    ),
+                )
+            },
+            downloadState = downloadState,
+            isLiked = liked,
+            isEditable = editable
         )
     }
 }

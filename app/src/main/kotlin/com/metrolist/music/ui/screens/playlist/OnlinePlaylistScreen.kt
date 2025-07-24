@@ -418,15 +418,14 @@ private fun PlaylistActionControls(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        // Left side: Radio and Shuffle as circular buttons
+        // Left side: Import and Menu buttons  
+        Row {
+            IconButton(onClick = onImportClick) { Icon(painterResource(R.drawable.input), "Import") }
+            IconButton(onClick = onMenuClick) { Icon(painterResource(R.drawable.more_vert), "Menu") }
+        }
+        
+        // Right side: Radio and Shuffle as circular buttons
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-            FloatingActionButton(
-                onClick = onShuffleClick, 
-                elevation = FloatingActionButtonDefaults.elevation(0.dp, 0.dp), 
-                modifier = Modifier.size(48.dp)
-            ) {
-                Icon(painterResource(R.drawable.shuffle), "Shuffle")
-            }
             playlist.radioEndpoint?.let {
                 FloatingActionButton(
                     onClick = onRadioClick,
@@ -436,11 +435,13 @@ private fun PlaylistActionControls(
                     Icon(painterResource(R.drawable.radio), "Radio") 
                 }
             }
-        }
-        // Right side: More and Import buttons
-        Row {
-            IconButton(onClick = onMenuClick) { Icon(painterResource(R.drawable.more_vert), "Menu") }
-            IconButton(onClick = onImportClick) { Icon(painterResource(R.drawable.input), "Import") }
+            FloatingActionButton(
+                onClick = onShuffleClick, 
+                elevation = FloatingActionButtonDefaults.elevation(0.dp, 0.dp), 
+                modifier = Modifier.size(48.dp)
+            ) {
+                Icon(painterResource(R.drawable.shuffle), "Shuffle")
+            }
         }
     }
 }

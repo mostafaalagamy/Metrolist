@@ -191,6 +191,28 @@ fun AutoPlaylistScreen(
     val onExitSelectionMode = { inSelectMode = false; selection.clear() }
     if (inSelectMode) { BackHandler(onBack = onExitSelectionMode) }
 
+    // Download state management
+    val downloadUtil = LocalDownloadUtil.current
+    var downloadState by remember { mutableStateOf(Download.STATE_STOPPED) }
+    
+    LaunchedEffect(songs) {
+        val songList = songs?.map { it.song.id }
+        if (songList.isNullOrEmpty()) return@LaunchedEffect
+        downloadUtil.downloads.collect { downloads ->
+            downloadState = if (songList.all { downloads[it]?.state == Download.STATE_COMPLETED }) {
+                Download.STATE_COMPLETED
+            } else if (songList.all {
+                    downloads[it]?.state == Download.STATE_QUEUED ||
+                            downloads[it]?.state == Download.STATE_DOWNLOADING ||
+                            downloads[it]?.state == Download.STATE_COMPLETED
+                }) {
+                Download.STATE_DOWNLOADING
+            } else {
+                Download.STATE_STOPPED
+            }
+        }
+    }
+
     if (isSearching) {
         BackHandler {
             isSearching = false
@@ -340,7 +362,29 @@ fun AutoPlaylistScreen(
                                 },
                                 onQueueClick = {
                                     playerConnection.addToQueue(items = songs!!.map { it.toMediaItem() })
-                                }
+                                },
+                                onDownloadClick = {
+                                    when (downloadState) {
+                                        Download.STATE_COMPLETED -> {
+                                            showRemoveDownloadDialog = true
+                                        }
+                                        Download.STATE_DOWNLOADING -> {
+                                            songs?.forEach { song ->
+                                                DownloadService.sendRemoveDownload(context, ExoDownloadService::class.java, song.song.id, false)
+                                            }
+                                        }
+                                        else -> {
+                                            songs?.forEach { song ->
+                                                val downloadRequest = DownloadRequest.Builder(song.song.id, song.song.id.toUri())
+                                                    .setCustomCacheKey(song.song.id)
+                                                    .setData(song.song.title.toByteArray())
+                                                    .build()
+                                                DownloadService.sendAddDownload(context, ExoDownloadService::class.java, downloadRequest, false)
+                                            }
+                                        }
+                                    }
+                                },
+                                downloadState = downloadState
                             )
                         }
                         item {
@@ -509,16 +553,29 @@ private fun AutoPlaylistHeader(
 private fun AutoPlaylistActionControls(
     onPlayClick: () -> Unit,
     onShuffleClick: () -> Unit,
-    onQueueClick: () -> Unit
+    onQueueClick: () -> Unit,
+    onDownloadClick: () -> Unit,
+    downloadState: Int
 ) {
     Row(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        // Left side - queue button
+        // Left side - queue and download buttons
         Row {
             IconButton(onClick = onQueueClick) { Icon(painterResource(R.drawable.queue_music), "Queue") }
+            when (downloadState) {
+                Download.STATE_COMPLETED -> IconButton(onClick = onDownloadClick) {
+                    Icon(painterResource(R.drawable.offline), "Downloaded", tint = MaterialTheme.colorScheme.primary)
+                }
+                Download.STATE_DOWNLOADING -> IconButton(onClick = onDownloadClick) {
+                    CircularProgressIndicator(modifier = Modifier.size(24.dp), strokeWidth = 2.dp)
+                }
+                else -> IconButton(onClick = onDownloadClick) {
+                    Icon(painterResource(R.drawable.download), "Download")
+                }
+            }
         }
         
         // Right side - circular shuffle and play buttons
