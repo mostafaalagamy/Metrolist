@@ -49,26 +49,30 @@ fun GridItemPlaceHolder(
             }.aspectRatio(1f)
                 .clip(thumbnailShape)
         ) {
-            // Background fill that simulates cropped content
+            // Enhanced background fill that simulates cropped content with more realistic appearance
             Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(
                         brush = Brush.linearGradient(
                             colors = listOf(
+                                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+                                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
                                 MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
                                 MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f),
-                                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
-                                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f)
+                                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.45f),
+                                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.25f)
                             )
                         )
                     )
             )
         }
 
-        Spacer(modifier = Modifier.height(6.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
         TextPlaceholder()
+
+        Spacer(modifier = Modifier.height(2.dp))
 
         TextPlaceholder()
     }

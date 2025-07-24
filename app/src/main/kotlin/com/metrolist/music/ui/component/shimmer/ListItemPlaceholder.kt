@@ -42,17 +42,19 @@ fun ListItemPlaceHolder(
                 .size(ListThumbnailSize)
                 .clip(thumbnailShape)
         ) {
-            // Background fill that simulates cropped content
+            // Enhanced background fill that simulates cropped content with more realistic appearance
             Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(
                         brush = Brush.linearGradient(
                             colors = listOf(
+                                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+                                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
                                 MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
                                 MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f),
-                                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
-                                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f)
+                                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.45f),
+                                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.25f)
                             )
                         )
                     )
