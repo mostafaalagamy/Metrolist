@@ -1173,19 +1173,17 @@ private fun LocalPlaylistActionControls(
             
             // Right side - circular play and shuffle buttons (compact)
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                val shuffleButtonSize = 50.dp // أصغر قليلاً
-                val playButtonSize = 56.dp // Play يبقى كبير
                 FloatingActionButton(
                     onClick = onShuffleClick,
                     elevation = FloatingActionButtonDefaults.elevation(0.dp, 0.dp),
-                    modifier = Modifier.size(shuffleButtonSize)
+                    modifier = Modifier.size(44.dp)
                 ) {
                     Icon(painterResource(R.drawable.shuffle), "Shuffle")
                 }
                 
                 FloatingActionButton(
                     onClick = onPlayClick,
-                    modifier = Modifier.size(playButtonSize)
+                    modifier = Modifier.size(48.dp)
                 ) {
                     Icon(painterResource(R.drawable.play), "Play")
                 }

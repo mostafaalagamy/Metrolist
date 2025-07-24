@@ -492,7 +492,7 @@ private fun AlbumActionControls(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         // Left side - more, download and like buttons (reversed order)
-        Row {
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             BorderedIconButton(onClick = onMenuClick) {
                 Icon(painterResource(R.drawable.more_vert), "More options")
             }

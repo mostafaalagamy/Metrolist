@@ -421,7 +421,7 @@ private fun PlaylistActionControls(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         // Left side: Import and Menu buttons  
-        Row {
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             BorderedIconButton(onClick = onImportClick) { Icon(painterResource(R.drawable.input), "Import") }
             BorderedIconButton(onClick = onMenuClick) { Icon(painterResource(R.drawable.more_vert), "Menu") }
         }

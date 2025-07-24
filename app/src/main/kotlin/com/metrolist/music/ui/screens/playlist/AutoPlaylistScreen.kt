@@ -547,7 +547,7 @@ private fun AutoPlaylistActionControls(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         // Left side - queue and download buttons
-        Row {
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             BorderedIconButton(onClick = onQueueClick) { Icon(painterResource(R.drawable.queue_music), "Queue") }
             when (downloadState) {
                 Download.STATE_COMPLETED -> BorderedIconButton(onClick = onDownloadClick) {
