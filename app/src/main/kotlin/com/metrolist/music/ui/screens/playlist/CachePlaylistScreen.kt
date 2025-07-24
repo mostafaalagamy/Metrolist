@@ -220,25 +220,24 @@ fun CachePlaylistScreen(
             .fillMaxSize()
             .background(Brush.verticalGradient(listOf(animatedBackgroundColor.copy(alpha = 0.4f), MaterialTheme.colorScheme.surface)))
     ) {
-        LazyColumn(
-            state = lazyListState,
-            contentPadding = LocalPlayerAwareWindowInsets.current.union(WindowInsets.ime).asPaddingValues()
-        ) {
-            if (filteredSongs.isEmpty()) {
-                item {
-                    if (isSearching) {
+        if (filteredSongs.isEmpty() && !isSearching) {
+            EmptyPlaceholder(
+                icon = R.drawable.music_note,
+                text = stringResource(R.string.playlist_is_empty)
+            )
+        } else {
+            LazyColumn(
+                state = lazyListState,
+                contentPadding = LocalPlayerAwareWindowInsets.current.union(WindowInsets.ime).asPaddingValues()
+            ) {
+                if (filteredSongs.isEmpty() && isSearching) {
+                    item {
                         EmptyPlaceholder(
                             icon = R.drawable.search,
                             text = stringResource(R.string.no_results_found)
                         )
-                    } else {
-                        EmptyPlaceholder(
-                            icon = R.drawable.music_note,
-                            text = stringResource(R.string.playlist_is_empty)
-                        )
                     }
-                }
-            } else {
+                } else if (filteredSongs.isNotEmpty()) {
                     // Header (only shown when not searching)
                     if (!isSearching) {
                         item {
