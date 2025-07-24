@@ -510,14 +510,18 @@ private fun TopPlaylistActionControls(
         
         // Right side - circular radio and shuffle buttons
         Row(verticalAlignment = Alignment.CenterVertically) {
-            BorderedFloatingActionButton(
+            FloatingActionButton(
                 onClick = onShuffleClick,
-                modifier = Modifier.size(48.dp)
+                elevation = FloatingActionButtonDefaults.elevation(0.dp, 0.dp),
+                modifier = Modifier.size(44.dp)
             ) {
                 Icon(painterResource(R.drawable.shuffle), "Shuffle")
             }
-            Spacer(Modifier.width(16.dp))
-            BorderedFloatingActionButton(onClick = onPlayClick) { 
+            Spacer(Modifier.width(12.dp))
+            FloatingActionButton(
+                onClick = onPlayClick,
+                modifier = Modifier.size(48.dp)
+            ) { 
                 Icon(painterResource(R.drawable.play), "Play") 
             }
         }

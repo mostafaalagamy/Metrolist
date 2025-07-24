@@ -1175,14 +1175,15 @@ private fun LocalPlaylistActionControls(
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 val shuffleButtonSize = 50.dp // أصغر قليلاً
                 val playButtonSize = 56.dp // Play يبقى كبير
-                BorderedFloatingActionButton(
+                FloatingActionButton(
                     onClick = onShuffleClick,
+                    elevation = FloatingActionButtonDefaults.elevation(0.dp, 0.dp),
                     modifier = Modifier.size(shuffleButtonSize)
                 ) {
                     Icon(painterResource(R.drawable.shuffle), "Shuffle")
                 }
                 
-                BorderedFloatingActionButton(
+                FloatingActionButton(
                     onClick = onPlayClick,
                     modifier = Modifier.size(playButtonSize)
                 ) {

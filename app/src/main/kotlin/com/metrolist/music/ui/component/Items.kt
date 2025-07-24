@@ -119,7 +119,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.logging.Logger
 import kotlin.math.roundToInt
-import androidx.compose.foundation.border
+
 
 const val ActiveBoxAlpha = 0.6f
 
@@ -1410,110 +1410,55 @@ data class Quadruple<A, B, C, D>(
 private object Icon {
     @Composable
     fun Favorite() {
-        Box(
+        Icon(
+            painter = painterResource(R.drawable.favorite),
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.error,
             modifier = Modifier
-                .size(22.dp)
+                .size(18.dp)
                 .padding(end = 2.dp)
-                .border(
-                    width = 1.dp,
-                    color = MaterialTheme.colorScheme.outline,
-                    shape = CircleShape
-                )
-                .padding(2.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                painter = painterResource(R.drawable.favorite),
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.error,
-                modifier = Modifier.size(14.dp)
-            )
-        }
+        )
     }
 
     @Composable
     fun Library() {
-        Box(
+        Icon(
+            painter = painterResource(R.drawable.library_add_check),
+            contentDescription = null,
             modifier = Modifier
-                .size(22.dp)
+                .size(18.dp)
                 .padding(end = 2.dp)
-                .border(
-                    width = 1.dp,
-                    color = MaterialTheme.colorScheme.outline,
-                    shape = CircleShape
-                )
-                .padding(2.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                painter = painterResource(R.drawable.library_add_check),
-                contentDescription = null,
-                modifier = Modifier.size(14.dp)
-            )
-        }
+        )
     }
 
     @Composable
     fun Download(state: Int?) {
         when (state) {
-            STATE_COMPLETED -> Box(
+            STATE_COMPLETED -> Icon(
+                painter = painterResource(R.drawable.offline),
+                contentDescription = null,
                 modifier = Modifier
-                    .size(22.dp)
+                    .size(18.dp)
                     .padding(end = 2.dp)
-                    .border(
-                        width = 1.dp,
-                        color = MaterialTheme.colorScheme.outline,
-                        shape = CircleShape
-                    )
-                    .padding(2.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.offline),
-                    contentDescription = null,
-                    modifier = Modifier.size(14.dp)
-                )
-            }
-            STATE_QUEUED, STATE_DOWNLOADING -> Box(
+            )
+            STATE_QUEUED, STATE_DOWNLOADING -> CircularProgressIndicator(
+                strokeWidth = 2.dp,
                 modifier = Modifier
-                    .size(22.dp)
+                    .size(16.dp)
                     .padding(end = 2.dp)
-                    .border(
-                        width = 1.dp,
-                        color = MaterialTheme.colorScheme.outline,
-                        shape = CircleShape
-                    )
-                    .padding(2.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator(
-                    strokeWidth = 2.dp,
-                    modifier = Modifier.size(12.dp)
-                )
-            }
+            )
             else -> { /* no icon */ }
         }
     }
 
     @Composable
     fun Explicit() {
-        Box(
+        Icon(
+            painter = painterResource(R.drawable.explicit),
+            contentDescription = null,
             modifier = Modifier
-                .size(22.dp)
+                .size(18.dp)
                 .padding(end = 2.dp)
-                .border(
-                    width = 1.dp,
-                    color = MaterialTheme.colorScheme.outline,
-                    shape = CircleShape
-                )
-                .padding(2.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                painter = painterResource(R.drawable.explicit),
-                contentDescription = null,
-                modifier = Modifier.size(14.dp)
-            )
-        }
+        )
     }
 }

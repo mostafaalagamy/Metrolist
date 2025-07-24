@@ -518,21 +518,26 @@ private fun AlbumActionControls(
 
         // Right side - circular radio, shuffle and play buttons
         Row(verticalAlignment = Alignment.CenterVertically) {
-            BorderedFloatingActionButton(
+            FloatingActionButton(
                 onClick = onRadioClick,
-                modifier = Modifier.size(48.dp)
+                elevation = FloatingActionButtonDefaults.elevation(0.dp, 0.dp),
+                modifier = Modifier.size(40.dp)
             ) {
                 Icon(painterResource(R.drawable.radio), "Radio")
             }
-            Spacer(Modifier.width(12.dp))
-            BorderedFloatingActionButton(
+            Spacer(Modifier.width(8.dp))
+            FloatingActionButton(
                 onClick = onShuffleClick,
-                modifier = Modifier.size(48.dp)
+                elevation = FloatingActionButtonDefaults.elevation(0.dp, 0.dp),
+                modifier = Modifier.size(44.dp)
             ) {
                 Icon(painterResource(R.drawable.shuffle), "Shuffle")
             }
-            Spacer(Modifier.width(16.dp))
-            BorderedFloatingActionButton(onClick = onPlayClick) {
+            Spacer(Modifier.width(12.dp))
+            FloatingActionButton(
+                onClick = onPlayClick,
+                modifier = Modifier.size(48.dp)
+            ) {
                 Icon(painterResource(R.drawable.play), "Play")
             }
         }
