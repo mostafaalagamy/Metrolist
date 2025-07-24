@@ -46,6 +46,7 @@ import androidx.media3.exoplayer.offline.Download
 import androidx.media3.exoplayer.offline.DownloadRequest
 import androidx.media3.exoplayer.offline.DownloadService
 import coil.compose.AsyncImage
+import androidx.compose.ui.layout.ContentScale
 import com.metrolist.innertube.YouTube
 import com.metrolist.innertube.models.PlaylistItem
 import com.metrolist.innertube.models.SongItem
@@ -285,6 +286,7 @@ fun YouTubePlaylistMenu(
                             AsyncImage(
                                 model = song.thumbnailUrl,
                                 contentDescription = null,
+                                contentScale = ContentScale.Crop,
                                 modifier = Modifier
                                     .fillMaxSize()
                                     .clip(RoundedCornerShape(ThumbnailCornerRadius)),

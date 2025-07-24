@@ -98,6 +98,7 @@ import androidx.palette.graphics.Palette
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import coil.size.Size
+import androidx.compose.ui.layout.ContentScale
 import com.metrolist.innertube.models.SongItem
 import com.metrolist.innertube.models.WatchEndpoint
 import com.metrolist.music.LocalDatabase
@@ -378,6 +379,7 @@ private fun PlaylistHeader(
         AsyncImage(
             model = playlist.thumbnail,
             contentDescription = "Playlist Thumbnail",
+            contentScale = ContentScale.Crop,
             modifier = Modifier.size(200.dp).clip(RoundedCornerShape(12.dp)).shadow(16.dp, RoundedCornerShape(12.dp))
         )
         Spacer(Modifier.height(16.dp))

@@ -90,6 +90,7 @@ import androidx.palette.graphics.Palette
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import coil.size.Size
+import androidx.compose.ui.layout.ContentScale
 import com.metrolist.music.LocalDownloadUtil
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.LocalPlayerConnection
@@ -459,6 +460,7 @@ private fun TopPlaylistHeader(
         AsyncImage(
             model = songs.first().song.thumbnailUrl,
             contentDescription = "Playlist Thumbnail",
+            contentScale = ContentScale.Crop,
             modifier = Modifier.size(200.dp).clip(RoundedCornerShape(12.dp)).shadow(16.dp, RoundedCornerShape(12.dp))
         )
         Spacer(Modifier.height(16.dp))
