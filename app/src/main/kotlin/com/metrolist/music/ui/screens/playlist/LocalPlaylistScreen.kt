@@ -841,7 +841,14 @@ fun LocalPlaylistScreen(
             }
         }
 
+        val topBarAnimatedColor by animateColorAsState(
+            if (showTopBarTitle || inSelectMode || isSearching) animatedBackgroundColor.copy(alpha = 0.8f) else Color.Transparent,
+            label = "TopBarColor"
+        )
+
         TopAppBar(
+            modifier = Modifier.background(topBarAnimatedColor),
+            colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
             title = {
                 if (inSelectMode) {
                     Text(
@@ -917,7 +924,7 @@ fun LocalPlaylistScreen(
                     ) {
                         Icon(
                             painter = painterResource(
-                                if (allSelected) R.drawable.deselect else R.drawable.select_all
+                                if (allSelected) R.drawable.uncheck_box else R.drawable.check_box
                             ),
                             contentDescription = null
                         )
@@ -956,13 +963,7 @@ fun LocalPlaylistScreen(
                         )
                     }
                 }
-            },
-            colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = animatedBackgroundColor.copy(alpha = 0.8f),
-                titleContentColor = MaterialTheme.colorScheme.onSurface,
-                navigationIconContentColor = MaterialTheme.colorScheme.onSurface,
-                actionIconContentColor = MaterialTheme.colorScheme.onSurface
-            )
+            }
         )
 
         SnackbarHost(

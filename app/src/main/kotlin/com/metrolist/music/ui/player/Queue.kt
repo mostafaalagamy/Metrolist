@@ -1019,9 +1019,9 @@ fun Queue(
                             painter =
                             painterResource(
                                 if (count == queueWindows.size) {
-                                    R.drawable.deselect
+                                    R.drawable.uncheck_box
                                 } else {
-                                    R.drawable.select_all
+                                    R.drawable.check_box
                                 },
                             ),
                             contentDescription = null,

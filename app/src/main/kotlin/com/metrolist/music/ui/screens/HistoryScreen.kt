@@ -469,7 +469,7 @@ fun HistoryScreen(
                 ) {
                     Icon(
                         painter = painterResource(
-                            if (allSelected) R.drawable.deselect else R.drawable.select_all
+                            if (allSelected) R.drawable.uncheck_box else R.drawable.check_box
                         ),
                         contentDescription = null
                     )

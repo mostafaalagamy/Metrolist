@@ -195,7 +195,7 @@ fun LibrarySongsScreen(
                             },
                         ) {
                             Icon(
-                                painter = painterResource(if (count == wrappedSongs.size) R.drawable.deselect else R.drawable.select_all),
+                                painter = painterResource(if (count == wrappedSongs.size) R.drawable.uncheck_box else R.drawable.check_box),
                                 contentDescription = null,
                             )
                         }

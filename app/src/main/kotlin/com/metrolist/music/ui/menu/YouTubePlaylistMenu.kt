@@ -528,7 +528,7 @@ fun YouTubePlaylistMenu(
                     headlineContent = { Text(text = stringResource(R.string.select)) },
                     leadingContent = {
                         Icon(
-                            painter = painterResource(R.drawable.select_all),
+                            painter = painterResource(R.drawable.check_box),
                             contentDescription = null,
                         )
                     },
