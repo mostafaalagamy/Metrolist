@@ -45,7 +45,7 @@ fun GridItemPlaceHolder(
                 Modifier.height(GridThumbnailHeight)
             }.aspectRatio(if (isPlaylistThumbnail) 16f / 9f else 1f)
                 .clip(thumbnailShape)
-                .background(MaterialTheme.colorScheme.onSurface),
+                .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)),
         )
 
         Spacer(modifier = Modifier.height(6.dp))
