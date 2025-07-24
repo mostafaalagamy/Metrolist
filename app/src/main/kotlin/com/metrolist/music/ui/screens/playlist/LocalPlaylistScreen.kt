@@ -516,38 +516,21 @@ fun LocalPlaylistScreen(
 
                     if (!isSearching) {
                         item {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier.padding(start = 16.dp),
-                            ) {
-                                SortHeader(
-                                    sortType = sortType,
-                                    sortDescending = sortDescending,
-                                    onSortTypeChange = onSortTypeChange,
-                                    onSortDescendingChange = onSortDescendingChange,
-                                    sortTypeText = { sortType ->
-                                        when (sortType) {
-                                            PlaylistSongSortType.CUSTOM -> R.string.sort_by_custom
-                                            PlaylistSongSortType.CREATE_DATE -> R.string.sort_by_create_date
-                                            PlaylistSongSortType.NAME -> R.string.sort_by_name
-                                            PlaylistSongSortType.ARTIST -> R.string.sort_by_artist
-                                            PlaylistSongSortType.PLAY_TIME -> R.string.sort_by_play_time
-                                        }
-                                    },
-                                    modifier = Modifier.weight(1f),
-                                )
-                                if (editable) {
-                                    IconButton(
-                                        onClick = { locked = !locked },
-                                        modifier = Modifier.padding(horizontal = 6.dp),
-                                    ) {
-                                        Icon(
-                                            painter = painterResource(if (locked) R.drawable.lock else R.drawable.lock_open),
-                                            contentDescription = null,
-                                        )
-                                    }
-                                }
-                            }
+                            LocalPlaylistActionControls(
+                                onPlayClick = {
+                                    playerConnection.playQueue(ListQueue(title = playlist.playlist.name, items = songs.map { it.song.toMediaItem() }))
+                                },
+                                onShuffleClick = {
+                                    playerConnection.playQueue(ListQueue(title = playlist.playlist.name, items = songs.shuffled().map { it.song.toMediaItem() }))
+                                },
+                                sortType = sortType,
+                                sortDescending = sortDescending,
+                                onSortTypeChange = onSortTypeChange,
+                                onSortDescendingChange = onSortDescendingChange,
+                                locked = locked,
+                                onLockToggle = { locked = !locked },
+                                isEditable = editable
+                            )
                         }
                     }
                 }
@@ -1458,5 +1441,96 @@ fun LocalPlaylistHeader(
             isLiked = liked,
             isEditable = editable
         )
+    }
+}
+
+@Composable
+private fun LocalPlaylistActionControls(
+    onPlayClick: () -> Unit,
+    onShuffleClick: () -> Unit,
+    sortType: PlaylistSongSortType,
+    sortDescending: Boolean,
+    onSortTypeChange: (PlaylistSongSortType) -> Unit,
+    onSortDescendingChange: (Boolean) -> Unit,
+    locked: Boolean,
+    onLockToggle: () -> Unit,
+    isEditable: Boolean
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        // Left side - Sort controls and lock button
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = Modifier.weight(1f)
+        ) {
+            SortHeader(
+                sortType = sortType,
+                sortDescending = sortDescending,
+                onSortTypeChange = onSortTypeChange,
+                onSortDescendingChange = onSortDescendingChange,
+                sortTypeText = { sortType ->
+                    when (sortType) {
+                        PlaylistSongSortType.CUSTOM -> R.string.sort_by_custom
+                        PlaylistSongSortType.CREATE_DATE -> R.string.sort_by_create_date
+                        PlaylistSongSortType.NAME -> R.string.sort_by_name
+                        PlaylistSongSortType.ARTIST -> R.string.sort_by_artist
+                        PlaylistSongSortType.PLAY_TIME -> R.string.sort_by_play_time
+                    }
+                },
+                modifier = Modifier.weight(1f),
+            )
+            
+            // Lock button (if editable)
+            if (isEditable) {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clip(CircleShape)
+                        .border(
+                            width = 1.dp,
+                            color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
+                            shape = CircleShape
+                        )
+                        .background(
+                            color = Color.Transparent,
+                            shape = CircleShape
+                        )
+                ) {
+                    IconButton(
+                        onClick = onLockToggle,
+                        modifier = Modifier.size(40.dp)
+                    ) {
+                        Icon(
+                            painter = painterResource(if (locked) R.drawable.lock else R.drawable.lock_open),
+                            contentDescription = null,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
+                }
+            }
+        }
+        
+        // Right side - circular shuffle and play buttons
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            FloatingActionButton(
+                onClick = onShuffleClick,
+                elevation = FloatingActionButtonDefaults.elevation(0.dp, 0.dp),
+                modifier = Modifier.size(44.dp)
+            ) {
+                Icon(painterResource(R.drawable.shuffle), "Shuffle")
+            }
+            Spacer(Modifier.width(12.dp))
+            FloatingActionButton(
+                onClick = onPlayClick,
+                modifier = Modifier.size(48.dp)
+            ) {
+                Icon(painterResource(R.drawable.play), "Play")
+            }
+        }
     }
 }

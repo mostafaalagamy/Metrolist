@@ -317,28 +317,26 @@ fun TopPlaylistScreen(
                             )
                         }
                         item {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier.padding(start = 16.dp),
-                            ) {
-                                SortHeader(
-                                    sortType = sortType,
-                                    sortDescending = false,
-                                    onSortTypeChange = { viewModel.topPeriod.value = it },
-                                    onSortDescendingChange = {},
-                                    sortTypeText = { sortType ->
-                                        when (sortType) {
-                                            MyTopFilter.ALL_TIME -> R.string.all_time
-                                            MyTopFilter.DAY -> R.string.past_24_hours
-                                            MyTopFilter.WEEK -> R.string.past_week
-                                            MyTopFilter.MONTH -> R.string.past_month
-                                            MyTopFilter.YEAR -> R.string.past_year
-                                        }
-                                    },
-                                    modifier = Modifier.weight(1f),
-                                    showDescending = false,
-                                )
-                            }
+                            TopPlaylistActionControls(
+                                onPlayClick = {
+                                    if (songs?.isNotEmpty() == true) {
+                                        playerConnection.playQueue(
+                                            ListQueue(title = name, items = songs!!.map { it.song.toMediaItem() })
+                                        )
+                                    }
+                                },
+                                onShuffleClick = {
+                                    if (songs?.isNotEmpty() == true) {
+                                        playerConnection.playQueue(
+                                            ListQueue(title = name, items = songs!!.shuffled().map { it.song.toMediaItem() })
+                                        )
+                                    }
+                                },
+                                sortType = sortType,
+                                sortDescending = false,
+                                onSortTypeChange = { viewModel.topPeriod.value = it },
+                                onSortDescendingChange = {}
+                            )
                         }
                     }
 
@@ -641,6 +639,59 @@ private fun TopPlaylistScreenSkeleton() {
             }
             items(7) {
                 ListItemPlaceHolder(modifier = Modifier.padding(horizontal = 8.dp))
+            }
+        }
+    }
+}
+
+@Composable
+private fun TopPlaylistActionControls(
+    onPlayClick: () -> Unit,
+    onShuffleClick: () -> Unit,
+    sortType: MyTopFilter,
+    sortDescending: Boolean,
+    onSortTypeChange: (MyTopFilter) -> Unit,
+    onSortDescendingChange: (Boolean) -> Unit
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        // Left side - Sort controls
+        SortHeader(
+            sortType = sortType,
+            sortDescending = sortDescending,
+            onSortTypeChange = onSortTypeChange,
+            onSortDescendingChange = onSortDescendingChange,
+            sortTypeText = { sortType ->
+                when (sortType) {
+                    MyTopFilter.ALL_TIME -> R.string.all_time
+                    MyTopFilter.DAY -> R.string.past_24_hours
+                    MyTopFilter.WEEK -> R.string.past_week
+                    MyTopFilter.MONTH -> R.string.past_month
+                    MyTopFilter.YEAR -> R.string.past_year
+                }
+            },
+            modifier = Modifier.weight(1f),
+            showDescending = false,
+        )
+        
+        // Right side - circular shuffle and play buttons
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            FloatingActionButton(
+                onClick = onShuffleClick,
+                elevation = FloatingActionButtonDefaults.elevation(0.dp, 0.dp),
+                modifier = Modifier.size(44.dp)
+            ) {
+                Icon(painterResource(R.drawable.shuffle), "Shuffle")
+            }
+            Spacer(Modifier.width(12.dp))
+            FloatingActionButton(
+                onClick = onPlayClick,
+                modifier = Modifier.size(48.dp)
+            ) {
+                Icon(painterResource(R.drawable.play), "Play")
             }
         }
     }
