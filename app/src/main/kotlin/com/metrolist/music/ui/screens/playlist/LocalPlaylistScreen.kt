@@ -647,7 +647,7 @@ fun LocalPlaylistScreen(
                                         )
                                     }
 
-                                    if (sortType == PlaylistSongSortType.CUSTOM && !locked && !inSelectMode && !isSearching) {
+                                    if (sortType == PlaylistSongSortType.CUSTOM && !locked && !inSelectMode && !isSearching && editable) {
                                         IconButton(
                                             onClick = { },
                                             modifier = Modifier.draggableHandle(),
@@ -687,7 +687,7 @@ fun LocalPlaylistScreen(
                             )
                         }
 
-                        if (locked || inSelectMode) {
+                        if (locked || inSelectMode || !editable) {
                             content()
                         } else {
                             SwipeToDismissBox(
@@ -788,7 +788,7 @@ fun LocalPlaylistScreen(
                                             contentDescription = null,
                                         )
                                     }
-                                        if (sortType == PlaylistSongSortType.CUSTOM && !locked && !inSelectMode && !isSearching) {
+                                        if (sortType == PlaylistSongSortType.CUSTOM && !locked && !inSelectMode && !isSearching && editable) {
                                             IconButton(
                                                 onClick = { },
                                                 modifier = Modifier.draggableHandle(),
