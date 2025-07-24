@@ -223,9 +223,6 @@ fun AutoPlaylistScreen(
     val (sortType, onSortTypeChange) = rememberEnumPreference(SongSortTypeKey, SongSortType.CREATE_DATE)
     val (sortDescending, onSortDescendingChange) = rememberPreference(SongSortDescendingKey, true)
 
-    val downloadUtil = LocalDownloadUtil.current
-    var downloadState by remember { mutableIntStateOf(Download.STATE_STOPPED) }
-
     LaunchedEffect(Unit) {
         if (ytmSync) {
             withContext(Dispatchers.IO) {
@@ -234,22 +231,7 @@ fun AutoPlaylistScreen(
         }
     }
 
-    LaunchedEffect(songs) {
-        if (songs?.isEmpty() == true) return@LaunchedEffect
-        downloadUtil.downloads.collect { downloads ->
-            downloadState = if (songs?.all { downloads[it.song.id]?.state == Download.STATE_COMPLETED } == true) {
-                Download.STATE_COMPLETED
-            } else if (songs?.all {
-                    downloads[it.song.id]?.state == Download.STATE_QUEUED ||
-                            downloads[it.song.id]?.state == Download.STATE_DOWNLOADING ||
-                            downloads[it.song.id]?.state == Download.STATE_COMPLETED
-                } == true) {
-                Download.STATE_DOWNLOADING
-            } else {
-                Download.STATE_STOPPED
-            }
-        }
-    }
+
 
     var showRemoveDownloadDialog by remember { mutableStateOf(false) }
 
