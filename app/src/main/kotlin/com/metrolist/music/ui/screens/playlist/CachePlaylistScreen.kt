@@ -268,7 +268,7 @@ fun CachePlaylistScreen(
                 }
 
                 // Songs list
-                    itemsIndexed(filteredSongs, key = { _, (originalIndex, _) -> originalIndex }) { index, (originalIndex, song) ->
+                itemsIndexed(filteredSongs, key = { _, (originalIndex, _) -> originalIndex }) { index, (originalIndex, song) ->
                         val onCheckedChange: (Boolean) -> Unit = { if (it) selection.add(originalIndex) else selection.remove(originalIndex) }
                         SongListItem(
                             song = song,
@@ -320,7 +320,6 @@ fun CachePlaylistScreen(
                     }
                 }
             }
-        }
 
         // Custom collapsing top bar
         CachePlaylistCollapsingTopAppBar(
