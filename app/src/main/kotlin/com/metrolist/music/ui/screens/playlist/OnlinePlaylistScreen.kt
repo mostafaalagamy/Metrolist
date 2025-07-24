@@ -426,11 +426,12 @@ private fun PlaylistActionControls(
         
         // Right side: Radio and Shuffle as circular buttons
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+            val buttonSize = if (playlist.radioEndpoint != null) 48.dp else 56.dp
             playlist.radioEndpoint?.let {
                 FloatingActionButton(
                     onClick = onRadioClick,
                     elevation = FloatingActionButtonDefaults.elevation(0.dp, 0.dp),
-                    modifier = Modifier.size(48.dp)
+                    modifier = Modifier.size(buttonSize)
                 ) { 
                     Icon(painterResource(R.drawable.radio), "Radio") 
                 }
@@ -438,7 +439,7 @@ private fun PlaylistActionControls(
             FloatingActionButton(
                 onClick = onShuffleClick, 
                 elevation = FloatingActionButtonDefaults.elevation(0.dp, 0.dp), 
-                modifier = Modifier.size(48.dp)
+                modifier = Modifier.size(buttonSize)
             ) {
                 Icon(painterResource(R.drawable.shuffle), "Shuffle")
             }

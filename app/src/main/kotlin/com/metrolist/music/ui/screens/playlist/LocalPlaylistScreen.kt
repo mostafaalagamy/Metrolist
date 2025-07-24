@@ -254,9 +254,12 @@ fun LocalPlaylistScreen(
         }
     }
 
-    var selection by remember {
-        mutableStateOf(false)
-    }
+    var inSelectMode by rememberSaveable { mutableStateOf(false) }
+    val selection = rememberSaveable(
+        saver = listSaver<MutableList<Int>, Int>({ it.toList() }, { it.toMutableStateList() })
+    ) { mutableStateListOf() }
+    val onExitSelectionMode = { inSelectMode = false; selection.clear() }
+    if (inSelectMode) { BackHandler(onBack = onExitSelectionMode) }
 
     val wrappedSongs = remember(filteredSongs) {
         filteredSongs.map { item -> ItemWrapper(item) }
@@ -266,10 +269,6 @@ fun LocalPlaylistScreen(
         BackHandler {
             isSearching = false
             query = TextFieldValue()
-        }
-    } else if (selection) {
-        BackHandler {
-            selection = false
         }
     }
 
