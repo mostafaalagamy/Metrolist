@@ -258,12 +258,30 @@ fun CachePlaylistScreen(
                                     playerConnection.playQueue(
                                         ListQueue(title = "Cache Songs", items = filteredSongs.shuffled().map { it.second.toMediaItem() })
                                     )
-                                },
-                                sortType = sortType,
-                                sortDescending = sortDescending,
-                                onSortTypeChange = onSortTypeChange,
-                                onSortDescendingChange = onSortDescendingChange
+                                }
                             )
+                        }
+                        item {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier.padding(start = 16.dp),
+                            ) {
+                                SortHeader(
+                                    sortType = sortType,
+                                    sortDescending = sortDescending,
+                                    onSortTypeChange = onSortTypeChange,
+                                    onSortDescendingChange = onSortDescendingChange,
+                                    sortTypeText = { sortType ->
+                                        when (sortType) {
+                                            SongSortType.CREATE_DATE -> R.string.sort_by_create_date
+                                            SongSortType.NAME -> R.string.sort_by_name
+                                            SongSortType.ARTIST -> R.string.sort_by_artist
+                                            SongSortType.PLAY_TIME -> R.string.sort_by_play_time
+                                        }
+                                    },
+                                    modifier = Modifier.weight(1f),
+                                )
+                            }
                         }
                         
 
@@ -409,33 +427,15 @@ private fun CachePlaylistHeader(
 @Composable
 private fun CachePlaylistActionControls(
     onPlayClick: () -> Unit,
-    onShuffleClick: () -> Unit,
-    sortType: SongSortType,
-    sortDescending: Boolean,
-    onSortTypeChange: (SongSortType) -> Unit,
-    onSortDescendingChange: (Boolean) -> Unit
+    onShuffleClick: () -> Unit
 ) {
     Row(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        // Left side - Sort controls
-        SortHeader(
-            sortType = sortType,
-            sortDescending = sortDescending,
-            onSortTypeChange = onSortTypeChange,
-            onSortDescendingChange = onSortDescendingChange,
-            sortTypeText = { sortType ->
-                when (sortType) {
-                    SongSortType.CREATE_DATE -> R.string.sort_by_create_date
-                    SongSortType.NAME -> R.string.sort_by_name
-                    SongSortType.ARTIST -> R.string.sort_by_artist
-                    SongSortType.PLAY_TIME -> R.string.sort_by_play_time
-                }
-            },
-            modifier = Modifier.weight(1f)
-        )
+        // Left side - placeholder for future buttons if needed
+        Spacer(Modifier.weight(1f))
         
         // Right side - circular shuffle and play buttons
         Row(verticalAlignment = Alignment.CenterVertically) {
