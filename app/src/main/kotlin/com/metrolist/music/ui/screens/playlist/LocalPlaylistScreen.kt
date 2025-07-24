@@ -468,8 +468,21 @@ fun LocalPlaylistScreen(
 
     var dismissJob: Job? by remember { mutableStateOf(null) }
 
+    // Dynamic color system
+    val defaultColor = MaterialTheme.colorScheme.surface
+    var dominantColor by remember { mutableStateOf(defaultColor) }
+    val animatedBackgroundColor by animateColorAsState(dominantColor, tween(500), label = "background_color")
+
+    LaunchedEffect(playlist?.playlist?.thumbnailUrl) {
+        dominantColor = fetchDominantColor(context, playlist?.playlist?.thumbnailUrl, defaultColor)
+    }
+
     Box(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Brush.verticalGradient(
+                listOf(animatedBackgroundColor.copy(alpha = 0.4f), MaterialTheme.colorScheme.surface)
+            )),
     ) {
         LazyColumn(
             state = lazyListState,
