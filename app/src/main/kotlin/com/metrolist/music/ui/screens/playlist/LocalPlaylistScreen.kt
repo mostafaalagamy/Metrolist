@@ -535,7 +535,7 @@ fun LocalPlaylistScreen(
                 }
             }
 
-            if (!selection) {
+            if (!inSelectMode) {
                 itemsIndexed(
                     items = if (isSearching) filteredSongs else mutableSongs,
                     key = { _, song -> song.map.id },
@@ -629,7 +629,7 @@ fun LocalPlaylistScreen(
                                         )
                                     }
 
-                                    if (sortType == PlaylistSongSortType.CUSTOM && !locked && !selection && !isSearching) {
+                                    if (sortType == PlaylistSongSortType.CUSTOM && !locked && !inSelectMode && !isSearching) {
                                         IconButton(
                                             onClick = { },
                                             modifier = Modifier.draggableHandle(),
@@ -659,19 +659,17 @@ fun LocalPlaylistScreen(
                                             }
                                         },
                                         onLongClick = {
-                                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                            if (!selection) {
-                                                selection = true
+                                            if (!inSelectMode) {
+                                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                                inSelectMode = true
+                                                selection.add(index)
                                             }
-                                            wrappedSongs.forEach { it.isSelected = false }
-                                            wrappedSongs.find { it.item.map.id == song.map.id }?.isSelected =
-                                                true
                                         },
                                     ),
                             )
                         }
 
-                        if (locked || selection) {
+                        if (locked || inSelectMode) {
                             content()
                         } else {
                             SwipeToDismissBox(
