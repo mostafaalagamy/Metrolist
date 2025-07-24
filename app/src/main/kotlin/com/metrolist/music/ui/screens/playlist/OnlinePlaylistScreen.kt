@@ -426,8 +426,8 @@ private fun PlaylistActionControls(
         
         // Right side: Radio and Shuffle as circular buttons
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-            val radioButtonSize = if (playlist.radioEndpoint != null) 48.dp else 0.dp
-            val shuffleButtonSize = if (playlist.radioEndpoint != null) 52.dp else 60.dp // أكبر قليلاً
+            val radioButtonSize = if (playlist.radioEndpoint != null) 52.dp else 0.dp
+            val shuffleButtonSize = if (playlist.radioEndpoint != null) 56.dp else 60.dp // أكبر قليلاً
             playlist.radioEndpoint?.let {
                 FloatingActionButton(
                     onClick = onRadioClick,
