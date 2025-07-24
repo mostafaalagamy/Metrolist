@@ -377,14 +377,14 @@ fun AutoPlaylistScreen(
                                 onPlayClick = {
                                     if (songs?.isNotEmpty() == true) {
                                         playerConnection.playQueue(
-                                            ListQueue(title = playlist, items = songs!!.map { it.song.toMediaItem() })
+                                            ListQueue(title = playlist, items = songs!!.map { it.toMediaItem() })
                                         )
                                     }
                                 },
                                 onShuffleClick = {
                                     if (songs?.isNotEmpty() == true) {
                                         playerConnection.playQueue(
-                                            ListQueue(title = playlist, items = songs!!.shuffled().map { it.song.toMediaItem() })
+                                            ListQueue(title = playlist, items = songs!!.shuffled().map { it.toMediaItem() })
                                         )
                                     }
                                 },
