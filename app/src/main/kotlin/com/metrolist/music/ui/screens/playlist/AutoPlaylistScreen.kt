@@ -373,26 +373,26 @@ fun AutoPlaylistScreen(
                             )
                         }
                         item {
-                            AutoPlaylistActionControls(
-                                onPlayClick = {
-                                    if (songs?.isNotEmpty() == true) {
-                                        playerConnection.playQueue(
-                                            ListQueue(title = playlist, items = songs!!.map { it.song.toMediaItem() })
-                                        )
-                                    }
-                                },
-                                onShuffleClick = {
-                                    if (songs?.isNotEmpty() == true) {
-                                        playerConnection.playQueue(
-                                            ListQueue(title = playlist, items = songs!!.shuffled().map { it.song.toMediaItem() })
-                                        )
-                                    }
-                                },
-                                sortType = sortType,
-                                sortDescending = sortDescending,
-                                onSortTypeChange = onSortTypeChange,
-                                onSortDescendingChange = onSortDescendingChange
-                            )
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier.padding(start = 16.dp),
+                            ) {
+                                SortHeader(
+                                    sortType = sortType,
+                                    sortDescending = sortDescending,
+                                    onSortTypeChange = onSortTypeChange,
+                                    onSortDescendingChange = onSortDescendingChange,
+                                    sortTypeText = { sortType ->
+                                        when (sortType) {
+                                            SongSortType.CREATE_DATE -> R.string.sort_by_create_date
+                                            SongSortType.NAME -> R.string.sort_by_name
+                                            SongSortType.ARTIST -> R.string.sort_by_artist
+                                            SongSortType.PLAY_TIME -> R.string.sort_by_play_time
+                                        }
+                                    },
+                                    modifier = Modifier.weight(1f),
+                                )
+                            }
                         }
                     }
 
@@ -695,57 +695,6 @@ private fun AutoPlaylistScreenSkeleton() {
             }
             items(7) {
                 ListItemPlaceHolder(modifier = Modifier.padding(horizontal = 8.dp))
-            }
-        }
-    }
-}
-
-@Composable
-private fun AutoPlaylistActionControls(
-    onPlayClick: () -> Unit,
-    onShuffleClick: () -> Unit,
-    sortType: SongSortType,
-    sortDescending: Boolean,
-    onSortTypeChange: (SongSortType) -> Unit,
-    onSortDescendingChange: (Boolean) -> Unit
-) {
-    Row(
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        // Left side - Sort controls
-        SortHeader(
-            sortType = sortType,
-            sortDescending = sortDescending,
-            onSortTypeChange = onSortTypeChange,
-            onSortDescendingChange = onSortDescendingChange,
-            sortTypeText = { sortType ->
-                when (sortType) {
-                    SongSortType.CREATE_DATE -> R.string.sort_by_create_date
-                    SongSortType.NAME -> R.string.sort_by_name
-                    SongSortType.ARTIST -> R.string.sort_by_artist
-                    SongSortType.PLAY_TIME -> R.string.sort_by_play_time
-                }
-            },
-            modifier = Modifier.weight(1f),
-        )
-        
-        // Right side - circular shuffle and play buttons
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            FloatingActionButton(
-                onClick = onShuffleClick,
-                elevation = FloatingActionButtonDefaults.elevation(0.dp, 0.dp),
-                modifier = Modifier.size(44.dp)
-            ) {
-                Icon(painterResource(R.drawable.shuffle), "Shuffle")
-            }
-            Spacer(Modifier.width(12.dp))
-            FloatingActionButton(
-                onClick = onPlayClick,
-                modifier = Modifier.size(48.dp)
-            ) {
-                Icon(painterResource(R.drawable.play), "Play")
             }
         }
     }
