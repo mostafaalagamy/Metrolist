@@ -9,6 +9,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
+import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -269,6 +270,11 @@ private fun NewMiniPlayer(
                         modifier = Modifier
                             .size(40.dp)
                             .clip(CircleShape)
+                            .border(
+                                width = 1.dp,
+                                color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
+                                shape = CircleShape
+                            )
                             .background(
                                 color = MaterialTheme.colorScheme.primary,
                                 shape = CircleShape
@@ -371,6 +377,14 @@ private fun NewMiniPlayer(
                             modifier = Modifier
                                 .size(40.dp)
                                 .clip(CircleShape)
+                                .border(
+                                    width = 1.dp,
+                                    color = if (isSubscribed)
+                                        MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
+                                    else
+                                        MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
+                                    shape = CircleShape
+                                )
                                 .background(
                                     color = if (isSubscribed) 
                                         MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
@@ -425,6 +439,14 @@ private fun NewMiniPlayer(
                         modifier = Modifier
                             .size(40.dp)
                             .clip(CircleShape)
+                            .border(
+                                width = 1.dp,
+                                color = if (isLiked)
+                                    MaterialTheme.colorScheme.error.copy(alpha = 0.5f)
+                                else
+                                    MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
+                                shape = CircleShape
+                            )
                             .background(
                                 color = if (isLiked) 
                                     MaterialTheme.colorScheme.error.copy(alpha = 0.1f)
