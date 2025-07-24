@@ -15,8 +15,6 @@ import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.platform.LocalLayoutDirection
-import androidx.compose.ui.unit.LayoutDirection
 import com.valentinilk.shimmer.defaultShimmerTheme
 import com.valentinilk.shimmer.shimmer
 
@@ -27,18 +25,13 @@ fun ShimmerHost(
     verticalArrangement: Arrangement.Vertical = Arrangement.Top,
     content: @Composable ColumnScope.() -> Unit,
 ) {
-    val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
-    
     Column(
         horizontalAlignment = horizontalAlignment,
         verticalArrangement = verticalArrangement,
         modifier =
         modifier
             .shimmer()
-            .graphicsLayer(
-                alpha = 0.99f,
-                scaleX = if (isRtl) -1f else 1f
-            )
+            .graphicsLayer(alpha = 0.99f)
             .drawWithContent {
                 drawContent()
                 drawRect(
