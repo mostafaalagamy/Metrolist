@@ -956,7 +956,13 @@ fun LocalPlaylistScreen(
                         )
                     }
                 }
-            }
+            },
+            colors = TopAppBarDefaults.topAppBarColors(
+                containerColor = animatedBackgroundColor.copy(alpha = 0.8f),
+                titleContentColor = MaterialTheme.colorScheme.onSurface,
+                navigationIconContentColor = MaterialTheme.colorScheme.onSurface,
+                actionIconContentColor = MaterialTheme.colorScheme.onSurface
+            )
         )
 
         SnackbarHost(
@@ -1052,8 +1058,7 @@ private fun LocalPlaylistActionControls(
         // Row of action buttons - Left side controls  
         Row(
             modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+            verticalAlignment = Alignment.CenterVertically
         ) {
             // Left side - action buttons (fill most space)
             Row(
@@ -1165,6 +1170,9 @@ private fun LocalPlaylistActionControls(
                     )
                 }
             }
+            
+            // Add space between left and right controls
+            Spacer(modifier = Modifier.weight(0.5f))
             
             // Right side - circular play and shuffle buttons (compact)
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {

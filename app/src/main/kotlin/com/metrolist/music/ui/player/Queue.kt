@@ -1003,7 +1003,7 @@ fun Queue(
                     )
                     IconButton(
                         onClick = {
-                            if (count == mutableQueueWindows.size) {
+                            if (count == queueWindows.size) {
                                 selection.clear()
                             } else {
                                 selection.clear()
@@ -1014,7 +1014,7 @@ fun Queue(
                         Icon(
                             painter =
                             painterResource(
-                                if (count == mutableQueueWindows.size) {
+                                if (count == queueWindows.size) {
                                     R.drawable.deselect
                                 } else {
                                     R.drawable.select_all
