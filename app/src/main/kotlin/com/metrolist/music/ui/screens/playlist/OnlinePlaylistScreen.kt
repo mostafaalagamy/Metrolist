@@ -7,6 +7,7 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -424,33 +425,87 @@ private fun PlaylistActionControls(
     ) {
         // Left side: Import and Menu buttons  
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            BorderedIconButton(
-                onClick = onImportClick,
-                modifier = Modifier.size(40.dp)
-            ) { Icon(painterResource(R.drawable.input), "Import") }
-            BorderedIconButton(
-                onClick = onMenuClick,
-                modifier = Modifier.size(40.dp)
-            ) { Icon(painterResource(R.drawable.more_vert), "Menu") }
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(CircleShape)
+                    .border(
+                        width = 1.dp,
+                        color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
+                        shape = CircleShape
+                    )
+                    .background(
+                        color = Color.Transparent,
+                        shape = CircleShape
+                    )
+            ) {
+                IconButton(
+                    onClick = onImportClick,
+                    modifier = Modifier.size(40.dp)
+                ) { 
+                    Icon(
+                        painterResource(R.drawable.input), 
+                        "Import",
+                        modifier = Modifier.size(20.dp)
+                    ) 
+                }
+            }
+            
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(CircleShape)
+                    .border(
+                        width = 1.dp,
+                        color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
+                        shape = CircleShape
+                    )
+                    .background(
+                        color = Color.Transparent,
+                        shape = CircleShape
+                    )
+            ) {
+                IconButton(
+                    onClick = onMenuClick,
+                    modifier = Modifier.size(40.dp)
+                ) { 
+                    Icon(
+                        painterResource(R.drawable.more_vert), 
+                        "Menu",
+                        modifier = Modifier.size(20.dp)
+                    ) 
+                }
+            }
         }
         
-        // Right side: Radio and Shuffle as circular buttons
-        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-            val radioButtonSize = if (playlist.radioEndpoint != null) 40.dp else 0.dp
-            val shuffleButtonSize = if (playlist.radioEndpoint != null) 44.dp else 48.dp // أصغر مثل LocalPlaylist
-            playlist.radioEndpoint?.let {
+        // Right side - circular action buttons
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            playlist.radioEndpoint?.let { radioEndpoint ->
                 FloatingActionButton(
                     onClick = onRadioClick,
                     elevation = FloatingActionButtonDefaults.elevation(0.dp, 0.dp),
-                    modifier = Modifier.size(radioButtonSize)
-                ) { 
-                    Icon(painterResource(R.drawable.radio), "Radio") 
+                    modifier = Modifier
+                        .size(48.dp)
+                        .border(
+                            width = 1.dp,
+                            color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
+                            shape = CircleShape
+                        )
+                ) {
+                    Icon(painterResource(R.drawable.radio), "Radio")
                 }
+                Spacer(Modifier.width(16.dp))
             }
+            
             FloatingActionButton(
-                onClick = onShuffleClick, 
-                elevation = FloatingActionButtonDefaults.elevation(0.dp, 0.dp), 
-                modifier = Modifier.size(shuffleButtonSize)
+                onClick = onShuffleClick,
+                modifier = Modifier.border(
+                    width = 1.dp,
+                    color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
+                    shape = CircleShape
+                )
             ) {
                 Icon(painterResource(R.drawable.shuffle), "Shuffle")
             }

@@ -8,6 +8,7 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.rememberScrollState
@@ -1069,124 +1070,265 @@ private fun LocalPlaylistActionControls(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
             if (isEditable) {
-                BorderedIconButton(
-                    onClick = onShowDeleteDialog,
-                    modifier = Modifier.size(40.dp)
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clip(CircleShape)
+                        .border(
+                            width = 1.dp,
+                            color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
+                            shape = CircleShape
+                        )
+                        .background(
+                            color = Color.Transparent,
+                            shape = CircleShape
+                        )
                 ) {
-                    Icon(
-                        painter = painterResource(R.drawable.delete),
-                        contentDescription = null,
-                        modifier = Modifier.size(24.dp)
-                    )
+                    IconButton(
+                        onClick = onShowDeleteDialog,
+                        modifier = Modifier.size(40.dp)
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.delete),
+                            contentDescription = null,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
                 }
             } else {
-                BorderedIconButton(
-                    onClick = onLikeClick,
-                    modifier = Modifier.size(40.dp)
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clip(CircleShape)
+                        .border(
+                            width = 1.dp,
+                            color = if (isLiked)
+                                MaterialTheme.colorScheme.error.copy(alpha = 0.5f)
+                            else
+                                MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
+                            shape = CircleShape
+                        )
+                        .background(
+                            color = if (isLiked) 
+                                MaterialTheme.colorScheme.error.copy(alpha = 0.1f)
+                            else 
+                                Color.Transparent,
+                            shape = CircleShape
+                        )
                 ) {
-                    Icon(
-                        painter = painterResource(if (isLiked) R.drawable.favorite else R.drawable.favorite_border),
-                        contentDescription = null,
-                        tint = if (isLiked) MaterialTheme.colorScheme.error else LocalContentColor.current,
-                        modifier = Modifier.size(24.dp)
-                    )
+                    IconButton(
+                        onClick = onLikeClick,
+                        modifier = Modifier.size(40.dp)
+                    ) {
+                        Icon(
+                            painter = painterResource(if (isLiked) R.drawable.favorite else R.drawable.favorite_border),
+                            contentDescription = null,
+                            tint = if (isLiked) MaterialTheme.colorScheme.error else LocalContentColor.current,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
                 }
             }
 
             if (isEditable) {
-                BorderedIconButton(
-                    onClick = onShowEditDialog,
-                    modifier = Modifier.size(40.dp)
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clip(CircleShape)
+                        .border(
+                            width = 1.dp,
+                            color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
+                            shape = CircleShape
+                        )
+                        .background(
+                            color = Color.Transparent,
+                            shape = CircleShape
+                        )
                 ) {
-                    Icon(
-                        painter = painterResource(R.drawable.edit),
-                        contentDescription = null,
-                        modifier = Modifier.size(24.dp)
-                    )
+                    IconButton(
+                        onClick = onShowEditDialog,
+                        modifier = Modifier.size(40.dp)
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.edit),
+                            contentDescription = null,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
                 }
             }
 
             if (playlist.playlist.browseId != null) {
-                BorderedIconButton(
-                    onClick = onSyncClick,
-                    modifier = Modifier.size(40.dp)
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clip(CircleShape)
+                        .border(
+                            width = 1.dp,
+                            color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
+                            shape = CircleShape
+                        )
+                        .background(
+                            color = Color.Transparent,
+                            shape = CircleShape
+                        )
                 ) {
-                    Icon(
-                        painter = painterResource(R.drawable.sync),
-                        contentDescription = null,
-                        modifier = Modifier.size(24.dp)
-                    )
+                    IconButton(
+                        onClick = onSyncClick,
+                        modifier = Modifier.size(40.dp)
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.sync),
+                            contentDescription = null,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
                 }
             }
 
             when (downloadState) {
                 Download.STATE_COMPLETED -> {
-                    BorderedIconButton(
-                        onClick = onDownloadClick,
-                        modifier = Modifier.size(40.dp)
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .size(40.dp)
+                            .clip(CircleShape)
+                            .border(
+                                width = 1.dp,
+                                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+                                shape = CircleShape
+                            )
+                            .background(
+                                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
+                                shape = CircleShape
+                            )
                     ) {
-                        Icon(
-                            painter = painterResource(R.drawable.offline),
-                            contentDescription = null,
-                            modifier = Modifier.size(24.dp)
-                        )
+                        IconButton(
+                            onClick = onDownloadClick,
+                            modifier = Modifier.size(40.dp)
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.offline),
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.size(20.dp)
+                            )
+                        }
                     }
                 }
 
                 Download.STATE_DOWNLOADING -> {
-                    BorderedIconButton(
-                        onClick = onDownloadClick,
-                        modifier = Modifier.size(40.dp)
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .size(40.dp)
+                            .clip(CircleShape)
+                            .border(
+                                width = 1.dp,
+                                color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
+                                shape = CircleShape
+                            )
                     ) {
-                        CircularProgressIndicator(
-                            strokeWidth = 2.dp,
-                            modifier = Modifier.size(24.dp),
-                        )
+                        IconButton(
+                            onClick = onDownloadClick,
+                            modifier = Modifier.size(40.dp)
+                        ) {
+                            CircularProgressIndicator(
+                                strokeWidth = 2.dp,
+                                modifier = Modifier.size(20.dp),
+                            )
+                        }
                     }
                 }
 
                 else -> {
-                    BorderedIconButton(
-                        onClick = onDownloadClick,
-                        modifier = Modifier.size(40.dp)
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .size(40.dp)
+                            .clip(CircleShape)
+                            .border(
+                                width = 1.dp,
+                                color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
+                                shape = CircleShape
+                            )
+                            .background(
+                                color = Color.Transparent,
+                                shape = CircleShape
+                            )
                     ) {
-                        Icon(
-                            painter = painterResource(R.drawable.download),
-                            contentDescription = null,
-                            modifier = Modifier.size(24.dp)
-                        )
+                        IconButton(
+                            onClick = onDownloadClick,
+                            modifier = Modifier.size(40.dp)
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.download),
+                                contentDescription = null,
+                                modifier = Modifier.size(20.dp)
+                            )
+                        }
                     }
                 }
             }
 
-                BorderedIconButton(
-                    onClick = onQueueClick,
-                    modifier = Modifier.size(40.dp)
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clip(CircleShape)
+                        .border(
+                            width = 1.dp,
+                            color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
+                            shape = CircleShape
+                        )
+                        .background(
+                            color = Color.Transparent,
+                            shape = CircleShape
+                        )
                 ) {
-                    Icon(
-                        painter = painterResource(R.drawable.queue_music),
-                        contentDescription = null,
-                        modifier = Modifier.size(24.dp)
-                    )
+                    IconButton(
+                        onClick = onQueueClick,
+                        modifier = Modifier.size(40.dp)
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.queue_music),
+                            contentDescription = null,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
                 }
             }
             
             // Add space between left and right controls
             Spacer(modifier = Modifier.weight(0.5f))
             
-            // Right side - circular play and shuffle buttons (compact)
-            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            // Right side - circular shuffle and play buttons
+            Row(verticalAlignment = Alignment.CenterVertically) {
                 FloatingActionButton(
                     onClick = onShuffleClick,
                     elevation = FloatingActionButtonDefaults.elevation(0.dp, 0.dp),
-                    modifier = Modifier.size(44.dp)
+                    modifier = Modifier
+                        .size(48.dp)
+                        .border(
+                            width = 1.dp,
+                            color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
+                            shape = CircleShape
+                        )
                 ) {
                     Icon(painterResource(R.drawable.shuffle), "Shuffle")
                 }
-                
+                Spacer(Modifier.width(16.dp))
                 FloatingActionButton(
                     onClick = onPlayClick,
-                    modifier = Modifier.size(48.dp)
+                    modifier = Modifier.border(
+                        width = 1.dp,
+                        color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
+                        shape = CircleShape
+                    )
                 ) {
                     Icon(painterResource(R.drawable.play), "Play")
                 }
