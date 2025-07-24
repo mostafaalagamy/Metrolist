@@ -486,26 +486,17 @@ private fun PlaylistActionControls(
                 FloatingActionButton(
                     onClick = onRadioClick,
                     elevation = FloatingActionButtonDefaults.elevation(0.dp, 0.dp),
-                    modifier = Modifier
-                        .size(48.dp)
-                        .border(
-                            width = 1.dp,
-                            color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
-                            shape = CircleShape
-                        )
+                    modifier = Modifier.size(40.dp)
                 ) {
                     Icon(painterResource(R.drawable.radio), "Radio")
                 }
-                Spacer(Modifier.width(16.dp))
+                Spacer(Modifier.width(8.dp))
             }
             
             FloatingActionButton(
                 onClick = onShuffleClick,
-                modifier = Modifier.border(
-                    width = 1.dp,
-                    color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
-                    shape = CircleShape
-                )
+                elevation = FloatingActionButtonDefaults.elevation(0.dp, 0.dp),
+                modifier = Modifier.size(44.dp)
             ) {
                 Icon(painterResource(R.drawable.shuffle), "Shuffle")
             }

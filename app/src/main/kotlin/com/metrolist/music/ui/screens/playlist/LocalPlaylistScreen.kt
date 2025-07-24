@@ -1311,24 +1311,14 @@ private fun LocalPlaylistActionControls(
                 FloatingActionButton(
                     onClick = onShuffleClick,
                     elevation = FloatingActionButtonDefaults.elevation(0.dp, 0.dp),
-                    modifier = Modifier
-                        .size(48.dp)
-                        .border(
-                            width = 1.dp,
-                            color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
-                            shape = CircleShape
-                        )
+                    modifier = Modifier.size(44.dp)
                 ) {
                     Icon(painterResource(R.drawable.shuffle), "Shuffle")
                 }
-                Spacer(Modifier.width(16.dp))
+                Spacer(Modifier.width(12.dp))
                 FloatingActionButton(
                     onClick = onPlayClick,
-                    modifier = Modifier.border(
-                        width = 1.dp,
-                        color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
-                        shape = CircleShape
-                    )
+                    modifier = Modifier.size(48.dp)
                 ) {
                     Icon(painterResource(R.drawable.play), "Play")
                 }
