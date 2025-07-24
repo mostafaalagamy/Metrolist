@@ -46,6 +46,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -71,6 +72,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.toMutableStateList
@@ -161,15 +163,15 @@ fun Queue(
 
     val currentFormat by playerConnection.currentFormat.collectAsState(initial = null)
 
-    val selectedSongs = remember { mutableStateListOf<MediaMetadata>() }
-    val selectedItems = remember { mutableStateListOf<Timeline.Window>() }
-    var selection by remember { mutableStateOf(false) }
-
-    if (selection) {
-        BackHandler {
-            selection = false
-        }
-    }
+    var inSelectMode by rememberSaveable { mutableStateOf(false) }
+    val selection = rememberSaveable(
+        saver = listSaver<MutableList<Int>, Int>(
+            save = { it.toList() }, 
+            restore = { it.toMutableStateList() }
+        )
+    ) { mutableStateListOf() }
+    val onExitSelectionMode = { inSelectMode = false; selection.clear() }
+    if (inSelectMode) { BackHandler(onBack = onExitSelectionMode) }
 
     var locked by rememberPreference(QueueEditLockKey, defaultValue = true)
 
@@ -798,12 +800,11 @@ fun Queue(
                                                 }
                                             },
                                             onLongClick = {
-                                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                                if (!selection) {
-                                                    selection = true
+                                                if (!inSelectMode) {
+                                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                                    inSelectMode = true
+                                                    selection.add(index)
                                                 }
-                                                selectedSongs.clear() // Clear all selections
-                                                selectedSongs.add(window.mediaItem.metadata!!) // Select current item
                                             },
                                         ),
                                 )
@@ -935,7 +936,7 @@ fun Queue(
                 )
 
                 AnimatedVisibility(
-                    visible = !selection,
+                    visible = !inSelectMode,
                     enter = fadeIn() + slideInVertically { it },
                     exit = fadeOut() + slideOutVertically { it },
                 ) {
@@ -985,9 +986,7 @@ fun Queue(
                 ) {
                     val count = selectedSongs.size
                     IconButton(
-                        onClick = {
-                            selection = false
-                        },
+                        onClick = onExitSelectionMode,
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.close),
