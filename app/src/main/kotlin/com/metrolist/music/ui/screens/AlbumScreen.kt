@@ -493,21 +493,36 @@ private fun AlbumActionControls(
     ) {
         // Left side - more, download and like buttons (reversed order)
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            BorderedIconButton(onClick = onMenuClick) {
+            BorderedIconButton(
+                onClick = onMenuClick,
+                modifier = Modifier.size(40.dp)
+            ) {
                 Icon(painterResource(R.drawable.more_vert), "More options")
             }
             when (downloadState) {
-                Download.STATE_COMPLETED -> BorderedIconButton(onClick = onRemoveDownloadClick) {
+                Download.STATE_COMPLETED -> BorderedIconButton(
+                    onClick = onRemoveDownloadClick,
+                    modifier = Modifier.size(40.dp)
+                ) {
                     Icon(painterResource(R.drawable.offline), "Downloaded", tint = MaterialTheme.colorScheme.primary)
                 }
-                Download.STATE_DOWNLOADING -> BorderedIconButton(onClick = onRemoveDownloadClick) {
+                Download.STATE_DOWNLOADING -> BorderedIconButton(
+                    onClick = onRemoveDownloadClick,
+                    modifier = Modifier.size(40.dp)
+                ) {
                     CircularProgressIndicator(modifier = Modifier.size(24.dp), strokeWidth = 2.dp)
                 }
-                else -> BorderedIconButton(onClick = onDownloadClick) {
+                else -> BorderedIconButton(
+                    onClick = onDownloadClick,
+                    modifier = Modifier.size(40.dp)
+                ) {
                     Icon(painterResource(R.drawable.download), "Download")
                 }
             }
-            BorderedIconButton(onClick = onLikeClick) {
+            BorderedIconButton(
+                onClick = onLikeClick,
+                modifier = Modifier.size(40.dp)
+            ) {
                 Icon(
                     painter = painterResource(if (isLiked) R.drawable.favorite else R.drawable.favorite_border),
                     contentDescription = "Like",

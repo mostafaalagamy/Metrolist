@@ -422,8 +422,14 @@ private fun PlaylistActionControls(
     ) {
         // Left side: Import and Menu buttons  
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            BorderedIconButton(onClick = onImportClick) { Icon(painterResource(R.drawable.input), "Import") }
-            BorderedIconButton(onClick = onMenuClick) { Icon(painterResource(R.drawable.more_vert), "Menu") }
+            BorderedIconButton(
+                onClick = onImportClick,
+                modifier = Modifier.size(40.dp)
+            ) { Icon(painterResource(R.drawable.input), "Import") }
+            BorderedIconButton(
+                onClick = onMenuClick,
+                modifier = Modifier.size(40.dp)
+            ) { Icon(painterResource(R.drawable.more_vert), "Menu") }
         }
         
         // Right side: Radio and Shuffle as circular buttons

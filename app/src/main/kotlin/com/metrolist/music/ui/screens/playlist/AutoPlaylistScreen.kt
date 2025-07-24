@@ -548,15 +548,27 @@ private fun AutoPlaylistActionControls(
     ) {
         // Left side - queue and download buttons
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            BorderedIconButton(onClick = onQueueClick) { Icon(painterResource(R.drawable.queue_music), "Queue") }
+            BorderedIconButton(
+                onClick = onQueueClick,
+                modifier = Modifier.size(40.dp)
+            ) { Icon(painterResource(R.drawable.queue_music), "Queue") }
             when (downloadState) {
-                Download.STATE_COMPLETED -> BorderedIconButton(onClick = onDownloadClick) {
+                Download.STATE_COMPLETED -> BorderedIconButton(
+                    onClick = onDownloadClick,
+                    modifier = Modifier.size(40.dp)
+                ) {
                     Icon(painterResource(R.drawable.offline), "Downloaded", tint = MaterialTheme.colorScheme.primary)
                 }
-                Download.STATE_DOWNLOADING -> BorderedIconButton(onClick = onDownloadClick) {
+                Download.STATE_DOWNLOADING -> BorderedIconButton(
+                    onClick = onDownloadClick,
+                    modifier = Modifier.size(40.dp)
+                ) {
                     CircularProgressIndicator(modifier = Modifier.size(24.dp), strokeWidth = 2.dp)
                 }
-                else -> BorderedIconButton(onClick = onDownloadClick) {
+                else -> BorderedIconButton(
+                    onClick = onDownloadClick,
+                    modifier = Modifier.size(40.dp)
+                ) {
                     Icon(painterResource(R.drawable.download), "Download")
                 }
             }
