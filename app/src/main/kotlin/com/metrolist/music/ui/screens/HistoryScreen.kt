@@ -288,7 +288,7 @@ fun HistoryScreen(
 
                     itemsIndexed(
                         items = events,
-                        key = { index, event -> "${event.song.id}_${index}_${event.id}" }
+                        key = { index, event -> "${event.song.id}_${index}_${event.event.id}" }
                     ) { localIndex, event ->
                         val globalIndex = allItems.indexOf(event)
                         val onCheckedChange: (Boolean) -> Unit = { checked -> 

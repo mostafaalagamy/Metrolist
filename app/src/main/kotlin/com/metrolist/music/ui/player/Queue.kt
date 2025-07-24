@@ -740,7 +740,11 @@ fun Queue(
                                     isPlaying = isPlaying,
                                     trailingContent = {
                                         if (inSelectMode) {
-                                            Checkbox(checked = index in selection, onCheckedChange = onCheckedChange)
+                                            Checkbox(
+                                                checked = index in selection, 
+                                                onCheckedChange = onCheckedChange,
+                                                modifier = Modifier.padding(end = 8.dp)
+                                            )
                                         } else {
                                         IconButton(
                                             onClick = {
