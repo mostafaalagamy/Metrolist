@@ -239,8 +239,8 @@ fun CachePlaylistScreen(
                     }
                 }
             } else {
-                // Header (only shown when not searching)
-                if (!isSearching) {
+                    // Header (only shown when not searching)
+                    if (!isSearching) {
                         item {
                             CachePlaylistHeader(
                                 songs = filteredSongs.map { it.second },
@@ -283,58 +283,61 @@ fun CachePlaylistScreen(
                                 )
                             }
                         }
-                }
+                        
 
-                // Songs list
-                itemsIndexed(filteredSongs, key = { _, (originalIndex, _) -> originalIndex }) { index, (originalIndex, song) ->
-                    val onCheckedChange: (Boolean) -> Unit = { if (it) selection.add(originalIndex) else selection.remove(originalIndex) }
-                    SongListItem(
-                        song = song,
-                        isActive = song.id == mediaMetadata?.id,
-                        isPlaying = isPlaying,
-                        showInLibraryIcon = true,
-                        trailingContent = {
-                            if (inSelectMode) {
-                                Checkbox(checked = originalIndex in selection, onCheckedChange = onCheckedChange)
-                            } else {
-                                IconButton(onClick = {
-                                    menuState.show {
-                                        SongMenu(
-                                            originalSong = song,
-                                            navController = navController,
-                                            onDismiss = menuState::dismiss,
-                                            isFromCache = true,
-                                        )
-                                    }
-                                }) {
-                                    Icon(painterResource(R.drawable.more_vert), null)
-                                }
-                            }
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .combinedClickable(
-                                onClick = {
-                                    if (inSelectMode) onCheckedChange(originalIndex !in selection)
-                                    else if (song.id == mediaMetadata?.id) playerConnection.player.togglePlayPause()
-                                    else playerConnection.playQueue(
-                                        ListQueue(
-                                            title = "Cache Songs",
-                                            items = cachedSongs.map { it.toMediaItem() },
-                                            startIndex = cachedSongs.indexOfFirst { it.id == song.id }
-                                        )
-                                    )
-                                },
-                                onLongClick = {
-                                    if (!inSelectMode) {
-                                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                        inSelectMode = true
-                                        onCheckedChange(true)
+                    }
+
+                    // Songs list
+                    itemsIndexed(filteredSongs, key = { _, (originalIndex, _) -> originalIndex }) { index, (originalIndex, song) ->
+                        val onCheckedChange: (Boolean) -> Unit = { if (it) selection.add(originalIndex) else selection.remove(originalIndex) }
+                        SongListItem(
+                            song = song,
+                            isActive = song.id == mediaMetadata?.id,
+                            isPlaying = isPlaying,
+                            showInLibraryIcon = true,
+                            trailingContent = {
+                                if (inSelectMode) {
+                                    Checkbox(checked = originalIndex in selection, onCheckedChange = onCheckedChange)
+                                } else {
+                                    IconButton(onClick = {
+                                        menuState.show {
+                                            SongMenu(
+                                                originalSong = song,
+                                                navController = navController,
+                                                onDismiss = menuState::dismiss,
+                                                isFromCache = true,
+                                            )
+                                        }
+                                    }) {
+                                        Icon(painterResource(R.drawable.more_vert), null)
                                     }
                                 }
-                            )
-                            .animateItem()
-                    )
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .combinedClickable(
+                                    onClick = {
+                                        if (inSelectMode) onCheckedChange(originalIndex !in selection)
+                                        else if (song.id == mediaMetadata?.id) playerConnection.player.togglePlayPause()
+                                        else playerConnection.playQueue(
+                                            ListQueue(
+                                                title = "Cache Songs",
+                                                items = cachedSongs.map { it.toMediaItem() },
+                                                startIndex = cachedSongs.indexOfFirst { it.id == song.id }
+                                            )
+                                        )
+                                    },
+                                    onLongClick = {
+                                        if (!inSelectMode) {
+                                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                            inSelectMode = true
+                                            onCheckedChange(true)
+                                        }
+                                    }
+                                )
+                                .animateItem()
+                        )
+                    }
                 }
             }
         }
