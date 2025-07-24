@@ -76,6 +76,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withLink
 import androidx.compose.ui.text.withStyle
@@ -417,37 +418,74 @@ private fun AlbumHeader(
     listState: LazyListState
 ) {
     val scrollOffset = if (listState.firstVisibleItemIndex == 0) listState.firstVisibleItemScrollOffset.toFloat() else Float.MAX_VALUE
-    val headerHeightPx = with(LocalDensity.current) { 320.dp.toPx() }
+    val headerHeightPx = with(LocalDensity.current) { 380.dp.toPx() }
 
-    val imageTranslationY = -scrollOffset * 0.2f
+    val imageTranslationY = -scrollOffset * 0.3f
     val textAlpha = (1f - (scrollOffset / (headerHeightPx / 2))).coerceIn(0f, 1f)
+    val imageScale = (1f - (scrollOffset / headerHeightPx * 0.3f)).coerceIn(0.8f, 1f)
 
-    Column(
-        modifier = Modifier.fillMaxWidth().height(320.dp).graphicsLayer { translationY = imageTranslationY },
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+    Box(
+        modifier = Modifier.fillMaxWidth().height(380.dp),
+        contentAlignment = Alignment.Center
     ) {
-        AsyncImage(
-            model = albumEntity.thumbnailUrl,
-            contentDescription = "Album Art",
-            contentScale = ContentScale.Crop,
-            modifier = Modifier.size(200.dp).clip(RoundedCornerShape(12.dp)).shadow(16.dp, RoundedCornerShape(12.dp))
-        )
-        Spacer(Modifier.height(16.dp))
         Column(
-            modifier = Modifier.graphicsLayer { alpha = textAlpha },
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier = Modifier.graphicsLayer { 
+                translationY = imageTranslationY
+                scaleX = imageScale
+                scaleY = imageScale
+            },
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
-            Text(
-                text = albumEntity.title,
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-            Text(
-                text = buildAnnotatedString {
-                    artists.fastForEachIndexed { index, artist ->
+            // Enhanced album artwork with gradient border and modern shadow
+            Box {
+                AsyncImage(
+                    model = albumEntity.thumbnailUrl,
+                    contentDescription = "Album Art",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .size(240.dp)
+                        .clip(RoundedCornerShape(20.dp))
+                        .shadow(24.dp, RoundedCornerShape(20.dp), ambientColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.4f))
+                )
+                // Add subtle overlay for better text readability
+                Box(
+                    modifier = Modifier
+                        .size(240.dp)
+                        .clip(RoundedCornerShape(20.dp))
+                        .background(
+                            brush = Brush.verticalGradient(
+                                colors = listOf(
+                                    Color.Transparent,
+                                    Color.Black.copy(alpha = 0.1f)
+                                )
+                            )
+                        )
+                )
+            }
+            
+            Spacer(Modifier.height(24.dp))
+            
+            // Enhanced text styling
+            Column(
+                modifier = Modifier
+                    .graphicsLayer { alpha = textAlpha }
+                    .padding(horizontal = 32.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = albumEntity.title,
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Spacer(Modifier.height(8.dp))
+                Text(
+                    text = buildAnnotatedString {
+                        artists.fastForEachIndexed { index, artist ->
                         val link = LinkAnnotation.Clickable(artist.id) { navController.navigate("artist/${artist.id}") }
                         withLink(link) {
                             withStyle(style = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.primary).toSpanStyle()) {
@@ -458,14 +496,17 @@ private fun AlbumHeader(
                     }
                 },
                 style = MaterialTheme.typography.bodyLarge,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+                textAlign = TextAlign.Center
             )
             albumEntity.year?.let {
+                Spacer(Modifier.height(4.dp))
                 Text(
                     text = it.toString(),
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Center
                 )
             }
         }
@@ -484,56 +525,112 @@ private fun AlbumActionControls(
     onRemoveDownloadClick: () -> Unit,
     onMenuClick: () -> Unit
 ) {
-    Row(
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        // Left side - more, download and like buttons (reversed order)
-        Row {
-            IconButton(onClick = onMenuClick) {
-                Icon(painterResource(R.drawable.more_vert), "More options")
+    Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 16.dp)) {
+        // Primary action buttons - more prominent and modern
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // Enhanced circular play button - primary action
+            FloatingActionButton(
+                onClick = onPlayClick,
+                modifier = Modifier.size(64.dp),
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary
+            ) {
+                Icon(
+                    painterResource(R.drawable.play),
+                    contentDescription = "Play",
+                    modifier = Modifier.size(28.dp)
+                )
             }
-            when (downloadState) {
-                Download.STATE_COMPLETED -> IconButton(onClick = onRemoveDownloadClick) {
-                    Icon(painterResource(R.drawable.offline), "Downloaded", tint = MaterialTheme.colorScheme.primary)
-                }
-                Download.STATE_DOWNLOADING -> IconButton(onClick = onRemoveDownloadClick) {
-                    CircularProgressIndicator(modifier = Modifier.size(24.dp), strokeWidth = 2.dp)
-                }
-                else -> IconButton(onClick = onDownloadClick) {
-                    Icon(painterResource(R.drawable.download), "Download")
-                }
+            
+            Spacer(Modifier.width(16.dp))
+            
+            // Enhanced shuffle button
+            FloatingActionButton(
+                onClick = onShuffleClick,
+                elevation = FloatingActionButtonDefaults.elevation(0.dp, 0.dp),
+                modifier = Modifier.size(56.dp),
+                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+            ) {
+                Icon(
+                    painterResource(R.drawable.shuffle),
+                    contentDescription = "Shuffle",
+                    modifier = Modifier.size(24.dp)
+                )
             }
+            
+            Spacer(Modifier.width(16.dp))
+            
+            // Enhanced radio button
+            FloatingActionButton(
+                onClick = onRadioClick,
+                elevation = FloatingActionButtonDefaults.elevation(0.dp, 0.dp),
+                modifier = Modifier.size(56.dp),
+                containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                contentColor = MaterialTheme.colorScheme.onTertiaryContainer
+            ) {
+                Icon(
+                    painterResource(R.drawable.radio),
+                    contentDescription = "Radio",
+                    modifier = Modifier.size(24.dp)
+                )
+            }
+        }
+        
+        Spacer(Modifier.height(16.dp))
+        
+        // Secondary action buttons - more subtle
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             IconButton(onClick = onLikeClick) {
                 Icon(
                     painter = painterResource(if (isLiked) R.drawable.favorite else R.drawable.favorite_border),
                     contentDescription = "Like",
-                    tint = if (isLiked) MaterialTheme.colorScheme.error else LocalContentColor.current
+                    tint = if (isLiked) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(24.dp)
                 )
             }
-        }
-
-        // Right side - circular radio, shuffle and play buttons
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            FloatingActionButton(
-                onClick = onRadioClick,
-                elevation = FloatingActionButtonDefaults.elevation(0.dp, 0.dp),
-                modifier = Modifier.size(48.dp)
-            ) {
-                Icon(painterResource(R.drawable.radio), "Radio")
+            
+            when (downloadState) {
+                Download.STATE_COMPLETED -> IconButton(onClick = onRemoveDownloadClick) {
+                    Icon(
+                        painterResource(R.drawable.offline),
+                        contentDescription = "Downloaded",
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+                Download.STATE_DOWNLOADING -> IconButton(onClick = onRemoveDownloadClick) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(24.dp),
+                        strokeWidth = 2.dp,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+                else -> IconButton(onClick = onDownloadClick) {
+                    Icon(
+                        painterResource(R.drawable.download),
+                        contentDescription = "Download",
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
             }
-            Spacer(Modifier.width(12.dp))
-            FloatingActionButton(
-                onClick = onShuffleClick,
-                elevation = FloatingActionButtonDefaults.elevation(0.dp, 0.dp),
-                modifier = Modifier.size(48.dp)
-            ) {
-                Icon(painterResource(R.drawable.shuffle), "Shuffle")
-            }
-            Spacer(Modifier.width(16.dp))
-            FloatingActionButton(onClick = onPlayClick) {
-                Icon(painterResource(R.drawable.play), "Play")
+            
+            IconButton(onClick = onMenuClick) {
+                Icon(
+                    painterResource(R.drawable.more_vert),
+                    contentDescription = "More options",
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(24.dp)
+                )
             }
         }
     }
