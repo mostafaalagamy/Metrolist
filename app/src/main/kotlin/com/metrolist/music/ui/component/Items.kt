@@ -1039,6 +1039,8 @@ fun ItemThumbnail(
             AsyncImage(
                 model = thumbnailUrl,
                 contentDescription = null,
+                placeholder = painterResource(R.drawable.music_note),
+                error = painterResource(R.drawable.music_note),
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(shape)
