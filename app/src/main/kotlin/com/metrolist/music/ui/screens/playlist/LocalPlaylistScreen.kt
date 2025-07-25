@@ -161,9 +161,6 @@ import com.metrolist.music.ui.component.LocalMenuState
 import com.metrolist.music.ui.component.SongListItem
 import com.metrolist.music.ui.component.SortHeader
 import com.metrolist.music.ui.component.TextFieldDialog
-import com.metrolist.music.ui.component.shimmer.ListItemPlaceHolder
-import com.metrolist.music.ui.component.shimmer.ShimmerHost
-import com.metrolist.music.ui.component.shimmer.TextPlaceholder
 import com.metrolist.music.ui.menu.PlaylistMenu
 import com.metrolist.music.ui.menu.SelectionSongMenu
 import com.metrolist.music.ui.menu.SongMenu
@@ -490,14 +487,11 @@ fun LocalPlaylistScreen(
                 listOf(animatedBackgroundColor.copy(alpha = 0.4f), MaterialTheme.colorScheme.surface)
             )),
     ) {
-        if (playlist == null) {
-            LocalPlaylistScreenSkeleton()
-        } else {
-            LazyColumn(
-                state = lazyListState,
-                contentPadding = LocalPlayerAwareWindowInsets.current.union(WindowInsets.ime).asPaddingValues(),
-            ) {
-                playlist.let { playlist ->
+        LazyColumn(
+            state = lazyListState,
+            contentPadding = LocalPlayerAwareWindowInsets.current.union(WindowInsets.ime).asPaddingValues(),
+        ) {
+            playlist?.let { playlist ->
                 if (playlist.songCount == 0 && playlist.playlist.remoteSongCount == 0) {
                     item {
                         EmptyPlaceholder(
@@ -992,7 +986,6 @@ fun LocalPlaylistScreen(
                 .windowInsetsPadding(LocalPlayerAwareWindowInsets.current.union(WindowInsets.ime))
                 .align(Alignment.BottomCenter),
         )
-        }
     }
 }
 
@@ -1019,11 +1012,11 @@ private fun LocalPlaylistHeader(
                 model = playlist.thumbnails[0],
                 contentDescription = "Playlist Thumbnail",
                 contentScale = ContentScale.Crop,
-                modifier = Modifier.size(200.dp).clip(RoundedCornerShape(12.dp)).shadow(16.dp, RoundedCornerShape(12.dp))
+                modifier = Modifier.size(200.dp).clip(RoundedCornerShape(12.dp))
             )
         } else if (playlist.thumbnails.size > 1) {
             Box(
-                modifier = Modifier.size(200.dp).clip(RoundedCornerShape(12.dp)).shadow(16.dp, RoundedCornerShape(12.dp))
+                modifier = Modifier.size(200.dp).clip(RoundedCornerShape(12.dp))
             ) {
                 listOf(
                     Alignment.TopStart,
@@ -1479,56 +1472,5 @@ fun LocalPlaylistHeader(
             isLiked = liked,
             isEditable = editable
         )
-    }
-}
-
-@Composable
-private fun LocalPlaylistScreenSkeleton() {
-    ShimmerHost {
-        LazyColumn(contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues()) {
-            item {
-                Column(
-                    modifier = Modifier.fillMaxWidth().height(320.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Spacer(Modifier.size(200.dp).clip(RoundedCornerShape(12.dp)).background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)))
-                    Spacer(Modifier.height(16.dp))
-                    TextPlaceholder()
-                    Spacer(Modifier.height(8.dp))
-                    TextPlaceholder()
-                }
-            }
-            item {
-                Row(
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    // Left side - action buttons
-                    Row(
-                        modifier = Modifier
-                            .weight(1f)
-                            .horizontalScroll(rememberScrollState()),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        repeat(5) { 
-                            Spacer(Modifier.size(40.dp).clip(CircleShape).background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)))
-                        }
-                    }
-                    
-                    // Right side - play buttons
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Spacer(Modifier.size(44.dp).clip(CircleShape).background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)))
-                        Spacer(Modifier.width(12.dp))
-                        Spacer(Modifier.size(48.dp).clip(CircleShape).background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)))
-                    }
-                }
-            }
-            items(7) {
-                ListItemPlaceHolder(modifier = Modifier.padding(horizontal = 8.dp))
-            }
-        }
     }
 }
