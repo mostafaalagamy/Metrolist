@@ -104,7 +104,7 @@
     <string name="seek_backward">5 секунд назад</string>
     <string name="seek_forward">5 секунд вперед</string>
     <string name="login_settings">Настройки логина</string>
-    <string name="new_player_design">Новый дизайн игрока</string>
+    <string name="new_player_design">Новый дизайн проигрывателя</string>
     <string name="default_style">По умолчанию</string>
     <string name="secondary_color_style">Вторичный</string>
     <string name="lyrics_click_change">Изменение текста песни по клику</string>
@@ -155,4 +155,5 @@
     <string name="clear_image_cache_dialog">Вы уверены, что хотите очистить все кэшированные изображения?</string>
     <string name="swipe_sensitivity">Чувствительность проведения по мини плееру</string>
     <string name="swipe_sensitivity_desc">Настроить чувствительность жестов для переключения песен</string>
+    <string name="new_mini_player_design">Новый дизайн мини проигрывателя</string>
 </resources>
