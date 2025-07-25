@@ -68,7 +68,7 @@
     <string name="player_background_style">Slog ozadja predvajalnika</string>
     <string name="follow_theme">Sledi temi</string>
     <string name="gradient">Gradient</string>
-    <string name="new_player_design">Novo oblikovanje predvajalnika</string>
+    <string name="new_player_design">Nova oblika predvajalnika</string>
     <string name="player_background_blur">Zameglitev</string>
     <string name="player_buttons_style">Barve gumbov predvajalnika</string>
     <string name="default_style">Privzeto</string>
@@ -155,4 +155,5 @@
         <item quantity="other">%d sekund</item>
     </plurals>
     <string name="explore">Razišči</string>
+    <string name="new_mini_player_design">Nova oblika mini predvajalnika</string>
 </resources>
