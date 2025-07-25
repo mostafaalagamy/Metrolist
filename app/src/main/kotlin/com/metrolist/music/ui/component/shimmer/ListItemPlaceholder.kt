@@ -51,25 +51,5 @@ fun ListItemPlaceHolder(
             TextPlaceholder()
             TextPlaceholder()
         }
-        
-        // إضافة placeholder للأزرار في الجانب الأيمن
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(end = 6.dp)
-        ) {
-            Spacer(
-                modifier = Modifier
-                    .size(24.dp)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
-            )
-            Spacer(
-                modifier = Modifier
-                    .size(24.dp)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
-            )
-        }
     }
 }
