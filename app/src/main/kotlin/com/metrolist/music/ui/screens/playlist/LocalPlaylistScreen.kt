@@ -509,6 +509,7 @@ fun LocalPlaylistScreen(
                                 onShowRemoveDownloadDialog = { showRemoveDownloadDialog = true },
                                 onshowDeletePlaylistDialog = { showDeletePlaylistDialog = true },
                                 snackbarHostState = snackbarHostState,
+                                listState = lazyListState,
                                 modifier = Modifier.animateItem()
                             )
                         }
@@ -999,6 +1000,7 @@ fun LocalPlaylistHeader(
     onShowRemoveDownloadDialog: () -> Unit,
     onshowDeletePlaylistDialog: () -> Unit,
     snackbarHostState: SnackbarHostState,
+    listState: LazyListState,
     modifier: Modifier
 ) {
     val playerConnection = LocalPlayerConnection.current ?: return
