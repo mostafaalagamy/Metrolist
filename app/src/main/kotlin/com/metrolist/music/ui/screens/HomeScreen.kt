@@ -652,6 +652,7 @@ fun HomeScreen(
                                 AsyncImage(
                                     model = thumbnailUrl,
                                     contentDescription = null,
+                                    contentScale = ContentScale.Crop,
                                     modifier = Modifier
                                         .size(ListThumbnailSize)
                                         .clip(shape)
@@ -698,6 +699,7 @@ fun HomeScreen(
                                 AsyncImage(
                                     model = thumbnailUrl,
                                     contentDescription = null,
+                                    contentScale = ContentScale.Crop,
                                     modifier = Modifier
                                         .size(ListThumbnailSize)
                                         .clip(shape)

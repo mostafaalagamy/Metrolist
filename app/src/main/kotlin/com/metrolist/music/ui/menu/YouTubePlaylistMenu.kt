@@ -522,22 +522,5 @@ fun YouTubePlaylistMenu(
                 }
             )
         }
-        if (canSelect) {
-            item {
-                ListItem(
-                    headlineContent = { Text(text = stringResource(R.string.select)) },
-                    leadingContent = {
-                        Icon(
-                            painter = painterResource(R.drawable.select_all),
-                            contentDescription = null,
-                        )
-                    },
-                    modifier = Modifier.clickable {
-                        onDismiss()
-                        selectAction()
-                    }
-                )
-            }
-        }
     }
 }

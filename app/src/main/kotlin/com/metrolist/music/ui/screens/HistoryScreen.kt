@@ -16,6 +16,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -29,7 +30,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.toMutableStateList
@@ -93,9 +96,15 @@ fun HistoryScreen(
     val isPlaying by playerConnection.isPlaying.collectAsState()
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
 
-    var selection by remember {
-        mutableStateOf(false)
-    }
+    var inSelectMode by rememberSaveable { mutableStateOf(false) }
+    val selection = rememberSaveable(
+        saver = listSaver<MutableList<String>, String>(
+            save = { it.toList() },
+            restore = { it.toMutableStateList() }
+        )
+    ) { mutableStateListOf() }
+    val onExitSelectionMode = { inSelectMode = false; selection.clear() }
+    if (inSelectMode) { BackHandler(onBack = onExitSelectionMode) }
 
     var isSearching by rememberSaveable { mutableStateOf(false) }
     var query by rememberSaveable(stateSaver = TextFieldValue.Saver) {
@@ -111,10 +120,6 @@ fun HistoryScreen(
         BackHandler {
             isSearching = false
             query = TextFieldValue()
-        }
-    } else if (selection) {
-        BackHandler {
-            selection = false
         }
     }
 
@@ -135,10 +140,6 @@ fun HistoryScreen(
             DateAgo.LastWeek -> context.getString(R.string.last_week)
             is DateAgo.Other -> dateAgo.date.format(DateTimeFormatter.ofPattern("yyyy/MM"))
         }
-    }
-
-    class WrappedHistoryItem(val item: EventWithSong) {
-        var isSelected by mutableStateOf(false)
     }
 
     val filteredEvents = remember(events, query) {
@@ -174,9 +175,9 @@ fun HistoryScreen(
         }
     }
 
-    val wrappedItems = remember(filteredEvents) {
-        filteredEvents.flatMap { it.value }.map { WrappedHistoryItem(it) }
-    }.toMutableStateList()
+    val allItems = remember(filteredEvents) {
+        filteredEvents.flatMap { it.value }
+    }
 
     val lazyListState = rememberLazyListState()
 
@@ -284,20 +285,25 @@ fun HistoryScreen(
                     }
 
                     itemsIndexed(
-                        items = wrappedItems,
-                    ) { index, wrappedItem ->
-                        val event = wrappedItem.item
+                        items = events,
+                        key = { index, event -> "${event.song.id}_${index}_${event.event.id}" }
+                    ) { localIndex, event ->
+                        val globalIndex = allItems.indexOf(event)
+                        val onCheckedChange: (Boolean) -> Unit = { checked ->
+                            if (checked) selection.add(event.song.id) else selection.remove(event.song.id)
+                        }
                         SongListItem(
                             song = event.song,
                             isActive = event.song.id == mediaMetadata?.id,
                             isPlaying = isPlaying,
                             showInLibraryIcon = true,
-                            isSelected = wrappedItem.isSelected && selection,
 
                             trailingContent = {
-                                IconButton(
-                                    onClick = {
-                                        if (!selection) {
+                                if (inSelectMode) {
+                                    Checkbox(checked = event.song.id in selection, onCheckedChange = onCheckedChange)
+                                } else {
+                                    IconButton(
+                                        onClick = {
                                             menuState.show {
                                                 SongMenu(
                                                     originalSong = event.song,
@@ -307,40 +313,37 @@ fun HistoryScreen(
                                                 )
                                             }
                                         }
+                                    ) {
+                                        Icon(
+                                            painter = painterResource(R.drawable.more_vert),
+                                            contentDescription = null
+                                        )
                                     }
-                                ) {
-                                    Icon(
-                                        painter = painterResource(R.drawable.more_vert),
-                                        contentDescription = null
-                                    )
                                 }
                             },
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .combinedClickable(
                                     onClick = {
-                                        if (!selection) {
-                                            if (event.song.id == mediaMetadata?.id) {
-                                                playerConnection.player.togglePlayPause()
-                                            } else {
-                                                playerConnection.playQueue(
-                                                    ListQueue(
-                                                        title = dateAgoToString(dateAgo),
-                                                        items = wrappedItems.map { it.item.song.toMediaItem() },
-                                                        startIndex = index
-                                                    )
-                                                )
-                                            }
+                                        if (inSelectMode) {
+                                            onCheckedChange(event.song.id !in selection)
+                                        } else if (event.song.id == mediaMetadata?.id) {
+                                            playerConnection.player.togglePlayPause()
                                         } else {
-                                            wrappedItem.isSelected = !wrappedItem.isSelected
+                                            playerConnection.playQueue(
+                                                ListQueue(
+                                                    title = dateAgoToString(dateAgo),
+                                                    items = events.map { it.song.toMediaItem() },
+                                                    startIndex = localIndex
+                                                )
+                                            )
                                         }
                                     },
                                     onLongClick = {
-                                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                        if (!selection) {
-                                            selection = true
-                                            wrappedItems.forEach { it.isSelected = false }
-                                            wrappedItem.isSelected = true
+                                        if (!inSelectMode) {
+                                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                            inSelectMode = true
+                                            onCheckedChange(true)
                                         }
                                     }
                                 )
@@ -355,7 +358,7 @@ fun HistoryScreen(
             visible = if (historySource == HistorySource.REMOTE) {
                 filteredRemoteContent?.any { it.songs.isNotEmpty() } == true
             } else {
-                wrappedItems.isNotEmpty()
+                allItems.isNotEmpty()
             },
             lazyListState = lazyListState,
             icon = R.drawable.shuffle,
@@ -371,12 +374,12 @@ fun HistoryScreen(
                         )
                     }
                 } else {
-                    playerConnection.playQueue(
-                        ListQueue(
-                            title = context.getString(R.string.history),
-                            items = wrappedItems.map { it.item.song.toMediaItem() }.shuffled()
+                                            playerConnection.playQueue(
+                            ListQueue(
+                                title = context.getString(R.string.history),
+                                items = allItems.map { it.song.toMediaItem() }.shuffled()
+                            )
                         )
-                    )
                 }
             }
         )
@@ -384,10 +387,9 @@ fun HistoryScreen(
 
     TopAppBar(
         title = {
-            if (selection) {
-                val count = wrappedItems.count { it.isSelected }
+            if (inSelectMode) {
                 Text(
-                    text = pluralStringResource(R.plurals.n_song, count, count),
+                    text = pluralStringResource(R.plurals.n_selected, selection.size, selection.size),
                     style = MaterialTheme.typography.titleLarge
                 )
             } else if (isSearching) {
@@ -427,8 +429,8 @@ fun HistoryScreen(
                             query = TextFieldValue()
                         }
 
-                        selection -> {
-                            selection = false
+                        inSelectMode -> {
+                            onExitSelectionMode()
                         }
 
                         else -> {
@@ -437,47 +439,42 @@ fun HistoryScreen(
                     }
                 },
                 onLongClick = {
-                    if (!isSearching && !selection) {
+                    if (!isSearching && !inSelectMode) {
                         navController.backToMain()
                     }
                 }
             ) {
                 Icon(
                     painter = painterResource(
-                        if (selection) R.drawable.close else R.drawable.arrow_back
+                        if (inSelectMode || isSearching) R.drawable.close else R.drawable.arrow_back
                     ),
                     contentDescription = null
                 )
             }
         },
         actions = {
-            if (selection) {
-                val count = wrappedItems.count { it.isSelected }
-                IconButton(
-                    onClick = {
-                        if (count == wrappedItems.size) {
-                            wrappedItems.forEach { it.isSelected = false }
+            if (inSelectMode) {
+                val allSelected = selection.size == allItems.size && selection.isNotEmpty()
+                Checkbox(
+                    checked = allSelected,
+                    onCheckedChange = {
+                        if (allSelected) {
+                            selection.clear()
                         } else {
-                            wrappedItems.forEach { it.isSelected = true }
+                            selection.clear()
+                            selection.addAll(allItems.map { it.song.id })
                         }
                     }
-                ) {
-                    Icon(
-                        painter = painterResource(
-                            if (count == wrappedItems.size) R.drawable.deselect else R.drawable.select_all
-                        ),
-                        contentDescription = null
-                    )
-                }
+                )
                 IconButton(
                     onClick = {
                         menuState.show {
                             SelectionMediaMetadataMenu(
-                                songSelection = wrappedItems
-                                    .filter { it.isSelected }
-                                    .map { it.item.song.toMediaItem().metadata!! },
+                                songSelection = selection.mapNotNull { songId ->
+                                    allItems.find { it.song.id == songId }?.song?.toMediaItem()?.metadata
+                                },
                                 onDismiss = menuState::dismiss,
-                                clearAction = { selection = false },
+                                clearAction = onExitSelectionMode,
                                 currentItems = emptyList()
                             )
                         }

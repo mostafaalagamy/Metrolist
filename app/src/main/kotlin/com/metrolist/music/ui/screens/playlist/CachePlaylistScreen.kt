@@ -54,6 +54,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -96,6 +97,8 @@ import com.metrolist.music.extensions.togglePlayPause
 import com.metrolist.music.playback.queues.ListQueue
 import com.metrolist.music.ui.component.EmptyPlaceholder
 import com.metrolist.music.ui.component.IconButton
+import com.metrolist.music.ui.component.BorderedIconButton
+import com.metrolist.music.ui.component.BorderedFloatingActionButton
 import com.metrolist.music.ui.component.LocalMenuState
 import com.metrolist.music.ui.component.SongListItem
 import com.metrolist.music.ui.component.SortHeader
@@ -201,7 +204,7 @@ fun CachePlaylistScreen(
     val defaultColor = MaterialTheme.colorScheme.surface
     var dominantColor by remember { mutableStateOf(defaultColor) }
     val animatedBackgroundColor by animateColorAsState(dominantColor, tween(500), label = "background_color")
-    
+
     LaunchedEffect(filteredSongs) {
         filteredSongs.firstOrNull()?.second?.thumbnailUrl?.let { thumbnailUrl ->
             dominantColor = fetchDominantColor(context, thumbnailUrl, defaultColor)
@@ -217,73 +220,55 @@ fun CachePlaylistScreen(
             .fillMaxSize()
             .background(Brush.verticalGradient(listOf(animatedBackgroundColor.copy(alpha = 0.4f), MaterialTheme.colorScheme.surface)))
     ) {
-        if (filteredSongs.isEmpty() && !isSearching) {
-            EmptyPlaceholder(
-                icon = R.drawable.music_note,
-                text = stringResource(R.string.playlist_is_empty)
-            )
-        } else {
-            LazyColumn(
-                state = lazyListState,
-                contentPadding = LocalPlayerAwareWindowInsets.current.union(WindowInsets.ime).asPaddingValues()
-            ) {
-                if (filteredSongs.isEmpty() && isSearching) {
-                    item {
+        LazyColumn(
+            state = lazyListState,
+            contentPadding = LocalPlayerAwareWindowInsets.current.union(WindowInsets.ime).asPaddingValues()
+        ) {
+            if (filteredSongs.isEmpty()) {
+                item {
+                    if (isSearching) {
                         EmptyPlaceholder(
                             icon = R.drawable.search,
                             text = stringResource(R.string.no_results_found)
                         )
+                    } else {
+                        EmptyPlaceholder(
+                            icon = R.drawable.music_note,
+                            text = stringResource(R.string.playlist_is_empty)
+                        )
                     }
-                } else if (filteredSongs.isNotEmpty()) {
-                    // Header (only shown when not searching)
-                    if (!isSearching) {
-                        item {
-                            CachePlaylistHeader(
-                                songs = filteredSongs.map { it.second },
-                                listState = lazyListState
-                            )
-                        }
-                        item {
-                            CachePlaylistActionControls(
-                                onPlayClick = {
-                                    playerConnection.playQueue(
-                                        ListQueue(title = "Cache Songs", items = filteredSongs.map { it.second.toMediaItem() })
-                                    )
-                                },
-                                onShuffleClick = {
-                                    playerConnection.playQueue(
-                                        ListQueue(title = "Cache Songs", items = filteredSongs.shuffled().map { it.second.toMediaItem() })
-                                    )
-                                }
-                            )
-                        }
-                        
-                        item {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier.padding(start = 16.dp),
-                            ) {
-                                SortHeader(
-                                    sortType = sortType,
-                                    sortDescending = sortDescending,
-                                    onSortTypeChange = onSortTypeChange,
-                                    onSortDescendingChange = onSortDescendingChange,
-                                    sortTypeText = { sortType ->
-                                        when (sortType) {
-                                            SongSortType.CREATE_DATE -> R.string.sort_by_create_date
-                                            SongSortType.NAME -> R.string.sort_by_name
-                                            SongSortType.ARTIST -> R.string.sort_by_artist
-                                            SongSortType.PLAY_TIME -> R.string.sort_by_play_time
-                                        }
-                                    },
-                                    modifier = Modifier.weight(1f),
+                }
+            } else {
+                // Header (only shown when not searching)
+                if (!isSearching) {
+                    item {
+                        CachePlaylistHeader(
+                            songs = filteredSongs.map { it.second },
+                            listState = lazyListState
+                        )
+                    }
+                    item {
+                        CachePlaylistActionControls(
+                            onPlayClick = {
+                                playerConnection.playQueue(
+                                    ListQueue(title = "Cache Songs", items = filteredSongs.map { it.second.toMediaItem() })
                                 )
-                            }
-                        }
+                            },
+                            onShuffleClick = {
+                                playerConnection.playQueue(
+                                    ListQueue(title = "Cache Songs", items = filteredSongs.shuffled().map { it.second.toMediaItem() })
+                                )
+                            },
+                            sortType = sortType,
+                            sortDescending = sortDescending,
+                            onSortTypeChange = onSortTypeChange,
+                            onSortDescendingChange = onSortDescendingChange
+                        )
                     }
+                }
 
-                    // Songs list
-                    itemsIndexed(filteredSongs, key = { _, (originalIndex, _) -> originalIndex }) { index, (originalIndex, song) ->
+                // Songs list
+                itemsIndexed(filteredSongs, key = { _, (originalIndex, _) -> originalIndex }) { index, (originalIndex, song) ->
                         val onCheckedChange: (Boolean) -> Unit = { if (it) selection.add(originalIndex) else selection.remove(originalIndex) }
                         SongListItem(
                             song = song,
@@ -335,7 +320,6 @@ fun CachePlaylistScreen(
                     }
                 }
             }
-        }
 
         // Custom collapsing top bar
         CachePlaylistCollapsingTopAppBar(
@@ -422,28 +406,49 @@ private fun CachePlaylistHeader(
 @Composable
 private fun CachePlaylistActionControls(
     onPlayClick: () -> Unit,
-    onShuffleClick: () -> Unit
+    onShuffleClick: () -> Unit,
+    sortType: SongSortType,
+    sortDescending: Boolean,
+    onSortTypeChange: (SongSortType) -> Unit,
+    onSortDescendingChange: (Boolean) -> Unit
 ) {
     Row(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        // Left side - empty for now (can add more actions later)
-        Row { }
-        
+        // Left side - Sort controls
+        SortHeader(
+            sortType = sortType,
+            sortDescending = sortDescending,
+            onSortTypeChange = onSortTypeChange,
+            onSortDescendingChange = onSortDescendingChange,
+            sortTypeText = { sortType ->
+                when (sortType) {
+                    SongSortType.CREATE_DATE -> R.string.sort_by_create_date
+                    SongSortType.NAME -> R.string.sort_by_name
+                    SongSortType.ARTIST -> R.string.sort_by_artist
+                    SongSortType.PLAY_TIME -> R.string.sort_by_play_time
+                }
+            },
+            modifier = Modifier.weight(1f)
+        )
+
         // Right side - circular shuffle and play buttons
         Row(verticalAlignment = Alignment.CenterVertically) {
             FloatingActionButton(
                 onClick = onShuffleClick,
                 elevation = FloatingActionButtonDefaults.elevation(0.dp, 0.dp),
-                modifier = Modifier.size(48.dp)
+                modifier = Modifier.size(44.dp)
             ) {
                 Icon(painterResource(R.drawable.shuffle), "Shuffle")
             }
-            Spacer(Modifier.width(16.dp))
-            FloatingActionButton(onClick = onPlayClick) { 
-                Icon(painterResource(R.drawable.play), "Play") 
+            Spacer(Modifier.width(12.dp))
+            FloatingActionButton(
+                onClick = onPlayClick,
+                modifier = Modifier.size(48.dp)
+            ) {
+                Icon(painterResource(R.drawable.play), "Play")
             }
         }
     }

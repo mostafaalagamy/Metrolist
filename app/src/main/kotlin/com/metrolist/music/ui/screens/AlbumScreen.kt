@@ -56,6 +56,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -101,6 +102,8 @@ import com.metrolist.music.extensions.togglePlayPause
 import com.metrolist.music.playback.ExoDownloadService
 import com.metrolist.music.playback.queues.LocalAlbumRadio
 import com.metrolist.music.ui.component.IconButton
+import com.metrolist.music.ui.component.BorderedIconButton
+import com.metrolist.music.ui.component.BorderedFloatingActionButton
 import com.metrolist.music.ui.component.LocalMenuState
 import com.metrolist.music.ui.component.NavigationTitle
 import com.metrolist.music.ui.component.SongListItem
@@ -173,7 +176,10 @@ fun AlbumScreen(
 
     var inSelectMode by rememberSaveable { mutableStateOf(false) }
     val selection = rememberSaveable(
-        saver = listSaver<MutableList<Int>, Int>({ it.toList() }, { it.toMutableStateList() })
+        saver = listSaver<MutableList<Int>, Int>(
+            save = { it.toList() }, 
+            restore = { it.toMutableStateList() }
+        )
     ) { mutableStateListOf() }
     val onExitSelectionMode = { inSelectMode = false; selection.clear() }
     if (inSelectMode) { BackHandler(onBack = onExitSelectionMode) }
@@ -287,7 +293,9 @@ fun AlbumScreen(
                 // Songs list
                 if (wrappedSongs.isNotEmpty()) {
                     itemsIndexed(items = wrappedSongs, key = { _, song -> song.item.id }) { index, songWrapper ->
-                        val onCheckedChange: (Boolean) -> Unit = { if (it) selection.add(index) else selection.remove(index) }
+                        val onCheckedChange: (Boolean) -> Unit = { checked -> 
+                            if (checked) selection.add(index) else selection.remove(index) 
+                        }
                         SongListItem(
                             song = songWrapper.item,
                             albumIndex = index + 1,
@@ -484,26 +492,42 @@ private fun AlbumActionControls(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         // Left side - more, download and like buttons (reversed order)
-        Row {
-            IconButton(onClick = onMenuClick) {
-                Icon(painterResource(R.drawable.more_vert), "More options")
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            BorderedIconButton(
+                onClick = onMenuClick,
+                modifier = Modifier.size(40.dp)
+            ) {
+                Icon(painterResource(R.drawable.more_vert), "More options", modifier = Modifier.size(24.dp))
             }
             when (downloadState) {
-                Download.STATE_COMPLETED -> IconButton(onClick = onRemoveDownloadClick) {
-                    Icon(painterResource(R.drawable.offline), "Downloaded", tint = MaterialTheme.colorScheme.primary)
+                Download.STATE_COMPLETED -> BorderedIconButton(
+                    onClick = onRemoveDownloadClick,
+                    modifier = Modifier.size(40.dp)
+                ) {
+                    Icon(painterResource(R.drawable.offline), "Downloaded", tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(24.dp))
                 }
-                Download.STATE_DOWNLOADING -> IconButton(onClick = onRemoveDownloadClick) {
+                Download.STATE_DOWNLOADING -> BorderedIconButton(
+                    onClick = onRemoveDownloadClick,
+                    modifier = Modifier.size(40.dp)
+                ) {
                     CircularProgressIndicator(modifier = Modifier.size(24.dp), strokeWidth = 2.dp)
                 }
-                else -> IconButton(onClick = onDownloadClick) {
-                    Icon(painterResource(R.drawable.download), "Download")
+                else -> BorderedIconButton(
+                    onClick = onDownloadClick,
+                    modifier = Modifier.size(40.dp)
+                ) {
+                    Icon(painterResource(R.drawable.download), "Download", modifier = Modifier.size(24.dp))
                 }
             }
-            IconButton(onClick = onLikeClick) {
+            BorderedIconButton(
+                onClick = onLikeClick,
+                modifier = Modifier.size(40.dp)
+            ) {
                 Icon(
                     painter = painterResource(if (isLiked) R.drawable.favorite else R.drawable.favorite_border),
                     contentDescription = "Like",
-                    tint = if (isLiked) MaterialTheme.colorScheme.error else LocalContentColor.current
+                    tint = if (isLiked) MaterialTheme.colorScheme.error else LocalContentColor.current,
+                    modifier = Modifier.size(24.dp)
                 )
             }
         }
@@ -513,20 +537,23 @@ private fun AlbumActionControls(
             FloatingActionButton(
                 onClick = onRadioClick,
                 elevation = FloatingActionButtonDefaults.elevation(0.dp, 0.dp),
-                modifier = Modifier.size(48.dp)
+                modifier = Modifier.size(40.dp)
             ) {
                 Icon(painterResource(R.drawable.radio), "Radio")
             }
-            Spacer(Modifier.width(12.dp))
+            Spacer(Modifier.width(8.dp))
             FloatingActionButton(
                 onClick = onShuffleClick,
                 elevation = FloatingActionButtonDefaults.elevation(0.dp, 0.dp),
-                modifier = Modifier.size(48.dp)
+                modifier = Modifier.size(44.dp)
             ) {
                 Icon(painterResource(R.drawable.shuffle), "Shuffle")
             }
-            Spacer(Modifier.width(16.dp))
-            FloatingActionButton(onClick = onPlayClick) {
+            Spacer(Modifier.width(12.dp))
+            FloatingActionButton(
+                onClick = onPlayClick,
+                modifier = Modifier.size(48.dp)
+            ) {
                 Icon(painterResource(R.drawable.play), "Play")
             }
         }

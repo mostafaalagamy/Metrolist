@@ -30,7 +30,6 @@ class OnlinePlaylistViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.Lazily, null)
 
     var continuation: String? = null
-        private set
 
     init {
         viewModelScope.launch(Dispatchers.IO) {

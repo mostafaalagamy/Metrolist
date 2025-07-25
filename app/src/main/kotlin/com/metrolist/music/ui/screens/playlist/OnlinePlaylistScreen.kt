@@ -7,6 +7,7 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -34,6 +35,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
@@ -49,12 +51,12 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -97,6 +99,7 @@ import androidx.palette.graphics.Palette
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import coil.size.Size
+import androidx.compose.ui.layout.ContentScale
 import com.metrolist.innertube.models.SongItem
 import com.metrolist.innertube.models.WatchEndpoint
 import com.metrolist.music.LocalDatabase
@@ -116,16 +119,17 @@ import com.metrolist.music.playback.queues.YouTubeQueue
 import com.metrolist.music.ui.component.AutoResizeText
 import com.metrolist.music.ui.component.FontSizeRange
 import com.metrolist.music.ui.component.IconButton
+import com.metrolist.music.ui.component.BorderedIconButton
+import com.metrolist.music.ui.component.BorderedFloatingActionButton
 import com.metrolist.music.ui.component.LocalMenuState
 import com.metrolist.music.ui.component.NavigationTitle
-import com.metrolist.music.ui.component.TopAppBarMinimalTitle
 import com.metrolist.music.ui.component.YouTubeListItem
 import com.metrolist.music.ui.component.shimmer.ListItemPlaceHolder
 import com.metrolist.music.ui.component.shimmer.ShimmerHost
 import com.metrolist.music.ui.component.shimmer.TextPlaceholder
 import com.metrolist.music.ui.menu.YouTubePlaylistMenu
 import com.metrolist.music.ui.menu.YouTubeSongMenu
-import com.metrolist.music.ui.menu.YouTubeSongSelectionMenu
+import com.metrolist.music.ui.menu.SelectionMediaMetadataMenu
 import com.metrolist.music.ui.utils.backToMain
 import com.metrolist.music.utils.rememberPreference
 import com.metrolist.music.viewmodels.OnlinePlaylistViewModel
@@ -169,11 +173,26 @@ fun OnlinePlaylistScreen(
 
     val playlist by viewModel.playlist.collectAsState()
     val songs by viewModel.playlistSongs.collectAsState()
+    val dbPlaylist by viewModel.dbPlaylist.collectAsState()
     val hideExplicit by rememberPreference(key = HideExplicitKey, defaultValue = false)
 
     val lazyListState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
+
+    LaunchedEffect(lazyListState) {
+        snapshotFlow {
+            val layoutInfo = lazyListState.layoutInfo
+            val totalItemsNumber = layoutInfo.totalItemsCount
+            val lastVisibleItemIndex = (layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0) + 1
+
+            lastVisibleItemIndex > (totalItemsNumber - 5)
+        }.collect { shouldLoadMore ->
+            if (shouldLoadMore && viewModel.continuation != null) {
+                viewModel.loadMoreSongs()
+            }
+        }
+    }
 
     var isSearching by rememberSaveable { mutableStateOf(false) }
     var query by rememberSaveable(stateSaver = TextFieldValue.Saver) { mutableStateOf(TextFieldValue()) }
@@ -191,7 +210,10 @@ fun OnlinePlaylistScreen(
     }
     var inSelectMode by rememberSaveable { mutableStateOf(false) }
     val selection = rememberSaveable(
-        saver = listSaver<MutableList<Int>, Int>({ it.toList() }, { it.toMutableStateList() })
+        saver = listSaver<MutableList<Int>, Int>(
+            save = { it.toList() },
+            restore = { it.toMutableStateList() }
+        )
     ) { mutableStateListOf() }
     val onExitSelectionMode = { inSelectMode = false; selection.clear() }
     if (inSelectMode) { BackHandler(onBack = onExitSelectionMode) }
@@ -230,23 +252,34 @@ fun OnlinePlaylistScreen(
                             playlist = playlistData,
                             onShuffleClick = { playlistData.shuffleEndpoint?.let { playerConnection.playQueue(YouTubeQueue(it)) } },
                             onRadioClick = { playlistData.radioEndpoint?.let { playerConnection.playQueue(YouTubeQueue(it)) } },
-                            onImportClick = {
+                            onFavoriteClick = {
                                 database.transaction {
-                                    val playlistEntity = PlaylistEntity(
-                                        name = playlistData.title,
-                                        browseId = playlistData.id,
-                                        isEditable = playlistData.isEditable,
-                                        playEndpointParams = playlistData.playEndpoint?.params,
-                                        shuffleEndpointParams = playlistData.shuffleEndpoint?.params,
-                                        radioEndpointParams = playlistData.radioEndpoint?.params
-                                    ).toggleLike()
-                                    insert(playlistEntity)
-                                    songs.map(SongItem::toMediaMetadata).onEach(::insert).mapIndexed { index, song ->
-                                        PlaylistSongMap(songId = song.id, playlistId = playlistEntity.id, position = index)
-                                    }.forEach(::insert)
-                                    coroutineScope.launch { snackbarHostState.showSnackbar(context.getString(R.string.playlist_imported)) }
+                                    if (dbPlaylist?.playlist?.bookmarkedAt != null) {
+                                        dbPlaylist?.let {
+                                            update(it.playlist.toggleLike())
+                                        }
+                                    } else {
+                                        val existingPlaylist = dbPlaylist?.playlist
+                                        if (existingPlaylist != null) {
+                                            update(existingPlaylist.toggleLike())
+                                        } else {
+                                            val playlistEntity = PlaylistEntity(
+                                                name = playlistData.title,
+                                                browseId = playlistData.id,
+                                                isEditable = playlistData.isEditable,
+                                                playEndpointParams = playlistData.playEndpoint?.params,
+                                                shuffleEndpointParams = playlistData.shuffleEndpoint?.params,
+                                                radioEndpointParams = playlistData.radioEndpoint?.params
+                                            ).toggleLike()
+                                            insert(playlistEntity)
+                                            songs.map(SongItem::toMediaMetadata).onEach(::insert).mapIndexed { index, song ->
+                                                PlaylistSongMap(songId = song.id, playlistId = playlistEntity.id, position = index)
+                                            }.forEach(::insert)
+                                        }
+                                    }
                                 }
                             },
+                            isFavorited = dbPlaylist?.playlist?.bookmarkedAt != null,
                             onMenuClick = {
                                 menuState.show {
                                     YouTubePlaylistMenu(
@@ -269,7 +302,7 @@ fun OnlinePlaylistScreen(
                         item = song,
                         isActive = mediaMetadata?.id == song.id,
                         isPlaying = isPlaying,
-                        isSelected = index in selection && inSelectMode,
+                        isSelected = false,
                         trailingContent = {
                             if (inSelectMode) {
                                 Checkbox(checked = index in selection, onCheckedChange = onCheckedChange)
@@ -302,6 +335,23 @@ fun OnlinePlaylistScreen(
                             .animateItem()
                     )
                 }
+
+                // Loading indicator for infinite scroll
+                if (viewModel.continuation != null) {
+                    item {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(24.dp),
+                                strokeWidth = 2.dp
+                            )
+                        }
+                    }
+                }
             }
         }
 
@@ -331,10 +381,11 @@ fun OnlinePlaylistScreen(
             },
             onSelectionMenuClick = {
                 menuState.show {
-                    YouTubeSongSelectionMenu(
-                        selection = selection.mapNotNull { songs.getOrNull(it) },
+                    SelectionMediaMetadataMenu(
+                        songSelection = selection.mapNotNull { songs.getOrNull(it)?.toMediaItem()?.metadata },
                         onDismiss = menuState::dismiss,
-                        onExitSelectionMode = onExitSelectionMode
+                        clearAction = onExitSelectionMode,
+                        currentItems = emptyList()
                     )
                 }
             }
@@ -372,6 +423,7 @@ private fun PlaylistHeader(
         AsyncImage(
             model = playlist.thumbnail,
             contentDescription = "Playlist Thumbnail",
+            contentScale = ContentScale.Crop,
             modifier = Modifier.size(200.dp).clip(RoundedCornerShape(12.dp)).shadow(16.dp, RoundedCornerShape(12.dp))
         )
         Spacer(Modifier.height(16.dp))
@@ -406,37 +458,93 @@ private fun PlaylistActionControls(
     playlist: com.metrolist.innertube.models.PlaylistItem,
     onShuffleClick: () -> Unit,
     onRadioClick: () -> Unit,
-    onImportClick: () -> Unit,
-    onMenuClick: () -> Unit
+    onFavoriteClick: () -> Unit,
+    onMenuClick: () -> Unit,
+    isFavorited: Boolean = false
 ) {
     Row(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        // Left side: Radio and Shuffle as circular buttons
-        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+        // Left side: Menu and Import buttons
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(CircleShape)
+                    .border(
+                        width = 1.dp,
+                        color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
+                        shape = CircleShape
+                    )
+                    .background(
+                        color = Color.Transparent,
+                        shape = CircleShape
+                    )
+            ) {
+                IconButton(
+                    onClick = onMenuClick,
+                    modifier = Modifier.size(40.dp)
+                ) {
+                    Icon(
+                        painterResource(R.drawable.more_vert),
+                        "Menu",
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+            }
+
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(CircleShape)
+                    .border(
+                        width = 1.dp,
+                        color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
+                        shape = CircleShape
+                    )
+                    .background(
+                        color = Color.Transparent,
+                        shape = CircleShape
+                    )
+            ) {
+                IconButton(
+                    onClick = onFavoriteClick,
+                    modifier = Modifier.size(40.dp)
+                ) {
+                    Icon(
+                        painterResource(if (isFavorited) R.drawable.favorite else R.drawable.favorite_border),
+                        "Favorite",
+                        tint = if (isFavorited) MaterialTheme.colorScheme.error else LocalContentColor.current,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+            }
+        }
+
+        // Right side - action buttons
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            playlist.radioEndpoint?.let { radioEndpoint ->
+                FloatingActionButton(
+                    onClick = onRadioClick,
+                    elevation = FloatingActionButtonDefaults.elevation(0.dp, 0.dp),
+                    modifier = Modifier.size(44.dp)
+                ) {
+                    Icon(painterResource(R.drawable.radio), "Radio")
+                }
+                Spacer(Modifier.width(8.dp))
+            }
+
             FloatingActionButton(
-                onClick = onShuffleClick, 
-                elevation = FloatingActionButtonDefaults.elevation(0.dp, 0.dp), 
+                onClick = onShuffleClick,
+                elevation = FloatingActionButtonDefaults.elevation(0.dp, 0.dp),
                 modifier = Modifier.size(48.dp)
             ) {
                 Icon(painterResource(R.drawable.shuffle), "Shuffle")
             }
-            playlist.radioEndpoint?.let {
-                FloatingActionButton(
-                    onClick = onRadioClick,
-                    elevation = FloatingActionButtonDefaults.elevation(0.dp, 0.dp),
-                    modifier = Modifier.size(48.dp)
-                ) { 
-                    Icon(painterResource(R.drawable.radio), "Radio") 
-                }
-            }
-        }
-        // Right side: More and Import buttons
-        Row {
-            IconButton(onClick = onMenuClick) { Icon(painterResource(R.drawable.more_vert), "Menu") }
-            IconButton(onClick = onImportClick) { Icon(painterResource(R.drawable.input), "Import") }
         }
     }
 }
@@ -529,13 +637,15 @@ private fun OnlinePlaylistScreenSkeleton() {
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Row(horizontalArrangement = Arrangement.spacedBy(16.dp), verticalAlignment = Alignment.CenterVertically) {
-                        Spacer(Modifier.size(48.dp).clip(CircleShape).background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)))
-                        Spacer(Modifier.size(48.dp).clip(CircleShape).background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)))
+                    // Left side: Menu and Import buttons (larger buttons)
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+                        Spacer(Modifier.size(40.dp).clip(CircleShape).background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)))
+                        Spacer(Modifier.size(40.dp).clip(CircleShape).background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)))
                     }
+                    // Right side: Radio and Shuffle buttons (smaller buttons)
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        Spacer(Modifier.size(24.dp).clip(CircleShape).background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)))
-                        Spacer(Modifier.size(24.dp).clip(CircleShape).background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)))
+                        Spacer(Modifier.size(40.dp).clip(CircleShape).background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)))
+                        Spacer(Modifier.size(44.dp).clip(CircleShape).background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)))
                     }
                 }
             }

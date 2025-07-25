@@ -46,6 +46,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -71,6 +72,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.toMutableStateList
@@ -161,15 +163,15 @@ fun Queue(
 
     val currentFormat by playerConnection.currentFormat.collectAsState(initial = null)
 
-    val selectedSongs = remember { mutableStateListOf<MediaMetadata>() }
-    val selectedItems = remember { mutableStateListOf<Timeline.Window>() }
-    var selection by remember { mutableStateOf(false) }
-
-    if (selection) {
-        BackHandler {
-            selection = false
-        }
-    }
+    var inSelectMode by rememberSaveable { mutableStateOf(false) }
+    val selection = rememberSaveable(
+        saver = listSaver<MutableList<Int>, Int>(
+            save = { it.toList() },
+            restore = { it.toMutableStateList() }
+        )
+    ) { mutableStateListOf() }
+    val onExitSelectionMode = { inSelectMode = false; selection.clear() }
+    if (inSelectMode) { BackHandler(onBack = onExitSelectionMode) }
 
     var locked by rememberPreference(QueueEditLockKey, defaultValue = true)
 
@@ -676,7 +678,7 @@ fun Queue(
                         modifier =
                         Modifier
                             .animateContentSize()
-                            .height(if (selection) 48.dp else 0.dp),
+                            .height(if (inSelectMode) 48.dp else 0.dp),
                     )
                 }
 
@@ -729,12 +731,21 @@ fun Queue(
                             Row(
                                 horizontalArrangement = Arrangement.Center,
                             ) {
+                                val onCheckedChange: (Boolean) -> Unit = { checked ->
+                                    if (checked) selection.add(index) else selection.remove(index)
+                                }
                                 MediaMetadataListItem(
                                     mediaMetadata = window.mediaItem.metadata!!,
-                                    isSelected = selection && window.mediaItem.metadata!! in selectedSongs,
                                     isActive = index == currentWindowIndex,
                                     isPlaying = isPlaying,
                                     trailingContent = {
+                                        if (inSelectMode) {
+                                            Checkbox(
+                                                checked = index in selection,
+                                                onCheckedChange = onCheckedChange,
+                                                modifier = Modifier.padding(end = 8.dp)
+                                            )
+                                        } else {
                                         IconButton(
                                             onClick = {
                                                 menuState.show {
@@ -760,7 +771,8 @@ fun Queue(
                                                 contentDescription = null,
                                             )
                                         }
-                                        if (!locked) {
+                                        }
+                                        if (!locked && !inSelectMode) {
                                             IconButton(
                                                 onClick = { },
                                                 modifier = Modifier.draggableHandle()
@@ -777,15 +789,11 @@ fun Queue(
                                         .fillMaxWidth()
                                         .background(backgroundColor)
                                         .combinedClickable(
+                                            interactionSource = remember { MutableInteractionSource() },
+                                            indication = null,
                                             onClick = {
-                                                if (selection) {
-                                                    if (window.mediaItem.metadata!! in selectedSongs) {
-                                                        selectedSongs.remove(window.mediaItem.metadata!!)
-                                                        selectedItems.remove(currentItem)
-                                                    } else {
-                                                        selectedSongs.add(window.mediaItem.metadata!!)
-                                                        selectedItems.add(currentItem)
-                                                    }
+                                                if (inSelectMode) {
+                                                    onCheckedChange(index !in selection)
                                                 } else {
                                                     if (index == currentWindowIndex) {
                                                         playerConnection.player.togglePlayPause()
@@ -798,12 +806,11 @@ fun Queue(
                                                 }
                                             },
                                             onLongClick = {
-                                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                                if (!selection) {
-                                                    selection = true
+                                                if (!inSelectMode) {
+                                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                                    inSelectMode = true
+                                                    selection.add(index)
                                                 }
-                                                selectedSongs.clear() // Clear all selections
-                                                selectedSongs.add(window.mediaItem.metadata!!) // Select current item
                                             },
                                         ),
                                 )
@@ -876,6 +883,8 @@ fun Queue(
                                 Modifier
                                     .fillMaxWidth()
                                     .combinedClickable(
+                                        interactionSource = remember { MutableInteractionSource() },
+                                        indication = null,
                                         onClick = {},
                                         onLongClick = {
                                             menuState.show {
@@ -935,7 +944,7 @@ fun Queue(
                 )
 
                 AnimatedVisibility(
-                    visible = !selection,
+                    visible = !inSelectMode,
                     enter = fadeIn() + slideInVertically { it },
                     exit = fadeOut() + slideOutVertically { it },
                 ) {
@@ -973,7 +982,7 @@ fun Queue(
             }
 
             AnimatedVisibility(
-                visible = selection,
+                visible = inSelectMode,
                 enter = fadeIn() + expandVertically(),
                 exit = fadeOut() + shrinkVertically(),
             ) {
@@ -983,11 +992,9 @@ fun Queue(
                         .height(48.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    val count = selectedSongs.size
+                    val count = selection.size
                     IconButton(
-                        onClick = {
-                            selection = false
-                        },
+                        onClick = onExitSelectionMode,
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.close),
@@ -998,45 +1005,30 @@ fun Queue(
                         text = stringResource(R.string.elements_selected, count),
                         modifier = Modifier.weight(1f)
                     )
-                    IconButton(
-                        onClick = {
-                            if (count == mutableQueueWindows.size) {
-                                selectedSongs.clear()
-                                selectedItems.clear()
+                    Checkbox(
+                        checked = count == queueWindows.size && count > 0,
+                        onCheckedChange = {
+                            if (count == queueWindows.size && count > 0) {
+                                selection.clear()
                             } else {
-                                queueWindows
-                                    .filter { it.mediaItem.metadata!! !in selectedSongs }
-                                    .forEach {
-                                        selectedSongs.add(it.mediaItem.metadata!!)
-                                        selectedItems.add(it)
-                                    }
+                                selection.clear()
+                                selection.addAll(queueWindows.indices)
                             }
-                        },
-                    ) {
-                        Icon(
-                            painter =
-                            painterResource(
-                                if (count == mutableQueueWindows.size) {
-                                    R.drawable.deselect
-                                } else {
-                                    R.drawable.select_all
-                                },
-                            ),
-                            contentDescription = null,
-                        )
-                    }
+                        }
+                    )
 
                     IconButton(
                         onClick = {
                             menuState.show {
                                 SelectionMediaMetadataMenu(
-                                    songSelection = selectedSongs,
-                                    onDismiss = menuState::dismiss,
-                                    clearAction = {
-                                        selectedSongs.clear()
-                                        selectedItems.clear()
+                                    songSelection = selection.mapNotNull { index ->
+                                        queueWindows.getOrNull(index)?.mediaItem?.metadata
                                     },
-                                    currentItems = selectedItems,
+                                    onDismiss = menuState::dismiss,
+                                    clearAction = onExitSelectionMode,
+                                    currentItems = selection.mapNotNull { index ->
+                                        queueWindows.getOrNull(index)
+                                    },
                                 )
                             }
                         },

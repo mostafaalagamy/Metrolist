@@ -32,6 +32,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
@@ -54,6 +55,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -88,6 +90,7 @@ import androidx.palette.graphics.Palette
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import coil.size.Size
+import androidx.compose.ui.layout.ContentScale
 import com.metrolist.music.LocalDownloadUtil
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.LocalPlayerConnection
@@ -100,6 +103,8 @@ import com.metrolist.music.playback.ExoDownloadService
 import com.metrolist.music.playback.queues.ListQueue
 import com.metrolist.music.ui.component.EmptyPlaceholder
 import com.metrolist.music.ui.component.IconButton
+import com.metrolist.music.ui.component.BorderedIconButton
+import com.metrolist.music.ui.component.BorderedFloatingActionButton
 import com.metrolist.music.ui.component.LocalMenuState
 import com.metrolist.music.ui.component.SongListItem
 import com.metrolist.music.ui.component.SortHeader
@@ -156,19 +161,41 @@ fun TopPlaylistScreen(
     var isSearching by rememberSaveable { mutableStateOf(false) }
     var query by rememberSaveable(stateSaver = TextFieldValue.Saver) { mutableStateOf(TextFieldValue()) }
     val focusRequester = remember { FocusRequester() }
-    
+
     LaunchedEffect(isSearching) {
         if (isSearching) {
             focusRequester.requestFocus()
         }
     }
-    
+
     var inSelectMode by rememberSaveable { mutableStateOf(false) }
     val selection = rememberSaveable(
         saver = listSaver<MutableList<Int>, Int>({ it.toList() }, { it.toMutableStateList() })
     ) { mutableStateListOf() }
     val onExitSelectionMode = { inSelectMode = false; selection.clear() }
     if (inSelectMode) { BackHandler(onBack = onExitSelectionMode) }
+
+    // Download state management
+    val downloadUtil = LocalDownloadUtil.current
+    var downloadState by remember { mutableStateOf(Download.STATE_STOPPED) }
+
+    LaunchedEffect(songs) {
+        val songList = songs?.map { it.song.id }
+        if (songList.isNullOrEmpty()) return@LaunchedEffect
+        downloadUtil.downloads.collect { downloads ->
+            downloadState = if (songList.all { downloads[it]?.state == Download.STATE_COMPLETED }) {
+                Download.STATE_COMPLETED
+            } else if (songList.all {
+                    downloads[it]?.state == Download.STATE_QUEUED ||
+                            downloads[it]?.state == Download.STATE_DOWNLOADING ||
+                            downloads[it]?.state == Download.STATE_COMPLETED
+                }) {
+                Download.STATE_DOWNLOADING
+            } else {
+                Download.STATE_STOPPED
+            }
+        }
+    }
 
     if (isSearching) {
         BackHandler {
@@ -179,26 +206,6 @@ fun TopPlaylistScreen(
 
     val sortType by viewModel.topPeriod.collectAsState()
     val name = stringResource(R.string.my_top) + " $maxSize"
-
-    val downloadUtil = LocalDownloadUtil.current
-    var downloadState by remember { mutableStateOf(Download.STATE_STOPPED) }
-
-    LaunchedEffect(songs) {
-        if (songs?.isEmpty() == true) return@LaunchedEffect
-        downloadUtil.downloads.collect { downloads ->
-            downloadState = if (songs?.all { downloads[it.song.id]?.state == Download.STATE_COMPLETED } == true) {
-                Download.STATE_COMPLETED
-            } else if (songs?.all {
-                    downloads[it.song.id]?.state == Download.STATE_QUEUED ||
-                            downloads[it.song.id]?.state == Download.STATE_DOWNLOADING ||
-                            downloads[it.song.id]?.state == Download.STATE_COMPLETED
-                } == true) {
-                Download.STATE_DOWNLOADING
-            } else {
-                Download.STATE_STOPPED
-            }
-        }
-    }
 
     val filteredSongs = remember(songs, query) {
         if (query.text.isEmpty()) songs?.mapIndexed { index, song -> index to song } ?: emptyList()
@@ -212,7 +219,7 @@ fun TopPlaylistScreen(
     val defaultColor = MaterialTheme.colorScheme.surface
     var dominantColor by remember { mutableStateOf(defaultColor) }
     val animatedBackgroundColor by animateColorAsState(dominantColor, tween(500), label = "background_color")
-    
+
     LaunchedEffect(songs) {
         songs?.firstOrNull()?.song?.thumbnailUrl?.let { thumbnailUrl ->
             dominantColor = fetchDominantColor(context, thumbnailUrl, defaultColor)
@@ -282,7 +289,31 @@ fun TopPlaylistScreen(
                                 },
                                 onQueueClick = {
                                     playerConnection.addToQueue(items = songs!!.map { it.toMediaItem() })
-                                }
+                                },
+                                onDownloadClick = {
+                                    when (downloadState) {
+                                        Download.STATE_COMPLETED -> {
+                                            songs?.forEach { song ->
+                                                DownloadService.sendRemoveDownload(context, ExoDownloadService::class.java, song.song.id, false)
+                                            }
+                                        }
+                                        Download.STATE_DOWNLOADING -> {
+                                            songs?.forEach { song ->
+                                                DownloadService.sendRemoveDownload(context, ExoDownloadService::class.java, song.song.id, false)
+                                            }
+                                        }
+                                        else -> {
+                                            songs?.forEach { song ->
+                                                val downloadRequest = DownloadRequest.Builder(song.song.id, song.song.id.toUri())
+                                                    .setCustomCacheKey(song.song.id)
+                                                    .setData(song.song.title.toByteArray())
+                                                    .build()
+                                                DownloadService.sendAddDownload(context, ExoDownloadService::class.java, downloadRequest, false)
+                                            }
+                                        }
+                                    }
+                                },
+                                downloadState = downloadState
                             )
                         }
                         item {
@@ -324,14 +355,14 @@ fun TopPlaylistScreen(
                                 if (inSelectMode) {
                                     Checkbox(checked = originalIndex in selection, onCheckedChange = onCheckedChange)
                                 } else {
-                                    IconButton(onClick = { 
-                                        menuState.show { 
+                                    IconButton(onClick = {
+                                        menuState.show {
                                             SongMenu(
                                                 originalSong = song,
                                                 navController = navController,
                                                 onDismiss = menuState::dismiss
-                                            ) 
-                                        } 
+                                            )
+                                        }
                                     }) {
                                         Icon(painterResource(R.drawable.more_vert), null)
                                     }
@@ -429,6 +460,7 @@ private fun TopPlaylistHeader(
         AsyncImage(
             model = songs.first().song.thumbnailUrl,
             contentDescription = "Playlist Thumbnail",
+            contentScale = ContentScale.Crop,
             modifier = Modifier.size(200.dp).clip(RoundedCornerShape(12.dp)).shadow(16.dp, RoundedCornerShape(12.dp))
         )
         Spacer(Modifier.height(16.dp))
@@ -453,30 +485,58 @@ private fun TopPlaylistHeader(
 private fun TopPlaylistActionControls(
     onPlayClick: () -> Unit,
     onShuffleClick: () -> Unit,
-    onQueueClick: () -> Unit
+    onQueueClick: () -> Unit,
+    onDownloadClick: () -> Unit,
+    downloadState: Int
 ) {
     Row(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        // Left side - more and queue buttons
-        Row {
-            IconButton(onClick = onQueueClick) { Icon(painterResource(R.drawable.queue_music), "Queue") }
+        // Left side - queue and download buttons
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            BorderedIconButton(
+                onClick = onQueueClick,
+                modifier = Modifier.size(40.dp)
+            ) { Icon(painterResource(R.drawable.queue_music), "Queue", modifier = Modifier.size(24.dp)) }
+            when (downloadState) {
+                Download.STATE_COMPLETED -> BorderedIconButton(
+                    onClick = onDownloadClick,
+                    modifier = Modifier.size(40.dp)
+                ) {
+                    Icon(painterResource(R.drawable.offline), "Downloaded", tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(24.dp))
+                }
+                Download.STATE_DOWNLOADING -> BorderedIconButton(
+                    onClick = onDownloadClick,
+                    modifier = Modifier.size(40.dp)
+                ) {
+                    CircularProgressIndicator(modifier = Modifier.size(24.dp), strokeWidth = 2.dp)
+                }
+                else -> BorderedIconButton(
+                    onClick = onDownloadClick,
+                    modifier = Modifier.size(40.dp)
+                ) {
+                    Icon(painterResource(R.drawable.download), "Download", modifier = Modifier.size(24.dp))
+                }
+            }
         }
-        
+
         // Right side - circular radio and shuffle buttons
         Row(verticalAlignment = Alignment.CenterVertically) {
             FloatingActionButton(
                 onClick = onShuffleClick,
                 elevation = FloatingActionButtonDefaults.elevation(0.dp, 0.dp),
-                modifier = Modifier.size(48.dp)
+                modifier = Modifier.size(44.dp)
             ) {
                 Icon(painterResource(R.drawable.shuffle), "Shuffle")
             }
-            Spacer(Modifier.width(16.dp))
-            FloatingActionButton(onClick = onPlayClick) { 
-                Icon(painterResource(R.drawable.play), "Play") 
+            Spacer(Modifier.width(12.dp))
+            FloatingActionButton(
+                onClick = onPlayClick,
+                modifier = Modifier.size(48.dp)
+            ) {
+                Icon(painterResource(R.drawable.play), "Play")
             }
         }
     }
