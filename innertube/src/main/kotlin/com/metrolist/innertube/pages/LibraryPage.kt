@@ -79,13 +79,36 @@ data class LibraryPage(
                     title = renderer.flexColumns.firstOrNull()
                         ?.musicResponsiveListItemFlexColumnRenderer?.text
                         ?.runs?.firstOrNull()?.text ?: return null,
-                    artists = renderer.flexColumns.getOrNull(1)?.musicResponsiveListItemFlexColumnRenderer?.text?.runs?.oddElements()
-                        ?.map {
-                            Artist(
-                                name = it.text,
-                                id = it.navigationEndpoint?.browseEndpoint?.browseId ?: return null
-                            )
-                        } ?: emptyList(),
+                    artists = renderer.flexColumns.getOrNull(1)?.musicResponsiveListItemFlexColumnRenderer?.text?.runs?.let { runs ->
+                        // First approach: look for elements with navigationEndpoint
+                        val artistsWithEndpoint = runs.mapNotNull { run ->
+                            run.navigationEndpoint?.browseEndpoint?.browseId?.let { browseId ->
+                                if (browseId.startsWith("UC") || browseId.startsWith("MPLA")) {
+                                    Artist(name = run.text, id = browseId)
+                                } else null
+                            }
+                        }
+                        
+                        if (artistsWithEndpoint.isNotEmpty()) {
+                            artistsWithEndpoint
+                        } else {
+                            // Fallback: use oddElements approach
+                            runs.oddElements().mapNotNull { run ->
+                                when {
+                                    run.text.matches(Regex("^\\d+.*")) -> null
+                                    run.text.lowercase() in listOf("song", "songs", "•", "views", "view") -> null
+                                    run.text.contains("views", ignoreCase = true) -> null
+                                    run.text.contains("view", ignoreCase = true) -> null
+                                    run.text.isBlank() || run.text.length <= 1 -> null
+                                    run.navigationEndpoint?.browseEndpoint?.browseId != null -> Artist(
+                                        name = run.text,
+                                        id = run.navigationEndpoint.browseEndpoint.browseId
+                                    )
+                                    else -> null
+                                }
+                            }
+                        }
+                    } ?: emptyList(),
                     album = renderer.flexColumns.getOrNull(2)?.musicResponsiveListItemFlexColumnRenderer?.text?.runs?.firstOrNull()
                         ?.let {
                             Album(
