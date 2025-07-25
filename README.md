@@ -3,6 +3,11 @@
 <h1>Metrolist</h1>
 <p>YouTube Music client for Android</p>
 
+  <div style="padding: 16px; margin: 16px 0; background-color: #FFFBE5; border-left: 6px solid #FFC107; border-radius: 4px;">
+  <h2 style="margin: 0;"><strong>⚠Warning</strong></h2>
+ If you're in a region where YouTube Music is not supported, you won't be able to use this app <strong>unless</strong> you have a proxy or VPN to connect to a YTM-supported region.
+  </div>
+
 <h1>Screenshots</h1>
 
   <img src="https://github.com/mostafaalagamy/Metrolist/blob/main/fastlane/metadata/android/en-US/images/screenshots/screenshot_1.png" width="30%" />
@@ -67,11 +72,6 @@ align="center">](https://apps.obtainium.imranr.dev/redirect?r=obtainium://add/ht
 align="center">](https://belberi.com/metrolist/?fbclid=PAY2xjawJP5dlleHRuA2FlbQIxMAABpjSk1oBp4e8aSV4nfX2dfunQObTlMWIkN-aVA9CSq36pnmkHsvfoYTjhHg_aem_9o9OGbQuZ2PjJTArq21UDA)
 
 </div>
-
-> **Warning**
->
->If you're in a region where YouTube Music is not supported, you won't be able to use this app
-***unless*** you have a proxy or VPN to connect to a YTM supported region.
 
 <div align="center">
 <h1>Translations</h1>
