@@ -50,12 +50,12 @@
     <string name="lyrics">Dalszöveg</string>
     <string name="already_in_playlist">Már a lejátszásilistában:</string>
     <plurals name="n_element">
-        <item quantity="one">elem</item>
-        <item quantity="other">elem</item>
+        <item quantity="one">%d elem</item>
+        <item quantity="other">%d elem</item>
     </plurals>
     <plurals name="n_time">
-        <item quantity="one">alkalom</item>
-        <item quantity="other">alkalom</item>
+        <item quantity="one">%d alkalom</item>
+        <item quantity="other">%d alkalom</item>
     </plurals>
     <string name="seek_backward">5 mp visszafelé</string>
     <string name="seek_forward">5 mp előrefelé</string>
@@ -114,4 +114,39 @@
     <string name="minimum_playback_duration">Minimum lejátszási hossz</string>
     <string name="import_online">\"m3u\" lejátszásilista importálása</string>
     <string name="import_csv">\"csv\" lejátszásilista importálása</string>
+    <string name="playlist_add_local_to_synced_note">Figyelem: A szinkronizált/távoli lejátszásilistához nem adhat hozzá helyi zenét. Minden más kombináció azonban működik</string>
+    <string name="auto_download_on_like">A like-olt zenék automata letöltése</string>
+    <string name="auto_download_on_like_desc">Ha a szívvel bejelöli kedvenc zenéjét, automatikusan letöltésre kerül</string>
+    <string name="swipe_sensitivity">Mini lejátszó félrehúzás érzékenység</string>
+    <string name="swipe_sensitivity_desc">Beállíthatja mennyire legyen érzékeny a zeneváltást kiváltó félrehúzás</string>
+    <string name="sensitivity_percentage">%1$d%%</string>
+    <string name="clear_song_cache_dialog">Biztosan ki akarja üríteni az összes gyorsítótárazott zenéjét?</string>
+    <string name="clear_image_cache_dialog">Biztosan ki akarja üríteni az összes gyorsítótárazott képét?</string>
+    <string name="clear_downloads_dialog">Biztosan ki akarja üríteni az összes letöltést?</string>
+    <string name="disable">Kikapcsol</string>
+    <string name="pause_remote_listen_history">A zenehallgatási előzmények megosztásának szüneteltetése YouTube Zenénél</string>
+    <string name="not_logged_in_youtube">Nincs bejelentkezve a YouTube-ba</string>
+    <string name="default_links">Támogatott hivatkozások megnyitása</string>
+    <string name="open_app_settings_error">Nem nyitható meg az app beállítás</string>
+    <string name="release_notes">Változásnapló</string>
+    <string name="all_time">Minden idők</string>
+    <string name="past_24_hours">Elmúlt 24 órában</string>
+    <string name="past_week">Elmúlt héten</string>
+    <string name="past_month">Elmúlt hónapban</string>
+    <string name="past_year">Elmúlt évben</string>
+    <string name="top_length">A toplistám hossza</string>
+    <string name="history_duration">Előzmény hossz</string>
+    <string name="information">Információ</string>
+    <string name="description">Leírás</string>
+    <string name="numbers">Számok</string>
+    <string name="subscribers">Feliratkozók</string>
+    <string name="views">Megtekintések</string>
+    <string name="likes">Tetszések</string>
+    <string name="dislikes">Nemtetszések</string>
+    <string name="subscribe">Feliratkozás</string>
+    <string name="subscribed">Feliratkozva</string>
+    <plurals name="seconds">
+        <item quantity="one">1 másodperc</item>
+        <item quantity="other">%d másodperc</item>
+    </plurals>
 </resources>
