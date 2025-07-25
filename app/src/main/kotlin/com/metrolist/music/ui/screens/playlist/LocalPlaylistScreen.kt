@@ -992,356 +992,6 @@ fun LocalPlaylistScreen(
 // New UI auxiliary components for Local Playlist
 
 @Composable
-private fun LocalPlaylistHeader(
-    playlist: Playlist,
-    listState: LazyListState
-) {
-    val scrollOffset = if (listState.firstVisibleItemIndex == 0) listState.firstVisibleItemScrollOffset.toFloat() else Float.MAX_VALUE
-    val headerHeightPx = with(LocalDensity.current) { 320.dp.toPx() }
-
-    val imageTranslationY = -scrollOffset * 0.2f
-    val textAlpha = (1f - (scrollOffset / (headerHeightPx / 2))).coerceIn(0f, 1f)
-
-    Column(
-        modifier = Modifier.fillMaxWidth().height(320.dp).graphicsLayer { translationY = imageTranslationY },
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        if (playlist.thumbnails.size == 1) {
-            AsyncImage(
-                model = playlist.thumbnails[0],
-                contentDescription = "Playlist Thumbnail",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.size(200.dp).clip(RoundedCornerShape(12.dp))
-            )
-        } else if (playlist.thumbnails.size > 1) {
-            Box(
-                modifier = Modifier.size(200.dp).clip(RoundedCornerShape(12.dp))
-            ) {
-                listOf(
-                    Alignment.TopStart,
-                    Alignment.TopEnd,
-                    Alignment.BottomStart,
-                    Alignment.BottomEnd,
-                ).fastForEachIndexed { index, alignment ->
-                    AsyncImage(
-                        model = playlist.thumbnails.getOrNull(index),
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .align(alignment)
-                            .size(100.dp)
-                    )
-                }
-            }
-        }
-        Spacer(Modifier.height(16.dp))
-        Column(
-            modifier = Modifier.graphicsLayer { alpha = textAlpha },
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(playlist.playlist.name, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis)
-            val songCountText = if (playlist.songCount == 0 && playlist.playlist.remoteSongCount != null) {
-                pluralStringResource(R.plurals.n_song, playlist.playlist.remoteSongCount, playlist.playlist.remoteSongCount)
-            } else {
-                pluralStringResource(R.plurals.n_song, playlist.songCount, playlist.songCount)
-            }
-            Text(songCountText, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
-        }
-    }
-}
-
-@Composable
-private fun LocalPlaylistActionControls(
-    playlist: Playlist,
-    songs: List<PlaylistSong>,
-    onShowEditDialog: () -> Unit,
-    onShowDeleteDialog: () -> Unit,
-    onSyncClick: () -> Unit,
-    onLikeClick: () -> Unit,
-    onDownloadClick: () -> Unit,
-    onQueueClick: () -> Unit,
-    onPlayClick: () -> Unit,
-    onShuffleClick: () -> Unit,
-    downloadState: Int,
-    isLiked: Boolean,
-    isEditable: Boolean
-) {
-    val playlistLength = remember(songs) { songs.fastSumBy { it.song.song.duration } }
-
-    Column(modifier = Modifier.padding(12.dp)) {
-        // Row of action buttons - Left side controls
-        Row(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            // Left side - action buttons (fill most space)
-            Row(
-                modifier = Modifier
-                    .weight(1f) // Take most available space
-                    .horizontalScroll(rememberScrollState()),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-            if (isEditable) {
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier
-                        .size(40.dp)
-                        .clip(CircleShape)
-                        .border(
-                            width = 1.dp,
-                            color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
-                            shape = CircleShape
-                        )
-                        .background(
-                            color = Color.Transparent,
-                            shape = CircleShape
-                        )
-                ) {
-                    IconButton(
-                        onClick = onShowDeleteDialog,
-                        modifier = Modifier.size(40.dp)
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.delete),
-                            contentDescription = null,
-                            modifier = Modifier.size(20.dp)
-                        )
-                    }
-                }
-            } else {
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier
-                        .size(40.dp)
-                        .clip(CircleShape)
-                        .border(
-                            width = 1.dp,
-                            color = if (isLiked)
-                                MaterialTheme.colorScheme.error.copy(alpha = 0.5f)
-                            else
-                                MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
-                            shape = CircleShape
-                        )
-                        .background(
-                            color = if (isLiked)
-                                MaterialTheme.colorScheme.error.copy(alpha = 0.1f)
-                            else
-                                Color.Transparent,
-                            shape = CircleShape
-                        )
-                ) {
-                    IconButton(
-                        onClick = onLikeClick,
-                        modifier = Modifier.size(40.dp)
-                    ) {
-                        Icon(
-                            painter = painterResource(if (isLiked) R.drawable.favorite else R.drawable.favorite_border),
-                            contentDescription = null,
-                            tint = if (isLiked) MaterialTheme.colorScheme.error else LocalContentColor.current,
-                            modifier = Modifier.size(20.dp)
-                        )
-                    }
-                }
-            }
-
-            if (isEditable) {
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier
-                        .size(40.dp)
-                        .clip(CircleShape)
-                        .border(
-                            width = 1.dp,
-                            color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
-                            shape = CircleShape
-                        )
-                        .background(
-                            color = Color.Transparent,
-                            shape = CircleShape
-                        )
-                ) {
-                    IconButton(
-                        onClick = onShowEditDialog,
-                        modifier = Modifier.size(40.dp)
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.edit),
-                            contentDescription = null,
-                            modifier = Modifier.size(20.dp)
-                        )
-                    }
-                }
-            }
-
-            if (playlist.playlist.browseId != null) {
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier
-                        .size(40.dp)
-                        .clip(CircleShape)
-                        .border(
-                            width = 1.dp,
-                            color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
-                            shape = CircleShape
-                        )
-                        .background(
-                            color = Color.Transparent,
-                            shape = CircleShape
-                        )
-                ) {
-                    IconButton(
-                        onClick = onSyncClick,
-                        modifier = Modifier.size(40.dp)
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.sync),
-                            contentDescription = null,
-                            modifier = Modifier.size(20.dp)
-                        )
-                    }
-                }
-            }
-
-            when (downloadState) {
-                Download.STATE_COMPLETED -> {
-                    Box(
-                        contentAlignment = Alignment.Center,
-                        modifier = Modifier
-                            .size(40.dp)
-                            .clip(CircleShape)
-                            .border(
-                                width = 1.dp,
-                                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
-                                shape = CircleShape
-                            )
-                            .background(
-                                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
-                                shape = CircleShape
-                            )
-                    ) {
-                        IconButton(
-                            onClick = onDownloadClick,
-                            modifier = Modifier.size(40.dp)
-                        ) {
-                            Icon(
-                                painter = painterResource(R.drawable.offline),
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.primary,
-                                modifier = Modifier.size(20.dp)
-                            )
-                        }
-                    }
-                }
-
-                Download.STATE_DOWNLOADING -> {
-                    Box(
-                        contentAlignment = Alignment.Center,
-                        modifier = Modifier
-                            .size(40.dp)
-                            .clip(CircleShape)
-                            .border(
-                                width = 1.dp,
-                                color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
-                                shape = CircleShape
-                            )
-                    ) {
-                        IconButton(
-                            onClick = onDownloadClick,
-                            modifier = Modifier.size(40.dp)
-                        ) {
-                            CircularProgressIndicator(
-                                strokeWidth = 2.dp,
-                                modifier = Modifier.size(20.dp),
-                            )
-                        }
-                    }
-                }
-
-                else -> {
-                    Box(
-                        contentAlignment = Alignment.Center,
-                        modifier = Modifier
-                            .size(40.dp)
-                            .clip(CircleShape)
-                            .border(
-                                width = 1.dp,
-                                color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
-                                shape = CircleShape
-                            )
-                            .background(
-                                color = Color.Transparent,
-                                shape = CircleShape
-                            )
-                    ) {
-                        IconButton(
-                            onClick = onDownloadClick,
-                            modifier = Modifier.size(40.dp)
-                        ) {
-                            Icon(
-                                painter = painterResource(R.drawable.download),
-                                contentDescription = null,
-                                modifier = Modifier.size(20.dp)
-                            )
-                        }
-                    }
-                }
-            }
-
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier
-                        .size(40.dp)
-                        .clip(CircleShape)
-                        .border(
-                            width = 1.dp,
-                            color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
-                            shape = CircleShape
-                        )
-                        .background(
-                            color = Color.Transparent,
-                            shape = CircleShape
-                        )
-                ) {
-                    IconButton(
-                        onClick = onQueueClick,
-                        modifier = Modifier.size(40.dp)
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.queue_music),
-                            contentDescription = null,
-                            modifier = Modifier.size(20.dp)
-                        )
-                    }
-                }
-            }
-
-            // Add space between left and right controls
-            Spacer(modifier = Modifier.weight(0.5f))
-
-            // Right side - circular shuffle and play buttons
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                FloatingActionButton(
-                    onClick = onShuffleClick,
-                    elevation = FloatingActionButtonDefaults.elevation(0.dp, 0.dp),
-                    modifier = Modifier.size(44.dp)
-                ) {
-                    Icon(painterResource(R.drawable.shuffle), "Shuffle")
-                }
-                Spacer(Modifier.width(12.dp))
-                FloatingActionButton(
-                    onClick = onPlayClick,
-                    modifier = Modifier.size(48.dp)
-                ) {
-                    Icon(painterResource(R.drawable.play), "Play")
-                }
-            }
-        }
-    }
-}
-
-@Composable
 fun LocalPlaylistHeader(
     playlist: Playlist,
     songs: List<PlaylistSong>,
@@ -1349,6 +999,7 @@ fun LocalPlaylistHeader(
     onShowRemoveDownloadDialog: () -> Unit,
     onshowDeletePlaylistDialog: () -> Unit,
     snackbarHostState: SnackbarHostState,
+    listState: LazyListState, // إضافة LazyListState للتأثيرات
     modifier: Modifier,
 ) {
     val playerConnection = LocalPlayerConnection.current ?: return
@@ -1381,96 +1032,398 @@ fun LocalPlaylistHeader(
         }
     }
 
-    Column(modifier = modifier) {
-        // Use the new header design
-        LocalPlaylistHeader(playlist = playlist, listState = rememberLazyListState())
+    val scrollOffset = if (listState.firstVisibleItemIndex == 0) listState.firstVisibleItemScrollOffset.toFloat() else Float.MAX_VALUE
+    val headerHeightPx = with(LocalDensity.current) { 320.dp.toPx() }
+    val imageTranslationY = -scrollOffset * 0.2f
+    val textAlpha = (1f - (scrollOffset / (headerHeightPx / 2))).coerceIn(0f, 1f)
 
-        // Use the original action controls design
-        LocalPlaylistActionControls(
-            playlist = playlist,
-            songs = songs,
-            onShowEditDialog = onShowEditDialog,
-            onShowDeleteDialog = onshowDeletePlaylistDialog,
-            onSyncClick = {
-                scope.launch(Dispatchers.IO) {
-                    val playlistPage = YouTube.playlist(playlist.playlist.browseId!!)
-                        .completed()
-                        .getOrNull() ?: return@launch
-                    database.transaction {
-                        clearPlaylist(playlist.id)
-                        playlistPage.songs
-                            .map(SongItem::toMediaMetadata)
-                            .onEach(::insert)
-                            .mapIndexed { position, song ->
-                                PlaylistSongMap(
-                                    songId = song.id,
-                                    playlistId = playlist.id,
-                                    position = position
+    Column(modifier = modifier) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(320.dp)
+                .graphicsLayer { translationY = imageTranslationY },
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            if (playlist.thumbnails.size == 1) {
+                AsyncImage(
+                    model = playlist.thumbnails[0],
+                    contentDescription = "Playlist Thumbnail",
+                    modifier = Modifier
+                        .size(200.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                )
+            } else if (playlist.thumbnails.size > 1) {
+                Box(
+                    modifier = Modifier
+                        .size(200.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                ) {
+                    listOf(
+                        Alignment.TopStart,
+                        Alignment.TopEnd,
+                        Alignment.BottomStart,
+                        Alignment.BottomEnd,
+                    ).fastForEachIndexed { index, alignment ->
+                        AsyncImage(
+                            model = playlist.thumbnails.getOrNull(index),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .align(alignment)
+                                .size(100.dp)
+                        )
+                    }
+                }
+            }
+            
+            Spacer(Modifier.height(16.dp))
+            
+            Column(
+                modifier = Modifier.graphicsLayer { alpha = textAlpha },
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = playlist.playlist.name,
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+                val songCountText = if (playlist.songCount == 0 && playlist.playlist.remoteSongCount != null) {
+                    pluralStringResource(R.plurals.n_song, playlist.playlist.remoteSongCount, playlist.playlist.remoteSongCount)
+                } else {
+                    pluralStringResource(R.plurals.n_song, playlist.songCount, playlist.songCount)
+                }
+                Text(
+                    text = songCountText,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
+
+        // Action Controls
+        Column(modifier = Modifier.padding(12.dp)) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                // Left side - action buttons
+                Row(
+                    modifier = Modifier
+                        .weight(1f)
+                        .horizontalScroll(rememberScrollState()),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    if (editable) {
+                        Box(
+                            contentAlignment = Alignment.Center,
+                            modifier = Modifier
+                                .size(40.dp)
+                                .clip(CircleShape)
+                                .border(
+                                    width = 1.dp,
+                                    color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
+                                    shape = CircleShape
+                                )
+                                .background(color = Color.Transparent, shape = CircleShape)
+                        ) {
+                            IconButton(
+                                onClick = onshowDeletePlaylistDialog,
+                                modifier = Modifier.size(40.dp)
+                            ) {
+                                Icon(
+                                    painter = painterResource(R.drawable.delete),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(20.dp)
                                 )
                             }
-                            .forEach(::insert)
+                        }
+                    } else {
+                        Box(
+                            contentAlignment = Alignment.Center,
+                            modifier = Modifier
+                                .size(40.dp)
+                                .clip(CircleShape)
+                                .border(
+                                    width = 1.dp,
+                                    color = if (liked)
+                                        MaterialTheme.colorScheme.error.copy(alpha = 0.5f)
+                                    else
+                                        MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
+                                    shape = CircleShape
+                                )
+                                .background(
+                                    color = if (liked)
+                                        MaterialTheme.colorScheme.error.copy(alpha = 0.1f)
+                                    else
+                                        Color.Transparent,
+                                    shape = CircleShape
+                                )
+                        ) {
+                            IconButton(
+                                onClick = {
+                                    database.transaction {
+                                        update(playlist.playlist.toggleLike())
+                                    }
+                                },
+                                modifier = Modifier.size(40.dp)
+                            ) {
+                                Icon(
+                                    painter = painterResource(if (liked) R.drawable.favorite else R.drawable.favorite_border),
+                                    contentDescription = null,
+                                    tint = if (liked) MaterialTheme.colorScheme.error else LocalContentColor.current,
+                                    modifier = Modifier.size(20.dp)
+                                )
+                            }
+                        }
                     }
-                }
-                scope.launch(Dispatchers.Main) {
-                    snackbarHostState.showSnackbar(context.getString(R.string.playlist_synced))
-                }
-            },
-            onLikeClick = {
-                database.transaction {
-                    update(playlist.playlist.toggleLike())
-                }
-            },
-            onDownloadClick = {
-                when (downloadState) {
-                    Download.STATE_COMPLETED -> onShowRemoveDownloadDialog()
-                    Download.STATE_DOWNLOADING -> {
-                        songs.forEach { song ->
-                            DownloadService.sendRemoveDownload(
-                                context,
-                                ExoDownloadService::class.java,
-                                song.song.id,
-                                false,
+
+                    if (editable) {
+                        Box(
+                            contentAlignment = Alignment.Center,
+                            modifier = Modifier
+                                .size(40.dp)
+                                .clip(CircleShape)
+                                .border(
+                                    width = 1.dp,
+                                    color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
+                                    shape = CircleShape
+                                )
+                                .background(color = Color.Transparent, shape = CircleShape)
+                        ) {
+                            IconButton(
+                                onClick = onShowEditDialog,
+                                modifier = Modifier.size(40.dp)
+                            ) {
+                                Icon(
+                                    painter = painterResource(R.drawable.edit),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(20.dp)
+                                )
+                            }
+                        }
+                    }
+
+                    if (playlist.playlist.browseId != null) {
+                        Box(
+                            contentAlignment = Alignment.Center,
+                            modifier = Modifier
+                                .size(40.dp)
+                                .clip(CircleShape)
+                                .border(
+                                    width = 1.dp,
+                                    color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
+                                    shape = CircleShape
+                                )
+                                .background(color = Color.Transparent, shape = CircleShape)
+                        ) {
+                            IconButton(
+                                onClick = {
+                                    scope.launch(Dispatchers.IO) {
+                                        val playlistPage = YouTube.playlist(playlist.playlist.browseId!!)
+                                            .completed()
+                                            .getOrNull() ?: return@launch
+                                        database.transaction {
+                                            clearPlaylist(playlist.id)
+                                            playlistPage.songs
+                                                .map(SongItem::toMediaMetadata)
+                                                .onEach(::insert)
+                                                .mapIndexed { position, song ->
+                                                    PlaylistSongMap(
+                                                        songId = song.id,
+                                                        playlistId = playlist.id,
+                                                        position = position
+                                                    )
+                                                }
+                                                .forEach(::insert)
+                                        }
+                                    }
+                                    scope.launch(Dispatchers.Main) {
+                                        snackbarHostState.showSnackbar(context.getString(R.string.playlist_synced))
+                                    }
+                                },
+                                modifier = Modifier.size(40.dp)
+                            ) {
+                                Icon(
+                                    painter = painterResource(R.drawable.sync),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(20.dp)
+                                )
+                            }
+                        }
+                    }
+
+                    when (downloadState) {
+                        Download.STATE_COMPLETED -> {
+                            Box(
+                                contentAlignment = Alignment.Center,
+                                modifier = Modifier
+                                    .size(40.dp)
+                                    .clip(CircleShape)
+                                    .border(
+                                        width = 1.dp,
+                                        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+                                        shape = CircleShape
+                                    )
+                                    .background(
+                                        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
+                                        shape = CircleShape
+                                    )
+                            ) {
+                                IconButton(
+                                    onClick = onShowRemoveDownloadDialog,
+                                    modifier = Modifier.size(40.dp)
+                                ) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.offline),
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.primary,
+                                        modifier = Modifier.size(20.dp)
+                                    )
+                                }
+                            }
+                        }
+
+                        Download.STATE_DOWNLOADING -> {
+                            Box(
+                                contentAlignment = Alignment.Center,
+                                modifier = Modifier
+                                    .size(40.dp)
+                                    .clip(CircleShape)
+                                    .border(
+                                        width = 1.dp,
+                                        color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
+                                        shape = CircleShape
+                                    )
+                            ) {
+                                IconButton(
+                                    onClick = {
+                                        songs.forEach { song ->
+                                            DownloadService.sendRemoveDownload(
+                                                context,
+                                                ExoDownloadService::class.java,
+                                                song.song.id,
+                                                false,
+                                            )
+                                        }
+                                    },
+                                    modifier = Modifier.size(40.dp)
+                                ) {
+                                    CircularProgressIndicator(
+                                        strokeWidth = 2.dp,
+                                        modifier = Modifier.size(20.dp),
+                                    )
+                                }
+                            }
+                        }
+
+                        else -> {
+                            Box(
+                                contentAlignment = Alignment.Center,
+                                modifier = Modifier
+                                    .size(40.dp)
+                                    .clip(CircleShape)
+                                    .border(
+                                        width = 1.dp,
+                                        color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
+                                        shape = CircleShape
+                                    )
+                                    .background(color = Color.Transparent, shape = CircleShape)
+                            ) {
+                                IconButton(
+                                    onClick = {
+                                        songs.forEach { song ->
+                                            val downloadRequest = DownloadRequest
+                                                .Builder(song.song.id, song.song.id.toUri())
+                                                .setCustomCacheKey(song.song.id)
+                                                .setData(song.song.song.title.toByteArray()).build()
+                                            DownloadService.sendAddDownload(
+                                                context,
+                                                ExoDownloadService::class.java,
+                                                downloadRequest,
+                                                false,
+                                            )
+                                        }
+                                    },
+                                    modifier = Modifier.size(40.dp)
+                                ) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.download),
+                                        contentDescription = null,
+                                        modifier = Modifier.size(20.dp)
+                                    )
+                                }
+                            }
+                        }
+                    }
+
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .size(40.dp)
+                            .clip(CircleShape)
+                            .border(
+                                width = 1.dp,
+                                color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
+                                shape = CircleShape
+                            )
+                            .background(color = Color.Transparent, shape = CircleShape)
+                    ) {
+                        IconButton(
+                            onClick = {
+                                playerConnection.addToQueue(items = songs.map { it.song.toMediaItem() })
+                            },
+                            modifier = Modifier.size(40.dp)
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.queue_music),
+                                contentDescription = null,
+                                modifier = Modifier.size(20.dp)
                             )
                         }
                     }
-                    else -> {
-                        songs.forEach { song ->
-                            val downloadRequest = DownloadRequest
-                                .Builder(song.song.id, song.song.id.toUri())
-                                .setCustomCacheKey(song.song.id)
-                                .setData(song.song.song.title.toByteArray()).build()
-                            DownloadService.sendAddDownload(
-                                context,
-                                ExoDownloadService::class.java,
-                                downloadRequest,
-                                false,
+                }
+
+                // Add space between left and right controls
+                Spacer(modifier = Modifier.weight(0.5f))
+
+                // Right side - circular shuffle and play buttons
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    FloatingActionButton(
+                        onClick = {
+                            playerConnection.playQueue(
+                                ListQueue(
+                                    title = playlist.playlist.name,
+                                    items = songs.shuffled().map { it.song.toMediaItem() },
+                                ),
                             )
-                        }
+                        },
+                        elevation = FloatingActionButtonDefaults.elevation(0.dp, 0.dp),
+                        modifier = Modifier.size(44.dp)
+                    ) {
+                        Icon(painterResource(R.drawable.shuffle), "Shuffle")
+                    }
+                    Spacer(Modifier.width(12.dp))
+                    FloatingActionButton(
+                        onClick = {
+                            playerConnection.playQueue(
+                                ListQueue(
+                                    title = playlist.playlist.name,
+                                    items = songs.map { it.song.toMediaItem() },
+                                ),
+                            )
+                        },
+                        modifier = Modifier.size(48.dp)
+                    ) {
+                        Icon(painterResource(R.drawable.play), "Play")
                     }
                 }
-            },
-            onQueueClick = {
-                playerConnection.addToQueue(items = songs.map { it.song.toMediaItem() })
-            },
-            onPlayClick = {
-                playerConnection.playQueue(
-                    ListQueue(
-                        title = playlist.playlist.name,
-                        items = songs.map { it.song.toMediaItem() },
-                    ),
-                )
-            },
-            onShuffleClick = {
-                playerConnection.playQueue(
-                    ListQueue(
-                        title = playlist.playlist.name,
-                        items = songs.shuffled().map { it.song.toMediaItem() },
-                    ),
-                )
-            },
-            downloadState = downloadState,
-            isLiked = liked,
-            isEditable = editable
-        )
+            }
+        }
     }
 }
