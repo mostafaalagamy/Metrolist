@@ -497,14 +497,14 @@ private fun AlbumActionControls(
                 onClick = onMenuClick,
                 modifier = Modifier.size(40.dp)
             ) {
-                Icon(painterResource(R.drawable.more_vert), "More options")
+                Icon(painterResource(R.drawable.more_vert), "More options", modifier = Modifier.size(24.dp))
             }
             when (downloadState) {
                 Download.STATE_COMPLETED -> BorderedIconButton(
                     onClick = onRemoveDownloadClick,
                     modifier = Modifier.size(40.dp)
                 ) {
-                    Icon(painterResource(R.drawable.offline), "Downloaded", tint = MaterialTheme.colorScheme.primary)
+                    Icon(painterResource(R.drawable.offline), "Downloaded", tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(24.dp))
                 }
                 Download.STATE_DOWNLOADING -> BorderedIconButton(
                     onClick = onRemoveDownloadClick,
@@ -516,7 +516,7 @@ private fun AlbumActionControls(
                     onClick = onDownloadClick,
                     modifier = Modifier.size(40.dp)
                 ) {
-                    Icon(painterResource(R.drawable.download), "Download")
+                    Icon(painterResource(R.drawable.download), "Download", modifier = Modifier.size(24.dp))
                 }
             }
             BorderedIconButton(
@@ -526,7 +526,8 @@ private fun AlbumActionControls(
                 Icon(
                     painter = painterResource(if (isLiked) R.drawable.favorite else R.drawable.favorite_border),
                     contentDescription = "Like",
-                    tint = if (isLiked) MaterialTheme.colorScheme.error else LocalContentColor.current
+                    tint = if (isLiked) MaterialTheme.colorScheme.error else LocalContentColor.current,
+                    modifier = Modifier.size(24.dp)
                 )
             }
         }

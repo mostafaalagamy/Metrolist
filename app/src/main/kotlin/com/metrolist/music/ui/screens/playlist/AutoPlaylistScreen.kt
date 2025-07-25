@@ -553,13 +553,13 @@ private fun AutoPlaylistActionControls(
             BorderedIconButton(
                 onClick = onQueueClick,
                 modifier = Modifier.size(40.dp)
-            ) { Icon(painterResource(R.drawable.queue_music), "Queue") }
+            ) { Icon(painterResource(R.drawable.queue_music), "Queue", modifier = Modifier.size(24.dp)) }
             when (downloadState) {
                 Download.STATE_COMPLETED -> BorderedIconButton(
                     onClick = onDownloadClick,
                     modifier = Modifier.size(40.dp)
                 ) {
-                    Icon(painterResource(R.drawable.offline), "Downloaded", tint = MaterialTheme.colorScheme.primary)
+                    Icon(painterResource(R.drawable.offline), "Downloaded", tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(24.dp))
                 }
                 Download.STATE_DOWNLOADING -> BorderedIconButton(
                     onClick = onDownloadClick,
@@ -571,7 +571,7 @@ private fun AutoPlaylistActionControls(
                     onClick = onDownloadClick,
                     modifier = Modifier.size(40.dp)
                 ) {
-                    Icon(painterResource(R.drawable.download), "Download")
+                    Icon(painterResource(R.drawable.download), "Download", modifier = Modifier.size(24.dp))
                 }
             }
         }

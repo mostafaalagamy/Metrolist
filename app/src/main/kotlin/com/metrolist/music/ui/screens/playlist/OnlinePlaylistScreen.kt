@@ -447,7 +447,7 @@ private fun PlaylistActionControls(
                     Icon(
                         painterResource(R.drawable.more_vert), 
                         "Menu",
-                        modifier = Modifier.size(20.dp)
+                        modifier = Modifier.size(24.dp)
                     ) 
                 }
             }
