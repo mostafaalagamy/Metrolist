@@ -46,6 +46,8 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import com.metrolist.music.constants.NavigationBarAnimationSpec
+import com.metrolist.music.constants.UseNewMiniPlayerDesignKey
+import com.metrolist.music.utils.rememberPreference
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -62,6 +64,7 @@ fun BottomSheet(
     collapsedContent: @Composable BoxScope.() -> Unit,
     content: @Composable BoxScope.() -> Unit,
 ) {
+    val (useNewMiniPlayerDesign) = rememberPreference(UseNewMiniPlayerDesignKey, defaultValue = true)
     Box(
         modifier =
         modifier
@@ -92,8 +95,8 @@ fun BottomSheet(
                 )
             }.clip(
                 RoundedCornerShape(
-                    topStart = if (!state.isExpanded) 16.dp else 0.dp,
-                    topEnd = if (!state.isExpanded) 16.dp else 0.dp,
+                    topStart = if (useNewMiniPlayerDesign) 0.dp else (if (!state.isExpanded) 16.dp else 0.dp), 
+                    topEnd = if (useNewMiniPlayerDesign) 0.dp else (if (!state.isExpanded) 16.dp else 0.dp),
                 ),
             ).background(brushBackgroundColor),
     ) {
