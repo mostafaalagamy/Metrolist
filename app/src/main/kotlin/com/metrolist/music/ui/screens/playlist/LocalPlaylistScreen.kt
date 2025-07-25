@@ -994,7 +994,6 @@ fun LocalPlaylistScreen(
 @Composable
 fun LocalPlaylistHeader(
     playlist: Playlist,
-    listState: LazyListState,
     songs: List<PlaylistSong>,
     onShowEditDialog: () -> Unit,
     onShowRemoveDownloadDialog: () -> Unit,
