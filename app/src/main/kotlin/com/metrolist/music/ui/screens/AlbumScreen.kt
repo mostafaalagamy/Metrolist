@@ -117,6 +117,7 @@ import com.metrolist.music.ui.menu.SongMenu
 import com.metrolist.music.ui.menu.YouTubeAlbumMenu
 import com.metrolist.music.ui.utils.backToMain
 import com.metrolist.music.ui.utils.ItemWrapper
+import com.metrolist.music.ui.utils.adaptiveTopBarColors
 import com.metrolist.music.utils.rememberPreference
 import com.metrolist.music.viewmodels.AlbumViewModel
 import kotlinx.coroutines.Dispatchers
@@ -569,27 +570,46 @@ private fun AlbumCollapsingTopAppBar(
     allSelected: Boolean, onSelectAllClick: () -> Unit, onSelectionMenuClick: () -> Unit
 ) {
     val animatedColor by animateColorAsState(if (showTitle || inSelectMode) backgroundColor.copy(alpha = 0.8f) else Color.Transparent, label = "TopBarColor")
+    
+    // Calculate adaptive colors based on the background color using Player.kt logic
+    val adaptiveColors = adaptiveTopBarColors(animatedColor)
 
     TopAppBar(
         modifier = Modifier.background(animatedColor),
         colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
         title = {
             if (inSelectMode) {
-                Text(pluralStringResource(R.plurals.n_selected, selectionCount, selectionCount))
+                Text(
+                    text = pluralStringResource(R.plurals.n_selected, selectionCount, selectionCount),
+                    color = adaptiveColors.titleColor
+                )
             } else if (showTitle) {
-                Text(albumTitle, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                Text(
+                    text = albumTitle, 
+                    maxLines = 1, 
+                    overflow = TextOverflow.Ellipsis,
+                    color = adaptiveColors.titleColor
+                )
             }
         },
         navigationIcon = {
             IconButton(onClick = onNavIconClick, onLongClick = onNavIconLongClick) {
-                Icon(painterResource(if (inSelectMode) R.drawable.close else R.drawable.arrow_back), null)
+                Icon(
+                    painter = painterResource(if (inSelectMode) R.drawable.close else R.drawable.arrow_back), 
+                    contentDescription = null,
+                    tint = adaptiveColors.iconColor
+                )
             }
         },
         actions = {
             if (inSelectMode) {
                 Checkbox(checked = allSelected, onCheckedChange = { onSelectAllClick() })
                 IconButton(enabled = selectionCount > 0, onClick = onSelectionMenuClick) {
-                    Icon(painterResource(R.drawable.more_vert), null)
+                    Icon(
+                        painter = painterResource(R.drawable.more_vert), 
+                        contentDescription = null,
+                        tint = adaptiveColors.iconColor
+                    )
                 }
             }
         }

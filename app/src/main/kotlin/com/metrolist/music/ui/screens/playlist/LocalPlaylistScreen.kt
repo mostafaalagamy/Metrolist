@@ -166,6 +166,7 @@ import com.metrolist.music.ui.menu.SelectionSongMenu
 import com.metrolist.music.ui.menu.SongMenu
 import com.metrolist.music.ui.utils.ItemWrapper
 import com.metrolist.music.ui.utils.backToMain
+import com.metrolist.music.ui.utils.adaptiveTopBarColors
 import com.metrolist.music.utils.makeTimeString
 import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
@@ -850,6 +851,9 @@ fun LocalPlaylistScreen(
             label = "TopBarColor"
         )
 
+        // Calculate adaptive colors based on the background color using Player.kt logic
+        val adaptiveColors = adaptiveTopBarColors(topBarAnimatedColor)
+
         TopAppBar(
             modifier = Modifier.background(topBarAnimatedColor),
             colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
@@ -857,7 +861,8 @@ fun LocalPlaylistScreen(
                 if (inSelectMode) {
                     Text(
                         text = pluralStringResource(R.plurals.n_selected, selection.size, selection.size),
-                        style = MaterialTheme.typography.titleLarge
+                        style = MaterialTheme.typography.titleLarge,
+                        color = adaptiveColors.titleColor
                     )
                 } else if (isSearching) {
                     TextField(
@@ -866,11 +871,12 @@ fun LocalPlaylistScreen(
                         placeholder = {
                             Text(
                                 text = stringResource(R.string.search),
-                                style = MaterialTheme.typography.titleLarge
+                                style = MaterialTheme.typography.titleLarge,
+                                color = adaptiveColors.subtitleColor
                             )
                         },
                         singleLine = true,
-                        textStyle = MaterialTheme.typography.titleLarge,
+                        textStyle = MaterialTheme.typography.titleLarge.copy(color = adaptiveColors.titleColor),
                         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
                         colors = TextFieldDefaults.colors(
                             focusedContainerColor = Color.Transparent,
@@ -878,13 +884,19 @@ fun LocalPlaylistScreen(
                             focusedIndicatorColor = Color.Transparent,
                             unfocusedIndicatorColor = Color.Transparent,
                             disabledIndicatorColor = Color.Transparent,
+                            focusedTextColor = adaptiveColors.titleColor,
+                            unfocusedTextColor = adaptiveColors.titleColor,
+                            cursorColor = adaptiveColors.actionColor
                         ),
                         modifier = Modifier
                             .fillMaxWidth()
                             .focusRequester(focusRequester)
                     )
                 } else if (showTopBarTitle) {
-                    Text(playlist?.playlist?.name.orEmpty())
+                    Text(
+                        text = playlist?.playlist?.name.orEmpty(),
+                        color = adaptiveColors.titleColor
+                    )
                 }
             },
             navigationIcon = {
@@ -909,7 +921,8 @@ fun LocalPlaylistScreen(
                         painter = painterResource(
                             if (inSelectMode || isSearching) R.drawable.close else R.drawable.arrow_back
                         ),
-                        contentDescription = null
+                        contentDescription = null,
+                        tint = adaptiveColors.iconColor
                     )
                 }
             },
@@ -948,7 +961,8 @@ fun LocalPlaylistScreen(
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.more_vert),
-                            contentDescription = null
+                            contentDescription = null,
+                            tint = adaptiveColors.iconColor
                         )
                     }
                 } else if (!isSearching) {
@@ -957,7 +971,8 @@ fun LocalPlaylistScreen(
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.search),
-                            contentDescription = null
+                            contentDescription = null,
+                            tint = adaptiveColors.iconColor
                         )
                     }
                 }
