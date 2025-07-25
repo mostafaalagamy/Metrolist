@@ -492,7 +492,7 @@ private fun PlaylistActionControls(
                     Icon(
                         painterResource(R.drawable.more_vert),
                         "Menu",
-                        modifier = Modifier.size(24.dp)
+                        modifier = Modifier.size(20.dp)
                     )
                 }
             }
@@ -504,11 +504,17 @@ private fun PlaylistActionControls(
                     .clip(CircleShape)
                     .border(
                         width = 1.dp,
-                        color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
+                        color = if (isFavorited)
+                            MaterialTheme.colorScheme.error.copy(alpha = 0.5f)
+                        else
+                            MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
                         shape = CircleShape
                     )
                     .background(
-                        color = Color.Transparent,
+                        color = if (isFavorited)
+                            MaterialTheme.colorScheme.error.copy(alpha = 0.1f)
+                        else
+                            Color.Transparent,
                         shape = CircleShape
                     )
             ) {
@@ -520,7 +526,7 @@ private fun PlaylistActionControls(
                         painterResource(if (isFavorited) R.drawable.favorite else R.drawable.favorite_border),
                         "Favorite",
                         tint = if (isFavorited) MaterialTheme.colorScheme.error else LocalContentColor.current,
-                        modifier = Modifier.size(24.dp)
+                        modifier = Modifier.size(20.dp)
                     )
                 }
             }
