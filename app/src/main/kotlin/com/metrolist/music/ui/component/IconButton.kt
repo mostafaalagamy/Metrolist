@@ -105,21 +105,24 @@ fun BorderedIconButton(
     colors: IconButtonColors = IconButtonDefaults.iconButtonColors(),
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     borderWidth: Dp = 1.dp,
-    borderColor: Color = MaterialTheme.colorScheme.outline,
+    borderColor: Color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
     shape: Shape = CircleShape,
     content: @Composable () -> Unit,
 ) {
     Box(
+        contentAlignment = Alignment.Center,
         modifier = modifier
-            .minimumInteractiveComponentSize()
-            .sizeIn(minWidth = 48.dp, minHeight = 48.dp)
+            .size(40.dp)
+            .clip(CircleShape)
             .border(
                 width = borderWidth,
                 color = borderColor,
                 shape = shape
             )
-            .clip(shape)
-            .background(color = colors.containerColor)
+            .background(
+                color = Color.Transparent,
+                shape = CircleShape
+            )
             .combinedClickable(
                 onClick = onClick,
                 onLongClick = onLongClick,
@@ -128,10 +131,9 @@ fun BorderedIconButton(
                 interactionSource = interactionSource,
                 indication = ripple(
                     bounded = false,
-                    radius = 24.dp
+                    radius = 20.dp
                 ),
-            ),
-        contentAlignment = Alignment.Center,
+            )
     ) {
         val contentColor = colors.contentColor
         CompositionLocalProvider(LocalContentColor provides contentColor, content = content)
