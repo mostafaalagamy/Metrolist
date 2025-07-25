@@ -994,13 +994,13 @@ fun LocalPlaylistScreen(
 @Composable
 fun LocalPlaylistHeader(
     playlist: Playlist,
+    listState: LazyListState,
     songs: List<PlaylistSong>,
     onShowEditDialog: () -> Unit,
     onShowRemoveDownloadDialog: () -> Unit,
     onshowDeletePlaylistDialog: () -> Unit,
     snackbarHostState: SnackbarHostState,
-    listState: LazyListState, // إضافة LazyListState للتأثيرات
-    modifier: Modifier,
+    modifier: Modifier
 ) {
     val playerConnection = LocalPlayerConnection.current ?: return
     val context = LocalContext.current
