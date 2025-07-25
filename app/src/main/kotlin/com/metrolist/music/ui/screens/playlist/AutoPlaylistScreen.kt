@@ -515,8 +515,7 @@ private fun AutoPlaylistHeader(
         AsyncImage(
             model = songs.first().song.thumbnailUrl,
             contentDescription = "Auto Playlist Thumbnail",
-            contentScale = ContentScale.Crop,
-            modifier = Modifier.size(200.dp).clip(RoundedCornerShape(12.dp)).shadow(16.dp, RoundedCornerShape(12.dp))
+            modifier = Modifier.size(200.dp).clip(RoundedCornerShape(12.dp))
         )
         Spacer(Modifier.height(16.dp))
         Column(
