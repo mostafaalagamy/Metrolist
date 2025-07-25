@@ -121,6 +121,7 @@ import com.metrolist.music.ui.menu.SelectionSongMenu
 import com.metrolist.music.ui.menu.SongMenu
 import com.metrolist.music.ui.utils.ItemWrapper
 import com.metrolist.music.ui.utils.backToMain
+import com.metrolist.music.ui.utils.adaptiveTopBarColors
 import com.metrolist.music.utils.makeTimeString
 import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
@@ -605,27 +606,49 @@ private fun AutoPlaylistCollapsingTopAppBar(
     allSelected: Boolean, onSelectAllClick: () -> Unit, onSelectionMenuClick: () -> Unit
 ) {
     val animatedColor by animateColorAsState(if (showTitle || inSelectMode || isSearching) backgroundColor.copy(alpha = 0.8f) else Color.Transparent, label = "TopBarColor")
+    
+    // Calculate adaptive colors based on the background color using Player.kt logic
+    val adaptiveColors = adaptiveTopBarColors(animatedColor)
 
     TopAppBar(
         modifier = Modifier.background(animatedColor),
         colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
         title = {
             when {
-                inSelectMode -> Text(pluralStringResource(R.plurals.n_selected, selectionCount, selectionCount))
+                inSelectMode -> Text(
+                    text = pluralStringResource(R.plurals.n_selected, selectionCount, selectionCount),
+                    color = adaptiveColors.titleColor
+                )
                 isSearching -> TextField(
                     value = query,
                     onValueChange = onQueryChange,
-                    placeholder = { Text(stringResource(R.string.search), style = MaterialTheme.typography.titleLarge) },
+                    placeholder = { 
+                        Text(
+                            text = stringResource(R.string.search), 
+                            style = MaterialTheme.typography.titleLarge,
+                            color = adaptiveColors.subtitleColor
+                        ) 
+                    },
                     singleLine = true,
-                    textStyle = MaterialTheme.typography.titleLarge.copy(color = MaterialTheme.colorScheme.onSurface),
+                    textStyle = MaterialTheme.typography.titleLarge.copy(color = adaptiveColors.titleColor),
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
                     colors = TextFieldDefaults.colors(
-                        focusedContainerColor = Color.Transparent, unfocusedContainerColor = Color.Transparent,
-                        focusedIndicatorColor = Color.Transparent, unfocusedIndicatorColor = Color.Transparent
+                        focusedContainerColor = Color.Transparent, 
+                        unfocusedContainerColor = Color.Transparent,
+                        focusedIndicatorColor = Color.Transparent, 
+                        unfocusedIndicatorColor = Color.Transparent,
+                        focusedTextColor = adaptiveColors.titleColor,
+                        unfocusedTextColor = adaptiveColors.titleColor,
+                        cursorColor = adaptiveColors.actionColor
                     ),
                     modifier = Modifier.fillMaxWidth().focusRequester(focusRequester)
                 )
-                showTitle -> Text(playlistTitle, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                showTitle -> Text(
+                    text = playlistTitle, 
+                    maxLines = 1, 
+                    overflow = TextOverflow.Ellipsis,
+                    color = adaptiveColors.titleColor
+                )
             }
         },
         navigationIcon = {
@@ -640,7 +663,11 @@ private fun AutoPlaylistCollapsingTopAppBar(
                 },
                 onLongClick = { if (!inSelectMode && !isSearching) onNavIconLongClick() }
             ) {
-                Icon(painterResource(navIcon), null, tint = MaterialTheme.colorScheme.onSurface)
+                Icon(
+                    painter = painterResource(navIcon), 
+                    contentDescription = null, 
+                    tint = adaptiveColors.iconColor
+                )
             }
         },
         actions = {
@@ -648,11 +675,21 @@ private fun AutoPlaylistCollapsingTopAppBar(
                 inSelectMode -> {
                     Checkbox(checked = allSelected, onCheckedChange = { onSelectAllClick() })
                     IconButton(enabled = selectionCount > 0, onClick = onSelectionMenuClick) {
-                        Icon(painterResource(R.drawable.more_vert), null)
+                        Icon(
+                            painter = painterResource(R.drawable.more_vert), 
+                            contentDescription = null,
+                            tint = adaptiveColors.iconColor
+                        )
                     }
                 }
                 !isSearching -> {
-                    IconButton(onClick = onSearchConfirmed) { Icon(painterResource(R.drawable.search), null) }
+                    IconButton(onClick = onSearchConfirmed) { 
+                        Icon(
+                            painter = painterResource(R.drawable.search), 
+                            contentDescription = null,
+                            tint = adaptiveColors.iconColor
+                        ) 
+                    }
                 }
             }
         }

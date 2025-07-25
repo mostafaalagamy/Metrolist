@@ -113,7 +113,6 @@ import com.metrolist.music.ui.menu.YouTubePlaylistMenu
 import com.metrolist.music.ui.menu.YouTubeSongMenu
 import com.metrolist.music.ui.utils.backToMain
 import com.metrolist.music.ui.utils.fadingEdge
-import com.metrolist.music.ui.utils.adaptiveTopBarColors
 import com.metrolist.music.utils.rememberPreference
 import com.metrolist.music.ui.utils.resize
 import com.metrolist.music.viewmodels.ArtistViewModel
@@ -715,33 +714,19 @@ fun ArtistScreen(
     }
 
     TopAppBar(
-        title = { 
-            if (!transparentAppBar) {
-                val backgroundColor = if (transparentAppBar) Color.Transparent else MaterialTheme.colorScheme.surface
-                val adaptiveColors = adaptiveTopBarColors(backgroundColor)
-                Text(
-                    text = artistPage?.artist?.title.orEmpty(),
-                    color = adaptiveColors.titleColor
-                )
-            }
-        },
+        title = { if (!transparentAppBar) Text(artistPage?.artist?.title.orEmpty()) },
         navigationIcon = {
-            val backgroundColor = if (transparentAppBar) Color.Transparent else MaterialTheme.colorScheme.surface
-            val adaptiveColors = adaptiveTopBarColors(backgroundColor)
             IconButton(
                 onClick = navController::navigateUp,
                 onLongClick = navController::backToMain,
             ) {
                 Icon(
-                    painter = painterResource(R.drawable.arrow_back),
+                    painterResource(R.drawable.arrow_back),
                     contentDescription = null,
-                    tint = adaptiveColors.iconColor
                 )
             }
         },
         actions = {
-            val backgroundColor = if (transparentAppBar) Color.Transparent else MaterialTheme.colorScheme.surface
-            val adaptiveColors = adaptiveTopBarColors(backgroundColor)
             IconButton(
                 onClick = {
                     viewModel.artistPage?.artist?.shareLink?.let { link ->
@@ -753,9 +738,8 @@ fun ArtistScreen(
                 },
             ) {
                 Icon(
-                    painter = painterResource(R.drawable.link),
+                    painterResource(R.drawable.link),
                     contentDescription = null,
-                    tint = adaptiveColors.iconColor
                 )
             }
         },
