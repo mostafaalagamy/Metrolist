@@ -35,6 +35,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
@@ -173,11 +174,27 @@ fun OnlinePlaylistScreen(
 
     val playlist by viewModel.playlist.collectAsState()
     val songs by viewModel.playlistSongs.collectAsState()
+    val dbPlaylist by viewModel.dbPlaylist.collectAsState()
     val hideExplicit by rememberPreference(key = HideExplicitKey, defaultValue = false)
 
     val lazyListState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
+    
+    // إضافة منطق التحميل التدريجي
+    LaunchedEffect(lazyListState) {
+        snapshotFlow {
+            val layoutInfo = lazyListState.layoutInfo
+            val totalItemsNumber = layoutInfo.totalItemsCount
+            val lastVisibleItemIndex = (layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0) + 1
+            
+            lastVisibleItemIndex > (totalItemsNumber - 5)
+        }.collect { shouldLoadMore ->
+            if (shouldLoadMore && viewModel.continuation != null) {
+                viewModel.loadMoreSongs()
+            }
+        }
+    }
 
     var isSearching by rememberSaveable { mutableStateOf(false) }
     var query by rememberSaveable(stateSaver = TextFieldValue.Saver) { mutableStateOf(TextFieldValue()) }
@@ -237,23 +254,38 @@ fun OnlinePlaylistScreen(
                             playlist = playlistData,
                             onShuffleClick = { playlistData.shuffleEndpoint?.let { playerConnection.playQueue(YouTubeQueue(it)) } },
                             onRadioClick = { playlistData.radioEndpoint?.let { playerConnection.playQueue(YouTubeQueue(it)) } },
-                            onImportClick = {
+                            onFavoriteClick = {
                                 database.transaction {
-                                    val playlistEntity = PlaylistEntity(
-                                        name = playlistData.title,
-                                        browseId = playlistData.id,
-                                        isEditable = playlistData.isEditable,
-                                        playEndpointParams = playlistData.playEndpoint?.params,
-                                        shuffleEndpointParams = playlistData.shuffleEndpoint?.params,
-                                        radioEndpointParams = playlistData.radioEndpoint?.params
-                                    ).toggleLike()
-                                    insert(playlistEntity)
-                                    songs.map(SongItem::toMediaMetadata).onEach(::insert).mapIndexed { index, song ->
-                                        PlaylistSongMap(songId = song.id, playlistId = playlistEntity.id, position = index)
-                                    }.forEach(::insert)
-                                    coroutineScope.launch { snackbarHostState.showSnackbar(context.getString(R.string.playlist_imported)) }
+                                    if (dbPlaylist?.playlist?.bookmarkedAt != null) {
+                                        // إزالة من المفضلة
+                                        dbPlaylist?.let { 
+                                            update(it.playlist.toggleLike())
+                                        }
+                                    } else {
+                                        // إضافة للمفضلة
+                                        val existingPlaylist = dbPlaylist?.playlist
+                                        if (existingPlaylist != null) {
+                                            // الـ playlist موجود، نضيفه للمفضلة فقط
+                                            update(existingPlaylist.toggleLike())
+                                        } else {
+                                            // إنشاء playlist جديد وإضافته للمفضلة
+                                            val playlistEntity = PlaylistEntity(
+                                                name = playlistData.title,
+                                                browseId = playlistData.id,
+                                                isEditable = playlistData.isEditable,
+                                                playEndpointParams = playlistData.playEndpoint?.params,
+                                                shuffleEndpointParams = playlistData.shuffleEndpoint?.params,
+                                                radioEndpointParams = playlistData.radioEndpoint?.params
+                                            ).toggleLike()
+                                            insert(playlistEntity)
+                                            songs.map(SongItem::toMediaMetadata).onEach(::insert).mapIndexed { index, song ->
+                                                PlaylistSongMap(songId = song.id, playlistId = playlistEntity.id, position = index)
+                                            }.forEach(::insert)
+                                        }
+                                    }
                                 }
                             },
+                            isFavorited = dbPlaylist?.playlist?.bookmarkedAt != null,
                             onMenuClick = {
                                 menuState.show {
                                     YouTubePlaylistMenu(
@@ -308,6 +340,23 @@ fun OnlinePlaylistScreen(
                             .alpha(if (hideExplicit && song.explicit) 0.3f else 1f)
                             .animateItem()
                     )
+                }
+                
+                // Loading indicator for infinite scroll
+                if (viewModel.continuation != null) {
+                    item {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(24.dp),
+                                strokeWidth = 2.dp
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -415,8 +464,9 @@ private fun PlaylistActionControls(
     playlist: com.metrolist.innertube.models.PlaylistItem,
     onShuffleClick: () -> Unit,
     onRadioClick: () -> Unit,
-    onImportClick: () -> Unit,
-    onMenuClick: () -> Unit
+    onFavoriteClick: () -> Unit,
+    onMenuClick: () -> Unit,
+    isFavorited: Boolean = false
 ) {
     Row(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
@@ -468,13 +518,14 @@ private fun PlaylistActionControls(
                     )
             ) {
                 IconButton(
-                    onClick = onImportClick,
+                    onClick = onFavoriteClick,
                     modifier = Modifier.size(40.dp)
                 ) { 
                     Icon(
-                        painterResource(R.drawable.input), 
-                        "Import",
-                        modifier = Modifier.size(20.dp)
+                        painterResource(if (isFavorited) R.drawable.favorite else R.drawable.favorite_border), 
+                        "Favorite",
+                        tint = if (isFavorited) MaterialTheme.colorScheme.error else LocalContentColor.current,
+                        modifier = Modifier.size(24.dp)
                     ) 
                 }
             }
