@@ -497,8 +497,8 @@ fun LocalPlaylistScreen(
                 state = lazyListState,
                 contentPadding = LocalPlayerAwareWindowInsets.current.union(WindowInsets.ime).asPaddingValues(),
             ) {
-                playlist.let { playlist ->
-                if (playlist.songCount == 0 && playlist.playlist.remoteSongCount == 0) {
+                val nonNullPlaylist = playlist
+                if (nonNullPlaylist.songCount == 0 && nonNullPlaylist.playlist.remoteSongCount == 0) {
                     item {
                         EmptyPlaceholder(
                             icon = R.drawable.music_note,
@@ -509,7 +509,7 @@ fun LocalPlaylistScreen(
                     if (!isSearching) {
                         item {
                             LocalPlaylistHeader(
-                                playlist = playlist,
+                                playlist = nonNullPlaylist,
                                 songs = songs,
                                 onShowEditDialog = { showEditDialog = true },
                                 onShowRemoveDownloadDialog = { showRemoveDownloadDialog = true },
@@ -675,7 +675,7 @@ fun LocalPlaylistScreen(
                                             } else {
                                                 playerConnection.playQueue(
                                                     ListQueue(
-                                                        title = playlist!!.playlist.name,
+                                                        title = nonNullPlaylist.playlist.name,
                                                         items = songs.map { it.song.toMediaItem() },
                                                         startIndex = songs.indexOfFirst { it.map.id == song.map.id },
                                                     ),
@@ -819,7 +819,7 @@ fun LocalPlaylistScreen(
                                             } else {
                                                 playerConnection.playQueue(
                                                     ListQueue(
-                                                        title = playlist!!.playlist.name,
+                                                        title = nonNullPlaylist.playlist.name,
                                                         items = songs.map { it.song.toMediaItem() },
                                                         startIndex = index,
                                                     ),
