@@ -549,28 +549,106 @@ private fun AutoPlaylistActionControls(
     ) {
         // Left side - queue and download buttons
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            BorderedIconButton(
-                onClick = onQueueClick,
-                modifier = Modifier.size(40.dp)
-            ) { Icon(painterResource(R.drawable.queue_music), "Queue", modifier = Modifier.size(24.dp)) }
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(CircleShape)
+                    .border(
+                        width = 1.dp,
+                        color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
+                        shape = CircleShape
+                    )
+                    .background(
+                        color = Color.Transparent,
+                        shape = CircleShape
+                    )
+            ) {
+                IconButton(
+                    onClick = onQueueClick,
+                    modifier = Modifier.size(40.dp)
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.queue_music),
+                        contentDescription = "Queue",
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
+            }
             when (downloadState) {
-                Download.STATE_COMPLETED -> BorderedIconButton(
-                    onClick = onDownloadClick,
-                    modifier = Modifier.size(40.dp)
+                Download.STATE_COMPLETED -> Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clip(CircleShape)
+                        .border(
+                            width = 1.dp,
+                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+                            shape = CircleShape
+                        )
+                        .background(
+                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
+                            shape = CircleShape
+                        )
                 ) {
-                    Icon(painterResource(R.drawable.offline), "Downloaded", tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(24.dp))
+                    IconButton(
+                        onClick = onDownloadClick,
+                        modifier = Modifier.size(40.dp)
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.offline),
+                            contentDescription = "Downloaded",
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
                 }
-                Download.STATE_DOWNLOADING -> BorderedIconButton(
-                    onClick = onDownloadClick,
-                    modifier = Modifier.size(40.dp)
+                Download.STATE_DOWNLOADING -> Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clip(CircleShape)
+                        .border(
+                            width = 1.dp,
+                            color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
+                            shape = CircleShape
+                        )
                 ) {
-                    CircularProgressIndicator(modifier = Modifier.size(24.dp), strokeWidth = 2.dp)
+                    IconButton(
+                        onClick = onDownloadClick,
+                        modifier = Modifier.size(40.dp)
+                    ) {
+                        CircularProgressIndicator(
+                            strokeWidth = 2.dp,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
                 }
-                else -> BorderedIconButton(
-                    onClick = onDownloadClick,
-                    modifier = Modifier.size(40.dp)
+                else -> Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clip(CircleShape)
+                        .border(
+                            width = 1.dp,
+                            color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
+                            shape = CircleShape
+                        )
+                        .background(
+                            color = Color.Transparent,
+                            shape = CircleShape
+                        )
                 ) {
-                    Icon(painterResource(R.drawable.download), "Download", modifier = Modifier.size(24.dp))
+                    IconButton(
+                        onClick = onDownloadClick,
+                        modifier = Modifier.size(40.dp)
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.download),
+                            contentDescription = "Download",
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
                 }
             }
         }

@@ -494,42 +494,140 @@ private fun AlbumActionControls(
     ) {
         // Left side - more, download and like buttons (reversed order)
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            BorderedIconButton(
-                onClick = onMenuClick,
-                modifier = Modifier.size(40.dp)
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(CircleShape)
+                    .border(
+                        width = 1.dp,
+                        color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
+                        shape = CircleShape
+                    )
+                    .background(
+                        color = Color.Transparent,
+                        shape = CircleShape
+                    )
             ) {
-                Icon(painterResource(R.drawable.more_vert), "More options", modifier = Modifier.size(24.dp))
+                IconButton(
+                    onClick = onMenuClick,
+                    modifier = Modifier.size(40.dp)
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.more_vert),
+                        contentDescription = "More options",
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
             }
             when (downloadState) {
-                Download.STATE_COMPLETED -> BorderedIconButton(
-                    onClick = onRemoveDownloadClick,
-                    modifier = Modifier.size(40.dp)
+                Download.STATE_COMPLETED -> Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clip(CircleShape)
+                        .border(
+                            width = 1.dp,
+                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+                            shape = CircleShape
+                        )
+                        .background(
+                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
+                            shape = CircleShape
+                        )
                 ) {
-                    Icon(painterResource(R.drawable.offline), "Downloaded", tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(24.dp))
+                    IconButton(
+                        onClick = onRemoveDownloadClick,
+                        modifier = Modifier.size(40.dp)
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.offline),
+                            contentDescription = "Downloaded",
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
                 }
-                Download.STATE_DOWNLOADING -> BorderedIconButton(
-                    onClick = onRemoveDownloadClick,
-                    modifier = Modifier.size(40.dp)
+                Download.STATE_DOWNLOADING -> Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clip(CircleShape)
+                        .border(
+                            width = 1.dp,
+                            color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
+                            shape = CircleShape
+                        )
                 ) {
-                    CircularProgressIndicator(modifier = Modifier.size(24.dp), strokeWidth = 2.dp)
+                    IconButton(
+                        onClick = onRemoveDownloadClick,
+                        modifier = Modifier.size(40.dp)
+                    ) {
+                        CircularProgressIndicator(
+                            strokeWidth = 2.dp,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
                 }
-                else -> BorderedIconButton(
-                    onClick = onDownloadClick,
-                    modifier = Modifier.size(40.dp)
+                else -> Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clip(CircleShape)
+                        .border(
+                            width = 1.dp,
+                            color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
+                            shape = CircleShape
+                        )
+                        .background(
+                            color = Color.Transparent,
+                            shape = CircleShape
+                        )
                 ) {
-                    Icon(painterResource(R.drawable.download), "Download", modifier = Modifier.size(24.dp))
+                    IconButton(
+                        onClick = onDownloadClick,
+                        modifier = Modifier.size(40.dp)
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.download),
+                            contentDescription = "Download",
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
                 }
             }
-            BorderedIconButton(
-                onClick = onLikeClick,
-                modifier = Modifier.size(40.dp)
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(CircleShape)
+                    .border(
+                        width = 1.dp,
+                        color = if (isLiked)
+                            MaterialTheme.colorScheme.error.copy(alpha = 0.5f)
+                        else
+                            MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
+                        shape = CircleShape
+                    )
+                    .background(
+                        color = if (isLiked)
+                            MaterialTheme.colorScheme.error.copy(alpha = 0.1f)
+                        else
+                            Color.Transparent,
+                        shape = CircleShape
+                    )
             ) {
-                Icon(
-                    painter = painterResource(if (isLiked) R.drawable.favorite else R.drawable.favorite_border),
-                    contentDescription = "Like",
-                    tint = if (isLiked) MaterialTheme.colorScheme.error else LocalContentColor.current,
-                    modifier = Modifier.size(24.dp)
-                )
+                IconButton(
+                    onClick = onLikeClick,
+                    modifier = Modifier.size(40.dp)
+                ) {
+                    Icon(
+                        painter = painterResource(if (isLiked) R.drawable.favorite else R.drawable.favorite_border),
+                        contentDescription = "Like",
+                        tint = if (isLiked) MaterialTheme.colorScheme.error else LocalContentColor.current,
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
             }
         }
 
