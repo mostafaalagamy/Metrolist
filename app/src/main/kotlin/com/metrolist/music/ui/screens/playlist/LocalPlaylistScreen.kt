@@ -497,7 +497,6 @@ fun LocalPlaylistScreen(
                 state = lazyListState,
                 contentPadding = LocalPlayerAwareWindowInsets.current.union(WindowInsets.ime).asPaddingValues(),
             ) {
-                playlist.let { playlist ->
                 if (playlist.songCount == 0 && playlist.playlist.remoteSongCount == 0) {
                     item {
                         EmptyPlaceholder(
@@ -850,7 +849,6 @@ fun LocalPlaylistScreen(
                     }
                 }
             }
-        }
 
         val topBarAnimatedColor by animateColorAsState(
             if (showTopBarTitle || inSelectMode || isSearching) animatedBackgroundColor.copy(alpha = 0.8f) else Color.Transparent,
