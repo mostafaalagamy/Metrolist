@@ -171,16 +171,16 @@ private fun calculateGradientScore(color1: Color, color2: Color): Double {
     
     // Prefer moderate luminance differences (0.15 to 0.6 is ideal for gradients)
     val luminanceScore = when {
-        luminanceDiff < 0.1 -> 0.1 // Too similar
-        luminanceDiff < 0.15 -> luminanceDiff * 2 // Getting better
-        luminanceDiff <= 0.6 -> 1.0 // Perfect range
-        luminanceDiff <= 0.8 -> 0.8 // Still good
+        luminanceDiff < 0.1f -> 0.1 // Too similar
+        luminanceDiff < 0.15f -> luminanceDiff * 2f // Getting better
+        luminanceDiff <= 0.6f -> 1.0 // Perfect range
+        luminanceDiff <= 0.8f -> 0.8 // Still good
         else -> 0.3 // Too high contrast
     }
     
     // Prefer colors that aren't too close to pure black or white
-    val color1Vibrancy = 1.0 - abs(color1.luminance() - 0.5) * 2
-    val color2Vibrancy = 1.0 - abs(color2.luminance() - 0.5) * 2
+    val color1Vibrancy = 1.0 - abs(color1.luminance() - 0.5f) * 2f
+    val color2Vibrancy = 1.0 - abs(color2.luminance() - 0.5f) * 2f
     val vibrancyScore = (color1Vibrancy + color2Vibrancy) / 2
     
     return luminanceScore * 0.7 + vibrancyScore * 0.3
