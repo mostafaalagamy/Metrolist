@@ -137,4 +137,16 @@
     <string name="likes">喜歡</string>
     <string name="information">資訊</string>
     <string name="dislikes">不喜歡</string>
+    <string name="new_player_design">新播放器設計</string>
+    <string name="lyrics_romanize_japanese">日文羅馬歌詞</string>
+    <string name="lyrics_romanize_korean">韓文羅馬歌詞</string>
+    <string name="yt_sync">自動與帳號同步</string>
+    <string name="more_content">更多內容</string>
+    <string name="swipe_sensitivity">迷你播放器滑動靈敏度</string>
+    <string name="swipe_sensitivity_desc">調整滑動手勢切換歌曲的靈敏度</string>
+    <string name="sensitivity_percentage">%1$d%%</string>
+    <string name="clear_image_cache_dialog">確定要清除所有快取的圖片嗎?</string>
+    <string name="disable">禁用</string>
+    <string name="subscribe">訂閱</string>
+    <string name="subscribed">已訂閱</string>
 </resources>

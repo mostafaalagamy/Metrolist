@@ -1,6 +1,6 @@
 Material 3 YouTube Music client pour Android
 
-Fonctionnalités :
+Fonctionnalités :
 
 - Jouer n'importe quelle vidéo de YT Music
 - Lecture en arrière-plan

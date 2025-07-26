@@ -17,6 +17,7 @@ val GridItemsSizeKey = stringPreferencesKey("gridItemSize")
 val SliderStyleKey = stringPreferencesKey("sliderStyle")
 val SwipeToSongKey = booleanPreferencesKey("SwipeToSong")
 val UseNewPlayerDesignKey= booleanPreferencesKey("useNewPlayerDesign")
+val UseNewMiniPlayerDesignKey = booleanPreferencesKey("useNewMiniPlayerDesign")
 
 enum class SliderStyle {
     DEFAULT,

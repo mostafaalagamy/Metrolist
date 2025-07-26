@@ -16,13 +16,13 @@
     <string name="liked">Geliket</string>
     <string name="offline">Gedownload</string>
     <string name="my_top">Mijn meest geluisterd</string>
-    <string name="cached_playlist">Cached</string>
+    <string name="cached_playlist">Gecached</string>
     <string name="sync_playlist">Playlist synchroniseren</string>
     <string name="sync_disabled">Synchroniseren uitgeschakeld</string>
     <string name="elements_selected">%1$d elementen geselecteerd</string>
     <string name="allows_for_sync_witch_youtube">Opmerking: Dit activeert synchronisatie met YouTube Music. Dit kan later NIET worden gewijzigd.</string>
     <string name="generating_image">Afbeelding genereren</string>
-    <string name="please_wait">Wacht aub</string>
+    <string name="please_wait">Een ogenblik geduld</string>
     <string name="cancel">Annuleren</string>
     <string name="share_lyrics">Liedtekst delen</string>
     <string name="share_as_text">Delen als tekst</string>
@@ -34,4 +34,40 @@
     <string name="text_color">Tekstkleur</string>
     <string name="secondary_text_color">Secundaire tekstkleur</string>
     <string name="background_color">Achtergrondkleur</string>
+    <string name="top_music_videos">Top muziek videos</string>
+    <string name="select">Alles selecteren</string>
+    <string name="like_all">Alles leuk vinden</string>
+    <string name="dislike_all">Alles niet leuk vinden</string>
+    <string name="sort_by_last_updated">Datum gewijzigd</string>
+    <string name="link_copied">Link gekopieerd naar het klembord</string>
+    <string name="lyrics">Songtekst</string>
+    <string name="already_in_playlist">Al in afspeellijst:</string>
+    <plurals name="n_time">
+        <item quantity="one">%d keer</item>
+        <item quantity="other">%d keren</item>
+    </plurals>
+    <string name="seek_backward">5 seconden terug</string>
+    <string name="seek_forward">5 seconden vooruit</string>
+    <string name="login_settings">Login instellingen</string>
+    <string name="general_settings">Algemene instellingen</string>
+    <string name="player_background_style">Speler achtergrond stijl</string>
+    <string name="follow_theme">Volg thema</string>
+    <string name="gradient">Gradient</string>
+    <string name="default_style">Standaard</string>
+    <string name="secondary_color_style">Secundair</string>
+    <string name="google">Google</string>
+    <string name="discord">Discord</string>
+    <string name="advanced_login">Login met token</string>
+    <string name="token_hidden">Klik om token te tonen</string>
+    <string name="token_shown">Klik opnieuw om te kopiëren of te wijzigen</string>
+    <string name="general">Algemeen</string>
+    <string name="proxy">Proxy</string>
+    <plurals name="n_element">
+        <item quantity="one">%d element</item>
+        <item quantity="other">%d elementen</item>
+    </plurals>
+    <plurals name="seconds">
+        <item quantity="one">1 seconde</item>
+        <item quantity="other">%d seconden</item>
+    </plurals>
 </resources>
