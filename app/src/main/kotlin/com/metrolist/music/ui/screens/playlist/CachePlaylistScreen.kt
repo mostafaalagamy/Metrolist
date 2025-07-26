@@ -102,6 +102,7 @@ import com.metrolist.music.ui.component.BorderedFloatingActionButton
 import com.metrolist.music.ui.component.LocalMenuState
 import com.metrolist.music.ui.component.SongListItem
 import com.metrolist.music.ui.component.SortHeader
+import com.metrolist.music.ui.component.PlaylistThumbnail
 import com.metrolist.music.ui.component.shimmer.ListItemPlaceHolder
 import com.metrolist.music.ui.component.shimmer.ShimmerHost
 import com.metrolist.music.ui.component.shimmer.TextPlaceholder
@@ -377,10 +378,18 @@ private fun CachePlaylistHeader(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        AsyncImage(
-            model = songs.firstOrNull()?.thumbnailUrl,
-            contentDescription = "Cache Playlist Thumbnail",
-            modifier = Modifier.size(200.dp).clip(RoundedCornerShape(12.dp))
+        PlaylistThumbnail(
+            thumbnails = songs.take(4).mapNotNull { it.thumbnailUrl }.filter { it.isNotEmpty() },
+            size = 200.dp,
+            placeHolder = {
+                Icon(
+                    painter = painterResource(R.drawable.cached),
+                    contentDescription = null,
+                    tint = LocalContentColor.current.copy(alpha = 0.8f),
+                    modifier = Modifier.size(100.dp)
+                )
+            },
+            shape = RoundedCornerShape(12.dp)
         )
         Spacer(Modifier.height(16.dp))
         Column(

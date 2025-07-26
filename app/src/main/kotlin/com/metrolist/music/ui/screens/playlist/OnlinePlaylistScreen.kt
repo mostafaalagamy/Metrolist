@@ -124,6 +124,7 @@ import com.metrolist.music.ui.component.BorderedFloatingActionButton
 import com.metrolist.music.ui.component.LocalMenuState
 import com.metrolist.music.ui.component.NavigationTitle
 import com.metrolist.music.ui.component.YouTubeListItem
+import com.metrolist.music.ui.component.PlaylistThumbnail
 import com.metrolist.music.ui.component.shimmer.ListItemPlaceHolder
 import com.metrolist.music.ui.component.shimmer.ShimmerHost
 import com.metrolist.music.ui.component.shimmer.TextPlaceholder
@@ -421,10 +422,18 @@ private fun PlaylistHeader(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        AsyncImage(
-            model = playlist.thumbnail,
-            contentDescription = "Playlist Thumbnail",
-            modifier = Modifier.size(200.dp).clip(RoundedCornerShape(12.dp))
+        PlaylistThumbnail(
+            thumbnails = listOfNotNull(playlist.thumbnail),
+            size = 200.dp,
+            placeHolder = {
+                Icon(
+                    painter = painterResource(R.drawable.queue_music),
+                    contentDescription = null,
+                    tint = LocalContentColor.current.copy(alpha = 0.8f),
+                    modifier = Modifier.size(100.dp)
+                )
+            },
+            shape = RoundedCornerShape(12.dp)
         )
         Spacer(Modifier.height(16.dp))
         Column(

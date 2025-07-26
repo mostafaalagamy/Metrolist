@@ -161,6 +161,7 @@ import com.metrolist.music.ui.component.LocalMenuState
 import com.metrolist.music.ui.component.SongListItem
 import com.metrolist.music.ui.component.SortHeader
 import com.metrolist.music.ui.component.TextFieldDialog
+import com.metrolist.music.ui.component.PlaylistThumbnail
 import com.metrolist.music.ui.menu.PlaylistMenu
 import com.metrolist.music.ui.menu.SelectionSongMenu
 import com.metrolist.music.ui.menu.SongMenu
@@ -1047,36 +1048,19 @@ fun LocalPlaylistHeader(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            if (playlist.thumbnails.size == 1) {
-                AsyncImage(
-                    model = playlist.thumbnails[0],
-                    contentDescription = "Playlist Thumbnail",
-                    modifier = Modifier
-                        .size(200.dp)
-                        .clip(RoundedCornerShape(12.dp))
-                )
-            } else if (playlist.thumbnails.size > 1) {
-                Box(
-                    modifier = Modifier
-                        .size(200.dp)
-                        .clip(RoundedCornerShape(12.dp))
-                ) {
-                    listOf(
-                        Alignment.TopStart,
-                        Alignment.TopEnd,
-                        Alignment.BottomStart,
-                        Alignment.BottomEnd,
-                    ).fastForEachIndexed { index, alignment ->
-                        AsyncImage(
-                            model = playlist.thumbnails.getOrNull(index),
-                            contentDescription = null,
-                            modifier = Modifier
-                                .align(alignment)
-                                .size(100.dp)
-                        )
-                    }
-                }
-            }
+            PlaylistThumbnail(
+                thumbnails = playlist.thumbnails,
+                size = 200.dp,
+                placeHolder = {
+                    Icon(
+                        painter = painterResource(R.drawable.queue_music),
+                        contentDescription = null,
+                        tint = LocalContentColor.current.copy(alpha = 0.8f),
+                        modifier = Modifier.size(100.dp)
+                    )
+                },
+                shape = RoundedCornerShape(12.dp)
+            )
             
             Spacer(Modifier.height(16.dp))
             
