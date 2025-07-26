@@ -567,7 +567,8 @@ fun AutoPlaylistScreen(
                         .asPaddingValues()
                 )
                 .align(Alignment.CenterEnd),
-            scrollState = state
+            scrollState = state,
+            headerItems = 2
         )
 
         TopAppBar(

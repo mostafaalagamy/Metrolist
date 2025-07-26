@@ -528,7 +528,8 @@ fun OnlinePlaylistScreen(
                         .asPaddingValues()
                 )
                 .align(Alignment.CenterEnd),
-            scrollState = lazyListState
+            scrollState = lazyListState,
+            headerItems = 1
         )
 
         TopAppBar(

@@ -785,7 +785,8 @@ fun LocalPlaylistScreen(
                         .asPaddingValues()
                 )
                 .align(Alignment.CenterEnd),
-            scrollState = lazyListState
+            scrollState = lazyListState,
+            headerItems = 2
         )
 
         TopAppBar(

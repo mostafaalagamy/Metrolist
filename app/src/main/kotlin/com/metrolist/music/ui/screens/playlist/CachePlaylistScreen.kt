@@ -364,7 +364,8 @@ fun CachePlaylistScreen(
                         .asPaddingValues()
                 )
                 .align(Alignment.CenterEnd),
-            scrollState = lazyListState
+            scrollState = lazyListState,
+            headerItems = 2
         )
 
         TopAppBar(

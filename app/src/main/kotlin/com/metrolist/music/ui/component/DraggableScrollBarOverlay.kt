@@ -42,7 +42,8 @@ fun DraggableScrollbar(
     thumbCornerRadius: Dp = 4.dp,
     trackWidth: Dp = 32.dp,
     minItemCountForScroll: Int = 15,
-    minScrollRangeForDrag: Int = 4
+    minScrollRangeForDrag: Int = 4,
+    headerItems: Int = 0    // <== Pass your header count here
 ) {
     val density = LocalDensity.current
     val coroutineScope = rememberCoroutineScope()
@@ -54,7 +55,8 @@ fun DraggableScrollbar(
             val layoutInfo = scrollState.layoutInfo
             val total = layoutInfo.totalItemsCount
             val visible = layoutInfo.visibleItemsInfo.size
-            total > minItemCountForScroll && total > visible
+            val contentCount = total - headerItems
+            contentCount > minItemCountForScroll && contentCount > visible
         }
     }
 
@@ -81,21 +83,25 @@ fun DraggableScrollbar(
                     val visibleItems = layoutInfo.visibleItemsInfo
                     if (visibleItems.isEmpty()) return@detectDragGestures
 
-                    val maxScrollIndex = max(1, layoutInfo.totalItemsCount - visibleItems.size)
+                    val totalContentItems = layoutInfo.totalItemsCount - headerItems
+                    val maxScrollIndex = max(1, totalContentItems - visibleItems.size)
 
                     if (maxScrollIndex > minScrollRangeForDrag) {
                         val touchProgress = (change.position.y / size.height).coerceIn(0f, 1f)
                         val targetFractionalIndex = touchProgress * maxScrollIndex
-                        val targetIndex = targetFractionalIndex.toInt()
-                        val targetFraction = targetFractionalIndex - targetIndex
+                        val targetIndex = headerItems + targetFractionalIndex.toInt()
+                        val targetFraction = targetFractionalIndex - targetFractionalIndex.toInt()
+
                         val avgItemHeightPx = visibleItems.first().size
                         val targetOffset = (targetFraction * avgItemHeightPx).toInt()
+                        val clampedIndex =
+                            targetIndex.coerceIn(headerItems, layoutInfo.totalItemsCount - 1)
 
-                        if (targetIndex != lastTargetIndex || targetOffset != lastTargetOffset) {
-                            lastTargetIndex = targetIndex
+                        if (clampedIndex != lastTargetIndex || targetOffset != lastTargetOffset) {
+                            lastTargetIndex = clampedIndex
                             lastTargetOffset = targetOffset
                             coroutineScope.launch {
-                                scrollState.scrollToItem(targetIndex)
+                                scrollState.scrollToItem(clampedIndex)
                             }
                         }
                     }
@@ -111,17 +117,17 @@ fun DraggableScrollbar(
                 val visibleItems = layoutInfo.visibleItemsInfo
                 if (visibleItems.isEmpty()) return@derivedStateOf 0f
 
-                val maxScrollIndex = max(1, layoutInfo.totalItemsCount - visibleItems.size)
-
+                val totalContentItems = layoutInfo.totalItemsCount - headerItems
+                val maxScrollIndex = max(1, totalContentItems - visibleItems.size)
                 if (maxScrollIndex <= minScrollRangeForDrag) return@derivedStateOf 0f
 
                 val firstItem = visibleItems.first()
+                val rawIndex = (scrollState.firstVisibleItemIndex - headerItems).coerceAtLeast(0)
                 val firstItemOffsetProgress =
-                    if (firstItem.size > 0)
-                        scrollState.firstVisibleItemScrollOffset.toFloat() / firstItem.size
+                    if (firstItem.size > 0) scrollState.firstVisibleItemScrollOffset.toFloat() / firstItem.size
                     else 0f
 
-                val granularCurrentIndex = scrollState.firstVisibleItemIndex + firstItemOffsetProgress
+                val granularCurrentIndex = rawIndex + firstItemOffsetProgress
 
                 val scrollProgress = granularCurrentIndex / maxScrollIndex
 
