@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -39,7 +40,9 @@ fun DraggableScrollbar(
     thumbHeight: Dp = 72.dp,
     thumbWidth: Dp = 8.dp,
     thumbCornerRadius: Dp = 4.dp,
-    trackWidth: Dp = 32.dp
+    trackWidth: Dp = 32.dp,
+    minItemCountForScroll: Int = 15,
+    minScrollRangeForDrag: Int = 4
 ) {
     val density = LocalDensity.current
     val coroutineScope = rememberCoroutineScope()
@@ -48,11 +51,17 @@ fun DraggableScrollbar(
 
     val isScrollable by remember {
         derivedStateOf {
-            scrollState.layoutInfo.totalItemsCount > scrollState.layoutInfo.visibleItemsInfo.size
+            val layoutInfo = scrollState.layoutInfo
+            val total = layoutInfo.totalItemsCount
+            val visible = layoutInfo.visibleItemsInfo.size
+            total > minItemCountForScroll && total > visible
         }
     }
 
     if (!isScrollable) return
+
+    var lastTargetIndex by remember { mutableIntStateOf(-1) }
+    var lastTargetOffset by remember { mutableIntStateOf(-1) }
 
     BoxWithConstraints(
         modifier = modifier
@@ -60,35 +69,61 @@ fun DraggableScrollbar(
             .fillMaxHeight()
             .pointerInput(scrollState) {
                 detectDragGestures(
-                    onDragStart = { isDragging = true },
+                    onDragStart = {
+                        isDragging = true
+                        lastTargetIndex = -1 // reset
+                        lastTargetOffset = -1
+                    },
                     onDragEnd = { isDragging = false },
                     onDragCancel = { isDragging = false }
                 ) { change, _ ->
                     val layoutInfo = scrollState.layoutInfo
-                    val maxScrollIndex =
-                        max(0, layoutInfo.totalItemsCount - layoutInfo.visibleItemsInfo.size)
-                    if (maxScrollIndex > 0) {
+                    val visibleItems = layoutInfo.visibleItemsInfo
+                    if (visibleItems.isEmpty()) return@detectDragGestures
+
+                    val maxScrollIndex = max(1, layoutInfo.totalItemsCount - visibleItems.size)
+
+                    if (maxScrollIndex > minScrollRangeForDrag) {
                         val touchProgress = (change.position.y / size.height).coerceIn(0f, 1f)
-                        val targetIndex = (touchProgress * maxScrollIndex).toInt()
-                        coroutineScope.launch {
-                            scrollState.scrollToItem(targetIndex)
+                        val targetFractionalIndex = touchProgress * maxScrollIndex
+                        val targetIndex = targetFractionalIndex.toInt()
+                        val targetFraction = targetFractionalIndex - targetIndex
+                        val avgItemHeightPx = visibleItems.first().size
+                        val targetOffset = (targetFraction * avgItemHeightPx).toInt()
+
+                        if (targetIndex != lastTargetIndex || targetOffset != lastTargetOffset) {
+                            lastTargetIndex = targetIndex
+                            lastTargetOffset = targetOffset
+                            coroutineScope.launch {
+                                scrollState.scrollToItem(targetIndex)
+                            }
                         }
                     }
                 }
             }
     ) {
-        val viewportHeight = with(density) { this@BoxWithConstraints.maxHeight.toPx() }
+    val viewportHeight = with(density) { this@BoxWithConstraints.maxHeight.toPx() }
         val constThumbHeight = with(density) { thumbHeight.toPx() }
 
         val targetThumbY by remember {
             derivedStateOf {
                 val layoutInfo = scrollState.layoutInfo
-                val totalItems = layoutInfo.totalItemsCount
-                val maxScrollIndex = max(0, totalItems - layoutInfo.visibleItemsInfo.size)
+                val visibleItems = layoutInfo.visibleItemsInfo
+                if (visibleItems.isEmpty()) return@derivedStateOf 0f
 
-                val scrollProgress = if (maxScrollIndex > 0) {
-                    scrollState.firstVisibleItemIndex.toFloat() / maxScrollIndex
-                } else 0f
+                val maxScrollIndex = max(1, layoutInfo.totalItemsCount - visibleItems.size)
+
+                if (maxScrollIndex <= minScrollRangeForDrag) return@derivedStateOf 0f
+
+                val firstItem = visibleItems.first()
+                val firstItemOffsetProgress =
+                    if (firstItem.size > 0)
+                        scrollState.firstVisibleItemScrollOffset.toFloat() / firstItem.size
+                    else 0f
+
+                val granularCurrentIndex = scrollState.firstVisibleItemIndex + firstItemOffsetProgress
+
+                val scrollProgress = granularCurrentIndex / maxScrollIndex
 
                 val maxThumbY = viewportHeight - constThumbHeight
                 (scrollProgress * maxThumbY).coerceIn(0f, maxThumbY)
