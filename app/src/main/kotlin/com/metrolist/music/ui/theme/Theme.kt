@@ -21,6 +21,7 @@ import com.materialkolor.PaletteStyle
 import com.materialkolor.dynamiccolor.ColorSpec
 import com.materialkolor.rememberDynamicColorScheme
 import com.materialkolor.score.Score
+import kotlin.math.abs
 
 val DefaultThemeColor = Color(0xFFED5564)
 
@@ -79,20 +80,110 @@ fun Bitmap.extractThemeColor(): Color {
     return Color(rankedColors.first())
 }
 
+/**
+ * Enhanced gradient color extraction inspired by premium music players.
+ * This function extracts more refined gradient colors with better algorithm
+ * that considers both vibrant colors and optimal color contrast for gradients.
+ */
 fun Bitmap.extractGradientColors(): List<Color> {
-    val extractedColors = Palette.from(this)
-        .maximumColorCount(64)
+    val palette = Palette.from(this)
+        .maximumColorCount(128) // Increased for better color analysis
         .generate()
-        .swatches
-        .associate { it.rgb to it.population }
+    
+    // Get all available swatches sorted by population
+    val allSwatches = palette.swatches.sortedByDescending { it.population }
+    
+    // Try to get vibrant colors first (like premium music players)
+    val vibrantColor = palette.vibrantSwatch?.rgb
+    val darkVibrantColor = palette.darkVibrantSwatch?.rgb
+    val lightVibrantColor = palette.lightVibrantSwatch?.rgb
+    val mutedColor = palette.mutedSwatch?.rgb
+    val darkMutedColor = palette.darkMutedSwatch?.rgb
+    val lightMutedColor = palette.lightMutedSwatch?.rgb
+    
+    // Collect potential colors with their properties
+    val candidateColors = mutableListOf<Pair<Color, Double>>()
+    
+    // Add vibrant colors with high priority
+    vibrantColor?.let { candidateColors.add(Color(it) to 1.0) }
+    darkVibrantColor?.let { candidateColors.add(Color(it) to 0.9) }
+    lightVibrantColor?.let { candidateColors.add(Color(it) to 0.8) }
+    
+    // Add muted colors with medium priority
+    mutedColor?.let { candidateColors.add(Color(it) to 0.7) }
+    darkMutedColor?.let { candidateColors.add(Color(it) to 0.6) }
+    lightMutedColor?.let { candidateColors.add(Color(it) to 0.5) }
+    
+    // Add high-population colors if we don't have enough candidates
+    if (candidateColors.size < 6) {
+        allSwatches.take(8).forEach { swatch ->
+            val color = Color(swatch.rgb)
+            if (candidateColors.none { abs(it.first.luminance() - color.luminance()) < 0.1f }) {
+                candidateColors.add(color to 0.4)
+            }
+        }
+    }
+    
+    // Select the best gradient pair
+    return selectOptimalGradientPair(candidateColors.map { it.first }.distinct())
+}
 
-    val orderedColors = Score.score(extractedColors, 2, 0xff4285f4.toInt(), true)
-        .sortedByDescending { Color(it).luminance() }
+/**
+ * Selects the optimal gradient pair from candidate colors based on:
+ * - Appropriate luminance contrast for gradient effect
+ * - Color harmony
+ * - Visual appeal
+ */
+private fun selectOptimalGradientPair(colors: List<Color>): List<Color> {
+    if (colors.size < 2) {
+        return listOf(
+            Color(0xFF1A1A1A), // Rich dark color
+            Color(0xFF0A0A0A)  // Deeper dark color
+        )
+    }
+    
+    var bestPair = colors.take(2)
+    var bestScore = 0.0
+    
+    // Test all possible pairs
+    for (i in colors.indices) {
+        for (j in i + 1 until colors.size) {
+            val color1 = colors[i]
+            val color2 = colors[j]
+            val score = calculateGradientScore(color1, color2)
+            
+            if (score > bestScore) {
+                bestScore = score
+                bestPair = listOf(color1, color2)
+            }
+        }
+    }
+    
+    // Sort by luminance to ensure proper gradient direction
+    return bestPair.sortedByDescending { it.luminance() }
+}
 
-    return if (orderedColors.size >= 2)
-        listOf(Color(orderedColors[0]), Color(orderedColors[1]))
-    else
-        listOf(Color(0xFF595959), Color(0xFF0D0D0D))
+/**
+ * Calculates a score for how good two colors would work as a gradient pair
+ */
+private fun calculateGradientScore(color1: Color, color2: Color): Double {
+    val luminanceDiff = abs(color1.luminance() - color2.luminance())
+    
+    // Prefer moderate luminance differences (0.15 to 0.6 is ideal for gradients)
+    val luminanceScore = when {
+        luminanceDiff < 0.1 -> 0.1 // Too similar
+        luminanceDiff < 0.15 -> luminanceDiff * 2 // Getting better
+        luminanceDiff <= 0.6 -> 1.0 // Perfect range
+        luminanceDiff <= 0.8 -> 0.8 // Still good
+        else -> 0.3 // Too high contrast
+    }
+    
+    // Prefer colors that aren't too close to pure black or white
+    val color1Vibrancy = 1.0 - abs(color1.luminance() - 0.5) * 2
+    val color2Vibrancy = 1.0 - abs(color2.luminance() - 0.5) * 2
+    val vibrancyScore = (color1Vibrancy + color2Vibrancy) / 2
+    
+    return luminanceScore * 0.7 + vibrancyScore * 0.3
 }
 
 fun ColorScheme.pureBlack(apply: Boolean) =

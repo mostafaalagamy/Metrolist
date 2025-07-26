@@ -9,6 +9,8 @@ import android.graphics.drawable.BitmapDrawable
 import android.widget.Toast
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.FastOutLinearInEasing
+import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
@@ -260,20 +262,35 @@ fun BottomSheetPlayer(
             gradientColors = listOf(Color.Black, Color.Black)
         } else if (playerBackground == PlayerBackgroundStyle.GRADIENT) {
             withContext(Dispatchers.IO) {
-                val result =
-                    (
-                        ImageLoader(context)
-                            .execute(
-                                ImageRequest
-                                    .Builder(context)
-                                    .data(mediaMetadata?.thumbnailUrl)
-                                    .allowHardware(false)
-                                   .build(),
-                            ).drawable as? BitmapDrawable
-                        )?.bitmap?.extractGradientColors()
+                try {
+                    val result =
+                        (
+                            ImageLoader(context)
+                                .execute(
+                                    ImageRequest
+                                        .Builder(context)
+                                        .data(mediaMetadata?.thumbnailUrl)
+                                        .allowHardware(false)
+                                        .size(512, 512) // Optimize image size for color extraction
+                                        .build(),
+                                ).drawable as? BitmapDrawable
+                            )?.bitmap?.extractGradientColors()
 
-                result?.let {
-                    gradientColors = it
+                    result?.let {
+                        gradientColors = it
+                    } ?: run {
+                        // Enhanced fallback colors for better visual appeal
+                        gradientColors = listOf(
+                            Color(0xFF2A2A2A), // Elegant dark gray
+                            Color(0xFF0F0F0F)  // Deep charcoal
+                        )
+                    }
+                } catch (e: Exception) {
+                    // Graceful error handling with elegant fallback
+                    gradientColors = listOf(
+                        Color(0xFF2A2A2A),
+                        Color(0xFF0F0F0F)
+                    )
                 }
             }
         } else {
@@ -517,11 +534,15 @@ fun BottomSheetPlayer(
                         )
                     )
                 } else if (gradientColors.size >= 2 && state.value > changeBound) {
-                    // Apply transparency to gradient colors
+                    // Apply smooth transparency to gradient colors with enhanced blending
                     val transparentGradientColors = gradientColors.map { color ->
-                        color.copy(alpha = color.alpha * progress)
+                        color.copy(alpha = (color.alpha * progress * 0.85f).coerceAtLeast(0.1f))
                     }
-                    Brush.verticalGradient(transparentGradientColors)
+                    Brush.verticalGradient(
+                        colors = transparentGradientColors,
+                        startY = 0f,
+                        endY = Float.POSITIVE_INFINITY
+                    )
                 } else {
                     Brush.verticalGradient(
                         listOf(
@@ -549,7 +570,11 @@ fun BottomSheetPlayer(
                         )
                     )
                 } else if (gradientColors.size >= 2 && state.value > changeBound) {
-                    Brush.verticalGradient(gradientColors)
+                    Brush.verticalGradient(
+                        colors = gradientColors,
+                        startY = 0f,
+                        endY = Float.POSITIVE_INFINITY
+                    )
                 } else {
                     Brush.verticalGradient(
                         listOf(
@@ -1172,14 +1197,30 @@ fun BottomSheetPlayer(
             AnimatedContent(
                 targetState = gradientColors,
                 transitionSpec = {
-                    fadeIn(tween(1000)) togetherWith fadeOut(tween(1000))
+                    fadeIn(
+                        animationSpec = tween(
+                            durationMillis = 1200,
+                            easing = FastOutSlowInEasing
+                        )
+                    ) togetherWith fadeOut(
+                        animationSpec = tween(
+                            durationMillis = 800,
+                            easing = FastOutLinearInEasing
+                        )
+                    )
                 }
             ) { colors ->
                 if (playerBackground == PlayerBackgroundStyle.GRADIENT && colors.size >= 2) {
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
-                            .background(Brush.verticalGradient(colors))
+                            .background(
+                                Brush.verticalGradient(
+                                    colors = colors,
+                                    startY = 0f,
+                                    endY = Float.POSITIVE_INFINITY
+                                )
+                            )
                     )
                 }
             }
