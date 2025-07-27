@@ -138,7 +138,6 @@ import com.metrolist.music.ui.utils.ShowMediaInfo
 import com.metrolist.music.utils.makeTimeString
 import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
-import com.metrolist.music.ui.theme.extractGradientColors
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
@@ -263,22 +262,24 @@ fun BottomSheetPlayer(
             try {
                 val request = ImageRequest.Builder(context)
                     .data(mediaMetadata?.thumbnailUrl)
-                    .size(Size(256, 256)) // Increased size for better color extraction
+                    .size(Size(128, 128))
                     .allowHardware(false)
-                    .memoryCacheKey(mediaMetadata.id) // Use consistent cache key
+                    .memoryCacheKey("gradient_${mediaMetadata.id}") // Use consistent cache key with prefix
                     .build()
 
                 val result = context.imageLoader.execute(request).drawable
                 if (result != null) {
                     val bitmap = result.toBitmap()
-                    val extractedColors = withContext(Dispatchers.Default) {
-                        bitmap.extractGradientColors()
+                    val palette = withContext(Dispatchers.Default) {
+                        Palette.from(bitmap).generate()
                     }
-                    
-                    gradientColors = if (extractedColors.size >= 2) {
-                        extractedColors
+                    val dominantColor = palette.dominantSwatch?.rgb?.let { Color(it) }
+                    val vibrantColor = palette.vibrantSwatch?.rgb?.let { Color(it) }
+
+                    if (dominantColor != null && vibrantColor != null) {
+                        gradientColors = listOf(vibrantColor, dominantColor)
                     } else {
-                        defaultGradientColors
+                        gradientColors = defaultGradientColors
                     }
                 } else {
                     gradientColors = defaultGradientColors
