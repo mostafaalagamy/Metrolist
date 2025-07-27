@@ -47,7 +47,7 @@
     <string name="sort_by_last_updated">Datum posodobitve</string>
     <string name="link_copied">Povezava kopirana v odložišče</string>
     <string name="lyrics">Besedila</string>
-    <string name="already_in_playlist">Že v seznamu predavanja:</string>
+    <string name="already_in_playlist">Že v seznamu predvajanja:</string>
     <plurals name="n_element">
         <item quantity="one">%d element</item>
         <item quantity="two">%d elementa</item>
@@ -68,7 +68,7 @@
     <string name="player_background_style">Slog ozadja predvajalnika</string>
     <string name="follow_theme">Sledi temi</string>
     <string name="gradient">Gradient</string>
-    <string name="new_player_design">Novo oblikovanje predvajalnika</string>
+    <string name="new_player_design">Nova oblika predvajalnika</string>
     <string name="player_background_blur">Zameglitev</string>
     <string name="player_buttons_style">Barve gumbov predvajalnika</string>
     <string name="default_style">Privzeto</string>
@@ -82,7 +82,7 @@
     <string name="lyrics_romanize_korean">Romaniziraj korejske besedilo</string>
     <string name="slim">Tanek</string>
     <string name="slim_navbar">Skrij oznake spodnje navigacijske vrstice</string>
-    <string name="auto_playlists">Avtomatski seznami predavanja</string>
+    <string name="auto_playlists">Avtomatski seznami predvajanja</string>
     <string name="show_liked_playlist">Prikaži seznam predvajanja \"Všeč mi je\"</string>
     <string name="show_downloaded_playlist">Prikaži seznam predvajanja \"Preneseno\"</string>
     <string name="show_top_playlist">Prikaži seznam predvajanja \"Top\"</string>
@@ -155,4 +155,5 @@
         <item quantity="other">%d sekund</item>
     </plurals>
     <string name="explore">Razišči</string>
+    <string name="new_mini_player_design">Nova oblika mini predvajalnika</string>
 </resources>

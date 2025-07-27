@@ -20,4 +20,4 @@ Caratteristiche:
 - Tema chiaro, scuro, nero o dinamico
 - Timer per il sonno
 - Material 3
-- ecc
+- ecc.
