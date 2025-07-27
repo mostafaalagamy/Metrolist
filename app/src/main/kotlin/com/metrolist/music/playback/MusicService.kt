@@ -623,6 +623,15 @@ class MusicService :
             ),
         )
     }
+    
+    /**
+     * Force refresh the media session and notification controls to ensure synchronization
+     * This method can be called when we detect the notification controls are out of sync
+     */
+    private fun forceRefreshMediaSession() {
+        currentMediaMetadata.value = player.currentMetadata
+        updateNotification()
+    }
 
     private suspend fun recoverSong(
         mediaId: String,
@@ -884,6 +893,16 @@ class MusicService :
                 }
             }
         }
+        
+        // Ensure notification is updated when media item transitions
+        // This helps fix the issue where notification controls get stuck when errors occur
+        if (reason == Player.MEDIA_ITEM_TRANSITION_REASON_AUTO || reason == Player.MEDIA_ITEM_TRANSITION_REASON_SEEK) {
+            scope.launch {
+                delay(50) // Small delay to ensure metadata is properly updated
+                currentMediaMetadata.value = player.currentMetadata
+                updateNotification()
+            }
+        }
     }
 
     override fun onPlaybackStateChanged(
@@ -893,6 +912,11 @@ class MusicService :
             currentQueue = EmptyQueue
             player.shuffleModeEnabled = false
             queueTitle = null
+        }
+        
+        // Reset consecutive error counter when playback is successful
+        if (playbackState == Player.STATE_READY || playbackState == Player.STATE_BUFFERING) {
+            consecutivePlaybackErr = 0
         }
     }
 
@@ -918,6 +942,18 @@ class MusicService :
         }
         if (events.containsAny(EVENT_TIMELINE_CHANGED, EVENT_POSITION_DISCONTINUITY)) {
             currentMediaMetadata.value = player.currentMetadata
+        }
+        
+        // Update notification when player state changes to ensure controls stay in sync
+        if (events.containsAny(
+                Player.EVENT_PLAYBACK_STATE_CHANGED,
+                Player.EVENT_PLAY_WHEN_READY_CHANGED,
+                EVENT_TIMELINE_CHANGED,
+                EVENT_POSITION_DISCONTINUITY,
+                Player.EVENT_PLAYER_ERROR
+            )
+        ) {
+            updateNotification()
         }
     }
 
@@ -955,6 +991,13 @@ class MusicService :
 
         if (dataStore.get(AutoSkipNextOnErrorKey, false)) {
             skipOnError()
+            // Force update media metadata and notification after skipping due to error
+            scope.launch {
+                // Small delay to ensure the player has fully transitioned to the next media item
+                delay(100)
+                currentMediaMetadata.value = player.currentMetadata
+                updateNotification()
+            }
         } else {
             stopOnError()
         }
