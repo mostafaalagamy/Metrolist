@@ -94,14 +94,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
 import androidx.core.graphics.ColorUtils
+import androidx.core.graphics.drawable.toBitmap
 import androidx.media3.common.C
 import androidx.media3.common.Player
 import androidx.media3.common.Player.STATE_ENDED
 import androidx.media3.common.Player.STATE_READY
+import androidx.palette.graphics.Palette
 import androidx.navigation.NavController
 import coil.ImageLoader
 import coil.compose.AsyncImage
+import coil.imageLoader
 import coil.request.ImageRequest
+import coil.size.Size
 import com.metrolist.music.LocalDownloadUtil
 import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
@@ -244,10 +248,6 @@ fun BottomSheetPlayer(
         mutableStateOf<List<Color>>(emptyList())
     }
 
-    var changeColor by remember {
-        mutableStateOf(false)
-    }
-
     if (!canSkipNext && automix.isNotEmpty()) {
         playerConnection.service.addToQueueAutomix(automix[0], 0)
     }
@@ -255,26 +255,32 @@ fun BottomSheetPlayer(
     LaunchedEffect(mediaMetadata, playerBackground) {
         if (useBlackBackground && playerBackground != PlayerBackgroundStyle.BLUR) {
             gradientColors = listOf(Color.Black, Color.Black)
-        }
-        if (useBlackBackground && playerBackground != PlayerBackgroundStyle.GRADIENT) {
-            gradientColors = listOf(Color.Black, Color.Black)
-        } else if (playerBackground == PlayerBackgroundStyle.GRADIENT) {
-            withContext(Dispatchers.IO) {
-                val result =
-                    (
-                        ImageLoader(context)
-                            .execute(
-                                ImageRequest
-                                    .Builder(context)
-                                    .data(mediaMetadata?.thumbnailUrl)
-                                    .allowHardware(false)
-                                   .build(),
-                            ).drawable as? BitmapDrawable
-                        )?.bitmap?.extractGradientColors()
+        } else if (playerBackground == PlayerBackgroundStyle.GRADIENT && mediaMetadata?.thumbnailUrl != null) {
+            try {
+                val request = ImageRequest.Builder(context)
+                    .data(mediaMetadata?.thumbnailUrl)
+                    .size(Size(128, 128))
+                    .allowHardware(false)
+                    .build()
 
-                result?.let {
-                    gradientColors = it
+                val result = context.imageLoader.execute(request).drawable
+                if (result != null) {
+                    val bitmap = result.toBitmap()
+                    val palette = withContext(Dispatchers.Default) {
+                        Palette.from(bitmap).generate()
+                    }
+                    val dominantColor = palette.dominantSwatch?.rgb?.let { Color(it) }
+                    val vibrantColor = palette.vibrantSwatch?.rgb?.let { Color(it) }
+
+                    if (dominantColor != null && vibrantColor != null) {
+                        gradientColors = listOf(vibrantColor, dominantColor)
+                    } else {
+                        gradientColors = listOf(MaterialTheme.colorScheme.surface, MaterialTheme.colorScheme.surfaceVariant)
+                    }
                 }
+            } catch (e: Exception) {
+                gradientColors = listOf(MaterialTheme.colorScheme.surface, MaterialTheme.colorScheme.surfaceVariant)
+                e.printStackTrace()
             }
         } else {
             gradientColors = emptyList()
@@ -287,78 +293,16 @@ fun BottomSheetPlayer(
         when (playerBackground) {
             PlayerBackgroundStyle.DEFAULT -> MaterialTheme.colorScheme.onBackground
             PlayerBackgroundStyle.BLUR -> Color.White
-            else -> {
-                val whiteContrast =
-                    if (gradientColors.size >= 2) {
-                        ColorUtils.calculateContrast(
-                            gradientColors.first().toArgb(),
-                            Color.White.toArgb(),
-                        )
-                    } else {
-                        2.0
-                    }
-                val blackContrast: Double =
-                    if (gradientColors.size >= 2) {
-                        ColorUtils.calculateContrast(
-                            gradientColors.last().toArgb(),
-                            Color.Black.toArgb(),
-                        )
-                    } else {
-                        2.0
-                    }
-                if (gradientColors.size >= 2 &&
-                    whiteContrast < 2f &&
-                    blackContrast > 2f
-                ) {
-                    changeColor = true
-                    Color.Black
-                } else if (whiteContrast > 2f && blackContrast < 2f) {
-                    changeColor = true
-                    Color.White
-                } else {
-                    changeColor = false
-                    Color.White
-                }
-            }
+            PlayerBackgroundStyle.GRADIENT -> Color.White
+            else -> MaterialTheme.colorScheme.onBackground
         }
 
     val icBackgroundColor =
         when (playerBackground) {
             PlayerBackgroundStyle.DEFAULT -> MaterialTheme.colorScheme.surface
             PlayerBackgroundStyle.BLUR -> Color.Black
-            else -> {
-                val whiteContrast =
-                    if (gradientColors.size >= 2) {
-                        ColorUtils.calculateContrast(
-                            gradientColors.first().toArgb(),
-                            Color.White.toArgb(),
-                        )
-                    } else {
-                        2.0
-                    }
-                val blackContrast: Double =
-                    if (gradientColors.size >= 2) {
-                        ColorUtils.calculateContrast(
-                            gradientColors.last().toArgb(),
-                            Color.Black.toArgb(),
-                        )
-                    } else {
-                        2.0
-                    }
-                if (gradientColors.size >= 2 &&
-                    whiteContrast < 2f &&
-                    blackContrast > 2f
-                ) {
-                    changeColor = true
-                    Color.White
-                } else if (whiteContrast > 2f && blackContrast < 2f) {
-                    changeColor = true
-                    Color.Black
-                } else {
-                    changeColor = false
-                    Color.Black
-                }
-            }
+            PlayerBackgroundStyle.GRADIENT -> Color.Black
+            else -> MaterialTheme.colorScheme.surface
         }
 
     val (textButtonColor, iconButtonColor) = when (playerButtonsStyle) {
@@ -1180,6 +1124,11 @@ fun BottomSheetPlayer(
                         modifier = Modifier
                             .fillMaxSize()
                             .background(Brush.verticalGradient(colors))
+                    )
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color.Black.copy(alpha = 0.2f))
                     )
                 }
             }
