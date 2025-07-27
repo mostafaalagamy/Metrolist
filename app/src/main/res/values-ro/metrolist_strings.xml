@@ -64,7 +64,7 @@
     <string name="player_background_style">Stilul fundalului player-ului</string>
     <string name="follow_theme">Urmează tema</string>
     <string name="gradient">Gradient</string>
-    <string name="new_player_design">Designul nou al player-ului</string>
+    <string name="new_player_design">Design nou al player-ului</string>
     <string name="player_background_blur">Blur</string>
     <string name="player_buttons_style">Culoarea butoanelor player-ului</string>
     <string name="default_style">Prestabilită</string>
@@ -152,4 +152,5 @@
     <string name="dislikes">Aprecieri negative</string>
     <string name="dislike_all">Apreciază negativ toate</string>
     <string name="default_lib_chips">Modifică secțiunea prestabilită a bibliotecii</string>
+    <string name="new_mini_player_design">Design nou al mini player-ului</string>
 </resources>
