@@ -295,16 +295,16 @@ fun BottomSheetPlayer(
                             val lightMutedColor = palette.lightMutedSwatch?.rgb?.let { Color(it) }
 
                             val extractedColors = when {
-                                // Prefer vibrant colors for colorful images
-                                vibrantColor != null && lightVibrantColor != null -> listOf(lightVibrantColor, vibrantColor)
-                                vibrantColor != null && darkVibrantColor != null -> listOf(vibrantColor, darkVibrantColor)
-                                vibrantColor != null && dominantColor != null -> listOf(vibrantColor, dominantColor)
-                                lightVibrantColor != null && dominantColor != null -> listOf(lightVibrantColor, dominantColor)
-                                // Fallback to muted colors
-                                mutedColor != null && lightMutedColor != null -> listOf(lightMutedColor, mutedColor)
-                                dominantColor != null && mutedColor != null -> listOf(dominantColor, mutedColor)
-                                // Last resort
-                                dominantColor != null -> listOf(dominantColor, dominantColor.copy(alpha = 0.7f))
+                                // Prefer darker colors for a more subdued look
+                                darkVibrantColor != null && vibrantColor != null -> listOf(darkVibrantColor, vibrantColor.copy(red = vibrantColor.red * 0.7f, green = vibrantColor.green * 0.7f, blue = vibrantColor.blue * 0.7f))
+                                darkVibrantColor != null && mutedColor != null -> listOf(darkVibrantColor, mutedColor)
+                                vibrantColor != null && mutedColor != null -> listOf(vibrantColor.copy(red = vibrantColor.red * 0.6f, green = vibrantColor.green * 0.6f, blue = vibrantColor.blue * 0.6f), mutedColor)
+                                dominantColor != null && mutedColor != null -> listOf(dominantColor.copy(red = dominantColor.red * 0.7f, green = dominantColor.green * 0.7f, blue = dominantColor.blue * 0.7f), mutedColor)
+                                // Fallback to muted colors with darkening
+                                mutedColor != null && lightMutedColor != null -> listOf(mutedColor, lightMutedColor.copy(red = lightMutedColor.red * 0.6f, green = lightMutedColor.green * 0.6f, blue = lightMutedColor.blue * 0.6f))
+                                vibrantColor != null && dominantColor != null -> listOf(vibrantColor.copy(red = vibrantColor.red * 0.6f, green = vibrantColor.green * 0.6f, blue = vibrantColor.blue * 0.6f), dominantColor.copy(red = dominantColor.red * 0.8f, green = dominantColor.green * 0.8f, blue = dominantColor.blue * 0.8f))
+                                // Last resort with darkening
+                                dominantColor != null -> listOf(dominantColor.copy(red = dominantColor.red * 0.7f, green = dominantColor.green * 0.7f, blue = dominantColor.blue * 0.7f), dominantColor.copy(red = dominantColor.red * 0.5f, green = dominantColor.green * 0.5f, blue = dominantColor.blue * 0.5f))
                                 else -> defaultGradientColors
                             }
                             
