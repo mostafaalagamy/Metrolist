@@ -112,7 +112,7 @@ import com.metrolist.music.utils.enumPreference
 import com.metrolist.music.utils.get
 import com.metrolist.music.utils.isInternetAvailable
 import com.metrolist.music.utils.reportException
-import com.metrolist.music.utils.NetworkConnectivity
+import com.metrolist.music.utils.NetworkConnectivityObserver
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -175,7 +175,7 @@ class MusicService :
     private val binder = MusicBinder()
 
     private lateinit var connectivityManager: ConnectivityManager
-    lateinit var connectivityObserver: NetworkConnectivity
+    lateinit var connectivityObserver: NetworkConnectivityObserver
     val waitingForNetworkConnection = MutableStateFlow(false)
     private val isNetworkConnected = MutableStateFlow(false)
 
@@ -288,15 +288,18 @@ class MusicService :
         controllerFuture.addListener({ controllerFuture.get() }, MoreExecutors.directExecutor())
 
         connectivityManager = getSystemService()!!
-        connectivityObserver = NetworkConnectivity(this)
+        connectivityObserver = NetworkConnectivityObserver(this)
 
         scope.launch {
             connectivityObserver.networkStatus.collect { isConnected ->
                 isNetworkConnected.value = isConnected
                 if (isConnected && waitingForNetworkConnection.value) {
+                    // Simple auto-play logic like OuterTune
                     waitingForNetworkConnection.value = false
-                    player.prepare()
-                    player.play()
+                    if (player.currentMediaItem != null && player.playWhenReady) {
+                        player.prepare()
+                        player.play()
+                    }
                 }
             }
         }
@@ -1161,6 +1164,7 @@ class MusicService :
             discordRpc?.closeRPC()
         }
         discordRpc = null
+        connectivityObserver.unregister()
         abandonAudioFocus()
         mediaSession.release()
         player.removeListener(this)

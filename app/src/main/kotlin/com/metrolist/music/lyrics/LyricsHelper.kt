@@ -9,7 +9,7 @@ import com.metrolist.music.extensions.toEnum
 import com.metrolist.music.models.MediaMetadata
 import com.metrolist.music.utils.dataStore
 import com.metrolist.music.utils.reportException
-import com.metrolist.music.utils.NetworkConnectivity
+import com.metrolist.music.utils.NetworkConnectivityObserver
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -28,7 +28,7 @@ class LyricsHelper
 @Inject
 constructor(
     @ApplicationContext private val context: Context,
-    private val networkConnectivity: NetworkConnectivity,
+    private val networkConnectivity: NetworkConnectivityObserver,
 ) {
     private var lyricsProviders =
         listOf(
