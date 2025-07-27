@@ -247,6 +247,9 @@ fun BottomSheetPlayer(
     var gradientColors by remember {
         mutableStateOf<List<Color>>(emptyList())
     }
+    
+    // Cache for gradient colors to prevent re-extraction for same songs
+    val gradientColorsCache = remember { mutableMapOf<String, List<Color>>() }
 
     if (!canSkipNext && automix.isNotEmpty()) {
         playerConnection.service.addToQueueAutomix(automix[0], 0)
@@ -261,34 +264,44 @@ fun BottomSheetPlayer(
         } else if (playerBackground == PlayerBackgroundStyle.GRADIENT) {
             val currentMetadata = mediaMetadata
             if (currentMetadata != null && currentMetadata.thumbnailUrl != null) {
-                try {
-                    val request = ImageRequest.Builder(context)
-                        .data(currentMetadata.thumbnailUrl)
-                        .size(Size(128, 128))
-                        .allowHardware(false)
-                        .memoryCacheKey("gradient_${currentMetadata.id}") // Use consistent cache key with prefix
-                        .build()
+                // Check cache first
+                val cachedColors = gradientColorsCache[currentMetadata.id]
+                if (cachedColors != null) {
+                    gradientColors = cachedColors
+                } else {
+                    try {
+                        val request = ImageRequest.Builder(context)
+                            .data(currentMetadata.thumbnailUrl)
+                            .size(Size(128, 128))
+                            .allowHardware(false)
+                            .memoryCacheKey("gradient_${currentMetadata.id}") // Use consistent cache key with prefix
+                            .build()
 
-                    val result = context.imageLoader.execute(request).drawable
-                    if (result != null) {
-                        val bitmap = result.toBitmap()
-                        val palette = withContext(Dispatchers.Default) {
-                            Palette.from(bitmap).generate()
-                        }
-                        val dominantColor = palette.dominantSwatch?.rgb?.let { Color(it) }
-                        val vibrantColor = palette.vibrantSwatch?.rgb?.let { Color(it) }
+                        val result = context.imageLoader.execute(request).drawable
+                        if (result != null) {
+                            val bitmap = result.toBitmap()
+                            val palette = withContext(Dispatchers.Default) {
+                                Palette.from(bitmap).generate()
+                            }
+                            val dominantColor = palette.dominantSwatch?.rgb?.let { Color(it) }
+                            val vibrantColor = palette.vibrantSwatch?.rgb?.let { Color(it) }
 
-                        if (dominantColor != null && vibrantColor != null) {
-                            gradientColors = listOf(vibrantColor, dominantColor)
+                            val extractedColors = if (dominantColor != null && vibrantColor != null) {
+                                listOf(vibrantColor, dominantColor)
+                            } else {
+                                defaultGradientColors
+                            }
+                            
+                            // Cache the extracted colors
+                            gradientColorsCache[currentMetadata.id] = extractedColors
+                            gradientColors = extractedColors
                         } else {
                             gradientColors = defaultGradientColors
                         }
-                    } else {
+                    } catch (e: Exception) {
                         gradientColors = defaultGradientColors
+                        e.printStackTrace()
                     }
-                } catch (e: Exception) {
-                    gradientColors = defaultGradientColors
-                    e.printStackTrace()
                 }
             } else {
                 gradientColors = emptyList()
