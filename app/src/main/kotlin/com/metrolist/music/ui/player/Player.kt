@@ -272,7 +272,7 @@ fun BottomSheetPlayer(
                     try {
                         val request = ImageRequest.Builder(context)
                             .data(currentMetadata.thumbnailUrl)
-                            .size(Size(128, 128))
+                            .size(Size(200, 200)) // Larger size for better color extraction
                             .allowHardware(false)
                             .memoryCacheKey("gradient_${currentMetadata.id}") // Use consistent cache key with prefix
                             .build()
@@ -281,15 +281,31 @@ fun BottomSheetPlayer(
                         if (result != null) {
                             val bitmap = result.toBitmap()
                             val palette = withContext(Dispatchers.Default) {
-                                Palette.from(bitmap).generate()
+                                Palette.from(bitmap)
+                                    .maximumColorCount(16) // Increase color count for better extraction
+                                    .generate()
                             }
-                            val dominantColor = palette.dominantSwatch?.rgb?.let { Color(it) }
+                            
+                            // Try multiple extraction methods for better color quality
                             val vibrantColor = palette.vibrantSwatch?.rgb?.let { Color(it) }
+                            val lightVibrantColor = palette.lightVibrantSwatch?.rgb?.let { Color(it) }
+                            val darkVibrantColor = palette.darkVibrantSwatch?.rgb?.let { Color(it) }
+                            val dominantColor = palette.dominantSwatch?.rgb?.let { Color(it) }
+                            val mutedColor = palette.mutedSwatch?.rgb?.let { Color(it) }
+                            val lightMutedColor = palette.lightMutedSwatch?.rgb?.let { Color(it) }
 
-                            val extractedColors = if (dominantColor != null && vibrantColor != null) {
-                                listOf(vibrantColor, dominantColor)
-                            } else {
-                                defaultGradientColors
+                            val extractedColors = when {
+                                // Prefer vibrant colors for colorful images
+                                vibrantColor != null && lightVibrantColor != null -> listOf(lightVibrantColor, vibrantColor)
+                                vibrantColor != null && darkVibrantColor != null -> listOf(vibrantColor, darkVibrantColor)
+                                vibrantColor != null && dominantColor != null -> listOf(vibrantColor, dominantColor)
+                                lightVibrantColor != null && dominantColor != null -> listOf(lightVibrantColor, dominantColor)
+                                // Fallback to muted colors
+                                mutedColor != null && lightMutedColor != null -> listOf(lightMutedColor, mutedColor)
+                                dominantColor != null && mutedColor != null -> listOf(dominantColor, mutedColor)
+                                // Last resort
+                                dominantColor != null -> listOf(dominantColor, dominantColor.copy(alpha = 0.7f))
+                                else -> defaultGradientColors
                             }
                             
                             // Cache the extracted colors
