@@ -260,7 +260,7 @@ fun BottomSheetPlayer(
             gradientColors = listOf(Color.Black, Color.Black)
         } else if (playerBackground == PlayerBackgroundStyle.GRADIENT) {
             val currentMetadata = mediaMetadata
-            if (currentMetadata?.thumbnailUrl != null) {
+            if (currentMetadata != null && currentMetadata.thumbnailUrl != null) {
                 try {
                     val request = ImageRequest.Builder(context)
                         .data(currentMetadata.thumbnailUrl)
