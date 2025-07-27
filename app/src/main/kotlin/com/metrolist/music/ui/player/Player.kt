@@ -252,6 +252,9 @@ fun BottomSheetPlayer(
         playerConnection.service.addToQueueAutomix(automix[0], 0)
     }
 
+    // Default gradient colors for fallback
+    val defaultGradientColors = listOf(MaterialTheme.colorScheme.surface, MaterialTheme.colorScheme.surfaceVariant)
+    
     LaunchedEffect(mediaMetadata, playerBackground) {
         if (useBlackBackground && playerBackground != PlayerBackgroundStyle.BLUR) {
             gradientColors = listOf(Color.Black, Color.Black)
@@ -275,11 +278,11 @@ fun BottomSheetPlayer(
                     if (dominantColor != null && vibrantColor != null) {
                         gradientColors = listOf(vibrantColor, dominantColor)
                     } else {
-                        gradientColors = listOf(MaterialTheme.colorScheme.surface, MaterialTheme.colorScheme.surfaceVariant)
+                        gradientColors = defaultGradientColors
                     }
                 }
             } catch (e: Exception) {
-                gradientColors = listOf(MaterialTheme.colorScheme.surface, MaterialTheme.colorScheme.surfaceVariant)
+                gradientColors = defaultGradientColors
                 e.printStackTrace()
             }
         } else {
