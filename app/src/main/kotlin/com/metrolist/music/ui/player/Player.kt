@@ -294,18 +294,39 @@ fun BottomSheetPlayer(
                             val mutedColor = palette.mutedSwatch?.rgb?.let { Color(it) }
                             val lightMutedColor = palette.lightMutedSwatch?.rgb?.let { Color(it) }
 
-                            val extractedColors = when {
-                                // Prefer darker colors for a more subdued look
-                                darkVibrantColor != null && vibrantColor != null -> listOf(darkVibrantColor, vibrantColor.copy(red = vibrantColor.red * 0.7f, green = vibrantColor.green * 0.7f, blue = vibrantColor.blue * 0.7f))
-                                darkVibrantColor != null && mutedColor != null -> listOf(darkVibrantColor, mutedColor)
-                                vibrantColor != null && mutedColor != null -> listOf(vibrantColor.copy(red = vibrantColor.red * 0.6f, green = vibrantColor.green * 0.6f, blue = vibrantColor.blue * 0.6f), mutedColor)
-                                dominantColor != null && mutedColor != null -> listOf(dominantColor.copy(red = dominantColor.red * 0.7f, green = dominantColor.green * 0.7f, blue = dominantColor.blue * 0.7f), mutedColor)
-                                // Fallback to muted colors with darkening
-                                mutedColor != null && lightMutedColor != null -> listOf(mutedColor, lightMutedColor.copy(red = lightMutedColor.red * 0.6f, green = lightMutedColor.green * 0.6f, blue = lightMutedColor.blue * 0.6f))
-                                vibrantColor != null && dominantColor != null -> listOf(vibrantColor.copy(red = vibrantColor.red * 0.6f, green = vibrantColor.green * 0.6f, blue = vibrantColor.blue * 0.6f), dominantColor.copy(red = dominantColor.red * 0.8f, green = dominantColor.green * 0.8f, blue = dominantColor.blue * 0.8f))
-                                // Last resort with darkening
-                                dominantColor != null -> listOf(dominantColor.copy(red = dominantColor.red * 0.7f, green = dominantColor.green * 0.7f, blue = dominantColor.blue * 0.7f), dominantColor.copy(red = dominantColor.red * 0.5f, green = dominantColor.green * 0.5f, blue = dominantColor.blue * 0.5f))
-                                else -> defaultGradientColors
+                            // دالة لتحديد إذا كان اللون غامق أو فاتح
+                            fun isColorDark(color: Color): Boolean {
+                                // YIQ formula to determine brightness
+                                val yiq = ((color.red * 255) * 299 + (color.green * 255) * 587 + (color.blue * 255) * 114) / 1000
+                                return yiq < 128
+                            }
+
+                            val extractedColors = if (dominantColor != null) {
+                                if (isColorDark(dominantColor)) {
+                                    // إذا كان اللون غامق، التدرج من الغامق إلى الأفتح
+                                    listOf(
+                                        dominantColor,
+                                        Color(
+                                            red = (dominantColor.red + 0.2f).coerceAtMost(1f),
+                                            green = (dominantColor.green + 0.2f).coerceAtMost(1f),
+                                            blue = (dominantColor.blue + 0.2f).coerceAtMost(1f),
+                                            alpha = dominantColor.alpha
+                                        )
+                                    )
+                                } else {
+                                    // إذا كان اللون فاتح، التدرج من الفاتح إلى الأغمق
+                                    listOf(
+                                        dominantColor,
+                                        Color(
+                                            red = (dominantColor.red - 0.2f).coerceAtLeast(0f),
+                                            green = (dominantColor.green - 0.2f).coerceAtLeast(0f),
+                                            blue = (dominantColor.blue - 0.2f).coerceAtLeast(0f),
+                                            alpha = dominantColor.alpha
+                                        )
+                                    )
+                                }
+                            } else {
+                                defaultGradientColors
                             }
                             
                             // Cache the extracted colors
