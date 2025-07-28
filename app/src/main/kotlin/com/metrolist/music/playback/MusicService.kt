@@ -238,11 +238,35 @@ class MusicService :
                 { NOTIFICATION_ID },
                 CHANNEL_ID,
                 R.string.music_player
-            )
-                .apply {
-                    setSmallIcon(R.drawable.small_icon)
-                },
+            ).apply { setSmallIcon(R.drawable.small_icon) },
         )
+
+        // Register the connectivity observer so that network status changes
+        // are delivered. Without registering, the observer may not receive
+        // events on some devices after the first update.
+        try {
+            connectivityObserver.unregister()
+        } catch (e: UninitializedPropertyAccessException) {}
+        // Initialize connectivity manager and observer.  Use the application
+        // context to ensure callbacks remain registered beyond the service
+        // lifecycle and explicitly register the observer to start
+        // receiving connectivity updates.
+        connectivityManager = getSystemService()!!
+        connectivityObserver = NetworkConnectivityObserver(applicationContext)
+
+        scope.launch {
+            connectivityObserver.networkStatus.collect { isConnected ->
+                isNetworkConnected.value = isConnected
+                if (isConnected && waitingForNetworkConnection.value) {
+                    // Clear waiting flag and prepare/play when the network
+                    // becomes available again.
+                    waitingForNetworkConnection.value = false
+                    player.prepare()
+                    player.play()
+                }
+            }
+        }
+
         player =
             ExoPlayer
                 .Builder(this)
@@ -261,10 +285,36 @@ class MusicService :
                 .setSeekForwardIncrementMs(5000)
                 .build()
                 .apply {
+                    // register the service listener to receive high-level playback callbacks
                     addListener(this@MusicService)
+                    // attach sleep timer to update playback notifications and timers
                     sleepTimer = SleepTimer(scope, this)
                     addListener(sleepTimer)
+                    // forward analytics to this service
                     addAnalyticsListener(PlaybackStatsListener(false, this@MusicService))
+
+                    // handle error callbacks locally instead of relying on the service-level implementation
+                    // similar to OuterTune, we intercept errors here to allow for automatic recovery
+                    addListener(object : Player.Listener {
+                        override fun onPlayerError(error: PlaybackException) {
+                            super.onPlayerError(error)
+                            val isConnectionError = (error.cause?.cause is PlaybackException) &&
+                                    (error.cause?.cause as PlaybackException).errorCode == PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_FAILED
+
+                            // if we're not connected or the error is a network error, wait for reconnection
+                            if (!isNetworkConnected.value || isConnectionError) {
+                                waitOnNetworkError()
+                                return
+                            }
+
+                            // respect user preference: skip to next item or stop on error
+                            if (dataStore.get(AutoSkipNextOnErrorKey, false)) {
+                                skipOnError()
+                            } else {
+                                stopOnError()
+                            }
+                        }
+                    })
                 }
 
         audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
@@ -293,30 +343,6 @@ class MusicService :
         val sessionToken = SessionToken(this, ComponentName(this, MusicService::class.java))
         val controllerFuture = MediaController.Builder(this, sessionToken).buildAsync()
         controllerFuture.addListener({ controllerFuture.get() }, MoreExecutors.directExecutor())
-
-            // Initialize connectivity manager and observer.  Use the application
-            // context to ensure callbacks remain registered beyond the service
-            // lifecycle and explicitly register the observer to start
-            // receiving connectivity updates.
-            connectivityManager = getSystemService()!!
-            connectivityObserver = NetworkConnectivityObserver(applicationContext)
-            // Register the connectivity observer so that network status changes
-            // are delivered. Without registering, the observer may not receive
-            // events on some devices after the first update.
-            connectivityObserver.register()
-
-            scope.launch {
-                connectivityObserver.networkStatus.collect { isConnected ->
-                    isNetworkConnected.value = isConnected
-                    if (isConnected && waitingForNetworkConnection.value) {
-                        // Clear waiting flag and prepare/play when the network
-                        // becomes available again.
-                        waitingForNetworkConnection.value = false
-                        player.prepare()
-                        player.play()
-                    }
-                }
-            }
 
         combine(playerVolume, normalizeFactor) { playerVolume, normalizeFactor ->
             playerVolume * normalizeFactor
@@ -556,24 +582,24 @@ class MusicService :
         return hasAudioFocus
     }
 
-        /**
-         * Called when a playback error is caused by a loss of network
-         * connectivity.  Sets a flag indicating that we should wait for the
-         * network to return and notifies the user.  When the network becomes
-         * available again, the connectivity observer will clear the flag
-         * and restart playback automatically.
-         */
-        private fun waitOnNetworkError() {
-            waitingForNetworkConnection.value = true
-            // Inform the user that we're waiting for the network.  Use the
-            // application context (this@MusicService) so the Toast can be
-            // displayed from a background service.
-            Toast.makeText(
-                this@MusicService,
-                getString(R.string.wait_to_reconnect),
-                Toast.LENGTH_LONG
-            ).show()
-        }
+    /**
+    * Called when a playback error is caused by a loss of network
+    * connectivity.  Sets a flag indicating that we should wait for the
+    * network to return and notifies the user.  When the network becomes
+    * available again, the connectivity observer will clear the flag
+    * and restart playback automatically.
+    */
+    private fun waitOnNetworkError() {
+        waitingForNetworkConnection.value = true
+        // Inform the user that we're waiting for the network.  Use the
+        // application context (this@MusicService) so the Toast can be
+        // displayed from a background service.
+        Toast.makeText(
+            this@MusicService,
+            getString(R.string.wait_to_reconnect),
+            Toast.LENGTH_LONG
+        ).show()
+    }
 
     private fun skipOnError() {
         /**
@@ -946,6 +972,9 @@ class MusicService :
                 }
             } else {
                 closeAudioEffectSession()
+                if (!player.playWhenReady) {
+                    waitingForNetworkConnection.value = false
+                }
             }
         }
         if (events.containsAny(EVENT_TIMELINE_CHANGED, EVENT_POSITION_DISCONTINUITY)) {
@@ -975,22 +1004,6 @@ class MusicService :
         }
     }
 
-    override fun onPlayerError(error: PlaybackException) {
-        super.onPlayerError(error)
-        val isConnectionError = (error.cause?.cause is PlaybackException) &&
-                (error.cause?.cause as PlaybackException).errorCode == PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_FAILED
-
-        if (!isNetworkConnected.value || isConnectionError) {
-            waitOnNetworkError()
-            return
-        }
-
-        if (dataStore.get(AutoSkipNextOnErrorKey, false)) {
-            skipOnError()
-        } else {
-            stopOnError()
-        }
-    }
 
     private fun createCacheDataSource(): CacheDataSource.Factory =
         CacheDataSource
