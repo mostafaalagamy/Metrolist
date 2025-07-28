@@ -1,3 +1,4 @@
+
 @file:Suppress("DEPRECATION")
 
 package com.metrolist.music.playback
@@ -178,7 +179,6 @@ class MusicService :
     lateinit var connectivityObserver: NetworkConnectivityObserver
     val waitingForNetworkConnection = MutableStateFlow(false)
     private val isNetworkConnected = MutableStateFlow(false)
-    private var waitingForNetwork = false
 
     private val audioQuality by enumPreference(
         this,
@@ -290,17 +290,17 @@ class MusicService :
 
         connectivityManager = getSystemService()!!
         connectivityObserver = NetworkConnectivityObserver(this)
+        // Register the connectivity observer so that network status changes are delivered.
+        // Without registering, the observer may not receive events on some devices.
+        connectivityObserver.register()
 
         scope.launch {
             connectivityObserver.networkStatus.collect { isConnected ->
                 isNetworkConnected.value = isConnected
-                if (isConnected && (waitingForNetworkConnection.value || waitingForNetwork)) {
+                if (isConnected && waitingForNetworkConnection.value) {
                     waitingForNetworkConnection.value = false
-                    waitingForNetwork = false
-                    if (player.currentMediaItem != null && player.playWhenReady) {
-                        player.prepare()
-                        player.play()
-                    }
+                    player.prepare()
+                    player.play()
                 }
             }
         }
@@ -541,6 +541,35 @@ class MusicService :
 
     fun hasAudioFocusForPlayback(): Boolean {
         return hasAudioFocus
+    }
+
+    private fun waitOnNetworkError() {
+        waitingForNetworkConnection.value = true
+    }
+
+    private fun skipOnError() {
+        /**
+         * Auto skip to the next media item on error.
+         *
+         * To prevent a "runaway diesel engine" scenario, force the user to take action after
+         * too many errors come up too quickly. Pause to show player "stopped" state
+         */
+        consecutivePlaybackErr += 2
+        val nextWindowIndex = player.nextMediaItemIndex
+
+        if (consecutivePlaybackErr <= MAX_CONSECUTIVE_ERR && nextWindowIndex != C.INDEX_UNSET) {
+            player.seekTo(nextWindowIndex, C.TIME_UNSET)
+            player.prepare()
+            player.play()
+            return
+        }
+
+        player.pause()
+        consecutivePlaybackErr = 0
+    }
+
+    private fun stopOnError() {
+        player.pause()
     }
 
     private fun updateNotification() {
@@ -845,6 +874,18 @@ class MusicService :
         mediaItem: MediaItem?,
         reason: Int,
     ) {
+        // Handle consecutive errors and ensure playback resumes after seeking due to an error.
+        if (consecutivePlaybackErr > 0) {
+            consecutivePlaybackErr--
+        }
+        // When a transition happens because of a seek (for example, after skipOnError()),
+        // ExoPlayer may remain in a paused state. Prepare and play again so that
+        // playback continues seamlessly.
+        if (player.isPlaying && reason == Player.MEDIA_ITEM_TRANSITION_REASON_SEEK) {
+            player.prepare()
+            player.play()
+        }
+
         // Auto load more songs
         if (dataStore.get(AutoLoadMoreKey, true) &&
             reason != Player.MEDIA_ITEM_TRANSITION_REASON_REPEAT &&
@@ -920,65 +961,18 @@ class MusicService :
 
     override fun onPlayerError(error: PlaybackException) {
         super.onPlayerError(error)
+        // Always indicate that we're waiting for reconnection after any error.
+        // The connectivity observer will automatically call prepare() and play() when
+        // the network becomes available again, which helps recover from errors that
+        // occurred due to temporary network issues or expired streams.
+        waitOnNetworkError()
 
-        val isNetworkError = when (error.errorCode) {
-            PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_FAILED,
-            PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_TIMEOUT,
-            PlaybackException.ERROR_CODE_IO_BAD_HTTP_STATUS -> true
-            else -> false
-        }
-
-        val isNestedConnectionError = (error.cause?.cause is PlaybackException) && 
-            (error.cause?.cause as PlaybackException).errorCode == PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_FAILED
-
-        if (!isNetworkConnected.value || isNetworkError || isNestedConnectionError) {
-            waitOnNetworkError()
-            waitingForNetwork = true
-
-            android.widget.Toast.makeText(this@MusicService, "Waiting for network connection...", android.widget.Toast.LENGTH_SHORT).show()
-        
-            return
-        }
-
+        // Decide whether to skip to the next item or stop based on user preference.
         if (dataStore.get(AutoSkipNextOnErrorKey, false)) {
             skipOnError()
         } else {
             stopOnError()
         }
-    }
-
-    fun waitOnNetworkError() {
-        waitingForNetworkConnection.value = true
-        android.widget.Toast.makeText(this@MusicService, "Waiting for network connection...", android.widget.Toast.LENGTH_SHORT).show()
-    }
-
-    fun skipOnError() {
-        /**
-         * Auto skip to the next media item on error.
-         *
-         * To prevent a "runaway diesel engine" scenario, force the user to take action after
-         * too many errors come up too quickly. Pause to show player "stopped" state
-         */
-        consecutivePlaybackErr += 2
-        val nextWindowIndex = player.nextMediaItemIndex
-
-        if (consecutivePlaybackErr <= MAX_CONSECUTIVE_ERR && nextWindowIndex != C.INDEX_UNSET) {
-            player.seekTo(nextWindowIndex, C.TIME_UNSET)
-            player.prepare()
-            player.play()
-
-            android.widget.Toast.makeText(this@MusicService, "Waiting for network connection...", android.widget.Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        player.pause()
-        android.widget.Toast.makeText(this@MusicService, "Waiting for network connection...", android.widget.Toast.LENGTH_SHORT).show()
-        consecutivePlaybackErr = 0
-    }
-
-    fun stopOnError() {
-        player.pause()
-        android.widget.Toast.makeText(this@MusicService, "Waiting for network connection...", android.widget.Toast.LENGTH_SHORT).show()
     }
 
     private fun createCacheDataSource(): CacheDataSource.Factory =
@@ -1182,7 +1176,6 @@ class MusicService :
             discordRpc?.closeRPC()
         }
         discordRpc = null
-        connectivityObserver.unregister()
         abandonAudioFocus()
         mediaSession.release()
         player.removeListener(this)
@@ -1221,4 +1214,3 @@ class MusicService :
         const val MAX_CONSECUTIVE_ERR = 5
     }
 }
-
