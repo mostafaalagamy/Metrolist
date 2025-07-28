@@ -14,14 +14,11 @@ import com.metrolist.innertube.models.YouTubeClient.Companion.ANDROID_VR_NO_AUTH
 import com.metrolist.innertube.models.YouTubeClient.Companion.MOBILE
 import com.metrolist.innertube.models.YouTubeClient.Companion.WEB
 import com.metrolist.innertube.models.YouTubeClient.Companion.WEB_CREATOR
-import kotlinx.coroutines.delay
 import okhttp3.OkHttpClient
 import timber.log.Timber
 
 object YTPlayerUtils {
     private const val logTag = "YTPlayerUtils"
-    private const val MAX_RETRY = 5
-    private const val INITIAL_RETRY_DELAY = 500L
     
     private val httpClient = OkHttpClient.Builder()
         .proxy(YouTube.proxy)
@@ -66,30 +63,6 @@ object YTPlayerUtils {
         audioQuality: AudioQuality,
         connectivityManager: ConnectivityManager,
     ): Result<PlaybackData> = runCatching {
-        var retryCount = 0
-        var lastError: Exception? = null
-
-        while (retryCount < MAX_RETRY) {
-            try {
-                val result = fetchPlaybackData(videoId, playlistId, audioQuality, connectivityManager)
-                if (result != null) return Result.success(result)
-            } catch (e: Exception) {
-                lastError = e
-                Timber.tag(logTag).e("Attempt ${retryCount + 1} failed: ${e.message}")
-                delay(INITIAL_RETRY_DELAY * (retryCount + 1))
-            }
-            retryCount++
-        }
-
-        throw lastError ?: Exception("All retries failed")
-    }
-
-    private suspend fun fetchPlaybackData(
-        videoId: String,
-        playlistId: String?,
-        audioQuality: AudioQuality,
-        connectivityManager: ConnectivityManager
-    ): PlaybackData? {
         Timber.tag(logTag).d("Fetching player response for videoId: $videoId, playlistId: $playlistId")
         /**
          * This is required for some clients to get working streams however
@@ -160,7 +133,10 @@ object YTPlayerUtils {
                         streamPlayerResponse,
                         audioQuality,
                         connectivityManager,
-                    )
+                    ) ?: continue
+                streamUrl = findUrlOrNull(format, videoId) ?: continue
+                streamExpiresInSeconds =
+                    streamPlayerResponse.streamingData?.expiresInSeconds ?: continue
 
                 if (format == null) {
                     Timber.tag(logTag).d("No suitable format found for client: ${if (clientIndex == -1) MAIN_CLIENT.clientName else STREAM_FALLBACK_CLIENTS[clientIndex].clientName}")
@@ -232,7 +208,7 @@ object YTPlayerUtils {
         }
 
         Timber.tag(logTag).d("Successfully obtained playback data with format: ${format.mimeType}, bitrate: ${format.bitrate}")
-        return PlaybackData(
+        PlaybackData(
             audioConfig,
             videoDetails,
             playbackTracking,
