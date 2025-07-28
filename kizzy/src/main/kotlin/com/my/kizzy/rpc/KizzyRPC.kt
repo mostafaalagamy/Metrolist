@@ -40,7 +40,7 @@ open class KizzyRPC(token: String) {
         return discordWebSocket.isWebSocketConnected()
     }
 
-    suspend fun stopRPC() {
+    suspend fun stopActivity() {
         if (!isRpcRunning()) {
             discordWebSocket.connect()
         }

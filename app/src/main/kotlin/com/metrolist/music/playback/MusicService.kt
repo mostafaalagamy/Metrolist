@@ -922,7 +922,7 @@ class MusicService :
             } else {
                 closeAudioEffectSession()
                 scope.launch {
-                    discordRpc?.stopRPC()
+                    discordRpc?.stopActivity()
                 }
             }
         }
