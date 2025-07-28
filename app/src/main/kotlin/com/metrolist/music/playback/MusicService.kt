@@ -256,27 +256,6 @@ class MusicService :
                 .build()
                 .apply {
                     addListener(this@MusicService)
-                    addListener(object : Player.Listener {
-                        override fun onPlayerError(error: PlaybackException) {
-                            super.onPlayerError(error)
-                            val isNetworkError = when (error.errorCode) {
-                                PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_FAILED,
-                                PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_TIMEOUT,
-                                PlaybackException.ERROR_CODE_IO_BAD_HTTP_STATUS -> true
-                                else -> false
-                            }
-
-                            if (isNetworkError) {
-                                waitingForNetwork = true
-                                waitingForNetworkConnection.value = true
-                                android.widget.Toast.makeText(this@MusicService, "Waiting for network connection...", android.widget.Toast.LENGTH_SHORT).show()
-                            } else if (dataStore.get(AutoSkipNextOnErrorKey, false)) {
-                                skipOnError()
-                            } else {
-                                stopOnError()
-                            }
-                        }
-                    })
                     sleepTimer = SleepTimer(scope, this)
                     addListener(sleepTimer)
                     addAnalyticsListener(PlaybackStatsListener(false, this@MusicService))
@@ -971,11 +950,19 @@ class MusicService :
 
     override fun onPlayerError(error: PlaybackException) {
         super.onPlayerError(error)
+        val isNetworkError = when (error.errorCode) {
+            PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_FAILED,
+            PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_TIMEOUT,
+            PlaybackException.ERROR_CODE_IO_BAD_HTTP_STATUS -> true
+            else -> false
+        }
         val isConnectionError = (error.cause?.cause is PlaybackException) &&
                 (error.cause?.cause as PlaybackException).errorCode == PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_FAILED
 
-        if (!isNetworkConnected.value || isConnectionError) {
+        if (!isNetworkConnected.value || (isConnectionError && isNetworkError)) {
             waitOnNetworkError()
+            waitingForNetwork = true
+            android.widget.Toast.makeText(this@MusicService, "Waiting for network connection...", android.widget.Toast.LENGTH_SHORT).show()
             return
         }
 
