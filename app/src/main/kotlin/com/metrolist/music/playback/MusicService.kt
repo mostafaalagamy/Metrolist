@@ -178,6 +178,7 @@ class MusicService :
     lateinit var connectivityObserver: NetworkConnectivityObserver
     val waitingForNetworkConnection = MutableStateFlow(false)
     private val isNetworkConnected = MutableStateFlow(false)
+    private var waitingForNetwork = false
 
     private val audioQuality by enumPreference(
         this,
@@ -255,6 +256,27 @@ class MusicService :
                 .build()
                 .apply {
                     addListener(this@MusicService)
+                    addListener(object : Player.Listener {
+                        override fun onPlayerError(error: PlaybackException) {
+                            super.onPlayerError(error)
+                            val isNetworkError = when (error.errorCode) {
+                                PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_FAILED,
+                                PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_TIMEOUT,
+                                PlaybackException.ERROR_CODE_IO_BAD_HTTP_STATUS -> true
+                                else -> false
+                            }
+
+                            if (isNetworkError) {
+                                waitingForNetwork = true
+                                waitingForNetworkConnection.value = true
+                                android.widget.Toast.makeText(this@MusicService, "Waiting for network connection...", android.widget.Toast.LENGTH_SHORT).show()
+                            } else if (dataStore.get(AutoSkipNextOnErrorKey, false)) {
+                                skipOnError()
+                            } else {
+                                stopOnError()
+                            }
+                        }
+                    })
                     sleepTimer = SleepTimer(scope, this)
                     addListener(sleepTimer)
                     addAnalyticsListener(PlaybackStatsListener(false, this@MusicService))
@@ -293,9 +315,9 @@ class MusicService :
         scope.launch {
             connectivityObserver.networkStatus.collect { isConnected ->
                 isNetworkConnected.value = isConnected
-                if (isConnected && waitingForNetworkConnection.value) {
-                    // Simple auto-play logic like OuterTune
+                if (isConnected && (waitingForNetworkConnection.value || waitingForNetwork)) {
                     waitingForNetworkConnection.value = false
+                    waitingForNetwork = false
                     if (player.currentMediaItem != null && player.playWhenReady) {
                         player.prepare()
                         player.play()
@@ -547,28 +569,29 @@ class MusicService :
     }
 
     private fun skipOnError() {
-        /**
-         * Auto skip to the next media item on error.
-         *
-         * To prevent a "runaway diesel engine" scenario, force the user to take action after
-         * too many errors come up too quickly. Pause to show player "stopped" state
-         */
-        consecutivePlaybackErr += 2
-        val nextWindowIndex = player.nextMediaItemIndex
-
-        if (consecutivePlaybackErr <= MAX_CONSECUTIVE_ERR && nextWindowIndex != C.INDEX_UNSET) {
-            player.seekTo(nextWindowIndex, C.TIME_UNSET)
-            player.prepare()
-            player.play()
-            return
+        player?.let {
+            if (it.nextMediaItemIndex != C.INDEX_UNSET) {
+                it.seekToNext()
+                it.prepare()
+                it.play()
+                android.widget.Toast.makeText(
+                    this@MusicService,
+                    getString(R.string.err_play_next_on_error),
+                    android.widget.Toast.LENGTH_SHORT
+                ).show()
+            } else {
+                stopOnError()
+            }
         }
-
-        player.pause()
-        consecutivePlaybackErr = 0
     }
 
     private fun stopOnError() {
         player.pause()
+        android.widget.Toast.makeText(
+            this@MusicService,
+            getString(R.string.err_stop_on_error),
+            android.widget.Toast.LENGTH_LONG
+        ).show()
     }
 
     private fun updateNotification() {

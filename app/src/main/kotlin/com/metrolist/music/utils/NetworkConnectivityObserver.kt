@@ -5,14 +5,15 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 
-/**
- * Simple NetworkConnectivityObserver based on OuterTune's implementation
- * Provides network connectivity monitoring for auto-play functionality
- */
-class NetworkConnectivityObserver(context: Context) {
+class NetworkConnectivityObserver(
+    context: Context
+) : DefaultLifecycleObserver {
+
     private val connectivityManager =
         context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
@@ -20,41 +21,39 @@ class NetworkConnectivityObserver(context: Context) {
     val networkStatus = _networkStatus.receiveAsFlow()
 
     private val networkCallback = object : ConnectivityManager.NetworkCallback() {
-        override fun onAvailable(network: Network) {
-            _networkStatus.trySend(true)
-        }
-
-        override fun onLost(network: Network) {
-            _networkStatus.trySend(false)
-        }
+        override fun onAvailable(network: Network) = checkNetworkStatus()
+        override fun onLost(network: Network) = checkNetworkStatus()
+        override fun onCapabilitiesChanged(network: Network, networkCapabilities: NetworkCapabilities) = checkNetworkStatus()
     }
 
-    init {
+    fun checkNetworkStatus() {
+        val activeNetwork = connectivityManager.activeNetwork
+        val hasInternet = connectivityManager.getNetworkCapabilities(activeNetwork)?.let { capabilities ->
+            capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) &&
+                    capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
+        } ?: false
+        _networkStatus.trySend(hasInternet)
+    }
+
+    fun register() {
         val request = NetworkRequest.Builder()
             .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
             .build()
         connectivityManager.registerNetworkCallback(request, networkCallback)
-        
-        // Send initial state
-        val isInitiallyConnected = isCurrentlyConnected()
-        _networkStatus.trySend(isInitiallyConnected)
+        checkNetworkStatus()
     }
 
     fun unregister() {
         connectivityManager.unregisterNetworkCallback(networkCallback)
     }
-    
-    /**
-     * Check current connectivity state synchronously
-     */
-    fun isCurrentlyConnected(): Boolean {
-        return try {
-            val activeNetwork = connectivityManager.activeNetwork
-            val networkCapabilities = connectivityManager.getNetworkCapabilities(activeNetwork)
-            networkCapabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) == true &&
-            networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
-        } catch (e: Exception) {
-            false
-        }
+
+    override fun onCreate(owner: LifecycleOwner) {
+        super.onCreate(owner)
+        register()
+    }
+
+    override fun onDestroy(owner: LifecycleOwner) {
+        super.onDestroy(owner)
+        unregister()
     }
 }

@@ -173,4 +173,7 @@
         <item quantity="one">1 second</item>
         <item quantity="other">%d seconds</item>
     </plurals>
+    
+    <string name="err_play_next_on_error">Playing next song due to error</string>
+    <string name="err_stop_on_error">Playback stopped due to error</string>
 </resources>
