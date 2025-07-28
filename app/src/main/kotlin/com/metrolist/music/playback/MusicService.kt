@@ -113,6 +113,7 @@ import com.metrolist.music.utils.get
 import com.metrolist.music.utils.isInternetAvailable
 import com.metrolist.music.utils.reportException
 import com.metrolist.music.utils.NetworkConnectivityObserver
+import android.widget.Toast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -175,6 +176,12 @@ class MusicService :
     private val binder = MusicBinder()
 
     private lateinit var connectivityManager: ConnectivityManager
+        /**
+         * Observes network connectivity changes.  We use the application context
+         * when creating this observer to ensure callbacks continue to run even
+         * if the service context is destroyed.  This observer must be
+         * registered in onCreate() to start receiving updates.
+         */
     lateinit var connectivityObserver: NetworkConnectivityObserver
     val waitingForNetworkConnection = MutableStateFlow(false)
     private val isNetworkConnected = MutableStateFlow(false)
@@ -287,22 +294,29 @@ class MusicService :
         val controllerFuture = MediaController.Builder(this, sessionToken).buildAsync()
         controllerFuture.addListener({ controllerFuture.get() }, MoreExecutors.directExecutor())
 
-        connectivityManager = getSystemService()!!
-        connectivityObserver = NetworkConnectivityObserver(this)
-        // Register the connectivity observer so that network status changes are delivered.
-        // Without registering, the observer may not receive events on some devices.
-        connectivityObserver.register()
+            // Initialize connectivity manager and observer.  Use the application
+            // context to ensure callbacks remain registered beyond the service
+            // lifecycle and explicitly register the observer to start
+            // receiving connectivity updates.
+            connectivityManager = getSystemService()!!
+            connectivityObserver = NetworkConnectivityObserver(applicationContext)
+            // Register the connectivity observer so that network status changes
+            // are delivered. Without registering, the observer may not receive
+            // events on some devices after the first update.
+            connectivityObserver.register()
 
-        scope.launch {
-            connectivityObserver.networkStatus.collect { isConnected ->
-                isNetworkConnected.value = isConnected
-                if (isConnected && waitingForNetworkConnection.value) {
-                    waitingForNetworkConnection.value = false
-                    player.prepare()
-                    player.play()
+            scope.launch {
+                connectivityObserver.networkStatus.collect { isConnected ->
+                    isNetworkConnected.value = isConnected
+                    if (isConnected && waitingForNetworkConnection.value) {
+                        // Clear waiting flag and prepare/play when the network
+                        // becomes available again.
+                        waitingForNetworkConnection.value = false
+                        player.prepare()
+                        player.play()
+                    }
                 }
             }
-        }
 
         combine(playerVolume, normalizeFactor) { playerVolume, normalizeFactor ->
             playerVolume * normalizeFactor
@@ -542,9 +556,24 @@ class MusicService :
         return hasAudioFocus
     }
 
-    private fun waitOnNetworkError() {
-        waitingForNetworkConnection.value = true
-    }
+        /**
+         * Called when a playback error is caused by a loss of network
+         * connectivity.  Sets a flag indicating that we should wait for the
+         * network to return and notifies the user.  When the network becomes
+         * available again, the connectivity observer will clear the flag
+         * and restart playback automatically.
+         */
+        private fun waitOnNetworkError() {
+            waitingForNetworkConnection.value = true
+            // Inform the user that we're waiting for the network.  Use the
+            // application context (this@MusicService) so the Toast can be
+            // displayed from a background service.
+            Toast.makeText(
+                this@MusicService,
+                getString(R.string.wait_to_reconnect),
+                Toast.LENGTH_LONG
+            ).show()
+        }
 
     private fun skipOnError() {
         /**
@@ -873,18 +902,6 @@ class MusicService :
         mediaItem: MediaItem?,
         reason: Int,
     ) {
-        // Handle consecutive errors and ensure playback resumes after seeking due to an error.
-        if (consecutivePlaybackErr > 0) {
-            consecutivePlaybackErr--
-        }
-        // When a transition happens because of a seek (for example, after skipOnError()),
-        // ExoPlayer may remain in a paused state. Prepare and play again so that
-        // playback continues seamlessly.
-        if (player.isPlaying && reason == Player.MEDIA_ITEM_TRANSITION_REASON_SEEK) {
-            player.prepare()
-            player.play()
-        }
-
         // Auto load more songs
         if (dataStore.get(AutoLoadMoreKey, true) &&
             reason != Player.MEDIA_ITEM_TRANSITION_REASON_REPEAT &&
@@ -960,18 +977,14 @@ class MusicService :
 
     override fun onPlayerError(error: PlaybackException) {
         super.onPlayerError(error)
-        // Only wait for reconnection when the error is caused by network issues or
-        // when the device is currently offline. For all other errors, skip or stop
-        // immediately so that playback can continue without waiting for network events.
         val isConnectionError = (error.cause?.cause is PlaybackException) &&
-            ((error.cause?.cause as PlaybackException).errorCode ==
-                PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_FAILED)
+                (error.cause?.cause as PlaybackException).errorCode == PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_FAILED
+
         if (!isNetworkConnected.value || isConnectionError) {
             waitOnNetworkError()
             return
         }
 
-        // Decide whether to skip to the next item or stop based on user preference.
         if (dataStore.get(AutoSkipNextOnErrorKey, false)) {
             skipOnError()
         } else {
