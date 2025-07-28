@@ -146,4 +146,5 @@
     <plurals name="seconds">
         <item quantity="other">Singular \n1 detik\n\nPlural\n%d detik</item>
     </plurals>
+    <string name="new_mini_player_design">Desain pemutar mini baru</string>
 </resources>
