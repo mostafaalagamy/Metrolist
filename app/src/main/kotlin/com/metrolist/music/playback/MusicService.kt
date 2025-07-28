@@ -543,36 +543,6 @@ class MusicService :
         return hasAudioFocus
     }
 
-    private fun waitOnNetworkError() {
-        waitingForNetworkConnection.value = true
-    }
-
-    private fun skipOnError() {
-        player?.let {
-            if (it.nextMediaItemIndex != C.INDEX_UNSET) {
-                it.seekToNext()
-                it.prepare()
-                it.play()
-                android.widget.Toast.makeText(
-                    this@MusicService,
-                    getString(R.string.err_play_next_on_error),
-                    android.widget.Toast.LENGTH_SHORT
-                ).show()
-            } else {
-                stopOnError()
-            }
-        }
-    }
-
-    private fun stopOnError() {
-        player.pause()
-        android.widget.Toast.makeText(
-            this@MusicService,
-            getString(R.string.err_stop_on_error),
-            android.widget.Toast.LENGTH_LONG
-        ).show()
-    }
-
     private fun updateNotification() {
         mediaSession.setCustomLayout(
             listOf(
@@ -950,19 +920,24 @@ class MusicService :
 
     override fun onPlayerError(error: PlaybackException) {
         super.onPlayerError(error)
+
         val isNetworkError = when (error.errorCode) {
             PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_FAILED,
             PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_TIMEOUT,
-            PlaybackException.ERROR_CODE_IO_BAD_HTTP_STATUS -> true
+            PlaybackException.ERROR_CODE_IO_BAD_HTTP_STATUS,
+            PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_DISCONNECTED -> true
             else -> false
         }
-        val isConnectionError = (error.cause?.cause is PlaybackException) &&
-                (error.cause?.cause as PlaybackException).errorCode == PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_FAILED
 
-        if (!isNetworkConnected.value || (isConnectionError && isNetworkError)) {
+        val isNestedConnectionError = (error.cause?.cause is PlaybackException) && 
+            (error.cause?.cause as PlaybackException).errorCode == PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_FAILED
+
+        if (!isNetworkConnected.value || isNetworkError || isNestedConnectionError) {
             waitOnNetworkError()
             waitingForNetwork = true
+
             android.widget.Toast.makeText(this@MusicService, "Waiting for network connection...", android.widget.Toast.LENGTH_SHORT).show()
+        
             return
         }
 
@@ -971,6 +946,40 @@ class MusicService :
         } else {
             stopOnError()
         }
+    }
+
+    fun waitOnNetworkError() {
+        waitingForNetworkConnection.value = true
+        android.widget.Toast.makeText(this@MusicService, "Waiting for network connection...", android.widget.Toast.LENGTH_SHORT).show()
+    }
+
+    fun skipOnError() {
+        /**
+         * Auto skip to the next media item on error.
+         *
+         * To prevent a "runaway diesel engine" scenario, force the user to take action after
+         * too many errors come up too quickly. Pause to show player "stopped" state
+         */
+        consecutivePlaybackErr += 2
+        val nextWindowIndex = player.nextMediaItemIndex
+
+        if (consecutivePlaybackErr <= MAX_CONSECUTIVE_ERR && nextWindowIndex != C.INDEX_UNSET) {
+            player.seekTo(nextWindowIndex, C.TIME_UNSET)
+            player.prepare()
+            player.play()
+
+            Toast.makeText(this@MusicService, getString(R.string.err_play_next_on_error), Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        player.pause()
+        Toast.makeText(this@MusicService, getString(R.string.err_stop_on_too_many_errors), Toast.LENGTH_LONG).show()
+        consecutivePlaybackErr = 0
+    }
+
+    fun stopOnError() {
+        player.pause()
+        Toast.makeText(this@MusicService, getString(R.string.err_stop_on_error), Toast.LENGTH_LONG).show()
     }
 
     private fun createCacheDataSource(): CacheDataSource.Factory =
