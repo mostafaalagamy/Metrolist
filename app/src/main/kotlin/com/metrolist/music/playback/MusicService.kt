@@ -489,7 +489,7 @@ class MusicService :
                 wasPlayingBeforeAudioFocusLoss = player.isPlaying
 
                 if (player.isPlaying) {
-                    player.volume = (playerVolume.value * normalizeFactor.value * 0.2f) // خفض إلى 20%
+                    player.volume = (playerVolume.value * normalizeFactor.value * 0.2f)
                 }
 
                 lastAudioFocusState = focusChange
@@ -968,18 +968,18 @@ class MusicService :
             player.prepare()
             player.play()
 
-            Toast.makeText(this@MusicService, getString(R.string.err_play_next_on_error), Toast.LENGTH_SHORT).show()
+            android.widget.Toast.makeText(this@MusicService, "Waiting for network connection...", android.widget.Toast.LENGTH_SHORT).show()
             return
         }
 
         player.pause()
-        Toast.makeText(this@MusicService, getString(R.string.err_stop_on_too_many_errors), Toast.LENGTH_LONG).show()
+        android.widget.Toast.makeText(this@MusicService, "Waiting for network connection...", android.widget.Toast.LENGTH_SHORT).show()
         consecutivePlaybackErr = 0
     }
 
     fun stopOnError() {
         player.pause()
-        Toast.makeText(this@MusicService, getString(R.string.err_stop_on_error), Toast.LENGTH_LONG).show()
+        android.widget.Toast.makeText(this@MusicService, "Waiting for network connection...", android.widget.Toast.LENGTH_SHORT).show()
     }
 
     private fun createCacheDataSource(): CacheDataSource.Factory =
