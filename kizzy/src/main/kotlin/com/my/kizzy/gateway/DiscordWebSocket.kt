@@ -69,7 +69,7 @@ open class DiscordWebSocket(
     override val coroutineContext: CoroutineContext
         get() = SupervisorJob() + Dispatchers.Default
 
-    suspend fun connect() {
+    fun connect() {
         launch {
             try {
                 Logger.getLogger("Kizzy").log(INFO, "Gateway: Connect called")

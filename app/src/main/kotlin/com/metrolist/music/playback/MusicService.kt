@@ -318,8 +318,8 @@ class MusicService :
 
         currentSong.debounce(1000).collect(scope) { song ->
             updateNotification()
-            if (song != null) {
-                discordRpc?.updateSong(song)
+            if (song != null && player.playWhenReady && player.playbackState == Player.STATE_READY) {
+                discordRpc?.updateSong(song, player.currentPosition)
             } else {
                 discordRpc?.closeRPC()
             }
@@ -380,8 +380,10 @@ class MusicService :
                 discordRpc = null
                 if (key != null && enabled) {
                     discordRpc = DiscordRPC(this, key)
-                    currentSong.value?.let {
-                        discordRpc?.updateSong(it)
+                    if (player.playbackState == Player.STATE_READY && player.playWhenReady) {
+                        currentSong.value?.let {
+                            discordRpc?.updateSong(it, player.currentPosition)
+                        }
                     }
                 }
             }
@@ -921,6 +923,25 @@ class MusicService :
         }
         if (events.containsAny(EVENT_TIMELINE_CHANGED, EVENT_POSITION_DISCONTINUITY)) {
             currentMediaMetadata.value = player.currentMetadata
+        }
+
+        // Discord RPC updates
+
+        // Update the Discord RPC activity if the player is playing
+        if (events.containsAny(Player.EVENT_IS_PLAYING_CHANGED)) {
+            if (player.isPlaying) {
+                currentSong.value?.let { song ->
+                    scope.launch {
+                        discordRpc?.updateSong(song, player.currentPosition)
+                    }
+                }
+            }
+            // Send empty activity to the Discord RPC if the player is not playing
+            else if (!events.containsAny(Player.EVENT_POSITION_DISCONTINUITY, Player.EVENT_MEDIA_ITEM_TRANSITION)){
+                scope.launch {
+                    discordRpc?.stopActivity()
+                }
+            }
         }
     }
 
