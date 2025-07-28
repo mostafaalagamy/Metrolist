@@ -1,4 +1,3 @@
-
 @file:Suppress("DEPRECATION")
 
 package com.metrolist.music.playback
@@ -961,11 +960,16 @@ class MusicService :
 
     override fun onPlayerError(error: PlaybackException) {
         super.onPlayerError(error)
-        // Always indicate that we're waiting for reconnection after any error.
-        // The connectivity observer will automatically call prepare() and play() when
-        // the network becomes available again, which helps recover from errors that
-        // occurred due to temporary network issues or expired streams.
-        waitOnNetworkError()
+        // Only wait for reconnection when the error is caused by network issues or
+        // when the device is currently offline. For all other errors, skip or stop
+        // immediately so that playback can continue without waiting for network events.
+        val isConnectionError = (error.cause?.cause is PlaybackException) &&
+            ((error.cause?.cause as PlaybackException).errorCode ==
+                PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_FAILED)
+        if (!isNetworkConnected.value || isConnectionError) {
+            waitOnNetworkError()
+            return
+        }
 
         // Decide whether to skip to the next item or stop based on user preference.
         if (dataStore.get(AutoSkipNextOnErrorKey, false)) {
