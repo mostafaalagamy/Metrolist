@@ -924,8 +924,7 @@ class MusicService :
         val isNetworkError = when (error.errorCode) {
             PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_FAILED,
             PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_TIMEOUT,
-            PlaybackException.ERROR_CODE_IO_BAD_HTTP_STATUS,
-            PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_DISCONNECTED -> true
+            PlaybackException.ERROR_CODE_IO_BAD_HTTP_STATUS -> true
             else -> false
         }
 
