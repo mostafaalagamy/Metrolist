@@ -46,6 +46,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -210,13 +211,15 @@ fun PlayerMenu(
             .padding(start = 24.dp, end = 24.dp, top = 8.dp, bottom = 8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
+        val buttonShape = RoundedCornerShape(8.dp)
         // Start Radio
         Column(
             modifier = Modifier
                 .weight(1f)
+                .clip(buttonShape)
                 .background(
                     color = MaterialTheme.colorScheme.surfaceVariant,
-                    shape = RoundedCornerShape(8.dp)
+                    shape = buttonShape
                 )
                 .clickable {
                     playerConnection.playQueue(
@@ -249,9 +252,10 @@ fun PlayerMenu(
         Column(
             modifier = Modifier
                 .weight(1f)
+                .clip(buttonShape)
                 .background(
                     color = MaterialTheme.colorScheme.surfaceVariant,
-                    shape = RoundedCornerShape(8.dp)
+                    shape = buttonShape
                 )
                 .clickable {
                     showChoosePlaylistDialog = true
@@ -277,9 +281,10 @@ fun PlayerMenu(
         Column(
             modifier = Modifier
                 .weight(1f)
+                .clip(buttonShape)
                 .background(
                     color = MaterialTheme.colorScheme.surfaceVariant,
-                    shape = RoundedCornerShape(8.dp)
+                    shape = buttonShape
                 )
                 .clickable {
                     val clipboard = context.getSystemService(android.content.Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
