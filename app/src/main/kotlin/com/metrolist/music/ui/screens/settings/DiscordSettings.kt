@@ -23,6 +23,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
@@ -34,8 +35,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -49,6 +52,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.media3.common.Player.STATE_READY
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.metrolist.music.LocalPlayerAwareWindowInsets
@@ -65,9 +69,12 @@ import com.metrolist.music.ui.component.PreferenceEntry
 import com.metrolist.music.ui.component.PreferenceGroupTitle
 import com.metrolist.music.ui.component.SwitchPreference
 import com.metrolist.music.ui.utils.backToMain
+import com.metrolist.music.utils.makeTimeString
 import com.metrolist.music.utils.rememberPreference
 import com.my.kizzy.rpc.KizzyRPC
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -78,6 +85,11 @@ fun DiscordSettings(
 ) {
     val playerConnection = LocalPlayerConnection.current ?: return
     val song by playerConnection.currentSong.collectAsState(null)
+
+    val playbackState by playerConnection.playbackState.collectAsState()
+    var position by rememberSaveable(playbackState) {
+        mutableLongStateOf(playerConnection.player.currentPosition)
+    }
 
     val coroutineScope = rememberCoroutineScope()
 
@@ -95,6 +107,15 @@ fun DiscordSettings(
             KizzyRPC.getUserInfo(token).onSuccess {
                 discordUsername = it.username
                 discordName = it.name
+            }
+        }
+    }
+
+    LaunchedEffect(playbackState) {
+        if (playbackState == STATE_READY) {
+            while (isActive) {
+                delay(100)
+                position = playerConnection.player.currentPosition
             }
         }
     }
@@ -213,7 +234,7 @@ fun DiscordSettings(
             title = stringResource(R.string.preview),
         )
 
-        RichPresence(song)
+        RichPresence(song, position)
     }
 
     TopAppBar(
@@ -233,7 +254,7 @@ fun DiscordSettings(
 }
 
 @Composable
-fun RichPresence(song: Song?) {
+fun RichPresence(song: Song?, currentPlaybackTimeMillis: Long = 0L) {
     val context = LocalContext.current
 
     Surface(
@@ -342,6 +363,13 @@ fun RichPresence(song: Song?) {
                             overflow = TextOverflow.Ellipsis,
                         )
                     }
+
+                    if (song != null) {
+                        SongProgressBar(
+                            currentTimeMillis = currentPlaybackTimeMillis,
+                            durationMillis = song.song.duration.times(1000L),
+                        )
+                    }
                 }
             }
 
@@ -374,5 +402,40 @@ fun RichPresence(song: Song?) {
                 Text("Visit Metrolist")
             }
         }
+    }
+}
+
+@Composable
+fun SongProgressBar(currentTimeMillis: Long, durationMillis: Long) {
+    val progress = if (durationMillis > 0) currentTimeMillis.toFloat() / durationMillis else 0f
+
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Spacer(modifier = Modifier.height(16.dp))
+
+        LinearProgressIndicator(
+            progress = { progress },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(6.dp)
+                .clip(RoundedCornerShape(3.dp))
+        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = makeTimeString(currentTimeMillis),
+                modifier = Modifier.weight(1f),
+                textAlign = TextAlign.Start,
+                fontSize = 12.sp
+            )
+            Text(
+                text = makeTimeString(durationMillis),
+                modifier = Modifier.weight(1f),
+                textAlign = TextAlign.End,
+                fontSize = 12.sp
+            )
+        }
+
     }
 }

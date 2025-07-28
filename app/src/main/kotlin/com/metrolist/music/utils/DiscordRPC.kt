@@ -10,11 +10,14 @@ class DiscordRPC(
     val context: Context,
     token: String,
 ) : KizzyRPC(token) {
-    suspend fun updateSong(song: Song) = runCatching {
+    suspend fun updateSong(song: Song, currentPlaybackTimeMillis: Long) = runCatching {
+        val currentTime = System.currentTimeMillis()
+        val calculatedStartTime = currentTime - currentPlaybackTimeMillis
         setActivity(
             name = context.getString(R.string.app_name).removeSuffix(" Debug"),
             details = song.song.title,
             state = song.song.artistName ?: song.artists.joinToString { it.name },
+            detailsUrl = "https://music.youtube.com/watch?v=${song.song.id}",
             largeImage = song.song.thumbnailUrl?.let { RpcImage.ExternalImage(it) },
             smallImage = song.artists.firstOrNull()?.thumbnailUrl?.let { RpcImage.ExternalImage(it) },
             largeText = song.album?.title,
@@ -24,7 +27,10 @@ class DiscordRPC(
                 "Visit Metrolist" to "https://github.com/mostafaalagamy/Metrolist"
             ),
             type = Type.LISTENING,
-            since = System.currentTimeMillis(),
+            statusDisplayType = StatusDisplayType.STATE,
+            since = currentTime,
+            startTime = calculatedStartTime,
+            endTime = currentTime + (song.song.duration * 1000L - currentPlaybackTimeMillis),
             applicationId = APPLICATION_ID
         )
     }

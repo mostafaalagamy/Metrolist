@@ -40,10 +40,22 @@ open class KizzyRPC(token: String) {
         return discordWebSocket.isWebSocketConnected()
     }
 
+    suspend fun stopActivity() {
+        if (!isRpcRunning()) {
+            discordWebSocket.connect()
+        }
+        val presence = Presence(
+            activities = emptyList()
+        )
+        discordWebSocket.sendActivity(presence)
+    }
+
     suspend fun setActivity(
         name: String,
         state: String?,
+        stateUrl: String? = null,
         details: String?,
+        detailsUrl: String? = null,
         largeImage: RpcImage?,
         smallImage: RpcImage?,
         largeText: String? = null,
@@ -52,6 +64,7 @@ open class KizzyRPC(token: String) {
         startTime: Long? = null,
         endTime: Long? = null,
         type: Type = Type.LISTENING,
+        statusDisplayType: StatusDisplayType = StatusDisplayType.NAME,
         streamUrl: String? = null,
         applicationId: String? = null,
         status: String? = "online",
@@ -65,8 +78,11 @@ open class KizzyRPC(token: String) {
                 Activity(
                     name = name,
                     state = state,
+                    stateUrl = stateUrl,
                     details = details,
+                    detailsUrl = detailsUrl,
                     type = type.value,
+                    statusDisplayType = statusDisplayType.value,
                     timestamps = Timestamps(startTime, endTime),
                     assets = Assets(
                         largeImage = largeImage?.resolveImage(kizzyRepository),
@@ -93,6 +109,12 @@ open class KizzyRPC(token: String) {
         LISTENING(2),
         WATCHING(3),
         COMPETING(5)
+    }
+
+    enum class StatusDisplayType(val value: Int) {
+        NAME(0),
+        STATE(1),
+        DETAILS(2)
     }
 
     companion object {
