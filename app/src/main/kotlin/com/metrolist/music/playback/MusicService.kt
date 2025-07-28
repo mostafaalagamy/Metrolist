@@ -914,20 +914,31 @@ class MusicService :
                 if (focusGranted) {
                     openAudioEffectSession()
                 }
+            } else {
+                closeAudioEffectSession()
+            }
+        }
+        if (events.containsAny(EVENT_TIMELINE_CHANGED, EVENT_POSITION_DISCONTINUITY)) {
+            currentMediaMetadata.value = player.currentMetadata
+        }
+
+        // Discord RPC updates
+
+        // Update the Discord RPC activity if the player is playing
+        if (events.containsAny(Player.EVENT_IS_PLAYING_CHANGED)) {
+            if (player.isPlaying) {
                 currentSong.value?.let { song ->
                     scope.launch {
                         discordRpc?.updateSong(song, player.currentPosition)
                     }
                 }
-            } else {
-                closeAudioEffectSession()
+            }
+            // Send empty activity to the Discord RPC if the player is not playing
+            else if (!events.containsAny(Player.EVENT_POSITION_DISCONTINUITY, Player.EVENT_MEDIA_ITEM_TRANSITION)){
                 scope.launch {
                     discordRpc?.stopActivity()
                 }
             }
-        }
-        if (events.containsAny(EVENT_TIMELINE_CHANGED, EVENT_POSITION_DISCONTINUITY)) {
-            currentMediaMetadata.value = player.currentMetadata
         }
     }
 
