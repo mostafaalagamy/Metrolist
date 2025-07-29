@@ -132,6 +132,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.isActive
@@ -146,6 +147,7 @@ import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.time.LocalDateTime
+import timber.log.Timber
 import javax.inject.Inject
 import kotlin.math.min
 import kotlin.math.pow
@@ -261,12 +263,37 @@ class MusicService :
         scope.launch {
             connectivityObserver.networkStatus.collect { isConnected ->
                 isNetworkConnected.value = isConnected
+                Timber.tag("MusicService").d("Network status changed: $isConnected, waiting: ${waitingForNetworkConnection.value}")
+                
                 if (isConnected && waitingForNetworkConnection.value) {
                     // Clear waiting flag and prepare/play when the network
                     // becomes available again.
                     waitingForNetworkConnection.value = false
-                    player.prepare()
-                    player.play()
+                    
+                    // Add a small delay to ensure network is stable
+                    delay(1000)
+                    
+                    // Check if we still have media items to play
+                    if (player.mediaItemCount > 0) {
+                        try {
+                            player.prepare()
+                            player.play()
+                            
+                            // Log for debugging
+                            Timber.tag("MusicService").d("Network restored, resuming playback")
+                            
+                            // Show success message
+                            Toast.makeText(
+                                this@MusicService,
+                                getString(R.string.resuming_playback),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        } catch (e: Exception) {
+                            Timber.tag("MusicService").e(e, "Failed to resume playback after network restoration")
+                        }
+                    } else {
+                        Timber.tag("MusicService").w("No media items available to resume playback")
+                    }
                 }
             }
         }
@@ -303,9 +330,30 @@ class MusicService :
                         override fun onPlayerError(error: PlaybackException) {
                             super.onPlayerError(error)
 
-                            // wait for reconnection
-                            val isConnectionError = (error.cause?.cause is PlaybackException)
-                                    && (error.cause?.cause as PlaybackException).errorCode == PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_FAILED
+                            // Log the error for debugging
+                            Timber.tag("MusicService").e(error, "Player error occurred: ${error.errorCode}")
+
+                            // Enhanced network error detection
+                            val isConnectionError = when {
+                                error.errorCode == PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_FAILED -> true
+                                error.errorCode == PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_TIMEOUT -> true
+                                error.errorCode == PlaybackException.ERROR_CODE_IO_BAD_HTTP_STATUS -> true
+                                error.errorCode == PlaybackException.ERROR_CODE_IO_FILE_NOT_FOUND -> true
+                                error.cause?.cause is PlaybackException && 
+                                (error.cause?.cause as PlaybackException).errorCode == PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_FAILED -> true
+                                error.cause?.cause is PlaybackException && 
+                                (error.cause?.cause as PlaybackException).errorCode == PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_TIMEOUT -> true
+                                error.cause?.message?.contains("network", ignoreCase = true) == true -> true
+                                error.cause?.message?.contains("connection", ignoreCase = true) == true -> true
+                                error.cause?.message?.contains("timeout", ignoreCase = true) == true -> true
+                                error.cause?.message?.contains("unreachable", ignoreCase = true) == true -> true
+                                error.cause?.message?.contains("failed", ignoreCase = true) == true -> true
+                                error.cause?.message?.contains("unable", ignoreCase = true) == true -> true
+                                else -> false
+                            }
+
+                            Timber.tag("MusicService").d("Network error detected: $isConnectionError, Network connected: ${isNetworkConnected.value}")
+
                             if (!isNetworkConnected.value || isConnectionError) {
                                 waitOnNetworkError()
                                 return
@@ -633,6 +681,16 @@ class MusicService :
      */
     private fun waitOnNetworkError() {
         waitingForNetworkConnection.value = true
+        
+        // Pause the player to show it's waiting
+        player.pause()
+        
+        // Ensure service stays alive while waiting for network
+        if (dataStore.get(KeepAliveKey, false)) {
+            // The service will stay alive through Media3 session
+            Timber.tag("MusicService").d("Keeping service alive while waiting for network")
+        }
+        
         // Inform the user that we're waiting for the network.  Use the
         // application context (this@MusicService) so the Toast can be
         // displayed from a background service.
@@ -641,6 +699,9 @@ class MusicService :
             getString(R.string.wait_to_reconnect),
             Toast.LENGTH_LONG
         ).show()
+        
+        // Log for debugging
+        Timber.tag("MusicService").d("Waiting for network connection to resume playback")
     }
 
     private fun skipOnError() {
