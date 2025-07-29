@@ -129,7 +129,7 @@
     <string name="minimum_playback_duration">Minimal durasi putaran</string>
     <string name="import_online">Import daftar putar \"m3u\"</string>
     <string name="import_csv">Import daftar putar \"csv\"</string>
-    <string name="playlist_add_local_to_synced_note">Catatan: Menambahkan lagu lokal ke daftar putar yang disinkronkan/jarak jauh tidak didukung. Kombinasi lain tetap valid.</string>
+    <string name="playlist_add_local_to_synced_note">Catatan: Menambahkan lagu lokal ke daftar putar yang disinkronkan/jarak jauh tidak didukung. Kombinasi lain tetap valid</string>
     <string name="auto_download_on_like">Unduh otomatis saat suka</string>
     <string name="auto_download_on_like_desc">Otomatis mengunduh lagu saat menyukai</string>
     <string name="swipe_sensitivity">Sensitivitas usapan pemutar mini</string>
