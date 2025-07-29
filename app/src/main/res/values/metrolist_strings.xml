@@ -99,7 +99,8 @@
     <string name="show_cached_playlist">Show \"Cached\" playlist</string>
 
     <string name="wait_to_reconnect">wait to reconnect</string>
-    
+    <string name="err_general" translatable="false">plr</string>
+
     <string name="google">Google</string>
     <string name="discord">Discord</string>
     <string name="advanced_login">Login with token</string>
