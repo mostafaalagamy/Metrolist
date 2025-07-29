@@ -298,21 +298,26 @@ class MusicService :
                     addListener(object : Player.Listener {
                         override fun onPlayerError(error: PlaybackException) {
                             super.onPlayerError(error)
-                            val isConnectionError = (error.cause?.cause is PlaybackException) &&
-                                    (error.cause?.cause as PlaybackException).errorCode == PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_FAILED
 
-                            // if we're not connected or the error is a network error, wait for reconnection
+                            // wait for reconnection
+                            val isConnectionError = (error.cause?.cause is PlaybackException)
+                                    && (error.cause?.cause as PlaybackException).errorCode == PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_FAILED
                             if (!isNetworkConnected.value || isConnectionError) {
                                 waitOnNetworkError()
                                 return
                             }
 
-                            // respect user preference: skip to next item or stop on error
                             if (dataStore.get(AutoSkipNextOnErrorKey, false)) {
                                 skipOnError()
                             } else {
                                 stopOnError()
                             }
+
+                            Toast.makeText(
+                                this@MusicService,
+                                "${getString(R.string.err_general)}: ${error.message} (${error.errorCode}): ${error.cause?.message ?: ""} ",
+                                Toast.LENGTH_LONG
+                            ).show()
                         }
 
                         override fun onMediaItemTransition(
@@ -616,12 +621,12 @@ class MusicService :
     }
 
     /**
-    * Called when a playback error is caused by a loss of network
-    * connectivity.  Sets a flag indicating that we should wait for the
-    * network to return and notifies the user.  When the network becomes
-    * available again, the connectivity observer will clear the flag
-    * and restart playback automatically.
-    */
+     * Called when a playback error is caused by a loss of network
+     * connectivity.  Sets a flag indicating that we should wait for the
+     * network to return and notifies the user.  When the network becomes
+     * available again, the connectivity observer will clear the flag
+     * and restart playback automatically.
+     */
     private fun waitOnNetworkError() {
         waitingForNetworkConnection.value = true
         // Inform the user that we're waiting for the network.  Use the
@@ -1067,40 +1072,57 @@ class MusicService :
                     audioQuality = audioQuality,
                     connectivityManager = connectivityManager,
                 )
-            }.getOrNull()
+            }.getOrElse { throwable ->
+                when (throwable) {
+                    is PlaybackException -> throw throwable
 
-            if (playbackData == null) {
-                throw PlaybackException(
-                    getString(R.string.error_unknown),
-                    null,
-                    PlaybackException.ERROR_CODE_REMOTE_ERROR
-                )
-            } else {
-                val format = playbackData.format
-
-                database.query {
-                    upsert(
-                        FormatEntity(
-                            id = mediaId,
-                            itag = format.itag,
-                            mimeType = format.mimeType.split(";")[0],
-                            codecs = format.mimeType.split("codecs=")[1].removeSurrounding("\""),
-                            bitrate = format.bitrate,
-                            sampleRate = format.audioSampleRate,
-                            contentLength = format.contentLength!!,
-                            loudnessDb = playbackData.audioConfig?.loudnessDb,
-                            playbackUrl = playbackData.playbackTracking?.videostatsPlaybackUrl?.baseUrl
+                    is ConnectException, is UnknownHostException -> {
+                        throw PlaybackException(
+                            getString(R.string.error_no_internet),
+                            throwable,
+                            PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_FAILED
                         )
+                    }
+
+                    is SocketTimeoutException -> {
+                        throw PlaybackException(
+                            getString(R.string.error_timeout),
+                            throwable,
+                            PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_TIMEOUT
+                        )
+                    }
+
+                    else -> throw PlaybackException(
+                        getString(R.string.error_unknown),
+                        throwable,
+                        PlaybackException.ERROR_CODE_REMOTE_ERROR
                     )
                 }
-                scope.launch(Dispatchers.IO) { recoverSong(mediaId, playbackData) }
-
-                val streamUrl = playbackData.streamUrl
-
-                songUrlCache[mediaId] =
-                    streamUrl to System.currentTimeMillis() + (playbackData.streamExpiresInSeconds * 1000L)
-                return@Factory dataSpec.withUri(streamUrl.toUri()).subrange(dataSpec.uriPositionOffset, CHUNK_LENGTH)
             }
+            val format = playbackData.format
+
+            database.query {
+                upsert(
+                    FormatEntity(
+                        id = mediaId,
+                        itag = format.itag,
+                        mimeType = format.mimeType.split(";")[0],
+                        codecs = format.mimeType.split("codecs=")[1].removeSurrounding("\""),
+                        bitrate = format.bitrate,
+                        sampleRate = format.audioSampleRate,
+                        contentLength = format.contentLength!!,
+                        loudnessDb = playbackData.audioConfig?.loudnessDb,
+                        playbackUrl = playbackData.playbackTracking?.videostatsPlaybackUrl?.baseUrl
+                    )
+                )
+            }
+            scope.launch(Dispatchers.IO) { recoverSong(mediaId, playbackData) }
+
+            val streamUrl = playbackData.streamUrl
+
+            songUrlCache[mediaId] =
+                streamUrl to System.currentTimeMillis() + (playbackData.streamExpiresInSeconds * 1000L)
+            return@Factory dataSpec.withUri(streamUrl.toUri()).subrange(dataSpec.uriPositionOffset, CHUNK_LENGTH)
         }
     }
 
