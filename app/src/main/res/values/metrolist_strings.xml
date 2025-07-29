@@ -99,7 +99,6 @@
     <string name="show_cached_playlist">Show \"Cached\" playlist</string>
 
     <string name="wait_to_reconnect">wait to reconnect</string>
-    <string name="resuming_playback">Resuming playback</string>
     <string name="err_general" translatable="false">plr</string>
 
     <string name="google">Google</string>
