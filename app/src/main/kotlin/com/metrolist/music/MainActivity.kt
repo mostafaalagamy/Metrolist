@@ -241,6 +241,10 @@ class MainActivity : ComponentActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+            try {
+                connectivityObserver.unregister()
+            } catch (e: UninitializedPropertyAccessException) {}
+
         if (dataStore.get(
                 StopMusicOnTaskClearKey,
                 false
@@ -283,6 +287,8 @@ class MainActivity : ComponentActivity() {
                     }
                 }
         }
+
+        connectivityObserver = NetworkConnectivityObserver(this)
 
         setContent {
             LaunchedEffect(Unit) {
