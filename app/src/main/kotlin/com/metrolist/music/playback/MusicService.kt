@@ -184,7 +184,7 @@ class MusicService :
          */
     lateinit var connectivityObserver: NetworkConnectivityObserver
     val waitingForNetworkConnection = MutableStateFlow(false)
-    private val isNetworkConnected = MutableStateFlow(false)
+    private val isNetworkConnected = MutableStateFlow(true)
 
     private val audioQuality by enumPreference(
         this,
@@ -251,7 +251,6 @@ class MusicService :
         // context to ensure callbacks remain registered beyond the service
         // lifecycle and explicitly register the observer to start
         // receiving connectivity updates.
-        connectivityManager = getSystemService()!!
         connectivityObserver = NetworkConnectivityObserver(applicationContext)
 
         scope.launch {
@@ -314,6 +313,37 @@ class MusicService :
                                 stopOnError()
                             }
                         }
+
+                        override fun onMediaItemTransition(
+                            mediaItem: MediaItem?,
+                            reason: Int,
+                        ) {
+                            super.onMediaItemTransition(mediaItem, reason)
+                            // +2 when and error happens, and -1 when transition. Thus when error, number increments by 1, else doesn't change
+                            if (consecutivePlaybackErr > 0) {
+                                consecutivePlaybackErr--
+                            }
+
+                            if (player.isPlaying && reason == MEDIA_ITEM_TRANSITION_REASON_SEEK) {
+                                player.prepare()
+                                player.play()
+                            }
+
+                            // Auto load more songs
+                            if (dataStore.get(AutoLoadMoreKey, true) &&
+                                reason != Player.MEDIA_ITEM_TRANSITION_REASON_REPEAT &&
+                                player.mediaItemCount - player.currentMediaItemIndex <= 5 &&
+                                currentQueue.hasNextPage()
+                            ) {
+                                scope.launch(SilentHandler) {
+                                    val mediaItems =
+                                        currentQueue.nextPage().filterExplicit(dataStore.get(HideExplicitKey, false))
+                                    if (player.playbackState != STATE_IDLE) {
+                                        player.addMediaItems(mediaItems.drop(1))
+                                    }
+                                }
+                            }
+                        }
                     })
                 }
 
@@ -343,6 +373,8 @@ class MusicService :
         val sessionToken = SessionToken(this, ComponentName(this, MusicService::class.java))
         val controllerFuture = MediaController.Builder(this, sessionToken).buildAsync()
         controllerFuture.addListener({ controllerFuture.get() }, MoreExecutors.directExecutor())
+
+        connectivityManager = getSystemService()!!
 
         combine(playerVolume, normalizeFactor) { playerVolume, normalizeFactor ->
             playerVolume * normalizeFactor
@@ -922,26 +954,6 @@ class MusicService :
                 putExtra(AudioEffect.EXTRA_PACKAGE_NAME, packageName)
             },
         )
-    }
-
-    override fun onMediaItemTransition(
-        mediaItem: MediaItem?,
-        reason: Int,
-    ) {
-        // Auto load more songs
-        if (dataStore.get(AutoLoadMoreKey, true) &&
-            reason != Player.MEDIA_ITEM_TRANSITION_REASON_REPEAT &&
-            player.mediaItemCount - player.currentMediaItemIndex <= 5 &&
-            currentQueue.hasNextPage()
-        ) {
-            scope.launch(SilentHandler) {
-                val mediaItems =
-                    currentQueue.nextPage().filterExplicit(dataStore.get(HideExplicitKey, false))
-                if (player.playbackState != STATE_IDLE) {
-                    player.addMediaItems(mediaItems.drop(1))
-                }
-            }
-        }
     }
 
     override fun onPlaybackStateChanged(
