@@ -70,10 +70,12 @@ import com.metrolist.music.constants.DiscordTokenKey
 import com.metrolist.music.constants.EnableDiscordRPCKey
 import com.metrolist.music.constants.HideExplicitKey
 import com.metrolist.music.constants.HistoryDuration
+import com.metrolist.music.constants.KeepAliveKey
 import com.metrolist.music.constants.MediaSessionConstants.CommandToggleLike
 import com.metrolist.music.constants.MediaSessionConstants.CommandToggleStartRadio
 import com.metrolist.music.constants.MediaSessionConstants.CommandToggleRepeatMode
 import com.metrolist.music.constants.MediaSessionConstants.CommandToggleShuffle
+import com.metrolist.music.constants.LastPosKey
 import com.metrolist.music.constants.PauseListenHistoryKey
 import com.metrolist.music.constants.PersistentQueueKey
 import com.metrolist.music.constants.PlayerVolumeKey
@@ -1195,7 +1197,7 @@ class MusicService :
         }
     }
 
-    private fun saveQueueToDisk() {
+    fun saveQueueToDisk() {
         if (player.playbackState == STATE_IDLE) {
             filesDir.resolve(PERSISTENT_AUTOMIX_FILE).delete()
             filesDir.resolve(PERSISTENT_QUEUE_FILE).delete()
@@ -1233,21 +1235,33 @@ class MusicService :
         }.onFailure {
             reportException(it)
         }
+
+        val pos = player.currentPosition
+
+        runBlocking {
+            // async issues, run blocking
+            dataStore.edit { settings ->
+                settings[LastPosKey] = pos
+            }
+        }
+    }
+
+    override fun onUpdateNotification(session: MediaSession, startInForegroundRequired: Boolean) {
+        // FG keep alive
+        if (!(!player.isPlaying && dataStore.get(KeepAliveKey, false))) {
+            super.onUpdateNotification(session, startInForegroundRequired)
+        }
     }
 
     override fun onDestroy() {
-        if (dataStore.get(PersistentQueueKey, true)) {
-            saveQueueToDisk()
-        }
         if (discordRpc?.isRpcRunning() == true) {
             discordRpc?.closeRPC()
         }
         discordRpc = null
         abandonAudioFocus()
+        mediaSession.player.stop()
         mediaSession.release()
-        player.removeListener(this)
-        player.removeListener(sleepTimer)
-        player.release()
+        mediaSession.player.release()
         super.onDestroy()
     }
 

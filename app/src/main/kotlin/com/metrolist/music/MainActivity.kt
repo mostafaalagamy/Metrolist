@@ -124,7 +124,9 @@ import com.metrolist.music.constants.MiniPlayerBottomSpacing
 import com.metrolist.music.constants.UseNewMiniPlayerDesignKey
 import com.metrolist.music.constants.NavigationBarAnimationSpec
 import com.metrolist.music.constants.NavigationBarHeight
+import com.metrolist.music.constants.LastPosKey
 import com.metrolist.music.constants.PauseSearchHistoryKey
+import com.metrolist.music.constants.PersistentQueueKey
 import com.metrolist.music.constants.PureBlackKey
 import com.metrolist.music.constants.SearchSource
 import com.metrolist.music.constants.SearchSourceKey
@@ -132,7 +134,7 @@ import com.metrolist.music.constants.SlimNavBarKey
 import com.metrolist.music.constants.StopMusicOnTaskClearKey
 import com.metrolist.music.db.MusicDatabase
 import com.metrolist.music.db.entities.SearchHistory
-import com.metrolist.music.extensions.toEnum
+
 import com.metrolist.music.models.toMediaMetadata
 import com.metrolist.music.playback.DownloadUtil
 import com.metrolist.music.playback.MusicService
@@ -234,25 +236,18 @@ class MainActivity : ComponentActivity() {
         )
     }
 
-    override fun onStop() {
-        unbindService(serviceConnection)
-        super.onStop()
-    }
-
     override fun onDestroy() {
         super.onDestroy()
-            try {
-                connectivityObserver.unregister()
-            } catch (e: UninitializedPropertyAccessException) {}
+        try {
+            connectivityObserver.unregister()
+        } catch (e: UninitializedPropertyAccessException) {}
 
-        if (dataStore.get(
-                StopMusicOnTaskClearKey,
-                false
-            ) && playerConnection?.isPlaying?.value == true && isFinishing
-        ) {
-            stopService(Intent(this, MusicService::class.java))
-            unbindService(serviceConnection)
+        if (dataStore.get(StopMusicOnTaskClearKey, false) && isFinishing) {
+            // stopService(Intent(this, MusicService::class.java)) // Believe me, this doesn't actually stop
+            playerConnection?.service?.onDestroy()
             playerConnection = null
+        } else {
+            playerConnection?.service?.saveQueueToDisk()
         }
     }
 
@@ -380,7 +375,11 @@ class MainActivity : ComponentActivity() {
                     val (useNewMiniPlayerDesign) = rememberPreference(UseNewMiniPlayerDesignKey, defaultValue = true)
                     val defaultOpenTab =
                         remember {
-                            dataStore[DefaultOpenTabKey].toEnum(defaultValue = NavigationTab.HOME)
+                            try {
+                                NavigationTab.valueOf(dataStore[DefaultOpenTabKey] ?: NavigationTab.HOME.name)
+                            } catch (e: IllegalArgumentException) {
+                                NavigationTab.HOME
+                            }
                         }
                     val tabOpenedFromShortcut =
                         remember {
