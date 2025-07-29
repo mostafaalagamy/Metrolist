@@ -1276,6 +1276,6 @@ class MusicService :
         const val CHUNK_LENGTH = 512 * 1024L
         const val PERSISTENT_QUEUE_FILE = "persistent_queue.data"
         const val PERSISTENT_AUTOMIX_FILE = "persistent_automix.data"
-        const val MAX_CONSECUTIVE_ERR = 5
+        const val MAX_CONSECUTIVE_ERR = 3
     }
 }
