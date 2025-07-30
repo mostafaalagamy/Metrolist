@@ -116,6 +116,8 @@ import com.metrolist.music.constants.PlayerBackgroundStyle
 import com.metrolist.music.constants.PlayerBackgroundStyleKey
 import com.metrolist.music.constants.PlayerButtonsStyle
 import com.metrolist.music.constants.PlayerButtonsStyleKey
+import com.metrolist.music.ui.theme.PlayerColorExtractor
+import com.metrolist.music.ui.theme.PlayerSliderColors
 import com.metrolist.music.constants.PlayerHorizontalPadding
 import com.metrolist.music.constants.QueuePeekHeight
 import com.metrolist.music.constants.ShowLyricsKey
@@ -269,9 +271,9 @@ fun BottomSheetPlayer(
                 } else {
                     val request = ImageRequest.Builder(context)
                         .data(currentMetadata.thumbnailUrl)
-                        .size(Size(200, 200)) // Larger size for better color extraction
+                        .size(Size(PlayerColorExtractor.Config.IMAGE_SIZE, PlayerColorExtractor.Config.IMAGE_SIZE))
                         .allowHardware(false)
-                        .memoryCacheKey("gradient_${currentMetadata.id}") // Use consistent cache key with prefix
+                        .memoryCacheKey("gradient_${currentMetadata.id}")
                         .build()
 
                     val result = runCatching { 
@@ -282,94 +284,15 @@ fun BottomSheetPlayer(
                         val bitmap = result.toBitmap()
                         val palette = withContext(Dispatchers.Default) {
                             Palette.from(bitmap)
-                                .maximumColorCount(32) // Increase color count for better extraction
-                                .resizeBitmapArea(8000) // Improve analysis precision
+                                .maximumColorCount(PlayerColorExtractor.Config.MAX_COLOR_COUNT)
+                                .resizeBitmapArea(PlayerColorExtractor.Config.BITMAP_AREA)
                                 .generate()
                         }
                         
-                        // Enhanced color extraction functions for vibrant colors
-                        fun isColorVibrant(color: Color): Boolean {
-                            val argb = color.toArgb()
-                            val hsv = FloatArray(3)
-                            android.graphics.Color.colorToHSV(argb, hsv)
-                            val saturation = hsv[1] // HSV[1] is saturation
-                            val brightness = hsv[2] // HSV[2] is brightness
-                            
-                            // Color is vibrant if it has sufficient saturation and appropriate brightness
-                            // Avoid colors that are too dark or too bright
-                            return saturation > 0.25f && brightness > 0.2f && brightness < 0.9f
-                        }
-                        
-                        fun enhanceColorVividness(color: Color, saturationFactor: Float = 1.4f): Color {
-                            // Convert to HSV for better saturation control
-                            val argb = color.toArgb()
-                            val hsv = FloatArray(3)
-                            android.graphics.Color.colorToHSV(argb, hsv)
-                            
-                            // Increase saturation for more vivid colors
-                            hsv[1] = (hsv[1] * saturationFactor).coerceAtMost(1.0f)
-                            // Adjust brightness for better visibility
-                            hsv[2] = (hsv[2] * 0.9f).coerceIn(0.4f, 0.85f)
-                            
-                            return Color(android.graphics.Color.HSVToColor(hsv))
-                        }
-
-                        // Function to calculate color weight based on dominance and vibrancy
-                        fun calculateColorWeight(swatch: Palette.Swatch?): Float {
-                            if (swatch == null) return 0f
-                            val population = swatch.population.toFloat()
-                            val color = Color(swatch.rgb)
-                            val argb = color.toArgb()
-                            val hsv = FloatArray(3)
-                            android.graphics.Color.colorToHSV(argb, hsv)
-                            val saturation = hsv[1]
-                            val brightness = hsv[2]
-                            
-                            // Give higher priority to dominance (population) while considering vibrancy
-                            val populationWeight = population * 2f // Double dominance weight
-                            val vibrancyBonus = if (saturation > 0.3f && brightness > 0.3f) 1.5f else 1f
-                            
-                            return populationWeight * vibrancyBonus * (saturation + brightness) / 2f
-                        }
-
-                        // Extract all available colors with priority for dominant colors
-                        val colorCandidates = listOfNotNull(
-                            palette.dominantSwatch, // High priority for dominant color
-                            palette.vibrantSwatch,
-                            palette.darkVibrantSwatch,
-                            palette.lightVibrantSwatch,
-                            palette.mutedSwatch,
-                            palette.darkMutedSwatch,
-                            palette.lightMutedSwatch
-                        )
-
-                        // Select best color based on weight (dominance + vibrancy)
-                        val bestSwatch = colorCandidates.maxByOrNull { calculateColorWeight(it) }
-                        val fallbackDominant = palette.dominantSwatch?.rgb?.let { Color(it) }
-                            ?: Color(palette.getDominantColor(fallbackColor))
-
-                        val primaryColor = if (bestSwatch != null) {
-                            val bestColor = Color(bestSwatch.rgb)
-                            // Ensure the color is suitable for use
-                            if (isColorVibrant(bestColor)) {
-                                enhanceColorVividness(bestColor, 1.3f)
-                            } else {
-                                // If not vibrant, use dominant color with slight enhancement
-                                enhanceColorVividness(fallbackDominant, 1.1f)
-                            }
-                        } else {
-                            enhanceColorVividness(fallbackDominant, 1.1f)
-                        }
-                        
-                        // Create sophisticated gradient with 3 color points
-                        val extractedColors = listOf(
-                            primaryColor, // Start: primary vibrant color
-                            primaryColor.copy(
-                                red = (primaryColor.red * 0.6f).coerceAtLeast(0f),
-                                green = (primaryColor.green * 0.6f).coerceAtLeast(0f),
-                                blue = (primaryColor.blue * 0.6f).coerceAtLeast(0f)
-                            ), // Middle: darker version of primary color
-                            Color.Black // End: black
+                        // Use the new color extraction system
+                        val extractedColors = PlayerColorExtractor.extractGradientColors(
+                            palette = palette,
+                            fallbackColor = fallbackColor
                         )
                         
                         // Cache the extracted colors
@@ -916,12 +839,7 @@ fun BottomSheetPlayer(
                             }
                             sliderPosition = null
                         },
-                        colors = SliderDefaults.colors(
-                            activeTrackColor = textButtonColor,
-                            activeTickColor = textButtonColor,
-                            thumbColor = textButtonColor,
-                            inactiveTrackColor = Color.White.copy(alpha = 0.15f)
-                        ),
+                        colors = PlayerSliderColors.defaultSliderColors(textButtonColor),
                         modifier = Modifier.padding(horizontal = PlayerHorizontalPadding),
                     )
                 }
@@ -940,12 +858,7 @@ fun BottomSheetPlayer(
                             }
                             sliderPosition = null
                         },
-                        colors = SliderDefaults.colors(
-                            activeTrackColor = textButtonColor,
-                            activeTickColor = textButtonColor,
-                            thumbColor = textButtonColor,
-                            inactiveTrackColor = Color.White.copy(alpha = 0.15f)
-                        ),
+                        colors = PlayerSliderColors.squigglySliderColors(textButtonColor),
                         modifier = Modifier.padding(horizontal = PlayerHorizontalPadding),
                         squigglesSpec =
                         SquigglySlider.SquigglesSpec(
@@ -973,11 +886,7 @@ fun BottomSheetPlayer(
                         track = { sliderState ->
                             PlayerSliderTrack(
                                 sliderState = sliderState,
-                                colors = SliderDefaults.colors(
-                                    activeTrackColor = textButtonColor,
-                                    activeTickColor = textButtonColor,
-                                    inactiveTrackColor = Color.White.copy(alpha = 0.15f)
-                                )
+                                colors = PlayerSliderColors.slimSliderColors(textButtonColor)
                             )
                         },
                         modifier = Modifier.padding(horizontal = PlayerHorizontalPadding)
