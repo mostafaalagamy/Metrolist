@@ -120,7 +120,6 @@
     <string name="pause_remote_listen_history">إيقاف مشاركة سجل الاستماع مع YouTube Music</string>
     <string name="lyrics">الكلمات</string>
     <string name="set_first_lyrics_provider">تعيين مزود كلمات الأغاني الإفتراضي</string>
-    string&gt;
     <string name="not_logged_in_youtube">لم يتم تسجيل الدخول إلى يوتيوب</string>
     <string name="default_links">فتح الروابط المدعومة افتراضيًا</string>
     <string name="open_app_settings_error">لم يتمكن التطبيق من فتح إعدادات التطبيق</string>
