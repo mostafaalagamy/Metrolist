@@ -153,4 +153,8 @@
     <string name="dislike_all">Apreciază negativ toate</string>
     <string name="default_lib_chips">Modifică secțiunea prestabilită a bibliotecii</string>
     <string name="new_mini_player_design">Design nou al mini player-ului</string>
+    <string name="playlist_not_found">Playlistul nu a fost găsit</string>
+    <string name="playlist_not_found_desc">Playlistul cerut nu a putut fi încărcat</string>
+    <string name="empty_playlist">Playlist gol</string>
+    <string name="empty_playlist_desc">Acest playlist nu conține nicio melodie</string>
 </resources>
