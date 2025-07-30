@@ -169,6 +169,10 @@
     <string name="dislikes">Dislikes</string>
     <string name="subscribe">Subscribe</string>
     <string name="subscribed">Subscribed</string>
+    <string name="playlist_not_found">Playlist not found</string>
+    <string name="playlist_not_found_desc">The requested playlist could not be loaded</string>
+    <string name="empty_playlist">Empty Playlist</string>
+    <string name="empty_playlist_desc">This playlist doesn\'t contain any songs</string>
     <plurals name="seconds">
         <item quantity="one">1 second</item>
         <item quantity="other">%d seconds</item>

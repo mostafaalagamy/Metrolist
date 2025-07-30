@@ -128,6 +128,9 @@ fun OnlinePlaylistScreen(
     val playlist by viewModel.playlist.collectAsState()
     val songs by viewModel.playlistSongs.collectAsState()
     val dbPlaylist by viewModel.dbPlaylist.collectAsState()
+    val isLoading by viewModel.isLoading.collectAsState()
+    val isLoadingMore by viewModel.isLoadingMore.collectAsState()
+    val error by viewModel.error.collectAsState()
 
     var selection by remember {
         mutableStateOf(false)
@@ -209,7 +212,47 @@ fun OnlinePlaylistScreen(
                 .asPaddingValues(),
         ) {
             playlist.let { playlist ->
-                if (playlist != null) {
+                if (isLoading) {
+                    item {
+                        ShimmerHost {
+                            Column(Modifier.padding(12.dp)) {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Spacer(
+                                        modifier =
+                                        Modifier
+                                            .size(AlbumThumbnailSize)
+                                            .clip(RoundedCornerShape(ThumbnailCornerRadius))
+                                            .background(MaterialTheme.colorScheme.onSurface),
+                                    )
+
+                                    Spacer(Modifier.width(16.dp))
+
+                                    Column(
+                                        verticalArrangement = Arrangement.Center,
+                                    ) {
+                                        TextPlaceholder()
+                                        TextPlaceholder()
+                                        TextPlaceholder()
+                                    }
+                                }
+
+                                Spacer(Modifier.padding(8.dp))
+
+                                Row {
+                                    ButtonPlaceholder(Modifier.weight(1f))
+
+                                    Spacer(Modifier.width(12.dp))
+
+                                    ButtonPlaceholder(Modifier.weight(1f))
+                                }
+                            }
+
+                            repeat(6) {
+                                ListItemPlaceHolder()
+                            }
+                        }
+                    }
+                } else if (playlist != null) {
                     if (!isSearching) {
                         item {
                             Column(
@@ -402,6 +445,29 @@ fun OnlinePlaylistScreen(
                         }
                     }
 
+                    if (songs.isEmpty() && !isLoading && error == null) {
+                        // Show empty playlist message when playlist is loaded but has no songs
+                        item {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(32.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Text(
+                                    text = stringResource(R.string.empty_playlist),
+                                    style = MaterialTheme.typography.titleLarge
+                                )
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Text(
+                                    text = stringResource(R.string.empty_playlist_desc),
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
+                        }
+                    }
+
                     items(
                         items = wrappedSongs,
                     ) { song ->
@@ -467,7 +533,7 @@ fun OnlinePlaylistScreen(
                         )
                     }
 
-                    if (viewModel.continuation != null && songs.isNotEmpty()) {
+                    if (viewModel.continuation != null && songs.isNotEmpty() && isLoadingMore) {
                         item {
                             ShimmerHost {
                                 repeat(2) {
@@ -478,42 +544,42 @@ fun OnlinePlaylistScreen(
                     }
 
                 } else {
+                    // Show error state when playlist is null and there's an error
                     item {
-                        ShimmerHost {
-                            Column(Modifier.padding(12.dp)) {
-                                Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Spacer(
-                                        modifier =
-                                        Modifier
-                                            .size(AlbumThumbnailSize)
-                                            .clip(RoundedCornerShape(ThumbnailCornerRadius))
-                                            .background(MaterialTheme.colorScheme.onSurface),
-                                    )
-
-                                    Spacer(Modifier.width(16.dp))
-
-                                    Column(
-                                        verticalArrangement = Arrangement.Center,
-                                    ) {
-                                        TextPlaceholder()
-                                        TextPlaceholder()
-                                        TextPlaceholder()
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(32.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(
+                                text = if (error != null) {
+                                    stringResource(R.string.error_unknown)
+                                } else {
+                                    stringResource(R.string.playlist_not_found)
+                                },
+                                style = MaterialTheme.typography.titleLarge,
+                                color = if (error != null) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(
+                                text = if (error != null) {
+                                    error!!
+                                } else {
+                                    stringResource(R.string.playlist_not_found_desc)
+                                },
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                            if (error != null) {
+                                Spacer(modifier = Modifier.height(16.dp))
+                                Button(
+                                    onClick = { 
+                                        viewModel.retry()
                                     }
+                                ) {
+                                    Text(stringResource(R.string.retry))
                                 }
-
-                                Spacer(Modifier.padding(8.dp))
-
-                                Row {
-                                    ButtonPlaceholder(Modifier.weight(1f))
-
-                                    Spacer(Modifier.width(12.dp))
-
-                                    ButtonPlaceholder(Modifier.weight(1f))
-                                }
-                            }
-
-                            repeat(6) {
-                                ListItemPlaceHolder()
                             }
                         }
                     }
