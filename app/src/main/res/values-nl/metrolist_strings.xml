@@ -70,4 +70,6 @@
         <item quantity="one">1 seconde</item>
         <item quantity="other">%d seconden</item>
     </plurals>
+    <string name="local_history">Lokaal</string>
+    <string name="remote_history">Afstandsbediening</string>
 </resources>

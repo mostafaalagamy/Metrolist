@@ -105,4 +105,19 @@
     <string name="open_supported_links">Vaikimisi ava toetatud link</string>
     <string name="configure_supported_links">Seadista toestatud linke</string>
     <string name="intent_supported_links_not_found">Toetatud linkide seadistusi ei leidunud, palun seadista neid käsitsi</string>
+    <string name="auto_playlists">Automaatsed esitusloendid</string>
+    <string name="last_song_listened">Põhineb viimasel kuulatud lool</string>
+    <string name="open_app_settings_error">Rakenduse seadistuste avamine ei õnnestunud</string>
+    <string name="release_notes">Muudatuste logi</string>
+    <string name="history_duration">Ajaloo kestus</string>
+    <string name="information">Teave</string>
+    <string name="description">Kirjeldus</string>
+    <string name="numbers">Numbrid</string>
+    <string name="subscribers">Tellijad</string>
+    <string name="views">Vaatamisi</string>
+    <string name="likes">Meeldimisi</string>
+    <string name="dislikes">Mittemeeldimisi</string>
+    <string name="subscribe">Telli</string>
+    <string name="subscribed">Tellitud</string>
+    <string name="top_length">Minu parimate lugude loendi pikkus</string>
 </resources>
