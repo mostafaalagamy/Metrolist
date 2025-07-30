@@ -2,7 +2,7 @@
 <resources>
     <string name="no_title">Bez naslova</string>
     <string name="unknown_artist">Nepoznati izvođač</string>
-    <string name="elements_selected">elementi odabrani</string>
+    <string name="elements_selected">%1$d elementi odabrani</string>
     <string name="explore">Istraži</string>
     <string name="charts">Liste</string>
     <string name="back_button_desc">Natrag</string>

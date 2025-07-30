@@ -99,7 +99,7 @@
     <string name="player_buttons_style">Kolory przycisków odtwarzacza</string>
     <string name="secondary_color_style">Drugi</string>
     <string name="enable_swipe_thumbnail">Włącz przesunięcie, aby zmienić utwór</string>
-    <string name="swipe_song_to_add">Przesuń utwór w prawo, aby odtworzyć następny lub w lewo, aby dodać go do kolejki.</string>
+    <string name="swipe_song_to_add">Przesuń utwór w prawo, aby odtworzyć następny lub w lewo, aby dodać go do kolejki</string>
     <string name="lyrics_click_change">Zmiana tekstu po kliknięciu</string>
     <string name="slim">Wąski / Smukły</string>
     <string name="slim_navbar">Ukryj etykiety dolnego paska nawigacji</string>

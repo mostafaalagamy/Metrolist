@@ -133,4 +133,21 @@
     <string name="generating_image">Δημιουργία εικόνας</string>
     <string name="auto_download_on_like">Αυτόματη λήψη στο like</string>
     <string name="auto_download_on_like_desc">Αυτόματη λήψη τραγουδιών στο like</string>
+    <string name="new_mini_player_design">Νέο σχέδιο mini player</string>
+    <string name="lyrics_auto_scroll">Στίχοι αυτόματης κύλισης</string>
+    <string name="lyrics_romanize_japanese">Ρωμανικοποιήστε τους ιαπωνικούς στίχους</string>
+    <string name="lyrics_romanize_korean">Ρωμανικοποίηση κορεατικών στίχων</string>
+    <string name="import_online">Εισαγωγή λιστών αναπαραγωγής \"m3u\"</string>
+    <string name="import_csv">Εισαγωγή λιστών αναπαραγωγής \"csv\"</string>
+    <string name="playlist_add_local_to_synced_note">Σημείωση: Η προσθήκη τοπικών τραγουδιών σε συγχρονισμένες/απομακρυσμένες λίστες αναπαραγωγής δεν υποστηρίζεται. Οποιοσδήποτε άλλος συνδυασμός είναι έγκυρος</string>
+    <string name="swipe_sensitivity">Ευαισθησία ολίσθησης mini player</string>
+    <string name="swipe_sensitivity_desc">Προσαρμόστε την ευαισθησία των κινήσεων σάρωσης για την αλλαγή τραγουδιών</string>
+    <string name="sensitivity_percentage">%1$d%%</string>
+    <string name="clear_image_cache_dialog">Είστε βέβαιοι ότι θέλετε να διαγράψετε όλες τις εικόνες που έχουν αποθηκευτεί στην προσωρινή μνήμη;</string>
+    <string name="disable">Απενεργοποίηση</string>
+    <string name="subscribe">Εγραφή</string>
+    <string name="subscribed">Οι εγραφές μου</string>
+    <string name="more_content">Περισσότερο περιεχόμενο</string>
+    <string name="yt_sync">Αυτόματος συγχρονισμός με λογαριασμό</string>
+    <string name="new_player_design">Νέο σχέδιο αναπαραγωγής μουσικής</string>
 </resources>
