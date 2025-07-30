@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="explore">الإستكشاف</string>
+    <string name="explore">Explore</string>
     <string name="back_button_desc">للخلف</string>
     <string name="no_title">لا يوجد عنوان</string>
     <string name="unknown_artist">فنان غير معروف</string>
