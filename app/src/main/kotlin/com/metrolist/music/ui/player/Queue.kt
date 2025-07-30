@@ -376,7 +376,7 @@ fun Queue(
                                     PlayerMenu(
                                         mediaMetadata = mediaMetadata,
                                         navController = navController,
-                                        playerBottomSheetState = state,
+                                        playerBottomSheetState = playerBottomSheetState,
                                         onShowDetailsDialog = {
                                             mediaMetadata?.id?.let {
                                                 bottomSheetPageState.show {
