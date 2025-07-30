@@ -256,11 +256,10 @@ fun BottomSheetPlayer(
 
     // Default gradient colors for fallback
     val defaultGradientColors = listOf(MaterialTheme.colorScheme.surface, MaterialTheme.colorScheme.surfaceVariant)
+    val fallbackColor = MaterialTheme.colorScheme.surface.toArgb()
     
     LaunchedEffect(mediaMetadata?.id, playerBackground) {
-        if (useBlackBackground && playerBackground != PlayerBackgroundStyle.BLUR) {
-            gradientColors = listOf(Color.Black, Color.Black)
-        } else if (playerBackground == PlayerBackgroundStyle.GRADIENT) {
+        if (playerBackground == PlayerBackgroundStyle.GRADIENT) {
             val currentMetadata = mediaMetadata
             if (currentMetadata != null && currentMetadata.thumbnailUrl != null) {
                 // Check cache first
@@ -268,75 +267,116 @@ fun BottomSheetPlayer(
                 if (cachedColors != null) {
                     gradientColors = cachedColors
                 } else {
-                    try {
-                        val request = ImageRequest.Builder(context)
-                            .data(currentMetadata.thumbnailUrl)
-                            .size(Size(200, 200)) // Larger size for better color extraction
-                            .allowHardware(false)
-                            .memoryCacheKey("gradient_${currentMetadata.id}") // Use consistent cache key with prefix
-                            .build()
+                    val request = ImageRequest.Builder(context)
+                        .data(currentMetadata.thumbnailUrl)
+                        .size(Size(200, 200)) // Larger size for better color extraction
+                        .allowHardware(false)
+                        .memoryCacheKey("gradient_${currentMetadata.id}") // Use consistent cache key with prefix
+                        .build()
 
-                        val result = context.imageLoader.execute(request).drawable
-                        if (result != null) {
-                            val bitmap = result.toBitmap()
-                            val palette = withContext(Dispatchers.Default) {
-                                Palette.from(bitmap)
-                                    .maximumColorCount(16) // Increase color count for better extraction
-                                    .generate()
-                            }
-                            
-                            // Try multiple extraction methods for better color quality
-                            val vibrantColor = palette.vibrantSwatch?.rgb?.let { Color(it) }
-                            val lightVibrantColor = palette.lightVibrantSwatch?.rgb?.let { Color(it) }
-                            val darkVibrantColor = palette.darkVibrantSwatch?.rgb?.let { Color(it) }
-                            val dominantColor = palette.dominantSwatch?.rgb?.let { Color(it) }
-                            val mutedColor = palette.mutedSwatch?.rgb?.let { Color(it) }
-                            val lightMutedColor = palette.lightMutedSwatch?.rgb?.let { Color(it) }
-
-                            // دالة لتحديد إذا كان اللون غامق أو فاتح
-                            fun isColorDark(color: Color): Boolean {
-                                // YIQ formula to determine brightness
-                                val yiq = ((color.red * 255) * 299 + (color.green * 255) * 587 + (color.blue * 255) * 114) / 1000
-                                return yiq < 128
-                            }
-
-                            val extractedColors = if (dominantColor != null) {
-                                if (isColorDark(dominantColor)) {
-                                    // إذا كان اللون غامق، التدرج من الغامق إلى الأفتح
-                                    listOf(
-                                        dominantColor,
-                                        Color(
-                                            red = (dominantColor.red + 0.2f).coerceAtMost(1f),
-                                            green = (dominantColor.green + 0.2f).coerceAtMost(1f),
-                                            blue = (dominantColor.blue + 0.2f).coerceAtMost(1f),
-                                            alpha = dominantColor.alpha
-                                        )
-                                    )
-                                } else {
-                                    // إذا كان اللون فاتح، التدرج من الفاتح إلى الأغمق
-                                    listOf(
-                                        dominantColor,
-                                        Color(
-                                            red = (dominantColor.red - 0.2f).coerceAtLeast(0f),
-                                            green = (dominantColor.green - 0.2f).coerceAtLeast(0f),
-                                            blue = (dominantColor.blue - 0.2f).coerceAtLeast(0f),
-                                            alpha = dominantColor.alpha
-                                        )
-                                    )
-                                }
-                            } else {
-                                defaultGradientColors
-                            }
-                            
-                            // Cache the extracted colors
-                            gradientColorsCache[currentMetadata.id] = extractedColors
-                            gradientColors = extractedColors
-                        } else {
-                            gradientColors = defaultGradientColors
+                    val result = runCatching { 
+                        context.imageLoader.execute(request).drawable 
+                    }.getOrNull()
+                    
+                    if (result != null) {
+                        val bitmap = result.toBitmap()
+                        val palette = withContext(Dispatchers.Default) {
+                            Palette.from(bitmap)
+                                .maximumColorCount(32) // Increase color count for better extraction
+                                .resizeBitmapArea(8000) // Improve analysis precision
+                                .generate()
                         }
-                    } catch (e: Exception) {
+                        
+                        // Enhanced color extraction functions for vibrant colors
+                        fun isColorVibrant(color: Color): Boolean {
+                            val argb = color.toArgb()
+                            val hsv = FloatArray(3)
+                            android.graphics.Color.colorToHSV(argb, hsv)
+                            val saturation = hsv[1] // HSV[1] is saturation
+                            val brightness = hsv[2] // HSV[2] is brightness
+                            
+                            // Color is vibrant if it has sufficient saturation and appropriate brightness
+                            // Avoid colors that are too dark or too bright
+                            return saturation > 0.25f && brightness > 0.2f && brightness < 0.9f
+                        }
+                        
+                        fun enhanceColorVividness(color: Color, saturationFactor: Float = 1.4f): Color {
+                            // Convert to HSV for better saturation control
+                            val argb = color.toArgb()
+                            val hsv = FloatArray(3)
+                            android.graphics.Color.colorToHSV(argb, hsv)
+                            
+                            // Increase saturation for more vivid colors
+                            hsv[1] = (hsv[1] * saturationFactor).coerceAtMost(1.0f)
+                            // Adjust brightness for better visibility
+                            hsv[2] = (hsv[2] * 0.9f).coerceIn(0.4f, 0.85f)
+                            
+                            return Color(android.graphics.Color.HSVToColor(hsv))
+                        }
+
+                        // Function to calculate color weight based on dominance and vibrancy
+                        fun calculateColorWeight(swatch: Palette.Swatch?): Float {
+                            if (swatch == null) return 0f
+                            val population = swatch.population.toFloat()
+                            val color = Color(swatch.rgb)
+                            val argb = color.toArgb()
+                            val hsv = FloatArray(3)
+                            android.graphics.Color.colorToHSV(argb, hsv)
+                            val saturation = hsv[1]
+                            val brightness = hsv[2]
+                            
+                            // Give higher priority to dominance (population) while considering vibrancy
+                            val populationWeight = population * 2f // Double dominance weight
+                            val vibrancyBonus = if (saturation > 0.3f && brightness > 0.3f) 1.5f else 1f
+                            
+                            return populationWeight * vibrancyBonus * (saturation + brightness) / 2f
+                        }
+
+                        // Extract all available colors with priority for dominant colors
+                        val colorCandidates = listOfNotNull(
+                            palette.dominantSwatch, // High priority for dominant color
+                            palette.vibrantSwatch,
+                            palette.darkVibrantSwatch,
+                            palette.lightVibrantSwatch,
+                            palette.mutedSwatch,
+                            palette.darkMutedSwatch,
+                            palette.lightMutedSwatch
+                        )
+
+                        // Select best color based on weight (dominance + vibrancy)
+                        val bestSwatch = colorCandidates.maxByOrNull { calculateColorWeight(it) }
+                        val fallbackDominant = palette.dominantSwatch?.rgb?.let { Color(it) }
+                            ?: Color(palette.getDominantColor(fallbackColor))
+
+                        val primaryColor = if (bestSwatch != null) {
+                            val bestColor = Color(bestSwatch.rgb)
+                            // Ensure the color is suitable for use
+                            if (isColorVibrant(bestColor)) {
+                                enhanceColorVividness(bestColor, 1.3f)
+                            } else {
+                                // If not vibrant, use dominant color with slight enhancement
+                                enhanceColorVividness(fallbackDominant, 1.1f)
+                            }
+                        } else {
+                            enhanceColorVividness(fallbackDominant, 1.1f)
+                        }
+                        
+                        // Create sophisticated gradient with 3 color points
+                        val extractedColors = listOf(
+                            primaryColor, // Start: primary vibrant color
+                            primaryColor.copy(
+                                red = (primaryColor.red * 0.6f).coerceAtLeast(0f),
+                                green = (primaryColor.green * 0.6f).coerceAtLeast(0f),
+                                blue = (primaryColor.blue * 0.6f).coerceAtLeast(0f)
+                            ), // Middle: darker version of primary color
+                            Color.Black // End: black
+                        )
+                        
+                        // Cache the extracted colors
+                        gradientColorsCache[currentMetadata.id] = extractedColors
+                        gradientColors = extractedColors
+                    } else {
                         gradientColors = defaultGradientColors
-                        e.printStackTrace()
                     }
                 }
             } else {
@@ -520,12 +560,22 @@ fun BottomSheetPlayer(
                             backgroundColor
                         )
                     )
-                } else if (gradientColors.size >= 2 && state.value > changeBound) {
-                    // Apply transparency to gradient colors
-                    val transparentGradientColors = gradientColors.map { color ->
-                        color.copy(alpha = color.alpha * progress)
+                } else if (gradientColors.size >= 2 && playerBackground == PlayerBackgroundStyle.GRADIENT) {
+                    // Enhanced gradient with 3 color points
+                    val colorStops = if (gradientColors.size >= 3) {
+                        arrayOf(
+                            0.0f to gradientColors[0].copy(alpha = progress), // Top: primary vibrant color
+                            0.5f to gradientColors[1].copy(alpha = progress), // Middle: darker variant
+                            1.0f to gradientColors[2].copy(alpha = progress)  // Bottom: black
+                        )
+                    } else {
+                        arrayOf(
+                            0.0f to gradientColors[0].copy(alpha = progress), // Top: primary color
+                            0.6f to gradientColors[0].copy(alpha = progress * 0.7f), // Middle: faded variant
+                            1.0f to Color.Black.copy(alpha = progress) // Bottom: black
+                        )
                     }
-                    Brush.verticalGradient(transparentGradientColors)
+                    Brush.verticalGradient(colorStops = colorStops)
                 } else {
                     Brush.verticalGradient(
                         listOf(
@@ -545,15 +595,29 @@ fun BottomSheetPlayer(
                     )
                 )
             } else {
-                if (state.value > changeBound) {
+                if (gradientColors.size >= 2 && playerBackground == PlayerBackgroundStyle.GRADIENT) {
+                    // Enhanced gradient for original design
+                    val colorStops = if (gradientColors.size >= 3) {
+                        arrayOf(
+                            0.0f to gradientColors[0], // Top: primary vibrant color
+                            0.5f to gradientColors[1], // Middle: darker variant
+                            1.0f to gradientColors[2]  // Bottom: black
+                        )
+                    } else {
+                        arrayOf(
+                            0.0f to gradientColors[0], // Top: primary color
+                            0.6f to gradientColors[0].copy(alpha = 0.7f), // Middle: faded variant
+                            1.0f to Color.Black // Bottom: black
+                        )
+                    }
+                    Brush.verticalGradient(colorStops = colorStops)
+                } else if (state.value > changeBound) {
                     Brush.verticalGradient(
                         listOf(
                             MaterialTheme.colorScheme.surfaceContainer,
                             backgroundColor
                         )
                     )
-                } else if (gradientColors.size >= 2 && state.value > changeBound) {
-                    Brush.verticalGradient(gradientColors)
                 } else {
                     Brush.verticalGradient(
                         listOf(
@@ -855,7 +919,8 @@ fun BottomSheetPlayer(
                         colors = SliderDefaults.colors(
                             activeTrackColor = textButtonColor,
                             activeTickColor = textButtonColor,
-                            thumbColor = textButtonColor
+                            thumbColor = textButtonColor,
+                            inactiveTrackColor = Color.White.copy(alpha = 0.15f)
                         ),
                         modifier = Modifier.padding(horizontal = PlayerHorizontalPadding),
                     )
@@ -878,7 +943,8 @@ fun BottomSheetPlayer(
                         colors = SliderDefaults.colors(
                             activeTrackColor = textButtonColor,
                             activeTickColor = textButtonColor,
-                            thumbColor = textButtonColor
+                            thumbColor = textButtonColor,
+                            inactiveTrackColor = Color.White.copy(alpha = 0.15f)
                         ),
                         modifier = Modifier.padding(horizontal = PlayerHorizontalPadding),
                         squigglesSpec =
@@ -910,6 +976,7 @@ fun BottomSheetPlayer(
                                 colors = SliderDefaults.colors(
                                     activeTrackColor = textButtonColor,
                                     activeTickColor = textButtonColor,
+                                    inactiveTrackColor = Color.White.copy(alpha = 0.15f)
                                 )
                             )
                         },
@@ -1180,15 +1247,28 @@ fun BottomSheetPlayer(
                 }
             ) { colors ->
                 if (playerBackground == PlayerBackgroundStyle.GRADIENT && colors.size >= 2) {
+                    val gradientColorStops = if (colors.size >= 3) {
+                        arrayOf(
+                            0.0f to colors[0], // Top: primary vibrant color
+                            0.5f to colors[1], // Middle: darker variant
+                            1.0f to colors[2]  // Bottom: black
+                        )
+                    } else {
+                        arrayOf(
+                            0.0f to colors[0], // Top: primary color
+                            0.6f to colors[0].copy(alpha = 0.7f), // Middle: faded variant
+                            1.0f to Color.Black // Bottom: black
+                        )
+                    }
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
-                            .background(Brush.verticalGradient(colors))
+                            .background(Brush.verticalGradient(colorStops = gradientColorStops))
                     )
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
-                            .background(Color.Black.copy(alpha = 0.2f))
+                            .background(Color.Black.copy(alpha = 0.15f))
                     )
                 }
             }
