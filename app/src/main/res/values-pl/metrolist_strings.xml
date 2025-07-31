@@ -153,4 +153,11 @@
     <string name="new_player_design">Nowy wygląd odtwarzacza</string>
     <string name="sensitivity_percentage">%1$d%%</string>
     <string name="disable">Wyłączyć</string>
+    <string name="new_mini_player_design">Nowy wygląd małego odwarzacza</string>
+    <string name="subscribe">Subskrybuj</string>
+    <string name="subscribed">Zasubskrybowano</string>
+    <string name="playlist_not_found">Nie znaleziono playlisty</string>
+    <string name="playlist_not_found_desc">Nie można załadować żądanej playlisty</string>
+    <string name="empty_playlist">Pusta playlista</string>
+    <string name="empty_playlist_desc">Ta playlista nie zawiera żadnych piosenek</string>
 </resources>
