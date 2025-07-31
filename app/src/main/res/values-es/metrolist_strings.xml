@@ -151,4 +151,8 @@
     <string name="disable">Desactivar</string>
     <string name="subscribe">Suscribirme</string>
     <string name="subscribed">Suscrito</string>
+    <string name="new_mini_player_design">Nuevo diseño del mini reproductor</string>
+    <string name="playlist_not_found">Lista de reproducción no encontrada</string>
+    <string name="playlist_not_found_desc">No se pudo cargar la lista de reproducción solicitada</string>
+    <string name="empty_playlist">Lista de reproducción vacía</string>
 </resources>
