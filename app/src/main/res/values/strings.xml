@@ -69,8 +69,6 @@
 
     <!-- Artist screen -->
     <string name="from_your_library">From your library</string>
-    <string name="local_artist_only">Local Artist</string>
-    <string name="local_artist_description">This artist is only available in your local library. YouTube Music content is not available.</string>
 
     <!-- Album screen -->
     <string name="other_versions">Other versions</string>

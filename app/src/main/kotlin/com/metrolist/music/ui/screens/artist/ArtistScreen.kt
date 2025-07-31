@@ -691,7 +691,7 @@ fun ArtistScreen(
                             }
                         }
                     }
-                } else if (artistPage == null && !isLoading && !hasError && viewModel.artistId.startsWith("LA")) {
+                } else if (artistPage == null && !isLoading && viewModel.artistId.startsWith("LA")) {
                     // Show local artist content when no YouTube data is available
                     item {
                         Column(
@@ -712,6 +712,28 @@ fun ArtistScreen(
                                 textAlign = TextAlign.Center,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
+                        }
+                    }
+                } else if (hasError && !isLoading) {
+                    // Show error state with retry option
+                    item {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(
+                                text = "Failed to load artist page",
+                                style = MaterialTheme.typography.bodyLarge,
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.padding(bottom = 8.dp)
+                            )
+                            Button(
+                                onClick = { viewModel.retry() }
+                            ) {
+                                Text("Retry")
+                            }
                         }
                     }
                 }
