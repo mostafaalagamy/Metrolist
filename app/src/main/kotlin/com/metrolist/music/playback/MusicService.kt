@@ -1138,11 +1138,6 @@ class MusicService :
     }
 
     private fun saveQueueToDisk() {
-        if (player.playbackState == STATE_IDLE) {
-            filesDir.resolve(PERSISTENT_AUTOMIX_FILE).delete()
-            filesDir.resolve(PERSISTENT_QUEUE_FILE).delete()
-            return
-        }
         val persistQueue =
             PersistQueue(
                 title = queueTitle,
