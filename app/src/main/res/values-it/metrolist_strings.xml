@@ -153,4 +153,8 @@
     <string name="subscribe">Iscriviti</string>
     <string name="subscribed">Iscritto</string>
     <string name="new_mini_player_design">Nuovo design del mini lettore</string>
+    <string name="empty_playlist_desc">Questa playlist non contiene brani</string>
+    <string name="playlist_not_found">Playlist non trovata</string>
+    <string name="playlist_not_found_desc">La playlist richiesta non può essere caricata</string>
+    <string name="empty_playlist">Playlist vuota</string>
 </resources>
