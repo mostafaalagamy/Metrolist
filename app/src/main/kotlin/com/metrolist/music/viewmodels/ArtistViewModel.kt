@@ -27,13 +27,14 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 
 @HiltViewModel
 class ArtistViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
-    database: MusicDatabase,
+    private val database: MusicDatabase,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
     val artistId = savedStateHandle.get<String>("artistId")!!
@@ -91,9 +92,20 @@ class ArtistViewModel @Inject constructor(
                 isLoading = true
                 hasError = false
                 
+                // Resolve the correct artist ID for YouTube API
+                val youtubeArtistId = resolveYouTubeArtistId(artistId)
+                
+                // Skip YouTube API call if this is a purely local artist with no YouTube equivalent
+                if (youtubeArtistId == null) {
+                    artistPage = null
+                    hasError = false
+                    isLoading = false
+                    return@launch
+                }
+                
                 val hideExplicit = context.dataStore.get(HideExplicitKey, false)
                 
-                YouTube.artist(artistId)
+                YouTube.artist(youtubeArtistId)
                     .onSuccess { page ->
                         val filteredSections = page.sections
                             .filterNot { section ->
@@ -106,17 +118,65 @@ class ArtistViewModel @Inject constructor(
                         artistPage = page.copy(sections = filteredSections)
                         hasError = false
                     }.onFailure { throwable ->
-                        hasError = true
-                        artistPage = null
-                        reportException(throwable)
+                        // If API call fails for a local artist, don't treat it as an error
+                        if (artistId.startsWith("LA")) {
+                            artistPage = null
+                            hasError = false
+                        } else {
+                            hasError = true
+                            artistPage = null
+                            reportException(throwable)
+                        }
                     }
             } catch (e: Exception) {
-                hasError = true
-                artistPage = null
-                reportException(e)
+                // If it's a local artist, don't treat it as an error
+                if (artistId.startsWith("LA")) {
+                    artistPage = null
+                    hasError = false
+                } else {
+                    hasError = true
+                    artistPage = null
+                    reportException(e)
+                }
             } finally {
                 isLoading = false
             }
+        }
+    }
+    
+    /**
+     * Resolves the YouTube artist ID from a local artist ID if possible
+     * Returns null if this is a purely local artist with no YouTube equivalent
+     */
+    private suspend fun resolveYouTubeArtistId(inputArtistId: String): String? {
+        return when {
+            // If it's already a YouTube artist ID, use it directly
+            inputArtistId.startsWith("UC") || inputArtistId.startsWith("FEmusic_library_privately_owned_artist") -> {
+                inputArtistId
+            }
+            // If it's a local artist ID, try to find the YouTube equivalent
+            inputArtistId.startsWith("LA") -> {
+                try {
+                    val localArtist = database.artist(inputArtistId).first()
+                    
+                    // If the local artist has a channelId, use it
+                    localArtist?.channelId?.let { channelId ->
+                        return channelId
+                    }
+                    
+                    // Try to find a YouTube artist with the same name
+                    localArtist?.name?.let { artistName ->
+                        val youtubeArtist = database.artistByName(artistName)
+                        youtubeArtist?.takeIf { 
+                            it.id.startsWith("UC") || it.id.startsWith("FEmusic_library_privately_owned_artist")
+                        }?.id
+                    }
+                } catch (e: Exception) {
+                    null
+                }
+            }
+            // Unknown format, try as is
+            else -> inputArtistId
         }
     }
     

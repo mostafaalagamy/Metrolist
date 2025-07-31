@@ -165,7 +165,8 @@ fun ArtistScreen(
                 )
                 .asPaddingValues(),
         ) {
-            if ((artistPage == null && !showLocal) || isLoading) {
+            // Show shimmer only when loading, not when there's no artist page for local artists
+            if (isLoading) {
                 item(key = "shimmer") {
                     ShimmerHost {
                         // Artist Image Placeholder
@@ -544,8 +545,8 @@ fun ArtistScreen(
                             }
                         }
                     }
-                } else {
-                    artistPage?.sections?.fastForEach { section ->
+                } else if (artistPage != null) {
+                    artistPage.sections.fastForEach { section ->
                         if (section.items.isNotEmpty()) {
                             item {
                                 NavigationTitle(
@@ -688,6 +689,29 @@ fun ArtistScreen(
                                     }
                                 }
                             }
+                        }
+                    }
+                } else if (artistPage == null && !isLoading && !hasError && viewModel.artistId.startsWith("LA")) {
+                    // Show local artist content when no YouTube data is available
+                    item {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(
+                                text = stringResource(R.string.local_artist_only),
+                                style = MaterialTheme.typography.bodyLarge,
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.padding(bottom = 8.dp)
+                            )
+                            Text(
+                                text = stringResource(R.string.local_artist_description),
+                                style = MaterialTheme.typography.bodyMedium,
+                                textAlign = TextAlign.Center,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
                         }
                     }
                 }
