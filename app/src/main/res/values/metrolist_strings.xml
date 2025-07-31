@@ -177,4 +177,8 @@
         <item quantity="one">1 second</item>
         <item quantity="other">%d seconds</item>
     </plurals>
+    
+    <!-- Artist screen -->
+    <string name="local_artist_only">Local Artist</string>
+    <string name="local_artist_description">This artist is only available in your local library. YouTube Music content is not available.</string>
 </resources>
