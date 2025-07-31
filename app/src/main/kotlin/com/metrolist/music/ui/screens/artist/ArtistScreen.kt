@@ -134,6 +134,8 @@ fun ArtistScreen(
     val isPlaying by playerConnection.isPlaying.collectAsState()
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
     val artistPage = viewModel.artistPage
+    val isLoading = viewModel.isLoading
+    val hasError = viewModel.hasError
     val libraryArtist by viewModel.libraryArtist.collectAsState()
     val librarySongs by viewModel.librarySongs.collectAsState()
     val libraryAlbums by viewModel.libraryAlbums.collectAsState()
@@ -147,11 +149,6 @@ fun ArtistScreen(
         derivedStateOf {
             lazyListState.firstVisibleItemIndex <= 1
         }
-    }
-
-    // Reload artist data when hide explicit setting changes
-    LaunchedEffect(hideExplicit) {
-        viewModel.fetchArtistsFromYTM()
     }
 
     Box(
@@ -168,7 +165,7 @@ fun ArtistScreen(
                 )
                 .asPaddingValues(),
         ) {
-            if (artistPage == null && !showLocal) {
+            if ((artistPage == null && !showLocal) || isLoading) {
                 item(key = "shimmer") {
                     ShimmerHost {
                         // Artist Image Placeholder

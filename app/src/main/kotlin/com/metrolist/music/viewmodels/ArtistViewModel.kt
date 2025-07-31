@@ -27,6 +27,8 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 
 @HiltViewModel
 class ArtistViewModel @Inject constructor(
@@ -36,6 +38,16 @@ class ArtistViewModel @Inject constructor(
 ) : ViewModel() {
     val artistId = savedStateHandle.get<String>("artistId")!!
     var artistPage by mutableStateOf<ArtistPage?>(null)
+        private set
+    
+    var isLoading by mutableStateOf(false)
+        private set
+    
+    var hasError by mutableStateOf(false)
+        private set
+    
+    private var fetchJob: Job? = null
+    
     val libraryArtist = database.artist(artistId)
         .stateIn(viewModelScope, SharingStarted.Lazily, null)
     val librarySongs = context.dataStore.data
@@ -54,34 +66,61 @@ class ArtistViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
     init {
-        // Load artist page and reload when hide explicit setting changes
+        // Load artist page initially
+        fetchArtistsFromYTM()
+        
+        // Reload when hide explicit setting changes
         viewModelScope.launch {
             context.dataStore.data
                 .map { it[HideExplicitKey] ?: false }
                 .distinctUntilChanged()
                 .collect {
+                    // Add a small delay to prevent rapid successive calls
+                    delay(100)
                     fetchArtistsFromYTM()
                 }
         }
     }
 
     fun fetchArtistsFromYTM() {
-        viewModelScope.launch {
-            val hideExplicit = context.dataStore.get(HideExplicitKey, false)
-            YouTube.artist(artistId)
-                .onSuccess { page ->
-                    val filteredSections = page.sections
-                        .filterNot { section ->
-                            section.title.equals("From your library", ignoreCase = true)
-                        }
-                        .map { section ->
-                            section.copy(items = section.items.filterExplicit(hideExplicit))
-                        }
+        // Cancel any existing fetch job to prevent race conditions
+        fetchJob?.cancel()
+        
+        fetchJob = viewModelScope.launch {
+            try {
+                isLoading = true
+                hasError = false
+                
+                val hideExplicit = context.dataStore.get(HideExplicitKey, false)
+                
+                YouTube.artist(artistId)
+                    .onSuccess { page ->
+                        val filteredSections = page.sections
+                            .filterNot { section ->
+                                section.title.equals("From your library", ignoreCase = true)
+                            }
+                            .map { section ->
+                                section.copy(items = section.items.filterExplicit(hideExplicit))
+                            }
 
-                    artistPage = page.copy(sections = filteredSections)
-                }.onFailure {
-                    reportException(it)
-                }
+                        artistPage = page.copy(sections = filteredSections)
+                        hasError = false
+                    }.onFailure { throwable ->
+                        hasError = true
+                        artistPage = null
+                        reportException(throwable)
+                    }
+            } catch (e: Exception) {
+                hasError = true
+                artistPage = null
+                reportException(e)
+            } finally {
+                isLoading = false
+            }
         }
+    }
+    
+    fun retry() {
+        fetchArtistsFromYTM()
     }
 }
