@@ -156,4 +156,8 @@
     <string name="subscribe">Підписатися</string>
     <string name="subscribed">Підписані</string>
     <string name="new_mini_player_design">Новий дизайн міні програвача</string>
+    <string name="playlist_not_found">Список відтворення не знайдено</string>
+    <string name="playlist_not_found_desc">Не вдалося завантажити запитуваний список відтворення</string>
+    <string name="empty_playlist">Порожній список відтворення</string>
+    <string name="empty_playlist_desc">Цей плейлист не містить жодної пісні</string>
 </resources>
