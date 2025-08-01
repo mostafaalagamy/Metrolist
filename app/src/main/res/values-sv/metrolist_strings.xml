@@ -137,4 +137,6 @@
     <string name="pause_remote_listen_history">Pausa delning av lyssningshistorik med YouTube Musik</string>
     <string name="not_logged_in_youtube">Inte inloggad på YouTube</string>
     <string name="release_notes">Versionsinfo</string>
+    <string name="new_player_design">Ny spelar design</string>
+    <string name="new_mini_player_design">Ny mini spelar design</string>
 </resources>
