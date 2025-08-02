@@ -154,4 +154,8 @@
     <string name="subscribe">Odebírat</string>
     <string name="subscribed">Odebíráno</string>
     <string name="new_mini_player_design">Nový vzhled mini přehrávače</string>
+    <string name="playlist_not_found">Playlist nenalezen</string>
+    <string name="playlist_not_found_desc">Požadovaný playlist se nepodařilo načíst</string>
+    <string name="empty_playlist">Prázdný playlist</string>
+    <string name="empty_playlist_desc">Tento playlist neobsahuje žádné skladby</string>
 </resources>
