@@ -1,6 +1,7 @@
 package com.metrolist.music.db.entities
 
 import androidx.compose.runtime.Immutable
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.metrolist.innertube.YouTube
@@ -19,17 +20,15 @@ data class ArtistEntity(
     val thumbnailUrl: String? = null,
     val channelId: String? = null,
     val lastUpdateTime: LocalDateTime = LocalDateTime.now(),
-    val bookmarkedAt: LocalDateTime? = null
+    val bookmarkedAt: LocalDateTime? = null,
+    @ColumnInfo(name = "isLocal", defaultValue = false.toString())
+    val isLocal: Boolean = false
 ) {
-
     val isYouTubeArtist: Boolean
         get() = id.startsWith("UC") || id.startsWith("FEmusic_library_privately_owned_artist")
 
     val isPrivatelyOwnedArtist: Boolean
         get() = id.startsWith("FEmusic_library_privately_owned_artist")
-
-    val isLocalArtist: Boolean
-        get() = id.startsWith("LA")
 
     fun localToggleLike() = copy(
         bookmarkedAt = if (bookmarkedAt != null) null else LocalDateTime.now(),

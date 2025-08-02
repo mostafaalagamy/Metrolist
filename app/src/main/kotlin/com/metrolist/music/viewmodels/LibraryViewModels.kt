@@ -110,7 +110,7 @@ constructor(
                                             songs
                                                 .sortedWith(
                                                     compareBy(collator) { song ->
-                                                        song.song.artistName ?: song.artists.joinToString("") { it.name }
+                                                        song.artists.joinToString("") { it.name }
                                                     },
                                                 ).groupBy { it.album?.title }
                                                 .flatMap { (_, songsByAlbum) ->

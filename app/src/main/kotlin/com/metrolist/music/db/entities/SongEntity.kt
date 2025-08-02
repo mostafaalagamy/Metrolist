@@ -28,7 +28,6 @@ data class SongEntity(
     val thumbnailUrl: String? = null,
     val albumId: String? = null,
     val albumName: String? = null,
-    val artistName: String? = null,
     @ColumnInfo(defaultValue = "0")
     val explicit: Boolean = false,
     val year: Int? = null,
@@ -39,6 +38,8 @@ data class SongEntity(
     val totalPlayTime: Long = 0, // in milliseconds
     val inLibrary: LocalDateTime? = null,
     val dateDownload: LocalDateTime? = LocalDateTime.now(),
+    @ColumnInfo(name = "isLocal", defaultValue = false.toString())
+    val isLocal: Boolean = false
 ) {
     fun localToggleLike() = copy(
         liked = !liked,
