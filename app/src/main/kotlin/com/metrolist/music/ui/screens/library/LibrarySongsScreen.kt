@@ -60,6 +60,7 @@ import com.metrolist.music.ui.component.HideOnScrollFAB
 import com.metrolist.music.ui.component.LocalMenuState
 import com.metrolist.music.ui.component.SongListItem
 import com.metrolist.music.ui.component.SortHeader
+import com.metrolist.music.ui.component.VerticalFastScroller
 import com.metrolist.music.ui.menu.SelectionSongMenu
 import com.metrolist.music.ui.menu.SongMenu
 import com.metrolist.music.ui.utils.ItemWrapper
@@ -125,10 +126,15 @@ fun LibrarySongsScreen(
     Box(
         modifier = Modifier.fillMaxSize(),
     ) {
-        LazyColumn(
-            state = lazyListState,
-            contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues(),
+        VerticalFastScroller(
+            listState = lazyListState,
+            topContentPadding = 16.dp,
+            endContentPadding = 0.dp
         ) {
+            LazyColumn(
+                state = lazyListState,
+                contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues(),
+            ) {
             item(
                 key = "filter",
                 contentType = CONTENT_TYPE_HEADER,
@@ -322,6 +328,7 @@ fun LibrarySongsScreen(
                         )
                         .animateItem(),
                 )
+            }
             }
         }
 
