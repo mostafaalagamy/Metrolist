@@ -463,7 +463,7 @@ fun BottomSheetPlayer(
         state = state,
         modifier = modifier,
         brushBackgroundColor = if (useNewMiniPlayerDesign) {
-            // New design with transparency effects
+            // New design with transparency effects - always use solid background
             if (useBlackBackground) {
                 Brush.verticalGradient(
                     colors = listOf(
@@ -483,22 +483,6 @@ fun BottomSheetPlayer(
                             backgroundColor
                         )
                     )
-                } else if (gradientColors.size >= 2 && playerBackground == PlayerBackgroundStyle.GRADIENT) {
-                    // Enhanced gradient with 3 color points
-                    val colorStops = if (gradientColors.size >= 3) {
-                        arrayOf(
-                            0.0f to gradientColors[0].copy(alpha = progress), // Top: primary vibrant color
-                            0.5f to gradientColors[1].copy(alpha = progress), // Middle: darker variant
-                            1.0f to gradientColors[2].copy(alpha = progress)  // Bottom: black
-                        )
-                    } else {
-                        arrayOf(
-                            0.0f to gradientColors[0].copy(alpha = progress), // Top: primary color
-                            0.6f to gradientColors[0].copy(alpha = progress * 0.7f), // Middle: faded variant
-                            1.0f to Color.Black.copy(alpha = progress) // Bottom: black
-                        )
-                    }
-                    Brush.verticalGradient(colorStops = colorStops)
                 } else {
                     Brush.verticalGradient(
                         listOf(
@@ -509,7 +493,7 @@ fun BottomSheetPlayer(
                 }
             }
         } else {
-            // Original gradient behavior (exactly as main branch)
+            // Original gradient behavior - always use solid background
             if (useBlackBackground) {
                 Brush.verticalGradient(
                     colors = listOf(
@@ -518,23 +502,7 @@ fun BottomSheetPlayer(
                     )
                 )
             } else {
-                if (gradientColors.size >= 2 && playerBackground == PlayerBackgroundStyle.GRADIENT) {
-                    // Enhanced gradient for original design
-                    val colorStops = if (gradientColors.size >= 3) {
-                        arrayOf(
-                            0.0f to gradientColors[0], // Top: primary vibrant color
-                            0.5f to gradientColors[1], // Middle: darker variant
-                            1.0f to gradientColors[2]  // Bottom: black
-                        )
-                    } else {
-                        arrayOf(
-                            0.0f to gradientColors[0], // Top: primary color
-                            0.6f to gradientColors[0].copy(alpha = 0.7f), // Middle: faded variant
-                            1.0f to Color.Black // Bottom: black
-                        )
-                    }
-                    Brush.verticalGradient(colorStops = colorStops)
-                } else if (state.value > changeBound) {
+                if (state.value > changeBound) {
                     Brush.verticalGradient(
                         listOf(
                             MaterialTheme.colorScheme.surfaceContainer,
@@ -1155,7 +1123,7 @@ fun BottomSheetPlayer(
                     fadeIn(tween(1000)) togetherWith fadeOut(tween(1000))
                 }
             ) { colors ->
-                if (playerBackground == PlayerBackgroundStyle.GRADIENT && colors.size >= 2) {
+                if (playerBackground == PlayerBackgroundStyle.GRADIENT && colors.size >= 2 && !state.isDismissed) {
                     val gradientColorStops = if (colors.size >= 3) {
                         arrayOf(
                             0.0f to colors[0], // Top: primary vibrant color
