@@ -93,6 +93,7 @@ import com.metrolist.music.ui.component.IconButton
 import com.metrolist.music.ui.component.LocalMenuState
 import com.metrolist.music.ui.component.SongListItem
 import com.metrolist.music.ui.component.SortHeader
+import com.metrolist.music.ui.component.VerticalFastScroller
 import com.metrolist.music.ui.menu.SelectionSongMenu
 import com.metrolist.music.ui.menu.SongMenu
 import com.metrolist.music.ui.utils.ItemWrapper
@@ -231,10 +232,15 @@ fun TopPlaylistScreen(
     Box(
         modifier = Modifier.fillMaxSize(),
     ) {
-        LazyColumn(
-            state = state,
-            contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues(),
+        VerticalFastScroller(
+            listState = state,
+            topContentPadding = 16.dp,
+            endContentPadding = 0.dp
         ) {
+            LazyColumn(
+                state = state,
+                contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues(),
+            ) {
             if (songs != null) {
                 if (songs!!.isEmpty()) {
                     item {
@@ -516,6 +522,7 @@ fun TopPlaylistScreen(
                         )
                     }
                 }
+            }
             }
         }
 

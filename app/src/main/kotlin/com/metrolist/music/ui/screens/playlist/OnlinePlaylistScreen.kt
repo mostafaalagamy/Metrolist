@@ -98,6 +98,7 @@ import com.metrolist.music.ui.component.DraggableScrollbar
 import com.metrolist.music.ui.component.FontSizeRange
 import com.metrolist.music.ui.component.IconButton
 import com.metrolist.music.ui.component.LocalMenuState
+import com.metrolist.music.ui.component.VerticalFastScroller
 import com.metrolist.music.ui.component.YouTubeListItem
 import com.metrolist.music.ui.component.shimmer.ButtonPlaceholder
 import com.metrolist.music.ui.component.shimmer.ListItemPlaceHolder
@@ -206,11 +207,16 @@ fun OnlinePlaylistScreen(
     Box(
         modifier = Modifier.fillMaxSize(),
     ) {
-        LazyColumn(
-            state = lazyListState,
-            contentPadding = LocalPlayerAwareWindowInsets.current.union(WindowInsets.ime)
-                .asPaddingValues(),
+        VerticalFastScroller(
+            listState = lazyListState,
+            topContentPadding = 16.dp,
+            endContentPadding = 0.dp
         ) {
+            LazyColumn(
+                state = lazyListState,
+                contentPadding = LocalPlayerAwareWindowInsets.current.union(WindowInsets.ime)
+                    .asPaddingValues(),
+            ) {
             playlist.let { playlist ->
                 if (isLoading) {
                     item {
@@ -584,6 +590,7 @@ fun OnlinePlaylistScreen(
                         }
                     }
                 }
+            }
             }
         }
 
