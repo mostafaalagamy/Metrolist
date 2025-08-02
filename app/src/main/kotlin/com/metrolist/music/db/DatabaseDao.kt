@@ -98,7 +98,7 @@ interface DatabaseDao {
                 songs
                     .sortedWith(
                         compareBy(collator) { song ->
-                            song.song.artistName ?: song.artists.joinToString("") { it.name }
+                            song.artists.joinToString("") { it.name }
                         },
                     ).groupBy { it.album?.title }
                     .flatMap { (_, songsByAlbum) ->
@@ -148,7 +148,7 @@ interface DatabaseDao {
                 songs
                     .sortedWith(
                         compareBy(collator) { song ->
-                            song.song.artistName ?: song.artists.joinToString("") { it.name }
+                            song.artists.joinToString("") { it.name }
                         },
                     ).groupBy { it.album?.title }
                     .flatMap { (_, songsByAlbum) ->
@@ -637,7 +637,7 @@ interface DatabaseDao {
             ArtistSortType.PLAY_TIME -> artistsByPlayTimeAsc()
         }.map { artists ->
             artists
-                .filter { it.artist.isYouTubeArtist }
+                .filter { it.artist.isYouTubeArtist || it.artist.isLocal } // TODO: add ui to filter by local or remote or something idk
                 .reversed(descending)
         }
 
@@ -649,7 +649,7 @@ interface DatabaseDao {
             ArtistSortType.PLAY_TIME -> artistsBookmarkedByPlayTimeAsc()
         }.map { artists ->
             artists
-                .filter { it.artist.isYouTubeArtist }
+                .filter { it.artist.isYouTubeArtist || it.artist.isLocal } // TODO: add ui to filter by local or remote or something idk
                 .reversed(descending)
         }
 
@@ -1057,17 +1057,15 @@ interface DatabaseDao {
         if (insert(mediaMetadata.toSongEntity().let(block)) == -1L) return
 
         mediaMetadata.artists.forEachIndexed { index, artist ->
-            val existing = artist.id?.let { getArtistById(it) } ?: artistByName(artist.name)
-            val artistId = existing?.id ?: ArtistEntity.generateArtistId()
-
-            if (existing == null) {
-                insert(
-                    ArtistEntity(
-                        id = artistId,
-                        name = artist.name,
-                    )
+            val artistId = artist.id ?: artistByName(artist.name)?.id ?: ArtistEntity.generateArtistId()
+            
+            insert(
+                ArtistEntity(
+                    id = artistId,
+                    name = artist.name,
+                    channelId = artist.id,
                 )
-            }
+            )
 
             insert(
                 SongArtistMap(
@@ -1144,12 +1142,13 @@ interface DatabaseDao {
         )
         songArtistMap(song.id).forEach(::delete)
         mediaMetadata.artists.forEachIndexed { index, artist ->
-            val artistId =
-                artist.id ?: artistByName(artist.name)?.id ?: ArtistEntity.generateArtistId()
+            val artistId = artist.id ?: artistByName(artist.name)?.id ?: ArtistEntity.generateArtistId()
+            
             insert(
                 ArtistEntity(
                     id = artistId,
                     name = artist.name,
+                    channelId = artist.id,
                 ),
             )
             insert(

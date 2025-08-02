@@ -51,7 +51,7 @@ class SyncUtils @Inject constructor(
                     val dbSong = database.song(song.id).firstOrNull()
                     val timestamp = LocalDateTime.now().minusSeconds(index.toLong())
                     if (dbSong == null) {
-                        database.insert(song.toMediaMetadata().toSongEntity().copy(liked = true, likedDate = timestamp))
+                        database.insert(song.toMediaMetadata()) { it.copy(liked = true, likedDate = timestamp) }
                     } else if (!dbSong.song.liked || dbSong.song.likedDate != timestamp) {
                         database.update(dbSong.song.copy(liked = true, likedDate = timestamp))
                     }
@@ -61,7 +61,7 @@ class SyncUtils @Inject constructor(
     }
 
     suspend fun syncLibrarySongs() = coroutineScope {
-        YouTube.library("FEmusic_liked_videos").completed().onSuccess { page ->
+        YouTube.library("FEmusic_library_corpus_tracks").completed().onSuccess { page ->
             val remoteSongs = page.items.filterIsInstance<SongItem>().reversed()
             val remoteIds = remoteSongs.map { it.id }.toSet()
             val localSongs = database.songsByNameAsc().first()
@@ -73,7 +73,7 @@ class SyncUtils @Inject constructor(
                 launch {
                     val dbSong = database.song(song.id).firstOrNull()
                     if (dbSong == null) {
-                        database.insert(song.toMediaMetadata(), SongEntity::toggleLibrary)
+                        database.insert(song.toMediaMetadata()) { it.toggleLibrary() }
                     } else if (dbSong.song.inLibrary == null) {
                         database.update(dbSong.song.toggleLibrary())
                     }
@@ -83,7 +83,7 @@ class SyncUtils @Inject constructor(
     }
 
     suspend fun syncLikedAlbums() = coroutineScope {
-        YouTube.library("FEmusic_liked_albums").completed().onSuccess { page ->
+        YouTube.library("FEmusic_library_corpus_albums").completed().onSuccess { page ->
             val remoteAlbums = page.items.filterIsInstance<AlbumItem>().reversed()
             val remoteIds = remoteAlbums.map { it.id }.toSet()
             val localAlbums = database.albumsLikedByNameAsc().first()
