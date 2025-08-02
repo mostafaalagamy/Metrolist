@@ -11,18 +11,18 @@
     <string name="loading_charts">Cargando listas de éxitos...</string>
     <string name="retry_button">Reintentar</string>
     <string name="album_cover_desc">Carátula del álbum</string>
-    <string name="top_music_videos">Top Vídeos musicales</string>
+    <string name="top_music_videos">Top vídeos musicales</string>
     <string name="trending">Tendencias</string>
     <string name="weeks">Semanas</string>
     <string name="months">Meses</string>
     <string name="years">Años</string>
     <string name="continuous">Continuo</string>
-    <string name="liked">Me gustas</string>
+    <string name="liked">Me gusta</string>
     <string name="offline">Descargado</string>
     <string name="my_top">Mi Top</string>
     <string name="cached_playlist">En caché</string>
     <string name="sync_playlist">Sincronizar lista de reproducción</string>
-    <string name="sync_disabled">Sincronización desactivada</string>
+    <string name="sync_disabled">Sincronización deshabilitada</string>
     <string name="elements_selected">%1$d elementos seleccionados</string>
     <string name="allows_for_sync_witch_youtube">Nota: Esto permite la sincronización con YouTube Music. Esto NO se puede cambiar más tarde.</string>
     <string name="added_to_play_next">Añadido a reproducir a continuación</string>
@@ -30,8 +30,8 @@
     <string name="remove_from_cache">Eliminar de la caché</string>
     <string name="copy_link">Copiar enlace</string>
     <string name="select">Seleccionar todo</string>
-    <string name="like_all">Marcar todo como "Me gusta"</string>
-    <string name="dislike_all">Marcar todo como "No me gusta"</string>
+    <string name="like_all">Me gusta a todo</string>
+    <string name="dislike_all">No me gusta a todo</string>
     <string name="sort_by_last_updated">Fecha de actualización</string>
     <string name="link_copied">Enlace copiado al portapapeles</string>
     <string name="lyrics">Letra</string>
@@ -43,7 +43,7 @@
     </plurals>
     <plurals name="n_time">
         <item quantity="one">%d vez</item>
-        <item quantity="many">%d de veces</item>
+        <item quantity="many">%d veces</item>
         <item quantity="other">%d veces</item>
     </plurals>
     <string name="seek_backward">Retroceder 5 segundos</string>
@@ -58,17 +58,17 @@
     <string name="player_buttons_style">Colores de los botones del reproductor</string>
     <string name="default_style">Predeterminado</string>
     <string name="secondary_color_style">Secundario</string>
-    <string name="enable_squiggly_slider">Activar control deslizante ondulado</string>
-    <string name="enable_swipe_thumbnail">Activar deslizar para cambiar de canción</string>
+    <string name="enable_squiggly_slider">Habilitar control deslizante ondulado</string>
+    <string name="enable_swipe_thumbnail">Habilitar deslizar para cambiar de canción</string>
     <string name="swipe_song_to_add">Desliza la canción a la derecha para reproducir a continuación o a la izquierda para añadir a la cola</string>
     <string name="lyrics_click_change">Cambiar letra al hacer clic</string>
     <string name="slim">Delgado</string>
     <string name="slim_navbar">Ocultar etiquetas de la barra de navegación inferior</string>
-    <string name="auto_playlists">Auto-Listas de reproducción</string>
-    <string name="show_liked_playlist">Ver tu playlist de \'Me gusta\'</string>
-    <string name="show_downloaded_playlist">Ver tu playlist de \'Descargas\'</string>
-    <string name="show_top_playlist">Ver tu playlist de \'Top\'</string>
-    <string name="show_cached_playlist">Ver tu playlist en caché</string>
+    <string name="auto_playlists">Listas de reproducción automática</string>
+    <string name="show_liked_playlist">Ver lista de reproducción \"Me gusta\"</string>
+    <string name="show_downloaded_playlist">Ver lista de reproducción \"Descargado\"</string>
+    <string name="show_top_playlist">Ver lista de reproducción \"Top\"</string>
+    <string name="show_cached_playlist">Ver lista de reproducción \"En caché\"</string>
     <string name="google">Google</string>
     <string name="discord">Discord</string>
     <string name="advanced_login">Iniciar sesión con token</string>
@@ -89,7 +89,7 @@
     <string name="intent_supported_links_not_found">No se pudieron encontrar los ajustes de enlaces compatibles, por favor configúralos manualmente</string>
     <string name="set_first_lyrics_provider">Proveedor de letras preferido</string>
     <string name="audio_quality_max">Máxima (beta)</string>
-    <string name="enable_similar_content">Activar contenido similar</string>
+    <string name="enable_similar_content">Habilitar contenido similar</string>
     <string name="similar_content_desc">Añadir automáticamente más canciones similares cuando se alcance el final de la cola</string>
     <string name="min_playback_duration_title">Duración mínima de reproducción</string>
     <string name="min_playback_duration_description">La cantidad mínima de una canción que debe reproducirse antes de que se considere "reproducida"</string>
@@ -107,7 +107,7 @@
     <string name="past_week">Semana pasada</string>
     <string name="past_month">Mes pasado</string>
     <string name="past_year">Año pasado</string>
-    <string name="top_length">Longitud de mi lista Top</string>
+    <string name="top_length">Longitud de lista Mi Top</string>
     <string name="history_duration">Duración del historial</string>
     <string name="information">Información</string>
     <string name="description">Descripción</string>
@@ -118,7 +118,7 @@
     <string name="dislikes">No me gusta</string>
     <plurals name="seconds">
         <item quantity="one">1 segundo</item>
-        <item quantity="many">%d de segundos</item>
+        <item quantity="many">%d segundos</item>
         <item quantity="other">%d segundos</item>
     </plurals>
     <string name="please_wait">Por favor, espere</string>
@@ -148,11 +148,13 @@
     <string name="swipe_sensitivity">Sensibilidad al deslizar el mini reproductor</string>
     <string name="swipe_sensitivity_desc">Ajusta la sensibilidad de los gestos de deslizamiento para cambiar de canción</string>
     <string name="clear_image_cache_dialog">¿Estás seguro de que deseas borrar todas las imágenes almacenadas en caché?</string>
-    <string name="disable">Desactivar</string>
+    <string name="disable">Deshabilitar</string>
     <string name="subscribe">Suscribirme</string>
     <string name="subscribed">Suscrito</string>
     <string name="new_mini_player_design">Nuevo diseño del mini reproductor</string>
     <string name="playlist_not_found">Lista de reproducción no encontrada</string>
     <string name="playlist_not_found_desc">No se pudo cargar la lista de reproducción solicitada</string>
     <string name="empty_playlist">Lista de reproducción vacía</string>
+    <string name="sensitivity_percentage">%1$d%%</string>
+    <string name="empty_playlist_desc">Esta lista de reproducción no contiene ninguna canción</string>
 </resources>
