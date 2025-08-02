@@ -153,4 +153,8 @@
     <string name="subscribe">S\'abonner</string>
     <string name="subscribed">Abonné</string>
     <string name="new_mini_player_design">Nouveau design du mini lecteur</string>
+    <string name="playlist_not_found">Liste de lecture introuvable</string>
+    <string name="playlist_not_found_desc">La liste de lecture demandée n\'a pas pu être chargée</string>
+    <string name="empty_playlist">Liste de lecture vide</string>
+    <string name="empty_playlist_desc">Cette liste de lecture ne contient aucune musique</string>
 </resources>
