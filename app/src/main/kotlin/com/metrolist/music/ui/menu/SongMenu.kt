@@ -145,12 +145,8 @@ fun SongMenu(
         mutableStateOf(TextFieldValue(song.song.title))
     }
 
-    var artistField by rememberSaveable(orderedArtists, stateSaver = TextFieldValueSaver) {
-        mutableStateOf(
-            TextFieldValue(
-                orderedArtists.joinToString(", ") { it.name }
-            )
-        )
+    var artistField by rememberSaveable(stateSaver = TextFieldValueSaver) {
+        mutableStateOf(TextFieldValue(song.artists.firstOrNull()?.name.orEmpty()))
     }
 
     if (showEditDialog) {
@@ -177,40 +173,11 @@ fun SongMenu(
                 val newArtist = values[1]
 
                 coroutineScope.launch {
-                    val newArtistNames = newArtist
-                        .split(",")
-                        .map { it.trim() }
-                        .filter { it.isNotEmpty() }
-
-                    val oldArtistMaps = withContext(Dispatchers.IO) {
-                        database.songArtistMap(song.id).sortedBy { it.position }
-                    }
-
-                    val oldNames = oldArtistMaps.mapIndexed { index, map ->
-                        index to song.artists.firstOrNull { it.id == map.artistId }?.name.orEmpty()
-                    }
-
-                    database.transaction {
-                        update(song.song.copy(title = newTitle, artistName = newArtist))
-
-                        val namesChanged = oldNames.size != newArtistNames.size ||
-                            oldNames.any { it.second != newArtistNames.getOrNull(it.first) }
-
-                        if (namesChanged) {
-                            openHelper.writableDatabase.execSQL(
-                                "DELETE FROM song_artist_map WHERE songId = ?", arrayOf(song.id)
-                            )
-
-                            newArtistNames.forEachIndexed { index, name ->
-                                val existingArtist = artistByName(name)
-                                val artistId = existingArtist?.id ?: ArtistEntity.generateArtistId()
-
-                                if (existingArtist == null) {
-                                    insert(ArtistEntity(id = artistId, name = name))
-                                }
-
-                                insert(SongArtistMap(songId = song.id, artistId = artistId, position = index))
-                            }
+                    database.query {
+                        update(song.song.copy(title = newTitle))
+                        val artist = song.artists.firstOrNull()
+                        if (artist != null) {
+                            update(artist.copy(name = newArtist))
                         }
                     }
 

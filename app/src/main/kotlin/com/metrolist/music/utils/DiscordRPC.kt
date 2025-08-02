@@ -16,7 +16,7 @@ class DiscordRPC(
         setActivity(
             name = context.getString(R.string.app_name).removeSuffix(" Debug"),
             details = song.song.title,
-            state = song.song.artistName ?: song.artists.joinToString { it.name },
+            state = song.artists.joinToString { it.name },
             detailsUrl = "https://music.youtube.com/watch?v=${song.song.id}",
             largeImage = song.song.thumbnailUrl?.let { RpcImage.ExternalImage(it) },
             smallImage = song.artists.firstOrNull()?.thumbnailUrl?.let { RpcImage.ExternalImage(it) },

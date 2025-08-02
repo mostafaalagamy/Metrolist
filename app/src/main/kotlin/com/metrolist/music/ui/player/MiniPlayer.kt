@@ -330,12 +330,12 @@ private fun NewMiniPlayer(
                         }
 
                         AnimatedContent(
-                            targetState = metadata.artistName ?: metadata.artists.joinToString { it.name },
+                            targetState = metadata.artists.joinToString { it.name },
                             transitionSpec = { fadeIn() togetherWith fadeOut() },
                             label = "",
                         ) { artists ->
                             Text(
-                                text = metadata.artistName ?: artists,
+                                text = artists,
                                 color = if (pureBlack) 
                                     Color.White.copy(alpha = 0.7f) 
                                 else 
@@ -755,17 +755,16 @@ private fun LegacyMiniMediaInfo(
             }
 
             AnimatedContent(
-                targetState = mediaMetadata.artistName ?: mediaMetadata.artists.joinToString { it.name },
+                targetState = mediaMetadata.artists.joinToString { it.name },
                 transitionSpec = { fadeIn() togetherWith fadeOut() },
                 label = "",
             ) { artists ->
                 Text(
-                    text = mediaMetadata.artistName ?: artists,
+                    text = artists,
                     color = MaterialTheme.colorScheme.secondary,
                     fontSize = 12.sp,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.basicMarquee(),
                 )
             }
         }

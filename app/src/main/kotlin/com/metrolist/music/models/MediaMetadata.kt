@@ -6,19 +6,21 @@ import com.metrolist.music.db.entities.Song
 import com.metrolist.music.db.entities.SongEntity
 import com.metrolist.music.ui.utils.resize
 import java.io.Serializable
+import java.time.LocalDateTime
 
 @Immutable
 data class MediaMetadata(
     val id: String,
     val title: String,
     val artists: List<Artist>,
-    val artistName: String? = null,
     val duration: Int,
     val thumbnailUrl: String? = null,
     val album: Album? = null,
     val setVideoId: String? = null,
     val explicit: Boolean = false,
     val liked: Boolean = false,
+    val likedDate: LocalDateTime? = null,
+    val inLibrary: LocalDateTime? = null,
 ) : Serializable {
     data class Artist(
         val id: String?,
@@ -38,8 +40,10 @@ data class MediaMetadata(
             thumbnailUrl = thumbnailUrl,
             albumId = album?.id,
             albumName = album?.title,
-            artistName = artistName,
             explicit = explicit,
+            liked = liked,
+            likedDate = likedDate,
+            inLibrary = inLibrary,
         )
 }
 
@@ -54,7 +58,6 @@ fun Song.toMediaMetadata() =
                 name = it.name,
             )
         },
-        artistName = song.artistName,
         duration = song.duration,
         thumbnailUrl = song.thumbnailUrl,
         album =
@@ -82,7 +85,6 @@ fun SongItem.toMediaMetadata() =
                 name = it.name,
             )
         },
-        artistName = null,
         duration = duration ?: -1,
         thumbnailUrl = thumbnail.resize(544, 544),
         album =

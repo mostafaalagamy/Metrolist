@@ -149,9 +149,9 @@ fun ArtistScreen(
         }
     }
 
-    // Reload artist data when hide explicit setting changes
-    LaunchedEffect(hideExplicit) {
-        viewModel.fetchArtistsFromYTM()
+    LaunchedEffect(libraryArtist) {
+        // always show local page for local artists. Show local page remote artist when offline
+        showLocal = libraryArtist?.artist?.isLocal == true
     }
 
     Box(
@@ -698,10 +698,12 @@ fun ArtistScreen(
         }
 
         HideOnScrollFAB(
+            visible = librarySongs.isNotEmpty() && libraryArtist?.artist?.isLocal != true,
             lazyListState = lazyListState,
             icon = if (showLocal) R.drawable.language else R.drawable.library_music,
             onClick = {
-                showLocal = !showLocal
+                showLocal = showLocal.not()
+                if (!showLocal && artistPage == null) viewModel.fetchArtistsFromYTM()
             }
         )
 
