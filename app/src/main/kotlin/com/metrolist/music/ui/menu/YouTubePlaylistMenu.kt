@@ -159,7 +159,9 @@ fun YouTubePlaylistMenu(
                             }
                         } else {
                             database.transaction {
-                                update(dbPlaylist!!.playlist.toggleLike())
+                                // Update playlist information including thumbnail before toggling like
+                                update(dbPlaylist!!.playlist, playlist)
+                                update(dbPlaylist.playlist.toggleLike())
                             }
                         }
                     }
