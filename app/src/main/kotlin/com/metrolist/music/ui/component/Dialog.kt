@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
@@ -112,7 +113,7 @@ fun DefaultDialog(
                 if (buttons != null) {
                     Spacer(Modifier.height(24.dp))
 
-                    Row(
+                    FlowRow(
                         modifier = Modifier.align(Alignment.End),
                     ) {
                         CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.primary) {
