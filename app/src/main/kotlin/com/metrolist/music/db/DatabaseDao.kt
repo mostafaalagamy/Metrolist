@@ -1254,6 +1254,7 @@ interface DatabaseDao {
             playlistEntity.copy(
                 name = playlistItem.title,
                 browseId = playlistItem.id,
+                thumbnailUrl = playlistItem.thumbnail,
                 isEditable = playlistItem.isEditable,
                 remoteSongCount = playlistItem.songCountText?.let { Regex("""\d+""").find(it)?.value?.toIntOrNull() },
                 playEndpointParams = playlistItem.playEndpoint?.params,

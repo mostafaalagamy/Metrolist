@@ -131,6 +131,7 @@ fun YouTubePlaylistMenu(
                                 val playlistEntity = PlaylistEntity(
                                     name = playlist.title,
                                     browseId = playlist.id,
+                                    thumbnailUrl = playlist.thumbnail,
                                     isEditable = false,
                                     remoteSongCount = playlist.songCountText?.let {
                                         Regex("""\d+""").find(it)?.value?.toIntOrNull()
