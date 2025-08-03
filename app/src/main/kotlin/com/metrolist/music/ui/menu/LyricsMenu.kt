@@ -166,16 +166,19 @@ fun LyricsMenu(
 
                 TextButton(
                     onClick = {
-                        if (isNetworkAvailable) {
-                            viewModel.search(
-                                searchMediaMetadata.id,
-                                titleField.text,
-                                artistField.text,
-                                searchMediaMetadata.duration
-                            )
-                            showSearchResultDialog = true
-                        } else {
-                            Toast.makeText(context, context.getString(R.string.error_no_internet), Toast.LENGTH_SHORT).show()
+                        // Try search regardless of network status indicator
+                        // as it might be a false negative
+                        viewModel.search(
+                            searchMediaMetadata.id,
+                            titleField.text,
+                            artistField.text,
+                            searchMediaMetadata.duration
+                        )
+                        showSearchResultDialog = true
+                        
+                        // Show warning only if network is definitely unavailable
+                        if (!isNetworkAvailable) {
+                            Toast.makeText(context, "Network might be unavailable, trying anyway...", Toast.LENGTH_SHORT).show()
                         }
                     },
                 ) {

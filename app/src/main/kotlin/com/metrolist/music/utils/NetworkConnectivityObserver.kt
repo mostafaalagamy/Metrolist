@@ -32,8 +32,15 @@ class NetworkConnectivityObserver(context: Context) {
     init {
         val request = NetworkRequest.Builder()
             .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+            .addCapability(NetworkCapabilities.NET_CAPABILITY_NOT_RESTRICTED)
             .build()
-        connectivityManager.registerNetworkCallback(request, networkCallback)
+        
+        try {
+            connectivityManager.registerNetworkCallback(request, networkCallback)
+        } catch (e: Exception) {
+            // Fallback: assume connected if registration fails
+            _networkStatus.trySend(true)
+        }
         
         // Send initial state
         val isInitiallyConnected = isCurrentlyConnected()
@@ -51,10 +58,26 @@ class NetworkConnectivityObserver(context: Context) {
         return try {
             val activeNetwork = connectivityManager.activeNetwork
             val networkCapabilities = connectivityManager.getNetworkCapabilities(activeNetwork)
-            networkCapabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) == true &&
-            networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
+            
+            // Check if we have internet capability
+            val hasInternet = networkCapabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) == true
+            
+            // For API 23+, also check if connection is validated
+            val isValidated = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                networkCapabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED) == true
+            } else {
+                true // For older versions, assume validated if we have internet capability
+            }
+            
+            hasInternet && isValidated
         } catch (e: Exception) {
-            false
+            // As fallback, try a more basic connectivity check
+            try {
+                val activeNetwork = connectivityManager.activeNetworkInfo
+                activeNetwork?.isConnectedOrConnecting == true
+            } catch (e2: Exception) {
+                false
+            }
         }
     }
 }

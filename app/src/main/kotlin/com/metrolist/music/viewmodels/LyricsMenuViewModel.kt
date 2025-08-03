@@ -41,6 +41,13 @@ constructor(
                 _isNetworkAvailable.value = isConnected
             }
         }
+        
+        // Set initial state using synchronous check
+        _isNetworkAvailable.value = try {
+            networkConnectivity.isCurrentlyConnected()
+        } catch (e: Exception) {
+            true // Assume connected as fallback
+        }
     }
 
     fun search(
