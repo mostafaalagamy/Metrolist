@@ -159,7 +159,10 @@ fun YouTubePlaylistMenu(
                             }
                         } else {
                             database.transaction {
-                                update(dbPlaylist!!.playlist.toggleLike())
+                                // Update playlist information including thumbnail before toggling like
+                                val currentPlaylist = dbPlaylist!!.playlist
+                                update(currentPlaylist, playlist)
+                                update(currentPlaylist.toggleLike())
                             }
                         }
                     }
