@@ -22,7 +22,7 @@ data class Playlist(
             entityColumn = "songId",
         ),
     )
-    val thumbnails: List<String>,
+    val songThumbnails: List<String?>,
 ) : LocalItem() {
     override val id: String
         get() = playlist.id
@@ -30,4 +30,11 @@ data class Playlist(
         get() = playlist.name
     override val thumbnailUrl: String?
         get() = null
+    
+    val thumbnails: List<String>
+        get() {
+            return if (playlist.thumbnailUrl != null)
+                listOf(playlist.thumbnailUrl)
+            else songThumbnails.filterNotNull()
+        }
 }
