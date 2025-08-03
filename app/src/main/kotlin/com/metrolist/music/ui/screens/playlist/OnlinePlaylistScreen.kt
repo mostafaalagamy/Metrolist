@@ -358,8 +358,9 @@ fun OnlinePlaylistScreen(
                                                         } else {
                                                             database.transaction {
                                                                 // Update playlist information including thumbnail before toggling like
-                                                                update(dbPlaylist!!.playlist, playlist)
-                                                                update(dbPlaylist.playlist.toggleLike())
+                                                                val currentPlaylist = dbPlaylist!!.playlist
+                                                                update(currentPlaylist, playlist)
+                                                                update(currentPlaylist.toggleLike())
                                                             }
                                                         }
                                                     }
