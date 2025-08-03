@@ -178,7 +178,7 @@ fun LyricsMenu(
                         
                         // Show warning only if network is definitely unavailable
                         if (!isNetworkAvailable) {
-                            Toast.makeText(context, "Network might be unavailable, trying anyway...", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, context.getString(R.string.error_no_internet), Toast.LENGTH_SHORT).show()
                         }
                     },
                 ) {
