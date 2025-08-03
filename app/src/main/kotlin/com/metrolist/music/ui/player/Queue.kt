@@ -103,6 +103,7 @@ import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
 import com.metrolist.music.constants.ListItemHeight
 import com.metrolist.music.constants.UseNewPlayerDesignKey
+import com.metrolist.music.constants.UseNewMiniPlayerDesignKey
 import com.metrolist.music.constants.PlayerButtonsStyle
 import com.metrolist.music.constants.PlayerButtonsStyleKey
 import com.metrolist.music.constants.QueueEditLockKey
@@ -177,6 +178,11 @@ fun Queue(
 
     val (useNewPlayerDesign, onUseNewPlayerDesignChange) = rememberPreference(
         UseNewPlayerDesignKey,
+        defaultValue = true
+    )
+    
+    val (useNewMiniPlayerDesign) = rememberPreference(
+        UseNewMiniPlayerDesignKey,
         defaultValue = true
     )
 
@@ -407,8 +413,14 @@ fun Queue(
                         .fillMaxWidth()
                         .padding(horizontal = 20.dp, vertical = 8.dp)
                         .windowInsetsPadding(
-                            WindowInsets.systemBars
-                                .only(WindowInsetsSides.Bottom + WindowInsetsSides.Horizontal),
+                            if (useNewMiniPlayerDesign) {
+                                // When new MiniPlayer design is enabled, only apply horizontal insets
+                                // because dismissedBound is calculated differently
+                                WindowInsets.systemBars.only(WindowInsetsSides.Horizontal)
+                            } else {
+                                // Original behavior
+                                WindowInsets.systemBars.only(WindowInsetsSides.Bottom + WindowInsetsSides.Horizontal)
+                            }
                         ),
                 ) {
                     TextButton(
