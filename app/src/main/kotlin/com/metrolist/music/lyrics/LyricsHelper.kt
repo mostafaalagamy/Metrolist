@@ -74,8 +74,16 @@ constructor(
         }
 
         // Check network connectivity before making network requests
-        val isNetworkAvailable = networkConnectivity.networkStatus.first()
+        // Use synchronous check as fallback if flow doesn't emit
+        val isNetworkAvailable = try {
+            networkConnectivity.isCurrentlyConnected()
+        } catch (e: Exception) {
+            // If network check fails, try to proceed anyway
+            true
+        }
+        
         if (!isNetworkAvailable) {
+            // Still proceed but return not found to avoid hanging
             return LYRICS_NOT_FOUND
         }
 
@@ -127,8 +135,16 @@ constructor(
         }
 
         // Check network connectivity before making network requests
-        val isNetworkAvailable = networkConnectivity.networkStatus.first()
+        // Use synchronous check as fallback if flow doesn't emit
+        val isNetworkAvailable = try {
+            networkConnectivity.isCurrentlyConnected()
+        } catch (e: Exception) {
+            // If network check fails, try to proceed anyway
+            true
+        }
+        
         if (!isNetworkAvailable) {
+            // Still try to proceed in case of false negative
             return
         }
 
