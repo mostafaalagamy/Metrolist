@@ -166,4 +166,5 @@
     <string name="empty_playlist">قائمة تشغيل فارغه</string>
     <string name="empty_playlist_desc">هذه القائمة لا تحتوي على أي أغنية</string>
     <string name="playlist_not_found_desc">لا يمكن تحميل القائمة المطلوبة</string>
+    <string name="now_playing">المُشغل حاليا</string>
 </resources>
