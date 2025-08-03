@@ -160,4 +160,5 @@
     <string name="playlist_not_found_desc">Не вдалося завантажити запитуваний список відтворення</string>
     <string name="empty_playlist">Порожній список відтворення</string>
     <string name="empty_playlist_desc">Цей плейлист не містить жодної пісні</string>
+    <string name="now_playing">Зараз грає</string>
 </resources>
