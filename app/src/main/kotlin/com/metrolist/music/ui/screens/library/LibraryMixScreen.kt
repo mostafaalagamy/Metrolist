@@ -111,7 +111,7 @@ fun LibraryMixScreen(
                 name = stringResource(R.string.liked)
             ),
             songCount = 0,
-            thumbnails = emptyList(),
+            songThumbnails = emptyList(),
         )
 
     val downloadPlaylist =
@@ -121,7 +121,7 @@ fun LibraryMixScreen(
                 name = stringResource(R.string.offline)
             ),
             songCount = 0,
-            thumbnails = emptyList(),
+            songThumbnails = emptyList(),
         )
 
     val topPlaylist =
@@ -131,7 +131,7 @@ fun LibraryMixScreen(
                 name = stringResource(R.string.my_top) + " $topSize"
             ),
             songCount = 0,
-            thumbnails = emptyList(),
+            songThumbnails = emptyList(),
         )
 
     val cachePlaylist =
@@ -141,7 +141,7 @@ fun LibraryMixScreen(
                 name = stringResource(R.string.cached_playlist)
             ),
             songCount = 0,
-            thumbnails = emptyList(),
+            songThumbnails = emptyList(),
         )
 
     val (showLiked) = rememberPreference(ShowLikedPlaylistKey, true)

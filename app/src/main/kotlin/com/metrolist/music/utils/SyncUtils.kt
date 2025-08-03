@@ -184,6 +184,7 @@ class SyncUtils @Inject constructor(
                         playlistEntity = PlaylistEntity(
                             name = playlist.title,
                             browseId = playlist.id,
+                            thumbnailUrl = playlist.thumbnail,
                             isEditable = playlist.isEditable,
                             bookmarkedAt = LocalDateTime.now(),
                             remoteSongCount = playlist.songCountText?.let { Regex("""\\d+""").find(it)?.value?.toIntOrNull() },
