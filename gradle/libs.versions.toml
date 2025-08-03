@@ -85,7 +85,7 @@ timber = { group = "com.jakewharton.timber", name = "timber", version = "5.0.1" 
 
 multidex = { group = "androidx.multidex", name = "multidex", version.ref = "multidex" }
 
-newpipe-extractor = { group = "com.github.libre-tube", name = "NewPipeExtractor", version = "f3bb450" }
+newpipe-extractor = { group = "com.github.libre-tube", name = "NewPipeExtractor", version = "70abbdb" }
 #newpipe-extractor = { group = "com.github.TeamNewPipe", name = "NewPipeExtractor", version = "dev-SNAPSHOT" }
 
 kuromoji-ipadic = { group = "com.atilika.kuromoji", name = "kuromoji-ipadic", version.ref = "kuromojiIpadic" }
