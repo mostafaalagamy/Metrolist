@@ -266,8 +266,8 @@
     <string name="default_">Padrão</string>
     <string name="misc">Outras</string>
     <string name="content_country">País padrão para conteúdo</string>
-    <string name="action_restore">Restauro</string>
-    <string name="action_backup">Backup</string>
+    <string name="action_restore">Restaurar</string>
+    <string name="action_backup">Fazer backup</string>
     <string name="backup_create_failed">Não foi possível criar o backup</string>
     <string name="options">Opções</string>
     <string name="preview">Antevisão</string>
