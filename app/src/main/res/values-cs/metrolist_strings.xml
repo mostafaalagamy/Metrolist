@@ -158,4 +158,5 @@
     <string name="playlist_not_found_desc">Požadovaný playlist se nepodařilo načíst</string>
     <string name="empty_playlist">Prázdný playlist</string>
     <string name="empty_playlist_desc">Tento playlist neobsahuje žádné skladby</string>
+    <string name="now_playing">Právě hraje</string>
 </resources>
