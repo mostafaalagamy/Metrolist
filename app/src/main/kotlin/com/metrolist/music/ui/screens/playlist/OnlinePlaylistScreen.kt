@@ -337,6 +337,7 @@ fun OnlinePlaylistScreen(
                                                                 val playlistEntity = PlaylistEntity(
                                                                     name = playlist.title,
                                                                     browseId = playlist.id,
+                                                                    thumbnailUrl = playlist.thumbnail,
                                                                     isEditable = playlist.isEditable,
                                                                     playEndpointParams = playlist.playEndpoint?.params,
                                                                     shuffleEndpointParams = playlist.shuffleEndpoint?.params,
@@ -356,7 +357,10 @@ fun OnlinePlaylistScreen(
                                                             }
                                                         } else {
                                                             database.transaction {
-                                                                update(dbPlaylist!!.playlist.toggleLike())
+                                                                // Update playlist information including thumbnail before toggling like
+                                                                val currentPlaylist = dbPlaylist!!.playlist
+                                                                update(currentPlaylist, playlist)
+                                                                update(currentPlaylist.toggleLike())
                                                             }
                                                         }
                                                     }
