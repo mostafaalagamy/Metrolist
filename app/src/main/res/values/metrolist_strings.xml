@@ -91,6 +91,7 @@
     <string name="lyrics_auto_scroll">Auto scroll lyrics</string>
     <string name="lyrics_romanize_japanese">Romanize japanese lyrics</string>
     <string name="lyrics_romanize_korean">Romanize korean lyrics</string>
+    <string name="lyrics_translate_ai">Translate lyrics with AI</string>
     <string name="slim">Slim</string>
     <string name="slim_navbar">Hide bottom navigation bar labels</string>
     <string name="auto_playlists">Auto playlists</string>

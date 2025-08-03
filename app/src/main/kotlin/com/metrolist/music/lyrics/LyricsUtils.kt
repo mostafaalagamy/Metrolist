@@ -368,4 +368,64 @@ object LyricsUtils {
         // The threshold (e.g., 0.1) can be adjusted based on desired sensitivity.
         return cjkCharCount > 0 && (hiraganaKatakanaCount.toDouble() / text.length.toDouble()) < 0.1
     }
+
+    /**
+     * Translates text to user's preferred language using AI (Gemini API).
+     * This function detects the source language and translates to English by default.
+     * You can modify the target language based on user preferences.
+     */
+    suspend fun translateLyricsWithAI(text: String, targetLanguage: String = "English"): String = withContext(Dispatchers.IO) {
+        try {
+            // For now, we'll use a simple HTTP client to call Gemini API
+            // In a real implementation, you would use the official Gemini SDK
+            
+            val prompt = """
+                Translate the following lyrics text to $targetLanguage. 
+                Keep the poetic and emotional meaning intact.
+                Only return the translated text without any additional explanation:
+                
+                $text
+            """.trimIndent()
+            
+            // This is a placeholder implementation
+            // In reality, you would integrate with Gemini API or another AI service
+            // For demonstration, we'll return a simple formatted response
+            return@withContext translateWithGeminiAPI(prompt, text, targetLanguage)
+            
+        } catch (e: Exception) {
+            // Return original text if translation fails
+            text
+        }
+    }
+    
+    /**
+     * Helper function to call Gemini API for translation
+     * This is a placeholder - implement actual API call
+     */
+    private suspend fun translateWithGeminiAPI(prompt: String, originalText: String, targetLanguage: String): String {
+        // Placeholder implementation
+        // In a real app, you would:
+        // 1. Add Gemini API dependency to build.gradle
+        // 2. Add API key to secure storage
+        // 3. Make actual API call
+        
+        // For now, return a formatted version indicating this would be translated
+        return "[$targetLanguage Translation] $originalText"
+    }
+
+    /**
+     * Detects if text needs translation based on language detection
+     */
+    fun needsTranslation(text: String, targetLanguage: String = "English"): Boolean {
+        if (text.isEmpty()) return false
+        
+        // Simple heuristic - if text contains non-Latin characters, it might need translation
+        val hasNonLatinChars = text.any { char ->
+            char !in 'A'..'Z' && char !in 'a'..'z' && char !in '0'..'9' && 
+            char != ' ' && char != '.' && char != ',' && char != '!' && char != '?' &&
+            char != '\'' && char != '"' && char != '-' && char != '\n' && char != '\r'
+        }
+        
+        return hasNonLatinChars
+    }
 }

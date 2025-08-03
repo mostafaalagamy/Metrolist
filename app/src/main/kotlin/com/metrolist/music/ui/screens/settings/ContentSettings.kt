@@ -65,6 +65,7 @@ fun ContentSettings(
         )
     val (lyricsRomanizeJapanese, onLyricsRomanizeJapaneseChange) = rememberPreference(LyricsRomanizeJapaneseKey, defaultValue = true)
     val (lyricsRomanizeKorean, onLyricsRomanizeKoreanChange) = rememberPreference(LyricsRomanizeKoreanKey, defaultValue = true)
+    val (translateLyrics, onTranslateLyricsChange) = rememberPreference(TranslateLyricsKey, defaultValue = false)
     val (lengthTop, onLengthTopChange) = rememberPreference(key = TopSize, defaultValue = "50")
     val (quickPicks, onQuickPicksChange) = rememberEnumPreference(key = QuickPicksKey, defaultValue = QuickPicks.QUICK_PICKS)
 
@@ -202,6 +203,13 @@ fun ContentSettings(
             icon = { Icon(painterResource(R.drawable.lyrics), null) },
             checked = lyricsRomanizeKorean,
             onCheckedChange = onLyricsRomanizeKoreanChange,
+        )
+
+        SwitchPreference(
+            title = { Text(stringResource(R.string.lyrics_translate_ai)) },
+            icon = { Icon(painterResource(R.drawable.lyrics), null) },
+            checked = translateLyrics,
+            onCheckedChange = onTranslateLyricsChange,
         )
 
         PreferenceGroupTitle(title = stringResource(R.string.misc))

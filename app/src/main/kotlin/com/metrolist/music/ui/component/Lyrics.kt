@@ -99,6 +99,7 @@ import com.metrolist.music.constants.LyricsScrollKey
 import com.metrolist.music.constants.LyricsTextPositionKey
 import com.metrolist.music.constants.PlayerBackgroundStyle
 import com.metrolist.music.constants.PlayerBackgroundStyleKey
+import com.metrolist.music.constants.TranslateLyricsKey
 import com.metrolist.music.db.entities.LyricsEntity.Companion.LYRICS_NOT_FOUND
 import com.metrolist.music.lyrics.LyricsEntry
 import com.metrolist.music.lyrics.LyricsUtils.isChinese
@@ -108,6 +109,8 @@ import com.metrolist.music.lyrics.LyricsUtils.isKorean
 import com.metrolist.music.lyrics.LyricsUtils.parseLyrics
 import com.metrolist.music.lyrics.LyricsUtils.romanizeJapanese
 import com.metrolist.music.lyrics.LyricsUtils.romanizeKorean
+import com.metrolist.music.lyrics.LyricsUtils.translateLyricsWithAI
+import com.metrolist.music.lyrics.LyricsUtils.needsTranslation
 import com.metrolist.music.ui.component.shimmer.ShimmerHost
 import com.metrolist.music.ui.component.shimmer.TextPlaceholder
 import com.metrolist.music.ui.menu.LyricsMenu
@@ -147,6 +150,7 @@ fun Lyrics(
     val scrollLyrics by rememberPreference(LyricsScrollKey, true)
     val romanizeJapaneseLyrics by rememberPreference(LyricsRomanizeJapaneseKey, true)
     val romanizeKoreanLyrics by rememberPreference(LyricsRomanizeKoreanKey, true)
+    val translateLyrics by rememberPreference(TranslateLyricsKey, false)
     val scope = rememberCoroutineScope()
 
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
@@ -185,6 +189,13 @@ fun Lyrics(
                         }
                     }
                 }
+                if (translateLyrics) {
+                    if (needsTranslation(entry.text)) {
+                        scope.launch {
+                            newEntry.translatedTextFlow.value = translateLyricsWithAI(entry.text)
+                        }
+                    }
+                }
                 newEntry
             }.let {
                 listOf(LyricsEntry.HEAD_LYRICS_ENTRY) + it
@@ -203,6 +214,13 @@ fun Lyrics(
                     if (isKorean(line)) {
                         scope.launch {
                             newEntry.romanizedTextFlow.value = romanizeKorean(line)
+                        }
+                    }
+                }
+                if (translateLyrics) {
+                    if (needsTranslation(line)) {
+                        scope.launch {
+                            newEntry.translatedTextFlow.value = translateLyricsWithAI(line)
                         }
                     }
                 }
@@ -550,6 +568,24 @@ fun Lyrics(
                                     text = romanized,
                                     fontSize = 16.sp,
                                     color = textColor.copy(alpha = 0.8f),
+                                    textAlign = when (lyricsTextPosition) {
+                                        LyricsPosition.LEFT -> TextAlign.Left
+                                        LyricsPosition.CENTER -> TextAlign.Center
+                                        LyricsPosition.RIGHT -> TextAlign.Right
+                                    },
+                                    fontWeight = FontWeight.Normal,
+                                    modifier = Modifier.padding(top = 2.dp)
+                                )
+                            }
+                        }
+                        if (translateLyrics) {
+                            // Show translated text if available
+                            val translatedText by item.translatedTextFlow.collectAsState()
+                            translatedText?.let { translated ->
+                                Text(
+                                    text = translated,
+                                    fontSize = 16.sp,
+                                    color = textColor.copy(alpha = 0.7f),
                                     textAlign = when (lyricsTextPosition) {
                                         LyricsPosition.LEFT -> TextAlign.Left
                                         LyricsPosition.CENTER -> TextAlign.Center
