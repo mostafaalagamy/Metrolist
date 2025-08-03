@@ -238,7 +238,10 @@ fun Thumbnail(
                 ) {
                     items(
                         items = mediaItems,
-                        key = { it.mediaId }
+                        key = { item -> 
+                            // Use mediaId with stable fallback to avoid recomposition issues
+                            item.mediaId.ifEmpty { "unknown_${item.hashCode()}" }
+                        }
                     ) { item ->
                         Box(
                             modifier = Modifier
