@@ -157,4 +157,5 @@
     <string name="playlist_not_found">Playlist non trovata</string>
     <string name="playlist_not_found_desc">La playlist richiesta non può essere caricata</string>
     <string name="empty_playlist">Playlist vuota</string>
+    <string name="now_playing">In riproduzione</string>
 </resources>
