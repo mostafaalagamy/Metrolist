@@ -238,11 +238,7 @@ fun Thumbnail(
                 ) {
                     items(
                         items = mediaItems,
-                        key = { item -> 
-                            // Use a combination of mediaId and index to ensure uniqueness
-                            val mediaId = item.mediaId.ifEmpty { "unknown_${item.hashCode()}" }
-                            "${mediaId}_${mediaItems.indexOf(item)}"
-                        }
+                        key = { it.mediaId }
                     ) { item ->
                         Box(
                             modifier = Modifier

@@ -682,15 +682,11 @@ fun Queue(
 
                 itemsIndexed(
                     items = mutableQueueWindows,
-                    key = { index, item -> 
-                        // Use a combination of uid and index to ensure uniqueness
-                        val uid = item.uid.hashCode()
-                        "${uid}_$index"
-                    },
+                    key = { _, item -> item.uid.hashCode() },
                 ) { index, window ->
                     ReorderableItem(
                         state = reorderableState,
-                        key = "${window.uid.hashCode()}_$index",
+                        key = window.uid.hashCode(),
                     ) {
                         val currentItem by rememberUpdatedState(window)
                         val dismissBoxState =
@@ -841,11 +837,7 @@ fun Queue(
 
                     itemsIndexed(
                         items = automix,
-                        key = { index, item -> 
-                            // Use a combination of mediaId and index to ensure uniqueness
-                            val mediaId = item.mediaId.ifEmpty { "unknown_${item.hashCode()}" }
-                            "${mediaId}_$index"
-                        },
+                        key = { _, it -> it.mediaId },
                     ) { index, item ->
                         Row(
                             horizontalArrangement = Arrangement.Center,
