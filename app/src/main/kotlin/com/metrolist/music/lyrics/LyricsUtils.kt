@@ -370,6 +370,32 @@ object LyricsUtils {
     }
 
     /**
+     * Detects if text is in Arabic
+     */
+    fun isArabic(text: String): Boolean {
+        if (text.isEmpty()) return false
+        
+        val arabicCharCount = text.count { char -> char in '\u0600'..'\u06FF' || char in '\u0750'..'\u077F' }
+        val totalChars = text.replace(" ", "").length
+        
+        // If more than 30% of non-space characters are Arabic, consider it Arabic text
+        return if (totalChars > 0) {
+            (arabicCharCount.toDouble() / totalChars.toDouble()) > 0.3
+        } else false
+    }
+
+    /**
+     * Detects if text needs translation based on language detection
+     * Only Arabic text needs translation to other languages
+     */
+    fun needsTranslation(text: String, targetLanguage: String = "English"): Boolean {
+        if (text.isEmpty()) return false
+        
+        // Only translate Arabic text
+        return isArabic(text)
+    }
+
+    /**
      * Translates text to user's preferred language using AI (Gemini API).
      * This function detects the source language and translates to English by default.
      * You can modify the target language based on user preferences.
@@ -403,29 +429,56 @@ object LyricsUtils {
      * This is a placeholder - implement actual API call
      */
     private suspend fun translateWithGeminiAPI(prompt: String, originalText: String, targetLanguage: String): String {
-        // Placeholder implementation
-        // In a real app, you would:
-        // 1. Add Gemini API dependency to build.gradle
-        // 2. Add API key to secure storage
-        // 3. Make actual API call
-        
-        // For now, return a formatted version indicating this would be translated
-        return "[$targetLanguage Translation] $originalText"
-    }
-
-    /**
-     * Detects if text needs translation based on language detection
-     */
-    fun needsTranslation(text: String, targetLanguage: String = "English"): Boolean {
-        if (text.isEmpty()) return false
-        
-        // Simple heuristic - if text contains non-Latin characters, it might need translation
-        val hasNonLatinChars = text.any { char ->
-            char !in 'A'..'Z' && char !in 'a'..'z' && char !in '0'..'9' && 
-            char != ' ' && char != '.' && char != ',' && char != '!' && char != '?' &&
-            char != '\'' && char != '"' && char != '-' && char != '\n' && char != '\r'
+        return try {
+            // Use Google Translate API as a simple alternative
+            translateWithGoogleTranslate(originalText, targetLanguage)
+        } catch (e: Exception) {
+            // Fallback: return original text if translation fails
+            originalText
         }
-        
-        return hasNonLatinChars
+    }
+    
+    /**
+     * Simple translation using Google Translate web service
+     * Note: This is a basic implementation for demonstration
+     * In production, use official Google Translate API with proper authentication
+     */
+    private suspend fun translateWithGoogleTranslate(text: String, targetLanguage: String): String = withContext(Dispatchers.IO) {
+        try {
+            val encodedText = java.net.URLEncoder.encode(text, "UTF-8")
+            val langCode = when (targetLanguage) {
+                "English" -> "en"
+                "French" -> "fr"
+                "German" -> "de"
+                "Spanish" -> "es"
+                "Italian" -> "it"
+                "Portuguese" -> "pt"
+                "Russian" -> "ru"
+                "Chinese" -> "zh"
+                "Japanese" -> "ja"
+                "Korean" -> "ko"
+                else -> "en"
+            }
+            
+            val url = "https://translate.googleapis.com/translate_a/single?client=gtx&sl=ar&tl=$langCode&dt=t&q=$encodedText"
+            
+            // Simple HTTP request to Google Translate
+            val connection = java.net.URL(url).openConnection()
+            connection.setRequestProperty("User-Agent", "Mozilla/5.0")
+            
+            val response = connection.getInputStream().bufferedReader().readText()
+            
+            // Parse the JSON response (simple parsing for the first translation)
+            val regex = """"([^"]+)"""".toRegex()
+            val matches = regex.findAll(response).toList()
+            
+            if (matches.isNotEmpty()) {
+                matches[0].groupValues[1]
+            } else {
+                text // Return original if parsing fails
+            }
+        } catch (e: Exception) {
+            text // Return original text if translation fails
+        }
     }
 }

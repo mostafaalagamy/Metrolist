@@ -47,6 +47,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -100,6 +102,7 @@ import com.metrolist.music.constants.LyricsTextPositionKey
 import com.metrolist.music.constants.PlayerBackgroundStyle
 import com.metrolist.music.constants.PlayerBackgroundStyleKey
 import com.metrolist.music.constants.TranslateLyricsKey
+import com.metrolist.music.constants.TranslationTargetLanguageKey
 import com.metrolist.music.db.entities.LyricsEntity.Companion.LYRICS_NOT_FOUND
 import com.metrolist.music.lyrics.LyricsEntry
 import com.metrolist.music.lyrics.LyricsUtils.isChinese
@@ -151,7 +154,23 @@ fun Lyrics(
     val romanizeJapaneseLyrics by rememberPreference(LyricsRomanizeJapaneseKey, true)
     val romanizeKoreanLyrics by rememberPreference(LyricsRomanizeKoreanKey, true)
     val translateLyrics by rememberPreference(TranslateLyricsKey, false)
+    val (targetLanguage, onTargetLanguageChange) = rememberPreference(TranslationTargetLanguageKey, "English")
     val scope = rememberCoroutineScope()
+
+    // Language selection state
+    var showLanguageMenu by remember { mutableStateOf(false) }
+    val supportedLanguages = listOf(
+        "English" to "🇺🇸",
+        "French" to "🇫🇷",
+        "German" to "🇩🇪",
+        "Spanish" to "🇪🇸",
+        "Italian" to "🇮🇹",
+        "Portuguese" to "🇵🇹",
+        "Russian" to "🇷🇺",
+        "Chinese" to "🇨🇳",
+        "Japanese" to "🇯🇵",
+        "Korean" to "🇰🇷"
+    )
 
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
     val lyricsEntity by playerConnection.currentLyrics.collectAsState(initial = null)
@@ -192,7 +211,7 @@ fun Lyrics(
                 if (translateLyrics) {
                     if (needsTranslation(entry.text)) {
                         scope.launch {
-                            newEntry.translatedTextFlow.value = translateLyricsWithAI(entry.text)
+                            newEntry.translatedTextFlow.value = translateLyricsWithAI(entry.text, targetLanguage)
                         }
                     }
                 }
@@ -220,7 +239,7 @@ fun Lyrics(
                 if (translateLyrics) {
                     if (needsTranslation(line)) {
                         scope.launch {
-                            newEntry.translatedTextFlow.value = translateLyricsWithAI(line)
+                            newEntry.translatedTextFlow.value = translateLyricsWithAI(line, targetLanguage)
                         }
                     }
                 }
@@ -671,6 +690,38 @@ fun Lyrics(
                         )
                     }
                 } else {
+                    // Language Selection Button (only show if translation is enabled)
+                    if (translateLyrics) {
+                        Box {
+                            IconButton(
+                                onClick = { showLanguageMenu = true }
+                            ) {
+                                Text(
+                                    text = supportedLanguages.find { it.first == targetLanguage }?.second ?: "🌐",
+                                    fontSize = 20.sp
+                                )
+                            }
+                            
+                            DropdownMenu(
+                                expanded = showLanguageMenu,
+                                onDismissRequest = { showLanguageMenu = false }
+                            ) {
+                                supportedLanguages.forEach { (language, flag) ->
+                                    DropdownMenuItem(
+                                        text = { 
+                                            Text("$flag $language") 
+                                        },
+                                        onClick = {
+                                            onTargetLanguageChange(language)
+                                            showLanguageMenu = false
+                                        }
+                                    )
+                                }
+                            }
+                        }
+                        Spacer(Modifier.width(8.dp))
+                    }
+                    
                     // Original More Button
                     IconButton(
                         onClick = {
