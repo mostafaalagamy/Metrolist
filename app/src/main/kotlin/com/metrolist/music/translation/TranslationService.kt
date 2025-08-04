@@ -85,15 +85,22 @@ object TranslationService {
         val cleanText = text.trim()
         
         // Skip very short text
-        if (cleanText.length < 2) return false
+        if (cleanText.length < 3) return false
         
-        // Skip common musical interjections
-        val universalSounds = listOf("oh", "ah", "eh", "mm", "hmm", "la", "na", "da", "ya", "وو", "آه", "أوه", "لا", "نا", "يا")
+        // Skip common musical interjections and sounds
+        val universalSounds = setOf(
+            "oh", "ah", "eh", "mm", "hmm", "la", "na", "da", "ya", "hey", "hi", "yo", "ok", "wow",
+            "ooh", "aah", "yeah", "whoa", "woah", "hm", "uh", "um", "er", "em",
+            "وو", "آه", "أوه", "لا", "نا", "يا", "هاي", "أوكيه", "أووه", "إيه"
+        )
         if (universalSounds.contains(cleanText.lowercase())) return false
         
         // Skip if text is mostly punctuation or numbers
         val alphaCount = cleanText.count { it.isLetter() }
-        if (alphaCount < cleanText.length * 0.5) return false
+        if (alphaCount < cleanText.length * 0.6) return false
+        
+        // Skip repeated characters
+        if (Regex("^(.)\\1{2,}$").matches(cleanText)) return false
         
         return true
     }
