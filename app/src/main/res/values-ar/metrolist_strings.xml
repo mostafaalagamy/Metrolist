@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- App name and general -->
+    <string name="app_name">متروليست</string>
+    
+    <!-- Main navigation -->
+    <string name="home">الرئيسية</string>
+    <string name="library">المكتبة</string>
+    <string name="search">البحث</string>
+    <string name="settings">الإعدادات</string>
+    
+    <!-- Music controls -->
+    <string name="play">تشغيل</string>
+    <string name="pause">إيقاف مؤقت</string>
+    <string name="next">التالي</string>
+    <string name="previous">السابق</string>
+    <string name="shuffle">خلط عشوائي</string>
+    <string name="repeat">تكرار</string>
+    
+    <!-- Library sections -->
+    <string name="songs">الأغاني</string>
+    <string name="albums">الألبومات</string>
+    <string name="artists">الفنانين</string>
+    <string name="playlists">قوائم التشغيل</string>
+    
+    <!-- Lyrics features -->
+    <string name="lyrics">كلمات الأغاني</string>
+    <string name="lyrics_not_found">لم يتم العثور على كلمات الأغنية</string>
+    <string name="romanize_japanese">ترومن ياباني</string>
+    <string name="romanize_korean">ترومن كوري</string>
+    <string name="lyrics_translate_ai">ترجمة كلمات الأغاني بالذكاء الاصطناعي</string>
+    
+    <!-- Settings categories -->
+    <string name="appearance">المظهر</string>
+    <string name="content">المحتوى</string>
+    <string name="player">المشغل</string>
+    <string name="storage">التخزين</string>
+    <string name="privacy">الخصوصية</string>
+    <string name="backup">النسخ الاحتياطي</string>
+    <string name="about">حول التطبيق</string>
+    
+    <!-- Common actions -->
+    <string name="add">إضافة</string>
+    <string name="delete">حذف</string>
+    <string name="edit">تعديل</string>
+    <string name="save">حفظ</string>
+    <string name="cancel">إلغاء</string>
+    <string name="ok">موافق</string>
+    <string name="yes">نعم</string>
+    <string name="no">لا</string>
+    
+    <!-- Search and discovery -->
+    <string name="search_songs">البحث في الأغاني</string>
+    <string name="search_artists">البحث في الفنانين</string>
+    <string name="search_albums">البحث في الألبومات</string>
+    <string name="trending">الشائع</string>
+    <string name="new_releases">الإصدارات الجديدة</string>
+    
+    <!-- Player features -->
+    <string name="queue">قائمة الانتظار</string>
+    <string name="now_playing">يتم تشغيله الآن</string>
+    <string name="add_to_playlist">إضافة إلى قائمة التشغيل</string>
+    <string name="download">تحميل</string>
+    <string name="share">مشاركة</string>
+    <string name="favorite">مفضل</string>
+    
+    <!-- Time and duration -->
+    <string name="duration">المدة</string>
+    <string name="remaining_time">الوقت المتبقي</string>
+    
+    <!-- Quality and format -->
+    <string name="quality">الجودة</string>
+    <string name="high_quality">جودة عالية</string>
+    <string name="standard_quality">جودة عادية</string>
+    
+    <!-- Notifications -->
+    <string name="loading">جاري التحميل</string>
+    <string name="error">خطأ</string>
+    <string name="success">تم بنجاح</string>
+    <string name="no_internet">لا يوجد اتصال بالإنترنت</string>
+    
+    <!-- Account and sync -->
+    <string name="account">الحساب</string>
+    <string name="sync">مزامنة</string>
+    <string name="login">تسجيل الدخول</string>
+    <string name="logout">تسجيل الخروج</string>
+    
+    <!-- Themes and appearance -->
+    <string name="theme">السمة</string>
+    <string name="dark_mode">الوضع الداكن</string>
+    <string name="light_mode">الوضع الفاتح</string>
+    <string name="auto_mode">تلقائي</string>
+    
+    <!-- Languages -->
+    <string name="language">اللغة</string>
+    <string name="arabic">العربية</string>
+    <string name="english">الإنجليزية</string>
+    
+    <!-- Cache and storage -->
+    <string name="cache">ذاكرة التخزين المؤقت</string>
+    <string name="clear_cache">مسح ذاكرة التخزين المؤقت</string>
+    <string name="storage_used">المساحة المستخدمة</string>
+    
+    <!-- Statistics -->
+    <string name="stats">الإحصائيات</string>
+    <string name="total_songs">إجمالي الأغاني</string>
+    <string name="total_time">إجمالي الوقت</string>
+    <string name="most_played">الأكثر تشغيلاً</string>
+    
+    <!-- Equalizer -->
+    <string name="equalizer">مُعادل الصوت</string>
+    <string name="bass">الصوت المنخفض</string>
+    <string name="treble">الصوت المرتفع</string>
+    
+    <!-- Updates -->
+    <string name="update_available">تحديث متاح</string>
+    <string name="update_now">تحديث الآن</string>
+    <string name="no_updates">لا توجد تحديثات</string>
+    
+    <!-- Permissions -->
+    <string name="permission_required">إذن مطلوب</string>
+    <string name="storage_permission">إذن الوصول للتخزين</string>
+    <string name="microphone_permission">إذن الوصول للميكروفون</string>
+    
+    <!-- Playlist management -->
+    <string name="create_playlist">إنشاء قائمة تشغيل</string>
+    <string name="playlist_name">اسم قائمة التشغيل</string>
+    <string name="add_songs">إضافة أغاني</string>
+    <string name="remove_from_playlist">إزالة من قائمة التشغيل</string>
+    
+    <!-- Sort options -->
+    <string name="sort_by">ترتيب حسب</string>
+    <string name="sort_by_name">الاسم</string>
+    <string name="sort_by_date">التاريخ</string>
+    <string name="sort_by_duration">المدة</string>
+    <string name="sort_ascending">تصاعدي</string>
+    <string name="sort_descending">تنازلي</string>
+    
+    <!-- Audio effects -->
+    <string name="audio_effects">التأثيرات الصوتية</string>
+    <string name="reverb">صدى</string>
+    <string name="echo">تردد</string>
+    
+    <!-- Import/Export -->
+    <string name="import_playlist">استيراد قائمة تشغيل</string>
+    <string name="export_playlist">تصدير قائمة تشغيل</string>
+    
+    <!-- Connection -->
+    <string name="connecting">جاري الاتصال</string>
+    <string name="connected">متصل</string>
+    <string name="disconnected">منقطع</string>
+    
+    <!-- File formats -->
+    <string name="mp3">MP3</string>
+    <string name="flac">FLAC</string>
+    <string name="wav">WAV</string>
+    
+    <!-- Recommendations -->
+    <string name="recommended">مُوصى به</string>
+    <string name="similar_artists">فنانين مشابهين</string>
+    <string name="similar_songs">أغاني مشابهة</string>
+    
+    <!-- Radio -->
+    <string name="radio">راديو</string>
+    <string name="live">مباشر</string>
+    
+    <!-- Volume -->
+    <string name="volume">مستوى الصوت</string>
+    <string name="mute">كتم الصوت</string>
+    <string name="unmute">إلغاء كتم الصوت</string>
+</resources>
