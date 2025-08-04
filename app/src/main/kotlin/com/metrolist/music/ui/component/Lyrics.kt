@@ -160,7 +160,7 @@ fun Lyrics(
     // Language selection state
     var showLanguageMenu by remember { mutableStateOf(false) }
     val supportedLanguages = listOf(
-        "Arabic" to "🇸🇦",
+        "Arabic" to "🇪🇬",
         "English" to "🇺🇸",
         "French" to "🇫🇷",
         "German" to "🇩🇪",

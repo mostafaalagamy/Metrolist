@@ -439,26 +439,80 @@ object LyricsUtils {
      */
     suspend fun translateLyricsWithAI(text: String, targetLanguage: String = "English"): String = withContext(Dispatchers.IO) {
         try {
-            // For now, we'll use a simple HTTP client to call Gemini API
-            // In a real implementation, you would use the official Gemini SDK
+            // For better translations, we'll try multiple approaches
             
-            val prompt = """
-                Translate the following lyrics text to $targetLanguage. 
-                Keep the poetic and emotional meaning intact.
-                Only return the translated text without any additional explanation:
-                
-                $text
-            """.trimIndent()
+            // First try: Use a better translation prompt for lyrics context
+            val improvedTranslation = translateWithImprovedContext(text, targetLanguage)
+            if (improvedTranslation != text) {
+                return@withContext improvedTranslation
+            }
             
-            // This is a placeholder implementation
-            // In reality, you would integrate with Gemini API or another AI service
-            // For demonstration, we'll return a simple formatted response
-            return@withContext translateWithGeminiAPI(prompt, text, targetLanguage)
+            // Fallback: Use Google Translate
+            return@withContext translateWithGoogleTranslate(text, targetLanguage)
             
         } catch (e: Exception) {
             // Return original text if translation fails
             text
         }
+    }
+    
+    /**
+     * Improved translation with better context and handling for lyrics
+     */
+    private suspend fun translateWithImprovedContext(text: String, targetLanguage: String): String = withContext(Dispatchers.IO) {
+        try {
+            // Clean the text first
+            val cleanText = text.trim()
+            if (cleanText.isEmpty()) return@withContext text
+            
+            // Skip very short words or common interjections that don't need translation
+            if (shouldSkipTranslation(cleanText)) {
+                return@withContext text
+            }
+            
+            // For lyrics, we want more natural, poetic translations
+            val enhancedText = preprocessLyricsText(cleanText)
+            
+            return@withContext translateWithGoogleTranslate(enhancedText, targetLanguage)
+            
+        } catch (e: Exception) {
+            text
+        }
+    }
+    
+    /**
+     * Check if text should be skipped from translation
+     */
+    private fun shouldSkipTranslation(text: String): Boolean {
+        val cleanText = text.trim().lowercase()
+        
+        // Skip very short text (less than 2 characters)
+        if (cleanText.length < 2) return true
+        
+        // Skip common musical interjections that are universal
+        val universalSounds = listOf("oh", "ah", "eh", "mm", "hmm", "la", "na", "da", "ya", "وو", "آه", "أوه", "لا", "نا", "يا")
+        if (universalSounds.contains(cleanText)) return true
+        
+        // Skip if text is mostly punctuation or numbers
+        val alphaCount = cleanText.count { it.isLetter() }
+        if (alphaCount < cleanText.length * 0.5) return true
+        
+        return false
+    }
+    
+    /**
+     * Preprocess lyrics text to improve translation quality
+     */
+    private fun preprocessLyricsText(text: String): String {
+        // Remove excessive punctuation that might confuse translation
+        var processedText = text.replace(Regex("[.]{2,}"), "...")
+        processedText = processedText.replace(Regex("[!]{2,}"), "!")
+        processedText = processedText.replace(Regex("[?]{2,}"), "?")
+        
+        // Handle common lyrical repetitions
+        processedText = processedText.replace(Regex("\\b(\\w+)\\s+\\1\\b"), "$1") // Remove word repetitions like "حبيبي حبيبي" -> "حبيبي"
+        
+        return processedText.trim()
     }
     
     /**
@@ -493,26 +547,92 @@ object LyricsUtils {
                 return@withContext text
             }
             
-            val url = "https://translate.googleapis.com/translate_a/single?client=gtx&sl=$sourceLangCode&tl=$targetLangCode&dt=t&q=$encodedText"
+            // Enhanced URL with more parameters for better translation quality
+            val url = "https://translate.googleapis.com/translate_a/single?" +
+                    "client=gtx&" +
+                    "sl=$sourceLangCode&" +
+                    "tl=$targetLangCode&" +
+                    "dt=t&" +          // Translation
+                    "dt=bd&" +         // Dictionary
+                    "dt=qc&" +         // Quality check
+                    "dt=rm&" +         // Romanization
+                    "q=$encodedText"
             
-            // Simple HTTP request to Google Translate
+            // Create connection with better headers
             val connection = java.net.URL(url).openConnection()
-            connection.setRequestProperty("User-Agent", "Mozilla/5.0")
+            connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36")
+            connection.setRequestProperty("Accept", "application/json, text/plain, */*")
+            connection.setRequestProperty("Accept-Language", "en-US,en;q=0.9")
+            connection.connectTimeout = 10000 // 10 seconds timeout
+            connection.readTimeout = 15000    // 15 seconds read timeout
             
             val response = connection.getInputStream().bufferedReader().readText()
             
-            // Parse the JSON response (simple parsing for the first translation)
-            val regex = """"([^"]+)"""".toRegex()
-            val matches = regex.findAll(response).toList()
+            // Better JSON parsing for translation
+            val translatedText = parseGoogleTranslateResponse(response)
             
-            if (matches.isNotEmpty()) {
-                matches[0].groupValues[1]
-            } else {
-                text // Return original if parsing fails
-            }
+            // Post-process the translation for lyrics
+            return@withContext postProcessTranslation(translatedText ?: text, targetLanguage)
+            
         } catch (e: Exception) {
             text // Return original text if translation fails
         }
+    }
+    
+    /**
+     * Parse Google Translate response more accurately
+     */
+    private fun parseGoogleTranslateResponse(response: String): String? {
+        try {
+            // Google Translate returns a complex JSON array
+            // Format: [[["translated text","original text",null,null,3]],null,"source_lang"]
+            
+            val regex = """"([^"\\]*(\\.[^"\\]*)*)"""".toRegex()
+            val matches = regex.findAll(response).toList()
+            
+            if (matches.isNotEmpty()) {
+                // Get the first translation segment
+                var translation = matches[0].groupValues[1]
+                
+                // Clean up the translation
+                translation = translation.replace("\\n", "\n")
+                translation = translation.replace("\\\"", "\"")
+                translation = translation.replace("\\/", "/")
+                
+                return translation
+            }
+            
+            return null
+        } catch (e: Exception) {
+            return null
+        }
+    }
+    
+    /**
+     * Post-process translation specifically for lyrics
+     */
+    private fun postProcessTranslation(translation: String, targetLanguage: String): String {
+        var processedTranslation = translation
+        
+        // Fix common translation issues for lyrics
+        when (targetLanguage) {
+            "Arabic" -> {
+                // Ensure proper Arabic punctuation
+                processedTranslation = processedTranslation.replace("?", "؟")
+                processedTranslation = processedTranslation.replace(",", "،")
+            }
+            "English" -> {
+                // Capitalize first letter of sentences
+                processedTranslation = processedTranslation.replaceFirstChar { 
+                    if (it.isLowerCase()) it.titlecase() else it.toString() 
+                }
+            }
+        }
+        
+        // Remove excessive whitespace
+        processedTranslation = processedTranslation.replace(Regex("\\s+"), " ").trim()
+        
+        return processedTranslation
     }
     
     /**
