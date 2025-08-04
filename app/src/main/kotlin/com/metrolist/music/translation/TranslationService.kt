@@ -2,11 +2,12 @@ package com.metrolist.music.translation
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import kotlinx.coroutines.withTimeoutOrNull
+
 import com.metrolist.music.translation.ai.AITranslationService
 import com.metrolist.music.translation.traditional.TraditionalTranslationService
 import com.metrolist.music.translation.utils.LanguageDetector
 import com.metrolist.music.translation.utils.TranslationPostProcessor
+import com.metrolist.music.translation.cache.TranslationCache
 
 /**
  * Main translation service that coordinates all translation methods
@@ -19,11 +20,10 @@ object TranslationService {
     private val languageDetector = LanguageDetector
     private val postProcessor = TranslationPostProcessor
     
-    // Timeout for translations to prevent UI freezing
-    private const val TRANSLATION_TIMEOUT_MS = 30000L // 30 seconds
+
     
     /**
-     * Main translation function with intelligent service selection and timeout
+     * Main translation function with intelligent service selection and caching
      */
     suspend fun translateLyricsWithAI(text: String, targetLanguage: String = "English"): String = withContext(Dispatchers.IO) {
         try {
@@ -47,11 +47,20 @@ object TranslationService {
                     return@withContext text
                 }
                 
+                // Check cache first - instant response if available
+                val cachedTranslation = TranslationCache.getTranslation(cleanedText, sourceLang, targetLanguage)
+                if (cachedTranslation != null) {
+                    return@withContext cachedTranslation
+                }
+                
                 // Try AI translation first (best quality)
                 try {
                     val aiResult = aiTranslationService.translate(cleanedText, sourceLang, targetLanguage)
                     if (isValidTranslation(aiResult, text)) {
-                        return@withContext postProcessor.process(aiResult, targetLanguage)
+                        val processedResult = postProcessor.process(aiResult, targetLanguage)
+                        // Store successful translation in cache
+                        TranslationCache.storeTranslation(cleanedText, processedResult, sourceLang, targetLanguage)
+                        return@withContext processedResult
                     }
                 } catch (e: Exception) {
                     // Fall back to traditional services
@@ -61,7 +70,10 @@ object TranslationService {
                 try {
                     val traditionalResult = traditionalTranslationService.translate(cleanedText, sourceLang, targetLanguage)
                     if (isValidTranslation(traditionalResult, text)) {
-                        return@withContext postProcessor.process(traditionalResult, targetLanguage)
+                        val processedResult = postProcessor.process(traditionalResult, targetLanguage)
+                        // Store successful translation in cache
+                        TranslationCache.storeTranslation(cleanedText, processedResult, sourceLang, targetLanguage)
+                        return@withContext processedResult
                     }
                 } catch (e: Exception) {
                     // All services failed, will return original text
@@ -185,5 +197,36 @@ object TranslationService {
         
         val sourceLang = languageDetector.detectLanguage(text)
         return !languageDetector.isSameLanguage(sourceLang, targetLanguage)
+    }
+    
+    /**
+     * Clear cached translations for specific language pair
+     * Call this when user changes translation language
+     */
+    suspend fun clearCacheForLanguage(sourceLang: String, targetLang: String) {
+        TranslationCache.clearTranslationsForLanguage(sourceLang, targetLang)
+    }
+    
+    /**
+     * Clear all cached translations
+     * Call this when user refreshes lyrics or searches again
+     */
+    suspend fun clearAllCache() {
+        TranslationCache.clearAllTranslations()
+    }
+    
+    /**
+     * Check if translation exists in cache
+     */
+    suspend fun hasTranslationInCache(text: String, targetLanguage: String): Boolean {
+        val sourceLang = languageDetector.detectLanguage(text)
+        return TranslationCache.hasTranslation(text, sourceLang, targetLanguage)
+    }
+    
+    /**
+     * Get cache statistics for monitoring
+     */
+    fun getCacheStats(): TranslationCache.CacheStats {
+        return TranslationCache.getCacheStats()
     }
 }

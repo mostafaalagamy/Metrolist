@@ -114,6 +114,7 @@ import com.metrolist.music.lyrics.LyricsUtils.romanizeJapanese
 import com.metrolist.music.lyrics.LyricsUtils.romanizeKorean
 import com.metrolist.music.lyrics.LyricsUtils.translateLyricsWithAI
 import com.metrolist.music.lyrics.LyricsUtils.needsTranslation
+import com.metrolist.music.translation.TranslationService
 import com.metrolist.music.ui.component.shimmer.ShimmerHost
 import com.metrolist.music.ui.component.shimmer.TextPlaceholder
 import com.metrolist.music.ui.menu.LyricsMenu
@@ -198,7 +199,7 @@ fun Lyrics(
     // Only start translations when they are actually needed and visible
     LaunchedEffect(translateLyrics, targetLanguage, lines) {
         if (translateLyrics && lines.isNotEmpty()) {
-            // Clear previous translations when language changes
+            // Reset translation states for new language
             lines.forEach { entry ->
                 if (entry != LyricsEntry.HEAD_LYRICS_ENTRY) {
                     entry.translatedTextFlow.value = null
@@ -212,14 +213,27 @@ fun Lyrics(
                     if (entry.text.isNotBlank() && entry != LyricsEntry.HEAD_LYRICS_ENTRY) {
                         if (needsTranslation(entry.text, targetLanguage)) {
                             launch(Dispatchers.IO) {
-                                entry.isTranslating.value = true
-                                try {
-                                    val result = translateLyricsWithAI(entry.text, targetLanguage)
-                                    entry.translatedTextFlow.value = result
-                                } catch (e: Exception) {
-                                    entry.translatedTextFlow.value = null
-                                } finally {
-                                    entry.isTranslating.value = false
+                                // Check cache first - instant if available
+                                val hasCache = TranslationService.hasTranslationInCache(entry.text, targetLanguage)
+                                if (hasCache) {
+                                    // Load from cache instantly
+                                    try {
+                                        val cachedResult = translateLyricsWithAI(entry.text, targetLanguage)
+                                        entry.translatedTextFlow.value = cachedResult
+                                    } catch (e: Exception) {
+                                        entry.translatedTextFlow.value = null
+                                    }
+                                } else {
+                                    // Translate and cache
+                                    entry.isTranslating.value = true
+                                    try {
+                                        val result = translateLyricsWithAI(entry.text, targetLanguage)
+                                        entry.translatedTextFlow.value = result
+                                    } catch (e: Exception) {
+                                        entry.translatedTextFlow.value = null
+                                    } finally {
+                                        entry.isTranslating.value = false
+                                    }
                                 }
                             }
                         }
