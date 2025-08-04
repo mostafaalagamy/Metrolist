@@ -196,8 +196,16 @@ fun Lyrics(
     }
     
     // Only start translations when they are actually needed and visible
-    LaunchedEffect(translateLyrics, targetLanguage) {
-        if (translateLyrics) {
+    LaunchedEffect(translateLyrics, targetLanguage, lines) {
+        if (translateLyrics && lines.isNotEmpty()) {
+            // Clear previous translations when language changes
+            lines.forEach { entry ->
+                if (entry != LyricsEntry.HEAD_LYRICS_ENTRY) {
+                    entry.translatedTextFlow.value = null
+                    entry.isTranslating.value = false
+                }
+            }
+            
             // Process translations in smaller batches to reduce UI load
             lines.chunked(3).forEach { batch ->
                 batch.forEach { entry ->
@@ -220,12 +228,20 @@ fun Lyrics(
                 // Small delay between batches to prevent overwhelming the UI
                 delay(50)
             }
+        } else {
+            // Clear translations when feature is disabled
+            lines.forEach { entry ->
+                if (entry != LyricsEntry.HEAD_LYRICS_ENTRY) {
+                    entry.translatedTextFlow.value = null
+                    entry.isTranslating.value = false
+                }
+            }
         }
     }
     
     // Handle romanization separately and only when needed
-    LaunchedEffect(romanizeJapaneseLyrics) {
-        if (romanizeJapaneseLyrics) {
+    LaunchedEffect(romanizeJapaneseLyrics, lines) {
+        if (romanizeJapaneseLyrics && lines.isNotEmpty()) {
             lines.forEach { entry ->
                 if (entry.text.isNotBlank() && entry != LyricsEntry.HEAD_LYRICS_ENTRY) {
                     if (isJapanese(entry.text) && !isChinese(entry.text)) {
@@ -235,11 +251,18 @@ fun Lyrics(
                     }
                 }
             }
+        } else {
+            // Clear romanization when feature is disabled
+            lines.forEach { entry ->
+                if (entry != LyricsEntry.HEAD_LYRICS_ENTRY) {
+                    entry.romanizedTextFlow.value = null
+                }
+            }
         }
     }
     
-    LaunchedEffect(romanizeKoreanLyrics) {
-        if (romanizeKoreanLyrics) {
+    LaunchedEffect(romanizeKoreanLyrics, lines) {
+        if (romanizeKoreanLyrics && lines.isNotEmpty()) {
             lines.forEach { entry ->
                 if (entry.text.isNotBlank() && entry != LyricsEntry.HEAD_LYRICS_ENTRY) {
                     if (isKorean(entry.text)) {
@@ -247,6 +270,13 @@ fun Lyrics(
                             entry.romanizedTextFlow.value = romanizeKorean(entry.text)
                         }
                     }
+                }
+            }
+        } else {
+            // Clear romanization when feature is disabled
+            lines.forEach { entry ->
+                if (entry != LyricsEntry.HEAD_LYRICS_ENTRY) {
+                    entry.romanizedTextFlow.value = null
                 }
             }
         }
