@@ -4,15 +4,12 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -20,6 +17,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.metrolist.music.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -40,7 +38,7 @@ fun OpenAISettings(
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
                         Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            painterResource(R.drawable.arrow_back),
                             contentDescription = "Back"
                         )
                     }
@@ -104,7 +102,7 @@ fun OpenAISettings(
                         trailingIcon = {
                             IconButton(onClick = { isApiKeyVisible = !isApiKeyVisible }) {
                                 Icon(
-                                    imageVector = if (isApiKeyVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility,
+                                    painterResource(if (isApiKeyVisible) R.drawable.close else R.drawable.info),
                                     contentDescription = if (isApiKeyVisible) "Hide API Key" else "Show API Key"
                                 )
                             }
