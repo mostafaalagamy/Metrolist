@@ -17,7 +17,7 @@
     <string name="months">Meses</string>
     <string name="years">Años</string>
     <string name="continuous">Continuo</string>
-    <string name="liked">Me gusta</string>
+    <string name="liked">Canciones que me gustan</string>
     <string name="offline">Descargado</string>
     <string name="my_top">Mi Top</string>
     <string name="cached_playlist">En caché</string>
@@ -121,7 +121,7 @@
         <item quantity="many">%d segundos</item>
         <item quantity="other">%d segundos</item>
     </plurals>
-    <string name="please_wait">Por favor, espere</string>
+    <string name="please_wait">Por favor, espera</string>
     <string name="cancel">Cancelar</string>
     <string name="share_lyrics">Compartir letra</string>
     <string name="share_as_text">Compartir como texto</string>
@@ -157,4 +157,5 @@
     <string name="empty_playlist">Lista de reproducción vacía</string>
     <string name="sensitivity_percentage">%1$d%%</string>
     <string name="empty_playlist_desc">Esta lista de reproducción no contiene ninguna canción</string>
+    <string name="now_playing">Ahora sonando</string>
 </resources>
