@@ -494,8 +494,9 @@ object LyricsUtils {
             return@withContext text
         }
         
-        // Try services in order of preference
+        // Try services in order of preference (AI first for better context)
         val translationServices = listOf<suspend () -> String>(
+            { translateWithAI(text, sourceLang, targetLanguage) },
             { translateWithLibreTranslate(text, sourceLangCode, targetLangCode) },
             { translateWithMicrosoftTranslator(text, sourceLangCode, targetLangCode) },
             { translateWithGoogleTranslate(text, targetLanguage) }
@@ -515,6 +516,246 @@ object LyricsUtils {
         
         // If all services fail, return original text
         return@withContext text
+    }
+    
+    /**
+     * AI-powered translation with context understanding for song lyrics
+     * Uses Hugging Face or similar AI models for better contextual translation
+     */
+    private suspend fun translateWithAI(text: String, sourceLang: String, targetLanguage: String): String = withContext(Dispatchers.IO) {
+        try {
+            // Enhanced prompt for song lyrics context
+            val prompt = buildLyricsTranslationPrompt(text, sourceLang, targetLanguage)
+            
+            // Try multiple AI services
+            val aiServices = listOf<suspend () -> String>(
+                { translateWithHuggingFace(prompt, text) },
+                { translateWithGroqAI(prompt, text) },
+                { translateWithOllamaLocal(prompt, text) }
+            )
+            
+            for (aiService in aiServices) {
+                try {
+                    val result = aiService()
+                    if (result != text && result.isNotBlank() && !result.startsWith("Error")) {
+                        return@withContext result
+                    }
+                } catch (e: Exception) {
+                    continue
+                }
+            }
+            
+            throw Exception("All AI services failed")
+            
+        } catch (e: Exception) {
+            throw e
+        }
+    }
+    
+    /**
+     * Build intelligent prompt for song lyrics translation
+     */
+    private fun buildLyricsTranslationPrompt(text: String, sourceLang: String, targetLanguage: String): String {
+        return """
+            You are a professional translator specializing in song lyrics and poetry. 
+            
+            Task: Translate the following song lyrics from $sourceLang to $targetLanguage.
+            
+            Instructions:
+            - Preserve the emotional meaning and poetic essence
+            - Maintain the rhythm and flow where possible
+            - Consider cultural context and metaphors
+            - Use natural, contemporary language
+            - Avoid literal word-for-word translation
+            - If it's a name, place, or proper noun, keep it as is
+            - If it's a universal expression (oh, ah, wow), adapt appropriately
+            
+            Original lyrics: "$text"
+            
+            Provide ONLY the translated text without any explanations:
+        """.trimIndent()
+    }
+    
+    /**
+     * Hugging Face AI Translation
+     */
+    private suspend fun translateWithHuggingFace(prompt: String, originalText: String): String = withContext(Dispatchers.IO) {
+        try {
+            // Using Hugging Face Inference API with a good translation model
+            val url = "https://api-inference.huggingface.co/models/facebook/mbart-large-50-many-to-many-mmt"
+            
+            val requestBody = """
+                {
+                    "inputs": "$prompt",
+                    "parameters": {
+                        "max_length": 200,
+                        "temperature": 0.7,
+                        "do_sample": true
+                    }
+                }
+            """.trimIndent()
+            
+            val connection = java.net.URL(url).openConnection() as java.net.HttpURLConnection
+            connection.requestMethod = "POST"
+            connection.setRequestProperty("Content-Type", "application/json")
+            connection.setRequestProperty("Accept", "application/json")
+            connection.setRequestProperty("User-Agent", "MetrolistMusicApp/1.0")
+            // Note: For production, add your Hugging Face API key
+            // connection.setRequestProperty("Authorization", "Bearer YOUR_HF_TOKEN")
+            connection.doOutput = true
+            connection.connectTimeout = 30000
+            connection.readTimeout = 30000
+            
+            connection.outputStream.use { os ->
+                val input = requestBody.toByteArray(Charsets.UTF_8)
+                os.write(input, 0, input.size)
+            }
+            
+            val responseCode = connection.responseCode
+            if (responseCode == 200) {
+                val response = connection.inputStream.bufferedReader().readText()
+                val translatedText = parseHuggingFaceResponse(response)
+                return@withContext translatedText ?: originalText
+            } else {
+                throw Exception("Hugging Face API error: $responseCode")
+            }
+        } catch (e: Exception) {
+            throw e
+        }
+    }
+    
+    /**
+     * Groq AI Translation (very fast and free)
+     */
+    private suspend fun translateWithGroqAI(prompt: String, originalText: String): String = withContext(Dispatchers.IO) {
+        try {
+            val url = "https://api.groq.com/openai/v1/chat/completions"
+            
+            val requestBody = """
+                {
+                    "model": "llama3-8b-8192",
+                    "messages": [
+                        {
+                            "role": "user",
+                            "content": "$prompt"
+                        }
+                    ],
+                    "temperature": 0.7,
+                    "max_tokens": 150
+                }
+            """.trimIndent()
+            
+            val connection = java.net.URL(url).openConnection() as java.net.HttpURLConnection
+            connection.requestMethod = "POST"
+            connection.setRequestProperty("Content-Type", "application/json")
+            connection.setRequestProperty("Accept", "application/json")
+            connection.setRequestProperty("User-Agent", "MetrolistMusicApp/1.0")
+            // Note: For production, add your Groq API key
+            // connection.setRequestProperty("Authorization", "Bearer YOUR_GROQ_API_KEY")
+            connection.doOutput = true
+            connection.connectTimeout = 30000
+            connection.readTimeout = 30000
+            
+            connection.outputStream.use { os ->
+                val input = requestBody.toByteArray(Charsets.UTF_8)
+                os.write(input, 0, input.size)
+            }
+            
+            val responseCode = connection.responseCode
+            if (responseCode == 200) {
+                val response = connection.inputStream.bufferedReader().readText()
+                val translatedText = parseGroqResponse(response)
+                return@withContext translatedText ?: originalText
+            } else {
+                throw Exception("Groq AI error: $responseCode")
+            }
+        } catch (e: Exception) {
+            throw e
+        }
+    }
+    
+    /**
+     * Local Ollama AI Translation (if available)
+     */
+    private suspend fun translateWithOllamaLocal(prompt: String, originalText: String): String = withContext(Dispatchers.IO) {
+        try {
+            val url = "http://localhost:11434/api/generate"
+            
+            val requestBody = """
+                {
+                    "model": "llama3.2",
+                    "prompt": "$prompt",
+                    "stream": false,
+                    "options": {
+                        "temperature": 0.7,
+                        "top_p": 0.9
+                    }
+                }
+            """.trimIndent()
+            
+            val connection = java.net.URL(url).openConnection() as java.net.HttpURLConnection
+            connection.requestMethod = "POST"
+            connection.setRequestProperty("Content-Type", "application/json")
+            connection.setRequestProperty("Accept", "application/json")
+            connection.doOutput = true
+            connection.connectTimeout = 30000
+            connection.readTimeout = 45000
+            
+            connection.outputStream.use { os ->
+                val input = requestBody.toByteArray(Charsets.UTF_8)
+                os.write(input, 0, input.size)
+            }
+            
+            val responseCode = connection.responseCode
+            if (responseCode == 200) {
+                val response = connection.inputStream.bufferedReader().readText()
+                val translatedText = parseOllamaResponse(response)
+                return@withContext translatedText ?: originalText
+            } else {
+                throw Exception("Ollama local AI error: $responseCode")
+            }
+        } catch (e: Exception) {
+            throw e
+        }
+    }
+    
+    /**
+     * Parse Hugging Face API response
+     */
+    private fun parseHuggingFaceResponse(response: String): String? {
+        try {
+            val regex = Regex("\"generated_text\"\\s*:\\s*\"([^\"]+)\"")
+            val match = regex.find(response)
+            return match?.groupValues?.get(1)?.trim()
+        } catch (e: Exception) {
+            return null
+        }
+    }
+    
+    /**
+     * Parse Groq AI response
+     */
+    private fun parseGroqResponse(response: String): String? {
+        try {
+            val regex = Regex("\"content\"\\s*:\\s*\"([^\"]+)\"")
+            val match = regex.find(response)
+            return match?.groupValues?.get(1)?.trim()
+        } catch (e: Exception) {
+            return null
+        }
+    }
+    
+    /**
+     * Parse Ollama response
+     */
+    private fun parseOllamaResponse(response: String): String? {
+        try {
+            val regex = Regex("\"response\"\\s*:\\s*\"([^\"]+)\"")
+            val match = regex.find(response)
+            return match?.groupValues?.get(1)?.trim()
+        } catch (e: Exception) {
+            return null
+        }
     }
     
     /**

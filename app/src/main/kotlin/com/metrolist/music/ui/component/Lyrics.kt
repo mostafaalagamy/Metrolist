@@ -694,28 +694,88 @@ fun Lyrics(
                     // Language Selection Button (only show if translation is enabled)
                     if (translateLyrics) {
                         Box {
-                            IconButton(
-                                onClick = { showLanguageMenu = true }
+                            Card(
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(16.dp))
+                                    .clickable { showLanguageMenu = true },
+                                colors = CardDefaults.cardColors(
+                                    containerColor = MaterialTheme.colorScheme.secondaryContainer
+                                ),
+                                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
                             ) {
-                                Text(
-                                    text = supportedLanguages.find { it.first == targetLanguage }?.second ?: "🌐",
-                                    fontSize = 20.sp
-                                )
+                                Row(
+                                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                ) {
+                                    Text(
+                                        text = supportedLanguages.find { it.first == targetLanguage }?.second ?: "🌐",
+                                        fontSize = 16.sp
+                                    )
+                                    Text(
+                                        text = targetLanguage,
+                                        fontSize = 12.sp,
+                                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                        fontWeight = FontWeight.Medium
+                                    )
+                                    Icon(
+                                        painter = painterResource(id = android.R.drawable.arrow_down_float),
+                                        contentDescription = null,
+                                        modifier = Modifier.size(14.dp),
+                                        tint = MaterialTheme.colorScheme.onSecondaryContainer
+                                    )
+                                }
                             }
                             
                             DropdownMenu(
                                 expanded = showLanguageMenu,
-                                onDismissRequest = { showLanguageMenu = false }
+                                onDismissRequest = { showLanguageMenu = false },
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(12.dp))
+                                    .background(MaterialTheme.colorScheme.surface)
                             ) {
                                 supportedLanguages.forEach { (language, flag) ->
                                     DropdownMenuItem(
                                         text = { 
-                                            Text("$flag $language") 
+                                            Row(
+                                                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                                                verticalAlignment = Alignment.CenterVertically
+                                            ) {
+                                                Text(
+                                                    text = flag,
+                                                    fontSize = 18.sp
+                                                )
+                                                Text(
+                                                    text = language,
+                                                    fontSize = 14.sp,
+                                                    fontWeight = if (language == targetLanguage) FontWeight.Bold else FontWeight.Normal,
+                                                    color = if (language == targetLanguage) 
+                                                        MaterialTheme.colorScheme.primary 
+                                                    else 
+                                                        MaterialTheme.colorScheme.onSurface
+                                                )
+                                                if (language == targetLanguage) {
+                                                    Icon(
+                                                        painter = painterResource(id = android.R.drawable.presence_online),
+                                                        contentDescription = null,
+                                                        modifier = Modifier.size(16.dp),
+                                                        tint = MaterialTheme.colorScheme.primary
+                                                    )
+                                                }
+                                            }
                                         },
                                         onClick = {
                                             onTargetLanguageChange(language)
                                             showLanguageMenu = false
-                                        }
+                                        },
+                                        modifier = Modifier
+                                            .clip(RoundedCornerShape(8.dp))
+                                            .background(
+                                                if (language == targetLanguage) 
+                                                    MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f)
+                                                else 
+                                                    Color.Transparent
+                                            )
                                     )
                                 }
                             }
