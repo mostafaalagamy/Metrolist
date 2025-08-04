@@ -386,13 +386,50 @@ object LyricsUtils {
 
     /**
      * Detects if text needs translation based on language detection
-     * Only Arabic text needs translation to other languages
+     * Now translates any text to the target language
      */
     fun needsTranslation(text: String, targetLanguage: String = "English"): Boolean {
         if (text.isEmpty()) return false
         
-        // Only translate Arabic text
-        return isArabic(text)
+        // Always translate if target language is different from source
+        // We'll detect source language and compare with target
+        val detectedLanguage = detectLanguage(text)
+        return detectedLanguage != targetLanguage
+    }
+    
+    /**
+     * Simple language detection based on character patterns
+     */
+    private fun detectLanguage(text: String): String {
+        if (text.isEmpty()) return "Unknown"
+        
+        val cleanText = text.replace(" ", "").lowercase()
+        
+        // Arabic detection
+        val arabicCharCount = text.count { char -> char in '\u0600'..'\u06FF' || char in '\u0750'..'\u077F' }
+        if (arabicCharCount > cleanText.length * 0.3) return "Arabic"
+        
+        // Japanese detection (Hiragana, Katakana, Kanji)
+        val japaneseCharCount = text.count { char -> 
+            char in '\u3040'..'\u309F' || char in '\u30A0'..'\u30FF' || char in '\u4E00'..'\u9FFF'
+        }
+        if (japaneseCharCount > 0) return "Japanese"
+        
+        // Korean detection
+        val koreanCharCount = text.count { char -> char in '\uAC00'..'\uD7A3' }
+        if (koreanCharCount > 0) return "Korean"
+        
+        // Chinese detection (mainly Hanzi without Japanese kana)
+        val chineseCharCount = text.count { char -> char in '\u4E00'..'\u9FFF' }
+        val kanaCount = text.count { char -> char in '\u3040'..'\u309F' || char in '\u30A0'..'\u30FF' }
+        if (chineseCharCount > 0 && kanaCount == 0) return "Chinese"
+        
+        // Cyrillic (Russian and others)
+        val cyrillicCharCount = text.count { char -> char in '\u0400'..'\u04FF' }
+        if (cyrillicCharCount > cleanText.length * 0.3) return "Russian"
+        
+        // Default to English for Latin characters
+        return "English"
     }
 
     /**
@@ -446,21 +483,17 @@ object LyricsUtils {
     private suspend fun translateWithGoogleTranslate(text: String, targetLanguage: String): String = withContext(Dispatchers.IO) {
         try {
             val encodedText = java.net.URLEncoder.encode(text, "UTF-8")
-            val langCode = when (targetLanguage) {
-                "English" -> "en"
-                "French" -> "fr"
-                "German" -> "de"
-                "Spanish" -> "es"
-                "Italian" -> "it"
-                "Portuguese" -> "pt"
-                "Russian" -> "ru"
-                "Chinese" -> "zh"
-                "Japanese" -> "ja"
-                "Korean" -> "ko"
-                else -> "en"
+            
+            // Auto-detect source language
+            val sourceLangCode = getLanguageCode(detectLanguage(text))
+            val targetLangCode = getLanguageCode(targetLanguage)
+            
+            // Don't translate if source and target are the same
+            if (sourceLangCode == targetLangCode) {
+                return@withContext text
             }
             
-            val url = "https://translate.googleapis.com/translate_a/single?client=gtx&sl=ar&tl=$langCode&dt=t&q=$encodedText"
+            val url = "https://translate.googleapis.com/translate_a/single?client=gtx&sl=$sourceLangCode&tl=$targetLangCode&dt=t&q=$encodedText"
             
             // Simple HTTP request to Google Translate
             val connection = java.net.URL(url).openConnection()
@@ -479,6 +512,26 @@ object LyricsUtils {
             }
         } catch (e: Exception) {
             text // Return original text if translation fails
+        }
+    }
+    
+    /**
+     * Convert language name to language code for Google Translate
+     */
+    private fun getLanguageCode(language: String): String {
+        return when (language) {
+            "Arabic" -> "ar"
+            "English" -> "en"
+            "French" -> "fr"
+            "German" -> "de"
+            "Spanish" -> "es"
+            "Italian" -> "it"
+            "Portuguese" -> "pt"
+            "Russian" -> "ru"
+            "Chinese" -> "zh"
+            "Japanese" -> "ja"
+            "Korean" -> "ko"
+            else -> "auto" // Let Google auto-detect
         }
     }
 }

@@ -160,6 +160,7 @@ fun Lyrics(
     // Language selection state
     var showLanguageMenu by remember { mutableStateOf(false) }
     val supportedLanguages = listOf(
+        "Arabic" to "🇸🇦",
         "English" to "🇺🇸",
         "French" to "🇫🇷",
         "German" to "🇩🇪",
@@ -209,7 +210,7 @@ fun Lyrics(
                     }
                 }
                 if (translateLyrics) {
-                    if (needsTranslation(entry.text)) {
+                    if (needsTranslation(entry.text, targetLanguage)) {
                         scope.launch {
                             newEntry.translatedTextFlow.value = translateLyricsWithAI(entry.text, targetLanguage)
                         }
@@ -237,7 +238,7 @@ fun Lyrics(
                     }
                 }
                 if (translateLyrics) {
-                    if (needsTranslation(line)) {
+                    if (needsTranslation(line, targetLanguage)) {
                         scope.launch {
                             newEntry.translatedTextFlow.value = translateLyricsWithAI(line, targetLanguage)
                         }
