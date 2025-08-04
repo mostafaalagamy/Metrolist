@@ -10,6 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -34,7 +35,7 @@ fun OpenAISettings(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("OpenAI Configuration") },
+                title = { Text(stringResource(R.string.openai_configuration_title)) },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
                         Icon(
@@ -65,14 +66,14 @@ fun OpenAISettings(
                     modifier = Modifier.padding(16.dp)
                 ) {
                     Text(
-                        text = "🌟 OpenAI GPT-4o Integration",
+                        text = stringResource(R.string.openai_integration_header),
                         style = MaterialTheme.typography.headlineSmall,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        text = "احصل على أفضل ترجمة للكلمات باستخدام الذكاء الاصطناعي المتقدم",
+                        text = stringResource(R.string.openai_integration_description),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
@@ -87,7 +88,7 @@ fun OpenAISettings(
                     modifier = Modifier.padding(16.dp)
                 ) {
                     Text(
-                        text = "API Key Configuration",
+                        text = stringResource(R.string.api_key_configuration),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold
                     )
@@ -96,8 +97,8 @@ fun OpenAISettings(
                     OutlinedTextField(
                         value = apiKey,
                         onValueChange = onApiKeyChange,
-                        label = { Text("OpenAI API Key") },
-                        placeholder = { Text("sk-...") },
+                        label = { Text(stringResource(R.string.openai_api_key_label)) },
+                        placeholder = { Text(stringResource(R.string.api_key_placeholder)) },
                         visualTransformation = if (isApiKeyVisible) VisualTransformation.None else PasswordVisualTransformation(),
                         trailingIcon = {
                             IconButton(onClick = { isApiKeyVisible = !isApiKeyVisible }) {
@@ -122,7 +123,7 @@ fun OpenAISettings(
                         modifier = Modifier.fillMaxWidth(),
                         enabled = apiKey.isNotBlank()
                     ) {
-                        Text("حفظ API Key")
+                        Text(stringResource(R.string.save_api_key))
                     }
                 }
             }

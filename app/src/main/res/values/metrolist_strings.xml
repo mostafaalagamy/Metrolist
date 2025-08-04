@@ -92,6 +92,35 @@
     <string name="lyrics_romanize_japanese">Romanize japanese lyrics</string>
     <string name="lyrics_romanize_korean">Romanize korean lyrics</string>
     <string name="lyrics_translate_ai">Translate lyrics with AI</string>
+    <string name="openai_settings_title">OpenAI GPT-4o Settings</string>
+    <string name="openai_settings_description">Configure AI for best lyrics translation</string>
+    
+    <!-- OpenAI Settings Screen -->
+    <string name="openai_configuration_title">OpenAI Configuration</string>
+    <string name="openai_integration_header">🌟 OpenAI GPT-4o Integration</string>
+    <string name="openai_integration_description">Get the best lyrics translation using advanced AI</string>
+    <string name="api_key_configuration">API Key Configuration</string>
+    <string name="openai_api_key_label">OpenAI API Key</string>
+    <string name="api_key_placeholder">sk-...</string>
+    <string name="save_api_key">Save API Key</string>
+    <string name="api_key_steps_title">📖 Steps to get API Key</string>
+    <string name="show_hide_instructions">Show/Hide</string>
+    <string name="step_1_title">Create OpenAI Account</string>
+    <string name="step_1_description">Visit OpenAI platform and create a new account or login</string>
+    <string name="step_2_title">Navigate to API Keys</string>
+    <string name="step_2_description">Go to Dashboard → API Keys section</string>
+    <string name="step_3_title">Create New Key</string>
+    <string name="step_3_description">Click \"Create new secret key\" and copy it</string>
+    <string name="step_4_title">Add to App</string>
+    <string name="step_4_description">Paste the key in the field above and save</string>
+    <string name="open_website">Open Website</string>
+    <string name="pricing_info_title">💰 Pricing Information</string>
+    <string name="pricing_details">• Model: GPT-4o (Latest and most powerful)\n• Cost: ~$0.005 per translation request\n• High quality contextual translation\n• Optimized for musical and poetic content</string>
+    <string name="features_title">✨ Features</string>
+    <string name="features_description">🎵 Specialized lyrics translation\n🎭 Maintains musical essence and emotions\n🌍 Supports all major languages\n⚡ Fast and accurate results\n🎨 Contextual understanding of poetry</string>
+    <string name="warning_title">⚠️ Warning</string>
+    <string name="warning_description">Without API Key, translation will work using other services only (Google Translate). For best quality, please add OpenAI API Key.</string>
+    
     <string name="slim">Slim</string>
     <string name="slim_navbar">Hide bottom navigation bar labels</string>
     <string name="auto_playlists">Auto playlists</string>

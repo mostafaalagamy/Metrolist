@@ -214,8 +214,8 @@ fun ContentSettings(
 
         if (translateLyrics) {
             PreferenceEntry(
-                title = { Text("🌟 إعدادات OpenAI GPT-4o") },
-                description = "تكوين الذكاء الاصطناعي لأفضل ترجمة للكلمات",
+                title = { Text(stringResource(R.string.openai_settings_title)) },
+                description = stringResource(R.string.openai_settings_description),
                 icon = { Icon(painterResource(R.drawable.settings), null) },
                 onClick = { navController.navigate("openai_settings") }
             )
