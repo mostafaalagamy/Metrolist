@@ -1,12 +1,12 @@
 package com.metrolist.music.viewmodels
 
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
+import android.app.Application
 import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.metrolist.music.constants.OpenAIApiKeyKey
 import com.metrolist.music.translation.TranslationConfig
+import com.metrolist.music.utils.dataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -17,8 +17,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class OpenAISettingsViewModel @Inject constructor(
-    private val dataStore: DataStore<Preferences>
+    private val application: Application
 ) : ViewModel() {
+    
+    private val dataStore = application.dataStore
     
     private val _apiKey = MutableStateFlow("")
     val apiKey: StateFlow<String> = _apiKey.asStateFlow()
