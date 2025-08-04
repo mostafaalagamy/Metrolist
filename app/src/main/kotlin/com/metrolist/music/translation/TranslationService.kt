@@ -26,12 +26,11 @@ object TranslationService {
      * Main translation function with intelligent service selection and timeout
      */
     suspend fun translateLyricsWithAI(text: String, targetLanguage: String = "English"): String = withContext(Dispatchers.IO) {
-        // Use timeout to prevent long-running translations from blocking UI
-        withTimeoutOrNull(TRANSLATION_TIMEOUT_MS) {
+        try {
             try {
                 // Skip translation for very short or non-translatable text
                 if (!shouldTranslate(text)) {
-                    return@withTimeoutOrNull text
+                    return@withContext text
                 }
                 
                 // Clean and prepare text
@@ -40,45 +39,43 @@ object TranslationService {
                 
                 // Don't translate if source and target are the same
                 if (languageDetector.isSameLanguage(sourceLang, targetLanguage)) {
-                    return@withTimeoutOrNull text
+                    return@withContext text
                 }
                 
                 // Skip very short or meaningless text
                 if (shouldSkipTranslation(cleanedText)) {
-                    return@withTimeoutOrNull text
+                    return@withContext text
                 }
                 
-                // Try AI translation first (best quality) with shorter timeout
+                // Try AI translation first (best quality)
                 try {
-                    withTimeoutOrNull(15000L) { // 15 seconds for AI
-                        val aiResult = aiTranslationService.translate(cleanedText, sourceLang, targetLanguage)
-                        if (isValidTranslation(aiResult, text)) {
-                            return@withTimeoutOrNull postProcessor.process(aiResult, targetLanguage)
-                        }
+                    val aiResult = aiTranslationService.translate(cleanedText, sourceLang, targetLanguage)
+                    if (isValidTranslation(aiResult, text)) {
+                        return@withContext postProcessor.process(aiResult, targetLanguage)
                     }
                 } catch (e: Exception) {
                     // Fall back to traditional services
                 }
                 
-                // Try traditional translation services with shorter timeout
+                // Try traditional translation services
                 try {
-                    withTimeoutOrNull(10000L) { // 10 seconds for traditional
-                        val traditionalResult = traditionalTranslationService.translate(cleanedText, sourceLang, targetLanguage)
-                        if (isValidTranslation(traditionalResult, text)) {
-                            return@withTimeoutOrNull postProcessor.process(traditionalResult, targetLanguage)
-                        }
+                    val traditionalResult = traditionalTranslationService.translate(cleanedText, sourceLang, targetLanguage)
+                    if (isValidTranslation(traditionalResult, text)) {
+                        return@withContext postProcessor.process(traditionalResult, targetLanguage)
                     }
                 } catch (e: Exception) {
                     // All services failed, will return original text
                 }
                 
                 // Return original text if all methods fail
-                return@withTimeoutOrNull text
+                return@withContext text
                 
             } catch (e: Exception) {
-                return@withTimeoutOrNull text
+                return@withContext text
             }
-        } ?: text // Return original text if timeout occurs
+        } catch (e: Exception) {
+            return@withContext text
+        }
     }
     
     /**
