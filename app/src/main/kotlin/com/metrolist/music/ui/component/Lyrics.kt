@@ -160,17 +160,17 @@ fun Lyrics(
     // Language selection state
     var showLanguageMenu by remember { mutableStateOf(false) }
     val supportedLanguages = listOf(
-        "Arabic" to "🇪🇬",
-        "English" to "🇺🇸",
-        "French" to "🇫🇷",
-        "German" to "🇩🇪",
-        "Spanish" to "🇪🇸",
-        "Italian" to "🇮🇹",
-        "Portuguese" to "🇵🇹",
-        "Russian" to "🇷🇺",
-        "Chinese" to "🇨🇳",
-        "Japanese" to "🇯🇵",
-        "Korean" to "🇰🇷"
+        "Arabic" to "AR",
+        "English" to "EN",
+        "French" to "FR",
+        "German" to "DE",
+        "Spanish" to "ES",
+        "Italian" to "IT",
+        "Portuguese" to "PT",
+        "Russian" to "RU",
+        "Chinese" to "ZH",
+        "Japanese" to "JA",
+        "Korean" to "KO"
     )
 
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
@@ -694,95 +694,37 @@ fun Lyrics(
                     // Language Selection Button (only show if translation is enabled)
                     if (translateLyrics) {
                         Box {
-                            Card(
-                                modifier = Modifier
-                                    .clip(RoundedCornerShape(16.dp))
-                                    .clickable { showLanguageMenu = true },
-                                colors = CardDefaults.cardColors(
-                                    containerColor = MaterialTheme.colorScheme.secondaryContainer
-                                ),
-                                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+                            IconButton(
+                                onClick = { showLanguageMenu = true }
                             ) {
-                                Row(
-                                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                                ) {
-                                    Text(
-                                        text = supportedLanguages.find { it.first == targetLanguage }?.second ?: "🌐",
-                                        fontSize = 16.sp
-                                    )
-                                    Text(
-                                        text = targetLanguage,
-                                        fontSize = 12.sp,
-                                        color = MaterialTheme.colorScheme.onSecondaryContainer,
-                                        fontWeight = FontWeight.Medium
-                                    )
-                                    Icon(
-                                        painter = painterResource(id = android.R.drawable.arrow_down_float),
-                                        contentDescription = null,
-                                        modifier = Modifier.size(14.dp),
-                                        tint = MaterialTheme.colorScheme.onSecondaryContainer
-                                    )
-                                }
+                                Text(
+                                    text = supportedLanguages.find { it.first == targetLanguage }?.second ?: "EN",
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = textColor
+                                )
                             }
                             
                             DropdownMenu(
                                 expanded = showLanguageMenu,
-                                onDismissRequest = { showLanguageMenu = false },
-                                modifier = Modifier
-                                    .clip(RoundedCornerShape(12.dp))
-                                    .background(MaterialTheme.colorScheme.surface)
+                                onDismissRequest = { showLanguageMenu = false }
                             ) {
-                                supportedLanguages.forEach { (language, flag) ->
+                                supportedLanguages.forEach { (language, code) ->
                                     DropdownMenuItem(
                                         text = { 
-                                            Row(
-                                                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                                                verticalAlignment = Alignment.CenterVertically
-                                            ) {
-                                                Text(
-                                                    text = flag,
-                                                    fontSize = 18.sp
-                                                )
-                                                Text(
-                                                    text = language,
-                                                    fontSize = 14.sp,
-                                                    fontWeight = if (language == targetLanguage) FontWeight.Bold else FontWeight.Normal,
-                                                    color = if (language == targetLanguage) 
-                                                        MaterialTheme.colorScheme.primary 
-                                                    else 
-                                                        MaterialTheme.colorScheme.onSurface
-                                                )
-                                                if (language == targetLanguage) {
-                                                    Icon(
-                                                        painter = painterResource(id = android.R.drawable.presence_online),
-                                                        contentDescription = null,
-                                                        modifier = Modifier.size(16.dp),
-                                                        tint = MaterialTheme.colorScheme.primary
-                                                    )
-                                                }
-                                            }
+                                            Text("$code $language") 
                                         },
                                         onClick = {
                                             onTargetLanguageChange(language)
                                             showLanguageMenu = false
-                                        },
-                                        modifier = Modifier
-                                            .clip(RoundedCornerShape(8.dp))
-                                            .background(
-                                                if (language == targetLanguage) 
-                                                    MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f)
-                                                else 
-                                                    Color.Transparent
-                                            )
+                                        }
                                     )
                                 }
                             }
                         }
                         Spacer(Modifier.width(8.dp))
                     }
-                    
+
                     // Original More Button
                     IconButton(
                         onClick = {
