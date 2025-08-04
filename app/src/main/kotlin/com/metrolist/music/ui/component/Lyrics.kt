@@ -599,7 +599,7 @@ fun Lyrics(
                                 }
                                 translatedText != null -> {
                                     Text(
-                                        text = translatedText,
+                                        text = translatedText ?: "",
                                         fontSize = 16.sp,
                                         color = textColor.copy(alpha = 0.7f),
                                         textAlign = when (lyricsTextPosition) {
