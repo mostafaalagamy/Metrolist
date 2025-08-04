@@ -141,14 +141,14 @@ fun OpenAISettings(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = "📖 خطوات الحصول على API Key",
+                            text = stringResource(R.string.api_key_steps_title),
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold
                         )
                         TextButton(
                             onClick = { showInstructions = !showInstructions }
                         ) {
-                            Text(if (showInstructions) "إخفاء" else "عرض")
+                            Text(stringResource(if (showInstructions) R.string.hide_instructions else R.string.show_instructions))
                         }
                     }
                     
@@ -158,9 +158,9 @@ fun OpenAISettings(
                         // Step 1
                         StepCard(
                             stepNumber = "1",
-                            title = "إنشاء حساب OpenAI",
-                            description = "اذهب إلى platform.openai.com وأنشئ حساب جديد أو سجل دخولك",
-                            actionText = "فتح الموقع",
+                            title = stringResource(R.string.step_1_title),
+                            description = stringResource(R.string.step_1_description),
+                            actionText = stringResource(R.string.open_website),
                             onActionClick = { 
                                 uriHandler.openUri("https://platform.openai.com/") 
                             }
@@ -171,8 +171,8 @@ fun OpenAISettings(
                         // Step 2
                         StepCard(
                             stepNumber = "2",
-                            title = "الذهاب إلى API Keys",
-                            description = "في لوحة التحكم، اضغط على 'API Keys' من القائمة الجانبية"
+                            title = stringResource(R.string.step_2_title),
+                            description = stringResource(R.string.step_2_description)
                         )
                         
                         Spacer(modifier = Modifier.height(8.dp))
@@ -180,8 +180,8 @@ fun OpenAISettings(
                         // Step 3
                         StepCard(
                             stepNumber = "3",
-                            title = "إنشاء مفتاح جديد",
-                            description = "اضغط على 'Create new secret key' واختر اسم للمفتاح"
+                            title = stringResource(R.string.step_3_title),
+                            description = stringResource(R.string.step_3_description)
                         )
                         
                         Spacer(modifier = Modifier.height(8.dp))
@@ -189,8 +189,8 @@ fun OpenAISettings(
                         // Step 4
                         StepCard(
                             stepNumber = "4",
-                            title = "نسخ المفتاح",
-                            description = "انسخ المفتاح فوراً - لن تتمكن من رؤيته مرة أخرى!"
+                            title = stringResource(R.string.step_4_title),
+                            description = stringResource(R.string.step_4_description)
                         )
                         
                         Spacer(modifier = Modifier.height(8.dp))
@@ -216,7 +216,7 @@ fun OpenAISettings(
                     modifier = Modifier.padding(16.dp)
                 ) {
                     Text(
-                        text = "💰 معلومات التكلفة",
+                        text = stringResource(R.string.pricing_info_title),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onSecondaryContainer
@@ -224,10 +224,7 @@ fun OpenAISettings(
                     Spacer(modifier = Modifier.height(8.dp))
                     
                     Text(
-                        text = "• النموذج: GPT-4o (الأحدث والأقوى)\n" +
-                               "• التكلفة: ~0.01-0.02$ لكل أغنية\n" +
-                               "• رصيد مجاني: 5$ عند التسجيل\n" +
-                               "• يكفي لترجمة 250-500 أغنية مجاناً!",
+                        text = stringResource(R.string.pricing_details),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSecondaryContainer
                     )
@@ -245,7 +242,7 @@ fun OpenAISettings(
                     modifier = Modifier.padding(16.dp)
                 ) {
                     Text(
-                        text = "✨ المميزات",
+                        text = stringResource(R.string.features_title),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onTertiaryContainer
@@ -253,11 +250,7 @@ fun OpenAISettings(
                     Spacer(modifier = Modifier.height(8.dp))
                     
                     Text(
-                        text = "🎵 ترجمة متخصصة للكلمات الموسيقية\n" +
-                               "🎭 حفظ المشاعر والمعنى الأصلي\n" +
-                               "🌍 تكيف ثقافي ذكي\n" +
-                               "⚡ جودة 25% أفضل من الترجمة التقليدية\n" +
-                               "🎶 ترجمات قابلة للغناء وشاعرية",
+                        text = stringResource(R.string.features_description),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onTertiaryContainer
                     )
@@ -276,14 +269,14 @@ fun OpenAISettings(
                         modifier = Modifier.padding(16.dp)
                     ) {
                         Text(
-                            text = "⚠️ تنبيه",
+                            text = stringResource(R.string.warning_title),
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onErrorContainer
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
-                            text = "بدون API Key، ستعمل الترجمة باستخدام الخدمات الأخرى فقط (Google Translate). للحصول على أفضل جودة، يرجى إضافة OpenAI API Key.",
+                            text = stringResource(R.string.warning_description),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onErrorContainer
                         )

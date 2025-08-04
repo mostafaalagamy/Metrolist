@@ -104,7 +104,8 @@
     <string name="api_key_placeholder">sk-...</string>
     <string name="save_api_key">Save API Key</string>
     <string name="api_key_steps_title">📖 Steps to get API Key</string>
-    <string name="show_hide_instructions">Show/Hide</string>
+    <string name="show_instructions">Show</string>
+    <string name="hide_instructions">Hide</string>
     <string name="step_1_title">Create OpenAI Account</string>
     <string name="step_1_description">Visit OpenAI platform and create a new account or login</string>
     <string name="step_2_title">Navigate to API Keys</string>
