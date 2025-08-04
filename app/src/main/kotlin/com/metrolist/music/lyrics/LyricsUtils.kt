@@ -495,7 +495,7 @@ object LyricsUtils {
         }
         
         // Try services in order of preference
-        val translationServices = listOf(
+        val translationServices = listOf<suspend () -> String>(
             { translateWithLibreTranslate(text, sourceLangCode, targetLangCode) },
             { translateWithMicrosoftTranslator(text, sourceLangCode, targetLangCode) },
             { translateWithGoogleTranslate(text, targetLanguage) }
@@ -614,7 +614,7 @@ object LyricsUtils {
     private fun parseLibreTranslateResponse(response: String): String? {
         try {
             // LibreTranslate returns: {"translatedText": "translated text"}
-            val regex = """"translatedText"\s*:\s*"([^"\\]*(\\.[^"\\]*)*)"".toRegex()
+            val regex = """"translatedText"\s*:\s*"([^"\\\\]*(\\\\.[^"\\\\]*)*)"".toRegex()
             val match = regex.find(response)
             
             if (match != null) {
@@ -638,7 +638,7 @@ object LyricsUtils {
     private fun parseMicrosoftTranslatorResponse(response: String): String? {
         try {
             // Microsoft returns: [{"translations":[{"text":"translated text","to":"target_lang"}]}]
-            val regex = """"text"\s*:\s*"([^"\\]*(\\.[^"\\]*)*)"".toRegex()
+            val regex = """"text"\s*:\s*"([^"\\\\]*(\\\\.[^"\\\\]*)*)"".toRegex()
             val match = regex.find(response)
             
             if (match != null) {
@@ -774,7 +774,7 @@ object LyricsUtils {
             // Google Translate returns a complex JSON array
             // Format: [[["translated text","original text",null,null,3]],null,"source_lang"]
             
-            val regex = """"([^"\\]*(\\.[^"\\]*)*)"""".toRegex()
+            val regex = """"([^"\\\\]*(\\\\.[^"\\\\]*)*)"".toRegex()
             val matches = regex.findAll(response).toList()
             
             if (matches.isNotEmpty()) {
