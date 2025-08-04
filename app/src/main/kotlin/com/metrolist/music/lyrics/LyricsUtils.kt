@@ -386,15 +386,9 @@ object LyricsUtils {
 
     /**
      * Detects if text needs translation based on language detection
-     * Now translates any text to the target language
      */
     fun needsTranslation(text: String, targetLanguage: String = "English"): Boolean {
-        if (text.isEmpty()) return false
-        
-        // Always translate if target language is different from source
-        // We'll detect source language and compare with target
-        val detectedLanguage = detectLanguage(text)
-        return detectedLanguage != targetLanguage
+        return com.metrolist.music.translation.TranslationService.needsTranslation(text, targetLanguage)
     }
     
     /**
@@ -433,23 +427,12 @@ object LyricsUtils {
     }
 
     /**
-     * Translates text to user's preferred language using AI (Gemini API).
-     * This function detects the source language and translates to English by default.
-     * You can modify the target language based on user preferences.
+     * Translates text to user's preferred language using organized translation service
      */
     suspend fun translateLyricsWithAI(text: String, targetLanguage: String = "English"): String = withContext(Dispatchers.IO) {
         try {
-            // For better translations, we'll try multiple approaches
-            
-            // First try: Use a better translation prompt for lyrics context
-            val improvedTranslation = translateWithImprovedContext(text, targetLanguage)
-            if (improvedTranslation != text) {
-                return@withContext improvedTranslation
-            }
-            
-            // Fallback: Use Google Translate
-            return@withContext translateWithGoogleTranslate(text, targetLanguage)
-            
+            // Use the organized translation service
+            return@withContext com.metrolist.music.translation.TranslationService.translateLyricsWithAI(text, targetLanguage)
         } catch (e: Exception) {
             // Return original text if translation fails
             text

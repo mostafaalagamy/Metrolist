@@ -157,21 +157,11 @@ fun Lyrics(
     val (targetLanguage, onTargetLanguageChange) = rememberPreference(TranslationTargetLanguageKey, "English")
     val scope = rememberCoroutineScope()
 
-    // Language selection state
+        // Language selection state
     var showLanguageMenu by remember { mutableStateOf(false) }
-    val supportedLanguages = listOf(
-        "Arabic" to "AR",
-        "English" to "EN",
-        "French" to "FR",
-        "German" to "DE",
-        "Spanish" to "ES",
-        "Italian" to "IT",
-        "Portuguese" to "PT",
-        "Russian" to "RU",
-        "Chinese" to "ZH",
-        "Japanese" to "JA",
-        "Korean" to "KO"
-    )
+    val supportedLanguages = remember { 
+        com.metrolist.music.translation.TranslationService.getSupportedLanguages()
+    }
 
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
     val lyricsEntity by playerConnection.currentLyrics.collectAsState(initial = null)
