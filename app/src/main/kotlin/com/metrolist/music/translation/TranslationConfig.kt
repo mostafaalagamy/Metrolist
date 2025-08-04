@@ -1,13 +1,20 @@
 package com.metrolist.music.translation
 
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import com.metrolist.music.constants.OpenAIApiKeyKey
+
 /**
  * Configuration object for translation services
- * Replace with actual API keys when available
+ * API keys are managed through DataStore preferences
  */
 object TranslationConfig {
     
     // OpenAI Configuration
-    const val OPENAI_API_KEY = "YOUR_OPENAI_API_KEY_HERE"
+    var OPENAI_API_KEY: String = ""
+        private set
     const val OPENAI_MODEL = "gpt-4o"
     const val OPENAI_MAX_TOKENS = 300
     const val OPENAI_TEMPERATURE = 0.1
@@ -47,10 +54,26 @@ object TranslationConfig {
     }
     
     /**
+     * Update OpenAI API key
+     */
+    fun updateOpenAIApiKey(apiKey: String) {
+        OPENAI_API_KEY = apiKey
+    }
+    
+    /**
      * Check if OpenAI API is configured
      */
     fun isOpenAIConfigured(): Boolean {
-        return OPENAI_API_KEY != "YOUR_OPENAI_API_KEY_HERE" && OPENAI_API_KEY.isNotBlank()
+        return OPENAI_API_KEY.isNotBlank() && OPENAI_API_KEY.startsWith("sk-")
+    }
+    
+    /**
+     * Get OpenAI API key from DataStore
+     */
+    fun getOpenAIApiKeyFlow(dataStore: DataStore<Preferences>): Flow<String> {
+        return dataStore.data.map { preferences ->
+            preferences[OpenAIApiKeyKey] ?: ""
+        }
     }
     
     /**

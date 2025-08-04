@@ -275,6 +275,7 @@ val LyricsRomanizeJapaneseKey = booleanPreferencesKey("lyricsRomanizeJapanese")
 val LyricsRomanizeKoreanKey = booleanPreferencesKey("lyricsRomanizeKorean")
 val TranslateLyricsKey = booleanPreferencesKey("translateLyrics")
 val TranslationTargetLanguageKey = stringPreferencesKey("translationTargetLanguage")
+val OpenAIApiKeyKey = stringPreferencesKey("openaiApiKey")
 
 val PlayerVolumeKey = floatPreferencesKey("playerVolume")
 val RepeatModeKey = intPreferencesKey("repeatMode")

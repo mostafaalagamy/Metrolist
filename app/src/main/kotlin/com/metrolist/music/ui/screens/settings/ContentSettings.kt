@@ -212,6 +212,15 @@ fun ContentSettings(
             onCheckedChange = onTranslateLyricsChange,
         )
 
+        if (translateLyrics) {
+            BasicPreference(
+                title = { Text("🌟 إعدادات OpenAI GPT-4o") },
+                description = { Text("تكوين الذكاء الاصطناعي لأفضل ترجمة للكلمات") },
+                icon = { Icon(painterResource(R.drawable.settings), null) },
+                onClick = { navController.navigate("openai_settings") }
+            )
+        }
+
         PreferenceGroupTitle(title = stringResource(R.string.misc))
         EditTextPreference(
             title = { Text(stringResource(R.string.top_length)) },
