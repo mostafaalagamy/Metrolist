@@ -178,63 +178,52 @@ fun Lyrics(
         if (darkTheme == DarkMode.AUTO) isSystemInDarkTheme else darkTheme == DarkMode.ON
     }
 
-    val lines = remember(lyrics, scope) {
+    val lines = remember(lyrics) {
         if (lyrics == null || lyrics == LYRICS_NOT_FOUND) {
             emptyList()
         } else if (lyrics.startsWith("[")) {
             val parsedLines = parseLyrics(lyrics)
             parsedLines.map { entry ->
-                val newEntry = LyricsEntry(entry.time, entry.text)
-                if (romanizeJapaneseLyrics) {
-                    if (isJapanese(entry.text) && !isChinese(entry.text)) {
-                        scope.launch {
-                            newEntry.romanizedTextFlow.value = romanizeJapanese(entry.text)
-                        }
-                    }
-                }
-                if (romanizeKoreanLyrics) {
-                    if (isKorean(entry.text)) {
-                        scope.launch {
-                            newEntry.romanizedTextFlow.value = romanizeKorean(entry.text)
-                        }
-                    }
-                }
-                if (translateLyrics) {
-                    if (needsTranslation(entry.text, targetLanguage)) {
-                        scope.launch {
-                            newEntry.translatedTextFlow.value = translateLyricsWithAI(entry.text, targetLanguage)
-                        }
-                    }
-                }
-                newEntry
+                LyricsEntry(entry.time, entry.text)
             }.let {
                 listOf(LyricsEntry.HEAD_LYRICS_ENTRY) + it
             }
         } else {
             lyrics.lines().mapIndexed { index, line ->
-                val newEntry = LyricsEntry(index * 100L, line)
-                if (romanizeJapaneseLyrics) {
-                    if (isJapanese(line) && !isChinese(line)) {
-                        scope.launch {
-                            newEntry.romanizedTextFlow.value = romanizeJapanese(line)
-                        }
+                LyricsEntry(index * 100L, line)
+            }
+        }
+    }
+    
+    // Start translations asynchronously after UI is rendered
+    LaunchedEffect(lines, romanizeJapaneseLyrics, romanizeKoreanLyrics, translateLyrics, targetLanguage) {
+        lines.forEach { entry ->
+            if (entry.text.isNotBlank() && entry != LyricsEntry.HEAD_LYRICS_ENTRY) {
+                // Launch each translation in separate coroutines to avoid blocking
+                if (romanizeJapaneseLyrics && isJapanese(entry.text) && !isChinese(entry.text)) {
+                    launch(Dispatchers.IO) {
+                        entry.romanizedTextFlow.value = romanizeJapanese(entry.text)
                     }
                 }
-                if (romanizeKoreanLyrics) {
-                    if (isKorean(line)) {
-                        scope.launch {
-                            newEntry.romanizedTextFlow.value = romanizeKorean(line)
-                        }
+                if (romanizeKoreanLyrics && isKorean(entry.text)) {
+                    launch(Dispatchers.IO) {
+                        entry.romanizedTextFlow.value = romanizeKorean(entry.text)
                     }
                 }
-                if (translateLyrics) {
-                    if (needsTranslation(line, targetLanguage)) {
-                        scope.launch {
-                            newEntry.translatedTextFlow.value = translateLyricsWithAI(line, targetLanguage)
-                        }
-                    }
-                }
-                newEntry
+                                 if (translateLyrics && needsTranslation(entry.text, targetLanguage)) {
+                     launch(Dispatchers.IO) {
+                         entry.isTranslating.value = true
+                         try {
+                             val result = translateLyricsWithAI(entry.text, targetLanguage)
+                             entry.translatedTextFlow.value = result
+                         } catch (e: Exception) {
+                             // Keep original text if translation fails
+                             entry.translatedTextFlow.value = null
+                         } finally {
+                             entry.isTranslating.value = false
+                         }
+                     }
+                 }
             }
         }
     }
@@ -589,21 +578,39 @@ fun Lyrics(
                             }
                         }
                         if (translateLyrics) {
-                            // Show translated text if available
+                            // Show translated text or loading indicator
                             val translatedText by item.translatedTextFlow.collectAsState()
-                            translatedText?.let { translated ->
-                                Text(
-                                    text = translated,
-                                    fontSize = 16.sp,
-                                    color = textColor.copy(alpha = 0.7f),
-                                    textAlign = when (lyricsTextPosition) {
-                                        LyricsPosition.LEFT -> TextAlign.Left
-                                        LyricsPosition.CENTER -> TextAlign.Center
-                                        LyricsPosition.RIGHT -> TextAlign.Right
-                                    },
-                                    fontWeight = FontWeight.Normal,
-                                    modifier = Modifier.padding(top = 2.dp)
-                                )
+                            val isTranslating by item.isTranslating.collectAsState()
+                            
+                            when {
+                                isTranslating -> {
+                                    Text(
+                                        text = "⋯", // Loading dots
+                                        fontSize = 16.sp,
+                                        color = textColor.copy(alpha = 0.5f),
+                                        textAlign = when (lyricsTextPosition) {
+                                            LyricsPosition.LEFT -> TextAlign.Left
+                                            LyricsPosition.CENTER -> TextAlign.Center
+                                            LyricsPosition.RIGHT -> TextAlign.Right
+                                        },
+                                        fontWeight = FontWeight.Normal,
+                                        modifier = Modifier.padding(top = 2.dp)
+                                    )
+                                }
+                                translatedText != null -> {
+                                    Text(
+                                        text = translatedText,
+                                        fontSize = 16.sp,
+                                        color = textColor.copy(alpha = 0.7f),
+                                        textAlign = when (lyricsTextPosition) {
+                                            LyricsPosition.LEFT -> TextAlign.Left
+                                            LyricsPosition.CENTER -> TextAlign.Center
+                                            LyricsPosition.RIGHT -> TextAlign.Right
+                                        },
+                                        fontWeight = FontWeight.Normal,
+                                        modifier = Modifier.padding(top = 2.dp)
+                                    )
+                                }
                             }
                         }
                     }
