@@ -9,9 +9,9 @@ import kotlinx.coroutines.withContext
 object TraditionalTranslationService {
     
     private val providers = listOf(
-        LibreTranslateProvider,
-        MicrosoftTranslatorProvider,
-        GoogleTranslateProvider
+        GoogleTranslateProvider,        // Most reliable and accurate
+        MicrosoftTranslatorProvider,    // Good fallback
+        LibreTranslateProvider          // Last resort (open source)
     )
     
     /**

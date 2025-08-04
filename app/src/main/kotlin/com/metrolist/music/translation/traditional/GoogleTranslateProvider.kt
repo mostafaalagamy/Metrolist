@@ -62,20 +62,20 @@ object GoogleTranslateProvider : TraditionalProvider {
     }
     
     private fun getGoogleLanguageCode(langCode: String): String {
-        return when (langCode) {
-            "ar" -> "ar"
-            "en" -> "en"
-            "fr" -> "fr"
-            "de" -> "de"
-            "es" -> "es"
-            "it" -> "it"
-            "pt" -> "pt"
-            "ru" -> "ru"
-            "zh" -> "zh-cn"
-            "ja" -> "ja"
-            "ko" -> "ko"
+        return when (langCode.lowercase()) {
+            "ar", "arabic" -> "ar"
+            "en", "english" -> "en"
+            "fr", "french" -> "fr"
+            "de", "german" -> "de"
+            "es", "spanish" -> "es"
+            "it", "italian" -> "it"
+            "pt", "portuguese" -> "pt"
+            "ru", "russian" -> "ru"
+            "zh", "chinese" -> "zh"
+            "ja", "japanese" -> "ja"
+            "ko", "korean" -> "ko"
             "auto" -> "auto"
-            else -> "en"
+            else -> "auto"  // Let Google auto-detect instead of defaulting to English
         }
     }
 }

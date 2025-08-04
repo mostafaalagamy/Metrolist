@@ -12,45 +12,60 @@ object HuggingFaceProvider : AIProvider {
     
     override suspend fun translate(prompt: String, originalText: String): String = withContext(Dispatchers.IO) {
         try {
-            val url = "https://api-inference.huggingface.co/models/facebook/mbart-large-50-many-to-many-mmt"
+            // Try multiple high-quality translation models
+            val models = listOf(
+                "facebook/nllb-200-distilled-600M",  // Better multilingual model
+                "Helsinki-NLP/opus-mt-mul-en"        // Fallback for English
+            )
             
-            val requestBody = """
-                {
-                    "inputs": "$prompt",
-                    "parameters": {
-                        "max_length": 250,
-                        "temperature": 0.8,
-                        "top_p": 0.95,
-                        "do_sample": true,
-                        "repetition_penalty": 1.1,
-                        "return_full_text": false
+            for (model in models) {
+                try {
+                    val url = "https://api-inference.huggingface.co/models/$model"
+                    
+                    val requestBody = """
+                        {
+                            "inputs": "$originalText",
+                            "parameters": {
+                                "max_length": 200,
+                                "temperature": 0.1,
+                                "do_sample": false,
+                                "early_stopping": true,
+                                "repetition_penalty": 1.05
+                            }
+                        }
+                    """.trimIndent()
+            
+                    val connection = URL(url).openConnection() as HttpURLConnection
+                    connection.requestMethod = "POST"
+                    connection.setRequestProperty("Content-Type", "application/json")
+                    connection.setRequestProperty("Accept", "application/json")
+                    connection.setRequestProperty("User-Agent", "MetrolistMusicApp/1.0")
+                    // Note: For production, add your Hugging Face API key
+                    // connection.setRequestProperty("Authorization", "Bearer YOUR_HF_TOKEN")
+                    connection.doOutput = true
+                    connection.connectTimeout = 20000
+                    connection.readTimeout = 20000
+                    
+                    connection.outputStream.use { os ->
+                        val input = requestBody.toByteArray(Charsets.UTF_8)
+                        os.write(input, 0, input.size)
                     }
+                    
+                    val responseCode = connection.responseCode
+                    if (responseCode == 200) {
+                        val response = connection.inputStream.bufferedReader().readText()
+                        val result = parseResponse(response)
+                        if (result != null && result != originalText) {
+                            return@withContext result
+                        }
+                    }
+                } catch (e: Exception) {
+                    // Try next model
+                    continue
                 }
-            """.trimIndent()
-            
-            val connection = URL(url).openConnection() as HttpURLConnection
-            connection.requestMethod = "POST"
-            connection.setRequestProperty("Content-Type", "application/json")
-            connection.setRequestProperty("Accept", "application/json")
-            connection.setRequestProperty("User-Agent", "MetrolistMusicApp/1.0")
-            // Note: For production, add your Hugging Face API key
-            // connection.setRequestProperty("Authorization", "Bearer YOUR_HF_TOKEN")
-            connection.doOutput = true
-            connection.connectTimeout = 30000
-            connection.readTimeout = 30000
-            
-            connection.outputStream.use { os ->
-                val input = requestBody.toByteArray(Charsets.UTF_8)
-                os.write(input, 0, input.size)
             }
             
-            val responseCode = connection.responseCode
-            if (responseCode == 200) {
-                val response = connection.inputStream.bufferedReader().readText()
-                return@withContext parseResponse(response) ?: originalText
-            } else {
-                throw Exception("Hugging Face API error: $responseCode")
-            }
+            throw Exception("All Hugging Face models failed")
         } catch (e: Exception) {
             throw e
         }

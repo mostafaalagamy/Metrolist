@@ -53,24 +53,24 @@ object TranslationService {
                     return@withContext cachedTranslation
                 }
                 
-                // Try AI translation first (best quality)
+                // Try traditional translation services first (more reliable)
                 try {
-                    val aiResult = aiTranslationService.translate(cleanedText, sourceLang, targetLanguage)
-                    if (isValidTranslation(aiResult, text)) {
-                        val processedResult = postProcessor.process(aiResult, targetLanguage)
+                    val traditionalResult = traditionalTranslationService.translate(cleanedText, sourceLang, targetLanguage)
+                    if (isValidTranslation(traditionalResult, text)) {
+                        val processedResult = postProcessor.process(traditionalResult, targetLanguage)
                         // Store successful translation in cache
                         TranslationCache.storeTranslation(cleanedText, processedResult, sourceLang, targetLanguage)
                         return@withContext processedResult
                     }
                 } catch (e: Exception) {
-                    // Fall back to traditional services
+                    // Fall back to AI services
                 }
                 
-                // Try traditional translation services
+                // Try AI translation as fallback
                 try {
-                    val traditionalResult = traditionalTranslationService.translate(cleanedText, sourceLang, targetLanguage)
-                    if (isValidTranslation(traditionalResult, text)) {
-                        val processedResult = postProcessor.process(traditionalResult, targetLanguage)
+                    val aiResult = aiTranslationService.translate(cleanedText, sourceLang, targetLanguage)
+                    if (isValidTranslation(aiResult, text)) {
+                        val processedResult = postProcessor.process(aiResult, targetLanguage)
                         // Store successful translation in cache
                         TranslationCache.storeTranslation(cleanedText, processedResult, sourceLang, targetLanguage)
                         return@withContext processedResult
