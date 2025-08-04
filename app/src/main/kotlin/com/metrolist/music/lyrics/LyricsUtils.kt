@@ -457,7 +457,7 @@ object LyricsUtils {
     }
     
     /**
-     * Improved translation with better context and handling for lyrics
+     * Improved translation with modern APIs and better context handling for lyrics
      */
     private suspend fun translateWithImprovedContext(text: String, targetLanguage: String): String = withContext(Dispatchers.IO) {
         try {
@@ -473,10 +473,186 @@ object LyricsUtils {
             // For lyrics, we want more natural, poetic translations
             val enhancedText = preprocessLyricsText(cleanText)
             
-            return@withContext translateWithGoogleTranslate(enhancedText, targetLanguage)
+            // Try multiple translation services in order of preference
+            return@withContext translateWithMultipleServices(enhancedText, targetLanguage)
             
         } catch (e: Exception) {
             text
+        }
+    }
+    
+    /**
+     * Try multiple translation services for better reliability and quality
+     */
+    private suspend fun translateWithMultipleServices(text: String, targetLanguage: String): String = withContext(Dispatchers.IO) {
+        val sourceLang = detectLanguage(text)
+        val sourceLangCode = getLanguageCode(sourceLang)
+        val targetLangCode = getLanguageCode(targetLanguage)
+        
+        // Don't translate if source and target are the same
+        if (sourceLangCode == targetLangCode) {
+            return@withContext text
+        }
+        
+        // Try services in order of preference
+        val translationServices = listOf(
+            { translateWithLibreTranslate(text, sourceLangCode, targetLangCode) },
+            { translateWithMicrosoftTranslator(text, sourceLangCode, targetLangCode) },
+            { translateWithGoogleTranslate(text, targetLanguage) }
+        )
+        
+        for (service in translationServices) {
+            try {
+                val result = service()
+                if (result != text && result.isNotBlank()) {
+                    return@withContext postProcessTranslation(result, targetLanguage)
+                }
+            } catch (e: Exception) {
+                // Continue to next service
+                continue
+            }
+        }
+        
+        // If all services fail, return original text
+        return@withContext text
+    }
+    
+    /**
+     * LibreTranslate API - Free and open source translation
+     */
+    private suspend fun translateWithLibreTranslate(text: String, sourceLang: String, targetLang: String): String = withContext(Dispatchers.IO) {
+        try {
+            val encodedText = java.net.URLEncoder.encode(text, "UTF-8")
+            
+            // Use public LibreTranslate instance (you can change this to your own instance)
+            val url = "https://libretranslate.de/translate"
+            
+            val jsonPayload = """
+                {
+                    "q": "$text",
+                    "source": "$sourceLang",
+                    "target": "$targetLang",
+                    "format": "text"
+                }
+            """.trimIndent()
+            
+            val connection = java.net.URL(url).openConnection() as java.net.HttpURLConnection
+            connection.requestMethod = "POST"
+            connection.setRequestProperty("Content-Type", "application/json")
+            connection.setRequestProperty("Accept", "application/json")
+            connection.setRequestProperty("User-Agent", "MetrolistMusicApp/1.0")
+            connection.doOutput = true
+            connection.connectTimeout = 15000
+            connection.readTimeout = 20000
+            
+            // Send request
+            connection.outputStream.use { os ->
+                val input = jsonPayload.toByteArray(Charsets.UTF_8)
+                os.write(input, 0, input.size)
+            }
+            
+            val responseCode = connection.responseCode
+            if (responseCode == 200) {
+                val response = connection.inputStream.bufferedReader().readText()
+                val translatedText = parseLibreTranslateResponse(response)
+                return@withContext translatedText ?: text
+            } else {
+                throw Exception("LibreTranslate API error: $responseCode")
+            }
+        } catch (e: Exception) {
+            throw e
+        }
+    }
+    
+    /**
+     * Microsoft Translator API - Free tier available
+     */
+    private suspend fun translateWithMicrosoftTranslator(text: String, sourceLang: String, targetLang: String): String = withContext(Dispatchers.IO) {
+        try {
+            val encodedText = java.net.URLEncoder.encode(text, "UTF-8")
+            
+            // Microsoft Translator Text API v3.0
+            val url = "https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=$sourceLang&to=$targetLang"
+            
+            val jsonPayload = """
+                [{"Text": "$text"}]
+            """.trimIndent()
+            
+            val connection = java.net.URL(url).openConnection() as java.net.HttpURLConnection
+            connection.requestMethod = "POST"
+            connection.setRequestProperty("Content-Type", "application/json")
+            connection.setRequestProperty("Accept", "application/json")
+            connection.setRequestProperty("User-Agent", "MetrolistMusicApp/1.0")
+            // Note: For production, you would need a proper API key here
+            // connection.setRequestProperty("Ocp-Apim-Subscription-Key", "YOUR_API_KEY")
+            connection.doOutput = true
+            connection.connectTimeout = 15000
+            connection.readTimeout = 20000
+            
+            // Send request
+            connection.outputStream.use { os ->
+                val input = jsonPayload.toByteArray(Charsets.UTF_8)
+                os.write(input, 0, input.size)
+            }
+            
+            val responseCode = connection.responseCode
+            if (responseCode == 200) {
+                val response = connection.inputStream.bufferedReader().readText()
+                val translatedText = parseMicrosoftTranslatorResponse(response)
+                return@withContext translatedText ?: text
+            } else {
+                throw Exception("Microsoft Translator API error: $responseCode")
+            }
+        } catch (e: Exception) {
+            throw e
+        }
+    }
+    
+    /**
+     * Parse LibreTranslate JSON response
+     */
+    private fun parseLibreTranslateResponse(response: String): String? {
+        try {
+            // LibreTranslate returns: {"translatedText": "translated text"}
+            val regex = """"translatedText"\s*:\s*"([^"\\]*(\\.[^"\\]*)*)"".toRegex()
+            val match = regex.find(response)
+            
+            if (match != null) {
+                var translation = match.groupValues[1]
+                // Clean up escaped characters
+                translation = translation.replace("\\\"", "\"")
+                translation = translation.replace("\\n", "\n")
+                translation = translation.replace("\\/", "/")
+                return translation
+            }
+            
+            return null
+        } catch (e: Exception) {
+            return null
+        }
+    }
+    
+    /**
+     * Parse Microsoft Translator JSON response
+     */
+    private fun parseMicrosoftTranslatorResponse(response: String): String? {
+        try {
+            // Microsoft returns: [{"translations":[{"text":"translated text","to":"target_lang"}]}]
+            val regex = """"text"\s*:\s*"([^"\\]*(\\.[^"\\]*)*)"".toRegex()
+            val match = regex.find(response)
+            
+            if (match != null) {
+                var translation = match.groupValues[1]
+                // Clean up escaped characters
+                translation = translation.replace("\\\"", "\"")
+                translation = translation.replace("\\n", "\n")
+                translation = translation.replace("\\/", "/")
+                return translation
+            }
+            
+            return null
+        } catch (e: Exception) {
+            return null
         }
     }
     
@@ -516,36 +692,48 @@ object LyricsUtils {
     }
     
     /**
-     * Helper function to call Gemini API for translation
-     * This is a placeholder - implement actual API call
+     * Post-process translation specifically for lyrics
      */
-    private suspend fun translateWithGeminiAPI(prompt: String, originalText: String, targetLanguage: String): String {
-        return try {
-            // Use Google Translate API as a simple alternative
-            translateWithGoogleTranslate(originalText, targetLanguage)
-        } catch (e: Exception) {
-            // Fallback: return original text if translation fails
-            originalText
+    private fun postProcessTranslation(translation: String, targetLanguage: String): String {
+        var processedTranslation = translation
+        
+        // Fix common translation issues for lyrics
+        when (targetLanguage) {
+            "Arabic" -> {
+                // Ensure proper Arabic punctuation
+                processedTranslation = processedTranslation.replace("?", "؟")
+                processedTranslation = processedTranslation.replace(",", "،")
+            }
+            "English" -> {
+                // Capitalize first letter of sentences
+                processedTranslation = processedTranslation.replaceFirstChar { 
+                    if (it.isLowerCase()) it.titlecase() else it.toString() 
+                }
+            }
         }
+        
+        // Remove excessive whitespace
+        processedTranslation = processedTranslation.replace(Regex("\\s+"), " ").trim()
+        
+        return processedTranslation
     }
     
     /**
-     * Simple translation using Google Translate web service
-     * Note: This is a basic implementation for demonstration
-     * In production, use official Google Translate API with proper authentication
+     * Simple translation using Google Translate web service (Enhanced)
+     * Note: This is a fallback option
      */
     private suspend fun translateWithGoogleTranslate(text: String, targetLanguage: String): String = withContext(Dispatchers.IO) {
         try {
-            val encodedText = java.net.URLEncoder.encode(text, "UTF-8")
-            
-            // Auto-detect source language
-            val sourceLangCode = getLanguageCode(detectLanguage(text))
-            val targetLangCode = getLanguageCode(targetLanguage)
+            val sourceLang = detectLanguage(text)
+            val sourceLangCode = getGoogleLanguageCode(sourceLang)
+            val targetLangCode = getGoogleLanguageCode(targetLanguage)
             
             // Don't translate if source and target are the same
             if (sourceLangCode == targetLangCode) {
                 return@withContext text
             }
+            
+            val encodedText = java.net.URLEncoder.encode(text, "UTF-8")
             
             // Enhanced URL with more parameters for better translation quality
             val url = "https://translate.googleapis.com/translate_a/single?" +
@@ -571,8 +759,7 @@ object LyricsUtils {
             // Better JSON parsing for translation
             val translatedText = parseGoogleTranslateResponse(response)
             
-            // Post-process the translation for lyrics
-            return@withContext postProcessTranslation(translatedText ?: text, targetLanguage)
+            return@withContext translatedText ?: text
             
         } catch (e: Exception) {
             text // Return original text if translation fails
@@ -609,36 +796,29 @@ object LyricsUtils {
     }
     
     /**
-     * Post-process translation specifically for lyrics
+     * Convert language name to language code for LibreTranslate/Microsoft Translator
      */
-    private fun postProcessTranslation(translation: String, targetLanguage: String): String {
-        var processedTranslation = translation
-        
-        // Fix common translation issues for lyrics
-        when (targetLanguage) {
-            "Arabic" -> {
-                // Ensure proper Arabic punctuation
-                processedTranslation = processedTranslation.replace("?", "؟")
-                processedTranslation = processedTranslation.replace(",", "،")
-            }
-            "English" -> {
-                // Capitalize first letter of sentences
-                processedTranslation = processedTranslation.replaceFirstChar { 
-                    if (it.isLowerCase()) it.titlecase() else it.toString() 
-                }
-            }
+    private fun getLanguageCode(language: String): String {
+        return when (language) {
+            "Arabic" -> "ar"
+            "English" -> "en"
+            "French" -> "fr"
+            "German" -> "de"
+            "Spanish" -> "es"
+            "Italian" -> "it"
+            "Portuguese" -> "pt"
+            "Russian" -> "ru"
+            "Chinese" -> "zh"
+            "Japanese" -> "ja"
+            "Korean" -> "ko"
+            else -> "auto" // Let service auto-detect
         }
-        
-        // Remove excessive whitespace
-        processedTranslation = processedTranslation.replace(Regex("\\s+"), " ").trim()
-        
-        return processedTranslation
     }
     
     /**
-     * Convert language name to language code for Google Translate
+     * Convert language name to language code specifically for Google Translate
      */
-    private fun getLanguageCode(language: String): String {
+    private fun getGoogleLanguageCode(language: String): String {
         return when (language) {
             "Arabic" -> "ar"
             "English" -> "en"
