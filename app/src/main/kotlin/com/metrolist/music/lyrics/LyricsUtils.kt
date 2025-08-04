@@ -890,7 +890,7 @@ object LyricsUtils {
         if (cleanText.length < 2) return true
         
         // Skip common musical interjections that are universal
-        val universalSounds = listOf("oh", "ah", "eh", "mm", "hmm", "la", "na", "da", "ya", "وو", "آه", "أوه", "لا", "نا", "يا")
+        val universalSounds = listOf("oh", "ah", "eh", "mm", "hmm", "la", "na", "da", "ya", "وو", "آه", "أوه", "لا", "نا", "يا") // English and Arabic sounds
         if (universalSounds.contains(cleanText)) return true
         
         // Skip if text is mostly punctuation or numbers
@@ -910,7 +910,7 @@ object LyricsUtils {
         processedText = processedText.replace(Regex("[?]{2,}"), "?")
         
         // Handle common lyrical repetitions
-        processedText = processedText.replace(Regex("\\b(\\w+)\\s+\\1\\b"), "$1") // Remove word repetitions like "حبيبي حبيبي" -> "حبيبي"
+        processedText = processedText.replace(Regex("\\b(\\w+)\\s+\\1\\b"), "$1") // Remove word repetitions like "hello hello" -> "hello"
         
         return processedText.trim()
     }

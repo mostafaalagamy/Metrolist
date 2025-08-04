@@ -193,14 +193,7 @@ fun OpenAISettings(
                             description = stringResource(R.string.step_4_description)
                         )
                         
-                        Spacer(modifier = Modifier.height(8.dp))
-                        
-                        // Step 5
-                        StepCard(
-                            stepNumber = "5",
-                            title = "لصق المفتاح هنا",
-                            description = "الصق المفتاح في الحقل أعلاه واضغط 'حفظ'"
-                        )
+
                     }
                 }
             }
@@ -232,31 +225,6 @@ fun OpenAISettings(
             }
 
             // Benefits
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.tertiaryContainer
-                )
-            ) {
-                Column(
-                    modifier = Modifier.padding(16.dp)
-                ) {
-                    Text(
-                        text = stringResource(R.string.features_title),
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onTertiaryContainer
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    
-                    Text(
-                        text = stringResource(R.string.features_description),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onTertiaryContainer
-                    )
-                }
-            }
-
             // Warning
             if (apiKey.isBlank()) {
                 Card(

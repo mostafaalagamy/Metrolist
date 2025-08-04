@@ -123,9 +123,9 @@ fun LyricsImageCard(
     val context = LocalContext.current
     val density = LocalDensity.current
 
-    // حجم الكارد المربع (الأقل من العرض/الطول)
+    // Square card size (minimum of width/height)
     val cardSizeDp = remember {
-        340.dp // يمكنك تعديله حسب الحاجة أو جعله متغيراً
+        340.dp // Can be adjusted as needed or made variable
     }
     val cardCornerRadius = 20.dp
     val padding = 28.dp
@@ -269,7 +269,7 @@ fun LyricsImageCard(
                             contentDescription = null,
                             modifier = Modifier
                                 .size(16.dp),
-                            colorFilter = androidx.compose.ui.graphics.ColorFilter.tint(backgroundGradient) // الرمز بلون الخلفية
+                            colorFilter = androidx.compose.ui.graphics.ColorFilter.tint(backgroundGradient) // Icon with background color
                         )
                     }
 

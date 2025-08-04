@@ -490,7 +490,7 @@ class MusicService :
                 wasPlayingBeforeAudioFocusLoss = player.isPlaying
 
                 if (player.isPlaying) {
-                    player.volume = (playerVolume.value * normalizeFactor.value * 0.2f) // خفض إلى 20%
+                                            player.volume = (playerVolume.value * normalizeFactor.value * 0.2f) // Reduce to 20%
                 }
 
                 lastAudioFocusState = focusChange

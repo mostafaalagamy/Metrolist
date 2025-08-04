@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.metrolist.music.R
 import com.metrolist.music.constants.OpenAIApiKeyKey
 import com.metrolist.music.translation.TranslationConfig
 import com.metrolist.music.utils.dataStore
@@ -63,7 +64,7 @@ class OpenAISettingsViewModel @Inject constructor(
                 
                 // Validate API key format
                 if (apiKeyToSave.isNotBlank() && !apiKeyToSave.startsWith("sk-")) {
-                    _saveResult.value = SaveResult.Error("API Key يجب أن يبدأ بـ 'sk-'")
+                    _saveResult.value = SaveResult.Error(application.getString(R.string.api_key_validation_error))
                     return@launch
                 }
                 
@@ -76,13 +77,13 @@ class OpenAISettingsViewModel @Inject constructor(
                 TranslationConfig.updateOpenAIApiKey(apiKeyToSave)
                 
                 _saveResult.value = if (apiKeyToSave.isBlank()) {
-                    SaveResult.Success("تم حذف API Key بنجاح")
+                    SaveResult.Success(application.getString(R.string.api_key_deleted_success))
                 } else {
-                    SaveResult.Success("تم حفظ API Key بنجاح! ستحصل الآن على أفضل ترجمة بالذكاء الاصطناعي")
+                    SaveResult.Success(application.getString(R.string.api_key_saved_success))
                 }
                 
             } catch (e: Exception) {
-                _saveResult.value = SaveResult.Error("حدث خطأ أثناء الحفظ: ${e.message}")
+                _saveResult.value = SaveResult.Error(application.getString(R.string.api_key_save_error, e.message ?: "Unknown error"))
             } finally {
                 _isLoading.value = false
             }

@@ -97,13 +97,13 @@
     
     <!-- OpenAI Settings Screen -->
     <string name="openai_configuration_title">OpenAI Configuration</string>
-    <string name="openai_integration_header">🌟 OpenAI GPT-4o Integration</string>
+    <string name="openai_integration_header">OpenAI GPT-4o Integration</string>
     <string name="openai_integration_description">Get the best lyrics translation using advanced AI</string>
     <string name="api_key_configuration">API Key Configuration</string>
     <string name="openai_api_key_label">OpenAI API Key</string>
     <string name="api_key_placeholder">sk-...</string>
     <string name="save_api_key">Save API Key</string>
-    <string name="api_key_steps_title">📖 Steps to get API Key</string>
+    <string name="api_key_steps_title">Steps to get API Key</string>
     <string name="show_instructions">Show</string>
     <string name="hide_instructions">Hide</string>
     <string name="step_1_title">Create OpenAI Account</string>
@@ -115,12 +115,16 @@
     <string name="step_4_title">Add to App</string>
     <string name="step_4_description">Paste the key in the field above and save</string>
     <string name="open_website">Open Website</string>
-    <string name="pricing_info_title">💰 Pricing Information</string>
-    <string name="pricing_details">• Model: GPT-4o (Latest and most powerful)\n• Cost: ~$0.005 per translation request\n• High quality contextual translation\n• Optimized for musical and poetic content</string>
-    <string name="features_title">✨ Features</string>
-    <string name="features_description">🎵 Specialized lyrics translation\n🎭 Maintains musical essence and emotions\n🌍 Supports all major languages\n⚡ Fast and accurate results\n🎨 Contextual understanding of poetry</string>
-    <string name="warning_title">⚠️ Warning</string>
+    <string name="pricing_info_title">Pricing Information</string>
+    <string name="pricing_details">• Model: GPT-4o (Latest and most powerful)\n• Free credit: $5 when you sign up\n• Cost: ~$0.01-0.02 per song translation\n• Enough for 250-500 songs for free!\n• No ChatGPT Plus subscription required</string>
+    <string name="warning_title">Warning</string>
     <string name="warning_description">Without API Key, translation will work using other services only (Google Translate). For best quality, please add OpenAI API Key.</string>
+    
+    <!-- OpenAI ViewModel Messages -->
+    <string name="api_key_validation_error">API Key must start with \'sk-\'</string>
+    <string name="api_key_deleted_success">API Key deleted successfully</string>
+    <string name="api_key_saved_success">API Key saved successfully! You will now get the best AI translation</string>
+    <string name="api_key_save_error">Error occurred while saving: %1$s</string>
     
     <string name="slim">Slim</string>
     <string name="slim_navbar">Hide bottom navigation bar labels</string>

@@ -99,7 +99,7 @@ object TranslationService {
         // Skip very short text
         if (cleanText.length < 3) return false
         
-        // Skip common musical interjections and sounds
+        // Skip common musical interjections and sounds (English and Arabic)
         val universalSounds = setOf(
             "oh", "ah", "eh", "mm", "hmm", "la", "na", "da", "ya", "hey", "hi", "yo", "ok", "wow",
             "ooh", "aah", "yeah", "whoa", "woah", "hm", "uh", "um", "er", "em",
@@ -147,7 +147,7 @@ object TranslationService {
         val letterCount = cleanText.count { it.isLetter() }
         if (letterCount < 2) return true
         
-        // Skip common interjections and sounds
+        // Skip common interjections and sounds (English and Arabic)
         val commonSounds = setOf(
             "oh", "ah", "eh", "mm", "hmm", "la", "na", "da", "ya", "hey", "hi", "yo", "ok", "wow",
             "وو", "آه", "أوه", "لا", "نا", "يا", "هاي", "أوكيه"

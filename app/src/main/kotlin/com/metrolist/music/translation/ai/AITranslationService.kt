@@ -69,11 +69,11 @@ object AITranslationService {
         // Basic validations
         if (cleanResult.isBlank() || cleanResult == original) return false
         
-        // Reject error messages
+        // Reject error messages (English and Arabic)
         val errorPhrases = listOf(
             "Error", "error", "I cannot", "I can't", "I'm sorry", "Sorry", "unable to",
             "translation:", "translate:", "result:", "output:", "Note:", "Please note",
-            "لا أستطيع", "أعتذر", "عذراً", "خطأ"
+            "لا أستطيع", "أعتذر", "عذراً", "خطأ" // Arabic error phrases
         )
         
         if (errorPhrases.any { cleanResult.startsWith(it, ignoreCase = true) }) return false

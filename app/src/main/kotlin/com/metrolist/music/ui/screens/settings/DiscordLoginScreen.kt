@@ -85,7 +85,7 @@ fun DiscordLoginScreen(navController: NavController) {
                                         if (token) {
                                             Android.onRetrieveToken(token.slice(1, -1));
                                         } else {
-                                            // fallback إلى alert (منطق kizzy)
+                                            // fallback to alert (kizzy logic)
                                             var i = document.createElement('iframe');
                                             document.body.appendChild(i);
                                             setTimeout(function() {
