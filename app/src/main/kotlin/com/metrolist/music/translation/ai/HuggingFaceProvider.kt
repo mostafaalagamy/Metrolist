@@ -18,9 +18,12 @@ object HuggingFaceProvider : AIProvider {
                 {
                     "inputs": "$prompt",
                     "parameters": {
-                        "max_length": 200,
-                        "temperature": 0.7,
-                        "do_sample": true
+                        "max_length": 250,
+                        "temperature": 0.8,
+                        "top_p": 0.95,
+                        "do_sample": true,
+                        "repetition_penalty": 1.1,
+                        "return_full_text": false
                     }
                 }
             """.trimIndent()

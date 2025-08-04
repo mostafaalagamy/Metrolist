@@ -40,22 +40,22 @@ object AITranslationService {
      */
     private fun buildLyricsTranslationPrompt(text: String, sourceLang: String, targetLanguage: String): String {
         return """
-            You are a professional translator specializing in song lyrics and poetry. 
+            You are an expert song lyrics translator with deep understanding of music, poetry, and cultural nuances.
             
-            Task: Translate the following song lyrics from $sourceLang to $targetLanguage.
+            Task: Translate these song lyrics from $sourceLang to $targetLanguage
             
-            Instructions:
-            - Preserve the emotional meaning and poetic essence
-            - Maintain the rhythm and flow where possible
-            - Consider cultural context and metaphors
-            - Use natural, contemporary language
-            - Avoid literal word-for-word translation
-            - If it's a name, place, or proper noun, keep it as is
-            - If it's a universal expression (oh, ah, wow), adapt appropriately
+            Critical Requirements:
+            - Capture the emotional essence, not just literal meaning
+            - Keep the poetic flow and musical rhythm
+            - Use contemporary, natural $targetLanguage expressions
+            - Consider cultural context and adapt metaphors appropriately
+            - Make it singable and meaningful to native $targetLanguage speakers
+            - Preserve names, places, and artistic expressions
+            - Adapt universal sounds (oh, ah, wow) to $targetLanguage equivalents
             
-            Original lyrics: "$text"
+            Original: "$text"
             
-            Provide ONLY the translated text without any explanations:
+            Return ONLY the $targetLanguage translation (no quotes, explanations, or extra text):
         """.trimIndent()
     }
     
@@ -63,11 +63,30 @@ object AITranslationService {
      * Validate AI translation result
      */
     private fun isValidAIResult(result: String, original: String): Boolean {
-        return result.isNotBlank() && 
-               result != original && 
-               !result.startsWith("Error") &&
-               !result.startsWith("I cannot") &&
-               !result.startsWith("I'm sorry") &&
-               !result.contains("translation:")
+        val cleanResult = result.trim()
+        
+        // Basic validations
+        if (cleanResult.isBlank() || cleanResult == original) return false
+        
+        // Reject error messages
+        val errorPhrases = listOf(
+            "Error", "error", "I cannot", "I can't", "I'm sorry", "Sorry", "unable to",
+            "translation:", "translate:", "result:", "output:", "Note:", "Please note",
+            "لا أستطيع", "أعتذر", "عذراً", "خطأ"
+        )
+        
+        if (errorPhrases.any { cleanResult.startsWith(it, ignoreCase = true) }) return false
+        
+        // Reject if it's just the original text repeated
+        if (cleanResult.equals(original, ignoreCase = true)) return false
+        
+        // Reject if it contains too many non-letter characters (likely formatting issues)
+        val letterCount = cleanResult.count { it.isLetter() }
+        if (letterCount < cleanResult.length * 0.3) return false
+        
+        // Reject if it's suspiciously long compared to original
+        if (cleanResult.length > original.length * 3) return false
+        
+        return true
     }
 }

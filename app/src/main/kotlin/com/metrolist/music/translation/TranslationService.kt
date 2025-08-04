@@ -37,6 +37,11 @@ object TranslationService {
                 return@withContext text
             }
             
+            // Skip very short or meaningless text
+            if (shouldSkipTranslation(cleanedText)) {
+                return@withContext text
+            }
+            
             // Try AI translation first (best quality)
             try {
                 val aiResult = aiTranslationService.translate(cleanedText, sourceLang, targetLanguage)
@@ -48,9 +53,13 @@ object TranslationService {
             }
             
             // Try traditional translation services
-            val traditionalResult = traditionalTranslationService.translate(cleanedText, sourceLang, targetLanguage)
-            if (isValidTranslation(traditionalResult, text)) {
-                return@withContext postProcessor.process(traditionalResult, targetLanguage)
+            try {
+                val traditionalResult = traditionalTranslationService.translate(cleanedText, sourceLang, targetLanguage)
+                if (isValidTranslation(traditionalResult, text)) {
+                    return@withContext postProcessor.process(traditionalResult, targetLanguage)
+                }
+            } catch (e: Exception) {
+                // All services failed, will return original text
             }
             
             // Return original text if all methods fail
@@ -99,6 +108,32 @@ object TranslationService {
     }
     
     /**
+     * Check if translation should be skipped for very short or meaningless text
+     */
+    private fun shouldSkipTranslation(text: String): Boolean {
+        val cleanText = text.trim()
+        
+        // Skip very short text (less than 3 characters)
+        if (cleanText.length < 3) return true
+        
+        // Skip text that's mostly punctuation or symbols
+        val letterCount = cleanText.count { it.isLetter() }
+        if (letterCount < 2) return true
+        
+        // Skip common interjections and sounds
+        val commonSounds = setOf(
+            "oh", "ah", "eh", "mm", "hmm", "la", "na", "da", "ya", "hey", "hi", "yo", "ok", "wow",
+            "وو", "آه", "أوه", "لا", "نا", "يا", "هاي", "أوكيه"
+        )
+        if (commonSounds.contains(cleanText.lowercase())) return true
+        
+        // Skip repeated single characters
+        if (Regex("^(.)\\1*$").matches(cleanText)) return true
+        
+        return false
+    }
+    
+    /**
      * Validate translation result
      */
     private fun isValidTranslation(result: String, original: String): Boolean {
@@ -113,17 +148,17 @@ object TranslationService {
      */
     fun getSupportedLanguages(): List<Pair<String, String>> {
         return listOf(
-            "Arabic" to "🇪🇬",
-            "English" to "🇺🇸",
-            "French" to "🇫🇷", 
-            "German" to "🇩🇪",
-            "Spanish" to "🇪🇸",
-            "Italian" to "🇮🇹",
-            "Portuguese" to "🇵🇹",
-            "Russian" to "🇷🇺",
-            "Chinese" to "🇨🇳",
-            "Japanese" to "🇯🇵",
-            "Korean" to "🇰🇷"
+            "Arabic" to "AR",
+            "English" to "EN",
+            "French" to "FR", 
+            "German" to "DE",
+            "Spanish" to "ES",
+            "Italian" to "IT",
+            "Portuguese" to "PT",
+            "Russian" to "RU",
+            "Chinese" to "ZH",
+            "Japanese" to "JA",
+            "Korean" to "KO"
         )
     }
     
