@@ -38,29 +38,14 @@ object TranslationService {
                 val cleanedText = preprocessText(text)
                 val sourceLang = languageDetector.detectLanguage(cleanedText)
                 
-                // Debug logging (can be removed in production)
-                println("TranslationService DEBUG: Original='$text', Cleaned='$cleanedText', Source='$sourceLang', Target='$targetLanguage'")
-                
-                // Don't translate if source and target are the same (with confidence)
-                if (languageDetector.isSameLanguage(sourceLang, targetLanguage) && cleanedText.length > 30) {
-                    println("TranslationService DEBUG: Skipping translation - same language detected")
+                // Don't translate if source and target are the same
+                if (languageDetector.isSameLanguage(sourceLang, targetLanguage)) {
                     return@withTimeoutOrNull text
                 }
                 
                 // Skip very short or meaningless text
                 if (shouldSkipTranslation(cleanedText)) {
                     return@withTimeoutOrNull text
-                }
-                
-                // Try test translation first for debugging
-                try {
-                    val testResult = TestTranslationProvider.translateForTesting(cleanedText, targetLanguage)
-                    println("TranslationService DEBUG: Test result='$testResult'")
-                    if (isValidTranslation(testResult, text)) {
-                        return@withTimeoutOrNull testResult
-                    }
-                } catch (e: Exception) {
-                    println("TranslationService DEBUG: Test translation failed: ${e.message}")
                 }
                 
                 // Try AI translation first (best quality) with shorter timeout
@@ -195,13 +180,6 @@ object TranslationService {
         if (!shouldTranslate(text)) return false
         
         val sourceLang = languageDetector.detectLanguage(text)
-        
-        // Allow translation even if detected language matches target
-        // because detection might be inaccurate for short lyrics
-        if (text.length < 20) {
-            return true // Always try to translate short text
-        }
-        
         return !languageDetector.isSameLanguage(sourceLang, targetLanguage)
     }
 }

@@ -23,7 +23,6 @@ object AITranslationService {
         for (provider in providers) {
             try {
                 val result = provider.translate(prompt, text)
-                println("AI Provider ${provider.javaClass.simpleName} result: '$result'")
                 if (isValidAIResult(result, text)) {
                     return@withContext result
                 }
