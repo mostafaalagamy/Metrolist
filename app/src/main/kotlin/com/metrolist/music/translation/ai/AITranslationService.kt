@@ -9,9 +9,10 @@ import kotlinx.coroutines.withContext
 object AITranslationService {
     
     private val providers = listOf(
-        HuggingFaceProvider,
-        GroqAIProvider,
-        OllamaProvider
+        OpenAIProvider,              // Best quality for lyrics translation
+        GroqAIProvider,             // Fast and reliable fallback
+        HuggingFaceProvider,        // Multiple model options
+        OllamaProvider              // Local processing option
     )
     
     /**
