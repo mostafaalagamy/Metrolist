@@ -5,6 +5,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.snapping.SnapLayoutInfoProvider
@@ -265,7 +266,9 @@ fun Thumbnail(
                         Text(
                             text = playingFrom,
                             style = MaterialTheme.typography.titleMedium,
-                            color = textBackgroundColor.copy(alpha = 0.8f)
+                            color = textBackgroundColor.copy(alpha = 0.8f),
+                            maxLines = 1,
+                            modifier = Modifier.basicMarquee()
                         )
                     }
                 }
