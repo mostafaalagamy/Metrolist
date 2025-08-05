@@ -47,7 +47,7 @@
     </plurals>
     <string name="min_playback_duration_description">Le temps minimum d\'un titre qui doit être lu avant d\'être considéré comme \"lu\"</string>
     <string name="open_app_settings_error">Impossible d\'ouvrir les paramètres de l\'application</string>
-    <string name="local_history">Dans l\'application</string>
+    <string name="local_history">Locale</string>
     <string name="charts">Graphiques</string>
     <string name="back_button_desc">Retour</string>
     <string name="no_title">Pas de titre</string>
