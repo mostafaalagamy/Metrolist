@@ -160,4 +160,5 @@
     <string name="playlist_not_found_desc">Не удалось загрузить запрошенный плейлист</string>
     <string name="empty_playlist">Пустой плейлист</string>
     <string name="empty_playlist_desc">Этот плейлист не содержит песен</string>
+    <string name="now_playing">Сейчас играет</string>
 </resources>
