@@ -1,0 +1,137 @@
+From fc08f4d6b2bd8a08b0c81d358a9dfb19a599e8e3 Mon Sep 17 00:00:00 2001
+From: mostafaalagamy <mostafaalagamy@email.com>
+Date: Wed, 6 Aug 2025 17:58:06 +0000
+Subject: [PATCH] Fix player background issues
+
+- Make blur/gradient backgrounds show as solid backgrounds during sheet dragging
+- Remove brush effects from player background that caused composition issues
+- Wrap MiniPlayer with solid background independent of player background style
+- Use appropriate content colors for different background styles
+---
+ .../zionhuang/music/ui/player/MiniPlayer.kt   | 45 +++----------------
+ .../com/zionhuang/music/ui/player/Player.kt   | 39 ++++++++--------
+ 2 files changed, 27 insertions(+), 57 deletions(-)
+
+diff --git a/app/src/main/java/com/zionhuang/music/ui/player/MiniPlayer.kt b/app/src/main/java/com/zionhuang/music/ui/player/MiniPlayer.kt
+index 3cf2fa05..8e552029 100644
+--- a/app/src/main/java/com/zionhuang/music/ui/player/MiniPlayer.kt
++++ b/app/src/main/java/com/zionhuang/music/ui/player/MiniPlayer.kt
+@@ -79,45 +79,12 @@ fun MiniPlayer(
+             .height(MiniPlayerHeight)
+             .clip(RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp))
+     ) {
+-        when {
+-            backgroundStyle == PlayerBackgroundStyle.GRADIENT && gradientColors.isNotEmpty() -> {
+-                Box(
+-                    modifier = Modifier
+-                        .fillMaxSize()
+-                        .background(Brush.verticalGradient(colors = gradientColors))
+-                )
+-                Box(
+-                    modifier = Modifier
+-                        .fillMaxSize()
+-                        .background(Color.Black.copy(alpha = 0.2f))
+-                )
+-            }
+-            backgroundStyle == PlayerBackgroundStyle.BLUR && mediaMetadata != null -> {
+-                AsyncImage(
+-                    model = mediaMetadata?.thumbnailUrl,
+-                    contentDescription = "Blurred background",
+-                    contentScale = ContentScale.Crop,
+-                    modifier = Modifier
+-                        .fillMaxSize()
+-                        .blur(radius = 25.dp)
+-                )
+-                Box(
+-                    modifier = Modifier
+-                        .fillMaxSize()
+-                        .background(Color.Black.copy(alpha = 0.4f))
+-                )
+-            }
+-            backgroundStyle == PlayerBackgroundStyle.DEFAULT -> {
+-                Box(
+-                    modifier = Modifier
+-                        .fillMaxSize()
+-                        .background(MaterialTheme.colorScheme.surfaceContainer)
+-                )
+-            }
+-            else -> {
+-                // Para TRANSPARENT y otros casos, no se dibuja fondo.
+-            }
+-        }
++        // Always use a solid background for MiniPlayer, independent of player background style
++        Box(
++            modifier = Modifier
++                .fillMaxSize()
++                .background(MaterialTheme.colorScheme.surfaceContainer)
++        )
+         Box(
+             modifier = Modifier
+                 .fillMaxSize()
+diff --git a/app/src/main/java/com/zionhuang/music/ui/player/Player.kt b/app/src/main/java/com/zionhuang/music/ui/player/Player.kt
+index 0c9c0c95..fe225115 100644
+--- a/app/src/main/java/com/zionhuang/music/ui/player/Player.kt
++++ b/app/src/main/java/com/zionhuang/music/ui/player/Player.kt
+@@ -128,7 +128,24 @@ fun BottomSheetPlayer(
+     }
+ 
+     val backgroundColor = when (backgroundStyle) {
+-        PlayerBackgroundStyle.BLUR, PlayerBackgroundStyle.GRADIENT -> Color.Transparent
++        PlayerBackgroundStyle.BLUR -> {
++            // Use a solid dark background for blur style instead of transparent
++            if (useBlackBackground && state.value > state.collapsedBound) {
++                lerp(MaterialTheme.colorScheme.surfaceContainer, Color.Black, state.progress)
++            } else {
++                MaterialTheme.colorScheme.surfaceContainer
++            }
++        }
++        PlayerBackgroundStyle.GRADIENT -> {
++            // Use a solid background derived from gradient colors or default
++            if (gradientColors.isNotEmpty()) {
++                gradientColors.first()
++            } else if (useBlackBackground && state.value > state.collapsedBound) {
++                lerp(MaterialTheme.colorScheme.surfaceContainer, Color.Black, state.progress)
++            } else {
++                MaterialTheme.colorScheme.surfaceContainer
++            }
++        }
+         else -> {
+             if (useBlackBackground && state.value > state.collapsedBound) {
+                 when (backgroundStyle) {
+@@ -291,7 +308,7 @@ fun BottomSheetPlayer(
+                 position = position,
+                 duration = duration,
+                 backgroundStyle = backgroundStyle,
+-                contentColor = contentColor,
++                contentColor = LocalContentColor.current, // Use default content color for solid background
+                 gradientColors = gradientColors
+             )
+         }
+@@ -532,22 +549,8 @@ fun BottomSheetPlayer(
+         }
+ 
+         Box(modifier = Modifier.fillMaxSize()) {
+-            // Background Layer
+-            when {
+-                backgroundStyle == PlayerBackgroundStyle.BLUR && mediaMetadata?.thumbnailUrl != null -> {
+-                    AsyncImage(
+-                        model = mediaMetadata?.thumbnailUrl,
+-                        contentDescription = "Blurred background",
+-                        contentScale = ContentScale.Crop,
+-                        modifier = Modifier.fillMaxSize().blur(radius = 25.dp)
+-                    )
+-                    Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.4f)))
+-                }
+-                backgroundStyle == PlayerBackgroundStyle.GRADIENT && gradientColors.isNotEmpty() -> {
+-                    Box(modifier = Modifier.fillMaxSize().background(Brush.verticalGradient(colors = gradientColors)))
+-                    Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.2f)))
+-                }
+-            }
++            // Background Layer - removed blur and gradient brush effects to show solid background
++            // The solid background is now handled by the backgroundColor parameter passed to BottomSheet
+ 
+             CompositionLocalProvider(LocalContentColor provides contentColor) {
+                 // Main Content (Thumbnail/Video + Controls)
+-- 
+2.48.1
+
