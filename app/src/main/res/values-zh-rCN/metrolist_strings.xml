@@ -141,8 +141,8 @@
     <string name="import_online">导入m3u格式歌单</string>
     <string name="import_csv">导入csv格式歌单</string>
     <string name="playlist_add_local_to_synced_note">注意：不支持将本地歌曲加入远程歌单，其他组合均有效</string>
-    <string name="swipe_sensitivity">播放控件敏感度</string>
-    <string name="swipe_sensitivity_desc">调整滑动切歌敏感度</string>
+    <string name="swipe_sensitivity">播放控件灵敏度</string>
+    <string name="swipe_sensitivity_desc">调整滑动切歌灵敏度</string>
     <string name="clear_image_cache_dialog">你确定要清除所有缓存的封面吗？</string>
     <string name="disable">禁用</string>
     <string name="subscribe">关注</string>
