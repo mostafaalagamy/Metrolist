@@ -58,11 +58,14 @@ import coil.compose.AsyncImage
 import coil.imageLoader
 import coil.request.ImageRequest
 import coil.size.Size
+import com.metrolist.music.LocalDatabase
 import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
 import com.metrolist.music.constants.PlayerBackgroundStyle
 import com.metrolist.music.constants.PlayerBackgroundStyleKey
+import com.metrolist.music.db.entities.LyricsEntity
 import com.metrolist.music.extensions.togglePlayPause
+import com.metrolist.music.lyrics.LyricsHelper
 import com.metrolist.music.models.MediaMetadata
 import com.metrolist.music.ui.component.Lyrics
 import com.metrolist.music.ui.component.LocalMenuState
@@ -70,12 +73,13 @@ import com.metrolist.music.ui.menu.LyricsMenu
 import com.metrolist.music.ui.theme.PlayerColorExtractor
 import com.metrolist.music.ui.theme.PlayerSliderColors
 import com.metrolist.music.utils.rememberEnumPreference
+import dagger.hilt.android.EntryPointAccessors
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.runCatching
-import android.util.Log
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -88,6 +92,7 @@ fun LyricsScreen(
     val player = playerConnection.player
     val context = LocalContext.current
     val menuState = LocalMenuState.current
+    val database = LocalDatabase.current
     val coroutineScope = rememberCoroutineScope()
 
     // استخدام نفس منطق المشغل لتتبع التقدم
@@ -95,15 +100,32 @@ fun LyricsScreen(
     val isPlaying by playerConnection.isPlaying.collectAsState()
     val currentLyrics by playerConnection.currentLyrics.collectAsState(initial = null)
 
-    // Debug logging for lyrics
-    LaunchedEffect(currentLyrics, mediaMetadata.id) {
-        Log.d("LyricsScreen", "Media ID: ${mediaMetadata.id}")
-        Log.d("LyricsScreen", "Current Lyrics: ${currentLyrics?.lyrics}")
-        Log.d("LyricsScreen", "Lyrics ID: ${currentLyrics?.id}")
+    // Auto-fetch lyrics when no lyrics found (same logic as refetch)
+    LaunchedEffect(mediaMetadata.id, currentLyrics) {
         if (currentLyrics == null) {
-            Log.d("LyricsScreen", "No lyrics found in database for ${mediaMetadata.title}")
-        } else {
-            Log.d("LyricsScreen", "Lyrics loaded: ${currentLyrics?.lyrics?.take(100)}...")
+            // Small delay to ensure database state is stable
+            delay(500)
+            
+            coroutineScope.launch(Dispatchers.IO) {
+                try {
+                    // Get LyricsHelper from Hilt
+                    val entryPoint = EntryPointAccessors.fromApplication(
+                        context.applicationContext,
+                        com.metrolist.music.di.LyricsHelperEntryPoint::class.java
+                    )
+                    val lyricsHelper = entryPoint.lyricsHelper()
+                    
+                    // Fetch lyrics automatically
+                    val lyrics = lyricsHelper.getLyrics(mediaMetadata)
+                    
+                    // Save to database
+                    database.query {
+                        upsert(LyricsEntity(mediaMetadata.id, lyrics))
+                    }
+                } catch (e: Exception) {
+                    // Handle error silently - user can manually refetch if needed
+                }
+            }
         }
     }
 
@@ -369,22 +391,6 @@ fun LyricsScreen(
                         contentDescription = "More options",
                         tint = textBackgroundColor,
                         modifier = Modifier.size(24.dp)
-                    )
-                }
-            }
-
-            // Debug info for lyrics when no lyrics found
-            if (currentLyrics == null) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "تشخيص: لا توجد كلمات في قاعدة البيانات لـ ${mediaMetadata.title}\nاستخدم زر المزيد (⋯) للبحث عن الكلمات",
-                        color = textBackgroundColor.copy(alpha = 0.7f),
-                        style = MaterialTheme.typography.bodyMedium
                     )
                 }
             }
