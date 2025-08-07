@@ -256,6 +256,10 @@ fun Lyrics(
         mutableStateOf(false)
     }
 
+    var isUserScrolling by remember {
+        mutableStateOf(false)
+    }
+
     var showProgressDialog by remember { mutableStateOf(false) }
     var showShareDialog by remember { mutableStateOf(false) }
     var shareDialogData by remember { mutableStateOf<Triple<String, String, String>?>(null) }
@@ -336,6 +340,7 @@ fun Lyrics(
         } else if (lastPreviewTime != 0L) {
             delay(LyricsPreviewTime)
             lastPreviewTime = 0L
+            isUserScrolling = false // Reset user scrolling flag after preview time
         }
     }
 
@@ -368,7 +373,7 @@ fun Lyrics(
                 lazyListState.scrollToItem(
                     currentLineIndex,
                     with(density) { 36.dp.toPx().toInt() } + calculateOffset())
-            } else if ((lastPreviewTime == 0L || currentLineIndex != previousLineIndex) && scrollLyrics) {
+            } else if (!isUserScrolling && (lastPreviewTime == 0L || currentLineIndex != previousLineIndex) && scrollLyrics) {
                 val visibleItemsInfo = lazyListState.layoutInfo.visibleItemsInfo
                 val isCurrentLineVisible = visibleItemsInfo.any { it.index == currentLineIndex }
                 val isPreviousLineVisible = visibleItemsInfo.any { it.index == previousLineIndex }
@@ -413,12 +418,24 @@ fun Lyrics(
                 .fadingEdge(vertical = 64.dp)
                 .nestedScroll(remember {
                     object : NestedScrollConnection {
+                        override fun onPreScroll(
+                            available: Offset,
+                            source: NestedScrollSource
+                        ): Offset {
+                            if (!isSelectionModeActive) {
+                                isUserScrolling = true
+                                lastPreviewTime = System.currentTimeMillis()
+                            }
+                            return super.onPreScroll(available, source)
+                        }
+
                         override fun onPostScroll(
                             consumed: Offset,
                             available: Offset,
                             source: NestedScrollSource
                         ): Offset {
                             if (!isSelectionModeActive) { // Only update preview time if not selecting
+                                isUserScrolling = true
                                 lastPreviewTime = System.currentTimeMillis()
                             }
                             return super.onPostScroll(consumed, available, source)
