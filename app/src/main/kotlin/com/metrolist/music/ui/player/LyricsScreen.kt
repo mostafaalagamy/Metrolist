@@ -29,6 +29,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -47,6 +48,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -88,10 +90,19 @@ fun LyricsScreen(
     val context = LocalContext.current
     val menuState = LocalMenuState.current
     val coroutineScope = rememberCoroutineScope()
+    val currentView = LocalView.current
+
+    // Keep screen on for lyrics
+    DisposableEffect(Unit) {
+        currentView.keepScreenOn = true
+        onDispose { currentView.keepScreenOn = false }
+    }
 
     // استخدام نفس منطق المشغل لتتبع التقدم
     val playbackState by playerConnection.playbackState.collectAsState()
     val isPlaying by playerConnection.isPlaying.collectAsState()
+    
+    // هذا هو المفتاح - نراقب currentLyrics مباشرة من playerConnection
     val currentLyrics by playerConnection.currentLyrics.collectAsState(initial = null)
 
     var position by remember { mutableLongStateOf(0L) }
@@ -171,13 +182,6 @@ fun LyricsScreen(
         PlayerBackgroundStyle.BLUR -> Color.White
         PlayerBackgroundStyle.GRADIENT -> Color.White
         else -> MaterialTheme.colorScheme.onBackground
-    }
-
-    val icBackgroundColor = when (playerBackground) {
-        PlayerBackgroundStyle.DEFAULT -> MaterialTheme.colorScheme.surface
-        PlayerBackgroundStyle.BLUR -> Color.Black
-        PlayerBackgroundStyle.GRADIENT -> Color.Black
-        else -> MaterialTheme.colorScheme.surface
     }
 
     // تتبع التقدم بنفس طريقة Player.kt
@@ -278,7 +282,7 @@ fun LyricsScreen(
                     }
                 }
                 else -> {
-                    // الخلفية الافتراضية شفافة
+                    // الخلفية الافتراضية
                     Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.surface))
                 }
             }
@@ -360,7 +364,7 @@ fun LyricsScreen(
                 }
             }
 
-            // محتوى الكلمات في وسط الشاشة
+            // محتوى الكلمات في وسط الشاشة مع key لإعادة التحميل
             Box(
                 modifier = Modifier
                     .weight(1f)
@@ -368,9 +372,12 @@ fun LyricsScreen(
                     .padding(horizontal = 16.dp),
                 contentAlignment = Alignment.Center
             ) {
-                Lyrics(
-                    sliderPositionProvider = { sliderPosition ?: position }
-                )
+                // استخدام key للتأكد من إعادة تحميل Lyrics عند تغيير الأغنية
+                androidx.compose.runtime.key(mediaMetadata.id) {
+                    Lyrics(
+                        sliderPositionProvider = { sliderPosition ?: position }
+                    )
+                }
             }
 
             // أدوات التحكم في الأسفل
