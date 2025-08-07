@@ -39,7 +39,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -52,11 +55,13 @@ import androidx.media3.common.C
 import coil.compose.AsyncImage
 import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
-
+import com.metrolist.music.constants.PlayerBackgroundStyle
+import com.metrolist.music.constants.PlayerBackgroundStyleKey
 import com.metrolist.music.db.entities.LyricsEntity
 import com.metrolist.music.extensions.togglePlayPause
 import com.metrolist.music.models.MediaMetadata
 import com.metrolist.music.ui.menu.LyricsMenu
+import com.metrolist.music.utils.rememberEnumPreference
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -77,6 +82,7 @@ fun LyricsScreen(
     var sliderPosition by remember { mutableFloatStateOf(0f) }
     var duration by remember { mutableLongStateOf(C.TIME_UNSET) }
     
+    val playerBackground by rememberEnumPreference(PlayerBackgroundStyleKey, PlayerBackgroundStyle.DEFAULT)
     val colorScheme = MaterialTheme.colorScheme
     
     // Update position and duration
@@ -87,10 +93,36 @@ fun LyricsScreen(
     }
 
     Box(
-        modifier = modifier
-            .fillMaxSize()
-            .background(colorScheme.surface)
+        modifier = modifier.fillMaxSize()
     ) {
+        // Background Layer - same logic as Player.kt
+        Box(modifier = Modifier.fillMaxSize()) {
+            when (playerBackground) {
+                PlayerBackgroundStyle.BLUR -> {
+                    AsyncImage(
+                        model = mediaMetadata.thumbnailUrl,
+                        contentDescription = "Blurred background",
+                        contentScale = ContentScale.FillBounds,
+                        modifier = Modifier.fillMaxSize().blur(radius = 150.dp)
+                    )
+                    Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.4f)))
+                }
+                PlayerBackgroundStyle.GRADIENT -> {
+                    // Simple gradient implementation
+                    val gradientColors = arrayOf(
+                        0.0f to colorScheme.primary,
+                        0.6f to colorScheme.primary.copy(alpha = 0.7f),
+                        1.0f to Color.Black
+                    )
+                    Box(modifier = Modifier.fillMaxSize().background(Brush.verticalGradient(colorStops = gradientColors)))
+                    Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.2f)))
+                }
+                else -> {
+                    // DEFAULT - solid background
+                    Box(modifier = Modifier.fillMaxSize().background(colorScheme.surface))
+                }
+            }
+        }
 
         Column(
             modifier = Modifier
