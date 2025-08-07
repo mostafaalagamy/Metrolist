@@ -157,4 +157,5 @@
     <string name="playlist_not_found_desc">Playlistul cerut nu a putut fi încărcat</string>
     <string name="empty_playlist">Playlist gol</string>
     <string name="empty_playlist_desc">Acest playlist nu conține nicio melodie</string>
+    <string name="now_playing">Acum se redă</string>
 </resources>
