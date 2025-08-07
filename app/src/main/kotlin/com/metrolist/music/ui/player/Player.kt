@@ -14,6 +14,8 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.animation.with
 import androidx.compose.foundation.Image
@@ -1235,15 +1237,25 @@ fun BottomSheetPlayer(
             pureBlack = pureBlack,
         )
         
-        // Lyrics Screen
-                 mediaMetadata?.let { metadata ->
-             if (showLyricsScreen) {
-                 LyricsScreen(
-                     mediaMetadata = metadata,
-                     lyrics = currentLyrics,
-                     onBackClick = { showLyricsScreen = false }
-                 )
-             }
-         }
+        // Lyrics Screen with animation
+        mediaMetadata?.let { metadata ->
+            AnimatedVisibility(
+                visible = showLyricsScreen,
+                enter = slideInVertically(
+                    animationSpec = tween(300),
+                    initialOffsetY = { it }
+                ),
+                exit = slideOutVertically(
+                    animationSpec = tween(300),
+                    targetOffsetY = { it }
+                )
+            ) {
+                LyricsScreen(
+                    mediaMetadata = metadata,
+                    lyrics = currentLyrics,
+                    onBackClick = { showLyricsScreen = false }
+                )
+            }
+        }
     }
 }
