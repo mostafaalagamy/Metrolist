@@ -62,7 +62,7 @@ import com.metrolist.music.extensions.togglePlayPause
 import com.metrolist.music.models.MediaMetadata
 import com.metrolist.music.ui.menu.LyricsMenu
 
-import com.metrolist.music.utils.rememberPreference
+import com.metrolist.music.utils.rememberEnumPreference
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -73,7 +73,7 @@ fun LyricsScreen(
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
-    val playerConnection = LocalPlayerConnection.current
+    val playerConnection = LocalPlayerConnection.current ?: return
     val player = playerConnection.player
     val isPlaying by playerConnection.isPlaying.collectAsState()
     val mediaMetadataProvider = { mediaMetadata }
@@ -83,7 +83,7 @@ fun LyricsScreen(
     var sliderPosition by remember { mutableFloatStateOf(0f) }
     var duration by remember { mutableLongStateOf(C.TIME_UNSET) }
     
-    val playerBackground by rememberPreference(PlayerBackgroundStyleKey, PlayerBackgroundStyle.DEFAULT)
+    val playerBackground by rememberEnumPreference(PlayerBackgroundStyleKey, PlayerBackgroundStyle.DEFAULT)
     val colorScheme = MaterialTheme.colorScheme
     
     // Update position and duration
