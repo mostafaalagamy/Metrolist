@@ -404,7 +404,7 @@ fun LyricsScreen(
                 contentAlignment = Alignment.Center
             ) {
                 Lyrics(
-                    sliderPositionProvider = { sliderPosition ?: position }
+                    sliderPositionProvider = { sliderPosition }
                 )
             }
 
