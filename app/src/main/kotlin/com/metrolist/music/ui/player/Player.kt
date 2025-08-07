@@ -293,13 +293,14 @@ fun BottomSheetPlayer(
                     }.getOrNull()
                     
                     if (result != null) {
-                        val bitmap = (result as? BitmapDrawable)?.bitmap
-                        val palette = withContext(Dispatchers.Default) {
-                            Palette.from(bitmap)
-                                .maximumColorCount(PlayerColorExtractor.Config.MAX_COLOR_COUNT)
-                                .resizeBitmapArea(PlayerColorExtractor.Config.BITMAP_AREA)
-                                .generate()
-                        }
+                        val bitmap = result.image?.toBitmap()
+                        if (bitmap != null) {
+                            val palette = withContext(Dispatchers.Default) {
+                                Palette.from(bitmap)
+                                    .maximumColorCount(PlayerColorExtractor.Config.MAX_COLOR_COUNT)
+                                    .resizeBitmapArea(PlayerColorExtractor.Config.BITMAP_AREA)
+                                    .generate()
+                            }
                         
                         // Use the new color extraction system
                         val extractedColors = PlayerColorExtractor.extractGradientColors(
@@ -310,6 +311,9 @@ fun BottomSheetPlayer(
                         // Cache the extracted colors
                         gradientColorsCache[currentMetadata.id] = extractedColors
                         gradientColors = extractedColors
+                        } else {
+                            gradientColors = defaultGradientColors
+                        }
                     } else {
                         gradientColors = defaultGradientColors
                     }
