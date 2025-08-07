@@ -55,6 +55,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -1250,16 +1251,11 @@ fun BottomSheetPlayer(
                     targetOffsetY = { it }
                 )
             ) {
-                // استخدام Box لتغطية الشاشة بالكامل
-                Box(
+                // استخدام Surface لجعل الشاشة طبقة منفصلة تماماً تحظر التفاعل
+                Surface(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .background(
-                            when (playerBackground) {
-                                PlayerBackgroundStyle.BLUR, PlayerBackgroundStyle.GRADIENT -> Color.Transparent
-                                else -> MaterialTheme.colorScheme.surface
-                            }
-                        )
+                        .fillMaxSize(),
+                    color = Color.Transparent
                 ) {
                     LyricsScreen(
                         mediaMetadata = metadata,
