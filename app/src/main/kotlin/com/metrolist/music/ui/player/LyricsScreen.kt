@@ -134,10 +134,10 @@ fun LyricsScreen(
                     Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.4f)))
                 }
                 PlayerBackgroundStyle.GRADIENT -> {
-                    // Solid gradient without transparency overlay
+                    // Solid gradient without any transparency
                     val gradientColors = arrayOf(
                         0.0f to colorScheme.primary,
-                        0.6f to colorScheme.primary.copy(alpha = 0.7f),
+                        0.6f to colorScheme.primary,
                         1.0f to Color.Black
                     )
                     Box(modifier = Modifier.fillMaxSize().background(Brush.verticalGradient(colorStops = gradientColors)))
