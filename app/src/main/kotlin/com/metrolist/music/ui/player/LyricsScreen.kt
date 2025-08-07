@@ -64,11 +64,12 @@ import com.metrolist.music.constants.PlayerBackgroundStyleKey
 import com.metrolist.music.db.entities.LyricsEntity
 import com.metrolist.music.extensions.togglePlayPause
 import com.metrolist.music.models.MediaMetadata
-import com.metrolist.music.constants.LyricsPosition
+import com.metrolist.music.ui.screens.settings.LyricsPosition
 import com.metrolist.music.constants.LyricsTextPositionKey
 import com.metrolist.music.ui.menu.LyricsMenu
 import com.metrolist.music.ui.theme.PlayerSliderColors
 import com.metrolist.music.utils.rememberEnumPreference
+import com.metrolist.music.utils.rememberPreference
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -93,7 +94,7 @@ fun LyricsScreen(
     var duration by remember { mutableLongStateOf(C.TIME_UNSET) }
     
     val playerBackground by rememberEnumPreference(PlayerBackgroundStyleKey, PlayerBackgroundStyle.DEFAULT)
-    val lyricsTextPosition by rememberEnumPreference(LyricsTextPositionKey, LyricsPosition.CENTER)
+    val lyricsTextPosition by rememberPreference(LyricsTextPositionKey, LyricsPosition.CENTER.name)
     val colorScheme = MaterialTheme.colorScheme
     
     // Color logic from Player.kt
@@ -106,9 +107,9 @@ fun LyricsScreen(
     
     // Text alignment based on lyrics position setting
     val textAlign = when (lyricsTextPosition) {
-        LyricsPosition.LEFT -> TextAlign.Start
-        LyricsPosition.RIGHT -> TextAlign.End
-        LyricsPosition.CENTER -> TextAlign.Center
+        LyricsPosition.LEFT.name -> TextAlign.Start
+        LyricsPosition.RIGHT.name -> TextAlign.End
+        else -> TextAlign.Center
     }
     
     // Update position and duration
