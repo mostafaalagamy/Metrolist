@@ -266,6 +266,8 @@ fun LyricsScreen(
 
                     if (showMenu) {
                         LyricsMenu(
+                            lyricsProvider = { lyrics },
+                            mediaMetadataProvider = { mediaMetadata },
                             onDismiss = { showMenu = false }
                         )
                     }
