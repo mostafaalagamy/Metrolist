@@ -148,4 +148,9 @@
     <string name="history_duration">Продължителност на историята</string>
     <string name="subscribe">Абонирай се</string>
     <string name="subscribed">Абониран</string>
+    <string name="new_mini_player_design">Нов дизайн на мини плеър</string>
+    <string name="playlist_not_found">Плейлистът не е намерен</string>
+    <string name="playlist_not_found_desc">Заявеният плейлист не можа да бъде зареден</string>
+    <string name="empty_playlist">Празен плейлист</string>
+    <string name="empty_playlist_desc">Този плейлист не съдържа никакви песни</string>
 </resources>

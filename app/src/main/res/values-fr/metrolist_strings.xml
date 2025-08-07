@@ -22,7 +22,7 @@
     <string name="past_year">L\’année dernière</string>
     <string name="top_length">Longueur de ma Top liste</string>
     <string name="explore">Explorer</string>
-    <string name="remote_history">À distance</string>
+    <string name="remote_history">Dans d\'autres applications</string>
     <string name="top_music_videos">Meilleurs Clips Musicaux</string>
     <string name="added_to_play_next">Ajouté à jouer après</string>
     <string name="allows_for_sync_witch_youtube">Note : Ceci permet de synchroniser avec YouTube Music. Ce choix est définitif.</string>
@@ -47,7 +47,7 @@
     </plurals>
     <string name="min_playback_duration_description">Le temps minimum d\'un titre qui doit être lu avant d\'être considéré comme \"lu\"</string>
     <string name="open_app_settings_error">Impossible d\'ouvrir les paramètres de l\'application</string>
-    <string name="local_history">Local</string>
+    <string name="local_history">Locale</string>
     <string name="charts">Graphiques</string>
     <string name="back_button_desc">Retour</string>
     <string name="no_title">Pas de titre</string>
@@ -153,4 +153,9 @@
     <string name="subscribe">S\'abonner</string>
     <string name="subscribed">Abonné</string>
     <string name="new_mini_player_design">Nouveau design du mini lecteur</string>
+    <string name="playlist_not_found">Liste de lecture introuvable</string>
+    <string name="playlist_not_found_desc">La liste de lecture demandée n\'a pas pu être chargée</string>
+    <string name="empty_playlist">Liste de lecture vide</string>
+    <string name="empty_playlist_desc">Cette liste de lecture ne contient aucune musique</string>
+    <string name="now_playing">En cours de lecture</string>
 </resources>

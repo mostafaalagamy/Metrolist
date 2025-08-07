@@ -153,4 +153,9 @@
     <string name="subscribe">Inscrever-se</string>
     <string name="subscribed">Inscrito</string>
     <string name="new_mini_player_design">Novo design do mini reprodutor</string>
+    <string name="playlist_not_found">Lista não encontrada</string>
+    <string name="playlist_not_found_desc">A lista solicitada não pôde ser carregada</string>
+    <string name="empty_playlist">Lista vazia</string>
+    <string name="empty_playlist_desc">Esta lista não tem nenhuma música</string>
+    <string name="now_playing">Reproduzindo agora</string>
 </resources>

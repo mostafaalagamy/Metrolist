@@ -149,4 +149,10 @@
     <string name="subscribe">Abone ol</string>
     <string name="subscribed">Abone olundu</string>
     <string name="generating_image">Görüntü oluşturuluyor</string>
+    <string name="playlist_not_found">Oynatma listesi bulunamadı</string>
+    <string name="playlist_not_found_desc">İstenen oynatma listesi yüklenemiyor</string>
+    <string name="empty_playlist">Boş oynatma listesi</string>
+    <string name="empty_playlist_desc">Bu oynatma listesi hiç şarkı içermiyor</string>
+    <string name="now_playing">Şimdi oynatılıyor</string>
+    <string name="new_mini_player_design">Yeni mini oynatıcı tasarımı</string>
 </resources>

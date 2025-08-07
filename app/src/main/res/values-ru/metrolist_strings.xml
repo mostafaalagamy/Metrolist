@@ -156,4 +156,9 @@
     <string name="swipe_sensitivity">Чувствительность проведения по мини плееру</string>
     <string name="swipe_sensitivity_desc">Настроить чувствительность жестов для переключения песен</string>
     <string name="new_mini_player_design">Новый дизайн мини проигрывателя</string>
+    <string name="playlist_not_found">Плейлист не найден</string>
+    <string name="playlist_not_found_desc">Не удалось загрузить запрошенный плейлист</string>
+    <string name="empty_playlist">Пустой плейлист</string>
+    <string name="empty_playlist_desc">Этот плейлист не содержит песен</string>
+    <string name="now_playing">Сейчас играет</string>
 </resources>

@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="explore">الإستكشاف</string>
-    <string name="back_button_desc">للخلف</string>
-    <string name="no_title">لا يوجد عنوان</string>
+    <string name="back_button_desc">العودة</string>
+    <string name="no_title">لا عنوان</string>
     <string name="unknown_artist">فنان غير معروف</string>
-    <string name="unknown_item_type">نوع العنصر غير معروف</string>
+    <string name="unknown_item_type">النوع غير المعروف</string>
     <string name="loading_charts">جاري تحميل المخططات...</string>
     <string name="retry_button">إعادة المحاولة</string>
     <string name="album_cover_desc">غلاف الألبوم</string>
     <string name="top_music_videos">أفضل مقاطع الفيديو الموسيقيه</string>
     <string name="trending">الأكثر رواجًا</string>
     <string name="weeks">أسابيع</string>
-    <string name="months">شهور</string>
-    <string name="years">سنين</string>
-    <string name="continuous">مستمر</string>
+    <string name="months">الشهر</string>
+    <string name="years">السنوات</string>
+    <string name="continuous">مواصلة</string>
     <string name="liked">الأغاني المفضلة</string>
     <string name="offline">التحميلات</string>
     <string name="my_top">الأعلي استماع</string>
@@ -137,7 +137,7 @@
     <string name="views">المشاهدات</string>
     <string name="likes">الإعجابات</string>
     <string name="dislikes">الغير محبوب</string>
-    <string name="local_history">محلي</string>
+    <string name="local_history">محلية</string>
     <string name="remote_history">مزامن</string>
     <string name="added_to_play_next">تمت إضافته للتشغيل التالي</string>
     <string name="added_to_queue">تمت إضافته إلى قائمة الانتظار</string>
@@ -162,4 +162,9 @@
     <string name="subscribe">اشتراك</string>
     <string name="subscribed">مشترك</string>
     <string name="new_mini_player_design">تصميم جديد للمشغل المصغر</string>
+    <string name="playlist_not_found">لم يتم العثور علي قائمة التشغيل</string>
+    <string name="empty_playlist">قائمة تشغيل فارغه</string>
+    <string name="empty_playlist_desc">هذه القائمة لا تحتوي على أي أغنية</string>
+    <string name="playlist_not_found_desc">لا يمكن تحميل القائمة المطلوبة</string>
+    <string name="now_playing">المُشغل حاليا</string>
 </resources>
