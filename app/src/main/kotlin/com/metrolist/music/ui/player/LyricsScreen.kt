@@ -29,7 +29,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -48,7 +47,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -77,6 +75,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
 import kotlin.runCatching
+import android.util.Log
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -90,20 +89,23 @@ fun LyricsScreen(
     val context = LocalContext.current
     val menuState = LocalMenuState.current
     val coroutineScope = rememberCoroutineScope()
-    val currentView = LocalView.current
-
-    // Keep screen on for lyrics
-    DisposableEffect(Unit) {
-        currentView.keepScreenOn = true
-        onDispose { currentView.keepScreenOn = false }
-    }
 
     // استخدام نفس منطق المشغل لتتبع التقدم
     val playbackState by playerConnection.playbackState.collectAsState()
     val isPlaying by playerConnection.isPlaying.collectAsState()
-    
-    // هذا هو المفتاح - نراقب currentLyrics مباشرة من playerConnection
     val currentLyrics by playerConnection.currentLyrics.collectAsState(initial = null)
+
+    // Debug logging for lyrics
+    LaunchedEffect(currentLyrics, mediaMetadata.id) {
+        Log.d("LyricsScreen", "Media ID: ${mediaMetadata.id}")
+        Log.d("LyricsScreen", "Current Lyrics: ${currentLyrics?.lyrics}")
+        Log.d("LyricsScreen", "Lyrics ID: ${currentLyrics?.id}")
+        if (currentLyrics == null) {
+            Log.d("LyricsScreen", "No lyrics found in database for ${mediaMetadata.title}")
+        } else {
+            Log.d("LyricsScreen", "Lyrics loaded: ${currentLyrics?.lyrics?.take(100)}...")
+        }
+    }
 
     var position by remember { mutableLongStateOf(0L) }
     var duration by remember { mutableLongStateOf(C.TIME_UNSET) }
@@ -182,6 +184,13 @@ fun LyricsScreen(
         PlayerBackgroundStyle.BLUR -> Color.White
         PlayerBackgroundStyle.GRADIENT -> Color.White
         else -> MaterialTheme.colorScheme.onBackground
+    }
+
+    val icBackgroundColor = when (playerBackground) {
+        PlayerBackgroundStyle.DEFAULT -> MaterialTheme.colorScheme.surface
+        PlayerBackgroundStyle.BLUR -> Color.Black
+        PlayerBackgroundStyle.GRADIENT -> Color.Black
+        else -> MaterialTheme.colorScheme.surface
     }
 
     // تتبع التقدم بنفس طريقة Player.kt
@@ -282,7 +291,7 @@ fun LyricsScreen(
                     }
                 }
                 else -> {
-                    // الخلفية الافتراضية
+                    // الخلفية الافتراضية شفافة
                     Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.surface))
                 }
             }
@@ -364,7 +373,23 @@ fun LyricsScreen(
                 }
             }
 
-            // محتوى الكلمات في وسط الشاشة مع key لإعادة التحميل
+            // Debug info for lyrics when no lyrics found
+            if (currentLyrics == null) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "تشخيص: لا توجد كلمات في قاعدة البيانات لـ ${mediaMetadata.title}\nاستخدم زر المزيد (⋯) للبحث عن الكلمات",
+                        color = textBackgroundColor.copy(alpha = 0.7f),
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
+            }
+
+            // محتوى الكلمات في وسط الشاشة
             Box(
                 modifier = Modifier
                     .weight(1f)
@@ -372,12 +397,9 @@ fun LyricsScreen(
                     .padding(horizontal = 16.dp),
                 contentAlignment = Alignment.Center
             ) {
-                // استخدام key للتأكد من إعادة تحميل Lyrics عند تغيير الأغنية
-                androidx.compose.runtime.key(mediaMetadata.id) {
-                    Lyrics(
-                        sliderPositionProvider = { sliderPosition ?: position }
-                    )
-                }
+                Lyrics(
+                    sliderPositionProvider = { sliderPosition ?: position }
+                )
             }
 
             // أدوات التحكم في الأسفل
