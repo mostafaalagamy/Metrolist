@@ -19,7 +19,7 @@ import androidx.core.graphics.withTranslation
 import coil3.ImageLoader
 import coil3.request.ImageRequest
 import coil3.request.allowHardware
-import android.graphics.drawable.BitmapDrawable
+import coil3.toBitmap
 import com.metrolist.music.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

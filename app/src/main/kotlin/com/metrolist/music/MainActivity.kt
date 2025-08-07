@@ -113,6 +113,7 @@ import coil3.compose.AsyncImage
 import coil3.imageLoader
 import coil3.request.ImageRequest
 import coil3.request.allowHardware
+import coil3.toBitmap
 import com.metrolist.innertube.YouTube
 import com.metrolist.innertube.models.SongItem
 import com.metrolist.innertube.models.WatchEndpoint
@@ -327,7 +328,7 @@ class MainActivity : ComponentActivity() {
                                             .allowHardware(false) // pixel access is not supported on Config#HARDWARE bitmaps
                                             .build(),
                                     )
-                                (result.image as? BitmapDrawable)?.bitmap?.extractThemeColor()
+                                result.image?.toBitmap()?.extractThemeColor()
                                     ?: DefaultThemeColor
                             }
                         } else {
