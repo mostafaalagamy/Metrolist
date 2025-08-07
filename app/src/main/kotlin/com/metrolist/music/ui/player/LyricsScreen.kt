@@ -61,7 +61,7 @@ import com.metrolist.music.db.entities.LyricsEntity
 import com.metrolist.music.extensions.togglePlayPause
 import com.metrolist.music.models.MediaMetadata
 import com.metrolist.music.ui.menu.LyricsMenu
-import com.metrolist.music.ui.theme.colorPalette
+
 import com.metrolist.music.utils.rememberPreference
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -74,8 +74,8 @@ fun LyricsScreen(
 ) {
     val context = LocalContext.current
     val playerConnection = LocalPlayerConnection.current
-    val player by playerConnection?.player?.collectAsState() ?: remember { mutableStateOf(null) }
-    val isPlaying by playerConnection?.isPlaying?.collectAsState() ?: remember { mutableStateOf(false) }
+    val player = playerConnection.player
+    val isPlaying by playerConnection.isPlaying.collectAsState()
     val mediaMetadataProvider = { mediaMetadata }
     val lyricsProvider = { lyrics }
     
@@ -84,15 +84,13 @@ fun LyricsScreen(
     var duration by remember { mutableLongStateOf(C.TIME_UNSET) }
     
     val playerBackground by rememberPreference(PlayerBackgroundStyleKey, PlayerBackgroundStyle.DEFAULT)
-    val colorPalette = colorPalette()
+    val colorScheme = MaterialTheme.colorScheme
     
     // Update position and duration
-    player?.let { p ->
-        position = p.currentPosition
-        duration = p.duration
-        if (duration != C.TIME_UNSET) {
-            sliderPosition = position.toFloat() / duration
-        }
+    position = player.currentPosition
+    duration = player.duration
+    if (duration != C.TIME_UNSET) {
+        sliderPosition = position.toFloat() / duration
     }
 
     // Background setup based on player background style
@@ -100,8 +98,8 @@ fun LyricsScreen(
         PlayerBackgroundStyle.GRADIENT -> {
             val dominantColor = mediaMetadata.thumbnailUrl?.let { url ->
                 // You might want to extract dominant color from image
-                colorPalette.primary
-            } ?: colorPalette.primary
+                colorScheme.primary
+            } ?: colorScheme.primary
             
             Modifier.background(
                 Brush.verticalGradient(
@@ -113,10 +111,10 @@ fun LyricsScreen(
             )
         }
         PlayerBackgroundStyle.BLUR -> {
-            Modifier.background(colorPalette.background)
+            Modifier.background(colorScheme.surface)
         }
         else -> {
-            Modifier.background(colorPalette.background)
+            Modifier.background(colorScheme.surface)
         }
     }
 
@@ -154,7 +152,7 @@ fun LyricsScreen(
                         Icon(
                             painter = painterResource(R.drawable.close),
                             contentDescription = "Back",
-                            tint = colorPalette.onBackground,
+                            tint = colorScheme.onSurface,
                             modifier = Modifier.size(24.dp)
                         )
                     }
@@ -190,14 +188,14 @@ fun LyricsScreen(
                     Text(
                         text = mediaMetadata.title,
                         style = MaterialTheme.typography.titleMedium,
-                        color = colorPalette.onBackground,
+                        color = colorScheme.onSurface,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
                     Text(
                         text = mediaMetadata.artists.joinToString { it.name },
                         style = MaterialTheme.typography.bodyMedium,
-                        color = colorPalette.onBackground.copy(alpha = 0.7f),
+                        color = colorScheme.onSurface.copy(alpha = 0.7f),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -213,14 +211,14 @@ fun LyricsScreen(
                         modifier = Modifier
                             .size(40.dp)
                             .background(
-                                color = colorPalette.onBackground.copy(alpha = 0.1f),
+                                color = colorScheme.onSurface.copy(alpha = 0.1f),
                                 shape = CircleShape
                             )
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.more_vert),
                             contentDescription = "Lyrics options",
-                            tint = colorPalette.onBackground,
+                            tint = colorScheme.onSurface,
                             modifier = Modifier.size(20.dp)
                         )
                     }
@@ -252,7 +250,7 @@ fun LyricsScreen(
                             fontSize = 16.sp,
                             lineHeight = 24.sp
                         ),
-                        color = colorPalette.onBackground,
+                        color = colorScheme.onSurface,
                         textAlign = TextAlign.Center,
                         modifier = Modifier
                             .fillMaxWidth()
@@ -263,7 +261,7 @@ fun LyricsScreen(
                     Text(
                         text = "No lyrics available",
                         style = MaterialTheme.typography.bodyLarge,
-                        color = colorPalette.onBackground.copy(alpha = 0.6f),
+                        color = colorScheme.onSurface.copy(alpha = 0.6f),
                         textAlign = TextAlign.Center
                     )
                 }
@@ -280,17 +278,15 @@ fun LyricsScreen(
                     value = sliderPosition,
                     onValueChange = { newValue ->
                         sliderPosition = newValue
-                        player?.let { p ->
-                            if (duration != C.TIME_UNSET) {
-                                val newPosition = (newValue * duration).toLong()
-                                p.seekTo(newPosition)
-                            }
+                        if (duration != C.TIME_UNSET) {
+                            val newPosition = (newValue * duration).toLong()
+                            player.seekTo(newPosition)
                         }
                     },
                     colors = SliderDefaults.colors(
-                        thumbColor = colorPalette.primary,
-                        activeTrackColor = colorPalette.primary,
-                        inactiveTrackColor = colorPalette.onBackground.copy(alpha = 0.3f)
+                        thumbColor = colorScheme.primary,
+                        activeTrackColor = colorScheme.primary,
+                        inactiveTrackColor = colorScheme.onSurface.copy(alpha = 0.3f)
                     ),
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -305,38 +301,38 @@ fun LyricsScreen(
                 ) {
                     // Previous button
                     IconButton(
-                        onClick = { player?.seekToPrevious() }
+                        onClick = { player.seekToPrevious() }
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.skip_previous),
                             contentDescription = "Previous",
-                            tint = colorPalette.onBackground,
+                            tint = colorScheme.onSurface,
                             modifier = Modifier.size(32.dp)
                         )
                     }
                     
                     // Play/Pause button
                     IconButton(
-                        onClick = { player?.togglePlayPause() }
+                        onClick = { player.togglePlayPause() }
                     ) {
                         Icon(
                             painter = painterResource(
                                 if (isPlaying) R.drawable.pause else R.drawable.play
                             ),
                             contentDescription = if (isPlaying) "Pause" else "Play",
-                            tint = colorPalette.onBackground,
+                            tint = colorScheme.onSurface,
                             modifier = Modifier.size(40.dp)
                         )
                     }
                     
                     // Next button
                     IconButton(
-                        onClick = { player?.seekToNext() }
+                        onClick = { player.seekToNext() }
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.skip_next),
                             contentDescription = "Next",
-                            tint = colorPalette.onBackground,
+                            tint = colorScheme.onSurface,
                             modifier = Modifier.size(32.dp)
                         )
                     }

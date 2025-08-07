@@ -225,6 +225,7 @@ fun BottomSheetPlayer(
     val isPlaying by playerConnection.isPlaying.collectAsState()
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
     val currentSong by playerConnection.currentSong.collectAsState(initial = null)
+    val currentLyrics by playerConnection.currentLyrics.collectAsState(initial = null)
     val automix by playerConnection.service.automixItems.collectAsState()
     val repeatMode by playerConnection.repeatMode.collectAsState()
 
@@ -1235,14 +1236,14 @@ fun BottomSheetPlayer(
         )
         
         // Lyrics Screen
-        mediaMetadata?.let { metadata ->
-            if (showLyricsScreen) {
-                LyricsScreen(
-                    mediaMetadata = metadata,
-                    lyrics = currentSong?.lyrics,
-                    onBackClick = { showLyricsScreen = false }
-                )
-            }
-        }
+                 mediaMetadata?.let { metadata ->
+             if (showLyricsScreen) {
+                 LyricsScreen(
+                     mediaMetadata = metadata,
+                     lyrics = currentLyrics,
+                     onBackClick = { showLyricsScreen = false }
+                 )
+             }
+         }
     }
 }
