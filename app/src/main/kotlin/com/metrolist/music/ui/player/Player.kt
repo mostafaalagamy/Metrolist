@@ -1252,7 +1252,6 @@ fun BottomSheetPlayer(
             ) {
                 LyricsScreen(
                     mediaMetadata = metadata,
-                    lyrics = currentLyrics,
                     onBackClick = { showLyricsScreen = false }
                 )
             }

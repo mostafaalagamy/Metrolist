@@ -63,7 +63,6 @@ import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
 import com.metrolist.music.constants.PlayerBackgroundStyle
 import com.metrolist.music.constants.PlayerBackgroundStyleKey
-import com.metrolist.music.db.entities.LyricsEntity
 import com.metrolist.music.extensions.togglePlayPause
 import com.metrolist.music.models.MediaMetadata
 import com.metrolist.music.ui.component.Lyrics
@@ -80,7 +79,6 @@ import kotlinx.coroutines.withContext
 @Composable
 fun LyricsScreen(
     mediaMetadata: MediaMetadata,
-    lyrics: LyricsEntity?,
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -88,6 +86,9 @@ fun LyricsScreen(
     val player = playerConnection.player
     val context = LocalContext.current
     val menuState = LocalMenuState.current
+
+    // Get current lyrics from playerConnection (like the original system)
+    val currentLyrics by playerConnection.currentLyrics.collectAsState(initial = null)
 
     var position by remember { mutableLongStateOf(0L) }
     var sliderPosition by remember { mutableFloatStateOf(0f) }
@@ -345,7 +346,7 @@ fun LyricsScreen(
                     onClick = {
                         menuState.show {
                             LyricsMenu(
-                                lyricsProvider = { lyrics },
+                                lyricsProvider = { currentLyrics },
                                 mediaMetadataProvider = { mediaMetadata },
                                 onDismiss = menuState::dismiss
                             )
