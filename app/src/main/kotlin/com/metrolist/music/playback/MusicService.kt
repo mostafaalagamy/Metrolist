@@ -95,8 +95,13 @@ import com.metrolist.music.extensions.findNextMediaItemById
 import com.metrolist.music.extensions.mediaItems
 import com.metrolist.music.extensions.metadata
 import com.metrolist.music.extensions.toMediaItem
+import com.metrolist.music.extensions.toPersistQueue
+import com.metrolist.music.extensions.toQueue
 import com.metrolist.music.lyrics.LyricsHelper
 import com.metrolist.music.models.PersistQueue
+import com.metrolist.music.models.PersistPlayerState
+import com.metrolist.music.models.QueueData
+import com.metrolist.music.models.QueueType
 import com.metrolist.music.models.toMediaMetadata
 import com.metrolist.music.playback.queues.EmptyQueue
 import com.metrolist.music.playback.queues.ListQueue
@@ -413,14 +418,10 @@ class MusicService :
                     }
                 }
             }.onSuccess { queue ->
+                // Convert back to proper queue type
+                val restoredQueue = queue.toQueue()
                 playQueue(
-                    queue =
-                    ListQueue(
-                        title = queue.title,
-                        items = queue.items.map { it.toMediaItem() },
-                        startIndex = queue.mediaItemIndex,
-                        position = queue.position,
-                    ),
+                    queue = restoredQueue,
                     playWhenReady = false,
                 )
             }
@@ -433,6 +434,28 @@ class MusicService :
             }.onSuccess { queue ->
                 automixItems.value = queue.items.map { it.toMediaItem() }
             }
+            
+            // Restore player state
+            runCatching {
+                filesDir.resolve(PERSISTENT_PLAYER_STATE_FILE).inputStream().use { fis ->
+                    ObjectInputStream(fis).use { oos ->
+                        oos.readObject() as PersistPlayerState
+                    }
+                }
+            }.onSuccess { playerState ->
+                // Restore player settings after queue is loaded
+                scope.launch {
+                    delay(1000) // Wait for queue to be loaded
+                    player.repeatMode = playerState.repeatMode
+                    player.shuffleModeEnabled = playerState.shuffleModeEnabled
+                    player.volume = playerState.volume
+                    
+                    // Restore position if it's still valid
+                    if (playerState.currentMediaItemIndex < player.mediaItemCount) {
+                        player.seekTo(playerState.currentMediaItemIndex, playerState.currentPosition)
+                    }
+                }
+            }
         }
 
         // Save queue periodically to prevent queue loss from crash or force kill
@@ -440,6 +463,16 @@ class MusicService :
             while (isActive) {
                 delay(30.seconds)
                 if (dataStore.get(PersistentQueueKey, true)) {
+                    saveQueueToDisk()
+                }
+            }
+        }
+        
+        // Save queue more frequently when playing to ensure state is preserved
+        scope.launch {
+            while (isActive) {
+                delay(10.seconds)
+                if (dataStore.get(PersistentQueueKey, true) && player.isPlaying) {
                     saveQueueToDisk()
                 }
             }
@@ -906,6 +939,11 @@ class MusicService :
                 }
             }
         }
+        
+        // Save state when media item changes
+        if (dataStore.get(PersistentQueueKey, true)) {
+            saveQueueToDisk()
+        }
     }
 
     override fun onPlaybackStateChanged(
@@ -915,6 +953,11 @@ class MusicService :
             currentQueue = EmptyQueue
             player.shuffleModeEnabled = false
             queueTitle = null
+        }
+        
+        // Save state when playback state changes
+        if (dataStore.get(PersistentQueueKey, true)) {
+            saveQueueToDisk()
         }
     }
 
@@ -973,6 +1016,11 @@ class MusicService :
             shuffledIndices[0] = player.currentMediaItemIndex
             player.setShuffleOrder(DefaultShuffleOrder(shuffledIndices, System.currentTimeMillis()))
         }
+        
+        // Save state when shuffle mode changes
+        if (dataStore.get(PersistentQueueKey, true)) {
+            saveQueueToDisk()
+        }
     }
 
     override fun onRepeatModeChanged(repeatMode: Int) {
@@ -981,6 +1029,11 @@ class MusicService :
             dataStore.edit { settings ->
                 settings[RepeatModeKey] = repeatMode
             }
+        }
+        
+        // Save state when repeat mode changes
+        if (dataStore.get(PersistentQueueKey, true)) {
+            saveQueueToDisk()
         }
     }
 
@@ -1202,15 +1255,18 @@ class MusicService :
         if (player.playbackState == STATE_IDLE) {
             filesDir.resolve(PERSISTENT_AUTOMIX_FILE).delete()
             filesDir.resolve(PERSISTENT_QUEUE_FILE).delete()
+            filesDir.resolve(PERSISTENT_PLAYER_STATE_FILE).delete()
             return
         }
-        val persistQueue =
-            PersistQueue(
-                title = queueTitle,
-                items = player.mediaItems.mapNotNull { it.metadata },
-                mediaItemIndex = player.currentMediaItemIndex,
-                position = player.currentPosition,
-            )
+        
+        // Save current queue with proper type information
+        val persistQueue = currentQueue.toPersistQueue(
+            title = queueTitle,
+            items = player.mediaItems.mapNotNull { it.metadata },
+            mediaItemIndex = player.currentMediaItemIndex,
+            position = player.currentPosition
+        )
+        
         val persistAutomix =
             PersistQueue(
                 title = "automix",
@@ -1218,6 +1274,18 @@ class MusicService :
                 mediaItemIndex = 0,
                 position = 0,
             )
+            
+        // Save player state
+        val persistPlayerState = PersistPlayerState(
+            playWhenReady = player.playWhenReady,
+            repeatMode = player.repeatMode,
+            shuffleModeEnabled = player.shuffleModeEnabled,
+            volume = player.volume,
+            currentPosition = player.currentPosition,
+            currentMediaItemIndex = player.currentMediaItemIndex,
+            playbackState = player.playbackState
+        )
+        
         runCatching {
             filesDir.resolve(PERSISTENT_QUEUE_FILE).outputStream().use { fos ->
                 ObjectOutputStream(fos).use { oos ->
@@ -1231,6 +1299,15 @@ class MusicService :
             filesDir.resolve(PERSISTENT_AUTOMIX_FILE).outputStream().use { fos ->
                 ObjectOutputStream(fos).use { oos ->
                     oos.writeObject(persistAutomix)
+                }
+            }
+        }.onFailure {
+            reportException(it)
+        }
+        runCatching {
+            filesDir.resolve(PERSISTENT_PLAYER_STATE_FILE).outputStream().use { fos ->
+                ObjectOutputStream(fos).use { oos ->
+                    oos.writeObject(persistPlayerState)
                 }
             }
         }.onFailure {
@@ -1282,6 +1359,7 @@ class MusicService :
         const val CHUNK_LENGTH = 512 * 1024L
         const val PERSISTENT_QUEUE_FILE = "persistent_queue.data"
         const val PERSISTENT_AUTOMIX_FILE = "persistent_automix.data"
+        const val PERSISTENT_PLAYER_STATE_FILE = "persistent_player_state.data"
         const val MAX_CONSECUTIVE_ERR = 5
     }
 }
