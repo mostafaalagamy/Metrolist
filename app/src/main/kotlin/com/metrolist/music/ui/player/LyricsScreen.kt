@@ -1,5 +1,6 @@
 package com.metrolist.music.ui.player
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInVertically
@@ -21,10 +22,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
+
 
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
+
 
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -49,8 +50,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -63,7 +62,9 @@ import com.metrolist.music.constants.PlayerBackgroundStyleKey
 import com.metrolist.music.db.entities.LyricsEntity
 import com.metrolist.music.extensions.togglePlayPause
 import com.metrolist.music.models.MediaMetadata
+import com.metrolist.music.ui.component.Lyrics
 import com.metrolist.music.ui.menu.LyricsMenu
+import com.metrolist.music.ui.theme.PlayerSliderColors
 import com.metrolist.music.utils.rememberEnumPreference
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -80,6 +81,9 @@ fun LyricsScreen(
     val isPlaying by playerConnection.isPlaying.collectAsState()
     val mediaMetadataProvider = { mediaMetadata }
     val lyricsProvider = { lyrics }
+    
+    // Handle back button press
+    BackHandler(onBack = onBackClick)
     
     var position by remember { mutableLongStateOf(0L) }
     var sliderPosition by remember { mutableFloatStateOf(0f) }
@@ -192,15 +196,15 @@ fun LyricsScreen(
                 
                 Spacer(modifier = Modifier.width(12.dp))
                 
-                // Lyrics menu button with circle background
+                // Lyrics menu button with smaller circle background
                 var showLyricsMenu by remember { mutableStateOf(false) }
                 Box {
                     IconButton(
                         onClick = { showLyricsMenu = true },
                         modifier = Modifier
-                            .size(40.dp)
+                            .size(32.dp)
                             .background(
-                                color = textColor.copy(alpha = 0.1f),
+                                color = textColor.copy(alpha = 0.15f),
                                 shape = RoundedCornerShape(50)
                             )
                     ) {
@@ -208,7 +212,7 @@ fun LyricsScreen(
                             painter = painterResource(R.drawable.more_vert),
                             contentDescription = "Lyrics options",
                             tint = textColor,
-                            modifier = Modifier.size(20.dp)
+                            modifier = Modifier.size(18.dp)
                         )
                     }
                     
@@ -224,40 +228,16 @@ fun LyricsScreen(
             
             Spacer(modifier = Modifier.height(24.dp))
             
-            // Lyrics content
+            // Lyrics content - using the same component as Thumbnail.kt
             Box(
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                contentAlignment = Alignment.Center
             ) {
-                if (lyrics?.lyrics?.isNotEmpty() == true) {
-                    Text(
-                        text = lyrics.lyrics,
-                        style = MaterialTheme.typography.headlineSmall.copy(
-                            fontSize = 20.sp,
-                            lineHeight = 28.sp,
-                            fontWeight = FontWeight.Medium
-                        ),
-                        color = textColor,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .verticalScroll(rememberScrollState())
-                            .padding(horizontal = 24.dp, vertical = 16.dp)
-                    )
-                } else {
-                    Text(
-                        text = "No lyrics available",
-                        style = MaterialTheme.typography.headlineSmall.copy(
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Medium
-                        ),
-                        color = textColor.copy(alpha = 0.6f),
-                        textAlign = TextAlign.Center
-                    )
-                }
+                Lyrics(
+                    sliderPositionProvider = { position },
+                    modifier = Modifier.fillMaxSize()
+                )
             }
             
             // Bottom player controls
@@ -276,11 +256,7 @@ fun LyricsScreen(
                             player.seekTo(newPosition)
                         }
                     },
-                    colors = SliderDefaults.colors(
-                        thumbColor = colorScheme.primary,
-                        activeTrackColor = colorScheme.primary,
-                        inactiveTrackColor = textColor.copy(alpha = 0.3f)
-                    ),
+                    colors = PlayerSliderColors.defaultSliderColors(textColor),
                     modifier = Modifier.fillMaxWidth()
                 )
                 
