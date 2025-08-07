@@ -400,7 +400,7 @@ fun LyricsScreen(
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
+                    .padding(horizontal = 16.dp, vertical = 32.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Lyrics(
@@ -412,7 +412,7 @@ fun LyricsScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 24.dp, vertical = 16.dp)
+                    .padding(horizontal = 32.dp, vertical = 16.dp)
             ) {
                 // شريط التقدم
                 Slider(
@@ -436,7 +436,9 @@ fun LyricsScreen(
 
                 // أزرار التحكم
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 48.dp),
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
