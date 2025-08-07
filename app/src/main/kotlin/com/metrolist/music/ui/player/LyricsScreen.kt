@@ -24,9 +24,9 @@ import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
 
 
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-
-
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -50,6 +50,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -62,7 +64,8 @@ import com.metrolist.music.constants.PlayerBackgroundStyleKey
 import com.metrolist.music.db.entities.LyricsEntity
 import com.metrolist.music.extensions.togglePlayPause
 import com.metrolist.music.models.MediaMetadata
-import com.metrolist.music.ui.component.Lyrics
+import com.metrolist.music.constants.LyricsPosition
+import com.metrolist.music.constants.LyricsTextPositionKey
 import com.metrolist.music.ui.menu.LyricsMenu
 import com.metrolist.music.ui.theme.PlayerSliderColors
 import com.metrolist.music.utils.rememberEnumPreference
@@ -90,6 +93,7 @@ fun LyricsScreen(
     var duration by remember { mutableLongStateOf(C.TIME_UNSET) }
     
     val playerBackground by rememberEnumPreference(PlayerBackgroundStyleKey, PlayerBackgroundStyle.DEFAULT)
+    val lyricsTextPosition by rememberEnumPreference(LyricsTextPositionKey, LyricsPosition.CENTER)
     val colorScheme = MaterialTheme.colorScheme
     
     // Color logic from Player.kt
@@ -98,6 +102,13 @@ fun LyricsScreen(
         PlayerBackgroundStyle.BLUR -> Color.White
         PlayerBackgroundStyle.GRADIENT -> Color.White
         else -> colorScheme.onBackground
+    }
+    
+    // Text alignment based on lyrics position setting
+    val textAlign = when (lyricsTextPosition) {
+        LyricsPosition.LEFT -> TextAlign.Start
+        LyricsPosition.RIGHT -> TextAlign.End
+        LyricsPosition.CENTER -> TextAlign.Center
     }
     
     // Update position and duration
@@ -228,16 +239,40 @@ fun LyricsScreen(
             
             Spacer(modifier = Modifier.height(24.dp))
             
-            // Lyrics content - using the same component as Thumbnail.kt
+            // Lyrics content - simple text display with position settings
             Box(
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                contentAlignment = Alignment.Center
             ) {
-                Lyrics(
-                    sliderPositionProvider = { position },
-                    modifier = Modifier.fillMaxSize()
-                )
+                if (lyrics?.lyrics?.isNotEmpty() == true) {
+                    Text(
+                        text = lyrics.lyrics,
+                        style = MaterialTheme.typography.headlineSmall.copy(
+                            fontSize = 20.sp,
+                            lineHeight = 28.sp,
+                            fontWeight = FontWeight.Medium
+                        ),
+                        color = textColor,
+                        textAlign = textAlign,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .verticalScroll(rememberScrollState())
+                            .padding(horizontal = 24.dp, vertical = 16.dp)
+                    )
+                } else {
+                    Text(
+                        text = "No lyrics available",
+                        style = MaterialTheme.typography.headlineSmall.copy(
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Medium
+                        ),
+                        color = textColor.copy(alpha = 0.6f),
+                        textAlign = TextAlign.Center
+                    )
+                }
             }
             
             // Bottom player controls
