@@ -516,7 +516,12 @@ private fun LegacyMiniPlayer(
             .fillMaxWidth()
             .height(MiniPlayerHeight)
             .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Horizontal))
-            .background(if (pureBlack) Color.Black else Color.Transparent)
+            .background(
+                if (pureBlack) 
+                    Color.Black 
+                else 
+                    MaterialTheme.colorScheme.surfaceContainer // Fixed background independent of player background
+            )
             .let { baseModifier ->
                 if (swipeThumbnail) {
                     baseModifier.pointerInput(Unit) {
