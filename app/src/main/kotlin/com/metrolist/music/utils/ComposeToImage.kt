@@ -16,8 +16,9 @@ import androidx.core.graphics.createBitmap
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.graphics.withClip
 import androidx.core.graphics.withTranslation
-import coil.ImageLoader
-import coil.request.ImageRequest
+import coil3.ImageLoader
+import coil3.request.ImageRequest
+import coil3.request.allowHardware
 import com.metrolist.music.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -69,7 +70,7 @@ object ComposeToImage {
                     .allowHardware(false)
                     .build()
                 val result = imageLoader.execute(request)
-                coverArtBitmap = result.drawable?.toBitmap(256, 256, Bitmap.Config.ARGB_8888)
+                coverArtBitmap = result.image?.toBitmap(256, 256, Bitmap.Config.ARGB_8888)
             } catch (_: Exception) {}
         }
 

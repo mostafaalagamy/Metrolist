@@ -101,11 +101,11 @@ import androidx.media3.common.Player.STATE_ENDED
 import androidx.media3.common.Player.STATE_READY
 import androidx.palette.graphics.Palette
 import androidx.navigation.NavController
-import coil.ImageLoader
-import coil.compose.AsyncImage
-import coil.imageLoader
-import coil.request.ImageRequest
-import coil.size.Size
+import coil3.ImageLoader
+import coil3.compose.AsyncImage
+import coil3.imageLoader
+import coil3.request.ImageRequest
+import coil3.request.allowHardware
 import com.metrolist.music.LocalDownloadUtil
 import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
@@ -290,7 +290,7 @@ fun BottomSheetPlayer(
                         .build()
 
                     val result = runCatching { 
-                        context.imageLoader.execute(request).drawable 
+                        context.imageLoader.execute(request).image 
                     }.getOrNull()
                     
                     if (result != null) {
