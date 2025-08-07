@@ -1250,11 +1250,16 @@ fun BottomSheetPlayer(
                     targetOffsetY = { it }
                 )
             ) {
-                // استخدام Box لتغطية الشاشة بالكامل وحظر التفاعل مع المشغل
+                // استخدام Box لتغطية الشاشة بالكامل
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(Color.Black) // خلفية صلبة لحظر التفاعل مع المشغل
+                        .background(
+                            when (playerBackground) {
+                                PlayerBackgroundStyle.BLUR, PlayerBackgroundStyle.GRADIENT -> Color.Transparent
+                                else -> MaterialTheme.colorScheme.surface
+                            }
+                        )
                 ) {
                     LyricsScreen(
                         mediaMetadata = metadata,
