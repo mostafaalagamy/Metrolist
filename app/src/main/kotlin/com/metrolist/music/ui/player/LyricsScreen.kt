@@ -18,9 +18,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
+
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -28,8 +30,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -39,14 +39,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -55,14 +52,11 @@ import androidx.media3.common.C
 import coil.compose.AsyncImage
 import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
-import com.metrolist.music.constants.PlayerBackgroundStyle
-import com.metrolist.music.constants.PlayerBackgroundStyleKey
+
 import com.metrolist.music.db.entities.LyricsEntity
 import com.metrolist.music.extensions.togglePlayPause
 import com.metrolist.music.models.MediaMetadata
 import com.metrolist.music.ui.menu.LyricsMenu
-
-import com.metrolist.music.utils.rememberEnumPreference
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -83,7 +77,6 @@ fun LyricsScreen(
     var sliderPosition by remember { mutableFloatStateOf(0f) }
     var duration by remember { mutableLongStateOf(C.TIME_UNSET) }
     
-    val playerBackground by rememberEnumPreference(PlayerBackgroundStyleKey, PlayerBackgroundStyle.DEFAULT)
     val colorScheme = MaterialTheme.colorScheme
     
     // Update position and duration
@@ -93,89 +86,43 @@ fun LyricsScreen(
         sliderPosition = position.toFloat() / duration
     }
 
-    // Background setup based on player background style
-    val backgroundModifier = when (playerBackground) {
-        PlayerBackgroundStyle.GRADIENT -> {
-            val dominantColor = mediaMetadata.thumbnailUrl?.let { url ->
-                // You might want to extract dominant color from image
-                colorScheme.primary
-            } ?: colorScheme.primary
-            
-            Modifier.background(
-                Brush.verticalGradient(
-                    colors = listOf(
-                        dominantColor.copy(alpha = 0.3f),
-                        Color.Transparent
-                    )
-                )
-            )
-        }
-        PlayerBackgroundStyle.BLUR -> {
-            Modifier.background(colorScheme.surface)
-        }
-        else -> {
-            Modifier.background(colorScheme.surface)
-        }
-    }
-
     Box(
         modifier = modifier
             .fillMaxSize()
-            .then(backgroundModifier)
+            .background(colorScheme.surface)
     ) {
-        // Background image for blur effect
-        if (playerBackground == PlayerBackgroundStyle.BLUR) {
-            AsyncImage(
-                model = mediaMetadata.thumbnailUrl,
-                contentDescription = null,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .blur(50.dp),
-                contentScale = ContentScale.Crop,
-                colorFilter = ColorFilter.tint(
-                    color = if (isSystemInDarkTheme()) Color.Black.copy(alpha = 0.6f)
-                    else Color.White.copy(alpha = 0.6f)
-                )
-            )
-        }
 
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(WindowInsets.systemBars.asPaddingValues())
         ) {
-            // Top bar with back button
-            TopAppBar(
-                title = { },
-                navigationIcon = {
-                    IconButton(onClick = onBackClick) {
-                        Icon(
-                            painter = painterResource(R.drawable.close),
-                            contentDescription = "Back",
-                            tint = colorScheme.onSurface,
-                            modifier = Modifier.size(24.dp)
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.Transparent
-                )
-            )
-
-            // Header with track info and lyrics button
+            // Header with all controls moved up
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                // Close button
+                IconButton(onClick = onBackClick) {
+                    Icon(
+                        painter = painterResource(R.drawable.close),
+                        contentDescription = "Back",
+                        tint = colorScheme.onSurface,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+                
+                Spacer(modifier = Modifier.width(8.dp))
+                
                 // Track thumbnail
                 AsyncImage(
                     model = mediaMetadata.thumbnailUrl,
                     contentDescription = null,
                     modifier = Modifier
-                        .size(60.dp)
-                        .clip(RoundedCornerShape(8.dp)),
+                        .size(48.dp)
+                        .clip(RoundedCornerShape(6.dp)),
                     contentScale = ContentScale.Crop
                 )
                 
@@ -187,14 +134,14 @@ fun LyricsScreen(
                 ) {
                     Text(
                         text = mediaMetadata.title,
-                        style = MaterialTheme.typography.titleMedium,
+                        style = MaterialTheme.typography.titleSmall,
                         color = colorScheme.onSurface,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
                     Text(
                         text = mediaMetadata.artists.joinToString { it.name },
-                        style = MaterialTheme.typography.bodyMedium,
+                        style = MaterialTheme.typography.bodySmall,
                         color = colorScheme.onSurface.copy(alpha = 0.7f),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
@@ -203,17 +150,11 @@ fun LyricsScreen(
                 
                 Spacer(modifier = Modifier.width(12.dp))
                 
-                // Lyrics menu button with transparent circle background
+                // Lyrics menu button - using dropdown menu instead
                 var showLyricsMenu by remember { mutableStateOf(false) }
                 Box {
                     IconButton(
-                        onClick = { showLyricsMenu = true },
-                        modifier = Modifier
-                            .size(40.dp)
-                            .background(
-                                color = colorScheme.onSurface.copy(alpha = 0.1f),
-                                shape = CircleShape
-                            )
+                        onClick = { showLyricsMenu = true }
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.more_vert),
@@ -223,11 +164,30 @@ fun LyricsScreen(
                         )
                     }
                     
-                    if (showLyricsMenu) {
-                        LyricsMenu(
-                            lyricsProvider = lyricsProvider,
-                            mediaMetadataProvider = mediaMetadataProvider,
-                            onDismiss = { showLyricsMenu = false }
+                    DropdownMenu(
+                        expanded = showLyricsMenu,
+                        onDismissRequest = { showLyricsMenu = false }
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text("Search lyrics") },
+                            onClick = { 
+                                showLyricsMenu = false
+                                // Add search lyrics functionality here
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { Text("Edit lyrics") },
+                            onClick = { 
+                                showLyricsMenu = false
+                                // Add edit lyrics functionality here
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { Text("Copy lyrics") },
+                            onClick = { 
+                                showLyricsMenu = false
+                                // Add copy lyrics functionality here
+                            }
                         )
                     }
                 }
@@ -246,21 +206,25 @@ fun LyricsScreen(
                 if (lyrics?.lyrics?.isNotEmpty() == true) {
                     Text(
                         text = lyrics.lyrics,
-                        style = MaterialTheme.typography.bodyLarge.copy(
-                            fontSize = 16.sp,
-                            lineHeight = 24.sp
+                        style = MaterialTheme.typography.headlineSmall.copy(
+                            fontSize = 20.sp,
+                            lineHeight = 28.sp,
+                            fontWeight = FontWeight.Medium
                         ),
                         color = colorScheme.onSurface,
                         textAlign = TextAlign.Center,
                         modifier = Modifier
                             .fillMaxWidth()
                             .verticalScroll(rememberScrollState())
-                            .padding(vertical = 16.dp)
+                            .padding(horizontal = 24.dp, vertical = 16.dp)
                     )
                 } else {
                     Text(
                         text = "No lyrics available",
-                        style = MaterialTheme.typography.bodyLarge,
+                        style = MaterialTheme.typography.headlineSmall.copy(
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Medium
+                        ),
                         color = colorScheme.onSurface.copy(alpha = 0.6f),
                         textAlign = TextAlign.Center
                     )
