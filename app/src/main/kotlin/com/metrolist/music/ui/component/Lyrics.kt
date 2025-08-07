@@ -60,6 +60,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -256,6 +257,8 @@ fun Lyrics(
         mutableStateOf(false)
     }
 
+    var isUserScrolling by remember { mutableStateOf(false) }
+
     var showProgressDialog by remember { mutableStateOf(false) }
     var showShareDialog by remember { mutableStateOf(false) }
     var shareDialogData by remember { mutableStateOf<Triple<String, String, String>?>(null) }
@@ -271,6 +274,11 @@ fun Lyrics(
     var showMaxSelectionToast by remember { mutableStateOf(false) } // State for showing max selection toast
 
     val lazyListState = rememberLazyListState()
+
+    LaunchedEffect(lazyListState) {
+        snapshotFlow { lazyListState.isScrollInProgress }
+            .collect { isUserScrolling = it }
+    }
 
     // Define max selection limit
     val maxSelectionLimit = 5
@@ -339,7 +347,8 @@ fun Lyrics(
         }
     }
 
-    LaunchedEffect(currentLineIndex, lastPreviewTime, initialScrollDone) {
+    LaunchedEffect(currentLineIndex, lastPreviewTime, initialScrollDone, isUserScrolling) {
+        if (isUserScrolling) return@LaunchedEffect
 
         /**
          * Calculate the lyric offset Based on how many lines (\n chars)
