@@ -368,7 +368,7 @@ fun Lyrics(
                 lazyListState.scrollToItem(
                     currentLineIndex,
                     with(density) { 36.dp.toPx().toInt() } + calculateOffset())
-            } else if (lastPreviewTime == 0L && currentLineIndex != previousLineIndex && scrollLyrics) {
+            } else if ((lastPreviewTime == 0L || currentLineIndex != previousLineIndex) && scrollLyrics) {
                 val visibleItemsInfo = lazyListState.layoutInfo.visibleItemsInfo
                 val isCurrentLineVisible = visibleItemsInfo.any { it.index == currentLineIndex }
                 val isPreviousLineVisible = visibleItemsInfo.any { it.index == previousLineIndex }
