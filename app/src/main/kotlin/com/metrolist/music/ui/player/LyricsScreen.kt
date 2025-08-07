@@ -62,6 +62,7 @@ import com.metrolist.music.db.entities.LyricsEntity
 import com.metrolist.music.extensions.togglePlayPause
 import com.metrolist.music.models.MediaMetadata
 import com.metrolist.music.ui.component.Lyrics
+import com.metrolist.music.ui.component.LocalMenuState
 import com.metrolist.music.ui.menu.LyricsMenu
 import com.metrolist.music.ui.theme.PlayerSliderColors
 import com.metrolist.music.utils.rememberEnumPreference
@@ -77,6 +78,7 @@ fun LyricsScreen(
     val playerConnection = LocalPlayerConnection.current ?: return
     val player = playerConnection.player
     val context = LocalContext.current
+    val menuState = LocalMenuState.current
 
     var position by remember { mutableLongStateOf(0L) }
     var sliderPosition by remember { mutableFloatStateOf(0f) }
@@ -243,34 +245,24 @@ fun LyricsScreen(
 
                 Spacer(modifier = Modifier.width(12.dp))
 
-                // More button with smaller circle background
-                Box {
-                    var showMenu by remember { mutableStateOf(false) }
-                    
-                    IconButton(
-                        onClick = { showMenu = true },
-                        modifier = Modifier
-                            .size(28.dp) // Smaller size
-                            .background(
-                                color = textColor.copy(alpha = 0.1f), // More subtle
-                                shape = RoundedCornerShape(50)
+                // More button using bottom sheet like the original (no background circle)
+                IconButton(
+                    onClick = {
+                        menuState.show {
+                            LyricsMenu(
+                                lyricsProvider = { lyrics },
+                                mediaMetadataProvider = { mediaMetadata },
+                                onDismiss = menuState::dismiss
                             )
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.more_vert),
-                            contentDescription = "More options",
-                            tint = textColor,
-                            modifier = Modifier.size(16.dp) // Smaller icon
-                        )
+                        }
                     }
-
-                    if (showMenu) {
-                        LyricsMenu(
-                            lyricsProvider = { lyrics },
-                            mediaMetadataProvider = { mediaMetadata },
-                            onDismiss = { showMenu = false }
-                        )
-                    }
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.more_horiz),
+                        contentDescription = "More options",
+                        tint = textColor,
+                        modifier = Modifier.size(24.dp)
+                    )
                 }
             }
 
@@ -285,11 +277,11 @@ fun LyricsScreen(
                 )
             }
 
-            // Player controls at bottom
+            // Player controls at bottom with horizontal spacing
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp)
+                    .padding(horizontal = 32.dp, vertical = 8.dp) // Increased horizontal padding
             ) {
                 // Progress slider
                 Slider(
@@ -305,9 +297,11 @@ fun LyricsScreen(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // Control buttons
+                // Control buttons with spacing
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp), // Additional spacing left and right
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     verticalAlignment = Alignment.CenterVertically
                 ) {

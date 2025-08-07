@@ -583,14 +583,15 @@ fun Lyrics(
             )
         }
 
-        mediaMetadata?.let { metadata ->
-            Row(
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(end = 12.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                if (isSelectionModeActive) {
+        // Show selection buttons only when in selection mode
+        if (isSelectionModeActive) {
+            mediaMetadata?.let { metadata ->
+                Row(
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .padding(end = 12.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     // Cancel Selection Button
                     IconButton(
                         onClick = {
@@ -617,7 +618,7 @@ fun Lyrics(
                                 if (selectedLyricsText.isNotBlank()) {
                                     shareDialogData = Triple(
                                         selectedLyricsText,
-                                        metadata.title, // Provide default empty string
+                                        metadata.title,
                                         metadata.artists.joinToString { it.name }
                                     )
                                     showShareDialog = true
@@ -626,7 +627,7 @@ fun Lyrics(
                                 selectedIndices.clear()
                             }
                         },
-                        enabled = selectedIndices.isNotEmpty() // Disable if nothing selected
+                        enabled = selectedIndices.isNotEmpty()
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.media3_icon_share),
@@ -634,28 +635,10 @@ fun Lyrics(
                             tint = if (selectedIndices.isNotEmpty()) textColor else textColor.copy(alpha = 0.5f)
                         )
                     }
-                } else {
-                    // Original More Button
-                    IconButton(
-                        onClick = {
-                            menuState.show {
-                                LyricsMenu(
-                                    lyricsProvider = { lyricsEntity },
-                                    mediaMetadataProvider = { metadata },
-                                    onDismiss = menuState::dismiss
-                                )
-                            }
-                        }
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.more_horiz),
-                            contentDescription = stringResource(R.string.more_options),
-                            tint = textColor
-                        )
-                    }
                 }
             }
         }
+        // Removed the more button from bottom - it's now in the top header
     }
 
     if (showProgressDialog) {
