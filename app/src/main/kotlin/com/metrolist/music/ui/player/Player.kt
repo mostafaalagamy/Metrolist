@@ -1237,7 +1237,7 @@ fun BottomSheetPlayer(
             pureBlack = pureBlack,
         )
         
-        // Lyrics Screen with animation
+        // Lyrics Screen with animation - محدث
         mediaMetadata?.let { metadata ->
             AnimatedVisibility(
                 visible = showLyricsScreen,
@@ -1250,10 +1250,24 @@ fun BottomSheetPlayer(
                     targetOffsetY = { it }
                 )
             ) {
-                LyricsScreen(
-                    mediaMetadata = metadata,
-                    onBackClick = { showLyricsScreen = false }
-                )
+                // استخدام Box لتغطية الشاشة بالكامل
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(
+                            when (playerBackground) {
+                                PlayerBackgroundStyle.BLUR, PlayerBackgroundStyle.GRADIENT -> Color.Transparent
+                                else -> MaterialTheme.colorScheme.surface
+                            }
+                        )
+                ) {
+                    LyricsScreen(
+                        mediaMetadata = metadata,
+                        onBackClick = { 
+                            showLyricsScreen = false 
+                        }
+                    )
+                }
             }
         }
     }

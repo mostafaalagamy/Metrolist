@@ -36,6 +36,7 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -47,12 +48,10 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.media3.common.C
+import androidx.media3.common.Player.STATE_READY
 import androidx.palette.graphics.Palette
 import androidx.core.graphics.drawable.toBitmap
 import coil.compose.AsyncImage
@@ -72,6 +71,8 @@ import com.metrolist.music.ui.theme.PlayerColorExtractor
 import com.metrolist.music.ui.theme.PlayerSliderColors
 import com.metrolist.music.utils.rememberEnumPreference
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
 import kotlin.runCatching
 
@@ -86,34 +87,29 @@ fun LyricsScreen(
     val player = playerConnection.player
     val context = LocalContext.current
     val menuState = LocalMenuState.current
+    val coroutineScope = rememberCoroutineScope()
 
-    // Get current lyrics from playerConnection (like the original system)
+    // استخدام نفس منطق المشغل لتتبع التقدم
+    val playbackState by playerConnection.playbackState.collectAsState()
+    val isPlaying by playerConnection.isPlaying.collectAsState()
     val currentLyrics by playerConnection.currentLyrics.collectAsState(initial = null)
 
     var position by remember { mutableLongStateOf(0L) }
-    var sliderPosition by remember { mutableFloatStateOf(0f) }
     var duration by remember { mutableLongStateOf(C.TIME_UNSET) }
+    var sliderPosition by remember { mutableStateOf<Long?>(null) }
 
     val playerBackground by rememberEnumPreference(PlayerBackgroundStyleKey, PlayerBackgroundStyle.DEFAULT)
-    val colorScheme = MaterialTheme.colorScheme
 
-    // Complete background logic from Player.kt - EXACT COPY
-    var gradientColors by remember {
-        mutableStateOf<List<Color>>(emptyList())
-    }
-    
-    // Previous background states for smooth transitions
+    // نسخ منطق الألوان بالكامل من Player.kt
+    var gradientColors by remember { mutableStateOf<List<Color>>(emptyList()) }
     var previousThumbnailUrl by remember { mutableStateOf<String?>(null) }
     var previousGradientColors by remember { mutableStateOf<List<Color>>(emptyList()) }
-    
-    // Cache for gradient colors to prevent re-extraction for same songs
     val gradientColorsCache = remember { mutableMapOf<String, List<Color>>() }
 
-    // Default gradient colors for fallback
     val defaultGradientColors = listOf(MaterialTheme.colorScheme.surface, MaterialTheme.colorScheme.surfaceVariant)
     val fallbackColor = MaterialTheme.colorScheme.surface.toArgb()
-    
-    // Update previous states when media changes
+
+    // تحديث الحالات السابقة عند تغيير الأغنية
     LaunchedEffect(mediaMetadata.id) {
         val currentThumbnail = mediaMetadata.thumbnailUrl
         if (currentThumbnail != previousThumbnailUrl) {
@@ -121,21 +117,20 @@ fun LyricsScreen(
             previousGradientColors = gradientColors
         }
     }
-    
+
+    // استخراج ألوان الـ gradient مع التخزين المؤقت
     LaunchedEffect(mediaMetadata.id, playerBackground) {
         if (playerBackground == PlayerBackgroundStyle.GRADIENT) {
-            val currentMetadata = mediaMetadata
-            if (currentMetadata.thumbnailUrl != null) {
-                // Check cache first
-                val cachedColors = gradientColorsCache[currentMetadata.id]
+            if (mediaMetadata.thumbnailUrl != null) {
+                val cachedColors = gradientColorsCache[mediaMetadata.id]
                 if (cachedColors != null) {
                     gradientColors = cachedColors
                 } else {
                     val request = ImageRequest.Builder(context)
-                        .data(currentMetadata.thumbnailUrl)
+                        .data(mediaMetadata.thumbnailUrl)
                         .size(Size(PlayerColorExtractor.Config.IMAGE_SIZE, PlayerColorExtractor.Config.IMAGE_SIZE))
                         .allowHardware(false)
-                        .memoryCacheKey("gradient_${currentMetadata.id}")
+                        .memoryCacheKey("gradient_${mediaMetadata.id}")
                         .build()
 
                     val result = runCatching { 
@@ -145,20 +140,18 @@ fun LyricsScreen(
                     if (result != null) {
                         val bitmap = result.toBitmap()
                         val palette = withContext(Dispatchers.Default) {
-                            Palette.Builder(bitmap)
+                            Palette.from(bitmap)
                                 .maximumColorCount(PlayerColorExtractor.Config.MAX_COLOR_COUNT)
                                 .resizeBitmapArea(PlayerColorExtractor.Config.BITMAP_AREA)
                                 .generate()
                         }
                         
-                        // Use the new color extraction system
                         val extractedColors = PlayerColorExtractor.extractGradientColors(
                             palette = palette,
                             fallbackColor = fallbackColor
                         )
                         
-                        // Cache the extracted colors
-                        gradientColorsCache[currentMetadata.id] = extractedColors
+                        gradientColorsCache[mediaMetadata.id] = extractedColors
                         gradientColors = extractedColors
                     } else {
                         gradientColors = defaultGradientColors
@@ -172,36 +165,40 @@ fun LyricsScreen(
         }
     }
 
-    // Color logic exactly from Player.kt
-    val TextBackgroundColor =
-        when (playerBackground) {
-            PlayerBackgroundStyle.DEFAULT -> MaterialTheme.colorScheme.onBackground
-            PlayerBackgroundStyle.BLUR -> Color.White
-            PlayerBackgroundStyle.GRADIENT -> Color.White
-            else -> MaterialTheme.colorScheme.onBackground
-        }
+    // نسخ منطق الألوان بالكامل من Player.kt
+    val textBackgroundColor = when (playerBackground) {
+        PlayerBackgroundStyle.DEFAULT -> MaterialTheme.colorScheme.onBackground
+        PlayerBackgroundStyle.BLUR -> Color.White
+        PlayerBackgroundStyle.GRADIENT -> Color.White
+        else -> MaterialTheme.colorScheme.onBackground
+    }
 
-    val icBackgroundColor =
-        when (playerBackground) {
-            PlayerBackgroundStyle.DEFAULT -> MaterialTheme.colorScheme.surface
-            PlayerBackgroundStyle.BLUR -> Color.Black
-            PlayerBackgroundStyle.GRADIENT -> Color.Black
-            else -> MaterialTheme.colorScheme.surface
-        }
+    val icBackgroundColor = when (playerBackground) {
+        PlayerBackgroundStyle.DEFAULT -> MaterialTheme.colorScheme.surface
+        PlayerBackgroundStyle.BLUR -> Color.Black
+        PlayerBackgroundStyle.GRADIENT -> Color.Black
+        else -> MaterialTheme.colorScheme.surface
+    }
 
-    // Update position and duration
-    position = player.currentPosition
-    duration = player.duration.coerceAtLeast(0L)
-    sliderPosition = if (duration > 0) position.toFloat() / duration else 0f
+    // تتبع التقدم بنفس طريقة Player.kt
+    LaunchedEffect(playbackState) {
+        if (playbackState == STATE_READY) {
+            while (isActive) {
+                delay(100)
+                position = player.currentPosition
+                duration = player.duration
+            }
+        }
+    }
 
     BackHandler(onBack = onBackClick)
 
     Box(modifier = modifier.fillMaxSize()) {
-        // Background Layer - EXACT COPY from Player.kt
+        // خلفية بنفس منطق Player.kt تماماً
         Box(modifier = Modifier.fillMaxSize()) {
             when (playerBackground) {
                 PlayerBackgroundStyle.BLUR -> {
-                    // Layer 1: Previous blur background (stays visible during transition)
+                    // الطبقة السابقة للانتقال السلس
                     if (previousThumbnailUrl != null) {
                         AsyncImage(
                             model = previousThumbnailUrl,
@@ -212,7 +209,7 @@ fun LyricsScreen(
                         Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.4f)))
                     }
                     
-                    // Layer 2: New blur background (animates on top)
+                    // الطبقة الجديدة
                     AnimatedContent(
                         targetState = mediaMetadata.thumbnailUrl,
                         transitionSpec = {
@@ -233,26 +230,26 @@ fun LyricsScreen(
                     }
                 }
                 PlayerBackgroundStyle.GRADIENT -> {
-                    // Layer 1: Previous gradient background (stays visible during transition)
+                    // الطبقة السابقة
                     if (previousGradientColors.isNotEmpty()) {
                         val gradientColorStops = if (previousGradientColors.size >= 3) {
                             arrayOf(
-                                0.0f to previousGradientColors[0], // Top: primary vibrant color
-                                0.5f to previousGradientColors[1], // Middle: darker variant
-                                1.0f to previousGradientColors[2]  // Bottom: black
+                                0.0f to previousGradientColors[0],
+                                0.5f to previousGradientColors[1],
+                                1.0f to previousGradientColors[2]
                             )
                         } else {
                             arrayOf(
-                                0.0f to previousGradientColors[0], // Top: primary color
-                                0.6f to previousGradientColors[0].copy(alpha = 0.7f), // Middle: faded variant
-                                1.0f to Color.Black // Bottom: black
+                                0.0f to previousGradientColors[0],
+                                0.6f to previousGradientColors[0].copy(alpha = 0.7f),
+                                1.0f to Color.Black
                             )
                         }
                         Box(modifier = Modifier.fillMaxSize().background(Brush.verticalGradient(colorStops = gradientColorStops)))
                         Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.2f)))
                     }
                     
-                    // Layer 2: New gradient background (animates on top)
+                    // الطبقة الجديدة
                     AnimatedContent(
                         targetState = gradientColors,
                         transitionSpec = {
@@ -263,15 +260,15 @@ fun LyricsScreen(
                             Box(modifier = Modifier.fillMaxSize()) {
                                 val gradientColorStops = if (colors.size >= 3) {
                                     arrayOf(
-                                        0.0f to colors[0], // Top: primary vibrant color
-                                        0.5f to colors[1], // Middle: darker variant
-                                        1.0f to colors[2]  // Bottom: black
+                                        0.0f to colors[0],
+                                        0.5f to colors[1],
+                                        1.0f to colors[2]
                                     )
                                 } else {
                                     arrayOf(
-                                        0.0f to colors[0], // Top: primary color
-                                        0.6f to colors[0].copy(alpha = 0.7f), // Middle: faded variant
-                                        1.0f to Color.Black // Bottom: black
+                                        0.0f to colors[0],
+                                        0.6f to colors[0].copy(alpha = 0.7f),
+                                        1.0f to Color.Black
                                     )
                                 }
                                 Box(modifier = Modifier.fillMaxSize().background(Brush.verticalGradient(colorStops = gradientColorStops)))
@@ -281,7 +278,8 @@ fun LyricsScreen(
                     }
                 }
                 else -> {
-                    // DEFAULT or other modes - no background
+                    // الخلفية الافتراضية شفافة
+                    Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.surface))
                 }
             }
         }
@@ -291,49 +289,49 @@ fun LyricsScreen(
                 .fillMaxSize()
                 .padding(WindowInsets.systemBars.asPaddingValues())
         ) {
-            // Header with thumbnail, track info, and more button
+            // رأس الشاشة مع الصورة المصغرة ومعلومات الأغنية
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                    .padding(horizontal = 16.dp, vertical = 12.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Close button
+                // زر الإغلاق
                 IconButton(onClick = onBackClick) {
                     Icon(
                         painter = painterResource(R.drawable.close),
                         contentDescription = "Close",
-                        tint = TextBackgroundColor,
+                        tint = textBackgroundColor,
                         modifier = Modifier.size(24.dp)
                     )
                 }
 
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.width(12.dp))
 
-                // Track thumbnail
+                // صورة الأغنية
                 AsyncImage(
                     model = mediaMetadata.thumbnailUrl,
                     contentDescription = null,
                     modifier = Modifier
                         .size(48.dp)
-                        .clip(RoundedCornerShape(6.dp))
+                        .clip(RoundedCornerShape(8.dp))
                 )
 
-                Spacer(modifier = Modifier.width(12.dp))
+                Spacer(modifier = Modifier.width(16.dp))
 
-                // Track info
+                // معلومات الأغنية
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = mediaMetadata.title,
-                        style = MaterialTheme.typography.titleSmall,
-                        color = TextBackgroundColor,
+                        style = MaterialTheme.typography.titleMedium,
+                        color = textBackgroundColor,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
                     Text(
                         text = mediaMetadata.artists.joinToString { it.name },
-                        style = MaterialTheme.typography.bodySmall,
-                        color = TextBackgroundColor.copy(alpha = 0.8f),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = textBackgroundColor.copy(alpha = 0.8f),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -341,7 +339,7 @@ fun LyricsScreen(
 
                 Spacer(modifier = Modifier.width(12.dp))
 
-                // More button using bottom sheet like the original (no background circle)
+                // زر المزيد
                 IconButton(
                     onClick = {
                         menuState.show {
@@ -356,82 +354,91 @@ fun LyricsScreen(
                     Icon(
                         painter = painterResource(R.drawable.more_horiz),
                         contentDescription = "More options",
-                        tint = TextBackgroundColor,
+                        tint = textBackgroundColor,
                         modifier = Modifier.size(24.dp)
                     )
                 }
             }
 
-            // Lyrics content in center with proper alignment
+            // محتوى الكلمات في وسط الشاشة
             Box(
                 modifier = Modifier
                     .weight(1f)
-                    .fillMaxWidth(),
-                contentAlignment = Alignment.Center // Center the lyrics content
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                contentAlignment = Alignment.Center
             ) {
                 Lyrics(
-                    sliderPositionProvider = { position }
+                    sliderPositionProvider = { sliderPosition ?: position }
                 )
             }
 
-            // Player controls at bottom with horizontal spacing
+            // أدوات التحكم في الأسفل
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 32.dp, vertical = 8.dp) // Increased horizontal padding
+                    .padding(horizontal = 24.dp, vertical = 16.dp)
             ) {
-                // Progress slider
+                // شريط التقدم
                 Slider(
-                    value = sliderPosition,
-                    onValueChange = { newValue ->
-                        sliderPosition = newValue
-                        val newPosition = (newValue * duration).toLong()
-                        player.seekTo(newPosition)
+                    value = (sliderPosition ?: position).toFloat(),
+                    valueRange = 0f..(if (duration == C.TIME_UNSET) 0f else duration.toFloat()),
+                    onValueChange = {
+                        sliderPosition = it.toLong()
                     },
-                    colors = PlayerSliderColors.defaultSliderColors(TextBackgroundColor),
+                    onValueChangeFinished = {
+                        sliderPosition?.let {
+                            player.seekTo(it)
+                            position = it
+                        }
+                        sliderPosition = null
+                    },
+                    colors = PlayerSliderColors.defaultSliderColors(textBackgroundColor),
                     modifier = Modifier.fillMaxWidth()
                 )
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
-                // Control buttons with spacing
+                // أزرار التحكم
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp), // Additional spacing left and right
+                    modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    // Previous button
+                    // زر السابق
                     IconButton(onClick = { player.seekToPrevious() }) {
                         Icon(
                             painter = painterResource(R.drawable.skip_previous),
                             contentDescription = "Previous",
-                            tint = TextBackgroundColor,
+                            tint = textBackgroundColor,
                             modifier = Modifier.size(32.dp)
                         )
                     }
 
-                    // Play/Pause button
+                    // زر التشغيل/الإيقاف
                     IconButton(onClick = { player.togglePlayPause() }) {
                         Icon(
-                            painter = painterResource(if (player.isPlaying) R.drawable.pause else R.drawable.play),
-                            contentDescription = if (player.isPlaying) "Pause" else "Play",
-                            tint = TextBackgroundColor,
+                            painter = painterResource(
+                                if (isPlaying) R.drawable.pause else R.drawable.play
+                            ),
+                            contentDescription = if (isPlaying) "Pause" else "Play",
+                            tint = textBackgroundColor,
                             modifier = Modifier.size(48.dp)
                         )
                     }
 
-                    // Next button
+                    // زر التالي
                     IconButton(onClick = { player.seekToNext() }) {
                         Icon(
                             painter = painterResource(R.drawable.skip_next),
                             contentDescription = "Next",
-                            tint = TextBackgroundColor,
+                            tint = textBackgroundColor,
                             modifier = Modifier.size(32.dp)
                         )
                     }
                 }
+
+                Spacer(modifier = Modifier.height(8.dp))
             }
         }
     }
