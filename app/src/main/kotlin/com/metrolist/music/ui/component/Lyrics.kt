@@ -151,7 +151,6 @@ fun Lyrics(
 
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
     val lyricsEntity by playerConnection.currentLyrics.collectAsState(initial = null)
-    val isPlaying by playerConnection.isPlaying.collectAsState()
     val lyrics = remember(lyricsEntity) { lyricsEntity?.lyrics?.trim() }
 
     val playerBackground by rememberEnumPreference(
@@ -369,7 +368,7 @@ fun Lyrics(
                 lazyListState.scrollToItem(
                     currentLineIndex,
                     with(density) { 36.dp.toPx().toInt() } + calculateOffset())
-            } else if (lastPreviewTime == 0L && currentLineIndex != previousLineIndex && scrollLyrics && isSynced && isPlaying) {
+            } else if ((lastPreviewTime == 0L || currentLineIndex != previousLineIndex) && scrollLyrics) {
                 val visibleItemsInfo = lazyListState.layoutInfo.visibleItemsInfo
                 val isCurrentLineVisible = visibleItemsInfo.any { it.index == currentLineIndex }
                 val isPreviousLineVisible = visibleItemsInfo.any { it.index == previousLineIndex }
