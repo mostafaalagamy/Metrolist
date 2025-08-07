@@ -173,14 +173,14 @@ fun LyricsScreen(
                     Text(
                         text = mediaMetadata.title,
                         style = MaterialTheme.typography.titleSmall,
-                        color = colorScheme.onSurface,
+                        color = textColor,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
                     Text(
                         text = mediaMetadata.artists.joinToString { it.name },
                         style = MaterialTheme.typography.bodySmall,
-                        color = colorScheme.onSurface.copy(alpha = 0.7f),
+                        color = textColor.copy(alpha = 0.7f),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -196,14 +196,14 @@ fun LyricsScreen(
                         modifier = Modifier
                             .size(40.dp)
                             .background(
-                                color = Color.White.copy(alpha = 0.1f),
+                                color = textColor.copy(alpha = 0.1f),
                                 shape = RoundedCornerShape(50)
                             )
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.more_vert),
                             contentDescription = "Lyrics options",
-                            tint = Color.White,
+                            tint = textColor,
                             modifier = Modifier.size(20.dp)
                         )
                     }
@@ -236,7 +236,7 @@ fun LyricsScreen(
                             lineHeight = 28.sp,
                             fontWeight = FontWeight.Medium
                         ),
-                        color = colorScheme.onSurface,
+                        color = textColor,
                         textAlign = TextAlign.Center,
                         modifier = Modifier
                             .fillMaxWidth()
@@ -250,7 +250,7 @@ fun LyricsScreen(
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Medium
                         ),
-                        color = colorScheme.onSurface.copy(alpha = 0.6f),
+                        color = textColor.copy(alpha = 0.6f),
                         textAlign = TextAlign.Center
                     )
                 }
@@ -275,7 +275,7 @@ fun LyricsScreen(
                     colors = SliderDefaults.colors(
                         thumbColor = colorScheme.primary,
                         activeTrackColor = colorScheme.primary,
-                        inactiveTrackColor = colorScheme.onSurface.copy(alpha = 0.3f)
+                        inactiveTrackColor = textColor.copy(alpha = 0.3f)
                     ),
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -295,7 +295,7 @@ fun LyricsScreen(
                         Icon(
                             painter = painterResource(R.drawable.skip_previous),
                             contentDescription = "Previous",
-                            tint = colorScheme.onSurface,
+                            tint = textColor,
                             modifier = Modifier.size(32.dp)
                         )
                     }
@@ -309,7 +309,7 @@ fun LyricsScreen(
                                 if (isPlaying) R.drawable.pause else R.drawable.play
                             ),
                             contentDescription = if (isPlaying) "Pause" else "Play",
-                            tint = colorScheme.onSurface,
+                            tint = textColor,
                             modifier = Modifier.size(40.dp)
                         )
                     }
@@ -321,7 +321,7 @@ fun LyricsScreen(
                         Icon(
                             painter = painterResource(R.drawable.skip_next),
                             contentDescription = "Next",
-                            tint = colorScheme.onSurface,
+                            tint = textColor,
                             modifier = Modifier.size(32.dp)
                         )
                     }
