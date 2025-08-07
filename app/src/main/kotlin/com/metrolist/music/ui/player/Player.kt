@@ -290,7 +290,7 @@ fun BottomSheetPlayer(
                         .build()
 
                     val result = runCatching { 
-                        context.imageLoader.execute(request).image 
+                        context.imageLoader.execute(request)
                     }.getOrNull()
                     
                     if (result != null) {
