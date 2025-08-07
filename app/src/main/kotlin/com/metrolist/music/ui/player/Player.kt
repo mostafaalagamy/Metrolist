@@ -1235,12 +1235,14 @@ fun BottomSheetPlayer(
         )
         
         // Lyrics Screen
-        if (showLyricsScreen && mediaMetadata != null) {
-            LyricsScreen(
-                mediaMetadata = mediaMetadata,
-                lyrics = currentSong?.lyrics,
-                onBackClick = { showLyricsScreen = false }
-            )
+        mediaMetadata?.let { metadata ->
+            if (showLyricsScreen) {
+                LyricsScreen(
+                    mediaMetadata = metadata,
+                    lyrics = currentSong?.lyrics,
+                    onBackClick = { showLyricsScreen = false }
+                )
+            }
         }
     }
 }

@@ -74,8 +74,8 @@ fun LyricsScreen(
 ) {
     val context = LocalContext.current
     val playerConnection = LocalPlayerConnection.current
-    val player by playerConnection.player.collectAsState()
-    val isPlaying by playerConnection.isPlaying.collectAsState()
+    val player by playerConnection?.player?.collectAsState() ?: remember { mutableStateOf(null) }
+    val isPlaying by playerConnection?.isPlaying?.collectAsState() ?: remember { mutableStateOf(false) }
     val mediaMetadataProvider = { mediaMetadata }
     val lyricsProvider = { lyrics }
     
@@ -98,7 +98,7 @@ fun LyricsScreen(
     // Background setup based on player background style
     val backgroundModifier = when (playerBackground) {
         PlayerBackgroundStyle.GRADIENT -> {
-            val dominantColor = mediaMetadata.album?.thumbnailUrl?.let { url ->
+            val dominantColor = mediaMetadata.thumbnailUrl?.let { url ->
                 // You might want to extract dominant color from image
                 colorPalette.primary
             } ?: colorPalette.primary
@@ -225,11 +225,13 @@ fun LyricsScreen(
                         )
                     }
                     
-                    LyricsMenu(
-                        lyricsProvider = lyricsProvider,
-                        mediaMetadataProvider = mediaMetadataProvider,
-                        onDismiss = { showLyricsMenu = false }
-                    )
+                    if (showLyricsMenu) {
+                        LyricsMenu(
+                            lyricsProvider = lyricsProvider,
+                            mediaMetadataProvider = mediaMetadataProvider,
+                            onDismiss = { showLyricsMenu = false }
+                        )
+                    }
                 }
             }
             
