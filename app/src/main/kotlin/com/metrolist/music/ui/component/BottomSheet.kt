@@ -33,7 +33,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
@@ -46,7 +46,6 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import com.metrolist.music.constants.NavigationBarAnimationSpec
-import com.metrolist.music.constants.UseNewMiniPlayerDesignKey
 import com.metrolist.music.utils.rememberPreference
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -59,12 +58,11 @@ import kotlinx.coroutines.launch
 fun BottomSheet(
     state: BottomSheetState,
     modifier: Modifier = Modifier,
-    brushBackgroundColor: Brush,
+    backgroundColor: Color,
     onDismiss: (() -> Unit)? = null,
     collapsedContent: @Composable BoxScope.() -> Unit,
     content: @Composable BoxScope.() -> Unit,
 ) {
-    val (useNewMiniPlayerDesign) = rememberPreference(UseNewMiniPlayerDesignKey, defaultValue = true)
     Box(
         modifier =
         modifier
@@ -95,10 +93,10 @@ fun BottomSheet(
                 )
             }.clip(
                 RoundedCornerShape(
-                    topStart = if (useNewMiniPlayerDesign) 0.dp else (if (!state.isExpanded) 16.dp else 0.dp), 
-                    topEnd = if (useNewMiniPlayerDesign) 0.dp else (if (!state.isExpanded) 16.dp else 0.dp),
+                    topStart = if (!state.isExpanded) 16.dp else 0.dp,
+                    topEnd = if (!state.isExpanded) 16.dp else 0.dp,
                 ),
-            ).background(brushBackgroundColor),
+            ).background(backgroundColor),
     ) {
         if (!state.isCollapsed && !state.isDismissed) {
             BackHandler(onBack = state::collapseSoft)
