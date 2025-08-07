@@ -70,7 +70,7 @@ object ComposeToImage {
                     .allowHardware(false)
                     .build()
                 val result = imageLoader.execute(request)
-                coverArtBitmap = result.image?.toBitmap(256, 256, Bitmap.Config.ARGB_8888)
+                coverArtBitmap = result.image?.toBitmap()
             } catch (_: Exception) {}
         }
 

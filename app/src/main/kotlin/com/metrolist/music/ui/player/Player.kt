@@ -284,9 +284,8 @@ fun BottomSheetPlayer(
                 } else {
                     val request = ImageRequest.Builder(context)
                         .data(currentMetadata.thumbnailUrl)
-                        .size(Size(PlayerColorExtractor.Config.IMAGE_SIZE, PlayerColorExtractor.Config.IMAGE_SIZE))
+                        .size(PlayerColorExtractor.Config.IMAGE_SIZE, PlayerColorExtractor.Config.IMAGE_SIZE)
                         .allowHardware(false)
-                        .memoryCacheKey("gradient_${currentMetadata.id}")
                         .build()
 
                     val result = runCatching { 

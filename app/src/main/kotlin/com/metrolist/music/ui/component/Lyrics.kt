@@ -89,6 +89,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.palette.graphics.Palette
 import coil3.ImageLoader
 import coil3.request.ImageRequest
+import coil3.request.allowHardware
 import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
 import com.metrolist.music.constants.DarkModeKey
@@ -825,7 +826,7 @@ fun Lyrics(
                         val loader = ImageLoader(context)
                         val req = ImageRequest.Builder(context).data(coverUrl).allowHardware(false).build()
                         val result = loader.execute(req)
-                        val bmp = result.drawable?.toBitmap()
+                        val bmp = result.image?.toBitmap()
                         if (bmp != null) {
                             val palette = Palette.from(bmp).generate()
                             val swatches = palette.swatches.sortedByDescending { it.population }
