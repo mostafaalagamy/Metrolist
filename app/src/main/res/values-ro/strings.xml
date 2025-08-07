@@ -4,7 +4,7 @@
     <string name="songs">Melodii</string>
     <string name="artists">Artiști</string>
     <string name="albums">Albume</string>
-    <string name="playlists">Playlist-uri</string>
+    <string name="playlists">Playlisturi</string>
     <string name="history">Istoric</string>
     <string name="stats">Statistici</string>
     <string name="mood_and_genres">Stare de spirit și genuri</string>
@@ -13,7 +13,7 @@
     <string name="quick_picks_empty">Ascultă melodii pentru a-ți genera alegerile rapide</string>
     <string name="forgotten_favorites">Preferințe uitate</string>
     <string name="keep_listening">Continuă să asculți</string>
-    <string name="your_youtube_playlists">Playlist-urile tale de pe YouTube</string>
+    <string name="your_youtube_playlists">Playlisturile tale de pe YouTube</string>
     <string name="similar_to">Similar cu</string>
     <string name="new_release_albums">Albume noi</string>
     <string name="today">Astăzi</string>
@@ -34,21 +34,21 @@
     <string name="filter_videos">Videoclipuri</string>
     <string name="filter_albums">Albume</string>
     <string name="filter_artists">Artiști</string>
-    <string name="filter_playlists">Playlist-uri</string>
-    <string name="filter_community_playlists">Playlist-uri comunitare</string>
-    <string name="filter_featured_playlists">Playlist-uri promovate</string>
+    <string name="filter_playlists">Playlisturi</string>
+    <string name="filter_community_playlists">Playlisturi comunitare</string>
+    <string name="filter_featured_playlists">Playlisturi promovate</string>
     <string name="filter_bookmarked">Marcate</string>
     <string name="no_results_found">Niciun rezultat găsit</string>
     <string name="library_song_empty">Melodiile din bibliotecă vor apărea aici</string>
     <string name="library_artist_empty">Artiștii din bibliotecă vor apărea aici</string>
     <string name="library_album_empty">Albumele din bibliotecă vor apărea aici</string>
-    <string name="library_playlist_empty">Playlist-urile tale vor apărea aici</string>
+    <string name="library_playlist_empty">Playlisturile tale vor apărea aici</string>
     <string name="from_your_library">Din biblioteca ta</string>
     <string name="other_versions">Alte versiuni</string>
     <string name="liked_songs">Melodii apreciate</string>
     <string name="downloaded_songs">Melodii descărcate</string>
-    <string name="playlist_is_empty">Playlist-ul este gol</string>
-    <string name="delete_playlist_confirm">Sigur vrei să ștergi playlist-ul \"%s\"?</string>
+    <string name="playlist_is_empty">Playlistul este gol</string>
+    <string name="delete_playlist_confirm">Sigur vrei să ștergi playlistul \"%s\"?</string>
     <string name="retry">Reîncearcă</string>
     <string name="radio">Radio</string>
     <string name="shuffle">Amestecă</string>
@@ -66,7 +66,7 @@
     <string name="action_download">Descarcă</string>
     <string name="downloading">Se descarcă</string>
     <string name="remove_download">Elimină descărcarea</string>
-    <string name="import_playlist">Importează playlist-ul</string>
+    <string name="import_playlist">Importă playlistul</string>
     <string name="add_to_playlist">Adaugă în playlist</string>
     <string name="view_artist">Vezi artistul</string>
     <string name="view_album">Vezi albumul</string>
@@ -95,7 +95,7 @@
     <string name="loudness">Intensitate sonoră</string>
     <string name="volume">Volum</string>
     <string name="file_size">Dimensiune fișier</string>
-    <string name="unknown">Nevunoscut</string>
+    <string name="unknown">Necunoscut</string>
     <string name="copied">Copiat în clipboard</string>
     <string name="edit_lyrics">Editează versurile</string>
     <string name="search_lyrics">Caută versuri</string>
@@ -105,19 +105,19 @@
     <string name="error_song_title_empty">Numele melodiei nu poate fi gol.</string>
     <string name="error_song_artist_empty">Artistul melodiei nu poate fi gol.</string>
     <string name="save">Salvează</string>
-    <string name="choose_playlist">Alege playlist-ul</string>
-    <string name="edit_playlist">Editează playlist-ul</string>
-    <string name="create_playlist">Creează playlist-ul</string>
-    <string name="playlist_name">Numele playlist-ului</string>
-    <string name="error_playlist_name_empty">Numele playlist-ului nu poate fi gol.</string>
+    <string name="choose_playlist">Alege playlistul</string>
+    <string name="edit_playlist">Editează playlistul</string>
+    <string name="create_playlist">Creează playlist</string>
+    <string name="playlist_name">Numele playlistului</string>
+    <string name="error_playlist_name_empty">Numele playlistului nu poate fi gol.</string>
     <string name="edit_artist">Editează artistul</string>
     <string name="artist_name">Numele artistului</string>
     <string name="error_artist_name_empty">Numele artistului nu poate fi gol.</string>
     <string name="duplicates">Duplicate</string>
     <string name="skip_duplicates">Omite duplicatele</string>
     <string name="add_anyway">Adaugă oricum</string>
-    <string name="duplicates_description_single">Melodia este deja în playlist-ul tău</string>
-    <string name="duplicates_description_multiple">%d (de) melodii sunt deja în playlist-ul tău</string>
+    <string name="duplicates_description_single">Melodia este deja în playlistul tău</string>
+    <string name="duplicates_description_multiple">%d (de) melodii sunt deja în playlistul tău</string>
     <plurals name="n_song">
         <item quantity="one">%d melodie</item>
         <item quantity="few">%d melodii</item>
@@ -135,8 +135,8 @@
     </plurals>
     <plurals name="n_playlist">
         <item quantity="one">%d playlist</item>
-        <item quantity="few">%d playlist-uri</item>
-        <item quantity="other">%d de playlist-uri</item>
+        <item quantity="few">%d playlisturi</item>
+        <item quantity="other">%d de playlisturi</item>
     </plurals>
     <plurals name="n_week">
         <item quantity="one">%d săptămână</item>
@@ -202,7 +202,7 @@
     <string name="left">Stânga</string>
     <string name="center">Centru</string>
     <string name="right">Dreapta</string>
-    <string name="player_slider_style">Stilul slider-ului de la player</string>
+    <string name="player_slider_style">Stilul slider-ului player-ului</string>
     <string name="default_">Implicit</string>
     <string name="misc">Diverse</string>
     <string name="default_open_tab">Fila prestabilită deschisă</string>
@@ -229,7 +229,7 @@
     <string name="audio_quality_low">Scăzută</string>
     <string name="queue">Coadă</string>
     <string name="persistent_queue">Coadă persistentă</string>
-    <string name="persistent_queue_desc">Restaurează-ți ultima coadă când aplicația pornește</string>
+    <string name="persistent_queue_desc">Restaurează ultima ta coadă atunci când aplicația pornește</string>
     <string name="auto_load_more">Încarcă automat mai multe melodii</string>
     <string name="auto_load_more_desc">Adaugă în mod automat mai multe melodii când ajungi la finalul cozii, dacă este posibil</string>
     <string name="skip_silence">Omite liniștea</string>
@@ -287,5 +287,5 @@
     <string name="squiggly">Ondulat</string>
     <string name="refetch">Reîncarcă</string>
     <string name="sided">Într-o parte</string>
-    <string name="remove_download_playlist_confirm">Sigur vrei să ștergi toate cele %s (de) melodii din playlist din Melodiile descărcate?</string>
+    <string name="remove_download_playlist_confirm">Sigur vrei să ștergi toate cele %s (de) melodii din playlist din Melodii descărcate?</string>
 </resources>
