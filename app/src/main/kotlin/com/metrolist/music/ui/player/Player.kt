@@ -120,7 +120,7 @@ import com.metrolist.music.ui.theme.PlayerColorExtractor
 import com.metrolist.music.ui.theme.PlayerSliderColors
 import com.metrolist.music.constants.PlayerHorizontalPadding
 import com.metrolist.music.constants.QueuePeekHeight
-import com.metrolist.music.constants.ShowLyricsKey
+
 import com.metrolist.music.constants.SliderStyle
 import com.metrolist.music.constants.SliderStyleKey
 import com.metrolist.music.extensions.togglePlayPause
@@ -231,7 +231,7 @@ fun BottomSheetPlayer(
     val canSkipPrevious by playerConnection.canSkipPrevious.collectAsState()
     val canSkipNext by playerConnection.canSkipNext.collectAsState()
 
-    var showLyrics by rememberPreference(ShowLyricsKey, defaultValue = false)
+    var showLyricsScreen by remember { mutableStateOf(false) }
 
     val sliderStyle by rememberEnumPreference(SliderStyleKey, SliderStyle.DEFAULT)
 
@@ -1147,13 +1147,7 @@ fun BottomSheetPlayer(
                     }
                 }
             }
-            if (playerBackground != PlayerBackgroundStyle.DEFAULT && showLyrics) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(Color.Black.copy(alpha = 0.3f))
-                )
-            }
+
         }
 
 // distance
@@ -1236,7 +1230,17 @@ fun BottomSheetPlayer(
             TextBackgroundColor = TextBackgroundColor,
             textButtonColor = textButtonColor,
             iconButtonColor = iconButtonColor,
+            onShowLyrics = { showLyricsScreen = true },
             pureBlack = pureBlack,
         )
+        
+        // Lyrics Screen
+        if (showLyricsScreen && mediaMetadata != null) {
+            LyricsScreen(
+                mediaMetadata = mediaMetadata,
+                lyrics = currentSong?.lyrics,
+                onBackClick = { showLyricsScreen = false }
+            )
+        }
     }
 }
