@@ -1,13 +1,12 @@
 package com.metrolist.music.ui.player
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,11 +21,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
-
-
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -35,10 +30,12 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -64,12 +61,10 @@ import com.metrolist.music.constants.PlayerBackgroundStyleKey
 import com.metrolist.music.db.entities.LyricsEntity
 import com.metrolist.music.extensions.togglePlayPause
 import com.metrolist.music.models.MediaMetadata
-import com.metrolist.music.ui.screens.settings.LyricsPosition
-import com.metrolist.music.constants.LyricsTextPositionKey
+import com.metrolist.music.ui.component.Lyrics
 import com.metrolist.music.ui.menu.LyricsMenu
 import com.metrolist.music.ui.theme.PlayerSliderColors
 import com.metrolist.music.utils.rememberEnumPreference
-import com.metrolist.music.utils.rememberPreference
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -79,74 +74,117 @@ fun LyricsScreen(
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val context = LocalContext.current
     val playerConnection = LocalPlayerConnection.current ?: return
     val player = playerConnection.player
-    val isPlaying by playerConnection.isPlaying.collectAsState()
-    val mediaMetadataProvider = { mediaMetadata }
-    val lyricsProvider = { lyrics }
-    
-    // Handle back button press
-    BackHandler(onBack = onBackClick)
-    
+    val context = LocalContext.current
+
     var position by remember { mutableLongStateOf(0L) }
     var sliderPosition by remember { mutableFloatStateOf(0f) }
     var duration by remember { mutableLongStateOf(C.TIME_UNSET) }
-    
+
     val playerBackground by rememberEnumPreference(PlayerBackgroundStyleKey, PlayerBackgroundStyle.DEFAULT)
-    val lyricsTextPosition by rememberPreference(LyricsTextPositionKey, LyricsPosition.CENTER.name)
     val colorScheme = MaterialTheme.colorScheme
-    
-    // Color logic from Player.kt
+
+    // Get gradient colors from player
+    var gradientColors by remember { mutableStateOf<List<Color>>(emptyList()) }
+    var previousGradientColors by remember { mutableStateOf<List<Color>>(emptyList()) }
+
+    // Color logic exactly from Player.kt
     val textColor = when (playerBackground) {
         PlayerBackgroundStyle.DEFAULT -> colorScheme.onBackground
         PlayerBackgroundStyle.BLUR -> Color.White
         PlayerBackgroundStyle.GRADIENT -> Color.White
         else -> colorScheme.onBackground
     }
-    
-    // Text alignment based on lyrics position setting
-    val textAlign = when (lyricsTextPosition) {
-        LyricsPosition.LEFT.name -> TextAlign.Start
-        LyricsPosition.RIGHT.name -> TextAlign.End
-        else -> TextAlign.Center
-    }
-    
+
     // Update position and duration
     position = player.currentPosition
-    duration = player.duration
-    if (duration != C.TIME_UNSET) {
-        sliderPosition = position.toFloat() / duration
+    duration = player.duration.coerceAtLeast(0L)
+    sliderPosition = if (duration > 0) position.toFloat() / duration else 0f
+
+    // Extract gradient colors exactly like Player.kt
+    LaunchedEffect(mediaMetadata.id, playerBackground) {
+        if (playerBackground == PlayerBackgroundStyle.GRADIENT) {
+            previousGradientColors = gradientColors
+            // Use default colors for now - in real implementation this would extract from image
+            val defaultGradientColors = listOf(
+                colorScheme.primary,
+                colorScheme.primary.copy(alpha = 0.7f),
+                Color.Black
+            )
+            gradientColors = defaultGradientColors
+        } else {
+            gradientColors = emptyList()
+        }
     }
 
-    Box(
-        modifier = modifier.fillMaxSize()
-    ) {
-        // Background Layer - same logic as Player.kt
-        Box(modifier = Modifier.fillMaxSize()) {
-            when (playerBackground) {
-                PlayerBackgroundStyle.BLUR -> {
-                    AsyncImage(
-                        model = mediaMetadata.thumbnailUrl,
-                        contentDescription = "Blurred background",
-                        contentScale = ContentScale.FillBounds,
-                        modifier = Modifier.fillMaxSize().blur(radius = 150.dp)
-                    )
-                    Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.4f)))
+    BackHandler(onBack = onBackClick)
+
+    Box(modifier = modifier.fillMaxSize()) {
+        // Background exactly from Player.kt
+        when (playerBackground) {
+            PlayerBackgroundStyle.BLUR -> {
+                AsyncImage(
+                    model = mediaMetadata.thumbnailUrl,
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .blur(50.dp)
+                )
+                Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.4f)))
+            }
+            PlayerBackgroundStyle.GRADIENT -> {
+                // Layer 1: Previous gradient background (stays visible during transition)
+                if (previousGradientColors.isNotEmpty()) {
+                    val gradientColorStops = if (previousGradientColors.size >= 3) {
+                        arrayOf(
+                            0.0f to previousGradientColors[0], // Top: primary vibrant color
+                            0.5f to previousGradientColors[1], // Middle: darker variant
+                            1.0f to previousGradientColors[2]  // Bottom: black
+                        )
+                    } else {
+                        arrayOf(
+                            0.0f to previousGradientColors[0], // Top: primary color
+                            0.6f to previousGradientColors[0].copy(alpha = 0.7f), // Middle: faded variant
+                            1.0f to Color.Black // Bottom: black
+                        )
+                    }
+                    Box(modifier = Modifier.fillMaxSize().background(Brush.verticalGradient(colorStops = gradientColorStops)))
+                    Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.2f)))
                 }
-                PlayerBackgroundStyle.GRADIENT -> {
-                    // Solid gradient without any transparency
-                    val gradientColors = arrayOf(
-                        0.0f to colorScheme.primary,
-                        0.6f to colorScheme.primary,
-                        1.0f to Color.Black
-                    )
-                    Box(modifier = Modifier.fillMaxSize().background(Brush.verticalGradient(colorStops = gradientColors)))
+                
+                // Layer 2: New gradient background (animates on top)
+                AnimatedContent(
+                    targetState = gradientColors,
+                    transitionSpec = {
+                        fadeIn(tween(500)) togetherWith fadeOut(tween(500))
+                    }
+                ) { colors ->
+                    if (colors.isNotEmpty()) {
+                        Box(modifier = Modifier.fillMaxSize()) {
+                            val gradientColorStops = if (colors.size >= 3) {
+                                arrayOf(
+                                    0.0f to colors[0], // Top: primary vibrant color
+                                    0.5f to colors[1], // Middle: darker variant
+                                    1.0f to colors[2]  // Bottom: black
+                                )
+                            } else {
+                                arrayOf(
+                                    0.0f to colors[0], // Top: primary color
+                                    0.6f to colors[0].copy(alpha = 0.7f), // Middle: faded variant
+                                    1.0f to Color.Black // Bottom: black
+                                )
+                            }
+                            Box(modifier = Modifier.fillMaxSize().background(Brush.verticalGradient(colorStops = gradientColorStops)))
+                            Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.2f)))
+                        }
+                    }
                 }
-                else -> {
-                    // DEFAULT - solid background
-                    Box(modifier = Modifier.fillMaxSize().background(colorScheme.surface))
-                }
+            }
+            else -> {
+                // DEFAULT or other modes
+                Box(modifier = Modifier.fillMaxSize().background(colorScheme.surface))
             }
         }
 
@@ -155,7 +193,7 @@ fun LyricsScreen(
                 .fillMaxSize()
                 .padding(WindowInsets.systemBars.asPaddingValues())
         ) {
-            // Header with all controls moved up
+            // Header with thumbnail, track info, and more button
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -166,30 +204,27 @@ fun LyricsScreen(
                 IconButton(onClick = onBackClick) {
                     Icon(
                         painter = painterResource(R.drawable.close),
-                        contentDescription = "Back",
+                        contentDescription = "Close",
                         tint = textColor,
                         modifier = Modifier.size(24.dp)
                     )
                 }
-                
+
                 Spacer(modifier = Modifier.width(8.dp))
-                
+
                 // Track thumbnail
                 AsyncImage(
                     model = mediaMetadata.thumbnailUrl,
                     contentDescription = null,
                     modifier = Modifier
                         .size(48.dp)
-                        .clip(RoundedCornerShape(6.dp)),
-                    contentScale = ContentScale.Crop
+                        .clip(RoundedCornerShape(6.dp))
                 )
-                
+
                 Spacer(modifier = Modifier.width(12.dp))
-                
+
                 // Track info
-                Column(
-                    modifier = Modifier.weight(1f)
-                ) {
+                Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = mediaMetadata.title,
                         style = MaterialTheme.typography.titleSmall,
@@ -200,104 +235,74 @@ fun LyricsScreen(
                     Text(
                         text = mediaMetadata.artists.joinToString { it.name },
                         style = MaterialTheme.typography.bodySmall,
-                        color = textColor.copy(alpha = 0.7f),
+                        color = textColor.copy(alpha = 0.8f),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
                 }
-                
+
                 Spacer(modifier = Modifier.width(12.dp))
-                
-                // Lyrics menu button with smaller circle background
-                var showLyricsMenu by remember { mutableStateOf(false) }
+
+                // More button with smaller circle background
                 Box {
+                    var showMenu by remember { mutableStateOf(false) }
+                    
                     IconButton(
-                        onClick = { showLyricsMenu = true },
+                        onClick = { showMenu = true },
                         modifier = Modifier
-                            .size(32.dp)
+                            .size(28.dp) // Smaller size
                             .background(
-                                color = textColor.copy(alpha = 0.15f),
+                                color = textColor.copy(alpha = 0.1f), // More subtle
                                 shape = RoundedCornerShape(50)
                             )
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.more_vert),
-                            contentDescription = "Lyrics options",
+                            contentDescription = "More options",
                             tint = textColor,
-                            modifier = Modifier.size(18.dp)
+                            modifier = Modifier.size(16.dp) // Smaller icon
                         )
                     }
-                    
-                    if (showLyricsMenu) {
+
+                    if (showMenu) {
                         LyricsMenu(
-                            lyricsProvider = lyricsProvider,
-                            mediaMetadataProvider = mediaMetadataProvider,
-                            onDismiss = { showLyricsMenu = false }
+                            onDismiss = { showMenu = false }
                         )
                     }
                 }
             }
-            
-            Spacer(modifier = Modifier.height(24.dp))
-            
-            // Lyrics content - simple text display with position settings
+
+            // Lyrics content using the original Lyrics component
             Box(
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                contentAlignment = Alignment.Center
             ) {
-                if (lyrics?.lyrics?.isNotEmpty() == true) {
-                    Text(
-                        text = lyrics.lyrics,
-                        style = MaterialTheme.typography.headlineSmall.copy(
-                            fontSize = 20.sp,
-                            lineHeight = 28.sp,
-                            fontWeight = FontWeight.Medium
-                        ),
-                        color = textColor,
-                        textAlign = textAlign,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .verticalScroll(rememberScrollState())
-                            .padding(horizontal = 24.dp, vertical = 16.dp)
-                    )
-                } else {
-                    Text(
-                        text = "No lyrics available",
-                        style = MaterialTheme.typography.headlineSmall.copy(
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Medium
-                        ),
-                        color = textColor.copy(alpha = 0.6f),
-                        textAlign = TextAlign.Center
-                    )
-                }
+                Lyrics(
+                    sliderPositionProvider = { position }
+                )
             }
-            
-            // Bottom player controls
+
+            // Player controls at bottom
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp)
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
             ) {
                 // Progress slider
                 Slider(
                     value = sliderPosition,
                     onValueChange = { newValue ->
                         sliderPosition = newValue
-                        if (duration != C.TIME_UNSET) {
-                            val newPosition = (newValue * duration).toLong()
-                            player.seekTo(newPosition)
-                        }
+                        val newPosition = (newValue * duration).toLong()
+                        player.seekTo(newPosition)
                     },
                     colors = PlayerSliderColors.defaultSliderColors(textColor),
                     modifier = Modifier.fillMaxWidth()
                 )
-                
-                Spacer(modifier = Modifier.height(16.dp))
-                
+
+                Spacer(modifier = Modifier.height(8.dp))
+
                 // Control buttons
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -305,9 +310,7 @@ fun LyricsScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     // Previous button
-                    IconButton(
-                        onClick = { player.seekToPrevious() }
-                    ) {
+                    IconButton(onClick = { player.seekToPrevious() }) {
                         Icon(
                             painter = painterResource(R.drawable.skip_previous),
                             contentDescription = "Previous",
@@ -315,25 +318,19 @@ fun LyricsScreen(
                             modifier = Modifier.size(32.dp)
                         )
                     }
-                    
+
                     // Play/Pause button
-                    IconButton(
-                        onClick = { player.togglePlayPause() }
-                    ) {
+                    IconButton(onClick = { player.togglePlayPause() }) {
                         Icon(
-                            painter = painterResource(
-                                if (isPlaying) R.drawable.pause else R.drawable.play
-                            ),
-                            contentDescription = if (isPlaying) "Pause" else "Play",
+                            painter = painterResource(if (player.isPlaying) R.drawable.pause else R.drawable.play),
+                            contentDescription = if (player.isPlaying) "Pause" else "Play",
                             tint = textColor,
-                            modifier = Modifier.size(40.dp)
+                            modifier = Modifier.size(48.dp)
                         )
                     }
-                    
+
                     // Next button
-                    IconButton(
-                        onClick = { player.seekToNext() }
-                    ) {
+                    IconButton(onClick = { player.seekToNext() }) {
                         Icon(
                             painter = painterResource(R.drawable.skip_next),
                             contentDescription = "Next",
