@@ -6,8 +6,7 @@ import android.content.res.Configuration
 import android.os.Build
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.core.EaseInOutQuart
+
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -361,11 +360,7 @@ fun Lyrics(
             // تمرير أولي سلس
             lazyListState.animateScrollToItem(
                 index = currentLineIndex,
-                scrollOffset = with(density) { 36.dp.toPx().toInt() } + calculateOffset(),
-                animationSpec = tween(
-                    durationMillis = INITIAL_SCROLL_DURATION.toInt(),
-                    easing = EaseInOutQuart
-                )
+                scrollOffset = with(density) { 36.dp.toPx().toInt() } + calculateOffset()
             )
             if(!isAppMinimized) {
                 initialScrollDone = true
@@ -376,11 +371,7 @@ fun Lyrics(
                 // تمرير سريع عند السحب
                 lazyListState.animateScrollToItem(
                     index = currentLineIndex,
-                    scrollOffset = with(density) { 36.dp.toPx().toInt() } + calculateOffset(),
-                    animationSpec = tween(
-                        durationMillis = SEEKING_SCROLL_DURATION.toInt(),
-                        easing = EaseInOutQuart
-                    )
+                    scrollOffset = with(density) { 36.dp.toPx().toInt() } + calculateOffset()
                 )
             } else if ((lastPreviewTime == 0L || currentLineIndex != previousLineIndex) && scrollLyrics) {
                 val visibleItemsInfo = lazyListState.layoutInfo.visibleItemsInfo
@@ -398,14 +389,10 @@ fun Lyrics(
 
                     if (currentLineOffset in centerRangeStart..centerRangeEnd ||
                         previousLineOffset in centerRangeStart..centerRangeEnd) {
-                        // تمرير سلس مع انيميشن أبطأ للكلمات
+                        // تمرير سلس مع انيميشن للكلمات
                         lazyListState.animateScrollToItem(
                             index = currentLineIndex,
-                            scrollOffset = with(density) { 36.dp.toPx().toInt() } + calculateOffset(),
-                            animationSpec = tween(
-                                durationMillis = AUTO_SCROLL_DURATION.toInt(),
-                                easing = EaseInOutQuart // حركة طبيعية وسلسة
-                            )
+                            scrollOffset = with(density) { 36.dp.toPx().toInt() } + calculateOffset()
                         )
                     }
                 }
@@ -973,8 +960,5 @@ fun Lyrics(
     }
 }
 
-// Animation durations for smooth lyrics scrolling
-const val INITIAL_SCROLL_DURATION = 600L // للتمرير الأولي - متوسط
-const val SEEKING_SCROLL_DURATION = 300L // للسحب - سريع
-const val AUTO_SCROLL_DURATION = 800L // للتمرير التلقائي - بطيء وسلس
+// Lyrics constants
 val LyricsPreviewTime = 2.seconds
