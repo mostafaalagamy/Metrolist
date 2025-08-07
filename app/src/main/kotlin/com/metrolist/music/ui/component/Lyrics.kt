@@ -368,15 +368,26 @@ fun Lyrics(
                 lazyListState.scrollToItem(
                     currentLineIndex,
                     with(density) { 36.dp.toPx().toInt() } + calculateOffset())
-            } else if (lastPreviewTime == 0L && currentLineIndex != previousLineIndex && scrollLyrics) {
+            } else if ((lastPreviewTime == 0L || currentLineIndex != previousLineIndex) && scrollLyrics) {
                 val visibleItemsInfo = lazyListState.layoutInfo.visibleItemsInfo
                 val isCurrentLineVisible = visibleItemsInfo.any { it.index == currentLineIndex }
-                
-                // Only auto-scroll if current line is not visible (user has scrolled away)
-                if (!isCurrentLineVisible) {
-                    lazyListState.animateScrollToItem(
-                        currentLineIndex,
-                        with(density) { 36.dp.toPx().toInt() } + calculateOffset())
+                val isPreviousLineVisible = visibleItemsInfo.any { it.index == previousLineIndex }
+
+                if (isCurrentLineVisible && isPreviousLineVisible) {
+                    val viewportStartOffset = lazyListState.layoutInfo.viewportStartOffset
+                    val viewportEndOffset = lazyListState.layoutInfo.viewportEndOffset
+                    val currentLineOffset = visibleItemsInfo.find { it.index == currentLineIndex }?.offset ?: 0
+                    val previousLineOffset = visibleItemsInfo.find { it.index == previousLineIndex }?.offset ?: 0
+
+                    val centerRangeStart = viewportStartOffset + (viewportEndOffset - viewportStartOffset) / 2
+                    val centerRangeEnd = viewportEndOffset - (viewportEndOffset - viewportStartOffset) / 8
+
+                    if (currentLineOffset in centerRangeStart..centerRangeEnd ||
+                        previousLineOffset in centerRangeStart..centerRangeEnd) {
+                        lazyListState.animateScrollToItem(
+                            currentLineIndex,
+                            with(density) { 36.dp.toPx().toInt() } + calculateOffset())
+                    }
                 }
             }
         }
@@ -944,4 +955,4 @@ fun Lyrics(
 
 // Constants remain unchanged
 const val ANIMATE_SCROLL_DURATION = 300L
-val LyricsPreviewTime = 3.seconds
+val LyricsPreviewTime = 2.seconds
