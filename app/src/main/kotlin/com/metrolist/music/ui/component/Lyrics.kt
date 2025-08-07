@@ -826,7 +826,7 @@ fun Lyrics(
                         val loader = ImageLoader(context)
                         val req = ImageRequest.Builder(context).data(coverUrl).allowHardware(false).build()
                         val result = loader.execute(req)
-                        val bmp = result.image?.toBitmap()
+                        val bmp = (result.image as? BitmapDrawable)?.bitmap
                         if (bmp != null) {
                             val palette = Palette.from(bmp).generate()
                             val swatches = palette.swatches.sortedByDescending { it.population }

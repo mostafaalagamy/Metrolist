@@ -293,7 +293,7 @@ fun BottomSheetPlayer(
                     }.getOrNull()
                     
                     if (result != null) {
-                        val bitmap = result.toBitmap()
+                        val bitmap = (result as? BitmapDrawable)?.bitmap
                         val palette = withContext(Dispatchers.Default) {
                             Palette.from(bitmap)
                                 .maximumColorCount(PlayerColorExtractor.Config.MAX_COLOR_COUNT)

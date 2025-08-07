@@ -140,8 +140,6 @@ fun LyricsImageCard(
         ImageRequest.Builder(context)
             .data(mediaMetadata.thumbnailUrl)
             .crossfade(true)
-            .placeholder(R.drawable.music_note)
-            .error(R.drawable.music_note)
             .build()
     )
 
