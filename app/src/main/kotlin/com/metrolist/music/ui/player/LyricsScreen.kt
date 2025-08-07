@@ -21,8 +21,7 @@ import androidx.compose.foundation.rememberScrollState
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
+
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -85,6 +84,14 @@ fun LyricsScreen(
     val playerBackground by rememberEnumPreference(PlayerBackgroundStyleKey, PlayerBackgroundStyle.DEFAULT)
     val colorScheme = MaterialTheme.colorScheme
     
+    // Color logic from Player.kt
+    val textColor = when (playerBackground) {
+        PlayerBackgroundStyle.DEFAULT -> colorScheme.onBackground
+        PlayerBackgroundStyle.BLUR -> Color.White
+        PlayerBackgroundStyle.GRADIENT -> Color.White
+        else -> colorScheme.onBackground
+    }
+    
     // Update position and duration
     position = player.currentPosition
     duration = player.duration
@@ -108,14 +115,13 @@ fun LyricsScreen(
                     Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.4f)))
                 }
                 PlayerBackgroundStyle.GRADIENT -> {
-                    // Simple gradient implementation
+                    // Solid gradient without transparency overlay
                     val gradientColors = arrayOf(
                         0.0f to colorScheme.primary,
                         0.6f to colorScheme.primary.copy(alpha = 0.7f),
                         1.0f to Color.Black
                     )
                     Box(modifier = Modifier.fillMaxSize().background(Brush.verticalGradient(colorStops = gradientColors)))
-                    Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.2f)))
                 }
                 else -> {
                     // DEFAULT - solid background
@@ -141,7 +147,7 @@ fun LyricsScreen(
                     Icon(
                         painter = painterResource(R.drawable.close),
                         contentDescription = "Back",
-                        tint = colorScheme.onSurface,
+                        tint = textColor,
                         modifier = Modifier.size(24.dp)
                     )
                 }
@@ -182,44 +188,31 @@ fun LyricsScreen(
                 
                 Spacer(modifier = Modifier.width(12.dp))
                 
-                // Lyrics menu button - using dropdown menu instead
+                // Lyrics menu button with circle background
                 var showLyricsMenu by remember { mutableStateOf(false) }
                 Box {
                     IconButton(
-                        onClick = { showLyricsMenu = true }
+                        onClick = { showLyricsMenu = true },
+                        modifier = Modifier
+                            .size(40.dp)
+                            .background(
+                                color = Color.White.copy(alpha = 0.1f),
+                                shape = RoundedCornerShape(50)
+                            )
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.more_vert),
                             contentDescription = "Lyrics options",
-                            tint = colorScheme.onSurface,
+                            tint = Color.White,
                             modifier = Modifier.size(20.dp)
                         )
                     }
                     
-                    DropdownMenu(
-                        expanded = showLyricsMenu,
-                        onDismissRequest = { showLyricsMenu = false }
-                    ) {
-                        DropdownMenuItem(
-                            text = { Text("Search lyrics") },
-                            onClick = { 
-                                showLyricsMenu = false
-                                // Add search lyrics functionality here
-                            }
-                        )
-                        DropdownMenuItem(
-                            text = { Text("Edit lyrics") },
-                            onClick = { 
-                                showLyricsMenu = false
-                                // Add edit lyrics functionality here
-                            }
-                        )
-                        DropdownMenuItem(
-                            text = { Text("Copy lyrics") },
-                            onClick = { 
-                                showLyricsMenu = false
-                                // Add copy lyrics functionality here
-                            }
+                    if (showLyricsMenu) {
+                        LyricsMenu(
+                            lyricsProvider = lyricsProvider,
+                            mediaMetadataProvider = mediaMetadataProvider,
+                            onDismiss = { showLyricsMenu = false }
                         )
                     }
                 }
