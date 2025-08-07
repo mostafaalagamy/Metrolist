@@ -68,7 +68,7 @@
     <string name="remove_from_library">Odebrat z knihovny</string>
     <string name="action_download">Stáhnout</string>
     <string name="downloading">Stahování</string>
-    <string name="remove_download">Odebrat stahování</string>
+    <string name="remove_download">Odstranit ze stažených</string>
     <string name="import_playlist">Importovat playlist</string>
     <string name="add_to_playlist">Přidat do playlistu</string>
     <string name="view_artist">Zobrazit umělce</string>

@@ -5,7 +5,7 @@
     <string name="songs">Titres</string>
     <string name="artists">Artistes</string>
     <string name="albums">Albums</string>
-    <string name="playlists">Listes de lecture</string>
+    <string name="playlists">Playlists</string>
     <!-- Top bar -->
     <plurals name="n_selected">
         <item quantity="one">%d sélectionné</item>
@@ -41,9 +41,9 @@
     <string name="filter_videos">Vidéos</string>
     <string name="filter_albums">Albums</string>
     <string name="filter_artists">Artistes</string>
-    <string name="filter_playlists">Listes de lecture</string>
-    <string name="filter_community_playlists">Listes de lecture de la communauté</string>
-    <string name="filter_featured_playlists">Listes de lecture mises en avant</string>
+    <string name="filter_playlists">Playlists</string>
+    <string name="filter_community_playlists">Playlists de la communauté</string>
+    <string name="filter_featured_playlists">Playlists mises en avant</string>
     <string name="filter_bookmarked">Favoris</string>
     <string name="no_results_found">Aucun résultat trouvé</string>
     <!-- Artist screen -->
@@ -51,7 +51,7 @@
     <!-- Playlist -->
     <string name="liked_songs">Titres aimés</string>
     <string name="downloaded_songs">Titres téléchargés</string>
-    <string name="playlist_is_empty">La liste de lecture est vide</string>
+    <string name="playlist_is_empty">La playlist est vide</string>
     <!-- Button -->
     <string name="retry">Réessayer</string>
     <string name="radio">Radio</string>
@@ -69,8 +69,8 @@
     <string name="action_download">Télécharger</string>
     <string name="downloading">Téléchargement</string>
     <string name="remove_download">Supprimer le téléchargement</string>
-    <string name="import_playlist">Importer une liste de lecture</string>
-    <string name="add_to_playlist">Ajouter à une liste de lecture</string>
+    <string name="import_playlist">Importer une playlist</string>
+    <string name="add_to_playlist">Ajouter à une playlist</string>
     <string name="view_artist">Voir l’artiste</string>
     <string name="view_album">Voir l’album</string>
     <string name="refetch">Récupérer</string>
@@ -108,11 +108,11 @@
     <string name="error_song_title_empty">Le titre de la chanson ne peut pas être vide.</string>
     <string name="error_song_artist_empty">L’artiste de la chanson ne peut pas être vide.</string>
     <string name="save">Enregistrer</string>
-    <string name="choose_playlist">Choisir la liste de lecture</string>
-    <string name="edit_playlist">Modifier la liste de lecture</string>
-    <string name="create_playlist">Créer une liste de lecture</string>
-    <string name="playlist_name">Nom de la liste de lecture</string>
-    <string name="error_playlist_name_empty">Le nom de la liste de lecture ne peut pas être vide.</string>
+    <string name="choose_playlist">Choisir une playlist</string>
+    <string name="edit_playlist">Modifier la playlist</string>
+    <string name="create_playlist">Créer une playlist</string>
+    <string name="playlist_name">Nom de la playlist</string>
+    <string name="error_playlist_name_empty">Le nom de la playlist ne peut pas être vide.</string>
     <string name="edit_artist">Éditer l’artiste</string>
     <string name="artist_name">Nom de l’artiste</string>
     <string name="error_artist_name_empty">Le nom de l’artiste ne peut pas être vide.</string>
@@ -133,9 +133,9 @@
         <item quantity="other">%d albums</item>
     </plurals>
     <plurals name="n_playlist">
-        <item quantity="one">%d liste de lecture</item>
-        <item quantity="many">%d listes de lecture</item>
-        <item quantity="other">%d listes de lecture</item>
+        <item quantity="one">%d playlist</item>
+        <item quantity="many">%d playlists</item>
+        <item quantity="other">%d playlists</item>
     </plurals>
     <plurals name="n_week">
         <item quantity="one">%d semaine</item>
@@ -153,9 +153,9 @@
         <item quantity="other">%d ans</item>
     </plurals>
     <!-- Snackbar -->
-    <string name="playlist_imported">Liste de lecture importée</string>
-    <string name="removed_song_from_playlist">« %s » retiré de la liste de lecture</string>
-    <string name="playlist_synced">Liste de lecture synchronisée</string>
+    <string name="playlist_imported">Playlist importée</string>
+    <string name="removed_song_from_playlist">« %s » retiré de la playlist</string>
+    <string name="playlist_synced">Playlist synchronisée</string>
     <string name="undo">Annuler</string>
     <!-- Player -->
     <string name="lyrics_not_found">Paroles introuvables</string>
@@ -236,10 +236,10 @@
     <string name="clear_search_history">Effacer l\'historique de recherche</string>
     <string name="clear_search_history_confirm">Voulez-vous vraiment effacer tout l’historique des recherches ?</string>
     <string name="enable_kugou">Activer le fournisseur de paroles KuGou</string>
-    <string name="backup_restore">Sauvegarder et restaurer</string>
+    <string name="backup_restore">Sauvegarder et Restaurer</string>
     <string name="action_backup">Sauvegarder</string>
     <string name="action_restore">Restaurer</string>
-    <string name="imported_playlist">Liste de lecture importée</string>
+    <string name="imported_playlist">Playlist importée</string>
     <string name="backup_create_success">Sauvegarde créée avec succès</string>
     <string name="backup_create_failed">Impossible de créer la sauvegarde</string>
     <string name="restore_failed">Échec de la restauration de la sauvegarde</string>
@@ -249,12 +249,12 @@
     <string name="translation_models">Modèles de traduction</string>
     <string name="clear_translation_models">Effacer les modèles de traduction</string>
     <string name="not_logged_in">Non connecté</string>
-    <string name="remove_from_playlist">Retirer de la liste de lecture</string>
+    <string name="remove_from_playlist">Retirer de la playlist</string>
     <string name="duplicates">Doublons</string>
     <string name="skip_duplicates">Passer les doublons</string>
     <string name="add_anyway">Ajouter quand même</string>
-    <string name="duplicates_description_single">Le titre est déjà dans votre liste de lecture</string>
-    <string name="duplicates_description_multiple">%d titres sont déjà dans votre liste de lecture</string>
+    <string name="duplicates_description_single">Le titre est déjà dans votre playlist</string>
+    <string name="duplicates_description_multiple">%d titres sont déjà dans votre playlist</string>
     <string name="player_text_alignment">Alignement du texte du lecteur</string>
     <string name="sided">Sur le côté</string>
     <string name="enable_lrclib">Activer le fournisseur de paroles LrcLib</string>
@@ -266,7 +266,7 @@
     <string name="action_logout">Se déconnecter</string>
     <string name="enable_discord_rpc">Activer la présence riche</string>
     <string name="login_failed">Échec de la connexion</string>
-    <string name="delete_playlist_confirm">Voulez-vous vraiment supprimer la liste de lecture « %s » ?</string>
+    <string name="delete_playlist_confirm">Voulez-vous vraiment supprimer la playlist « %s » ?</string>
     <string name="listen_history">Historique d\'écoute</string>
     <string name="disable_screenshot">Désactiver les captures d\'écran</string>
     <string name="search_history">Historique de recherche</string>
@@ -277,9 +277,9 @@
     <string name="similar_to">Similaire à</string>
     <string name="library_song_empty">Les titres de la bibliothèque s\'afficheront ici</string>
     <string name="library_artist_empty">Les artistes de la bibliothèque s\'afficheront ici</string>
-    <string name="library_playlist_empty">Vos listes de lecture s\'afficheront ici</string>
+    <string name="library_playlist_empty">Vos playlists s\'afficheront ici</string>
     <string name="other_versions">Autres versions</string>
-    <string name="remove_download_playlist_confirm">Voulez-vous vraiment supprimer tous les titres de la liste de lecture « %s » du stockage des titres téléchargés ?</string>
+    <string name="remove_download_playlist_confirm">Voulez-vous vraiment supprimer tous les titres de la playlist « %s » du stockage des titres téléchargés ?</string>
     <string name="add_all_to_library">Tout ajouter à la bibliothèque</string>
     <string name="tempo_and_pitch">Tempo et Pitch</string>
     <string name="action_like_all">Tout marquer comme aimé</string>
@@ -293,7 +293,7 @@
     <string name="auto_load_more_desc">Ajouter automatiquement, si possible, des titres à la fin de la file d\'attente quand elle est atteinte</string>
     <string name="auto_skip_next_on_error_desc">Permet d\'assurer une lecture continue</string>
     <string name="library_album_empty">Les albums de la bibliothèque s\'afficheront ici</string>
-    <string name="your_youtube_playlists">Vos listes de lecture YouTube</string>
+    <string name="your_youtube_playlists">Vos playlists YouTube</string>
     <string name="remove_all_from_library">Tout supprimer de la bibliothèque</string>
     <string name="remove_from_queue">Retirer de la file d\'attente</string>
     <string name="small">Petit</string>
