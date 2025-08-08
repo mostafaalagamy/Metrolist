@@ -23,8 +23,9 @@ import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.*
-import coil.compose.rememberAsyncImagePainter
-import coil.request.ImageRequest
+import coil3.compose.rememberAsyncImagePainter
+import coil3.request.ImageRequest
+import coil3.request.crossfade
 import com.metrolist.music.R
 import com.metrolist.music.models.MediaMetadata
 
@@ -139,8 +140,6 @@ fun LyricsImageCard(
         ImageRequest.Builder(context)
             .data(mediaMetadata.thumbnailUrl)
             .crossfade(true)
-            .placeholder(R.drawable.music_note)
-            .error(R.drawable.music_note)
             .build()
     )
 
