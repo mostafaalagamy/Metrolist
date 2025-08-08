@@ -299,25 +299,8 @@ class MusicService :
             connectivityObserver.networkStatus.collect { isConnected ->
                 isNetworkConnected.value = isConnected
                 if (isConnected && waitingForNetworkConnection.value) {
+                    // Simple auto-play logic like OuterTune
                     waitingForNetworkConnection.value = false
-                    
-                    // Check if current song is available offline before trying to stream
-                    val currentMediaId = player.currentMediaItem?.mediaId
-                    if (currentMediaId != null) {
-                        val isOfflineAvailable = downloadCache.isCached(currentMediaId, 0, 1) || 
-                                                playerCache.isCached(currentMediaId, 0, CHUNK_LENGTH)
-                        
-                        if (isOfflineAvailable) {
-                            // Use offline version if available
-                            if (player.playWhenReady) {
-                                player.prepare()
-                                player.play()
-                            }
-                            return@collect
-                        }
-                    }
-                    
-                    // Only try to stream if song is not available offline
                     if (player.currentMediaItem != null && player.playWhenReady) {
                         player.prepare()
                         player.play()
@@ -1042,23 +1025,6 @@ class MusicService :
         val isConnectionError = (error.cause?.cause is PlaybackException) &&
                 (error.cause?.cause as PlaybackException).errorCode == PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_FAILED
 
-        // Check if current song is available offline first
-        val currentMediaId = player.currentMediaItem?.mediaId
-        if (currentMediaId != null) {
-            val isOfflineAvailable = downloadCache.isCached(
-                currentMediaId,
-                0,
-                1
-            ) || playerCache.isCached(currentMediaId, 0, CHUNK_LENGTH)
-            
-            if (isOfflineAvailable) {
-                // If song is available offline but still got error, it might be a temporary issue
-                // Just pause instead of skipping
-                stopOnError()
-                return
-            }
-        }
-
         if (!isNetworkConnected.value || isConnectionError) {
             waitOnNetworkError()
             return
@@ -1098,37 +1064,20 @@ class MusicService :
         return ResolvingDataSource.Factory(createCacheDataSource()) { dataSpec ->
             val mediaId = dataSpec.key ?: error("No media id")
 
-            // First priority: Check for downloaded content
             if (downloadCache.isCached(
                     mediaId,
                     dataSpec.position,
                     if (dataSpec.length >= 0) dataSpec.length else 1
-                )
+                ) ||
+                playerCache.isCached(mediaId, dataSpec.position, CHUNK_LENGTH)
             ) {
                 scope.launch(Dispatchers.IO) { recoverSong(mediaId) }
                 return@Factory dataSpec
             }
 
-            // Second priority: Check for cached content
-            if (playerCache.isCached(mediaId, dataSpec.position, CHUNK_LENGTH)) {
-                scope.launch(Dispatchers.IO) { recoverSong(mediaId) }
-                return@Factory dataSpec
-            }
-
-            // Third priority: Check cached URLs (if still valid)
             songUrlCache[mediaId]?.takeIf { it.second > System.currentTimeMillis() }?.let {
                 scope.launch(Dispatchers.IO) { recoverSong(mediaId) }
                 return@Factory dataSpec.withUri(it.first.toUri())
-            }
-
-            // Last resort: Try to get from YouTube (only if network is available)
-            if (!isNetworkConnected.value) {
-                // If no network and no cached version, throw a network error
-                throw PlaybackException(
-                    getString(R.string.error_no_internet),
-                    null,
-                    PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_FAILED
-                )
             }
 
             val playbackData = runBlocking(Dispatchers.IO) {
@@ -1137,24 +1086,40 @@ class MusicService :
                     audioQuality = audioQuality,
                     connectivityManager = connectivityManager,
                 )
-            }.getOrNull()
+            }.getOrElse { throwable ->
+                when (throwable) {
+                    is PlaybackException -> throw throwable
 
-            if (playbackData == null) {
-                // Check one more time if we have any cached version as fallback
-                val hasAnyCachedVersion = downloadCache.keys.any { it == mediaId } || 
-                                        playerCache.keys.any { it == mediaId }
-                
-                if (hasAnyCachedVersion) {
-                    // Try to use cached version even if partially available
-                    scope.launch(Dispatchers.IO) { recoverSong(mediaId) }
-                    return@Factory dataSpec
-                } else {
-                    throw PlaybackException(
+                    is java.net.ConnectException, is java.net.UnknownHostException -> {
+                        throw PlaybackException(
+                            getString(R.string.error_no_internet),
+                            throwable,
+                            PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_FAILED
+                        )
+                    }
+
+                    is java.net.SocketTimeoutException -> {
+                        throw PlaybackException(
+                            getString(R.string.error_timeout),
+                            throwable,
+                            PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_TIMEOUT
+                        )
+                    }
+
+                    else -> throw PlaybackException(
                         getString(R.string.error_unknown),
-                        null,
+                        throwable,
                         PlaybackException.ERROR_CODE_REMOTE_ERROR
                     )
                 }
+            }
+
+            if (playbackData == null) {
+                throw PlaybackException(
+                    getString(R.string.error_unknown),
+                    null,
+                    PlaybackException.ERROR_CODE_REMOTE_ERROR
+                )
             } else {
                 val format = playbackData.format
 
