@@ -1191,7 +1191,8 @@ fun BottomSheetPlayer(
                         val thumbnailSize = (screenWidth * 0.4).dp
                         Thumbnail(
                             sliderPositionProvider = { sliderPosition },
-                            modifier = Modifier.size(thumbnailSize)
+                            modifier = Modifier.size(thumbnailSize),
+                            isPlayerExpanded = state.isExpanded // Pass player state
                         )
                     }
                     Column(
@@ -1227,6 +1228,7 @@ fun BottomSheetPlayer(
                         Thumbnail(
                             sliderPositionProvider = { sliderPosition },
                             modifier = Modifier.nestedScroll(state.preUpPostDownNestedScrollConnection),
+                            isPlayerExpanded = state.isExpanded // Pass player state
                         )
                     }
 
