@@ -19,7 +19,7 @@ package com.metrolist.music.ui.screens
  import androidx.compose.ui.res.painterResource
  import androidx.compose.ui.res.stringResource
  import androidx.compose.ui.unit.dp
- import androidx.hilt.navigation.compose.hiltViewModel
+ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
  import androidx.navigation.NavController
  import com.metrolist.music.LocalPlayerAwareWindowInsets
  import com.metrolist.music.LocalPlayerConnection
