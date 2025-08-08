@@ -477,8 +477,8 @@ fun BottomSheetPlayer(
         modifier = modifier,
         backgroundColor = when (playerBackground) {
             PlayerBackgroundStyle.BLUR, PlayerBackgroundStyle.GRADIENT -> {
-                // Use transparent background for blur/gradient modes
-                Color.Transparent
+                // Use system surface color instead of transparent
+                MaterialTheme.colorScheme.surface
             }
             else -> {
                 // Default behavior for normal theme mode
@@ -1251,13 +1251,9 @@ fun BottomSheetPlayer(
                     targetOffsetY = { it }
                 )
             ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .clickable(
-                            interactionSource = remember { MutableInteractionSource() },
-                            indication = null
-                        ) { /* Block clicks */ }
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.surface
                 ) {
                     LyricsScreen(
                         mediaMetadata = metadata,
