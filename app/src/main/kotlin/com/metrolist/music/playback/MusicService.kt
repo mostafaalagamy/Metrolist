@@ -1086,7 +1086,33 @@ class MusicService :
                     audioQuality = audioQuality,
                     connectivityManager = connectivityManager,
                 )
-            }.getOrNull()
+            }.getOrElse { throwable ->
+                when (throwable) {
+                    is PlaybackException -> throw throwable
+
+                    is java.net.ConnectException, is java.net.UnknownHostException -> {
+                        throw PlaybackException(
+                            getString(R.string.error_no_internet),
+                            throwable,
+                            PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_FAILED
+                        )
+                    }
+
+                    is java.net.SocketTimeoutException -> {
+                        throw PlaybackException(
+                            getString(R.string.error_timeout),
+                            throwable,
+                            PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_TIMEOUT
+                        )
+                    }
+
+                    else -> throw PlaybackException(
+                        getString(R.string.error_unknown),
+                        throwable,
+                        PlaybackException.ERROR_CODE_REMOTE_ERROR
+                    )
+                }
+            }
 
             if (playbackData == null) {
                 throw PlaybackException(
