@@ -272,6 +272,15 @@ fun LyricsScreen(
                     Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.surface))
                 }
             }
+            
+            // طبقة سوداء إضافية فوق الخلفية لتحسين قراءة النص
+            if (playerBackground != PlayerBackgroundStyle.DEFAULT) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Black.copy(alpha = 0.3f))
+                )
+            }
         }
 
         Column(
