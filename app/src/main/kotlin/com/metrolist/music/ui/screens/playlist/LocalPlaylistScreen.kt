@@ -136,7 +136,7 @@ import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
 import com.metrolist.music.viewmodels.LocalPlaylistViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
+
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyListState
 import java.time.LocalDateTime
@@ -417,7 +417,7 @@ fun LocalPlaylistScreen(
         }
     }
 
-    var dismissJob: Job? by remember { mutableStateOf(null) }
+
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -516,27 +516,7 @@ fun LocalPlaylistScreen(
                                 )
                                 delete(currentItem.map.copy(position = Int.MAX_VALUE))
                             }
-                            dismissJob?.cancel()
-                            dismissJob = coroutineScope.launch {
-                                val snackbarResult = snackbarHostState.showSnackbar(
-                                    message = context.getString(
-                                        R.string.removed_song_from_playlist,
-                                        currentItem.song.song.title
-                                    ),
-                                    actionLabel = context.getString(R.string.undo),
-                                    duration = SnackbarDuration.Short
-                                )
-                                if (snackbarResult == SnackbarResult.ActionPerformed) {
-                                    database.transaction {
-                                        insert(currentItem.map.copy(position = playlistLength))
-                                        move(
-                                            currentItem.map.playlistId,
-                                            playlistLength,
-                                            currentItem.map.position
-                                        )
-                                    }
-                                }
-                            }
+                            // Song removed directly without undo option
                         }
 
                         val dismissBoxState =
@@ -659,27 +639,7 @@ fun LocalPlaylistScreen(
                                 )
                                 delete(currentItem.map.copy(position = Int.MAX_VALUE))
                             }
-                            dismissJob?.cancel()
-                            dismissJob = coroutineScope.launch {
-                                val snackbarResult = snackbarHostState.showSnackbar(
-                                    message = context.getString(
-                                        R.string.removed_song_from_playlist,
-                                        currentItem.song.song.title
-                                    ),
-                                    actionLabel = context.getString(R.string.undo),
-                                    duration = SnackbarDuration.Short
-                                )
-                                if (snackbarResult == SnackbarResult.ActionPerformed) {
-                                    database.transaction {
-                                        insert(currentItem.map.copy(position = playlistLength))
-                                        move(
-                                            currentItem.map.playlistId,
-                                            playlistLength,
-                                            currentItem.map.position
-                                        )
-                                    }
-                                }
-                            }
+                            // Song removed directly without undo option
                         }
 
                         val dismissBoxState =
