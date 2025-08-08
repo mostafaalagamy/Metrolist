@@ -53,12 +53,10 @@ import androidx.media3.common.C
 import androidx.media3.common.Player.STATE_READY
 import androidx.palette.graphics.Palette
 import androidx.core.graphics.drawable.toBitmap
-import coil3.compose.AsyncImage
-import coil3.imageLoader
-import coil3.request.ImageRequest
-import coil3.request.allowHardware
-import coil3.size.Size
-import coil3.toBitmap
+import coil.compose.AsyncImage
+import coil.imageLoader
+import coil.request.ImageRequest
+import coil.size.Size
 import com.metrolist.music.LocalDatabase
 import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
@@ -164,7 +162,7 @@ fun LyricsScreen(
                         .build()
 
                     val result = runCatching { 
-                        context.imageLoader.execute(request).image 
+                        context.imageLoader.execute(request).drawable 
                     }.getOrNull()
                     
                     if (result != null) {
