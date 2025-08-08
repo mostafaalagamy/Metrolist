@@ -37,6 +37,7 @@ class CoilBitmapLoader(
                         .Builder(context)
                         .data(uri)
                         .allowHardware(false)
+                        .diskCachePolicy(CachePolicy.ENABLED)
                         .build(),
                 )
             if (result is ErrorResult) {
