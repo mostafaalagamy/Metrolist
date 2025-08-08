@@ -6,7 +6,10 @@ import android.content.res.Configuration
 import android.os.Build
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.EaseInOutQuart
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.AnimationVector1D
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -65,6 +68,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
@@ -272,6 +276,10 @@ fun Lyrics(
     var showMaxSelectionToast by remember { mutableStateOf(false) } // State for showing max selection toast
 
     val lazyListState = rememberLazyListState()
+    
+    // Professional animation states for smooth Apple Music-style transitions
+    val scrollAnimatable = remember { Animatable(0f) }
+    var isAnimating by remember { mutableStateOf(false) }
 
     // Define max selection limit
     val maxSelectionLimit = 5
@@ -355,24 +363,46 @@ fun Lyrics(
         }
 
         if (!isSynced) return@LaunchedEffect
+        
+        // Professional smooth animation logic inspired by Apple Music
+        suspend fun performSmoothScroll(targetIndex: Int, duration: Int = 800) {
+            if (isAnimating) return // Prevent multiple animations
+            
+            isAnimating = true
+            val targetOffset = with(density) { 36.dp.toPx().toInt() } + calculateOffset()
+            
+            try {
+                // Use custom smooth animation with easing
+                scrollAnimatable.animateTo(
+                    targetValue = targetIndex.toFloat(),
+                    animationSpec = tween(
+                        durationMillis = duration,
+                        easing = EaseInOutQuart
+                    )
+                )
+                
+                // Apply the scroll with smooth transition
+                lazyListState.animateScrollToItem(
+                    index = targetIndex,
+                    scrollOffset = targetOffset
+                )
+            } finally {
+                isAnimating = false
+            }
+        }
+        
         if((currentLineIndex == 0 && shouldScrollToFirstLine) || !initialScrollDone) {
             shouldScrollToFirstLine = false
-            // تمرير أولي سلس
-            lazyListState.animateScrollToItem(
-                index = currentLineIndex,
-                scrollOffset = with(density) { 36.dp.toPx().toInt() } + calculateOffset()
-            )
+            // Initial scroll with medium animation (600ms)
+            performSmoothScroll(currentLineIndex, 600)
             if(!isAppMinimized) {
                 initialScrollDone = true
             }
         } else if (currentLineIndex != -1) {
             deferredCurrentLineIndex = currentLineIndex
             if (isSeeking) {
-                // تمرير سريع عند السحب
-                lazyListState.animateScrollToItem(
-                    index = currentLineIndex,
-                    scrollOffset = with(density) { 36.dp.toPx().toInt() } + calculateOffset()
-                )
+                // Fast scroll for seeking (300ms)
+                performSmoothScroll(currentLineIndex, 300)
             } else if ((lastPreviewTime == 0L || currentLineIndex != previousLineIndex) && scrollLyrics) {
                 val visibleItemsInfo = lazyListState.layoutInfo.visibleItemsInfo
                 val isCurrentLineVisible = visibleItemsInfo.any { it.index == currentLineIndex }
@@ -389,11 +419,8 @@ fun Lyrics(
 
                     if (currentLineOffset in centerRangeStart..centerRangeEnd ||
                         previousLineOffset in centerRangeStart..centerRangeEnd) {
-                        // تمرير سلس مع انيميشن للكلمات
-                        lazyListState.animateScrollToItem(
-                            index = currentLineIndex,
-                            scrollOffset = with(density) { 36.dp.toPx().toInt() } + calculateOffset()
-                        )
+                        // Smooth auto-scroll with Apple Music-style timing (800ms)
+                        performSmoothScroll(currentLineIndex, 800)
                     }
                 }
             }
@@ -492,17 +519,26 @@ fun Lyrics(
                                         }
                                     }
                                 } else if (isSynced && changeLyrics) {
-                                    // Seek action
+                                    // Professional seek action with smooth animation
                                     playerConnection.player.seekTo(item.time)
                                     scope.launch {
-                                        lazyListState.animateScrollToItem(
-                                            index,
-                                            with(density) { 36.dp.toPx().toInt() } +
-                                                    with(density) {
-                                                        val count = item.text.count { it == '\n' }
-                                                        (if (landscapeOffset) 16.dp.toPx() else 20.dp.toPx()).toInt() * count
-                                                    }
+                                        // Use the same professional animation for seeking
+                                        val targetOffset = with(density) { 36.dp.toPx().toInt() } +
+                                                with(density) {
+                                                    val count = item.text.count { it == '\n' }
+                                                    (if (landscapeOffset) 16.dp.toPx() else 20.dp.toPx()).toInt() * count
+                                                }
+                                        
+                                        // Smooth seek animation (faster than auto-scroll but smoother than instant)
+                                        scrollAnimatable.animateTo(
+                                            targetValue = index.toFloat(),
+                                            animationSpec = tween(
+                                                durationMillis = 400, // Medium speed for user interaction
+                                                easing = EaseInOutQuart
+                                            )
                                         )
+                                        
+                                        lazyListState.animateScrollToItem(index, targetOffset)
                                     }
                                     lastPreviewTime = 0L
                                 }
@@ -525,10 +561,28 @@ fun Lyrics(
                             else Color.Transparent
                         )
                         .padding(horizontal = 24.dp, vertical = 8.dp)
+                        // Apple Music-style depth effect with professional alpha transitions
                         .alpha(
-                            if (!isSynced || index == displayedCurrentLineIndex || (isSelectionModeActive && isSelected)) 1f
-                            else 0.5f
+                            when {
+                                !isSynced || (isSelectionModeActive && isSelected) -> 1f
+                                index == displayedCurrentLineIndex -> 1f // Active line - full opacity
+                                kotlin.math.abs(index - displayedCurrentLineIndex) == 1 -> 0.7f // Adjacent lines - medium opacity
+                                kotlin.math.abs(index - displayedCurrentLineIndex) == 2 -> 0.4f // 2 lines away - low opacity  
+                                else -> 0.2f // Far lines - very low opacity (deep water effect)
+                            }
                         )
+                        // Add subtle scale effect for depth
+                        .graphicsLayer {
+                            val distance = kotlin.math.abs(index - displayedCurrentLineIndex)
+                            val scale = when {
+                                !isSynced || index == displayedCurrentLineIndex -> 1f
+                                distance == 1 -> 0.95f // Slightly smaller
+                                distance >= 2 -> 0.9f // Even smaller for distant lines
+                                else -> 1f
+                            }
+                            scaleX = scale
+                            scaleY = scale
+                        }
 
                     Column(
                         modifier = itemModifier,
@@ -540,14 +594,18 @@ fun Lyrics(
                     ) {
                         Text(
                             text = item.text,
-                            fontSize = 20.sp,
-                            color = textColor,
+                            fontSize = if (index == displayedCurrentLineIndex && isSynced) 22.sp else 20.sp, // Highlight active line
+                            color = if (index == displayedCurrentLineIndex && isSynced) {
+                                textColor // Full color for active line
+                            } else {
+                                textColor.copy(alpha = 0.8f) // Slightly muted for inactive lines
+                            },
                             textAlign = when (lyricsTextPosition) {
                                 LyricsPosition.LEFT -> TextAlign.Left
                                 LyricsPosition.CENTER -> TextAlign.Center
                                 LyricsPosition.RIGHT -> TextAlign.Right
                             },
-                            fontWeight = FontWeight.Bold
+                            fontWeight = if (index == displayedCurrentLineIndex && isSynced) FontWeight.ExtraBold else FontWeight.Bold
                         )
                         if (romanizeJapaneseLyrics || romanizeKoreanLyrics) {
                             // Show romanized text if available
@@ -959,6 +1017,12 @@ fun Lyrics(
         }
     }
 }
+
+// Professional animation constants inspired by Apple Music
+private const val APPLE_MUSIC_AUTO_SCROLL_DURATION = 800L // Slow and smooth for automatic scrolling
+private const val APPLE_MUSIC_INITIAL_SCROLL_DURATION = 600L // Medium for initial positioning  
+private const val APPLE_MUSIC_SEEK_DURATION = 400L // Responsive for user interaction
+private const val APPLE_MUSIC_FAST_SEEK_DURATION = 300L // Fast for slider seeking
 
 // Lyrics constants
 val LyricsPreviewTime = 2.seconds
