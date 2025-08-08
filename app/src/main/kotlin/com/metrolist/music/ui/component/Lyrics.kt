@@ -394,7 +394,7 @@ fun Lyrics(
         if((currentLineIndex == 0 && shouldScrollToFirstLine) || !initialScrollDone) {
             shouldScrollToFirstLine = false
             // Initial scroll with medium animation (600ms)
-            performSmoothScroll(currentLineIndex, 600)
+                                         performSmoothScroll(currentLineIndex, APPLE_MUSIC_INITIAL_SCROLL_DURATION.toInt())
             if(!isAppMinimized) {
                 initialScrollDone = true
             }
@@ -402,7 +402,7 @@ fun Lyrics(
             deferredCurrentLineIndex = currentLineIndex
             if (isSeeking) {
                 // Fast scroll for seeking (300ms)
-                performSmoothScroll(currentLineIndex, 300)
+                                 performSmoothScroll(currentLineIndex, APPLE_MUSIC_FAST_SEEK_DURATION.toInt())
             } else if ((lastPreviewTime == 0L || currentLineIndex != previousLineIndex) && scrollLyrics) {
                 val visibleItemsInfo = lazyListState.layoutInfo.visibleItemsInfo
                 val isCurrentLineVisible = visibleItemsInfo.any { it.index == currentLineIndex }
@@ -420,7 +420,7 @@ fun Lyrics(
                     if (currentLineOffset in centerRangeStart..centerRangeEnd ||
                         previousLineOffset in centerRangeStart..centerRangeEnd) {
                         // Smooth auto-scroll with Apple Music-style timing (800ms)
-                        performSmoothScroll(currentLineIndex, 800)
+                                                 performSmoothScroll(currentLineIndex, APPLE_MUSIC_AUTO_SCROLL_DURATION.toInt())
                     }
                 }
             }
@@ -533,7 +533,7 @@ fun Lyrics(
                                         scrollAnimatable.animateTo(
                                             targetValue = index.toFloat(),
                                             animationSpec = tween(
-                                                durationMillis = 400, // Medium speed for user interaction
+                                                durationMillis = APPLE_MUSIC_SEEK_DURATION.toInt(), // Medium speed for user interaction
                                                 easing = EaseInOutQuart
                                             )
                                         )
