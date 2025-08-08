@@ -758,7 +758,6 @@ fun Lyrics(
                         color = MaterialTheme.colorScheme.onSurface
                     )
                     Spacer(modifier = Modifier.height(16.dp))
-                    HorizontalDivider(color = DividerDefaults.color) // Use default color
                     // Share as Text Row
                     Row(
                         modifier = Modifier
@@ -778,7 +777,7 @@ fun Lyrics(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Icon(
-                            painter = painterResource(id = R.drawable.media3_icon_share), // Consistent share icon
+                            painter = painterResource(id = R.drawable.share), // Use new share icon
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.primary
                         )
@@ -789,7 +788,6 @@ fun Lyrics(
                             color = MaterialTheme.colorScheme.onSurface
                         )
                     }
-                    HorizontalDivider(color = DividerDefaults.color)
                     // Share as Image Row
                     Row(
                         modifier = Modifier
@@ -804,8 +802,7 @@ fun Lyrics(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Icon(
-                            // Changed icon to represent image sharing better
-                            painter = painterResource(id = R.drawable.media3_icon_share), // Use a relevant icon
+                            painter = painterResource(id = R.drawable.share), // Use new share icon
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.primary
                         )
@@ -816,7 +813,6 @@ fun Lyrics(
                             color = MaterialTheme.colorScheme.onSurface
                         )
                     }
-                    HorizontalDivider(color = DividerDefaults.color)
                     // Cancel Button Row
                     Row(
                         modifier = Modifier
@@ -824,25 +820,15 @@ fun Lyrics(
                             .padding(top = 8.dp, bottom = 4.dp),
                         horizontalArrangement = Arrangement.End,
                     ) {
-                        Row(
+                        Text(
+                            text = stringResource(R.string.cancel),
+                            fontSize = 16.sp,
+                            color = MaterialTheme.colorScheme.error,
+                            fontWeight = FontWeight.Medium,
                             modifier = Modifier
                                 .clickable { showShareDialog = false }
-                                .padding(vertical = 8.dp, horizontal = 12.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(
-                                text = stringResource(R.string.cancel),
-                                fontSize = 16.sp,
-                                color = MaterialTheme.colorScheme.error,
-                                fontWeight = FontWeight.Medium // Make cancel slightly bolder
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Icon(
-                                painter = painterResource(id = R.drawable.close),
-                                contentDescription = null, // Description is handled by Text
-                                tint = MaterialTheme.colorScheme.error
-                            )
-                        }
+                                .padding(vertical = 8.dp, horizontal = 12.dp)
+                        )
                     }
                 }
             }
