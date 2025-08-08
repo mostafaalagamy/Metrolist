@@ -622,15 +622,15 @@ fun Lyrics(
             }
         }
 
-        // Close button in top-right (appears only in selection mode)
+        // Close button in top-right aligned with more button (appears only in selection mode)
         if (isSelectionModeActive) {
             Box(
                 modifier = Modifier
                     .align(Alignment.TopEnd)
-                    .padding(top = 16.dp, end = 16.dp)
+                    .padding(top = 16.dp, end = 24.dp) // Aligned with header padding
                     .size(32.dp)
                     .background(
-                        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.9f),
+                        color = Color.Black.copy(alpha = 0.3f), // Match more button style
                         shape = CircleShape
                     )
                     .clickable {
@@ -642,7 +642,7 @@ fun Lyrics(
                 Icon(
                     painter = painterResource(id = R.drawable.close),
                     contentDescription = stringResource(R.string.cancel),
-                    tint = MaterialTheme.colorScheme.onSurface,
+                    tint = Color.White, // Match more button text color
                     modifier = Modifier.size(18.dp)
                 )
             }
@@ -662,9 +662,9 @@ fun Lyrics(
                         modifier = Modifier
                             .background(
                                 color = if (selectedIndices.isNotEmpty()) 
-                                    MaterialTheme.colorScheme.primary.copy(alpha = 0.9f)
+                                    Color.Black.copy(alpha = 0.3f) // Match player controls background
                                 else 
-                                    MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.8f),
+                                    Color.Black.copy(alpha = 0.1f),
                                 shape = RoundedCornerShape(24.dp)
                             )
                             .clickable(enabled = selectedIndices.isNotEmpty()) {
@@ -693,18 +693,12 @@ fun Lyrics(
                         Icon(
                             painter = painterResource(id = R.drawable.share),
                             contentDescription = stringResource(R.string.share_selected),
-                            tint = if (selectedIndices.isNotEmpty()) 
-                                Color.White 
-                            else 
-                                MaterialTheme.colorScheme.onSurfaceVariant,
+                            tint = Color.White, // Always white like player controls
                             modifier = Modifier.size(20.dp)
                         )
                         Text(
                             text = stringResource(R.string.share),
-                            color = if (selectedIndices.isNotEmpty()) 
-                                Color.White 
-                            else 
-                                MaterialTheme.colorScheme.onSurfaceVariant,
+                            color = Color.White, // Always white like player controls
                             style = MaterialTheme.typography.bodyMedium,
                             fontWeight = FontWeight.Medium
                         )
@@ -1028,11 +1022,11 @@ fun Lyrics(
     }
 }
 
-// Professional page animation constants inspired by Metrolist design
-private const val METROLIST_AUTO_SCROLL_DURATION = 800L // Smooth auto-scroll
-private const val METROLIST_INITIAL_SCROLL_DURATION = 600L // Quick initial positioning
-private const val METROLIST_SEEK_DURATION = 400L // Fast user interaction
-private const val METROLIST_FAST_SEEK_DURATION = 300L // Very responsive seeking
+// Professional page animation constants inspired by Metrolist design - slower for smoothness
+private const val METROLIST_AUTO_SCROLL_DURATION = 1500L // Much slower auto-scroll for smooth transitions
+private const val METROLIST_INITIAL_SCROLL_DURATION = 1000L // Slower initial positioning
+private const val METROLIST_SEEK_DURATION = 800L // Slower user interaction
+private const val METROLIST_FAST_SEEK_DURATION = 600L // Less aggressive seeking
 
 // Lyrics constants
 val LyricsPreviewTime = 2.seconds
