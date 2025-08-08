@@ -1,7 +1,6 @@
 package com.metrolist.music.ui.player
 
 import androidx.activity.compose.BackHandler
-
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -38,7 +37,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
@@ -101,7 +99,6 @@ fun LyricsScreen(
     val database = LocalDatabase.current
     val coroutineScope = rememberCoroutineScope()
 
-    // استخدام نفس منطق المشغل لتتبع التقدم
     val playbackState by playerConnection.playbackState.collectAsState()
     val isPlaying by playerConnection.isPlaying.collectAsState()
     
@@ -144,16 +141,12 @@ fun LyricsScreen(
 
     val playerBackground by rememberEnumPreference(PlayerBackgroundStyleKey, PlayerBackgroundStyle.DEFAULT)
 
-    // منطق الألوان المبسط - بدون انيميشن منفصل
     var gradientColors by remember { mutableStateOf<List<Color>>(emptyList()) }
     val gradientColorsCache = remember { mutableMapOf<String, List<Color>>() }
 
     val defaultGradientColors = listOf(MaterialTheme.colorScheme.surface, MaterialTheme.colorScheme.surfaceVariant)
     val fallbackColor = MaterialTheme.colorScheme.surface.toArgb()
 
-
-
-    // استخراج ألوان الـ gradient مع التخزين المؤقت
     LaunchedEffect(mediaMetadata.id, playerBackground) {
         if (playerBackground == PlayerBackgroundStyle.GRADIENT) {
             if (mediaMetadata.thumbnailUrl != null) {
@@ -200,7 +193,6 @@ fun LyricsScreen(
         }
     }
 
-    // نسخ منطق الألوان بالكامل من Player.kt
     val textBackgroundColor = when (playerBackground) {
         PlayerBackgroundStyle.DEFAULT -> MaterialTheme.colorScheme.onBackground
         PlayerBackgroundStyle.BLUR -> Color.White
@@ -215,7 +207,6 @@ fun LyricsScreen(
         else -> MaterialTheme.colorScheme.surface
     }
 
-    // تتبع التقدم بنفس طريقة Player.kt
     LaunchedEffect(playbackState) {
         if (playbackState == STATE_READY) {
             while (isActive) {
@@ -229,11 +220,9 @@ fun LyricsScreen(
     BackHandler(onBack = onBackClick)
 
     Box(modifier = modifier.fillMaxSize()) {
-        // خلفية بنفس منطق Player.kt تماماً
         Box(modifier = Modifier.fillMaxSize()) {
             when (playerBackground) {
                 PlayerBackgroundStyle.BLUR -> {
-                    // خلفية ثابتة - تتبع انيميشن الصفحة فقط
                     if (mediaMetadata.thumbnailUrl != null) {
                         Box(modifier = Modifier.fillMaxSize()) {
                             AsyncImage(
@@ -247,7 +236,6 @@ fun LyricsScreen(
                     }
                 }
                 PlayerBackgroundStyle.GRADIENT -> {
-                    // خلفية gradient ثابتة - تتبع انيميشن الصفحة فقط
                     if (gradientColors.isNotEmpty()) {
                         Box(modifier = Modifier.fillMaxSize()) {
                             val gradientColorStops = if (gradientColors.size >= 3) {
@@ -269,12 +257,10 @@ fun LyricsScreen(
                     }
                 }
                 else -> {
-                    // الخلفية الافتراضية شفافة
                     Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.surface))
                 }
             }
-            
-            // طبقة سوداء إضافية فوق الخلفية لتحسين قراءة النص
+
             if (playerBackground != PlayerBackgroundStyle.DEFAULT) {
                 Box(
                     modifier = Modifier
@@ -289,14 +275,12 @@ fun LyricsScreen(
                 .fillMaxSize()
                 .padding(WindowInsets.systemBars.asPaddingValues())
         ) {
-            // رأس الشاشة مع الصورة المصغرة ومعلومات الأغنية
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 24.dp, vertical = 16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // صورة الأغنية (قابلة للنقر للإغلاق) مع نفس حواف Thumbnail.kt
                 AsyncImage(
                     model = mediaMetadata.thumbnailUrl,
                     contentDescription = "Back",
@@ -308,7 +292,6 @@ fun LyricsScreen(
 
                 Spacer(modifier = Modifier.width(16.dp))
 
-                // معلومات الأغنية
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = mediaMetadata.title,
@@ -328,7 +311,6 @@ fun LyricsScreen(
 
                 Spacer(modifier = Modifier.width(12.dp))
 
-                // زر المزيد مع خلفية دائرية وتأثير ضغط دائري
                     Box(
                     modifier = Modifier
                         .size(32.dp)
@@ -340,7 +322,7 @@ fun LyricsScreen(
                             interactionSource = remember { MutableInteractionSource() },
                             indication = ripple(
                                 bounded = true,
-                                radius = 16.dp // نصف حجم الـ Box
+                                radius = 16.dp
                             )
                         ) {
                             menuState.show {
@@ -362,7 +344,6 @@ fun LyricsScreen(
                 }
             }
 
-            // محتوى الكلمات يبدأ من الأعلى
             Box(
                 modifier = Modifier
                     .weight(1f)
@@ -375,13 +356,11 @@ fun LyricsScreen(
                 )
             }
 
-            // أدوات التحكم في الأسفل
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 32.dp, vertical = 16.dp)
             ) {
-                // شريط التقدم مع أنماط مختلفة
                 when (sliderStyle) {
                     SliderStyle.DEFAULT -> {
                         Slider(
@@ -451,7 +430,6 @@ fun LyricsScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // أزرار التحكم
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -459,7 +437,6 @@ fun LyricsScreen(
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    // زر السابق
                     IconButton(onClick = { player.seekToPrevious() }) {
                         Icon(
                             painter = painterResource(R.drawable.skip_previous),
@@ -469,10 +446,9 @@ fun LyricsScreen(
                         )
                     }
 
-                    // زر التشغيل/الإيقاف - تأثير ضغط أكبر
                     IconButton(
                         onClick = { player.togglePlayPause() },
-                        modifier = Modifier.size(64.dp)  // منطقة ضغط أكبر
+                        modifier = Modifier.size(64.dp)
                     ) {
                         Icon(
                             painter = painterResource(
@@ -480,11 +456,10 @@ fun LyricsScreen(
                             ),
                             contentDescription = if (isPlaying) "Pause" else "Play",
                             tint = textBackgroundColor,
-                            modifier = Modifier.size(48.dp)  // حجم الأيقونة يبقى كما هو
+                            modifier = Modifier.size(48.dp)
                         )
                     }
 
-                    // زر التالي
                     IconButton(onClick = { player.seekToNext() }) {
                         Icon(
                             painter = painterResource(R.drawable.skip_next),
@@ -497,8 +472,7 @@ fun LyricsScreen(
 
                 Spacer(modifier = Modifier.height(8.dp))
             }
-            
-            // زر السهم في الأسفل للإغلاق
+
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
