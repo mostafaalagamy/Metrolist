@@ -14,6 +14,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -419,31 +420,7 @@ fun Lyrics(
             .fillMaxSize()
             .padding(bottom = 12.dp)
     ) {
-        // زر X للإغلاق في أعلى اليمين (يظهر فقط في وضع التحديد)
-        if (isSelectionModeActive) {
-            Box(
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(top = 16.dp, end = 16.dp)
-                    .size(32.dp)
-                    .background(
-                        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.9f),
-                        shape = CircleShape
-                    )
-                    .clickable {
-                        isSelectionModeActive = false
-                        selectedIndices.clear()
-                    },
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.close),
-                    contentDescription = stringResource(R.string.cancel),
-                    tint = MaterialTheme.colorScheme.onSurface,
-                    modifier = Modifier.size(18.dp)
-                )
-            }
-        }
+
         // عرض "lyrics not found" في منتصف الشاشة
         if (lyrics == LYRICS_NOT_FOUND) {
             Box(
@@ -646,56 +623,65 @@ fun Lyrics(
             }
         }
 
-        // Show selection buttons only when in selection mode - YouTube Music style
+        // Share button in player style - centered and lower
         if (isSelectionModeActive) {
             mediaMetadata?.let { metadata ->
-                // Center the share button like YouTube Music
                 Box(
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
-                        .padding(bottom = 32.dp),
+                        .padding(bottom = 80.dp), // Moved lower
                     contentAlignment = Alignment.Center
                 ) {
-                    // YouTube Music style share button - larger and centered
-                    IconButton(
-                        onClick = {
-                            if (selectedIndices.isNotEmpty()) {
-                                val sortedIndices = selectedIndices.sorted()
-                                val selectedLyricsText = sortedIndices
-                                    .mapNotNull { lines.getOrNull(it)?.text }
-                                    .joinToString("\n")
-
-                                if (selectedLyricsText.isNotBlank()) {
-                                    shareDialogData = Triple(
-                                        selectedLyricsText,
-                                        metadata.title,
-                                        metadata.artists.joinToString { it.name }
-                                    )
-                                    showShareDialog = true
-                                }
-                                isSelectionModeActive = false
-                                selectedIndices.clear()
-                            }
-                        },
-                        enabled = selectedIndices.isNotEmpty(),
+                    // Player-style share button with text
+                    Row(
                         modifier = Modifier
-                            .size(56.dp)
                             .background(
                                 color = if (selectedIndices.isNotEmpty()) 
                                     MaterialTheme.colorScheme.primary.copy(alpha = 0.9f)
                                 else 
-                                    MaterialTheme.colorScheme.surface.copy(alpha = 0.3f),
-                                shape = CircleShape
+                                    MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.8f),
+                                shape = RoundedCornerShape(24.dp)
                             )
+                            .clickable(enabled = selectedIndices.isNotEmpty()) {
+                                if (selectedIndices.isNotEmpty()) {
+                                    val sortedIndices = selectedIndices.sorted()
+                                    val selectedLyricsText = sortedIndices
+                                        .mapNotNull { lines.getOrNull(it)?.text }
+                                        .joinToString("\n")
+
+                                    if (selectedLyricsText.isNotBlank()) {
+                                        shareDialogData = Triple(
+                                            selectedLyricsText,
+                                            metadata.title,
+                                            metadata.artists.joinToString { it.name }
+                                        )
+                                        showShareDialog = true
+                                    }
+                                    isSelectionModeActive = false
+                                    selectedIndices.clear()
+                                }
+                            }
+                            .padding(horizontal = 24.dp, vertical = 12.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         Icon(
-                            painter = painterResource(id = R.drawable.media3_icon_share),
+                            painter = painterResource(id = R.drawable.share),
                             contentDescription = stringResource(R.string.share_selected),
                             tint = if (selectedIndices.isNotEmpty()) 
                                 Color.White 
                             else 
-                                textColor.copy(alpha = 0.5f),
-                            modifier = Modifier.size(28.dp)
+                                MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.size(20.dp)
+                        )
+                        Text(
+                            text = stringResource(R.string.share),
+                            color = if (selectedIndices.isNotEmpty()) 
+                                Color.White 
+                            else 
+                                MaterialTheme.colorScheme.onSurfaceVariant,
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.Medium
                         )
                     }
                 }
