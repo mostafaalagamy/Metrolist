@@ -2,7 +2,6 @@ package com.metrolist.music.lyrics
 
 import android.text.format.DateUtils
 import com.atilika.kuromoji.ipadic.Tokenizer
-// Remove unused import
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
