@@ -1,13 +1,7 @@
 package com.metrolist.music.ui.player
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
-import androidx.compose.animation.togetherWith
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -149,23 +143,14 @@ fun LyricsScreen(
 
     val playerBackground by rememberEnumPreference(PlayerBackgroundStyleKey, PlayerBackgroundStyle.DEFAULT)
 
-    // نسخ منطق الألوان بالكامل من Player.kt
+    // منطق الألوان المبسط - بدون انيميشن منفصل
     var gradientColors by remember { mutableStateOf<List<Color>>(emptyList()) }
-    var previousThumbnailUrl by remember { mutableStateOf<String?>(null) }
-    var previousGradientColors by remember { mutableStateOf<List<Color>>(emptyList()) }
     val gradientColorsCache = remember { mutableMapOf<String, List<Color>>() }
 
     val defaultGradientColors = listOf(MaterialTheme.colorScheme.surface, MaterialTheme.colorScheme.surfaceVariant)
     val fallbackColor = MaterialTheme.colorScheme.surface.toArgb()
 
-    // تحديث الحالات السابقة عند تغيير الأغنية
-    LaunchedEffect(mediaMetadata.id) {
-        val currentThumbnail = mediaMetadata.thumbnailUrl
-        if (currentThumbnail != previousThumbnailUrl) {
-            previousThumbnailUrl = currentThumbnail
-            previousGradientColors = gradientColors
-        }
-    }
+
 
     // استخراج ألوان الـ gradient مع التخزين المؤقت
     LaunchedEffect(mediaMetadata.id, playerBackground) {
@@ -247,94 +232,38 @@ fun LyricsScreen(
         Box(modifier = Modifier.fillMaxSize()) {
             when (playerBackground) {
                 PlayerBackgroundStyle.BLUR -> {
-                    // الطبقة السابقة للانتقال السلس
-                    if (previousThumbnailUrl != null) {
-                        AsyncImage(
-                            model = previousThumbnailUrl,
-                            contentDescription = "Previous blurred background",
-                            contentScale = ContentScale.FillBounds,
-                            modifier = Modifier.fillMaxSize().blur(radius = 150.dp)
-                        )
-                        Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.4f)))
-                    }
-                    
-                    // الطبقة الجديدة
-                    AnimatedContent(
-                        targetState = mediaMetadata.thumbnailUrl,
-                        transitionSpec = {
-                            slideInVertically(
-                                animationSpec = tween(300),
-                                initialOffsetY = { it }
-                            ) togetherWith slideOutVertically(
-                                animationSpec = tween(300),
-                                targetOffsetY = { it }
+                    // خلفية ثابتة - تتبع انيميشن الصفحة فقط
+                    if (mediaMetadata.thumbnailUrl != null) {
+                        Box(modifier = Modifier.fillMaxSize()) {
+                            AsyncImage(
+                                model = mediaMetadata.thumbnailUrl,
+                                contentDescription = "Blurred background",
+                                contentScale = ContentScale.FillBounds,
+                                modifier = Modifier.fillMaxSize().blur(radius = 150.dp)
                             )
-                        }
-                    ) { thumbnailUrl ->
-                        if (thumbnailUrl != null) {
-                            Box(modifier = Modifier.fillMaxSize()) {
-                                AsyncImage(
-                                    model = thumbnailUrl,
-                                    contentDescription = "New blurred background",
-                                    contentScale = ContentScale.FillBounds,
-                                    modifier = Modifier.fillMaxSize().blur(radius = 150.dp)
-                                )
-                                Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.4f)))
-                            }
+                            Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.4f)))
                         }
                     }
                 }
                 PlayerBackgroundStyle.GRADIENT -> {
-                    // الطبقة السابقة
-                    if (previousGradientColors.isNotEmpty()) {
-                        val gradientColorStops = if (previousGradientColors.size >= 3) {
-                            arrayOf(
-                                0.0f to previousGradientColors[0],
-                                0.5f to previousGradientColors[1],
-                                1.0f to previousGradientColors[2]
-                            )
-                        } else {
-                            arrayOf(
-                                0.0f to previousGradientColors[0],
-                                0.6f to previousGradientColors[0].copy(alpha = 0.7f),
-                                1.0f to Color.Black
-                            )
-                        }
-                        Box(modifier = Modifier.fillMaxSize().background(Brush.verticalGradient(colorStops = gradientColorStops)))
-                        Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.2f)))
-                    }
-                    
-                    // الطبقة الجديدة
-                    AnimatedContent(
-                        targetState = gradientColors,
-                        transitionSpec = {
-                            slideInVertically(
-                                animationSpec = tween(300),
-                                initialOffsetY = { it }
-                            ) togetherWith slideOutVertically(
-                                animationSpec = tween(300),
-                                targetOffsetY = { it }
-                            )
-                        }
-                    ) { colors ->
-                        if (colors.isNotEmpty()) {
-                            Box(modifier = Modifier.fillMaxSize()) {
-                                val gradientColorStops = if (colors.size >= 3) {
-                                    arrayOf(
-                                        0.0f to colors[0],
-                                        0.5f to colors[1],
-                                        1.0f to colors[2]
-                                    )
-                                } else {
-                                    arrayOf(
-                                        0.0f to colors[0],
-                                        0.6f to colors[0].copy(alpha = 0.7f),
-                                        1.0f to Color.Black
-                                    )
-                                }
-                                Box(modifier = Modifier.fillMaxSize().background(Brush.verticalGradient(colorStops = gradientColorStops)))
-                                Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.2f)))
+                    // خلفية gradient ثابتة - تتبع انيميشن الصفحة فقط
+                    if (gradientColors.isNotEmpty()) {
+                        Box(modifier = Modifier.fillMaxSize()) {
+                            val gradientColorStops = if (gradientColors.size >= 3) {
+                                arrayOf(
+                                    0.0f to gradientColors[0],
+                                    0.5f to gradientColors[1],
+                                    1.0f to gradientColors[2]
+                                )
+                            } else {
+                                arrayOf(
+                                    0.0f to gradientColors[0],
+                                    0.6f to gradientColors[0].copy(alpha = 0.7f),
+                                    1.0f to Color.Black
+                                )
                             }
+                            Box(modifier = Modifier.fillMaxSize().background(Brush.verticalGradient(colorStops = gradientColorStops)))
+                            Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.2f)))
                         }
                     }
                 }
