@@ -622,13 +622,39 @@ fun Lyrics(
             }
         }
 
+        // Close button in top-right (appears only in selection mode)
+        if (isSelectionModeActive) {
+            Box(
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(top = 16.dp, end = 16.dp)
+                    .size(32.dp)
+                    .background(
+                        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.9f),
+                        shape = CircleShape
+                    )
+                    .clickable {
+                        isSelectionModeActive = false
+                        selectedIndices.clear()
+                    },
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.close),
+                    contentDescription = stringResource(R.string.cancel),
+                    tint = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier.size(18.dp)
+                )
+            }
+        }
+
         // Share button in player style - centered and lower
         if (isSelectionModeActive) {
             mediaMetadata?.let { metadata ->
                 Box(
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
-                        .padding(bottom = 80.dp), // Moved lower
+                        .padding(bottom = 16.dp), // Just above player slider
                     contentAlignment = Alignment.Center
                 ) {
                     // Player-style share button with text

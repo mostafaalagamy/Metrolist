@@ -38,9 +38,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
+
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
@@ -330,45 +328,7 @@ fun LyricsScreen(
 
                 Spacer(modifier = Modifier.width(12.dp))
 
-                // أزرار الهيدر: close - more (من اليمين لليسار)
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    // زر X للإغلاق (يظهر فقط في وضع التحديد)
-                    AnimatedVisibility(
-                        visible = false, // TODO: ربط بحالة التحديد من Lyrics
-                        enter = fadeIn(),
-                        exit = fadeOut()
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .size(32.dp)
-                                .background(
-                                    color = icBackgroundColor.copy(alpha = 0.3f),
-                                    shape = CircleShape
-                                )
-                                .clickable(
-                                    interactionSource = remember { MutableInteractionSource() },
-                                    indication = ripple(
-                                        bounded = true,
-                                        radius = 16.dp
-                                    )
-                                ) {
-                                    // TODO: ربط بـ exit selection mode
-                                },
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Icon(
-                                painter = painterResource(R.drawable.close),
-                                contentDescription = "Close selection",
-                                tint = textBackgroundColor,
-                                modifier = Modifier.size(18.dp)
-                            )
-                        }
-                    }
-
-                    // زر المزيد مع خلفية دائرية وتأثير ضغط دائري
+                // زر المزيد مع خلفية دائرية وتأثير ضغط دائري
                     Box(
                     modifier = Modifier
                         .size(32.dp)
@@ -399,7 +359,6 @@ fun LyricsScreen(
                         tint = textBackgroundColor,
                         modifier = Modifier.size(20.dp)
                     )
-                }
                 }
             }
 
