@@ -92,7 +92,7 @@
     <string name="enable_similar_content">Habilitar contenido similar</string>
     <string name="similar_content_desc">Añadir automáticamente más canciones similares cuando se alcance el final de la cola</string>
     <string name="min_playback_duration_title">Duración mínima de reproducción</string>
-    <string name="min_playback_duration_description">La cantidad mínima de una canción que debe reproducirse antes de que se considere "reproducida"</string>
+    <string name="min_playback_duration_description">La cantidad mínima de una canción que debe reproducirse antes de que se considere reproducida</string>
     <string name="percentage_format">%d%%</string>
     <string name="minimum_playback_duration">Duración mínima de reproducción</string>
     <string name="clear_song_cache_dialog">¿Estás seguro de que quieres borrar todas las canciones en caché?</string>
