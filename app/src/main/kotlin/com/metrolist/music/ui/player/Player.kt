@@ -1251,12 +1251,21 @@ fun BottomSheetPlayer(
                     targetOffsetY = { it }
                 )
             ) {
-                LyricsScreen(
-                    mediaMetadata = metadata,
-                    onBackClick = { 
-                        showLyricsScreen = false 
-                    }
-                )
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null
+                        ) { /* Block clicks */ }
+                ) {
+                    LyricsScreen(
+                        mediaMetadata = metadata,
+                        onBackClick = { 
+                            showLyricsScreen = false 
+                        }
+                    )
+                }
             }
         }
     }
