@@ -11,7 +11,6 @@
     <plurals name="n_element">
         <item quantity="one">%d prvek</item>
         <item quantity="few">%d prvky</item>
-        <item quantity="many">%d prvků</item>
         <item quantity="other">%d prvků</item>
     </plurals>
     <string name="proxy">Proxy</string>
