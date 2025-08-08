@@ -622,33 +622,9 @@ fun Lyrics(
             }
         }
 
-        // Close button in top-right aligned with more button (appears only in selection mode)
-        if (isSelectionModeActive) {
-            Box(
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(top = 16.dp, end = 32.dp) // Moved more to the right
-                    .size(32.dp)
-                    .background(
-                        color = Color.Black.copy(alpha = 0.3f), // Match more button style
-                        shape = CircleShape
-                    )
-                    .clickable {
-                        isSelectionModeActive = false
-                        selectedIndices.clear()
-                    },
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.close),
-                    contentDescription = stringResource(R.string.cancel),
-                    tint = Color.White, // Match more button text color
-                    modifier = Modifier.size(18.dp)
-                )
-            }
-        }
 
-        // Share button in player style - centered and lower
+
+        // Action buttons: Close and Share buttons grouped together
         if (isSelectionModeActive) {
             mediaMetadata?.let { metadata ->
                 Box(
@@ -657,51 +633,79 @@ fun Lyrics(
                         .padding(bottom = 16.dp), // Just above player slider
                     contentAlignment = Alignment.Center
                 ) {
-                    // Player-style share button with text
+                    // Row containing both close and share buttons
                     Row(
-                        modifier = Modifier
-                            .background(
-                                color = if (selectedIndices.isNotEmpty()) 
-                                    Color.White.copy(alpha = 0.9f) // White background when active
-                                else 
-                                    Color.White.copy(alpha = 0.5f), // Lighter white when inactive
-                                shape = RoundedCornerShape(24.dp)
-                            )
-                            .clickable(enabled = selectedIndices.isNotEmpty()) {
-                                if (selectedIndices.isNotEmpty()) {
-                                    val sortedIndices = selectedIndices.sorted()
-                                    val selectedLyricsText = sortedIndices
-                                        .mapNotNull { lines.getOrNull(it)?.text }
-                                        .joinToString("\n")
-
-                                    if (selectedLyricsText.isNotBlank()) {
-                                        shareDialogData = Triple(
-                                            selectedLyricsText,
-                                            metadata.title,
-                                            metadata.artists.joinToString { it.name }
-                                        )
-                                        showShareDialog = true
-                                    }
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        // Close button (circular, right side of share)
+                        Box(
+                            modifier = Modifier
+                                .size(48.dp) // Larger for better touch target
+                                .background(
+                                    color = Color.Black.copy(alpha = 0.3f),
+                                    shape = CircleShape
+                                )
+                                .clickable {
                                     isSelectionModeActive = false
                                     selectedIndices.clear()
+                                },
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.close),
+                                contentDescription = stringResource(R.string.cancel),
+                                tint = Color.White,
+                                modifier = Modifier.size(20.dp)
+                            )
+                        }
+
+                        // Share button (rectangular with text)
+                        Row(
+                            modifier = Modifier
+                                .background(
+                                    color = if (selectedIndices.isNotEmpty()) 
+                                        Color.White.copy(alpha = 0.9f) // White background when active
+                                    else 
+                                        Color.White.copy(alpha = 0.5f), // Lighter white when inactive
+                                    shape = RoundedCornerShape(24.dp)
+                                )
+                                .clickable(enabled = selectedIndices.isNotEmpty()) {
+                                    if (selectedIndices.isNotEmpty()) {
+                                        val sortedIndices = selectedIndices.sorted()
+                                        val selectedLyricsText = sortedIndices
+                                            .mapNotNull { lines.getOrNull(it)?.text }
+                                            .joinToString("\n")
+
+                                        if (selectedLyricsText.isNotBlank()) {
+                                            shareDialogData = Triple(
+                                                selectedLyricsText,
+                                                metadata.title,
+                                                metadata.artists.joinToString { it.name }
+                                            )
+                                            showShareDialog = true
+                                        }
+                                        isSelectionModeActive = false
+                                        selectedIndices.clear()
+                                    }
                                 }
-                            }
-                            .padding(horizontal = 24.dp, vertical = 12.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.share),
-                            contentDescription = stringResource(R.string.share_selected),
-                            tint = Color.Black, // Black icon on white background
-                            modifier = Modifier.size(20.dp)
-                        )
-                        Text(
-                            text = stringResource(R.string.share),
-                            color = Color.Black, // Black text on white background
-                            style = MaterialTheme.typography.bodyMedium,
-                            fontWeight = FontWeight.Medium
-                        )
+                                .padding(horizontal = 24.dp, vertical = 12.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.share),
+                                contentDescription = stringResource(R.string.share_selected),
+                                tint = Color.Black, // Black icon on white background
+                                modifier = Modifier.size(20.dp)
+                            )
+                            Text(
+                                text = stringResource(R.string.share),
+                                color = Color.Black, // Black text on white background
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontWeight = FontWeight.Medium
+                            )
+                        }
                     }
                 }
             }
