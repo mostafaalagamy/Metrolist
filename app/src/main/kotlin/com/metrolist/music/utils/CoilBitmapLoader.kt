@@ -3,13 +3,16 @@ package com.metrolist.music.utils
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import androidx.media3.common.util.BitmapLoader
 import coil3.imageLoader
 import coil3.request.ErrorResult
 import coil3.request.ImageRequest
 import coil3.request.allowHardware
+import coil3.request.diskCachePolicy
+import coil3.request.memoryCachePolicy
+import coil3.disk.DiskCache
+import coil3.memory.MemoryCache
 import coil3.toBitmap
 import com.google.common.util.concurrent.ListenableFuture
 import kotlinx.coroutines.CoroutineScope
@@ -37,7 +40,8 @@ class CoilBitmapLoader(
                         .Builder(context)
                         .data(uri)
                         .allowHardware(false)
-                        .diskCachePolicy(CachePolicy.ENABLED)
+                        .diskCachePolicy(DiskCache.Policy.ENABLED)
+                        .memoryCachePolicy(MemoryCache.Policy.ENABLED)
                         .build(),
                 )
             if (result is ErrorResult) {
@@ -49,4 +53,4 @@ class CoilBitmapLoader(
                 throw ExecutionException(e)
             }
         }
-}
+} 
