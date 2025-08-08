@@ -153,4 +153,9 @@
         <item quantity="few">%d sekunde</item>
         <item quantity="other">%d sekundi</item>
     </plurals>
+    <string name="playlist_not_found_desc"></string>
+    <string name="empty_playlist"></string>
+    <string name="empty_playlist_desc"></string>
+    <string name="playlist_not_found"></string>
+    <string name="now_playing"></string>
 </resources>
