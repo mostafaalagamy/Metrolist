@@ -397,7 +397,7 @@ fun AlbumScreen(
                 }
             }
 
-            if (wrappedSongs != null) {
+            if (!wrappedSongs.isNullOrEmpty()) {
                 itemsIndexed(
                     items = wrappedSongs,
                     key = { _, song -> song.item.id },

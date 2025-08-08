@@ -1114,14 +1114,11 @@ class MusicService :
                 }
             }
 
-            if (playbackData == null) {
-                throw PlaybackException(
-                    getString(R.string.error_unknown),
-                    null,
-                    PlaybackException.ERROR_CODE_REMOTE_ERROR
-                )
-            } else {
-                val format = playbackData.format
+            val nonNullPlayback = requireNotNull(playbackData) {
+                getString(R.string.error_unknown)
+            }
+            run {
+                val format = nonNullPlayback.format
 
                 database.query {
                     upsert(
@@ -1133,17 +1130,17 @@ class MusicService :
                             bitrate = format.bitrate,
                             sampleRate = format.audioSampleRate,
                             contentLength = format.contentLength!!,
-                            loudnessDb = playbackData.audioConfig?.loudnessDb,
-                            playbackUrl = playbackData.playbackTracking?.videostatsPlaybackUrl?.baseUrl
+                            loudnessDb = nonNullPlayback.audioConfig?.loudnessDb,
+                            playbackUrl = nonNullPlayback.playbackTracking?.videostatsPlaybackUrl?.baseUrl
                         )
                     )
                 }
-                scope.launch(Dispatchers.IO) { recoverSong(mediaId, playbackData) }
+                scope.launch(Dispatchers.IO) { recoverSong(mediaId, nonNullPlayback) }
 
-                val streamUrl = playbackData.streamUrl
+                val streamUrl = nonNullPlayback.streamUrl
 
                 songUrlCache[mediaId] =
-                    streamUrl to System.currentTimeMillis() + (playbackData.streamExpiresInSeconds * 1000L)
+                    streamUrl to System.currentTimeMillis() + (nonNullPlayback.streamExpiresInSeconds * 1000L)
                 return@Factory dataSpec.withUri(streamUrl.toUri()).subrange(dataSpec.uriPositionOffset, CHUNK_LENGTH)
             }
         }
