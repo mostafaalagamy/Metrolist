@@ -65,6 +65,8 @@ import com.metrolist.music.ui.component.shimmer.TextPlaceholder
 import com.metrolist.music.ui.screens.settings.DarkMode
 import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
+import android.content.ClipData
+import android.content.ClipboardManager
 
 @Composable
 fun ShowMediaInfo(videoId: String) {
@@ -178,7 +180,9 @@ fun ShowMediaInfo(videoId: String) {
                                     interactionSource = remember { MutableInteractionSource() },
                                     indication = null,
                                     onClick = {
-                                        clipboardManager.setText(AnnotatedString(displayText))
+                                        // LocalClipboard API may not expose direct setText; use Android ClipboardManager
+                                        val cm = context.getSystemService(android.content.Context.CLIPBOARD_SERVICE) as ClipboardManager
+                                        cm.setPrimaryClip(ClipData.newPlainText("text", displayText))
                                         Toast.makeText(
                                             context,
                                             R.string.copied,
