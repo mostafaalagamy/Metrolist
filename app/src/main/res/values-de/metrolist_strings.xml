@@ -70,7 +70,6 @@
     <string name="minimum_playback_duration">Mindestspieldauer</string>
     <string name="not_logged_in_youtube">Nicht bei YouTube angemeldet</string>
     <string name="percentage_format">%d%%</string>
-    <string name="seek_forward">5 Sekunden vor</string>
     <string name="local_history">Lokal</string>
     <string name="dislike_all">Allen „Mag ich“ entfernen</string>
     <string name="similar_content">Ähnlicher Inhalt</string>
@@ -91,7 +90,6 @@
     <string name="no_title">Kein Titel</string>
     <string name="secondary_color_style">Sekundär</string>
     <string name="unknown_item_type">Unbekannter Typ</string>
-    <string name="seek_backward">5 Sekunden zurück</string>
     <string name="min_playback_duration_description">Die Mindestspieldauer, welche erreicht werden muss, bevor ein Song als „gehört“ gilt</string>
     <string name="unknown_artist">Unbekannter Künstler</string>
     <string name="years">Jahre</string>
