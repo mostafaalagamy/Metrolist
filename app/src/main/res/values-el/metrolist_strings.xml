@@ -93,8 +93,8 @@
     <string name="min_playback_duration_description">Η ελάχιστη ποσότητα ενός τραγουδιού που πρέπει να αναπαραχθεί πριν θεωρηθεί ότι \"αναπαρήχθη\"</string>
     <string name="percentage_format">%d%%</string>
     <string name="minimum_playback_duration">Ελάχιστη διάρκεια αναπαραγωγής</string>
-    <string name="clear_song_cache_dialog">  Είστε σίγουροι ότι θέλετε να διαγράψετε όλα τα τραγούδια που είναι στην κρυφή μνήμη;</string>
-    <string name="clear_downloads_dialog">  Είστε σίγουροι ότι θέλετε να διαγράψετε όλες τις λήψεις;</string>
+    <string name="clear_song_cache_dialog">Είστε σίγουροι ότι θέλετε να διαγράψετε όλα τα τραγούδια που είναι στην κρυφή μνήμη;</string>
+    <string name="clear_downloads_dialog">Είστε σίγουροι ότι θέλετε να διαγράψετε όλες τις λήψεις;</string>
     <string name="pause_remote_listen_history">Παύση κοινής χρήσης ιστορικού ακρόασης με το YouTube Music</string>
     <string name="not_logged_in_youtube">Δεν έχετε συνδεθεί στο YouTube</string>
     <string name="default_links">Άνοιγμα υποστηριζόμενων συνδέσμων</string>
@@ -150,4 +150,9 @@
     <string name="more_content">Περισσότερο περιεχόμενο</string>
     <string name="yt_sync">Αυτόματος συγχρονισμός με λογαριασμό</string>
     <string name="new_player_design">Νέο σχέδιο αναπαραγωγής μουσικής</string>
+    <string name="playlist_not_found_desc"></string>
+    <string name="empty_playlist"></string>
+    <string name="empty_playlist_desc"></string>
+    <string name="playlist_not_found"></string>
+    <string name="now_playing"></string>
 </resources>
