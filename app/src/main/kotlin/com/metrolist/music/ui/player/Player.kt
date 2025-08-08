@@ -481,16 +481,8 @@ fun BottomSheetPlayer(
                 MaterialTheme.colorScheme.surface
             }
             else -> {
-                // Default behavior for normal theme mode
-                if (useBlackBackground) {
-                    backgroundColor
-                } else {
-                    // Calculate transparency progress
-                    val progress = ((state.value - state.collapsedBound) / (state.expandedBound - state.collapsedBound))
-                        .coerceIn(0f, 1f)
-                    
-                    MaterialTheme.colorScheme.surfaceContainer.copy(alpha = progress)
-                }
+                // Same as blur/gradient - stable background without transparency
+                MaterialTheme.colorScheme.surface
             }
         },
         onDismiss = {

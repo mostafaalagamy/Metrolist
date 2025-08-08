@@ -459,15 +459,18 @@ fun LyricsScreen(
                         )
                     }
 
-                    // زر التشغيل/الإيقاف
-                    IconButton(onClick = { player.togglePlayPause() }) {
+                    // زر التشغيل/الإيقاف - تأثير ضغط أكبر
+                    IconButton(
+                        onClick = { player.togglePlayPause() },
+                        modifier = Modifier.size(64.dp)  // منطقة ضغط أكبر
+                    ) {
                         Icon(
                             painter = painterResource(
                                 if (isPlaying) R.drawable.pause else R.drawable.play
                             ),
                             contentDescription = if (isPlaying) "Pause" else "Play",
                             tint = textBackgroundColor,
-                            modifier = Modifier.size(48.dp)
+                            modifier = Modifier.size(48.dp)  // حجم الأيقونة يبقى كما هو
                         )
                     }
 
