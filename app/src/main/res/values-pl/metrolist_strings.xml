@@ -94,8 +94,6 @@
         <item quantity="many">%d razy</item>
         <item quantity="other">%d razy</item>
     </plurals>
-    <string name="seek_backward">5 sekund do tyłu</string>
-    <string name="seek_forward">5 sekund do przodu</string>
     <string name="player_buttons_style">Kolory przycisków odtwarzacza</string>
     <string name="secondary_color_style">Drugi</string>
     <string name="enable_swipe_thumbnail">Włącz przesunięcie, aby zmienić utwór</string>

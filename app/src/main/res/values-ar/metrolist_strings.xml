@@ -53,8 +53,6 @@
         <item quantity="many">%d ثانية</item>
         <item quantity="other">%d ثانية</item>
     </plurals>
-    <string name="seek_backward">للخلف 5 ثواني</string>
-    <string name="seek_forward">للأمام 5 ثواني</string>
     <string name="login_settings">إعدادات تسجيل الدخول</string>
     <string name="general_settings">الإعدادات العامة</string>
     <string name="player_background_style">نمط خلفية المشغل</string>
