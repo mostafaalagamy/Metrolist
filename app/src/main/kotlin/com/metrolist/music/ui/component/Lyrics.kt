@@ -584,7 +584,7 @@ fun Lyrics(
                     ) {
                         Text(
                             text = item.text,
-                            fontSize = if (index == displayedCurrentLineIndex && isSynced) 22.sp else 20.sp, // Highlight active line
+                            fontSize = if (index == displayedCurrentLineIndex && isSynced) 26.sp else 24.sp, // Larger text for better readability
                             color = if (index == displayedCurrentLineIndex && isSynced) {
                                 textColor // Full color for active line
                             } else {
@@ -603,7 +603,7 @@ fun Lyrics(
                             romanizedText?.let { romanized ->
                                 Text(
                                     text = romanized,
-                                    fontSize = 16.sp,
+                                    fontSize = 18.sp,
                                     color = textColor.copy(alpha = 0.8f),
                                     textAlign = when (lyricsTextPosition) {
                                         LyricsPosition.LEFT -> TextAlign.Left
@@ -620,30 +620,17 @@ fun Lyrics(
             }
         }
 
-        // Show selection buttons only when in selection mode
+        // Show selection buttons only when in selection mode - YouTube Music style
         if (isSelectionModeActive) {
             mediaMetadata?.let { metadata ->
-                Row(
+                // Center the share button like YouTube Music
+                Box(
                     modifier = Modifier
-                        .align(Alignment.BottomEnd)
-                        .padding(end = 12.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                        .align(Alignment.BottomCenter)
+                        .padding(bottom = 32.dp),
+                    contentAlignment = Alignment.Center
                 ) {
-                    // Cancel Selection Button
-                    IconButton(
-                        onClick = {
-                            isSelectionModeActive = false
-                            selectedIndices.clear()
-                        }
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.close),
-                            contentDescription = stringResource(R.string.cancel),
-                            tint = textColor
-                        )
-                    }
-                    Spacer(Modifier.width(8.dp))
-                    // Share Selected Button
+                    // YouTube Music style share button - larger and centered
                     IconButton(
                         onClick = {
                             if (selectedIndices.isNotEmpty()) {
@@ -664,12 +651,25 @@ fun Lyrics(
                                 selectedIndices.clear()
                             }
                         },
-                        enabled = selectedIndices.isNotEmpty()
+                        enabled = selectedIndices.isNotEmpty(),
+                        modifier = Modifier
+                            .size(56.dp)
+                            .background(
+                                color = if (selectedIndices.isNotEmpty()) 
+                                    MaterialTheme.colorScheme.primary.copy(alpha = 0.9f)
+                                else 
+                                    MaterialTheme.colorScheme.surface.copy(alpha = 0.3f),
+                                shape = CircleShape
+                            )
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.media3_icon_share),
                             contentDescription = stringResource(R.string.share_selected),
-                            tint = if (selectedIndices.isNotEmpty()) textColor else textColor.copy(alpha = 0.5f)
+                            tint = if (selectedIndices.isNotEmpty()) 
+                                Color.White 
+                            else 
+                                textColor.copy(alpha = 0.5f),
+                            modifier = Modifier.size(28.dp)
                         )
                     }
                 }
