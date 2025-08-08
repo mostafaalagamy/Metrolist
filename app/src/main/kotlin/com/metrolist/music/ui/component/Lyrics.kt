@@ -410,21 +410,23 @@ fun Lyrics(
             } else if ((lastPreviewTime == 0L || currentLineIndex != previousLineIndex) && scrollLyrics) {
                 val visibleItemsInfo = lazyListState.layoutInfo.visibleItemsInfo
                 val isCurrentLineVisible = visibleItemsInfo.any { it.index == currentLineIndex }
-                val isPreviousLineVisible = visibleItemsInfo.any { it.index == previousLineIndex }
-
-                if (isCurrentLineVisible && isPreviousLineVisible) {
+                
+                // Always perform smooth scroll when line changes, regardless of visibility
+                if (currentLineIndex != previousLineIndex) {
+                    // Use professional smooth animation for ALL line transitions
+                    performSmoothGroupScroll(currentLineIndex, APPLE_MUSIC_AUTO_SCROLL_DURATION.toInt())
+                } else if (isCurrentLineVisible) {
+                    // If same line but we need to adjust position
                     val viewportStartOffset = lazyListState.layoutInfo.viewportStartOffset
                     val viewportEndOffset = lazyListState.layoutInfo.viewportEndOffset
                     val currentLineOffset = visibleItemsInfo.find { it.index == currentLineIndex }?.offset ?: 0
-                    val previousLineOffset = visibleItemsInfo.find { it.index == previousLineIndex }?.offset ?: 0
 
                     val centerRangeStart = viewportStartOffset + (viewportEndOffset - viewportStartOffset) / 2
                     val centerRangeEnd = viewportEndOffset - (viewportEndOffset - viewportStartOffset) / 8
 
-                    if (currentLineOffset in centerRangeStart..centerRangeEnd ||
-                        previousLineOffset in centerRangeStart..centerRangeEnd) {
-                        // Smooth auto-scroll with Apple Music-style timing (800ms)
-                                                                         performSmoothGroupScroll(currentLineIndex, APPLE_MUSIC_AUTO_SCROLL_DURATION.toInt())
+                    if (currentLineOffset !in centerRangeStart..centerRangeEnd) {
+                        // Gentle repositioning animation
+                        performSmoothGroupScroll(currentLineIndex, APPLE_MUSIC_AUTO_SCROLL_DURATION.toInt())
                     }
                 }
             }
@@ -1023,7 +1025,7 @@ fun Lyrics(
 }
 
 // Professional group animation constants inspired by Apple Music
-private const val APPLE_MUSIC_AUTO_SCROLL_DURATION = 1000L // Slower and more graceful for group movement
+private const val APPLE_MUSIC_AUTO_SCROLL_DURATION = 1200L // Even slower for graceful group movement especially at edges
 private const val APPLE_MUSIC_INITIAL_SCROLL_DURATION = 700L // Smooth initial positioning  
 private const val APPLE_MUSIC_SEEK_DURATION = 500L // Comfortable for user interaction
 private const val APPLE_MUSIC_FAST_SEEK_DURATION = 350L // Responsive for slider seeking
