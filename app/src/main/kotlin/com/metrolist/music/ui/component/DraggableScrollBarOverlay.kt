@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -35,20 +36,25 @@ import kotlin.math.max
 fun DraggableScrollbar(
     scrollState: LazyListState,
     modifier: Modifier = Modifier,
-    thumbColor: Color = Color.Gray.copy(alpha = 0.7f),
-    thumbColorActive: Color = MaterialTheme.colorScheme.primary,
+    thumbColor: Color = LocalContentColor.current.copy(alpha = 0.8f),
+    thumbColorActive: Color = MaterialTheme.colorScheme.secondary,
     thumbHeight: Dp = 72.dp,
     thumbWidth: Dp = 8.dp,
     thumbCornerRadius: Dp = 4.dp,
-    trackWidth: Dp = 32.dp,
+    trackWidth: Dp = 24.dp,
     minItemCountForScroll: Int = 15,
-    minScrollRangeForDrag: Int = 4,
+    minScrollRangeForDrag: Int = 1,
     headerItems: Int = 0    // <== Pass your header count here
 ) {
     val density = LocalDensity.current
     val coroutineScope = rememberCoroutineScope()
     var isDragging by remember { mutableStateOf(false) }
     val animatedThumbY = remember { Animatable(0f) }
+
+    // Observe whether the list is being scrolled by the user to snap without lag
+    val isUserScrolling by remember(scrollState) {
+        derivedStateOf { scrollState.isScrollInProgress }
+    }
 
     val isScrollable by remember {
         derivedStateOf {
@@ -88,20 +94,30 @@ fun DraggableScrollbar(
 
                     if (maxScrollIndex > minScrollRangeForDrag) {
                         val touchProgress = (change.position.y / size.height).coerceIn(0f, 1f)
-                        val targetFractionalIndex = touchProgress * maxScrollIndex
-                        val targetIndex = headerItems + targetFractionalIndex.toInt()
-                        val targetFraction = targetFractionalIndex - targetFractionalIndex.toInt()
-
-                        val avgItemHeightPx = visibleItems.first().size
-                        val targetOffset = (targetFraction * avgItemHeightPx).toInt()
-                        val clampedIndex =
-                            targetIndex.coerceIn(headerItems, layoutInfo.totalItemsCount - 1)
-
-                        if (clampedIndex != lastTargetIndex || targetOffset != lastTargetOffset) {
-                            lastTargetIndex = clampedIndex
-                            lastTargetOffset = targetOffset
+                        // If the user drags to the very bottom, force-jump to the final item
+                        if (touchProgress >= 0.999f) {
+                            lastTargetIndex = layoutInfo.totalItemsCount - 1
+                            lastTargetOffset = 0
                             coroutineScope.launch {
-                                scrollState.scrollToItem(clampedIndex)
+                                scrollState.scrollToItem(lastTargetIndex, 0)
+                            }
+                        } else {
+                            val targetFractionalIndex = touchProgress * maxScrollIndex
+                            val targetIndex = headerItems + targetFractionalIndex.toInt()
+                            val targetFraction = targetFractionalIndex - targetFractionalIndex.toInt()
+
+                            val avgItemHeightPx = visibleItems.first().size
+                            val targetOffset = (targetFraction * avgItemHeightPx).toInt()
+                            val clampedIndex =
+                                targetIndex.coerceIn(headerItems, layoutInfo.totalItemsCount - 1)
+
+                            if (clampedIndex != lastTargetIndex || targetOffset != lastTargetOffset) {
+                                lastTargetIndex = clampedIndex
+                                lastTargetOffset = targetOffset
+                                coroutineScope.launch {
+                                    // Use offset so dragging can reach exact end positions
+                                    scrollState.scrollToItem(clampedIndex, targetOffset)
+                                }
                             }
                         }
                     }
@@ -136,8 +152,9 @@ fun DraggableScrollbar(
             }
         }
 
-        LaunchedEffect(targetThumbY, isDragging) {
-            if (isDragging) {
+        LaunchedEffect(targetThumbY, isDragging, isUserScrolling) {
+            if (isDragging || isUserScrolling) {
+                // Snap while the user is interacting (dragging the thumb or manually scrolling)
                 animatedThumbY.snapTo(targetThumbY)
             } else {
                 animatedThumbY.animateTo(
