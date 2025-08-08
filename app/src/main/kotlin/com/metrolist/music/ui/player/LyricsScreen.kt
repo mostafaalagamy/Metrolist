@@ -5,6 +5,8 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -260,7 +262,13 @@ fun LyricsScreen(
                     AnimatedContent(
                         targetState = mediaMetadata.thumbnailUrl,
                         transitionSpec = {
-                            fadeIn(tween(500)) togetherWith fadeOut(tween(500))
+                            slideInVertically(
+                                animationSpec = tween(300),
+                                initialOffsetY = { it }
+                            ) togetherWith slideOutVertically(
+                                animationSpec = tween(300),
+                                targetOffsetY = { it }
+                            )
                         }
                     ) { thumbnailUrl ->
                         if (thumbnailUrl != null) {
@@ -300,7 +308,13 @@ fun LyricsScreen(
                     AnimatedContent(
                         targetState = gradientColors,
                         transitionSpec = {
-                            fadeIn(tween(500)) togetherWith fadeOut(tween(500))
+                            slideInVertically(
+                                animationSpec = tween(300),
+                                initialOffsetY = { it }
+                            ) togetherWith slideOutVertically(
+                                animationSpec = tween(300),
+                                targetOffsetY = { it }
+                            )
                         }
                     ) { colors ->
                         if (colors.isNotEmpty()) {
