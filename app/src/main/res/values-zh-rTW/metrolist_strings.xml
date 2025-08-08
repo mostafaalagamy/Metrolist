@@ -22,14 +22,12 @@
     <string name="lyrics">歌詞</string>
     <string name="already_in_playlist">已在播放清單中:</string>
     <plurals name="n_element">
-        <item quantity="one">%d 個項目</item>
         <item quantity="other">%d 個項目</item>
     </plurals>
     <plurals name="n_time">
-        <item quantity="one">%d 次</item>
         <item quantity="other">%d 次</item>
     </plurals>
-    <string name="seek_backward">向後 5 秒 </string>
+    <string name="seek_backward">向後 5 秒</string>
     <string name="seek_forward">向前 5 秒</string>
     <string name="similar_content">相似內容</string>
     <string name="login_settings">登入設定</string>
@@ -83,7 +81,6 @@
     <string name="top_length">我的熱門清單長度</string>
     <string name="history_duration">加入歷史紀錄的播放時長</string>
     <plurals name="seconds">
-        <item quantity="one">1 秒</item>
         <item quantity="other">%d 秒</item>
     </plurals>
     <string name="lyrics_auto_scroll">自動滾動歌詞</string>
@@ -149,4 +146,10 @@
     <string name="disable">禁用</string>
     <string name="subscribe">訂閱</string>
     <string name="subscribed">已訂閱</string>
+    <string name="playlist_not_found_desc"></string>
+    <string name="empty_playlist"></string>
+    <string name="empty_playlist_desc"></string>
+    <string name="new_mini_player_design"></string>
+    <string name="playlist_not_found"></string>
+    <string name="now_playing"></string>
 </resources>
