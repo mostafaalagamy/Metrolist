@@ -7,7 +7,6 @@
     <string name="share_as_image">اشتراک گذاری به عنوان تصویر</string>
     <string name="subscribers">دنبال کننده‌ها</string>
     <string name="auto_download_on_like_desc">دریافت خودکار موسیقی‌ها زمانی که آنها را پسندیدید</string>
-    <string name="seek_forward">۵ ثانیه جلو رفتن</string>
     <string name="follow_theme">پیروی از پوسته</string>
     <string name="player_background_style">سبک پس‌زمینه پخش‌کننده</string>
     <string name="login_settings">تنظیمات ورود</string>
@@ -29,7 +28,6 @@
     <string name="background_color">رنگ پس‌زمینه</string>
     <string name="lyrics">متن آهنگ</string>
     <string name="already_in_playlist">همین الان در لیست پخش است:</string>
-    <string name="seek_backward">۵ ثانیه برگشت به عقب</string>
     <string name="similar_content">محتوای مشابه</string>
     <plurals name="n_time">
         <item quantity="one">%d بار</item>

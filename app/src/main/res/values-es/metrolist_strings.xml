@@ -46,8 +46,6 @@
         <item quantity="many">%d veces</item>
         <item quantity="other">%d veces</item>
     </plurals>
-    <string name="seek_backward">Retroceder 5 segundos</string>
-    <string name="seek_forward">Avanzar 5 segundos</string>
     <string name="similar_content">Contenido similar</string>
     <string name="login_settings">Ajustes de inicio de sesión</string>
     <string name="general_settings">Ajustes generales</string>

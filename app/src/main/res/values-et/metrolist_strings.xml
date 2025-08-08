@@ -61,8 +61,6 @@
     <string name="added_to_play_next">Lisatud esitamiseks järgmisena</string>
     <string name="added_to_queue">Lisatud esitusjärjekorda</string>
     <string name="remove_from_cache">Kustuta puhverdatud andmetest</string>
-    <string name="seek_backward">5 sekundit tagasi</string>
-    <string name="seek_forward">5 sekundit edasi</string>
     <string name="similar_content">Sarnane sisu</string>
     <string name="login_settings">Sisselogimise seadistused</string>
     <string name="general_settings">Üldised seadistused</string>
