@@ -14,15 +14,12 @@ import com.metrolist.music.db.entities.SongEntity
 import com.metrolist.music.models.toMediaMetadata
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDateTime
-import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -66,25 +63,24 @@ class SyncUtils @Inject constructor(
     }
 
     suspend fun syncLibrarySongs() = coroutineScope {
-        // Get remote songs from both liked videos and uploaded tracks
-        val remoteSongs = getRemoteData<SongItem>("FEmusic_liked_videos", "FEmusic_library_privately_owned_tracks")
-        val remoteIds = remoteSongs.map { it.id }.toSet()
-        val localSongs = database.songsByNameAsc().first()
+        YouTube.library("FEmusic_liked_videos").completed().onSuccess { page ->
+            val remoteSongs = page.items.filterIsInstance<SongItem>().reversed()
+            val remoteIds = remoteSongs.map { it.id }.toSet()
+            val localSongs = database.songsByNameAsc().first()
 
-        // Remove songs that are no longer in remote
-        localSongs.filterNot { it.id in remoteIds }
-            .forEach { database.update(it.song.toggleLibrary()) }
+            localSongs.filterNot { it.id in remoteIds }
+                .forEach { database.update(it.song.toggleLibrary()) }
 
-        // Add or update songs from remote
-        remoteSongs.forEach { song ->
-            launch {
-                val dbSong = database.song(song.id).firstOrNull()
-                database.transaction {
-                    if (dbSong == null) {
-                        // Use proper MediaMetadata insertion to save artist information
-                        insert(song.toMediaMetadata()) { it.toggleLibrary() }
-                    } else if (dbSong.song.inLibrary == null) {
-                        update(dbSong.song.toggleLibrary())
+            remoteSongs.forEach { song ->
+                launch {
+                    val dbSong = database.song(song.id).firstOrNull()
+                    database.transaction {
+                        if (dbSong == null) {
+                            // Use proper MediaMetadata insertion to save artist information
+                            insert(song.toMediaMetadata()) { it.toggleLibrary() }
+                        } else if (dbSong.song.inLibrary == null) {
+                            update(dbSong.song.toggleLibrary())
+                        }
                     }
                 }
             }
@@ -119,46 +115,31 @@ class SyncUtils @Inject constructor(
     }
 
     suspend fun syncArtistsSubscriptions() = coroutineScope {
-        // Get remote artists from both liked artists and uploaded artists
-        val likedArtists = getRemoteData<ArtistItem>(
-            "FEmusic_library_corpus_artists",
-            "FEmusic_library_privately_owned_artists"
-        )
-        val trackArtists = getRemoteData<ArtistItem>(
-            "FEmusic_library_corpus_track_artists", 
-            "FEmusic_library_privately_owned_artists"
-        )
-        val remoteArtists = mutableListOf<ArtistItem>().apply {
-            addAll(likedArtists)
-            addAll(trackArtists.filterNot { trackArtist ->
-                likedArtists.any { it.id == trackArtist.id }
-            })
-        }
-        
-        val remoteIds = remoteArtists.map { it.id }.toSet()
-        val localArtists = database.artistsBookmarkedByNameAsc().first()
+        YouTube.library("FEmusic_library_corpus_artists").completed().onSuccess { page ->
+            val remoteArtists = page.items.filterIsInstance<ArtistItem>()
+            val remoteIds = remoteArtists.map { it.id }.toSet()
+            val localArtists = database.artistsBookmarkedByNameAsc().first()
 
-        localArtists.filterNot { it.id in remoteIds }
-            .forEach { database.update(it.artist.localToggleLike()) }
+            localArtists.filterNot { it.id in remoteIds }
+                .forEach { database.update(it.artist.localToggleLike()) }
 
-        remoteArtists.forEach { artist ->
-            launch {
-                val dbArtist = database.artist(artist.id).firstOrNull()
-                val isLikedArtist = likedArtists.contains(artist)
-                
-                database.transaction {
-                    if (dbArtist == null) {
-                        insert(
-                            ArtistEntity(
-                                id = artist.id,
-                                name = artist.title,
-                                thumbnailUrl = artist.thumbnail,
-                                channelId = artist.channelId,
-                                bookmarkedAt = if (isLikedArtist) LocalDateTime.now() else null
+            remoteArtists.forEach { artist ->
+                launch {
+                    val dbArtist = database.artist(artist.id).firstOrNull()
+                    database.transaction {
+                        if (dbArtist == null) {
+                            insert(
+                                ArtistEntity(
+                                    id = artist.id,
+                                    name = artist.title,
+                                    thumbnailUrl = artist.thumbnail,
+                                    channelId = artist.channelId,
+                                    bookmarkedAt = LocalDateTime.now()
+                                )
                             )
-                        )
-                    } else if (dbArtist.artist.bookmarkedAt == null && isLikedArtist) {
-                        update(dbArtist.artist.localToggleLike())
+                        } else if (dbArtist.artist.bookmarkedAt == null) {
+                            update(dbArtist.artist.localToggleLike())
+                        }
                     }
                 }
             }
@@ -234,27 +215,5 @@ class SyncUtils @Inject constructor(
                 }
             }
         }
-    }
-
-    private suspend inline fun <reified T> getRemoteData(libraryId: String, uploadsId: String): MutableList<T> {
-        val browseIds = mapOf(
-            libraryId to 0,
-            uploadsId to 1
-        )
-
-        val remote = mutableListOf<T>()
-        coroutineScope {
-            val fetchJobs = browseIds.map { (browseId, tab) ->
-                async {
-                    YouTube.library(browseId, tab).completed().onSuccess { page ->
-                        val data = page.items.filterIsInstance<T>().reversed()
-                        synchronized(remote) { remote.addAll(data) }
-                    }
-                }
-            }
-            fetchJobs.awaitAll()
-        }
-
-        return remote
     }
 }
