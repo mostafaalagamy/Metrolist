@@ -627,7 +627,7 @@ fun Lyrics(
             Box(
                 modifier = Modifier
                     .align(Alignment.TopEnd)
-                    .padding(top = 16.dp, end = 24.dp) // Aligned with header padding
+                    .padding(top = 16.dp, end = 32.dp) // Moved more to the right
                     .size(32.dp)
                     .background(
                         color = Color.Black.copy(alpha = 0.3f), // Match more button style
@@ -662,9 +662,9 @@ fun Lyrics(
                         modifier = Modifier
                             .background(
                                 color = if (selectedIndices.isNotEmpty()) 
-                                    Color.Black.copy(alpha = 0.3f) // Match player controls background
+                                    Color.White.copy(alpha = 0.9f) // White background when active
                                 else 
-                                    Color.Black.copy(alpha = 0.1f),
+                                    Color.White.copy(alpha = 0.5f), // Lighter white when inactive
                                 shape = RoundedCornerShape(24.dp)
                             )
                             .clickable(enabled = selectedIndices.isNotEmpty()) {
@@ -693,12 +693,12 @@ fun Lyrics(
                         Icon(
                             painter = painterResource(id = R.drawable.share),
                             contentDescription = stringResource(R.string.share_selected),
-                            tint = Color.White, // Always white like player controls
+                            tint = Color.Black, // Black icon on white background
                             modifier = Modifier.size(20.dp)
                         )
                         Text(
                             text = stringResource(R.string.share),
-                            color = Color.White, // Always white like player controls
+                            color = Color.Black, // Black text on white background
                             style = MaterialTheme.typography.bodyMedium,
                             fontWeight = FontWeight.Medium
                         )
