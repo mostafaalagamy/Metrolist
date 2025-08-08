@@ -156,4 +156,9 @@
     </plurals>
     <string name="explore">Razišči</string>
     <string name="new_mini_player_design">Nova oblika mini predvajalnika</string>
+    <string name="playlist_not_found_desc"></string>
+    <string name="empty_playlist"></string>
+    <string name="empty_playlist_desc"></string>
+    <string name="playlist_not_found"></string>
+    <string name="now_playing"></string>
 </resources>
