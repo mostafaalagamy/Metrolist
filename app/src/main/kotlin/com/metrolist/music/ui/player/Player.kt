@@ -1251,19 +1251,12 @@ fun BottomSheetPlayer(
                     targetOffsetY = { it }
                 )
             ) {
-                // استخدام Surface لجعل الشاشة طبقة منفصلة تماماً تحظر التفاعل
-                Surface(
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    color = Color.Transparent
-                ) {
-                    LyricsScreen(
-                        mediaMetadata = metadata,
-                        onBackClick = { 
-                            showLyricsScreen = false 
-                        }
-                    )
-                }
+                LyricsScreen(
+                    mediaMetadata = metadata,
+                    onBackClick = { 
+                        showLyricsScreen = false 
+                    }
+                )
             }
         }
     }
