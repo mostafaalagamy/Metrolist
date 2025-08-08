@@ -1143,6 +1143,15 @@ fun BottomSheetPlayer(
                     }
                 }
             }
+            
+            // طبقة سوداء فوق الخلفية عند تفعيل الكلمات
+            if (playerBackground != PlayerBackgroundStyle.DEFAULT && showLyricsScreen) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Black.copy(alpha = 0.3f))
+                )
+            }
 
         }
 
