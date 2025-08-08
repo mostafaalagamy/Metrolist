@@ -14,6 +14,8 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.animation.with
 import androidx.compose.foundation.Image
@@ -53,6 +55,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -121,7 +124,6 @@ import com.metrolist.music.ui.theme.PlayerColorExtractor
 import com.metrolist.music.ui.theme.PlayerSliderColors
 import com.metrolist.music.constants.PlayerHorizontalPadding
 import com.metrolist.music.constants.QueuePeekHeight
-import com.metrolist.music.constants.ShowLyricsKey
 import com.metrolist.music.constants.SliderStyle
 import com.metrolist.music.constants.SliderStyleKey
 import com.metrolist.music.extensions.togglePlayPause
@@ -226,13 +228,14 @@ fun BottomSheetPlayer(
     val isPlaying by playerConnection.isPlaying.collectAsState()
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
     val currentSong by playerConnection.currentSong.collectAsState(initial = null)
+    val currentLyrics by playerConnection.currentLyrics.collectAsState(initial = null)
     val automix by playerConnection.service.automixItems.collectAsState()
     val repeatMode by playerConnection.repeatMode.collectAsState()
 
     val canSkipPrevious by playerConnection.canSkipPrevious.collectAsState()
     val canSkipNext by playerConnection.canSkipNext.collectAsState()
 
-    var showLyrics by rememberPreference(ShowLyricsKey, defaultValue = false)
+    var showLyricsScreen by remember { mutableStateOf(false) }
 
     val sliderStyle by rememberEnumPreference(SliderStyleKey, SliderStyle.DEFAULT)
 
@@ -477,19 +480,38 @@ fun BottomSheetPlayer(
         modifier = modifier,
         backgroundColor = when (playerBackground) {
             PlayerBackgroundStyle.BLUR, PlayerBackgroundStyle.GRADIENT -> {
-                // Use transparent background for blur/gradient modes
-                Color.Transparent
+                // Apply same enhanced fade logic to blur/gradient backgrounds
+                val progress = ((state.value - state.collapsedBound) / (state.expandedBound - state.collapsedBound))
+                    .coerceIn(0f, 1f)
+                
+                // Only start fading when very close to dismissal (last 20%)
+                val fadeProgress = if (progress < 0.2f) {
+                    ((0.2f - progress) / 0.2f).coerceIn(0f, 1f)
+                } else {
+                    0f
+                }
+                
+                MaterialTheme.colorScheme.surface.copy(alpha = 1f - fadeProgress)
             }
             else -> {
-                // Default behavior for normal theme mode
-                if (useBlackBackground) {
-                    backgroundColor
+                // Enhanced background - stable until last 20% of drag (both normal and pure black)
+                // Calculate progress for fade effect
+                val progress = ((state.value - state.collapsedBound) / (state.expandedBound - state.collapsedBound))
+                    .coerceIn(0f, 1f)
+                
+                // Only start fading when very close to dismissal (last 20%)
+                val fadeProgress = if (progress < 0.2f) {
+                    ((0.2f - progress) / 0.2f).coerceIn(0f, 1f)
                 } else {
-                    // Calculate transparency progress
-                    val progress = ((state.value - state.collapsedBound) / (state.expandedBound - state.collapsedBound))
-                        .coerceIn(0f, 1f)
-                    
-                    MaterialTheme.colorScheme.surfaceContainer.copy(alpha = progress)
+                    0f
+                }
+                
+                if (useBlackBackground) {
+                    // Apply same logic to pure black background
+                    Color.Black.copy(alpha = 1f - fadeProgress)
+                } else {
+                    // Apply same logic to normal theme
+                    MaterialTheme.colorScheme.surface.copy(alpha = 1f - fadeProgress)
                 }
             }
         },
@@ -1151,13 +1173,7 @@ fun BottomSheetPlayer(
                     }
                 }
             }
-            if (playerBackground != PlayerBackgroundStyle.DEFAULT && showLyrics) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(Color.Black.copy(alpha = 0.3f))
-                )
-            }
+
         }
 
 // distance
@@ -1178,7 +1194,8 @@ fun BottomSheetPlayer(
                         val thumbnailSize = (screenWidth * 0.4).dp
                         Thumbnail(
                             sliderPositionProvider = { sliderPosition },
-                            modifier = Modifier.size(thumbnailSize)
+                            modifier = Modifier.size(thumbnailSize),
+                            isPlayerExpanded = state.isExpanded // Pass player state
                         )
                     }
                     Column(
@@ -1214,6 +1231,7 @@ fun BottomSheetPlayer(
                         Thumbnail(
                             sliderPositionProvider = { sliderPosition },
                             modifier = Modifier.nestedScroll(state.preUpPostDownNestedScrollConnection),
+                            isPlayerExpanded = state.isExpanded // Pass player state
                         )
                     }
 
@@ -1240,7 +1258,35 @@ fun BottomSheetPlayer(
             TextBackgroundColor = TextBackgroundColor,
             textButtonColor = textButtonColor,
             iconButtonColor = iconButtonColor,
+            onShowLyrics = { showLyricsScreen = true },
             pureBlack = pureBlack,
         )
+        
+        // Lyrics Screen with animation
+        mediaMetadata?.let { metadata ->
+            AnimatedVisibility(
+                visible = showLyricsScreen,
+                enter = slideInVertically(
+                    animationSpec = tween(300),
+                    initialOffsetY = { it }
+                ),
+                exit = slideOutVertically(
+                    animationSpec = tween(300),
+                    targetOffsetY = { it }
+                )
+            ) {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.surface
+                ) {
+                    LyricsScreen(
+                        mediaMetadata = metadata,
+                        onBackClick = { 
+                            showLyricsScreen = false 
+                        }
+                    )
+                }
+            }
+        }
     }
 }

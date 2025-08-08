@@ -216,6 +216,4 @@ class SyncUtils @Inject constructor(
             }
         }
     }
-
-
 }

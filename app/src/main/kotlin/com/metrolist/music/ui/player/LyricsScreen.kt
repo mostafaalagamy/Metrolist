@@ -163,8 +163,8 @@ fun LyricsScreen(
                         .memoryCacheKey("gradient_${mediaMetadata.id}")
                         .build()
 
-                    val result = runCatching { 
-                        context.imageLoader.execute(request).image 
+                    val result = runCatching {
+                        context.imageLoader.execute(request).image
                     }.getOrNull()
                     
                     if (result != null) {
