@@ -6,10 +6,7 @@ import android.content.res.Configuration
 import android.os.Build
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.core.EaseInOutQuart
-import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.AnimationVector1D
+
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -278,7 +275,6 @@ fun Lyrics(
     val lazyListState = rememberLazyListState()
     
     // Professional animation states for smooth Apple Music-style transitions
-    val scrollAnimatable = remember { Animatable(0f) }
     var isAnimating by remember { mutableStateOf(false) }
 
     // Define max selection limit
@@ -377,51 +373,8 @@ fun Lyrics(
                 val screenCenter = with(density) { (maxHeight / 2).toPx().toInt() }
                 val targetOffset = kotlin.math.max(0, screenCenter - lineHeight)
                 
-                // Get current scroll position for smooth interpolation
-                val currentFirstVisibleIndex = lazyListState.firstVisibleItemIndex
-                val currentScrollOffset = lazyListState.firstVisibleItemScrollOffset
-                
-                // Create a custom animation loop for smooth page scrolling
-                val startTime = System.currentTimeMillis()
-                val animationDuration = duration.toLong()
-                
-                while (System.currentTimeMillis() - startTime < animationDuration) {
-                    val elapsed = System.currentTimeMillis() - startTime
-                    val progress = (elapsed.toFloat() / animationDuration.toFloat()).coerceIn(0f, 1f)
-                    
-                    // Apply easing curve (simplified EaseInOutQuart)
-                    val easedProgress = if (progress < 0.5f) {
-                        8 * progress * progress * progress * progress
-                    } else {
-                        1 - 8 * (1 - progress) * (1 - progress) * (1 - progress) * (1 - progress)
-                    }
-                    
-                    // Smooth interpolation between current and target positions
-                    val interpolatedIndex = if (currentFirstVisibleIndex != targetIndex) {
-                        (currentFirstVisibleIndex + (targetIndex - currentFirstVisibleIndex) * easedProgress).toInt()
-                            .coerceIn(0, kotlin.math.max(currentFirstVisibleIndex, targetIndex))
-                    } else {
-                        targetIndex
-                    }
-                    
-                    val interpolatedOffset = if (currentScrollOffset != targetOffset) {
-                        (currentScrollOffset + (targetOffset - currentScrollOffset) * easedProgress).toInt()
-                    } else {
-                        targetOffset
-                    }
-                    
-                    // Apply gradual scroll during animation
-                    lazyListState.scrollToItem(
-                        index = interpolatedIndex,
-                        scrollOffset = interpolatedOffset
-                    )
-                    
-                    // Small delay for smooth frame rate
-                    delay(16) // ~60fps
-                }
-                
-                // Final position with exact target
-                lazyListState.scrollToItem(
+                // Use native Compose animation for butter-smooth scrolling
+                lazyListState.animateScrollToItem(
                     index = targetIndex,
                     scrollOffset = targetOffset
                 )
@@ -559,16 +512,9 @@ fun Lyrics(
                                                     (if (landscapeOffset) 16.dp.toPx() else 20.dp.toPx()).toInt() * count
                                                 }
                                         
-                                        // Smooth seek animation (faster than auto-scroll but smoother than instant)
-                                        scrollAnimatable.animateTo(
-                                            targetValue = index.toFloat(),
-                                            animationSpec = tween(
-                                                durationMillis = APPLE_MUSIC_SEEK_DURATION.toInt(), // Medium speed for user interaction
-                                                easing = EaseInOutQuart
-                                            )
-                                        )
-                                        
-                                        lazyListState.animateScrollToItem(index, targetOffset)
+                                        // Smooth seek animation to center the clicked line
+                                        val centerTargetIndex = kotlin.math.max(0, index - 1)
+                                        lazyListState.animateScrollToItem(centerTargetIndex, targetOffset)
                                     }
                                     lastPreviewTime = 0L
                                 }
@@ -1049,10 +995,10 @@ fun Lyrics(
 }
 
 // Professional page animation constants inspired by Apple Music
-private const val APPLE_MUSIC_AUTO_SCROLL_DURATION = 1500L // Very slow for graceful page movement
-private const val APPLE_MUSIC_INITIAL_SCROLL_DURATION = 800L // Smooth initial page positioning  
-private const val APPLE_MUSIC_SEEK_DURATION = 600L // Comfortable page interaction
-private const val APPLE_MUSIC_FAST_SEEK_DURATION = 400L // Responsive page seeking
+private const val APPLE_MUSIC_AUTO_SCROLL_DURATION = 800L // Smooth auto-scroll
+private const val APPLE_MUSIC_INITIAL_SCROLL_DURATION = 600L // Quick initial positioning
+private const val APPLE_MUSIC_SEEK_DURATION = 400L // Fast user interaction
+private const val APPLE_MUSIC_FAST_SEEK_DURATION = 300L // Very responsive seeking
 
 // Lyrics constants
 val LyricsPreviewTime = 2.seconds
