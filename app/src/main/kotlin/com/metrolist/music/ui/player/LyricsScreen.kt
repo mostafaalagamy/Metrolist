@@ -327,40 +327,7 @@ fun LyricsScreen(
 
                 Spacer(modifier = Modifier.width(12.dp))
 
-                // أزرار الهيدر
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    // زر X للإغلاق (يظهر فقط في وضع التحديد)
-                    // TODO: سيتم ربطه بوضع التحديد لاحقاً
-                    Box(
-                        modifier = Modifier
-                            .size(32.dp)
-                            .background(
-                                color = icBackgroundColor.copy(alpha = 0.3f),
-                                shape = CircleShape
-                            )
-                            .clickable(
-                                interactionSource = remember { MutableInteractionSource() },
-                                indication = ripple(
-                                    bounded = true,
-                                    radius = 16.dp
-                                )
-                            ) {
-                                // TODO: Toggle selection mode off
-                            },
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.close),
-                            contentDescription = "Close selection",
-                            tint = textBackgroundColor,
-                            modifier = Modifier.size(18.dp)
-                        )
-                    }
-
-                    // زر المزيد مع خلفية دائرية وتأثير ضغط دائري
+                // زر المزيد مع خلفية دائرية وتأثير ضغط دائري
                     Box(
                     modifier = Modifier
                         .size(32.dp)
@@ -544,9 +511,8 @@ fun LyricsScreen(
                         contentDescription = "Close",
                         tint = textBackgroundColor,
                         modifier = Modifier.size(24.dp)
-                    )
+                                            )
+                    }
                 }
             }
-        }
-    }
 }
