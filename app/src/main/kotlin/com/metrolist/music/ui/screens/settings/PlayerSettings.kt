@@ -48,6 +48,7 @@ import com.metrolist.music.constants.SimilarContent
 import com.metrolist.music.constants.SkipSilenceKey
 import com.metrolist.music.constants.StopMusicOnTaskClearKey
 import com.metrolist.music.constants.HistoryDuration
+import com.metrolist.music.constants.SeekExtraSeconds
 import com.metrolist.music.ui.component.EnumListPreference
 import com.metrolist.music.ui.component.IconButton
 import com.metrolist.music.ui.component.PreferenceGroupTitle
@@ -80,6 +81,12 @@ fun PlayerSettings(
         AudioNormalizationKey,
         defaultValue = true
     )
+
+    val (seekExtraSeconds, onSeekExtraSeconds) = rememberPreference(
+        SeekExtraSeconds,
+        defaultValue = false
+    )
+
     val (autoLoadMore, onAutoLoadMoreChange) = rememberPreference(
         AutoLoadMoreKey,
         defaultValue = true
@@ -155,6 +162,14 @@ fun PlayerSettings(
             icon = { Icon(painterResource(R.drawable.volume_up), null) },
             checked = audioNormalization,
             onCheckedChange = onAudioNormalizationChange
+        )
+
+        SwitchPreference(
+            title = { Text(stringResource(R.string.seek_seconds_addup)) },
+            description = stringResource(R.string.seek_seconds_addup_description),
+            icon = { Icon(painterResource(R.drawable.arrow_forward), null) },
+            checked = seekExtraSeconds,
+            onCheckedChange = onSeekExtraSeconds
         )
 
         PreferenceGroupTitle(

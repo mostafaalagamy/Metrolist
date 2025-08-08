@@ -284,6 +284,8 @@
     <string name="auto_load_more_desc">Automatically add more songs when the end of the queue is reached, if possible</string>
     <string name="skip_silence">Skip silence</string>
     <string name="audio_normalization">Audio normalization</string>
+    <string name="seek_seconds_addup">Progressive seek</string>
+    <string name="seek_seconds_addup_description">If enabled,  Adds up 5 extra seconds incrementally on each seek skip</string>
     <string name="auto_skip_next_on_error">Auto skip to next song when error occurs</string>
     <string name="auto_skip_next_on_error_desc">Ensure your continuous playback experience</string>
     <string name="stop_music_on_task_clear">Stop music on task clear</string>

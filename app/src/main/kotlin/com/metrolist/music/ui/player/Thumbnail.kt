@@ -37,6 +37,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -67,6 +68,7 @@ import com.metrolist.music.R
 import com.metrolist.music.constants.PlayerBackgroundStyle
 import com.metrolist.music.constants.PlayerBackgroundStyleKey
 import com.metrolist.music.constants.PlayerHorizontalPadding
+import com.metrolist.music.constants.SeekExtraSeconds
 import com.metrolist.music.constants.SwipeThumbnailKey
 import com.metrolist.music.constants.ThumbnailCornerRadius
 import com.metrolist.music.utils.rememberEnumPreference
@@ -241,7 +243,6 @@ fun Thumbnail(
                         style = MaterialTheme.typography.titleMedium,
                         color = textBackgroundColor
                     )
-                    
                     // Show album title or queue title
                     val playingFrom = queueTitle ?: mediaMetadata?.album?.title
                     if (!playingFrom.isNullOrBlank()) {
@@ -278,6 +279,10 @@ fun Thumbnail(
                                 item.mediaId.ifEmpty { "unknown_${item.hashCode()}" }
                             }
                         ) { item ->
+                            val incrementalSeekSkipEnabled by rememberPreference(SeekExtraSeconds, defaultValue = false)
+                            var skipMultiplier by remember { mutableStateOf(1) }
+                            var lastTapTime by remember { mutableLongStateOf(0L) }
+
                             Box(
                                 modifier = Modifier
                                     .width(horizontalLazyGridItemWidth)
@@ -287,21 +292,33 @@ fun Thumbnail(
                                         detectTapGestures(
                                             onDoubleTap = { offset ->
                                                 val currentPosition = playerConnection.player.currentPosition
+                                                val duration = playerConnection.player.duration
+
+                                                val now = System.currentTimeMillis()
+                                                if (incrementalSeekSkipEnabled && now - lastTapTime < 1000) {
+                                                    skipMultiplier++
+                                                } else {
+                                                    skipMultiplier = 1
+                                                }
+                                                lastTapTime = now
+
+                                                val skipAmount = 5000 * skipMultiplier
+
                                                 if ((layoutDirection == LayoutDirection.Ltr && offset.x < size.width / 2) ||
                                                     (layoutDirection == LayoutDirection.Rtl && offset.x > size.width / 2)
                                                 ) {
                                                     playerConnection.player.seekTo(
-                                                        (currentPosition - 5000).coerceAtLeast(0)
+                                                        (currentPosition - skipAmount).coerceAtLeast(0)
                                                     )
-                                                    seekDirection = context.getString(R.string.seek_backward)
+                                                    seekDirection =
+                                                        context.getString(R.string.seek_backward_dynamic, skipAmount / 1000)
                                                 } else {
                                                     playerConnection.player.seekTo(
-                                                        (currentPosition + 5000).coerceAtMost(
-                                                            playerConnection.player.duration
-                                                        )
+                                                        (currentPosition + skipAmount).coerceAtMost(duration)
                                                     )
-                                                    seekDirection = context.getString(R.string.seek_forward)
+                                                    seekDirection = context.getString(R.string.seek_forward_dynamic, skipAmount / 1000)
                                                 }
+
                                                 showSeekEffect = true
                                             }
                                         )
