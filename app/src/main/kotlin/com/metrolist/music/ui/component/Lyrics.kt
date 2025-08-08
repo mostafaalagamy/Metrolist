@@ -369,9 +369,7 @@ fun Lyrics(
             try {
                 // Calculate offset to center the active line group (current + prev + next)
                 // This ensures the active lines are always in the middle of the screen
-                val lineHeight = with(density) { 60.dp.toPx().toInt() } // Approximate line height
-                val screenCenter = with(density) { (maxHeight / 2).toPx().toInt() }
-                val targetOffset = kotlin.math.max(0, screenCenter - lineHeight)
+                val targetOffset = with(density) { 100.dp.toPx().toInt() } // Fixed center offset
                 
                 // Use native Compose animation for butter-smooth scrolling
                 lazyListState.animateScrollToItem(
