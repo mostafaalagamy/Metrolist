@@ -7,7 +7,6 @@ import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import androidx.media3.common.util.BitmapLoader
 import coil.imageLoader
-import coil.request.CachePolicy
 import coil.request.ErrorResult
 import coil.request.ImageRequest
 import com.google.common.util.concurrent.ListenableFuture
@@ -36,8 +35,6 @@ class CoilBitmapLoader(
                         .Builder(context)
                         .data(uri)
                         .allowHardware(false)
-                        .diskCachePolicy(CachePolicy.ENABLED)
-                        .memoryCachePolicy(CachePolicy.ENABLED)
                         .build(),
                 )
             if (result is ErrorResult) {
