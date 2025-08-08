@@ -481,21 +481,23 @@ fun BottomSheetPlayer(
                 MaterialTheme.colorScheme.surface
             }
             else -> {
-                // Enhanced background - stable until last 20% of drag
-                if (useBlackBackground) {
-                    backgroundColor
+                // Enhanced background - stable until last 20% of drag (both normal and pure black)
+                // Calculate progress for fade effect
+                val progress = ((state.value - state.collapsedBound) / (state.expandedBound - state.collapsedBound))
+                    .coerceIn(0f, 1f)
+                
+                // Only start fading when very close to dismissal (last 20%)
+                val fadeProgress = if (progress < 0.2f) {
+                    ((0.2f - progress) / 0.2f).coerceIn(0f, 1f)
                 } else {
-                    // Calculate progress for fade effect
-                    val progress = ((state.value - state.collapsedBound) / (state.expandedBound - state.collapsedBound))
-                        .coerceIn(0f, 1f)
-                    
-                    // Only start fading when very close to dismissal (last 20%)
-                    val fadeProgress = if (progress < 0.2f) {
-                        ((0.2f - progress) / 0.2f).coerceIn(0f, 1f)
-                    } else {
-                        0f
-                    }
-                    
+                    0f
+                }
+                
+                if (useBlackBackground) {
+                    // Apply same logic to pure black background
+                    Color.Black.copy(alpha = 1f - fadeProgress)
+                } else {
+                    // Apply same logic to normal theme
                     MaterialTheme.colorScheme.surface.copy(alpha = 1f - fadeProgress)
                 }
             }
