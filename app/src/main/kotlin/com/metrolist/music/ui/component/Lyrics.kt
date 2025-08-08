@@ -380,23 +380,31 @@ fun Lyrics(
                 val currentFirstVisibleIndex = lazyListState.firstVisibleItemIndex
                 val currentScrollOffset = lazyListState.firstVisibleItemScrollOffset
                 
-                // Custom smooth animation that controls the LazyColumn page movement
-                scrollAnimatable.animateTo(
-                    targetValue = 1f,
-                    animationSpec = tween(
-                        durationMillis = duration,
-                        easing = EaseInOutQuart // Natural Apple Music-style curve
-                    )
-                ) { animationValue ->
+                // Create a custom animation loop for smooth page scrolling
+                val startTime = System.currentTimeMillis()
+                val animationDuration = duration.toLong()
+                
+                while (System.currentTimeMillis() - startTime < animationDuration) {
+                    val elapsed = System.currentTimeMillis() - startTime
+                    val progress = (elapsed.toFloat() / animationDuration.toFloat()).coerceIn(0f, 1f)
+                    
+                    // Apply easing curve (simplified EaseInOutQuart)
+                    val easedProgress = if (progress < 0.5f) {
+                        8 * progress * progress * progress * progress
+                    } else {
+                        1 - 8 * (1 - progress) * (1 - progress) * (1 - progress) * (1 - progress)
+                    }
+                    
                     // Smooth interpolation between current and target positions
                     val interpolatedIndex = if (currentFirstVisibleIndex != targetIndex) {
-                        (currentFirstVisibleIndex + (targetIndex - currentFirstVisibleIndex) * animationValue).toInt()
+                        (currentFirstVisibleIndex + (targetIndex - currentFirstVisibleIndex) * easedProgress).toInt()
+                            .coerceIn(0, kotlin.math.max(currentFirstVisibleIndex, targetIndex))
                     } else {
                         targetIndex
                     }
                     
                     val interpolatedOffset = if (currentScrollOffset != targetOffset) {
-                        (currentScrollOffset + (targetOffset - currentScrollOffset) * animationValue).toInt()
+                        (currentScrollOffset + (targetOffset - currentScrollOffset) * easedProgress).toInt()
                     } else {
                         targetOffset
                     }
@@ -406,6 +414,9 @@ fun Lyrics(
                         index = interpolatedIndex,
                         scrollOffset = interpolatedOffset
                     )
+                    
+                    // Small delay for smooth frame rate
+                    delay(16) // ~60fps
                 }
                 
                 // Final position with exact target
@@ -414,8 +425,7 @@ fun Lyrics(
                     scrollOffset = targetOffset
                 )
                 
-                // Reset animatable for next use
-                scrollAnimatable.snapTo(0f)
+
             } finally {
                 isAnimating = false
             }
