@@ -160,4 +160,5 @@
     <string name="playlist_not_found_desc">Nie można załadować żądanej playlisty</string>
     <string name="empty_playlist">Pusta playlista</string>
     <string name="empty_playlist_desc">Ta playlista nie zawiera żadnych piosenek</string>
+    <string name="now_playing">Teraz gra</string>
 </resources>
