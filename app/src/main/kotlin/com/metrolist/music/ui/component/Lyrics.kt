@@ -604,24 +604,6 @@ fun Lyrics(
             }
         }
 
-        if (lyrics == LYRICS_NOT_FOUND) {
-            Text(
-                text = stringResource(R.string.lyrics_not_found),
-                fontSize = 20.sp,
-                color = MaterialTheme.colorScheme.secondary,
-                textAlign = when (lyricsTextPosition) {
-                    LyricsPosition.LEFT -> TextAlign.Left
-                    LyricsPosition.CENTER -> TextAlign.Center
-                    LyricsPosition.RIGHT -> TextAlign.Right
-                },
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 24.dp, vertical = 8.dp)
-                    .alpha(0.5f)
-            )
-        }
-
         // Show selection buttons only when in selection mode
         if (isSelectionModeActive) {
             mediaMetadata?.let { metadata ->
@@ -987,6 +969,23 @@ fun Lyrics(
                         Text(stringResource(id = R.string.share))
                     }
                 }
+            }
+        }
+        
+        // عرض "lyrics not found" في منتصف الشاشة
+        if (lyrics == LYRICS_NOT_FOUND) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = stringResource(R.string.lyrics_not_found),
+                    fontSize = 20.sp,
+                    color = MaterialTheme.colorScheme.secondary,
+                    textAlign = TextAlign.Center,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.alpha(0.5f)
+                )
             }
         }
     }
