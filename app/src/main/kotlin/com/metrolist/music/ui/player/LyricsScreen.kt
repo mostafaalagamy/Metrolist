@@ -74,7 +74,6 @@ import com.metrolist.music.models.MediaMetadata
 import com.metrolist.music.ui.component.Lyrics
 import com.metrolist.music.ui.component.LocalMenuState
 import com.metrolist.music.ui.component.PlayerSliderTrack
-import com.metrolist.music.ui.component.SquigglySlider
 import com.metrolist.music.ui.menu.LyricsMenu
 import com.metrolist.music.ui.theme.PlayerColorExtractor
 import com.metrolist.music.ui.theme.PlayerSliderColors
@@ -440,7 +439,8 @@ fun LyricsScreen(
                         )
                     }
                     SliderStyle.SQUIGGLY -> {
-                        SquigglySlider(
+                        // استخدام نفس slider الافتراضي (SquigglySlider غير متوفر)
+                        Slider(
                             value = (sliderPosition ?: position).toFloat(),
                             valueRange = 0f..(if (duration == C.TIME_UNSET) 0f else duration.toFloat()),
                             onValueChange = {
@@ -453,7 +453,7 @@ fun LyricsScreen(
                                 }
                                 sliderPosition = null
                             },
-                            color = textBackgroundColor,
+                            colors = PlayerSliderColors.defaultSliderColors(textBackgroundColor),
                             modifier = Modifier.fillMaxWidth()
                         )
                     }
@@ -475,7 +475,7 @@ fun LyricsScreen(
                             track = { sliderState ->
                                 PlayerSliderTrack(
                                     sliderState = sliderState,
-                                    color = textBackgroundColor
+                                    colors = PlayerSliderColors.defaultSliderColors(textBackgroundColor)
                                 )
                             },
                             modifier = Modifier.fillMaxWidth()
