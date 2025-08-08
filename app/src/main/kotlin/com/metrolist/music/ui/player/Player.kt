@@ -104,11 +104,12 @@ import androidx.media3.common.Player.STATE_ENDED
 import androidx.media3.common.Player.STATE_READY
 import androidx.palette.graphics.Palette
 import androidx.navigation.NavController
-import coil.ImageLoader
-import coil.compose.AsyncImage
-import coil.imageLoader
-import coil.request.ImageRequest
-import coil.size.Size
+import coil3.ImageLoader
+import coil3.compose.AsyncImage
+import coil3.imageLoader
+import coil3.request.ImageRequest
+import coil3.request.allowHardware
+import coil3.toBitmap
 import com.metrolist.music.LocalDownloadUtil
 import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
@@ -287,23 +288,23 @@ fun BottomSheetPlayer(
                 } else {
                     val request = ImageRequest.Builder(context)
                         .data(currentMetadata.thumbnailUrl)
-                        .size(Size(PlayerColorExtractor.Config.IMAGE_SIZE, PlayerColorExtractor.Config.IMAGE_SIZE))
+                        .size(PlayerColorExtractor.Config.IMAGE_SIZE, PlayerColorExtractor.Config.IMAGE_SIZE)
                         .allowHardware(false)
-                        .memoryCacheKey("gradient_${currentMetadata.id}")
                         .build()
 
                     val result = runCatching { 
-                        context.imageLoader.execute(request).drawable 
+                        context.imageLoader.execute(request)
                     }.getOrNull()
                     
                     if (result != null) {
-                        val bitmap = result.toBitmap()
-                        val palette = withContext(Dispatchers.Default) {
-                            Palette.from(bitmap)
-                                .maximumColorCount(PlayerColorExtractor.Config.MAX_COLOR_COUNT)
-                                .resizeBitmapArea(PlayerColorExtractor.Config.BITMAP_AREA)
-                                .generate()
-                        }
+                        val bitmap = result.image?.toBitmap()
+                        if (bitmap != null) {
+                            val palette = withContext(Dispatchers.Default) {
+                                Palette.from(bitmap)
+                                    .maximumColorCount(PlayerColorExtractor.Config.MAX_COLOR_COUNT)
+                                    .resizeBitmapArea(PlayerColorExtractor.Config.BITMAP_AREA)
+                                    .generate()
+                            }
                         
                         // Use the new color extraction system
                         val extractedColors = PlayerColorExtractor.extractGradientColors(
@@ -314,6 +315,9 @@ fun BottomSheetPlayer(
                         // Cache the extracted colors
                         gradientColorsCache[currentMetadata.id] = extractedColors
                         gradientColors = extractedColors
+                        } else {
+                            gradientColors = defaultGradientColors
+                        }
                     } else {
                         gradientColors = defaultGradientColors
                     }

@@ -170,6 +170,7 @@ dependencies {
     implementation(libs.materialKolor)
 
     implementation(libs.coil)
+    implementation(libs.coil.network.okhttp)
 
     implementation(libs.shimmer)
 
