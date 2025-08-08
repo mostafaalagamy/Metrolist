@@ -364,24 +364,28 @@ fun Lyrics(
 
         if (!isSynced) return@LaunchedEffect
         
-        // Professional smooth animation logic inspired by Apple Music
-        suspend fun performSmoothScroll(targetIndex: Int, duration: Int = 800) {
+        // Professional smooth group animation inspired by Apple Music
+        suspend fun performSmoothGroupScroll(targetIndex: Int, duration: Int = 800) {
             if (isAnimating) return // Prevent multiple animations
             
             isAnimating = true
-            val targetOffset = with(density) { 36.dp.toPx().toInt() } + calculateOffset()
             
             try {
-                // Use custom smooth animation with easing
+                // Calculate optimal offset to keep active line visible but near top
+                val baseOffset = with(density) { 16.dp.toPx().toInt() }
+                val dynamicOffset = calculateOffset()
+                val targetOffset = baseOffset + dynamicOffset
+                
+                // Smooth group animation with professional easing
                 scrollAnimatable.animateTo(
                     targetValue = targetIndex.toFloat(),
                     animationSpec = tween(
                         durationMillis = duration,
-                        easing = EaseInOutQuart
+                        easing = EaseInOutQuart // Natural Apple Music-style curve
                     )
                 )
                 
-                // Apply the scroll with smooth transition
+                // Apply the smooth group scroll - entire lyrics move as unified group
                 lazyListState.animateScrollToItem(
                     index = targetIndex,
                     scrollOffset = targetOffset
@@ -394,7 +398,7 @@ fun Lyrics(
         if((currentLineIndex == 0 && shouldScrollToFirstLine) || !initialScrollDone) {
             shouldScrollToFirstLine = false
             // Initial scroll with medium animation (600ms)
-                                         performSmoothScroll(currentLineIndex, APPLE_MUSIC_INITIAL_SCROLL_DURATION.toInt())
+                                                     performSmoothGroupScroll(currentLineIndex, APPLE_MUSIC_INITIAL_SCROLL_DURATION.toInt())
             if(!isAppMinimized) {
                 initialScrollDone = true
             }
@@ -402,7 +406,7 @@ fun Lyrics(
             deferredCurrentLineIndex = currentLineIndex
             if (isSeeking) {
                 // Fast scroll for seeking (300ms)
-                                 performSmoothScroll(currentLineIndex, APPLE_MUSIC_FAST_SEEK_DURATION.toInt())
+                                                 performSmoothGroupScroll(currentLineIndex, APPLE_MUSIC_FAST_SEEK_DURATION.toInt())
             } else if ((lastPreviewTime == 0L || currentLineIndex != previousLineIndex) && scrollLyrics) {
                 val visibleItemsInfo = lazyListState.layoutInfo.visibleItemsInfo
                 val isCurrentLineVisible = visibleItemsInfo.any { it.index == currentLineIndex }
@@ -420,7 +424,7 @@ fun Lyrics(
                     if (currentLineOffset in centerRangeStart..centerRangeEnd ||
                         previousLineOffset in centerRangeStart..centerRangeEnd) {
                         // Smooth auto-scroll with Apple Music-style timing (800ms)
-                                                 performSmoothScroll(currentLineIndex, APPLE_MUSIC_AUTO_SCROLL_DURATION.toInt())
+                                                                         performSmoothGroupScroll(currentLineIndex, APPLE_MUSIC_AUTO_SCROLL_DURATION.toInt())
                     }
                 }
             }
@@ -432,7 +436,7 @@ fun Lyrics(
     }
 
     BoxWithConstraints(
-        contentAlignment = Alignment.Center,
+        contentAlignment = Alignment.TopCenter,
         modifier = modifier
             .fillMaxSize()
             .padding(bottom = 12.dp)
@@ -441,7 +445,7 @@ fun Lyrics(
             state = lazyListState,
             contentPadding = WindowInsets.systemBars
                 .only(WindowInsetsSides.Top)
-                .add(WindowInsets(top = maxHeight / 2, bottom = maxHeight / 2))
+                .add(WindowInsets(top = 16.dp, bottom = maxHeight / 3))
                 .asPaddingValues(),
             modifier = Modifier
                 .fadingEdge(vertical = 64.dp)
@@ -1018,11 +1022,11 @@ fun Lyrics(
     }
 }
 
-// Professional animation constants inspired by Apple Music
-private const val APPLE_MUSIC_AUTO_SCROLL_DURATION = 800L // Slow and smooth for automatic scrolling
-private const val APPLE_MUSIC_INITIAL_SCROLL_DURATION = 600L // Medium for initial positioning  
-private const val APPLE_MUSIC_SEEK_DURATION = 400L // Responsive for user interaction
-private const val APPLE_MUSIC_FAST_SEEK_DURATION = 300L // Fast for slider seeking
+// Professional group animation constants inspired by Apple Music
+private const val APPLE_MUSIC_AUTO_SCROLL_DURATION = 1000L // Slower and more graceful for group movement
+private const val APPLE_MUSIC_INITIAL_SCROLL_DURATION = 700L // Smooth initial positioning  
+private const val APPLE_MUSIC_SEEK_DURATION = 500L // Comfortable for user interaction
+private const val APPLE_MUSIC_FAST_SEEK_DURATION = 350L // Responsive for slider seeking
 
 // Lyrics constants
 val LyricsPreviewTime = 2.seconds
