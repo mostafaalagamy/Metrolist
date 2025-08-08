@@ -145,11 +145,4 @@
     <string name="disable">Vô hiệu hóa</string>
     <string name="subscribe">Đăng ký</string>
     <string name="subscribed">Đã đăng ký</string>
-    <string name="playlist_not_found_desc"></string>
-    <string name="empty_playlist"></string>
-    <string name="empty_playlist_desc"></string>
-    <string name="new_mini_player_design"></string>
-    <string name="sensitivity_percentage"></string>
-    <string name="playlist_not_found"></string>
-    <string name="now_playing"></string>
 </resources>

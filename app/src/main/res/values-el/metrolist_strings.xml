@@ -150,9 +150,4 @@
     <string name="more_content">Περισσότερο περιεχόμενο</string>
     <string name="yt_sync">Αυτόματος συγχρονισμός με λογαριασμό</string>
     <string name="new_player_design">Νέο σχέδιο αναπαραγωγής μουσικής</string>
-    <string name="playlist_not_found_desc"></string>
-    <string name="empty_playlist"></string>
-    <string name="empty_playlist_desc"></string>
-    <string name="playlist_not_found"></string>
-    <string name="now_playing"></string>
 </resources>

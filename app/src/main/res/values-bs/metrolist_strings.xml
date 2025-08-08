@@ -140,22 +140,4 @@
         <item quantity="other">%dsekundi</item>
     </plurals>
     <string name="token_adv_login_description">Ovo je NAPREDNA metoda prijave. Kao alternativa web portalu, ovdje možete direktno unijeti ili ažurirati svoj token za prijavu. Na primjer, ovo može ubrzati prijavu na više uređaja. Imajte na umu da neće biti prihvaćeni nevažeći formati tokena koje aplikacija ne uspije analizirati</string>
-    <string name="playlist_not_found_desc"></string>
-    <string name="swipe_sensitivity"></string>
-    <string name="subscribe"></string>
-    <string name="subscribed"></string>
-    <string name="new_player_design"></string>
-    <string name="empty_playlist"></string>
-    <string name="lyrics_romanize_korean"></string>
-    <string name="empty_playlist_desc"></string>
-    <string name="new_mini_player_design"></string>
-    <string name="yt_sync"></string>
-    <string name="more_content"></string>
-    <string name="sensitivity_percentage"></string>
-    <string name="clear_image_cache_dialog"></string>
-    <string name="lyrics_romanize_japanese"></string>
-    <string name="disable"></string>
-    <string name="playlist_not_found"></string>
-    <string name="now_playing"></string>
-    <string name="swipe_sensitivity_desc"></string>
 </resources>

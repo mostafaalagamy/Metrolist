@@ -153,6 +153,4 @@
     <string name="playlist_not_found_desc">Заявеният плейлист не можа да бъде зареден</string>
     <string name="empty_playlist">Празен плейлист</string>
     <string name="empty_playlist_desc">Този плейлист не съдържа никакви песни</string>
-    <string name="default_lib_chips"></string>
-    <string name="now_playing"></string>
 </resources>

@@ -146,10 +146,4 @@
     <string name="disable">禁用</string>
     <string name="subscribe">訂閱</string>
     <string name="subscribed">已訂閱</string>
-    <string name="playlist_not_found_desc"></string>
-    <string name="empty_playlist"></string>
-    <string name="empty_playlist_desc"></string>
-    <string name="new_mini_player_design"></string>
-    <string name="playlist_not_found"></string>
-    <string name="now_playing"></string>
 </resources>

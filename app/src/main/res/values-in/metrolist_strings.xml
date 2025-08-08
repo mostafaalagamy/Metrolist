@@ -147,9 +147,4 @@
         <item quantity="other">Singular \n1 detik\n\nPlural\n%d detik</item>
     </plurals>
     <string name="new_mini_player_design">Desain pemutar mini baru</string>
-    <string name="playlist_not_found_desc"></string>
-    <string name="empty_playlist"></string>
-    <string name="empty_playlist_desc"></string>
-    <string name="playlist_not_found"></string>
-    <string name="now_playing"></string>
 </resources>
