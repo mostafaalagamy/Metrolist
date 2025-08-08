@@ -67,10 +67,8 @@ import com.metrolist.music.R
 import com.metrolist.music.constants.PlayerBackgroundStyle
 import com.metrolist.music.constants.PlayerBackgroundStyleKey
 import com.metrolist.music.constants.PlayerHorizontalPadding
-
 import com.metrolist.music.constants.SwipeThumbnailKey
 import com.metrolist.music.constants.ThumbnailCornerRadius
-
 import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
 import kotlinx.coroutines.delay
@@ -118,7 +116,6 @@ fun Thumbnail(
     val timeline = playerConnection.player.currentTimeline
     val currentIndex = playerConnection.player.currentMediaItemIndex
     val shuffleModeEnabled = playerConnection.player.shuffleModeEnabled
-    
     val previousMediaMetadata = if (swipeThumbnail && !timeline.isEmpty) {
         val previousIndex = timeline.getPreviousWindowIndex(
             currentIndex,
@@ -198,16 +195,12 @@ fun Thumbnail(
         }
     }
 
-
-
     // Seek on double tap
     var showSeekEffect by remember { mutableStateOf(false) }
     var seekDirection by remember { mutableStateOf("") }
     val layoutDirection = LocalLayoutDirection.current
 
     Box(modifier = modifier) {
-
-
         // Error view
         AnimatedVisibility(
             visible = error != null,
