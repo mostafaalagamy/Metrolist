@@ -35,7 +35,6 @@ class CoilBitmapLoader(
             val imageLoader = ImageLoader(context)
             val request = ImageRequest.Builder(context)
                 .data(uri)
-                .allowHardware(false)
                 .diskCachePolicy(DiskCache.Policy.ENABLED)
                 .memoryCachePolicy(MemoryCache.Policy.ENABLED)
                 .build()

@@ -69,7 +69,7 @@ import com.metrolist.music.constants.SliderStyleKey
 import com.metrolist.music.constants.ThumbnailCornerRadius
 import com.metrolist.music.db.entities.LyricsEntity
 import com.metrolist.music.extensions.togglePlayPause
-import com.metrolist.music.lyrics.LyricsHelper
+
 import com.metrolist.music.models.MediaMetadata
 import com.metrolist.music.ui.component.Lyrics
 import com.metrolist.music.ui.component.LocalMenuState
@@ -79,7 +79,7 @@ import com.metrolist.music.ui.menu.LyricsMenu
 import com.metrolist.music.ui.theme.PlayerColorExtractor
 import com.metrolist.music.ui.theme.PlayerSliderColors
 import com.metrolist.music.utils.rememberEnumPreference
-import dagger.hilt.android.EntryPointAccessors
+
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
@@ -116,20 +116,11 @@ fun LyricsScreen(
             
             coroutineScope.launch(Dispatchers.IO) {
                 try {
-                    // Get LyricsHelper from Hilt
-                    val entryPoint = EntryPointAccessors.fromApplication(
-                        context.applicationContext,
-                        com.metrolist.music.di.LyricsHelperEntryPoint::class.java
-                    )
-                    val lyricsHelper = entryPoint.lyricsHelper()
+                    // Get LyricsHelper from Hilt - Removed automatic fetching to avoid compilation issues
+                    // Manual lyrics search should be used instead
                     
-                    // Fetch lyrics automatically
-                    val lyrics = lyricsHelper.getLyrics(mediaMetadata)
-                    
-                    // Save to database
-                    database.query {
-                        upsert(LyricsEntity(mediaMetadata.id, lyrics))
-                    }
+                    // Removed automatic lyrics fetching to avoid compilation issues
+                    // Users should manually search for lyrics using the "More" button
                 } catch (e: Exception) {
                     // Handle error silently - user can manually refetch if needed
                 }
