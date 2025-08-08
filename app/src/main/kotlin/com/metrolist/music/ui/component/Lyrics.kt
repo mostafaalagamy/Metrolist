@@ -364,8 +364,8 @@ fun Lyrics(
 
         if (!isSynced) return@LaunchedEffect
         
-        // Professional smooth group animation inspired by Apple Music
-        suspend fun performSmoothGroupScroll(targetIndex: Int, duration: Int = 800) {
+        // Professional smooth page animation inspired by Apple Music
+        suspend fun performSmoothPageScroll(targetIndex: Int, duration: Int = 800) {
             if (isAnimating) return // Prevent multiple animations
             
             isAnimating = true
@@ -376,20 +376,46 @@ fun Lyrics(
                 val dynamicOffset = calculateOffset()
                 val targetOffset = baseOffset + dynamicOffset
                 
-                // Smooth group animation with professional easing
+                // Get current scroll position for smooth interpolation
+                val currentFirstVisibleIndex = lazyListState.firstVisibleItemIndex
+                val currentScrollOffset = lazyListState.firstVisibleItemScrollOffset
+                
+                // Custom smooth animation that controls the LazyColumn page movement
                 scrollAnimatable.animateTo(
-                    targetValue = targetIndex.toFloat(),
+                    targetValue = 1f,
                     animationSpec = tween(
                         durationMillis = duration,
                         easing = EaseInOutQuart // Natural Apple Music-style curve
                     )
-                )
+                ) { animationValue ->
+                    // Smooth interpolation between current and target positions
+                    val interpolatedIndex = if (currentFirstVisibleIndex != targetIndex) {
+                        (currentFirstVisibleIndex + (targetIndex - currentFirstVisibleIndex) * animationValue).toInt()
+                    } else {
+                        targetIndex
+                    }
+                    
+                    val interpolatedOffset = if (currentScrollOffset != targetOffset) {
+                        (currentScrollOffset + (targetOffset - currentScrollOffset) * animationValue).toInt()
+                    } else {
+                        targetOffset
+                    }
+                    
+                    // Apply gradual scroll during animation
+                    lazyListState.scrollToItem(
+                        index = interpolatedIndex,
+                        scrollOffset = interpolatedOffset
+                    )
+                }
                 
-                // Apply the smooth group scroll - entire lyrics move as unified group
-                lazyListState.animateScrollToItem(
+                // Final position with exact target
+                lazyListState.scrollToItem(
                     index = targetIndex,
                     scrollOffset = targetOffset
                 )
+                
+                // Reset animatable for next use
+                scrollAnimatable.snapTo(0f)
             } finally {
                 isAnimating = false
             }
@@ -398,7 +424,7 @@ fun Lyrics(
         if((currentLineIndex == 0 && shouldScrollToFirstLine) || !initialScrollDone) {
             shouldScrollToFirstLine = false
             // Initial scroll with medium animation (600ms)
-                                                     performSmoothGroupScroll(currentLineIndex, APPLE_MUSIC_INITIAL_SCROLL_DURATION.toInt())
+                                                     performSmoothPageScroll(currentLineIndex, APPLE_MUSIC_INITIAL_SCROLL_DURATION.toInt())
             if(!isAppMinimized) {
                 initialScrollDone = true
             }
@@ -406,7 +432,7 @@ fun Lyrics(
             deferredCurrentLineIndex = currentLineIndex
             if (isSeeking) {
                 // Fast scroll for seeking (300ms)
-                                                 performSmoothGroupScroll(currentLineIndex, APPLE_MUSIC_FAST_SEEK_DURATION.toInt())
+                                                 performSmoothPageScroll(currentLineIndex, APPLE_MUSIC_FAST_SEEK_DURATION.toInt())
             } else if ((lastPreviewTime == 0L || currentLineIndex != previousLineIndex) && scrollLyrics) {
                 val visibleItemsInfo = lazyListState.layoutInfo.visibleItemsInfo
                 val isCurrentLineVisible = visibleItemsInfo.any { it.index == currentLineIndex }
@@ -414,7 +440,7 @@ fun Lyrics(
                 // Always perform smooth scroll when line changes, regardless of visibility
                 if (currentLineIndex != previousLineIndex) {
                     // Use professional smooth animation for ALL line transitions
-                    performSmoothGroupScroll(currentLineIndex, APPLE_MUSIC_AUTO_SCROLL_DURATION.toInt())
+                                         performSmoothPageScroll(currentLineIndex, APPLE_MUSIC_AUTO_SCROLL_DURATION.toInt())
                 } else if (isCurrentLineVisible) {
                     // If same line but we need to adjust position
                     val viewportStartOffset = lazyListState.layoutInfo.viewportStartOffset
@@ -426,7 +452,7 @@ fun Lyrics(
 
                     if (currentLineOffset !in centerRangeStart..centerRangeEnd) {
                         // Gentle repositioning animation
-                        performSmoothGroupScroll(currentLineIndex, APPLE_MUSIC_AUTO_SCROLL_DURATION.toInt())
+                        performSmoothPageScroll(currentLineIndex, APPLE_MUSIC_AUTO_SCROLL_DURATION.toInt())
                     }
                 }
             }
@@ -1024,11 +1050,11 @@ fun Lyrics(
     }
 }
 
-// Professional group animation constants inspired by Apple Music
-private const val APPLE_MUSIC_AUTO_SCROLL_DURATION = 1200L // Even slower for graceful group movement especially at edges
-private const val APPLE_MUSIC_INITIAL_SCROLL_DURATION = 700L // Smooth initial positioning  
-private const val APPLE_MUSIC_SEEK_DURATION = 500L // Comfortable for user interaction
-private const val APPLE_MUSIC_FAST_SEEK_DURATION = 350L // Responsive for slider seeking
+// Professional page animation constants inspired by Apple Music
+private const val APPLE_MUSIC_AUTO_SCROLL_DURATION = 1500L // Very slow for graceful page movement
+private const val APPLE_MUSIC_INITIAL_SCROLL_DURATION = 800L // Smooth initial page positioning  
+private const val APPLE_MUSIC_SEEK_DURATION = 600L // Comfortable page interaction
+private const val APPLE_MUSIC_FAST_SEEK_DURATION = 400L // Responsive page seeking
 
 // Lyrics constants
 val LyricsPreviewTime = 2.seconds
