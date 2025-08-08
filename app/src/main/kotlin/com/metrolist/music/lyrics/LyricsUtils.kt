@@ -2,7 +2,6 @@ package com.metrolist.music.lyrics
 
 import android.text.format.DateUtils
 import com.atilika.kuromoji.ipadic.Tokenizer
-import com.metrolist.music.ui.component.ANIMATE_SCROLL_DURATION
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -137,7 +136,7 @@ object LyricsUtils {
         position: Long,
     ): Int {
         for (index in lines.indices) {
-            if (lines[index].time >= position + ANIMATE_SCROLL_DURATION) {
+            if (lines[index].time >= position + 300L) { // Use constant instead of import
                 return index - 1
             }
         }
