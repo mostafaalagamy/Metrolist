@@ -21,7 +21,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -63,12 +65,16 @@ import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
 import com.metrolist.music.constants.PlayerBackgroundStyle
 import com.metrolist.music.constants.PlayerBackgroundStyleKey
+import com.metrolist.music.constants.SliderStyle
+import com.metrolist.music.constants.SliderStyleKey
 import com.metrolist.music.db.entities.LyricsEntity
 import com.metrolist.music.extensions.togglePlayPause
 import com.metrolist.music.lyrics.LyricsHelper
 import com.metrolist.music.models.MediaMetadata
 import com.metrolist.music.ui.component.Lyrics
 import com.metrolist.music.ui.component.LocalMenuState
+import com.metrolist.music.ui.component.PlayerSliderTrack
+import com.metrolist.music.ui.component.SquigglySlider
 import com.metrolist.music.ui.menu.LyricsMenu
 import com.metrolist.music.ui.theme.PlayerColorExtractor
 import com.metrolist.music.ui.theme.PlayerSliderColors
@@ -98,6 +104,9 @@ fun LyricsScreen(
     // استخدام نفس منطق المشغل لتتبع التقدم
     val playbackState by playerConnection.playbackState.collectAsState()
     val isPlaying by playerConnection.isPlaying.collectAsState()
+    
+    // slider style preference
+    val sliderStyle by rememberEnumPreference(SliderStyleKey, SliderStyle.DEFAULT)
     val currentLyrics by playerConnection.currentLyrics.collectAsState(initial = null)
 
     // Auto-fetch lyrics when no lyrics found (same logic as refetch)
@@ -328,28 +337,17 @@ fun LyricsScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                    .padding(horizontal = 24.dp, vertical = 16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // زر الإغلاق
-                IconButton(onClick = onBackClick) {
-                    Icon(
-                        painter = painterResource(R.drawable.close),
-                        contentDescription = "Close",
-                        tint = textBackgroundColor,
-                        modifier = Modifier.size(24.dp)
-                    )
-                }
-
-                Spacer(modifier = Modifier.width(12.dp))
-
-                // صورة الأغنية
+                // صورة الأغنية (قابلة للنقر للإغلاق)
                 AsyncImage(
                     model = mediaMetadata.thumbnailUrl,
-                    contentDescription = null,
+                    contentDescription = "Back",
                     modifier = Modifier
                         .size(48.dp)
                         .clip(RoundedCornerShape(8.dp))
+                        .clickable { onBackClick() }
                 )
 
                 Spacer(modifier = Modifier.width(16.dp))
@@ -374,34 +372,41 @@ fun LyricsScreen(
 
                 Spacer(modifier = Modifier.width(12.dp))
 
-                // زر المزيد
-                IconButton(
-                    onClick = {
-                        menuState.show {
-                            LyricsMenu(
-                                lyricsProvider = { currentLyrics },
-                                mediaMetadataProvider = { mediaMetadata },
-                                onDismiss = menuState::dismiss
-                            )
-                        }
-                    }
+                // زر المزيد مع خلفية دائرية
+                Box(
+                    modifier = Modifier
+                        .size(32.dp)
+                        .background(
+                            color = icBackgroundColor.copy(alpha = 0.3f),
+                            shape = CircleShape
+                        )
+                        .clickable {
+                            menuState.show {
+                                LyricsMenu(
+                                    lyricsProvider = { currentLyrics },
+                                    mediaMetadataProvider = { mediaMetadata },
+                                    onDismiss = menuState::dismiss
+                                )
+                            }
+                        },
+                    contentAlignment = Alignment.Center
                 ) {
                     Icon(
                         painter = painterResource(R.drawable.more_horiz),
                         contentDescription = "More options",
                         tint = textBackgroundColor,
-                        modifier = Modifier.size(24.dp)
+                        modifier = Modifier.size(20.dp)
                     )
                 }
             }
 
-            // محتوى الكلمات في وسط الشاشة
+            // محتوى الكلمات يبدأ من الأعلى
             Box(
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),
-                contentAlignment = Alignment.Center
+                contentAlignment = Alignment.TopCenter
             ) {
                 Lyrics(
                     sliderPositionProvider = { sliderPosition }
@@ -412,31 +417,79 @@ fun LyricsScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 24.dp, vertical = 16.dp)
+                    .padding(horizontal = 32.dp, vertical = 16.dp)
             ) {
-                // شريط التقدم
-                Slider(
-                    value = (sliderPosition ?: position).toFloat(),
-                    valueRange = 0f..(if (duration == C.TIME_UNSET) 0f else duration.toFloat()),
-                    onValueChange = {
-                        sliderPosition = it.toLong()
-                    },
-                    onValueChangeFinished = {
-                        sliderPosition?.let {
-                            player.seekTo(it)
-                            position = it
-                        }
-                        sliderPosition = null
-                    },
-                    colors = PlayerSliderColors.defaultSliderColors(textBackgroundColor),
-                    modifier = Modifier.fillMaxWidth()
-                )
+                // شريط التقدم مع أنماط مختلفة
+                when (sliderStyle) {
+                    SliderStyle.DEFAULT -> {
+                        Slider(
+                            value = (sliderPosition ?: position).toFloat(),
+                            valueRange = 0f..(if (duration == C.TIME_UNSET) 0f else duration.toFloat()),
+                            onValueChange = {
+                                sliderPosition = it.toLong()
+                            },
+                            onValueChangeFinished = {
+                                sliderPosition?.let {
+                                    player.seekTo(it)
+                                    position = it
+                                }
+                                sliderPosition = null
+                            },
+                            colors = PlayerSliderColors.defaultSliderColors(textBackgroundColor),
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+                    SliderStyle.SQUIGGLY -> {
+                        SquigglySlider(
+                            value = (sliderPosition ?: position).toFloat(),
+                            valueRange = 0f..(if (duration == C.TIME_UNSET) 0f else duration.toFloat()),
+                            onValueChange = {
+                                sliderPosition = it.toLong()
+                            },
+                            onValueChangeFinished = {
+                                sliderPosition?.let {
+                                    player.seekTo(it)
+                                    position = it
+                                }
+                                sliderPosition = null
+                            },
+                            color = textBackgroundColor,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+                    SliderStyle.SLIM -> {
+                        Slider(
+                            value = (sliderPosition ?: position).toFloat(),
+                            valueRange = 0f..(if (duration == C.TIME_UNSET) 0f else duration.toFloat()),
+                            onValueChange = {
+                                sliderPosition = it.toLong()
+                            },
+                            onValueChangeFinished = {
+                                sliderPosition?.let {
+                                    player.seekTo(it)
+                                    position = it
+                                }
+                                sliderPosition = null
+                            },
+                            colors = PlayerSliderColors.defaultSliderColors(textBackgroundColor),
+                            track = { sliderState ->
+                                PlayerSliderTrack(
+                                    sliderState = sliderState,
+                                    color = textBackgroundColor
+                                )
+                            },
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+                }
 
                 Spacer(modifier = Modifier.height(16.dp))
 
                 // أزرار التحكم
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -474,6 +527,23 @@ fun LyricsScreen(
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))
+            }
+            
+            // زر السهم في الأسفل للإغلاق
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                IconButton(onClick = onBackClick) {
+                    Icon(
+                        painter = painterResource(R.drawable.expand_more),
+                        contentDescription = "Close",
+                        tint = textBackgroundColor,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
             }
         }
     }
