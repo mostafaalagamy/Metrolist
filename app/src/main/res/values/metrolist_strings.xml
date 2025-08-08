@@ -67,8 +67,8 @@
         <item quantity="other">%d times</item>
     </plurals>
 
-    <string name="seek_backward">5 seconds backward</string>
-    <string name="seek_forward">5 seconds forward</string>
+    <string name="seek_forward_dynamic">+%1$d seconds forwards</string>
+    <string name="seek_backward_dynamic">-%1$d seconds backwards</string>
 
     <string name="similar_content">Similar content</string>
 
