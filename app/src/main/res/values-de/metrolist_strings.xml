@@ -81,7 +81,7 @@
     <string name="default_style">Standard</string>
     <string name="elements_selected">%1$d Elemente ausgewählt</string>
     <string name="min_playback_duration_title">Mindestspieldauer</string>
-    <string name="clear_downloads_dialog">  Bist du sicher dass du alle Downloads löschen willst?</string>
+    <string name="clear_downloads_dialog">Bist du sicher dass du alle Downloads löschen willst?</string>
     <string name="months">Monate</string>
     <string name="link_copied">Link kopiert</string>
     <string name="added_to_play_next">Zu „Als Nächstes“ hinzugefügt</string>
