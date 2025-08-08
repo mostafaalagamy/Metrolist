@@ -6,11 +6,10 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.media3.common.util.BitmapLoader
 import coil3.ImageLoader
-import coil3.disk.DiskCache
-import coil3.memory.MemoryCache
 import coil3.request.ErrorResult
 import coil3.request.ImageRequest
 import coil3.request.SuccessResult
+import coil3.request.allowHardware
 import coil3.toBitmap
 import com.google.common.util.concurrent.ListenableFuture
 import kotlinx.coroutines.CoroutineScope
@@ -35,8 +34,7 @@ class CoilBitmapLoader(
             val imageLoader = ImageLoader(context)
             val request = ImageRequest.Builder(context)
                 .data(uri)
-                .diskCachePolicy(DiskCache.Policy.ENABLED)
-                .memoryCachePolicy(MemoryCache.Policy.ENABLED)
+                .allowHardware(false)
                 .build()
 
             val result = imageLoader.execute(request)
