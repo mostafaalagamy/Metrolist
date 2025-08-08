@@ -147,4 +147,9 @@
     <string name="subscribe">定期購読</string>
     <string name="subscribed">定期購読済み</string>
     <string name="sensitivity_percentage">%1$d%</string>
+    <string name="playlist_not_found_desc"></string>
+    <string name="empty_playlist"></string>
+    <string name="empty_playlist_desc"></string>
+    <string name="playlist_not_found"></string>
+    <string name="now_playing"></string>
 </resources>
