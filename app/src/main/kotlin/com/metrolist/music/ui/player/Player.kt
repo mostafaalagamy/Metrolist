@@ -490,8 +490,8 @@ fun BottomSheetPlayer(
                         .coerceIn(0f, 1f)
                     
                     // Only start fading when very close to dismissal (last 20%)
-                    val fadeProgress = if (progress > 0.8f) {
-                        ((progress - 0.8f) / 0.2f).coerceIn(0f, 1f)
+                    val fadeProgress = if (progress < 0.2f) {
+                        ((0.2f - progress) / 0.2f).coerceIn(0f, 1f)
                     } else {
                         0f
                     }
