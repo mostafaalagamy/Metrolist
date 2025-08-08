@@ -24,6 +24,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.Indication
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -67,6 +70,7 @@ import com.metrolist.music.constants.PlayerBackgroundStyle
 import com.metrolist.music.constants.PlayerBackgroundStyleKey
 import com.metrolist.music.constants.SliderStyle
 import com.metrolist.music.constants.SliderStyleKey
+import com.metrolist.music.constants.ThumbnailCornerRadius
 import com.metrolist.music.db.entities.LyricsEntity
 import com.metrolist.music.extensions.togglePlayPause
 import com.metrolist.music.lyrics.LyricsHelper
@@ -74,6 +78,7 @@ import com.metrolist.music.models.MediaMetadata
 import com.metrolist.music.ui.component.Lyrics
 import com.metrolist.music.ui.component.LocalMenuState
 import com.metrolist.music.ui.component.PlayerSliderTrack
+import me.saket.squiggles.SquigglySlider
 import com.metrolist.music.ui.menu.LyricsMenu
 import com.metrolist.music.ui.theme.PlayerColorExtractor
 import com.metrolist.music.ui.theme.PlayerSliderColors
@@ -339,13 +344,13 @@ fun LyricsScreen(
                     .padding(horizontal = 24.dp, vertical = 16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // صورة الأغنية (قابلة للنقر للإغلاق)
+                // صورة الأغنية (قابلة للنقر للإغلاق) مع نفس حواف Thumbnail.kt
                 AsyncImage(
                     model = mediaMetadata.thumbnailUrl,
                     contentDescription = "Back",
                     modifier = Modifier
                         .size(48.dp)
-                        .clip(RoundedCornerShape(8.dp))
+                        .clip(RoundedCornerShape(ThumbnailCornerRadius))
                         .clickable { onBackClick() }
                 )
 
@@ -371,7 +376,7 @@ fun LyricsScreen(
 
                 Spacer(modifier = Modifier.width(12.dp))
 
-                // زر المزيد مع خلفية دائرية
+                // زر المزيد مع خلفية دائرية وتأثير ضغط دائري
                 Box(
                     modifier = Modifier
                         .size(32.dp)
@@ -379,7 +384,13 @@ fun LyricsScreen(
                             color = icBackgroundColor.copy(alpha = 0.3f),
                             shape = CircleShape
                         )
-                        .clickable {
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = rememberRipple(
+                                bounded = true,
+                                radius = 16.dp // نصف حجم الـ Box
+                            )
+                        ) {
                             menuState.show {
                                 LyricsMenu(
                                     lyricsProvider = { currentLyrics },
@@ -439,8 +450,7 @@ fun LyricsScreen(
                         )
                     }
                     SliderStyle.SQUIGGLY -> {
-                        // استخدام نفس slider الافتراضي (SquigglySlider غير متوفر)
-                        Slider(
+                        SquigglySlider(
                             value = (sliderPosition ?: position).toFloat(),
                             valueRange = 0f..(if (duration == C.TIME_UNSET) 0f else duration.toFloat()),
                             onValueChange = {
@@ -453,8 +463,12 @@ fun LyricsScreen(
                                 }
                                 sliderPosition = null
                             },
-                            colors = PlayerSliderColors.defaultSliderColors(textBackgroundColor),
-                            modifier = Modifier.fillMaxWidth()
+                            colors = PlayerSliderColors.squigglySliderColors(textBackgroundColor),
+                            modifier = Modifier.fillMaxWidth(),
+                            squigglesSpec = SquigglySlider.SquigglesSpec(
+                                amplitude = if (isPlaying) (2.dp).coerceAtLeast(2.dp) else 0.dp,
+                                strokeWidth = 3.dp,
+                            )
                         )
                     }
                     SliderStyle.SLIM -> {
@@ -471,11 +485,11 @@ fun LyricsScreen(
                                 }
                                 sliderPosition = null
                             },
-                            colors = PlayerSliderColors.defaultSliderColors(textBackgroundColor),
+                            thumb = { Spacer(modifier = Modifier.size(0.dp)) },
                             track = { sliderState ->
                                 PlayerSliderTrack(
                                     sliderState = sliderState,
-                                    colors = PlayerSliderColors.defaultSliderColors(textBackgroundColor)
+                                    colors = PlayerSliderColors.slimSliderColors(textBackgroundColor)
                                 )
                             },
                             modifier = Modifier.fillMaxWidth()
