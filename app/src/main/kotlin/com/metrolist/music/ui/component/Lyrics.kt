@@ -418,7 +418,23 @@ fun Lyrics(
             .fillMaxSize()
             .padding(bottom = 12.dp)
     ) {
-        LazyColumn(
+        // عرض "lyrics not found" في منتصف الشاشة
+        if (lyrics == LYRICS_NOT_FOUND) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = stringResource(R.string.lyrics_not_found),
+                    fontSize = 20.sp,
+                    color = MaterialTheme.colorScheme.secondary,
+                    textAlign = TextAlign.Center,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.alpha(0.5f)
+                )
+            }
+        } else {
+            LazyColumn(
             state = lazyListState,
             contentPadding = WindowInsets.systemBars
                 .only(WindowInsetsSides.Top)
@@ -971,23 +987,7 @@ fun Lyrics(
                 }
             }
         }
-        
-        // عرض "lyrics not found" في منتصف الشاشة
-        if (lyrics == LYRICS_NOT_FOUND) {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = stringResource(R.string.lyrics_not_found),
-                    fontSize = 20.sp,
-                    color = MaterialTheme.colorScheme.secondary,
-                    textAlign = TextAlign.Center,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.alpha(0.5f)
-                )
-            }
-        }
+        } // إغلاق else block
     }
 }
 
