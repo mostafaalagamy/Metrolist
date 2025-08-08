@@ -5,14 +5,12 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.media3.common.util.BitmapLoader
-import coil3.imageLoader
-import coil3.request.ErrorResult
-import coil3.request.ImageRequest
-import coil3.request.allowHardware
-import coil3.request.diskCachePolicy
-import coil3.request.memoryCachePolicy
+import coil3.ImageLoader
 import coil3.disk.DiskCache
 import coil3.memory.MemoryCache
+import coil3.request.ErrorResult
+import coil3.request.ImageRequest
+import coil3.request.SuccessResult
 import coil3.toBitmap
 import com.google.common.util.concurrent.ListenableFuture
 import kotlinx.coroutines.CoroutineScope
@@ -34,23 +32,27 @@ class CoilBitmapLoader(
 
     override fun loadBitmap(uri: Uri): ListenableFuture<Bitmap> =
         scope.future(Dispatchers.IO) {
-            val result =
-                context.imageLoader.execute(
-                    ImageRequest
-                        .Builder(context)
-                        .data(uri)
-                        .allowHardware(false)
-                        .diskCachePolicy(DiskCache.Policy.ENABLED)
-                        .memoryCachePolicy(MemoryCache.Policy.ENABLED)
-                        .build(),
-                )
-            if (result is ErrorResult) {
-                throw ExecutionException(result.throwable)
-            }
-            try {
-                result.image!!.toBitmap()
-            } catch (e: Exception) {
-                throw ExecutionException(e)
+            val imageLoader = ImageLoader(context)
+            val request = ImageRequest.Builder(context)
+                .data(uri)
+                .allowHardware(false)
+                .diskCachePolicy(DiskCache.Policy.ENABLED)
+                .memoryCachePolicy(MemoryCache.Policy.ENABLED)
+                .build()
+
+            val result = imageLoader.execute(request)
+
+            when (result) {
+                is ErrorResult -> {
+                    throw ExecutionException(result.throwable)
+                }
+                is SuccessResult -> {
+                    try {
+                        result.image.toBitmap()
+                    } catch (e: Exception) {
+                        throw ExecutionException(e)
+                    }
+                }
             }
         }
 } 
