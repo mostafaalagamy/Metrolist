@@ -686,39 +686,42 @@ fun Queue(
                         val currentItem by rememberUpdatedState(window)
                         val dismissBoxState =
                             rememberSwipeToDismissBoxState(
-                                positionalThreshold = { totalDistance ->
-                                    totalDistance
-                                },
-                                confirmValueChange = { dismissValue ->
-                                    if (dismissValue == SwipeToDismissBoxValue.StartToEnd ||
-                                        dismissValue == SwipeToDismissBoxValue.EndToStart
-                                    ) {
-                                        playerConnection.player.removeMediaItem(currentItem.firstPeriodIndex)
-                                        dismissJob?.cancel()
-                                        dismissJob =
-                                            coroutineScope.launch {
-                                                val snackbarResult =
-                                                    snackbarHostState.showSnackbar(
-                                                        message =
-                                                        context.getString(
-                                                            R.string.removed_song_from_playlist,
-                                                            currentItem.mediaItem.metadata?.title,
-                                                        ),
-                                                        actionLabel = context.getString(R.string.undo),
-                                                        duration = SnackbarDuration.Short,
-                                                    )
-                                                if (snackbarResult == SnackbarResult.ActionPerformed) {
-                                                    playerConnection.player.addMediaItem(currentItem.mediaItem)
-                                                    playerConnection.player.moveMediaItem(
-                                                        mutableQueueWindows.size,
-                                                        currentItem.firstPeriodIndex,
-                                                    )
-                                                }
-                                            }
-                                    }
-                                    true
-                                },
+                                positionalThreshold = { totalDistance -> totalDistance }
                             )
+
+                        var processedDismiss by remember { mutableStateOf(false) }
+                        LaunchedEffect(dismissBoxState.currentValue) {
+                            val dv = dismissBoxState.currentValue
+                            if (!processedDismiss && (
+                                    dv == SwipeToDismissBoxValue.StartToEnd ||
+                                    dv == SwipeToDismissBoxValue.EndToStart
+                                )
+                            ) {
+                                processedDismiss = true
+                                playerConnection.player.removeMediaItem(currentItem.firstPeriodIndex)
+                                dismissJob?.cancel()
+                                dismissJob = coroutineScope.launch {
+                                    val snackbarResult = snackbarHostState.showSnackbar(
+                                        message = context.getString(
+                                            R.string.removed_song_from_playlist,
+                                            currentItem.mediaItem.metadata?.title,
+                                        ),
+                                        actionLabel = context.getString(R.string.undo),
+                                        duration = SnackbarDuration.Short,
+                                    )
+                                    if (snackbarResult == SnackbarResult.ActionPerformed) {
+                                        playerConnection.player.addMediaItem(currentItem.mediaItem)
+                                        playerConnection.player.moveMediaItem(
+                                            mutableQueueWindows.size,
+                                            currentItem.firstPeriodIndex,
+                                        )
+                                    }
+                                }
+                            }
+                            if (dv == SwipeToDismissBoxValue.Settled) {
+                                processedDismiss = false
+                            }
+                        }
 
                         val content: @Composable () -> Unit = {
                             Row(
