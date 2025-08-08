@@ -123,7 +123,6 @@ import com.metrolist.music.ui.theme.PlayerColorExtractor
 import com.metrolist.music.ui.theme.PlayerSliderColors
 import com.metrolist.music.constants.PlayerHorizontalPadding
 import com.metrolist.music.constants.QueuePeekHeight
-
 import com.metrolist.music.constants.SliderStyle
 import com.metrolist.music.constants.SliderStyleKey
 import com.metrolist.music.extensions.togglePlayPause
@@ -1259,7 +1258,7 @@ fun BottomSheetPlayer(
             pureBlack = pureBlack,
         )
         
-        // Lyrics Screen with animation - محدث
+        // Lyrics Screen with animation
         mediaMetadata?.let { metadata ->
             AnimatedVisibility(
                 visible = showLyricsScreen,
