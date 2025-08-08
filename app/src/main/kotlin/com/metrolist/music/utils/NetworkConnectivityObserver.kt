@@ -69,19 +69,12 @@ class NetworkConnectivityObserver(context: Context) {
                 true // For older versions, assume validated if we have internet capability
             }
             
-            // Additional check: ensure we're not on a captive portal
-            val notCaptivePortal = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-                networkCapabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_NOT_RESTRICTED) == true
-            } else {
-                true
-            }
-            
-            hasInternet && isValidated && notCaptivePortal
+            hasInternet && isValidated
         } catch (e: Exception) {
             // As fallback, try a more basic connectivity check
             try {
                 val activeNetwork = connectivityManager.activeNetworkInfo
-                activeNetwork?.isConnectedOrConnecting == true && activeNetwork.isAvailable
+                activeNetwork?.isConnectedOrConnecting == true
             } catch (e2: Exception) {
                 false
             }

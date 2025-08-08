@@ -175,13 +175,13 @@ object YTPlayerUtils {
         }
 
         if (streamPlayerResponse == null) {
-            Timber.tag(logTag).e("Bad stream player response - all clients failed for videoId: $videoId")
-            throw Exception("Failed to get stream from all YouTube clients")
+            Timber.tag(logTag).e("Bad stream player response - all clients failed")
+            throw Exception("Bad stream player response")
         }
 
         if (streamPlayerResponse.playabilityStatus.status != "OK") {
-            val errorReason = streamPlayerResponse.playabilityStatus.reason ?: "Unknown playability error"
-            Timber.tag(logTag).e("Playability status not OK for videoId: $videoId - $errorReason")
+            val errorReason = streamPlayerResponse.playabilityStatus.reason
+            Timber.tag(logTag).e("Playability status not OK: $errorReason")
             throw PlaybackException(
                 errorReason,
                 null,
@@ -190,13 +190,13 @@ object YTPlayerUtils {
         }
 
         if (streamExpiresInSeconds == null) {
-            Timber.tag(logTag).e("Missing stream expire time for videoId: $videoId")
-            throw Exception("Stream URL missing expiration information")
+            Timber.tag(logTag).e("Missing stream expire time")
+            throw Exception("Missing stream expire time")
         }
 
         if (format == null) {
-            Timber.tag(logTag).e("Could not find suitable audio format for videoId: $videoId")
-            throw Exception("No compatible audio format found")
+            Timber.tag(logTag).e("Could not find format")
+            throw Exception("Could not find format")
         }
 
         if (streamUrl == null) {
