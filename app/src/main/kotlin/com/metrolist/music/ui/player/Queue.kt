@@ -105,7 +105,6 @@ import com.metrolist.music.constants.UseNewPlayerDesignKey
 import com.metrolist.music.constants.PlayerButtonsStyle
 import com.metrolist.music.constants.PlayerButtonsStyleKey
 import com.metrolist.music.constants.QueueEditLockKey
-import com.metrolist.music.constants.ShowLyricsKey
 import com.metrolist.music.extensions.metadata
 import com.metrolist.music.extensions.move
 import com.metrolist.music.extensions.togglePlayPause
@@ -143,6 +142,7 @@ fun Queue(
     TextBackgroundColor: Color,
     textButtonColor: Color,
     iconButtonColor: Color,
+    onShowLyrics: () -> Unit = {},
     pureBlack: Boolean,
 ) {
     val context = LocalContext.current
@@ -171,8 +171,6 @@ fun Queue(
     }
 
     var locked by rememberPreference(QueueEditLockKey, defaultValue = true)
-
-    var showLyrics by rememberPreference(ShowLyricsKey, defaultValue = false)
 
     val (useNewPlayerDesign, onUseNewPlayerDesignChange) = rememberPreference(
         UseNewPlayerDesignKey,
@@ -307,7 +305,7 @@ fun Queue(
                             .clip(RoundedCornerShape(10.dp))
                             .border(1.dp, borderColor, RoundedCornerShape(10.dp))
                             .clickable {
-                                showLyrics = !showLyrics
+                                onShowLyrics()
                             },
                         contentAlignment = Alignment.Center
                     ) {
@@ -315,7 +313,7 @@ fun Queue(
                             painter = painterResource(id = R.drawable.lyrics),
                             contentDescription = null,
                             modifier = Modifier.size(iconSize),
-                            tint = TextBackgroundColor.copy(alpha = if (showLyrics) 1f else 0.5f)
+                            tint = TextBackgroundColor
                         )
                     }
 
@@ -485,7 +483,7 @@ fun Queue(
                     }
 
                     TextButton(
-                        onClick = { showLyrics = !showLyrics },
+                        onClick = { onShowLyrics() },
                         modifier = Modifier.weight(1f)
                     ) {
                         Row(
@@ -497,12 +495,12 @@ fun Queue(
                                 painter = painterResource(id = R.drawable.lyrics),
                                 contentDescription = null,
                                 modifier = Modifier.size(20.dp),
-                                tint = TextBackgroundColor.copy(alpha = if (showLyrics) 1f else 0.5f)
+                                tint = TextBackgroundColor
                             )
                             Spacer(modifier = Modifier.width(6.dp))
                             Text(
                                 text = stringResource(id = R.string.lyrics),
-                                color = TextBackgroundColor.copy(alpha = if (showLyrics) 1f else 0.5f),
+                                color = TextBackgroundColor,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis,
                                 textAlign = TextAlign.Center,
