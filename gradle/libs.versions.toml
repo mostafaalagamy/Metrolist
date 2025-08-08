@@ -15,6 +15,7 @@ ksp = "2.2.20-Beta2-2.0.2"
 jsoup = "1.21.1"
 kuromojiIpadic = "0.9.0"
 multidex = "2.0.1"
+coil = "3.3.0"
 
 [libraries]
 annotation = { module = "androidx.annotation:annotation", version.ref = "annotation" }
@@ -45,7 +46,8 @@ material3 = { group = "androidx.compose.material3", name = "material3", version.
 
 materialKolor = { module = "com.materialkolor:material-kolor", version.ref = "materialKolor" }
 
-coil = { group = "io.coil-kt", name = "coil-compose", version = "2.7.0" }
+coil = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil" }
+coil-network-okhttp = { group = "io.coil-kt.coil3", name = "coil-network-okhttp", version.ref = "coil" }
 
 shimmer = { group = "com.valentinilk.shimmer", name = "compose-shimmer", version = "1.3.3" }
 
