@@ -274,7 +274,7 @@ fun Lyrics(
 
     val lazyListState = rememberLazyListState()
     
-    // Professional animation states for smooth Apple Music-style transitions
+    // Professional animation states for smooth Metrolist-style transitions
     var isAnimating by remember { mutableStateOf(false) }
 
     // Define max selection limit
@@ -360,7 +360,7 @@ fun Lyrics(
 
         if (!isSynced) return@LaunchedEffect
         
-        // Professional smooth page animation inspired by Apple Music
+        // Professional smooth page animation inspired by Metrolist design
         suspend fun performSmoothPageScroll(targetIndex: Int, duration: Int = 800) {
             if (isAnimating) return // Prevent multiple animations
             
@@ -387,7 +387,7 @@ fun Lyrics(
             shouldScrollToFirstLine = false
             // Initial scroll to center the first line with medium animation (600ms)
             val initialCenterIndex = kotlin.math.max(0, currentLineIndex - 1)
-            performSmoothPageScroll(initialCenterIndex, APPLE_MUSIC_INITIAL_SCROLL_DURATION.toInt())
+            performSmoothPageScroll(initialCenterIndex, METROLIST_INITIAL_SCROLL_DURATION.toInt())
             if(!isAppMinimized) {
                 initialScrollDone = true
             }
@@ -396,13 +396,13 @@ fun Lyrics(
             if (isSeeking) {
                 // Fast scroll for seeking to center the target line (300ms)
                 val seekCenterIndex = kotlin.math.max(0, currentLineIndex - 1)
-                performSmoothPageScroll(seekCenterIndex, APPLE_MUSIC_FAST_SEEK_DURATION.toInt())
+                performSmoothPageScroll(seekCenterIndex, METROLIST_FAST_SEEK_DURATION.toInt())
             } else if ((lastPreviewTime == 0L || currentLineIndex != previousLineIndex) && scrollLyrics) {
                 // Always scroll to center the active line (current + previous + next)
                 if (currentLineIndex != previousLineIndex) {
                     // Calculate which line should be at the top to center the active group
                     val centerTargetIndex = kotlin.math.max(0, currentLineIndex - 1) // Show previous line at top to center current
-                    performSmoothPageScroll(centerTargetIndex, APPLE_MUSIC_AUTO_SCROLL_DURATION.toInt())
+                    performSmoothPageScroll(centerTargetIndex, METROLIST_AUTO_SCROLL_DURATION.toInt())
                 }
             }
         }
@@ -535,7 +535,7 @@ fun Lyrics(
                             else Color.Transparent
                         )
                         .padding(horizontal = 24.dp, vertical = 8.dp)
-                        // Apple Music-style depth effect with professional alpha transitions
+                        // Metrolist-style depth effect with professional alpha transitions
                         .alpha(
                             when {
                                 !isSynced || (isSelectionModeActive && isSelected) -> 1f
@@ -992,11 +992,11 @@ fun Lyrics(
     }
 }
 
-// Professional page animation constants inspired by Apple Music
-private const val APPLE_MUSIC_AUTO_SCROLL_DURATION = 800L // Smooth auto-scroll
-private const val APPLE_MUSIC_INITIAL_SCROLL_DURATION = 600L // Quick initial positioning
-private const val APPLE_MUSIC_SEEK_DURATION = 400L // Fast user interaction
-private const val APPLE_MUSIC_FAST_SEEK_DURATION = 300L // Very responsive seeking
+// Professional page animation constants inspired by Metrolist design
+private const val METROLIST_AUTO_SCROLL_DURATION = 800L // Smooth auto-scroll
+private const val METROLIST_INITIAL_SCROLL_DURATION = 600L // Quick initial positioning
+private const val METROLIST_SEEK_DURATION = 400L // Fast user interaction
+private const val METROLIST_FAST_SEEK_DURATION = 300L // Very responsive seeking
 
 // Lyrics constants
 val LyricsPreviewTime = 2.seconds
