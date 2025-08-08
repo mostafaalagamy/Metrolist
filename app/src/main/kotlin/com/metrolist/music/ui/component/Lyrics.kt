@@ -371,10 +371,11 @@ fun Lyrics(
             isAnimating = true
             
             try {
-                // Calculate optimal offset to keep active line visible but near top
-                val baseOffset = with(density) { 16.dp.toPx().toInt() }
-                val dynamicOffset = calculateOffset()
-                val targetOffset = baseOffset + dynamicOffset
+                // Calculate offset to center the active line group (current + prev + next)
+                // This ensures the active lines are always in the middle of the screen
+                val lineHeight = with(density) { 60.dp.toPx().toInt() } // Approximate line height
+                val screenCenter = with(density) { (maxHeight / 2).toPx().toInt() }
+                val targetOffset = kotlin.math.max(0, screenCenter - lineHeight)
                 
                 // Get current scroll position for smooth interpolation
                 val currentFirstVisibleIndex = lazyListState.firstVisibleItemIndex
@@ -433,37 +434,24 @@ fun Lyrics(
         
         if((currentLineIndex == 0 && shouldScrollToFirstLine) || !initialScrollDone) {
             shouldScrollToFirstLine = false
-            // Initial scroll with medium animation (600ms)
-                                                     performSmoothPageScroll(currentLineIndex, APPLE_MUSIC_INITIAL_SCROLL_DURATION.toInt())
+            // Initial scroll to center the first line with medium animation (600ms)
+            val initialCenterIndex = kotlin.math.max(0, currentLineIndex - 1)
+            performSmoothPageScroll(initialCenterIndex, APPLE_MUSIC_INITIAL_SCROLL_DURATION.toInt())
             if(!isAppMinimized) {
                 initialScrollDone = true
             }
         } else if (currentLineIndex != -1) {
             deferredCurrentLineIndex = currentLineIndex
             if (isSeeking) {
-                // Fast scroll for seeking (300ms)
-                                                 performSmoothPageScroll(currentLineIndex, APPLE_MUSIC_FAST_SEEK_DURATION.toInt())
+                // Fast scroll for seeking to center the target line (300ms)
+                val seekCenterIndex = kotlin.math.max(0, currentLineIndex - 1)
+                performSmoothPageScroll(seekCenterIndex, APPLE_MUSIC_FAST_SEEK_DURATION.toInt())
             } else if ((lastPreviewTime == 0L || currentLineIndex != previousLineIndex) && scrollLyrics) {
-                val visibleItemsInfo = lazyListState.layoutInfo.visibleItemsInfo
-                val isCurrentLineVisible = visibleItemsInfo.any { it.index == currentLineIndex }
-                
-                // Always perform smooth scroll when line changes, regardless of visibility
+                // Always scroll to center the active line (current + previous + next)
                 if (currentLineIndex != previousLineIndex) {
-                    // Use professional smooth animation for ALL line transitions
-                                         performSmoothPageScroll(currentLineIndex, APPLE_MUSIC_AUTO_SCROLL_DURATION.toInt())
-                } else if (isCurrentLineVisible) {
-                    // If same line but we need to adjust position
-                    val viewportStartOffset = lazyListState.layoutInfo.viewportStartOffset
-                    val viewportEndOffset = lazyListState.layoutInfo.viewportEndOffset
-                    val currentLineOffset = visibleItemsInfo.find { it.index == currentLineIndex }?.offset ?: 0
-
-                    val centerRangeStart = viewportStartOffset + (viewportEndOffset - viewportStartOffset) / 2
-                    val centerRangeEnd = viewportEndOffset - (viewportEndOffset - viewportStartOffset) / 8
-
-                    if (currentLineOffset !in centerRangeStart..centerRangeEnd) {
-                        // Gentle repositioning animation
-                        performSmoothPageScroll(currentLineIndex, APPLE_MUSIC_AUTO_SCROLL_DURATION.toInt())
-                    }
+                    // Calculate which line should be at the top to center the active group
+                    val centerTargetIndex = kotlin.math.max(0, currentLineIndex - 1) // Show previous line at top to center current
+                    performSmoothPageScroll(centerTargetIndex, APPLE_MUSIC_AUTO_SCROLL_DURATION.toInt())
                 }
             }
         }
@@ -483,7 +471,7 @@ fun Lyrics(
             state = lazyListState,
             contentPadding = WindowInsets.systemBars
                 .only(WindowInsetsSides.Top)
-                .add(WindowInsets(top = 16.dp, bottom = maxHeight / 3))
+                .add(WindowInsets(top = maxHeight / 2 - 40.dp, bottom = maxHeight / 2 + 40.dp))
                 .asPaddingValues(),
             modifier = Modifier
                 .fadingEdge(vertical = 64.dp)
