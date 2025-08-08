@@ -167,16 +167,9 @@ fun Thumbnail(
     val currentItem by remember { derivedStateOf { thumbnailLazyGridState.firstVisibleItemIndex } }
     val itemScrollOffset by remember { derivedStateOf { thumbnailLazyGridState.firstVisibleItemScrollOffset } }
 
-    // Handle swipe to change song - fixed to prevent unwanted triggers during slow scrolling
-    LaunchedEffect(currentItem) {
-        // Only trigger when scroll has completed and item actually changed
-        if (!swipeThumbnail || currentMediaIndex < 0) return@LaunchedEffect
-        
-        // Add a small delay to ensure scroll has settled
-        kotlinx.coroutines.delay(100)
-        
-        // Double-check that we're not still scrolling
-        if (thumbnailLazyGridState.isScrollInProgress) return@LaunchedEffect
+    // Handle swipe to change song
+    LaunchedEffect(itemScrollOffset) {
+        if (!thumbnailLazyGridState.isScrollInProgress || !swipeThumbnail || itemScrollOffset != 0 || currentMediaIndex < 0) return@LaunchedEffect
 
         if (currentItem > currentMediaIndex && canSkipNext) {
             playerConnection.player.seekToNext()
