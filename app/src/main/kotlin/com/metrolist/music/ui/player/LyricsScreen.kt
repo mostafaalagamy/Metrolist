@@ -158,6 +158,27 @@ fun LyricsScreen(
         }
     }
 
+    // Auto-scroll to current lyrics line when screen is first opened
+    var hasPerformedInitialScroll by remember { mutableStateOf(false) }
+    
+    LaunchedEffect(mediaMetadata.id, currentLyrics) {
+        hasPerformedInitialScroll = false // Reset on song change
+        
+        if (currentLyrics != null && !hasPerformedInitialScroll) {
+            // Wait for lyrics to be ready
+            delay(800)
+            
+            // Trigger initial scroll by simulating a seek
+            val currentPos = playerConnection.player.currentPosition
+            if (currentPos > 0) {
+                sliderPosition = currentPos
+                delay(200)
+                sliderPosition = null
+                hasPerformedInitialScroll = true
+            }
+        }
+    }
+
     var position by remember { mutableLongStateOf(0L) }
     var duration by remember { mutableLongStateOf(C.TIME_UNSET) }
     var sliderPosition by remember { mutableStateOf<Long?>(null) }

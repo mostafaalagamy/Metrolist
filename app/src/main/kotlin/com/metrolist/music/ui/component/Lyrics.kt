@@ -353,6 +353,33 @@ fun Lyrics(
         }
     }
 
+    // Auto-scroll to current line when lyrics screen is first opened
+    LaunchedEffect(lyrics, lines) {
+        if (lyrics != null && lines.isNotEmpty() && isSynced && scrollLyrics) {
+            // Small delay to ensure UI is fully loaded
+            delay(500)
+            
+            // Find current line and scroll to it
+            val currentTime = playerConnection.player.currentPosition
+            val initialLineIndex = findCurrentLineIndex(lines, currentTime)
+            
+            if (initialLineIndex > -1) {
+                // Calculate smart target index like in performSmoothPageScroll
+                val targetIndex = if (initialLineIndex >= lines.size - 3) {
+                    kotlin.math.max(0, initialLineIndex - 2)
+                } else {
+                    initialLineIndex
+                }
+                
+                // Perform initial scroll to center current line
+                lazyListState.animateScrollAndCentralizeItem(
+                    index = targetIndex,
+                    scope = this
+                )
+            }
+        }
+    }
+
     LaunchedEffect(currentLineIndex, lastPreviewTime, initialScrollDone) {
 
         /**
@@ -388,7 +415,7 @@ fun Lyrics(
             }
         }
         
-        if((currentLineIndex == 0 && shouldScrollToFirstLine) || !initialScrollDone) {
+        if((currentLineIndex == 0 && shouldScrollToFirstLine) || (!initialScrollDone && currentLineIndex > -1)) {
             shouldScrollToFirstLine = false
             // Use smooth animation for initial scroll
             performSmoothPageScroll()
