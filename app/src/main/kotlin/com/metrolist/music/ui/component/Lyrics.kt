@@ -372,36 +372,31 @@ fun Lyrics(
 
         if (!isSynced) return@LaunchedEffect
         
-        // Professional smooth page animation inspired by Metrolist design
-        suspend fun performSmoothPageScroll(targetIndex: Int, duration: Int = 800) {
+        // Smooth page animation without sudden jumps - direct animation to center
+        suspend fun performSmoothPageScroll(targetIndex: Int, duration: Int = 1500) {
             if (isAnimating) return // Prevent multiple animations
             
             isAnimating = true
             
             try {
-                // Smooth slow scroll to bring next line to center (3 seconds)
-                scope.launch {
-                    // First scroll to the target item without animation
-                    lazyListState.scrollToItem(index = targetIndex)
-                    
-                    // Then animate it to center position slowly
-                    val itemInfo = lazyListState.layoutInfo.visibleItemsInfo.firstOrNull { it.index == targetIndex }
-                    if (itemInfo != null) {
-                        val viewportHeight = lazyListState.layoutInfo.viewportEndOffset - lazyListState.layoutInfo.viewportStartOffset
-                        val center = lazyListState.layoutInfo.viewportStartOffset + (viewportHeight / 2)
-                        val itemCenter = itemInfo.offset + itemInfo.size / 2
-                        val offset = itemCenter - center
-                        
-                        if (kotlin.math.abs(offset) > 10) { // Only animate if not already centered
-                            lazyListState.animateScrollBy(
-                                value = offset.toFloat(),
-                                animationSpec = tween(durationMillis = 1500) // Reduced to half speed
-                            )
-                        }
-                    }
-                }
-                
+                val itemInfo = lazyListState.layoutInfo.visibleItemsInfo.firstOrNull { it.index == targetIndex }
+                if (itemInfo != null) {
+                    // Item is visible, animate directly to center without sudden jumps
+                    val viewportHeight = lazyListState.layoutInfo.viewportEndOffset - lazyListState.layoutInfo.viewportStartOffset
+                    val center = lazyListState.layoutInfo.viewportStartOffset + (viewportHeight / 2)
+                    val itemCenter = itemInfo.offset + itemInfo.size / 2
+                    val offset = itemCenter - center
 
+                    if (kotlin.math.abs(offset) > 10) {
+                        lazyListState.animateScrollBy(
+                            value = offset.toFloat(),
+                            animationSpec = tween(durationMillis = duration)
+                        )
+                    }
+                } else {
+                    // Item is not visible, scroll to it first without animation, then it will be handled in next cycle
+                    lazyListState.scrollToItem(targetIndex)
+                }
             } finally {
                 isAnimating = false
             }
@@ -411,7 +406,7 @@ fun Lyrics(
             shouldScrollToFirstLine = false
             // Initial scroll to center the first line with medium animation (600ms)
             val initialCenterIndex = kotlin.math.max(0, currentLineIndex - 1)
-            performSmoothPageScroll(initialCenterIndex, METROLIST_INITIAL_SCROLL_DURATION.toInt())
+            performSmoothPageScroll(initialCenterIndex, 800) // Initial scroll duration
             if(!isAppMinimized) {
                 initialScrollDone = true
             }
@@ -420,13 +415,13 @@ fun Lyrics(
             if (isSeeking) {
                 // Fast scroll for seeking to center the target line (300ms)
                 val seekCenterIndex = kotlin.math.max(0, currentLineIndex - 1)
-                performSmoothPageScroll(seekCenterIndex, METROLIST_FAST_SEEK_DURATION.toInt())
+                performSmoothPageScroll(seekCenterIndex, 500) // Fast seek duration
             } else if ((lastPreviewTime == 0L || currentLineIndex != previousLineIndex) && scrollLyrics && isPlaying) {
                 // Only auto-scroll when track is playing and lyrics settings allow it
                 if (currentLineIndex != previousLineIndex) {
                     // Calculate which line should be at the top to center the active group
                     val centerTargetIndex = kotlin.math.max(0, currentLineIndex - 1) // Show previous line at top to center current
-                    performSmoothPageScroll(centerTargetIndex, METROLIST_AUTO_SCROLL_DURATION.toInt())
+                    performSmoothPageScroll(centerTargetIndex, 1500) // Auto scroll duration
                 }
             }
         }
