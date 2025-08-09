@@ -50,8 +50,6 @@
     <string name="link_copied">Link je kopiran</string>
     <string name="lyrics">Tekst pesme</string>
     <string name="already_in_playlist">Već je u plejlisiti:</string>
-    <string name="seek_backward">5 sekundi unazad</string>
-    <string name="seek_forward">5 sekundi unapred</string>
     <string name="similar_content">Sličan sadržaj</string>
     <string name="login_settings">Podešavanja prijavljivanja</string>
     <string name="general_settings">Opšta podešavanja</string>

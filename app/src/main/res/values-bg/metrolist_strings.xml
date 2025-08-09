@@ -50,8 +50,6 @@
         <item quantity="one">%d време</item>
         <item quantity="other">%d времена</item>
     </plurals>
-    <string name="seek_backward">5 секунди назад</string>
-    <string name="seek_forward">5 секунди напред</string>
     <string name="similar_content">Подобно съдържание</string>
     <string name="login_settings">Настройки на влизането</string>
     <string name="general_settings">Общи настройки</string>

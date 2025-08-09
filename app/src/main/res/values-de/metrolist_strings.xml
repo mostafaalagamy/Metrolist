@@ -29,7 +29,7 @@
     <string name="advanced_login">Mit Token anmelden</string>
     <string name="token_hidden">Tippen, um Token anzuzeigen</string>
     <string name="token_shown">Tippen, um zu kopieren oder zu bearbeiten</string>
-    <string name="token_adv_login_description">Dies ist eine ERWEITERTE Anmeldemethode. Als Alternative zum Webportal kannst du hier direkt deinen Anmelde-Token eingeben oder aktualisieren. Dies kann beispielsweise das Anmelden auf mehreren Geräten beschleunigen. Bitte beachte , dass ungültige Token-Formate, welche die App nicht verarbeiten kann, nicht akzeptiert werden</string>
+    <string name="token_adv_login_description">Dies ist eine erweiterte Anmeldemethode. Als Alternative zum Webportal können Sie hier Ihr Anmeldetoken direkt eingeben oder aktualisieren. Dies kann beispielsweise die Anmeldung auf mehreren Geräten beschleunigen. Bitte beachten Sie, dass ungültige Token-Formate, die die App nicht verarbeiten kann, nicht akzeptiert werden</string>
     <string name="ytm_sync">Automatische Synchronisierung mit Ihrem YouTube Music-Account</string>
     <string name="general">Allgemein</string>
     <string name="proxy">Proxy</string>
@@ -45,7 +45,7 @@
     <string name="set_first_lyrics_provider">Bevorzugter Songtext-Anbieter</string>
     <string name="audio_quality_max">Maximal (Beta)</string>
     <string name="enable_similar_content">Ähnliche Inhalte aktivieren</string>
-    <string name="similar_content_desc">Fügt automatisch weitere ähnliche Songs hinzu, wenn das Ende der Warteschlange erreicht ist</string>
+    <string name="similar_content_desc">Automatisch weitere ähnliche Songs hinzufügen, wenn das Ende der Warteschlange erreicht ist</string>
     <string name="default_links">Unterstützte Links öffnen</string>
     <string name="open_app_settings_error">App-Einstellungen konnten nicht geöffnet werden</string>
     <string name="release_notes">Versionshinweise</string>
@@ -70,20 +70,19 @@
     <string name="minimum_playback_duration">Mindestspieldauer</string>
     <string name="not_logged_in_youtube">Nicht bei YouTube angemeldet</string>
     <string name="percentage_format">%d%%</string>
-    <string name="seek_forward">5 Sekunden vor</string>
     <string name="local_history">Lokal</string>
     <string name="dislike_all">Allen „Mag ich“ entfernen</string>
     <string name="similar_content">Ähnlicher Inhalt</string>
     <string name="clear_song_cache_dialog">Bist du sicher dass du den Song-Cache leeren willst?</string>
     <string name="loading_charts">Charts werden geladen...</string>
     <string name="copy_link">Link kopieren</string>
-    <string name="allows_for_sync_witch_youtube">Hinweis: Dies syncronisiert die Playlist mit YouTube Music. Dies kann danach NICHT geändert werden.</string>
+    <string name="allows_for_sync_witch_youtube">Hinweis: Dies syncronisiert die Playlist mit YouTube Music. Das kann danach NICHT mehr geändert werden.</string>
     <string name="default_style">Standard</string>
     <string name="elements_selected">%1$d Elemente ausgewählt</string>
     <string name="min_playback_duration_title">Mindestspieldauer</string>
     <string name="clear_downloads_dialog">  Bist du sicher dass du alle Downloads löschen willst?</string>
     <string name="months">Monate</string>
-    <string name="link_copied">Link kopiert</string>
+    <string name="link_copied">Link in die Zwischenablage kopiert</string>
     <string name="added_to_play_next">Zu „Als Nächstes“ hinzugefügt</string>
     <string name="added_to_queue">Zur Warteschlange hinzugefügt</string>
     <string name="charts">Charts</string>
@@ -91,7 +90,6 @@
     <string name="no_title">Kein Titel</string>
     <string name="secondary_color_style">Sekundär</string>
     <string name="unknown_item_type">Unbekannter Typ</string>
-    <string name="seek_backward">5 Sekunden zurück</string>
     <string name="min_playback_duration_description">Die Mindestspieldauer, welche erreicht werden muss, bevor ein Song als „gehört“ gilt</string>
     <string name="unknown_artist">Unbekannter Künstler</string>
     <string name="years">Jahre</string>
@@ -115,7 +113,7 @@
     <string name="auto_playlists">Automatische Playlists</string>
     <string name="share_selected">Auswahl teilen</string>
     <string name="customize_colors">Farben personalisieren</string>
-    <string name="more_options">Mehr optionen</string>
+    <string name="more_options">Mehr Optionen</string>
     <string name="text_color">Textfarbe</string>
     <string name="secondary_text_color">Sekundäre Textfarbe</string>
     <string name="background_color">Hintergrundfarbe</string>
@@ -149,10 +147,16 @@
     <string name="disable">Deaktivieren</string>
     <string name="subscribe">Abonnieren</string>
     <string name="subscribed">Abonniert</string>
-    <string name="now_playing">Es spielt</string>
+    <string name="now_playing">Wird gerade abgespielt</string>
     <string name="new_mini_player_design">Neues Design für den Mini-Player</string>
     <string name="playlist_not_found">Playlist nicht gefunden</string>
     <string name="playlist_not_found_desc">Die angeforderte Playlist konnte nicht geladen werden</string>
     <string name="empty_playlist">Leere Playlist</string>
     <string name="empty_playlist_desc">Diese Playlist enthält keine Songs</string>
+    <string name="seek_backward">5 Sekunden zurückspulen</string>
+    <string name="seek_forward">5 sekunden überspringen</string>
+    <string name="seek_forward_dynamic">+%1$d Sekunden überspringen</string>
+    <string name="seek_backward_dynamic">-%1$d Sekunden zurückspulen</string>
+    <string name="seek_seconds_addup_description">Wenn aktiviert, werden bei jedem Suchsprung schrittweise 5 zusätzliche Sekunden hinzugefügt</string>
+    <string name="seek_seconds_addup">Progressive Suche</string>
 </resources>

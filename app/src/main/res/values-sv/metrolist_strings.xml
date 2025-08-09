@@ -89,7 +89,6 @@
     <string name="secondary_text_color">Sekundär textfärg</string>
     <string name="added_to_play_next">Tillagd i spelas härnäst</string>
     <string name="top_music_videos">Populära musikvideor</string>
-    <string name="seek_forward">fem sekunder framåt</string>
     <string name="added_to_queue">Tillagd i kön</string>
     <string name="general_settings">Generella inställningar</string>
     <string name="slim_navbar">Dölj texter i nedersta menyn</string>
@@ -111,7 +110,6 @@
         <item quantity="one">%d gång</item>
         <item quantity="other">%d gånger</item>
     </plurals>
-    <string name="seek_backward">fem sekunder tillbaka</string>
     <string name="similar_content">Liknande innehåll</string>
     <string name="login_settings">Inloggningsinställningar</string>
     <string name="player_background_style">Utseende på spelarens bakgrund</string>

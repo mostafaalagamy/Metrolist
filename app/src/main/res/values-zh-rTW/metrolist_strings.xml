@@ -29,8 +29,6 @@
         <item quantity="one">%d 次</item>
         <item quantity="other">%d 次</item>
     </plurals>
-    <string name="seek_backward">向後 5 秒 </string>
-    <string name="seek_forward">向前 5 秒</string>
     <string name="similar_content">相似內容</string>
     <string name="login_settings">登入設定</string>
     <string name="general_settings">一般設定</string>

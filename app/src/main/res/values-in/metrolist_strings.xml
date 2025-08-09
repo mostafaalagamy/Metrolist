@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="seek_forward">5 detik maju</string>
     <plurals name="n_time">
         <item quantity="other">%d kali</item>
     </plurals>
-    <string name="seek_backward">5 detik mundur</string>
     <string name="similar_content">Konten serupa</string>
     <string name="remote_history">Histori jarak jauh</string>
     <string name="years">Tahun</string>

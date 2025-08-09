@@ -23,7 +23,6 @@
         <item quantity="few">%d elementa</item>
         <item quantity="other">%d elementi</item>
     </plurals>
-    <string name="seek_backward">5 sekundi unazad</string>
     <string name="similar_content">#Sličan #sadržaj</string>
     <string name="login_settings">Login podešavanja</string>
     <string name="general_settings">Opšta podešavanja</string>
@@ -49,7 +48,6 @@
     <string name="show_liked_playlist">Prikaži plejliste \"Sviđa mi se\"</string>
     <string name="show_downloaded_playlist">Prikaži plejlistu “Preuzeto”</string>
     <string name="show_top_playlist">Prikaži \"Najbolju\" plejlistu</string>
-    <string name="seek_forward">5 sekundi unaprijed</string>
     <string name="local_history">Lokalno</string>
     <string name="months">Mjeseci</string>
     <string name="advanced_login">Napredni login(token)</string>

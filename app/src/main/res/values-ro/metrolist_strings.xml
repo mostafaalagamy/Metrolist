@@ -56,8 +56,6 @@
         <item quantity="few">%d ori</item>
         <item quantity="other">%d de ori</item>
     </plurals>
-    <string name="seek_backward">5 secunde înapoi</string>
-    <string name="seek_forward">5 secunde înainte</string>
     <string name="similar_content">Conținut similar</string>
     <string name="login_settings">Setări autentificare</string>
     <string name="general_settings">Setări generale</string>

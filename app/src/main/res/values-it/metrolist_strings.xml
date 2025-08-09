@@ -46,8 +46,6 @@
         <item quantity="many">%d volte</item>
         <item quantity="other">%d volte</item>
     </plurals>
-    <string name="seek_backward">5 secondi indietro</string>
-    <string name="seek_forward">5 secondi avanti</string>
     <string name="similar_content">Contenuto simile</string>
     <string name="login_settings">Impostazioni dell\'accesso</string>
     <string name="general_settings">Impostazioni generali</string>
@@ -158,4 +156,10 @@
     <string name="playlist_not_found_desc">La playlist richiesta non può essere caricata</string>
     <string name="empty_playlist">Playlist vuota</string>
     <string name="now_playing">In riproduzione</string>
+    <string name="seek_forward">5 secondi in avanti</string>
+    <string name="seek_forward_dynamic">%1$d secondi in avanti</string>
+    <string name="seek_backward_dynamic">%1$d secondi indietro</string>
+    <string name="seek_seconds_addup">Ricerca progressiva</string>
+    <string name="seek_seconds_addup_description">Se attivato, aggiunge 5 secondi in più per ogni salto</string>
+    <string name="seek_backward">5 secondi indietro</string>
 </resources>

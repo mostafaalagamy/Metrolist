@@ -49,8 +49,6 @@
     <string name="added_to_play_next">次に再生に追加しました</string>
     <string name="added_to_queue">キューに追加しました</string>
     <string name="already_in_playlist">再生リストに追加済みです:</string>
-    <string name="seek_backward">5 秒戻す</string>
-    <string name="seek_forward">5 秒進める</string>
     <string name="login_settings">ログイン設定</string>
     <string name="general_settings">一般設定</string>
     <string name="lyrics_click_change">タップで歌詞を変更</string>

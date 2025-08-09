@@ -60,6 +60,9 @@ align="center">](https://github.com/mostafaalagamy/Metrolist/releases/latest/dow
 [<img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png" alt="Get it on IzzyOnDroid" height="80"
 align="center">](https://apt.izzysoft.de/fdroid/index/apk/com.metrolist.music)
 
+[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" alt="Get it on F-Droid" height="80"
+align="center">](https://f-droid.org/packages/com.metrolist.music)
+
 [<img src="https://www.openapk.net/images/openapk-badge.png" alt="Get it on OpenAPK" height="80"
 align="center">](https://www.openapk.net/metrolist/com.metrolist.music/)
 

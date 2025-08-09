@@ -57,8 +57,6 @@
         <item quantity="one">%d alkalom</item>
         <item quantity="other">%d alkalom</item>
     </plurals>
-    <string name="seek_backward">5 mp visszafelé</string>
-    <string name="seek_forward">5 mp előrefelé</string>
     <string name="similar_content">Hasonló tartalom</string>
     <string name="login_settings">Belépési beállítások</string>
     <string name="general_settings">Általános beállítások</string>

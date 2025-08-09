@@ -46,8 +46,6 @@
         <item quantity="many">%d veces</item>
         <item quantity="other">%d veces</item>
     </plurals>
-    <string name="seek_backward">Retroceder 5 segundos</string>
-    <string name="seek_forward">Avanzar 5 segundos</string>
     <string name="similar_content">Contenido similar</string>
     <string name="login_settings">Ajustes de inicio de sesión</string>
     <string name="general_settings">Ajustes generales</string>
@@ -158,4 +156,10 @@
     <string name="sensitivity_percentage">%1$d%%</string>
     <string name="empty_playlist_desc">Esta lista de reproducción no contiene ninguna canción</string>
     <string name="now_playing">Ahora sonando</string>
+    <string name="seek_backward">5 segundos hacia atrás</string>
+    <string name="seek_forward">5 segundos adelante</string>
+    <string name="seek_forward_dynamic">+%1$d segundos hacia adelante</string>
+    <string name="seek_backward_dynamic">-%1$d segundos hacia atrás</string>
+    <string name="seek_seconds_addup">Búsqueda progresiva</string>
+    <string name="seek_seconds_addup_description">Si está habilitado, agrega 5 segundos adicionales de forma incremental en cada salto de búsqueda</string>
 </resources>

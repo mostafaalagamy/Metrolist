@@ -45,8 +45,6 @@
         <item quantity="few">%dkrát</item>
         <item quantity="other">%dkrát</item>
     </plurals>
-    <string name="seek_backward">5 sekund zpět</string>
-    <string name="seek_forward">5 sekund vpřed</string>
     <string name="similar_content">Podobný obsah</string>
     <string name="login_settings">Nastavení přihlášení</string>
     <string name="general_settings">Obecná nastavení</string>
@@ -159,4 +157,10 @@
     <string name="empty_playlist">Prázdný playlist</string>
     <string name="empty_playlist_desc">Tento playlist neobsahuje žádné skladby</string>
     <string name="now_playing">Právě hraje</string>
+    <string name="seek_backward">5 sekund zpět</string>
+    <string name="seek_forward">5 sekund vpřed</string>
+    <string name="seek_forward_dynamic">+%1$d sekund vpřed</string>
+    <string name="seek_backward_dynamic">-%1$d sekund zpět</string>
+    <string name="seek_seconds_addup">Progresivní posun</string>
+    <string name="seek_seconds_addup_description">Při povolení se při každém přeskočení bude postupně přidávat 5 sekund</string>
 </resources>

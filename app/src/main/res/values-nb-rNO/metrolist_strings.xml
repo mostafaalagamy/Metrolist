@@ -5,7 +5,6 @@
     <string name="share_as_image">Del som bilde</string>
     <string name="link_copied">Lenke kopiert til utklippstavlen</string>
     <string name="token_hidden">Klikk for å vise tokenen</string>
-    <string name="seek_backward">5 sekund bakover</string>
     <string name="enable_swipe_thumbnail">Sveip for å bytte sanger</string>
     <string name="google">Google</string>
     <string name="token_adv_login_description">Dette er en AVANSERT innloggingsmetode. Som alternativ til nettportalen, kan du direkte legge inn eller oppdatere innloggingstokenen din her. Dette kan f.eks. gjøre innlogging på flere enheter raskere. NB: Ugyldige tokenformater som appen ikke lykkes til i å tolke, vil ikke godtas</string>
@@ -63,7 +62,6 @@
         <item quantity="one">%d gang</item>
         <item quantity="other">%d ganger</item>
     </plurals>
-    <string name="seek_forward">5 sekund framover</string>
     <string name="login_settings">Innloggingsinnstillinger</string>
     <string name="general_settings">Alminnelige innstillinger</string>
     <string name="player_background_style">Bakgrunnsstil for avspilleren</string>

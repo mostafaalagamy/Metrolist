@@ -48,8 +48,6 @@
     <plurals name="n_time">
         <item quantity="other">%d 次</item>
     </plurals>
-    <string name="seek_backward">向后5秒</string>
-    <string name="seek_forward">向前5秒</string>
     <string name="similar_content">相关内容</string>
     <string name="login_settings">登录设置</string>
     <string name="general_settings">通用设置</string>

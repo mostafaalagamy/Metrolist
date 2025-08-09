@@ -27,8 +27,6 @@
         <item quantity="one">%d lần</item>
         <item quantity="other">%d lần</item>
     </plurals>
-    <string name="seek_backward">5 giây trước</string>
-    <string name="seek_forward">5 giây sau</string>
     <string name="similar_content">Nội dung tương tự</string>
     <string name="login_settings">Cài đặt đăng nhập</string>
     <string name="general_settings">Cài đặt chung</string>

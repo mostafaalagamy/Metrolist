@@ -60,8 +60,6 @@
         <item quantity="few">%dkrat</item>
         <item quantity="other">%dkrat</item>
     </plurals>
-    <string name="seek_backward">5 sekund nazaj</string>
-    <string name="seek_forward">5 sekund najprej</string>
     <string name="similar_content">Podobna vsebina</string>
     <string name="login_settings">Nastavitve prijave</string>
     <string name="general_settings">Splošne nastavitve</string>
