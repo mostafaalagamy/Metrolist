@@ -593,45 +593,45 @@ fun LyricsScreen(
                     }
                 }
 
-                Spacer(modifier = Modifier.height(32.dp)) // Increased spacing
+                Spacer(modifier = Modifier.height(24.dp)) // Proper spacing
 
-                // Queue and Details buttons (aligned with control buttons spacing)
+                // Queue and Details buttons (matching control buttons size)
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 40.dp), // Matching the control buttons visual alignment
+                        .padding(horizontal = 48.dp), // Better alignment with control buttons
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    // Details button (left) - larger and enhanced
+                    // Details button (left) - matching control button size
                     IconButton(
                         onClick = { 
                             bottomSheetPageState.show {
                                 ShowMediaInfo(mediaMetadata.id)
                             }
                         },
-                        modifier = Modifier.size(48.dp)
+                        modifier = Modifier.size(44.dp) // Same as control buttons
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.info),
                             contentDescription = "Details",
                             tint = textBackgroundColor,
-                            modifier = Modifier.size(24.dp)
+                            modifier = Modifier.size(22.dp) // Same as repeat/shuffle icons
                         )
                     }
 
-                    // Queue button (right) - larger and enhanced
+                    // Queue button (right) - matching control button size
                     IconButton(
                         onClick = { 
                             queueSheetState.expand(androidx.compose.animation.core.SpringSpec())
                         },
-                        modifier = Modifier.size(48.dp)
+                        modifier = Modifier.size(44.dp) // Same as control buttons
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.queue_music),
                             contentDescription = "Queue",
                             tint = textBackgroundColor,
-                            modifier = Modifier.size(24.dp)
+                            modifier = Modifier.size(22.dp) // Same as repeat/shuffle icons
                         )
                     }
                 }
