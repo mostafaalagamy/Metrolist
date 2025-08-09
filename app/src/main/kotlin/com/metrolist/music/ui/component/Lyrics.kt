@@ -391,9 +391,9 @@ fun Lyrics(
                         val center = lazyListState.layoutInfo.viewportEndOffset / 2
                         val childCenter = itemInfo.offset + itemInfo.size / 2
                         
-                        // Animate to center with very slow animation (3 seconds)
+                        // Animate to center with very slow animation (3 seconds) - corrected direction
                         lazyListState.animateScrollBy(
-                            value = (childCenter - center).toFloat(),
+                            value = (center - childCenter).toFloat(), // Fixed: inverted to scroll in correct direction
                             animationSpec = tween(durationMillis = 3000)
                         )
                     }
@@ -460,7 +460,7 @@ fun Lyrics(
             state = lazyListState,
             contentPadding = WindowInsets.systemBars
                 .only(WindowInsetsSides.Top)
-                .add(WindowInsets(top = maxHeight / 2 - 40.dp, bottom = maxHeight / 2 + 40.dp))
+                .add(WindowInsets(top = 80.dp, bottom = maxHeight - 200.dp)) // Position active line at top
                 .asPaddingValues(),
             modifier = Modifier
                 .fadingEdge(vertical = 64.dp)
@@ -553,9 +553,9 @@ fun Lyrics(
                                             val center = lazyListState.layoutInfo.viewportEndOffset / 2
                                             val childCenter = itemInfo.offset + itemInfo.size / 2
                                             
-                                            // Animate to center with very slow animation (3 seconds)
+                                            // Animate to center with very slow animation (3 seconds) - corrected direction
                                             lazyListState.animateScrollBy(
-                                                value = (childCenter - center).toFloat(),
+                                                value = (center - childCenter).toFloat(), // Fixed: inverted to scroll in correct direction
                                                 animationSpec = tween(durationMillis = 3000)
                                             )
                                         }
