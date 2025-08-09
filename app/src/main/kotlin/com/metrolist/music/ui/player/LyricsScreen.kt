@@ -75,7 +75,21 @@ import com.metrolist.music.lyrics.LyricsHelper
 import com.metrolist.music.models.MediaMetadata
 import com.metrolist.music.ui.component.LocalMenuState
 import com.metrolist.music.ui.component.PlayerSliderTrack
-import com.metrolist.music.ui.component.Lyrics
+import com.metrolist.music.extensions.animateScrollAndCentralizeItem
+import com.metrolist.music.lyrics.LyricsUtils
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.layout.onGloballyPositioned
+import com.metrolist.music.constants.LyricsClickKey
+import com.metrolist.music.constants.LyricsScrollKey
+import com.metrolist.music.utils.rememberPreference
 import com.metrolist.music.ui.component.BottomSheetState
 import com.metrolist.music.ui.component.rememberBottomSheetState
 import com.metrolist.music.ui.player.Queue
@@ -379,15 +393,16 @@ fun LyricsScreen(
                 }
             }
 
+            // SimpMusic-style Lyrics Display with Full Screen Coverage
             Box(
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                contentAlignment = Alignment.TopCenter
             ) {
-                Lyrics(
-                    sliderPositionProvider = { sliderPosition }
+                SimpMusicStyleLyrics(
+                    sliderPosition = sliderPosition,
+                    textColor = textBackgroundColor,
+                    playerConnection = playerConnection
                 )
             }
 
