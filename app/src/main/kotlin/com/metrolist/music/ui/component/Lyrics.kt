@@ -615,7 +615,7 @@ fun Lyrics(
                                 index < displayedCurrentLineIndex -> 24f // Previous lines - larger
                                 else -> 20f // Future lines - smaller
                             },
-                            animationSpec = tween(durationMillis = 600), // Smooth font size animation
+                            animationSpec = tween(durationMillis = 300), // Fast font size animation
                             label = "FontSizeAnimation"
                         )
                         

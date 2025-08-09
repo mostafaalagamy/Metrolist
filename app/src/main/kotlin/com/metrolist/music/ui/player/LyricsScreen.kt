@@ -500,11 +500,11 @@ fun LyricsScreen(
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // All control buttons in one row with custom spacing
+                // All control buttons with consistent 16dp spacing like main player
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 24.dp),
+                        .padding(horizontal = 16.dp),
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -529,7 +529,7 @@ fun LyricsScreen(
                         )
                     }
 
-                    Spacer(modifier = Modifier.width(16.dp)) // Space between repeat and previous
+                    Spacer(modifier = Modifier.width(16.dp)) // Consistent spacing like main player
 
                     // Previous button
                     IconButton(
@@ -544,7 +544,7 @@ fun LyricsScreen(
                         )
                     }
 
-                    Spacer(modifier = Modifier.width(8.dp)) // Smaller space around play button
+                    Spacer(modifier = Modifier.width(16.dp)) // Consistent spacing like main player
 
                     // Play/Pause button (largest)
                     IconButton(
@@ -561,7 +561,7 @@ fun LyricsScreen(
                         )
                     }
 
-                    Spacer(modifier = Modifier.width(8.dp)) // Smaller space around play button
+                    Spacer(modifier = Modifier.width(16.dp)) // Consistent spacing like main player
 
                     // Next button
                     IconButton(
@@ -576,7 +576,7 @@ fun LyricsScreen(
                         )
                     }
 
-                    Spacer(modifier = Modifier.width(16.dp)) // Space between next and shuffle
+                    Spacer(modifier = Modifier.width(16.dp)) // Consistent spacing like main player
 
                     // Shuffle button
                     IconButton(

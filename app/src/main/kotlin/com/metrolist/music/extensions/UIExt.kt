@@ -8,7 +8,7 @@ import kotlinx.coroutines.launch
 
 /**
  * Smoothly animate scroll to center an item in the LazyList viewport.
- * Inspired by SimpMusic's smooth animation approach with smooth transitions (2.5 seconds).
+ * Inspired by SimpMusic's smooth animation approach with fast transitions (1.25 seconds).
  */
 fun LazyListState.animateScrollAndCentralizeItem(
     index: Int,
@@ -21,10 +21,10 @@ fun LazyListState.animateScrollAndCentralizeItem(
             val center = this@animateScrollAndCentralizeItem.layoutInfo.viewportEndOffset / 2
             // Calculate the center of the target item
             val childCenter = itemInfo.offset + itemInfo.size / 2
-            // Animate to center the item smoothly (2.5 seconds)
+            // Animate to center the item smoothly (1.25 seconds)
             this@animateScrollAndCentralizeItem.animateScrollBy(
                 value = (childCenter - center).toFloat(),
-                animationSpec = tween(durationMillis = 2500) // Smooth 2.5-second animation
+                animationSpec = tween(durationMillis = 1250) // Smooth 1.25-second animation
             )
         } else {
             // If item is not visible, scroll to it first then center it slowly
@@ -36,7 +36,7 @@ fun LazyListState.animateScrollAndCentralizeItem(
                 val childCenter = newItemInfo.offset + newItemInfo.size / 2
                 this@animateScrollAndCentralizeItem.animateScrollBy(
                     value = (childCenter - center).toFloat(),
-                    animationSpec = tween(durationMillis = 2500) // Smooth 2.5-second animation
+                    animationSpec = tween(durationMillis = 1250) // Smooth 1.25-second animation
                 )
             }
         }
