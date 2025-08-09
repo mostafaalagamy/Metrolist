@@ -386,7 +386,8 @@ fun Lyrics(
                     // Then animate it to center position slowly
                     val itemInfo = lazyListState.layoutInfo.visibleItemsInfo.firstOrNull { it.index == targetIndex }
                     if (itemInfo != null) {
-                        val center = lazyListState.layoutInfo.viewportEndOffset / 2
+                        val viewportHeight = lazyListState.layoutInfo.viewportEndOffset - lazyListState.layoutInfo.viewportStartOffset
+                        val center = lazyListState.layoutInfo.viewportStartOffset + (viewportHeight / 2)
                         val itemCenter = itemInfo.offset + itemInfo.size / 2
                         val offset = itemCenter - center
                         
@@ -548,7 +549,8 @@ fun Lyrics(
                                         // Then animate it to center position slowly
                                         val itemInfo = lazyListState.layoutInfo.visibleItemsInfo.firstOrNull { it.index == index }
                                         if (itemInfo != null) {
-                                            val center = lazyListState.layoutInfo.viewportEndOffset / 2
+                                            val viewportHeight = lazyListState.layoutInfo.viewportEndOffset - lazyListState.layoutInfo.viewportStartOffset
+                                            val center = lazyListState.layoutInfo.viewportStartOffset + (viewportHeight / 2)
                                             val itemCenter = itemInfo.offset + itemInfo.size / 2
                                             val offset = itemCenter - center
                                             
