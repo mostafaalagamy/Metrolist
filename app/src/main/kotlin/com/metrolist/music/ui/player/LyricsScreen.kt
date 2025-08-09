@@ -158,6 +158,10 @@ fun LyricsScreen(
         }
     }
 
+    var position by remember { mutableLongStateOf(0L) }
+    var duration by remember { mutableLongStateOf(C.TIME_UNSET) }
+    var sliderPosition by remember { mutableStateOf<Long?>(null) }
+
     // Auto-scroll to current lyrics line when screen is first opened
     var hasPerformedInitialScroll by remember { mutableStateOf(false) }
     
@@ -178,10 +182,6 @@ fun LyricsScreen(
             }
         }
     }
-
-    var position by remember { mutableLongStateOf(0L) }
-    var duration by remember { mutableLongStateOf(C.TIME_UNSET) }
-    var sliderPosition by remember { mutableStateOf<Long?>(null) }
 
     val playerBackground by rememberEnumPreference(PlayerBackgroundStyleKey, PlayerBackgroundStyle.DEFAULT)
 
