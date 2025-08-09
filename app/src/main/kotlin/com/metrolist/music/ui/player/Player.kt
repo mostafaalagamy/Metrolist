@@ -1276,14 +1276,18 @@ fun BottomSheetPlayer(
                     targetOffsetY = { it }
                 )
             ) {
-                Surface(
+                Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .clickable(
-                            interactionSource = remember { MutableInteractionSource() },
-                            indication = null
-                        ) { },
-                    color = MaterialTheme.colorScheme.surface
+                        .background(MaterialTheme.colorScheme.surface)
+                        .pointerInput(Unit) {
+                            awaitEachGesture {
+                                while (true) {
+                                    val event = awaitPointerEvent()
+                                    event.changes.forEach { it.consume() }
+                                }
+                            }
+                        }
                 ) {
                     LyricsScreen(
                         mediaMetadata = metadata,
