@@ -1,0 +1,30 @@
+Categories:
+  - Multimedia
+License: GPL-3.0-only
+AuthorName: mostafaalagamy
+AuthorEmail: mostafaalagamyt@gmail.com
+WebSite: https://github.com/mostafaalagamy/Metrolist
+SourceCode: https://github.com/mostafaalagamy/Metrolist
+IssueTracker: https://github.com/mostafaalagamy/Metrolist/issues
+Changelog: https://github.com/mostafaalagamy/Metrolist/releases
+
+AutoName: Metrolist
+Name: Metrolist
+
+RepoType: git
+Repo: https://github.com/mostafaalagamy/Metrolist.git
+
+Builds:
+  - versionName: '12.2.0'
+    versionCode: 123
+    commit: c8cb17a5
+    subdir: app
+    gradle:
+      - universal
+    prebuild: echo 'org.gradle.jvmargs=-Xmx2g -XX:MaxMetaspaceSize=512m -XX:+HeapDumpOnOutOfMemoryError
+      -Dfile.encoding=UTF-8 -XX:+UseParallelGC' >> ../gradle.properties
+
+AutoUpdateMode: Version v%v
+UpdateCheckMode: Tags
+CurrentVersion: '12.2.0'
+CurrentVersionCode: 123
