@@ -608,21 +608,29 @@ fun Lyrics(
                         modifier = itemModifier,
                         horizontalAlignment = Alignment.CenterHorizontally // Always center for SimpMusic style
                     ) {
+                        // Animated scale for active line with slow transition
+                        val animatedScale by animateFloatAsState(
+                            targetValue = if (index == displayedCurrentLineIndex && isSynced) 1.1f else 1f,
+                            animationSpec = tween(durationMillis = 800), // Slow scaling animation
+                            label = "ScaleAnimation"
+                        )
+                        
                         Text(
                             text = item.text,
-                            fontSize = 22.sp, // Uniform medium size for all lines
+                            fontSize = 20.sp, // Slightly smaller base size
                             color = when {
                                 index == displayedCurrentLineIndex && isSynced -> textColor // Active line - maximum contrast (full opacity)
                                 else -> textColor.copy(alpha = 0.3f) // All other lines - very low contrast
                             },
                             textAlign = TextAlign.Center,
-                            fontWeight = when {
-                                index == displayedCurrentLineIndex && isSynced -> FontWeight.Bold // Active line - bold for emphasis
-                                else -> FontWeight.Normal // All other lines - normal weight
-                            },
+                            fontWeight = FontWeight.Bold, // All lines bold as requested
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(start = 24.dp, top = 12.dp, end = 24.dp, bottom = 12.dp) // Full screen generous spacing
+                                .padding(start = 24.dp, top = 12.dp, end = 24.dp, bottom = 12.dp)
+                                .graphicsLayer {
+                                    scaleX = animatedScale
+                                    scaleY = animatedScale
+                                }
                         )
                         if (romanizeJapaneseLyrics || romanizeKoreanLyrics) {
                             // Show romanized text if available
