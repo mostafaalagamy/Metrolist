@@ -14,7 +14,8 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.animation.with
 import androidx.compose.foundation.Image
@@ -1262,28 +1263,27 @@ fun BottomSheetPlayer(
             pureBlack = pureBlack,
         )
         
-        // Lyrics Screen with BottomSheet
-        if (showLyricsScreen) {
-            mediaMetadata?.let { metadata ->
-                BottomSheet(
-                    state = lyricsSheetState,
-                    modifier = Modifier,
-                    backgroundColor = when (playerBackground) {
-                        PlayerBackgroundStyle.BLUR, PlayerBackgroundStyle.GRADIENT -> {
-                            val progress = ((lyricsSheetState.value - lyricsSheetState.collapsedBound) / (lyricsSheetState.expandedBound - lyricsSheetState.collapsedBound))
-                                .coerceIn(0f, 1f)
-                            val fadeProgress = if (progress < 0.2f) {
-                                (0.2f - progress) / 0.2f
-                            } else 0f
-                            Color.Black.copy(alpha = 1f - fadeProgress)
-                        } else -> {
-                            MaterialTheme.colorScheme.surface.copy(alpha = 1f - ((lyricsSheetState.value - lyricsSheetState.collapsedBound) / (lyricsSheetState.expandedBound - lyricsSheetState.collapsedBound)).coerceIn(0f, 0.2f) / 0.2f)
-                        }
-                    },
-                    onDismiss = {
-                        showLyricsScreen = false
-                    },
-                    collapsedContent = { },
+        // Lyrics Screen with AnimatedVisibility
+        mediaMetadata?.let { metadata ->
+            AnimatedVisibility(
+                visible = showLyricsScreen,
+                enter = slideInVertically(
+                    animationSpec = tween(300),
+                    initialOffsetY = { it }
+                ),
+                exit = slideOutVertically(
+                    animationSpec = tween(300),
+                    targetOffsetY = { it }
+                )
+            ) {
+                Surface(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null
+                        ) { },
+                    color = MaterialTheme.colorScheme.surface
                 ) {
                     LyricsScreen(
                         mediaMetadata = metadata,
