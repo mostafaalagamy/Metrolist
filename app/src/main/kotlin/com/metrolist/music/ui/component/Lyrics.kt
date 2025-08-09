@@ -8,6 +8,8 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.animateScrollBy
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
@@ -113,6 +115,7 @@ import com.metrolist.music.lyrics.LyricsUtils.isKorean
 import com.metrolist.music.lyrics.LyricsUtils.parseLyrics
 import com.metrolist.music.lyrics.LyricsUtils.romanizeJapanese
 import com.metrolist.music.lyrics.LyricsUtils.romanizeKorean
+
 import com.metrolist.music.ui.component.shimmer.ShimmerHost
 import com.metrolist.music.ui.component.shimmer.TextPlaceholder
 import com.metrolist.music.ui.menu.LyricsMenu
@@ -135,6 +138,7 @@ import kotlin.time.Duration.Companion.seconds
 @Composable
 fun Lyrics(
     sliderPositionProvider: () -> Long?,
+    isPlaying: Boolean = false,
     modifier: Modifier = Modifier,
 ) {
     val playerConnection = LocalPlayerConnection.current ?: return
@@ -375,15 +379,27 @@ fun Lyrics(
             isAnimating = true
             
             try {
-                // Calculate offset to center the active line group (current + prev + next)
-                // This ensures the active lines are always in the middle of the screen
-                val targetOffset = with(density) { 100.dp.toPx().toInt() } // Fixed center offset
-                
-                // Use native Compose animation for butter-smooth scrolling
-                lazyListState.animateScrollToItem(
-                    index = targetIndex,
-                    scrollOffset = targetOffset
-                )
+                // Smooth slow scroll to bring next line to center (3 seconds)
+                scope.launch {
+                    // First scroll to the target item without animation
+                    lazyListState.scrollToItem(index = targetIndex)
+                    
+                    // Then animate it to center position slowly
+                    val itemInfo = lazyListState.layoutInfo.visibleItemsInfo.firstOrNull { it.index == targetIndex }
+                    if (itemInfo != null) {
+                        val viewportHeight = lazyListState.layoutInfo.viewportEndOffset - lazyListState.layoutInfo.viewportStartOffset
+                        val center = lazyListState.layoutInfo.viewportStartOffset + (viewportHeight / 2)
+                        val itemCenter = itemInfo.offset + itemInfo.size / 2
+                        val offset = itemCenter - center
+                        
+                        if (kotlin.math.abs(offset) > 10) { // Only animate if not already centered
+                            lazyListState.animateScrollBy(
+                                value = offset.toFloat(),
+                                animationSpec = tween(durationMillis = 1500) // Reduced to half speed
+                            )
+                        }
+                    }
+                }
                 
 
             } finally {
@@ -405,8 +421,8 @@ fun Lyrics(
                 // Fast scroll for seeking to center the target line (300ms)
                 val seekCenterIndex = kotlin.math.max(0, currentLineIndex - 1)
                 performSmoothPageScroll(seekCenterIndex, METROLIST_FAST_SEEK_DURATION.toInt())
-            } else if ((lastPreviewTime == 0L || currentLineIndex != previousLineIndex) && scrollLyrics) {
-                // Always scroll to center the active line (current + previous + next)
+            } else if ((lastPreviewTime == 0L || currentLineIndex != previousLineIndex) && scrollLyrics && isPlaying) {
+                // Only auto-scroll when track is playing and lyrics settings allow it
                 if (currentLineIndex != previousLineIndex) {
                     // Calculate which line should be at the top to center the active group
                     val centerTargetIndex = kotlin.math.max(0, currentLineIndex - 1) // Show previous line at top to center current
@@ -446,7 +462,7 @@ fun Lyrics(
             state = lazyListState,
             contentPadding = WindowInsets.systemBars
                 .only(WindowInsetsSides.Top)
-                .add(WindowInsets(top = maxHeight / 2 - 40.dp, bottom = maxHeight / 2 + 40.dp))
+                .add(WindowInsets(top = maxHeight / 2, bottom = maxHeight / 2)) // Keep active line centered
                 .asPaddingValues(),
             modifier = Modifier
                 .fadingEdge(vertical = 64.dp)
@@ -526,17 +542,26 @@ fun Lyrics(
                                 } else if (isSynced && changeLyrics) {
                                     // Professional seek action with smooth animation
                                     playerConnection.player.seekTo(item.time)
+                                    // Smooth slow scroll when clicking on lyrics (3 seconds)
                                     scope.launch {
-                                        // Use the same professional animation for seeking
-                                        val targetOffset = with(density) { 36.dp.toPx().toInt() } +
-                                                with(density) {
-                                                    val count = item.text.count { it == '\n' }
-                                                    (if (landscapeOffset) 16.dp.toPx() else 20.dp.toPx()).toInt() * count
-                                                }
+                                        // First scroll to the clicked item without animation
+                                        lazyListState.scrollToItem(index = index)
                                         
-                                        // Smooth seek animation to center the clicked line
-                                        val centerTargetIndex = kotlin.math.max(0, index - 1)
-                                        lazyListState.animateScrollToItem(centerTargetIndex, targetOffset)
+                                        // Then animate it to center position slowly
+                                        val itemInfo = lazyListState.layoutInfo.visibleItemsInfo.firstOrNull { it.index == index }
+                                        if (itemInfo != null) {
+                                            val viewportHeight = lazyListState.layoutInfo.viewportEndOffset - lazyListState.layoutInfo.viewportStartOffset
+                                            val center = lazyListState.layoutInfo.viewportStartOffset + (viewportHeight / 2)
+                                            val itemCenter = itemInfo.offset + itemInfo.size / 2
+                                            val offset = itemCenter - center
+                                            
+                                            if (kotlin.math.abs(offset) > 10) { // Only animate if not already centered
+                                                lazyListState.animateScrollBy(
+                                                    value = offset.toFloat(),
+                                                    animationSpec = tween(durationMillis = 1500) // Reduced to half speed
+                                                )
+                                            }
+                                        }
                                     }
                                     lastPreviewTime = 0L
                                 }
@@ -592,7 +617,7 @@ fun Lyrics(
                     ) {
                         Text(
                             text = item.text,
-                            fontSize = if (index == displayedCurrentLineIndex && isSynced) 26.sp else 24.sp, // Larger text for better readability
+                            fontSize = 24.sp, // Uniform size for all lines matching latest enh version
                             color = if (index == displayedCurrentLineIndex && isSynced) {
                                 textColor // Full color for active line
                             } else {

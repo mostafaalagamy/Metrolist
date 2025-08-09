@@ -1281,7 +1281,8 @@ fun BottomSheetPlayer(
                         mediaMetadata = metadata,
                         onBackClick = { 
                             showLyricsScreen = false 
-                        }
+                        },
+                        navController = navController
                     )
                 }
             }
