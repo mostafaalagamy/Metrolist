@@ -182,4 +182,8 @@
         <item quantity="one">1 second</item>
         <item quantity="other">%d seconds</item>
     </plurals>
+
+    <!-- Player Settings -->
+    <string name="disable_load_more_when_repeat_all">Disable load more when repeat all</string>
+    <string name="disable_load_more_when_repeat_all_desc">Don\'t auto load more songs and similar content when repeat all mode is enabled</string>
 </resources>
