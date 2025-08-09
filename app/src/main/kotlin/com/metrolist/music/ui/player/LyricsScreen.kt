@@ -500,18 +500,18 @@ fun LyricsScreen(
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // All control buttons with consistent 16dp spacing like main player
+                // Optimized control buttons for better fit
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
-                    horizontalArrangement = Arrangement.Center,
+                        .padding(horizontal = 8.dp), // Reduced padding
+                    horizontalArrangement = Arrangement.SpaceEvenly, // Even distribution
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     // Repeat button
                     IconButton(
                         onClick = { playerConnection.player.toggleRepeatMode() },
-                        modifier = Modifier.size(44.dp)
+                        modifier = Modifier.size(40.dp) // Slightly smaller
                     ) {
                         Icon(
                             painter = painterResource(
@@ -525,31 +525,27 @@ fun LyricsScreen(
                             contentDescription = "Repeat",
                             tint = if (repeatMode == Player.REPEAT_MODE_OFF) 
                                 textBackgroundColor.copy(alpha = 0.5f) else textBackgroundColor,
-                            modifier = Modifier.size(22.dp)
+                            modifier = Modifier.size(20.dp)
                         )
                     }
-
-                    Spacer(modifier = Modifier.width(16.dp)) // Consistent spacing like main player
 
                     // Previous button
                     IconButton(
                         onClick = { player.seekToPrevious() },
-                        modifier = Modifier.size(44.dp)
+                        modifier = Modifier.size(40.dp) // Slightly smaller
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.skip_previous),
                             contentDescription = "Previous",
                             tint = textBackgroundColor,
-                            modifier = Modifier.size(26.dp)
+                            modifier = Modifier.size(24.dp)
                         )
                     }
-
-                    Spacer(modifier = Modifier.width(16.dp)) // Consistent spacing like main player
 
                     // Play/Pause button (largest)
                     IconButton(
                         onClick = { player.togglePlayPause() },
-                        modifier = Modifier.size(64.dp)
+                        modifier = Modifier.size(56.dp) // Slightly smaller but still prominent
                     ) {
                         Icon(
                             painter = painterResource(
@@ -557,38 +553,34 @@ fun LyricsScreen(
                             ),
                             contentDescription = if (isPlaying) "Pause" else "Play",
                             tint = textBackgroundColor,
-                            modifier = Modifier.size(44.dp)
+                            modifier = Modifier.size(36.dp)
                         )
                     }
-
-                    Spacer(modifier = Modifier.width(16.dp)) // Consistent spacing like main player
 
                     // Next button
                     IconButton(
                         onClick = { player.seekToNext() },
-                        modifier = Modifier.size(44.dp)
+                        modifier = Modifier.size(40.dp) // Slightly smaller
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.skip_next),
                             contentDescription = "Next",
                             tint = textBackgroundColor,
-                            modifier = Modifier.size(26.dp)
+                            modifier = Modifier.size(24.dp)
                         )
                     }
-
-                    Spacer(modifier = Modifier.width(16.dp)) // Consistent spacing like main player
 
                     // Shuffle button
                     IconButton(
                         onClick = { playerConnection.player.shuffleModeEnabled = !playerConnection.player.shuffleModeEnabled },
-                        modifier = Modifier.size(44.dp)
+                        modifier = Modifier.size(40.dp) // Slightly smaller
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.shuffle),
                             contentDescription = "Shuffle",
                             tint = if (playerConnection.player.shuffleModeEnabled) 
                                 textBackgroundColor else textBackgroundColor.copy(alpha = 0.5f),
-                            modifier = Modifier.size(22.dp)
+                            modifier = Modifier.size(20.dp)
                         )
                     }
                 }
@@ -603,35 +595,35 @@ fun LyricsScreen(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    // Details button (left) - matching control button size
+                    // Details button (left) - matching updated control button size
                     IconButton(
                         onClick = { 
                             bottomSheetPageState.show {
                                 ShowMediaInfo(mediaMetadata.id)
                             }
                         },
-                        modifier = Modifier.size(44.dp) // Same as control buttons
+                        modifier = Modifier.size(40.dp) // Same as updated control buttons
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.info),
                             contentDescription = "Details",
                             tint = textBackgroundColor,
-                            modifier = Modifier.size(22.dp) // Same as repeat/shuffle icons
+                            modifier = Modifier.size(20.dp) // Same as repeat/shuffle icons
                         )
                     }
 
-                    // Queue button (right) - matching control button size
+                    // Queue button (right) - matching updated control button size
                     IconButton(
                         onClick = { 
                             queueSheetState.expand(androidx.compose.animation.core.SpringSpec())
                         },
-                        modifier = Modifier.size(44.dp) // Same as control buttons
+                        modifier = Modifier.size(40.dp) // Same as updated control buttons
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.queue_music),
                             contentDescription = "Queue",
                             tint = textBackgroundColor,
-                            modifier = Modifier.size(22.dp) // Same as repeat/shuffle icons
+                            modifier = Modifier.size(20.dp) // Same as repeat/shuffle icons
                         )
                     }
                 }
