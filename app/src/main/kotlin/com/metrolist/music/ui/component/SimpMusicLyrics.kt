@@ -2,7 +2,6 @@ package com.metrolist.music.ui.component
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -32,9 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.extensions.animateScrollAndCentralizeItem
-import com.metrolist.music.lyrics.LyricsEntry
 import com.metrolist.music.lyrics.LyricsUtils
-import kotlin.math.abs
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -76,23 +73,23 @@ fun SimpMusicLyrics(
         if (currentTimeMs > 0L) {
             lines.indices.forEach { i ->
                 val sentence = lines[i]
-                val startTimeMs = sentence.startTime
+                val startTimeMs = sentence.time
                 
                 // Estimate end time based on next sentence or add default duration
                 val endTimeMs = if (i < lines.size - 1) {
-                    lines[i + 1].startTime
+                    lines[i + 1].time
                 } else {
                     startTimeMs + 60000 // Default 1 minute for last line
                 }
                 
-                if (currentTimeMs in startTimeMs..endTimeMs) {
+                if (currentTimeMs >= startTimeMs && currentTimeMs <= endTimeMs) {
                     currentLineIndex = i
                     return@LaunchedEffect
                 }
             }
             
             // If before first line, set to -1
-            if (lines.isNotEmpty() && currentTimeMs < lines[0].startTime) {
+            if (lines.isNotEmpty() && currentTimeMs < lines[0].time) {
                 currentLineIndex = -1
             }
         } else {

@@ -50,6 +50,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.C
+import androidx.media3.common.Player
 import androidx.media3.common.Player.STATE_READY
 import androidx.palette.graphics.Palette
 import androidx.core.graphics.drawable.toBitmap
@@ -87,7 +88,7 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.runCatching
-import com.metrolist.music.ui.utils.formatDuration
+import com.metrolist.music.utils.makeTimeString
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -105,6 +106,7 @@ fun LyricsScreen(
 
     val playbackState by playerConnection.playbackState.collectAsState()
     val isPlaying by playerConnection.isPlaying.collectAsState()
+    val repeatMode by playerConnection.repeatMode.collectAsState()
     
     // slider style preference
     val sliderStyle by rememberEnumPreference(SliderStyleKey, SliderStyle.DEFAULT)
@@ -421,12 +423,12 @@ fun LyricsScreen(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
-                        text = formatDuration((sliderPosition ?: position) / 1000),
+                        text = makeTimeString(sliderPosition ?: position),
                         style = MaterialTheme.typography.bodySmall,
                         color = textBackgroundColor.copy(alpha = 0.7f)
                     )
                     Text(
-                        text = if (duration != C.TIME_UNSET) formatDuration(duration / 1000) else "",
+                        text = if (duration != C.TIME_UNSET) makeTimeString(duration) else "",
                         style = MaterialTheme.typography.bodySmall,
                         color = textBackgroundColor.copy(alpha = 0.7f)
                     )
@@ -450,14 +452,14 @@ fun LyricsScreen(
                         Icon(
                             painter = painterResource(
                                 when (repeatMode) {
-                                    androidx.media3.common.Player.REPEAT_MODE_OFF, 
-                                    androidx.media3.common.Player.REPEAT_MODE_ALL -> R.drawable.repeat
-                                    androidx.media3.common.Player.REPEAT_MODE_ONE -> R.drawable.repeat_one
+                                    Player.REPEAT_MODE_OFF, 
+                                    Player.REPEAT_MODE_ALL -> R.drawable.repeat
+                                    Player.REPEAT_MODE_ONE -> R.drawable.repeat_one
                                     else -> R.drawable.repeat
                                 }
                             ),
                             contentDescription = "Repeat",
-                            tint = if (repeatMode == androidx.media3.common.Player.REPEAT_MODE_OFF) 
+                            tint = if (repeatMode == Player.REPEAT_MODE_OFF) 
                                 textBackgroundColor.copy(alpha = 0.5f) else textBackgroundColor,
                             modifier = Modifier.size(20.dp)
                         )
