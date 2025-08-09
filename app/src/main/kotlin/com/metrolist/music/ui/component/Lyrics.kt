@@ -604,7 +604,11 @@ fun Lyrics(
 
                     Column(
                         modifier = itemModifier,
-                        horizontalAlignment = Alignment.CenterHorizontally // Always center for SimpMusic style
+                        horizontalAlignment = when (lyricsTextPosition) {
+                            LyricsPosition.LEFT -> Alignment.Start
+                            LyricsPosition.CENTER -> Alignment.CenterHorizontally
+                            LyricsPosition.RIGHT -> Alignment.End
+                        }
                     ) {
                         Text(
                             text = item.text,
@@ -613,7 +617,11 @@ fun Lyrics(
                                 index == displayedCurrentLineIndex && isSynced -> textColor // Active line - maximum contrast (full opacity)
                                 else -> textColor.copy(alpha = 0.3f) // All other lines - very low contrast
                             },
-                            textAlign = TextAlign.Center,
+                            textAlign = when (lyricsTextPosition) {
+                                LyricsPosition.LEFT -> TextAlign.Left
+                                LyricsPosition.CENTER -> TextAlign.Center
+                                LyricsPosition.RIGHT -> TextAlign.Right
+                            },
                             fontWeight = FontWeight.Bold, // All lines bold as requested
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -627,7 +635,11 @@ fun Lyrics(
                                     text = romanized,
                                     fontSize = 16.sp,
                                     color = textColor.copy(alpha = 0.6f),
-                                    textAlign = TextAlign.Center,
+                                    textAlign = when (lyricsTextPosition) {
+                                        LyricsPosition.LEFT -> TextAlign.Left
+                                        LyricsPosition.CENTER -> TextAlign.Center
+                                        LyricsPosition.RIGHT -> TextAlign.Right
+                                    },
                                     fontWeight = FontWeight.Normal,
                                     modifier = Modifier
                                         .fillMaxWidth()
