@@ -114,6 +114,7 @@ fun LyricsScreen(
     val playbackState by playerConnection.playbackState.collectAsState()
     val isPlaying by playerConnection.isPlaying.collectAsState()
     val repeatMode by playerConnection.repeatMode.collectAsState()
+    val shuffleModeEnabled by playerConnection.shuffleModeEnabled.collectAsState()
     
     // slider style preference
     val sliderStyle by rememberEnumPreference(SliderStyleKey, SliderStyle.DEFAULT)
@@ -508,10 +509,10 @@ fun LyricsScreen(
                     horizontalArrangement = Arrangement.SpaceEvenly, // Even distribution
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    // Repeat button
+                    // Repeat button with clear state indication
                     IconButton(
                         onClick = { playerConnection.player.toggleRepeatMode() },
-                        modifier = Modifier.size(40.dp) // Slightly smaller
+                        modifier = Modifier.size(40.dp)
                     ) {
                         Icon(
                             painter = painterResource(
@@ -522,9 +523,19 @@ fun LyricsScreen(
                                     else -> R.drawable.repeat
                                 }
                             ),
-                            contentDescription = "Repeat",
-                            tint = if (repeatMode == Player.REPEAT_MODE_OFF) 
-                                textBackgroundColor.copy(alpha = 0.5f) else textBackgroundColor,
+                            contentDescription = when (repeatMode) {
+                                Player.REPEAT_MODE_OFF -> "Repeat Off"
+                                Player.REPEAT_MODE_ALL -> "Repeat All"
+                                Player.REPEAT_MODE_ONE -> "Repeat One"
+                                else -> "Repeat"
+                            },
+                            tint = if (repeatMode == Player.REPEAT_MODE_OFF) {
+                                // Inactive state - low opacity
+                                textBackgroundColor.copy(alpha = 0.4f)
+                            } else {
+                                // Active state - full brightness
+                                textBackgroundColor
+                            },
                             modifier = Modifier.size(20.dp)
                         )
                     }
@@ -570,16 +581,21 @@ fun LyricsScreen(
                         )
                     }
 
-                    // Shuffle button
+                    // Shuffle button with clear state indication
                     IconButton(
-                        onClick = { playerConnection.player.shuffleModeEnabled = !playerConnection.player.shuffleModeEnabled },
-                        modifier = Modifier.size(40.dp) // Slightly smaller
+                        onClick = { playerConnection.player.shuffleModeEnabled = !shuffleModeEnabled },
+                        modifier = Modifier.size(40.dp)
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.shuffle),
-                            contentDescription = "Shuffle",
-                            tint = if (playerConnection.player.shuffleModeEnabled) 
-                                textBackgroundColor else textBackgroundColor.copy(alpha = 0.5f),
+                            contentDescription = if (shuffleModeEnabled) "Shuffle On" else "Shuffle Off",
+                            tint = if (shuffleModeEnabled) {
+                                // Active state - full brightness
+                                textBackgroundColor
+                            } else {
+                                // Inactive state - low opacity
+                                textBackgroundColor.copy(alpha = 0.4f)
+                            },
                             modifier = Modifier.size(20.dp)
                         )
                     }
