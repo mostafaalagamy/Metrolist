@@ -76,6 +76,12 @@ import com.metrolist.music.models.MediaMetadata
 import com.metrolist.music.ui.component.Lyrics
 import com.metrolist.music.ui.component.LocalMenuState
 import com.metrolist.music.ui.component.PlayerSliderTrack
+import com.metrolist.music.ui.component.BottomSheetState
+import com.metrolist.music.ui.component.rememberBottomSheetState
+import com.metrolist.music.ui.component.LocalBottomSheetPageState
+import com.metrolist.music.ui.utils.ShowMediaInfo
+import com.metrolist.music.ui.player.Queue
+import androidx.navigation.NavController
 import me.saket.squiggles.SquigglySlider
 import com.metrolist.music.ui.menu.LyricsMenu
 import com.metrolist.music.ui.theme.PlayerColorExtractor
@@ -95,6 +101,7 @@ import com.metrolist.music.utils.makeTimeString
 fun LyricsScreen(
     mediaMetadata: MediaMetadata,
     onBackClick: () -> Unit,
+    navController: NavController,
     modifier: Modifier = Modifier
 ) {
     val playerConnection = LocalPlayerConnection.current ?: return
@@ -112,6 +119,16 @@ fun LyricsScreen(
     // slider style preference
     val sliderStyle by rememberEnumPreference(SliderStyleKey, SliderStyle.DEFAULT)
     val currentLyrics by playerConnection.currentLyrics.collectAsState(initial = null)
+    
+    // Queue sheet state
+    val queueSheetState = rememberBottomSheetState(
+        dismissedBound = 0.dp,
+        expandedBound = 800.dp,
+        collapsedBound = 1.dp
+    )
+    
+    // Details dialog state
+    val bottomSheetPageState = LocalBottomSheetPageState.current
 
     // Auto-fetch lyrics when no lyrics found (same logic as refetch)
     LaunchedEffect(mediaMetadata.id, currentLyrics) {
@@ -280,7 +297,7 @@ fun LyricsScreen(
                 .fillMaxSize()
                 .padding(WindowInsets.systemBars.asPaddingValues())
         ) {
-            // New Header Design: Centered "Now Playing" with down arrow
+            // Header with More button and Down arrow on opposite sides
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -288,8 +305,26 @@ fun LyricsScreen(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                // Spacer for balance
-                Spacer(modifier = Modifier.width(32.dp))
+                // Down arrow button (left)
+                Box(
+                    modifier = Modifier
+                        .size(32.dp)
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = ripple(
+                                bounded = true,
+                                radius = 16.dp
+                            )
+                        ) { onBackClick() },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.expand_more),
+                        contentDescription = "Close",
+                        tint = textBackgroundColor,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
                 
                 // Centered content
                 Column(
@@ -310,7 +345,7 @@ fun LyricsScreen(
                     )
                 }
                 
-                // Down arrow (replaces track image and more button)
+                // More button (right)
                 Box(
                     modifier = Modifier
                         .size(32.dp)
@@ -320,14 +355,22 @@ fun LyricsScreen(
                                 bounded = true,
                                 radius = 16.dp
                             )
-                        ) { onBackClick() },
+                        ) {
+                            menuState.show {
+                                LyricsMenu(
+                                    lyricsProvider = { currentLyrics },
+                                    mediaMetadataProvider = { mediaMetadata },
+                                    onDismiss = menuState::dismiss
+                                )
+                            }
+                        },
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        painter = painterResource(R.drawable.expand_more),
-                        contentDescription = "Close",
+                        painter = painterResource(R.drawable.more_horiz),
+                        contentDescription = "More options",
                         tint = textBackgroundColor,
-                        modifier = Modifier.size(24.dp)
+                        modifier = Modifier.size(20.dp)
                     )
                 }
             }
@@ -437,15 +480,15 @@ fun LyricsScreen(
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // Main control buttons (smaller and repositioned)
+                // Optimized control buttons for better fit
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 32.dp),
-                    horizontalArrangement = Arrangement.SpaceEvenly,
+                        .padding(horizontal = 8.dp), // Reduced padding
+                    horizontalArrangement = Arrangement.SpaceEvenly, // Even distribution
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    // Repeat button
+                    // Repeat button with clear state indication
                     IconButton(
                         onClick = { playerConnection.player.toggleRepeatMode() },
                         modifier = Modifier.size(40.dp)
@@ -453,15 +496,25 @@ fun LyricsScreen(
                         Icon(
                             painter = painterResource(
                                 when (repeatMode) {
-                                    Player.REPEAT_MODE_OFF,
+                                    Player.REPEAT_MODE_OFF, 
                                     Player.REPEAT_MODE_ALL -> R.drawable.repeat
                                     Player.REPEAT_MODE_ONE -> R.drawable.repeat_one
                                     else -> R.drawable.repeat
                                 }
                             ),
-                            contentDescription = "Repeat",
-                            tint = if (repeatMode == Player.REPEAT_MODE_OFF)
-                                textBackgroundColor.copy(alpha = 0.5f) else textBackgroundColor,
+                            contentDescription = when (repeatMode) {
+                                Player.REPEAT_MODE_OFF -> "Repeat Off"
+                                Player.REPEAT_MODE_ALL -> "Repeat All"
+                                Player.REPEAT_MODE_ONE -> "Repeat One"
+                                else -> "Repeat"
+                            },
+                            tint = if (repeatMode == Player.REPEAT_MODE_OFF) {
+                                // Inactive state - low opacity
+                                textBackgroundColor.copy(alpha = 0.4f)
+                            } else {
+                                // Active state - full brightness
+                                textBackgroundColor
+                            },
                             modifier = Modifier.size(20.dp)
                         )
                     }
@@ -469,7 +522,7 @@ fun LyricsScreen(
                     // Previous button
                     IconButton(
                         onClick = { player.seekToPrevious() },
-                        modifier = Modifier.size(40.dp)
+                        modifier = Modifier.size(40.dp) // Slightly smaller
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.skip_previous),
@@ -479,10 +532,10 @@ fun LyricsScreen(
                         )
                     }
 
-                    // Play/Pause button (slightly smaller)
+                    // Play/Pause button (largest)
                     IconButton(
                         onClick = { player.togglePlayPause() },
-                        modifier = Modifier.size(56.dp)
+                        modifier = Modifier.size(56.dp) // Slightly smaller but still prominent
                     ) {
                         Icon(
                             painter = painterResource(
@@ -490,14 +543,14 @@ fun LyricsScreen(
                             ),
                             contentDescription = if (isPlaying) "Pause" else "Play",
                             tint = textBackgroundColor,
-                            modifier = Modifier.size(40.dp)
+                            modifier = Modifier.size(36.dp)
                         )
                     }
 
                     // Next button
                     IconButton(
                         onClick = { player.seekToNext() },
-                        modifier = Modifier.size(40.dp)
+                        modifier = Modifier.size(40.dp) // Slightly smaller
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.skip_next),
@@ -507,67 +560,90 @@ fun LyricsScreen(
                         )
                     }
 
-                    // Shuffle button
+                    // Shuffle button with clear state indication
                     IconButton(
                         onClick = { playerConnection.player.shuffleModeEnabled = !shuffleModeEnabled },
                         modifier = Modifier.size(40.dp)
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.shuffle),
-                            contentDescription = "Shuffle",
-                            tint = if (shuffleModeEnabled)
-                                textBackgroundColor else textBackgroundColor.copy(alpha = 0.5f),
+                            contentDescription = if (shuffleModeEnabled) "Shuffle On" else "Shuffle Off",
+                            tint = if (shuffleModeEnabled) {
+                                // Active state - full brightness
+                                textBackgroundColor
+                            } else {
+                                // Inactive state - low opacity
+                                textBackgroundColor.copy(alpha = 0.4f)
+                            },
                             modifier = Modifier.size(20.dp)
                         )
                     }
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(24.dp)) // Proper spacing
 
-                // Queue and Details buttons
+                // Queue and Details buttons (matching control buttons size)
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 32.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween
+                        .padding(horizontal = 48.dp), // Better alignment with control buttons
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    // Details button (left)
+                    // Details button (left) - matching updated control button size
                     IconButton(
                         onClick = { 
-                            menuState.show {
-                                LyricsMenu(
-                                    lyricsProvider = { currentLyrics },
-                                    mediaMetadataProvider = { mediaMetadata },
-                                    onDismiss = menuState::dismiss
-                                )
+                            bottomSheetPageState.show {
+                                ShowMediaInfo(mediaMetadata.id)
                             }
                         },
-                        modifier = Modifier.size(40.dp)
+                        modifier = Modifier.size(40.dp) // Same as updated control buttons
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.info),
                             contentDescription = "Details",
                             tint = textBackgroundColor,
-                            modifier = Modifier.size(20.dp)
+                            modifier = Modifier.size(20.dp) // Same as repeat/shuffle icons
                         )
                     }
 
-                    // Queue button (right)
+                    // Queue button (right) - matching updated control button size
                     IconButton(
-                        onClick = { /* Handle queue action */ },
-                        modifier = Modifier.size(40.dp)
+                        onClick = { 
+                            queueSheetState.expand(androidx.compose.animation.core.SpringSpec())
+                        },
+                        modifier = Modifier.size(40.dp) // Same as updated control buttons
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.queue_music),
                             contentDescription = "Queue",
                             tint = textBackgroundColor,
-                            modifier = Modifier.size(20.dp)
+                            modifier = Modifier.size(20.dp) // Same as repeat/shuffle icons
                         )
                     }
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))
             }
+
+
         }
+        
+        // Queue Sheet
+        Queue(
+            state = queueSheetState,
+            playerBottomSheetState = queueSheetState, // Using same state for now
+            navController = navController,
+            backgroundColor = when (playerBackground) {
+                PlayerBackgroundStyle.DEFAULT -> MaterialTheme.colorScheme.surface
+                else -> Color.Black.copy(alpha = 0.9f)
+            },
+            onBackgroundColor = textBackgroundColor,
+            TextBackgroundColor = textBackgroundColor,
+            textButtonColor = textBackgroundColor,
+            iconButtonColor = icBackgroundColor,
+            onShowLyrics = { onBackClick() }, // Return to lyrics when called from queue
+            pureBlack = false
+        )
     }
 }
