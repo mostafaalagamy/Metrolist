@@ -61,7 +61,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.fastForEachIndexed
 import androidx.core.net.toUri
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.media3.exoplayer.offline.Download
 import androidx.media3.exoplayer.offline.DownloadRequest
 import androidx.media3.exoplayer.offline.DownloadService
@@ -397,7 +397,7 @@ fun AlbumScreen(
                 }
             }
 
-            if (wrappedSongs != null) {
+            if (!wrappedSongs.isNullOrEmpty()) {
                 itemsIndexed(
                     items = wrappedSongs,
                     key = { _, song -> song.item.id },

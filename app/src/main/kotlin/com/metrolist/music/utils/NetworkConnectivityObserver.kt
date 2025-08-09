@@ -71,13 +71,7 @@ class NetworkConnectivityObserver(context: Context) {
             
             hasInternet && isValidated
         } catch (e: Exception) {
-            // As fallback, try a more basic connectivity check
-            try {
-                val activeNetwork = connectivityManager.activeNetworkInfo
-                activeNetwork?.isConnectedOrConnecting == true
-            } catch (e2: Exception) {
-                false
-            }
+            false
         }
     }
 }

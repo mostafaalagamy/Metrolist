@@ -1,6 +1,8 @@
 package com.metrolist.music.db.entities
 
 import androidx.compose.runtime.Immutable
+import androidx.room.ColumnInfo
+import androidx.room.Ignore
 import androidx.room.Embedded
 import androidx.room.Junction
 import androidx.room.Relation
@@ -20,10 +22,10 @@ data class Album(
             entityColumn = "artistId",
         ),
     )
-    val artists: List<ArtistEntity>,
-    val songCountListened: Int? = 0,
-    val timeListened: Int? = 0,
+    val artists: List<ArtistEntity> = emptyList(),
 ) : LocalItem() {
+    @Ignore var songCountListened: Int = 0
+    @Ignore var timeListened: Long = 0
     override val id: String
         get() = album.id
     override val title: String
