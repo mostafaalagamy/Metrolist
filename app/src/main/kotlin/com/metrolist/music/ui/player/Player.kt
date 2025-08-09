@@ -80,8 +80,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.foundation.gestures.awaitEachGesture
-import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -1274,25 +1273,26 @@ fun BottomSheetPlayer(
                     targetOffsetY = { it }
                 )
             ) {
-                Surface(
+                Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .pointerInput(Unit) {
-                            awaitEachGesture {
-                                while (true) {
-                                    awaitPointerEvent()
-                                }
-                            }
-                        },
-                    color = MaterialTheme.colorScheme.surface
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null
+                        ) { }
                 ) {
-                    LyricsScreen(
-                        mediaMetadata = metadata,
-                        onBackClick = { 
-                            showLyricsScreen = false 
-                        },
-                        navController = navController
-                    )
+                    Surface(
+                        modifier = Modifier.fillMaxSize(),
+                        color = MaterialTheme.colorScheme.surface
+                    ) {
+                        LyricsScreen(
+                            mediaMetadata = metadata,
+                            onBackClick = { 
+                                showLyricsScreen = false 
+                            },
+                            navController = navController
+                        )
+                    }
                 }
             }
         }
