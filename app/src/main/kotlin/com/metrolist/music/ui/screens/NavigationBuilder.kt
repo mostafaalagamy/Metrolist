@@ -52,6 +52,7 @@ import com.metrolist.music.ui.screens.library.LibraryScreen
 import com.metrolist.music.ui.screens.playlist.AutoPlaylistScreen
 import com.metrolist.music.ui.screens.playlist.LocalPlaylistScreen
 import com.metrolist.music.ui.screens.playlist.OnlinePlaylistScreen
+import com.metrolist.music.ui.screens.LyricsPage
 import com.metrolist.music.ui.screens.playlist.TopPlaylistScreen
 import com.metrolist.music.ui.screens.playlist.CachePlaylistScreen
 import com.metrolist.music.ui.screens.search.OnlineSearchResult
@@ -102,6 +103,19 @@ fun NavGraphBuilder.navigationBuilder(
     }
     composable("charts_screen") {
        ChartsScreen(navController)
+    }
+    composable(
+        route = "lyrics/{mediaId}",
+        arguments = listOf(
+            navArgument("mediaId") {
+                type = NavType.StringType
+            }
+        )
+    ) {
+        LyricsPage(
+            mediaId = it.arguments?.getString("mediaId") ?: "",
+            navController = navController
+        )
     }
     composable(
         route = "browse/{browseId}",

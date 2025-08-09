@@ -14,8 +14,7 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
+
 import androidx.compose.animation.togetherWith
 import androidx.compose.animation.with
 import androidx.compose.foundation.Image
@@ -80,7 +79,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.foundation.gestures.awaitEachGesture
+
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
@@ -236,7 +235,7 @@ fun BottomSheetPlayer(
     val canSkipPrevious by playerConnection.canSkipPrevious.collectAsState()
     val canSkipNext by playerConnection.canSkipNext.collectAsState()
 
-    var showLyricsScreen by remember { mutableStateOf(false) }
+
 
     val sliderStyle by rememberEnumPreference(SliderStyleKey, SliderStyle.DEFAULT)
 
@@ -1259,45 +1258,14 @@ fun BottomSheetPlayer(
             TextBackgroundColor = TextBackgroundColor,
             textButtonColor = textButtonColor,
             iconButtonColor = iconButtonColor,
-            onShowLyrics = { showLyricsScreen = true },
+            onShowLyrics = { 
+                mediaMetadata?.id?.let { mediaId ->
+                    navController.navigate("lyrics/$mediaId")
+                }
+            },
             pureBlack = pureBlack,
         )
         
-        // Lyrics Screen with AnimatedVisibility
-        mediaMetadata?.let { metadata ->
-            AnimatedVisibility(
-                visible = showLyricsScreen,
-                enter = slideInVertically(
-                    animationSpec = tween(300),
-                    initialOffsetY = { it }
-                ),
-                exit = slideOutVertically(
-                    animationSpec = tween(300),
-                    targetOffsetY = { it }
-                )
-            ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(MaterialTheme.colorScheme.surface)
-                        .pointerInput(Unit) {
-                            awaitEachGesture {
-                                while (true) {
-                                    val event = awaitPointerEvent()
-                                    event.changes.forEach { it.consume() }
-                                }
-                            }
-                        }
-                ) {
-                    LyricsScreen(
-                        mediaMetadata = metadata,
-                        onBackClick = { 
-                            showLyricsScreen = false 
-                        },
-                        navController = navController
-                    )
-                }
-            }
-        }
+
     }
 }
