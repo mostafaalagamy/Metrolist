@@ -439,7 +439,7 @@ fun Lyrics(
             state = lazyListState,
             contentPadding = WindowInsets.systemBars
                 .only(WindowInsetsSides.Top)
-                .add(WindowInsets(top = maxHeight / 2 - 20.dp, bottom = maxHeight / 2 + 100.dp))
+                .add(WindowInsets(top = 120.dp, bottom = 200.dp)) // Full screen coverage with generous spacing
                 .asPaddingValues(),
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
@@ -581,24 +581,25 @@ fun Lyrics(
                     ) {
                         Text(
                             text = item.text,
-                            fontSize = if (index == displayedCurrentLineIndex && isSynced) 28.sp else 22.sp, // SimpMusic-style sizing
-                            color = if (index == displayedCurrentLineIndex && isSynced) {
-                                textColor // Full color for active line
-                            } else {
-                                // SimpMusic-style alpha gradation
-                                val distance = kotlin.math.abs(index - displayedCurrentLineIndex)
-                                val alpha = when {
-                                    distance == 1 -> 0.6f // Adjacent lines
-                                    distance >= 2 -> 0.4f // Distant lines
-                                    else -> 1f
-                                }
-                                textColor.copy(alpha = alpha)
+                            fontSize = when {
+                                index == displayedCurrentLineIndex && isSynced -> 26.sp // Active line - largest
+                                index < displayedCurrentLineIndex -> 24.sp // Previous lines - larger
+                                else -> 20.sp // Future lines - smaller
                             },
-                            textAlign = TextAlign.Center, // Always center for SimpMusic style
-                            fontWeight = if (index == displayedCurrentLineIndex && isSynced) FontWeight.Bold else FontWeight.Normal,
+                            color = when {
+                                index == displayedCurrentLineIndex && isSynced -> textColor // Active line - full color
+                                index < displayedCurrentLineIndex -> textColor.copy(alpha = 0.8f) // Previous lines - high visibility
+                                else -> textColor.copy(alpha = 0.5f) // Future lines - low visibility
+                            },
+                            textAlign = TextAlign.Center,
+                            fontWeight = when {
+                                index == displayedCurrentLineIndex && isSynced -> FontWeight.ExtraBold // Active line - boldest
+                                index < displayedCurrentLineIndex -> FontWeight.Bold // Previous lines - bold
+                                else -> FontWeight.Normal // Future lines - normal
+                            },
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(horizontal = 32.dp, vertical = 8.dp) // More generous padding like SimpMusic
+                                .padding(start = 24.dp, top = 12.dp, end = 24.dp, bottom = 12.dp) // Full screen generous spacing
                         )
                         if (romanizeJapaneseLyrics || romanizeKoreanLyrics) {
                             // Show romanized text if available
@@ -612,7 +613,7 @@ fun Lyrics(
                                     fontWeight = FontWeight.Normal,
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .padding(top = 4.dp, horizontal = 32.dp)
+                                        .padding(start = 32.dp, top = 4.dp, end = 32.dp)
                                 )
                             }
                         }

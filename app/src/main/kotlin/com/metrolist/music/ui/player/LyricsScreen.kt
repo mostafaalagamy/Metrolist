@@ -304,36 +304,24 @@ fun LyricsScreen(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                // More button (left)
+                // Down arrow button (left)
                 Box(
                     modifier = Modifier
                         .size(32.dp)
-                        .background(
-                            color = icBackgroundColor.copy(alpha = 0.3f),
-                            shape = CircleShape
-                        )
                         .clickable(
                             interactionSource = remember { MutableInteractionSource() },
                             indication = ripple(
                                 bounded = true,
                                 radius = 16.dp
                             )
-                        ) {
-                            menuState.show {
-                                LyricsMenu(
-                                    lyricsProvider = { currentLyrics },
-                                    mediaMetadataProvider = { mediaMetadata },
-                                    onDismiss = menuState::dismiss
-                                )
-                            }
-                        },
+                        ) { onBackClick() },
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        painter = painterResource(R.drawable.more_horiz),
-                        contentDescription = "More options",
+                        painter = painterResource(R.drawable.expand_more),
+                        contentDescription = "Close",
                         tint = textBackgroundColor,
-                        modifier = Modifier.size(20.dp)
+                        modifier = Modifier.size(24.dp)
                     )
                 }
                 
@@ -356,7 +344,7 @@ fun LyricsScreen(
                     )
                 }
                 
-                // Down arrow (right)
+                // More button (right)
                 Box(
                     modifier = Modifier
                         .size(32.dp)
@@ -366,14 +354,22 @@ fun LyricsScreen(
                                 bounded = true,
                                 radius = 16.dp
                             )
-                        ) { onBackClick() },
+                        ) {
+                            menuState.show {
+                                LyricsMenu(
+                                    lyricsProvider = { currentLyrics },
+                                    mediaMetadataProvider = { mediaMetadata },
+                                    onDismiss = menuState::dismiss
+                                )
+                            }
+                        },
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        painter = painterResource(R.drawable.expand_more),
-                        contentDescription = "Close",
+                        painter = painterResource(R.drawable.more_horiz),
+                        contentDescription = "More options",
                         tint = textBackgroundColor,
-                        modifier = Modifier.size(24.dp)
+                        modifier = Modifier.size(20.dp)
                     )
                 }
             }
