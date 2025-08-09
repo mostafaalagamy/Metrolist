@@ -122,6 +122,7 @@ import com.metrolist.music.ui.utils.fadingEdge
 import com.metrolist.music.utils.ComposeToImage
 import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
+import com.metrolist.music.extensions.animateScrollAndCentralizeItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
@@ -327,19 +328,36 @@ fun Lyrics(
         selectedIndices.clear()
     }
 
-    LaunchedEffect(lyrics) {
+    LaunchedEffect(lyrics, playerConnection.player.currentPosition) {
         if (lyrics.isNullOrEmpty() || !lyrics.startsWith("[")) {
             currentLineIndex = -1
             return@LaunchedEffect
         }
-        while (isActive) {
-            delay(200) // Increased from 50ms to 200ms for smoother transitions
-            val sliderPosition = sliderPositionProvider()
-            isSeeking = sliderPosition != null
-            currentLineIndex = findCurrentLineIndex(
-                lines,
-                sliderPosition ?: playerConnection.player.currentPosition
-            )
+        
+        val currentTimeMs = sliderPositionProvider() ?: playerConnection.player.currentPosition
+        isSeeking = sliderPositionProvider() != null
+        
+        // SimpMusic-inspired line detection: simple time range check
+        lines.indices.forEach { i ->
+            val sentence = lines[i]
+            val startTimeMs = sentence.startTime
+            
+            // Estimate end time based on next sentence or add default duration
+            val endTimeMs = if (i < lines.size - 1) {
+                lines[i + 1].startTime
+            } else {
+                startTimeMs + 60000 // Default 1 minute for last line
+            }
+            
+            if (currentTimeMs in startTimeMs..endTimeMs) {
+                currentLineIndex = i
+                return@LaunchedEffect
+            }
+        }
+        
+        // If before first line, set to -1
+        if (lines.isNotEmpty() && currentTimeMs < lines[0].startTime) {
+            currentLineIndex = -1
         }
     }
 
@@ -352,70 +370,13 @@ fun Lyrics(
         }
     }
 
-    LaunchedEffect(currentLineIndex, lastPreviewTime, initialScrollDone) {
-
-        /**
-         * Calculate the lyric offset Based on how many lines (\n chars)
-         */
-        fun calculateOffset() = with(density) {
-            if (currentLineIndex < 0 || currentLineIndex >= lines.size) return@with 0
-            val currentItem = lines[currentLineIndex]
-            val totalNewLines = currentItem.text.count { it == '\n' }
-
-            val dpValue = if (landscapeOffset) 16.dp else 20.dp
-            dpValue.toPx().toInt() * totalNewLines
-        }
-
-        if (!isSynced) return@LaunchedEffect
-        
-        // Professional smooth page animation inspired by Metrolist design
-        suspend fun performSmoothPageScroll(targetIndex: Int, duration: Int = 800) {
-            if (isAnimating) return // Prevent multiple animations
-            
-            isAnimating = true
-            
-            try {
-                // Calculate offset to center the active line group (current + prev + next)
-                // This ensures the active lines are always in the middle of the screen
-                val targetOffset = with(density) { 100.dp.toPx().toInt() } // Fixed center offset
-                
-                // Use native Compose animation for butter-smooth scrolling
-                lazyListState.animateScrollToItem(
-                    index = targetIndex,
-                    scrollOffset = targetOffset
-                )
-                
-
-            } finally {
-                isAnimating = false
-            }
-        }
-        
-        if((currentLineIndex == 0 && shouldScrollToFirstLine) || !initialScrollDone) {
-            shouldScrollToFirstLine = false
-            // Initial scroll to center the first line with medium animation (600ms)
-            val initialCenterIndex = kotlin.math.max(0, currentLineIndex - 1)
-            performSmoothPageScroll(initialCenterIndex, METROLIST_INITIAL_SCROLL_DURATION.toInt())
-            if(!isAppMinimized) {
-                initialScrollDone = true
-            }
-        } else if (currentLineIndex != -1) {
-            deferredCurrentLineIndex = currentLineIndex
-            if (isSeeking) {
-                // Fast scroll for seeking to center the target line (300ms)
-                val seekCenterIndex = kotlin.math.max(0, currentLineIndex - 1)
-                performSmoothPageScroll(seekCenterIndex, METROLIST_FAST_SEEK_DURATION.toInt())
-            } else if ((lastPreviewTime == 0L || currentLineIndex != previousLineIndex) && scrollLyrics) {
-                // Always scroll to center the active line (current + previous + next)
-                if (currentLineIndex != previousLineIndex) {
-                    // Calculate which line should be at the top to center the active group
-                    val centerTargetIndex = kotlin.math.max(0, currentLineIndex - 1) // Show previous line at top to center current
-                    performSmoothPageScroll(centerTargetIndex, METROLIST_AUTO_SCROLL_DURATION.toInt())
-                }
-            }
-        }
-        if(currentLineIndex > 0) {
-            shouldScrollToFirstLine = true
+    LaunchedEffect(currentLineIndex) {
+        // SimpMusic-inspired smooth centering animation
+        if (currentLineIndex > -1 && scrollLyrics && isSynced) {
+            lazyListState.animateScrollAndCentralizeItem(
+                index = currentLineIndex,
+                scope = this
+            )
         }
         previousLineIndex = currentLineIndex
     }
