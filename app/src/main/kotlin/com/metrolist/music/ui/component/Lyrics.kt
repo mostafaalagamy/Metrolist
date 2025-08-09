@@ -8,6 +8,8 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
@@ -606,13 +608,20 @@ fun Lyrics(
                         modifier = itemModifier,
                         horizontalAlignment = Alignment.CenterHorizontally // Always center for SimpMusic style
                     ) {
+                        // Animated font size for smooth transitions
+                        val animatedFontSize by animateFloatAsState(
+                            targetValue = when {
+                                index == displayedCurrentLineIndex && isSynced -> 26f // Active line - largest
+                                index < displayedCurrentLineIndex -> 24f // Previous lines - larger
+                                else -> 20f // Future lines - smaller
+                            },
+                            animationSpec = tween(durationMillis = 600), // Smooth font size animation
+                            label = "FontSizeAnimation"
+                        )
+                        
                         Text(
                             text = item.text,
-                            fontSize = when {
-                                index == displayedCurrentLineIndex && isSynced -> 26.sp // Active line - largest
-                                index < displayedCurrentLineIndex -> 24.sp // Previous lines - larger
-                                else -> 20.sp // Future lines - smaller
-                            },
+                            fontSize = animatedFontSize.sp,
                             color = when {
                                 index == displayedCurrentLineIndex && isSynced -> textColor // Active line - full color
                                 index < displayedCurrentLineIndex -> textColor.copy(alpha = 0.8f) // Previous lines - high visibility

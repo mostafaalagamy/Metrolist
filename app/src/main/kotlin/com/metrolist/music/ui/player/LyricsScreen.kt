@@ -500,12 +500,12 @@ fun LyricsScreen(
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // All control buttons in one row
+                // All control buttons in one row with custom spacing
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 32.dp),
-                    horizontalArrangement = Arrangement.SpaceEvenly,
+                        .padding(horizontal = 24.dp),
+                    horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     // Repeat button
@@ -529,6 +529,8 @@ fun LyricsScreen(
                         )
                     }
 
+                    Spacer(modifier = Modifier.width(16.dp)) // Space between repeat and previous
+
                     // Previous button
                     IconButton(
                         onClick = { player.seekToPrevious() },
@@ -541,6 +543,8 @@ fun LyricsScreen(
                             modifier = Modifier.size(26.dp)
                         )
                     }
+
+                    Spacer(modifier = Modifier.width(8.dp)) // Smaller space around play button
 
                     // Play/Pause button (largest)
                     IconButton(
@@ -557,6 +561,8 @@ fun LyricsScreen(
                         )
                     }
 
+                    Spacer(modifier = Modifier.width(8.dp)) // Smaller space around play button
+
                     // Next button
                     IconButton(
                         onClick = { player.seekToNext() },
@@ -569,6 +575,8 @@ fun LyricsScreen(
                             modifier = Modifier.size(26.dp)
                         )
                     }
+
+                    Spacer(modifier = Modifier.width(16.dp)) // Space between next and shuffle
 
                     // Shuffle button
                     IconButton(
@@ -587,11 +595,11 @@ fun LyricsScreen(
 
                 Spacer(modifier = Modifier.height(32.dp)) // Increased spacing
 
-                // Queue and Details buttons (far left and far right)
+                // Queue and Details buttons (aligned with control buttons spacing)
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 24.dp),
+                        .padding(horizontal = 40.dp), // Matching the control buttons visual alignment
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
