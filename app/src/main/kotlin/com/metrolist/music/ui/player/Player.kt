@@ -14,8 +14,7 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
+
 import androidx.compose.animation.togetherWith
 import androidx.compose.animation.with
 import androidx.compose.foundation.Image
@@ -23,7 +22,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
+
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -473,6 +472,21 @@ fun BottomSheetPlayer(
         collapsedBound = dismissedBound + 1.dp,
         initialAnchor = 1
     )
+
+    val lyricsSheetState = rememberBottomSheetState(
+        dismissedBound = dismissedBound,
+        expandedBound = state.expandedBound,
+        collapsedBound = dismissedBound + 1.dp,
+        initialAnchor = if (showLyricsScreen) 0 else 1
+    )
+
+    LaunchedEffect(showLyricsScreen) {
+        if (showLyricsScreen) {
+            lyricsSheetState.expandSoft()
+        } else {
+            lyricsSheetState.dismissSoft()
+        }
+    }
 
     BottomSheet(
         state = state,
@@ -1261,40 +1275,35 @@ fun BottomSheetPlayer(
             pureBlack = pureBlack,
         )
         
-        // Lyrics Screen with animation
+        // Lyrics Screen with BottomSheet
         mediaMetadata?.let { metadata ->
-            AnimatedVisibility(
-                visible = showLyricsScreen,
-                enter = slideInVertically(
-                    animationSpec = tween(300),
-                    initialOffsetY = { it }
-                ),
-                exit = slideOutVertically(
-                    animationSpec = tween(300),
-                    targetOffsetY = { it }
-                )
-            ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .clickable(
-                            interactionSource = remember { MutableInteractionSource() },
-                            indication = null
-                        ) { }
-                ) {
-                    Surface(
-                        modifier = Modifier.fillMaxSize(),
-                        color = MaterialTheme.colorScheme.surface
-                    ) {
-                        LyricsScreen(
-                            mediaMetadata = metadata,
-                            onBackClick = { 
-                                showLyricsScreen = false 
-                            },
-                            navController = navController
-                        )
+            BottomSheet(
+                state = lyricsSheetState,
+                modifier = Modifier,
+                backgroundColor = when (playerBackground) {
+                    PlayerBackgroundStyle.BLUR, PlayerBackgroundStyle.GRADIENT -> {
+                        val progress = ((lyricsSheetState.value - lyricsSheetState.collapsedBound) / (lyricsSheetState.expandedBound - lyricsSheetState.collapsedBound))
+                            .coerceIn(0f, 1f)
+                        val fadeProgress = if (progress < 0.2f) {
+                            (0.2f - progress) / 0.2f
+                        } else 0f
+                        Color.Black.copy(alpha = 1f - fadeProgress)
+                    } else -> {
+                        MaterialTheme.colorScheme.surface.copy(alpha = 1f - ((lyricsSheetState.value - lyricsSheetState.collapsedBound) / (lyricsSheetState.expandedBound - lyricsSheetState.collapsedBound)).coerceIn(0f, 0.2f) / 0.2f)
                     }
-                }
+                },
+                onDismiss = {
+                    showLyricsScreen = false
+                },
+                collapsedContent = { },
+            ) {
+                LyricsScreen(
+                    mediaMetadata = metadata,
+                    onBackClick = { 
+                        showLyricsScreen = false 
+                    },
+                    navController = navController
+                )
             }
         }
     }
