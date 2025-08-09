@@ -138,6 +138,7 @@ import kotlin.time.Duration.Companion.seconds
 @Composable
 fun Lyrics(
     sliderPositionProvider: () -> Long?,
+    isPlaying: Boolean = false,
     modifier: Modifier = Modifier,
 ) {
     val playerConnection = LocalPlayerConnection.current ?: return
@@ -394,7 +395,7 @@ fun Lyrics(
                         if (kotlin.math.abs(offset) > 10) { // Only animate if not already centered
                             lazyListState.animateScrollBy(
                                 value = offset.toFloat(),
-                                animationSpec = tween(durationMillis = 3000)
+                                animationSpec = tween(durationMillis = 1500) // Reduced to half speed
                             )
                         }
                     }
@@ -420,8 +421,8 @@ fun Lyrics(
                 // Fast scroll for seeking to center the target line (300ms)
                 val seekCenterIndex = kotlin.math.max(0, currentLineIndex - 1)
                 performSmoothPageScroll(seekCenterIndex, METROLIST_FAST_SEEK_DURATION.toInt())
-            } else if ((lastPreviewTime == 0L || currentLineIndex != previousLineIndex) && scrollLyrics) {
-                // Always scroll to center the active line (current + previous + next)
+            } else if ((lastPreviewTime == 0L || currentLineIndex != previousLineIndex) && scrollLyrics && isPlaying) {
+                // Only auto-scroll when track is playing and lyrics settings allow it
                 if (currentLineIndex != previousLineIndex) {
                     // Calculate which line should be at the top to center the active group
                     val centerTargetIndex = kotlin.math.max(0, currentLineIndex - 1) // Show previous line at top to center current
@@ -557,7 +558,7 @@ fun Lyrics(
                                             if (kotlin.math.abs(offset) > 10) { // Only animate if not already centered
                                                 lazyListState.animateScrollBy(
                                                     value = offset.toFloat(),
-                                                    animationSpec = tween(durationMillis = 3000)
+                                                    animationSpec = tween(durationMillis = 1500) // Reduced to half speed
                                                 )
                                             }
                                         }

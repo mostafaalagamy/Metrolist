@@ -383,7 +383,8 @@ fun LyricsScreen(
                 contentAlignment = Alignment.TopCenter
             ) {
                 Lyrics(
-                    sliderPositionProvider = { sliderPosition }
+                    sliderPositionProvider = { sliderPosition },
+                    isPlaying = isPlaying
                 )
             }
 
