@@ -136,7 +136,6 @@ import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
 import com.metrolist.music.viewmodels.LocalPlaylistViewModel
 import kotlinx.coroutines.Dispatchers
-
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyListState
 import java.time.LocalDateTime
@@ -416,8 +415,6 @@ fun LocalPlaylistScreen(
             lazyListState.firstVisibleItemIndex > 0
         }
     }
-
-
 
     Box(
         modifier = Modifier.fillMaxSize(),
