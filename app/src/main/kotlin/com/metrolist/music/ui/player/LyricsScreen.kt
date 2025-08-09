@@ -90,13 +90,13 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import com.metrolist.music.constants.LyricsClickKey
 import com.metrolist.music.constants.LyricsScrollKey
 import com.metrolist.music.utils.rememberPreference
+import com.metrolist.music.playback.PlayerConnection
 import com.metrolist.music.ui.component.BottomSheetState
 import com.metrolist.music.ui.component.rememberBottomSheetState
 import com.metrolist.music.ui.player.Queue
 import androidx.navigation.NavController
-import com.metrolist.music.ui.component.BottomSheetPageState
-import com.metrolist.music.ui.component.rememberBottomSheetPageState
-import com.metrolist.music.ui.component.ShowMediaInfo
+import com.metrolist.music.ui.component.LocalBottomSheetPageState
+import com.metrolist.music.ui.utils.ShowMediaInfo
 import me.saket.squiggles.SquigglySlider
 import com.metrolist.music.ui.menu.LyricsMenu
 import com.metrolist.music.ui.theme.PlayerColorExtractor
@@ -142,7 +142,7 @@ fun LyricsScreen(
     )
     
     // Details dialog state
-    val bottomSheetPageState = rememberBottomSheetPageState()
+    val bottomSheetPageState = LocalBottomSheetPageState.current
 
     // Auto-fetch lyrics when no lyrics found (same logic as refetch)
     LaunchedEffect(mediaMetadata.id, currentLyrics) {
@@ -613,7 +613,7 @@ fun LyricsScreen(
                     // Queue button (right)
                     IconButton(
                         onClick = { 
-                            queueSheetState.collapseTo(queueSheetState.expandedBound)
+                            queueSheetState.expand(androidx.compose.animation.core.SpringSpec())
                         },
                         modifier = Modifier.size(40.dp)
                     ) {
@@ -648,5 +648,154 @@ fun LyricsScreen(
             onShowLyrics = { onBackClick() }, // Return to lyrics when called from queue
             pureBlack = false
         )
+    }
+}
+
+@Composable
+private fun SimpMusicStyleLyrics(
+    sliderPosition: Long?,
+    textColor: Color,
+    playerConnection: PlayerConnection
+) {
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    
+    // Get lyrics settings
+    val scrollLyrics by rememberPreference(LyricsScrollKey, true)
+    
+    val currentLyrics by playerConnection.currentLyrics.collectAsState(initial = null)
+    val lyrics = remember(currentLyrics) { currentLyrics?.lyrics?.trim() }
+    
+    // Parse lyrics
+    val lines = remember(lyrics) {
+        if (lyrics.isNullOrEmpty() || !lyrics.startsWith("[")) {
+            emptyList()
+        } else {
+            LyricsUtils.parseLyrics(lyrics)
+        }
+    }
+
+    var currentLineIndex by rememberSaveable { mutableIntStateOf(-1) }
+    var currentLineHeight by remember { mutableIntStateOf(0) }
+    val listState = rememberLazyListState()
+    
+    // Improved synchronization logic with continuous updates
+    LaunchedEffect(Unit) {
+        while (true) {
+            kotlinx.coroutines.delay(100) // Update every 100ms for smooth sync
+            
+            if (lines.isEmpty()) {
+                currentLineIndex = -1
+                continue
+            }
+            
+            val currentTimeMs = sliderPosition ?: playerConnection.player.currentPosition
+            
+            if (currentTimeMs > 0L) {
+                var foundIndex = -1
+                lines.forEachIndexed { i, sentence ->
+                    val startTimeMs = sentence.time
+                    val endTimeMs = if (i < lines.size - 1) {
+                        lines[i + 1].time
+                    } else {
+                        startTimeMs + 60000
+                    }
+                    
+                    if (currentTimeMs >= startTimeMs && currentTimeMs <= endTimeMs) {
+                        foundIndex = i
+                        return@forEachIndexed
+                    }
+                }
+                
+                // Update current line index
+                if (foundIndex != currentLineIndex) {
+                    currentLineIndex = foundIndex
+                }
+                
+                // If before first line, set to -1
+                if (lines.isNotEmpty() && currentTimeMs < lines[0].time) {
+                    currentLineIndex = -1
+                }
+            } else {
+                currentLineIndex = -1
+            }
+        }
+    }
+
+    // SimpMusic-inspired smooth animation with smart positioning
+    LaunchedEffect(currentLineIndex) {
+        if (currentLineIndex > -1 && scrollLyrics && lines.isNotEmpty()) {
+            // Smart scrolling: when near end, scroll up a bit to show remaining lines
+            val targetIndex = if (currentLineIndex >= lines.size - 3) {
+                // Near end, show a bit more context by scrolling up
+                kotlin.math.max(0, currentLineIndex - 2)
+            } else {
+                currentLineIndex
+            }
+            
+            listState.animateScrollAndCentralizeItem(
+                index = targetIndex,
+                scope = this
+            )
+        }
+    }
+
+    if (lines.isEmpty()) {
+        // Show no lyrics message
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = "No lyrics available",
+                style = MaterialTheme.typography.bodyLarge,
+                color = textColor.copy(alpha = 0.7f),
+                textAlign = TextAlign.Center
+            )
+        }
+    } else {
+        // SimpMusic-style full screen lyrics display
+        LazyColumn(
+            state = listState,
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            // Add top spacing for better positioning
+            item {
+                Spacer(modifier = Modifier.height(250.dp))
+            }
+            
+            itemsIndexed(lines) { index, line ->
+                val isCurrentLine = index == currentLineIndex
+                val alpha = when {
+                    isCurrentLine -> 1f
+                    index == currentLineIndex - 1 || index == currentLineIndex + 1 -> 0.6f
+                    else -> 0.4f
+                }
+                
+                Text(
+                    text = line.text,
+                    style = MaterialTheme.typography.headlineSmall.copy(
+                        fontSize = if (isCurrentLine) 26.sp else 22.sp,
+                        fontWeight = if (isCurrentLine) FontWeight.Bold else FontWeight.Normal
+                    ),
+                    color = textColor.copy(alpha = alpha),
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp, vertical = 12.dp)
+                        .onGloballyPositioned { layoutCoordinates ->
+                            if (isCurrentLine) {
+                                currentLineHeight = layoutCoordinates.size.height
+                            }
+                        }
+                )
+            }
+            
+            // Add bottom spacing to ensure last lines are visible
+            item {
+                Spacer(modifier = Modifier.height(300.dp))
+            }
+        }
     }
 }
