@@ -8,8 +8,6 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
@@ -608,30 +606,17 @@ fun Lyrics(
                         modifier = itemModifier,
                         horizontalAlignment = Alignment.CenterHorizontally // Always center for SimpMusic style
                     ) {
-                        // Animated font size for smooth transitions
-                        val animatedFontSize by animateFloatAsState(
-                            targetValue = when {
-                                index == displayedCurrentLineIndex && isSynced -> 26f // Active line - largest
-                                index < displayedCurrentLineIndex -> 24f // Previous lines - larger
-                                else -> 20f // Future lines - smaller
-                            },
-                            animationSpec = tween(durationMillis = 300), // Fast font size animation
-                            label = "FontSizeAnimation"
-                        )
-                        
                         Text(
                             text = item.text,
-                            fontSize = animatedFontSize.sp,
+                            fontSize = 22.sp, // Uniform medium size for all lines
                             color = when {
-                                index == displayedCurrentLineIndex && isSynced -> textColor // Active line - full color
-                                index < displayedCurrentLineIndex -> textColor.copy(alpha = 0.8f) // Previous lines - high visibility
-                                else -> textColor.copy(alpha = 0.5f) // Future lines - low visibility
+                                index == displayedCurrentLineIndex && isSynced -> textColor // Active line - maximum contrast (full opacity)
+                                else -> textColor.copy(alpha = 0.3f) // All other lines - very low contrast
                             },
                             textAlign = TextAlign.Center,
                             fontWeight = when {
-                                index == displayedCurrentLineIndex && isSynced -> FontWeight.ExtraBold // Active line - boldest
-                                index < displayedCurrentLineIndex -> FontWeight.Bold // Previous lines - bold
-                                else -> FontWeight.Normal // Future lines - normal
+                                index == displayedCurrentLineIndex && isSynced -> FontWeight.Bold // Active line - bold for emphasis
+                                else -> FontWeight.Normal // All other lines - normal weight
                             },
                             modifier = Modifier
                                 .fillMaxWidth()
