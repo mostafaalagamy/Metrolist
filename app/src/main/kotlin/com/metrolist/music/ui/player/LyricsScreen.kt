@@ -229,7 +229,7 @@ fun LyricsScreen(
                                 model = mediaMetadata.thumbnailUrl,
                                 contentDescription = "Blurred background",
                                 contentScale = ContentScale.FillBounds,
-                                modifier = Modifier.fillMaxSize().blur(radius = 25.dp)
+                                modifier = Modifier.fillMaxSize().blur(radius = 125.dp)
                             )
                             Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.4f)))
                         }
