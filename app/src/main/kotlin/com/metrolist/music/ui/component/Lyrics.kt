@@ -8,8 +8,6 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
@@ -468,7 +466,7 @@ fun Lyrics(
             state = lazyListState,
             contentPadding = WindowInsets.systemBars
                 .only(WindowInsetsSides.Top)
-                .add(WindowInsets(top = 120.dp, bottom = 200.dp)) // Full screen coverage with generous spacing
+                .add(WindowInsets(top = maxHeight / 2, bottom = maxHeight / 2)) // Center active line perfectly
                 .asPaddingValues(),
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
@@ -608,16 +606,9 @@ fun Lyrics(
                         modifier = itemModifier,
                         horizontalAlignment = Alignment.CenterHorizontally // Always center for SimpMusic style
                     ) {
-                        // Animated scale for active line with slow transition
-                        val animatedScale by animateFloatAsState(
-                            targetValue = if (index == displayedCurrentLineIndex && isSynced) 1.1f else 1f,
-                            animationSpec = tween(durationMillis = 800), // Slow scaling animation
-                            label = "ScaleAnimation"
-                        )
-                        
                         Text(
                             text = item.text,
-                            fontSize = 20.sp, // Slightly smaller base size
+                            fontSize = 20.sp, // Uniform size for all lines
                             color = when {
                                 index == displayedCurrentLineIndex && isSynced -> textColor // Active line - maximum contrast (full opacity)
                                 else -> textColor.copy(alpha = 0.3f) // All other lines - very low contrast
@@ -627,10 +618,6 @@ fun Lyrics(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(start = 24.dp, top = 12.dp, end = 24.dp, bottom = 12.dp)
-                                .graphicsLayer {
-                                    scaleX = animatedScale
-                                    scaleY = animatedScale
-                                }
                         )
                         if (romanizeJapaneseLyrics || romanizeKoreanLyrics) {
                             // Show romanized text if available
