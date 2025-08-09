@@ -328,36 +328,19 @@ fun Lyrics(
         selectedIndices.clear()
     }
 
-    LaunchedEffect(lyrics, playerConnection.player.currentPosition) {
+    LaunchedEffect(lyrics) {
         if (lyrics.isNullOrEmpty() || !lyrics.startsWith("[")) {
             currentLineIndex = -1
             return@LaunchedEffect
         }
-        
-        val currentTimeMs = sliderPositionProvider() ?: playerConnection.player.currentPosition
-        isSeeking = sliderPositionProvider() != null
-        
-        // SimpMusic-inspired line detection: simple time range check
-        lines.indices.forEach { i ->
-            val sentence = lines[i]
-            val startTimeMs = sentence.startTime
-            
-            // Estimate end time based on next sentence or add default duration
-            val endTimeMs = if (i < lines.size - 1) {
-                lines[i + 1].startTime
-            } else {
-                startTimeMs + 60000 // Default 1 minute for last line
-            }
-            
-            if (currentTimeMs in startTimeMs..endTimeMs) {
-                currentLineIndex = i
-                return@LaunchedEffect
-            }
-        }
-        
-        // If before first line, set to -1
-        if (lines.isNotEmpty() && currentTimeMs < lines[0].startTime) {
-            currentLineIndex = -1
+        while (isActive) {
+            delay(100) // Optimized from 200ms to 100ms for better responsiveness
+            val sliderPosition = sliderPositionProvider()
+            isSeeking = sliderPosition != null
+            currentLineIndex = findCurrentLineIndex(
+                lines,
+                sliderPosition ?: playerConnection.player.currentPosition
+            )
         }
     }
 
@@ -370,13 +353,54 @@ fun Lyrics(
         }
     }
 
-    LaunchedEffect(currentLineIndex) {
-        // SimpMusic-inspired smooth centering animation
-        if (currentLineIndex > -1 && scrollLyrics && isSynced) {
-            lazyListState.animateScrollAndCentralizeItem(
-                index = currentLineIndex,
-                scope = this
-            )
+    LaunchedEffect(currentLineIndex, lastPreviewTime, initialScrollDone) {
+
+        /**
+         * Calculate the lyric offset Based on how many lines (\n chars)
+         */
+        fun calculateOffset() = with(density) {
+            if (currentLineIndex < 0 || currentLineIndex >= lines.size) return@with 0
+            val currentItem = lines[currentLineIndex]
+            val totalNewLines = currentItem.text.count { it == '\n' }
+
+            val dpValue = if (landscapeOffset) 16.dp else 20.dp
+            dpValue.toPx().toInt() * totalNewLines
+        }
+
+        if (!isSynced) return@LaunchedEffect
+        
+        // Enhanced smooth animation using SimpMusic's approach combined with existing logic
+        suspend fun performSmoothPageScroll() {
+            if (currentLineIndex > -1 && scrollLyrics) {
+                // Use SimpMusic's smooth centering approach
+                lazyListState.animateScrollAndCentralizeItem(
+                    index = currentLineIndex,
+                    scope = this@LaunchedEffect
+                )
+            }
+        }
+        
+        if((currentLineIndex == 0 && shouldScrollToFirstLine) || !initialScrollDone) {
+            shouldScrollToFirstLine = false
+            // Use smooth animation for initial scroll
+            performSmoothPageScroll()
+            if(!isAppMinimized) {
+                initialScrollDone = true
+            }
+        } else if (currentLineIndex != -1) {
+            deferredCurrentLineIndex = currentLineIndex
+            if (isSeeking) {
+                // Smooth scroll for seeking
+                performSmoothPageScroll()
+            } else if ((lastPreviewTime == 0L || currentLineIndex != previousLineIndex) && scrollLyrics) {
+                // Smooth scroll for auto progression
+                if (currentLineIndex != previousLineIndex) {
+                    performSmoothPageScroll()
+                }
+            }
+        }
+        if(currentLineIndex > 0) {
+            shouldScrollToFirstLine = true
         }
         previousLineIndex = currentLineIndex
     }
@@ -979,11 +1003,7 @@ fun Lyrics(
     }
 }
 
-// Professional page animation constants inspired by Metrolist design - very slow for smoothness
-private const val METROLIST_AUTO_SCROLL_DURATION = 5000L // Much slower auto-scroll for ultra smooth transitions
-private const val METROLIST_INITIAL_SCROLL_DURATION = 4000L // Much slower initial positioning
-private const val METROLIST_SEEK_DURATION = 3000L // Much slower user interaction
-private const val METROLIST_FAST_SEEK_DURATION = 2500L // Much less aggressive seeking
+// SimpMusic-inspired smooth animation - no fixed durations needed as it uses natural Compose animation
 
 // Lyrics constants
 val LyricsPreviewTime = 2.seconds
