@@ -466,7 +466,7 @@ fun Lyrics(
             state = lazyListState,
             contentPadding = WindowInsets.systemBars
                 .only(WindowInsetsSides.Top)
-                .add(WindowInsets(top = maxHeight / 2, bottom = maxHeight / 2)) // Center active line perfectly
+                .add(WindowInsets(top = 80.dp, bottom = maxHeight - 200.dp)) // Position active line at top
                 .asPaddingValues(),
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
@@ -608,7 +608,7 @@ fun Lyrics(
                     ) {
                         Text(
                             text = item.text,
-                            fontSize = 20.sp, // Uniform size for all lines
+                            fontSize = 24.sp, // Slightly larger uniform size for all lines
                             color = when {
                                 index == displayedCurrentLineIndex && isSynced -> textColor // Active line - maximum contrast (full opacity)
                                 else -> textColor.copy(alpha = 0.3f) // All other lines - very low contrast
