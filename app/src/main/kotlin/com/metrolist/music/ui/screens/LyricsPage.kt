@@ -16,11 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.material3.ripple
+
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -35,7 +31,7 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -52,37 +48,34 @@ import androidx.compose.ui.unit.dp
 import androidx.media3.common.C
 import androidx.media3.common.Player
 import androidx.navigation.NavController
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
-import coil.size.Size
+import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
+import coil3.size.Size
+import coil3.imageLoader
+import coil3.toBitmap
 import androidx.palette.graphics.Palette
-import androidx.compose.runtime.rememberUpdatedState
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.graphics.painter.BitmapPainter
-import androidx.core.graphics.drawable.toBitmap
+
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
 import com.metrolist.music.constants.PlayerBackgroundStyleKey
 import com.metrolist.music.constants.SliderStyleKey
-import com.metrolist.music.constants.PlayerColorExtractor
+import com.metrolist.music.ui.theme.PlayerColorExtractor
 import com.metrolist.music.extensions.togglePlayPause
 import com.metrolist.music.extensions.toggleRepeatMode
 import com.metrolist.music.extensions.toggleShuffleMode
 import com.metrolist.music.models.MediaMetadata
-import com.metrolist.music.playback.queues.Queue
 import com.metrolist.music.ui.component.Lyrics
 import com.metrolist.music.ui.component.LocalBottomSheetPageState
 import com.metrolist.music.ui.component.LocalMenuState
 import com.metrolist.music.ui.component.PlayerSliderTrack
-import com.metrolist.music.ui.menu.PlayerMenu
 import com.metrolist.music.ui.utils.ShowMediaInfo
 import com.metrolist.music.utils.makeTimeString
 import com.metrolist.music.utils.rememberEnumPreference
-import com.metrolist.music.enums.PlayerBackgroundStyle
-import com.metrolist.music.enums.SliderStyle
-import androidx.compose.animation.core.SpringSpec
+import com.metrolist.music.constants.PlayerBackgroundStyle
+import com.metrolist.music.constants.SliderStyle
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -99,7 +92,7 @@ fun LyricsPage(
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
     val isPlaying by playerConnection.isPlaying.collectAsState()
     val repeatMode by playerConnection.repeatMode.collectAsState()
-    val shuffleMode by playerConnection.shuffleMode.collectAsState()
+    val shuffleMode by playerConnection.shuffleModeEnabled.collectAsState()
     
     // Return if wrong media is playing
     if (mediaMetadata?.id != mediaId) {
@@ -345,10 +338,19 @@ fun LyricsPage(
                         )
                     }
                     SliderStyle.SQUIGGLY -> {
-                        PlayerSliderTrack(
-                            sliderPositions = androidx.compose.material3.SliderPositions(
-                                activeRange = 0f..(sliderPosition?.toFloat() ?: position.toFloat()) / (duration.takeIf { it != C.TIME_UNSET }?.toFloat() ?: 1f)
-                            )
+                        // TODO: Implement squiggly slider properly
+                        Slider(
+                            value = sliderPosition?.toFloat() ?: position.toFloat(),
+                            valueRange = 0f..(duration.takeIf { it != C.TIME_UNSET }?.toFloat() ?: 1f),
+                            onValueChange = { sliderPosition = it.toLong() },
+                            onValueChangeFinished = {
+                                sliderPosition?.let { pos ->
+                                    playerConnection.player.seekTo(pos)
+                                    position = pos
+                                    sliderPosition = null
+                                }
+                            },
+                            modifier = Modifier.fillMaxWidth()
                         )
                     }
                 }
@@ -494,14 +496,6 @@ fun LyricsPage(
             }
         }
 
-        if (menuState.isVisible) {
-            mediaMetadata?.let { metadata ->
-                PlayerMenu(
-                    mediaMetadata = metadata,
-                    navController = navController,
-                    onDismiss = menuState::dismiss,
-                )
-            }
-        }
+
     }
 }
