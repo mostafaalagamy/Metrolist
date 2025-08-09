@@ -372,9 +372,17 @@ fun Lyrics(
         // Enhanced smooth animation using SimpMusic's approach combined with existing logic
         suspend fun performSmoothPageScroll() {
             if (currentLineIndex > -1 && scrollLyrics) {
+                // SimpMusic-style smart scrolling: when near end, scroll up a bit to show remaining lines
+                val targetIndex = if (currentLineIndex >= lines.size - 3) {
+                    // Near end, show a bit more context by scrolling up
+                    kotlin.math.max(0, currentLineIndex - 2)
+                } else {
+                    currentLineIndex
+                }
+                
                 // Use SimpMusic's smooth centering approach
                 lazyListState.animateScrollAndCentralizeItem(
-                    index = currentLineIndex,
+                    index = targetIndex,
                     scope = this@LaunchedEffect
                 )
             }
@@ -431,8 +439,9 @@ fun Lyrics(
             state = lazyListState,
             contentPadding = WindowInsets.systemBars
                 .only(WindowInsetsSides.Top)
-                .add(WindowInsets(top = maxHeight / 2 - 40.dp, bottom = maxHeight / 2 + 40.dp))
+                .add(WindowInsets(top = maxHeight / 2 - 20.dp, bottom = maxHeight / 2 + 100.dp))
                 .asPaddingValues(),
+            horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .fadingEdge(vertical = 64.dp)
                 .nestedScroll(remember {
@@ -543,7 +552,6 @@ fun Lyrics(
                             if (isSelected && isSelectionModeActive) MaterialTheme.colorScheme.primary.copy(alpha = 0.3f)
                             else Color.Transparent
                         )
-                        .padding(horizontal = 24.dp, vertical = 8.dp)
                         // Metrolist-style depth effect with professional alpha transitions
                         .alpha(
                             when {
@@ -569,26 +577,28 @@ fun Lyrics(
 
                     Column(
                         modifier = itemModifier,
-                        horizontalAlignment = when (lyricsTextPosition) {
-                            LyricsPosition.LEFT -> Alignment.Start
-                            LyricsPosition.CENTER -> Alignment.CenterHorizontally
-                            LyricsPosition.RIGHT -> Alignment.End
-                        }
+                        horizontalAlignment = Alignment.CenterHorizontally // Always center for SimpMusic style
                     ) {
                         Text(
                             text = item.text,
-                            fontSize = if (index == displayedCurrentLineIndex && isSynced) 26.sp else 24.sp, // Larger text for better readability
+                            fontSize = if (index == displayedCurrentLineIndex && isSynced) 28.sp else 22.sp, // SimpMusic-style sizing
                             color = if (index == displayedCurrentLineIndex && isSynced) {
                                 textColor // Full color for active line
                             } else {
-                                textColor.copy(alpha = 0.8f) // Slightly muted for inactive lines
+                                // SimpMusic-style alpha gradation
+                                val distance = kotlin.math.abs(index - displayedCurrentLineIndex)
+                                val alpha = when {
+                                    distance == 1 -> 0.6f // Adjacent lines
+                                    distance >= 2 -> 0.4f // Distant lines
+                                    else -> 1f
+                                }
+                                textColor.copy(alpha = alpha)
                             },
-                            textAlign = when (lyricsTextPosition) {
-                                LyricsPosition.LEFT -> TextAlign.Left
-                                LyricsPosition.CENTER -> TextAlign.Center
-                                LyricsPosition.RIGHT -> TextAlign.Right
-                            },
-                            fontWeight = if (index == displayedCurrentLineIndex && isSynced) FontWeight.ExtraBold else FontWeight.Bold
+                            textAlign = TextAlign.Center, // Always center for SimpMusic style
+                            fontWeight = if (index == displayedCurrentLineIndex && isSynced) FontWeight.Bold else FontWeight.Normal,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 32.dp, vertical = 8.dp) // More generous padding like SimpMusic
                         )
                         if (romanizeJapaneseLyrics || romanizeKoreanLyrics) {
                             // Show romanized text if available
@@ -596,15 +606,13 @@ fun Lyrics(
                             romanizedText?.let { romanized ->
                                 Text(
                                     text = romanized,
-                                    fontSize = 18.sp,
-                                    color = textColor.copy(alpha = 0.8f),
-                                    textAlign = when (lyricsTextPosition) {
-                                        LyricsPosition.LEFT -> TextAlign.Left
-                                        LyricsPosition.CENTER -> TextAlign.Center
-                                        LyricsPosition.RIGHT -> TextAlign.Right
-                                    },
+                                    fontSize = 16.sp,
+                                    color = textColor.copy(alpha = 0.6f),
+                                    textAlign = TextAlign.Center,
                                     fontWeight = FontWeight.Normal,
-                                    modifier = Modifier.padding(top = 2.dp)
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(top = 4.dp, horizontal = 32.dp)
                                 )
                             }
                         }
