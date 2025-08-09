@@ -10,7 +10,6 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.animateScrollBy
 import androidx.compose.animation.core.tween
-import kotlinx.coroutines.delay
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
@@ -379,23 +378,24 @@ fun Lyrics(
             isAnimating = true
             
             try {
-                // Use slow smooth scroll animation (3 seconds)
+                // Smooth slow scroll to bring next line to center (3 seconds)
                 scope.launch {
-                    lazyListState.animateScrollToItem(index = targetIndex)
-                    delay(50) // Small delay to ensure scroll is complete
+                    // First scroll to the target item without animation
+                    lazyListState.scrollToItem(index = targetIndex)
                     
-                    // Get item info after scrolling
+                    // Then animate it to center position slowly
                     val itemInfo = lazyListState.layoutInfo.visibleItemsInfo.firstOrNull { it.index == targetIndex }
                     if (itemInfo != null) {
-                        // Calculate center position
                         val center = lazyListState.layoutInfo.viewportEndOffset / 2
-                        val childCenter = itemInfo.offset + itemInfo.size / 2
+                        val itemCenter = itemInfo.offset + itemInfo.size / 2
+                        val offset = itemCenter - center
                         
-                        // Animate to center with very slow animation (3 seconds) - corrected direction
-                        lazyListState.animateScrollBy(
-                            value = (center - childCenter).toFloat(), // Fixed: inverted to scroll in correct direction
-                            animationSpec = tween(durationMillis = 3000)
-                        )
+                        if (kotlin.math.abs(offset) > 10) { // Only animate if not already centered
+                            lazyListState.animateScrollBy(
+                                value = offset.toFloat(),
+                                animationSpec = tween(durationMillis = 3000)
+                            )
+                        }
                     }
                 }
                 
@@ -460,7 +460,7 @@ fun Lyrics(
             state = lazyListState,
             contentPadding = WindowInsets.systemBars
                 .only(WindowInsetsSides.Top)
-                .add(WindowInsets(top = 80.dp, bottom = maxHeight - 200.dp)) // Position active line at top
+                .add(WindowInsets(top = maxHeight / 2, bottom = maxHeight / 2)) // Keep active line centered
                 .asPaddingValues(),
             modifier = Modifier
                 .fadingEdge(vertical = 64.dp)
@@ -540,24 +540,24 @@ fun Lyrics(
                                 } else if (isSynced && changeLyrics) {
                                     // Professional seek action with smooth animation
                                     playerConnection.player.seekTo(item.time)
-                                    // Use slow smooth animation when clicking on lyrics (3 seconds)
+                                    // Smooth slow scroll when clicking on lyrics (3 seconds)
                                     scope.launch {
-                                        val centerTargetIndex = kotlin.math.max(0, index - 1)
-                                        lazyListState.animateScrollToItem(index = centerTargetIndex)
-                                        delay(50) // Small delay to ensure scroll is complete
+                                        // First scroll to the clicked item without animation
+                                        lazyListState.scrollToItem(index = index)
                                         
-                                        // Get item info after scrolling
-                                        val itemInfo = lazyListState.layoutInfo.visibleItemsInfo.firstOrNull { it.index == centerTargetIndex }
+                                        // Then animate it to center position slowly
+                                        val itemInfo = lazyListState.layoutInfo.visibleItemsInfo.firstOrNull { it.index == index }
                                         if (itemInfo != null) {
-                                            // Calculate center position
                                             val center = lazyListState.layoutInfo.viewportEndOffset / 2
-                                            val childCenter = itemInfo.offset + itemInfo.size / 2
+                                            val itemCenter = itemInfo.offset + itemInfo.size / 2
+                                            val offset = itemCenter - center
                                             
-                                            // Animate to center with very slow animation (3 seconds) - corrected direction
-                                            lazyListState.animateScrollBy(
-                                                value = (center - childCenter).toFloat(), // Fixed: inverted to scroll in correct direction
-                                                animationSpec = tween(durationMillis = 3000)
-                                            )
+                                            if (kotlin.math.abs(offset) > 10) { // Only animate if not already centered
+                                                lazyListState.animateScrollBy(
+                                                    value = offset.toFloat(),
+                                                    animationSpec = tween(durationMillis = 3000)
+                                                )
+                                            }
                                         }
                                     }
                                     lastPreviewTime = 0L
