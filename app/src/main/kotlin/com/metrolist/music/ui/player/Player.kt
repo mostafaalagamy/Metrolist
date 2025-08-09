@@ -1093,7 +1093,7 @@ fun BottomSheetPlayer(
                                 model = previousThumbnailUrl,
                                 contentDescription = "Previous blurred background",
                                 contentScale = ContentScale.FillBounds,
-                                modifier = Modifier.fillMaxSize().blur(radius = 150.dp)
+                                modifier = Modifier.fillMaxSize().blur(radius = 25.dp)
                             )
                             Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.4f)))
                         }
@@ -1111,7 +1111,7 @@ fun BottomSheetPlayer(
                                         model = thumbnailUrl,
                                         contentDescription = "New blurred background",
                                         contentScale = ContentScale.FillBounds,
-                                        modifier = Modifier.fillMaxSize().blur(radius = 150.dp)
+                                        modifier = Modifier.fillMaxSize().blur(radius = 25.dp)
                                     )
                                     Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.4f)))
                                 }

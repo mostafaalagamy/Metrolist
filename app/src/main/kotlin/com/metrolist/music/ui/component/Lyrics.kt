@@ -1018,11 +1018,11 @@ fun Lyrics(
     }
 }
 
-// Professional page animation constants inspired by Metrolist design - slower for smoothness
-private const val METROLIST_AUTO_SCROLL_DURATION = 1500L // Much slower auto-scroll for smooth transitions
-private const val METROLIST_INITIAL_SCROLL_DURATION = 1000L // Slower initial positioning
-private const val METROLIST_SEEK_DURATION = 800L // Slower user interaction
-private const val METROLIST_FAST_SEEK_DURATION = 600L // Less aggressive seeking
+// Professional page animation constants inspired by Metrolist design - very slow for smoothness
+private const val METROLIST_AUTO_SCROLL_DURATION = 3000L // Very slow auto-scroll for very smooth transitions
+private const val METROLIST_INITIAL_SCROLL_DURATION = 2500L // Very slow initial positioning
+private const val METROLIST_SEEK_DURATION = 2000L // Very slow user interaction
+private const val METROLIST_FAST_SEEK_DURATION = 1800L // Much less aggressive seeking
 
 // Lyrics constants
 val LyricsPreviewTime = 2.seconds
