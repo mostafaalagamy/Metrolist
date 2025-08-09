@@ -473,20 +473,7 @@ fun BottomSheetPlayer(
         initialAnchor = 1
     )
 
-    val lyricsSheetState = rememberBottomSheetState(
-        dismissedBound = dismissedBound,
-        expandedBound = state.expandedBound,
-        collapsedBound = dismissedBound + 1.dp,
-        initialAnchor = if (showLyricsScreen) 0 else 1
-    )
 
-    LaunchedEffect(showLyricsScreen) {
-        if (showLyricsScreen) {
-            lyricsSheetState.expandSoft()
-        } else {
-            lyricsSheetState.dismiss()
-        }
-    }
 
     BottomSheet(
         state = state,
@@ -1276,34 +1263,36 @@ fun BottomSheetPlayer(
         )
         
         // Lyrics Screen with BottomSheet
-        mediaMetadata?.let { metadata ->
-            BottomSheet(
-                state = lyricsSheetState,
-                modifier = Modifier,
-                backgroundColor = when (playerBackground) {
-                    PlayerBackgroundStyle.BLUR, PlayerBackgroundStyle.GRADIENT -> {
-                        val progress = ((lyricsSheetState.value - lyricsSheetState.collapsedBound) / (lyricsSheetState.expandedBound - lyricsSheetState.collapsedBound))
-                            .coerceIn(0f, 1f)
-                        val fadeProgress = if (progress < 0.2f) {
-                            (0.2f - progress) / 0.2f
-                        } else 0f
-                        Color.Black.copy(alpha = 1f - fadeProgress)
-                    } else -> {
-                        MaterialTheme.colorScheme.surface.copy(alpha = 1f - ((lyricsSheetState.value - lyricsSheetState.collapsedBound) / (lyricsSheetState.expandedBound - lyricsSheetState.collapsedBound)).coerceIn(0f, 0.2f) / 0.2f)
-                    }
-                },
-                onDismiss = {
-                    showLyricsScreen = false
-                },
-                collapsedContent = { },
-            ) {
-                LyricsScreen(
-                    mediaMetadata = metadata,
-                    onBackClick = { 
-                        showLyricsScreen = false 
+        if (showLyricsScreen) {
+            mediaMetadata?.let { metadata ->
+                BottomSheet(
+                    state = lyricsSheetState,
+                    modifier = Modifier,
+                    backgroundColor = when (playerBackground) {
+                        PlayerBackgroundStyle.BLUR, PlayerBackgroundStyle.GRADIENT -> {
+                            val progress = ((lyricsSheetState.value - lyricsSheetState.collapsedBound) / (lyricsSheetState.expandedBound - lyricsSheetState.collapsedBound))
+                                .coerceIn(0f, 1f)
+                            val fadeProgress = if (progress < 0.2f) {
+                                (0.2f - progress) / 0.2f
+                            } else 0f
+                            Color.Black.copy(alpha = 1f - fadeProgress)
+                        } else -> {
+                            MaterialTheme.colorScheme.surface.copy(alpha = 1f - ((lyricsSheetState.value - lyricsSheetState.collapsedBound) / (lyricsSheetState.expandedBound - lyricsSheetState.collapsedBound)).coerceIn(0f, 0.2f) / 0.2f)
+                        }
                     },
-                    navController = navController
-                )
+                    onDismiss = {
+                        showLyricsScreen = false
+                    },
+                    collapsedContent = { },
+                ) {
+                    LyricsScreen(
+                        mediaMetadata = metadata,
+                        onBackClick = { 
+                            showLyricsScreen = false 
+                        },
+                        navController = navController
+                    )
+                }
             }
         }
     }
