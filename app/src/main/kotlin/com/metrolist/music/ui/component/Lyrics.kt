@@ -113,6 +113,7 @@ import com.metrolist.music.lyrics.LyricsUtils.isKorean
 import com.metrolist.music.lyrics.LyricsUtils.parseLyrics
 import com.metrolist.music.lyrics.LyricsUtils.romanizeJapanese
 import com.metrolist.music.lyrics.LyricsUtils.romanizeKorean
+import com.metrolist.music.extensions.animateScrollAndCentralizeItem
 import com.metrolist.music.ui.component.shimmer.ShimmerHost
 import com.metrolist.music.ui.component.shimmer.TextPlaceholder
 import com.metrolist.music.ui.menu.LyricsMenu
@@ -375,14 +376,10 @@ fun Lyrics(
             isAnimating = true
             
             try {
-                // Calculate offset to center the active line group (current + prev + next)
-                // This ensures the active lines are always in the middle of the screen
-                val targetOffset = with(density) { 100.dp.toPx().toInt() } // Fixed center offset
-                
-                // Use native Compose animation for butter-smooth scrolling
-                lazyListState.animateScrollToItem(
+                // Use slow smooth animation for butter-smooth scrolling (3 seconds)
+                lazyListState.animateScrollAndCentralizeItem(
                     index = targetIndex,
-                    scrollOffset = targetOffset
+                    scope = scope
                 )
                 
 
@@ -526,18 +523,12 @@ fun Lyrics(
                                 } else if (isSynced && changeLyrics) {
                                     // Professional seek action with smooth animation
                                     playerConnection.player.seekTo(item.time)
-                                    scope.launch {
-                                        // Use the same professional animation for seeking
-                                        val targetOffset = with(density) { 36.dp.toPx().toInt() } +
-                                                with(density) {
-                                                    val count = item.text.count { it == '\n' }
-                                                    (if (landscapeOffset) 16.dp.toPx() else 20.dp.toPx()).toInt() * count
-                                                }
-                                        
-                                        // Smooth seek animation to center the clicked line
-                                        val centerTargetIndex = kotlin.math.max(0, index - 1)
-                                        lazyListState.animateScrollToItem(centerTargetIndex, targetOffset)
-                                    }
+                                    // Use slow smooth animation when clicking on lyrics (3 seconds)
+                                    val centerTargetIndex = kotlin.math.max(0, index - 1)
+                                    lazyListState.animateScrollAndCentralizeItem(
+                                        index = centerTargetIndex,
+                                        scope = scope
+                                    )
                                     lastPreviewTime = 0L
                                 }
                             },
