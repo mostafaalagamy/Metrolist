@@ -333,7 +333,7 @@ fun Lyrics(
             return@LaunchedEffect
         }
         while (isActive) {
-            delay(50)
+            delay(200) // Increased from 50ms to 200ms for smoother transitions
             val sliderPosition = sliderPositionProvider()
             isSeeking = sliderPosition != null
             currentLineIndex = findCurrentLineIndex(
@@ -1019,10 +1019,10 @@ fun Lyrics(
 }
 
 // Professional page animation constants inspired by Metrolist design - very slow for smoothness
-private const val METROLIST_AUTO_SCROLL_DURATION = 3000L // Very slow auto-scroll for very smooth transitions
-private const val METROLIST_INITIAL_SCROLL_DURATION = 2500L // Very slow initial positioning
-private const val METROLIST_SEEK_DURATION = 2000L // Very slow user interaction
-private const val METROLIST_FAST_SEEK_DURATION = 1800L // Much less aggressive seeking
+private const val METROLIST_AUTO_SCROLL_DURATION = 5000L // Much slower auto-scroll for ultra smooth transitions
+private const val METROLIST_INITIAL_SCROLL_DURATION = 4000L // Much slower initial positioning
+private const val METROLIST_SEEK_DURATION = 3000L // Much slower user interaction
+private const val METROLIST_FAST_SEEK_DURATION = 2500L // Much less aggressive seeking
 
 // Lyrics constants
 val LyricsPreviewTime = 2.seconds

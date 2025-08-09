@@ -63,6 +63,7 @@ import com.metrolist.music.R
 import com.metrolist.music.constants.AudioNormalizationKey
 import com.metrolist.music.constants.AudioQualityKey
 import com.metrolist.music.constants.AutoLoadMoreKey
+import com.metrolist.music.constants.DisableLoadMoreWhenRepeatAllKey
 import com.metrolist.music.constants.AutoDownloadOnLikeKey
 import com.metrolist.music.constants.AutoSkipNextOnErrorKey
 import com.metrolist.music.constants.DiscordTokenKey
@@ -785,7 +786,8 @@ class MusicService :
     }
 
     fun getAutomix(playlistId: String) {
-        if (dataStore[SimilarContent] == true) {
+        if (dataStore[SimilarContent] == true && 
+            !(dataStore.get(DisableLoadMoreWhenRepeatAllKey, false) && player.repeatMode == REPEAT_MODE_ALL)) {
             scope.launch(SilentHandler) {
                 YouTube
                     .next(WatchEndpoint(playlistId = playlistId))
@@ -912,7 +914,8 @@ class MusicService :
         if (dataStore.get(AutoLoadMoreKey, true) &&
             reason != Player.MEDIA_ITEM_TRANSITION_REASON_REPEAT &&
             player.mediaItemCount - player.currentMediaItemIndex <= 5 &&
-            currentQueue.hasNextPage()
+            currentQueue.hasNextPage() &&
+            !(dataStore.get(DisableLoadMoreWhenRepeatAllKey, false) && player.repeatMode == REPEAT_MODE_ALL)
         ) {
             scope.launch(SilentHandler) {
                 val mediaItems =
