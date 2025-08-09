@@ -67,8 +67,12 @@
         <item quantity="other">%d times</item>
     </plurals>
 
+    <string name="seek_backward">5 seconds backward</string>
+    <string name="seek_forward">5 seconds forward</string>
     <string name="seek_forward_dynamic">+%1$d seconds forwards</string>
     <string name="seek_backward_dynamic">-%1$d seconds backwards</string>
+    <string name="seek_seconds_addup">Progressive seek</string>
+    <string name="seek_seconds_addup_description">If enabled,  Adds up 5 extra seconds incrementally on each seek skip</string>
 
     <string name="similar_content">Similar content</string>
 

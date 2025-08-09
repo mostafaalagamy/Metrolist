@@ -85,7 +85,7 @@ import androidx.compose.ui.util.fastAny
 import androidx.compose.ui.util.fastForEachIndexed
 import androidx.compose.ui.util.fastSumBy
 import androidx.core.net.toUri
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.exoplayer.offline.Download
 import androidx.media3.exoplayer.offline.DownloadRequest
@@ -136,7 +136,6 @@ import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
 import com.metrolist.music.viewmodels.LocalPlaylistViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyListState
 import java.time.LocalDateTime
@@ -417,8 +416,6 @@ fun LocalPlaylistScreen(
         }
     }
 
-    var dismissJob: Job? by remember { mutableStateOf(null) }
-
     Box(
         modifier = Modifier.fillMaxSize(),
     ) {
@@ -516,43 +513,28 @@ fun LocalPlaylistScreen(
                                 )
                                 delete(currentItem.map.copy(position = Int.MAX_VALUE))
                             }
-                            dismissJob?.cancel()
-                            dismissJob = coroutineScope.launch {
-                                val snackbarResult = snackbarHostState.showSnackbar(
-                                    message = context.getString(
-                                        R.string.removed_song_from_playlist,
-                                        currentItem.song.song.title
-                                    ),
-                                    actionLabel = context.getString(R.string.undo),
-                                    duration = SnackbarDuration.Short
-                                )
-                                if (snackbarResult == SnackbarResult.ActionPerformed) {
-                                    database.transaction {
-                                        insert(currentItem.map.copy(position = playlistLength))
-                                        move(
-                                            currentItem.map.playlistId,
-                                            playlistLength,
-                                            currentItem.map.position
-                                        )
-                                    }
-                                }
-                            }
+                            // Song removed directly without undo option
                         }
 
                         val dismissBoxState =
                             rememberSwipeToDismissBoxState(
-                                positionalThreshold = { totalDistance ->
-                                    totalDistance
-                                },
-                                confirmValueChange = { dismissValue ->
-                                    if (dismissValue == SwipeToDismissBoxValue.StartToEnd ||
-                                        dismissValue == SwipeToDismissBoxValue.EndToStart
-                                    ) {
-                                        deleteFromPlaylist()
-                                    }
-                                    true
-                                },
+                                positionalThreshold = { totalDistance -> totalDistance }
                             )
+                        var processedDismiss by remember { mutableStateOf(false) }
+                        LaunchedEffect(dismissBoxState.currentValue) {
+                            val dv = dismissBoxState.currentValue
+                            if (!processedDismiss && (
+                                    dv == SwipeToDismissBoxValue.StartToEnd ||
+                                    dv == SwipeToDismissBoxValue.EndToStart
+                                )
+                            ) {
+                                processedDismiss = true
+                                deleteFromPlaylist()
+                            }
+                            if (dv == SwipeToDismissBoxValue.Settled) {
+                                processedDismiss = false
+                            }
+                        }
 
                         val content: @Composable () -> Unit = {
                             SongListItem(
@@ -654,43 +636,28 @@ fun LocalPlaylistScreen(
                                 )
                                 delete(currentItem.map.copy(position = Int.MAX_VALUE))
                             }
-                            dismissJob?.cancel()
-                            dismissJob = coroutineScope.launch {
-                                val snackbarResult = snackbarHostState.showSnackbar(
-                                    message = context.getString(
-                                        R.string.removed_song_from_playlist,
-                                        currentItem.song.song.title
-                                    ),
-                                    actionLabel = context.getString(R.string.undo),
-                                    duration = SnackbarDuration.Short
-                                )
-                                if (snackbarResult == SnackbarResult.ActionPerformed) {
-                                    database.transaction {
-                                        insert(currentItem.map.copy(position = playlistLength))
-                                        move(
-                                            currentItem.map.playlistId,
-                                            playlistLength,
-                                            currentItem.map.position
-                                        )
-                                    }
-                                }
-                            }
+                            // Song removed directly without undo option
                         }
 
                         val dismissBoxState =
                             rememberSwipeToDismissBoxState(
-                                positionalThreshold = { totalDistance ->
-                                    totalDistance
-                                },
-                                confirmValueChange = { dismissValue ->
-                                    if (dismissValue == SwipeToDismissBoxValue.StartToEnd ||
-                                        dismissValue == SwipeToDismissBoxValue.EndToStart
-                                    ) {
-                                        deleteFromPlaylist()
-                                    }
-                                    true
-                                },
+                                positionalThreshold = { totalDistance -> totalDistance }
                             )
+                        var processedDismiss2 by remember { mutableStateOf(false) }
+                        LaunchedEffect(dismissBoxState.currentValue) {
+                            val dv = dismissBoxState.currentValue
+                            if (!processedDismiss2 && (
+                                    dv == SwipeToDismissBoxValue.StartToEnd ||
+                                    dv == SwipeToDismissBoxValue.EndToStart
+                                )
+                            ) {
+                                processedDismiss2 = true
+                                deleteFromPlaylist()
+                            }
+                            if (dv == SwipeToDismissBoxValue.Settled) {
+                                processedDismiss2 = false
+                            }
+                        }
 
                         val content: @Composable () -> Unit = {
                             SongListItem(
