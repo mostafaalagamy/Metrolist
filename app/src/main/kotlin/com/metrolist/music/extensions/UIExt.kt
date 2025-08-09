@@ -27,11 +27,18 @@ fun LazyListState.animateScrollAndCentralizeItem(
                 animationSpec = tween(durationMillis = 5000) // Extremely slow 5-second animation
             )
         } else {
-            // If item is not visible, animate to it directly with slow animation
-            this@animateScrollAndCentralizeItem.animateScrollToItem(
-                index = index,
-                animationSpec = tween(durationMillis = 5000) // Extremely slow 5-second animation
-            )
+            // If item is not visible, scroll to it first then center it slowly
+            this@animateScrollAndCentralizeItem.animateScrollToItem(index)
+            // After scrolling, try to center it with slow animation
+            val newItemInfo = this@animateScrollAndCentralizeItem.layoutInfo.visibleItemsInfo.firstOrNull { it.index == index }
+            if (newItemInfo != null) {
+                val center = this@animateScrollAndCentralizeItem.layoutInfo.viewportEndOffset / 2
+                val childCenter = newItemInfo.offset + newItemInfo.size / 2
+                this@animateScrollAndCentralizeItem.animateScrollBy(
+                    value = (childCenter - center).toFloat(),
+                    animationSpec = tween(durationMillis = 5000) // Extremely slow 5-second animation
+                )
+            }
         }
     }
 }
