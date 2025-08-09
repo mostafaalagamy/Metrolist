@@ -8,6 +8,9 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.animateScrollBy
+import androidx.compose.animation.core.tween
+import kotlinx.coroutines.delay
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
@@ -113,7 +116,7 @@ import com.metrolist.music.lyrics.LyricsUtils.isKorean
 import com.metrolist.music.lyrics.LyricsUtils.parseLyrics
 import com.metrolist.music.lyrics.LyricsUtils.romanizeJapanese
 import com.metrolist.music.lyrics.LyricsUtils.romanizeKorean
-import com.metrolist.music.extensions.animateScrollAndCentralizeItem
+
 import com.metrolist.music.ui.component.shimmer.ShimmerHost
 import com.metrolist.music.ui.component.shimmer.TextPlaceholder
 import com.metrolist.music.ui.menu.LyricsMenu
@@ -376,11 +379,25 @@ fun Lyrics(
             isAnimating = true
             
             try {
-                // Use slow smooth animation for butter-smooth scrolling (3 seconds)
-                lazyListState.animateScrollAndCentralizeItem(
-                    index = targetIndex,
-                    scope = scope
-                )
+                // Use slow smooth scroll animation (3 seconds)
+                scope.launch {
+                    lazyListState.animateScrollToItem(index = targetIndex)
+                    delay(50) // Small delay to ensure scroll is complete
+                    
+                    // Get item info after scrolling
+                    val itemInfo = lazyListState.layoutInfo.visibleItemsInfo.firstOrNull { it.index == targetIndex }
+                    if (itemInfo != null) {
+                        // Calculate center position
+                        val center = lazyListState.layoutInfo.viewportEndOffset / 2
+                        val childCenter = itemInfo.offset + itemInfo.size / 2
+                        
+                        // Animate to center with very slow animation (3 seconds)
+                        lazyListState.animateScrollBy(
+                            value = (childCenter - center).toFloat(),
+                            animationSpec = tween(durationMillis = 3000)
+                        )
+                    }
+                }
                 
 
             } finally {
@@ -524,11 +541,25 @@ fun Lyrics(
                                     // Professional seek action with smooth animation
                                     playerConnection.player.seekTo(item.time)
                                     // Use slow smooth animation when clicking on lyrics (3 seconds)
-                                    val centerTargetIndex = kotlin.math.max(0, index - 1)
-                                    lazyListState.animateScrollAndCentralizeItem(
-                                        index = centerTargetIndex,
-                                        scope = scope
-                                    )
+                                    scope.launch {
+                                        val centerTargetIndex = kotlin.math.max(0, index - 1)
+                                        lazyListState.animateScrollToItem(index = centerTargetIndex)
+                                        delay(50) // Small delay to ensure scroll is complete
+                                        
+                                        // Get item info after scrolling
+                                        val itemInfo = lazyListState.layoutInfo.visibleItemsInfo.firstOrNull { it.index == centerTargetIndex }
+                                        if (itemInfo != null) {
+                                            // Calculate center position
+                                            val center = lazyListState.layoutInfo.viewportEndOffset / 2
+                                            val childCenter = itemInfo.offset + itemInfo.size / 2
+                                            
+                                            // Animate to center with very slow animation (3 seconds)
+                                            lazyListState.animateScrollBy(
+                                                value = (childCenter - center).toFloat(),
+                                                animationSpec = tween(durationMillis = 3000)
+                                            )
+                                        }
+                                    }
                                     lastPreviewTime = 0L
                                 }
                             },
