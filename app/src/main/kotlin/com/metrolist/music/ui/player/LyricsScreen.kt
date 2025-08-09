@@ -73,9 +73,16 @@ import com.metrolist.music.extensions.togglePlayPause
 import com.metrolist.music.extensions.toggleRepeatMode
 import com.metrolist.music.lyrics.LyricsHelper
 import com.metrolist.music.models.MediaMetadata
-import com.metrolist.music.ui.component.SimpMusicLyrics
 import com.metrolist.music.ui.component.LocalMenuState
 import com.metrolist.music.ui.component.PlayerSliderTrack
+import com.metrolist.music.ui.component.Lyrics
+import com.metrolist.music.ui.component.BottomSheetState
+import com.metrolist.music.ui.component.rememberBottomSheetState
+import com.metrolist.music.ui.player.Queue
+import androidx.navigation.NavController
+import com.metrolist.music.ui.component.BottomSheetPageState
+import com.metrolist.music.ui.component.rememberBottomSheetPageState
+import com.metrolist.music.ui.component.ShowMediaInfo
 import me.saket.squiggles.SquigglySlider
 import com.metrolist.music.ui.menu.LyricsMenu
 import com.metrolist.music.ui.theme.PlayerColorExtractor
@@ -95,6 +102,7 @@ import com.metrolist.music.utils.makeTimeString
 fun LyricsScreen(
     mediaMetadata: MediaMetadata,
     onBackClick: () -> Unit,
+    navController: NavController,
     modifier: Modifier = Modifier
 ) {
     val playerConnection = LocalPlayerConnection.current ?: return
@@ -111,6 +119,16 @@ fun LyricsScreen(
     // slider style preference
     val sliderStyle by rememberEnumPreference(SliderStyleKey, SliderStyle.DEFAULT)
     val currentLyrics by playerConnection.currentLyrics.collectAsState(initial = null)
+    
+    // Queue sheet state
+    val queueSheetState = rememberBottomSheetState(
+        dismissedBound = 0.dp,
+        expandedBound = 800.dp,
+        collapsedBound = 1.dp
+    )
+    
+    // Details dialog state
+    val bottomSheetPageState = rememberBottomSheetPageState()
 
     // Auto-fetch lyrics when no lyrics found (same logic as refetch)
     LaunchedEffect(mediaMetadata.id, currentLyrics) {
@@ -279,7 +297,7 @@ fun LyricsScreen(
                 .fillMaxSize()
                 .padding(WindowInsets.systemBars.asPaddingValues())
         ) {
-            // New Header Design: Centered "Now Playing" with down arrow
+            // Header with More button and Down arrow on opposite sides
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -287,8 +305,38 @@ fun LyricsScreen(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                // Spacer for balance
-                Spacer(modifier = Modifier.width(32.dp))
+                // More button (left)
+                Box(
+                    modifier = Modifier
+                        .size(32.dp)
+                        .background(
+                            color = icBackgroundColor.copy(alpha = 0.3f),
+                            shape = CircleShape
+                        )
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = ripple(
+                                bounded = true,
+                                radius = 16.dp
+                            )
+                        ) {
+                            menuState.show {
+                                LyricsMenu(
+                                    lyricsProvider = { currentLyrics },
+                                    mediaMetadataProvider = { mediaMetadata },
+                                    onDismiss = menuState::dismiss
+                                )
+                            }
+                        },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.more_horiz),
+                        contentDescription = "More options",
+                        tint = textBackgroundColor,
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
                 
                 // Centered content
                 Column(
@@ -309,7 +357,7 @@ fun LyricsScreen(
                     )
                 }
                 
-                // Down arrow (replaces track image and more button)
+                // Down arrow (right)
                 Box(
                     modifier = Modifier
                         .size(32.dp)
@@ -334,19 +382,19 @@ fun LyricsScreen(
             Box(
                 modifier = Modifier
                     .weight(1f)
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
                 contentAlignment = Alignment.TopCenter
             ) {
-                SimpMusicLyrics(
-                    sliderPositionProvider = { sliderPosition },
-                    textColor = textBackgroundColor
+                Lyrics(
+                    sliderPositionProvider = { sliderPosition }
                 )
             }
 
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 32.dp, vertical = 16.dp)
+                    .padding(horizontal = 48.dp, vertical = 12.dp)
             ) {
                 when (sliderStyle) {
                     SliderStyle.DEFAULT -> {
@@ -533,12 +581,8 @@ fun LyricsScreen(
                     // Details button (left)
                     IconButton(
                         onClick = { 
-                            menuState.show {
-                                LyricsMenu(
-                                    lyricsProvider = { currentLyrics },
-                                    mediaMetadataProvider = { mediaMetadata },
-                                    onDismiss = menuState::dismiss
-                                )
+                            bottomSheetPageState.show {
+                                ShowMediaInfo(mediaMetadata.id)
                             }
                         },
                         modifier = Modifier.size(40.dp)
@@ -553,7 +597,9 @@ fun LyricsScreen(
 
                     // Queue button (right)
                     IconButton(
-                        onClick = { /* Handle queue action */ },
+                        onClick = { 
+                            queueSheetState.collapseTo(queueSheetState.expandedBound)
+                        },
                         modifier = Modifier.size(40.dp)
                     ) {
                         Icon(
@@ -570,5 +616,22 @@ fun LyricsScreen(
 
 
         }
+        
+        // Queue Sheet
+        Queue(
+            state = queueSheetState,
+            playerBottomSheetState = queueSheetState, // Using same state for now
+            navController = navController,
+            backgroundColor = when (playerBackground) {
+                PlayerBackgroundStyle.DEFAULT -> MaterialTheme.colorScheme.surface
+                else -> Color.Black.copy(alpha = 0.9f)
+            },
+            onBackgroundColor = textBackgroundColor,
+            TextBackgroundColor = textBackgroundColor,
+            textButtonColor = textBackgroundColor,
+            iconButtonColor = icBackgroundColor,
+            onShowLyrics = { onBackClick() }, // Return to lyrics when called from queue
+            pureBlack = false
+        )
     }
 }
