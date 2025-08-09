@@ -482,7 +482,7 @@ fun BottomSheetPlayer(
 
     LaunchedEffect(showLyricsScreen) {
         if (showLyricsScreen) {
-            lyricsSheetState.expand()
+            lyricsSheetState.expandSoft()
         } else {
             lyricsSheetState.dismiss()
         }
