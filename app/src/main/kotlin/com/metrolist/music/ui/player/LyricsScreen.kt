@@ -390,7 +390,7 @@ fun LyricsScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 32.dp, vertical = 16.dp)
+                    .padding(horizontal = 48.dp, vertical = 16.dp)
             ) {
                 when (sliderStyle) {
                     SliderStyle.DEFAULT -> {
