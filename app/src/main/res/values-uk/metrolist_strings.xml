@@ -170,4 +170,6 @@
     <string name="maximum_volume">Максимальна гучність</string>
     <string name="disable_load_more_when_repeat_all">Вимкнути завантаження додаткових параметрів під час повторення всіх</string>
     <string name="disable_load_more_when_repeat_all_desc">Не завантажувати автоматично більше пісень та подібного контенту, коли ввімкнено режим повторення всіх</string>
+    <string name="hide_player_thumbnail">Приховати мініатюру гравця</string>
+    <string name="hide_player_thumbnail_desc">Замінити обкладинку альбому логотипом програми в плеєрі</string>
 </resources>
