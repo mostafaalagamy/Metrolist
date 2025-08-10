@@ -50,7 +50,6 @@ import com.metrolist.music.constants.SkipSilenceKey
 import com.metrolist.music.constants.StopMusicOnTaskClearKey
 import com.metrolist.music.constants.HistoryDuration
 import com.metrolist.music.constants.SeekExtraSeconds
-import com.metrolist.music.constants.HidePlayerThumbnailKey
 import com.metrolist.music.ui.component.EnumListPreference
 import com.metrolist.music.ui.component.IconButton
 import com.metrolist.music.ui.component.PreferenceGroupTitle
@@ -86,10 +85,6 @@ fun PlayerSettings(
 
     val (seekExtraSeconds, onSeekExtraSeconds) = rememberPreference(
         SeekExtraSeconds,
-        defaultValue = false
-    )
-    val (hidePlayerThumbnail, onHidePlayerThumbnailChange) = rememberPreference(
-        HidePlayerThumbnailKey,
         defaultValue = false
     )
 
@@ -180,14 +175,6 @@ fun PlayerSettings(
             icon = { Icon(painterResource(R.drawable.arrow_forward), null) },
             checked = seekExtraSeconds,
             onCheckedChange = onSeekExtraSeconds
-        )
-
-        SwitchPreference(
-            title = { Text(stringResource(R.string.hide_player_thumbnail)) },
-            description = stringResource(R.string.hide_player_thumbnail_desc),
-            icon = { Icon(painterResource(R.drawable.about_splash), null) },
-            checked = hidePlayerThumbnail,
-            onCheckedChange = onHidePlayerThumbnailChange
         )
 
         PreferenceGroupTitle(

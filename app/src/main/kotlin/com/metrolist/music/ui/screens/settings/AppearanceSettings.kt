@@ -71,6 +71,7 @@ import com.metrolist.music.constants.ShowCachedPlaylistKey
 import com.metrolist.music.constants.SwipeThumbnailKey
 import com.metrolist.music.constants.SwipeSensitivityKey
 import com.metrolist.music.constants.SwipeToSongKey
+import com.metrolist.music.constants.HidePlayerThumbnailKey
 import com.metrolist.music.ui.component.DefaultDialog
 import com.metrolist.music.ui.component.EnumListPreference
 import com.metrolist.music.ui.component.IconButton
@@ -106,6 +107,10 @@ fun AppearanceSettings(
     val (useNewMiniPlayerDesign, onUseNewMiniPlayerDesignChange) = rememberPreference(
         UseNewMiniPlayerDesignKey,
         defaultValue = true
+    )
+    val (hidePlayerThumbnail, onHidePlayerThumbnailChange) = rememberPreference(
+        HidePlayerThumbnailKey,
+        defaultValue = false
     )
     val (playerBackground, onPlayerBackgroundChange) =
         rememberEnumPreference(
@@ -430,6 +435,14 @@ fun AppearanceSettings(
             icon = { Icon(painterResource(R.drawable.swipe), null) },
             checked = swipeThumbnail,
             onCheckedChange = onSwipeThumbnailChange,
+        )
+
+        SwitchPreference(
+            title = { Text(stringResource(R.string.hide_player_thumbnail)) },
+            description = stringResource(R.string.hide_player_thumbnail_desc),
+            icon = { Icon(painterResource(R.drawable.about_splash), null) },
+            checked = hidePlayerThumbnail,
+            onCheckedChange = onHidePlayerThumbnailChange
         )
 
         AnimatedVisibility(swipeThumbnail) {
