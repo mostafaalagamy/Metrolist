@@ -146,4 +146,12 @@
     <string name="disable">Vô hiệu hóa</string>
     <string name="subscribe">Đăng ký</string>
     <string name="subscribed">Đã đăng ký</string>
+    <string name="now_playing">Đang Phát</string>
+    <string name="close">Đóng</string>
+    <string name="minimum_volume">Âm lượng tối thiểu</string>
+    <string name="maximum_volume">Âm lượng tối đa</string>
+    <string name="seek_backward">5 giây lùi lại</string>
+    <string name="seek_forward">5 giây chuyển tiếp</string>
+    <string name="seek_forward_dynamic">+%1$d giây chuyển tiếp</string>
+    <string name="seek_backward_dynamic">-%1$d giây ngược lại</string>
 </resources>
