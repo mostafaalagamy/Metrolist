@@ -167,4 +167,6 @@
     <string name="close">Cerrar</string>
     <string name="minimum_volume">Volumen Mínimo</string>
     <string name="maximum_volume">Volumen Máximo</string>
+    <string name="hide_player_thumbnail">Ocultar miniatura del reproductor</string>
+    <string name="hide_player_thumbnail_desc">Reemplazar la carátula del álbum con el logotipo de la aplicación en el reproductor</string>
 </resources>
