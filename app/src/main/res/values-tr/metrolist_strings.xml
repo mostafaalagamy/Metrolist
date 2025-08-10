@@ -151,6 +151,17 @@
     <string name="playlist_not_found_desc">İstenen oynatma listesi yüklenemiyor</string>
     <string name="empty_playlist">Boş oynatma listesi</string>
     <string name="empty_playlist_desc">Bu oynatma listesi hiç şarkı içermiyor</string>
-    <string name="now_playing">Şimdi oynatılıyor</string>
+    <string name="now_playing">Şimdi Oynatılıyor</string>
     <string name="new_mini_player_design">Yeni mini oynatıcı tasarımı</string>
+    <string name="close">Kapat</string>
+    <string name="minimum_volume">En Düşük Ses Seviyesi</string>
+    <string name="maximum_volume">En Yüksek Ses Seviyesi</string>
+    <string name="seek_backward">5 saniye geri</string>
+    <string name="seek_forward">5 saniye ileri</string>
+    <string name="seek_forward_dynamic">+%1$d saniye ileri</string>
+    <string name="seek_backward_dynamic">-%1$d saniye geri</string>
+    <string name="seek_seconds_addup">Kademeli atlama</string>
+    <string name="seek_seconds_addup_description">Eğer etkinleştirilirse, her ileri/geri sarma atlamasında kademeli olarak fazladan 5 saniye ekler</string>
+    <string name="disable_load_more_when_repeat_all">Tümünü tekrarla açıkken daha fazla yükle seçeneğini devre dışı bırak.</string>
+    <string name="disable_load_more_when_repeat_all_desc">Tümünü tekrarla modu açıkken daha fazla şarkı veya benzer içerik yükleme</string>
 </resources>
