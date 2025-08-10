@@ -17,4 +17,6 @@
     <string name="years">ஆண்டுகள்</string>
     <string name="continuous">தொடர்ச்சி</string>
     <string name="liked">பிடித்திருந்தது</string>
+    <string name="my_top">என் சிறந்த</string>
+    <string name="cached_playlist">பதுக்கம் செய்யப்பட்ட</string>
 </resources>
