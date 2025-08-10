@@ -52,9 +52,12 @@
     <string name="dislike_all">Dislike all</string>
     <string name="sort_by_last_updated">Date updated</string>
     <string name="link_copied">Link copied to clipboard</string>
-    <string name="now_playing">Now playing</string>
+    <string name="now_playing">Now Playing</string>
 
     <string name="lyrics">Lyrics</string>
+    <string name="close">Close</string>
+    <string name="minimum_volume">Minimum Volume</string>
+    <string name="maximum_volume">Maximum Volume</string>
 
     <string name="already_in_playlist">Already in playlist:</string>
 
