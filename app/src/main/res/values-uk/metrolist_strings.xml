@@ -31,8 +31,6 @@
         <item quantity="many">%d разів</item>
         <item quantity="other">%d разів</item>
     </plurals>
-    <string name="seek_backward">5 секунд назад</string>
-    <string name="seek_forward">5 секунд вперед</string>
     <string name="similar_content">Подібний контент</string>
     <string name="login_settings">Параметри входу</string>
     <string name="general_settings">Загальні параметри</string>
@@ -161,4 +159,10 @@
     <string name="empty_playlist">Порожній список відтворення</string>
     <string name="empty_playlist_desc">Цей плейлист не містить жодної пісні</string>
     <string name="now_playing">Зараз грає</string>
+    <string name="seek_backward">5 секунди назад</string>
+    <string name="seek_forward">5 секунди вперед</string>
+    <string name="seek_forward_dynamic">+%1$d секунди вперед</string>
+    <string name="seek_backward_dynamic">-%1$d секунди назад</string>
+    <string name="seek_seconds_addup">Прогресивний пошук</string>
+    <string name="seek_seconds_addup_description">Якщо ввімкнено, додає 5 додаткових секунд при кожному пропусканні пошуку</string>
 </resources>
