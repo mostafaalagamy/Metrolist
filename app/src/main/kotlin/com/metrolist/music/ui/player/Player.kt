@@ -1089,34 +1089,15 @@ fun BottomSheetPlayer(
             Box(modifier = Modifier.fillMaxSize()) {
                 when (playerBackground) {
                     PlayerBackgroundStyle.BLUR -> {
-                        // Layer 1: Previous blur background (stays visible during transition)
-                        if (previousThumbnailUrl != null) {
-                            AsyncImage(
-                                model = previousThumbnailUrl,
-                                contentDescription = "Previous blurred background",
-                                contentScale = ContentScale.FillBounds,
-                                modifier = Modifier.fillMaxSize().blur(75.dp)
-                            )
-                            Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.4f)))
-                        }
-                        
-                        // Layer 2: New blur background (animates on top)
-                        AnimatedContent(
-                            targetState = mediaMetadata?.thumbnailUrl,
-                            transitionSpec = {
-                                fadeIn(tween(500)) togetherWith fadeOut(tween(500))
-                            }
-                        ) { thumbnailUrl ->
-                            if (thumbnailUrl != null) {
-                                Box(modifier = Modifier.fillMaxSize()) {
-                                    AsyncImage(
-                                        model = thumbnailUrl,
-                                        contentDescription = "New blurred background",
-                                        contentScale = ContentScale.FillBounds,
-                                        modifier = Modifier.fillMaxSize().blur(150.dp)
-                                    )
-                                    Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.4f)))
-                                }
+                        if (mediaMetadata?.thumbnailUrl != null) {
+                            Box(modifier = Modifier.fillMaxSize()) {
+                                AsyncImage(
+                                    model = mediaMetadata.thumbnailUrl,
+                                    contentDescription = "Blurred background",
+                                    contentScale = ContentScale.FillBounds,
+                                    modifier = Modifier.fillMaxSize().blur(150.dp)
+                                )
+                                Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.4f)))
                             }
                         }
                     }
