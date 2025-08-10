@@ -440,7 +440,7 @@ fun AppearanceSettings(
         SwitchPreference(
             title = { Text(stringResource(R.string.hide_player_thumbnail)) },
             description = stringResource(R.string.hide_player_thumbnail_desc),
-            icon = { Icon(painterResource(R.drawable.small_icon), null) },
+            icon = { Icon(painterResource(R.drawable.launcher_monochrome), null) },
             checked = hidePlayerThumbnail,
             onCheckedChange = onHidePlayerThumbnailChange
         )
