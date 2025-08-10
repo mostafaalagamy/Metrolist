@@ -164,4 +164,7 @@
     <string name="seek_seconds_addup_description">Si está habilitado, agrega 5 segundos adicionales de forma incremental en cada salto de búsqueda</string>
     <string name="disable_load_more_when_repeat_all">Deshabilitar cargar más al repetir todo</string>
     <string name="disable_load_more_when_repeat_all_desc">No cargar automáticamente más canciones ni contenido similar cuando el modo repetir todo esté habilitado</string>
+    <string name="close">Cerrar</string>
+    <string name="minimum_volume">Volumen Mínimo</string>
+    <string name="maximum_volume">Volumen Máximo</string>
 </resources>
