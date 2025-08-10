@@ -54,6 +54,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.LayoutDirection
@@ -63,6 +64,7 @@ import androidx.compose.ui.util.fastForEach
 import androidx.media3.common.C
 import androidx.media3.common.Player
 import coil3.compose.AsyncImage
+import androidx.compose.material3.Icon
 import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
 import com.metrolist.music.constants.PlayerBackgroundStyle
@@ -71,6 +73,7 @@ import com.metrolist.music.constants.PlayerHorizontalPadding
 import com.metrolist.music.constants.SeekExtraSeconds
 import com.metrolist.music.constants.SwipeThumbnailKey
 import com.metrolist.music.constants.ThumbnailCornerRadius
+import com.metrolist.music.constants.HidePlayerThumbnailKey
 import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
 import kotlinx.coroutines.delay
@@ -95,6 +98,7 @@ fun Thumbnail(
     val queueTitle by playerConnection.queueTitle.collectAsState()
 
     val swipeThumbnail by rememberPreference(SwipeThumbnailKey, true)
+    val hidePlayerThumbnail by rememberPreference(HidePlayerThumbnailKey, false)
     val canSkipPrevious by playerConnection.canSkipPrevious.collectAsState()
     val canSkipNext by playerConnection.canSkipNext.collectAsState()
     
@@ -329,26 +333,43 @@ fun Thumbnail(
                                         .size(containerMaxWidth - (PlayerHorizontalPadding * 2))
                                         .clip(RoundedCornerShape(ThumbnailCornerRadius * 2))
                                 ) {
-                                    // Blurred background
-                                    AsyncImage(
-                                        model = item.mediaMetadata.artworkUri?.toString(),
-                                        contentDescription = null,
-                                        contentScale = ContentScale.FillBounds,
-                                        modifier = Modifier
-                                            .fillMaxSize()
-                                            .graphicsLayer(
-                                                renderEffect = BlurEffect(radiusX = 75f, radiusY = 75f),
-                                                alpha = 0.5f
+                                    if (hidePlayerThumbnail) {
+                                        // Show app logo when thumbnail is hidden
+                                        Box(
+                                            modifier = Modifier
+                                                .fillMaxSize()
+                                                .background(MaterialTheme.colorScheme.surfaceVariant),
+                                            contentAlignment = Alignment.Center
+                                        ) {
+                                            Icon(
+                                                painter = painterResource(R.drawable.about_splash),
+                                                contentDescription = stringResource(R.string.hide_player_thumbnail),
+                                                tint = textBackgroundColor.copy(alpha = 0.7f),
+                                                modifier = Modifier.size(120.dp)
                                             )
-                                    )
+                                        }
+                                    } else {
+                                        // Blurred background
+                                        AsyncImage(
+                                            model = item.mediaMetadata.artworkUri?.toString(),
+                                            contentDescription = null,
+                                            contentScale = ContentScale.FillBounds,
+                                            modifier = Modifier
+                                                .fillMaxSize()
+                                                .graphicsLayer(
+                                                    renderEffect = BlurEffect(radiusX = 75f, radiusY = 75f),
+                                                    alpha = 0.5f
+                                                )
+                                        )
 
-                                    // Main image
-                                    AsyncImage(
-                                        model = item.mediaMetadata.artworkUri?.toString(),
-                                        contentDescription = null,
-                                        contentScale = ContentScale.Fit,
-                                        modifier = Modifier.fillMaxSize()
-                                    )
+                                        // Main image
+                                        AsyncImage(
+                                            model = item.mediaMetadata.artworkUri?.toString(),
+                                            contentDescription = null,
+                                            contentScale = ContentScale.Fit,
+                                            modifier = Modifier.fillMaxSize()
+                                        )
+                                    }
                                 }
                             }
                         }
