@@ -28,6 +28,7 @@ import com.metrolist.music.ui.component.IconButton
 import com.metrolist.music.ui.component.PreferenceEntry
 import com.metrolist.music.ui.component.ReleaseNotesCard
 import com.metrolist.music.ui.utils.backToMain
+import com.metrolist.music.utils.Updater
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -145,9 +146,7 @@ fun SettingsScreen(
                         Icon(painterResource(R.drawable.update), null)
                     }
                 },
-                onClick = {
-                    uriHandler.openUri("https://github.com/mostafaalagamy/Metrolist/releases/latest/download/Metrolist.apk")
-                }
+                onClick = { uriHandler.openUri(Updater.getLatestDownloadUrl()) }
             )
             ReleaseNotesCard()
         }
