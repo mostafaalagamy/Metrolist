@@ -59,8 +59,6 @@
         <item quantity="few">%d puta</item>
         <item quantity="other">%d puta</item>
     </plurals>
-    <string name="seek_backward">5 sekundi unazad</string>
-    <string name="seek_forward">5 sekundi naprijed</string>
     <string name="similar_content">Sličan sadržaj</string>
     <string name="login_settings">Postavke prijave</string>
     <string name="general_settings">Opća postavka</string>

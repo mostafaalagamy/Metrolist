@@ -70,8 +70,6 @@
         <item quantity="many">%d fois</item>
         <item quantity="other">%d fois</item>
     </plurals>
-    <string name="seek_backward">5 secondes en arrière</string>
-    <string name="seek_forward">5 secondes en avant</string>
     <string name="similar_content">Contenu similaire</string>
     <string name="login_settings">Paramètres de connexion</string>
     <string name="player_background_style">Style de l\'arrière plan du lecteur</string>
@@ -158,4 +156,10 @@
     <string name="empty_playlist">Liste de lecture vide</string>
     <string name="empty_playlist_desc">Cette liste de lecture ne contient aucune musique</string>
     <string name="now_playing">En cours de lecture</string>
+    <string name="seek_backward">5 secondes en arrière</string>
+    <string name="seek_forward">5 secondes en avant</string>
+    <string name="seek_forward_dynamic">+%1$d secondes en avant</string>
+    <string name="seek_backward_dynamic">-%1$d secondes en arrière</string>
+    <string name="seek_seconds_addup">Recherche progressive</string>
+    <string name="seek_seconds_addup_description">Si cette option est activée, chaque nouvel appui pour avancer ou reculer ajoute 5 secondes de plus que le saut précédent</string>
 </resources>
