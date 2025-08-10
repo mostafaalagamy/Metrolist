@@ -403,6 +403,14 @@ fun AppearanceSettings(
             },
         )
 
+        SwitchPreference(
+            title = { Text(stringResource(R.string.hide_player_thumbnail)) },
+            description = stringResource(R.string.hide_player_thumbnail_desc),
+            icon = { Icon(painterResource(R.drawable.hide_image), null) },
+            checked = hidePlayerThumbnail,
+            onCheckedChange = onHidePlayerThumbnailChange
+        )
+
         EnumListPreference(
             title = { Text(stringResource(R.string.player_buttons_style)) },
             icon = { Icon(painterResource(R.drawable.palette), null) },
@@ -436,14 +444,6 @@ fun AppearanceSettings(
             checked = swipeThumbnail,
             onCheckedChange = onSwipeThumbnailChange,
         )
-
-                    SwitchPreference(
-                title = { Text(stringResource(R.string.hide_player_thumbnail)) },
-                description = stringResource(R.string.hide_player_thumbnail_desc),
-                icon = { Icon(painterResource(R.drawable.hide_image), null) },
-                checked = hidePlayerThumbnail,
-                onCheckedChange = onHidePlayerThumbnailChange
-            )
 
         AnimatedVisibility(swipeThumbnail) {
             var showSensitivityDialog by rememberSaveable { mutableStateOf(false) }
