@@ -165,4 +165,9 @@
     <string name="seek_backward_dynamic">-%1$d секунди назад</string>
     <string name="seek_seconds_addup">Прогресивний пошук</string>
     <string name="seek_seconds_addup_description">Якщо ввімкнено, додає 5 додаткових секунд при кожному пропусканні пошуку</string>
+    <string name="close">Закрити</string>
+    <string name="minimum_volume">Мінімальний обсяг</string>
+    <string name="maximum_volume">Максимальна гучність</string>
+    <string name="disable_load_more_when_repeat_all">Вимкнути завантаження додаткових параметрів під час повторення всіх</string>
+    <string name="disable_load_more_when_repeat_all_desc">Не завантажувати автоматично більше пісень та подібного контенту, коли ввімкнено режим повторення всіх</string>
 </resources>
