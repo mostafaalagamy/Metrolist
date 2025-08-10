@@ -229,6 +229,8 @@ class MusicService :
 
     private var consecutivePlaybackErr = 0
 
+    val maxSafeGainFactor = 1.414f // +3 dB    
+
     override fun onCreate() {
         super.onCreate()
         setMediaNotificationProvider(
@@ -369,7 +371,11 @@ class MusicService :
         }.collectLatest(scope) { (format, normalizeAudio) ->
             normalizeFactor.value =
                 if (normalizeAudio && format?.loudnessDb != null) {
-                    min(10f.pow(-format.loudnessDb.toFloat() / 20), 1f)
+                    var factor = 10f.pow(-format.loudnessDb.toFloat() / 20)
+                    if (factor > 1f) {
+                        factor = min(factor, maxSafeGainFactor)
+                    }
+                    factor
                 } else {
                     1f
                 }
