@@ -159,4 +159,9 @@
     <string name="seek_backward_dynamic">-%1$d Sekunden zurückspulen</string>
     <string name="seek_seconds_addup_description">Wenn aktiviert, werden bei jedem Suchsprung schrittweise 5 zusätzliche Sekunden hinzugefügt</string>
     <string name="seek_seconds_addup">Progressive Suche</string>
+    <string name="close">Schließen</string>
+    <string name="minimum_volume">Minimale Lautstärke</string>
+    <string name="maximum_volume">Maximale Lautstärke</string>
+    <string name="disable_load_more_when_repeat_all">Mehr laden deaktivieren, wenn alle wiederholen</string>
+    <string name="disable_load_more_when_repeat_all_desc">Nicht automatisch mehr Songs und ähnliche Inhalte laden, wenn der Modus „Alles wiederholen“ aktiviert ist</string>
 </resources>
