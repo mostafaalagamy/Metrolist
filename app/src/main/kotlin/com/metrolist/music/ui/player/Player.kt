@@ -8,14 +8,11 @@ import android.content.res.Configuration
 import android.graphics.drawable.BitmapDrawable
 import android.widget.Toast
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.animation.with
 import androidx.compose.foundation.Image
@@ -234,8 +231,6 @@ fun BottomSheetPlayer(
 
     val canSkipPrevious by playerConnection.canSkipPrevious.collectAsState()
     val canSkipNext by playerConnection.canSkipNext.collectAsState()
-
-    var showLyricsScreen by remember { mutableStateOf(false) }
 
     val sliderStyle by rememberEnumPreference(SliderStyleKey, SliderStyle.DEFAULT)
 
@@ -470,6 +465,13 @@ fun BottomSheetPlayer(
         dismissedBound = dismissedBound,
         expandedBound = state.expandedBound,
         collapsedBound = dismissedBound + 1.dp,
+        initialAnchor = 1
+    )
+    
+    val lyricsSheetState = rememberBottomSheetState(
+        dismissedBound = 0.dp,
+        expandedBound = state.expandedBound,
+        collapsedBound = 1.dp,
         initialAnchor = 1
     )
 
@@ -1256,34 +1258,25 @@ fun BottomSheetPlayer(
             TextBackgroundColor = TextBackgroundColor,
             textButtonColor = textButtonColor,
             iconButtonColor = iconButtonColor,
-            onShowLyrics = { showLyricsScreen = true },
+            onShowLyrics = { lyricsSheetState.expandSoft() },
             pureBlack = pureBlack,
         )
         
-        // Lyrics Screen with animation
+        // Lyrics BottomSheet - separate from Queue
         mediaMetadata?.let { metadata ->
-            AnimatedVisibility(
-                visible = showLyricsScreen,
-                enter = slideInVertically(
-                    animationSpec = tween(300),
-                    initialOffsetY = { it }
-                ),
-                exit = slideOutVertically(
-                    animationSpec = tween(300),
-                    targetOffsetY = { it }
-                )
-            ) {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.surface
-                ) {
-                    LyricsScreen(
-                        mediaMetadata = metadata,
-                        onBackClick = { 
-                            showLyricsScreen = false 
-                        }
-                    )
+            BottomSheet(
+                state = lyricsSheetState,
+                backgroundColor = MaterialTheme.colorScheme.surface,
+                onDismiss = { /* Optional dismiss action */ },
+                collapsedContent = {
+                    // Empty collapsed content - fully hidden when collapsed
                 }
+            ) {
+                LyricsScreen(
+                    mediaMetadata = metadata,
+                    onBackClick = { lyricsSheetState.collapseSoft() },
+                    navController = navController
+                )
             }
         }
     }
