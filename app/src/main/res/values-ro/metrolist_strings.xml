@@ -155,4 +155,18 @@
     <string name="playlist_not_found_desc">Playlistul cerut nu a putut fi încărcat</string>
     <string name="empty_playlist">Playlist gol</string>
     <string name="empty_playlist_desc">Acest playlist nu conține nicio melodie</string>
+    <string name="now_playing">Acum se redă</string>
+    <string name="close">Închide</string>
+    <string name="minimum_volume">Volum minim</string>
+    <string name="maximum_volume">Volum maxim</string>
+    <string name="hide_player_thumbnail">Ascunde thumbnail-ul din player</string>
+    <string name="hide_player_thumbnail_desc">Înlocuiește coperta albumului cu logo-ul aplicației în player</string>
+    <string name="seek_backward">5 secunde înapoi</string>
+    <string name="seek_forward">5 secunde înainte</string>
+    <string name="seek_forward_dynamic">+%1$d (de) secunde înainte</string>
+    <string name="seek_backward_dynamic">-%1$d (de) secunde înapoi</string>
+    <string name="seek_seconds_addup">Derulare progresivă</string>
+    <string name="seek_seconds_addup_description">Dacă este activată, adaugă 5 secunde suplimentare în mod incremental la fiecare salt al derulării</string>
+    <string name="disable_load_more_when_repeat_all">Dezactivează \"Încarcă mai multe\" atunci când se repetă tot</string>
+    <string name="disable_load_more_when_repeat_all_desc">Nu încărca în mod automat mai multe melodii și conținut similar atunci când modul \"Repetă tot\" este activat</string>
 </resources>
