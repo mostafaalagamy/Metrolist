@@ -58,6 +58,8 @@
     <string name="close">Close</string>
     <string name="minimum_volume">Minimum Volume</string>
     <string name="maximum_volume">Maximum Volume</string>
+    <string name="hide_player_thumbnail">Hide Player Thumbnail</string>
+    <string name="hide_player_thumbnail_desc">Replace album artwork with app logo in player</string>
 
     <string name="already_in_playlist">Already in playlist:</string>
 
