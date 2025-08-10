@@ -67,6 +67,7 @@ import com.metrolist.music.ui.component.PreferenceEntry
 import com.metrolist.music.ui.component.ReleaseNotesCard
 import com.metrolist.music.ui.component.SwitchPreference
 import com.metrolist.music.ui.component.TextFieldDialog
+import com.metrolist.music.utils.Updater
 import com.metrolist.music.utils.rememberPreference
 import com.metrolist.music.viewmodels.HomeViewModel
 
@@ -332,7 +333,7 @@ fun AccountSettings(
                         }
                     },
                     onClick = {
-                        uriHandler.openUri("https://github.com/mostafaalagamy/Metrolist/releases/latest/download/Metrolist.apk")
+                        uriHandler.openUri(Updater.getLatestDownloadUrl())
                     }
                 )
             }
