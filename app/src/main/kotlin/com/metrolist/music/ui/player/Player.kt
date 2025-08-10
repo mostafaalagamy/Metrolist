@@ -1092,7 +1092,7 @@ fun BottomSheetPlayer(
                         if (mediaMetadata?.thumbnailUrl != null) {
                             Box(modifier = Modifier.fillMaxSize()) {
                                 AsyncImage(
-                                    model = mediaMetadata.thumbnailUrl,
+                                    model = mediaMetadata?.thumbnailUrl,
                                     contentDescription = "Blurred background",
                                     contentScale = ContentScale.FillBounds,
                                     modifier = Modifier.fillMaxSize().blur(150.dp)
