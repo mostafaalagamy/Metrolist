@@ -471,7 +471,7 @@ fun BottomSheetPlayer(
     val lyricsSheetState = rememberBottomSheetState(
         dismissedBound = 0.dp,
         expandedBound = state.expandedBound,
-        collapsedBound = 1.dp,
+        collapsedBound = 0.dp,
         initialAnchor = 1
     )
 
@@ -1095,7 +1095,7 @@ fun BottomSheetPlayer(
                                 model = previousThumbnailUrl,
                                 contentDescription = "Previous blurred background",
                                 contentScale = ContentScale.FillBounds,
-                                modifier = Modifier.fillMaxSize().blur(radius = 150.dp)
+                                modifier = Modifier.fillMaxSize().blur(150.dp)
                             )
                             Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.4f)))
                         }
@@ -1113,7 +1113,7 @@ fun BottomSheetPlayer(
                                         model = thumbnailUrl,
                                         contentDescription = "New blurred background",
                                         contentScale = ContentScale.FillBounds,
-                                        modifier = Modifier.fillMaxSize().blur(radius = 150.dp)
+                                        modifier = Modifier.fillMaxSize().blur(150.dp)
                                     )
                                     Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.4f)))
                                 }
