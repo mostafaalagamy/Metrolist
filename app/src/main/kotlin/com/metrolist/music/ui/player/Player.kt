@@ -1266,17 +1266,27 @@ fun BottomSheetPlayer(
         mediaMetadata?.let { metadata ->
             BottomSheet(
                 state = lyricsSheetState,
-                backgroundColor = MaterialTheme.colorScheme.surface,
+                backgroundColor = Color.Unspecified,
                 onDismiss = { /* Optional dismiss action */ },
                 collapsedContent = {
                     // Empty collapsed content - fully hidden when collapsed
                 }
             ) {
-                LyricsScreen(
-                    mediaMetadata = metadata,
-                    onBackClick = { lyricsSheetState.collapseSoft() },
-                    navController = navController
-                )
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(
+                            MaterialTheme.colorScheme.surface.copy(
+                                alpha = lyricsSheetState.progress.coerceIn(0f, 1f)
+                            )
+                        )
+                ) {
+                    LyricsScreen(
+                        mediaMetadata = metadata,
+                        onBackClick = { lyricsSheetState.collapseSoft() },
+                        navController = navController
+                    )
+                }
             }
         }
     }
