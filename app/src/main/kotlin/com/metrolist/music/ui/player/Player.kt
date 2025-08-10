@@ -1089,15 +1089,22 @@ fun BottomSheetPlayer(
             Box(modifier = Modifier.fillMaxSize()) {
                 when (playerBackground) {
                     PlayerBackgroundStyle.BLUR -> {
-                        if (mediaMetadata?.thumbnailUrl != null) {
-                            Box(modifier = Modifier.fillMaxSize()) {
-                                AsyncImage(
-                                    model = mediaMetadata?.thumbnailUrl,
-                                    contentDescription = "Blurred background",
-                                    contentScale = ContentScale.FillBounds,
-                                    modifier = Modifier.fillMaxSize().blur(150.dp)
-                                )
-                                Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.4f)))
+                        AnimatedContent(
+                            targetState = mediaMetadata?.thumbnailUrl,
+                            transitionSpec = {
+                                fadeIn(tween(500)) togetherWith fadeOut(tween(500))
+                            }
+                        ) { thumbnailUrl ->
+                            if (thumbnailUrl != null) {
+                                Box(modifier = Modifier.fillMaxSize()) {
+                                    AsyncImage(
+                                        model = thumbnailUrl,
+                                        contentDescription = "Blurred background",
+                                        contentScale = ContentScale.FillBounds,
+                                        modifier = Modifier.fillMaxSize().blur(150.dp)
+                                    )
+                                    Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.4f)))
+                                }
                             }
                         }
                     }
