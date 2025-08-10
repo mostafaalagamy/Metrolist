@@ -163,4 +163,9 @@
     <string name="seek_backward_dynamic">-%1$d sekund zpět</string>
     <string name="seek_seconds_addup">Progresivní posun</string>
     <string name="seek_seconds_addup_description">Při povolení se při každém přeskočení bude postupně přidávat 5 sekund</string>
+    <string name="close">Zavřít</string>
+    <string name="minimum_volume">Minimální hlasitost</string>
+    <string name="maximum_volume">Maximální hlasitost</string>
+    <string name="disable_load_more_when_repeat_all">Zakázat načtení více skladeb při opakování všech</string>
+    <string name="disable_load_more_when_repeat_all_desc">Automaticky nenačítat další skladby a podobný obsah, když je zapnutý režim opakování</string>
 </resources>
