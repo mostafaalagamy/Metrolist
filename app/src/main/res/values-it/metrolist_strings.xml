@@ -164,4 +164,7 @@
     <string name="seek_backward">5 secondi indietro</string>
     <string name="disable_load_more_when_repeat_all">Disabilita il caricamento di altri brani quando si ripetono tutti i brani</string>
     <string name="disable_load_more_when_repeat_all_desc">Non caricare automaticamente altri brani e contenuti simili quando la modalità Ripeti tutto è attiva</string>
+    <string name="close">Chiudi</string>
+    <string name="minimum_volume">Volume minimo</string>
+    <string name="maximum_volume">Volume massimo</string>
 </resources>
