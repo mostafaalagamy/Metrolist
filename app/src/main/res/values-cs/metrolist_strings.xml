@@ -168,4 +168,6 @@
     <string name="maximum_volume">Maximální hlasitost</string>
     <string name="disable_load_more_when_repeat_all">Zakázat načtení více skladeb při opakování všech</string>
     <string name="disable_load_more_when_repeat_all_desc">Automaticky nenačítat další skladby a podobný obsah, když je zapnutý režim opakování</string>
+    <string name="hide_player_thumbnail">Skrýt náhled přehrávače</string>
+    <string name="hide_player_thumbnail_desc">Nahradit obal alba v přehrávači logem aplikace</string>
 </resources>
