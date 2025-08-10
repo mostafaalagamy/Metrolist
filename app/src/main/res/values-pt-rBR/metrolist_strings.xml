@@ -156,4 +156,13 @@
     <string name="empty_playlist">Lista vazia</string>
     <string name="empty_playlist_desc">Esta lista não tem nenhuma música</string>
     <string name="now_playing">Reproduzindo agora</string>
+    <string name="close">Fechar</string>
+    <string name="minimum_volume">Volume mínimo</string>
+    <string name="maximum_volume">Volume máximo</string>
+    <string name="hide_player_thumbnail">Ocultar miniatura do reprodutor</string>
+    <string name="hide_player_thumbnail_desc">Substituir arte do álbum com a logo do app no reprodutor</string>
+    <string name="seek_backward">5 segundos pra atrás</string>
+    <string name="seek_forward">5 segundos pra frente</string>
+    <string name="seek_forward_dynamic">+%1$d segundos para frente</string>
+    <string name="seek_backward_dynamic">-%1$d segundos pra trás</string>
 </resources>
