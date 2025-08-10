@@ -165,4 +165,12 @@
     <string name="empty_playlist_desc">هذه القائمة لا تحتوي على أي أغنية</string>
     <string name="playlist_not_found_desc">لا يمكن تحميل القائمة المطلوبة</string>
     <string name="now_playing">المُشغل حاليا</string>
+    <string name="seek_backward">5 ثوان للخلف</string>
+    <string name="seek_forward">للأمام 5 ثواني</string>
+    <string name="seek_forward_dynamic">+%1$d ثواني للأمام</string>
+    <string name="seek_backward_dynamic">- %1$d ثواني للخلف</string>
+    <string name="seek_seconds_addup">التقدم التدريجي</string>
+    <string name="seek_seconds_addup_description">إذا مُكنت أضف 5 ثوان إضافية بشكل تدريجي على كل مطاردة</string>
+    <string name="disable_load_more_when_repeat_all">تعطيل تحميل المزيد عند تفعيل تكرار الكل</string>
+    <string name="disable_load_more_when_repeat_all_desc">لا يتم تحميل المزيد من الأغاني والمحتوى المماثل تلقائيًا عند تمكين وضع تكرار الكل</string>
 </resources>
