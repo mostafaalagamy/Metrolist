@@ -437,13 +437,13 @@ fun AppearanceSettings(
             onCheckedChange = onSwipeThumbnailChange,
         )
 
-        SwitchPreference(
-            title = { Text(stringResource(R.string.hide_player_thumbnail)) },
-            description = stringResource(R.string.hide_player_thumbnail_desc),
-            icon = { Icon(painterResource(R.drawable.app_icon_small), null) },
-            checked = hidePlayerThumbnail,
-            onCheckedChange = onHidePlayerThumbnailChange
-        )
+                    SwitchPreference(
+                title = { Text(stringResource(R.string.hide_player_thumbnail)) },
+                description = stringResource(R.string.hide_player_thumbnail_desc),
+                icon = { Icon(painterResource(R.drawable.hide_image), null) },
+                checked = hidePlayerThumbnail,
+                onCheckedChange = onHidePlayerThumbnailChange
+            )
 
         AnimatedVisibility(swipeThumbnail) {
             var showSensitivityDialog by rememberSaveable { mutableStateOf(false) }
