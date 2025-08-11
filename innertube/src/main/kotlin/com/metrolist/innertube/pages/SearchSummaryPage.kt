@@ -228,7 +228,7 @@ data class SearchSummaryPage(
                                 ?.text ?: return null,
                         artists =
                             if (artist.isEmpty()) {
-                                secondaryLine.getOrNull(0)?.oddElements()?.map {
+                                listRun.getOrNull(0)?.oddElements()?.map {
                                     Artist(name = it.text, id = it.navigationEndpoint?.browseEndpoint?.browseId)
                                 } ?: return null
                             } else {
