@@ -236,10 +236,7 @@ private fun NewMiniPlayer(
                 .offset { IntOffset(offsetXAnimatable.value.roundToInt(), 0) }
                 .clip(RoundedCornerShape(32.dp)) // Clip first for perfect rounded corners
                 .background(
-                    color = if (pureBlack) 
-                        Color.Black
-                    else 
-                        MaterialTheme.colorScheme.surfaceContainer // Same as navigation bar color
+                    color = MaterialTheme.colorScheme.surfaceContainer // Same as navigation bar color
                 )
         ) {
             Row(
@@ -338,7 +335,7 @@ private fun NewMiniPlayer(
                         ) { title ->
                             Text(
                                 text = title,
-                                color = if (pureBlack) Color.White else MaterialTheme.colorScheme.onSurface,
+                                color = MaterialTheme.colorScheme.onSurface,
                                 fontSize = 14.sp,
                                 fontWeight = FontWeight.Medium,
                                 maxLines = 1,
@@ -354,10 +351,7 @@ private fun NewMiniPlayer(
                         ) { artists ->
                             Text(
                                 text = artists,
-                                color = if (pureBlack) 
-                                    Color.White.copy(alpha = 0.7f) 
-                                else 
-                                    MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
                                 fontSize = 12.sp,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis,
@@ -438,7 +432,7 @@ private fun NewMiniPlayer(
                                 tint = if (isSubscribed) 
                                     MaterialTheme.colorScheme.primary 
                                 else 
-                                    if (pureBlack) Color.White.copy(alpha = 0.7f) else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+                                    MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
                                 modifier = Modifier.size(20.dp)
                             )
                         }
@@ -484,7 +478,7 @@ private fun NewMiniPlayer(
                             tint = if (isLiked) 
                                 MaterialTheme.colorScheme.error 
                             else 
-                                if (pureBlack) Color.White.copy(alpha = 0.7f) else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+                                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
                             modifier = Modifier.size(20.dp)
                         )
                     }
