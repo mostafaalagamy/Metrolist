@@ -191,29 +191,6 @@ data class SearchSummaryPage(
                     ?.splitBySeparator()
                     ?: emptyList()
             val listRun = (secondaryLine + thirdLine).clean()
-            var album: Album? = null
-            val artist: MutableList<Artist> = mutableListOf()
-            listRun.forEach { runs ->
-                runs.forEach {
-                    val pageType =
-                        it.navigationEndpoint
-                            ?.browseEndpoint
-                            ?.browseEndpointContextSupportedConfigs
-                            ?.browseEndpointContextMusicConfig
-                            ?.pageType
-                    if (pageType == MUSIC_PAGE_TYPE_ALBUM
-                    ) {
-                        album = Album(name = it.text, id = it.navigationEndpoint.browseEndpoint.browseId)
-                    } else if (pageType == MUSIC_PAGE_TYPE_ARTIST || pageType == MUSIC_PAGE_TYPE_USER_CHANNEL) {
-                        artist.add(
-                            Artist(
-                                name = it.text,
-                                id = it.navigationEndpoint.browseEndpoint.browseId,
-                            ),
-                        )
-                    }
-                }
-            }
             return when {
                 renderer.isSong -> {
                     SongItem(
@@ -226,15 +203,18 @@ data class SearchSummaryPage(
                                 ?.runs
                                 ?.firstOrNull()
                                 ?.text ?: return null,
-                        artists =
-                            if (artist.isEmpty()) {
-                                secondaryLine.getOrNull(0)?.oddElements()?.map {
-                                    Artist(name = it.text, id = it.navigationEndpoint?.browseEndpoint?.browseId)
-                                } ?: return null
-                            } else {
-                                artist
-                            },
-                        album = album,
+                        artists = listRun.getOrNull(0)?.oddElements()?.map {
+                            Artist(
+                                name = it.text,
+                                id = it.navigationEndpoint?.browseEndpoint?.browseId
+                            )
+                        } ?: return null,
+                        album = listRun.getOrNull(1)?.firstOrNull()?.takeIf { it.navigationEndpoint?.browseEndpoint != null }?.let {
+                            Album(
+                                name = it.text,
+                                id = it.navigationEndpoint?.browseEndpoint?.browseId!!
+                            )
+                        },
                         duration =
                             secondaryLine
                                 .lastOrNull()
