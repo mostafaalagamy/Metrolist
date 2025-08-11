@@ -88,6 +88,9 @@ data class AlbumPage(
                         name = it.text,
                         id = it.navigationEndpoint?.browseEndpoint?.browseId
                     )
+                }.ifEmpty {
+                    // Fallback to album artists if no artists found in song data
+                    album?.artists ?: emptyList()
                 },
                 album = album?.let {
                     Album(it.title, it.browseId)
