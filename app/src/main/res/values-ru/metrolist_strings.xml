@@ -159,4 +159,17 @@
     <string name="empty_playlist">Пустой плейлист</string>
     <string name="empty_playlist_desc">Этот плейлист не содержит песен</string>
     <string name="now_playing">Сейчас играет</string>
+    <string name="close">Закрыть</string>
+    <string name="minimum_volume">Мин. громкость</string>
+    <string name="maximum_volume">Макс. громкость</string>
+    <string name="hide_player_thumbnail">Скрыть миниатюру проигрывателя</string>
+    <string name="hide_player_thumbnail_desc">Заменить обложку альбома на логотип приложения в проигрывателе</string>
+    <string name="seek_backward">5 секунд назад</string>
+    <string name="seek_forward">5 секунд вперёд</string>
+    <string name="seek_forward_dynamic">+%1$d сек. вперёд</string>
+    <string name="seek_backward_dynamic">-%1$d сек. назад</string>
+    <string name="seek_seconds_addup">Прогрессивный поиск</string>
+    <string name="seek_seconds_addup_description">Если включено, при каждом пропуске перемотки добавляется ещё 5 секунд</string>
+    <string name="disable_load_more_when_repeat_all">Отключить автозагрузку при повторе всех песен</string>
+    <string name="disable_load_more_when_repeat_all_desc">Не загружать автоматически больше песен и похожего контента при повторе всех песен</string>
 </resources>
