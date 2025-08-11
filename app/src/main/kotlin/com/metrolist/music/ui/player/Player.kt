@@ -1092,7 +1092,7 @@ fun BottomSheetPlayer(
                         AnimatedContent(
                             targetState = mediaMetadata?.thumbnailUrl,
                             transitionSpec = {
-                                fadeIn(tween(500)) togetherWith fadeOut(tween(500))
+                                fadeIn(tween(1000)) togetherWith fadeOut(tween(1000))
                             }
                         ) { thumbnailUrl ->
                             if (thumbnailUrl != null) {
