@@ -167,4 +167,6 @@
     <string name="close">Chiudi</string>
     <string name="minimum_volume">Volume minimo</string>
     <string name="maximum_volume">Volume massimo</string>
+    <string name="hide_player_thumbnail">Nascondi Miniatura del Lettore</string>
+    <string name="hide_player_thumbnail_desc">Sostituisci la copertina dell\'album con il logo dell\'app nel lettore</string>
 </resources>
