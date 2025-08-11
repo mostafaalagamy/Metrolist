@@ -471,7 +471,7 @@ fun BottomSheetPlayer(
     val lyricsSheetState = rememberBottomSheetState(
         dismissedBound = 0.dp,
         expandedBound = state.expandedBound,
-        collapsedBound = 1.dp,
+        collapsedBound = 0.dp,
         initialAnchor = 1
     )
 
@@ -1089,31 +1089,19 @@ fun BottomSheetPlayer(
             Box(modifier = Modifier.fillMaxSize()) {
                 when (playerBackground) {
                     PlayerBackgroundStyle.BLUR -> {
-                        // Layer 1: Previous blur background (stays visible during transition)
-                        if (previousThumbnailUrl != null) {
-                            AsyncImage(
-                                model = previousThumbnailUrl,
-                                contentDescription = "Previous blurred background",
-                                contentScale = ContentScale.FillBounds,
-                                modifier = Modifier.fillMaxSize().blur(radius = 150.dp)
-                            )
-                            Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.4f)))
-                        }
-                        
-                        // Layer 2: New blur background (animates on top)
                         AnimatedContent(
                             targetState = mediaMetadata?.thumbnailUrl,
                             transitionSpec = {
-                                fadeIn(tween(500)) togetherWith fadeOut(tween(500))
+                                fadeIn(tween(1000)) togetherWith fadeOut(tween(1000))
                             }
                         ) { thumbnailUrl ->
                             if (thumbnailUrl != null) {
                                 Box(modifier = Modifier.fillMaxSize()) {
                                     AsyncImage(
                                         model = thumbnailUrl,
-                                        contentDescription = "New blurred background",
+                                        contentDescription = "Blurred background",
                                         contentScale = ContentScale.FillBounds,
-                                        modifier = Modifier.fillMaxSize().blur(radius = 150.dp)
+                                        modifier = Modifier.fillMaxSize().blur(150.dp)
                                     )
                                     Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.4f)))
                                 }
@@ -1266,17 +1254,27 @@ fun BottomSheetPlayer(
         mediaMetadata?.let { metadata ->
             BottomSheet(
                 state = lyricsSheetState,
-                backgroundColor = MaterialTheme.colorScheme.surface,
+                backgroundColor = Color.Unspecified,
                 onDismiss = { /* Optional dismiss action */ },
                 collapsedContent = {
                     // Empty collapsed content - fully hidden when collapsed
                 }
             ) {
-                LyricsScreen(
-                    mediaMetadata = metadata,
-                    onBackClick = { lyricsSheetState.collapseSoft() },
-                    navController = navController
-                )
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(
+                            MaterialTheme.colorScheme.surface.copy(
+                                alpha = lyricsSheetState.progress.coerceIn(0f, 1f)
+                            )
+                        )
+                ) {
+                    LyricsScreen(
+                        mediaMetadata = metadata,
+                        onBackClick = { lyricsSheetState.collapseSoft() },
+                        navController = navController
+                    )
+                }
             }
         }
     }
