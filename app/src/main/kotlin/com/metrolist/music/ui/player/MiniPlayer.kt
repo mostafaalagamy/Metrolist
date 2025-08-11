@@ -264,7 +264,7 @@ private fun NewMiniPlayer(
                         )
                     }
                     
-                    // Play/Pause button
+                    // Play/Pause button with thumbnail background
                     Box(
                         contentAlignment = Alignment.Center,
                         modifier = Modifier
@@ -273,10 +273,6 @@ private fun NewMiniPlayer(
                             .border(
                                 width = 1.dp,
                                 color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
-                                shape = CircleShape
-                            )
-                            .background(
-                                color = MaterialTheme.colorScheme.primary,
                                 shape = CircleShape
                             )
                             .clickable {
@@ -288,6 +284,28 @@ private fun NewMiniPlayer(
                                 }
                             }
                     ) {
+                        // Thumbnail background
+                        mediaMetadata?.let { metadata ->
+                            AsyncImage(
+                                model = metadata.thumbnailUrl,
+                                contentDescription = null,
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .clip(CircleShape)
+                            )
+                        }
+                        
+                        // Semi-transparent overlay for better icon visibility
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(
+                                    color = Color.Black.copy(alpha = 0.4f),
+                                    shape = CircleShape
+                                )
+                        )
+                        
                         Icon(
                             painter = painterResource(
                                 if (playbackState == Player.STATE_ENDED) {
@@ -299,7 +317,7 @@ private fun NewMiniPlayer(
                                 },
                             ),
                             contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onPrimary,
+                            tint = Color.White,
                             modifier = Modifier.size(20.dp)
                         )
                     }
