@@ -196,7 +196,20 @@ object YouTube {
                 thumbnail = response.contents.twoColumnBrowseResultsRenderer.tabs.firstOrNull()?.tabRenderer?.content?.sectionListRenderer?.contents?.firstOrNull()?.musicResponsiveHeaderRenderer?.thumbnail?.musicThumbnailRenderer?.thumbnail?.thumbnails?.lastOrNull()?.url!!,
                 explicit = false, // TODO: Extract explicit badge for albums from YouTube response
             ),
-            songs = if (withSongs) albumSongs(playlistId).getOrThrow() else emptyList(),
+            songs = if (withSongs) albumSongs(playlistId, AlbumItem(
+                browseId = browseId,
+                playlistId = playlistId,
+                title = response.contents?.twoColumnBrowseResultsRenderer?.tabs?.firstOrNull()?.tabRenderer?.content?.sectionListRenderer?.contents?.firstOrNull()?.musicResponsiveHeaderRenderer?.title?.runs?.firstOrNull()?.text!!,
+                artists = response.contents.twoColumnBrowseResultsRenderer.tabs.firstOrNull()?.tabRenderer?.content?.sectionListRenderer?.contents?.firstOrNull()?.musicResponsiveHeaderRenderer?.straplineTextOne?.runs?.oddElements()?.map {
+                    Artist(
+                        name = it.text,
+                        id = it.navigationEndpoint?.browseEndpoint?.browseId
+                    )
+                }!!,
+                year = response.contents.twoColumnBrowseResultsRenderer.tabs.firstOrNull()?.tabRenderer?.content?.sectionListRenderer?.contents?.firstOrNull()?.musicResponsiveHeaderRenderer?.subtitle?.runs?.lastOrNull()?.text?.toIntOrNull(),
+                thumbnail = response.contents.twoColumnBrowseResultsRenderer.tabs.firstOrNull()?.tabRenderer?.content?.sectionListRenderer?.contents?.firstOrNull()?.musicResponsiveHeaderRenderer?.thumbnail?.musicThumbnailRenderer?.thumbnail?.thumbnails?.lastOrNull()?.url!!,
+                explicit = false
+            )).getOrThrow() else emptyList(),
             otherVersions = response.contents.twoColumnBrowseResultsRenderer.secondaryContents?.sectionListRenderer?.contents?.getOrNull(1)?.musicCarouselShelfRenderer?.contents
                 ?.mapNotNull { it.musicTwoRowItemRenderer }
                 ?.mapNotNull(NewReleaseAlbumPage::fromMusicTwoRowItemRenderer)
@@ -204,14 +217,14 @@ object YouTube {
         )
     }
 
-    suspend fun albumSongs(playlistId: String): Result<List<SongItem>> = runCatching {
+    suspend fun albumSongs(playlistId: String, album: AlbumItem? = null): Result<List<SongItem>> = runCatching {
         var response = innerTube.browse(WEB_REMIX, "VL$playlistId").body<BrowseResponse>()
         val songs = response.contents?.twoColumnBrowseResultsRenderer
             ?.secondaryContents?.sectionListRenderer
             ?.contents?.firstOrNull()
             ?.musicPlaylistShelfRenderer?.contents?.getItems()
             ?.mapNotNull {
-                AlbumPage.getSong(it)
+                AlbumPage.getSong(it, album)
             }!!
             .toMutableList()
         var continuation = response.contents?.twoColumnBrowseResultsRenderer?.secondaryContents?.sectionListRenderer
@@ -233,7 +246,7 @@ object YouTube {
                 continuation = continuation,
             ).body<BrowseResponse>()
             songs += response.continuationContents?.musicPlaylistShelfContinuation?.contents?.getItems()?.mapNotNull {
-                AlbumPage.getSong(it)
+                AlbumPage.getSong(it, album)
             }.orEmpty()
             continuation = response.continuationContents?.musicPlaylistShelfContinuation?.continuations?.getContinuation()
         }
@@ -771,32 +784,11 @@ object YouTube {
                             ?.musicPlayButtonRenderer?.playNavigationEndpoint
                             ?.watchPlaylistEndpoint?.playlistId ?: return null,
                         title = renderer.title.runs?.firstOrNull()?.text ?: return null,
-                        artists = renderer.subtitle?.runs?.let { runs ->
-                            // First approach: look for elements with navigationEndpoint
-                            val artistsWithEndpoint = runs.mapNotNull { run ->
-                                run.navigationEndpoint?.browseEndpoint?.browseId?.let { browseId ->
-                                    if (browseId.startsWith("UC") || browseId.startsWith("MPLA")) {
-                                        Artist(name = run.text, id = browseId)
-                                    } else null
-                                }
+                        artists = renderer.subtitle?.runs?.oddElements()?.drop(1)?.mapNotNull {
+                            it.navigationEndpoint?.browseEndpoint?.browseId?.let { id ->
+                                Artist(name = it.text, id = id)
                             }
-                            
-                            if (artistsWithEndpoint.isNotEmpty()) {
-                                artistsWithEndpoint
-                            } else {
-                                // Fallback: use oddElements approach
-                                runs.oddElements().mapNotNull { run ->
-                                    when {
-                                        run.text.matches(Regex("^\\d+.*")) -> null
-                                        run.text.matches(Regex("^\\d{4}$")) -> null
-                                        run.text.lowercase() in listOf("song", "songs", "•", "views", "view", "album", "albums") -> null
-                                        run.text.contains("views", ignoreCase = true) -> null
-                                        run.text.isBlank() || run.text.length <= 1 -> null
-                                        else -> Artist(name = run.text, id = run.navigationEndpoint?.browseEndpoint?.browseId)
-                                    }
-                                }.take(3)
-                            }
-                        } ?: emptyList(),
+                        },
                         year = renderer.subtitle?.runs?.lastOrNull()?.text?.toIntOrNull(),
                         thumbnail = renderer.thumbnailRenderer.musicThumbnailRenderer?.getThumbnailUrl() ?: return null,
                         explicit = renderer.subtitleBadges?.any {
