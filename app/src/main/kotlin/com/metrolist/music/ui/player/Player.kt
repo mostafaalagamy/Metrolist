@@ -1109,30 +1109,10 @@ fun BottomSheetPlayer(
                         }
                     }
                     PlayerBackgroundStyle.GRADIENT -> {
-                        // Layer 1: Previous gradient background (stays visible during transition)
-                        if (previousGradientColors.isNotEmpty()) {
-                            val gradientColorStops = if (previousGradientColors.size >= 3) {
-                                arrayOf(
-                                    0.0f to previousGradientColors[0], // Top: primary vibrant color
-                                    0.5f to previousGradientColors[1], // Middle: darker variant
-                                    1.0f to previousGradientColors[2]  // Bottom: black
-                                )
-                            } else {
-                                arrayOf(
-                                    0.0f to previousGradientColors[0], // Top: primary color
-                                    0.6f to previousGradientColors[0].copy(alpha = 0.7f), // Middle: faded variant
-                                    1.0f to Color.Black // Bottom: black
-                                )
-                            }
-                            Box(modifier = Modifier.fillMaxSize().background(Brush.verticalGradient(colorStops = gradientColorStops)))
-                            Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.2f)))
-                        }
-                        
-                        // Layer 2: New gradient background (animates on top)
                         AnimatedContent(
                             targetState = gradientColors,
                             transitionSpec = {
-                                fadeIn(tween(500)) togetherWith fadeOut(tween(500))
+                                fadeIn(tween(1000)) togetherWith fadeOut(tween(1000))
                             }
                         ) { colors ->
                             if (colors.isNotEmpty()) {

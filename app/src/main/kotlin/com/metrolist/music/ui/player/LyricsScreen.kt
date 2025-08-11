@@ -1,6 +1,11 @@
 package com.metrolist.music.ui.player
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -232,36 +237,50 @@ fun LyricsScreen(
         Box(modifier = Modifier.fillMaxSize()) {
             when (playerBackground) {
                 PlayerBackgroundStyle.BLUR -> {
-                    if (mediaMetadata.thumbnailUrl != null) {
-                        Box(modifier = Modifier.fillMaxSize()) {
-                            AsyncImage(
-                                model = mediaMetadata.thumbnailUrl,
-                                contentDescription = "Blurred background",
-                                contentScale = ContentScale.FillBounds,
-                                modifier = Modifier.fillMaxSize().blur(150.dp)
-                            )
-                            Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.4f)))
+                    AnimatedContent(
+                        targetState = mediaMetadata.thumbnailUrl,
+                        transitionSpec = {
+                            fadeIn(tween(1000)) togetherWith fadeOut(tween(1000))
+                        }
+                    ) { thumbnailUrl ->
+                        if (thumbnailUrl != null) {
+                            Box(modifier = Modifier.fillMaxSize()) {
+                                AsyncImage(
+                                    model = thumbnailUrl,
+                                    contentDescription = "Blurred background",
+                                    contentScale = ContentScale.FillBounds,
+                                    modifier = Modifier.fillMaxSize().blur(150.dp)
+                                )
+                                Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.4f)))
+                            }
                         }
                     }
                 }
                 PlayerBackgroundStyle.GRADIENT -> {
-                    if (gradientColors.isNotEmpty()) {
-                        Box(modifier = Modifier.fillMaxSize()) {
-                            val gradientColorStops = if (gradientColors.size >= 3) {
-                                arrayOf(
-                                    0.0f to gradientColors[0],
-                                    0.5f to gradientColors[1],
-                                    1.0f to gradientColors[2]
-                                )
-                            } else {
-                                arrayOf(
-                                    0.0f to gradientColors[0],
-                                    0.6f to gradientColors[0].copy(alpha = 0.7f),
-                                    1.0f to Color.Black
-                                )
+                    AnimatedContent(
+                        targetState = gradientColors,
+                        transitionSpec = {
+                            fadeIn(tween(1000)) togetherWith fadeOut(tween(1000))
+                        }
+                    ) { colors ->
+                        if (colors.isNotEmpty()) {
+                            Box(modifier = Modifier.fillMaxSize()) {
+                                val gradientColorStops = if (colors.size >= 3) {
+                                    arrayOf(
+                                        0.0f to colors[0],
+                                        0.5f to colors[1],
+                                        1.0f to colors[2]
+                                    )
+                                } else {
+                                    arrayOf(
+                                        0.0f to colors[0],
+                                        0.6f to colors[0].copy(alpha = 0.7f),
+                                        1.0f to Color.Black
+                                    )
+                                }
+                                Box(modifier = Modifier.fillMaxSize().background(Brush.verticalGradient(colorStops = gradientColorStops)))
+                                Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.2f)))
                             }
-                            Box(modifier = Modifier.fillMaxSize().background(Brush.verticalGradient(colorStops = gradientColorStops)))
-                            Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.2f)))
                         }
                     }
                 }
