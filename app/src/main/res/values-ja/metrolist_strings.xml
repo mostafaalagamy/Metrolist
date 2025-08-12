@@ -144,5 +144,5 @@
     <string name="history_duration">履歴期間</string>
     <string name="subscribe">定期購読</string>
     <string name="subscribed">定期購読済み</string>
-    <string name="sensitivity_percentage">%1$d%</string>
+    <string name="sensitivity_percentage">%1$d%%</string>
 </resources>
