@@ -193,6 +193,7 @@ dependencies {
     implementation(project(":innertube"))
     implementation(project(":kugou"))
     implementation(project(":lrclib"))
+    implementation(project(":musicxmatch"))
     implementation(project(":kizzy"))
 
     implementation(libs.ktor.client.core)

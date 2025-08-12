@@ -34,6 +34,7 @@ constructor(
         listOf(
             LrcLibLyricsProvider,
             KuGouLyricsProvider,
+            MusicXMatchLyricsProvider,
             YouTubeSubtitleLyricsProvider,
             YouTubeLyricsProvider
         )
@@ -45,17 +46,25 @@ constructor(
             }.distinctUntilChanged()
             .map {
                 lyricsProviders =
-                    if (it == PreferredLyricsProvider.LRCLIB) {
-                        listOf(
+                    when (it) {
+                        PreferredLyricsProvider.LRCLIB -> listOf(
                             LrcLibLyricsProvider,
                             KuGouLyricsProvider,
+                            MusicXMatchLyricsProvider,
                             YouTubeSubtitleLyricsProvider,
                             YouTubeLyricsProvider
                         )
-                    } else {
-                        listOf(
+                        PreferredLyricsProvider.KUGOU -> listOf(
                             KuGouLyricsProvider,
                             LrcLibLyricsProvider,
+                            MusicXMatchLyricsProvider,
+                            YouTubeSubtitleLyricsProvider,
+                            YouTubeLyricsProvider
+                        )
+                        PreferredLyricsProvider.MUSICXMATCH -> listOf(
+                            MusicXMatchLyricsProvider,
+                            LrcLibLyricsProvider,
+                            KuGouLyricsProvider,
                             YouTubeSubtitleLyricsProvider,
                             YouTubeLyricsProvider
                         )

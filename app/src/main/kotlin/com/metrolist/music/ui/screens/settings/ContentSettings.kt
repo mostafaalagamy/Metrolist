@@ -58,6 +58,7 @@ fun ContentSettings(
     val (proxyUrl, onProxyUrlChange) = rememberPreference(key = ProxyUrlKey, defaultValue = "host:port")
     val (enableKugou, onEnableKugouChange) = rememberPreference(key = EnableKugouKey, defaultValue = true)
     val (enableLrclib, onEnableLrclibChange) = rememberPreference(key = EnableLrcLibKey, defaultValue = true)
+    val (enableMusicXMatch, onEnableMusicXMatchChange) = rememberPreference(key = EnableMusicXMatchKey, defaultValue = true)
     val (preferredProvider, onPreferredProviderChange) =
         rememberEnumPreference(
             key = PreferredLyricsProviderKey,
@@ -177,15 +178,22 @@ fun ContentSettings(
             checked = enableKugou,
             onCheckedChange = onEnableKugouChange,
         )
+        SwitchPreference(
+            title = { Text(stringResource(R.string.enable_musicxmatch)) },
+            icon = { Icon(painterResource(R.drawable.lyrics), null) },
+            checked = enableMusicXMatch,
+            onCheckedChange = onEnableMusicXMatchChange,
+        )
         ListPreference(
             title = { Text(stringResource(R.string.set_first_lyrics_provider)) },
             icon = { Icon(painterResource(R.drawable.lyrics), null) },
             selectedValue = preferredProvider,
-            values = listOf(PreferredLyricsProvider.LRCLIB, PreferredLyricsProvider.KUGOU),
+            values = listOf(PreferredLyricsProvider.LRCLIB, PreferredLyricsProvider.KUGOU, PreferredLyricsProvider.MUSICXMATCH),
             valueText = {
                 when (it) {
                     PreferredLyricsProvider.LRCLIB -> "LrcLib"
                     PreferredLyricsProvider.KUGOU -> "KuGou"
+                    PreferredLyricsProvider.MUSICXMATCH -> "MusicXMatch"
                 }
             },
             onValueSelected = onPreferredProviderChange,
