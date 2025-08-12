@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="explore">الإستكشاف</string>
+    <string name="explore">الاستكشاف</string>
     <string name="back_button_desc">للخلف</string>
     <string name="no_title">لا يوجد عنوان</string>
     <string name="unknown_artist">فنان غير معروف</string>
@@ -164,5 +164,18 @@
     <string name="empty_playlist">قائمة تشغيل فارغه</string>
     <string name="empty_playlist_desc">هذه القائمة لا تحتوي على أي أغنية</string>
     <string name="playlist_not_found_desc">لا يمكن تحميل القائمة المطلوبة</string>
-    <string name="now_playing">المُشغل حاليا</string>
+    <string name="now_playing">المُشغل الأن</string>
+    <string name="seek_backward">5 ثوان للخلف</string>
+    <string name="seek_forward">للأمام 5 ثواني</string>
+    <string name="seek_forward_dynamic">+%1$d ثواني للأمام</string>
+    <string name="seek_backward_dynamic">- %1$d ثواني للخلف</string>
+    <string name="seek_seconds_addup">التقدم التدريجي</string>
+    <string name="seek_seconds_addup_description">إذا مُكنت أضف 5 ثوان إضافية بشكل تدريجي على كل مطاردة</string>
+    <string name="disable_load_more_when_repeat_all">تعطيل تحميل المزيد عند تفعيل تكرار الكل</string>
+    <string name="disable_load_more_when_repeat_all_desc">لا يتم تحميل المزيد من الأغاني والمحتوى المماثل تلقائيًا عند تمكين وضع تكرار الكل</string>
+    <string name="close">إغلاق</string>
+    <string name="minimum_volume">الحد الأدنى للصوت</string>
+    <string name="maximum_volume">الحد الاقصى للصوت</string>
+    <string name="hide_player_thumbnail">إخفاء صورة الأغنيه</string>
+    <string name="hide_player_thumbnail_desc">استبدال غلاف الألبوم بشعار التطبيق في المشغل</string>
 </resources>

@@ -154,4 +154,22 @@
     </plurals>
     <string name="explore">Razišči</string>
     <string name="new_mini_player_design">Nova oblika mini predvajalnika</string>
+    <string name="now_playing">Igra zdaj</string>
+    <string name="close">Zapri</string>
+    <string name="minimum_volume">Minimalna glasnost</string>
+    <string name="maximum_volume">Maximalna glasnost</string>
+    <string name="hide_player_thumbnail">Skrij predogled predvajalnika</string>
+    <string name="hide_player_thumbnail_desc">Zamenjaj podobo albuma z logotipom aplikacije v predvajalniku</string>
+    <string name="seek_backward">5 sekund nazaj</string>
+    <string name="seek_forward">5 sekund naprej</string>
+    <string name="seek_forward_dynamic">+%1$d sekund naprej</string>
+    <string name="seek_backward_dynamic">-%1$d sekund nazaj</string>
+    <string name="seek_seconds_addup">Napredno iskanje</string>
+    <string name="seek_seconds_addup_description">Če je omogočeno, se ob vsakem preskoku časa pri iskanju postopoma doda dodatnih 5 sekund</string>
+    <string name="playlist_not_found">Seznam predvajanja ni najden</string>
+    <string name="playlist_not_found_desc">Zahtevan seznam predvajanja ni bil mogoče naložiti</string>
+    <string name="empty_playlist">Prazen seznam predvajanja</string>
+    <string name="empty_playlist_desc">Ta seznam predvajanja ne vsebuje nobenih pesmi</string>
+    <string name="disable_load_more_when_repeat_all">Onemogoči samodejno nalaganje, ko je vklopljeno ponavljanje vseh pesmi</string>
+    <string name="disable_load_more_when_repeat_all_desc">Ne nalagaj samodejno več pesmi in podobne vsebine, ko je vklopljen način ponavljanja vseh</string>
 </resources>

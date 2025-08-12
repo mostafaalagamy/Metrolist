@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="explore">Esploratu</string>
+    <string name="charts">Arrakasta Zerrendak</string>
+    <string name="back_button_desc">Atzera</string>
+    <string name="no_title">Izenbururik gabe</string>
+    <string name="unknown_artist">Artista ezezaguna</string>
+    <string name="unknown_item_type">Elementu mota ezezaguna</string>
+    <string name="loading_charts">Arrakasta-zerrendak kargatzen...</string>
+    <string name="retry_button">Saiatu berriro</string>
+    <string name="album_cover_desc">Albumaren azala</string>
+    <string name="top_music_videos">Musika bideo onenak</string>
+    <string name="trending">Joera</string>
+    <string name="weeks">Asteak</string>
+    <string name="months">Hilabeteak</string>
+    <string name="years">Urteak</string>
+    <string name="continuous">Etengabe</string>
+    <string name="liked">Gustoko</string>
+    <string name="offline">Jaiskia</string>
+    <string name="my_top">Nire onenak</string>
+    <string name="cached_playlist">Cachean gordeta</string>
+    <string name="sync_playlist">Zerrenda sinkronizatu</string>
+    <string name="sync_disabled">Sinkronizazioa itzalita</string>
+    <string name="elements_selected">elementu hautatuta</string>
+    <string name="allows_for_sync_witch_youtube">Oharra: Honek YouTube Music-ekin sinkronizatzea ahalbidetzen du. Ondoren ezin izango da aldatu.</string>
+    <string name="generating_image">Irudia sortzen</string>
+    <string name="please_wait">Itxaron, mesedez</string>
+    <string name="cancel">Utzi</string>
+</resources>

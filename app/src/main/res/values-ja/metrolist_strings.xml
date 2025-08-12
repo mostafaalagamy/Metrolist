@@ -144,5 +144,23 @@
     <string name="history_duration">履歴期間</string>
     <string name="subscribe">定期購読</string>
     <string name="subscribed">定期購読済み</string>
-    <string name="sensitivity_percentage">%1$d%%</string>
+    <string name="sensitivity_percentage">%1$d%</string>
+    <string name="now_playing">再生中</string>
+    <string name="close">閉じる</string>
+    <string name="minimum_volume">最低音量</string>
+    <string name="maximum_volume">最大音量</string>
+    <string name="hide_player_thumbnail">プレイヤーにサムネイルを表示しない</string>
+    <string name="hide_player_thumbnail_desc">プレイヤー中のアルバムのカバーをアプリのロゴで置換する</string>
+    <string name="seek_backward">5秒戻る</string>
+    <string name="seek_forward">5秒進む</string>
+    <string name="seek_forward_dynamic">%1$d秒進む</string>
+    <string name="seek_backward_dynamic">%1$d秒戻る</string>
+    <string name="seek_seconds_addup">段階的スキップ</string>
+    <string name="seek_seconds_addup_description">有効な場合、スキップごとにスキップ時間が5秒伸びる</string>
+    <string name="playlist_not_found">プレイリストが見つかりません</string>
+    <string name="playlist_not_found_desc">リクエストされたプレイリストが読み込めませんでした</string>
+    <string name="empty_playlist">空のプレイリスト</string>
+    <string name="empty_playlist_desc">このプレイリストには曲が含まれていません</string>
+    <string name="disable_load_more_when_repeat_all">全曲リピートが有効な時、\"追加の曲をさらに読み込む\"機能を無効化する</string>
+    <string name="disable_load_more_when_repeat_all_desc">全曲リピートが有効な時、曲の自動追加や似ているコンテンツの追加を行わない</string>
 </resources>

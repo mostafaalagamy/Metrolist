@@ -162,4 +162,11 @@
     <string name="seek_backward_dynamic">-%1$d secondes en arrière</string>
     <string name="seek_seconds_addup">Recherche progressive</string>
     <string name="seek_seconds_addup_description">Si cette option est activée, chaque nouvel appui pour avancer ou reculer ajoute 5 secondes de plus que le saut précédent</string>
+    <string name="close">Fermer</string>
+    <string name="minimum_volume">Volume Minimum</string>
+    <string name="maximum_volume">Volume Maximum</string>
+    <string name="hide_player_thumbnail">Masquer la miniature du lecteur</string>
+    <string name="hide_player_thumbnail_desc">Remplacer la pochette de l\'album par le logo de l\'application dans le lecteur</string>
+    <string name="disable_load_more_when_repeat_all">Désactiver le chargement supplémentaire lors de la répétition de tout</string>
+    <string name="disable_load_more_when_repeat_all_desc">Ne chargez pas automatiquement plus de titres et de contenu similaire lorsque le mode répéter tout est activé</string>
 </resources>
