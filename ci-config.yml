@@ -1,0 +1,224 @@
+# Additional CI/CD Configuration for GitLab
+# This file contains additional settings and variables
+
+# GitLab CI/CD Variables (set these in GitLab Project Settings > CI/CD > Variables)
+# Required Variables:
+# - GITLAB_TOKEN: Personal access token for creating releases
+# - ANDROID_KEYSTORE: Base64 encoded keystore file (optional, for signing)
+# - KEYSTORE_PASSWORD: Password for the keystore (optional)
+# - KEY_ALIAS: Key alias in the keystore (optional)
+# - KEY_PASSWORD: Password for the key (optional)
+
+# Optional Environment Variables:
+environment_variables:
+  # Gradle optimization
+  GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.parallel=true -Dorg.gradle.caching=true -Dorg.gradle.configuration-cache=true"
+  
+  # Android SDK settings
+  ANDROID_COMPILE_SDK: "34"
+  ANDROID_BUILD_TOOLS: "35.0.0"
+  ANDROID_SDK_ROOT: "/opt/android-sdk"
+  
+  # Build optimization
+  TERM: "dumb"
+  
+  # APK naming
+  VERSION_NAME: "auto-generated"
+  VERSION_CODE: "auto-generated"
+
+# Cache configuration
+cache_strategy:
+  gradle_cache:
+    key: "gradle-$CI_COMMIT_REF_SLUG"
+    paths:
+      - .gradle/wrapper
+      - .gradle/caches
+      - ~/.gradle/caches
+      - ~/.gradle/wrapper
+    policy: pull-push
+    
+  android_sdk_cache:
+    key: "android-sdk-v2"
+    paths:
+      - /opt/android-sdk
+    policy: pull-push
+
+# Build matrix configuration
+build_variants:
+  architectures:
+    - name: "arm64"
+      gradle_task: "assembleArm64Release"
+      output_path: "app/build/outputs/apk/arm64/release/"
+      
+    - name: "armeabi"
+      gradle_task: "assembleArmeabiRelease"
+      output_path: "app/build/outputs/apk/armeabi/release/"
+      
+    - name: "x86"
+      gradle_task: "assembleX86Release"
+      output_path: "app/build/outputs/apk/x86/release/"
+      
+    - name: "x86_64"
+      gradle_task: "assembleX86_64Release"
+      output_path: "app/build/outputs/apk/x86_64/release/"
+      
+    - name: "universal"
+      gradle_task: "assembleUniversalRelease"
+      output_path: "app/build/outputs/apk/universal/release/"
+
+# Pipeline triggers
+triggers:
+  # Automatic triggers
+  push_branches:
+    - main
+    - develop
+    - "release/*"
+    - "hotfix/*"
+    
+  # Manual triggers
+  manual_triggers:
+    - web
+    - api
+    
+  # Merge request triggers
+  merge_requests: true
+  
+  # Tag triggers (for releases)
+  tags: true
+  
+  # Ignore paths
+  ignore_paths:
+    - "README.md"
+    - "*.md"
+    - "docs/**"
+    - "fastlane/metadata/**"
+    - "assets/**"
+    - ".github/**"
+
+# Notification settings
+notifications:
+  slack:
+    enabled: false
+    webhook_url: "" # Set in GitLab variables
+    
+  email:
+    enabled: true
+    on_success: false
+    on_failure: true
+
+# Security settings
+security:
+  # Secret scanning
+  secret_detection: true
+  
+  # Dependency scanning
+  dependency_scanning: true
+  
+  # Container scanning
+  container_scanning: false
+  
+  # SAST (Static Application Security Testing)
+  sast: false
+
+# Performance settings
+performance:
+  # Parallel jobs limit
+  parallel_limit: 5
+  
+  # Timeout settings
+  default_timeout: "30m"
+  quick_timeout: "15m"
+  long_timeout: "60m"
+  
+  # Resource limits
+  memory_limit: "4GB"
+  cpu_limit: "2 cores"
+
+# Artifact management
+artifacts:
+  # Default expiry
+  default_expire_in: "1 week"
+  
+  # Release artifacts expiry
+  release_expire_in: "1 year"
+  
+  # Debug artifacts expiry
+  debug_expire_in: "3 days"
+  
+  # Reports expiry
+  reports_expire_in: "1 month"
+
+# Quality gates
+quality_gates:
+  # Code coverage minimum
+  coverage_threshold: 0 # Disabled for now
+  
+  # Lint warnings threshold
+  lint_warning_threshold: 100 # Allow up to 100 warnings
+  
+  # Build warnings threshold
+  build_warning_threshold: 50 # Allow up to 50 build warnings
+
+# Release configuration
+release:
+  # Automatic release creation
+  auto_release_on_tag: true
+  
+  # Release notes generation
+  generate_release_notes: true
+  
+  # Include artifacts in release
+  include_artifacts: true
+  
+  # Release naming pattern
+  release_name_pattern: "Metrolist v{tag}"
+  
+  # Release description template
+  release_description_template: |
+    ## Metrolist {tag}
+    
+    ### Changes
+    - See commit history for detailed changes
+    
+    ### Download
+    - Universal APK: Suitable for all devices
+    - Architecture-specific APKs: Optimized for specific device architectures
+    
+    ### Installation
+    1. Download the appropriate APK
+    2. Enable "Unknown sources" in Android settings
+    3. Install the APK
+    
+    ### Verification
+    All APKs are built from source code using GitLab CI/CD.
+
+# Documentation
+documentation:
+  pipeline_docs: |
+    ## GitLab CI/CD Pipeline Documentation
+    
+    This pipeline builds Metrolist APKs for multiple Android architectures.
+    
+    ### Stages:
+    1. **Prepare**: Download and setup Android SDK
+    2. **Build**: Build APKs for different architectures
+    3. **Collect**: Gather all built APKs
+    4. **Release**: Create GitLab releases (for tags only)
+    
+    ### Artifacts:
+    - APK files for arm64, armeabi, x86, x86_64, and universal
+    - Debug APK for testing
+    - Lint and test reports
+    
+    ### Manual Execution:
+    You can manually trigger the pipeline from GitLab UI:
+    1. Go to CI/CD > Pipelines
+    2. Click "Run Pipeline"
+    3. Select the branch/tag
+    4. Click "Run Pipeline"
+    
+    ### Troubleshooting:
+    - Check job logs for detailed error messages
+    - Verify Android SDK installation in prepare stage
+    - Ensure Gradle wrapper has execute permissions
+    - Check for any dependency conflicts
