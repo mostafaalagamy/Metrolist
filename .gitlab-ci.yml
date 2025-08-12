@@ -27,13 +27,32 @@ prepare_sdk:
   before_script:
     - apt-get update -qq && apt-get install -y -qq wget unzip
   script:
-    - wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
-    - unzip -q commandlinetools-linux-11076708_latest.zip
-    - mkdir -p $ANDROID_SDK_ROOT/cmdline-tools
-    - mv cmdline-tools $ANDROID_SDK_ROOT/cmdline-tools/latest
-    - export PATH=$PATH:$ANDROID_SDK_ROOT/cmdline-tools/latest/bin
-    - yes | sdkmanager --licenses >/dev/null 2>&1
-    - sdkmanager --install "platform-tools" "platforms;android-34" "build-tools;35.0.0" >/dev/null
+    - |
+      echo "Setting up Android SDK..."
+      
+      # Download Android command line tools
+      wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+      unzip -q commandlinetools-linux-11076708_latest.zip
+      
+      # Setup Android SDK directory structure
+      mkdir -p $ANDROID_SDK_ROOT/cmdline-tools
+      mv cmdline-tools $ANDROID_SDK_ROOT/cmdline-tools/latest
+      
+      # Set PATH for sdkmanager
+      export PATH=$PATH:$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$ANDROID_SDK_ROOT/platform-tools
+      
+      # Accept licenses automatically
+      mkdir -p $ANDROID_SDK_ROOT/licenses
+      echo "8933bad161af4178b1185d1a37fbf41ea5269c55" > $ANDROID_SDK_ROOT/licenses/android-sdk-license
+      echo "d56f5187479451eabf01fb78af6dfcb131a6481e" >> $ANDROID_SDK_ROOT/licenses/android-sdk-license
+      echo "24333f8a63b6825ea9c5514f83c2829b004d1fee" >> $ANDROID_SDK_ROOT/licenses/android-sdk-license
+      
+      # Install required SDK components
+      sdkmanager --install "platform-tools" "platforms;android-34" "build-tools;35.0.0"
+      
+      # Verify installation
+      echo "Android SDK setup completed"
+      ls -la $ANDROID_SDK_ROOT/
   artifacts:
     paths:
       - $ANDROID_SDK_ROOT
@@ -52,12 +71,14 @@ prepare_sdk:
   before_script:
     - export PATH=$PATH:$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$ANDROID_SDK_ROOT/platform-tools
     - chmod +x gradlew
-    # Verify SDK installation
-    - ls -la $ANDROID_SDK_ROOT/
-    - which adb || echo "ADB not found, continuing..."
+    - echo "Verifying Android SDK setup..."
+    - ls -la $ANDROID_SDK_ROOT/ || echo "SDK directory not found"
   script:
-    - echo "Building ${ABI} variant..."
-    - ./gradlew clean assemble${ABI}Release --stacktrace --info
+    - |
+      echo "Building ${ABI} variant..."
+      export ANDROID_HOME=$ANDROID_SDK_ROOT
+      export PATH=$PATH:$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$ANDROID_SDK_ROOT/platform-tools
+      ./gradlew clean assemble${ABI}Release --stacktrace
   artifacts:
     paths:
       - app/build/outputs/apk/${ABI_LOWER}/release/
@@ -126,12 +147,15 @@ build_debug:
   before_script:
     - export PATH=$PATH:$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$ANDROID_SDK_ROOT/platform-tools
     - chmod +x gradlew
-    # Create debug keystore
+    - echo "Setting up debug keystore..."
     - mkdir -p app/
     - keytool -genkey -v -keystore ./app/debug.keystore -alias debug -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Debug,OU=Debug,O=Debug,L=Debug,S=Debug,C=US" -storepass android -keypass android 2>/dev/null || true
   script:
-    - echo "Building debug variant..."
-    - ./gradlew assembleUniversalDebug --stacktrace
+    - |
+      echo "Building debug variant..."
+      export ANDROID_HOME=$ANDROID_SDK_ROOT
+      export PATH=$PATH:$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$ANDROID_SDK_ROOT/platform-tools
+      ./gradlew assembleUniversalDebug --stacktrace
   artifacts:
     paths:
       - app/build/outputs/apk/universal/debug/
