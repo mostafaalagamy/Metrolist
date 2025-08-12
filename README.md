@@ -1,58 +1,61 @@
 <div align="center">
-<img src="https://github.com/mostafaalagamy/Metrolist/blob/main/fastlane/metadata/android/en-US/images/icon.png" width="160" height="160" style="display: block; margin: 0 auto"/>
+<img src="https://gitlab.com/mostafaalagamy/metrolist/-/raw/main/fastlane/metadata/android/en-US/images/icon.png" width="160" height="160" style="display: block; margin: 0 auto"/>
 <h1>Metrolist</h1>
 <p>YouTube Music client for Android</p>
 
   <div style="padding: 16px; margin: 16px 0; background-color: #FFFBE5; border-left: 6px solid #FFC107; border-radius: 4px;">
-  <h2 style="margin: 0;"><strong>⚠Warning</strong></h2>
+  <h2 style="margin: 0;"><strong>⚠ Warning</strong></h2>
  If you're in a region where YouTube Music is not supported, you won't be able to use this app <strong>unless</strong> you have a proxy or VPN to connect to a YTM-supported region.
   </div>
 
 <h1>Screenshots</h1>
 
-  <img src="https://github.com/mostafaalagamy/Metrolist/blob/main/fastlane/metadata/android/en-US/images/screenshots/screenshot_1.png" width="30%" />
-  <img src="https://github.com/mostafaalagamy/Metrolist/blob/main/fastlane/metadata/android/en-US/images/screenshots/screenshot_2.png" width="30%" />
-  <img src="https://github.com/mostafaalagamy/Metrolist/blob/main/fastlane/metadata/android/en-US/images/screenshots/screenshot_3.png" width="30%" />
+  <img src="https://gitlab.com/mostafaalagamy/metrolist/-/raw/main/fastlane/metadata/android/en-US/images/screenshots/screenshot_1.png" width="30%" />
+  <img src="https://gitlab.com/mostafaalagamy/metrolist/-/raw/main/fastlane/metadata/android/en-US/images/screenshots/screenshot_2.png" width="30%" />
+  <img src="https://gitlab.com/mostafaalagamy/metrolist/-/raw/main/fastlane/metadata/android/en-US/images/screenshots/screenshot_3.png" width="30%" />
 
-  <img src="https://github.com/mostafaalagamy/Metrolist/blob/main/fastlane/metadata/android/en-US/images/screenshots/screenshot_4.png" width="30%" />
-  <img src="https://github.com/mostafaalagamy/Metrolist/blob/main/fastlane/metadata/android/en-US/images/screenshots/screenshot_5.png" width="30%" />
-  <img src="https://github.com/mostafaalagamy/Metrolist/blob/main/fastlane/metadata/android/en-US/images/screenshots/screenshot_6.png" width="30%" />
-</p>
+  <img src="https://gitlab.com/mostafaalagamy/metrolist/-/raw/main/fastlane/metadata/android/en-US/images/screenshots/screenshot_4.png" width="30%" />
+  <img src="https://gitlab.com/mostafaalagamy/metrolist/-/raw/main/fastlane/metadata/android/en-US/images/screenshots/screenshot_5.png" width="30%" />
+  <img src="https://gitlab.com/mostafaalagamy/metrolist/-/raw/main/fastlane/metadata/android/en-US/images/screenshots/screenshot_6.png" width="30%" />
 
 <img
-src="https://github.com/mostafaalagamy/Metrolist/blob/main/fastlane/metadata/android/en-US/images/featureGraphic.png" width="91%" />
+src="https://gitlab.com/mostafaalagamy/metrolist/-/raw/main/fastlane/metadata/android/en-US/images/featureGraphic.png" width="91%" />
 
-[![Latest release](https://img.shields.io/github/v/release/mostafaalagamy/Metrolist?style=for-the-badge)](https://github.com/mostafaalagamy/Metrolist/releases)
-[![GitHub license](https://img.shields.io/github/license/mostafaalagamy/metrolist?style=for-the-badge)](https://github.com/mostafaalagamy/Metrolist/blob/main/LICENSE)
-[![Downloads](https://img.shields.io/github/downloads/mostafaalagamy/Metrolist/total?style=for-the-badge)](https://github.com/mostafaalagamy/Metrolist/releases)
+[![Latest release](https://img.shields.io/gitlab/v/release/mostafaalagamy%2Fmetrolist?style=for-the-badge)](https://gitlab.com/mostafaalagamy/metrolist/-/releases)
+[![GitLab license](https://img.shields.io/gitlab/license/mostafaalagamy%2Fmetrolist?style=for-the-badge)](https://gitlab.com/mostafaalagamy/metrolist/-/blob/main/LICENSE)
+[![GitLab forks](https://img.shields.io/gitlab/forks/mostafaalagamy%2Fmetrolist?style=for-the-badge)](https://gitlab.com/mostafaalagamy/metrolist/-/forks)
+[![GitLab stars](https://img.shields.io/gitlab/stars/mostafaalagamy%2Fmetrolist?style=for-the-badge)](https://gitlab.com/mostafaalagamy/metrolist/-/starrers)
 </div>
 
 <div align="center">
-<h1>Features</h1>
+<h1>✨ Features</h1>
  </div>
  
-- Play any song or video from YT Music
-- Background playback 
-- Personalized quick picks 
-- Library management 
-- Download and cache songs for offline playback
-- Search for songs, albums, artists, videos and playlists
-- Live lyrics 
-- YouTube Music account login support
-- Syncing of songs, artists, albums and playlists, from and to your account
-- Skip silence 
-- Import playlists 
-- Audio normalization 
-- Adjust tempo/pitch 
-- Local playlist management
-- Reorder songs in playlist or queue 
-- Light - Dark - black - Dynamic theme
-- Sleep timer
-- Material 3 
-- etc.
+- 🎵 Play any song or video from YT Music
+- 🎧 Background playback 
+- 🎲 Personalized quick picks 
+- 📚 Library management 
+- 💾 Download and cache songs for offline playback
+- 🔍 Search for songs, albums, artists, videos and playlists
+- 🎤 Live lyrics 
+- 👤 YouTube Music account login support
+- ☁️ Syncing of songs, artists, albums and playlists, from and to your account
+- ⏭️ Skip silence 
+- 📥 Import playlists 
+- 🔊 Audio normalization 
+- ⚡ Adjust tempo/pitch 
+- 📝 Local playlist management
+- 🔄 Reorder songs in playlist or queue 
+- 🎨 Light - Dark - black - Dynamic theme
+- ⏰ Sleep timer
+- 🎯 Material 3 
+- And much more!
 
 <div align="center">
-<h1>Download Now</h1>
+<h1>📱 Download Now</h1>
+
+[<img src="https://gitlab.com/mostafaalagamy/metrolist/-/raw/main/assets/badge_gitlab.png" alt="Get it on GitLab" height="82"
+align="center">](https://gitlab.com/mostafaalagamy/metrolist/-/releases)
 
 [<img src="https://github.com/machiav3lli/oandbackupx/blob/034b226cea5c1b30eb4f6a6f313e4dadcbb0ece4/badge_github.png" alt="Get it on GitHub" height="82"
 align="center">](https://github.com/mostafaalagamy/Metrolist/releases/latest/download/Metrolist.apk)
@@ -69,15 +72,15 @@ align="center">](https://www.openapk.net/metrolist/com.metrolist.music/)
 [<img src="https://github.com/ImranR98/Obtainium/blob/main/assets/graphics/badge_obtainium.png"
 alt="Get it on Obtainium"
 height="55"
-align="center">](https://apps.obtainium.imranr.dev/redirect?r=obtainium://add/https://github.com/mostafaalagamy/Metrolist/)
+align="center">](https://apps.obtainium.imranr.dev/redirect?r=obtainium://add/https://gitlab.com/mostafaalagamy/metrolist/)
 
-[<img src="https://github.com/mostafaalagamy/Metrolist/blob/main/fastlane/metadata/android/en-US/images/belberi_github.png" alt="Get it on Belberi" height="82"
+[<img src="https://gitlab.com/mostafaalagamy/metrolist/-/raw/main/fastlane/metadata/android/en-US/images/belberi_github.png" alt="Get it on Belberi" height="82"
 align="center">](https://belberi.com/metrolist/?fbclid=PAY2xjawJP5dlleHRuA2FlbQIxMAABpjSk1oBp4e8aSV4nfX2dfunQObTlMWIkN-aVA9CSq36pnmkHsvfoYTjhHg_aem_9o9OGbQuZ2PjJTArq21UDA)
 
 </div>
 
 <div align="center">
-<h1>Translations</h1>
+<h1>🌍 Translations</h1>
 
 [![Translation status](https://img.shields.io/weblate/progress/metrolist?style=for-the-badge)](https://hosted.weblate.org/engage/metrolist/)
 
@@ -87,40 +90,42 @@ We use Weblate to translate Metrolist. For more details or to get started, visit
 <img src="https://hosted.weblate.org/widget/Metrolist/multi-auto.svg" alt="Translation status" />
 </a>
 
-Thank you very much for helping to make Metrolist accessible to many people worldwide.
+Thank you very much for helping to make Metrolist accessible to many people worldwide. 🙏
 </div>
 
 <div align="center">
-<h1>FAQ</h1>
+<h1>❓ FAQ</h1>
 </div>
 
-<h3> Q: Why Metrolist isn't showing in Android Auto? </h3>
+<h3>🚗 Q: Why Metrolist isn't showing in Android Auto?</h3>
 
 1. Go to Android Auto's settings and tap multiple times on the version in the bottom to enable
    developer settings
 2. In the three dots menu at the top-right of the screen, click "Developer settings"
 3. Enable "Unknown sources"
 
-<h3> Q: How to scrobble music to LastFM, LibreFM, ListenBrainz or GNU FM? </h3>
+<h3>📊 Q: How to scrobble music to LastFM, LibreFM, ListenBrainz or GNU FM?</h3>
 
 Use other music scrobbler apps, I recommend [Pano Scrobbler](https://play.google.com/store/apps/details?id=com.arn.scrobble).
 
 <div align="center">
-<h1>Support Me</h1>
+<h1>💝 Support Me</h1>
 
 If you'd like to support my work, send a Monero (XMR) donation to this address:
 
+```
 44XjSELSWcgJTZiCKzjpCQWyXhokrH9RqH3rpp35FkSKi57T25hniHWHQNhLeXyFn3DDYqufmfRB1iEtENerZpJc7xJCcqt
+```
 
 Or scan this QR code:
 
-<img src="https://github.com/mostafaalagamy/Metrolist/blob/main/assets/XMR.png" alt="QR Code" width="200" height="200" />
+<img src="https://gitlab.com/mostafaalagamy/metrolist/-/raw/main/assets/XMR.png" alt="QR Code" width="200" height="200" />
 <br />
 
-Or other
+Or other options:
 
 <a href="https://www.buymeacoffee.com/mostafaalagamy">
-  <img src="https://github.com/mostafaalagamy/Metrolist/blob/main/assets/buymeacoffee.png?raw=true" alt="Buy Me a Coffee" width="150" height="150" />
+  <img src="https://gitlab.com/mostafaalagamy/metrolist/-/raw/main/assets/buymeacoffee.png" alt="Buy Me a Coffee" width="150" height="150" />
 </a>
 
 <br />
@@ -129,25 +134,34 @@ Or other
   <img src="https://liberapay.com/assets/widgets/donate.svg" alt="Donate" width="100" height="100" />
 </a>
 
+</div>
 
 <div align="center">
-<h1>Special thanks</h1>
+<h1>🙏 Special Thanks</h1>
 
-InnerTune:
+**InnerTune:**
 [Zion Huang](https://github.com/z-huang),
-[Malopieds](https://github.com/Malopieds),
-OuterTune:
+[Malopieds](https://github.com/Malopieds)
+
+**OuterTune:**
 [Davide Garberi](https://github.com/DD3Boh),
-[Michael Zh](https://github.com/mikooomich),
-Muzza:
+[Michael Zh](https://github.com/mikooomich)
+
+**Muzza:**
 [Maloy Android](https://github.com/Maloy-Android)
 
 </div>
 
 <div align="center">
-<h1>Disclaimer</h1>
+<h1>⚖️ Disclaimer</h1>
 </div>
 
 This project and its contents are not affiliated with, funded, authorized, endorsed by, or in any way associated with YouTube, Google LLC, Metrolist Group LLC or any of its affiliates and subsidiaries.
 
 Any trademark, service mark, trade name, or other intellectual property rights used in this project are owned by the respective owners.
+
+---
+
+<div align="center">
+<p><strong>📍 Main Repository:</strong> <a href="https://gitlab.com/mostafaalagamy/metrolist">GitLab</a> | <strong>🔄 Mirror:</strong> <a href="https://github.com/mostafaalagamy/Metrolist">GitHub</a></p>
+</div>
