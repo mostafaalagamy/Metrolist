@@ -35,6 +35,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.ListItem
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -69,12 +70,17 @@ import com.metrolist.music.LocalDownloadUtil
 import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
 import com.metrolist.music.constants.ListItemHeight
+import com.metrolist.music.constants.linkPitchToTempo
+import com.metrolist.music.constants.pitch
+import com.metrolist.music.constants.tempo
 import com.metrolist.music.models.MediaMetadata
 import com.metrolist.music.playback.ExoDownloadService
 import com.metrolist.music.playback.queues.YouTubeQueue
 import com.metrolist.music.ui.component.BigSeekBar
 import com.metrolist.music.ui.component.BottomSheetState
 import com.metrolist.music.ui.component.ListDialog
+import com.metrolist.music.ui.component.SwitchPreference
+import com.metrolist.music.utils.rememberPreference
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlin.math.log2
@@ -498,16 +504,27 @@ fun PlayerMenu(
 @Composable
 fun TempoPitchDialog(onDismiss: () -> Unit) {
     val playerConnection = LocalPlayerConnection.current ?: return
-    var tempo by remember {
-        mutableFloatStateOf(playerConnection.player.playbackParameters.speed)
-    }
+    val (tempo, onTempoChange) = rememberPreference(
+        key = tempo,
+        defaultValue = 1.0f
+    )
+    val(pitch, onPitchChange) = rememberPreference(
+        key = pitch,
+        defaultValue = 1f
+    )
     var transposeValue by remember {
-        mutableIntStateOf(round(12 * log2(playerConnection.player.playbackParameters.pitch)).toInt())
+        mutableIntStateOf(round(12 * log2(pitch.toDouble())).toInt())
     }
-    val updatePlaybackParameters = {
-        playerConnection.player.playbackParameters =
-            PlaybackParameters(tempo, 2f.pow(transposeValue.toFloat() / 12))
+
+    // Keep track of the transpose value based on pitch
+    LaunchedEffect(pitch) {
+        transposeValue = round(12 * log2(pitch.toDouble())).toInt()
     }
+
+    val (linkPitchToTempo, onLinkPitchToTempoChange) = rememberPreference (
+        key = linkPitchToTempo,
+        defaultValue = false
+    )
 
     AlertDialog(
         properties = DialogProperties(usePlatformDefaultWidth = false),
@@ -515,22 +532,20 @@ fun TempoPitchDialog(onDismiss: () -> Unit) {
         title = {
             Text(stringResource(R.string.tempo_and_pitch))
         },
+        confirmButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(android.R.string.ok))
+            }
+        },
         dismissButton = {
             TextButton(
                 onClick = {
-                    tempo = 1f
-                    transposeValue = 0
-                    updatePlaybackParameters()
-                },
+                    onTempoChange(1.0f)
+                    onPitchChange(1.0f)
+                    playerConnection.player.playbackParameters = PlaybackParameters(1.0f, 1.0f)
+                }
             ) {
                 Text(stringResource(R.string.reset))
-            }
-        },
-        confirmButton = {
-            TextButton(
-                onClick = onDismiss,
-            ) {
-                Text(stringResource(android.R.string.ok))
             }
         },
         text = {
@@ -540,24 +555,49 @@ fun TempoPitchDialog(onDismiss: () -> Unit) {
                     currentValue = tempo,
                     values = (0..35).map { round((0.25f + it * 0.05f) * 100) / 100 },
                     onValueUpdate = {
-                        tempo = it
-                        updatePlaybackParameters()
+                        onTempoChange(it)
+                        playerConnection.player.playbackParameters = PlaybackParameters(
+                            it, if (linkPitchToTempo) it else pitch)
                     },
                     valueText = { "x$it" },
-                    modifier = Modifier.padding(bottom = 12.dp),
+                    modifier = Modifier.padding(bottom = 12.dp)
                 )
-                ValueAdjuster(
-                    icon = R.drawable.discover_tune,
-                    currentValue = transposeValue,
-                    values = (-12..12).toList(),
-                    onValueUpdate = {
-                        transposeValue = it
-                        updatePlaybackParameters()
-                    },
-                    valueText = { "${if (it > 0) "+" else ""}$it" },
-                )
+
+                if (!linkPitchToTempo) {
+                    ValueAdjuster(
+                        icon = R.drawable.discover_tune,
+                        currentValue = transposeValue,
+                        values = (-12..12).toList(),
+                        onValueUpdate = {
+                            val newPitch = 2f.pow(it.toFloat() / 12f)
+                            onPitchChange(newPitch)
+                            playerConnection.player.playbackParameters = PlaybackParameters(tempo, newPitch)
+                        },
+                        valueText = { "${if (it > 0) "+" else ""}$it" },
+                        modifier = Modifier.padding(bottom = 12.dp)
+                    )
+                }
+                
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Start,
+                    modifier = Modifier
+                        .padding(top = 12.dp)
+                        .fillMaxWidth()
+                ) {
+                    SwitchPreference(
+                        title = { Text(stringResource(R.string.link_pitch_to_tempo)) },
+                        icon = { Icon(painterResource(R.drawable.equalizer), null) },
+                        checked = linkPitchToTempo,
+                        onCheckedChange = { newValue ->
+                            onLinkPitchToTempoChange(newValue)
+                            playerConnection.player.playbackParameters = PlaybackParameters(tempo,  if (newValue) tempo else pitch)
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
             }
-        },
+        }
     )
 }
 
