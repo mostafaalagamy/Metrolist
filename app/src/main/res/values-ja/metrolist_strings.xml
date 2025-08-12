@@ -144,7 +144,7 @@
     <string name="history_duration">履歴期間</string>
     <string name="subscribe">定期購読</string>
     <string name="subscribed">定期購読済み</string>
-    <string name="sensitivity_percentage">%1$d%</string>
+    <string name="sensitivity_percentage">%1$d%%</string>
     <string name="now_playing">再生中</string>
     <string name="close">閉じる</string>
     <string name="minimum_volume">最低音量</string>
