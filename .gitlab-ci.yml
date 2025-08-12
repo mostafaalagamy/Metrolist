@@ -150,7 +150,8 @@ collect_apks:
   script:
     - echo "Collecting all built APKs..."
     - mkdir -p release_apks
-    - find app/build/outputs/apk/ -name "*.apk" -type f | while read apk; do
+    - |
+      find app/build/outputs/apk/ -name "*.apk" -type f | while read apk; do
         echo "Found APK: $apk"
         cp "$apk" release_apks/ || echo "Failed to copy $apk"
       done
