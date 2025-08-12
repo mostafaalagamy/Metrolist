@@ -145,7 +145,7 @@ fun ArtistScreen(
 
     val transparentAppBar by remember {
         derivedStateOf {
-            lazyListState.firstVisibleItemIndex <= 1
+            lazyListState.firstVisibleItemIndex == 0 && lazyListState.firstVisibleItemScrollOffset < 100
         }
     }
 
@@ -257,13 +257,23 @@ fun ArtistScreen(
                     val artistName = artistPage?.artist?.title ?: libraryArtist?.artist?.name
 
                     Column {
-                        // Artist Image
-                        if (thumbnail != null) {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .aspectRatio(1.2f / 1),
-                            ) {
+                        // Artist Image (maintain consistent dimensions)
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .then(
+                                    if (thumbnail != null) {
+                                        Modifier.aspectRatio(1.2f / 1)
+                                    } else {
+                                        // Add safe space when no image to prevent overlap with system bars
+                                        Modifier.height(
+                                            WindowInsets.systemBars.asPaddingValues().calculateTopPadding() + 
+                                            AppBarHeight + 16.dp
+                                        )
+                                    }
+                                ),
+                        ) {
+                            if (thumbnail != null) {
                                 AsyncImage(
                                     model = thumbnail.resize(1200, 1000),
                                     contentDescription = null,
