@@ -28,37 +28,31 @@ src="https://gitlab.com/mostafaalagamy/metrolist/-/raw/main/fastlane/metadata/an
 </div>
 
 <div align="center">
-<h1>✨ Features</h1>
+<h1>Features</h1>
  </div>
  
-- 🎵 Play any song or video from YT Music
-- 🎧 Background playback 
-- 🎲 Personalized quick picks 
-- 📚 Library management 
-- 💾 Download and cache songs for offline playback
-- 🔍 Search for songs, albums, artists, videos and playlists
-- 🎤 Live lyrics 
-- 👤 YouTube Music account login support
-- ☁️ Syncing of songs, artists, albums and playlists, from and to your account
-- ⏭️ Skip silence 
-- 📥 Import playlists 
-- 🔊 Audio normalization 
-- ⚡ Adjust tempo/pitch 
-- 📝 Local playlist management
-- 🔄 Reorder songs in playlist or queue 
-- 🎨 Light - Dark - black - Dynamic theme
-- ⏰ Sleep timer
-- 🎯 Material 3 
+- Play any song or video from YT Music
+- Background playback 
+- Personalized quick picks 
+- Library management 
+- Download and cache songs for offline playback
+- Search for songs, albums, artists, videos and playlists
+- Live lyrics 
+- YouTube Music account login support
+- Syncing of songs, artists, albums and playlists, from and to your account
+- Skip silence 
+- Import playlists 
+- Audio normalization 
+- Adjust tempo/pitch 
+- Local playlist management
+- Reorder songs in playlist or queue 
+- Light - Dark - black - Dynamic theme
+- Sleep timer
+- Material 3 
 - And much more!
 
 <div align="center">
-<h1>📱 Download Now</h1>
-
-[<img src="https://gitlab.com/mostafaalagamy/metrolist/-/raw/main/assets/badge_gitlab.png" alt="Get it on GitLab" height="82"
-align="center">](https://gitlab.com/mostafaalagamy/metrolist/-/releases)
-
-[<img src="https://github.com/machiav3lli/oandbackupx/blob/034b226cea5c1b30eb4f6a6f313e4dadcbb0ece4/badge_github.png" alt="Get it on GitHub" height="82"
-align="center">](https://github.com/mostafaalagamy/Metrolist/releases/latest/download/Metrolist.apk)
+<h1>Download Now</h1>
 
 [<img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png" alt="Get it on IzzyOnDroid" height="80"
 align="center">](https://apt.izzysoft.de/fdroid/index/apk/com.metrolist.music)
@@ -67,20 +61,14 @@ align="center">](https://apt.izzysoft.de/fdroid/index/apk/com.metrolist.music)
 align="center">](https://f-droid.org/packages/com.metrolist.music)
 
 [<img src="https://www.openapk.net/images/openapk-badge.png" alt="Get it on OpenAPK" height="80"
-align="center">](https://www.openapk.net/metrolist/com.metrolist.music/)
-
-[<img src="https://github.com/ImranR98/Obtainium/blob/main/assets/graphics/badge_obtainium.png"
-alt="Get it on Obtainium"
-height="55"
-align="center">](https://apps.obtainium.imranr.dev/redirect?r=obtainium://add/https://gitlab.com/mostafaalagamy/metrolist/)
-
+align="center">](https://www.openapk.net/metrolist/com.metrolist.music)
 [<img src="https://gitlab.com/mostafaalagamy/metrolist/-/raw/main/fastlane/metadata/android/en-US/images/belberi_github.png" alt="Get it on Belberi" height="82"
 align="center">](https://belberi.com/metrolist/?fbclid=PAY2xjawJP5dlleHRuA2FlbQIxMAABpjSk1oBp4e8aSV4nfX2dfunQObTlMWIkN-aVA9CSq36pnmkHsvfoYTjhHg_aem_9o9OGbQuZ2PjJTArq21UDA)
 
 </div>
 
 <div align="center">
-<h1>🌍 Translations</h1>
+<h1>Translations</h1>
 
 [![Translation status](https://img.shields.io/weblate/progress/metrolist?style=for-the-badge)](https://hosted.weblate.org/engage/metrolist/)
 
@@ -90,26 +78,26 @@ We use Weblate to translate Metrolist. For more details or to get started, visit
 <img src="https://hosted.weblate.org/widget/Metrolist/multi-auto.svg" alt="Translation status" />
 </a>
 
-Thank you very much for helping to make Metrolist accessible to many people worldwide. 🙏
+Thank you very much for helping to make Metrolist accessible to many people worldwide.
 </div>
 
 <div align="center">
-<h1>❓ FAQ</h1>
+<h1>FAQ</h1>
 </div>
 
-<h3>🚗 Q: Why Metrolist isn't showing in Android Auto?</h3>
+<h3>Q: Why Metrolist isn't showing in Android Auto?</h3>
 
 1. Go to Android Auto's settings and tap multiple times on the version in the bottom to enable
    developer settings
 2. In the three dots menu at the top-right of the screen, click "Developer settings"
 3. Enable "Unknown sources"
 
-<h3>📊 Q: How to scrobble music to LastFM, LibreFM, ListenBrainz or GNU FM?</h3>
+<h3>Q: How to scrobble music to LastFM, LibreFM, ListenBrainz or GNU FM?</h3>
 
 Use other music scrobbler apps, I recommend [Pano Scrobbler](https://play.google.com/store/apps/details?id=com.arn.scrobble).
 
 <div align="center">
-<h1>💝 Support Me</h1>
+<h1>Support Me</h1>
 
 If you'd like to support my work, send a Monero (XMR) donation to this address:
 
@@ -137,7 +125,7 @@ Or other options:
 </div>
 
 <div align="center">
-<h1>🙏 Special Thanks</h1>
+<h1>Special Thanks</h1>
 
 **InnerTune:**
 [Zion Huang](https://github.com/z-huang),
@@ -153,7 +141,7 @@ Or other options:
 </div>
 
 <div align="center">
-<h1>⚖️ Disclaimer</h1>
+<h1>Disclaimer</h1>
 </div>
 
 This project and its contents are not affiliated with, funded, authorized, endorsed by, or in any way associated with YouTube, Google LLC, Metrolist Group LLC or any of its affiliates and subsidiaries.
@@ -163,5 +151,5 @@ Any trademark, service mark, trade name, or other intellectual property rights u
 ---
 
 <div align="center">
-<p><strong>📍 Main Repository:</strong> <a href="https://gitlab.com/mostafaalagamy/metrolist">GitLab</a> | <strong>🔄 Mirror:</strong> <a href="https://github.com/mostafaalagamy/Metrolist">GitHub</a></p>
+<p><strong>Main Repository:</strong> <a href="https://gitlab.com/mostafaalagamy/metrolist">GitLab</a> | <strong>Mirror:</strong> <a href="https://github.com/mostafaalagamy/Metrolist">GitHub</a></p>
 </div>
