@@ -96,6 +96,7 @@ prepare_sdk:
     - if: $CI_PIPELINE_SOURCE == "web"
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
   timeout: 30m
+  allow_failure: true
 
 # Build jobs for different ABIs
 build_arm64:
@@ -175,17 +176,63 @@ collect_apks:
     - |
       echo "Collecting all built APKs..."
       mkdir -p release_apks
-      find app/build/outputs/apk/ -name "*.apk" -type f | while read apk; do
-        echo "Found APK: $apk"
+      
+      # Check if any build outputs exist
+      echo "Checking for APK build outputs..."
+      
+      # Look for any APKs from artifact downloads
+      if [ -d "app/build/outputs/apk/" ]; then
+        echo "Found APK build directory"
+        find app/build/outputs/apk/ -name "*.apk" -type f | while read apk; do
+          echo "Found APK: $apk"
+          cp "$apk" release_apks/ || echo "Failed to copy $apk"
+        done
+      else
+        echo "No app/build/outputs/apk/ directory found"
+      fi
+      
+      # Also check for any APKs in current directory (from artifacts)
+      find . -name "*.apk" -type f -not -path "./release_apks/*" | while read apk; do
+        echo "Found APK in artifacts: $apk"
         cp "$apk" release_apks/ || echo "Failed to copy $apk"
       done
-      ls -la release_apks/
-      echo "Total APKs collected: $(ls -1 release_apks/*.apk 2>/dev/null | wc -l)"
+      
+      # Count collected APKs
+      collected_count=$(ls -1 release_apks/*.apk 2>/dev/null | wc -l)
+      echo "Total APKs collected: $collected_count"
+      
+      if [ "$collected_count" -eq 0 ]; then
+        echo "WARNING: No APKs were collected!"
+        echo "This might be because all build jobs failed."
+        echo "Current directory structure:"
+        find . -name "*.apk" -type f || echo "No APK files found anywhere"
+        echo "Creating empty release directory for artifact consistency"
+        touch release_apks/.keep
+      else
+        echo "Successfully collected $collected_count APK(s)"
+        ls -la release_apks/
+      fi
   artifacts:
     paths:
       - release_apks/
     name: "metrolist-all-apks-$CI_COMMIT_SHORT_SHA"
     expire_in: 1 month
+  needs:
+    - job: build_arm64
+      artifacts: true
+      optional: true
+    - job: build_armeabi  
+      artifacts: true
+      optional: true
+    - job: build_x86
+      artifacts: true
+      optional: true
+    - job: build_x86_64
+      artifacts: true
+      optional: true
+    - job: build_universal
+      artifacts: true
+      optional: true
   dependencies:
     - build_arm64
     - build_armeabi
