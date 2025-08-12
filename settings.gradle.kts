@@ -10,9 +10,10 @@ dependencyResolutionManagement {
     }
 }
 
-plugins {
-    id("org.gradle.toolchains.foojay-resolver-convention") version("1.0.0")
-}
+// F-Droid doesn't support foojay-resolver plugin
+// plugins {
+//     id("org.gradle.toolchains.foojay-resolver-convention") version("1.0.0")
+// }
 
 rootProject.name = "Metrolist"
 include(":app")
