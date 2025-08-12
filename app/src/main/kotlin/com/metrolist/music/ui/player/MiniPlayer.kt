@@ -1,9 +1,11 @@
 package com.metrolist.music.ui.player
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
@@ -136,6 +138,12 @@ private fun NewMiniPlayer(
     val animationSpec = spring<Float>(
         dampingRatio = Spring.DampingRatioNoBouncy,
         stiffness = Spring.StiffnessLow
+    )
+    
+    val overlayAlpha by animateFloatAsState(
+        targetValue = if (isPlaying) 0.0f else 0.4f,
+        label = "overlay_alpha",
+        animationSpec = animationSpec
     )
 
     /**
@@ -298,25 +306,29 @@ private fun NewMiniPlayer(
                             modifier = Modifier
                                 .fillMaxSize()
                                 .background(
-                                    color = Color.Black.copy(alpha = 0.4f),
+                                    color = Color.Black.copy(alpha = overlayAlpha),
                                     shape = CircleShape
                                 )
                         )
                         
-                        Icon(
-                            painter = painterResource(
-                                if (playbackState == Player.STATE_ENDED) {
-                                    R.drawable.replay
-                                } else if (isPlaying) {
-                                    R.drawable.pause
-                                } else {
-                                    R.drawable.play
-                                },
-                            ),
-                            contentDescription = null,
-                            tint = Color.White,
-                            modifier = Modifier.size(20.dp)
-                        )
+                        androidx.compose.animation.AnimatedVisibility(
+                            visible = playbackState == Player.STATE_ENDED || !isPlaying,
+                            enter = fadeIn(),
+                            exit = fadeOut()
+                        ) {
+                            Icon(
+                                painter = painterResource(
+                                    if (playbackState == Player.STATE_ENDED) {
+                                        R.drawable.replay
+                                    } else {
+                                        R.drawable.play
+                                    }
+                                ),
+                                contentDescription = null,
+                                tint = Color.White,
+                                modifier = Modifier.size(20.dp)
+                            )
+                        }
                     }
                 }
 
