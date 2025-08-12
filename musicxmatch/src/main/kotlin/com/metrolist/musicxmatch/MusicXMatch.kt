@@ -9,16 +9,13 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.request.get
 import io.ktor.client.request.header
-import io.ktor.client.request.parameter
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpHeaders
-import io.ktor.http.encodeURLParameter
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
 import kotlinx.serialization.json.Json
 import java.net.URLEncoder
-import java.security.MessageDigest
 import java.time.LocalDateTime
 import java.util.*
 import javax.crypto.Mac
@@ -51,10 +48,12 @@ object MusicXMatch {
         }
     }
 
+    private val baseUrl = "https://www.musixmatch.com/ws/1.1/"
     private var cachedSecret: String? = null
 
     private suspend fun getLatestApp(): String {
         val response = client.get("https://www.musixmatch.com/search") {
+            header("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36")
             header("Cookie", "mxm_bab=AB")
         }
         val htmlContent = response.bodyAsText()
@@ -76,7 +75,9 @@ object MusicXMatch {
         }
         
         val appUrl = getLatestApp()
-        val response = client.get(appUrl)
+        val response = client.get(appUrl) {
+            header("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36")
+        }
         val javascriptCode = response.bodyAsText()
         
         // Regular expression to capture the string inside `from(...)`
@@ -119,24 +120,51 @@ object MusicXMatch {
         return "&signature=$urlEncodedSignature&signature_protocol=sha256"
     }
 
+    private suspend fun makeRequest(url: String): String {
+        try {
+            // Follow Python implementation exactly
+            var processedUrl = url.replace("%20", "+").replace(" ", "+")
+            processedUrl = baseUrl + processedUrl
+            val signedUrl = processedUrl + generateSignature(processedUrl)
+            
+            // Debug logging
+            println("MusicXMatch: Making request to: $signedUrl")
+            
+            val response = client.get(signedUrl) {
+                header("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36")
+            }
+            
+            val responseBody = response.bodyAsText()
+            println("MusicXMatch: Response status: ${response.status.value}")
+            println("MusicXMatch: Response body (first 500 chars): ${responseBody.take(500)}")
+            
+            if (response.status.value != 200) {
+                throw Exception("HTTP error: ${response.status.value}")
+            }
+            
+            return responseBody
+        } catch (e: Exception) {
+            println("MusicXMatch: Error in makeRequest: ${e.message}")
+            throw e
+        }
+    }
+
     private suspend fun searchTracks(
         query: String,
         page: Int = 1
     ): Result<List<Track>> = runCatching {
         currentCoroutineContext().ensureActive()
         
-        val baseUrl = "track.search?app_id=web-desktop-app-v1.0&format=json&q=${URLEncoder.encode(query, "UTF-8")}&f_has_lyrics=true&page_size=100&page=$page"
-        val fullUrl = "https://www.musixmatch.com/ws/1.1/$baseUrl"
-        val signature = generateSignature(fullUrl)
-        val signedUrl = fullUrl + signature
+        // Follow Python implementation exactly
+        val encodedQuery = URLEncoder.encode(query, "UTF-8")
+        val url = "track.search?app_id=web-desktop-app-v1.0&format=json&q=$encodedQuery&f_has_lyrics=true&page_size=100&page=$page"
         
-        val response = client.get(signedUrl)
-        
-        if (response.status.value != 200) {
-            throw Exception("MusicXMatch API error: ${response.status.value}")
+        val responseBody = makeRequest(url)
+        val json = Json { 
+            isLenient = true
+            ignoreUnknownKeys = true 
         }
-        
-        val musicXMatchResponse = response.body<MusicXMatchResponse<TrackSearchBody>>()
+        val musicXMatchResponse = json.decodeFromString<MusicXMatchResponse<TrackSearchBody>>(responseBody)
         
         if (musicXMatchResponse.message.header.statusCode != 200) {
             throw Exception("MusicXMatch API error: ${musicXMatchResponse.message.header.statusCode}")
@@ -148,18 +176,14 @@ object MusicXMatch {
     private suspend fun getTrackLyrics(trackId: Int): Result<String> = runCatching {
         currentCoroutineContext().ensureActive()
         
-        val baseUrl = "track.lyrics.get?app_id=web-desktop-app-v1.0&format=json&track_id=$trackId"
-        val fullUrl = "https://www.musixmatch.com/ws/1.1/$baseUrl"
-        val signature = generateSignature(fullUrl)
-        val signedUrl = fullUrl + signature
+        val url = "track.lyrics.get?app_id=web-desktop-app-v1.0&format=json&track_id=$trackId"
         
-        val response = client.get(signedUrl)
-        
-        if (response.status.value != 200) {
-            throw Exception("MusicXMatch API error: ${response.status.value}")
+        val responseBody = makeRequest(url)
+        val json = Json { 
+            isLenient = true
+            ignoreUnknownKeys = true 
         }
-        
-        val musicXMatchResponse = response.body<MusicXMatchResponse<LyricsBody>>()
+        val musicXMatchResponse = json.decodeFromString<MusicXMatchResponse<LyricsBody>>(responseBody)
         
         if (musicXMatchResponse.message.header.statusCode != 200) {
             throw Exception("MusicXMatch API error: ${musicXMatchResponse.message.header.statusCode}")
@@ -177,18 +201,14 @@ object MusicXMatch {
     private suspend fun getTrackRichSync(trackId: Int): Result<String> = runCatching {
         currentCoroutineContext().ensureActive()
         
-        val baseUrl = "track.richsync.get?app_id=web-desktop-app-v1.0&format=json&track_id=$trackId"
-        val fullUrl = "https://www.musixmatch.com/ws/1.1/$baseUrl"
-        val signature = generateSignature(fullUrl)
-        val signedUrl = fullUrl + signature
+        val url = "track.richsync.get?app_id=web-desktop-app-v1.0&format=json&track_id=$trackId"
         
-        val response = client.get(signedUrl)
-        
-        if (response.status.value != 200) {
-            throw Exception("MusicXMatch API error: ${response.status.value}")
+        val responseBody = makeRequest(url)
+        val json = Json { 
+            isLenient = true
+            ignoreUnknownKeys = true 
         }
-        
-        val musicXMatchResponse = response.body<MusicXMatchResponse<RichSyncBody>>()
+        val musicXMatchResponse = json.decodeFromString<MusicXMatchResponse<RichSyncBody>>(responseBody)
         
         if (musicXMatchResponse.message.header.statusCode != 200) {
             throw Exception("MusicXMatch API error: ${musicXMatchResponse.message.header.statusCode}")
