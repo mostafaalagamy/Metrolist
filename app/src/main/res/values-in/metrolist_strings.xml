@@ -142,7 +142,23 @@
     <string name="subscribe">Berlangganan</string>
     <string name="subscribed">Berlangganan</string>
     <plurals name="seconds">
-        <item quantity="other">Singular \n1 detik\n\nPlural\n%d detik</item>
+        <item quantity="other">%d detik</item>
     </plurals>
     <string name="new_mini_player_design">Desain pemutar mini baru</string>
+    <string name="close">Tutup</string>
+    <string name="seek_backward">5 detik ke belakang</string>
+    <string name="seek_forward">5 detik ke depan</string>
+    <string name="seek_forward_dynamic">+%1$d detik ke depan</string>
+    <string name="seek_backward_dynamic">-%1$d ke belakang</string>
+    <string name="playlist_not_found">Playlist tidak ditemukan</string>
+    <string name="playlist_not_found_desc">Playlist yang diminta tidak dapat dimuat</string>
+    <string name="empty_playlist">Playlist Kosong</string>
+    <string name="empty_playlist_desc">Playlist ini tidak berisi lagu apapun</string>
+    <string name="disable_load_more_when_repeat_all">Nonaktifkan memuat lebih banyak saat mengulang semua</string>
+    <string name="disable_load_more_when_repeat_all_desc">Jangan memuat lebih banyak lagu dan konten serupa secara otomatis saat mode ulangi semua diaktifkan</string>
+    <string name="now_playing">Sedang diputar</string>
+    <string name="minimum_volume">Volume Minimal</string>
+    <string name="maximum_volume">Volume Maksimal</string>
+    <string name="seek_seconds_addup">Pencarian progresif</string>
+    <string name="seek_seconds_addup_description">Jika diaktifkan, Menambahkan 5 detik ekstra secara bertahap pada setiap lompatan pencarian</string>
 </resources>
