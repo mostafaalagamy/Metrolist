@@ -124,38 +124,88 @@ internal fun List<Track>.bestMatchingFor(
     if (isEmpty()) return null
     
     return maxByOrNull { track ->
-        val titleSimilarity = calculateSimilarity(title.lowercase(), track.trackName.lowercase())
-        val artistSimilarity = calculateSimilarity(artist.lowercase(), track.artistName.lowercase())
+        val titleSimilarity = calculateSimilarity(
+            normalizeForMatching(title), 
+            normalizeForMatching(track.trackName)
+        )
+        val artistSimilarity = calculateSimilarity(
+            normalizeForMatching(artist), 
+            normalizeForMatching(track.artistName)
+        )
         
         var score = (titleSimilarity + artistSimilarity) / 2.0
         
         // Add bonus for duration match (if provided)
         if (duration > 0 && track.trackLength != null) {
             val durationDiff = abs(track.trackLength - duration)
-            val durationSimilarity = if (durationDiff <= 10) 1.0 else maxOf(0.0, 1.0 - (durationDiff / 300.0))
-            score = (score * 0.8) + (durationSimilarity * 0.2)
+            // More lenient duration matching - allow up to 30 seconds difference
+            val durationSimilarity = when {
+                durationDiff <= 5 -> 1.0 // Perfect match
+                durationDiff <= 15 -> 0.9 // Very close
+                durationDiff <= 30 -> 0.7 // Close enough
+                else -> maxOf(0.0, 1.0 - (durationDiff / 600.0)) // Gradual decrease
+            }
+            score = (score * 0.7) + (durationSimilarity * 0.3)
         }
         
         // Boost tracks that have lyrics
         if (track.hasLyrics == 1) {
-            score += 0.1
+            score += 0.15
         }
         
         // Boost tracks that have rich sync
         if (track.hasRichsync == 1) {
-            score += 0.05
+            score += 0.1
+        }
+        
+        // Extra boost for very high title similarity (likely exact match)
+        if (titleSimilarity > 0.9) {
+            score += 0.2
+        }
+        
+        // Extra boost for very high artist similarity
+        if (artistSimilarity > 0.9) {
+            score += 0.1
         }
         
         score
+    }?.takeIf { track ->
+        // Only return if we have reasonable similarity (lowered threshold)
+        val titleSim = calculateSimilarity(normalizeForMatching(title), normalizeForMatching(track.trackName))
+        val artistSim = calculateSimilarity(normalizeForMatching(artist), normalizeForMatching(track.artistName))
+        
+        // More lenient matching - accept if either title OR artist has good similarity
+        titleSim > 0.4 || artistSim > 0.4 || (titleSim + artistSim) / 2.0 > 0.35
     }
+}
+
+private fun normalizeForMatching(text: String): String {
+    return text.lowercase()
+        // Remove common words/phrases that might interfere
+        .replace("\\b(the|a|an|and|or|of|in|on|at|to|for|with|by)\\b".toRegex(), " ")
+        .replace("\\b(feat\\.?|ft\\.?|featuring)\\b.*".toRegex(), "")
+        .replace("\\b(official|video|lyric|lyrics|audio|song)\\b".toRegex(), "")
+        .replace("\\b(remix|acoustic|live|version|remaster|remastered)\\b".toRegex(), "")
+        
+        // Clean punctuation but preserve Arabic/English characters
+        .replace("[^\\p{L}\\p{N}\\s]".toRegex(), " ")
+        
+        // Normalize whitespace
+        .replace("\\s+".toRegex(), " ")
+        .trim()
 }
 
 private fun calculateSimilarity(s1: String, s2: String): Double {
     val maxLength = maxOf(s1.length, s2.length)
     if (maxLength == 0) return 1.0
     
-    val distance = levenshteinDistance(s1, s2)
-    return 1.0 - (distance.toDouble() / maxLength)
+    // Use multiple similarity metrics and take the best one
+    val levenshteinSim = 1.0 - (levenshteinDistance(s1, s2).toDouble() / maxLength)
+    val jaccardSim = jaccardSimilarity(s1, s2)
+    val containsSim = containsSimilarity(s1, s2)
+    
+    // Return the highest similarity score
+    return maxOf(levenshteinSim, jaccardSim, containsSim)
 }
 
 private fun levenshteinDistance(s1: String, s2: String): Int {
@@ -177,4 +227,38 @@ private fun levenshteinDistance(s1: String, s2: String): Int {
         }
     }
     return dp[m][n]
+}
+
+private fun jaccardSimilarity(s1: String, s2: String): Double {
+    val words1 = s1.split("\\s+".toRegex()).filter { it.isNotEmpty() }.toSet()
+    val words2 = s2.split("\\s+".toRegex()).filter { it.isNotEmpty() }.toSet()
+    
+    if (words1.isEmpty() && words2.isEmpty()) return 1.0
+    if (words1.isEmpty() || words2.isEmpty()) return 0.0
+    
+    val intersection = words1.intersect(words2).size
+    val union = words1.union(words2).size
+    
+    return intersection.toDouble() / union
+}
+
+private fun containsSimilarity(s1: String, s2: String): Double {
+    val shorter = if (s1.length < s2.length) s1 else s2
+    val longer = if (s1.length >= s2.length) s1 else s2
+    
+    return if (longer.contains(shorter, ignoreCase = true)) {
+        shorter.length.toDouble() / longer.length
+    } else {
+        // Check if most words from shorter string exist in longer string
+        val shorterWords = shorter.split("\\s+".toRegex()).filter { it.isNotEmpty() }
+        val longerWords = longer.split("\\s+".toRegex()).filter { it.isNotEmpty() }
+        
+        if (shorterWords.isEmpty()) return 0.0
+        
+        val matchingWords = shorterWords.count { word ->
+            longerWords.any { it.contains(word, ignoreCase = true) || word.contains(it, ignoreCase = true) }
+        }
+        
+        matchingWords.toDouble() / shorterWords.size * 0.7 // Slightly lower score for partial matches
+    }
 }

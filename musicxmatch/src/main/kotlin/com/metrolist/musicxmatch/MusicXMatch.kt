@@ -255,15 +255,40 @@ object MusicXMatch {
     ): Result<String> = runCatching {
         currentCoroutineContext().ensureActive()
         
-        val query = "$artist $title".trim()
-        val tracks = searchTracks(query).getOrThrow()
+        // Try multiple search strategies
+        val searchQueries = buildSearchQueries(title, artist)
+        var bestMatch: Track? = null
+        var allTracks = emptyList<Track>()
         
-        if (tracks.isEmpty()) {
-            throw Exception("No tracks found for: $title by $artist")
+        // Try each search query until we find results
+        for (query in searchQueries) {
+            currentCoroutineContext().ensureActive()
+            
+            try {
+                val tracks = searchTracks(query).getOrNull() ?: continue
+                if (tracks.isNotEmpty()) {
+                    allTracks = allTracks + tracks
+                    
+                    // Try to find a good match with current tracks
+                    val candidate = tracks.bestMatchingFor(title, artist, duration)
+                    if (candidate != null) {
+                        bestMatch = candidate
+                        break // Found a good match, stop searching
+                    }
+                }
+            } catch (e: Exception) {
+                // Continue to next search query
+                continue
+            }
         }
         
-        val bestMatch = tracks.bestMatchingFor(title, artist, duration)
-            ?: throw Exception("No suitable match found")
+        // If no good match found yet, try with all collected tracks
+        if (bestMatch == null && allTracks.isNotEmpty()) {
+            bestMatch = allTracks.distinctBy { it.trackId }.bestMatchingFor(title, artist, duration)
+        }
+        
+        // Final check
+        bestMatch ?: throw Exception("No suitable match found for: $title by $artist")
         
         // Try to get rich sync first (synced lyrics), then fallback to regular lyrics
         val richSyncResult = getTrackRichSync(bestMatch.trackId)
@@ -273,6 +298,54 @@ object MusicXMatch {
         
         // Fallback to regular lyrics
         getTrackLyrics(bestMatch.trackId).getOrThrow()
+    }
+
+    private fun buildSearchQueries(title: String, artist: String): List<String> {
+        val cleanTitle = cleanSearchText(title)
+        val cleanArtist = cleanSearchText(artist)
+        
+        return listOf(
+            // Primary search: artist + title
+            "$cleanArtist $cleanTitle",
+            
+            // Alternative: title + artist
+            "$cleanTitle $cleanArtist",
+            
+            // Title only (if artist search fails)
+            cleanTitle,
+            
+            // Artist only (to find their songs)
+            cleanArtist,
+            
+            // Original text combinations (fallback)
+            "$artist $title",
+            "$title $artist",
+            title,
+            
+            // Remove featured artists and extra info
+            "${cleanArtist} ${cleanTitle.split("(").first().split("[").first().trim()}",
+            
+            // Just the core title without parentheses/brackets
+            cleanTitle.split("(").first().split("[").first().split("-").first().trim()
+        ).filter { it.trim().length >= 2 } // Only non-empty meaningful queries
+         .distinct() // Remove duplicates
+    }
+
+    private fun cleanSearchText(text: String): String {
+        return text
+            // Remove common prefixes/suffixes
+            .replace("(?i)\\b(feat\\.?|ft\\.?|featuring)\\b.*".toRegex(), "")
+            .replace("(?i)\\b(official|video|lyric|lyrics|audio)\\b".toRegex(), "")
+            .replace("(?i)\\b(remix|acoustic|live|version)\\b".toRegex(), "")
+            
+            // Clean up punctuation but keep Arabic/English characters
+            .replace("""[\[\]\(\)"'`´''""«»]""".toRegex(), " ")
+            .replace("[-_–—|/\\\\]".toRegex(), " ")
+            .replace("[&+]".toRegex(), " and ")
+            
+            // Normalize whitespace
+            .replace("\\s+".toRegex(), " ")
+            .trim()
     }
 
     suspend fun getAllLyrics(
