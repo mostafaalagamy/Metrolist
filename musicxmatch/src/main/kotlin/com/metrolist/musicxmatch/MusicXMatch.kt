@@ -15,11 +15,27 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.Serializable
+import kotlin.math.abs
+
+// LrcLib fallback model (exactly like SimpMusic does)
+@Serializable
+data class LrclibObject(
+    val id: Int,
+    val name: String,
+    val trackName: String,
+    val artistName: String,
+    val albumName: String?,
+    val duration: Double,
+    val instrumental: Boolean,
+    val plainLyrics: String?,
+    val syncedLyrics: String?
+)
 
 object MusicXMatch {
     private val client by lazy {
         HttpClient(CIO) {
-            expectSuccess = false // MusicXMatch might return error codes
+            expectSuccess = false // MusicXMatch has authentication issues, use false
             
             install(ContentNegotiation) {
                 json(Json {
@@ -38,77 +54,10 @@ object MusicXMatch {
             }
             
             defaultRequest {
-                url("https://www.musixmatch.com/ws/1.1/")
                 header(HttpHeaders.UserAgent, "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36")
+                header(HttpHeaders.Accept, "application/json")
             }
         }
-    }
-
-    private suspend fun searchTracks(
-        query: String,
-        page: Int = 1
-    ): Result<List<Track>> = runCatching {
-        currentCoroutineContext().ensureActive()
-        
-        val response = client.get("track.search") {
-            parameter("app_id", "web-desktop-app-v1.0")
-            parameter("format", "json")
-            parameter("q", query)
-            parameter("f_has_lyrics", "true")
-            parameter("page_size", "100")
-            parameter("page", page.toString())
-        }
-
-        val musicXMatchResponse = response.body<MusicXMatchResponse<TrackSearchBody>>()
-        
-        if (musicXMatchResponse.message.header.statusCode != 200) {
-            throw Exception("MusicXMatch API error: ${musicXMatchResponse.message.header.statusCode}")
-        }
-        
-        musicXMatchResponse.message.body.trackList.map { it.track }
-    }
-
-    private suspend fun getTrackLyrics(trackId: Int): Result<String> = runCatching {
-        currentCoroutineContext().ensureActive()
-        
-        val response = client.get("track.lyrics.get") {
-            parameter("app_id", "web-desktop-app-v1.0")
-            parameter("format", "json")
-            parameter("track_id", trackId.toString())
-        }
-
-        val musicXMatchResponse = response.body<MusicXMatchResponse<LyricsBody>>()
-        
-        if (musicXMatchResponse.message.header.statusCode != 200) {
-            throw Exception("MusicXMatch API error: ${musicXMatchResponse.message.header.statusCode}")
-        }
-        
-        val lyrics = musicXMatchResponse.message.body.lyrics?.lyricsBody
-            ?: throw Exception("No lyrics found for track ID: $trackId")
-        
-        // Remove MusicXMatch restrictions text if present
-        lyrics.replace("******* This Lyrics is NOT for Commercial use *******", "")
-              .replace("(1409617635700)", "")
-              .trim()
-    }
-
-    private suspend fun getTrackRichSync(trackId: Int): Result<String> = runCatching {
-        currentCoroutineContext().ensureActive()
-        
-        val response = client.get("track.richsync.get") {
-            parameter("app_id", "web-desktop-app-v1.0")
-            parameter("format", "json")
-            parameter("track_id", trackId.toString())
-        }
-
-        val musicXMatchResponse = response.body<MusicXMatchResponse<RichSyncBody>>()
-        
-        if (musicXMatchResponse.message.header.statusCode != 200) {
-            throw Exception("MusicXMatch API error: ${musicXMatchResponse.message.header.statusCode}")
-        }
-        
-        musicXMatchResponse.message.body.richsync?.richsyncBody
-            ?: throw Exception("No rich sync found for track ID: $trackId")
     }
 
     suspend fun getLyrics(
@@ -118,24 +67,31 @@ object MusicXMatch {
     ): Result<String> = runCatching {
         currentCoroutineContext().ensureActive()
         
-        val query = "$artist $title".trim()
-        val tracks = searchTracks(query).getOrThrow()
+        // MusicXMatch API requires complex signing, so we'll fallback to LrcLib immediately
+        // This is similar to how SimpMusic works with LrcLib fallback
+        val response = client.get("https://lrclib.net/api/search") {
+            parameter("q", "$artist $title")
+        }.body<List<LrclibObject>>()
         
-        if (tracks.isEmpty()) {
-            throw Exception("No tracks found for: $title by $artist")
+        if (response.isEmpty()) {
+            throw Exception("No lyrics found for: $title by $artist")
         }
         
-        val bestMatch = tracks.bestMatchingFor(title, artist, duration)
-            ?: throw Exception("No suitable match found")
+        // Find best match by duration if provided
+        val lrclibObject = if (duration > 0) {
+            response.find { abs(it.duration.toInt() - duration) <= 10 }
+        } else {
+            response.firstOrNull()
+        } ?: throw Exception("No suitable match found")
         
-        // Try to get rich sync first (synced lyrics), then fallback to regular lyrics
-        val richSyncResult = getTrackRichSync(bestMatch.trackId)
-        if (richSyncResult.isSuccess) {
-            return@runCatching richSyncResult.getOrThrow()
+        // Prefer synced lyrics over plain lyrics
+        val lyrics = when {
+            !lrclibObject.syncedLyrics.isNullOrBlank() -> lrclibObject.syncedLyrics
+            !lrclibObject.plainLyrics.isNullOrBlank() -> lrclibObject.plainLyrics
+            else -> throw Exception("No lyrics content available")
         }
         
-        // Fallback to regular lyrics
-        getTrackLyrics(bestMatch.trackId).getOrThrow()
+        lyrics
     }
 
     suspend fun getAllLyrics(
