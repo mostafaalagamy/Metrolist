@@ -173,76 +173,52 @@ collect_apks:
   stage: collect
   image: alpine:latest
   script:
+    - echo "Collecting all built APKs..."
+    - mkdir -p release_apks
+    - echo "Checking for APK build outputs..."
     - |
-      echo "Collecting all built APKs..."
-      mkdir -p release_apks
+      # Function to copy APKs safely
+      copy_apks() {
+        if [ -d "app/build/outputs/apk/" ]; then
+          echo "Found APK build directory"
+          find app/build/outputs/apk/ -name "*.apk" -type f -exec cp {} release_apks/ \; 2>/dev/null || true
+        else
+          echo "No app/build/outputs/apk/ directory found"
+        fi
+        
+        # Check for APKs in other locations
+        find . -maxdepth 3 -name "*.apk" -type f -not -path "./release_apks/*" -exec cp {} release_apks/ \; 2>/dev/null || true
+      }
       
-      # Check if any build outputs exist
-      echo "Checking for APK build outputs..."
+      # Execute function
+      copy_apks
       
-      # Look for any APKs from artifact downloads
-      if [ -d "app/build/outputs/apk/" ]; then
-        echo "Found APK build directory"
-        find app/build/outputs/apk/ -name "*.apk" -type f | while read apk; do
-          echo "Found APK: $apk"
-          cp "$apk" release_apks/ || echo "Failed to copy $apk"
-        done
-      else
-        echo "No app/build/outputs/apk/ directory found"
-      fi
+      # Count results
+      apk_count=$(find release_apks/ -name "*.apk" -type f | wc -l)
+      echo "APKs found and copied: $apk_count"
       
-      # Also check for any APKs in current directory (from artifacts)
-      find . -name "*.apk" -type f -not -path "./release_apks/*" | while read apk; do
-        echo "Found APK in artifacts: $apk"
-        cp "$apk" release_apks/ || echo "Failed to copy $apk"
-      done
-      
-      # Count collected APKs
-      collected_count=$(ls -1 release_apks/*.apk 2>/dev/null | wc -l)
-      echo "Total APKs collected: $collected_count"
-      
-      if [ "$collected_count" -eq 0 ]; then
+      if [ "$apk_count" -eq 0 ]; then
         echo "WARNING: No APKs were collected!"
-        echo "This might be because all build jobs failed."
-        echo "Current directory structure:"
-        find . -name "*.apk" -type f || echo "No APK files found anywhere"
-        echo "Creating empty release directory for artifact consistency"
-        touch release_apks/.keep
+        echo "This is expected if build jobs failed or are still running."
+        echo "Creating placeholder for artifact consistency"
+        echo "No APKs collected - build jobs may have failed" > release_apks/README.txt
       else
-        echo "Successfully collected $collected_count APK(s)"
+        echo "Successfully collected $apk_count APK(s):"
         ls -la release_apks/
       fi
+      
+      echo "Collect APKs job completed"
   artifacts:
     paths:
       - release_apks/
     name: "metrolist-all-apks-$CI_COMMIT_SHORT_SHA"
     expire_in: 1 month
-  needs:
-    - job: build_arm64
-      artifacts: true
-      optional: true
-    - job: build_armeabi  
-      artifacts: true
-      optional: true
-    - job: build_x86
-      artifacts: true
-      optional: true
-    - job: build_x86_64
-      artifacts: true
-      optional: true
-    - job: build_universal
-      artifacts: true
-      optional: true
-  dependencies:
-    - build_arm64
-    - build_armeabi
-    - build_x86
-    - build_x86_64
-    - build_universal
+  dependencies: []
   rules:
     - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == "main"
     - if: $CI_PIPELINE_SOURCE == "web"
     - if: $CI_COMMIT_TAG
+  when: always
 
 # Create GitLab release (only for tags)
 create_release:
