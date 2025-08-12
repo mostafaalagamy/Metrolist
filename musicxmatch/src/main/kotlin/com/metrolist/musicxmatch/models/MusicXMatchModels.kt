@@ -107,6 +107,14 @@ data class RichSync(
     val updatedTime: String? = null
 )
 
+// Rich Sync JSON format models
+@Serializable
+data class RichSyncLine(
+    val ts: Double, // Start time in seconds
+    val te: Double, // End time in seconds  
+    val x: String   // Full line text
+)
+
 // Helper function for finding best match
 internal fun List<Track>.bestMatchingFor(
     title: String,

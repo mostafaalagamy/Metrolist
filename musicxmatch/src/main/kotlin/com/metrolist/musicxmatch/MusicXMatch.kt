@@ -127,16 +127,11 @@ object MusicXMatch {
             processedUrl = baseUrl + processedUrl
             val signedUrl = processedUrl + generateSignature(processedUrl)
             
-            // Debug logging
-            println("MusicXMatch: Making request to: $signedUrl")
-            
             val response = client.get(signedUrl) {
                 header("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36")
             }
             
             val responseBody = response.bodyAsText()
-            println("MusicXMatch: Response status: ${response.status.value}")
-            println("MusicXMatch: Response body (first 500 chars): ${responseBody.take(500)}")
             
             if (response.status.value != 200) {
                 throw Exception("HTTP error: ${response.status.value}")
@@ -144,7 +139,6 @@ object MusicXMatch {
             
             return responseBody
         } catch (e: Exception) {
-            println("MusicXMatch: Error in makeRequest: ${e.message}")
             throw e
         }
     }
@@ -214,8 +208,44 @@ object MusicXMatch {
             throw Exception("MusicXMatch API error: ${musicXMatchResponse.message.header.statusCode}")
         }
         
-        musicXMatchResponse.message.body.richsync?.richsyncBody
+        val richSyncBody = musicXMatchResponse.message.body.richsync?.richsyncBody
             ?: throw Exception("No rich sync found for track ID: $trackId")
+        
+        // Convert Rich Sync JSON to LRC format
+        convertRichSyncToLrc(richSyncBody)
+    }
+
+    private fun convertRichSyncToLrc(richSyncJson: String): String {
+        try {
+            val json = Json { 
+                isLenient = true
+                ignoreUnknownKeys = true 
+            }
+            
+            // Parse the Rich Sync JSON - it's an array of lines
+            val richSyncData = json.decodeFromString<List<RichSyncLine>>(richSyncJson)
+            
+            val lrcLines = mutableListOf<String>()
+            
+            for (line in richSyncData) {
+                val startTimeSeconds = line.ts
+                val minutes = (startTimeSeconds / 60).toInt()
+                val seconds = (startTimeSeconds % 60).toInt()
+                val centiseconds = ((startTimeSeconds % 1) * 100).toInt()
+                
+                // Format as LRC: [mm:ss.cc]text
+                val timeTag = String.format("[%02d:%02d.%02d]", minutes, seconds, centiseconds)
+                val text = line.x // The 'x' field contains the full line text
+                
+                lrcLines.add("$timeTag$text")
+            }
+            
+            return lrcLines.joinToString("\n")
+        } catch (e: Exception) {
+            // Log error for debugging
+            // If conversion fails, return the raw text without timing
+            throw Exception("Failed to convert Rich Sync to LRC format: ${e.message}")
+        }
     }
 
     suspend fun getLyrics(
