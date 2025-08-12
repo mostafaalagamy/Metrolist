@@ -141,7 +141,7 @@ data class SearchSummaryPage(
                             renderer.onTap.browseEndpoint.browseId
                                 .removePrefix("VL"),
                         title =
-                            renderer.header.musicCardShelfHeaderBasicRenderer.title.runs
+                            renderer.header?.musicCardShelfHeaderBasicRenderer?.title?.runs
                                 ?.joinToString(separator = "") { it.text }
                                 ?: return null,
                         author =
