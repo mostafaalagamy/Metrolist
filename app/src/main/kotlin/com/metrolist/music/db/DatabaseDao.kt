@@ -383,7 +383,7 @@ interface DatabaseDao {
     ): Flow<List<Artist>>
 
     @Transaction
-    @RewriteQueriesToDropUnusedColumns
+    @SuppressWarnings(RoomWarnings.QUERY_MISMATCH)
     @Query(
         """
     SELECT album.*,
@@ -424,7 +424,7 @@ interface DatabaseDao {
     ): Flow<List<Album>>
 
     @Transaction
-    @RewriteQueriesToDropUnusedColumns
+    @SuppressWarnings(RoomWarnings.QUERY_MISMATCH)
     @Query("""
         SELECT album.*, count(song.dateDownload) downloadCount
         FROM album_artist_map 
