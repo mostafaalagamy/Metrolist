@@ -10,32 +10,24 @@ import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.parameter
+import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpHeaders
+import io.ktor.http.encodeURLParameter
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.Serializable
-import kotlin.math.abs
-
-// LrcLib fallback model (exactly like SimpMusic does)
-@Serializable
-data class LrclibObject(
-    val id: Int,
-    val name: String,
-    val trackName: String,
-    val artistName: String,
-    val albumName: String?,
-    val duration: Double,
-    val instrumental: Boolean,
-    val plainLyrics: String?,
-    val syncedLyrics: String?
-)
+import java.net.URLEncoder
+import java.security.MessageDigest
+import java.time.LocalDateTime
+import java.util.*
+import javax.crypto.Mac
+import javax.crypto.spec.SecretKeySpec
 
 object MusicXMatch {
     private val client by lazy {
         HttpClient(CIO) {
-            expectSuccess = false // MusicXMatch has authentication issues, use false
+            expectSuccess = false // Handle errors manually
             
             install(ContentNegotiation) {
                 json(Json {
@@ -55,9 +47,155 @@ object MusicXMatch {
             
             defaultRequest {
                 header(HttpHeaders.UserAgent, "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36")
-                header(HttpHeaders.Accept, "application/json")
             }
         }
+    }
+
+    private var cachedSecret: String? = null
+
+    private suspend fun getLatestApp(): String {
+        val response = client.get("https://www.musixmatch.com/search") {
+            header("Cookie", "mxm_bab=AB")
+        }
+        val htmlContent = response.bodyAsText()
+        
+        // Regular expression to match `_app` script URLs
+        val pattern = Regex("""src="([^"]*/_next/static/chunks/pages/_app-[^"]+\.js)"""")
+        val matches = pattern.findAll(htmlContent).map { it.groupValues[1] }.toList()
+        
+        if (matches.isEmpty()) {
+            throw Exception("_app URL not found in the HTML content.")
+        }
+        
+        return matches.last() // Get the last match if multiple are found
+    }
+
+    private suspend fun getSecret(): String {
+        if (cachedSecret != null) {
+            return cachedSecret!!
+        }
+        
+        val appUrl = getLatestApp()
+        val response = client.get(appUrl)
+        val javascriptCode = response.bodyAsText()
+        
+        // Regular expression to capture the string inside `from(...)`
+        val pattern = Regex("""from\(\s*"(.*?)"\s*\.split""")
+        val match = pattern.find(javascriptCode)
+        
+        if (match != null) {
+            val encodedString = match.groupValues[1]
+            val reversedString = encodedString.reversed()
+            
+            // Decode the reversed string from Base64
+            val decodedBytes = Base64.getDecoder().decode(reversedString)
+            val decodedString = String(decodedBytes, Charsets.UTF_8)
+            
+            cachedSecret = decodedString
+            return decodedString
+        } else {
+            throw Exception("Encoded string not found in the JavaScript code.")
+        }
+    }
+
+    private suspend fun generateSignature(url: String): String {
+        val secret = getSecret()
+        val currentDate = LocalDateTime.now()
+        val l = currentDate.year.toString()
+        val s = currentDate.monthValue.toString().padStart(2, '0')
+        val r = currentDate.dayOfMonth.toString().padStart(2, '0')
+        
+        val message = (url + l + s + r).toByteArray(Charsets.UTF_8)
+        val key = secret.toByteArray(Charsets.UTF_8)
+        
+        val mac = Mac.getInstance("HmacSHA256")
+        val secretKeySpec = SecretKeySpec(key, "HmacSHA256")
+        mac.init(secretKeySpec)
+        val hashOutput = mac.doFinal(message)
+        
+        val encodedSignature = Base64.getEncoder().encodeToString(hashOutput)
+        val urlEncodedSignature = URLEncoder.encode(encodedSignature, "UTF-8")
+        
+        return "&signature=$urlEncodedSignature&signature_protocol=sha256"
+    }
+
+    private suspend fun searchTracks(
+        query: String,
+        page: Int = 1
+    ): Result<List<Track>> = runCatching {
+        currentCoroutineContext().ensureActive()
+        
+        val baseUrl = "track.search?app_id=web-desktop-app-v1.0&format=json&q=${URLEncoder.encode(query, "UTF-8")}&f_has_lyrics=true&page_size=100&page=$page"
+        val fullUrl = "https://www.musixmatch.com/ws/1.1/$baseUrl"
+        val signature = generateSignature(fullUrl)
+        val signedUrl = fullUrl + signature
+        
+        val response = client.get(signedUrl)
+        
+        if (response.status.value != 200) {
+            throw Exception("MusicXMatch API error: ${response.status.value}")
+        }
+        
+        val musicXMatchResponse = response.body<MusicXMatchResponse<TrackSearchBody>>()
+        
+        if (musicXMatchResponse.message.header.statusCode != 200) {
+            throw Exception("MusicXMatch API error: ${musicXMatchResponse.message.header.statusCode}")
+        }
+        
+        musicXMatchResponse.message.body.trackList.map { it.track }
+    }
+
+    private suspend fun getTrackLyrics(trackId: Int): Result<String> = runCatching {
+        currentCoroutineContext().ensureActive()
+        
+        val baseUrl = "track.lyrics.get?app_id=web-desktop-app-v1.0&format=json&track_id=$trackId"
+        val fullUrl = "https://www.musixmatch.com/ws/1.1/$baseUrl"
+        val signature = generateSignature(fullUrl)
+        val signedUrl = fullUrl + signature
+        
+        val response = client.get(signedUrl)
+        
+        if (response.status.value != 200) {
+            throw Exception("MusicXMatch API error: ${response.status.value}")
+        }
+        
+        val musicXMatchResponse = response.body<MusicXMatchResponse<LyricsBody>>()
+        
+        if (musicXMatchResponse.message.header.statusCode != 200) {
+            throw Exception("MusicXMatch API error: ${musicXMatchResponse.message.header.statusCode}")
+        }
+        
+        val lyrics = musicXMatchResponse.message.body.lyrics?.lyricsBody
+            ?: throw Exception("No lyrics found for track ID: $trackId")
+        
+        // Remove MusicXMatch restrictions text if present
+        lyrics.replace("******* This Lyrics is NOT for Commercial use *******", "")
+              .replace("(1409617635700)", "")
+              .trim()
+    }
+
+    private suspend fun getTrackRichSync(trackId: Int): Result<String> = runCatching {
+        currentCoroutineContext().ensureActive()
+        
+        val baseUrl = "track.richsync.get?app_id=web-desktop-app-v1.0&format=json&track_id=$trackId"
+        val fullUrl = "https://www.musixmatch.com/ws/1.1/$baseUrl"
+        val signature = generateSignature(fullUrl)
+        val signedUrl = fullUrl + signature
+        
+        val response = client.get(signedUrl)
+        
+        if (response.status.value != 200) {
+            throw Exception("MusicXMatch API error: ${response.status.value}")
+        }
+        
+        val musicXMatchResponse = response.body<MusicXMatchResponse<RichSyncBody>>()
+        
+        if (musicXMatchResponse.message.header.statusCode != 200) {
+            throw Exception("MusicXMatch API error: ${musicXMatchResponse.message.header.statusCode}")
+        }
+        
+        musicXMatchResponse.message.body.richsync?.richsyncBody
+            ?: throw Exception("No rich sync found for track ID: $trackId")
     }
 
     suspend fun getLyrics(
@@ -67,31 +205,24 @@ object MusicXMatch {
     ): Result<String> = runCatching {
         currentCoroutineContext().ensureActive()
         
-        // MusicXMatch API requires complex signing, so we'll fallback to LrcLib immediately
-        // This is similar to how SimpMusic works with LrcLib fallback
-        val response = client.get("https://lrclib.net/api/search") {
-            parameter("q", "$artist $title")
-        }.body<List<LrclibObject>>()
+        val query = "$artist $title".trim()
+        val tracks = searchTracks(query).getOrThrow()
         
-        if (response.isEmpty()) {
-            throw Exception("No lyrics found for: $title by $artist")
+        if (tracks.isEmpty()) {
+            throw Exception("No tracks found for: $title by $artist")
         }
         
-        // Find best match by duration if provided
-        val lrclibObject = if (duration > 0) {
-            response.find { abs(it.duration.toInt() - duration) <= 10 }
-        } else {
-            response.firstOrNull()
-        } ?: throw Exception("No suitable match found")
+        val bestMatch = tracks.bestMatchingFor(title, artist, duration)
+            ?: throw Exception("No suitable match found")
         
-        // Prefer synced lyrics over plain lyrics
-        val lyrics = when {
-            !lrclibObject.syncedLyrics.isNullOrBlank() -> lrclibObject.syncedLyrics
-            !lrclibObject.plainLyrics.isNullOrBlank() -> lrclibObject.plainLyrics
-            else -> throw Exception("No lyrics content available")
+        // Try to get rich sync first (synced lyrics), then fallback to regular lyrics
+        val richSyncResult = getTrackRichSync(bestMatch.trackId)
+        if (richSyncResult.isSuccess) {
+            return@runCatching richSyncResult.getOrThrow()
         }
         
-        lyrics
+        // Fallback to regular lyrics
+        getTrackLyrics(bestMatch.trackId).getOrThrow()
     }
 
     suspend fun getAllLyrics(
