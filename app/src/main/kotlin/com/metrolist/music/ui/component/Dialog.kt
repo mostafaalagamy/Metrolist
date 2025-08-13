@@ -15,9 +15,21 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.ime
+import androidx.compose.animation.core.animateIntAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.runtime.getValue
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialogDefaults
@@ -66,21 +78,48 @@ fun DefaultDialog(
     buttons: (@Composable RowScope.() -> Unit)? = null,
     content: @Composable ColumnScope.() -> Unit,
 ) {
+    val density = LocalDensity.current
+    val imeHeight = WindowInsets.ime.getBottom(density)
+    val isKeyboardVisible = imeHeight > 0
+    
+    // Animated bottom padding for smooth keyboard transition
+    val animatedBottomPadding by animateIntAsState(
+        targetValue = if (isKeyboardVisible) imeHeight else 0,
+        animationSpec = tween(durationMillis = 300),
+        label = "keyboard_padding"
+    )
+    
     Dialog(
         onDismissRequest = onDismiss,
-        properties = DialogProperties(usePlatformDefaultWidth = false),
+        properties = DialogProperties(
+            usePlatformDefaultWidth = false,
+            decorFitsSystemWindows = false
+        ),
     ) {
         Surface(
-            modifier = Modifier.padding(24.dp),
+            modifier = Modifier
+                .padding(
+                    start = 24.dp,
+                    top = 24.dp,
+                    end = 24.dp,
+                    bottom = 24.dp + with(density) { animatedBottomPadding.toDp() }
+                )
+                .navigationBarsPadding(),
             shape = AlertDialogDefaults.shape,
             color = AlertDialogDefaults.containerColor,
             tonalElevation = AlertDialogDefaults.TonalElevation,
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier =
-                modifier
-                    .padding(24.dp),
+                modifier = modifier
+                    .padding(24.dp)
+                    .then(
+                        if (isKeyboardVisible) {
+                            Modifier.verticalScroll(rememberScrollState())
+                        } else {
+                            Modifier
+                        }
+                    ),
             ) {
                 if (icon != null) {
                     CompositionLocalProvider(LocalContentColor provides AlertDialogDefaults.iconContentColor) {
