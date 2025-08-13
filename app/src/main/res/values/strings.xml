@@ -114,7 +114,6 @@
     <string name="action_sync">Sync</string>
     <string name="advanced">Advanced</string>
     <string name="tempo_and_pitch">Tempo and Pitch</string>
-    <string name="link_pitch_to_tempo">Link Pitch to Tempo</string>
 
     <!-- Sort menu -->
     <string name="sort_by_create_date">Date added</string>
