@@ -20,6 +20,7 @@ import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackException
+import androidx.media3.common.PlaybackParameters
 import androidx.media3.common.Player
 import androidx.media3.common.Player.EVENT_POSITION_DISCONTINUITY
 import androidx.media3.common.Player.EVENT_TIMELINE_CHANGED
@@ -81,6 +82,9 @@ import com.metrolist.music.constants.RepeatModeKey
 import com.metrolist.music.constants.ShowLyricsKey
 import com.metrolist.music.constants.SimilarContent
 import com.metrolist.music.constants.SkipSilenceKey
+import com.metrolist.music.constants.linkPitchToTempo
+import com.metrolist.music.constants.pitch
+import com.metrolist.music.constants.tempo
 import com.metrolist.music.db.MusicDatabase
 import com.metrolist.music.db.entities.Event
 import com.metrolist.music.db.entities.FormatEntity
@@ -287,6 +291,12 @@ class MusicService :
                 ).setBitmapLoader(CoilBitmapLoader(this, scope))
                 .build()
         player.repeatMode = dataStore.get(RepeatModeKey, REPEAT_MODE_OFF)
+        
+        val preferredTempo = dataStore.get(tempo, 1.0f)
+        val preferredPitch = dataStore.get(pitch, 1.0f)
+        val linkPitchToTempo = dataStore.get(linkPitchToTempo, false)
+        val actualPitch = if (linkPitchToTempo) preferredTempo else preferredPitch
+        player.playbackParameters = PlaybackParameters(preferredTempo, actualPitch)
 
         // Keep a connected controller so that notification works
         val sessionToken = SessionToken(this, ComponentName(this, MusicService::class.java))

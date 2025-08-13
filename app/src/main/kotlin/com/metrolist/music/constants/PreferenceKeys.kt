@@ -20,6 +20,9 @@ val UseNewPlayerDesignKey= booleanPreferencesKey("useNewPlayerDesign")
 val UseNewMiniPlayerDesignKey = booleanPreferencesKey("useNewMiniPlayerDesign")
 val HidePlayerThumbnailKey = booleanPreferencesKey("hidePlayerThumbnail")
 val SeekExtraSeconds = booleanPreferencesKey("seekExtraSeconds")
+val tempo = floatPreferencesKey("tempo")
+val pitch = floatPreferencesKey("pitch")
+val linkPitchToTempo = booleanPreferencesKey("linkPitchToTempo")
 
 enum class SliderStyle {
     DEFAULT,
