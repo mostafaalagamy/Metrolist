@@ -191,4 +191,12 @@
     <!-- Player Settings -->
     <string name="disable_load_more_when_repeat_all">Disable load more when repeat all</string>
     <string name="disable_load_more_when_repeat_all_desc">Don\'t auto load more songs and similar content when repeat all mode is enabled</string>
+    
+    <!-- Material 3 Settings Sections -->
+    <string name="settings_section_ui">User Interface</string>
+    <string name="settings_section_privacy">Privacy &amp; Security</string>
+    <string name="settings_section_player">Player &amp; Media</string>
+    <string name="settings_section_player_content">Player &amp; Content</string>
+    <string name="settings_section_storage">Storage &amp; Data</string>
+    <string name="settings_section_system">System &amp; About</string>
 </resources>
