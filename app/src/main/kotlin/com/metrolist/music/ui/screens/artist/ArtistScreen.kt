@@ -117,6 +117,10 @@ import com.metrolist.music.utils.rememberPreference
 import com.metrolist.music.ui.utils.resize
 import com.metrolist.music.viewmodels.ArtistViewModel
 import com.valentinilk.shimmer.shimmer
+import androidx.compose.foundation.layout.offset
+import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalResources
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -142,6 +146,13 @@ fun ArtistScreen(
     val lazyListState = rememberLazyListState()
     val snackbarHostState = remember { SnackbarHostState() }
     var showLocal by rememberSaveable { mutableStateOf(false) }
+    val density = LocalDensity.current
+
+    // Calculate the offset value outside of the offset lambda
+    val systemBarsTopPadding = WindowInsets.systemBars.asPaddingValues().calculateTopPadding()
+    val headerOffset = with(density) {
+        -(systemBarsTopPadding + AppBarHeight).roundToPx()
+    }
 
     val transparentAppBar by remember {
         derivedStateOf {
@@ -159,18 +170,16 @@ fun ArtistScreen(
     ) {
         LazyColumn(
             state = lazyListState,
-            contentPadding = LocalPlayerAwareWindowInsets.current
-                .add(
-                    WindowInsets(
-                        top = -WindowInsets.systemBars.asPaddingValues()
-                            .calculateTopPadding() - AppBarHeight
-                    )
-                )
-                .asPaddingValues(),
+            contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues(),
         ) {
             if (artistPage == null && !showLocal) {
                 item(key = "shimmer") {
-                    ShimmerHost {
+                    ShimmerHost (
+                        modifier = Modifier
+                            .offset {
+                                IntOffset(x = 0, y = headerOffset)
+                            }
+                    ) {
                         // Artist Image Placeholder
                         Box(
                             modifier = Modifier
@@ -183,14 +192,11 @@ fun ArtistScreen(
                                     .shimmer()
                                     .background(MaterialTheme.colorScheme.onSurface)
                                     .fadingEdge(
-                                        top = WindowInsets.systemBars
-                                            .asPaddingValues()
-                                            .calculateTopPadding() + AppBarHeight,
+                                        top = systemBarsTopPadding + AppBarHeight,
                                         bottom = 200.dp,
                                     ),
                             )
                         }
-
                         // Artist Name and Controls Section
                         Column(
                             modifier = Modifier
@@ -244,7 +250,6 @@ fun ArtistScreen(
                                 }
                             }
                         }
-
                         // Songs List Placeholder
                         repeat(6) {
                             ListItemPlaceHolder()
@@ -256,24 +261,17 @@ fun ArtistScreen(
                     val thumbnail = artistPage?.artist?.thumbnail ?: libraryArtist?.artist?.thumbnailUrl
                     val artistName = artistPage?.artist?.title ?: libraryArtist?.artist?.name
 
-                    Column {
-                        // Artist Image (maintain consistent dimensions)
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .then(
-                                    if (thumbnail != null) {
-                                        Modifier.aspectRatio(1.2f / 1)
-                                    } else {
-                                        // Add safe space when no image to prevent overlap with system bars
-                                        Modifier.height(
-                                            WindowInsets.systemBars.asPaddingValues().calculateTopPadding() + 
-                                            AppBarHeight + 16.dp
-                                        )
+                    Box {
+                        // Artist Image with offset
+                        if (thumbnail != null) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .aspectRatio(1.2f / 1)
+                                    .offset {
+                                        IntOffset(x = 0, y = headerOffset)
                                     }
-                                ),
-                        ) {
-                            if (thumbnail != null) {
+                            ) {
                                 AsyncImage(
                                     model = thumbnail.resize(1200, 1000),
                                     contentDescription = null,
@@ -287,102 +285,147 @@ fun ArtistScreen(
                             }
                         }
 
-                        // Artist Name and Controls Section
+                        // Artist Name and Controls Section - positioned at bottom of image
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(top = 8.dp, start = 16.dp, end = 16.dp, bottom = 0.dp)
+                                .padding(
+                                    top = if (thumbnail != null) {
+                                        // Position content at the bottom part of the image
+                                        // Using screen width to calculate aspect ratio height minus overlap
+                                        LocalResources.current.displayMetrics.widthPixels.let { screenWidth ->
+                                            with(density) {
+                                                ((screenWidth / 1.2f) - 144).toDp()
+                                            }
+                                        }
+                                    } else {
+                                        16.dp
+                                    }
+                                )
                         ) {
-                            // Artist Name
-                            Text(
-                                text = artistName ?: "Unknown",
-                                style = MaterialTheme.typography.headlineLarge,
-                                fontWeight = FontWeight.Bold,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                                fontSize = 32.sp,
-                                modifier = Modifier.padding(bottom = 16.dp)
-                            )
-
-                            // Buttons Row
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                verticalAlignment = Alignment.CenterVertically
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 16.dp)
                             ) {
-                                // Subscribe Button
-                                OutlinedButton(
-                                    onClick = {
-                                        database.transaction {
-                                            val artist = libraryArtist?.artist
-                                            if (artist != null) {
-                                                update(artist.toggleLike())
-                                            } else {
-                                                artistPage?.artist?.let {
-                                                    insert(
-                                                        ArtistEntity(
-                                                            id = it.id,
-                                                            name = it.title,
-                                                            channelId = it.channelId,
-                                                            thumbnailUrl = it.thumbnail,
-                                                        ).toggleLike()
+                                // Artist Name
+                                Text(
+                                    text = artistName ?: "Unknown",
+                                    style = MaterialTheme.typography.headlineLarge,
+                                    fontWeight = FontWeight.Bold,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                    fontSize = 32.sp,
+                                    modifier = Modifier.padding(bottom = 16.dp)
+                                )
+
+                                // Buttons Row
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    // Subscribe Button
+                                    OutlinedButton(
+                                        onClick = {
+                                            database.transaction {
+                                                val artist = libraryArtist?.artist
+                                                if (artist != null) {
+                                                    update(artist.toggleLike())
+                                                } else {
+                                                    artistPage?.artist?.let {
+                                                        insert(
+                                                            ArtistEntity(
+                                                                id = it.id,
+                                                                name = it.title,
+                                                                channelId = it.channelId,
+                                                                thumbnailUrl = it.thumbnail,
+                                                            ).toggleLike()
+                                                        )
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        colors = ButtonDefaults.outlinedButtonColors(
+                                            containerColor = if (libraryArtist?.artist?.bookmarkedAt != null)
+                                                MaterialTheme.colorScheme.surface
+                                            else
+                                                Color.Transparent
+                                        ),
+                                        shape = RoundedCornerShape(50),
+                                        modifier = Modifier.height(40.dp)
+                                    ) {
+                                        val isSubscribed = libraryArtist?.artist?.bookmarkedAt != null
+                                        Text(
+                                            text = stringResource(if (isSubscribed) R.string.subscribed else R.string.subscribe),
+                                            fontSize = 14.sp,
+                                            color = if (!isSubscribed) MaterialTheme.colorScheme.error else LocalContentColor.current
+                                        )
+                                    }
+
+                                    Spacer(modifier = Modifier.weight(1f))
+
+                                    Row(
+                                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        // Radio Button
+                                        if (!showLocal) {
+                                            artistPage?.artist?.radioEndpoint?.let { radioEndpoint ->
+                                                OutlinedButton(
+                                                    onClick = {
+                                                        playerConnection.playQueue(YouTubeQueue(radioEndpoint))
+                                                    },
+                                                    shape = RoundedCornerShape(50),
+                                                    modifier = Modifier.height(40.dp)
+                                                ) {
+                                                    Icon(
+                                                        painter = painterResource(R.drawable.radio),
+                                                        contentDescription = null,
+                                                        modifier = Modifier.size(20.dp)
+                                                    )
+                                                    Spacer(modifier = Modifier.width(8.dp))
+                                                    Text(
+                                                        text = stringResource(R.string.radio),
+                                                        fontSize = 14.sp
                                                     )
                                                 }
                                             }
                                         }
-                                    },
-                                    colors = ButtonDefaults.outlinedButtonColors(
-                                        containerColor = if (libraryArtist?.artist?.bookmarkedAt != null) 
-                                            MaterialTheme.colorScheme.surface 
-                                        else 
-                                            Color.Transparent
-                                    ),
-                                    shape = RoundedCornerShape(50),
-                                    modifier = Modifier.height(40.dp)
-                                ) {
-                                    val isSubscribed = libraryArtist?.artist?.bookmarkedAt != null
-                                    Text(
-                                        text = stringResource(if (isSubscribed) R.string.subscribed else R.string.subscribe),
-                                        fontSize = 14.sp,
-                                        color = if (!isSubscribed) MaterialTheme.colorScheme.error else LocalContentColor.current
-                                    )
-                                }
 
-                                Spacer(modifier = Modifier.weight(1f))
-
-                                Row(
-                                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    // Radio Button
-                                    if (!showLocal) {
-                                        artistPage?.artist?.radioEndpoint?.let { radioEndpoint ->
-                                            OutlinedButton(
-                                                onClick = {
-                                                    playerConnection.playQueue(YouTubeQueue(radioEndpoint))
-                                                },
-                                                shape = RoundedCornerShape(50),
-                                                modifier = Modifier.height(40.dp)
-                                            ) {
-                                                Icon(
-                                                    painter = painterResource(R.drawable.radio),
-                                                    contentDescription = null,
-                                                    modifier = Modifier.size(20.dp)
-                                                )
-                                                Spacer(modifier = Modifier.width(8.dp))
-                                                Text(
-                                                    text = stringResource(R.string.radio),
-                                                    fontSize = 14.sp
-                                                )
+                                        // Shuffle Button
+                                        if (!showLocal) {
+                                            artistPage?.artist?.shuffleEndpoint?.let { shuffleEndpoint ->
+                                                IconButton(
+                                                    onClick = {
+                                                        playerConnection.playQueue(YouTubeQueue(shuffleEndpoint))
+                                                    },
+                                                    modifier = Modifier
+                                                        .size(48.dp)
+                                                        .background(
+                                                            MaterialTheme.colorScheme.primary,
+                                                            RoundedCornerShape(24.dp)
+                                                        )
+                                                ) {
+                                                    Icon(
+                                                        painter = painterResource(R.drawable.shuffle),
+                                                        contentDescription = "Shuffle",
+                                                        tint = MaterialTheme.colorScheme.onPrimary,
+                                                        modifier = Modifier.size(20.dp)
+                                                    )
+                                                }
                                             }
-                                        }
-                                    }
-
-                                    // Shuffle Button
-                                    if (!showLocal) {
-                                        artistPage?.artist?.shuffleEndpoint?.let { shuffleEndpoint ->
+                                        } else if (librarySongs.isNotEmpty()) {
                                             IconButton(
                                                 onClick = {
-                                                    playerConnection.playQueue(YouTubeQueue(shuffleEndpoint))
+                                                    val shuffledSongs = librarySongs.shuffled()
+                                                    if (shuffledSongs.isNotEmpty()) {
+                                                        playerConnection.playQueue(
+                                                            ListQueue(
+                                                                title = libraryArtist?.artist?.name ?: "Unknown Artist",
+                                                                items = shuffledSongs.map { it.toMediaItem() }
+                                                            )
+                                                        )
+                                                    }
                                                 },
                                                 modifier = Modifier
                                                     .size(48.dp)
@@ -399,38 +442,11 @@ fun ArtistScreen(
                                                 )
                                             }
                                         }
-                                    } else if (librarySongs.isNotEmpty()) {
-                                        IconButton(
-                                            onClick = {
-                                                val shuffledSongs = librarySongs.shuffled()
-                                                if (shuffledSongs.isNotEmpty()) {
-                                                    playerConnection.playQueue(
-                                                        ListQueue(
-                                                            title = libraryArtist?.artist?.name ?: "Unknown Artist",
-                                                            items = shuffledSongs.map { it.toMediaItem() }
-                                                        )
-                                                    )
-                                                }
-                                            },
-                                            modifier = Modifier
-                                                .size(48.dp)
-                                                .background(
-                                                    MaterialTheme.colorScheme.primary,
-                                                    RoundedCornerShape(24.dp)
-                                                )
-                                        ) {
-                                            Icon(
-                                                painter = painterResource(R.drawable.shuffle),
-                                                contentDescription = "Shuffle",
-                                                tint = MaterialTheme.colorScheme.onPrimary,
-                                                modifier = Modifier.size(20.dp)
-                                            )
-                                        }
                                     }
                                 }
                             }
+                            Spacer(modifier = Modifier.height(16.dp))
                         }
-                        Spacer(modifier = Modifier.height(16.dp))
                     }
                 }
 
