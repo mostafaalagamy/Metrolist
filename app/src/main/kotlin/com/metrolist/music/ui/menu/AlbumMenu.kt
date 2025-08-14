@@ -68,9 +68,13 @@ import com.metrolist.music.db.entities.Album
 import com.metrolist.music.db.entities.Song
 import com.metrolist.music.extensions.toMediaItem
 import com.metrolist.music.playback.ExoDownloadService
+import com.metrolist.music.playback.queues.ListQueue
+import com.metrolist.music.playback.queues.LocalAlbumRadio
 import com.metrolist.music.ui.component.AlbumListItem
 import com.metrolist.music.ui.component.ListDialog
 import com.metrolist.music.ui.component.ListItem
+import com.metrolist.music.ui.component.NewAction
+import com.metrolist.music.ui.component.NewActionGrid
 import com.metrolist.music.ui.component.SongListItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -267,11 +271,85 @@ fun AlbumMenu(
 
     HorizontalDivider()
 
+    // Enhanced Action Grid using NewMenuComponents
+    NewActionGrid(
+        actions = listOf(
+            NewAction(
+                icon = {
+                    Icon(
+                        painter = painterResource(R.drawable.play),
+                        contentDescription = null,
+                        modifier = Modifier.size(28.dp),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                },
+                text = stringResource(R.string.play),
+                onClick = {
+                    onDismiss()
+                    if (songs.isNotEmpty()) {
+                        playerConnection.playQueue(
+                            ListQueue(
+                                title = album.album.title,
+                                items = songs.map(Song::toMediaItem)
+                            )
+                        )
+                    }
+                }
+            ),
+            NewAction(
+                icon = {
+                    Icon(
+                        painter = painterResource(R.drawable.shuffle),
+                        contentDescription = null,
+                        modifier = Modifier.size(28.dp),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                },
+                text = stringResource(R.string.shuffle),
+                onClick = {
+                    onDismiss()
+                    if (songs.isNotEmpty()) {
+                        album.album.playlistId?.let { playlistId ->
+                            playerConnection.service.getAutomix(playlistId)
+                        }
+                        playerConnection.playQueue(
+                            ListQueue(
+                                title = album.album.title,
+                                items = songs.shuffled().map(Song::toMediaItem)
+                            )
+                        )
+                    }
+                }
+            ),
+            NewAction(
+                icon = {
+                    Icon(
+                        painter = painterResource(R.drawable.share),
+                        contentDescription = null,
+                        modifier = Modifier.size(28.dp),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                },
+                text = stringResource(R.string.share),
+                onClick = {
+                    onDismiss()
+                    val intent = Intent().apply {
+                        action = Intent.ACTION_SEND
+                        type = "text/plain"
+                        putExtra(Intent.EXTRA_TEXT, "https://music.youtube.com/playlist?list=${album.album.playlistId}")
+                    }
+                    context.startActivity(Intent.createChooser(intent, null))
+                }
+            )
+        ),
+        modifier = Modifier.padding(horizontal = 4.dp, vertical = 16.dp)
+    )
+
     LazyColumn(
         contentPadding = PaddingValues(
-            start = 8.dp,
-            top = 8.dp,
-            end = 8.dp,
+            start = 0.dp,
+            top = 0.dp,
+            end = 0.dp,
             bottom = 8.dp + WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
         ),
     ) {
@@ -438,29 +516,6 @@ fun AlbumMenu(
                 }
             )
         }
-        item {
-            ListItem(
-                headlineContent = { Text(text = stringResource(R.string.share)) },
-                leadingContent = {
-                    Icon(
-                        painter = painterResource(R.drawable.share),
-                        contentDescription = null,
-                    )
-                },
-                modifier = Modifier.clickable {
-                    onDismiss()
-                    val intent =
-                        Intent().apply {
-                            action = Intent.ACTION_SEND
-                            type = "text/plain"
-                            putExtra(
-                                Intent.EXTRA_TEXT,
-                                "https://music.youtube.com/browse/${album.album.id}"
-                            )
-                        }
-                    context.startActivity(Intent.createChooser(intent, null))
-                }
-            )
-        }
+
     }
 }
