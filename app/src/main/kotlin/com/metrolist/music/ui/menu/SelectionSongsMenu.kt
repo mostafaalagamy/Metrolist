@@ -49,6 +49,8 @@ import com.metrolist.music.models.toMediaMetadata
 import com.metrolist.music.playback.ExoDownloadService
 import com.metrolist.music.playback.queues.ListQueue
 import com.metrolist.music.ui.component.DefaultDialog
+import com.metrolist.music.ui.component.NewAction
+import com.metrolist.music.ui.component.NewActionGrid
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -176,11 +178,74 @@ fun SelectionSongMenu(
         )
     }
 
+    // Enhanced Action Grid using NewMenuComponents
+    NewActionGrid(
+        actions = listOf(
+            NewAction(
+                icon = {
+                    Icon(
+                        painter = painterResource(R.drawable.play),
+                        contentDescription = null,
+                        modifier = Modifier.size(28.dp),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                },
+                text = stringResource(R.string.play),
+                onClick = {
+                    onDismiss()
+                    playerConnection.playQueue(
+                        ListQueue(
+                            title = "Selection",
+                            items = songSelection.map { it.toMediaItem() },
+                        ),
+                    )
+                    clearAction()
+                }
+            ),
+            NewAction(
+                icon = {
+                    Icon(
+                        painter = painterResource(R.drawable.shuffle),
+                        contentDescription = null,
+                        modifier = Modifier.size(28.dp),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                },
+                text = stringResource(R.string.shuffle),
+                onClick = {
+                    onDismiss()
+                    playerConnection.playQueue(
+                        ListQueue(
+                            title = "Selection",
+                            items = songSelection.shuffled().map { it.toMediaItem() },
+                        ),
+                    )
+                    clearAction()
+                }
+            ),
+            NewAction(
+                icon = {
+                    Icon(
+                        painter = painterResource(R.drawable.playlist_add),
+                        contentDescription = null,
+                        modifier = Modifier.size(28.dp),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                },
+                text = stringResource(R.string.add_to_playlist),
+                onClick = {
+                    showChoosePlaylistDialog = true
+                }
+            )
+        ),
+        modifier = Modifier.padding(horizontal = 4.dp, vertical = 16.dp)
+    )
+
     LazyColumn(
         contentPadding = PaddingValues(
-            start = 8.dp,
-            top = 8.dp,
-            end = 8.dp,
+            start = 0.dp,
+            top = 0.dp,
+            end = 0.dp,
             bottom = 8.dp + WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
         ),
     ) {
@@ -523,9 +588,9 @@ fun SelectionMediaMetadataMenu(
 
     LazyColumn(
         contentPadding = PaddingValues(
-            start = 8.dp,
-            top = 8.dp,
-            end = 8.dp,
+            start = 0.dp,
+            top = 0.dp,
+            end = 0.dp,
             bottom = 8.dp + WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
         ),
     ) {
