@@ -16,18 +16,36 @@ jsoup = "1.21.1"
 kuromojiIpadic = "0.9.0"
 multidex = "2.0.1"
 coil = "3.3.0"
+# Fixed versions for libraries
+guava = "33.4.8-jre"
+coroutinesGuava = "1.10.2"
+concurrentFutures = "1.3.0"
+activity = "1.12.0-alpha06"
+navigation = "2.9.3"
+hiltNavigation = "1.3.0-beta01"
+datastore = "1.2.0-alpha02"
+composeReorderable = "2.5.1"
+squigglyslider = "1.0.0"
+shimmer = "1.3.3"
+palette = "1.0.0"
+apacheLang3 = "3.18.0"
+brotli = "0.1.2"
+desugaring = "2.1.5"
+junit = "4.13.2"
+timber = "5.0.1"
+newpipeExtractor = "4240401"
 
 [libraries]
 annotation = { module = "androidx.annotation:annotation", version.ref = "annotation" }
-guava = { module = "com.google.guava:guava:33.4.8-jre" }
-coroutines-guava = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-guava:1.10.2" }
-concurrent-futures = { module = "androidx.concurrent:concurrent-futures-ktx:1.3.0" }
+guava = { module = "com.google.guava:guava", version.ref = "guava" }
+coroutines-guava = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-guava", version.ref = "coroutinesGuava" }
+concurrent-futures = { module = "androidx.concurrent:concurrent-futures-ktx", version.ref = "concurrentFutures" }
 
 gradle = { module = "com.android.tools.build:gradle", version.ref = "androidGradlePlugin" }
-activity = { module = "androidx.activity:activity-compose:1.12.0-alpha06" }
-navigation = { module = "androidx.navigation:navigation-compose:2.9.3" }
-hilt-navigation = { module = "androidx.hilt:hilt-navigation-compose:1.3.0-beta01" }
-datastore = { module = "androidx.datastore:datastore-preferences:1.2.0-alpha02" }
+activity = { module = "androidx.activity:activity-compose", version.ref = "activity" }
+navigation = { module = "androidx.navigation:navigation-compose", version.ref = "navigation" }
+hilt-navigation = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigation" }
+datastore = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
 
 compose-runtime = { module = "androidx.compose.runtime:runtime", version.ref = "compose" }
 compose-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "compose" }
@@ -35,9 +53,9 @@ compose-ui = { module = "androidx.compose.ui:ui", version.ref = "compose" }
 compose-ui-util = { module = "androidx.compose.ui:ui-util", version.ref = "compose" }
 compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "compose" }
 compose-animation = { module = "androidx.compose.animation:animation-graphics", version.ref = "compose" }
-compose-reorderable = { module = "sh.calvin.reorderable:reorderable", version = "2.5.1" }
+compose-reorderable = { module = "sh.calvin.reorderable:reorderable", version.ref = "composeReorderable" }
 
-squigglyslider = { module = "me.saket.squigglyslider:squigglyslider:1.0.0" }
+squigglyslider = { module = "me.saket.squigglyslider:squigglyslider", version.ref = "squigglyslider" }
 
 viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycle" }
 viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycle" }
@@ -49,9 +67,9 @@ materialKolor = { module = "com.materialkolor:material-kolor", version.ref = "ma
 coil = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
 coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coil" }
 
-shimmer = { module = "com.valentinilk.shimmer:compose-shimmer:1.3.3" }
+shimmer = { module = "com.valentinilk.shimmer:compose-shimmer", version.ref = "shimmer" }
 
-palette = { module = "androidx.palette:palette-ktx:1.0.0" }
+palette = { module = "androidx.palette:palette-ktx", version.ref = "palette" }
 
 media3 = { module = "androidx.media3:media3-exoplayer", version.ref = "media3" }
 media3-okhttp = { module = "androidx.media3:media3-datasource-okhttp", version.ref = "media3" }
@@ -61,7 +79,7 @@ room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 
-apache-lang3 = { module = "org.apache.commons:commons-lang3:3.18.0" }
+apache-lang3 = { module = "org.apache.commons:commons-lang3", version.ref = "apacheLang3" }
 
 hilt = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
 hilt-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hilt" }
@@ -77,19 +95,19 @@ jsoup = { module = "org.jsoup:jsoup", version.ref = "jsoup" }
 
 json = { module = "org.json:json", version.ref = "json" }
 
-brotli = { module = "org.brotli:dec:0.1.2" }
+brotli = { module = "org.brotli:dec", version.ref = "brotli" }
 
-desugaring = { module = "com.android.tools:desugar_jdk_libs:2.1.5" }
+desugaring = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugaring" }
 
-junit = { module = "junit:junit:4.13.2" }
+junit = { module = "junit:junit", version.ref = "junit" }
 
-timber = { module = "com.jakewharton.timber:timber:5.0.1" }
+timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 
 multidex = { module = "androidx.multidex:multidex", version.ref = "multidex" }
 
-#newpipe-extractor = { module = "com.github.libre-tube:NewPipeExtractor:70abbdb" }
-#newpipe-extractor = { module = "com.github.TeamNewPipe:NewPipeExtractor:dev-SNAPSHOT" }
-newpipe-extractor = { module = "com.github.InfinityLoop1308:PipePipeExtractor:4240401" }
+#newpipe-extractor = { module = "com.github.libre-tube:NewPipeExtractor", version = "70abbdb" }
+#newpipe-extractor = { module = "com.github.TeamNewPipe:NewPipeExtractor", version = "dev-SNAPSHOT" }
+newpipe-extractor = { module = "com.github.InfinityLoop1308:PipePipeExtractor", version.ref = "newpipeExtractor" }
 
 kuromoji-ipadic = { module = "com.atilika.kuromoji:kuromoji-ipadic", version.ref = "kuromojiIpadic" }
 
