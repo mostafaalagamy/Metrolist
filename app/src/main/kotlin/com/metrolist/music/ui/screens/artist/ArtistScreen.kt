@@ -184,7 +184,7 @@ fun ArtistScreen(
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .aspectRatio(1.2f / 1),
+                                .aspectRatio(1f),
                         ) {
                             Spacer(
                                 modifier = Modifier
@@ -267,13 +267,13 @@ fun ArtistScreen(
                             Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .aspectRatio(1.2f / 1)
+                                    .aspectRatio(1f)
                                     .offset {
                                         IntOffset(x = 0, y = headerOffset)
                                     }
                             ) {
                                 AsyncImage(
-                                    model = thumbnail.resize(1200, 1000),
+                                    model = thumbnail.resize(1200, 1200),
                                     contentDescription = null,
                                     modifier = Modifier
                                         .fillMaxWidth()
