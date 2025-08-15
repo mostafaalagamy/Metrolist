@@ -6,17 +6,14 @@ kotlin = "2.2.20-Beta2"
 compose = "1.10.0-alpha01"
 lifecycle = "2.10.0-alpha02"
 material3 = "1.5.0-alpha02"
-materialKolor = "3.0.1"
 media3 = "1.7.1"
 room = "2.8.0-rc01"
 hilt = "2.57"
 ktor = "3.2.3"
 ksp = "2.2.20-Beta2-2.0.2"
 jsoup = "1.21.1"
-kuromojiIpadic = "0.9.0"
 multidex = "2.0.1"
 coil = "3.3.0"
-# Fixed versions for libraries
 guava = "33.4.8-jre"
 coroutinesGuava = "1.10.2"
 concurrentFutures = "1.3.0"
@@ -33,6 +30,8 @@ brotli = "0.1.2"
 desugaring = "2.1.5"
 junit = "4.13.2"
 timber = "5.0.1"
+materialKolor = "3.0.1"
+kuromojiIpadic = "0.9.0"
 newpipeExtractor = "4240401"
 
 [libraries]
@@ -112,7 +111,7 @@ newpipe-extractor = { module = "com.github.InfinityLoop1308:PipePipeExtractor", 
 kuromoji-ipadic = { module = "com.atilika.kuromoji:kuromoji-ipadic", version.ref = "kuromojiIpadic" }
 
 [plugins]
-hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
-kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
