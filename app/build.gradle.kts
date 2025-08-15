@@ -221,7 +221,7 @@ kapt {
     arguments {
         arg("dagger.fastInit", "enabled")
         arg("dagger.formatGeneratedSource", "disabled")
-        arg("dagger.gradle.incremental", "true")
+        // dagger.gradle.incremental is deprecated in newer versions
     }
 }
 
