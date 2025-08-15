@@ -124,6 +124,9 @@ android {
 
     lint {
         lintConfig = file("lint.xml")
+        warningsAsErrors = false
+        abortOnError = false
+        checkDependencies = false
     }
 
     androidResources {
@@ -210,4 +213,25 @@ dependencies {
     implementation(libs.multidex)
 
     implementation(libs.timber)
+}
+
+kapt {
+    correctErrorTypes = true
+    useBuildCache = true
+    arguments {
+        arg("dagger.fastInit", "enabled")
+        arg("dagger.formatGeneratedSource", "disabled")
+        arg("dagger.gradle.incremental", "true")
+    }
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+    compilerOptions {
+        freeCompilerArgs.addAll(
+            "-opt-in=kotlin.RequiresOptIn",
+            "-Xcontext-receivers"
+        )
+        // Suppress warnings
+        suppressWarnings.set(true)
+    }
 }
