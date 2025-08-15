@@ -184,7 +184,7 @@ fun ArtistScreen(
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .aspectRatio(1f),
+                                .aspectRatio(1.1f),
                         ) {
                             Spacer(
                                 modifier = Modifier
