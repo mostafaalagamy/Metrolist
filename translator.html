@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مترجم فوري - ترجمة احترافية لجميع اللغات</title>
+    <link rel="stylesheet" href="translator-styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-language"></i>
+                <span>مترجم فوري</span>
+            </div>
+            <nav class="nav">
+                <a href="#" class="nav-link active">الترجمة</a>
+                <a href="#" class="nav-link">السجل</a>
+                <a href="#" class="nav-link">المفضلة</a>
+                <a href="#" class="nav-link">الإعدادات</a>
+            </nav>
+            <div class="theme-toggle">
+                <button id="themeToggle" class="theme-btn">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Translation Area -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Language Selector Bar -->
+            <div class="language-bar">
+                <div class="lang-selector source-lang">
+                    <button class="lang-dropdown-btn" id="sourceLangBtn">
+                        <span class="lang-flag">🇺🇸</span>
+                        <span class="lang-name">الإنجليزية</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="lang-dropdown" id="sourceLangDropdown">
+                        <div class="lang-search">
+                            <input type="text" placeholder="ابحث عن لغة..." class="lang-search-input">
+                        </div>
+                        <div class="lang-list">
+                            <button class="lang-option" data-lang="auto" data-flag="🌐">
+                                <span class="lang-flag">🌐</span>
+                                <span>اكتشاف تلقائي</span>
+                            </button>
+                            <button class="lang-option active" data-lang="en" data-flag="🇺🇸">
+                                <span class="lang-flag">🇺🇸</span>
+                                <span>الإنجليزية</span>
+                            </button>
+                            <button class="lang-option" data-lang="ar" data-flag="🇸🇦">
+                                <span class="lang-flag">🇸🇦</span>
+                                <span>العربية</span>
+                            </button>
+                            <button class="lang-option" data-lang="fr" data-flag="🇫🇷">
+                                <span class="lang-flag">🇫🇷</span>
+                                <span>الفرنسية</span>
+                            </button>
+                            <button class="lang-option" data-lang="es" data-flag="🇪🇸">
+                                <span class="lang-flag">🇪🇸</span>
+                                <span>الإسبانية</span>
+                            </button>
+                            <button class="lang-option" data-lang="de" data-flag="🇩🇪">
+                                <span class="lang-flag">🇩🇪</span>
+                                <span>الألمانية</span>
+                            </button>
+                            <button class="lang-option" data-lang="it" data-flag="🇮🇹">
+                                <span class="lang-flag">🇮🇹</span>
+                                <span>الإيطالية</span>
+                            </button>
+                            <button class="lang-option" data-lang="pt" data-flag="🇵🇹">
+                                <span class="lang-flag">🇵🇹</span>
+                                <span>البرتغالية</span>
+                            </button>
+                            <button class="lang-option" data-lang="ru" data-flag="🇷🇺">
+                                <span class="lang-flag">🇷🇺</span>
+                                <span>الروسية</span>
+                            </button>
+                            <button class="lang-option" data-lang="zh" data-flag="🇨🇳">
+                                <span class="lang-flag">🇨🇳</span>
+                                <span>الصينية</span>
+                            </button>
+                            <button class="lang-option" data-lang="ja" data-flag="🇯🇵">
+                                <span class="lang-flag">🇯🇵</span>
+                                <span>اليابانية</span>
+                            </button>
+                            <button class="lang-option" data-lang="ko" data-flag="🇰🇷">
+                                <span class="lang-flag">🇰🇷</span>
+                                <span>الكورية</span>
+                            </button>
+                            <button class="lang-option" data-lang="tr" data-flag="🇹🇷">
+                                <span class="lang-flag">🇹🇷</span>
+                                <span>التركية</span>
+                            </button>
+                            <button class="lang-option" data-lang="hi" data-flag="🇮🇳">
+                                <span class="lang-flag">🇮🇳</span>
+                                <span>الهندية</span>
+                            </button>
+                            <button class="lang-option" data-lang="ur" data-flag="🇵🇰">
+                                <span class="lang-flag">🇵🇰</span>
+                                <span>الأردية</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="swap-btn" id="swapLangs">
+                    <i class="fas fa-exchange-alt"></i>
+                </button>
+
+                <div class="lang-selector target-lang">
+                    <button class="lang-dropdown-btn" id="targetLangBtn">
+                        <span class="lang-flag">🇸🇦</span>
+                        <span class="lang-name">العربية</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="lang-dropdown" id="targetLangDropdown">
+                        <div class="lang-search">
+                            <input type="text" placeholder="ابحث عن لغة..." class="lang-search-input">
+                        </div>
+                        <div class="lang-list">
+                            <button class="lang-option" data-lang="en" data-flag="🇺🇸">
+                                <span class="lang-flag">🇺🇸</span>
+                                <span>الإنجليزية</span>
+                            </button>
+                            <button class="lang-option active" data-lang="ar" data-flag="🇸🇦">
+                                <span class="lang-flag">🇸🇦</span>
+                                <span>العربية</span>
+                            </button>
+                            <button class="lang-option" data-lang="fr" data-flag="🇫🇷">
+                                <span class="lang-flag">🇫🇷</span>
+                                <span>الفرنسية</span>
+                            </button>
+                            <button class="lang-option" data-lang="es" data-flag="🇪🇸">
+                                <span class="lang-flag">🇪🇸</span>
+                                <span>الإسبانية</span>
+                            </button>
+                            <button class="lang-option" data-lang="de" data-flag="🇩🇪">
+                                <span class="lang-flag">🇩🇪</span>
+                                <span>الألمانية</span>
+                            </button>
+                            <button class="lang-option" data-lang="it" data-flag="🇮🇹">
+                                <span class="lang-flag">🇮🇹</span>
+                                <span>الإيطالية</span>
+                            </button>
+                            <button class="lang-option" data-lang="pt" data-flag="🇵🇹">
+                                <span class="lang-flag">🇵🇹</span>
+                                <span>البرتغالية</span>
+                            </button>
+                            <button class="lang-option" data-lang="ru" data-flag="🇷🇺">
+                                <span class="lang-flag">🇷🇺</span>
+                                <span>الروسية</span>
+                            </button>
+                            <button class="lang-option" data-lang="zh" data-flag="🇨🇳">
+                                <span class="lang-flag">🇨🇳</span>
+                                <span>الصينية</span>
+                            </button>
+                            <button class="lang-option" data-lang="ja" data-flag="🇯🇵">
+                                <span class="lang-flag">🇯🇵</span>
+                                <span>اليابانية</span>
+                            </button>
+                            <button class="lang-option" data-lang="ko" data-flag="🇰🇷">
+                                <span class="lang-flag">🇰🇷</span>
+                                <span>الكورية</span>
+                            </button>
+                            <button class="lang-option" data-lang="tr" data-flag="🇹🇷">
+                                <span class="lang-flag">🇹🇷</span>
+                                <span>التركية</span>
+                            </button>
+                            <button class="lang-option" data-lang="hi" data-flag="🇮🇳">
+                                <span class="lang-flag">🇮🇳</span>
+                                <span>الهندية</span>
+                            </button>
+                            <button class="lang-option" data-lang="ur" data-flag="🇵🇰">
+                                <span class="lang-flag">🇵🇰</span>
+                                <span>الأردية</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Translation Boxes -->
+            <div class="translation-container">
+                <div class="translation-box source-box">
+                    <div class="box-header">
+                        <span class="char-count">0 / 5000</span>
+                        <div class="box-actions">
+                            <button class="action-btn" id="clearSource" title="مسح">
+                                <i class="fas fa-times"></i>
+                            </button>
+                            <button class="action-btn" id="pasteBtn" title="لصق">
+                                <i class="fas fa-paste"></i>
+                            </button>
+                            <button class="action-btn" id="uploadFile" title="رفع ملف">
+                                <i class="fas fa-file-upload"></i>
+                            </button>
+                            <button class="action-btn" id="voiceInput" title="إدخال صوتي">
+                                <i class="fas fa-microphone"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <textarea 
+                        id="sourceText" 
+                        class="translation-textarea" 
+                        placeholder="أدخل النص المراد ترجمته..."
+                        maxlength="5000"
+                        dir="auto"
+                    ></textarea>
+                    <div class="box-footer">
+                        <button class="translate-btn" id="translateBtn">
+                            <i class="fas fa-language"></i>
+                            <span>ترجم</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="translation-box target-box">
+                    <div class="box-header">
+                        <span class="translation-status">الترجمة</span>
+                        <div class="box-actions">
+                            <button class="action-btn" id="copyTranslation" title="نسخ">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                            <button class="action-btn" id="shareTranslation" title="مشاركة">
+                                <i class="fas fa-share-alt"></i>
+                            </button>
+                            <button class="action-btn" id="saveTranslation" title="حفظ">
+                                <i class="fas fa-star"></i>
+                            </button>
+                            <button class="action-btn" id="speakTranslation" title="نطق">
+                                <i class="fas fa-volume-up"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="targetText" class="translation-result" dir="auto">
+                        <div class="placeholder-text">
+                            <i class="fas fa-language"></i>
+                            <p>الترجمة ستظهر هنا</p>
+                        </div>
+                    </div>
+                    <div class="box-footer">
+                        <div class="quality-indicator">
+                            <span class="quality-label">جودة الترجمة:</span>
+                            <div class="quality-bars">
+                                <span class="quality-bar active"></span>
+                                <span class="quality-bar active"></span>
+                                <span class="quality-bar active"></span>
+                                <span class="quality-bar active"></span>
+                                <span class="quality-bar"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Phrases Section -->
+            <div class="quick-phrases">
+                <h3 class="section-title">عبارات سريعة</h3>
+                <div class="phrases-grid">
+                    <button class="phrase-btn" data-text="Hello, how are you?">
+                        <i class="fas fa-hand-wave"></i>
+                        <span>التحية</span>
+                    </button>
+                    <button class="phrase-btn" data-text="Thank you very much">
+                        <i class="fas fa-heart"></i>
+                        <span>الشكر</span>
+                    </button>
+                    <button class="phrase-btn" data-text="Can you help me?">
+                        <i class="fas fa-question-circle"></i>
+                        <span>طلب المساعدة</span>
+                    </button>
+                    <button class="phrase-btn" data-text="Where is the nearest restaurant?">
+                        <i class="fas fa-utensils"></i>
+                        <span>المطاعم</span>
+                    </button>
+                    <button class="phrase-btn" data-text="How much does this cost?">
+                        <i class="fas fa-dollar-sign"></i>
+                        <span>الأسعار</span>
+                    </button>
+                    <button class="phrase-btn" data-text="I need directions">
+                        <i class="fas fa-map-marked-alt"></i>
+                        <span>الاتجاهات</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Features Section -->
+            <div class="features">
+                <div class="feature-card">
+                    <i class="fas fa-bolt feature-icon"></i>
+                    <h3>ترجمة فورية</h3>
+                    <p>احصل على ترجمة دقيقة وسريعة في ثوانٍ معدودة</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-globe feature-icon"></i>
+                    <h3>100+ لغة</h3>
+                    <p>دعم لأكثر من 100 لغة من جميع أنحاء العالم</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-microphone-alt feature-icon"></i>
+                    <h3>إدخال صوتي</h3>
+                    <p>تحدث وسنقوم بترجمة كلامك فوراً</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-file-alt feature-icon"></i>
+                    <h3>ترجمة المستندات</h3>
+                    <p>ارفع ملفاتك النصية للحصول على ترجمة كاملة</p>
+                </div>
+            </div>
+
+            <!-- History Section -->
+            <div class="history-section">
+                <div class="section-header">
+                    <h3 class="section-title">السجل</h3>
+                    <button class="clear-history-btn">
+                        <i class="fas fa-trash"></i>
+                        <span>مسح السجل</span>
+                    </button>
+                </div>
+                <div class="history-list">
+                    <div class="history-item">
+                        <div class="history-langs">
+                            <span class="lang-badge">EN</span>
+                            <i class="fas fa-arrow-right"></i>
+                            <span class="lang-badge">AR</span>
+                        </div>
+                        <div class="history-content">
+                            <p class="history-source">Welcome to our website</p>
+                            <p class="history-target">مرحباً بكم في موقعنا</p>
+                        </div>
+                        <div class="history-actions">
+                            <button class="history-action-btn"><i class="fas fa-copy"></i></button>
+                            <button class="history-action-btn"><i class="fas fa-star"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>عن المترجم</h4>
+                    <p>أداة ترجمة احترافية تدعم جميع اللغات العالمية بدقة عالية وسرعة فائقة</p>
+                </div>
+                <div class="footer-section">
+                    <h4>الميزات</h4>
+                    <ul>
+                        <li><a href="#">ترجمة النصوص</a></li>
+                        <li><a href="#">ترجمة المستندات</a></li>
+                        <li><a href="#">الترجمة الصوتية</a></li>
+                        <li><a href="#">API للمطورين</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>اللغات المدعومة</h4>
+                    <ul>
+                        <li><a href="#">العربية</a></li>
+                        <li><a href="#">الإنجليزية</a></li>
+                        <li><a href="#">الفرنسية</a></li>
+                        <li><a href="#">المزيد...</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>تواصل معنا</h4>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 مترجم فوري - جميع الحقوق محفوظة</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+            <p>جاري الترجمة...</p>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span class="toast-message">تم النسخ بنجاح!</span>
+    </div>
+
+    <script src="translator-script.js"></script>
+</body>
+</html>

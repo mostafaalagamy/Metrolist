@@ -1,153 +1,115 @@
-<div align="center">
-<img src="https://github.com/mostafaalagamy/Metrolist/blob/main/fastlane/metadata/android/en-US/images/icon.png" width="160" height="160" style="display: block; margin: 0 auto"/>
-<h1>Metrolist</h1>
-<p>YouTube Music client for Android</p>
+# 🌐 أداة الترجمة الفورية - Instant Translator
 
-  <div style="padding: 16px; margin: 16px 0; background-color: #FFFBE5; border-left: 6px solid #FFC107; border-radius: 4px;">
-  <h2 style="margin: 0;"><strong>⚠Warning</strong></h2>
- If you're in a region where YouTube Music is not supported, you won't be able to use this app <strong>unless</strong> you have a proxy or VPN to connect to a YTM-supported region.
-  </div>
+أداة ترجمة احترافية وعصرية تدعم أكثر من 14 لغة مع واجهة مستخدم جذابة ومميزات متقدمة.
 
-<h1>Screenshots</h1>
+## ✨ المميزات
 
-  <img src="https://github.com/mostafaalagamy/Metrolist/blob/main/fastlane/metadata/android/en-US/images/screenshots/screenshot_1.png" width="30%" />
-  <img src="https://github.com/mostafaalagamy/Metrolist/blob/main/fastlane/metadata/android/en-US/images/screenshots/screenshot_2.png" width="30%" />
-  <img src="https://github.com/mostafaalagamy/Metrolist/blob/main/fastlane/metadata/android/en-US/images/screenshots/screenshot_3.png" width="30%" />
+### 🎯 الميزات الأساسية
+- **ترجمة فورية**: ترجمة النصوص تلقائياً أثناء الكتابة
+- **دعم 14+ لغة**: العربية، الإنجليزية، الفرنسية، الإسبانية، وأكثر
+- **اكتشاف تلقائي للغة**: تحديد لغة النص المدخل تلقائياً
+- **تبديل اللغات**: تبديل سريع بين لغة المصدر والهدف
 
-  <img src="https://github.com/mostafaalagamy/Metrolist/blob/main/fastlane/metadata/android/en-US/images/screenshots/screenshot_4.png" width="30%" />
-  <img src="https://github.com/mostafaalagamy/Metrolist/blob/main/fastlane/metadata/android/en-US/images/screenshots/screenshot_5.png" width="30%" />
-  <img src="https://github.com/mostafaalagamy/Metrolist/blob/main/fastlane/metadata/android/en-US/images/screenshots/screenshot_6.png" width="30%" />
-</p>
+### 🚀 الميزات المتقدمة
+- **إدخال صوتي**: التحدث للترجمة باستخدام الميكروفون
+- **نطق الترجمة**: الاستماع للنص المترجم
+- **رفع الملفات**: ترجمة ملفات نصية كاملة
+- **العبارات السريعة**: عبارات جاهزة للاستخدام الفوري
+- **السجل التاريخي**: حفظ آخر 20 ترجمة تلقائياً
+- **المفضلة**: حفظ الترجمات المهمة للرجوع إليها لاحقاً
 
-<img
-src="https://github.com/mostafaalagamy/Metrolist/blob/main/fastlane/metadata/android/en-US/images/featureGraphic.png" width="91%" />
+### 🎨 واجهة المستخدم
+- **الوضع الليلي/النهاري**: تبديل بين الثيمات الفاتحة والداكنة
+- **تصميم متجاوب**: يعمل على جميع الأجهزة والشاشات
+- **أنيميشن سلس**: تجربة مستخدم سلسة وممتعة
+- **إشعارات توست**: تنبيهات أنيقة للإجراءات
 
-[![Latest release](https://img.shields.io/github/v/release/mostafaalagamy/Metrolist?style=for-the-badge)](https://github.com/mostafaalagamy/Metrolist/releases)
-[![GitHub license](https://img.shields.io/github/license/mostafaalagamy/metrolist?style=for-the-badge)](https://github.com/mostafaalagamy/Metrolist/blob/main/LICENSE)
-[![Downloads](https://img.shields.io/github/downloads/mostafaalagamy/Metrolist/total?style=for-the-badge)](https://github.com/mostafaalagamy/Metrolist/releases)
-</div>
+### ⌨️ اختصارات لوحة المفاتيح
+- `Ctrl/Cmd + Enter`: ترجمة النص
+- `Ctrl/Cmd + Shift + C`: نسخ الترجمة
+- `Ctrl/Cmd + Shift + S`: تبديل اللغات
 
-<div align="center">
-<h1>Features</h1>
- </div>
- 
-- Play any song or video from YT Music
-- Background playback 
-- Personalized quick picks 
-- Library management 
-- Download and cache songs for offline playback
-- Search for songs, albums, artists, videos and playlists
-- Live lyrics 
-- YouTube Music account login support
-- Syncing of songs, artists, albums and playlists, from and to your account
-- Skip silence 
-- Import playlists 
-- Audio normalization 
-- Adjust tempo/pitch 
-- Local playlist management
-- Reorder songs in playlist or queue 
-- Light - Dark - black - Dynamic theme
-- Sleep timer
-- Material 3 
-- etc.
+## 🛠️ التقنيات المستخدمة
 
-<div align="center">
-<h1>Download Now</h1>
+- **HTML5**: البنية الأساسية
+- **CSS3**: التصميم والأنيميشن
+- **JavaScript (ES6+)**: الوظائف التفاعلية
+- **Font Awesome**: الأيقونات
+- **Google Fonts**: خط Cairo العربي
+- **MyMemory API**: خدمة الترجمة
+- **Web Speech API**: الإدخال والإخراج الصوتي
+- **LocalStorage**: حفظ البيانات محلياً
 
-[<img src="https://github.com/machiav3lli/oandbackupx/blob/034b226cea5c1b30eb4f6a6f313e4dadcbb0ece4/badge_github.png" alt="Get it on GitHub" height="82"
-align="center">](https://github.com/mostafaalagamy/Metrolist/releases/latest/download/Metrolist.apk)
+## 📦 الملفات
 
-[<img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png" alt="Get it on IzzyOnDroid" height="80"
-align="center">](https://apt.izzysoft.de/fdroid/index/apk/com.metrolist.music)
+```
+/workspace/
+├── translator.html       # الصفحة الرئيسية
+├── translator-styles.css # ملف التنسيقات
+├── translator-script.js  # الوظائف البرمجية
+└── README.md            # هذا الملف
+```
 
-[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" alt="Get it on F-Droid" height="80"
-align="center">](https://f-droid.org/packages/com.metrolist.music)
+## 🚀 كيفية الاستخدام
 
-[<img src="https://www.openapk.net/images/openapk-badge.png" alt="Get it on OpenAPK" height="80"
-align="center">](https://www.openapk.net/metrolist/com.metrolist.music/)
+1. **فتح الموقع**: افتح ملف `translator.html` في المتصفح
+2. **اختر اللغات**: حدد لغة المصدر والهدف من القوائم المنسدلة
+3. **أدخل النص**: اكتب أو الصق النص المراد ترجمته
+4. **الترجمة**: سيتم الترجمة تلقائياً أو اضغط زر "ترجم"
 
-[<img src="https://github.com/ImranR98/Obtainium/blob/main/assets/graphics/badge_obtainium.png"
-alt="Get it on Obtainium"
-height="55"
-align="center">](https://apps.obtainium.imranr.dev/redirect?r=obtainium://add/https://github.com/mostafaalagamy/Metrolist/)
+## 🌍 اللغات المدعومة
 
-[<img src="https://github.com/mostafaalagamy/Metrolist/blob/main/fastlane/metadata/android/en-US/images/belberi_github.png" alt="Get it on Belberi" height="82"
-align="center">](https://belberi.com/metrolist/?fbclid=PAY2xjawJP5dlleHRuA2FlbQIxMAABpjSk1oBp4e8aSV4nfX2dfunQObTlMWIkN-aVA9CSq36pnmkHsvfoYTjhHg_aem_9o9OGbQuZ2PjJTArq21UDA)
+| اللغة | الرمز | العلم |
+|------|------|-------|
+| العربية | ar | 🇸🇦 |
+| الإنجليزية | en | 🇺🇸 |
+| الفرنسية | fr | 🇫🇷 |
+| الإسبانية | es | 🇪🇸 |
+| الألمانية | de | 🇩🇪 |
+| الإيطالية | it | 🇮🇹 |
+| البرتغالية | pt | 🇵🇹 |
+| الروسية | ru | 🇷🇺 |
+| الصينية | zh | 🇨🇳 |
+| اليابانية | ja | 🇯🇵 |
+| الكورية | ko | 🇰🇷 |
+| التركية | tr | 🇹🇷 |
+| الهندية | hi | 🇮🇳 |
+| الأردية | ur | 🇵🇰 |
 
-</div>
+## 📱 التوافق
 
-<div align="center">
-<h1>Translations</h1>
+- ✅ Chrome (90+)
+- ✅ Firefox (88+)
+- ✅ Safari (14+)
+- ✅ Edge (90+)
+- ✅ Opera (76+)
+- 📱 متوافق مع الهواتف الذكية والأجهزة اللوحية
 
-[![Translation status](https://img.shields.io/weblate/progress/metrolist?style=for-the-badge)](https://hosted.weblate.org/engage/metrolist/)
+## 🔧 التخصيص
 
-We use Weblate to translate Metrolist. For more details or to get started, visit our [Weblate page](https://hosted.weblate.org/projects/Metrolist/).
+يمكنك تخصيص الألوان والتصميم من خلال تعديل متغيرات CSS في ملف `translator-styles.css`:
 
-<a href="https://hosted.weblate.org/projects/Metrolist/">
-<img src="https://hosted.weblate.org/widget/Metrolist/multi-auto.svg" alt="Translation status" />
-</a>
+```css
+:root {
+    --primary-color: #4A90E2;
+    --secondary-color: #50E3C2;
+    --accent-color: #F5A623;
+    /* ... */
+}
+```
 
-Thank you very much for helping to make Metrolist accessible to many people worldwide.
-</div>
+## 📄 الترخيص
 
-<div align="center">
-<h1>FAQ</h1>
-</div>
+هذا المشروع مفتوح المصدر ومتاح للاستخدام الحر.
 
-<h3> Q: Why Metrolist isn't showing in Android Auto? </h3>
+## 🤝 المساهمة
 
-1. Go to Android Auto's settings and tap multiple times on the version in the bottom to enable
-   developer settings
-2. In the three dots menu at the top-right of the screen, click "Developer settings"
-3. Enable "Unknown sources"
+نرحب بالمساهمات! يرجى فتح issue أو pull request للمساهمة في تحسين المشروع.
 
-<h3> Q: How to scrobble music to LastFM, LibreFM, ListenBrainz or GNU FM? </h3>
+## 📞 التواصل
 
-Use other music scrobbler apps, I recommend [Pano Scrobbler](https://play.google.com/store/apps/details?id=com.arn.scrobble).
+للأسئلة والاقتراحات، يرجى فتح issue في المشروع.
 
-<div align="center">
-<h1>Support Me</h1>
+---
 
-If you'd like to support my work, send a Monero (XMR) donation to this address:
-
-44XjSELSWcgJTZiCKzjpCQWyXhokrH9RqH3rpp35FkSKi57T25hniHWHQNhLeXyFn3DDYqufmfRB1iEtENerZpJc7xJCcqt
-
-Or scan this QR code:
-
-<img src="https://github.com/mostafaalagamy/Metrolist/blob/main/assets/XMR.png" alt="QR Code" width="200" height="200" />
-<br />
-
-Or other
-
-<a href="https://www.buymeacoffee.com/mostafaalagamy">
-  <img src="https://github.com/mostafaalagamy/Metrolist/blob/main/assets/buymeacoffee.png?raw=true" alt="Buy Me a Coffee" width="150" height="150" />
-</a>
-
-<br />
-
-<a href="https://liberapay.com/mostafaalagamy/donate">
-  <img src="https://liberapay.com/assets/widgets/donate.svg" alt="Donate" width="100" height="100" />
-</a>
-
-
-<div align="center">
-<h1>Special thanks</h1>
-
-InnerTune:
-[Zion Huang](https://github.com/z-huang),
-[Malopieds](https://github.com/Malopieds),
-OuterTune:
-[Davide Garberi](https://github.com/DD3Boh),
-[Michael Zh](https://github.com/mikooomich),
-Muzza:
-[Maloy Android](https://github.com/Maloy-Android)
-
-</div>
-
-<div align="center">
-<h1>Disclaimer</h1>
-</div>
-
-This project and its contents are not affiliated with, funded, authorized, endorsed by, or in any way associated with YouTube, Google LLC, Metrolist Group LLC or any of its affiliates and subsidiaries.
-
-Any trademark, service mark, trade name, or other intellectual property rights used in this project are owned by the respective owners.
+صُنع بـ ❤️ لدعم التواصل بين الثقافات واللغات
