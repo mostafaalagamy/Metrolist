@@ -102,6 +102,7 @@ import com.metrolist.music.constants.DarkModeKey
 import com.metrolist.music.constants.LyricsClickKey
 import com.metrolist.music.constants.LyricsRomanizeJapaneseKey
 import com.metrolist.music.constants.LyricsRomanizeKoreanKey
+import com.metrolist.music.constants.LyricsRomanizeRussianKey
 import com.metrolist.music.constants.LyricsScrollKey
 import com.metrolist.music.constants.LyricsTextPositionKey
 import com.metrolist.music.constants.PlayerBackgroundStyle
@@ -112,9 +113,11 @@ import com.metrolist.music.lyrics.LyricsUtils.isChinese
 import com.metrolist.music.lyrics.LyricsUtils.findCurrentLineIndex
 import com.metrolist.music.lyrics.LyricsUtils.isJapanese
 import com.metrolist.music.lyrics.LyricsUtils.isKorean
+import com.metrolist.music.lyrics.LyricsUtils.isRussian
 import com.metrolist.music.lyrics.LyricsUtils.parseLyrics
 import com.metrolist.music.lyrics.LyricsUtils.romanizeJapanese
 import com.metrolist.music.lyrics.LyricsUtils.romanizeKorean
+import com.metrolist.music.lyrics.LyricsUtils.romanizeRussian
 import com.metrolist.music.ui.component.shimmer.ShimmerHost
 import com.metrolist.music.ui.component.shimmer.TextPlaceholder
 import com.metrolist.music.ui.menu.LyricsMenu
@@ -153,6 +156,7 @@ fun Lyrics(
     val scrollLyrics by rememberPreference(LyricsScrollKey, true)
     val romanizeJapaneseLyrics by rememberPreference(LyricsRomanizeJapaneseKey, true)
     val romanizeKoreanLyrics by rememberPreference(LyricsRomanizeKoreanKey, true)
+    val romanizeRussianLyrics by rememberPreference(LyricsRomanizeRussianKey, true)
     val scope = rememberCoroutineScope()
 
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
@@ -191,6 +195,13 @@ fun Lyrics(
                         }
                     }
                 }
+                if (romanizeRussianLyrics) {
+                    if (isRussian(entry.text)) {
+                        scope.launch {
+                            newEntry.romanizedTextFlow.value = romanizeRussian(entry.text)
+                        }
+                    }
+                }
                 newEntry
             }.let {
                 listOf(LyricsEntry.HEAD_LYRICS_ENTRY) + it
@@ -209,6 +220,13 @@ fun Lyrics(
                     if (isKorean(line)) {
                         scope.launch {
                             newEntry.romanizedTextFlow.value = romanizeKorean(line)
+                        }
+                    }
+                }
+                if (romanizeRussianLyrics) {
+                    if (isRussian(line)) {
+                        scope.launch {
+                            newEntry.romanizedTextFlow.value = romanizeRussian(line)
                         }
                     }
                 }
@@ -623,7 +641,7 @@ fun Lyrics(
                             },
                             fontWeight = if (index == displayedCurrentLineIndex && isSynced) FontWeight.ExtraBold else FontWeight.Bold
                         )
-                        if (romanizeJapaneseLyrics || romanizeKoreanLyrics) {
+                        if (romanizeJapaneseLyrics || romanizeKoreanLyrics || romanizeRussianLyrics) {
                             // Show romanized text if available
                             val romanizedText by item.romanizedTextFlow.collectAsState()
                             romanizedText?.let { romanized ->

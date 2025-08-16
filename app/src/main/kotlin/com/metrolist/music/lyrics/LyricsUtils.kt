@@ -96,6 +96,27 @@ object LyricsUtils {
         )
     )
 
+    private val RUSSIAN_ROMAJI_MAP: Map<String, String> = mapOf(
+        // Special Sequences
+        "ого" to "ovo", "Ого" to "Ovo", "его" to "yevo", "Его" to "Yevo",
+        // Uppercase Russian to Latin
+        "А" to "A", "Б" to "B", "В" to "V", "Г" to "G", "Д" to "D",
+        "Е" to "E", "Ё" to "Yo", "Ж" to "Zh", "З" to "Z", "И" to "I",
+        "Й" to "Y", "К" to "K", "Л" to "L", "М" to "M", "Н" to "N",
+        "О" to "O", "П" to "P", "Р" to "R", "С" to "S", "Т" to "T",
+        "У" to "U", "Ф" to "F", "Х" to "Kh", "Ц" to "Ts", "Ч" to "Ch",
+        "Ш" to "Sh", "Щ" to "Shch", "Ъ" to "", "Ы" to "Y", "Ь" to "'",
+        "Э" to "E", "Ю" to "Yu", "Я" to "Ya",
+        // Lowercase Russian to Latin
+        "а" to "a", "б" to "b", "в" to "v", "г" to "g", "д" to "d",
+        "е" to "e", "ё" to "yo", "ж" to "zh", "з" to "z", "и" to "i",
+        "й" to "y", "к" to "k", "л" to "l", "м" to "m", "н" to "n",
+        "о" to "o", "п" to "p", "р" to "r", "с" to "s", "т" to "t",
+        "у" to "u", "ф" to "f", "х" to "kh", "ц" to "ts", "ч" to "ch",
+        "ш" to "sh", "щ" to "shch", "ъ" to "", "ы" to "y", "ь" to "'",
+        "э" to "e", "ю" to "yu", "я" to "ya"
+    )
+
     // Lazy initialized Tokenizer
     private val kuromojiTokenizer: Tokenizer by lazy {
         Tokenizer()
@@ -316,6 +337,68 @@ object LyricsUtils {
         }
 
         romajaBuilder.toString()
+    }
+
+    suspend fun romanizeRussian(text: String): String = withContext(Dispatchers.Default) {
+        if (text.isEmpty()) return@withContext ""
+
+        val romajiBuilder = StringBuilder(text.length)
+        // Split text into words, preserving delimiters (spaces, punctuation)
+        val words = text.split("((?<=\\s|[.,!?;])|(?=\\s|[.,!?;]))".toRegex())
+            .filter { it.isNotEmpty() }
+
+        words.forEachIndexed { index, word ->
+            if (word.matches("[.,!?;]".toRegex()) || word.isBlank()) {
+                // Preserve punctuation or spaces as is
+                romajiBuilder.append(word)
+            } else {
+                // Process word
+                var charIndex = 0
+                while (charIndex < word.length) {
+                    var consumed = false
+                    // Check for 3-character trigraphs first (e.g., "ого", "его")
+                    if (charIndex + 2 < word.length) {
+                        val threeCharCandidate = word.substring(charIndex, charIndex + 3)
+                        val mappedThreeChar = RUSSIAN_ROMAJI_MAP[threeCharCandidate]
+                        if (mappedThreeChar != null) {
+                            romajiBuilder.append(mappedThreeChar)
+                            charIndex += 3
+                            consumed = true
+                        }
+                    }
+                    // Check for 2-character digraphs (e.g., "нь", "Нь")
+                    if (!consumed && charIndex + 1 < word.length) {
+                        val twoCharCandidate = word.substring(charIndex, charIndex + 2)
+                        val mappedTwoChar = RUSSIAN_ROMAJI_MAP[twoCharCandidate]
+                        if (mappedTwoChar != null) {
+                            romajiBuilder.append(mappedTwoChar)
+                            charIndex += 2
+                            consumed = true
+                        }
+                    }
+                    // Process single character
+                    if (!consumed) {
+                        val charStr = word[charIndex].toString()
+                        if ((charStr == "е" || charStr == "Е") && charIndex == 0) {
+                            // Special case: 'е' or 'Е' at start of word
+                            romajiBuilder.append(if (charStr == "е") "ye" else "Ye")
+                        } else {
+                            // Use standard mapping
+                            romajiBuilder.append(RUSSIAN_ROMAJI_MAP[charStr] ?: charStr)
+                        }
+                        charIndex += 1
+                    }
+                }
+            }
+        }
+
+        romajiBuilder.toString()
+    }
+
+    fun isRussian(text: String): Boolean {
+        return text.any { char ->
+            char in '\u0400'..'\u04FF' // Cyrillic Unicode range
+        }
     }
 
     /**
