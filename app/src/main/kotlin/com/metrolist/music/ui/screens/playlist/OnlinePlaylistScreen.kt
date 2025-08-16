@@ -97,7 +97,7 @@ import com.metrolist.music.ui.component.AutoResizeText
 import com.metrolist.music.ui.component.DraggableScrollbar
 import com.metrolist.music.ui.component.FontSizeRange
 import com.metrolist.music.ui.component.IconButton
-import com.metrolist.music.ui.component.LocalMenuState
+import com.metrolist.music.LocalMenuState
 import com.metrolist.music.ui.component.YouTubeListItem
 import com.metrolist.music.ui.component.shimmer.ButtonPlaceholder
 import com.metrolist.music.ui.component.shimmer.ListItemPlaceHolder

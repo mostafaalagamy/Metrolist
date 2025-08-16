@@ -44,7 +44,7 @@ import com.metrolist.music.extensions.togglePlayPause
 import com.metrolist.music.models.toMediaMetadata
 import com.metrolist.music.playback.queues.YouTubeQueue
 import com.metrolist.music.ui.component.IconButton
-import com.metrolist.music.ui.component.LocalMenuState
+import com.metrolist.music.LocalMenuState
 import com.metrolist.music.ui.component.YouTubeGridItem
 import com.metrolist.music.ui.component.YouTubeListItem
 import com.metrolist.music.ui.component.shimmer.GridItemPlaceHolder

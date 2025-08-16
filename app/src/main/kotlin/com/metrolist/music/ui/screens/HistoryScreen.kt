@@ -66,7 +66,7 @@ import com.metrolist.music.playback.queues.YouTubeQueue
 import com.metrolist.music.ui.component.ChipsRow
 import com.metrolist.music.ui.component.HideOnScrollFAB
 import com.metrolist.music.ui.component.IconButton
-import com.metrolist.music.ui.component.LocalMenuState
+import com.metrolist.music.LocalMenuState
 import com.metrolist.music.ui.component.NavigationTitle
 import com.metrolist.music.ui.component.SongListItem
 import com.metrolist.music.ui.component.YouTubeListItem

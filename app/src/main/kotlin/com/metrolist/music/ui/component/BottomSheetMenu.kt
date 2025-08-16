@@ -13,9 +13,9 @@ import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.SheetState
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -26,10 +26,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 
-val LocalMenuState = compositionLocalOf { MenuState() }
-
 @Stable
-class MenuState(
+class MenuState @OptIn(ExperimentalMaterial3Api::class) constructor(
+    val sheetState: SheetState,
     isVisible: Boolean = false,
     content: @Composable ColumnScope.() -> Unit = {},
 ) {
@@ -63,6 +62,7 @@ fun BottomSheetMenu(
                 focusManager.clearFocus()
                 state.isVisible = false
             },
+            sheetState = state.sheetState,
             containerColor = background,
             contentColor = MaterialTheme.colorScheme.onSurface,
             dragHandle = {

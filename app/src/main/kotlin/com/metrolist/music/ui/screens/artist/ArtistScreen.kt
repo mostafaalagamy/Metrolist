@@ -96,7 +96,7 @@ import com.metrolist.music.ui.component.AutoResizeText
 import com.metrolist.music.ui.component.FontSizeRange
 import com.metrolist.music.ui.component.HideOnScrollFAB
 import com.metrolist.music.ui.component.IconButton
-import com.metrolist.music.ui.component.LocalMenuState
+import com.metrolist.music.LocalMenuState
 import com.metrolist.music.ui.component.NavigationTitle
 import com.metrolist.music.ui.component.SongListItem
 import com.metrolist.music.ui.component.YouTubeGridItem

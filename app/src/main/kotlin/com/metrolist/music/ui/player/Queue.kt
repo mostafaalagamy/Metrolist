@@ -114,7 +114,7 @@ import com.metrolist.music.ui.component.ActionPromptDialog
 import com.metrolist.music.ui.component.BottomSheet
 import com.metrolist.music.ui.component.BottomSheetState
 import com.metrolist.music.ui.component.LocalBottomSheetPageState
-import com.metrolist.music.ui.component.LocalMenuState
+import com.metrolist.music.LocalMenuState
 import com.metrolist.music.ui.component.MediaMetadataListItem
 import com.metrolist.music.ui.menu.PlayerMenu
 import com.metrolist.music.ui.menu.SelectionMediaMetadataMenu

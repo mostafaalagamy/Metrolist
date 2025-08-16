@@ -57,7 +57,7 @@ import com.metrolist.music.extensions.togglePlayPause
 import com.metrolist.music.playback.queues.ListQueue
 import com.metrolist.music.ui.component.ChipsRow
 import com.metrolist.music.ui.component.HideOnScrollFAB
-import com.metrolist.music.ui.component.LocalMenuState
+import com.metrolist.music.LocalMenuState
 import com.metrolist.music.ui.component.SongListItem
 import com.metrolist.music.ui.component.SortHeader
 import com.metrolist.music.ui.menu.SelectionSongMenu

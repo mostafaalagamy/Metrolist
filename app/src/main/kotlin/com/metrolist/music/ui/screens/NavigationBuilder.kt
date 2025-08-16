@@ -41,7 +41,7 @@ import com.metrolist.music.constants.DarkModeKey
 import com.metrolist.music.constants.PureBlackKey
 import com.metrolist.music.ui.component.BottomSheet
 import com.metrolist.music.ui.component.BottomSheetMenu
-import com.metrolist.music.ui.component.LocalMenuState
+import com.metrolist.music.LocalMenuState
 import com.metrolist.music.ui.component.rememberBottomSheetState
 import com.metrolist.music.ui.screens.BrowseScreen
 import com.metrolist.music.ui.screens.artist.ArtistAlbumsScreen

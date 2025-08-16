@@ -70,7 +70,7 @@ import com.metrolist.music.ui.component.CreatePlaylistDialog
 import com.metrolist.music.ui.component.HideOnScrollFAB
 import com.metrolist.music.ui.component.LibraryPlaylistGridItem
 import com.metrolist.music.ui.component.LibraryPlaylistListItem
-import com.metrolist.music.ui.component.LocalMenuState
+import com.metrolist.music.LocalMenuState
 import com.metrolist.music.ui.component.PlaylistGridItem
 import com.metrolist.music.ui.component.PlaylistListItem
 import com.metrolist.music.ui.component.SortHeader

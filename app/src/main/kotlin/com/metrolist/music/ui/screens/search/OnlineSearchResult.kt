@@ -57,7 +57,7 @@ import com.metrolist.music.models.toMediaMetadata
 import com.metrolist.music.playback.queues.YouTubeQueue
 import com.metrolist.music.ui.component.ChipsRow
 import com.metrolist.music.ui.component.EmptyPlaceholder
-import com.metrolist.music.ui.component.LocalMenuState
+import com.metrolist.music.LocalMenuState
 import com.metrolist.music.ui.component.NavigationTitle
 import com.metrolist.music.ui.component.YouTubeListItem
 import com.metrolist.music.ui.component.shimmer.ListItemPlaceHolder

@@ -63,6 +63,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.contentColorFor
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.DisposableEffect
@@ -147,7 +148,7 @@ import com.metrolist.music.ui.component.BottomSheetMenu
 import com.metrolist.music.ui.component.BottomSheetPage
 import com.metrolist.music.ui.component.IconButton
 import com.metrolist.music.ui.component.LocalBottomSheetPageState
-import com.metrolist.music.ui.component.LocalMenuState
+import com.metrolist.music.ui.component.MenuState
 import com.metrolist.music.ui.component.TopSearch
 import com.metrolist.music.ui.component.rememberBottomSheetState
 import com.metrolist.music.ui.component.shimmer.ShimmerTheme
@@ -611,6 +612,7 @@ class MainActivity : ComponentActivity() {
                     CompositionLocalProvider(
                         LocalDatabase provides database,
                         LocalContentColor provides if (pureBlack) Color.White else contentColorFor(MaterialTheme.colorScheme.surface),
+                        LocalMenuState provides MenuState(rememberModalBottomSheetState()),
                         LocalPlayerConnection provides playerConnection,
                         LocalPlayerAwareWindowInsets provides playerAwareWindowInsets,
                         LocalDownloadUtil provides downloadUtil,
@@ -1153,6 +1155,7 @@ class MainActivity : ComponentActivity() {
 }
 
 val LocalDatabase = staticCompositionLocalOf<MusicDatabase> { error("No database provided") }
+val LocalMenuState = staticCompositionLocalOf<MenuState> { error("No menu state provided") }
 val LocalPlayerConnection =
     staticCompositionLocalOf<PlayerConnection?> { error("No PlayerConnection provided") }
 val LocalPlayerAwareWindowInsets =

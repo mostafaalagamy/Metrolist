@@ -48,7 +48,7 @@ import com.metrolist.music.ui.component.HideOnScrollFAB
 import com.metrolist.music.ui.component.IconButton
 import com.metrolist.music.ui.component.LocalAlbumsGrid
 import com.metrolist.music.ui.component.LocalArtistsGrid
-import com.metrolist.music.ui.component.LocalMenuState
+import com.metrolist.music.LocalMenuState
 import com.metrolist.music.ui.component.LocalSongsGrid
 import com.metrolist.music.ui.component.NavigationTitle
 import com.metrolist.music.ui.menu.AlbumMenu

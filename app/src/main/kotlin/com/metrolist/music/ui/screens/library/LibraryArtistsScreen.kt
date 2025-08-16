@@ -58,7 +58,7 @@ import com.metrolist.music.ui.component.ChipsRow
 import com.metrolist.music.ui.component.EmptyPlaceholder
 import com.metrolist.music.ui.component.LibraryArtistGridItem
 import com.metrolist.music.ui.component.LibraryArtistListItem
-import com.metrolist.music.ui.component.LocalMenuState
+import com.metrolist.music.LocalMenuState
 import com.metrolist.music.ui.component.SortHeader
 import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference

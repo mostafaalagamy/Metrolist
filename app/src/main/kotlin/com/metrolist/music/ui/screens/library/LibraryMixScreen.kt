@@ -63,7 +63,7 @@ import com.metrolist.music.ui.component.AlbumGridItem
 import com.metrolist.music.ui.component.AlbumListItem
 import com.metrolist.music.ui.component.ArtistGridItem
 import com.metrolist.music.ui.component.ArtistListItem
-import com.metrolist.music.ui.component.LocalMenuState
+import com.metrolist.music.LocalMenuState
 import com.metrolist.music.ui.component.PlaylistGridItem
 import com.metrolist.music.ui.component.PlaylistListItem
 import com.metrolist.music.ui.component.SortHeader

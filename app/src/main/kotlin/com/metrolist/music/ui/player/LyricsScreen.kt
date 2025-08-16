@@ -91,7 +91,7 @@ import com.metrolist.music.extensions.toggleRepeatMode
 import com.metrolist.music.lyrics.LyricsHelper
 import com.metrolist.music.models.MediaMetadata
 import com.metrolist.music.ui.component.Lyrics
-import com.metrolist.music.ui.component.LocalMenuState
+import com.metrolist.music.LocalMenuState
 import com.metrolist.music.ui.component.PlayerSliderTrack
 import com.metrolist.music.ui.component.BigSeekBar
 import androidx.navigation.NavController

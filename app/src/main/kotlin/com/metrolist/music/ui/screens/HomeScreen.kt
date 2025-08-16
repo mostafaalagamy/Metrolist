@@ -99,7 +99,7 @@ import com.metrolist.music.ui.component.ArtistGridItem
 import com.metrolist.music.ui.component.ChipsRow
 import com.metrolist.music.ui.component.HideOnScrollFAB
 import com.metrolist.music.ui.component.LocalBottomSheetPageState
-import com.metrolist.music.ui.component.LocalMenuState
+import com.metrolist.music.LocalMenuState
 import com.metrolist.music.ui.component.NavigationTitle
 import com.metrolist.music.ui.component.SongGridItem
 import com.metrolist.music.ui.component.SongListItem

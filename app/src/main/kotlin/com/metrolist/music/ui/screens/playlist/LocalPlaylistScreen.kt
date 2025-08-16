@@ -123,7 +123,7 @@ import com.metrolist.music.ui.component.DraggableScrollbar
 import com.metrolist.music.ui.component.EmptyPlaceholder
 import com.metrolist.music.ui.component.FontSizeRange
 import com.metrolist.music.ui.component.IconButton
-import com.metrolist.music.ui.component.LocalMenuState
+import com.metrolist.music.LocalMenuState
 import com.metrolist.music.ui.component.SongListItem
 import com.metrolist.music.ui.component.SortHeader
 import com.metrolist.music.ui.component.TextFieldDialog

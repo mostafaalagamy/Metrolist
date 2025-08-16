@@ -28,7 +28,7 @@ import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
 import com.metrolist.music.constants.GridThumbnailHeight
 import com.metrolist.music.ui.component.IconButton
-import com.metrolist.music.ui.component.LocalMenuState
+import com.metrolist.music.LocalMenuState
 import com.metrolist.music.ui.component.YouTubeGridItem
 import com.metrolist.music.ui.component.shimmer.GridItemPlaceHolder
 import com.metrolist.music.ui.component.shimmer.ShimmerHost

@@ -58,7 +58,7 @@ import com.metrolist.music.constants.DarkModeKey
 import com.metrolist.music.constants.PureBlackKey
 import com.metrolist.music.db.entities.FormatEntity
 import com.metrolist.music.db.entities.Song
-import com.metrolist.music.ui.component.LocalMenuState
+import com.metrolist.music.LocalMenuState
 import com.metrolist.music.ui.component.MenuState
 import com.metrolist.music.ui.component.shimmer.ShimmerHost
 import com.metrolist.music.ui.component.shimmer.TextPlaceholder
