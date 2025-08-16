@@ -15,7 +15,7 @@ import com.google.common.util.concurrent.ListenableFuture
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.guava.future
-import java.util.concurrent.ExecutionException
+import androidx.core.graphics.createBitmap
 
 class CoilBitmapLoader(
     private val context: Context,
@@ -39,15 +39,16 @@ class CoilBitmapLoader(
 
             val result = imageLoader.execute(request)
 
+            // In case of error, returns an empty bitmap
             when (result) {
                 is ErrorResult -> {
-                    throw ExecutionException(result.throwable)
+                    createBitmap(1, 1)
                 }
                 is SuccessResult -> {
                     try {
                         result.image.toBitmap()
                     } catch (e: Exception) {
-                        throw ExecutionException(e)
+                        createBitmap(1, 1)
                     }
                 }
             }
