@@ -592,7 +592,7 @@ fun ArtistScreen(
 
                         if ((section.items.firstOrNull() as? SongItem)?.album != null) {
                             items(
-                                items = section.items,
+                                items = section.items.distinctBy { it.id },
                                 key = { it.id },
                             ) { song ->
                                 YouTubeListItem(
@@ -649,7 +649,7 @@ fun ArtistScreen(
                             item {
                                 LazyRow {
                                     items(
-                                        items = section.items,
+                                        items = section.items.distinctBy { it.id },
                                         key = { it.id },
                                     ) { item ->
                                         YouTubeGridItem(
