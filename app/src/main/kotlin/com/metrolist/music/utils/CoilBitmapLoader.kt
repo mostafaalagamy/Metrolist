@@ -42,13 +42,13 @@ class CoilBitmapLoader(
             // In case of error, returns an empty bitmap
             when (result) {
                 is ErrorResult -> {
-                    createBitmap(1, 1)
+                    createBitmap(64, 64)
                 }
                 is SuccessResult -> {
                     try {
                         result.image.toBitmap()
                     } catch (e: Exception) {
-                        createBitmap(1, 1)
+                        createBitmap(64, 64)
                     }
                 }
             }
