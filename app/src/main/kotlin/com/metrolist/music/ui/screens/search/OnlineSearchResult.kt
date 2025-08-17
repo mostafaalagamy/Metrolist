@@ -215,7 +215,7 @@ fun OnlineSearchResult(
             }
         } else {
             items(
-                items = itemsPage?.items.orEmpty(),
+                items = itemsPage?.items.orEmpty().distinctBy { it.id },
                 key = { it.id },
                 itemContent = ytItemContent,
             )

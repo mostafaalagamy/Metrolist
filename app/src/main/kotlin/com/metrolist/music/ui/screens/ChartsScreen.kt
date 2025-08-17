@@ -213,7 +213,7 @@ fun ChartsScreen(
                                         .animateItem(),
                                 ) {
                                     items(
-                                        items = section.items.filterIsInstance<SongItem>(),
+                                        items = section.items.filterIsInstance<SongItem>().distinctBy { it.id },
                                         key = { it.id },
                                     ) { song ->
                                         YouTubeListItem(
@@ -287,7 +287,7 @@ fun ChartsScreen(
                                 modifier = Modifier.animateItem(),
                             ) {
                                 items(
-                                    items = topVideosSection.items.filterIsInstance<SongItem>(),
+                                    items = topVideosSection.items.filterIsInstance<SongItem>().distinctBy { it.id },
                                     key = { it.id },
                                 ) { video ->
                                     YouTubeGridItem(

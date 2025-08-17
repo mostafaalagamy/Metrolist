@@ -237,7 +237,7 @@ fun ExploreScreen(
                                 .height(ListItemHeight * 4),
                         ) {
                             items(
-                                items = section.items.filterIsInstance<SongItem>(),
+                                items = section.items.filterIsInstance<SongItem>().distinctBy { it.id },
                                 key = { it.id },
                             ) { song ->
                                 YouTubeListItem(
@@ -308,7 +308,7 @@ fun ExploreScreen(
                             .asPaddingValues(),
                     ) {
                         items(
-                            items = newReleaseAlbums,
+                            items = newReleaseAlbums.distinctBy { it.id },
                             key = { it.id },
                         ) { album ->
                             YouTubeGridItem(
@@ -348,7 +348,7 @@ fun ExploreScreen(
                             .asPaddingValues(),
                     ) {
                         items(
-                            items = topVideosSection.items.filterIsInstance<SongItem>(),
+                            items = topVideosSection.items.filterIsInstance<SongItem>().distinctBy { it.id },
                             key = { it.id },
                         ) { video ->
                             YouTubeGridItem(

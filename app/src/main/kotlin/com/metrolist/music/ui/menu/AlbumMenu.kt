@@ -204,7 +204,7 @@ fun AlbumMenu(
             onDismiss = { showSelectArtistDialog = false },
         ) {
             items(
-                items = album.artists,
+                items = album.artists.distinctBy { it.id },
                 key = { it.id },
             ) { artist ->
                 Row(
