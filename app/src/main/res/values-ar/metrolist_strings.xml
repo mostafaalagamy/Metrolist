@@ -178,4 +178,10 @@
     <string name="maximum_volume">الحد الاقصى للصوت</string>
     <string name="hide_player_thumbnail">إخفاء صورة الأغنيه</string>
     <string name="hide_player_thumbnail_desc">استبدال غلاف الألبوم بشعار التطبيق في المشغل</string>
+    <string name="settings_section_ui">واجهة المستخدم</string>
+    <string name="settings_section_privacy">الخصوصية والأمان</string>
+    <string name="settings_section_player">المشغل والوسائط</string>
+    <string name="settings_section_player_content">المشغل و المحتوي</string>
+    <string name="settings_section_storage">التخزين و البيانات</string>
+    <string name="settings_section_system">‫النظام والمعلومات</string>
 </resources>
