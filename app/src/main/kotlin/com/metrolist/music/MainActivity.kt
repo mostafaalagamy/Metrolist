@@ -1136,13 +1136,16 @@ class MainActivity : ComponentActivity() {
             isAppearanceLightStatusBars = !isDark
             isAppearanceLightNavigationBars = !isDark
         }
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            window.statusBarColor =
-                (if (isDark) Color.Transparent else Color.Black.copy(alpha = 0.2f)).toArgb()
-        }
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            window.navigationBarColor =
-                (if (isDark) Color.Transparent else Color.Black.copy(alpha = 0.2f)).toArgb()
+        
+        // جعل Status Bar شفاف
+        window.statusBarColor = Color.TRANSPARENT
+        
+        // جعل Navigation Bar شفاف تماماً
+        window.navigationBarColor = Color.TRANSPARENT
+        
+        // إضافة هذه الأسطر لجعل النظام يعامل الناف بار كشفاف
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            window.isNavigationBarContrastEnforced = false
         }
     }
 
