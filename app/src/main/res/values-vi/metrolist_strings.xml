@@ -166,4 +166,10 @@
     <string name="disable_load_more_when_repeat_all_desc">Không tự động tải thêm bài hát và nội dung tương tự khi bật chế độ lặp lại tất cả</string>
     <string name="seek_seconds_addup">Tua liên tục</string>
     <string name="seek_seconds_addup_description">Nếu được bật, sẽ cộng thêm 5 giây theo từng lần bỏ qua tua</string>
+    <string name="settings_section_ui">Giao diện người dùng</string>
+    <string name="settings_section_privacy">Quyền riêng tư &amp; Bảo mật</string>
+    <string name="settings_section_player">Trình phát &amp; Phương tiện</string>
+    <string name="settings_section_player_content">Trình phát &amp; Nội dung</string>
+    <string name="settings_section_storage">Lưu trữ &amp; Dữ liệu</string>
+    <string name="settings_section_system">Hệ thống &amp; Thông tin</string>
 </resources>
