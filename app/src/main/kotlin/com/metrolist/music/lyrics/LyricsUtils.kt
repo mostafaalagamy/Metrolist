@@ -139,7 +139,7 @@ object LyricsUtils {
     )
 
     private val BELARUSIAN_ROMAJI_MAP: Map<String, String> = mapOf(
-        "Г" to "H", "г" to "h", "Ў" to "W", "ў" to "w"
+        "Г" to "H", "г" to "h", "Ў" to "W", "ў" to "w", "Ь" to "", "ь" to ""
     )
 
     private val RUSSIAN_CYRILLIC_LETTERS = setOf(
