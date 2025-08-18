@@ -167,7 +167,7 @@
     <string name="hide_player_thumbnail">Player-Miniaturansicht verbergen</string>
     <string name="hide_player_thumbnail_desc">Ersetze das Albumcover mit dem App-Logo im Player</string>
     <string name="settings_section_ui">Benutzeroberfläche</string>
-    <string name="settings_section_privacy">Datenschutz &amp; Sicherheit</string>
+    <string name="settings_section_privacy">Privatsphäre &amp; Sicherheit</string>
     <string name="settings_section_player">Player &amp; Medien</string>
     <string name="settings_section_player_content">Player &amp; Inhalt</string>
     <string name="settings_section_storage">Speicher &amp; Daten</string>
