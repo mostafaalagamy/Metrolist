@@ -164,4 +164,12 @@
     <string name="maximum_volume">Maximale Lautstärke</string>
     <string name="disable_load_more_when_repeat_all">Mehr laden deaktivieren, wenn alle wiederholen</string>
     <string name="disable_load_more_when_repeat_all_desc">Nicht automatisch mehr Songs und ähnliche Inhalte laden, wenn der Modus „Alles wiederholen“ aktiviert ist</string>
+    <string name="hide_player_thumbnail">Player-Miniaturansicht verbergen</string>
+    <string name="hide_player_thumbnail_desc">Ersetze das Albumcover mit dem App-Logo im Player</string>
+    <string name="settings_section_ui">Benutzeroberfläche</string>
+    <string name="settings_section_privacy">Datenschutz &amp; Sicherheit</string>
+    <string name="settings_section_player">Player &amp; Medien</string>
+    <string name="settings_section_player_content">Player &amp; Inhalt</string>
+    <string name="settings_section_storage">Speicher &amp; Daten</string>
+    <string name="settings_section_system">System % Über</string>
 </resources>
