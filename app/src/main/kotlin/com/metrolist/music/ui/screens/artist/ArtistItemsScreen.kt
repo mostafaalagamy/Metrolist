@@ -111,7 +111,7 @@ fun ArtistItemsScreen(
             contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues(),
         ) {
             items(
-                items = itemsPage?.items.orEmpty(),
+                items = itemsPage?.items.orEmpty().distinctBy { it.id },
                 key = { it.id },
             ) { item ->
                 YouTubeListItem(
@@ -206,7 +206,7 @@ fun ArtistItemsScreen(
             contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues()
         ) {
             items(
-                items = itemsPage?.items.orEmpty(),
+                items = itemsPage?.items.orEmpty().distinctBy { it.id },
                 key = { it.id }
             ) { item ->
                 YouTubeGridItem(

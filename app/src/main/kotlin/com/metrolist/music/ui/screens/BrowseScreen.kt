@@ -63,7 +63,7 @@ package com.metrolist.music.ui.screens
      ) {
          items?.let { items ->
              items(
-                 items = items,
+                 items = items.distinctBy { it.id },
                  key = { it.id }
              ) { item ->
                  YouTubeGridItem(

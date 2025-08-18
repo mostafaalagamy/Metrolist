@@ -241,7 +241,7 @@ fun LibraryAlbumsScreen(
                             albums
                         }
                         items(
-                            items = filteredAlbumsForList,
+                            items = filteredAlbumsForList.distinctBy { it.id },
                             key = { it.id },
                             contentType = { CONTENT_TYPE_ALBUM },
                         ) { album ->
@@ -300,7 +300,7 @@ fun LibraryAlbumsScreen(
                             albums
                         }
                         items(
-                            items = filteredAlbumsForGrid,
+                            items = filteredAlbumsForGrid.distinctBy { it.id },
                             key = { it.id },
                             contentType = { CONTENT_TYPE_ALBUM },
                         ) { album ->
