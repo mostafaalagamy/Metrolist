@@ -1084,7 +1084,7 @@ fun BottomSheetPlayer(
             }
         }
 
-        // Background Layer - Previous background as base layer during transitions
+        // Background Layer
         if (!state.isCollapsed) {
             Box(modifier = Modifier.fillMaxSize()) {
                 when (playerBackground) {
@@ -1101,7 +1101,7 @@ fun BottomSheetPlayer(
                                         model = thumbnailUrl,
                                         contentDescription = "Blurred background",
                                         contentScale = ContentScale.FillBounds,
-                                        modifier = Modifier.fillMaxSize().blur(150.dp)
+                                        modifier = Modifier.fillMaxSize().blur(50.dp)
                                     )
                                     Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.4f)))
                                 }
