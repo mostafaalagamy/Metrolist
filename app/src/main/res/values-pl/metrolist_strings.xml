@@ -158,4 +158,24 @@
     <string name="playlist_not_found_desc">Nie można załadować żądanej playlisty</string>
     <string name="empty_playlist">Pusta playlista</string>
     <string name="empty_playlist_desc">Ta playlista nie zawiera żadnych piosenek</string>
+    <string name="now_playing">Teraz odtwarzane</string>
+    <string name="close">Zamknij</string>
+    <string name="minimum_volume">Minimalna głośność</string>
+    <string name="maximum_volume">Maksymalna głośność</string>
+    <string name="hide_player_thumbnail">Ukryj miniaturę odtwarzacza</string>
+    <string name="hide_player_thumbnail_desc">Zastąp okładkę albumu logo aplikacji w odtwarzaczu</string>
+    <string name="seek_backward">5 sekund wstecz</string>
+    <string name="seek_forward">5 sekund do przodu</string>
+    <string name="seek_forward_dynamic">+%1$d sekund do przodu</string>
+    <string name="seek_backward_dynamic">-%1$d sekund wstecz</string>
+    <string name="seek_seconds_addup">Postępowe wyszukiwanie</string>
+    <string name="seek_seconds_addup_description">Jeśli włączone, dodaje 5 dodatkowych sekund przy każdym pominięciu wyszukiwania</string>
+    <string name="disable_load_more_when_repeat_all">Wyłącz opcję „Załaduj więcej” podczas powtarzania wszystkich</string>
+    <string name="disable_load_more_when_repeat_all_desc">Nie ładuj automatycznie większej liczby utworów i podobnych treści, gdy włączony jest tryb powtarzania wszystkich utworów</string>
+    <string name="settings_section_ui">Interfejs użytkownika</string>
+    <string name="settings_section_privacy">Prywatność i bezpieczeństwo</string>
+    <string name="settings_section_player">Odtwarzacz i media</string>
+    <string name="settings_section_player_content">Odtwarzacz i zawartość</string>
+    <string name="settings_section_storage">Pamięć i dane</string>
+    <string name="settings_section_system">System i informacje</string>
 </resources>
