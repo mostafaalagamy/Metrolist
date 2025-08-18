@@ -164,4 +164,12 @@
     <string name="seek_seconds_addup_description">Eğer etkinleştirilirse, her ileri/geri sarma atlamasında kademeli olarak fazladan 5 saniye ekler</string>
     <string name="disable_load_more_when_repeat_all">Tümünü tekrarla açıkken daha fazla yükle seçeneğini devre dışı bırak.</string>
     <string name="disable_load_more_when_repeat_all_desc">Tümünü tekrarla modu açıkken daha fazla şarkı veya benzer içerik yükleme</string>
+    <string name="hide_player_thumbnail">Oynatıcı Küçük Resmini Gizle</string>
+    <string name="hide_player_thumbnail_desc">Oynatıcıdaki albüm resmini uygulama logosuyla değiştirin</string>
+    <string name="settings_section_ui">Kullanıcı Arayüzü</string>
+    <string name="settings_section_privacy">Gizlilik ve Güvenlik</string>
+    <string name="settings_section_player">Oynatıcı ve Medya</string>
+    <string name="settings_section_player_content">Oynatıcı ve İçerik</string>
+    <string name="settings_section_storage">Depolama ve Veri</string>
+    <string name="settings_section_system">Sistem ve Hakkında</string>
 </resources>
