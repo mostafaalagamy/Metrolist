@@ -38,6 +38,7 @@ import com.metrolist.music.ui.component.*
 import com.metrolist.music.ui.utils.backToMain
 import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
+import com.metrolist.music.utils.setAppLocale
 import java.net.Proxy
 import java.util.Locale
 import androidx.core.net.toUri
@@ -50,8 +51,12 @@ fun ContentSettings(
 ) {
     val context = LocalContext.current
 
+    // Used only before Android 13
+    val (appLanguage, onAppLanguageChange) = rememberPreference(key = AppLanguageKey, defaultValue = SYSTEM_DEFAULT)
+
     val (contentLanguage, onContentLanguageChange) = rememberPreference(key = ContentLanguageKey, defaultValue = "system")
     val (contentCountry, onContentCountryChange) = rememberPreference(key = ContentCountryKey, defaultValue = "system")
+
     val (hideExplicit, onHideExplicitChange) = rememberPreference(key = HideExplicitKey, defaultValue = false)
     val (proxyEnabled, onProxyEnabledChange) = rememberPreference(key = ProxyEnabledKey, defaultValue = false)
     val (proxyType, onProxyTypeChange) = rememberEnumPreference(key = ProxyTypeKey, defaultValue = Proxy.Type.HTTP)
@@ -136,6 +141,24 @@ fun ContentSettings(
                             "package:${context.packageName}".toUri()
                         )
                     )
+                }
+            )
+        }
+        // Support for Android versions before Android 13
+        else {
+            ListPreference(
+                title = { Text(stringResource(R.string.app_language)) },
+                icon = { Icon(painterResource(R.drawable.language), null) },
+                selectedValue = appLanguage,
+                values = listOf(SYSTEM_DEFAULT) + LanguageCodeToName.keys.toList(),
+                valueText = {
+                    LanguageCodeToName.getOrElse(it) { stringResource(R.string.system_default) }
+                },
+                onValueSelected = { newValue ->
+                    val newLocale = if (newValue == SYSTEM_DEFAULT) Locale.getDefault() else Locale.forLanguageTag(newValue)
+                    setAppLocale(context, newLocale)
+                    onAppLanguageChange(newValue)
+
                 }
             )
         }
