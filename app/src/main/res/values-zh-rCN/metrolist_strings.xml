@@ -150,4 +150,23 @@
     <string name="empty_playlist">空的歌单</string>
     <string name="empty_playlist_desc">该歌单里面没有歌曲</string>
     <string name="sensitivity_percentage">%1$d%%</string>
+    <string name="close">关闭</string>
+    <string name="minimum_volume">最小音量</string>
+    <string name="maximum_volume">最大音量</string>
+    <string name="hide_player_thumbnail">隐藏专辑封面</string>
+    <string name="hide_player_thumbnail_desc">在播放器中用App图标代替专辑封面</string>
+    <string name="seek_backward">快退5秒</string>
+    <string name="seek_forward">快进5秒</string>
+    <string name="seek_forward_dynamic">快进+%1$d 秒</string>
+    <string name="seek_backward_dynamic">快退-%1$d 秒</string>
+    <string name="seek_seconds_addup">步进式快进/快退</string>
+    <string name="disable_load_more_when_repeat_all">如果循环播放则停止加载更多歌曲</string>
+    <string name="disable_load_more_when_repeat_all_desc">循环播放模式启用后，不会自动加载更多歌曲与相似内容</string>
+    <string name="settings_section_ui">UI界面</string>
+    <string name="settings_section_privacy">安全与隐私</string>
+    <string name="settings_section_player">播放器与媒体</string>
+    <string name="settings_section_player_content">播放器与内容</string>
+    <string name="settings_section_storage">储存与数据</string>
+    <string name="settings_section_system">系统与关于</string>
+    <string name="seek_seconds_addup_description">启用后，每次快进/快退都额外增加5秒</string>
 </resources>
