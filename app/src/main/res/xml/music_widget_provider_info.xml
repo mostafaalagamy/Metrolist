@@ -1,0 +1,8 @@
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:minWidth="180dp"
+    android:minHeight="30dp"
+    android:updatePeriodMillis="0"
+    android:initialLayout="@layout/music_widget_glance_layout"
+    android:resizeMode="horizontal|vertical">
+    android:widgetCategory="home_screen">
+    </appwidget-provider>

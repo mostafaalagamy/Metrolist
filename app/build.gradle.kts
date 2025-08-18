@@ -203,4 +203,10 @@ dependencies {
     implementation(libs.multidex)
 
     implementation(libs.timber)
+
+    //widget
+    implementation(libs.glance.appwidget)
+    implementation(libs.glance.material3)
+    implementation(libs.media3.session)
+
 }
