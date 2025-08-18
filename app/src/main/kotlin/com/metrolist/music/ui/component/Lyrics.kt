@@ -100,8 +100,10 @@ import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
 import com.metrolist.music.constants.DarkModeKey
 import com.metrolist.music.constants.LyricsClickKey
+import com.metrolist.music.constants.LyricsRomanizeBelarusianKey
 import com.metrolist.music.constants.LyricsRomanizeJapaneseKey
 import com.metrolist.music.constants.LyricsRomanizeKoreanKey
+import com.metrolist.music.constants.LyricsRomanizeUkrainianKey
 import com.metrolist.music.constants.LyricsRomanizeRussianKey
 import com.metrolist.music.constants.LyricsScrollKey
 import com.metrolist.music.constants.LyricsTextPositionKey
@@ -111,13 +113,15 @@ import com.metrolist.music.db.entities.LyricsEntity.Companion.LYRICS_NOT_FOUND
 import com.metrolist.music.lyrics.LyricsEntry
 import com.metrolist.music.lyrics.LyricsUtils.isChinese
 import com.metrolist.music.lyrics.LyricsUtils.findCurrentLineIndex
+import com.metrolist.music.lyrics.LyricsUtils.isBelarusian
 import com.metrolist.music.lyrics.LyricsUtils.isJapanese
 import com.metrolist.music.lyrics.LyricsUtils.isKorean
 import com.metrolist.music.lyrics.LyricsUtils.isRussian
+import com.metrolist.music.lyrics.LyricsUtils.isUkrainian
 import com.metrolist.music.lyrics.LyricsUtils.parseLyrics
 import com.metrolist.music.lyrics.LyricsUtils.romanizeJapanese
 import com.metrolist.music.lyrics.LyricsUtils.romanizeKorean
-import com.metrolist.music.lyrics.LyricsUtils.romanizeRussian
+import com.metrolist.music.lyrics.LyricsUtils.romanizeCyrillic
 import com.metrolist.music.ui.component.shimmer.ShimmerHost
 import com.metrolist.music.ui.component.shimmer.TextPlaceholder
 import com.metrolist.music.ui.menu.LyricsMenu
@@ -157,6 +161,8 @@ fun Lyrics(
     val romanizeJapaneseLyrics by rememberPreference(LyricsRomanizeJapaneseKey, true)
     val romanizeKoreanLyrics by rememberPreference(LyricsRomanizeKoreanKey, true)
     val romanizeRussianLyrics by rememberPreference(LyricsRomanizeRussianKey, true)
+    val romanizeUkrainianLyrics by rememberPreference(LyricsRomanizeUkrainianKey, true)
+    val romanizeBelarusianLyrics by rememberPreference(LyricsRomanizeBelarusianKey, true)
     val scope = rememberCoroutineScope()
 
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
@@ -196,9 +202,23 @@ fun Lyrics(
                     }
                 }
                 if (romanizeRussianLyrics) {
-                    if (isRussian(entry.text)) {
+                    if (isRussian(lyrics)) {
                         scope.launch {
-                            newEntry.romanizedTextFlow.value = romanizeRussian(entry.text)
+                            newEntry.romanizedTextFlow.value = romanizeCyrillic(entry.text)
+                        }
+                    }
+                }
+                if (romanizeUkrainianLyrics) {
+                    if (isUkrainian(lyrics)) {
+                        scope.launch {
+                            newEntry.romanizedTextFlow.value = romanizeCyrillic(entry.text)
+                        }
+                    }
+                }
+                if (romanizeBelarusianLyrics) {
+                    if (isBelarusian(lyrics)) {
+                        scope.launch {
+                            newEntry.romanizedTextFlow.value = romanizeCyrillic(entry.text)
                         }
                     }
                 }
@@ -224,9 +244,23 @@ fun Lyrics(
                     }
                 }
                 if (romanizeRussianLyrics) {
-                    if (isRussian(line)) {
+                    if (isRussian(lyrics)) {
                         scope.launch {
-                            newEntry.romanizedTextFlow.value = romanizeRussian(line)
+                            newEntry.romanizedTextFlow.value = romanizeCyrillic(line)
+                        }
+                    }
+                }
+                if (romanizeUkrainianLyrics) {
+                    if (isUkrainian(lyrics)) {
+                        scope.launch {
+                            newEntry.romanizedTextFlow.value = romanizeCyrillic(line)
+                        }
+                    }
+                }
+                if (romanizeBelarusianLyrics) {
+                    if (isBelarusian(lyrics)) {
+                        scope.launch {
+                            newEntry.romanizedTextFlow.value = romanizeCyrillic(line)
                         }
                     }
                 }
@@ -641,7 +675,7 @@ fun Lyrics(
                             },
                             fontWeight = if (index == displayedCurrentLineIndex && isSynced) FontWeight.ExtraBold else FontWeight.Bold
                         )
-                        if (romanizeJapaneseLyrics || romanizeKoreanLyrics || romanizeRussianLyrics) {
+                        if (romanizeJapaneseLyrics || romanizeKoreanLyrics || romanizeRussianLyrics || romanizeUkrainianLyrics || romanizeBelarusianLyrics) {
                             // Show romanized text if available
                             val romanizedText by item.romanizedTextFlow.collectAsState()
                             romanizedText?.let { romanized ->

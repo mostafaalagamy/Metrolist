@@ -277,6 +277,8 @@ val LyricsScrollKey = booleanPreferencesKey("lyricsScrollKey")
 val LyricsRomanizeJapaneseKey = booleanPreferencesKey("lyricsRomanizeJapanese")
 val LyricsRomanizeKoreanKey = booleanPreferencesKey("lyricsRomanizeKorean")
 val LyricsRomanizeRussianKey = booleanPreferencesKey("lyricsRomanizeRussian")
+val LyricsRomanizeUkrainianKey = booleanPreferencesKey("lyricsRomanizeUkrainian")
+val LyricsRomanizeBelarusianKey = booleanPreferencesKey("lyricsRomanizeBelarusian")
 val TranslateLyricsKey = booleanPreferencesKey("translateLyrics")
 
 val PlayerVolumeKey = floatPreferencesKey("playerVolume")

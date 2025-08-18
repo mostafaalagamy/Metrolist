@@ -191,25 +191,11 @@ fun ContentSettings(
             },
             onValueSelected = onPreferredProviderChange,
         )
-        SwitchPreference(
-            title = { Text(stringResource(R.string.lyrics_romanize_japanese)) },
-            icon = { Icon(painterResource(R.drawable.lyrics), null) },
-            checked = lyricsRomanizeJapanese,
-            onCheckedChange = onLyricsRomanizeJapaneseChange,
-        )
 
-        SwitchPreference(
-            title = { Text(stringResource(R.string.lyrics_romanize_korean)) },
+        PreferenceEntry(
+            title = { Text(stringResource(R.string.lyrics_romanization)) },
             icon = { Icon(painterResource(R.drawable.lyrics), null) },
-            checked = lyricsRomanizeKorean,
-            onCheckedChange = onLyricsRomanizeKoreanChange,
-        )
-
-        SwitchPreference(
-            title = { Text(stringResource(R.string.lyrics_romanize_russian)) },
-            icon = { Icon(painterResource(R.drawable.lyrics), null) },
-            checked = lyricsRomanizeRussian,
-            onCheckedChange = onLyricsRomanizeRussianChange,
+            onClick = { navController.navigate("settings/content/romanization") }
         )
 
         PreferenceGroupTitle(title = stringResource(R.string.misc))

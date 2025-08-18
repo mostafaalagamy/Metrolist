@@ -1,0 +1,115 @@
+package com.metrolist.music.ui.screens.settings
+
+import android.annotation.TargetApi
+import android.content.Context
+import android.content.Intent
+import android.content.res.Configuration
+import android.os.Build
+import android.provider.Settings
+import android.os.LocaleList
+import android.util.Log
+import android.widget.Toast
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarScrollBehavior
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.capitalize
+import androidx.compose.ui.text.toLowerCase
+import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.floatPreferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.navigation.NavController
+import com.metrolist.innertube.YouTube
+import com.metrolist.music.LocalPlayerAwareWindowInsets
+import com.metrolist.music.R
+import com.metrolist.music.constants.*
+import com.metrolist.music.ui.component.*
+import com.metrolist.music.ui.utils.backToMain
+import com.metrolist.music.utils.rememberEnumPreference
+import com.metrolist.music.utils.rememberPreference
+import java.net.Proxy
+import java.util.Locale
+import androidx.core.net.toUri
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun RomanizationSettings(
+    navController: NavController,
+    scrollBehavior: TopAppBarScrollBehavior,
+) {
+    val context = LocalContext.current
+
+    val (lyricsRomanizeJapanese, onLyricsRomanizeJapaneseChange) = rememberPreference(LyricsRomanizeJapaneseKey, defaultValue = true)
+    val (lyricsRomanizeKorean, onLyricsRomanizeKoreanChange) = rememberPreference(LyricsRomanizeKoreanKey, defaultValue = true)
+    val (lyricsRomanizeRussian, onLyricsRomanizeRussianChange) = rememberPreference(LyricsRomanizeRussianKey, defaultValue = false)
+    val (lyricsRomanizeUkrainian, onLyricsRomanizeUkrainianChange) = rememberPreference(LyricsRomanizeUkrainianKey, defaultValue = false)
+    val (lyricsRomanizeBelarusian, onLyricsRomanizeBelarusianChange) = rememberPreference(LyricsRomanizeBelarusianKey, defaultValue = false)
+
+    Column(
+        Modifier
+            .windowInsetsPadding(LocalPlayerAwareWindowInsets.current)
+            .verticalScroll(rememberScrollState()),
+    ) {
+        PreferenceGroupTitle(title = stringResource(R.string.general))
+
+        SwitchPreference(
+            title = { Text(stringResource(R.string.lyrics_romanize_japanese)) },
+            icon = { Icon(painterResource(R.drawable.lyrics), null) },
+            checked = lyricsRomanizeJapanese,
+            onCheckedChange = onLyricsRomanizeJapaneseChange,
+        )
+
+        SwitchPreference(
+            title = { Text(stringResource(R.string.lyrics_romanize_korean)) },
+            icon = { Icon(painterResource(R.drawable.lyrics), null) },
+            checked = lyricsRomanizeKorean,
+            onCheckedChange = onLyricsRomanizeKoreanChange,
+        )
+
+        PreferenceGroupTitle(title = stringResource(R.string.lyrics_romanization_cyrillic))
+        SwitchPreference(
+            title = { Text(stringResource(R.string.lyrics_romanize_russian)) },
+            icon = { Icon(painterResource(R.drawable.lyrics), null) },
+            checked = lyricsRomanizeRussian,
+            onCheckedChange = onLyricsRomanizeRussianChange,
+        )
+        SwitchPreference(
+            title = { Text(stringResource(R.string.lyrics_romanize_ukrainian)) },
+            icon = { Icon(painterResource(R.drawable.lyrics), null) },
+            checked = lyricsRomanizeUkrainian,
+            onCheckedChange = onLyricsRomanizeUkrainianChange,
+        )
+        SwitchPreference(
+            title = { Text(stringResource(R.string.lyrics_romanize_belarusian)) },
+            icon = { Icon(painterResource(R.drawable.lyrics), null) },
+            checked = lyricsRomanizeBelarusian,
+            onCheckedChange = onLyricsRomanizeBelarusianChange,
+        )
+    }
+
+    TopAppBar(
+        title = { Text(stringResource(R.string.lyrics_romanize_title)) },
+        navigationIcon = {
+            IconButton(
+                onClick = navController::navigateUp,
+                onLongClick = navController::backToMain,
+            ) {
+                Icon(
+                    painterResource(R.drawable.arrow_back),
+                    contentDescription = null,
+                )
+            }
+        }
+    )
+}

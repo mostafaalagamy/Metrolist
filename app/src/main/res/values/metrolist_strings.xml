@@ -192,4 +192,9 @@
     <!-- Player Settings -->
     <string name="disable_load_more_when_repeat_all">Disable load more when repeat all</string>
     <string name="disable_load_more_when_repeat_all_desc">Don\'t auto load more songs and similar content when repeat all mode is enabled</string>
+    <string name="lyrics_romanization_cyrillic">Cyrillic</string>
+    <string name="lyrics_romanize_title">Romanization</string>
+    <string name="lyrics_romanization">Lyrics romanization</string>
+    <string name="lyrics_romanize_ukrainian">Romanize ukrainian lyrics</string>
+    <string name="lyrics_romanize_belarusian">Romanize belarusian lyrics</string>
 </resources>
