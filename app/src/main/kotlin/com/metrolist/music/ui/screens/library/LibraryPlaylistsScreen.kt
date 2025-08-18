@@ -355,7 +355,7 @@ fun LibraryPlaylistsScreen(
                         }
 
                         items(
-                            items = playlists,
+                            items = playlists.distinctBy { it.id },
                             key = { it.id },
                             contentType = { CONTENT_TYPE_PLAYLIST },
                         ) { playlist ->
@@ -499,7 +499,7 @@ fun LibraryPlaylistsScreen(
                         }
 
                         items(
-                            items = playlists,
+                            items = playlists.distinctBy { it.id },
                             key = { it.id },
                             contentType = { CONTENT_TYPE_PLAYLIST },
                         ) { playlist ->

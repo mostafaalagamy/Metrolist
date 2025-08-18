@@ -60,7 +60,7 @@ fun AccountScreen(
         contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues(),
     ) {
         items(
-            items = playlists.orEmpty(),
+            items = playlists.orEmpty().distinctBy { it.id },
             key = { it.id },
         ) { item ->
             YouTubeGridItem(
@@ -87,7 +87,7 @@ fun AccountScreen(
         }
 
         items(
-            items = albums.orEmpty(),
+            items = albums.orEmpty().distinctBy { it.id },
             key = { it.id }
         ) { item ->
             YouTubeGridItem(
@@ -113,7 +113,7 @@ fun AccountScreen(
         }
 
         items(
-            items = artists.orEmpty(),
+            items = artists.orEmpty().distinctBy { it.id },
             key = { it.id }
         ) { item ->
             YouTubeGridItem(

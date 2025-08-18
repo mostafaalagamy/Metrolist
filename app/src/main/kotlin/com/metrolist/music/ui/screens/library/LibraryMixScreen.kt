@@ -358,7 +358,7 @@ fun LibraryMixScreen(
                     }
 
                     items(
-                        items = allItems,
+                        items = allItems.distinctBy { it.id },
                         key = { it.id },
                         contentType = { CONTENT_TYPE_PLAYLIST },
                     ) { item ->
@@ -613,7 +613,7 @@ fun LibraryMixScreen(
                     }
 
                     items(
-                        items = allItems,
+                        items = allItems.distinctBy { it.id },
                         key = { it.id },
                         contentType = { CONTENT_TYPE_PLAYLIST },
                     ) { item ->

@@ -231,7 +231,7 @@ fun LibraryArtistsScreen(
                         }
 
                         items(
-                            items = artists,
+                            items = artists.distinctBy { it.id },
                             key = { it.id },
                             contentType = { CONTENT_TYPE_ARTIST },
                         ) { artist ->
@@ -283,7 +283,7 @@ fun LibraryArtistsScreen(
                         }
 
                         items(
-                            items = artists,
+                            items = artists.distinctBy { it.id },
                             key = { it.id },
                             contentType = { CONTENT_TYPE_ARTIST },
                         ) { artist ->

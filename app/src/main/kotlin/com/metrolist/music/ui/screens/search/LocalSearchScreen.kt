@@ -129,7 +129,7 @@ fun LocalSearchScreen(
                 }
 
                 items(
-                    items = items,
+                    items = items.distinctBy { it.id },
                     key = { it.id },
                     contentType = { CONTENT_TYPE_LIST },
                 ) { item ->

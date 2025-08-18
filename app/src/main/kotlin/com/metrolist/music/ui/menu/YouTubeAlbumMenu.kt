@@ -188,7 +188,7 @@ fun YouTubeAlbumMenu(
             onDismiss = { showSelectArtistDialog = false },
         ) {
             items(
-                items = album?.artists.orEmpty(),
+                items = album?.artists.orEmpty().distinctBy { it.id },
                 key = { it.id },
             ) { artist ->
                 Row(
