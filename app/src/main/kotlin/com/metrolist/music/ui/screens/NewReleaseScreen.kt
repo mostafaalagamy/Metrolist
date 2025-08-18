@@ -58,7 +58,7 @@ fun NewReleaseScreen(
         contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues(),
     ) {
         items(
-            items = newReleaseAlbums,
+            items = newReleaseAlbums.distinctBy { it.id },
             key = { it.id },
         ) { album ->
             YouTubeGridItem(

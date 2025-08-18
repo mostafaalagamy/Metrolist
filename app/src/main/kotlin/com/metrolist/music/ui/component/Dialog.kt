@@ -76,55 +76,28 @@ fun DefaultDialog(
     icon: (@Composable () -> Unit)? = null,
     title: (@Composable () -> Unit)? = null,
     buttons: (@Composable RowScope.() -> Unit)? = null,
+    horizontalAlignment: Alignment.Horizontal = Alignment.CenterHorizontally,
     content: @Composable ColumnScope.() -> Unit,
 ) {
-    val density = LocalDensity.current
-    val imeHeight = WindowInsets.ime.getBottom(density)
-    val isKeyboardVisible = imeHeight > 0
-    
-    // Animated bottom padding for smooth keyboard transition
-    val animatedBottomPadding by animateIntAsState(
-        targetValue = if (isKeyboardVisible) imeHeight else 0,
-        animationSpec = tween(durationMillis = 300),
-        label = "keyboard_padding"
-    )
-    
     Dialog(
         onDismissRequest = onDismiss,
-        properties = DialogProperties(
-            usePlatformDefaultWidth = false,
-            decorFitsSystemWindows = false
-        ),
+        properties = DialogProperties(usePlatformDefaultWidth = false)
     ) {
         Surface(
-            modifier = Modifier
-                .padding(
-                    start = 24.dp,
-                    top = 24.dp,
-                    end = 24.dp,
-                    bottom = 24.dp + with(density) { animatedBottomPadding.toDp() }
-                )
-                .navigationBarsPadding(),
+            modifier = Modifier.padding(24.dp),
             shape = AlertDialogDefaults.shape,
             color = AlertDialogDefaults.containerColor,
-            tonalElevation = AlertDialogDefaults.TonalElevation,
+            tonalElevation = AlertDialogDefaults.TonalElevation
         ) {
             Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
+                horizontalAlignment = horizontalAlignment,
                 modifier = modifier
                     .padding(24.dp)
-                    .then(
-                        if (isKeyboardVisible) {
-                            Modifier.verticalScroll(rememberScrollState())
-                        } else {
-                            Modifier
-                        }
-                    ),
             ) {
                 if (icon != null) {
                     CompositionLocalProvider(LocalContentColor provides AlertDialogDefaults.iconContentColor) {
                         Box(
-                            Modifier.align(Alignment.CenterHorizontally),
+                            Modifier.align(Alignment.CenterHorizontally)
                         ) {
                             icon()
                         }
@@ -137,7 +110,7 @@ fun DefaultDialog(
                         ProvideTextStyle(MaterialTheme.typography.headlineSmall) {
                             Box(
                                 // Align the title to the center when an icon is present.
-                                Modifier.align(if (icon == null) Alignment.Start else Alignment.CenterHorizontally),
+                                Modifier.align(if (icon == null) Alignment.Start else Alignment.CenterHorizontally)
                             ) {
                                 title()
                             }
@@ -152,12 +125,12 @@ fun DefaultDialog(
                 if (buttons != null) {
                     Spacer(Modifier.height(24.dp))
 
-                    FlowRow(
-                        modifier = Modifier.align(Alignment.End),
+                    Row(
+                        modifier = Modifier.align(Alignment.End)
                     ) {
                         CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.primary) {
                             ProvideTextStyle(
-                                value = MaterialTheme.typography.labelLarge,
+                                value = MaterialTheme.typography.labelLarge
                             ) {
                                 buttons()
                             }

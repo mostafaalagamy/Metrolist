@@ -115,7 +115,7 @@ fun ArtistAlbumsScreen(
             }
 
             items(
-                items = albums,
+                items = albums.distinctBy { it.id },
                 key = { it.id },
                 contentType = { CONTENT_TYPE_ALBUM }
             ) { album ->

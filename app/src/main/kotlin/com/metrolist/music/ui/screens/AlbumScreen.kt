@@ -470,7 +470,7 @@ fun AlbumScreen(
                 item {
                     LazyRow {
                         items(
-                            items = otherVersions,
+                            items = otherVersions.distinctBy { it.id },
                             key = { it.id },
                         ) { item ->
                             YouTubeGridItem(

@@ -415,7 +415,7 @@ fun HomeScreen(
                             .animateItem()
                     ) {
                         items(
-                            items = quickPicks,
+                            items = quickPicks.distinctBy { it.id },
                             key = { it.id }
                         ) { originalSong ->
                             // fetch song from database to keep updated
@@ -546,7 +546,7 @@ fun HomeScreen(
                         modifier = Modifier.animateItem()
                     ) {
                         items(
-                            items = accountPlaylists,
+                            items = accountPlaylists.distinctBy { it.id },
                             key = { it.id },
                         ) { item ->
                             ytGridItem(item)
@@ -581,7 +581,7 @@ fun HomeScreen(
                             .animateItem()
                     ) {
                         items(
-                            items = forgottenFavorites,
+                            items = forgottenFavorites.distinctBy { it.id },
                             key = { it.id }
                         ) { originalSong ->
                             val song by database.song(originalSong.id)
