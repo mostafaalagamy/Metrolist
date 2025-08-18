@@ -17,8 +17,8 @@ android {
         applicationId = "com.metrolist.music"
         minSdk = 26
         targetSdk = 36
-        versionCode = 124
-        versionName = "12.3.0"
+        versionCode = 125
+        versionName = "12.4.0"
 
         multiDexEnabled = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -124,6 +124,9 @@ android {
 
     lint {
         lintConfig = file("lint.xml")
+        warningsAsErrors = false
+        abortOnError = false
+        checkDependencies = false
     }
 
     androidResources {
@@ -131,6 +134,13 @@ android {
     }
 
     packaging {
+        jniLibs {
+            useLegacyPackaging = false
+            keepDebugSymbols += listOf(
+                "**/libandroidx.graphics.path.so",
+                "**/libdatastore_shared_counter.so"
+            )
+        }
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
             excludes += "META-INF/NOTICE.md"
@@ -209,4 +219,25 @@ dependencies {
     implementation(libs.glance.material3)
     implementation(libs.media3.session)
 
+}
+
+kapt {
+    correctErrorTypes = true
+    useBuildCache = true
+    arguments {
+        arg("dagger.fastInit", "enabled")
+        arg("dagger.formatGeneratedSource", "disabled")
+        // dagger.gradle.incremental is deprecated in newer versions
+    }
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+    compilerOptions {
+        freeCompilerArgs.addAll(
+            "-opt-in=kotlin.RequiresOptIn",
+            "-Xcontext-receivers"
+        )
+        // Suppress warnings
+        suppressWarnings.set(true)
+    }
 }

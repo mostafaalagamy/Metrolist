@@ -54,6 +54,8 @@ import com.metrolist.music.db.entities.LyricsEntity
 import com.metrolist.music.models.MediaMetadata
 import com.metrolist.music.ui.component.DefaultDialog
 import com.metrolist.music.ui.component.ListDialog
+import com.metrolist.music.ui.component.NewAction
+import com.metrolist.music.ui.component.NewActionGrid
 import com.metrolist.music.ui.component.TextFieldDialog
 import com.metrolist.music.viewmodels.LyricsMenuViewModel
 
@@ -307,56 +309,64 @@ fun LyricsMenu(
         }
     }
 
-    LazyColumn(
-        contentPadding = PaddingValues(
-            start = 8.dp,
-            top = 8.dp,
-            end = 8.dp,
-            bottom = 8.dp + WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
-        ),
-    ) {
-        item {
-            ListItem(
-                headlineContent = { Text(text = stringResource(R.string.edit)) },
-                leadingContent = {
+    // Enhanced Action Grid using NewMenuComponents
+    NewActionGrid(
+        actions = listOf(
+            NewAction(
+                icon = {
                     Icon(
                         painter = painterResource(R.drawable.edit),
                         contentDescription = null,
+                        modifier = Modifier.size(28.dp),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 },
-                modifier = Modifier.clickable {
+                text = stringResource(R.string.edit),
+                onClick = {
                     showEditDialog = true
                 }
-            )
-        }
-        item {
-            ListItem(
-                headlineContent = { Text(text = stringResource(R.string.refetch)) },
-                leadingContent = {
+            ),
+            NewAction(
+                icon = {
                     Icon(
                         painter = painterResource(R.drawable.cached),
                         contentDescription = null,
+                        modifier = Modifier.size(28.dp),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 },
-                modifier = Modifier.clickable {
+                text = stringResource(R.string.refetch),
+                onClick = {
                     onDismiss()
                     viewModel.refetchLyrics(mediaMetadataProvider(), lyricsProvider())
                 }
-            )
-        }
-        item {
-            ListItem(
-                headlineContent = { Text(text = stringResource(R.string.search)) },
-                leadingContent = {
+            ),
+            NewAction(
+                icon = {
                     Icon(
                         painter = painterResource(R.drawable.search),
                         contentDescription = null,
+                        modifier = Modifier.size(28.dp),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 },
-                modifier = Modifier.clickable {
+                text = stringResource(R.string.search),
+                onClick = {
                     showSearchDialog = true
                 }
             )
-        }
+        ),
+        modifier = Modifier.padding(horizontal = 4.dp, vertical = 16.dp)
+    )
+
+    LazyColumn(
+        contentPadding = PaddingValues(
+            start = 0.dp,
+            top = 0.dp,
+            end = 0.dp,
+            bottom = 8.dp + WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
+        ),
+    ) {
+
     }
 }
