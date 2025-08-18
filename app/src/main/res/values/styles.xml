@@ -11,6 +11,7 @@
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:windowLayoutInDisplayCutoutMode" tools:ignore="NewApi">shortEdges</item>
-        <item name="android:windowTranslucentNavigation" tools:ignore="NewApi">true</item>
+        <item name="android:windowTranslucentNavigation" tools:ignore="NewApi">false</item>
+        <item name="android:windowTranslucentStatus" tools:ignore="NewApi">false</item>
     </style>
 </resources>

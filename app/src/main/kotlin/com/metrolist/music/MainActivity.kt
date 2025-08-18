@@ -11,6 +11,7 @@ import android.os.Bundle
 import android.os.IBinder
 import android.view.View
 import android.view.WindowManager
+import android.view.WindowInsetsController
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.AnimatedContentTransitionScope
@@ -1137,15 +1138,29 @@ class MainActivity : ComponentActivity() {
             isAppearanceLightNavigationBars = !isDark
         }
         
-        // جعل Status Bar شفاف
+        // Make Status Bar transparent
         window.statusBarColor = Color.Transparent.toArgb()
         
-        // جعل Navigation Bar شفاف تماماً
+        // Make Navigation Bar completely transparent
         window.navigationBarColor = Color.Transparent.toArgb()
         
-        // إضافة هذه الأسطر لجعل النظام يعامل الناف بار كشفاف
+        // Disable navigation bar contrast enforcement
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             window.isNavigationBarContrastEnforced = false
+        }
+        
+        // Force full transparency by clearing all flags
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION)
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+        }
+        
+        // Additional transparency settings for newer Android versions
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            window.insetsController?.let { controller ->
+                controller.systemBarsBehavior = WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+            }
         }
     }
 
