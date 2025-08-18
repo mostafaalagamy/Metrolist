@@ -1138,10 +1138,10 @@ class MainActivity : ComponentActivity() {
         }
         
         // جعل Status Bar شفاف
-        window.statusBarColor = Color.TRANSPARENT
+        window.statusBarColor = Color.Transparent
         
         // جعل Navigation Bar شفاف تماماً
-        window.navigationBarColor = Color.TRANSPARENT
+        window.navigationBarColor = Color.Transparent
         
         // إضافة هذه الأسطر لجعل النظام يعامل الناف بار كشفاف
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
