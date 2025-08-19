@@ -580,7 +580,7 @@ fun LocalPlaylistScreen(
                                         )
                                     }
 
-                                    if (sortType == PlaylistSongSortType.CUSTOM && !locked && !selection && !isSearching) {
+                                    if (sortType == PlaylistSongSortType.CUSTOM && !locked && !selection && !isSearching && editable) {
                                         IconButton(
                                             onClick = { },
                                             modifier = Modifier.draggableHandle(),
@@ -702,7 +702,7 @@ fun LocalPlaylistScreen(
                                             contentDescription = null,
                                         )
                                     }
-                                    if (sortType == PlaylistSongSortType.CUSTOM && !locked && !selection && !isSearching) {
+                                    if (sortType == PlaylistSongSortType.CUSTOM && !locked && !selection && !isSearching && editable) {
                                         IconButton(
                                             onClick = { },
                                             modifier = Modifier.draggableHandle(),
