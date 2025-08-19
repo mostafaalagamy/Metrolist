@@ -76,6 +76,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
 import androidx.compose.ui.util.lerp
+import com.metrolist.music.constants.AppBarHeight
 import kotlin.math.max
 
 @ExperimentalMaterial3Api
@@ -172,7 +173,7 @@ fun TopSearch(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(88.dp)
+                .height(topInset + AppBarHeight)
                 .background(color = MaterialTheme.colorScheme.surface)
         )
 
