@@ -407,7 +407,7 @@ fun LocalPlaylistScreen(
                 }
 
                 // Sync order with YT Music
-                if (viewModel.playlist.value?.playlist?.isLocal == false) {
+                if (viewModel.playlist.value?.playlist?.browseId != null) {
                     viewModel.viewModelScope.launch(Dispatchers.IO) {
                         val playlistSongMap = database.playlistSongMaps(viewModel.playlistId, 0)
 
