@@ -28,7 +28,7 @@ sealed class Action {
     data class MoveVideoAction(
         val action: String = "ACTION_MOVE_VIDEO_BEFORE",
         val setVideoId: String,
-        val movedSetVideoIdSuccessor: String
+        val movedSetVideoIdSuccessor: String?
     ) : Action()
 
     @Serializable

@@ -414,7 +414,7 @@ class InnerTube {
         client: YouTubeClient,
         playlistId: String,
         setVideoId: String,
-        successorSetVideoId: String,
+        successorSetVideoId: String?,
     ) = httpClient.post("browse/edit_playlist") {
         ytClient(client, setLogin = true)
         setBody(

@@ -405,6 +405,25 @@ fun LocalPlaylistScreen(
                 database.transaction {
                     move(viewModel.playlistId, from, to)
                 }
+
+                // Sync order with YT Music
+                if (viewModel.playlist.value?.playlist?.isLocal == false) {
+                    viewModel.viewModelScope.launch(Dispatchers.IO) {
+                        val playlistSongMap = database.playlistSongMaps(viewModel.playlistId, 0)
+
+                        val successorIndex = if (from > to) to else to + 1
+                        val successorSetVideoId = if (successorIndex <= viewModel.playlistSongs.value.size - 1) playlistSongMap[successorIndex].setVideoId else null
+
+                        playlistSongMap[from].setVideoId?.let { setVideoId ->
+                            YouTube.moveSongPlaylist(
+                                viewModel.playlist.value?.playlist?.browseId!!,
+                                setVideoId,
+                                successorSetVideoId,
+                                )
+                        }
+                    }
+                }
+
                 dragInfo = null
             }
         }
@@ -910,7 +929,7 @@ fun LocalPlaylistHeader(
     }
 
     val liked = playlist.playlist.bookmarkedAt != null
-    val editable: Boolean = playlist.playlist.isEditable == true
+    val editable: Boolean = playlist.playlist.isEditable
 
     LaunchedEffect(songs) {
         if (songs.isEmpty()) return@LaunchedEffect
@@ -1080,7 +1099,8 @@ fun LocalPlaylistHeader(
                                                 PlaylistSongMap(
                                                     songId = song.id,
                                                     playlistId = playlist.id,
-                                                    position = position
+                                                    position = position,
+                                                    setVideoId = song.setVideoId
                                                 )
                                             }
                                             .forEach(::insert)
