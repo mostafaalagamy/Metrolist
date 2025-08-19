@@ -486,7 +486,7 @@ fun LocalPlaylistScreen(
                                 },
                                 modifier = Modifier.weight(1f),
                             )
-                            if (editable) {
+                            if (editable && sortType == PlaylistSongSortType.CUSTOM) {
                                 IconButton(
                                     onClick = { locked = !locked },
                                     modifier = Modifier.padding(horizontal = 6.dp),
