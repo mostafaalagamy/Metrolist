@@ -170,4 +170,10 @@
     <string name="disable_load_more_when_repeat_all_desc">Automaticky nenačítat další skladby a podobný obsah, když je zapnutý režim opakování</string>
     <string name="hide_player_thumbnail">Skrýt náhled přehrávače</string>
     <string name="hide_player_thumbnail_desc">Nahradit obal alba v přehrávači logem aplikace</string>
+    <string name="settings_section_ui">Uživatelské rozhraní</string>
+    <string name="settings_section_privacy">Soukromí a zabezpečení</string>
+    <string name="settings_section_player">Přehrávač a média</string>
+    <string name="settings_section_player_content">Přehrávač a obsah</string>
+    <string name="settings_section_storage">Úložiště a data</string>
+    <string name="settings_section_system">Systém a informace</string>
 </resources>

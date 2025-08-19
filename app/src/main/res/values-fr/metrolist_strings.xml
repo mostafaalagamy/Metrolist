@@ -169,4 +169,10 @@
     <string name="hide_player_thumbnail_desc">Remplacer la pochette de l\'album par le logo de l\'application dans le lecteur</string>
     <string name="disable_load_more_when_repeat_all">Désactiver le chargement supplémentaire lors de la répétition de tout</string>
     <string name="disable_load_more_when_repeat_all_desc">Ne chargez pas automatiquement plus de titres et de contenu similaire lorsque le mode répéter tout est activé</string>
+    <string name="settings_section_ui">Interface Utilisateur</string>
+    <string name="settings_section_privacy">Confidentialité &amp; Sécurité</string>
+    <string name="settings_section_player">Lecteur &amp; Médias</string>
+    <string name="settings_section_player_content">Lecteur &amp; Contenu</string>
+    <string name="settings_section_storage">Stockage &amp; Données</string>
+    <string name="settings_section_system">Système &amp; À propos</string>
 </resources>
