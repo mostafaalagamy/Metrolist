@@ -155,7 +155,7 @@
     <string name="empty_playlist">Lista de reproducción vacía</string>
     <string name="sensitivity_percentage">%1$d%%</string>
     <string name="empty_playlist_desc">Esta lista de reproducción no contiene ninguna canción</string>
-    <string name="now_playing">Ahora sonando</string>
+    <string name="now_playing">Reproduciendo</string>
     <string name="seek_backward">5 segundos hacia atrás</string>
     <string name="seek_forward">5 segundos adelante</string>
     <string name="seek_forward_dynamic">+%1$d segundos hacia adelante</string>
@@ -169,4 +169,10 @@
     <string name="maximum_volume">Volumen Máximo</string>
     <string name="hide_player_thumbnail">Ocultar miniatura del reproductor</string>
     <string name="hide_player_thumbnail_desc">Reemplazar la carátula del álbum con el logotipo de la aplicación en el reproductor</string>
+    <string name="settings_section_ui">Interfaz de usuario</string>
+    <string name="settings_section_privacy">Privacidad y seguridad</string>
+    <string name="settings_section_player">Reproductor y Multimedia</string>
+    <string name="settings_section_player_content">Reproductor y contenido</string>
+    <string name="settings_section_storage">Almacenamiento y datos</string>
+    <string name="settings_section_system">Sistema y Acerca de</string>
 </resources>

@@ -169,4 +169,10 @@
     <string name="seek_seconds_addup_description">Dacă este activată, adaugă 5 secunde suplimentare în mod incremental la fiecare salt al derulării</string>
     <string name="disable_load_more_when_repeat_all">Dezactivează \"Încarcă mai multe\" atunci când se repetă tot</string>
     <string name="disable_load_more_when_repeat_all_desc">Nu încărca în mod automat mai multe melodii și conținut similar atunci când modul \"Repetă tot\" este activat</string>
+    <string name="settings_section_ui">Interfață utilizator</string>
+    <string name="settings_section_privacy">Confidențialitate și securitate</string>
+    <string name="settings_section_player">Player și media</string>
+    <string name="settings_section_player_content">Player și conținut</string>
+    <string name="settings_section_storage">Stocare și date</string>
+    <string name="settings_section_system">Sistem și despre</string>
 </resources>

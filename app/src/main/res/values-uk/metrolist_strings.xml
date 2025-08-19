@@ -172,4 +172,10 @@
     <string name="disable_load_more_when_repeat_all_desc">Не завантажувати автоматично більше пісень та подібного контенту, коли ввімкнено режим повторення всіх</string>
     <string name="hide_player_thumbnail">Приховати мініатюру гравця</string>
     <string name="hide_player_thumbnail_desc">Замінити обкладинку альбому логотипом програми в плеєрі</string>
+    <string name="settings_section_ui">Інтерфейс користувача</string>
+    <string name="settings_section_privacy">Конфіденційність та безпека</string>
+    <string name="settings_section_player">Плеєр і медіа</string>
+    <string name="settings_section_player_content">Плеєр і контент</string>
+    <string name="settings_section_storage">Зберігання та дані</string>
+    <string name="settings_section_system">Система та про нас</string>
 </resources>
