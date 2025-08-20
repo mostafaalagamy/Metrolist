@@ -254,11 +254,11 @@
     <string name="listen_history">Istoric ascultări</string>
     <string name="pause_listen_history">Pune pe pauză istoricul ascultărilor</string>
     <string name="clear_listen_history">Șterge istoricul ascultărilor</string>
-    <string name="clear_listen_history_confirm">Sigur ștergi tot istoricul ascultărilor?</string>
+    <string name="clear_listen_history_confirm">Sigur vrei să ștergi tot istoricul ascultărilor?</string>
     <string name="search_history">Istoric căutări</string>
     <string name="pause_search_history">Pune pe pauză istoricul căutărilor</string>
     <string name="clear_search_history">Șterge istoricul căutărilor</string>
-    <string name="clear_search_history_confirm">Sigur ștergi tot istoricul căutărilor?</string>
+    <string name="clear_search_history_confirm">Sigur vrei să ștergi tot istoricul căutărilor?</string>
     <string name="use_login_for_browse">Folosește autentificarea pentru a răsfoi conținut</string>
     <string name="use_login_for_browse_desc">Această setare poate influența ce conținut vezi, de exemplu poate arăta albume doar pentru utilizatorii Premium dacă ești autentificat cu un cont Premium</string>
     <string name="disable_screenshot">Dezactivează capturile de ecran</string>
