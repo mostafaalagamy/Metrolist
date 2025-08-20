@@ -57,6 +57,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
 import androidx.core.net.toUri
+import android.widget.Toast
 import androidx.media3.common.PlaybackParameters
 import androidx.media3.exoplayer.offline.Download
 import androidx.media3.exoplayer.offline.DownloadRequest
@@ -221,6 +222,7 @@ fun PlayerMenu(
                 },
                 text = stringResource(R.string.start_radio),
                 onClick = {
+                    Toast.makeText(context, "Starting radio...", Toast.LENGTH_SHORT).show()
                     playerConnection.startRadioSeamlessly()
                     onDismiss()
                 }

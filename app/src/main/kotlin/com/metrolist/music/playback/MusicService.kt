@@ -755,13 +755,10 @@ class MusicService :
     fun startRadioSeamlessly() {
         val currentMediaMetadata = player.currentMetadata ?: return
         
-        // إظهار رسالة "Starting radio"
-        showToast("Starting radio...")
-        
-        // حفظ الأغنية الحالية
+        // Save current song
         val currentSong = player.currentMediaItem
         
-        // إزالة باقي الأغاني من الـ queue
+        // Remove other songs from queue
         if (player.currentMediaItemIndex > 0) {
             player.removeMediaItems(0, player.currentMediaItemIndex)
         }
@@ -779,20 +776,10 @@ class MusicService :
                 queueTitle = initialStatus.title
             }
             
-            // إضافة أغاني الراديو بعد الأغنية الحالية
+            // Add radio songs after current song
             player.addMediaItems(initialStatus.items.drop(1))
             currentQueue = radioQueue
-            
-            // إظهار رسالة نجاح
-            showToast("Radio started successfully")
         }
-    }
-    
-    private fun showToast(message: String) {
-        // إرسال broadcast لعرض Toast من MainActivity
-        val intent = Intent("SHOW_TOAST")
-        intent.putExtra("message", message)
-        sendBroadcast(intent)
     }
 
     fun getAutomixAlbum(albumId: String) {
