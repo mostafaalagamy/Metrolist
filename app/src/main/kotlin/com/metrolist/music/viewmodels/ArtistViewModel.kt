@@ -74,7 +74,7 @@ class ArtistViewModel @Inject constructor(
                 .onSuccess { page ->
                     val filteredSections = page.sections
                         .filterNot { section ->
-                            section.title.equals("From your library", ignoreCase = true)
+                            section.moreEndpoint?.browseId?.startsWith("MPLAUC") == true
                         }
                         .map { section ->
                             section.copy(items = section.items.filterExplicit(hideExplicit))
