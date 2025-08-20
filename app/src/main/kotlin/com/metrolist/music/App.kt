@@ -37,6 +37,10 @@ import timber.log.Timber
 import java.net.Proxy
 import java.util.*
 
+import java.net.Authenticator
+import okhttp3.Credentials
+import java.net.PasswordAuthentication
+
 @HiltAndroidApp
 class App : Application(), SingletonImageLoader.Factory {
     // Create a proper application scope that will be cancelled when the app is destroyed
@@ -64,6 +68,20 @@ class App : Application(), SingletonImageLoader.Factory {
         }
 
         if (dataStore[ProxyEnabledKey] == true) {
+            if (dataStore[ProxyUsernameKey] != "" || dataStore[ProxyPasswordKey] != "") {
+                if (dataStore[ProxyTypeKey].toEnum(defaultValue = Proxy.Type.HTTP) == Proxy.Type.HTTP) {
+                    YouTube.proxyAuth = Credentials.basic(
+                        dataStore[ProxyUsernameKey] ?: "",
+                        dataStore[ProxyPasswordKey] ?: ""
+                    )
+                } else {
+                    val authenticator = object : Authenticator() {
+                        override fun getPasswordAuthentication() =
+                            PasswordAuthentication(dataStore[ProxyUsernameKey] ?: "", (dataStore[ProxyPasswordKey] ?: "").toCharArray())
+                    }
+                    Authenticator.setDefault(authenticator)
+                }
+            }
             try {
                 YouTube.proxy = Proxy(
                     dataStore[ProxyTypeKey].toEnum(defaultValue = Proxy.Type.HTTP),
