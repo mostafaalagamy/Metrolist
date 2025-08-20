@@ -173,6 +173,6 @@
     <string name="settings_section_privacy">Privacy e Sicurezza</string>
     <string name="settings_section_player">Lettore e Media</string>
     <string name="settings_section_player_content">Lettore e Contenuto</string>
-    <string name="settings_section_storage">Archiviazione e Dati</string>
-    <string name="settings_section_system">Sistema e Info</string>
+    <string name="settings_section_storage">Archiviazione e dati</string>
+    <string name="settings_section_system">Sistema e informazioni</string>
 </resources>
