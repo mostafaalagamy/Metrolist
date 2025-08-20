@@ -222,7 +222,7 @@ fun PlayerMenu(
                 },
                 text = stringResource(R.string.start_radio),
                 onClick = {
-                    Toast.makeText(context, "Starting radio...", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, stringResource(R.string.starting_radio), Toast.LENGTH_SHORT).show()
                     playerConnection.startRadioSeamlessly()
                     onDismiss()
                 }
