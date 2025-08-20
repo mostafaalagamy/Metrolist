@@ -1,5 +1,6 @@
 package com.metrolist.innertube.pages
 
+import com.metrolist.innertube.models.Album
 import com.metrolist.innertube.models.AlbumItem
 import com.metrolist.innertube.models.Artist
 import com.metrolist.innertube.models.ArtistItem
@@ -61,24 +62,36 @@ data class HomePage(
             private fun fromMusicTwoRowItemRenderer(renderer: MusicTwoRowItemRenderer): YTItem? {
                 return when {
                     renderer.isSong -> {
+                        val subtitleRuns = renderer.subtitle?.runs ?: return null
+                        val (artistRuns, albumRuns) = subtitleRuns.partition { run ->
+                            run.navigationEndpoint?.browseEndpoint?.browseId?.startsWith("UC") == true
+                        }
+                        val artists = artistRuns.map {
+                            Artist(
+                                name = it.text,
+                                id = it.navigationEndpoint?.browseEndpoint?.browseId ?: return null
+                            )
+                        }
                         SongItem(
                             id = renderer.navigationEndpoint.watchEndpoint?.videoId ?: return null,
                             title = renderer.title.runs?.firstOrNull()?.text ?: return null,
-                            artists = listOfNotNull(renderer.subtitle?.runs?.oddElements()?.drop(1)?.firstOrNull()?.let {
-                                Artist(
-                                    name = it.text,
-                                    id = it.navigationEndpoint?.browseEndpoint?.browseId
+                            artists = artists,
+                            album = albumRuns.firstOrNull { run ->
+                                run.navigationEndpoint?.browseEndpoint?.browseId?.startsWith("MPREb_") == true
+                            }?.let { run ->
+                                val endpoint = run.navigationEndpoint?.browseEndpoint ?: return null
+                                Album(
+                                    name = run.text,
+                                    id = endpoint.browseId
                                 )
-                            }),
-                            album = null,
+                            },
                             duration = null,
                             thumbnail = renderer.thumbnailRenderer.musicThumbnailRenderer?.getThumbnailUrl() ?: return null,
-                            explicit = renderer.subtitleBadges?.find {
+                            explicit = renderer.subtitleBadges?.any {
                                 it.musicInlineBadgeRenderer?.icon?.iconType == "MUSIC_EXPLICIT_BADGE"
-                            } != null
+                            } == true
                         )
                     }
-
                     renderer.isAlbum -> {
                         AlbumItem(
                             browseId = renderer.navigationEndpoint.browseEndpoint?.browseId ?: return null,
@@ -92,7 +105,7 @@ data class HomePage(
                                     id = it.navigationEndpoint?.browseEndpoint?.browseId
                                 )
                             },
-                            year = renderer.subtitle?.runs?.lastOrNull()?.text?.toIntOrNull(),
+                            year = null,
                             thumbnail = renderer.thumbnailRenderer.musicThumbnailRenderer?.getThumbnailUrl() ?: return null,
                             explicit = renderer.subtitleBadges?.find {
                                 it.musicInlineBadgeRenderer?.icon?.iconType == "MUSIC_EXPLICIT_BADGE"
@@ -101,7 +114,6 @@ data class HomePage(
                     }
 
                     renderer.isPlaylist -> {
-                        // Playlist from YouTube Music
                         PlaylistItem(
                             id = renderer.navigationEndpoint.browseEndpoint?.browseId?.removePrefix("VL") ?: return null,
                             title = renderer.title.runs?.firstOrNull()?.text ?: return null,
