@@ -188,6 +188,9 @@ import java.net.URLEncoder
 import java.util.Locale
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.days
+import android.content.BroadcastReceiver
+import android.content.IntentFilter
+import android.widget.Toast
 
 @Suppress("DEPRECATION", "ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
 @AndroidEntryPoint
@@ -206,6 +209,16 @@ class MainActivity : ComponentActivity() {
     private var latestVersionName by mutableStateOf(BuildConfig.VERSION_NAME)
 
     private var playerConnection by mutableStateOf<PlayerConnection?>(null)
+    
+    private val toastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (intent?.action == "SHOW_TOAST") {
+                val message = intent.getStringExtra("message") ?: return
+                Toast.makeText(this@MainActivity, message, Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+    
     private val serviceConnection =
         object : ServiceConnection {
             override fun onServiceConnected(
@@ -232,10 +245,21 @@ class MainActivity : ComponentActivity() {
             serviceConnection,
             Context.BIND_AUTO_CREATE
         )
+        
+        // تسجيل BroadcastReceiver للرسائل
+        registerReceiver(toastReceiver, IntentFilter("SHOW_TOAST"))
     }
 
     override fun onStop() {
         unbindService(serviceConnection)
+        
+        // إلغاء تسجيل BroadcastReceiver
+        try {
+            unregisterReceiver(toastReceiver)
+        } catch (e: Exception) {
+            // تجاهل الخطأ إذا لم يكن مسجل
+        }
+        
         super.onStop()
     }
 

@@ -221,12 +221,7 @@ fun PlayerMenu(
                 },
                 text = stringResource(R.string.start_radio),
                 onClick = {
-                    playerConnection.playQueue(
-                        YouTubeQueue(
-                            WatchEndpoint(videoId = mediaMetadata.id),
-                            mediaMetadata
-                        )
-                    )
+                    playerConnection.startRadioSeamlessly()
                     onDismiss()
                 }
             ),

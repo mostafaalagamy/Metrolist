@@ -754,25 +754,45 @@ class MusicService :
 
     fun startRadioSeamlessly() {
         val currentMediaMetadata = player.currentMetadata ?: return
-        if (player.currentMediaItemIndex > 0) player.removeMediaItems(
-            0,
-            player.currentMediaItemIndex
-        )
-        if (player.currentMediaItemIndex <
-            player.mediaItemCount - 1
-        ) {
+        
+        // إظهار رسالة "Starting radio"
+        showToast("Starting radio...")
+        
+        // حفظ الأغنية الحالية
+        val currentSong = player.currentMediaItem
+        
+        // إزالة باقي الأغاني من الـ queue
+        if (player.currentMediaItemIndex > 0) {
+            player.removeMediaItems(0, player.currentMediaItemIndex)
+        }
+        if (player.currentMediaItemIndex < player.mediaItemCount - 1) {
             player.removeMediaItems(player.currentMediaItemIndex + 1, player.mediaItemCount)
         }
+        
         scope.launch(SilentHandler) {
-            val radioQueue =
-                YouTubeQueue(endpoint = WatchEndpoint(videoId = currentMediaMetadata.id))
+            val radioQueue = YouTubeQueue(
+                endpoint = WatchEndpoint(videoId = currentMediaMetadata.id)
+            )
             val initialStatus = radioQueue.getInitialStatus()
+            
             if (initialStatus.title != null) {
                 queueTitle = initialStatus.title
             }
+            
+            // إضافة أغاني الراديو بعد الأغنية الحالية
             player.addMediaItems(initialStatus.items.drop(1))
             currentQueue = radioQueue
+            
+            // إظهار رسالة نجاح
+            showToast("Radio started successfully")
         }
+    }
+    
+    private fun showToast(message: String) {
+        // إرسال broadcast لعرض Toast من MainActivity
+        val intent = Intent("SHOW_TOAST")
+        intent.putExtra("message", message)
+        sendBroadcast(intent)
     }
 
     fun getAutomixAlbum(albumId: String) {
