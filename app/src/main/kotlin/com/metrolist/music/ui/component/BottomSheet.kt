@@ -4,11 +4,15 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.animation.core.AnimationVector1D
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.SpringSpec
 import androidx.compose.animation.core.VectorConverter
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.DraggableState
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -41,8 +45,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
-import com.metrolist.music.constants.BottomSheetAnimationSpec
-import com.metrolist.music.constants.BottomSheetSoftAnimationSpec
 import com.metrolist.music.constants.NavigationBarAnimationSpec
 import com.metrolist.music.utils.rememberPreference
 import kotlinx.coroutines.CoroutineScope
@@ -119,6 +121,8 @@ fun BottomSheet(
                     .graphicsLayer {
                         alpha = 1f - (state.progress * 4).coerceAtMost(1f)
                     }.clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null,
                         onClick = state::expandSoft,
                     ).fillMaxWidth()
                     .height(state.collapsedBound),
@@ -175,19 +179,19 @@ class BottomSheetState(
     }
 
     private fun collapse() {
-        collapse(BottomSheetAnimationSpec)
+        collapse(SpringSpec())
     }
 
     private fun expand() {
-        expand(BottomSheetAnimationSpec)
+        expand(SpringSpec())
     }
 
     fun collapseSoft() {
-        collapse(BottomSheetSoftAnimationSpec)
+        collapse(spring(stiffness = Spring.StiffnessMediumLow))
     }
 
     fun expandSoft() {
-        expand(BottomSheetSoftAnimationSpec)
+        expand(spring(stiffness = Spring.StiffnessMediumLow))
     }
 
     fun dismiss() {
