@@ -56,7 +56,6 @@ fun ContentSettings(
 
     val (contentLanguage, onContentLanguageChange) = rememberPreference(key = ContentLanguageKey, defaultValue = "system")
     val (contentCountry, onContentCountryChange) = rememberPreference(key = ContentCountryKey, defaultValue = "system")
-
     val (hideExplicit, onHideExplicitChange) = rememberPreference(key = HideExplicitKey, defaultValue = false)
     val (proxyEnabled, onProxyEnabledChange) = rememberPreference(key = ProxyEnabledKey, defaultValue = false)
     val (proxyType, onProxyTypeChange) = rememberEnumPreference(key = ProxyTypeKey, defaultValue = Proxy.Type.HTTP)
@@ -154,10 +153,14 @@ fun ContentSettings(
                 valueText = {
                     LanguageCodeToName.getOrElse(it) { stringResource(R.string.system_default) }
                 },
-                onValueSelected = { newValue ->
-                    val newLocale = if (newValue == SYSTEM_DEFAULT) Locale.getDefault() else Locale.forLanguageTag(newValue)
+                onValueSelected = { langTag ->
+                    val newLocale = langTag
+                        .takeUnless { it == SYSTEM_DEFAULT }
+                        ?.let { Locale.forLanguageTag(it) }
+                        ?: Locale.getDefault()
+
+                    onAppLanguageChange(langTag)
                     setAppLocale(context, newLocale)
-                    onAppLanguageChange(newValue)
 
                 }
             )
