@@ -1278,8 +1278,6 @@ class MusicService :
         }
     }
 
-    
-
     override fun onDestroy() {
         if (dataStore.get(PersistentQueueKey, true)) {
             saveQueueToDisk()
@@ -1327,4 +1325,3 @@ class MusicService :
         const val MAX_CONSECUTIVE_ERR = 5
     }
 }
-
