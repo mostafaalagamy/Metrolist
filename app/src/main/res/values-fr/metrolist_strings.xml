@@ -175,4 +175,5 @@
     <string name="settings_section_player_content">Lecteur &amp; Contenu</string>
     <string name="settings_section_storage">Stockage &amp; Données</string>
     <string name="settings_section_system">Système &amp; À propos</string>
+    <string name="starting_radio">Démarrage de la radio</string>
 </resources>
