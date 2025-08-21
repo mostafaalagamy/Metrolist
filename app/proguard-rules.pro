@@ -92,3 +92,17 @@
 
 # Keep all classes within the kuromoji package
 -keep class com.atilika.kuromoji.** { *; }
+
+## Queue Persistence Rules
+# Keep queue-related classes to prevent serialization issues in release builds
+-keep class com.metrolist.music.models.PersistQueue { *; }
+-keep class com.metrolist.music.models.PersistPlayerState { *; }
+-keep class com.metrolist.music.models.QueueData { *; }
+-keep class com.metrolist.music.models.QueueType { *; }
+-keep class com.metrolist.music.playback.queues.** { *; }
+
+# Keep serialization methods for queue persistence
+-keepclassmembers class * implements java.io.Serializable {
+    private void writeObject(java.io.ObjectOutputStream);
+    private void readObject(java.io.ObjectInputStream);
+}
