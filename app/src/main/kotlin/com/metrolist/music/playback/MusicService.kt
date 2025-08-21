@@ -76,7 +76,6 @@ import com.metrolist.music.constants.MediaSessionConstants.CommandToggleRepeatMo
 import com.metrolist.music.constants.MediaSessionConstants.CommandToggleShuffle
 import com.metrolist.music.constants.PauseListenHistoryKey
 import com.metrolist.music.constants.PersistentQueueKey
-import com.metrolist.music.constants.ServiceKeepAliveKey
 import com.metrolist.music.constants.PlayerVolumeKey
 import com.metrolist.music.constants.RepeatModeKey
 import com.metrolist.music.constants.ShowLyricsKey
@@ -836,7 +835,6 @@ class MusicService :
     }
 
     fun clearAutomix() {
-        filesDir.resolve(PERSISTENT_QUEUE_FILE).delete()
         automixItems.value = emptyList()
     }
 
@@ -943,11 +941,6 @@ class MusicService :
     override fun onPlaybackStateChanged(
         @Player.State playbackState: Int,
     ) {
-        if (playbackState == STATE_IDLE) {
-            currentQueue = EmptyQueue
-            player.shuffleModeEnabled = false
-            queueTitle = null
-        }
         
         // Save state when playback state changes
         if (dataStore.get(PersistentQueueKey, true)) {
@@ -1225,10 +1218,7 @@ class MusicService :
     }
 
     private fun saveQueueToDisk() {
-        if (player.playbackState == STATE_IDLE) {
-            filesDir.resolve(PERSISTENT_AUTOMIX_FILE).delete()
-            filesDir.resolve(PERSISTENT_QUEUE_FILE).delete()
-            filesDir.resolve(PERSISTENT_PLAYER_STATE_FILE).delete()
+        if (player.mediaItemCount == 0) {
             return
         }
         
@@ -1288,15 +1278,7 @@ class MusicService :
         }
     }
 
-    override fun onUpdateNotification(
-        session: MediaSession,
-        startInForegroundRequired: Boolean,
-    ) {
-        // Keep service alive when playing or when service keep alive is enabled
-        if (!(!player.isPlaying && dataStore.get(ServiceKeepAliveKey, false))) {
-            super.onUpdateNotification(session, startInForegroundRequired)
-        }
-    }
+    
 
     override fun onDestroy() {
         if (dataStore.get(PersistentQueueKey, true)) {

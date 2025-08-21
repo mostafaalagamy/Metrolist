@@ -45,7 +45,6 @@ import com.metrolist.music.constants.AutoLoadMoreKey
 import com.metrolist.music.constants.DisableLoadMoreWhenRepeatAllKey
 import com.metrolist.music.constants.AutoSkipNextOnErrorKey
 import com.metrolist.music.constants.PersistentQueueKey
-import com.metrolist.music.constants.ServiceKeepAliveKey
 import com.metrolist.music.constants.SimilarContent
 import com.metrolist.music.constants.SkipSilenceKey
 import com.metrolist.music.constants.StopMusicOnTaskClearKey
@@ -74,10 +73,6 @@ fun PlayerSettings(
     val (persistentQueue, onPersistentQueueChange) = rememberPreference(
         PersistentQueueKey,
         defaultValue = true
-    )
-    val (serviceKeepAlive, onServiceKeepAliveChange) = rememberPreference(
-        ServiceKeepAliveKey,
-        defaultValue = false
     )
     val (skipSilence, onSkipSilenceChange) = rememberPreference(
         SkipSilenceKey,
@@ -194,13 +189,7 @@ fun PlayerSettings(
             onCheckedChange = onPersistentQueueChange
         )
 
-        SwitchPreference(
-            title = { Text(stringResource(R.string.service_keep_alive)) },
-            description = stringResource(R.string.service_keep_alive_desc),
-            icon = { Icon(painterResource(R.drawable.wifi_proxy), null) },
-            checked = serviceKeepAlive,
-            onCheckedChange = onServiceKeepAliveChange
-        )
+        
 
         SwitchPreference(
             title = { Text(stringResource(R.string.auto_load_more)) },
