@@ -17,7 +17,7 @@
     <string name="quick_picks">Brzi izbori</string>
     <string name="quick_picks_empty">Odslušaj pesme kako bi generisao tvoje brze izbore</string>
     <string name="forgotten_favorites">Zaboravljeni favoriti</string>
-    <string name="keep_listening">Nastavi da slušaš</string>
+    <string name="keep_listening">Nastavi slušanje</string>
     <string name="your_youtube_playlists">Tvoje YouTube plejliste</string>
     <string name="similar_to">Slično ko</string>
     <string name="new_release_albums">Novi albumi</string>
@@ -26,7 +26,7 @@
     <string name="this_week">Ove nedelje</string>
     <string name="last_week">Prošle nedelje</string>
     <string name="most_played_songs">Najslušanije pesme</string>
-    <string name="most_played_artists">Najslušaniji umetnici</string>
+    <string name="most_played_artists">Najslušaniji izvođači</string>
     <string name="most_played_albums">Najslušaniji albumi</string>
     <string name="search">Pretraži</string>
     <string name="search_yt_music">Pretraži YouTube Music…</string>
@@ -35,7 +35,7 @@
     <string name="filter_songs">Pesme</string>
     <string name="filter_videos">Videi</string>
     <string name="filter_albums">Albumi</string>
-    <string name="filter_artists">Umetnici</string>
+    <string name="filter_artists">Izvođači</string>
     <string name="filter_playlists">Plejliste</string>
     <string name="filter_community_playlists">Plejliste zajednice</string>
     <string name="filter_featured_playlists">Istaknute plejliste</string>
@@ -108,9 +108,9 @@
         <item quantity="other">%d pesama</item>
     </plurals>
     <plurals name="n_artist">
-        <item quantity="one">%d umetnik</item>
-        <item quantity="few">%d umetnika</item>
-        <item quantity="other">%d umetnika</item>
+        <item quantity="one">%d izvođač</item>
+        <item quantity="few">%d izvođača</item>
+        <item quantity="other">%d izvođača</item>
     </plurals>
     <plurals name="n_album">
         <item quantity="one">%d album</item>
@@ -163,7 +163,7 @@
     <string name="customize_navigation_tabs">Izmeni kartice za navigaciju</string>
     <string name="player">Plejer</string>
     <string name="player_text_alignment">Poravnanje teksta plejera</string>
-    <string name="lyrics_text_position">Pozicija liričnog teksta</string>
+    <string name="lyrics_text_position">Pozicija teksta pesama</string>
     <string name="left">Levo</string>
     <string name="center">Centar</string>
     <string name="right">Desno</string>
@@ -207,9 +207,9 @@
     <string name="clear_listen_history_confirm">Da li ste sigurni da želite da obrišete svu istoriju slušanja?</string>
     <string name="search_history">Istorija pretrage</string>
     <string name="pause_search_history">Pauziraj istoriju pretrage</string>
-    <string name="disable_screenshot">Onemogući slikanje zaslona</string>
+    <string name="disable_screenshot">Onemogući slikanje ekrana</string>
     <string name="disable_screenshot_desc">Kada je opcija omogućena, slikanje zaslona i pregled aplikacije u Nedavnim je onemogućeno.</string>
-    <string name="enable_lrclib">Omogući LrcLib dobavljača teksta</string>
+    <string name="enable_lrclib">Omogući LrcLib dobavljača teksta pesama</string>
     <string name="enable_kugou">Omogući KuGou dobavljača teksta</string>
     <string name="hide_explicit">Sakrij eksplicitan sadržaj</string>
     <string name="backup_restore">Rezervne kopije i vraćanje</string>
@@ -219,7 +219,7 @@
     <string name="backup_create_success">Rezervna kopija je uspešno sagrađena</string>
     <string name="backup_create_failed">Nije moguće napraviti rezervnu kopiju</string>
     <string name="restore_failed">Neuspešno vraćanje rezervne kopije</string>
-    <string name="discord_integration">Integracija sa Discord-om</string>
+    <string name="discord_integration">Discord integracija</string>
     <string name="discord_information">Metrolist koristi KizzyRPC biblioteku kako bi stavio tvoj Discord status. Ovo uključuje korištenje Discord Gateway spajanja, što bi se moglo smatrati prekršajem Discord-ovog TOS-a. Međutim nema poznatih slučajeva gde su korisnički nalozi bili suspendovani zbog ovog razloga. Korisite na svoj rizik.\n\nMetrolist će samo izvesti tvoj žeton, i sve drugo je sklađeno lokalno.</string>
     <string name="dismiss">Odbaci</string>
     <string name="options">Opcije</string>
@@ -229,7 +229,7 @@
     <string name="new_version_available">Dostupna je nova verzija</string>
     <string name="translation_models">Modeli prevođenja</string>
     <string name="clear_translation_models">Obriši modele prevođenja</string>
-    <string name="library_artist_empty">Umetnici biblioteke će se pojaviti ovde</string>
+    <string name="library_artist_empty">Izvođači biblioteke će se pojaviti ovde</string>
     <string name="library_album_empty">Albumi biblioteke će se pojaviti ovde</string>
     <string name="search_library">Pretraži biblioteku…</string>
     <string name="liked_songs">Pesme koje vam se sviđaju</string>
@@ -253,20 +253,20 @@
     <string name="choose_playlist">Izaberi plejlistu</string>
     <string name="playlist_name">Ime plejliste</string>
     <string name="error_no_internet">Nema internet veze</string>
-    <string name="lyrics_not_found">Tekst nije pronađen</string>
+    <string name="lyrics_not_found">Tekst pesme nije pronađen</string>
     <string name="playlist_synced">Plejlista sinhronizovana</string>
     <string name="sleep_timer">Merač vremena za spavanje</string>
     <string name="end_of_song">Kraj pesme</string>
     <plurals name="minute">
         <item quantity="one">%d minut</item>
-        <item quantity="few">%d minute</item>
+        <item quantity="few">%d minuta</item>
         <item quantity="other">%d minuta</item>
     </plurals>
     <string name="error_no_stream">Prenos nije dostupan</string>
     <string name="error_timeout">Istek vremena</string>
     <string name="action_like">Sviđa mi se</string>
     <string name="error_unknown">Nepoznata greška</string>
-    <string name="misc">Ostalo</string>
+    <string name="misc">Razno</string>
     <string name="default_open_tab">Podrazumevana otvorena kartica</string>
     <string name="restart_to_take_effect">Ponovo pokrenite da biste videli promenu</string>
     <string name="big">Veliko</string>
@@ -282,7 +282,7 @@
     <string name="unlimited">Neograničeno</string>
     <string name="max_image_cache_size">Maksimalna veličina keša slika</string>
     <string name="clear_image_cache">Obrišite keš slika</string>
-    <string name="login_failed">Neuspešno ulogovanje</string>
+    <string name="login_failed">Neuspešna prijava</string>
     <string name="preview">Pregled</string>
     <string name="action_logout">Izloguj se</string>
     <string name="use_login_for_browse">Koristite prijavu za pregledanje sadržaja</string>
