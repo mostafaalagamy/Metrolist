@@ -754,22 +754,29 @@ class MusicService :
 
     fun startRadioSeamlessly() {
         val currentMediaMetadata = player.currentMetadata ?: return
-        if (player.currentMediaItemIndex > 0) player.removeMediaItems(
-            0,
-            player.currentMediaItemIndex
-        )
-        if (player.currentMediaItemIndex <
-            player.mediaItemCount - 1
-        ) {
+        
+        // Save current song
+        val currentSong = player.currentMediaItem
+        
+        // Remove other songs from queue
+        if (player.currentMediaItemIndex > 0) {
+            player.removeMediaItems(0, player.currentMediaItemIndex)
+        }
+        if (player.currentMediaItemIndex < player.mediaItemCount - 1) {
             player.removeMediaItems(player.currentMediaItemIndex + 1, player.mediaItemCount)
         }
+        
         scope.launch(SilentHandler) {
-            val radioQueue =
-                YouTubeQueue(endpoint = WatchEndpoint(videoId = currentMediaMetadata.id))
+            val radioQueue = YouTubeQueue(
+                endpoint = WatchEndpoint(videoId = currentMediaMetadata.id)
+            )
             val initialStatus = radioQueue.getInitialStatus()
+            
             if (initialStatus.title != null) {
                 queueTitle = initialStatus.title
             }
+            
+            // Add radio songs after current song
             player.addMediaItems(initialStatus.items.drop(1))
             currentQueue = radioQueue
         }

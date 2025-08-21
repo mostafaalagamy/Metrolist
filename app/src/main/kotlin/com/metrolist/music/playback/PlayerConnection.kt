@@ -91,6 +91,10 @@ class PlayerConnection(
         service.playQueue(queue)
     }
 
+    fun startRadioSeamlessly() {
+        service.startRadioSeamlessly()
+    }
+
     fun playNext(item: MediaItem) = playNext(listOf(item))
 
     fun playNext(items: List<MediaItem>) {
