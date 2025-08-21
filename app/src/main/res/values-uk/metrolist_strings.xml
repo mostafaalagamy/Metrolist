@@ -178,4 +178,5 @@
     <string name="settings_section_player_content">Плеєр і контент</string>
     <string name="settings_section_storage">Зберігання та дані</string>
     <string name="settings_section_system">Система та про нас</string>
+    <string name="starting_radio">Запуск радіо</string>
 </resources>
