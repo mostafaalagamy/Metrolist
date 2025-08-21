@@ -189,8 +189,6 @@ fun PlayerSettings(
             onCheckedChange = onPersistentQueueChange
         )
 
-        
-
         SwitchPreference(
             title = { Text(stringResource(R.string.auto_load_more)) },
             description = stringResource(R.string.auto_load_more_desc),
