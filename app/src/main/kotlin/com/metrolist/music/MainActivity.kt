@@ -206,6 +206,7 @@ class MainActivity : ComponentActivity() {
     private var latestVersionName by mutableStateOf(BuildConfig.VERSION_NAME)
 
     private var playerConnection by mutableStateOf<PlayerConnection?>(null)
+    
     private val serviceConnection =
         object : ServiceConnection {
             override fun onServiceConnected(
