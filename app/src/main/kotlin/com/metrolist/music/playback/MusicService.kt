@@ -835,7 +835,6 @@ class MusicService :
     }
 
     fun clearAutomix() {
-        filesDir.resolve(PERSISTENT_QUEUE_FILE).delete()
         automixItems.value = emptyList()
     }
 
@@ -942,11 +941,6 @@ class MusicService :
     override fun onPlaybackStateChanged(
         @Player.State playbackState: Int,
     ) {
-        if (playbackState == STATE_IDLE) {
-            currentQueue = EmptyQueue
-            player.shuffleModeEnabled = false
-            queueTitle = null
-        }
         
         // Save state when playback state changes
         if (dataStore.get(PersistentQueueKey, true)) {
@@ -1224,10 +1218,7 @@ class MusicService :
     }
 
     private fun saveQueueToDisk() {
-        if (player.playbackState == STATE_IDLE) {
-            filesDir.resolve(PERSISTENT_AUTOMIX_FILE).delete()
-            filesDir.resolve(PERSISTENT_QUEUE_FILE).delete()
-            filesDir.resolve(PERSISTENT_PLAYER_STATE_FILE).delete()
+        if (player.mediaItemCount == 0) {
             return
         }
         
@@ -1308,7 +1299,6 @@ class MusicService :
 
     override fun onTaskRemoved(rootIntent: Intent?) {
         super.onTaskRemoved(rootIntent)
-        stopSelf()
     }
 
     override fun onGetSession(controllerInfo: MediaSession.ControllerInfo) = mediaSession
@@ -1335,4 +1325,3 @@ class MusicService :
         const val MAX_CONSECUTIVE_ERR = 5
     }
 }
-
