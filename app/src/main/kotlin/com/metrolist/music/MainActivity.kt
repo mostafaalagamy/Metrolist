@@ -272,8 +272,10 @@ class MainActivity : ComponentActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-            val newValue = dataStore[AppLanguageKey]?: "en_US"
-            val locale = if (newValue == SYSTEM_DEFAULT) Locale.getDefault() else Locale.forLanguageTag(newValue)
+            val locale = dataStore[AppLanguageKey]
+                ?.takeUnless { it == SYSTEM_DEFAULT }
+                ?.let { Locale.forLanguageTag(it) }
+                ?: Locale.getDefault()
             setAppLocale(this, locale)
         }
         
