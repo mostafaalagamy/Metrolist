@@ -70,10 +70,10 @@ android {
             keyPassword = System.getenv("KEY_PASSWORD")
         }
         getByName("debug") {
+            storeFile = file("${System.getProperty("user.home")}/.android/debug.keystore")
+            storePassword = "android"
             keyAlias = "androiddebugkey"
             keyPassword = "android"
-            storePassword = "android"
-            storeFile = file("${System.getProperty("user.home")}/.android/debug.keystore")
         }
     }
 
@@ -89,10 +89,10 @@ android {
         debug {
             applicationIdSuffix = ".debug"
             isDebuggable = true
-            signingConfig = if (System.getenv("GITHUB_EVENT_NAME") == "pull_request") {
+            signingConfig = if (System.getenv("GITHUB_EVENT_NAME").isNullOrEmpty()) {
                 signingConfigs.getByName("debug")
             } else {
-                signingConfigs.getByName("persistentDebug")
+                signingConfigs.getByName("persistentDebug") 
             }
         }
     }
