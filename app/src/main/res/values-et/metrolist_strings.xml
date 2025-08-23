@@ -118,4 +118,14 @@
     <string name="subscribe">Telli</string>
     <string name="subscribed">Tellitud</string>
     <string name="top_length">Minu parimate lugude loendi pikkus</string>
+    <string name="starting_radio">Käivitan raadiot</string>
+    <string name="now_playing">Praegu esitamisel</string>
+    <string name="close">Sulge</string>
+    <string name="minimum_volume">Väikseim helivaljus</string>
+    <string name="maximum_volume">Suurim helivaljus</string>
+    <string name="seek_backward">5 sekundit tagasi</string>
+    <string name="seek_forward">5 sekundit edasi</string>
+    <string name="seek_forward_dynamic">+%1$d sekundit edasi</string>
+    <string name="seek_backward_dynamic">-%1$d sekundit tagasi</string>
+    <string name="new_mini_player_design">Meediaesitaja uus kompaktne kujundus</string>
 </resources>
