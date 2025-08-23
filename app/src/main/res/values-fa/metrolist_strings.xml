@@ -116,4 +116,9 @@
     <string name="token_hidden">ضربه برای نمایش توکن</string>
     <string name="set_quick_picks">تنظیم انتخاب سریع</string>
     <string name="views">بازدید‌ها</string>
+    <string name="charts">چارت‌ها</string>
+    <string name="unknown_item_type">آیتم نامشخص</string>
+    <string name="loading_charts">بارگذاری چارت‌ها...</string>
+    <string name="cached_playlist">کش شده</string>
+    <string name="now_playing">در حال پخش</string>
 </resources>
