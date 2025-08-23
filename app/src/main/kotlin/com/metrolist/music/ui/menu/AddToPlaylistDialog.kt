@@ -72,7 +72,7 @@ fun AddToPlaylistDialog(
     if (isVisible) {
         AlertDialog(
             onDismissRequest = onDismiss,
-            title = { Text("Add to playlist") },
+            title = { stringResource(R.string.add_to_playlist) },
             text = {
                 LazyColumn {
                     item {
@@ -120,7 +120,7 @@ fun AddToPlaylistDialog(
                 }
             },
             dismissButton = {
-                TextButton(onClick = onDismiss) { Text("Cancel") }
+                TextButton(onClick = onDismiss) { Text(stringResource(R.string.cancel)) }
             },
             confirmButton = {
                 TextButton(
@@ -171,7 +171,7 @@ fun AddToPlaylistDialog(
                         }
                     }
                 ) {
-                    Text("Done")
+                    Text(stringResource(R.string.done))
                 }
             }
         )

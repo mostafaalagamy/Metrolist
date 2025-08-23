@@ -102,6 +102,7 @@
     <string name="remove_download">Remove download</string>
     <string name="import_playlist">Import playlist</string>
     <string name="add_to_playlist">Add to playlist</string>
+    <string name="done">Done</string>
     <string name="view_artist">View artist</string>
     <string name="view_album">View album</string>
     <string name="refetch">Refetch</string>
