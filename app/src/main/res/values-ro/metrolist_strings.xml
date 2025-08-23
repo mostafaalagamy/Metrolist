@@ -175,4 +175,5 @@
     <string name="settings_section_player_content">Player și conținut</string>
     <string name="settings_section_storage">Stocare și date</string>
     <string name="settings_section_system">Sistem și despre</string>
+    <string name="starting_radio">Se pornește radioul</string>
 </resources>
