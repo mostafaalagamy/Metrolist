@@ -200,7 +200,7 @@ fun OnlineSearchResult(
 
                 items(
                     items = summary.items,
-                    key = { "${summary.title}/${it.id}" },
+                    key = { "${summary.title}/${it.id}/${summary.items.indexOf(it)}" },
                     itemContent = ytItemContent,
                 )
             }
@@ -216,7 +216,7 @@ fun OnlineSearchResult(
         } else {
             items(
                 items = itemsPage?.items.orEmpty().distinctBy { it.id },
-                key = { it.id },
+                key = { "filtered_${it.id}" },
                 itemContent = ytItemContent,
             )
 

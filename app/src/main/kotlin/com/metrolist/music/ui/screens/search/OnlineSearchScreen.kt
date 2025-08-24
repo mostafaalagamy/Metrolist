@@ -88,7 +88,7 @@ fun OnlineSearchScreen(
             .fillMaxSize()
             .background(if (pureBlack) Color.Black else MaterialTheme.colorScheme.background)
     ) {
-        items(viewState.history, key = { it.query }) { history ->
+        items(viewState.history, key = { "history_${it.query}" }) { history ->
             SuggestionItem(
                 query = history.query,
                 online = false,
@@ -109,7 +109,7 @@ fun OnlineSearchScreen(
             )
         }
 
-        items(viewState.suggestions, key = { it }) { query ->
+        items(viewState.suggestions, key = { "suggestion_$it" }) { query ->
             SuggestionItem(
                 query = query,
                 online = true,
@@ -131,7 +131,7 @@ fun OnlineSearchScreen(
             }
         }
 
-        items(viewState.items.distinctBy { it.id }, key = { it.id }) { item ->
+        items(viewState.items.distinctBy { it.id }, key = { "item_${it.id}" }) { item ->
             YouTubeListItem(
                 item = item,
                 isActive = when (item) {
