@@ -64,6 +64,9 @@ class HomeViewModel @Inject constructor(
     // Account display info
     val accountName = MutableStateFlow("Guest")
     val accountImageUrl = MutableStateFlow<String?>(null)
+    
+    // Track last processed cookie to avoid unnecessary updates
+    private var lastProcessedCookie: String? = null
 
     private suspend fun getQuickPicks(){
         when (quickPicksEnum.first()) {
@@ -250,6 +253,31 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    fun refreshAccountData() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val cookie = context.dataStore.get(InnerTubeCookieKey, "")
+            if (cookie.isNotEmpty()) {
+                YouTube.accountInfo().onSuccess { info ->
+                    accountName.value = info.name
+                    accountImageUrl.value = info.thumbnailUrl
+                }.onFailure {
+                    reportException(it)
+                }
+
+                YouTube.library("FEmusic_liked_playlists").completed().onSuccess {
+                    val lists = it.items.filterIsInstance<PlaylistItem>().filterNot { it.id == "SE" }
+                    accountPlaylists.value = lists
+                }.onFailure {
+                    reportException(it)
+                }
+            } else {
+                accountName.value = "Guest"
+                accountImageUrl.value = null
+                accountPlaylists.value = null
+            }
+        }
+    }
+
     init {
         viewModelScope.launch(Dispatchers.IO) {
             // Wait for YouTube.cookie to be initialized (either set or confirmed as null)
@@ -280,10 +308,16 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             context.dataStore.data
                 .map { it[InnerTubeCookieKey] }
-                .distinctUntilChanged()
                 .collect { cookie ->
-                    // Reload account-related data when cookie changes
-                    if (YouTube.cookie != null) {
+                    // Avoid processing the same cookie value multiple times
+                    if (cookie == lastProcessedCookie) return@collect
+                    lastProcessedCookie = cookie
+                    
+                    // Use cookie parameter directly instead of YouTube.cookie for immediate response
+                    if (cookie != null && cookie.isNotEmpty()) {
+                        // Small delay to ensure YouTube.cookie is updated
+                        kotlinx.coroutines.delay(100)
+                        
                         YouTube.accountInfo().onSuccess { info ->
                             accountName.value = info.name
                             accountImageUrl.value = info.thumbnailUrl
