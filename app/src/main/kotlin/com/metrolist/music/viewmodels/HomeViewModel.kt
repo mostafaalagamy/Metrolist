@@ -67,6 +67,9 @@ class HomeViewModel @Inject constructor(
     
     // Track last processed cookie to avoid unnecessary updates
     private var lastProcessedCookie: String? = null
+    
+    // Track if we're currently processing account data
+    private var isProcessingAccountData = false
 
     private suspend fun getQuickPicks(){
         when (quickPicksEnum.first()) {
@@ -255,25 +258,40 @@ class HomeViewModel @Inject constructor(
 
     fun refreshAccountData() {
         viewModelScope.launch(Dispatchers.IO) {
-            val cookie = context.dataStore.get(InnerTubeCookieKey, "")
-            if (cookie.isNotEmpty()) {
-                YouTube.accountInfo().onSuccess { info ->
-                    accountName.value = info.name
-                    accountImageUrl.value = info.thumbnailUrl
-                }.onFailure {
-                    reportException(it)
-                }
+            if (isProcessingAccountData) return@launch
+            
+            isProcessingAccountData = true
+            try {
+                val cookie = context.dataStore.get(InnerTubeCookieKey, "")
+                if (cookie.isNotEmpty()) {
+                    // Reset account data first to clear old data
+                    accountName.value = "Guest"
+                    accountImageUrl.value = null
+                    accountPlaylists.value = null
+                    
+                    // Update YouTube.cookie manually to ensure it's set
+                    YouTube.cookie = cookie
+                    
+                    YouTube.accountInfo().onSuccess { info ->
+                        accountName.value = info.name
+                        accountImageUrl.value = info.thumbnailUrl
+                    }.onFailure {
+                        reportException(it)
+                    }
 
-                YouTube.library("FEmusic_liked_playlists").completed().onSuccess {
-                    val lists = it.items.filterIsInstance<PlaylistItem>().filterNot { it.id == "SE" }
-                    accountPlaylists.value = lists
-                }.onFailure {
-                    reportException(it)
+                    YouTube.library("FEmusic_liked_playlists").completed().onSuccess {
+                        val lists = it.items.filterIsInstance<PlaylistItem>().filterNot { it.id == "SE" }
+                        accountPlaylists.value = lists
+                    }.onFailure {
+                        reportException(it)
+                    }
+                } else {
+                    accountName.value = "Guest"
+                    accountImageUrl.value = null
+                    accountPlaylists.value = null
                 }
-            } else {
-                accountName.value = "Guest"
-                accountImageUrl.value = null
-                accountPlaylists.value = null
+            } finally {
+                isProcessingAccountData = false
             }
         }
     }
@@ -309,33 +327,51 @@ class HomeViewModel @Inject constructor(
             context.dataStore.data
                 .map { it[InnerTubeCookieKey] }
                 .collect { cookie ->
-                    // Avoid processing the same cookie value multiple times
-                    if (cookie == lastProcessedCookie) return@collect
-                    lastProcessedCookie = cookie
+                    // Avoid processing if already processing
+                    if (isProcessingAccountData) return@collect
                     
-                    // Use cookie parameter directly instead of YouTube.cookie for immediate response
-                    if (cookie != null && cookie.isNotEmpty()) {
-                        // Small delay to ensure YouTube.cookie is updated
-                        kotlinx.coroutines.delay(100)
-                        
-                        YouTube.accountInfo().onSuccess { info ->
-                            accountName.value = info.name
-                            accountImageUrl.value = info.thumbnailUrl
-                        }.onFailure {
-                            reportException(it)
-                        }
+                    // Always process cookie changes, even if same value (for logout/login scenarios)
+                    lastProcessedCookie = cookie
+                    isProcessingAccountData = true
+                    
+                    try {
+                        if (cookie != null && cookie.isNotEmpty()) {
+                            // Reset account data first to clear old data immediately
+                            accountName.value = "Guest"
+                            accountImageUrl.value = null
+                            accountPlaylists.value = null
+                            
+                            // Wait for YouTube.cookie to be updated
+                            kotlinx.coroutines.delay(300)
+                            
+                            // Update YouTube.cookie manually to ensure it's set
+                            YouTube.cookie = cookie
+                            
+                            // Additional delay to ensure cookie is properly set
+                            kotlinx.coroutines.delay(100)
+                            
+                            // Fetch new account data
+                            YouTube.accountInfo().onSuccess { info ->
+                                accountName.value = info.name
+                                accountImageUrl.value = info.thumbnailUrl
+                            }.onFailure {
+                                reportException(it)
+                            }
 
-                        YouTube.library("FEmusic_liked_playlists").completed().onSuccess {
-                            val lists = it.items.filterIsInstance<PlaylistItem>().filterNot { it.id == "SE" }
-                            accountPlaylists.value = lists
-                        }.onFailure {
-                            reportException(it)
+                            YouTube.library("FEmusic_liked_playlists").completed().onSuccess {
+                                val lists = it.items.filterIsInstance<PlaylistItem>().filterNot { it.id == "SE" }
+                                accountPlaylists.value = lists
+                            }.onFailure {
+                                reportException(it)
+                            }
+                        } else {
+                            // Reset account data when logged out
+                            accountName.value = "Guest"
+                            accountImageUrl.value = null
+                            accountPlaylists.value = null
                         }
-                    } else {
-                        // Reset account data when logged out
-                        accountName.value = "Guest"
-                        accountImageUrl.value = null
-                        accountPlaylists.value = null
+                    } finally {
+                        isProcessingAccountData = false
                     }
                 }
         }
