@@ -12,6 +12,7 @@ import com.metrolist.innertube.pages.ExplorePage
 import com.metrolist.innertube.pages.HomePage
 import com.metrolist.innertube.utils.completed
 import com.metrolist.music.constants.HideExplicitKey
+import com.metrolist.music.constants.InnerTubeCookieKey
 import com.metrolist.music.constants.QuickPicks
 import com.metrolist.music.constants.QuickPicksKey
 import com.metrolist.music.constants.YtmSyncKey
@@ -96,21 +97,7 @@ class HomeViewModel @Inject constructor(
         allLocalItems.value = (quickPicks.value.orEmpty() + forgottenFavorites.value.orEmpty() + keepListening.value.orEmpty())
             .filter { it is Song || it is Album }
 
-        if (YouTube.cookie != null) {
-            YouTube.accountInfo().onSuccess { info ->
-                accountName.value = info.name
-                accountImageUrl.value = info.thumbnailUrl
-            }.onFailure {
-                reportException(it)
-            }
-
-            YouTube.library("FEmusic_liked_playlists").completed().onSuccess {
-                val lists = it.items.filterIsInstance<PlaylistItem>().filterNot { it.id == "SE" }
-                accountPlaylists.value = lists
-            }.onFailure {
-                reportException(it)
-            }
-        }
+        // Account data is now handled in the init block to avoid duplication
 
         val artistRecommendations = database.mostPlayedArtists(fromTimeStamp, limit = 10).first()
             .filter { it.artist.isYouTubeArtist }
@@ -265,6 +252,12 @@ class HomeViewModel @Inject constructor(
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
+            // Wait for YouTube.cookie to be initialized (either set or confirmed as null)
+            context.dataStore.data
+                .map { it[InnerTubeCookieKey] }
+                .distinctUntilChanged()
+                .first()
+            
             load()
 
             val isSyncEnabled = context.dataStore.data
@@ -281,6 +274,36 @@ class HomeViewModel @Inject constructor(
                     launch { syncUtils.syncArtistsSubscriptions() }
                 }
             }
+        }
+        
+        // Listen for cookie changes and reload account data
+        viewModelScope.launch(Dispatchers.IO) {
+            context.dataStore.data
+                .map { it[InnerTubeCookieKey] }
+                .distinctUntilChanged()
+                .collect { cookie ->
+                    // Reload account-related data when cookie changes
+                    if (YouTube.cookie != null) {
+                        YouTube.accountInfo().onSuccess { info ->
+                            accountName.value = info.name
+                            accountImageUrl.value = info.thumbnailUrl
+                        }.onFailure {
+                            reportException(it)
+                        }
+
+                        YouTube.library("FEmusic_liked_playlists").completed().onSuccess {
+                            val lists = it.items.filterIsInstance<PlaylistItem>().filterNot { it.id == "SE" }
+                            accountPlaylists.value = lists
+                        }.onFailure {
+                            reportException(it)
+                        }
+                    } else {
+                        // Reset account data when logged out
+                        accountName.value = "Guest"
+                        accountImageUrl.value = null
+                        accountPlaylists.value = null
+                    }
+                }
         }
     }
 }
