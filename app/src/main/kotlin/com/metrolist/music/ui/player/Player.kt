@@ -516,6 +516,9 @@ fun BottomSheetPlayer(
             }
         },
         onDismiss = {
+            playerConnection.service.clearAutomix()
+            playerConnection.player.stop()
+            playerConnection.player.clearMediaItems()
         },
         collapsedContent = {
             MiniPlayer(
