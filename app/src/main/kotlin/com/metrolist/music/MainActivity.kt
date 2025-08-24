@@ -118,6 +118,7 @@ import com.metrolist.innertube.YouTube
 import com.metrolist.innertube.models.SongItem
 import com.metrolist.innertube.models.WatchEndpoint
 import com.metrolist.music.constants.AppBarHeight
+import com.metrolist.music.constants.AppLanguageKey
 import com.metrolist.music.constants.DarkModeKey
 import com.metrolist.music.constants.DefaultOpenTabKey
 import com.metrolist.music.constants.DisableScreenshotKey
@@ -129,6 +130,7 @@ import com.metrolist.music.constants.NavigationBarAnimationSpec
 import com.metrolist.music.constants.NavigationBarHeight
 import com.metrolist.music.constants.PauseSearchHistoryKey
 import com.metrolist.music.constants.PureBlackKey
+import com.metrolist.music.constants.SYSTEM_DEFAULT
 import com.metrolist.music.constants.SearchSource
 import com.metrolist.music.constants.SearchSourceKey
 import com.metrolist.music.constants.SlimNavBarKey
@@ -173,6 +175,7 @@ import com.metrolist.music.utils.get
 import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
 import com.metrolist.music.utils.reportException
+import com.metrolist.music.utils.setAppLocale
 import com.metrolist.music.viewmodels.HomeViewModel
 import com.valentinilk.shimmer.LocalShimmerTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -269,6 +272,14 @@ class MainActivity : ComponentActivity() {
         window.decorView.layoutDirection = View.LAYOUT_DIRECTION_LTR
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            val locale = dataStore[AppLanguageKey]
+                ?.takeUnless { it == SYSTEM_DEFAULT }
+                ?.let { Locale.forLanguageTag(it) }
+                ?: Locale.getDefault()
+            setAppLocale(this, locale)
+        }
+        
         lifecycleScope.launch {
             dataStore.data
                 .map { it[DisableScreenshotKey] ?: false }

@@ -38,6 +38,7 @@ import com.metrolist.music.ui.component.*
 import com.metrolist.music.ui.utils.backToMain
 import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
+import com.metrolist.music.utils.setAppLocale
 import java.net.Proxy
 import java.util.Locale
 import androidx.core.net.toUri
@@ -49,6 +50,9 @@ fun ContentSettings(
     scrollBehavior: TopAppBarScrollBehavior,
 ) {
     val context = LocalContext.current
+
+    // Used only before Android 13
+    val (appLanguage, onAppLanguageChange) = rememberPreference(key = AppLanguageKey, defaultValue = SYSTEM_DEFAULT)
 
     val (contentLanguage, onContentLanguageChange) = rememberPreference(key = ContentLanguageKey, defaultValue = "system")
     val (contentCountry, onContentCountryChange) = rememberPreference(key = ContentCountryKey, defaultValue = "system")
@@ -136,6 +140,28 @@ fun ContentSettings(
                             "package:${context.packageName}".toUri()
                         )
                     )
+                }
+            )
+        }
+        // Support for Android versions before Android 13
+        else {
+            ListPreference(
+                title = { Text(stringResource(R.string.app_language)) },
+                icon = { Icon(painterResource(R.drawable.language), null) },
+                selectedValue = appLanguage,
+                values = listOf(SYSTEM_DEFAULT) + LanguageCodeToName.keys.toList(),
+                valueText = {
+                    LanguageCodeToName.getOrElse(it) { stringResource(R.string.system_default) }
+                },
+                onValueSelected = { langTag ->
+                    val newLocale = langTag
+                        .takeUnless { it == SYSTEM_DEFAULT }
+                        ?.let { Locale.forLanguageTag(it) }
+                        ?: Locale.getDefault()
+
+                    onAppLanguageChange(langTag)
+                    setAppLocale(context, newLocale)
+
                 }
             )
         }
