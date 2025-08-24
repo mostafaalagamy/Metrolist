@@ -184,4 +184,5 @@
     <string name="settings_section_player_content">المشغل و المحتوي</string>
     <string name="settings_section_storage">التخزين و البيانات</string>
     <string name="settings_section_system">‫النظام والمعلومات</string>
+    <string name="starting_radio">بدء تشغيل الراديو</string>
 </resources>
