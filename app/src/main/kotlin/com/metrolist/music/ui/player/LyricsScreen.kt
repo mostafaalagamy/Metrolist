@@ -20,7 +20,6 @@ import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
@@ -421,8 +420,7 @@ fun LyricsScreen(
                                 contentAlignment = Alignment.Center  // Center lyrics in landscape
                             ) {
                                 Lyrics(
-                                    sliderPositionProvider = { sliderPosition },
-                                    modifier = Modifier.offset(y = (-80).dp)  // Raise lyrics up by 80dp
+                                    sliderPositionProvider = { sliderPosition }
                                 )
                             }
                         }
