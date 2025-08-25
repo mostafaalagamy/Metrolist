@@ -174,9 +174,15 @@ fun HistoryScreen(
         }
     }
 
-    val wrappedItems = remember(filteredEvents) {
-        filteredEvents.flatMap { it.value }.map { WrappedHistoryItem(it) }
-    }.toMutableStateList()
+    val wrappedItemsMap = remember(filteredEvents) {
+        filteredEvents.mapValues { (_, events) ->
+            events.map { WrappedHistoryItem(it) }.toMutableStateList()
+        }
+    }
+
+    val allWrappedItems = remember(wrappedItemsMap) {
+        wrappedItemsMap.values.flatten()
+    }
 
     val lazyListState = rememberLazyListState()
 
@@ -283,8 +289,11 @@ fun HistoryScreen(
                         )
                     }
 
+                    val currentDateWrappedItems = wrappedItemsMap[dateAgo] ?: emptyList()
+                    
                     itemsIndexed(
-                        items = wrappedItems,
+                        items = currentDateWrappedItems,
+                        key = { index, wrappedItem -> "${dateAgo}_${wrappedItem.item.event.id}_$index" }
                     ) { index, wrappedItem ->
                         val event = wrappedItem.item
                         SongListItem(
@@ -326,7 +335,7 @@ fun HistoryScreen(
                                                 playerConnection.playQueue(
                                                     ListQueue(
                                                         title = dateAgoToString(dateAgo),
-                                                        items = wrappedItems.map { it.item.song.toMediaItem() },
+                                                        items = currentDateWrappedItems.map { it.item.song.toMediaItem() },
                                                         startIndex = index
                                                     )
                                                 )
@@ -339,7 +348,7 @@ fun HistoryScreen(
                                         haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                                         if (!selection) {
                                             selection = true
-                                            wrappedItems.forEach { it.isSelected = false }
+                                            allWrappedItems.forEach { it.isSelected = false }
                                             wrappedItem.isSelected = true
                                         }
                                     }
@@ -355,7 +364,7 @@ fun HistoryScreen(
             visible = if (historySource == HistorySource.REMOTE) {
                 filteredRemoteContent?.any { it.songs.isNotEmpty() } == true
             } else {
-                wrappedItems.isNotEmpty()
+                allWrappedItems.isNotEmpty()
             },
             lazyListState = lazyListState,
             icon = R.drawable.shuffle,
@@ -374,7 +383,7 @@ fun HistoryScreen(
                     playerConnection.playQueue(
                         ListQueue(
                             title = context.getString(R.string.history),
-                            items = wrappedItems.map { it.item.song.toMediaItem() }.shuffled()
+                            items = allWrappedItems.map { it.item.song.toMediaItem() }.shuffled()
                         )
                     )
                 }
@@ -385,7 +394,7 @@ fun HistoryScreen(
     TopAppBar(
         title = {
             if (selection) {
-                val count = wrappedItems.count { it.isSelected }
+                val count = allWrappedItems.count { it.isSelected }
                 Text(
                     text = pluralStringResource(R.plurals.n_song, count, count),
                     style = MaterialTheme.typography.titleLarge
@@ -452,19 +461,19 @@ fun HistoryScreen(
         },
         actions = {
             if (selection) {
-                val count = wrappedItems.count { it.isSelected }
+                val count = allWrappedItems.count { it.isSelected }
                 IconButton(
                     onClick = {
-                        if (count == wrappedItems.size) {
-                            wrappedItems.forEach { it.isSelected = false }
+                        if (count == allWrappedItems.size) {
+                            allWrappedItems.forEach { it.isSelected = false }
                         } else {
-                            wrappedItems.forEach { it.isSelected = true }
+                            allWrappedItems.forEach { it.isSelected = true }
                         }
                     }
                 ) {
                     Icon(
                         painter = painterResource(
-                            if (count == wrappedItems.size) R.drawable.deselect else R.drawable.select_all
+                            if (count == allWrappedItems.size) R.drawable.deselect else R.drawable.select_all
                         ),
                         contentDescription = null
                     )
@@ -473,7 +482,7 @@ fun HistoryScreen(
                     onClick = {
                         menuState.show {
                             SelectionMediaMetadataMenu(
-                                songSelection = wrappedItems
+                                songSelection = allWrappedItems
                                     .filter { it.isSelected }
                                     .map { it.item.song.toMediaItem().metadata!! },
                                 onDismiss = menuState::dismiss,
