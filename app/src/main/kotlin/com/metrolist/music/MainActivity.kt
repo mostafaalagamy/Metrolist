@@ -454,7 +454,7 @@ class MainActivity : ComponentActivity() {
 
                     fun getNavPadding(): Dp {
                         return if (shouldShowNavigationBar) {
-                            if (slimNav) 52.dp else 68.dp
+                            if (slimNav) SlimNavBarHeight else NavigationBarHeight
                         } else {
                             0.dp
                         }
