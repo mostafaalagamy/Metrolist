@@ -91,6 +91,7 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastAny
 import androidx.compose.ui.util.fastFirstOrNull
@@ -133,6 +134,7 @@ import com.metrolist.music.constants.PureBlackKey
 import com.metrolist.music.constants.SYSTEM_DEFAULT
 import com.metrolist.music.constants.SearchSource
 import com.metrolist.music.constants.SearchSourceKey
+import com.metrolist.music.constants.SlimNavBarHeight
 import com.metrolist.music.constants.SlimNavBarKey
 import com.metrolist.music.constants.StopMusicOnTaskClearKey
 import com.metrolist.music.db.MusicDatabase
@@ -451,6 +453,14 @@ class MainActivity : ComponentActivity() {
                                     !active
                         }
 
+                    fun getNavPadding(): Dp {
+                        return if (shouldShowNavigationBar) {
+                            if (slimNav) SlimNavBarHeight else NavigationBarHeight
+                        } else {
+                            0.dp
+                        }
+                    }
+
                     val navigationBarHeight by animateDpAsState(
                         targetValue = if (shouldShowNavigationBar) NavigationBarHeight else 0.dp,
                         animationSpec = NavigationBarAnimationSpec,
@@ -460,7 +470,7 @@ class MainActivity : ComponentActivity() {
                     val playerBottomSheetState =
                         rememberBottomSheetState(
                             dismissedBound = 0.dp,
-                            collapsedBound = bottomInset + (if (shouldShowNavigationBar) NavigationBarHeight else 0.dp) + (if (useNewMiniPlayerDesign) MiniPlayerBottomSpacing else 0.dp) + MiniPlayerHeight,
+                            collapsedBound = bottomInset + getNavPadding() + (if (useNewMiniPlayerDesign) MiniPlayerBottomSpacing else 0.dp) + MiniPlayerHeight,
                             expandedBound = maxHeight,
                         )
 
@@ -864,6 +874,7 @@ class MainActivity : ComponentActivity() {
                                     NavigationBar(
                                         modifier = Modifier
                                             .align(Alignment.BottomCenter)
+                                            .height(bottomInset + getNavPadding())
                                             .offset {
                                                 if (navigationBarHeight == 0.dp) {
                                                     IntOffset(
