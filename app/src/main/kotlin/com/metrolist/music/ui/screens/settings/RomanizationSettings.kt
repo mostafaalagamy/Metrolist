@@ -52,9 +52,12 @@ fun RomanizationSettings(
 
     val (lyricsRomanizeJapanese, onLyricsRomanizeJapaneseChange) = rememberPreference(LyricsRomanizeJapaneseKey, defaultValue = true)
     val (lyricsRomanizeKorean, onLyricsRomanizeKoreanChange) = rememberPreference(LyricsRomanizeKoreanKey, defaultValue = true)
-    val (lyricsRomanizeRussian, onLyricsRomanizeRussianChange) = rememberPreference(LyricsRomanizeRussianKey, defaultValue = false)
-    val (lyricsRomanizeUkrainian, onLyricsRomanizeUkrainianChange) = rememberPreference(LyricsRomanizeUkrainianKey, defaultValue = false)
-    val (lyricsRomanizeBelarusian, onLyricsRomanizeBelarusianChange) = rememberPreference(LyricsRomanizeBelarusianKey, defaultValue = false)
+    val (lyricsRomanizeRussian, onLyricsRomanizeRussianChange) = rememberPreference(LyricsRomanizeRussianKey, defaultValue = true)
+    val (lyricsRomanizeUkrainian, onLyricsRomanizeUkrainianChange) = rememberPreference(LyricsRomanizeUkrainianKey, defaultValue = true)
+    val (lyricsRomanizeSerbian, onLyricsRomanizeSerbianChange) = rememberPreference(LyricsRomanizeSerbianKey, defaultValue = true)
+    val (lyricsRomanizeBelarusian, onLyricsRomanizeBelarusianChange) = rememberPreference(LyricsRomanizeBelarusianKey, defaultValue = true)
+    val (lyricsRomanizeKyrgyz, onLyricsRomanizeKyrgyzChange) = rememberPreference(LyricsRomanizeKyrgyzKey, defaultValue = true)
+    val (lyricsRomanizeCyrillicByLine, onLyricsRomanizeCyrillicByLineChange) = rememberPreference(LyricsRomanizeCyrillicByLineKey, defaultValue = false)
 
     Column(
         Modifier
@@ -91,10 +94,29 @@ fun RomanizationSettings(
             onCheckedChange = onLyricsRomanizeUkrainianChange,
         )
         SwitchPreference(
+            title = { Text(stringResource(R.string.lyrics_romanize_serbian)) },
+            icon = { Icon(painterResource(R.drawable.lyrics), null) },
+            checked = lyricsRomanizeSerbian,
+            onCheckedChange = onLyricsRomanizeSerbianChange,
+        )
+        SwitchPreference(
             title = { Text(stringResource(R.string.lyrics_romanize_belarusian)) },
             icon = { Icon(painterResource(R.drawable.lyrics), null) },
             checked = lyricsRomanizeBelarusian,
             onCheckedChange = onLyricsRomanizeBelarusianChange,
+        )
+        SwitchPreference(
+            title = { Text(stringResource(R.string.lyrics_romanize_kyrgyz)) },
+            icon = { Icon(painterResource(R.drawable.lyrics), null) },
+            checked = lyricsRomanizeKyrgyz,
+            onCheckedChange = onLyricsRomanizeKyrgyzChange,
+        )
+        SwitchPreference(
+            title = { Text("EXPERIMENTAL: Detect language line by line") },
+            icon = { Icon(painterResource(R.drawable.lyrics), null) },
+            description = "Normally the cyrillic language is determined from the lyrics of the whole song. With this option on, it will be determined line by line instead. This might cause some inaccuracies.",
+            checked = lyricsRomanizeCyrillicByLine,
+            onCheckedChange = onLyricsRomanizeCyrillicByLineChange,
         )
     }
 

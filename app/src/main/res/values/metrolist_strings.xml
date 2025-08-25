@@ -197,4 +197,6 @@
     <string name="lyrics_romanization">Lyrics romanization</string>
     <string name="lyrics_romanize_ukrainian">Romanize ukrainian lyrics</string>
     <string name="lyrics_romanize_belarusian">Romanize belarusian lyrics</string>
+    <string name="lyrics_romanize_kyrgyz">Romanize kyrgyz lyrics</string>
+    <string name="lyrics_romanize_serbian">Romanize serbian lyrics</string>
 </resources>

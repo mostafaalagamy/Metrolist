@@ -5,17 +5,17 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.os.Build
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.annotation.RequiresApi
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.animateScrollBy
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.gestures.animateScrollBy
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -37,18 +37,15 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -68,9 +65,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
@@ -81,14 +78,13 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.Lifecycle
-import androidx.activity.compose.BackHandler
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.palette.graphics.Palette
@@ -101,30 +97,34 @@ import com.metrolist.music.R
 import com.metrolist.music.constants.DarkModeKey
 import com.metrolist.music.constants.LyricsClickKey
 import com.metrolist.music.constants.LyricsRomanizeBelarusianKey
+import com.metrolist.music.constants.LyricsRomanizeCyrillicByLineKey
 import com.metrolist.music.constants.LyricsRomanizeJapaneseKey
 import com.metrolist.music.constants.LyricsRomanizeKoreanKey
-import com.metrolist.music.constants.LyricsRomanizeUkrainianKey
+import com.metrolist.music.constants.LyricsRomanizeKyrgyzKey
 import com.metrolist.music.constants.LyricsRomanizeRussianKey
+import com.metrolist.music.constants.LyricsRomanizeSerbianKey
+import com.metrolist.music.constants.LyricsRomanizeUkrainianKey
 import com.metrolist.music.constants.LyricsScrollKey
 import com.metrolist.music.constants.LyricsTextPositionKey
 import com.metrolist.music.constants.PlayerBackgroundStyle
 import com.metrolist.music.constants.PlayerBackgroundStyleKey
 import com.metrolist.music.db.entities.LyricsEntity.Companion.LYRICS_NOT_FOUND
 import com.metrolist.music.lyrics.LyricsEntry
-import com.metrolist.music.lyrics.LyricsUtils.isChinese
 import com.metrolist.music.lyrics.LyricsUtils.findCurrentLineIndex
 import com.metrolist.music.lyrics.LyricsUtils.isBelarusian
+import com.metrolist.music.lyrics.LyricsUtils.isChinese
 import com.metrolist.music.lyrics.LyricsUtils.isJapanese
 import com.metrolist.music.lyrics.LyricsUtils.isKorean
+import com.metrolist.music.lyrics.LyricsUtils.isKyrgyz
 import com.metrolist.music.lyrics.LyricsUtils.isRussian
+import com.metrolist.music.lyrics.LyricsUtils.isSerbian
 import com.metrolist.music.lyrics.LyricsUtils.isUkrainian
 import com.metrolist.music.lyrics.LyricsUtils.parseLyrics
+import com.metrolist.music.lyrics.LyricsUtils.romanizeCyrillic
 import com.metrolist.music.lyrics.LyricsUtils.romanizeJapanese
 import com.metrolist.music.lyrics.LyricsUtils.romanizeKorean
-import com.metrolist.music.lyrics.LyricsUtils.romanizeCyrillic
 import com.metrolist.music.ui.component.shimmer.ShimmerHost
 import com.metrolist.music.ui.component.shimmer.TextPlaceholder
-import com.metrolist.music.ui.menu.LyricsMenu
 import com.metrolist.music.ui.screens.settings.DarkMode
 import com.metrolist.music.ui.screens.settings.LyricsPosition
 import com.metrolist.music.ui.utils.fadingEdge
@@ -162,7 +162,10 @@ fun Lyrics(
     val romanizeKoreanLyrics by rememberPreference(LyricsRomanizeKoreanKey, true)
     val romanizeRussianLyrics by rememberPreference(LyricsRomanizeRussianKey, true)
     val romanizeUkrainianLyrics by rememberPreference(LyricsRomanizeUkrainianKey, true)
+    val romanizeSerbianLyrics by rememberPreference(LyricsRomanizeSerbianKey, true)
     val romanizeBelarusianLyrics by rememberPreference(LyricsRomanizeBelarusianKey, true)
+    val romanizeKyrgyzLyrics by rememberPreference(LyricsRomanizeKyrgyzKey, true)
+    val romanizeCyrillicByLine by rememberPreference(LyricsRomanizeCyrillicByLineKey, false)
     val scope = rememberCoroutineScope()
 
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
@@ -202,21 +205,35 @@ fun Lyrics(
                     }
                 }
                 if (romanizeRussianLyrics) {
-                    if (isRussian(lyrics)) {
+                    if (isRussian(if (romanizeCyrillicByLine) entry.text else lyrics)) {
                         scope.launch {
                             newEntry.romanizedTextFlow.value = romanizeCyrillic(entry.text)
                         }
                     }
                 }
                 if (romanizeUkrainianLyrics) {
-                    if (isUkrainian(lyrics)) {
+                    if (isUkrainian(if (romanizeCyrillicByLine) entry.text else lyrics)) {
+                        scope.launch {
+                            newEntry.romanizedTextFlow.value = romanizeCyrillic(entry.text)
+                        }
+                    }
+                }
+                if (romanizeSerbianLyrics) {
+                    if (isSerbian(if (romanizeCyrillicByLine) entry.text else lyrics)) {
                         scope.launch {
                             newEntry.romanizedTextFlow.value = romanizeCyrillic(entry.text)
                         }
                     }
                 }
                 if (romanizeBelarusianLyrics) {
-                    if (isBelarusian(lyrics)) {
+                    if (isBelarusian(if (romanizeCyrillicByLine) entry.text else lyrics)) {
+                        scope.launch {
+                            newEntry.romanizedTextFlow.value = romanizeCyrillic(entry.text)
+                        }
+                    }
+                }
+                if (romanizeKyrgyzLyrics) {
+                    if (isKyrgyz(if (romanizeCyrillicByLine) entry.text else lyrics)) {
                         scope.launch {
                             newEntry.romanizedTextFlow.value = romanizeCyrillic(entry.text)
                         }
@@ -244,21 +261,35 @@ fun Lyrics(
                     }
                 }
                 if (romanizeRussianLyrics) {
-                    if (isRussian(lyrics)) {
+                    if (isRussian(if (romanizeCyrillicByLine) line else lyrics)) {
                         scope.launch {
                             newEntry.romanizedTextFlow.value = romanizeCyrillic(line)
                         }
                     }
                 }
                 if (romanizeUkrainianLyrics) {
-                    if (isUkrainian(lyrics)) {
+                    if (isUkrainian(if (romanizeCyrillicByLine) line else lyrics)) {
+                        scope.launch {
+                            newEntry.romanizedTextFlow.value = romanizeCyrillic(line)
+                        }
+                    }
+                }
+                if (romanizeSerbianLyrics) {
+                    if (isSerbian(if (romanizeCyrillicByLine) line else lyrics)) {
                         scope.launch {
                             newEntry.romanizedTextFlow.value = romanizeCyrillic(line)
                         }
                     }
                 }
                 if (romanizeBelarusianLyrics) {
-                    if (isBelarusian(lyrics)) {
+                    if (isBelarusian(if (romanizeCyrillicByLine) line else lyrics)) {
+                        scope.launch {
+                            newEntry.romanizedTextFlow.value = romanizeCyrillic(line)
+                        }
+                    }
+                }
+                if (romanizeKyrgyzLyrics) {
+                    if (isKyrgyz(if (romanizeCyrillicByLine) line else lyrics)) {
                         scope.launch {
                             newEntry.romanizedTextFlow.value = romanizeCyrillic(line)
                         }
@@ -575,7 +606,8 @@ fun Lyrics(
                                     if (isSelected) {
                                         selectedIndices.remove(index)
                                         if (selectedIndices.isEmpty()) {
-                                            isSelectionModeActive = false // Exit mode if last item deselected
+                                            isSelectionModeActive =
+                                                false // Exit mode if last item deselected
                                         }
                                     } else {
                                         if (selectedIndices.size < maxSelectionLimit) {
@@ -591,15 +623,18 @@ fun Lyrics(
                                     scope.launch {
                                         // First scroll to the clicked item without animation
                                         lazyListState.scrollToItem(index = index)
-                                        
+
                                         // Then animate it to center position slowly
-                                        val itemInfo = lazyListState.layoutInfo.visibleItemsInfo.firstOrNull { it.index == index }
+                                        val itemInfo =
+                                            lazyListState.layoutInfo.visibleItemsInfo.firstOrNull { it.index == index }
                                         if (itemInfo != null) {
-                                            val viewportHeight = lazyListState.layoutInfo.viewportEndOffset - lazyListState.layoutInfo.viewportStartOffset
-                                            val center = lazyListState.layoutInfo.viewportStartOffset + (viewportHeight / 2)
+                                            val viewportHeight =
+                                                lazyListState.layoutInfo.viewportEndOffset - lazyListState.layoutInfo.viewportStartOffset
+                                            val center =
+                                                lazyListState.layoutInfo.viewportStartOffset + (viewportHeight / 2)
                                             val itemCenter = itemInfo.offset + itemInfo.size / 2
                                             val offset = itemCenter - center
-                                            
+
                                             if (kotlin.math.abs(offset) > 10) { // Only animate if not already centered
                                                 lazyListState.animateScrollBy(
                                                     value = offset.toFloat(),
@@ -625,7 +660,9 @@ fun Lyrics(
                             }
                         )
                         .background(
-                            if (isSelected && isSelectionModeActive) MaterialTheme.colorScheme.primary.copy(alpha = 0.3f)
+                            if (isSelected && isSelectionModeActive) MaterialTheme.colorScheme.primary.copy(
+                                alpha = 0.3f
+                            )
                             else Color.Transparent
                         )
                         .padding(horizontal = 24.dp, vertical = 8.dp)
@@ -675,7 +712,7 @@ fun Lyrics(
                             },
                             fontWeight = if (index == displayedCurrentLineIndex && isSynced) FontWeight.ExtraBold else FontWeight.Bold
                         )
-                        if (romanizeJapaneseLyrics || romanizeKoreanLyrics || romanizeRussianLyrics || romanizeUkrainianLyrics || romanizeBelarusianLyrics) {
+                        if (romanizeJapaneseLyrics || romanizeKoreanLyrics || romanizeRussianLyrics || romanizeUkrainianLyrics || romanizeSerbianLyrics || romanizeBelarusianLyrics || romanizeKyrgyzLyrics) {
                             // Show romanized text if available
                             val romanizedText by item.romanizedTextFlow.collectAsState()
                             romanizedText?.let { romanized ->
@@ -740,9 +777,9 @@ fun Lyrics(
                         Row(
                             modifier = Modifier
                                 .background(
-                                    color = if (selectedIndices.isNotEmpty()) 
+                                    color = if (selectedIndices.isNotEmpty())
                                         Color.White.copy(alpha = 0.9f) // White background when active
-                                    else 
+                                    else
                                         Color.White.copy(alpha = 0.5f), // Lighter white when inactive
                                     shape = RoundedCornerShape(24.dp)
                                 )
@@ -835,11 +872,20 @@ fun Lyrics(
                                 val shareIntent = Intent().apply {
                                     action = Intent.ACTION_SEND
                                     type = "text/plain"
-                                    val songLink = "https://music.youtube.com/watch?v=${mediaMetadata?.id}"
+                                    val songLink =
+                                        "https://music.youtube.com/watch?v=${mediaMetadata?.id}"
                                     // Use the potentially multi-line lyricsText here
-                                    putExtra(Intent.EXTRA_TEXT, "\"$lyricsText\"\n\n$songTitle - $artists\n$songLink")
+                                    putExtra(
+                                        Intent.EXTRA_TEXT,
+                                        "\"$lyricsText\"\n\n$songTitle - $artists\n$songLink"
+                                    )
                                 }
-                                context.startActivity(Intent.createChooser(shareIntent, context.getString(R.string.share_lyrics)))
+                                context.startActivity(
+                                    Intent.createChooser(
+                                        shareIntent,
+                                        context.getString(R.string.share_lyrics)
+                                    )
+                                )
                                 showShareDialog = false
                             }
                             .padding(vertical = 12.dp),
@@ -1007,7 +1053,11 @@ fun Lyrics(
                                     .size(32.dp)
                                     .background(color, shape = RoundedCornerShape(8.dp))
                                     .clickable { previewBackgroundColor = color }
-                                    .border(2.dp, if (previewBackgroundColor == color) MaterialTheme.colorScheme.primary else Color.Transparent, RoundedCornerShape(8.dp))
+                                    .border(
+                                        2.dp,
+                                        if (previewBackgroundColor == color) MaterialTheme.colorScheme.primary else Color.Transparent,
+                                        RoundedCornerShape(8.dp)
+                                    )
                             )
                         }
                     }
@@ -1020,7 +1070,11 @@ fun Lyrics(
                                     .size(32.dp)
                                     .background(color, shape = RoundedCornerShape(8.dp))
                                     .clickable { previewTextColor = color }
-                                    .border(2.dp, if (previewTextColor == color) MaterialTheme.colorScheme.primary else Color.Transparent, RoundedCornerShape(8.dp))
+                                    .border(
+                                        2.dp,
+                                        if (previewTextColor == color) MaterialTheme.colorScheme.primary else Color.Transparent,
+                                        RoundedCornerShape(8.dp)
+                                    )
                             )
                         }
                     }
@@ -1033,7 +1087,11 @@ fun Lyrics(
                                     .size(32.dp)
                                     .background(color, shape = RoundedCornerShape(8.dp))
                                     .clickable { previewSecondaryTextColor = color }
-                                    .border(2.dp, if (previewSecondaryTextColor == color) MaterialTheme.colorScheme.primary else Color.Transparent, RoundedCornerShape(8.dp))
+                                    .border(
+                                        2.dp,
+                                        if (previewSecondaryTextColor == color) MaterialTheme.colorScheme.primary else Color.Transparent,
+                                        RoundedCornerShape(8.dp)
+                                    )
                             )
                         }
                     }

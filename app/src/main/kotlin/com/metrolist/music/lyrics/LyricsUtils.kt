@@ -92,7 +92,6 @@ object LyricsUtils {
     )
 
     private val GENERAL_CYRILLIC_ROMAJI_MAP: Map<String, String> = mapOf(
-        // Uppercase Cyrillic (including archaic and language-specific letters)
         "А" to "A", "Б" to "B", "В" to "V", "Г" to "G", "Ґ" to "G", "Д" to "D",
         "Ѓ" to "Ǵ", "Ђ" to "Đ", "Е" to "E", "Ё" to "Yo", "Є" to "Ye", "Ж" to "Zh",
         "З" to "Z", "Ѕ" to "Dz", "И" to "I", "І" to "I", "Ї" to "Yi", "Й" to "Y",
@@ -100,15 +99,16 @@ object LyricsUtils {
         "Њ" to "Ny", "О" to "O", "П" to "P", "Р" to "R", "С" to "S", "Т" to "T",
         "Ћ" to "Ć", "У" to "U", "Ў" to "Ŭ", "Ф" to "F", "Х" to "Kh", "Ц" to "Ts",
         "Ч" to "Ch", "Џ" to "Dž", "Ш" to "Sh", "Щ" to "Shch", "Ъ" to "ʺ", "Ы" to "Y",
-        "Ь" to "'", "Э" to "E", "Ю" to "Yu", "Я" to "Ya",
+        "Ь" to "ʹ", "Э" to "E", "Ю" to "Yu", "Я" to "Ya",
         "Ѡ" to "O", "Ѣ" to "Ya", "Ѥ" to "Ye", "Ѧ" to "Ya", "Ѩ" to "Ya",
         "Ѫ" to "U", "Ѭ" to "Yu", "Ѯ" to "Ks", "Ѱ" to "Ps", "Ѳ" to "F",
         "Ѵ" to "I", "Ѷ" to "I", "Ғ" to "Gh", "Ҕ" to "G", "Җ" to "Zh",
         "Ҙ" to "Dz", "Қ" to "Q", "Ҝ" to "K", "Ҟ" to "K", "Ҡ" to "K",
         "Ң" to "Ng", "Ҥ" to "Ng", "Ҧ" to "P", "Ҩ" to "O", "Ҫ" to "S",
         "Ҭ" to "T", "Ү" to "U", "Ұ" to "U", "Ҳ" to "Kh", "Ҵ" to "Ts",
-        "Ҷ" to "Ch", "Ҹ" to "Ch", "Һ" to "H", "Ҽ" to "Ch", "Ҿ" to "Ch", "Ѓ" to "Ǵ", "Ќ" to "Ḱ",
-        // Lowercase Cyrillic (including archaic and language-specific letters)
+        "Ҷ" to "Ch", "Ҹ" to "Ch", "Һ" to "H", "Ҽ" to "Ch", "Ҿ" to "Ch",
+        "Ќ" to "Ḱ", "Ө" to "Ö",
+
         "а" to "a", "б" to "b", "в" to "v", "г" to "g", "ґ" to "g", "д" to "d",
         "ѓ" to "ǵ", "ђ" to "đ", "е" to "e", "ё" to "yo", "є" to "ye", "ж" to "zh",
         "з" to "z", "ѕ" to "dz", "и" to "i", "і" to "i", "ї" to "yi", "й" to "y",
@@ -116,14 +116,15 @@ object LyricsUtils {
         "њ" to "ny", "о" to "o", "п" to "p", "р" to "r", "с" to "s", "т" to "t",
         "ћ" to "ć", "у" to "u", "ў" to "ŭ", "ф" to "f", "х" to "kh", "ц" to "ts",
         "ч" to "ch", "џ" to "dž", "ш" to "sh", "щ" to "shch", "ъ" to "ʺ", "ы" to "y",
-        "ь" to "'", "э" to "e", "ю" to "yu", "я" to "ya",
+        "ь" to "ʹ", "э" to "e", "ю" to "yu", "я" to "ya",
         "ѡ" to "o", "ѣ" to "ya", "ѥ" to "ye", "ѧ" to "ya", "ѩ" to "ya",
         "ѫ" to "u", "ѭ" to "yu", "ѯ" to "ks", "ѱ" to "ps", "ѳ" to "f",
         "ѵ" to "i", "ѷ" to "i", "ғ" to "gh", "ҕ" to "g", "җ" to "zh",
         "ҙ" to "dz", "қ" to "q", "ҝ" to "k", "ҟ" to "k", "ҡ" to "k",
         "ң" to "ng", "ҥ" to "ng", "ҧ" to "p", "ҩ" to "o", "ҫ" to "s",
         "ҭ" to "t", "ү" to "u", "ұ" to "u", "ҳ" to "kh", "ҵ" to "ts",
-        "ҷ" to "ch", "ҹ" to "ch", "һ" to "h", "ҽ" to "ch", "ҿ" to "ch", "ѓ" to "ǵ", "ќ" to "ḱ"
+        "ҷ" to "ch", "ҹ" to "ch", "һ" to "h", "ҽ" to "ch", "ҿ" to "ch",
+        "ќ" to "ḱ", "ө" to "ö"
     )
 
     private val RUSSIAN_ROMAJI_MAP: Map<String, String> = mapOf(
@@ -138,47 +139,84 @@ object LyricsUtils {
         "Ї" to "Yi", "ї" to "yi"
     )
 
+    private val SERBIAN_ROMAJI_MAP: Map<String, String> = mapOf(
+        "Ж" to "Ž", "Љ" to "Lj", "Њ" to "Nj", "Ц" to "C", "Ч" to "Č",
+        "Џ" to "Dž", "Ш" to "Š", "Х" to "H",
+
+        "ж" to "ž", "љ" to "lj", "њ" to "nj", "ц" to "c", "ч" to "č",
+        "џ" to "dž", "ш" to "š", "х" to "h"
+    )
+
     private val BELARUSIAN_ROMAJI_MAP: Map<String, String> = mapOf(
-        "Г" to "H", "г" to "h", "Ў" to "W", "ў" to "w", "Ь" to "", "ь" to ""
+        "Г" to "H", "г" to "h", "Ў" to "W", "ў" to "w"
+    )
+
+    private val KYRGYZ_ROMAJI_MAP: Map<String, String> = mapOf(
+        "Ү" to "Ü", "ү" to "ü", "Ы" to "Y", "ы" to "y"
     )
 
     private val RUSSIAN_CYRILLIC_LETTERS = setOf(
-        // Uppercase Russian letters
         "А", "Б", "В", "Г", "Д", "Е", "Ё", "Ж", "З", "И", "Й", "К", "Л", "М", "Н",
         "О", "П", "Р", "С", "Т", "У", "Ф", "Х", "Ц", "Ч", "Ш", "Щ", "Ъ", "Ы", "Ь",
         "Э", "Ю", "Я",
-        // Lowercase Russian letters
+
         "а", "б", "в", "г", "д", "е", "ё", "ж", "з", "и", "й", "к", "л", "м", "н",
         "о", "п", "р", "с", "т", "у", "ф", "х", "ц", "ч", "ш", "щ", "ъ", "ы", "ь",
         "э", "ю", "я"
     )
 
     private val UKRAINIAN_CYRILLIC_LETTERS = setOf(
-        // Uppercase Ukrainian letters
-        "А", "Б", "В", "Г", "Ґ", "Д", "Е", "Є", "Ж", "З", "И", "І", "Ї", "Й",
+       "А", "Б", "В", "Г", "Ґ", "Д", "Е", "Є", "Ж", "З", "И", "І", "Ї", "Й",
         "К", "Л", "М", "Н", "О", "П", "Р", "С", "Т", "У", "Ф", "Х", "Ц", "Ч",
         "Ш", "Щ", "Ь", "Ю", "Я",
-        // Lowercase Ukrainian letters
+
         "а", "б", "в", "г", "ґ", "д", "е", "є", "ж", "з", "и", "і", "ї", "й",
         "к", "л", "м", "н", "о", "п", "р", "с", "т", "у", "ф", "х", "ц", "ч",
         "ш", "щ", "ь", "ю", "я"
     )
 
+    private val SERBIAN_CYRILLIC_LETTERS = setOf(
+        "А", "Б", "В", "Г", "Д", "Ђ", "Е", "Ж", "З", "И", "Ј", "К", "Л", "Љ", "М",
+        "Н", "Њ", "О", "П", "Р", "С", "Т", "Ћ", "У", "Ф", "Х", "Ц", "Ч", "Џ", "Ш",
+
+        "а", "б", "в", "г", "д", "ђ", "е", "ж", "з", "и", "ј", "к", "л", "љ", "м",
+        "н", "њ", "о", "п", "р", "с", "т", "ћ", "у", "ф", "х", "ц", "ч", "џ", "ш"
+    )
+
     private val BELARUSIAN_CYRILLIC_LETTERS = setOf(
-        // Uppercase Belarusian letters
         "А", "Б", "В", "Г", "Д", "Е", "Ё", "Ж", "З", "І", "Й", "К", "Л", "М", "Н",
         "О", "П", "Р", "С", "Т", "У", "Ў", "Ф", "Х", "Ц", "Ч", "Ш", "Ь", "Ю", "Я",
-        // Lowercase Belarusian letters
+        "Ы", "Э",
+
         "а", "б", "в", "г", "д", "е", "ё", "ж", "з", "і", "й", "к", "л", "м", "н",
-        "о", "п", "р", "с", "т", "у", "ў", "ф", "х", "ц", "ч", "ш", "ь", "ю", "я"
+        "о", "п", "р", "с", "т", "у", "ў", "ф", "х", "ц", "ч", "ш", "ь", "ю", "я",
+        "ы", "э"
+    )
+
+    private val KYRGYZ_CYRILLIC_LETTERS = setOf(
+        "А", "Б", "В", "Г", "Д", "Е", "Ё", "Ж", "З", "И", "Й", "К", "Л", "М", "Н",
+        "Ң", "О", "Ө", "П", "Р", "С", "Т", "У", "Ү", "Ф", "Х", "Ц", "Ч", "Ш", "Щ",
+        "Ъ", "Ы", "Ь", "Э", "Ю", "Я",
+
+        "а", "б", "в", "г", "д", "е", "ё", "ж", "з", "и", "й", "к", "л", "м", "н",
+        "ң", "о", "ө", "п", "р", "с", "т", "у", "ү", "ф", "х", "ц", "ч", "ш", "щ",
+        "ъ", "ы", "ь", "э", "ю", "я"
     )
 
     private val UKRAINIAN_SPECIFIC_CYRILLIC_LETTERS = setOf(
         "Ґ", "ґ", "Є", "є", "І", "і", "Ї", "ї"
     )
 
+    private val SERBIAN_SPECIFIC_CYRILLIC_LETTERS = setOf(
+        "Ђ", "ђ", "Ј", "ј", "Љ", "љ", "Њ", "њ", "Ћ", "ћ", "Џ", "џ"
+    )
+
     private val BELARUSIAN_SPECIFIC_CYRILLIC_LETTERS = setOf(
         "Ў", "ў", "І", "і"
+    )
+
+    private val KYRGYZ_SPECIFIC_CYRILLIC_LETTERS = setOf(
+        "Ң", "ң", "Ө", "ө", "Ү", "ү"
     )
 
     // Lazy initialized Tokenizer
@@ -228,11 +266,14 @@ object LyricsUtils {
         return lines.lastIndex
     }
 
-    enum class CyrillicLanguage {
+    // TODO: Will be useful if we let the user pick the language, useless for now
+    /* enum class CyrillicLanguage {
         RUSSIAN,
         UKRAINIAN,
-        BELARUSIAN
-    }
+        SERBIAN,
+        BELARUSIAN,
+        KYRGYZ
+    } */
 
     fun katakanaToRomaji(katakana: String?): String {
         if (katakana.isNullOrEmpty()) return ""
@@ -378,17 +419,17 @@ object LyricsUtils {
     suspend fun romanizeCyrillic(text: String): String? = withContext(Dispatchers.Default) {
         if (text.isEmpty()) return@withContext null
 
-        // Check if the text contains any Cyrillic characters
         if (!text.any { it in '\u0400'..'\u04FF' }) {
-            return@withContext null // Return null if no Cyrillic characters are present
+            return@withContext null
         }
 
-        // Determine language
         when {
             isRussian(text) -> romanizeRussianInternal(text)
             isUkrainian(text) -> romanizeUkrainianInternal(text)
+            isSerbian(text) -> romanizeSerbianInternal(text)
             isBelarusian(text) -> romanizeBelarusianInternal(text)
-            else -> null // Return null if language can't be determined
+            isKyrgyz(text) -> romanizeKyrgyzInternal(text)
+            else -> null
         }
     }
 
@@ -404,7 +445,7 @@ object LyricsUtils {
                 var charIndex = 0
                 while (charIndex < word.length) {
                     var consumed = false
-                    // Check for 3-character sequences like "ого", "его"
+                    // Check for 3-character sequences
                     if (charIndex + 2 < word.length) {
                         val threeCharCandidate = word.substring(charIndex, charIndex + 3)
                         if (RUSSIAN_ROMAJI_MAP.containsKey(threeCharCandidate)) {
@@ -420,8 +461,8 @@ object LyricsUtils {
                         if ((charStr == "е" || charStr == "Е") && (charIndex == 0 || word[charIndex - 1].isWhitespace())) {
                             romajiBuilder.append(if (charStr == "е") "ye" else "Ye")
                         } else {
-                            // Apply Belarusian specific mapping first, then general
-                            val romanizedChar = BELARUSIAN_ROMAJI_MAP[charStr] ?: GENERAL_CYRILLIC_ROMAJI_MAP[charStr] ?: charStr
+                            // Apply general Cyrillic mapping (Russian is no different so there's no need to apply a russian map)
+                            val romanizedChar = GENERAL_CYRILLIC_ROMAJI_MAP[charStr] ?: charStr
                             romajiBuilder.append(romanizedChar)
                         }
                         charIndex += 1
@@ -473,6 +514,27 @@ object LyricsUtils {
         return romajiBuilder.toString()
     }
 
+    private fun romanizeSerbianInternal(text: String): String {
+        val romajiBuilder = StringBuilder(text.length)
+        val words = text.split("((?<=\\s|[.,!?;])|(?=\\s|[.,!?;]))".toRegex())
+            .filter { it.isNotEmpty() }
+
+        words.forEachIndexed { _, word ->
+            if (word.matches("[.,!?;]".toRegex()) || word.isBlank()) {
+                romajiBuilder.append(word)
+            } else {
+                var charIndex = 0
+                while (charIndex < word.length) {
+                    val charStr = word[charIndex].toString()
+                    val romanizedChar = SERBIAN_ROMAJI_MAP[charStr] ?: GENERAL_CYRILLIC_ROMAJI_MAP[charStr] ?: charStr
+                    romajiBuilder.append(romanizedChar)
+                    charIndex++
+                }
+            }
+        }
+        return romajiBuilder.toString()
+    }
+
     private fun romanizeBelarusianInternal(text: String): String {
         val romajiBuilder = StringBuilder(text.length)
         val words = text.split("((?<=\\s|[.,!?;])|(?=\\s|[.,!?;]))".toRegex())
@@ -485,15 +547,15 @@ object LyricsUtils {
                 var charIndex = 0
                 while (charIndex < word.length) {
                     val charStr = word[charIndex].toString()
-                        // Special case for 'е' or 'Е' at the start of a word
-                        if ((charStr == "е" || charStr == "Е") && (charIndex == 0 || word[charIndex - 1].isWhitespace())) {
-                            romajiBuilder.append(if (charStr == "е") "ye" else "Ye")
-                        } else {
-                            // General mapping
-                            val romanizedChar = BELARUSIAN_ROMAJI_MAP[charStr] ?: GENERAL_CYRILLIC_ROMAJI_MAP[charStr] ?: charStr
-                            romajiBuilder.append(romanizedChar)
-                        }
-                        charIndex += 1
+                    // Special case for 'е' or 'Е' at the start of a word
+                    if ((charStr == "е" || charStr == "Е") && (charIndex == 0 || word[charIndex - 1].isWhitespace())) {
+                        romajiBuilder.append(if (charStr == "е") "ye" else "Ye")
+                    } else {
+                        // General mapping
+                        val romanizedChar = BELARUSIAN_ROMAJI_MAP[charStr] ?: GENERAL_CYRILLIC_ROMAJI_MAP[charStr] ?: charStr
+                        romajiBuilder.append(romanizedChar)
+                    }
+                    charIndex += 1
                 }
             }
         }
@@ -501,35 +563,58 @@ object LyricsUtils {
         return romajiBuilder.toString()
     }
 
-    // Internal function to handle romanization when a specific language is provided or already detected.
-    // This function is kept for potential direct use or testing, but romanizeCyrillic is the main entry point.
-    private suspend fun romanizeCyrillicWithLanguage(text: String, language: CyrillicLanguage): String = withContext(Dispatchers.Default) {
+    private fun romanizeKyrgyzInternal(text: String): String {
+        val romajiBuilder = StringBuilder(text.length)
+        val words = text.split("((?<=\\s|[.,!?;])|(?=\\s|[.,!?;]))".toRegex())
+            .filter { it.isNotEmpty() }
+
+        words.forEachIndexed { _, word ->
+            if (word.matches("[.,!?;]".toRegex()) || word.isBlank()) {
+                romajiBuilder.append(word)
+            } else {
+                var charIndex = 0
+                while (charIndex < word.length) {
+                    val charStr = word[charIndex].toString()
+                    val romanizedChar = KYRGYZ_ROMAJI_MAP[charStr] ?: GENERAL_CYRILLIC_ROMAJI_MAP[charStr] ?: charStr
+                    romajiBuilder.append(romanizedChar)
+                    charIndex++
+                }
+            }
+        }
+        return romajiBuilder.toString()
+    }
+
+    // TODO: This function might be used later if we let the user choose the language manually
+    /* private suspend fun romanizeCyrillicWithLanguage(text: String, language: CyrillicLanguage): String = withContext(Dispatchers.Default) {
         if (text.isEmpty()) return@withContext ""
 
-        // Determine language if not specified or validate if specified
-        val detectedLanguage = language ?: when { // This part remains for direct calls if language isn't pre-determined
+        val detectedLanguage = language ?: when {
             isRussian(text) -> CyrillicLanguage.RUSSIAN
             isUkrainian(text) -> CyrillicLanguage.UKRAINIAN
+            isSerbian(text) -> CyrillicLanguage.SERBIAN
             isBelarusian(text) -> CyrillicLanguage.BELARUSIAN
-            else -> return@withContext text // Return original text if language can't be determined or is not supported for specific rules
+            isKyrgyz(text) -> CyrillicLanguage.KYRGYZ
+            else -> return@withContext text
         }
 
-        // Select language-specific map and letter set based on detected or specified language
         val languageMap: Map<String, String> = when (detectedLanguage) {
             CyrillicLanguage.RUSSIAN -> RUSSIAN_ROMAJI_MAP
             CyrillicLanguage.UKRAINIAN -> UKRAINIAN_ROMAJI_MAP
+            CyrillicLanguage.SERBIAN -> SERBIAN_ROMAJI_MAP
             CyrillicLanguage.BELARUSIAN -> BELARUSIAN_ROMAJI_MAP
-            // else -> emptyMap() // Should not happen due to the when statement above, but needed for exhaustive check
-        } // This map is now less critical if logic is moved to language-specific functions
+            CyrillicLanguage.KYRGYZ -> KYRGYZ_ROMAJI_MAP
+            // else -> emptyMap()
+        }
         val languageLetters = when (language) {
             CyrillicLanguage.RUSSIAN -> RUSSIAN_CYRILLIC_LETTERS
             CyrillicLanguage.UKRAINIAN -> UKRAINIAN_CYRILLIC_LETTERS
-            CyrillicLanguage.BELARUSIAN -> BELARUSIAN_ROMAJI_MAP
-            else -> GENERAL_CYRILLIC_ROMAJI_MAP.keys // Fallback for general Cyrillic
+            CyrillicLanguage.SERBIAN -> SERBIAN_CYRILLIC_LETTERS
+            CyrillicLanguage.BELARUSIAN -> BELARUSIAN_CYRILLIC_LETTERS
+            CyrillicLanguage.KYRGYZ -> KYRGYZ_CYRILLIC_LETTERS
+            else -> GENERAL_CYRILLIC_ROMAJI_MAP.keys
         }
 
         val romajiBuilder = StringBuilder(text.length)
-        // Split text into words, preserving delimiters (spaces, punctuation)
         val words = text.split("((?<=\\s|[.,!?;])|(?=\\s|[.,!?;]))".toRegex())
             .filter { it.isNotEmpty() }
 
@@ -554,7 +639,6 @@ object LyricsUtils {
                             }
                         }
                     }
-                    // Process single character
                     if (!consumed) {
                         val charStr = word[charIndex].toString()
                         val isSpecificLanguageChar = languageLetters is Set<*> && languageLetters.contains(charStr)
@@ -562,55 +646,25 @@ object LyricsUtils {
 
                         if (isSpecificLanguageChar || isGeneralCyrillicChar) {
                             if (detectedLanguage == CyrillicLanguage.RUSSIAN && (charStr == "е" || charStr == "Е") && charIndex == 0 && (charIndex == 0 || word[charIndex-1].isWhitespace())) {
-                                // Special case for Russian: 'е' or 'Е' at start of word
                                 romajiBuilder.append(if (charStr == "е") "ye" else "Ye")
                             } else {
-                                // Use language-specific map first, then general map
                                 val romanizedChar = languageMap[charStr] ?: GENERAL_CYRILLIC_ROMAJI_MAP[charStr]
                                 if (romanizedChar != null) {
                                     romajiBuilder.append(romanizedChar)
                                 } else {
-                                    // If character is Cyrillic but not in maps, do nothing (skip)
-                                    // Or append original if it's a non-Cyrillic character within a Cyrillic word (e.g. mixed script)
-                                    // This part depends on desired behavior for unmapped chars.
-                                    // For now, skipping unmapped Cyrillic, and non-Cyrillic chars are handled by word splitting.
-                                    // If a non-Cyrillic char is part of a "word", it means it wasn't a delimiter.
-                                    // We should decide if non-Cyrillic chars within words are preserved or skipped.
-                                    // Appending original character if not found in maps
                                     romajiBuilder.append(charStr)
                                 }
                             }
                         } else {
-                            romajiBuilder.append(charStr) // Append non-Cyrillic characters as is
-                        } // else: If character is not a target Cyrillic character (e.g., Latin), do nothing (skip)
+                            romajiBuilder.append(charStr)
+                        }
                         charIndex += 1
                     }
                 }
             }
         }
         romajiBuilder.toString()
-    }
-
-    suspend fun romanizeRussian(text: String): String = withContext(Dispatchers.Default) {
-        if (!isRussian(text)) return@withContext text // Return original if not Russian
-        romanizeRussianInternal(text)
-    }
-
-    suspend fun romanizeUkrainian(text: String): String = withContext(Dispatchers.Default) {
-        if (!isUkrainian(text)) return@withContext text // Return original if not Ukrainian
-        romanizeUkrainianInternal(text)
-    }
-
-    suspend fun romanizeBelarusian(text: String): String = withContext(Dispatchers.Default) {
-        if (!isBelarusian(text)) return@withContext text // Return original if not Ukrainian
-        romanizeBelarusianInternal(text)
-    }
-
-    // General romanization function that attempts to detect language or uses general rules
-    suspend fun romanizeUnknownCyrillic(text: String): String = withContext(Dispatchers.Default) {
-        // This will try to detect Russian/Ukrainian, otherwise use general map
-        romanizeCyrillic(text) as String // Calls the main romanizeCyrillic which handles detection
-    }
+    } */
 
     fun isRussian(text: String): Boolean {
         return text.any { char ->
@@ -629,11 +683,27 @@ object LyricsUtils {
         }
     }
 
+    fun isSerbian(text: String): Boolean {
+        return text.any { char ->
+            SERBIAN_CYRILLIC_LETTERS.contains(char.toString()) || SERBIAN_SPECIFIC_CYRILLIC_LETTERS.contains(char.toString())
+        } && text.all { char ->
+            SERBIAN_CYRILLIC_LETTERS.contains(char.toString()) || SERBIAN_SPECIFIC_CYRILLIC_LETTERS.contains(char.toString()) || !char.toString().matches("[\\u0400-\\u04FF]".toRegex())
+        }
+    }
+
     fun isBelarusian(text: String): Boolean {
         return text.any { char ->
             BELARUSIAN_CYRILLIC_LETTERS.contains(char.toString()) || BELARUSIAN_SPECIFIC_CYRILLIC_LETTERS.contains(char.toString())
         } && text.all { char ->
             BELARUSIAN_CYRILLIC_LETTERS.contains(char.toString()) || BELARUSIAN_SPECIFIC_CYRILLIC_LETTERS.contains(char.toString()) || !char.toString().matches("[\\u0400-\\u04FF]".toRegex())
+        }
+    }
+
+    fun isKyrgyz(text: String): Boolean {
+        return text.any { char ->
+            KYRGYZ_CYRILLIC_LETTERS.contains(char.toString()) || KYRGYZ_SPECIFIC_CYRILLIC_LETTERS.contains(char.toString())
+        } && text.all { char ->
+            KYRGYZ_CYRILLIC_LETTERS.contains(char.toString()) || KYRGYZ_SPECIFIC_CYRILLIC_LETTERS.contains(char.toString()) || !char.toString().matches("[\\u0400-\\u04FF]".toRegex())
         }
     }
 
