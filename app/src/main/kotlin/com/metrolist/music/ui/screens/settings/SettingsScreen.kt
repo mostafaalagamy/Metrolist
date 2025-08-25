@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
@@ -20,12 +22,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.metrolist.music.BuildConfig
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.R
 import com.metrolist.music.ui.component.IconButton
-import com.metrolist.music.ui.component.PreferenceEntry
+import com.metrolist.music.ui.component.Material3SettingsGroup
+import com.metrolist.music.ui.component.Material3SettingsItem
 import com.metrolist.music.ui.component.ReleaseNotesCard
 import com.metrolist.music.ui.utils.backToMain
 import com.metrolist.music.utils.Updater
@@ -45,6 +49,7 @@ fun SettingsScreen(
         Modifier
             .windowInsetsPadding(LocalPlayerAwareWindowInsets.current.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom))
             .verticalScroll(rememberScrollState())
+            .padding(horizontal = 16.dp)
     ) {
         Spacer(
             Modifier.windowInsetsPadding(
@@ -54,102 +59,157 @@ fun SettingsScreen(
             )
         )
 
-        PreferenceEntry(
-            title = { Text(stringResource(R.string.appearance)) },
-            icon = { Icon(painterResource(R.drawable.palette), null) },
-            onClick = { navController.navigate("settings/appearance") }
+        // User Interface Section
+        Material3SettingsGroup(
+            title = stringResource(R.string.settings_section_ui),
+            items = listOf(
+                Material3SettingsItem(
+                    icon = painterResource(R.drawable.palette),
+                    title = { Text(stringResource(R.string.appearance)) },
+                    onClick = { navController.navigate("settings/appearance") }
+                )
+            )
         )
-        PreferenceEntry(
-            title = { Text(stringResource(R.string.content)) },
-            icon = { Icon(painterResource(R.drawable.language), null) },
-            onClick = { navController.navigate("settings/content") }
+        
+        Spacer(modifier = Modifier.height(16.dp))
+        
+        // Player & Content Section (moved up and combined with content)
+        Material3SettingsGroup(
+            title = stringResource(R.string.settings_section_player_content),
+            items = listOf(
+                Material3SettingsItem(
+                    icon = painterResource(R.drawable.play),
+                    title = { Text(stringResource(R.string.player_and_audio)) },
+                    onClick = { navController.navigate("settings/player") }
+                ),
+                Material3SettingsItem(
+                    icon = painterResource(R.drawable.language),
+                    title = { Text(stringResource(R.string.content)) },
+                    onClick = { navController.navigate("settings/content") }
+                )
+            )
         )
-        PreferenceEntry(
-            title = { Text(stringResource(R.string.privacy)) },
-            icon = { Icon(painterResource(R.drawable.security), null) },
-            onClick = { navController.navigate("settings/privacy") }
+        
+        Spacer(modifier = Modifier.height(16.dp))
+        
+        // Privacy & Security Section
+        Material3SettingsGroup(
+            title = stringResource(R.string.settings_section_privacy),
+            items = listOf(
+                Material3SettingsItem(
+                    icon = painterResource(R.drawable.security),
+                    title = { Text(stringResource(R.string.privacy)) },
+                    onClick = { navController.navigate("settings/privacy") }
+                )
+            )
         )
-        PreferenceEntry(
-            title = { Text(stringResource(R.string.player_and_audio)) },
-            icon = { Icon(painterResource(R.drawable.play), null) },
-            onClick = { navController.navigate("settings/player") }
+        
+        Spacer(modifier = Modifier.height(16.dp))
+        
+        // Storage & Data Section
+        Material3SettingsGroup(
+            title = stringResource(R.string.settings_section_storage),
+            items = listOf(
+                Material3SettingsItem(
+                    icon = painterResource(R.drawable.storage),
+                    title = { Text(stringResource(R.string.storage)) },
+                    onClick = { navController.navigate("settings/storage") }
+                ),
+                Material3SettingsItem(
+                    icon = painterResource(R.drawable.restore),
+                    title = { Text(stringResource(R.string.backup_restore)) },
+                    onClick = { navController.navigate("settings/backup_restore") }
+                )
+            )
         )
-        PreferenceEntry(
-            title = { Text(stringResource(R.string.storage)) },
-            icon = { Icon(painterResource(R.drawable.storage), null) },
-            onClick = { navController.navigate("settings/storage") }
-        )
-        PreferenceEntry(
-            title = { Text(stringResource(R.string.backup_restore)) },
-            icon = { Icon(painterResource(R.drawable.restore), null) },
-            onClick = { navController.navigate("settings/backup_restore") }
-        )
-        if (isAndroid12OrLater) {
-            PreferenceEntry(
-                title = { Text(stringResource(R.string.default_links)) },
-                icon = { Icon(painterResource(R.drawable.link), null) },
-                onClick = {
-                    try {
-                        val intent = Intent(
-                            Settings.ACTION_APP_OPEN_BY_DEFAULT_SETTINGS,
-                            Uri.parse("package:${context.packageName}")
+        
+        Spacer(modifier = Modifier.height(16.dp))
+        
+        // System & About Section
+        Material3SettingsGroup(
+            title = stringResource(R.string.settings_section_system),
+            items = buildList {
+                if (isAndroid12OrLater) {
+                    add(
+                        Material3SettingsItem(
+                            icon = painterResource(R.drawable.link),
+                            title = { Text(stringResource(R.string.default_links)) },
+                            onClick = {
+                                try {
+                                    val intent = Intent(
+                                        Settings.ACTION_APP_OPEN_BY_DEFAULT_SETTINGS,
+                                        Uri.parse("package:${context.packageName}")
+                                    )
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                    context.startActivity(intent)
+                                } catch (e: Exception) {
+                                    when (e) {
+                                        is ActivityNotFoundException -> {
+                                            Toast.makeText(
+                                                context,
+                                                R.string.open_app_settings_error,
+                                                Toast.LENGTH_LONG
+                                            ).show()
+                                        }
+
+                                        is SecurityException -> {
+                                            Toast.makeText(
+                                                context,
+                                                R.string.open_app_settings_error,
+                                                Toast.LENGTH_LONG
+                                            ).show()
+                                        }
+
+                                        else -> {
+                                            Toast.makeText(
+                                                context,
+                                                R.string.open_app_settings_error,
+                                                Toast.LENGTH_LONG
+                                            ).show()
+                                        }
+                                    }
+                                }
+                            }
                         )
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        context.startActivity(intent)
-                    } catch (e: Exception) {
-                        when (e) {
-                            is ActivityNotFoundException -> {
-                                Toast.makeText(
-                                    context,
-                                    R.string.open_app_settings_error,
-                                    Toast.LENGTH_LONG
-                                ).show()
-                            }
-
-                            is SecurityException -> {
-                                Toast.makeText(
-                                    context,
-                                    R.string.open_app_settings_error,
-                                    Toast.LENGTH_LONG
-                                ).show()
-                            }
-
-                            else -> {
-                                Toast.makeText(
-                                    context,
-                                    R.string.open_app_settings_error,
-                                    Toast.LENGTH_LONG
-                                ).show()
-                            }
-                        }
-                    }
-                },
-            )
-        }
-        PreferenceEntry(
-            title = { Text(stringResource(R.string.about)) },
-            icon = { Icon(painterResource(R.drawable.info), null) },
-            onClick = { navController.navigate("settings/about") }
-        )
-        if (latestVersionName != BuildConfig.VERSION_NAME) {
-            PreferenceEntry(
-                title = {
-                    Text(
-                        text = stringResource(R.string.new_version_available),
                     )
-                },
-                description = latestVersionName,
-                icon = {
-                    BadgedBox(
-                        badge = { Badge() }
-                    ) {
-                        Icon(painterResource(R.drawable.update), null)
-                    }
-                },
-                onClick = { uriHandler.openUri(Updater.getLatestDownloadUrl()) }
-            )
+                }
+                add(
+                    Material3SettingsItem(
+                        icon = painterResource(R.drawable.info),
+                        title = { Text(stringResource(R.string.about)) },
+                        onClick = { navController.navigate("settings/about") }
+                    )
+                )
+                if (latestVersionName != BuildConfig.VERSION_NAME) {
+                    add(
+                        Material3SettingsItem(
+                            icon = painterResource(R.drawable.update),
+                            title = { 
+                                Text(
+                                    text = stringResource(R.string.new_version_available),
+                                )
+                            },
+                            description = {
+                                Text(
+                                    text = latestVersionName,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            },
+                            showBadge = true,
+                            onClick = { uriHandler.openUri(Updater.getLatestDownloadUrl()) }
+                        )
+                    )
+                }
+            }
+        )
+        
+        if (latestVersionName != BuildConfig.VERSION_NAME) {
+            Spacer(modifier = Modifier.height(16.dp))
             ReleaseNotesCard()
         }
+        
+        Spacer(modifier = Modifier.height(16.dp))
     }
 
     TopAppBar(
@@ -164,6 +224,7 @@ fun SettingsScreen(
                     contentDescription = null
                 )
             }
-        }
+        },
+        scrollBehavior = scrollBehavior
     )
 }

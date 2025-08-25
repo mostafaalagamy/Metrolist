@@ -131,7 +131,7 @@ fun OnlineSearchScreen(
             }
         }
 
-        items(viewState.items, key = { it.id }) { item ->
+        items(viewState.items.distinctBy { it.id }, key = { it.id }) { item ->
             YouTubeListItem(
                 item = item,
                 isActive = when (item) {
