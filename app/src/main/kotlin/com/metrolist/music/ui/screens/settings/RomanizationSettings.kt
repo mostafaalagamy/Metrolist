@@ -18,8 +18,12 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarScrollBehavior
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -58,6 +62,7 @@ fun RomanizationSettings(
     val (lyricsRomanizeBelarusian, onLyricsRomanizeBelarusianChange) = rememberPreference(LyricsRomanizeBelarusianKey, defaultValue = true)
     val (lyricsRomanizeKyrgyz, onLyricsRomanizeKyrgyzChange) = rememberPreference(LyricsRomanizeKyrgyzKey, defaultValue = true)
     val (lyricsRomanizeCyrillicByLine, onLyricsRomanizeCyrillicByLineChange) = rememberPreference(LyricsRomanizeCyrillicByLineKey, defaultValue = false)
+    val (showDialog, setShowDialog) = remember { mutableStateOf(false) }
 
     Column(
         Modifier
@@ -68,14 +73,14 @@ fun RomanizationSettings(
 
         SwitchPreference(
             title = { Text(stringResource(R.string.lyrics_romanize_japanese)) },
-            icon = { Icon(painterResource(R.drawable.lyrics), null) },
+            icon = { Icon(painterResource(R.drawable.language_japanese_latin), null) },
             checked = lyricsRomanizeJapanese,
             onCheckedChange = onLyricsRomanizeJapaneseChange,
         )
 
         SwitchPreference(
             title = { Text(stringResource(R.string.lyrics_romanize_korean)) },
-            icon = { Icon(painterResource(R.drawable.lyrics), null) },
+            icon = { Icon(painterResource(R.drawable.language_korean_latin), null) },
             checked = lyricsRomanizeKorean,
             onCheckedChange = onLyricsRomanizeKoreanChange,
         )
@@ -83,40 +88,61 @@ fun RomanizationSettings(
         PreferenceGroupTitle(title = stringResource(R.string.lyrics_romanization_cyrillic))
         SwitchPreference(
             title = { Text(stringResource(R.string.lyrics_romanize_russian)) },
-            icon = { Icon(painterResource(R.drawable.lyrics), null) },
+            icon = { Icon(painterResource(R.drawable.alphabet_cyrillic), null) },
             checked = lyricsRomanizeRussian,
             onCheckedChange = onLyricsRomanizeRussianChange,
         )
         SwitchPreference(
             title = { Text(stringResource(R.string.lyrics_romanize_ukrainian)) },
-            icon = { Icon(painterResource(R.drawable.lyrics), null) },
+            icon = { Icon(painterResource(R.drawable.alphabet_cyrillic), null) },
             checked = lyricsRomanizeUkrainian,
             onCheckedChange = onLyricsRomanizeUkrainianChange,
         )
         SwitchPreference(
             title = { Text(stringResource(R.string.lyrics_romanize_serbian)) },
-            icon = { Icon(painterResource(R.drawable.lyrics), null) },
+            icon = { Icon(painterResource(R.drawable.alphabet_cyrillic), null) },
             checked = lyricsRomanizeSerbian,
             onCheckedChange = onLyricsRomanizeSerbianChange,
         )
         SwitchPreference(
             title = { Text(stringResource(R.string.lyrics_romanize_belarusian)) },
-            icon = { Icon(painterResource(R.drawable.lyrics), null) },
+            icon = { Icon(painterResource(R.drawable.alphabet_cyrillic), null) },
             checked = lyricsRomanizeBelarusian,
             onCheckedChange = onLyricsRomanizeBelarusianChange,
         )
         SwitchPreference(
             title = { Text(stringResource(R.string.lyrics_romanize_kyrgyz)) },
-            icon = { Icon(painterResource(R.drawable.lyrics), null) },
+            icon = { Icon(painterResource(R.drawable.alphabet_cyrillic), null) },
             checked = lyricsRomanizeKyrgyz,
             onCheckedChange = onLyricsRomanizeKyrgyzChange,
         )
         SwitchPreference(
             title = { Text("EXPERIMENTAL: Detect language line by line") },
-            icon = { Icon(painterResource(R.drawable.lyrics), null) },
-            description = "Normally the cyrillic language is determined from the lyrics of the whole song. With this option on, it will be determined line by line instead. This might cause some inaccuracies.",
+            icon = { Icon(painterResource(R.drawable.warning), null) },
+            description = "The Cyrillic language will be detected line by line instead of the entire song.",
             checked = lyricsRomanizeCyrillicByLine,
-            onCheckedChange = onLyricsRomanizeCyrillicByLineChange,
+            onCheckedChange = {
+                if (it) {
+                    setShowDialog(true)
+                } else {
+                    onLyricsRomanizeCyrillicByLineChange(false)
+                }
+            },
+        )
+    }
+
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = { setShowDialog(false) },
+            title = { Text(stringResource(R.string.line_by_line_dialog_title)) },
+            text = { Text(stringResource(R.string.line_by_line_dialog_desc)) },
+            confirmButton = {
+                TextButton(onClick = {
+                    onLyricsRomanizeCyrillicByLineChange(true)
+                    setShowDialog(false)
+                }) { Text(stringResource(R.string.line_by_line_dialog_enable)) }
+            },
+            dismissButton = { TextButton(onClick = { setShowDialog(false) }) { Text(stringResource(R.string.line_by_line_dialog_cancel)) } }
         )
     }
 
