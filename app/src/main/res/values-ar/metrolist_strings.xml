@@ -67,7 +67,7 @@
     <string name="swipe_song_to_add">مرر الأغنية إلى اليسار لإضافتها إلى قائمة الانتظار أو إلى اليمين لتشغيلها بعد الأغنية الحالية</string>
     <string name="lyrics_click_change">تغيير كلمات الأغنية عند النقر عليها</string>
     <string name="slim">نحيل</string>
-    <string name="slim_navbar">إخفاء أسماء الصفحات من شريط التنقل السفلي</string>
+    <string name="slim_navbar">شريط تنقل سفلي رفيع</string>
     <string name="auto_playlists">قوائم التشغيل التلقائيه</string>
     <string name="show_liked_playlist">إظهار قائمة \"الاعجابات\"</string>
     <string name="show_downloaded_playlist">إظهار قائمة \"التحميلات\"</string>
