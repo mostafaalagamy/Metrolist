@@ -91,6 +91,7 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastAny
 import androidx.compose.ui.util.fastFirstOrNull
@@ -451,6 +452,14 @@ class MainActivity : ComponentActivity() {
                                     !active
                         }
 
+                    fun getNavPadding(): Dp {
+                        return if (shouldShowNavigationBar) {
+                            if (slimNav) 52.dp else 68.dp
+                        } else {
+                            0.dp
+                        }
+                    }
+
                     val navigationBarHeight by animateDpAsState(
                         targetValue = if (shouldShowNavigationBar) NavigationBarHeight else 0.dp,
                         animationSpec = NavigationBarAnimationSpec,
@@ -460,7 +469,7 @@ class MainActivity : ComponentActivity() {
                     val playerBottomSheetState =
                         rememberBottomSheetState(
                             dismissedBound = 0.dp,
-                            collapsedBound = bottomInset + (if (shouldShowNavigationBar) NavigationBarHeight else 0.dp) + (if (useNewMiniPlayerDesign) MiniPlayerBottomSpacing else 0.dp) + MiniPlayerHeight,
+                            collapsedBound = bottomInset + (getNavPadding() + (if (useNewMiniPlayerDesign) MiniPlayerBottomSpacing else 0.dp) + MiniPlayerHeight,
                             expandedBound = maxHeight,
                         )
 
@@ -864,6 +873,7 @@ class MainActivity : ComponentActivity() {
                                     NavigationBar(
                                         modifier = Modifier
                                             .align(Alignment.BottomCenter)
+                                            .height(bottomInset + getNavPadding())
                                             .offset {
                                                 if (navigationBarHeight == 0.dp) {
                                                     IntOffset(
