@@ -178,4 +178,5 @@
     <string name="settings_section_player_content">Odtwarzacz i zawartość</string>
     <string name="settings_section_storage">Pamięć i dane</string>
     <string name="settings_section_system">System i informacje</string>
+    <string name="starting_radio">Uruchamianie radia</string>
 </resources>
