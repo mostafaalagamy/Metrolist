@@ -194,6 +194,7 @@
     <string name="lyrics_romanization_cyrillic">Cyrillic</string>
     <string name="lyrics_romanize_title">Romanization</string>
     <string name="lyrics_romanization">Lyrics romanization</string>
+    <string name="romanization">Romanization</string>
     <string name="lyrics_romanize_japanese">Romanize Japanese lyrics</string>
     <string name="lyrics_romanize_korean">Romanize Korean lyrics</string>
     <string name="lyrics_romanize_russian">Romanize Russian lyrics</string>
@@ -201,11 +202,13 @@
     <string name="lyrics_romanize_belarusian">Romanize Belarusian lyrics</string>
     <string name="lyrics_romanize_kyrgyz">Romanize Kyrgyz lyrics</string>
     <string name="lyrics_romanize_serbian">Romanize Serbian lyrics</string>
+    <string name="lyrics_romanize_bulgarian">Romanize Bulgarian lyrics</string>
     <string name="line_by_line_option_title">EXPERIMENTAL: Detect language line by line</string>
     <string name="line_by_line_option_desc">The Cyrillic language will be detected line by line instead of the entire song.</string>
     <string name="line_by_line_dialog_title">Are you sure?</string>
     <string name="line_by_line_dialog_desc">This is a hit or miss experimental feature. \n\nBy default, language is determined from the whole song, but with this option on, it will be determined line by line instead. This will allow multi-language songs to work BUT the language might not always be correct (for example if there is a Ukrainian lyric that doesn\'t contain any Ukrainian-specific letters, it might be romanized as Russian instead). \n\nIf you do not have issues, it is recommended to keep this option off.</string>
     <string name="line_by_line_dialog_enable">Enable</string>
+    <string name="romanize_current_track">Romanize current track</string>
 
     <!-- Material 3 Settings Sections -->
     <string name="settings_section_ui">User Interface</string>
@@ -214,5 +217,4 @@
     <string name="settings_section_player_content">Player &amp; Content</string>
     <string name="settings_section_storage">Storage &amp; Data</string>
     <string name="settings_section_system">System &amp; About</string>
-    <string name="lyrics_romanize_bulgarian">Romanize Bulgarian lyrics</string>
 </resources>

@@ -173,6 +173,7 @@ fun Lyrics(
 
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
     val lyricsEntity by playerConnection.currentLyrics.collectAsState(initial = null)
+    val currentSong by playerConnection.currentSong.collectAsState(initial = null)
     val lyrics = remember(lyricsEntity) { lyricsEntity?.lyrics?.trim() }
 
     val playerBackground by rememberEnumPreference(
@@ -729,29 +730,31 @@ fun Lyrics(
                             },
                             fontWeight = if (index == displayedCurrentLineIndex && isSynced) FontWeight.ExtraBold else FontWeight.Bold
                         )
-                        if (romanizeJapaneseLyrics ||
-                            romanizeKoreanLyrics ||
-                            romanizeRussianLyrics ||
-                            romanizeUkrainianLyrics ||
-                            romanizeSerbianLyrics ||
-                            romanizeBulgarianLyrics ||
-                            romanizeBelarusianLyrics ||
-                            romanizeKyrgyzLyrics) {
-                            // Show romanized text if available
-                            val romanizedText by item.romanizedTextFlow.collectAsState()
-                            romanizedText?.let { romanized ->
-                                Text(
-                                    text = romanized,
-                                    fontSize = 18.sp,
-                                    color = textColor.copy(alpha = 0.8f),
-                                    textAlign = when (lyricsTextPosition) {
-                                        LyricsPosition.LEFT -> TextAlign.Left
-                                        LyricsPosition.CENTER -> TextAlign.Center
-                                        LyricsPosition.RIGHT -> TextAlign.Right
-                                    },
-                                    fontWeight = FontWeight.Normal,
-                                    modifier = Modifier.padding(top = 2.dp)
-                                )
+                        if (currentSong?.romanizeLyrics == true && (romanizeJapaneseLyrics || romanizeKoreanLyrics || romanizeRussianLyrics || romanizeUkrainianLyrics || romanizeSerbianLyrics || romanizeBulgarianLyrics || romanizeBelarusianLyrics || romanizeKyrgyzLyrics)) {
+                            if (romanizeJapaneseLyrics ||
+                                romanizeKoreanLyrics ||
+                                romanizeRussianLyrics ||
+                                romanizeUkrainianLyrics ||
+                                romanizeSerbianLyrics ||
+                                romanizeBulgarianLyrics ||
+                                romanizeBelarusianLyrics ||
+                                romanizeKyrgyzLyrics) {
+                                // Show romanized text if available
+                                val romanizedText by item.romanizedTextFlow.collectAsState()
+                                romanizedText?.let { romanized ->
+                                    Text(
+                                        text = romanized,
+                                        fontSize = 18.sp,
+                                        color = textColor.copy(alpha = 0.8f),
+                                        textAlign = when (lyricsTextPosition) {
+                                            LyricsPosition.LEFT -> TextAlign.Left
+                                            LyricsPosition.CENTER -> TextAlign.Center
+                                            LyricsPosition.RIGHT -> TextAlign.Right
+                                        },
+                                        fontWeight = FontWeight.Normal,
+                                        modifier = Modifier.padding(top = 2.dp)
+                                    )
+                                }
                             }
                         }
                     }

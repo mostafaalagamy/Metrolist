@@ -191,7 +191,7 @@ fun ContentSettings(
 
         PreferenceEntry(
             title = { Text(stringResource(R.string.lyrics_romanization)) },
-            icon = { Icon(painterResource(R.drawable.lyrics), null) },
+            icon = { Icon(painterResource(R.drawable.language_korean_latin), null) },
             onClick = { navController.navigate("settings/content/romanization") }
         )
 

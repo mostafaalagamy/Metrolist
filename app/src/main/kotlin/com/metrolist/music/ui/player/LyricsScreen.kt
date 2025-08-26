@@ -109,6 +109,7 @@ import kotlinx.coroutines.withContext
 import kotlin.runCatching
 import com.metrolist.music.utils.makeTimeString
 import androidx.compose.ui.text.style.TextAlign
+import com.metrolist.music.db.entities.SongEntity
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -134,6 +135,7 @@ fun LyricsScreen(
     // slider style preference
     val sliderStyle by rememberEnumPreference(SliderStyleKey, SliderStyle.DEFAULT)
     val currentLyrics by playerConnection.currentLyrics.collectAsState(initial = null)
+    val currentSong by playerConnection.currentSong.collectAsState(initial = null)
 
     // Auto-fetch lyrics when no lyrics found (same logic as refetch)
     LaunchedEffect(mediaMetadata.id, currentLyrics) {
@@ -385,6 +387,7 @@ fun LyricsScreen(
                                     menuState.show {
                                         LyricsMenu(
                                             lyricsProvider = { currentLyrics },
+                                            songProvider = { currentSong?.song },
                                             mediaMetadataProvider = { mediaMetadata },
                                             onDismiss = menuState::dismiss
                                         )
@@ -728,6 +731,7 @@ fun LyricsScreen(
                                     menuState.show {
                                         LyricsMenu(
                                             lyricsProvider = { currentLyrics },
+                                            songProvider = { currentSong?.song },
                                             mediaMetadataProvider = { mediaMetadata },
                                             onDismiss = menuState::dismiss
                                         )
