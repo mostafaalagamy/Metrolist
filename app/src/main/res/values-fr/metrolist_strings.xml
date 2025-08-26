@@ -32,7 +32,7 @@
     <string name="general_settings">Paramètres généraux</string>
     <string name="remove_from_cache">Retirer du cache</string>
     <string name="link_copied">Lien copié au presse-papier</string>
-    <string name="slim_navbar">Masquer les étiquettes de la barre de navigation du bas</string>
+    <string name="slim_navbar">Barre de navigation inférieure mince</string>
     <string name="lyrics">Paroles</string>
     <string name="already_in_playlist">Déjà dans la playlist :</string>
     <string name="swipe_song_to_add">Faites glisser le titre vers la gauche pour l\'ajouter à la file d\'attente ou vers la droite pour le lire ensuite</string>
