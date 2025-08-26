@@ -142,7 +142,7 @@ fun RomanizationSettings(
                     setShowDialog(false)
                 }) { Text(stringResource(R.string.line_by_line_dialog_enable)) }
             },
-            dismissButton = { TextButton(onClick = { setShowDialog(false) }) { Text(stringResource(R.string.line_by_line_dialog_cancel)) } }
+            dismissButton = { TextButton(onClick = { setShowDialog(false) }) { Text(stringResource(R.string.cancel)) } }
         )
     }
 
