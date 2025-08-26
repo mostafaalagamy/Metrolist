@@ -124,9 +124,9 @@ fun RomanizationSettings(
             onCheckedChange = onLyricsRomanizeKyrgyzChange,
         )
         SwitchPreference(
-            title = { Text("EXPERIMENTAL: Detect language line by line") },
+            title = { Text(stringResource(R.string.line_by_line_option_title)) },
             icon = { Icon(painterResource(R.drawable.warning), null) },
-            description = "The Cyrillic language will be detected line by line instead of the entire song.",
+            description = stringResource(R.string.line_by_line_option_desc),
             checked = lyricsRomanizeCyrillicByLine,
             onCheckedChange = {
                 if (it) {
@@ -134,23 +134,22 @@ fun RomanizationSettings(
                 } else {
                     onLyricsRomanizeCyrillicByLineChange(false)
                 }
-            },
+            }
         )
-    }
-
-    if (showDialog) {
-        AlertDialog(
-            onDismissRequest = { setShowDialog(false) },
-            title = { Text(stringResource(R.string.line_by_line_dialog_title)) },
-            text = { Text(stringResource(R.string.line_by_line_dialog_desc)) },
-            confirmButton = {
-                TextButton(onClick = {
+        if (showDialog) {
+            ActionPromptDialog(
+                title = stringResource(R.string.line_by_line_dialog_title),
+                onDismiss = { setShowDialog(false) },
+                onConfirm = {
                     onLyricsRomanizeCyrillicByLineChange(true)
                     setShowDialog(false)
-                }) { Text(stringResource(R.string.line_by_line_dialog_enable)) }
-            },
-            dismissButton = { TextButton(onClick = { setShowDialog(false) }) { Text(stringResource(R.string.cancel)) } }
-        )
+                },
+                onCancel = { setShowDialog(false) },
+                content = {
+                    Text(stringResource(R.string.line_by_line_dialog_desc))
+                }
+            )
+        }
     }
 
     TopAppBar(
