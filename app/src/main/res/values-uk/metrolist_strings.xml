@@ -41,7 +41,7 @@
     <string name="enable_squiggly_slider">Увімкнути хвилястий повзунок</string>
     <string name="enable_swipe_thumbnail">Перемикання пісень проведенням по обкладинці</string>
     <string name="lyrics_click_change">Змінити текст пісні при натисканні</string>
-    <string name="slim_navbar">Приховати мітки нижньої панелі навігації</string>
+    <string name="slim_navbar">Тонка нижня панель навігації</string>
     <string name="google">Google</string>
     <string name="discord">Discord</string>
     <string name="advanced_login">Вхід через токен</string>
