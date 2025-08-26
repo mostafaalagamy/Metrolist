@@ -59,6 +59,7 @@ fun RomanizationSettings(
     val (lyricsRomanizeRussian, onLyricsRomanizeRussianChange) = rememberPreference(LyricsRomanizeRussianKey, defaultValue = true)
     val (lyricsRomanizeUkrainian, onLyricsRomanizeUkrainianChange) = rememberPreference(LyricsRomanizeUkrainianKey, defaultValue = true)
     val (lyricsRomanizeSerbian, onLyricsRomanizeSerbianChange) = rememberPreference(LyricsRomanizeSerbianKey, defaultValue = true)
+    val (lyricsRomanizeBulgarian, onLyricsRomanizeBulgarianChange) = rememberPreference(LyricsRomanizeBulgarianKey, defaultValue = true)
     val (lyricsRomanizeBelarusian, onLyricsRomanizeBelarusianChange) = rememberPreference(LyricsRomanizeBelarusianKey, defaultValue = true)
     val (lyricsRomanizeKyrgyz, onLyricsRomanizeKyrgyzChange) = rememberPreference(LyricsRomanizeKyrgyzKey, defaultValue = true)
     val (lyricsRomanizeCyrillicByLine, onLyricsRomanizeCyrillicByLineChange) = rememberPreference(LyricsRomanizeCyrillicByLineKey, defaultValue = false)
@@ -103,6 +104,12 @@ fun RomanizationSettings(
             icon = { Icon(painterResource(R.drawable.alphabet_cyrillic), null) },
             checked = lyricsRomanizeSerbian,
             onCheckedChange = onLyricsRomanizeSerbianChange,
+        )
+        SwitchPreference(
+            title = { Text(stringResource(R.string.lyrics_romanize_bulgarian)) },
+            icon = { Icon(painterResource(R.drawable.alphabet_cyrillic), null) },
+            checked = lyricsRomanizeBulgarian,
+            onCheckedChange = onLyricsRomanizeBulgarianChange,
         )
         SwitchPreference(
             title = { Text(stringResource(R.string.lyrics_romanize_belarusian)) },
