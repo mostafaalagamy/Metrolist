@@ -98,9 +98,6 @@
     <string name="swipe_song_to_add">Swipe song to the left to add it to the queue or to the right to play it next</string>
     <string name="lyrics_click_change">Change lyrics on click</string>
     <string name="lyrics_auto_scroll">Auto scroll lyrics</string>
-    <string name="lyrics_romanize_japanese">Romanize japanese lyrics</string>
-    <string name="lyrics_romanize_korean">Romanize korean lyrics</string>
-    <string name="lyrics_romanize_russian">Romanize russian lyrics</string>
     <string name="slim">Slim</string>
     <string name="slim_navbar">Hide bottom navigation bar labels</string>
     <string name="auto_playlists">Auto playlists</string>
@@ -197,10 +194,13 @@
     <string name="lyrics_romanization_cyrillic">Cyrillic</string>
     <string name="lyrics_romanize_title">Romanization</string>
     <string name="lyrics_romanization">Lyrics romanization</string>
-    <string name="lyrics_romanize_ukrainian">Romanize ukrainian lyrics</string>
-    <string name="lyrics_romanize_belarusian">Romanize belarusian lyrics</string>
-    <string name="lyrics_romanize_kyrgyz">Romanize kyrgyz lyrics</string>
-    <string name="lyrics_romanize_serbian">Romanize serbian lyrics</string>
+    <string name="lyrics_romanize_japanese">Romanize Japanese lyrics</string>
+    <string name="lyrics_romanize_korean">Romanize Korean lyrics</string>
+    <string name="lyrics_romanize_russian">Romanize Russian lyrics</string>
+    <string name="lyrics_romanize_ukrainian">Romanize Ukrainian lyrics</string>
+    <string name="lyrics_romanize_belarusian">Romanize Belarusian lyrics</string>
+    <string name="lyrics_romanize_kyrgyz">Romanize Kyrgyz lyrics</string>
+    <string name="lyrics_romanize_serbian">Romanize Serbian lyrics</string>
     <string name="line_by_line_dialog_title">Are you sure you want to do this?</string>
     <string name="line_by_line_dialog_desc">This is a hit or miss experimental feature. \n\nBy default, language is determined from the whole song, but with this option on, it will be determined line by line instead. This will allow multi-language songs to work BUT the language might not always be correct (for example if there is a Ukrainian lyric that doesn\'t contain any Ukrainian-specific letters, it might be romanized as Russian instead). \n\nIf you do not have issues, it is recommended to keep this option off.</string>
     <string name="line_by_line_dialog_enable">Enable</string>
