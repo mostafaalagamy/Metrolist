@@ -61,7 +61,7 @@
     <string name="swipe_song_to_add">Scorri il brano verso sinistra aggiungerlo alla coda o verso destra per riprodurlo come successivo</string>
     <string name="lyrics_click_change">Cambia testi con il tocco</string>
     <string name="slim">Sottile</string>
-    <string name="slim_navbar">Nascondi etichette della barra di navigazione</string>
+    <string name="slim_navbar">Barra inferiore di navigazione sottile</string>
     <string name="auto_playlists">Playlist automatiche</string>
     <string name="show_liked_playlist">Mostra la Playlist dei brani piaciuti</string>
     <string name="show_downloaded_playlist">Mostra la Playlist dei brani scaricati</string>
