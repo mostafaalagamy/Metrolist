@@ -202,7 +202,7 @@
     <string name="lyrics_romanize_kyrgyz">Romanize kyrgyz lyrics</string>
     <string name="lyrics_romanize_serbian">Romanize serbian lyrics</string>
     <string name="line_by_line_dialog_title">Are you sure you want to do this?</string>
-    <string name="line_by_line_dialog_desc">This is a hit or miss experimental feature. By default, language is determined from the whole song, but with this option on, it will be determined line by line instead. This will allow multi-language songs to work BUT the language might not always be correct (for example if there is a Ukrainian lyric that doesn\'t contain any Ukrainian-specific letters, it might be romanized as Russian instead). If you do not have issues, it is recommended to keep this option off.</string>
+    <string name="line_by_line_dialog_desc">This is a hit or miss experimental feature. \n\nBy default, language is determined from the whole song, but with this option on, it will be determined line by line instead. This will allow multi-language songs to work BUT the language might not always be correct (for example if there is a Ukrainian lyric that doesn\'t contain any Ukrainian-specific letters, it might be romanized as Russian instead). \n\nIf you do not have issues, it is recommended to keep this option off.</string>
     <string name="line_by_line_dialog_enable">Enable</string>
     <string name="line_by_line_dialog_cancel">Cancel</string>
 
