@@ -387,7 +387,7 @@ fun LyricsMenu(
     ) {
         item {
             ListItem(
-                headlineContent = { Text(text = stringResource(R.string.romanize_current_track) },
+                headlineContent = { Text(text = stringResource(R.string.romanize_current_track)) },
                 leadingContent = {
                     Icon(
                         painter = painterResource(R.drawable.language_korean_latin),
