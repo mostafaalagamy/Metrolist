@@ -1140,6 +1140,8 @@ interface DatabaseDao {
                 thumbnailUrl = mediaMetadata.thumbnailUrl,
                 albumId = mediaMetadata.album?.id,
                 albumName = mediaMetadata.album?.title,
+                libraryAddToken = mediaMetadata.libraryAddToken,
+                libraryRemoveToken = mediaMetadata.libraryRemoveToken
             ),
         )
         songArtistMap(song.id).forEach(::delete)

@@ -69,7 +69,14 @@ class SyncUtils @Inject constructor(
             val localSongs = database.songsByNameAsc().first()
 
             localSongs.filterNot { it.id in remoteIds }
-                .forEach { database.update(it.song.toggleLibrary()) }
+                .forEach { 
+                    if (it.song.libraryAddToken != null && it.song.libraryRemoveToken != null) {
+                        YouTube.feedback(it.song.libraryAddToken)
+                    }
+                    else{
+                        database.update(it.song.toggleLibrary())
+                    }
+                }
 
             remoteSongs.forEach { song ->
                 launch {

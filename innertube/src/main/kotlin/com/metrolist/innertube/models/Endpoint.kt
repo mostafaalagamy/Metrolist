@@ -91,17 +91,28 @@ data class QueueAddEndpoint(
 }
 
 @Serializable
-data class ShareEntityEndpoint(
-    val serializedShareEntity: String,
-) : Endpoint()
-
-@Serializable
 data class DefaultServiceEndpoint(
-    var subscribeEndpoint: SubscribeEndpoint?
+    var subscribeEndpoint: SubscribeEndpoint?,
+    var feedbackEndpoint: FeedbackEndpoint?
 ) : Endpoint() {
     @Serializable
     data class SubscribeEndpoint(
         val channelIds: List<String>,
         val params: String? = null,
+    ) : Endpoint()
+
+    @Serializable
+    data class FeedbackEndpoint(
+        val feedbackToken: String
+    ) : Endpoint()
+}
+
+@Serializable
+data class ToggledServiceEndpoint(
+    var feedbackEndpoint: FeedbackEndpoint?
+) : Endpoint() {
+    @Serializable
+    data class FeedbackEndpoint(
+        val feedbackToken: String
     ) : Endpoint()
 }

@@ -88,7 +88,7 @@ class MusicDatabase(
         SortedSongAlbumMap::class,
         PlaylistSongMapPreview::class,
     ],
-    version = 22,
+    version = 23,
     exportSchema = true,
     autoMigrations = [
         AutoMigration(from = 2, to = 3),
@@ -110,7 +110,8 @@ class MusicDatabase(
         AutoMigration(from = 18, to = 19, spec = Migration18To19::class),
         AutoMigration(from = 19, to = 20, spec = Migration19To20::class),
         AutoMigration(from = 20, to = 21, spec = Migration20To21::class),
-        AutoMigration(from = 21, to = 22),
+        AutoMigration(from = 21, to = 22, spec = Migration21To22::class),
+        AutoMigration(from = 22, to = 23)
     ],
 )
 @TypeConverters(Converters::class)
@@ -488,3 +489,11 @@ class Migration19To20 : AutoMigrationSpec {
     )
 )
 class Migration20To21 : AutoMigrationSpec
+
+class Migration21To22 : AutoMigrationSpec {
+    override fun onPostMigrate(db: SupportSQLiteDatabase) {
+        // Add LibraryTokens
+        db.execSQL("ALTER TABLE song ADD COLUMN libraryAddToken TEXT DEFAULT ''")
+        db.execSQL("ALTER TABLE song ADD COLUMN libraryRemoveToken TEXT DEFAULT ''")
+    }
+}

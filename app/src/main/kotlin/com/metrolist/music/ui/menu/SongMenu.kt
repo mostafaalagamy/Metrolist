@@ -444,6 +444,15 @@ fun SongMenu(
                     )
                 },
                 modifier = Modifier.clickable {
+                    if (song.song.libraryRemoveToken != null && song.song.libraryAddToken != null) {
+                        scope.launch {
+                            if (song.song.inLibrary != null) {
+                                YouTube.feedback(song.song.libraryRemoveToken)
+                            } else {
+                                YouTube.feedback(song.song.libraryAddToken)
+                            }
+                        }
+                    }
                     database.query {
                         update(song.song.toggleLibrary())
                     }

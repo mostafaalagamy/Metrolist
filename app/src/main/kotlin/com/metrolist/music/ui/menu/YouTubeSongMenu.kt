@@ -343,10 +343,20 @@ fun YouTubeSongMenu(
                 },
                 modifier = Modifier.clickable {
                     if (librarySong?.song?.inLibrary != null) {
+                        if (librarySong?.song?.libraryRemoveToken != null) {
+                            coroutineScope.launch {
+                                YouTube.feedback(librarySong?.song?.libraryRemoveToken!!)
+                            }
+                        }
                         database.query {
                             inLibrary(song.id, null)
                         }
                     } else {
+                        if (librarySong?.song?.libraryAddToken != null) {
+                            coroutineScope.launch {
+                                YouTube.feedback(librarySong?.song?.libraryAddToken!!)
+                            }
+                        }
                         database.transaction {
                             insert(song.toMediaMetadata())
                             inLibrary(song.id, LocalDateTime.now())
