@@ -236,28 +236,6 @@ fun LocalPlaylistScreen(
 
     val editable: Boolean = playlist?.playlist?.isEditable == true
 
-    val playlist_thumbnail = remember {mutableStateOf<String?>(playlist.thumbnails[0])}
-    val result = remember { mutableStateOf<Uri?>(null) }
-
-    val launcher = rememberLauncherForActivityResult(
-        ActivityResultContracts.PickVisualMedia()
-    ) { uri ->
-        result.value = uri
-    }
-
-    LaunchedEffect(result.value) {
-        val uri = result.value ?: return@LaunchedEffect
-        withContext(Dispatchers.IO) {
-            val bytes = uriToByteArray(context, uri)
-            YouTube.uploadCustomThumbnailLink(
-                playlist.playlist.browseId!!,
-                bytes!!
-            ).onSuccess {
-                playlist_thumbnail.value = uri.toString()
-            }
-        }
-    }
-
     LaunchedEffect(songs) {
         mutableSongs.apply {
             clear()
@@ -959,6 +937,28 @@ fun LocalPlaylistHeader(
     val liked = playlist.playlist.bookmarkedAt != null
     val editable: Boolean = playlist.playlist.isEditable
 
+    val playlist_thumbnail = remember {mutableStateOf<String?>(playlist.thumbnails[0])}
+    val result = remember { mutableStateOf<Uri?>(null) }
+
+    val launcher = rememberLauncherForActivityResult(
+        ActivityResultContracts.PickVisualMedia()
+    ) { uri ->
+        result.value = uri
+    }
+
+    LaunchedEffect(result.value) {
+        val uri = result.value ?: return@LaunchedEffect
+        withContext(Dispatchers.IO) {
+            val bytes = uriToByteArray(context, uri)
+            YouTube.uploadCustomThumbnailLink(
+                playlist.playlist.browseId!!,
+                bytes!!
+            ).onSuccess {
+                playlist_thumbnail.value = uri.toString()
+            }
+        }
+    }
+
     LaunchedEffect(songs) {
         if (songs.isEmpty()) return@LaunchedEffect
         downloadUtil.downloads.collect { downloads ->
@@ -1006,7 +1006,7 @@ fun LocalPlaylistHeader(
                                         PickVisualMediaRequest(mediaType = ActivityResultContracts.PickVisualMedia.ImageOnly)
                                     )
                                 },
-                            ),                    
+                            ),
                     )
                 }
             } else if (playlist.thumbnails.size > 1) {
