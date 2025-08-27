@@ -109,7 +109,7 @@ fun ContentSettings(
         AlertDialog(
             onDismissRequest = { showProxyConfigurationDialog = false },
             title = {
-                Text(stringResource(R.string.configure_proxy))
+                Text(stringResource(R.string.config_proxy))
             },
             text = {
                 Column(
