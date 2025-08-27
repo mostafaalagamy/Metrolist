@@ -268,11 +268,12 @@
     <string name="content_country">Default content country</string>
     <string name="system_default">System default</string>
     <string name="enable_proxy">Enable proxy</string>
-    <string name="config_proxy">Configure proxy</string>
+    <string name="configure_proxy">Configure proxy</string>
     <string name="proxy_type">Proxy type</string>
     <string name="proxy_url">Proxy URL</string>
     <string name="proxy_username">Proxy Username</string>
     <string name="proxy_password">Proxy Password</string>
+    <string name="enable_authentication">Enable Authentication</string>
     <string name="restart_to_take_effect">Restart to take effect</string>
 
     <string name="player_and_audio">Player and audio</string>

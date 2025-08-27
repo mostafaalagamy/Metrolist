@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -155,8 +156,7 @@ fun ContentSettings(
                         value = tempProxyUrl,
                         onValueChange = { tempProxyUrl = it },
                         label = { Text(stringResource(R.string.proxy_url)) },
-                        modifier = Modifier.fillMaxWidth(),
-                        isError = errorUrl
+                        modifier = Modifier.fillMaxWidth()
                     )
 
                     Row(
@@ -183,15 +183,13 @@ fun ContentSettings(
                                 value = tempProxyUsername,
                                 onValueChange = { tempProxyUsername = it },
                                 label = { Text(stringResource(R.string.proxy_username)) },
-                                modifier = Modifier.fillMaxWidth(),
-                                isError = errorAuth
+                                modifier = Modifier.fillMaxWidth()
                             )
                             OutlinedTextField(
                                 value = tempProxyPassword,
                                 onValueChange = { tempProxyPassword = it },
                                 label = { Text(stringResource(R.string.proxy_password)) },
-                                modifier = Modifier.fillMaxWidth(),
-                                isError = errorAuth
+                                modifier = Modifier.fillMaxWidth()
                             )
                         }
                     }
@@ -200,7 +198,6 @@ fun ContentSettings(
             confirmButton = {
                 TextButton(
                     onClick = {
-                        
                         onProxyUrlChange(tempProxyUrl)
                         onProxyUsernameChange(if (authEnabled) tempProxyUsername else "")
                         onProxyPasswordChange(if (authEnabled) tempProxyPassword else "")
