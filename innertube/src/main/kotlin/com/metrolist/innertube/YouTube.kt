@@ -32,6 +32,7 @@ import com.metrolist.innertube.models.response.CreatePlaylistResponse
 import com.metrolist.innertube.models.response.GetQueueResponse
 import com.metrolist.innertube.models.response.GetSearchSuggestionsResponse
 import com.metrolist.innertube.models.response.GetTranscriptResponse
+import com.metrolist.innertube.models.response.ImageUploadResponse
 import com.metrolist.innertube.models.response.NextResponse
 import com.metrolist.innertube.models.response.PlayerResponse
 import com.metrolist.innertube.models.response.SearchResponse
@@ -874,6 +875,17 @@ object YouTube {
         innerTube.renamePlaylist(WEB_REMIX, playlistId, name)
     }
 
+    suspend fun uploadCustomThumbnailLink(playlistId: String, image: ByteArray) = runCatching {
+        val uploadUrl = innerTube.getUploadCustomThumbnailLink(WEB_REMIX, image.size).headers["x-guploader-uploadid"]
+        val blobReq = innerTube.uploadCustomThumbnail(
+            WEB_REMIX,
+            uploadUrl!!,
+            image
+        )
+        val blobId = Json.decodeFromString<ImageUploadResponse>(blobReq.bodyAsText()).encryptedBlobId
+        innerTube.setThumbnailPlaylist(WEB_REMIX, playlistId, blobId)
+    }
+    
     suspend fun deletePlaylist(playlistId: String) = runCatching {
         innerTube.deletePlaylist(WEB_REMIX, playlistId)
     }

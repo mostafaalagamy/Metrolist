@@ -1,7 +1,13 @@
 package com.metrolist.music.ui.screens.playlist
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.graphics.BitmapFactory
+import android.net.Uri
 import androidx.activity.compose.BackHandler
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.horizontalScroll
@@ -136,6 +142,7 @@ import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
 import com.metrolist.music.viewmodels.LocalPlaylistViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyListState
 import java.time.LocalDateTime
@@ -228,6 +235,28 @@ fun LocalPlaylistScreen(
     }
 
     val editable: Boolean = playlist?.playlist?.isEditable == true
+
+    val playlist_thumbnail = remember {mutableStateOf<String?>(playlist.thumbnails[0])}
+    val result = remember { mutableStateOf<Uri?>(null) }
+
+    val launcher = rememberLauncherForActivityResult(
+        ActivityResultContracts.PickVisualMedia()
+    ) { uri ->
+        result.value = uri
+    }
+
+    LaunchedEffect(result.value) {
+        val uri = result.value ?: return@LaunchedEffect
+        withContext(Dispatchers.IO) {
+            val bytes = uriToByteArray(context, uri)
+            YouTube.uploadCustomThumbnailLink(
+                playlist.playlist.browseId!!,
+                bytes!!
+            ).onSuccess {
+                playlist_thumbnail.value = uri.toString()
+            }
+        }
+    }
 
     LaunchedEffect(songs) {
         mutableSongs.apply {
@@ -965,11 +994,19 @@ fun LocalPlaylistHeader(
                         .clip(RoundedCornerShape(ThumbnailCornerRadius)),
                 ) {
                     AsyncImage(
-                        model = playlist.thumbnails[0],
+                        model = playlist_thumbnail.value,
                         contentDescription = null,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clip(RoundedCornerShape(ThumbnailCornerRadius)),
+                            .clip(RoundedCornerShape(ThumbnailCornerRadius))
+                            .combinedClickable(
+                                onClick = {},
+                                onLongClick = {
+                                    launcher.launch(
+                                        PickVisualMediaRequest(mediaType = ActivityResultContracts.PickVisualMedia.ImageOnly)
+                                    )
+                                },
+                            ),                    
                     )
                 }
             } else if (playlist.thumbnails.size > 1) {
@@ -1245,5 +1282,11 @@ fun LocalPlaylistHeader(
                 Text(stringResource(R.string.shuffle))
             }
         }
+    }
+}
+
+fun uriToByteArray(context: Context, uri: Uri): ByteArray? {
+    return context.contentResolver.openInputStream(uri)?.use { inputStream ->
+        inputStream.readBytes()
     }
 }
