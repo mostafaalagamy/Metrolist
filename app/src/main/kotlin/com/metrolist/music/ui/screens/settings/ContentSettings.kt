@@ -9,9 +9,11 @@ import android.provider.Settings
 import android.os.LocaleList
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.animation.AnimatedVisibility
 import androidx.core.net.toUri
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -25,6 +27,7 @@ import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
@@ -35,6 +38,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -65,6 +70,8 @@ fun ContentSettings(
     scrollBehavior: TopAppBarScrollBehavior,
 ) {
     val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+
 
     val (contentLanguage, onContentLanguageChange) = rememberPreference(key = ContentLanguageKey, defaultValue = "system")
     val (contentCountry, onContentCountryChange) = rememberPreference(key = ContentCountryKey, defaultValue = "system")
@@ -93,17 +100,27 @@ fun ContentSettings(
     if (showProxyConfigurationDialog) {
         var expandedDropdown by remember { mutableStateOf(false) }
 
-        DefaultDialog(
-            onDismiss = { showProxyConfigurationDialog = false },
-            title = { Text(stringResource(R.string.config_proxy)) },
-            content = {
+        var tempProxyUrl by rememberSaveable { mutableStateOf(proxyUrl) }
+        var tempProxyUsername by rememberSaveable { mutableStateOf(proxyUsername) }
+        var tempProxyPassword by rememberSaveable { mutableStateOf(proxyPassword) }
+        var authEnabled by rememberSaveable { mutableStateOf(proxyUsername.isNotBlank() || proxyPassword.isNotBlank()) }
+
+        AlertDialog(
+            onDismissRequest = { showProxyConfigurationDialog = false },
+            title = {
+                Text(stringResource(R.string.configure_proxy))
+            },
+            text = {
                 Column(
-                    modifier = Modifier.padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .verticalScroll(rememberScrollState()),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     ExposedDropdownMenuBox(
                         expanded = expandedDropdown,
-                        onExpandedChange = { expandedDropdown = !expandedDropdown }
+                        onExpandedChange = { expandedDropdown = !expandedDropdown },
+                        modifier = Modifier.fillMaxWidth()
                     ) {
                         OutlinedTextField(
                             value = proxyType.name,
@@ -122,11 +139,11 @@ fun ContentSettings(
                             expanded = expandedDropdown,
                             onDismissRequest = { expandedDropdown = false }
                         ) {
-                            listOf(Proxy.Type.HTTP, Proxy.Type.SOCKS).forEach { selectionOption ->
+                            listOf(Proxy.Type.HTTP, Proxy.Type.SOCKS).forEach { type ->
                                 DropdownMenuItem(
-                                    text = { Text(selectionOption.name) },
+                                    text = { Text(type.name) },
                                     onClick = {
-                                        onProxyTypeChange(selectionOption)
+                                        onProxyTypeChange(type)
                                         expandedDropdown = false
                                     }
                                 )
@@ -134,46 +151,72 @@ fun ContentSettings(
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(8.dp))
                     OutlinedTextField(
-                        value = proxyUrl,
-                        onValueChange = onProxyUrlChange,
+                        value = tempProxyUrl,
+                        onValueChange = { tempProxyUrl = it },
                         label = { Text(stringResource(R.string.proxy_url)) },
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
+                        isError = errorUrl
                     )
 
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(stringResource(R.string.enable_authentication))
+                        Switch(
+                            checked = authEnabled,
+                            onCheckedChange = {
+                                authEnabled = it
+                                if (!it) {
+                                    tempProxyUsername = ""
+                                    tempProxyPassword = ""
+                                }
+                            }
+                        )
+                    }
 
-                    OutlinedTextField(
-                        value = proxyUsername,
-                        onValueChange = onProxyUsernameChange,
-                        label = { Text(stringResource(R.string.proxy_username)) },
-                        modifier = Modifier.fillMaxWidth()
-                    )
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    OutlinedTextField(
-                        value = proxyPassword,
-                        onValueChange = onProxyPasswordChange,
-                        label = { Text(stringResource(R.string.proxy_password)) },
-                        modifier = Modifier.fillMaxWidth()
-                    )
+                    AnimatedVisibility(visible = authEnabled) {
+                        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                            OutlinedTextField(
+                                value = tempProxyUsername,
+                                onValueChange = { tempProxyUsername = it },
+                                label = { Text(stringResource(R.string.proxy_username)) },
+                                modifier = Modifier.fillMaxWidth(),
+                                isError = errorAuth
+                            )
+                            OutlinedTextField(
+                                value = tempProxyPassword,
+                                onValueChange = { tempProxyPassword = it },
+                                label = { Text(stringResource(R.string.proxy_password)) },
+                                modifier = Modifier.fillMaxWidth(),
+                                isError = errorAuth
+                            )
+                        }
+                    }
                 }
             },
-            buttons = {
+            confirmButton = {
                 TextButton(
-                    onClick = { showProxyConfigurationDialog = false },
+                    onClick = {
+                        
+                        onProxyUrlChange(tempProxyUrl)
+                        onProxyUsernameChange(if (authEnabled) tempProxyUsername else "")
+                        onProxyPasswordChange(if (authEnabled) tempProxyPassword else "")
+                        showProxyConfigurationDialog = false
+                    }
                 ) {
-                    Text(text = stringResource(android.R.string.cancel))
-                }
-
-                TextButton(
-                    onClick = { showProxyConfigurationDialog = false },
-                ) {
-                    Text(text = stringResource(android.R.string.ok))
+                    Text(stringResource(R.string.save))
                 }
             },
+            dismissButton = {
+                TextButton(onClick = {
+                    showProxyConfigurationDialog = false
+                }) {
+                    Text(stringResource(R.string.cancel))
+                }
+            }
         )
     }
 
