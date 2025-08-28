@@ -61,7 +61,7 @@
     <string name="swipe_song_to_add">Desliza la canción a la derecha para reproducir a continuación o a la izquierda para añadir a la cola</string>
     <string name="lyrics_click_change">Cambiar letra al hacer clic</string>
     <string name="slim">Delgado</string>
-    <string name="slim_navbar">Ocultar etiquetas de la barra de navegación inferior</string>
+    <string name="slim_navbar">Barra de navegación inferior delgada</string>
     <string name="auto_playlists">Listas de reproducción automáticas</string>
     <string name="show_liked_playlist">Ver lista de reproducción \"Me gusta\"</string>
     <string name="show_downloaded_playlist">Ver lista de reproducción \"Descargado\"</string>
