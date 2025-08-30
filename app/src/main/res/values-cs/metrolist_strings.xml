@@ -58,8 +58,8 @@
     <string name="enable_swipe_thumbnail">Povolit posunutí pro změnu skladby</string>
     <string name="swipe_song_to_add">Posuňte skladbu doleva pro přidání do fronty nebo doprava pro přehrání jako další</string>
     <string name="lyrics_click_change">Změnit texty po klepnutí</string>
-    <string name="slim">Úzká</string>
-    <string name="slim_navbar">Skrýt popisky navigačního panelu</string>
+    <string name="slim">Úzký</string>
+    <string name="slim_navbar">Zúžit spodní navigační panel</string>
     <string name="auto_playlists">Automatické playlisty</string>
     <string name="show_liked_playlist">Zobrazit playlist „Oblíbené“</string>
     <string name="show_downloaded_playlist">Zobrazit playlist „Stažené“</string>
