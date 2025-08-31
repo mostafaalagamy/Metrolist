@@ -36,4 +36,5 @@
     <string name="customize_colors">Koloreak aldatu</string>
     <string name="more_options">Aukera gehiago</string>
     <string name="text_color">Testu kolorea</string>
+    <string name="secondary_text_color">Bigarren testu kolorea</string>
 </resources>
