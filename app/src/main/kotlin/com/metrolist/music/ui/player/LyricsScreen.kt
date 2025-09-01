@@ -108,6 +108,7 @@ import kotlinx.coroutines.withContext
 import kotlin.runCatching
 import com.metrolist.music.utils.makeTimeString
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.foundation.keepScreenOn
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -245,7 +246,8 @@ fun LyricsScreen(
 
     BackHandler(onBack = onBackClick)
 
-    Box(modifier = modifier.fillMaxSize()) {
+    //ensuring the screen will be awake when lyrics are displaying
+    Box(modifier = modifier.fillMaxSize().keepScreenOn()) {
         Box(modifier = Modifier.fillMaxSize()) {
             when (playerBackground) {
                 PlayerBackgroundStyle.BLUR -> {
