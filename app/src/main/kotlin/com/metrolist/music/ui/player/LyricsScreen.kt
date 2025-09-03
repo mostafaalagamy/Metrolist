@@ -7,6 +7,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -82,6 +83,8 @@ import coil3.toBitmap
 import com.metrolist.music.LocalDatabase
 import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
+import com.metrolist.music.constants.DarkMode
+import com.metrolist.music.constants.DarkModeKey
 import com.metrolist.music.constants.PlayerBackgroundStyle
 import com.metrolist.music.constants.PlayerBackgroundStyleKey
 import com.metrolist.music.constants.SliderStyle
@@ -182,6 +185,13 @@ fun LyricsScreen(
     var sliderPosition by remember { mutableStateOf<Long?>(null) }
 
     val playerBackground by rememberEnumPreference(PlayerBackgroundStyleKey, PlayerBackgroundStyle.DEFAULT)
+    
+    // Dark theme logic
+    val isSystemInDarkTheme = isSystemInDarkTheme()
+    val darkTheme by rememberEnumPreference(DarkModeKey, defaultValue = DarkMode.AUTO)
+    val useDarkTheme = remember(darkTheme, isSystemInDarkTheme) {
+        if (darkTheme == DarkMode.AUTO) isSystemInDarkTheme else darkTheme == DarkMode.ON
+    }
 
     var gradientColors by remember { mutableStateOf<List<Color>>(emptyList()) }
     val gradientColorsCache = remember { mutableMapOf<String, List<Color>>() }
@@ -464,7 +474,7 @@ fun LyricsScreen(
                                             }
                                             sliderPosition = null
                                         },
-                                        colors = PlayerSliderColors.defaultSliderColors(textBackgroundColor),
+                                        colors = PlayerSliderColors.defaultSliderColors(textBackgroundColor, playerBackground, useDarkTheme),
                                         modifier = Modifier.fillMaxWidth()
                                     )
                                 }
@@ -482,7 +492,7 @@ fun LyricsScreen(
                                             }
                                             sliderPosition = null
                                         },
-                                        colors = PlayerSliderColors.squigglySliderColors(textBackgroundColor),
+                                        colors = PlayerSliderColors.squigglySliderColors(textBackgroundColor, playerBackground, useDarkTheme),
                                         modifier = Modifier.fillMaxWidth(),
                                         squigglesSpec = SquigglySlider.SquigglesSpec(
                                             amplitude = if (isPlaying) (2.dp).coerceAtLeast(2.dp) else 0.dp,
@@ -508,7 +518,7 @@ fun LyricsScreen(
                                         track = { sliderState ->
                                             PlayerSliderTrack(
                                                 sliderState = sliderState,
-                                                colors = PlayerSliderColors.slimSliderColors(textBackgroundColor)
+                                                colors = PlayerSliderColors.slimSliderColors(textBackgroundColor, playerBackground, useDarkTheme)
                                             )
                                         },
                                         modifier = Modifier.fillMaxWidth()
@@ -788,7 +798,7 @@ fun LyricsScreen(
                                         }
                                         sliderPosition = null
                                     },
-                                    colors = PlayerSliderColors.defaultSliderColors(textBackgroundColor),
+                                    colors = PlayerSliderColors.defaultSliderColors(textBackgroundColor, playerBackground, useDarkTheme),
                                     modifier = Modifier.fillMaxWidth()
                                 )
                             }
@@ -806,7 +816,7 @@ fun LyricsScreen(
                                         }
                                         sliderPosition = null
                                     },
-                                    colors = PlayerSliderColors.squigglySliderColors(textBackgroundColor),
+                                    colors = PlayerSliderColors.squigglySliderColors(textBackgroundColor, playerBackground, useDarkTheme),
                                     modifier = Modifier.fillMaxWidth(),
                                     squigglesSpec = SquigglySlider.SquigglesSpec(
                                         amplitude = if (isPlaying) (2.dp).coerceAtLeast(2.dp) else 0.dp,
@@ -832,7 +842,7 @@ fun LyricsScreen(
                                     track = { sliderState ->
                                         PlayerSliderTrack(
                                             sliderState = sliderState,
-                                            colors = PlayerSliderColors.slimSliderColors(textBackgroundColor)
+                                            colors = PlayerSliderColors.slimSliderColors(textBackgroundColor, playerBackground, useDarkTheme)
                                         )
                                     },
                                     modifier = Modifier.fillMaxWidth()
