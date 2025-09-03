@@ -403,7 +403,7 @@ fun Lyrics(
         if((currentLineIndex == 0 && shouldScrollToFirstLine) || !initialScrollDone) {
             shouldScrollToFirstLine = false
             // Initial scroll to center the first line with medium animation (600ms)
-            val initialCenterIndex = kotlin.math.max(0, currentLineIndex - 1)
+            val initialCenterIndex = kotlin.math.max(0, currentLineIndex)
             performSmoothPageScroll(initialCenterIndex, 800) // Initial scroll duration
             if(!isAppMinimized) {
                 initialScrollDone = true
