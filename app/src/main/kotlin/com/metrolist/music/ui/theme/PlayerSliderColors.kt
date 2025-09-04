@@ -31,7 +31,6 @@ object PlayerSliderColors {
     ): SliderColors {
         val inactiveTrackColor = when (playerBackground) {
             PlayerBackgroundStyle.DEFAULT -> {
-                // في الوضع الافتراضي، استخدم لون محدد بوضوح
                 if (useDarkTheme) {
                     MaterialTheme.colorScheme.outline.copy(alpha = 0.4f)
                 } else {
@@ -110,7 +109,6 @@ object PlayerSliderColors {
     ): SliderColors {
         val inactiveTrackColor = when (playerBackground) {
             PlayerBackgroundStyle.DEFAULT -> {
-                // في الوضع الافتراضي، استخدم لون محدد بوضوح
                 if (useDarkTheme) {
                     MaterialTheme.colorScheme.outline.copy(alpha = 0.4f)
                 } else {
