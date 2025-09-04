@@ -46,7 +46,7 @@
     </plurals>
     <string name="allows_for_sync_witch_youtube">Примечание: Это позволит синхронизировать плейлист с YouTube Music. Этот параметр НЕЛЬЗЯ изменить позже.</string>
     <string name="player_background_blur">Размытие</string>
-    <string name="slim_navbar">Убрать подписи с панели навигации</string>
+    <string name="slim_navbar">Тонкая панель навигации</string>
     <string name="min_playback_duration_description">Минимальное время воспроизведения песни, после которого она будет считаться \"проигранной\"</string>
     <string name="dislikes">Дизлайки</string>
     <string name="token_adv_login_description">Это ПРОДВИНУТЫЙ способ входа. Вместо использования веб-портала вы можете ввести или обновить токен для входа здесь. Это может быть полезно для быстрого входа на нескольких устройствах. Учтите, что приложение не примет токены с неверным форматом</string>
@@ -178,4 +178,5 @@
     <string name="settings_section_player_content">Плеер и контент</string>
     <string name="settings_section_storage">Хранилище и данные</string>
     <string name="settings_section_system">Система и сведения</string>
+    <string name="starting_radio">Запуск радио</string>
 </resources>

@@ -43,7 +43,7 @@
     </plurals>
     <plurals name="n_time">
         <item quantity="one">%d vez</item>
-        <item quantity="many">%d veces</item>
+        <item quantity="many">%d de veces</item>
         <item quantity="other">%d veces</item>
     </plurals>
     <string name="similar_content">Contenido similar</string>
@@ -61,8 +61,8 @@
     <string name="swipe_song_to_add">Desliza la canción a la derecha para reproducir a continuación o a la izquierda para añadir a la cola</string>
     <string name="lyrics_click_change">Cambiar letra al hacer clic</string>
     <string name="slim">Delgado</string>
-    <string name="slim_navbar">Ocultar etiquetas de la barra de navegación inferior</string>
-    <string name="auto_playlists">Listas de reproducción automática</string>
+    <string name="slim_navbar">Barra de navegación inferior delgada</string>
+    <string name="auto_playlists">Listas de reproducción automáticas</string>
     <string name="show_liked_playlist">Ver lista de reproducción \"Me gusta\"</string>
     <string name="show_downloaded_playlist">Ver lista de reproducción \"Descargado\"</string>
     <string name="show_top_playlist">Ver lista de reproducción \"Top\"</string>
@@ -105,7 +105,7 @@
     <string name="past_week">Semana pasada</string>
     <string name="past_month">Mes pasado</string>
     <string name="past_year">Año pasado</string>
-    <string name="top_length">Longitud de lista Mi Top</string>
+    <string name="top_length">Longitud de la lista Mi Top</string>
     <string name="history_duration">Duración del historial</string>
     <string name="information">Información</string>
     <string name="description">Descripción</string>
@@ -116,7 +116,7 @@
     <string name="dislikes">No me gusta</string>
     <plurals name="seconds">
         <item quantity="one">1 segundo</item>
-        <item quantity="many">%d segundos</item>
+        <item quantity="many">%d de segundos</item>
         <item quantity="other">%d segundos</item>
     </plurals>
     <string name="please_wait">Por favor, espera</string>
@@ -175,4 +175,5 @@
     <string name="settings_section_player_content">Reproductor y contenido</string>
     <string name="settings_section_storage">Almacenamiento y datos</string>
     <string name="settings_section_system">Sistema y Acerca de</string>
+    <string name="starting_radio">Iniciando radio</string>
 </resources>

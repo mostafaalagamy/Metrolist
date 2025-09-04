@@ -35,7 +35,7 @@
     <string name="enable_swipe_thumbnail">Habilitar o deslizar para trocar de música</string>
     <string name="lyrics_click_change">Alterar letra ao clicar</string>
     <string name="slim">Pequeno</string>
-    <string name="slim_navbar">Ocultar rótulos da barra de navegação inferior</string>
+    <string name="slim_navbar">Barra de navegação inferior pequena</string>
     <string name="google">Google</string>
     <string name="discord">Discord</string>
     <string name="general">Geral</string>
@@ -165,4 +165,14 @@
     <string name="seek_forward">5 segundos pra frente</string>
     <string name="seek_forward_dynamic">+%1$d segundos para frente</string>
     <string name="seek_backward_dynamic">-%1$d segundos pra trás</string>
+    <string name="starting_radio">Iniciando a rádio</string>
+    <string name="seek_seconds_addup_description">Ao ativar, adiciona até 5 segundos extras incrementalmente em cada pulo de pesquisa</string>
+    <string name="disable_load_more_when_repeat_all">Desativar o carregar mais ao repetir tudo</string>
+    <string name="disable_load_more_when_repeat_all_desc">Não carregar mais músicas automaticamente e conteúdo parecido quando o modo de repetir tudo está ativado</string>
+    <string name="settings_section_ui">Interface de usuário</string>
+    <string name="settings_section_privacy">Privacidade e segurança</string>
+    <string name="settings_section_player">Reprodutor e mídia</string>
+    <string name="settings_section_player_content">Reprodutor e conteúdo</string>
+    <string name="settings_section_storage">Armazenamento e dados</string>
+    <string name="settings_section_system">Sistema e informações</string>
 </resources>

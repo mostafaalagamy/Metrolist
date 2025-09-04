@@ -136,7 +136,7 @@
     <string name="configure_app_language">Configurar idioma de la aplicación</string>
     <string name="set_first_lyrics_provider">Proveedor de letras preferido</string>
     <string name="slim">Delgado</string>
-    <string name="slim_navbar">Ocultar las etiquetas de la barra de navegación inferior</string>
+    <string name="slim_navbar">Barra de navegación inferior delgada</string>
     <string name="intent_supported_links_not_found">No se pudo encontrar la configuración de links soportados, por favor, configúrelos manualmente</string>
     <string name="now_playing">Reproduciendo Ahora</string>
     <string name="close">Cerrar</string>
@@ -169,4 +169,11 @@
     <string name="disable_load_more_when_repeat_all">Deshabilitar cargar más al repetir todo</string>
     <string name="disable_load_more_when_repeat_all_desc">No precargar más canciones ni contenido similar cuando repetir todo está activado</string>
     <string name="sensitivity_percentage">%1$d%%</string>
+    <string name="starting_radio">Iniciando radio</string>
+    <string name="settings_section_ui">Interfaz de usuario</string>
+    <string name="settings_section_privacy">Privacidad y seguridad</string>
+    <string name="settings_section_player">Reproductor y medios</string>
+    <string name="settings_section_player_content">Reproductor y contenido</string>
+    <string name="settings_section_storage">Almacenamiento y datos</string>
+    <string name="settings_section_system">Sistema e información</string>
 </resources>

@@ -19,4 +19,8 @@
     <string name="liked">பிடித்திருந்தது</string>
     <string name="my_top">என் சிறந்த</string>
     <string name="cached_playlist">பதுக்கம் செய்யப்பட்ட</string>
+    <string name="local_history">அகம்</string>
+    <string name="remote_history">புறம்</string>
+    <string name="sync_playlist">ஒத்திசைவு பாடல்கள்</string>
+    <string name="sync_disabled">ஒத்திசைவு முடக்கப்பட்டுள்ளது</string>
 </resources>

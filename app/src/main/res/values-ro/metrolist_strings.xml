@@ -75,7 +75,7 @@
     <string name="lyrics_romanize_japanese">Romanizează versurile în japoneză</string>
     <string name="lyrics_romanize_korean">Romanizează versurile în coreeană</string>
     <string name="slim">Subțire</string>
-    <string name="slim_navbar">Ascunde etichetele din bara de navigare de jos</string>
+    <string name="slim_navbar">Bară de navigare compactă</string>
     <string name="auto_playlists">Playlisturi automate</string>
     <string name="show_liked_playlist">Arată playlistul \"Apreciate\"</string>
     <string name="show_downloaded_playlist">Arată playlistul \"Descărcate\"</string>
@@ -175,4 +175,5 @@
     <string name="settings_section_player_content">Player și conținut</string>
     <string name="settings_section_storage">Stocare și date</string>
     <string name="settings_section_system">Sistem și despre</string>
+    <string name="starting_radio">Se pornește radioul</string>
 </resources>
