@@ -72,7 +72,7 @@
     <string name="open_supported_links">デフォルトで開く対応リンク</string>
     <string name="configure_supported_links">対応リンクを設定します</string>
     <string name="ytm_sync">YouTube Music のアカウントと自動的に同期する</string>
-    <string name="slim_navbar">ボトムナビゲーションバーのラベルを非表示</string>
+    <string name="slim_navbar">下部ナビゲーションバーをスリム化</string>
     <string name="enable_similar_content">似ているコンテンツを有効化</string>
     <string name="follow_theme">テーマに従う</string>
     <string name="secondary_color_style">セカンダリ</string>
