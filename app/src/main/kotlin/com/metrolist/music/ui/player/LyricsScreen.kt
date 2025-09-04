@@ -83,8 +83,6 @@ import coil3.toBitmap
 import com.metrolist.music.LocalDatabase
 import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
-import com.metrolist.music.constants.DarkMode
-import com.metrolist.music.constants.DarkModeKey
 import com.metrolist.music.constants.PlayerBackgroundStyle
 import com.metrolist.music.constants.PlayerBackgroundStyleKey
 import com.metrolist.music.constants.SliderStyle
@@ -185,13 +183,9 @@ fun LyricsScreen(
     var sliderPosition by remember { mutableStateOf<Long?>(null) }
 
     val playerBackground by rememberEnumPreference(PlayerBackgroundStyleKey, PlayerBackgroundStyle.DEFAULT)
-    
-    // Dark theme logic
+
     val isSystemInDarkTheme = isSystemInDarkTheme()
-    val darkTheme by rememberEnumPreference(DarkModeKey, DarkMode.AUTO)
-    val useDarkTheme = remember(darkTheme, isSystemInDarkTheme) {
-        if (darkTheme == DarkMode.AUTO) isSystemInDarkTheme else darkTheme == DarkMode.ON
-    }
+    val useDarkTheme = isSystemInDarkTheme
 
     var gradientColors by remember { mutableStateOf<List<Color>>(emptyList()) }
     val gradientColorsCache = remember { mutableMapOf<String, List<Color>>() }
