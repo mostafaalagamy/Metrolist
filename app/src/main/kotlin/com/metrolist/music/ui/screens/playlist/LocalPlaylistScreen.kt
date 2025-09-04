@@ -1022,18 +1022,18 @@ fun LocalPlaylistHeader(
                             PickVisualMediaRequest(mediaType = ActivityResultContracts.PickVisualMedia.ImageOnly)
                         )
                     }) {
-                        Text(stringResource(R.string.ok))
+                        Text(stringResource(android.R.string.ok))
                     }
                 },
                 dismissButton = {
                     TextButton(onClick = { showEditNoteDialog = false }) {
-                        Text(stringResource(R.string.cancel))
+                        Text(stringResource(android.R.string.cancel))
                     }
                 },
                 title = { Text(stringResource(R.string.edit_playlist_cover)) },
                 text = {
                     Text(
-                        text = "Note: Your account must be linked to a phone number and verified on YouTube Music to change playlist cover.",
+                        text = stringResource(R.string.edit_playlist_cover_note),
                         style = MaterialTheme.typography.bodyMedium
                     )
                 }
