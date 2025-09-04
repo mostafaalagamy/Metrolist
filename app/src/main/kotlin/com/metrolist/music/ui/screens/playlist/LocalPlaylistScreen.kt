@@ -5,6 +5,7 @@ import android.content.Context
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.content.Intent
+import android.graphics.Bitmap
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
@@ -89,6 +90,8 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.core.content.FileProvider
+import com.yalantis.ucrop.UCrop
 import com.metrolist.music.ui.component.OverlayEditButton
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.fastAny
@@ -943,34 +946,34 @@ fun LocalPlaylistHeader(
 
     val playlist_thumbnail = remember {mutableStateOf<String?>(playlist.thumbnails[0])}
     val result = remember { mutableStateOf<Uri?>(null) }
+    var pendingCropDestUri by remember { mutableStateOf<Uri?>(null) }
     var showEditNoteDialog by remember { mutableStateOf(false) }
 
     val cropLauncher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { res ->
-        val dataUri = res.data?.data
-        if (res.resultCode == android.app.Activity.RESULT_OK && dataUri != null) {
-            result.value = dataUri
+        if (res.resultCode == android.app.Activity.RESULT_OK) {
+            val output = res.data?.let { UCrop.getOutput(it) } ?: pendingCropDestUri
+            if (output != null) result.value = output
         }
     }
 
     val pickLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.PickVisualMedia()
     ) { uri ->
-        uri?.let {
-            val cropIntent = Intent("com.android.camera.action.CROP").apply {
-                setDataAndType(uri, "image/*")
-                putExtra("crop", "true")
-                putExtra("aspectX", 1)
-                putExtra("aspectY", 1)
-                putExtra("scale", true)
-                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                putExtra("outputFormat", android.graphics.Bitmap.CompressFormat.JPEG.toString())
+        uri?.let { sourceUri ->
+            val destFile = java.io.File(context.cacheDir, "playlist_cover_crop_${System.currentTimeMillis()}.jpg")
+            val destUri = FileProvider.getUriForFile(context, "${context.packageName}.FileProvider", destFile)
+            pendingCropDestUri = destUri
+            val options = UCrop.Options().apply {
+                setCompressionFormat(Bitmap.CompressFormat.JPEG)
+                setCompressionQuality(90)
+                setHideBottomControls(true)
+                setToolbarTitle(context.getString(R.string.edit_playlist_cover))
             }
-            try {
-                cropLauncher.launch(cropIntent)
-            } catch (_: Exception) {
-                // If crop UI not available, fallback to direct upload
-                result.value = uri
-            }
+            val intent = UCrop.of(sourceUri, destUri)
+                .withAspectRatio(1f, 1f)
+                .withOptions(options)
+                .getIntent(context)
+            cropLauncher.launch(intent)
         }
     }
 
@@ -1355,7 +1358,9 @@ fun LocalPlaylistHeader(
 }
 
 fun uriToByteArray(context: Context, uri: Uri): ByteArray? {
-    return context.contentResolver.openInputStream(uri)?.use { inputStream ->
-        inputStream.readBytes()
+    return try {
+        context.contentResolver.openInputStream(uri)?.use { it.readBytes() }
+    } catch (_: SecurityException) {
+        null
     }
 }

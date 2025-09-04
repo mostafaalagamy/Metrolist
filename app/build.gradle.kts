@@ -181,6 +181,8 @@ dependencies {
 
     implementation(libs.coil)
     implementation(libs.coil.network.okhttp)
+    // In-app image cropper (UCrop)
+    implementation("com.github.yalantis:ucrop:2.2.8")
 
     implementation(libs.shimmer)
 
