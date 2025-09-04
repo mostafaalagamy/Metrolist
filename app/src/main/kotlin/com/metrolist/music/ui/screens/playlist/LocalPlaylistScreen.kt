@@ -1018,31 +1018,28 @@ fun LocalPlaylistHeader(
         modifier = modifier.padding(12.dp),
     ) {
         if (showEditNoteDialog) {
-            AlertDialog(
-                onDismissRequest = { showEditNoteDialog = false },
-                confirmButton = {
-                    TextButton(onClick = {
-                        showEditNoteDialog = false
-                        pickLauncher.launch(
-                            PickVisualMediaRequest(mediaType = ActivityResultContracts.PickVisualMedia.ImageOnly)
-                        )
-                    }) {
-                        Text(stringResource(android.R.string.ok))
-                    }
-                },
-                dismissButton = {
-                    TextButton(onClick = { showEditNoteDialog = false }) {
-                        Text(stringResource(android.R.string.cancel))
-                    }
-                },
-                title = { Text(stringResource(R.string.edit_playlist_cover)) },
-                text = {
-                    Text(
-                        text = stringResource(R.string.edit_playlist_cover_note),
-                        style = MaterialTheme.typography.bodyMedium
+            ActionPromptDialog(
+                title = stringResource(R.string.edit_playlist_cover),
+                onDismiss = { showEditNoteDialog = false },
+                onConfirm = {
+                    showEditNoteDialog = false
+                    pickLauncher.launch(
+                        PickVisualMediaRequest(mediaType = ActivityResultContracts.PickVisualMedia.ImageOnly)
                     )
-                }
-            )
+                },
+                onCancel = { showEditNoteDialog = false }
+            ) {
+                Text(
+                    text = stringResource(R.string.edit_playlist_cover_note),
+                    style = MaterialTheme.typography.bodyMedium
+                )
+                Spacer(Modifier.height(8.dp))
+                Text(
+                    text = stringResource(R.string.edit_playlist_cover_note_wait),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                )
+            }
         }
         Row(
             horizontalArrangement = Arrangement.spacedBy(12.dp),
