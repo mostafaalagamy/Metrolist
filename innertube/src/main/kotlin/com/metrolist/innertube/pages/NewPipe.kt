@@ -22,9 +22,11 @@ private class NewPipeDownloaderImpl(proxy: Proxy?, proxyAuth: String?) : Downloa
     private val client = OkHttpClient.Builder()
         .proxy(proxy)
         .proxyAuthenticator { _, response ->
-            response.request.newBuilder()
-                .header("Proxy-Authorization", proxyAuth!!)
-                .build()
+            proxyAuth?.let { auth ->
+                response.request.newBuilder()
+                    .header("Proxy-Authorization", auth)
+                    .build()
+            } ?: response.request
         }
         .build()
 
