@@ -7,6 +7,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -36,6 +37,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -64,7 +66,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.zIndex
+import android.app.Activity
 import android.content.res.Configuration
+import android.view.WindowManager
 import androidx.media3.common.C
 import androidx.media3.common.Player
 import androidx.media3.common.Player.STATE_READY
@@ -117,9 +121,20 @@ fun LyricsScreen(
     navController: NavController,
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
+    val activity = context as? Activity
+    
+    // Keep the screen on when entering the screen
+    DisposableEffect(Unit) {
+        activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        
+        onDispose {
+            // Remove the feature when exiting the screen
+            activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        }
+    }
     val playerConnection = LocalPlayerConnection.current ?: return
     val player = playerConnection.player
-    val context = LocalContext.current
     val menuState = LocalMenuState.current
     val database = LocalDatabase.current
     val coroutineScope = rememberCoroutineScope()
@@ -168,6 +183,9 @@ fun LyricsScreen(
     var sliderPosition by remember { mutableStateOf<Long?>(null) }
 
     val playerBackground by rememberEnumPreference(PlayerBackgroundStyleKey, PlayerBackgroundStyle.DEFAULT)
+
+    val isSystemInDarkTheme = isSystemInDarkTheme()
+    val useDarkTheme = isSystemInDarkTheme
 
     var gradientColors by remember { mutableStateOf<List<Color>>(emptyList()) }
     val gradientColorsCache = remember { mutableMapOf<String, List<Color>>() }
@@ -450,7 +468,7 @@ fun LyricsScreen(
                                             }
                                             sliderPosition = null
                                         },
-                                        colors = PlayerSliderColors.defaultSliderColors(textBackgroundColor),
+                                        colors = PlayerSliderColors.defaultSliderColors(textBackgroundColor, playerBackground, useDarkTheme),
                                         modifier = Modifier.fillMaxWidth()
                                     )
                                 }
@@ -468,7 +486,7 @@ fun LyricsScreen(
                                             }
                                             sliderPosition = null
                                         },
-                                        colors = PlayerSliderColors.squigglySliderColors(textBackgroundColor),
+                                        colors = PlayerSliderColors.squigglySliderColors(textBackgroundColor, playerBackground, useDarkTheme),
                                         modifier = Modifier.fillMaxWidth(),
                                         squigglesSpec = SquigglySlider.SquigglesSpec(
                                             amplitude = if (isPlaying) (2.dp).coerceAtLeast(2.dp) else 0.dp,
@@ -494,7 +512,7 @@ fun LyricsScreen(
                                         track = { sliderState ->
                                             PlayerSliderTrack(
                                                 sliderState = sliderState,
-                                                colors = PlayerSliderColors.slimSliderColors(textBackgroundColor)
+                                                colors = PlayerSliderColors.slimSliderColors(textBackgroundColor, playerBackground, useDarkTheme)
                                             )
                                         },
                                         modifier = Modifier.fillMaxWidth()
@@ -774,7 +792,7 @@ fun LyricsScreen(
                                         }
                                         sliderPosition = null
                                     },
-                                    colors = PlayerSliderColors.defaultSliderColors(textBackgroundColor),
+                                    colors = PlayerSliderColors.defaultSliderColors(textBackgroundColor, playerBackground, useDarkTheme),
                                     modifier = Modifier.fillMaxWidth()
                                 )
                             }
@@ -792,7 +810,7 @@ fun LyricsScreen(
                                         }
                                         sliderPosition = null
                                     },
-                                    colors = PlayerSliderColors.squigglySliderColors(textBackgroundColor),
+                                    colors = PlayerSliderColors.squigglySliderColors(textBackgroundColor, playerBackground, useDarkTheme),
                                     modifier = Modifier.fillMaxWidth(),
                                     squigglesSpec = SquigglySlider.SquigglesSpec(
                                         amplitude = if (isPlaying) (2.dp).coerceAtLeast(2.dp) else 0.dp,
@@ -818,7 +836,7 @@ fun LyricsScreen(
                                     track = { sliderState ->
                                         PlayerSliderTrack(
                                             sliderState = sliderState,
-                                            colors = PlayerSliderColors.slimSliderColors(textBackgroundColor)
+                                            colors = PlayerSliderColors.slimSliderColors(textBackgroundColor, playerBackground, useDarkTheme)
                                         )
                                     },
                                     modifier = Modifier.fillMaxWidth()

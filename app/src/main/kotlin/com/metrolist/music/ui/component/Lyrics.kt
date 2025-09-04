@@ -381,7 +381,7 @@ fun Lyrics(
                 if (itemInfo != null) {
                     // Item is visible, animate directly to center without sudden jumps
                     val viewportHeight = lazyListState.layoutInfo.viewportEndOffset - lazyListState.layoutInfo.viewportStartOffset
-                    val center = lazyListState.layoutInfo.viewportStartOffset + (viewportHeight / 3)
+                    val center = lazyListState.layoutInfo.viewportStartOffset + (viewportHeight / 2)
                     val itemCenter = itemInfo.offset + itemInfo.size / 2
                     val offset = itemCenter - center
 
@@ -403,7 +403,7 @@ fun Lyrics(
         if((currentLineIndex == 0 && shouldScrollToFirstLine) || !initialScrollDone) {
             shouldScrollToFirstLine = false
             // Initial scroll to center the first line with medium animation (600ms)
-            val initialCenterIndex = kotlin.math.max(0, currentLineIndex )
+            val initialCenterIndex = kotlin.math.max(0, currentLineIndex)
             performSmoothPageScroll(initialCenterIndex, 800) // Initial scroll duration
             if(!isAppMinimized) {
                 initialScrollDone = true
@@ -412,13 +412,13 @@ fun Lyrics(
             deferredCurrentLineIndex = currentLineIndex
             if (isSeeking) {
                 // Fast scroll for seeking to center the target line (300ms)
-                val seekCenterIndex = kotlin.math.max(0, currentLineIndex )
+                val seekCenterIndex = kotlin.math.max(0, currentLineIndex - 1)
                 performSmoothPageScroll(seekCenterIndex, 500) // Fast seek duration
             } else if ((lastPreviewTime == 0L || currentLineIndex != previousLineIndex) && scrollLyrics) {
                 // Auto-scroll when lyrics settings allow it
                 if (currentLineIndex != previousLineIndex) {
                     // Calculate which line should be at the top to center the active group
-                    val centerTargetIndex = kotlin.math.max(0, currentLineIndex ) // Show previous line at top to center current
+                    val centerTargetIndex = currentLineIndex
                     performSmoothPageScroll(centerTargetIndex, 1500) // Auto scroll duration
                 }
             }
@@ -455,7 +455,7 @@ fun Lyrics(
             state = lazyListState,
             contentPadding = WindowInsets.systemBars
                 .only(WindowInsetsSides.Top)
-                .add(WindowInsets(top = maxHeight / 2, bottom = maxHeight / 2)) // Keep active line centered
+                .add(WindowInsets(top = maxHeight / 3, bottom = maxHeight / 2))
                 .asPaddingValues(),
             modifier = Modifier
                 .fadingEdge(vertical = 64.dp)
