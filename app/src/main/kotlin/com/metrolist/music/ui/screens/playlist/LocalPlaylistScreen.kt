@@ -87,6 +87,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -968,6 +969,9 @@ fun LocalPlaylistHeader(
                 setCompressionQuality(90)
                 setHideBottomControls(true)
                 setToolbarTitle(context.getString(R.string.edit_playlist_cover))
+                setStatusBarColor(MaterialTheme.colorScheme.surface.toArgb())
+                setToolbarColor(MaterialTheme.colorScheme.surface.toArgb())
+                setActiveControlsWidgetColor(MaterialTheme.colorScheme.primary.toArgb())
             }
             val intent = UCrop.of(sourceUri, destUri)
                 .withAspectRatio(1f, 1f)
