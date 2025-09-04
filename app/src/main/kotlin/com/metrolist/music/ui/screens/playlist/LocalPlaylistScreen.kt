@@ -34,6 +34,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -942,6 +943,7 @@ fun LocalPlaylistHeader(
 
     val playlist_thumbnail = remember {mutableStateOf<String?>(playlist.thumbnails[0])}
     val result = remember { mutableStateOf<Uri?>(null) }
+    var showEditNoteDialog by remember { mutableStateOf(false) }
 
     val cropLauncher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { res ->
         val dataUri = res.data?.data
@@ -1010,6 +1012,33 @@ fun LocalPlaylistHeader(
         verticalArrangement = Arrangement.spacedBy(12.dp),
         modifier = modifier.padding(12.dp),
     ) {
+        if (showEditNoteDialog) {
+            AlertDialog(
+                onDismissRequest = { showEditNoteDialog = false },
+                confirmButton = {
+                    TextButton(onClick = {
+                        showEditNoteDialog = false
+                        pickLauncher.launch(
+                            PickVisualMediaRequest(mediaType = ActivityResultContracts.PickVisualMedia.ImageOnly)
+                        )
+                    }) {
+                        Text(stringResource(R.string.ok))
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { showEditNoteDialog = false }) {
+                        Text(stringResource(R.string.cancel))
+                    }
+                },
+                title = { Text(stringResource(R.string.edit_playlist_cover)) },
+                text = {
+                    Text(
+                        text = "Note: Your account must be linked to a phone number and verified on YouTube Music to change playlist cover.",
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
+            )
+        }
         Row(
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalAlignment = Alignment.CenterVertically,
@@ -1034,11 +1063,11 @@ fun LocalPlaylistHeader(
                                 .clip(RoundedCornerShape(ThumbnailCornerRadius))
                         )
                         if (editable) {
-                            OverlayEditButton(visible = true, alignment = Alignment.BottomEnd) {
-                                pickLauncher.launch(
-                                    PickVisualMediaRequest(mediaType = ActivityResultContracts.PickVisualMedia.ImageOnly)
-                                )
-                            }
+                            OverlayEditButton(
+                                visible = true,
+                                onClick = { showEditNoteDialog = true },
+                                alignment = Alignment.BottomEnd
+                            )
                         }
                     }
                 }
@@ -1066,11 +1095,11 @@ fun LocalPlaylistHeader(
                         )
                     }
                     if (editable) {
-                        OverlayEditButton(visible = true, alignment = Alignment.BottomEnd) {
-                            pickLauncher.launch(
-                                PickVisualMediaRequest(mediaType = ActivityResultContracts.PickVisualMedia.ImageOnly)
-                            )
-                        }
+                        OverlayEditButton(
+                            visible = true,
+                            onClick = { showEditNoteDialog = true },
+                            alignment = Alignment.BottomEnd
+                        )
                     }
                 }
             }
