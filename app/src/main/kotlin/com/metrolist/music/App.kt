@@ -34,12 +34,11 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import timber.log.Timber
+import java.net.Authenticator
+import java.net.PasswordAuthentication
 import java.net.Proxy
 import java.util.*
-
-import java.net.Authenticator
 import okhttp3.Credentials
-import java.net.PasswordAuthentication
 
 @HiltAndroidApp
 class App : Application(), SingletonImageLoader.Factory {
