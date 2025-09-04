@@ -52,6 +52,8 @@ class InnerTube {
             httpClient.close()
             httpClient = createClient()
         }
+    
+    var proxyAuth: String? = null
 
     var useLoginForBrowse: Boolean = false
 
@@ -78,9 +80,18 @@ class InnerTube {
             socketTimeoutMillis = 15000
         }
 
-        if (proxy != null) {
+        proxy?.let {
             engine {
                 proxy = this@InnerTube.proxy
+                proxyAuth?.let {
+                    config {
+                        proxyAuthenticator { _, response ->
+                            response.request.newBuilder()
+                                .header("Proxy-Authorization", proxyAuth!!)
+                                .build()
+                        }
+                    }
+                }
             }
         }
 

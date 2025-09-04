@@ -9,23 +9,45 @@ import android.provider.Settings
 import android.os.LocaleList
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.animation.AnimatedVisibility
+import androidx.core.net.toUri
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.toLowerCase
+import androidx.compose.ui.unit.dp
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
@@ -41,7 +63,6 @@ import com.metrolist.music.utils.rememberPreference
 import com.metrolist.music.utils.setAppLocale
 import java.net.Proxy
 import java.util.Locale
-import androidx.core.net.toUri
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -50,6 +71,7 @@ fun ContentSettings(
     scrollBehavior: TopAppBarScrollBehavior,
 ) {
     val context = LocalContext.current
+    val scope = rememberCoroutineScope()
 
     // Used only before Android 13
     val (appLanguage, onAppLanguageChange) = rememberPreference(key = AppLanguageKey, defaultValue = SYSTEM_DEFAULT)
@@ -60,6 +82,8 @@ fun ContentSettings(
     val (proxyEnabled, onProxyEnabledChange) = rememberPreference(key = ProxyEnabledKey, defaultValue = false)
     val (proxyType, onProxyTypeChange) = rememberEnumPreference(key = ProxyTypeKey, defaultValue = Proxy.Type.HTTP)
     val (proxyUrl, onProxyUrlChange) = rememberPreference(key = ProxyUrlKey, defaultValue = "host:port")
+    val (proxyUsername, onProxyUsernameChange) = rememberPreference(key = ProxyUsernameKey, defaultValue = "username")
+    val (proxyPassword, onProxyPasswordChange) = rememberPreference(key = ProxyPasswordKey, defaultValue = "password")
     val (enableKugou, onEnableKugouChange) = rememberPreference(key = EnableKugouKey, defaultValue = true)
     val (enableLrclib, onEnableLrclibChange) = rememberPreference(key = EnableLrcLibKey, defaultValue = true)
     val (preferredProvider, onPreferredProviderChange) =
@@ -71,6 +95,129 @@ fun ContentSettings(
     val (lyricsRomanizeKorean, onLyricsRomanizeKoreanChange) = rememberPreference(LyricsRomanizeKoreanKey, defaultValue = true)
     val (lengthTop, onLengthTopChange) = rememberPreference(key = TopSize, defaultValue = "50")
     val (quickPicks, onQuickPicksChange) = rememberEnumPreference(key = QuickPicksKey, defaultValue = QuickPicks.QUICK_PICKS)
+
+    var showProxyConfigurationDialog by rememberSaveable {
+        mutableStateOf(false)
+    }
+
+    if (showProxyConfigurationDialog) {
+        var expandedDropdown by remember { mutableStateOf(false) }
+
+        var tempProxyUrl by rememberSaveable { mutableStateOf(proxyUrl) }
+        var tempProxyUsername by rememberSaveable { mutableStateOf(proxyUsername) }
+        var tempProxyPassword by rememberSaveable { mutableStateOf(proxyPassword) }
+        var authEnabled by rememberSaveable { mutableStateOf(proxyUsername.isNotBlank() || proxyPassword.isNotBlank()) }
+
+        AlertDialog(
+            onDismissRequest = { showProxyConfigurationDialog = false },
+            title = {
+                Text(stringResource(R.string.config_proxy))
+            },
+            text = {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .verticalScroll(rememberScrollState()),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    ExposedDropdownMenuBox(
+                        expanded = expandedDropdown,
+                        onExpandedChange = { expandedDropdown = !expandedDropdown },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        OutlinedTextField(
+                            value = proxyType.name,
+                            onValueChange = {},
+                            readOnly = true,
+                            label = { Text(stringResource(R.string.proxy_type)) },
+                            trailingIcon = {
+                                ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedDropdown)
+                            },
+                            colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(),
+                            modifier = Modifier
+                                .menuAnchor()
+                                .fillMaxWidth()
+                        )
+                        ExposedDropdownMenu(
+                            expanded = expandedDropdown,
+                            onDismissRequest = { expandedDropdown = false }
+                        ) {
+                            listOf(Proxy.Type.HTTP, Proxy.Type.SOCKS).forEach { type ->
+                                DropdownMenuItem(
+                                    text = { Text(type.name) },
+                                    onClick = {
+                                        onProxyTypeChange(type)
+                                        expandedDropdown = false
+                                    }
+                                )
+                            }
+                        }
+                    }
+
+                    OutlinedTextField(
+                        value = tempProxyUrl,
+                        onValueChange = { tempProxyUrl = it },
+                        label = { Text(stringResource(R.string.proxy_url)) },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(stringResource(R.string.enable_authentication))
+                        Switch(
+                            checked = authEnabled,
+                            onCheckedChange = {
+                                authEnabled = it
+                                if (!it) {
+                                    tempProxyUsername = ""
+                                    tempProxyPassword = ""
+                                }
+                            }
+                        )
+                    }
+
+                    AnimatedVisibility(visible = authEnabled) {
+                        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                            OutlinedTextField(
+                                value = tempProxyUsername,
+                                onValueChange = { tempProxyUsername = it },
+                                label = { Text(stringResource(R.string.proxy_username)) },
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                            OutlinedTextField(
+                                value = tempProxyPassword,
+                                onValueChange = { tempProxyPassword = it },
+                                label = { Text(stringResource(R.string.proxy_password)) },
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                        }
+                    }
+                }
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        onProxyUrlChange(tempProxyUrl)
+                        onProxyUsernameChange(if (authEnabled) tempProxyUsername else "")
+                        onProxyPasswordChange(if (authEnabled) tempProxyPassword else "")
+                        showProxyConfigurationDialog = false
+                    }
+                ) {
+                    Text(stringResource(R.string.save))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = {
+                    showProxyConfigurationDialog = false
+                }) {
+                    Text(stringResource(R.string.cancel))
+                }
+            }
+        )
+    }
 
     Column(
         Modifier
@@ -174,20 +321,11 @@ fun ContentSettings(
             onCheckedChange = onProxyEnabledChange,
         )
         if (proxyEnabled) {
-            Column {
-                ListPreference(
-                    title = { Text(stringResource(R.string.proxy_type)) },
-                    selectedValue = proxyType,
-                    values = listOf(Proxy.Type.HTTP, Proxy.Type.SOCKS),
-                    valueText = { it.name },
-                    onValueSelected = onProxyTypeChange,
-                )
-                EditTextPreference(
-                    title = { Text(stringResource(R.string.proxy_url)) },
-                    value = proxyUrl,
-                    onValueChange = onProxyUrlChange,
-                )
-            }
+            PreferenceEntry(
+                title = { Text(stringResource(R.string.config_proxy)) },
+                icon = { Icon(painterResource(R.drawable.settings), null) },
+                onClick = {showProxyConfigurationDialog = true}
+            )
         }
 
         PreferenceGroupTitle(title = stringResource(R.string.lyrics))
