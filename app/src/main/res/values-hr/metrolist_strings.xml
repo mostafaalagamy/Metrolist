@@ -11,7 +11,7 @@
     <string name="retry_button">Pokušaj ponovno</string>
     <string name="album_cover_desc">Naslovnica albuma</string>
     <string name="top_music_videos">Najgledaniji glazbeni spotovi</string>
-    <string name="trending">Trending</string>
+    <string name="trending">U trendu</string>
     <string name="weeks">Tjedni</string>
     <string name="months">Mjeseci</string>
     <string name="years">Godine</string>
@@ -151,4 +151,29 @@
         <item quantity="few">%d sekunde</item>
         <item quantity="other">%d sekundi</item>
     </plurals>
+    <string name="starting_radio">Pokretanje radija</string>
+    <string name="now_playing">Trenutna reprodukcija</string>
+    <string name="close">Zatvori</string>
+    <string name="minimum_volume">Minimalna glasnoća</string>
+    <string name="maximum_volume">Maksimalna glasnoća</string>
+    <string name="hide_player_thumbnail">Sakrij sličicu reproduktora</string>
+    <string name="hide_player_thumbnail_desc">Zamijeni naslovnicu albuma s logotipom aplikacije u reproduktoru</string>
+    <string name="seek_backward">5 sek. unazad</string>
+    <string name="seek_forward">5 sek. unaprijed</string>
+    <string name="seek_forward_dynamic">+%1$d sek. unaprijed</string>
+    <string name="seek_backward_dynamic">-%1$d sek. unazad</string>
+    <string name="seek_seconds_addup">Progresivno traženje</string>
+    <string name="seek_seconds_addup_description">Ako je omogućeno, dodaje i do 5 dodatnih sek. pri svakom preskakanju traženja</string>
+    <string name="playlist_not_found">Popis za reprodukciju nije pronađen</string>
+    <string name="playlist_not_found_desc">Zatraženi popis za reprodukciju se ne može učitati</string>
+    <string name="empty_playlist">Prazan popis za reprodukciju</string>
+    <string name="empty_playlist_desc">Ovaj popis za reprodukciju ne sadrži nijednu pjesmu</string>
+    <string name="disable_load_more_when_repeat_all">Onemogući učitavanje više prilikom ponavljanja svega</string>
+    <string name="disable_load_more_when_repeat_all_desc">Ne učitava automatski više pjesama i sličnog sadržaja kad je omogućen način ponavljanja svega</string>
+    <string name="settings_section_ui">Korisničko sučelje</string>
+    <string name="settings_section_privacy">Privatnost i sigurnost</string>
+    <string name="settings_section_player">Reproduktor i medija</string>
+    <string name="settings_section_player_content">Reproduktor i sadržaj</string>
+    <string name="settings_section_storage">Pohrana i podaci</string>
+    <string name="settings_section_system">Sustav i o aplikaciji</string>
 </resources>

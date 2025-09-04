@@ -51,11 +51,11 @@
     <string name="already_in_playlist">Már a lejátszásilistában:</string>
     <plurals name="n_element">
         <item quantity="one">%d elem</item>
-        <item quantity="other">%d elem</item>
+        <item quantity="other">%d elemek</item>
     </plurals>
     <plurals name="n_time">
         <item quantity="one">%d alkalom</item>
-        <item quantity="other">%d alkalom</item>
+        <item quantity="other">%d alkalmak</item>
     </plurals>
     <string name="similar_content">Hasonló tartalom</string>
     <string name="login_settings">Belépési beállítások</string>
@@ -147,4 +147,29 @@
         <item quantity="one">1 másodperc</item>
         <item quantity="other">%d másodperc</item>
     </plurals>
+    <string name="now_playing">Most játszott</string>
+    <string name="close">Bezárás</string>
+    <string name="minimum_volume">Minimum hangerő</string>
+    <string name="maximum_volume">Maximum hangerő</string>
+    <string name="hide_player_thumbnail">A lejátszó gomb elrejtése</string>
+    <string name="hide_player_thumbnail_desc">Az album dizájnjának kicserélése az applikáció logójára</string>
+    <string name="seek_backward">5 másodperc visszatekerése</string>
+    <string name="seek_forward">5 máospderc előretekerése</string>
+    <string name="seek_forward_dynamic">%1$dmásodperc előre</string>
+    <string name="seek_seconds_addup">Progresszív keresés</string>
+    <string name="seek_seconds_addup_description">Amennyiben elfogadja, minden egyes átugrás után 5 másodperc összeadódik</string>
+    <string name="new_mini_player_design">Új mini lejátszó dizájn</string>
+    <string name="playlist_not_found">A lejátszási listát nem találtuk</string>
+    <string name="playlist_not_found_desc">A kért lejátszási lista nem betölthető</string>
+    <string name="empty_playlist">Üres lejátszási lista</string>
+    <string name="empty_playlist_desc">Ez a lejátszási lista nem tartalmaz egyetlen dalt sem</string>
+    <string name="disable_load_more_when_repeat_all">Lejátszó beállításai</string>
+    <string name="disable_load_more_when_repeat_all_desc">Ne töltsön be automatikusan több dalt és hasonló tartalmat, amikor a minden újrajátszása mód be van kapcsolva</string>
+    <string name="settings_section_privacy">Titoktartás és biztonság</string>
+    <string name="settings_section_player">Lejátszó és média</string>
+    <string name="settings_section_player_content">Lejátszó és tartalom</string>
+    <string name="settings_section_storage">Tároló és adat</string>
+    <string name="settings_section_system">Rendszer és történet</string>
+    <string name="seek_backward_dynamic">%1$d másodperc visszafelé</string>
+    <string name="settings_section_ui">Anyag 3 beállítás szekció</string>
 </resources>

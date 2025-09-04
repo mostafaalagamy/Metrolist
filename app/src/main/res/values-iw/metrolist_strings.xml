@@ -26,4 +26,17 @@
     <string name="sync_playlist">סנכרן את הפלייליסט</string>
     <string name="sync_disabled">סינכרון מכובה</string>
     <string name="elements_selected">%1$d איברים מסומנים</string>
+    <string name="allows_for_sync_witch_youtube">הערה: זה מאפשר סנכרון עם YouTube Music. לא ניתן לשנות זאת מאוחר יותר.</string>
+    <string name="generating_image">יצירת תמונה</string>
+    <string name="please_wait">אנא המתן</string>
+    <string name="cancel">ביטול</string>
+    <string name="share_lyrics">שתף את מילות שיר</string>
+    <string name="share_as_text">שתף כטקסט</string>
+    <string name="share_as_image">שתף כתמונה</string>
+    <string name="max_selection_limit">מגבלת בחירה מקסימלית</string>
+    <string name="share_selected">שתף את הנבחרים</string>
+    <string name="customize_colors">התאמה אישית של צבעים</string>
+    <string name="more_options">אפשרויות נוספות</string>
+    <string name="text_color">צבע טקסט</string>
+    <string name="secondary_text_color">צבע טקסט משני</string>
 </resources>
