@@ -1273,13 +1273,14 @@ fun BoxScope.OverlayPlayButton(
 fun BoxScope.OverlayEditButton(
     visible: Boolean,
     onClick: () -> Unit,
+    alignment: Alignment = Alignment.Center,
 ) {
     AnimatedVisibility(
         visible = visible,
         enter = fadeIn(),
         exit = fadeOut(),
         modifier = Modifier
-            .align(Alignment.Center)
+            .align(alignment)
     ) {
         Box(
             contentAlignment = Alignment.Center,
@@ -1287,6 +1288,7 @@ fun BoxScope.OverlayEditButton(
                 .size(36.dp)
                 .clip(CircleShape)
                 .background(Color.Black.copy(alpha = ActiveBoxAlpha))
+                .padding(0.dp)
                 .clickable(onClick = onClick)
         ) {
             Icon(

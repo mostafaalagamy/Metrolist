@@ -943,32 +943,30 @@ fun LocalPlaylistHeader(
     val playlist_thumbnail = remember {mutableStateOf<String?>(playlist.thumbnails[0])}
     val result = remember { mutableStateOf<Uri?>(null) }
 
-    val launcher = rememberLauncherForActivityResult(
+    val cropLauncher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { res ->
+        val dataUri = res.data?.data
+        if (res.resultCode == android.app.Activity.RESULT_OK && dataUri != null) {
+            result.value = dataUri
+        }
+    }
+
+    val pickLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.PickVisualMedia()
     ) { uri ->
         uri?.let {
-            // enforce 1:1 crop using system crop intent if available
             val cropIntent = Intent("com.android.camera.action.CROP").apply {
                 setDataAndType(uri, "image/*")
                 putExtra("crop", "true")
                 putExtra("aspectX", 1)
                 putExtra("aspectY", 1)
-                putExtra("outputX", 1024)
-                putExtra("outputY", 1024)
                 putExtra("scale", true)
-                putExtra("return-data", false)
                 addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+                putExtra("outputFormat", android.graphics.Bitmap.CompressFormat.JPEG.toString())
             }
-
-            val outputUri = uri // fallback to original if crop not supported
             try {
-                context.startActivity(cropIntent)
-                // If device supports crop UI, user will crop and we rely on picker result replaced later if integrated.
-                // For now, fallback to original uri directly
-                result.value = outputUri
+                cropLauncher.launch(cropIntent)
             } catch (_: Exception) {
-                // Fallback: no crop UI available, use the original image
+                // If crop UI not available, fallback to direct upload
                 result.value = uri
             }
         }
@@ -987,15 +985,7 @@ fun LocalPlaylistHeader(
         }
     }
 
-    // Note below crop UI (informational)
-    if (result.value == null && editable) {
-        Spacer(Modifier.height(8.dp))
-        Text(
-            text = "Note: Your account must be linked to a phone number and verified on YouTube Music to change playlist cover.",
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
-        )
-    }
+    // Note will be shown by crop UI (system), so we avoid showing it in the playlist screen.
 
     LaunchedEffect(songs) {
         if (songs.isEmpty()) return@LaunchedEffect
@@ -1044,8 +1034,8 @@ fun LocalPlaylistHeader(
                                 .clip(RoundedCornerShape(ThumbnailCornerRadius))
                         )
                         if (editable) {
-                            OverlayEditButton(visible = true) {
-                                launcher.launch(
+                            OverlayEditButton(visible = true, alignment = Alignment.BottomEnd) {
+                                pickLauncher.launch(
                                     PickVisualMediaRequest(mediaType = ActivityResultContracts.PickVisualMedia.ImageOnly)
                                 )
                             }
@@ -1076,8 +1066,8 @@ fun LocalPlaylistHeader(
                         )
                     }
                     if (editable) {
-                        OverlayEditButton(visible = true) {
-                            launcher.launch(
+                        OverlayEditButton(visible = true, alignment = Alignment.BottomEnd) {
+                            pickLauncher.launch(
                                 PickVisualMediaRequest(mediaType = ActivityResultContracts.PickVisualMedia.ImageOnly)
                             )
                         }
