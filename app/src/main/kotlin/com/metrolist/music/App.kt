@@ -67,25 +67,22 @@ class App : Application(), SingletonImageLoader.Factory {
         }
 
         if (dataStore[ProxyEnabledKey] == true) {
-            if (dataStore[ProxyUsernameKey] != "" || dataStore[ProxyPasswordKey] != "") {
-                if (dataStore[ProxyTypeKey].toEnum(defaultValue = Proxy.Type.HTTP) == Proxy.Type.HTTP) {
-                    YouTube.proxyAuth = Credentials.basic(
-                        dataStore[ProxyUsernameKey] ?: "",
-                        dataStore[ProxyPasswordKey] ?: ""
-                    )
+            val username = dataStore[ProxyUsernameKey].orEmpty()
+            val password = dataStore[ProxyPasswordKey].orEmpty()
+            val type = dataStore[ProxyTypeKey].toEnum(defaultValue = Proxy.Type.HTTP)
+
+            if (username.isNotEmpty() || password.isNotEmpty()) {
+                if (type == Proxy.Type.HTTP) {
+                    YouTube.proxyAuth = Credentials.basic(username, password)
                 } else {
-                    val authenticator = object : Authenticator() {
+                    Authenticator.setDefault(object : Authenticator() {
                         override fun getPasswordAuthentication() =
-                            PasswordAuthentication(dataStore[ProxyUsernameKey] ?: "", (dataStore[ProxyPasswordKey] ?: "").toCharArray())
-                    }
-                    Authenticator.setDefault(authenticator)
+                            PasswordAuthentication(username, password.toCharArray())
+                    })
                 }
             }
             try {
-                YouTube.proxy = Proxy(
-                    dataStore[ProxyTypeKey].toEnum(defaultValue = Proxy.Type.HTTP),
-                    dataStore[ProxyUrlKey]!!.toInetSocketAddress()
-                )
+                YouTube.proxy = Proxy(type, dataStore[ProxyUrlKey]!!.toInetSocketAddress())
             } catch (e: Exception) {
                 Toast.makeText(this, "Failed to parse proxy url.", LENGTH_SHORT).show()
                 reportException(e)

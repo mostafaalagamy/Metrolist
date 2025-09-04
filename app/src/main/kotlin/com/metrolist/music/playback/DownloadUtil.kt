@@ -57,9 +57,11 @@ constructor(
                         OkHttpClient.Builder()
                             .proxy(YouTube.proxy)
                             .proxyAuthenticator { _, response ->
-                                response.request.newBuilder()
-                                    .header("Proxy-Authorization", YouTube.proxyAuth!!)
-                                    .build()
+                                YouTube.proxyAuth?.let { auth ->
+                                    response.request.newBuilder()
+                                        .header("Proxy-Authorization", auth)
+                                        .build()
+                                } ?: response.request
                             }
                             .build(),
                     ),
