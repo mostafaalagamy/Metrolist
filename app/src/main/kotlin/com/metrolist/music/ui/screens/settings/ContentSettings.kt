@@ -63,7 +63,6 @@ import com.metrolist.music.utils.rememberPreference
 import java.net.Proxy
 import java.util.Locale
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ContentSettings(
@@ -72,7 +71,6 @@ fun ContentSettings(
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
-
 
     val (contentLanguage, onContentLanguageChange) = rememberPreference(key = ContentLanguageKey, defaultValue = "system")
     val (contentCountry, onContentCountryChange) = rememberPreference(key = ContentCountryKey, defaultValue = "system")
