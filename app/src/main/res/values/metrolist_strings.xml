@@ -132,7 +132,7 @@
     <string name="config_proxy">Configure proxy</string>
     <string name="proxy_username">Proxy username</string>
     <string name="proxy_password">Proxy password</string>
-    <string name="enable_authentication">Enable Authentication</string>
+    <string name="enable_authentication">Enable authentication</string>
 
     <string name="audio_quality_max">Max (beta)</string>
     <string name="enable_similar_content">Enable similar content</string>
@@ -197,7 +197,7 @@
     <string name="disable_load_more_when_repeat_all_desc">Don\'t auto load more songs and similar content when repeat all mode is enabled</string>
     
     <!-- Material 3 Settings Sections -->
-    <string name="settings_section_ui">User Interface</string>
+    <string name="settings_section_ui">Interface</string>
     <string name="settings_section_privacy">Privacy &amp; Security</string>
     <string name="settings_section_player">Player &amp; Media</string>
     <string name="settings_section_player_content">Player &amp; Content</string>
