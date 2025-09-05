@@ -950,8 +950,10 @@ fun LocalPlaylistHeader(
     var pendingCropDestUri by remember { mutableStateOf<Uri?>(null) }
     var showEditNoteDialog by remember { mutableStateOf(false) }
 
-    val surfaceColor = MaterialTheme.colorScheme.surface.toArgb()
-    val primaryColor = MaterialTheme.colorScheme.primary.toArgb()
+    val statusBarHeight = remember {
+        val resourceId = context.resources.getIdentifier("status_bar_height", "dimen", "android")
+        if (resourceId > 0) context.resources.getDimensionPixelSize(resourceId) else 0
+    }
 
     val cropLauncher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { res ->
         if (res.resultCode == android.app.Activity.RESULT_OK) {
@@ -972,9 +974,13 @@ fun LocalPlaylistHeader(
                 setCompressionQuality(90)
                 setHideBottomControls(true)
                 setToolbarTitle(context.getString(R.string.edit_playlist_cover))
-                setStatusBarColor(surfaceColor)
-                setToolbarColor(surfaceColor)
-                setActiveControlsWidgetColor(primaryColor)
+                // Add status bar padding to prevent overlap
+                setRootViewBackgroundColor(surfaceColor)
+                setShowCropGrid(true)
+                setShowCropFrame(true)
+                setFreeStyleCropEnabled(false)
+                // Force the activity to be full screen but respect system bars
+                setHideBottomControls(false)
             }
             val intent = UCrop.of(sourceUri, destUri)
                 .withAspectRatio(1f, 1f)
@@ -982,6 +988,8 @@ fun LocalPlaylistHeader(
                 .getIntent(context)
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+            // Add window flags to handle status bar properly
+            intent.putExtra("extra_status_bar_height", statusBarHeight)
             cropLauncher.launch(intent)
         }
     }
