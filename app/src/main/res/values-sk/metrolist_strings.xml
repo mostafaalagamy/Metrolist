@@ -193,7 +193,7 @@
     <string name="line_by_line_option_title">EXPERIMENTÁLNE: Zistenie jazyka riadok po riadku</string>
     <string name="line_by_line_option_desc">Cyrilika bude detekovaná riadok po riadku, nie v celej skladbe.</string>
     <string name="line_by_line_dialog_title">Si si istý/á?</string>
-    <string name="line_by_line_dialog_desc">Toto je experimentálna funkcia, ktorá sa dá alebo nemá úspech.\n\nŠtandardne sa jazyk určuje z celej skladby, ale ak je táto možnosť zapnutá, bude sa určovať riadok po riadku. To umožní viacjazyčné prehrávanie.</string>
+    <string name="line_by_line_dialog_desc">Toto je experimentálna funkcia, ktorá sa buď posúva dopredu, alebo dozadu.\n\nŠtandardne sa jazyk určuje z celej skladby, ale ak je táto možnosť zapnutá, bude sa určovať riadok po riadku. To umožní fungovanie viacjazyčných skladieb, ALE jazyk nemusí byť vždy správny (napríklad, ak existuje ukrajinský text, ktorý neobsahuje žiadne písmená špecifické pre ukrajinčinu, môže byť namiesto toho romanizovaný ako ruský).\n\nAk nemáte problémy, odporúča sa túto možnosť ponechať vypnutú.</string>
     <string name="line_by_line_dialog_enable">Povoliť</string>
     <string name="romanize_current_track">Romanizovať aktuálnu skladbu</string>
 </resources>
