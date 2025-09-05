@@ -148,6 +148,7 @@ import com.metrolist.music.utils.makeTimeString
 import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
 import com.metrolist.music.viewmodels.LocalPlaylistViewModel
+import io.ktor.client.plugins.ClientRequestException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import sh.calvin.reorderable.ReorderableItem
@@ -944,7 +945,7 @@ fun LocalPlaylistHeader(
     val liked = playlist.playlist.bookmarkedAt != null
     val editable: Boolean = playlist.playlist.isEditable
 
-    val playlist_thumbnail = remember {mutableStateOf<String?>(playlist.thumbnails[0])}
+    val playlistThumbnail = remember {mutableStateOf<String?>(playlist.thumbnails[0])}
     val result = remember { mutableStateOf<Uri?>(null) }
     var pendingCropDestUri by remember { mutableStateOf<Uri?>(null) }
     var showEditNoteDialog by remember { mutableStateOf(false) }
@@ -987,7 +988,12 @@ fun LocalPlaylistHeader(
                 playlist.playlist.browseId!!,
                 bytes!!
             ).onSuccess {
-                playlist_thumbnail.value = uri.toString()
+                playlistThumbnail.value = uri.toString()
+            }.onFailure {
+                if (it is ClientRequestException) {
+                    snackbarHostState.showSnackbar("${it.response.status.value} ${it.response.status.description}")
+                }
+                reportException(it)
             }
         }
     }
@@ -1056,7 +1062,7 @@ fun LocalPlaylistHeader(
                             .clip(RoundedCornerShape(ThumbnailCornerRadius))
                     ) {
                         AsyncImage(
-                            model = playlist_thumbnail.value,
+                            model = playlistThumbnail.value,
                             contentDescription = null,
                             modifier = Modifier
                                 .fillMaxWidth()
