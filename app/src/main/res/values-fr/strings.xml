@@ -15,9 +15,9 @@
     <!-- Home -->
     <string name="history">Historique</string>
     <string name="stats">Statistiques</string>
-    <string name="mood_and_genres">Humeurs et genres</string>
+    <string name="mood_and_genres">Humeurs et Genres</string>
     <string name="account">Compte</string>
-    <string name="quick_picks">Sélection rapide</string>
+    <string name="quick_picks">Sélection Rapide</string>
     <string name="quick_picks_empty">Écoutez quelques titres pour générer votre sélection rapide</string>
     <string name="new_release_albums">Nouveautés</string>
     <!-- History -->
@@ -297,7 +297,7 @@
     <string name="remove_all_from_library">Tout supprimer de la bibliothèque</string>
     <string name="remove_from_queue">Retirer de la file d\'attente</string>
     <string name="small">Petit</string>
-    <string name="player_slider_style">Style de la barre du lecteur</string>
+    <string name="player_slider_style">Style de curseur du lecteur</string>
     <string name="big">Grand</string>
     <string name="persistent_queue_desc">Restaurer la file d\'attente lorsque l\'application est relancée</string>
     <string name="queue">File d\'attente</string>
