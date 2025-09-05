@@ -949,11 +949,6 @@ fun LocalPlaylistHeader(
     var pendingCropDestUri by remember { mutableStateOf<Uri?>(null) }
     var showEditNoteDialog by remember { mutableStateOf(false) }
 
-    val statusBarHeight = remember {
-        val resourceId = context.resources.getIdentifier("status_bar_height", "dimen", "android")
-        if (resourceId > 0) context.resources.getDimensionPixelSize(resourceId) else 0
-    }
-
     val cropLauncher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { res ->
         if (res.resultCode == android.app.Activity.RESULT_OK) {
             val output = res.data?.let { UCrop.getOutput(it) } ?: pendingCropDestUri
