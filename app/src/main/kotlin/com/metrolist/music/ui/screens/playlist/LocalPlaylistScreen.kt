@@ -87,7 +87,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -974,12 +973,6 @@ fun LocalPlaylistHeader(
                 setCompressionQuality(90)
                 setHideBottomControls(true)
                 setToolbarTitle(context.getString(R.string.edit_playlist_cover))
-                // Add status bar padding to prevent overlap
-                setShowCropGrid(true)
-                setShowCropFrame(true)
-                setFreeStyleCropEnabled(false)
-                // Force the activity to be full screen but respect system bars
-                setHideBottomControls(false)
             }
             val intent = UCrop.of(sourceUri, destUri)
                 .withAspectRatio(1f, 1f)
@@ -987,8 +980,6 @@ fun LocalPlaylistHeader(
                 .getIntent(context)
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
-            // Add window flags to handle status bar properly
-            intent.putExtra("extra_status_bar_height", statusBarHeight)
             cropLauncher.launch(intent)
         }
     }
@@ -1005,8 +996,6 @@ fun LocalPlaylistHeader(
             }
         }
     }
-
-    // Note will be shown by crop UI (system), so we avoid showing it in the playlist screen.
 
     LaunchedEffect(songs) {
         if (songs.isEmpty()) return@LaunchedEffect
