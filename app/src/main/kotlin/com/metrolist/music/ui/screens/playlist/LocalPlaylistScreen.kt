@@ -975,7 +975,6 @@ fun LocalPlaylistHeader(
                 setHideBottomControls(true)
                 setToolbarTitle(context.getString(R.string.edit_playlist_cover))
                 // Add status bar padding to prevent overlap
-                setRootViewBackgroundColor(surfaceColor)
                 setShowCropGrid(true)
                 setShowCropFrame(true)
                 setFreeStyleCropEnabled(false)
