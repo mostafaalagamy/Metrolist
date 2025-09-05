@@ -950,6 +950,9 @@ fun LocalPlaylistHeader(
     var pendingCropDestUri by remember { mutableStateOf<Uri?>(null) }
     var showEditNoteDialog by remember { mutableStateOf(false) }
 
+    val surfaceColor = MaterialTheme.colorScheme.surface.toArgb()
+    val primaryColor = MaterialTheme.colorScheme.primary.toArgb()
+
     val cropLauncher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { res ->
         if (res.resultCode == android.app.Activity.RESULT_OK) {
             val output = res.data?.let { UCrop.getOutput(it) } ?: pendingCropDestUri
@@ -969,9 +972,9 @@ fun LocalPlaylistHeader(
                 setCompressionQuality(90)
                 setHideBottomControls(true)
                 setToolbarTitle(context.getString(R.string.edit_playlist_cover))
-                setStatusBarColor(MaterialTheme.colorScheme.surface.toArgb())
-                setToolbarColor(MaterialTheme.colorScheme.surface.toArgb())
-                setActiveControlsWidgetColor(MaterialTheme.colorScheme.primary.toArgb())
+                setStatusBarColor(surfaceColor)
+                setToolbarColor(surfaceColor)
+                setActiveControlsWidgetColor(primaryColor)
             }
             val intent = UCrop.of(sourceUri, destUri)
                 .withAspectRatio(1f, 1f)
