@@ -64,4 +64,16 @@ sealed class Action {
             )
         }
     }
+
+    @Serializable
+    data class RemoveCustomThumbnailAction(
+        val action: String = "ACTION_REMOVE_CUSTOM_THUMBNAIL",
+        val deletedCustomThumbnail: DeletedCustomThumbnail = DeletedCustomThumbnail()
+    ) : Action() {
+        @Serializable
+        data class DeletedCustomThumbnail(
+            val name: String = "studio_square_thumbnail",
+            val type: String = "PLAYLIST_IMAGE_TYPE_CUSTOM_THUMBNAIL"
+        )
+    }
 }

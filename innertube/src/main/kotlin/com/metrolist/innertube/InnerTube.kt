@@ -512,6 +512,22 @@ class InnerTube {
         )
     }
 
+    suspend fun removeThumbnailPlaylist(
+        client: YouTubeClient,
+        playlistId: String
+    ) = httpClient.post("browse/edit_playlist") {
+        ytClient(client, setLogin = true)
+        setBody(
+            EditPlaylistBody(
+                context = client.toContext(locale, visitorData, dataSyncId),
+                playlistId = playlistId,
+                actions = listOf(
+                    Action.RemoveCustomThumbnailAction()
+                )
+            )
+        )
+    }
+
     suspend fun deletePlaylist(
         client: YouTubeClient,
         playlistId: String,

@@ -140,6 +140,7 @@ import com.metrolist.music.ui.component.LocalMenuState
 import com.metrolist.music.ui.component.SongListItem
 import com.metrolist.music.ui.component.SortHeader
 import com.metrolist.music.ui.component.TextFieldDialog
+import com.metrolist.music.ui.menu.CustomThumbnailMenu
 import com.metrolist.music.ui.menu.SelectionSongMenu
 import com.metrolist.music.ui.menu.SongMenu
 import com.metrolist.music.ui.utils.ItemWrapper
@@ -930,6 +931,7 @@ fun LocalPlaylistHeader(
     val playerConnection = LocalPlayerConnection.current ?: return
     val context = LocalContext.current
     val database = LocalDatabase.current
+    val menuState = LocalMenuState.current
     val syncUtils = LocalSyncUtils.current
     val scope = rememberCoroutineScope()
 
@@ -947,6 +949,8 @@ fun LocalPlaylistHeader(
     val editable: Boolean = playlist.playlist.isEditable
 
     val playlistThumbnail = remember {mutableStateOf<String?>(playlist.thumbnails[0])}
+    var customThumbnail: Boolean = playlist.thumbnails[0].contains("studio_square_thumbnail") == true
+
     val result = remember { mutableStateOf<Uri?>(null) }
     var pendingCropDestUri by remember { mutableStateOf<Uri?>(null) }
     var showEditNoteDialog by remember { mutableStateOf(false) }
@@ -989,7 +993,8 @@ fun LocalPlaylistHeader(
                 playlist.playlist.browseId!!,
                 bytes!!
             ).onSuccess {
-                playlistThumbnail.value = uri.toString()
+                playlistThumbnail.value = it
+                customThumbnail = true
             }.onFailure {
                 if (it is ClientRequestException) {
                     snackbarHostState.showSnackbar("${it.response.status.value} ${it.response.status.description}")
@@ -1072,7 +1077,32 @@ fun LocalPlaylistHeader(
                         if (editable) {
                             OverlayEditButton(
                                 visible = true,
-                                onClick = { showEditNoteDialog = true },
+                                onClick = {
+                                    if (customThumbnail) {
+                                        menuState.show(
+                                            {
+                                                CustomThumbnailMenu(
+                                                    onEdit = {
+                                                        pickLauncher.launch(
+                                                            PickVisualMediaRequest(mediaType = ActivityResultContracts.PickVisualMedia.ImageOnly)
+                                                        )
+                                                    },
+                                                    onRemove = {
+                                                        scope.launch(Dispatchers.IO) {
+                                                            YouTube.removeThumbnailPlaylist(playlist.playlist.browseId!!).onSuccess {
+                                                                playlistThumbnail.value = it
+                                                            }
+                                                            customThumbnail = false
+                                                        }
+                                                    },
+                                                    onDismiss = menuState::dismiss
+                                                )
+                                            }
+                                        )
+                                    } else {
+                                        showEditNoteDialog = true
+                                    }
+                                },
                                 alignment = Alignment.BottomEnd
                             )
                         }
@@ -1104,7 +1134,32 @@ fun LocalPlaylistHeader(
                     if (editable) {
                         OverlayEditButton(
                             visible = true,
-                            onClick = { showEditNoteDialog = true },
+                            onClick = {
+                                if (customThumbnail) {
+                                    menuState.show(
+                                        {
+                                            CustomThumbnailMenu(
+                                                onEdit = {
+                                                    pickLauncher.launch(
+                                                        PickVisualMediaRequest(mediaType = ActivityResultContracts.PickVisualMedia.ImageOnly)
+                                                    )
+                                                },
+                                                onRemove = {
+                                                    scope.launch(Dispatchers.IO) {
+                                                        YouTube.removeThumbnailPlaylist(playlist.playlist.browseId!!).onSuccess {
+                                                            playlistThumbnail.value = it
+                                                        }
+                                                        customThumbnail = false
+                                                    }
+                                                },
+                                                onDismiss = menuState::dismiss
+                                            )
+                                        }
+                                    )
+                                } else {
+                                    showEditNoteDialog = true
+                                }
+                            },
                             alignment = Alignment.BottomEnd
                         )
                     }
