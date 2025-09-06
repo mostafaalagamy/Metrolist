@@ -37,7 +37,7 @@
     <string name="enable_swipe_thumbnail">Bật lướt bìa để chuyển bài</string>
     <string name="lyrics_click_change">Thay đổi lời bài hát khi nhấp</string>
     <string name="slim">Dạng mỏng</string>
-    <string name="slim_navbar">Ẩn nhãn của thanh điều hướng phía dưới</string>
+    <string name="slim_navbar">Thanh điều hướng mỏng phía dưới</string>
     <string name="google">Google</string>
     <string name="discord">Discord</string>
     <string name="advanced_login">Đăng nhập bằng token</string>
@@ -172,4 +172,5 @@
     <string name="settings_section_player_content">Trình phát &amp; Nội dung</string>
     <string name="settings_section_storage">Lưu trữ &amp; Dữ liệu</string>
     <string name="settings_section_system">Hệ thống &amp; Thông tin</string>
+    <string name="starting_radio">Radio đang bắt đầu</string>
 </resources>

@@ -19,12 +19,12 @@
     <string name="continuous">Sürekli</string>
     <string name="liked">Beğenilen</string>
     <string name="offline">İndirilen</string>
-    <string name="my_top">Benim En İyilerim</string>
+    <string name="my_top">En İyilerim</string>
     <string name="cached_playlist">Önbelleğe Alınan</string>
     <string name="sync_playlist">Çalma listesini senkronize et</string>
     <string name="sync_disabled">Senkronizasyon devre dışı</string>
     <string name="elements_selected">%1$d Öğe seçildi</string>
-    <string name="allows_for_sync_witch_youtube">Not: Bu, YouTube Music ile senkronizasyona izin verir. Bu daha sonra DEĞİŞTİRİLEMEZ.</string>
+    <string name="allows_for_sync_witch_youtube">Not: Bu, YouTube Music ile senkronizasyona izin verir. Sonradan DEĞİŞTİRİLEMEZ.</string>
     <string name="added_to_play_next">Sonra çal listesine eklendi</string>
     <string name="added_to_queue">Kuyruğa eklendi</string>
     <string name="remove_from_cache">Önbellekten kaldır</string>

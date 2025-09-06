@@ -22,6 +22,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Switch
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -32,6 +33,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.ListItem
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -48,9 +50,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.room.util.copy
 import com.metrolist.music.LocalDatabase
+import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
 import com.metrolist.music.db.entities.LyricsEntity
+import com.metrolist.music.db.entities.SongEntity
 import com.metrolist.music.models.MediaMetadata
 import com.metrolist.music.ui.component.DefaultDialog
 import com.metrolist.music.ui.component.ListDialog
@@ -63,6 +68,7 @@ import com.metrolist.music.viewmodels.LyricsMenuViewModel
 @Composable
 fun LyricsMenu(
     lyricsProvider: () -> LyricsEntity?,
+    songProvider: () -> SongEntity?,
     mediaMetadataProvider: () -> MediaMetadata,
     onDismiss: () -> Unit,
     viewModel: LyricsMenuViewModel = hiltViewModel(),
@@ -359,6 +365,18 @@ fun LyricsMenu(
         modifier = Modifier.padding(horizontal = 4.dp, vertical = 16.dp)
     )
 
+    var showRomanizationDialog by rememberSaveable {
+        mutableStateOf(false)
+    }
+
+    var showRomanization by rememberSaveable { mutableStateOf(false) }
+    var isChecked by remember { mutableStateOf(songProvider()?.romanizeLyrics ?: true) }
+
+    // Sync isChecked with song changes
+    LaunchedEffect(songProvider()) {
+        isChecked = songProvider()?.romanizeLyrics ?: true
+    }
+
     LazyColumn(
         contentPadding = PaddingValues(
             start = 0.dp,
@@ -367,6 +385,82 @@ fun LyricsMenu(
             bottom = 8.dp + WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
         ),
     ) {
-
+        item {
+            ListItem(
+                headlineContent = { Text(text = stringResource(R.string.romanize_current_track)) },
+                leadingContent = {
+                    Icon(
+                        painter = painterResource(R.drawable.language_korean_latin),
+                        contentDescription = null,
+                    )
+                },
+                trailingContent = {
+                    Switch(
+                        checked = isChecked,
+                        onCheckedChange = { newCheckedState ->
+                            isChecked = newCheckedState
+                            songProvider()?.let { song ->
+                                database.query {
+                                    upsert(song.copy(romanizeLyrics = newCheckedState))
+                                }
+                            }
+                        }
+                    )
+                },
+                modifier = Modifier.clickable {
+                    isChecked = !isChecked
+                    songProvider()?.let { song ->
+                        database.query {
+                            upsert(song.copy(romanizeLyrics = isChecked))
+                        }
+                    }
+                }
+            )
+        }
     }
+    /* if (showRomanizationDialog) {
+        var isChecked by remember { mutableStateOf(songProvider()?.romanizeLyrics ?: true) }
+
+        // Sync with song changes
+        LaunchedEffect(songProvider()) {
+            isChecked = songProvider()?.romanizeLyrics ?: true
+        }
+
+        DefaultDialog(
+            onDismiss = { showRomanizationDialog = false },
+            title = { Text(stringResource(R.string.romanization)) }
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable {
+                        // Toggle isChecked when the row is clicked
+                        isChecked = !isChecked
+                        songProvider()?.let { song ->
+                            database.query {
+                                upsert(song.copy(romanizeLyrics = isChecked))
+                            }
+                        }
+                    }
+                    .padding(vertical = 8.dp, horizontal = 16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = stringResource(R.string.romanize_current_track),
+                    modifier = Modifier.weight(1f)
+                )
+                Switch(
+                    checked = isChecked,
+                    onCheckedChange = { newCheckedState ->
+                        isChecked = newCheckedState
+                        songProvider()?.let { song ->
+                            database.query {
+                                upsert(song.copy(romanizeLyrics = newCheckedState))
+                            }
+                        }
+                    }
+                )
+            }
+        }
+    } */
 }

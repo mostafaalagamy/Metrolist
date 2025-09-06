@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="explore">Esploratu</string>
+    <string name="explore">Arakatu</string>
     <string name="charts">Arrakasta Zerrendak</string>
     <string name="back_button_desc">Atzera</string>
     <string name="no_title">Izenbururik gabe</string>
@@ -21,9 +21,55 @@
     <string name="cached_playlist">Cachean gordeta</string>
     <string name="sync_playlist">Zerrenda sinkronizatu</string>
     <string name="sync_disabled">Sinkronizazioa itzalita</string>
-    <string name="elements_selected">elementu hautatuta</string>
+    <string name="elements_selected">%1$d hautatutako elementuak</string>
     <string name="allows_for_sync_witch_youtube">Oharra: Honek YouTube Music-ekin sinkronizatzea ahalbidetzen du. Ondoren ezin izango da aldatu.</string>
     <string name="generating_image">Irudia sortzen</string>
     <string name="please_wait">Itxaron, mesedez</string>
     <string name="cancel">Utzi</string>
+    <string name="local_history">Lokala</string>
+    <string name="remote_history">Historia Urruna</string>
+    <string name="share_lyrics">Letrak partekatu</string>
+    <string name="share_as_text">Testu moduan partekatu</string>
+    <string name="share_as_image">Irudi moduan partekatu</string>
+    <string name="max_selection_limit">Gehienezko hautaketa</string>
+    <string name="share_selected">Hautatuak partekatu</string>
+    <string name="customize_colors">Koloreak aldatu</string>
+    <string name="more_options">Aukera gehiago</string>
+    <string name="text_color">Testu kolorea</string>
+    <string name="secondary_text_color">Bigarren testu kolorea</string>
+    <string name="background_color">Atzealde kolorea</string>
+    <string name="added_to_play_next">Hurrengoan jotzeko gehitu da</string>
+    <string name="added_to_queue">Ilarara gehitu da</string>
+    <string name="remove_from_cache">\"Cache\"tik ezabatu</string>
+    <string name="copy_link">Link-a kopiatu</string>
+    <string name="select">Hautatu dena</string>
+    <string name="like_all">Dena gustoko</string>
+    <string name="sort_by_last_updated">Eguneratze data</string>
+    <string name="link_copied">Link-a arbelera kopiatuta</string>
+    <string name="starting_radio">Irratia pizten</string>
+    <string name="now_playing">Orain jotzen</string>
+    <string name="lyrics">Letrak</string>
+    <string name="close">Itxi</string>
+    <string name="minimum_volume">Gutxieneko bolumena</string>
+    <string name="maximum_volume">Gehieneko bolumena</string>
+    <string name="hide_player_thumbnail">Miniatura ezkutatu</string>
+    <string name="hide_player_thumbnail_desc">Album irudia aplikazio logoarekin aldatu</string>
+    <string name="already_in_playlist">Erreprodukzio listan:</string>
+    <plurals name="n_element">
+        <item quantity="one">%d elementua</item>
+        <item quantity="other">%d elementuak</item>
+    </plurals>
+    <plurals name="n_time">
+        <item quantity="one">Aldi %d</item>
+        <item quantity="other">%d aldi</item>
+    </plurals>
+    <string name="seek_backward">5 segundu atzera</string>
+    <string name="seek_forward">5 segundu aurrera</string>
+    <string name="seek_forward_dynamic">%1$d segundu aurrera</string>
+    <string name="seek_backward_dynamic">-%1$d segundu atzera</string>
+    <string name="seek_seconds_addup">Bilaketa progresiboa</string>
+    <string name="seek_seconds_addup_description">Gaituta badago, bilaketa-jauzi bakoitzean 5 segundo extra gehitu</string>
+    <string name="similar_content">Antzeko edukia</string>
+    <string name="login_settings">Sartzeko aukerak</string>
+    <string name="general_settings">Aukera orokorrak</string>
 </resources>

@@ -1062,6 +1062,13 @@ class MusicService :
                                 OkHttpClient
                                     .Builder()
                                     .proxy(YouTube.proxy)
+                                    .proxyAuthenticator { _, response ->
+                                        YouTube.proxyAuth?.let { auth ->
+                                            response.request.newBuilder()
+                                                .header("Proxy-Authorization", auth)
+                                                .build()
+                                        } ?: response.request
+                                    }
                                     .build(),
                             ),
                         ),
