@@ -36,6 +36,6 @@ class DiscordRPC(
     }
 
     companion object {
-        private const val APPLICATION_ID = "1271273225120125040"
+        private const val APPLICATION_ID = "1411019391843172514"
     }
 }
