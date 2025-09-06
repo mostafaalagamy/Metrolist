@@ -976,7 +976,6 @@ fun LocalPlaylistHeader(
                 setHideBottomControls(true)
                 setToolbarTitle(context.getString(R.string.edit_playlist_cover))
 
-                setStatusBarColor(android.graphics.Color.BLACK)
                 setToolbarColor(android.graphics.Color.BLACK)
                 setRootViewBackgroundColor(android.graphics.Color.BLACK)
 
