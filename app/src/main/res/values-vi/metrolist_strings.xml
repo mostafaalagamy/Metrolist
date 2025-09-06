@@ -173,4 +173,5 @@
     <string name="settings_section_storage">Lưu trữ &amp; Dữ liệu</string>
     <string name="settings_section_system">Hệ thống &amp; Thông tin</string>
     <string name="starting_radio">Radio đang bắt đầu</string>
+    <string name="edit_playlist_cover">Chỉnh sửa bìa danh sách phát</string>
 </resources>
