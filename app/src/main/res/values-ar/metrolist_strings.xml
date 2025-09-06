@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="explore">الاستكشاف</string>
+    <string name="explore">استكشاف</string>
     <string name="back_button_desc">للخلف</string>
     <string name="no_title">لا يوجد عنوان</string>
     <string name="unknown_artist">فنان غير معروف</string>
@@ -147,8 +147,8 @@
     <string name="playlist_add_local_to_synced_note">ملاحظة: إضافة الأغاني المحلية إلى قوائم التشغيل المتزامنة / قوائم التشغيل عن بعد غير مدعومة. أي نوع آخر منها صالح.</string>
     <string name="import_csv">استيراد قوائم التشغيل من نوع \"csv\"</string>
     <string name="import_online">استيراد قوائم التشغيل من نوع \"m3u\"</string>
-    <string name="lyrics_romanize_japanese">كلمات الأغاني اليابانية الرومانية</string>
-    <string name="lyrics_romanize_korean">كلمات الأغاني الكورية الرومانية</string>
+    <string name="lyrics_romanize_japanese">كلمات الأغاني اليابانيه الرومانيه</string>
+    <string name="lyrics_romanize_korean">كلمات الأغاني الكوريه الرومانيه</string>
     <string name="yt_sync">المزامنة التلقائية مع الحساب</string>
     <string name="more_content">المزيد من المحتوي</string>
     <string name="new_player_design">تصميم المشغل الجديد</string>
@@ -178,11 +178,31 @@
     <string name="maximum_volume">الحد الاقصى للصوت</string>
     <string name="hide_player_thumbnail">إخفاء صورة الأغنيه</string>
     <string name="hide_player_thumbnail_desc">استبدال غلاف الألبوم بشعار التطبيق في المشغل</string>
-    <string name="settings_section_ui">واجهة المستخدم</string>
+    <string name="settings_section_ui">الواجهة</string>
     <string name="settings_section_privacy">الخصوصية والأمان</string>
     <string name="settings_section_player">المشغل والوسائط</string>
     <string name="settings_section_player_content">المشغل و المحتوي</string>
     <string name="settings_section_storage">التخزين و البيانات</string>
     <string name="settings_section_system">‫النظام والمعلومات</string>
     <string name="starting_radio">بدء تشغيل الراديو</string>
+    <string name="config_proxy">تكوين الوكيل</string>
+    <string name="proxy_username">اسم مستخدم الوكيل</string>
+    <string name="proxy_password">كلمة سر الوكيل</string>
+    <string name="enable_authentication">تمكين المصادقة</string>
+    <string name="lyrics_romanization_cyrillic">إعدادات الرومنة</string>
+    <string name="lyrics_romanize_title">الكتابة بالحروف اللاتينية</string>
+    <string name="lyrics_romanization">رومنة كلمات الأغاني</string>
+    <string name="romanization">الكتابة بالحروف اللاتينية</string>
+    <string name="lyrics_romanize_russian">كلمات الأغاني الروسية الرومانية</string>
+    <string name="lyrics_romanize_ukrainian">كلمات الأغاني الأوكرانية الرومانية</string>
+    <string name="lyrics_romanize_belarusian">كلمات الأغاني البيلاروسية بالرومانية</string>
+    <string name="lyrics_romanize_kyrgyz">كلمات أغنية Romanize Kyrgyz</string>
+    <string name="lyrics_romanize_serbian">كلمات الأغاني الصربية الرومانية</string>
+    <string name="lyrics_romanize_bulgarian">كلمات الأغاني البلغارية الرومانية</string>
+    <string name="line_by_line_option_title">تجريبي: اكتشاف اللغة سطرًا بسطر</string>
+    <string name="line_by_line_option_desc">سيتم اكتشاف اللغة السيريلية سطرًا بسطر بدلاً من الأغنية بأكملها.</string>
+    <string name="line_by_line_dialog_title">هل أنت متأكد؟</string>
+    <string name="line_by_line_dialog_desc">هذه ميزة تجريبية قد تكون غير مؤكدة.\n\nافتراضيًا، يتم تحديد اللغة من الأغنية بأكملها، ولكن مع تفعيل هذا الخيار، سيتم تحديدها سطرًا بسطر. هذا يسمح بتعدد اللغات.</string>
+    <string name="line_by_line_dialog_enable">تفعيل</string>
+    <string name="romanize_current_track">كتابة المسار الحالي بالرومانية</string>
 </resources>
