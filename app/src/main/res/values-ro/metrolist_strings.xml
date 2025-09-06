@@ -196,4 +196,9 @@
     <string name="line_by_line_dialog_enable">Activează</string>
     <string name="romanize_current_track">Romanizează pista curentă</string>
     <string name="lyrics_romanization_cyrillic">Chirilic</string>
+    <string name="edit_playlist_cover">Editează coperta playlistului</string>
+    <string name="edit_playlist_cover_note">Notă: Contul tău trebuie să fie asociat cu un număr de telefon verificat pe YouTube Music pentru a putea schimba coperta playlistului.</string>
+    <string name="edit_playlist_cover_note_wait">După selectarea unei imagini, așteaptă un moment pentru ca noua coperta să apară la playlistul tău.</string>
+    <string name="set_custom_thumbnail">Setează miniatură personalizată</string>
+    <string name="remove_custom_thumbnail">Elimină miniatura personalizată</string>
 </resources>
