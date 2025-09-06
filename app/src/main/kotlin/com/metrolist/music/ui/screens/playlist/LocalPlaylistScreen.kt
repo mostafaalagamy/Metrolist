@@ -969,12 +969,21 @@ fun LocalPlaylistHeader(
             val destFile = java.io.File(context.cacheDir, "playlist_cover_crop_${System.currentTimeMillis()}.jpg")
             val destUri = FileProvider.getUriForFile(context, "${context.packageName}.FileProvider", destFile)
             pendingCropDestUri = destUri
+    
             val options = UCrop.Options().apply {
                 setCompressionFormat(Bitmap.CompressFormat.JPEG)
                 setCompressionQuality(90)
                 setHideBottomControls(true)
                 setToolbarTitle(context.getString(R.string.edit_playlist_cover))
+
+                setStatusBarColor(android.graphics.Color.BLACK)
+                setToolbarColor(android.graphics.Color.BLACK)
+                setRootViewBackgroundColor(android.graphics.Color.BLACK)
+
+                setToolbarWidgetColor(android.graphics.Color.WHITE)
+                setActiveControlsWidgetColor(android.graphics.Color.WHITE)
             }
+
             val intent = UCrop.of(sourceUri, destUri)
                 .withAspectRatio(1f, 1f)
                 .withOptions(options)
