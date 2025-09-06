@@ -1000,9 +1000,14 @@ fun LocalPlaylistHeader(
             YouTube.uploadCustomThumbnailLink(
                 playlist.playlist.browseId!!,
                 bytes!!
-            ).onSuccess {
-                playlistThumbnail.value = it
+            ).onSuccess { newThumbnailUrl ->
+                playlistThumbnail.value = newThumbnailUrl
                 customThumbnail = true
+            
+                // Update the database with the new thumbnail URL
+                database.query {
+                    update(playlist.playlist.copy(thumbnailUrl = newThumbnailUrl))
+                }
             }.onFailure {
                 if (it is ClientRequestException) {
                     snackbarHostState.showSnackbar("${it.response.status.value} ${it.response.status.description}")
@@ -1097,8 +1102,14 @@ fun LocalPlaylistHeader(
                                                     },
                                                     onRemove = {
                                                         scope.launch(Dispatchers.IO) {
-                                                            YouTube.removeThumbnailPlaylist(playlist.playlist.browseId!!).onSuccess {
-                                                                playlistThumbnail.value = it
+                                                            YouTube.removeThumbnailPlaylist(playlist.playlist.browseId!!).onSuccess { newThumbnailUrl ->
+                                                                playlistThumbnail.value = newThumbnailUrl
+                                                                customThumbnail = false
+            
+                                                                // Update the database to remove the custom thumbnail
+                                                                database.query {
+                                                                    update(playlist.playlist.copy(thumbnailUrl = newThumbnailUrl))
+                                                                }
                                                             }
                                                             customThumbnail = false
                                                         }
@@ -1154,8 +1165,14 @@ fun LocalPlaylistHeader(
                                                 },
                                                 onRemove = {
                                                     scope.launch(Dispatchers.IO) {
-                                                        YouTube.removeThumbnailPlaylist(playlist.playlist.browseId!!).onSuccess {
-                                                            playlistThumbnail.value = it
+                                                        YouTube.removeThumbnailPlaylist(playlist.playlist.browseId!!).onSuccess { newThumbnailUrl ->
+                                                            playlistThumbnail.value = newThumbnailUrl
+                                                            customThumbnail = false
+            
+                                                            // Update the database to remove the custom thumbnail
+                                                            database.query {
+                                                                update(playlist.playlist.copy(thumbnailUrl = newThumbnailUrl))
+                                                            }
                                                         }
                                                         customThumbnail = false
                                                     }
