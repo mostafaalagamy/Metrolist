@@ -130,8 +130,10 @@ private fun Material3SettingsItemRow(
             Column(
                 modifier = Modifier.weight(1f)
             ) {
-                // Title content (can be Text or custom composable)
-                item.title()
+                // Title content
+                ProvideTextStyle(MaterialTheme.typography.titleMedium) {
+                    item.title()
+                }
                 
                 // Description if provided
                 item.description?.let { desc ->
