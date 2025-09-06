@@ -129,6 +129,12 @@
                 android:resource="@xml/provider_paths" />
         </provider>
 
+        <activity
+            android:name="com.yalantis.ucrop.UCropActivity"
+            android:screenOrientation="portrait"
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
         <service
             android:name=".playback.MusicService"
             android:exported="true"

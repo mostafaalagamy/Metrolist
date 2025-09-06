@@ -200,8 +200,13 @@ dependencies {
     implementation(libs.palette)
     implementation(libs.materialKolor)
 
+    implementation(libs.appcompat)
+
     implementation(libs.coil)
     implementation(libs.coil.network.okhttp)
+
+    // In-app image cropper (UCrop)
+    implementation(libs.ucrop)
 
     implementation(libs.shimmer)
 

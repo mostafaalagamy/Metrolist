@@ -1270,6 +1270,39 @@ fun BoxScope.OverlayPlayButton(
 }
 
 @Composable
+fun BoxScope.OverlayEditButton(
+    visible: Boolean,
+    onClick: () -> Unit,
+    alignment: Alignment = Alignment.Center,
+) {
+    AnimatedVisibility(
+        visible = visible,
+        enter = fadeIn(),
+        exit = fadeOut(),
+        modifier = Modifier
+            .align(alignment)
+            .then(if (alignment == Alignment.BottomEnd) Modifier.padding(8.dp) else Modifier)
+    ) {
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .size(36.dp)
+                .clip(CircleShape)
+                .background(Color.Black.copy(alpha = ActiveBoxAlpha))
+                .padding(0.dp)
+                .clickable(onClick = onClick)
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.edit),
+                contentDescription = null,
+                tint = Color.White,
+                modifier = Modifier.size(20.dp)
+            )
+        }
+    }
+}
+
+@Composable
 fun BoxScope.AlbumPlayButton(
     visible: Boolean,
     onClick: () -> Unit,
