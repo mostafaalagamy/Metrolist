@@ -474,6 +474,70 @@ class InnerTube {
             )
         )
     }
+    
+    suspend fun getUploadCustomThumbnailLink(
+        client: YouTubeClient,
+        contentLength: Int
+    ) = httpClient.post("https://music.youtube.com/playlist_image_upload/playlist_custom_thumbnail") {
+        ytClient(client, setLogin = true)
+        headers {
+            append("X-Goog-Upload-Command", "start")
+            append("X-Goog-Upload-Protocol", "resumable")
+            append("X-Goog-Upload-Header-Content-Length", contentLength.toString())
+        }
+    }
+
+    suspend fun uploadCustomThumbnail(
+        client: YouTubeClient,
+        uploadId: String,
+        image: ByteArray,
+    ) = httpClient.post("https://music.youtube.com/playlist_image_upload/playlist_custom_thumbnail") {
+        ytClient(client, setLogin = true)
+        parameter("upload_id", uploadId)
+        parameter("upload_protocol", "resumable")
+        headers {
+            append("X-Goog-Upload-Command", "upload, finalize")
+            append("X-Goog-Upload-Offset", "0")
+        }
+        setBody(image)
+    }
+
+    suspend fun setThumbnailPlaylist(
+        client: YouTubeClient,
+        playlistId: String,
+        blobId: String,
+    ) = httpClient.post("browse/edit_playlist") {
+        ytClient(client, setLogin = true)
+        setBody(
+            EditPlaylistBody(
+                context = client.toContext(locale, visitorData, dataSyncId),
+                playlistId = playlistId,
+                actions = listOf(
+                    Action.SetCustomThumbnailAction(
+                        addedCustomThumbnail = Action.SetCustomThumbnailAction.AddedCustomThumbnail(
+                            playlistScottyEncryptedBlobId = blobId
+                        )
+                    )
+                )
+            )
+        )
+    }
+
+    suspend fun removeThumbnailPlaylist(
+        client: YouTubeClient,
+        playlistId: String
+    ) = httpClient.post("browse/edit_playlist") {
+        ytClient(client, setLogin = true)
+        setBody(
+            EditPlaylistBody(
+                context = client.toContext(locale, visitorData, dataSyncId),
+                playlistId = playlistId,
+                actions = listOf(
+                    Action.RemoveCustomThumbnailAction()
+                )
+            )
+        )
+    }
 
     suspend fun deletePlaylist(
         client: YouTubeClient,

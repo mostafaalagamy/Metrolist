@@ -116,6 +116,15 @@
     <string name="ytm_sync">Automatically sync with your YouTube Music account</string>
     <string name="yt_sync">Auto sync with account</string>
     <string name="more_content">More content</string>
+    
+    <!-- Playlist cover edit -->
+    <string name="edit_playlist_cover">Edit playlist cover</string>
+    <string name="edit_playlist_cover_note">Note: Your account must be linked to a phone number and verified on YouTube Music to change playlist cover.</string>
+    <string name="edit_playlist_cover_note_wait">After selecting an image, please wait a moment for the new cover to appear in your playlist.</string>
+    <string name="set_custom_thumbnail">Set custom thumbnail</string>
+    <string name="remove_custom_thumbnail">Remove custom thumbnail</string>
+
+    <!-- General -->
     <string name="general">General</string>
     <string name="proxy">Proxy</string>
     <string name="default_lib_chips">Change default library chip</string>

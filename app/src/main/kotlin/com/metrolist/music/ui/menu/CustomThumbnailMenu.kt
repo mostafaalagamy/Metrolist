@@ -1,0 +1,70 @@
+package com.metrolist.music.ui.menu
+
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.material3.ListItem
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import com.metrolist.music.R
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CustomThumbnailMenu(
+    onEdit: () -> Unit,
+    onRemove: () -> Unit,
+    onDismiss: () -> Unit,
+) {
+    LazyColumn(
+        contentPadding = PaddingValues(
+            start = 8.dp,
+            top = 8.dp,
+            end = 8.dp,
+            bottom = 8.dp + WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
+        ),
+    ) {
+        item {
+            ListItem(
+                headlineContent = { 
+                    Text(text = stringResource(R.string.set_custom_thumbnail)) 
+                },
+                leadingContent = {
+                    Icon(
+                        painter = painterResource(R.drawable.media3_icon_plus),
+                        contentDescription = null,
+                    )
+                },
+                modifier = Modifier.clickable {
+                    onEdit()
+                    onDismiss()
+                }
+            )
+        }
+        item {
+            ListItem(
+                headlineContent = { 
+                    Text(text = stringResource(R.string.remove_custom_thumbnail)) 
+                },
+                leadingContent = {
+                    Icon(
+                        painter = painterResource(R.drawable.remove),
+                        contentDescription = null,
+                    )
+                },
+                modifier = Modifier.clickable {
+                    onRemove()
+                    onDismiss()
+                }
+            )
+        }
+    }
+}
