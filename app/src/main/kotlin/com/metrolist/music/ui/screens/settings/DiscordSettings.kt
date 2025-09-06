@@ -36,6 +36,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -65,9 +66,11 @@ import com.metrolist.music.constants.DiscordUsernameKey
 import com.metrolist.music.constants.EnableDiscordRPCKey
 import com.metrolist.music.db.entities.Song
 import com.metrolist.music.ui.component.IconButton
+import com.metrolist.music.ui.component.InfoLabel
 import com.metrolist.music.ui.component.PreferenceEntry
 import com.metrolist.music.ui.component.PreferenceGroupTitle
 import com.metrolist.music.ui.component.SwitchPreference
+import com.metrolist.music.ui.component.TextFieldDialog
 import com.metrolist.music.ui.utils.backToMain
 import com.metrolist.music.utils.makeTimeString
 import com.metrolist.music.utils.rememberPreference
@@ -76,6 +79,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import androidx.core.net.toUri
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -129,6 +133,24 @@ fun DiscordSettings(
         remember(discordToken) {
             discordToken != ""
         }
+
+    var showTokenDialog by rememberSaveable { mutableStateOf(false) }
+
+    if (showTokenDialog) {
+        TextFieldDialog(
+            onDismiss = { showTokenDialog = false },
+            icon = { Icon(painterResource(R.drawable.token), null) },
+            onDone = {
+                discordToken = it
+                showTokenDialog = false
+            },
+            singleLine = true,
+            isInputValid = { it.isNotEmpty() },
+            extraContent = {
+                InfoLabel(text = stringResource(R.string.token_adv_login_description))
+            }
+        )
+    }
 
     Column(
         Modifier
@@ -218,6 +240,17 @@ fun DiscordSettings(
                 }
             },
         )
+        if (!isLoggedIn) {
+            PreferenceEntry(
+                title = {
+                    Text(stringResource(R.string.advanced_login))
+                },
+                icon = { Icon(painterResource(R.drawable.token), null) },
+                onClick = {
+                    showTokenDialog = true
+                }
+            )
+        }
 
         PreferenceGroupTitle(
             title = stringResource(R.string.options),
@@ -380,7 +413,7 @@ fun RichPresence(song: Song?, currentPlaybackTimeMillis: Long = 0L) {
                 onClick = {
                     val intent = Intent(
                         Intent.ACTION_VIEW,
-                        Uri.parse("https://music.youtube.com/watch?v=${song?.id}")
+                        "https://music.youtube.com/watch?v=${song?.id}".toUri()
                     )
                     context.startActivity(intent)
                 },
@@ -393,7 +426,7 @@ fun RichPresence(song: Song?, currentPlaybackTimeMillis: Long = 0L) {
                 onClick = {
                     val intent = Intent(
                         Intent.ACTION_VIEW,
-                        Uri.parse("https://github.com/mostafaalagamy/Metrolist")
+                        "https://github.com/mostafaalagamy/Metrolist".toUri()
                     )
                     context.startActivity(intent)
                 },
