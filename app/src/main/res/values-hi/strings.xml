@@ -193,8 +193,11 @@
     <string name="player">संगीत प्लेयर</string>
     <string name="lyrics_text_position">गीतिकाव्य पाठ की स्थिति</string>
     <string name="sided">दो पक्षीय</string>
-    <string name="left">बाएं</string>
+    <string name="left">बाए</string>
     <string name="center">मध्य</string>
-    <string name="right">दायाँ</string>
+    <string name="right">दाए</string>
     <string name="player_slider_style">प्लेयर स्लाइडर का प्रकार</string>
+    <string name="small">छोटा</string>
+    <string name="big">बड़ा</string>
+    <string name="clear_all_downloads">सभी डौन्लोडस निकाल दे</string>
 </resources>
