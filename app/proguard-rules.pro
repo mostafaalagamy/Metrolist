@@ -106,15 +106,3 @@
     private void writeObject(java.io.ObjectOutputStream);
     private void readObject(java.io.ObjectInputStream);
 }
-
-## Media3 Protection Rules
-# Protect Guava from conflicts with system versions
--keep class com.google.common.** { *; }
--keep class com.google.common.util.concurrent.** { *; }
--keep class com.google.common.collect.** { *; }
--dontwarn com.google.common.**
-
-# Protect Media3 from obfuscation
--keep class androidx.media3.** { *; }
--keep interface androidx.media3.** { *; }
--dontwarn androidx.media3.**
