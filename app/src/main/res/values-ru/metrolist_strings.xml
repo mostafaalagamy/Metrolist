@@ -202,6 +202,4 @@
     <string name="edit_playlist_cover">Редактировать обложку плейлиста</string>
     <string name="edit_playlist_cover_note">Примечание: чтобы изменить обложку плейлиста, ваш аккаунт должен быть привязан к номеру телефона и подтверждён в YouTube Music.</string>
     <string name="edit_playlist_cover_note_wait">После выбора изображения подождите немного, пока новая обложка появится в вашем плейлисте.</string>
-    <string name="set_custom_thumbnail">Установить собственную миниатюру</string>
-    <string name="remove_custom_thumbnail">Удалить собственную миниатюру</string>
 </resources>

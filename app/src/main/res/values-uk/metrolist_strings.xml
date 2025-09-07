@@ -202,8 +202,6 @@
     <string name="edit_playlist_cover">Редагувати обкладинку списку відтворення</string>
     <string name="edit_playlist_cover_note">Примітка: Щоб змінити обкладинку списку відтворення, ваш обліковий запис має бути пов’язаний з номером телефону та підтверджений у YouTube Music.</string>
     <string name="edit_playlist_cover_note_wait">Після вибору зображення зачекайте трохи, поки нова обкладинка з’явиться у вашому списку відтворення.</string>
-    <string name="set_custom_thumbnail">Встановити власну мініатюру</string>
-    <string name="remove_custom_thumbnail">Вилучити власну мініатюру</string>
     <string name="audio_offload">Увімкнути розвантаження</string>
     <string name="audio_offload_description">Використовуйте шлях розвантаження аудіо для відтворення аудіо. Вимкнення цієї функції може збільшити споживання енергії, але може бути корисним, якщо у вас виникнуть проблеми з відтворенням аудіо або постобробкою</string>
 </resources>

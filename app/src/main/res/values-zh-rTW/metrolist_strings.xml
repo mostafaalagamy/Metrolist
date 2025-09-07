@@ -164,8 +164,6 @@
     <string name="edit_playlist_cover">更改播放清單圖片</string>
     <string name="edit_playlist_cover_note">注意：您的帳戶必須連結到電話號碼並在 YouTube Music 上進行驗證才能更改播放清單封面。</string>
     <string name="edit_playlist_cover_note_wait">選擇圖片後，請等待片刻，新的封面就會出現在您的播放清單中。</string>
-    <string name="set_custom_thumbnail">自定義封面</string>
-    <string name="remove_custom_thumbnail">復原封面</string>
     <string name="config_proxy">設定代理伺服器</string>
     <string name="proxy_username">代理伺服器名稱</string>
     <string name="proxy_password">代理伺服器密碼</string>
