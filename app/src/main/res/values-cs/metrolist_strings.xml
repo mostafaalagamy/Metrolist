@@ -197,4 +197,11 @@
     <string name="line_by_line_dialog_desc">Toto je experimentální funkce, která nemusí vždy fungovat správně.\n\nVe výchozím nastavení se jazyk určuje z celé písně, ale po zapnutí této možnosti se bude určovat pro každý řádek zvlášť. To umožní fungování vícejazyčných písní, ALE jazyk nemusí být vždy určen správně (například pokud ukrajinský text neobsahuje žádná písmena specifická pro ukrajinštinu, může být chybně přepsán jako ruský).\n\nPokud nemáte žádné problémy, doporučujeme nechat tuto možnost vypnutou.</string>
     <string name="line_by_line_dialog_enable">Povolit</string>
     <string name="romanize_current_track">Přepsat aktuální skladbu do latinky</string>
+    <string name="edit_playlist_cover">Upravit obal playlistu</string>
+    <string name="edit_playlist_cover_note">Upozornění: pro změnu obalu alba musí být k vašemu účtu připojeno telefonní číslo a účet musí být ověřen na YouTube Music.</string>
+    <string name="edit_playlist_cover_note_wait">Po vybrání obrázku prosím počkejte, než se nový obal objeví ve vašem playlistu.</string>
+    <string name="choose_from_library">Vybrat z knihovny</string>
+    <string name="remove_custom_image">Odstranit vlastní obrázek</string>
+    <string name="audio_offload">Povolit offload</string>
+    <string name="audio_offload_description">Povolit offload zvukové cesty pro přehrávání zvuku. Zakázání může zvýšit spotřebu energie, ale může být užitečné, pokud máte problémy s přehráváním zvuku nebo jeho následným zpracováním</string>
 </resources>
