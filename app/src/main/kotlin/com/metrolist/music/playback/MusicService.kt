@@ -62,6 +62,7 @@ import com.metrolist.music.MainActivity
 import com.metrolist.music.R
 import com.metrolist.music.constants.AudioNormalizationKey
 import com.metrolist.music.constants.AudioQualityKey
+import com.metrolist.music.constants.AudioOffload
 import com.metrolist.music.constants.AutoLoadMoreKey
 import com.metrolist.music.constants.DisableLoadMoreWhenRepeatAllKey
 import com.metrolist.music.constants.AutoDownloadOnLikeKey
@@ -95,6 +96,7 @@ import com.metrolist.music.extensions.currentMetadata
 import com.metrolist.music.extensions.findNextMediaItemById
 import com.metrolist.music.extensions.mediaItems
 import com.metrolist.music.extensions.metadata
+import com.metrolist.music.extensions.setOffloadEnabled
 import com.metrolist.music.extensions.toMediaItem
 import com.metrolist.music.extensions.toPersistQueue
 import com.metrolist.music.extensions.toQueue
@@ -266,6 +268,7 @@ class MusicService :
                     sleepTimer = SleepTimer(scope, this)
                     addListener(sleepTimer)
                     addAnalyticsListener(PlaybackStatsListener(false, this@MusicService))
+                    setOffloadEnabled(dataStore.get(AudioOffload, false))
                 }
 
         audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
