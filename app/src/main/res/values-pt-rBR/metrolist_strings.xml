@@ -179,8 +179,6 @@
     <string name="edit_playlist_cover">Editar capa da lista</string>
     <string name="edit_playlist_cover_note">Observação: A sua conta deve estar vinculada a um número de telefone e verificada no YouTube Music para alterar a capa da lista.</string>
     <string name="edit_playlist_cover_note_wait">Ao selecionar uma imagem, aguarde um momento para que a capa nova apareça na sua lista.</string>
-    <string name="set_custom_thumbnail">Definir miniatura personalizada</string>
-    <string name="remove_custom_thumbnail">Remover miniatura personalizada</string>
     <string name="config_proxy">Configurar proxy</string>
     <string name="proxy_username">Nome do usuário da proxy</string>
     <string name="proxy_password">Senha da proxy</string>

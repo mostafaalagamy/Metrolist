@@ -179,8 +179,6 @@
     <string name="edit_playlist_cover">Editar carátula de la lista de reproducción</string>
     <string name="edit_playlist_cover_note">Nota: Tu cuenta debe estar vinculada a un número de teléfono y verificada en YouTube Music para modificar la carátula de la lista de reproducción.</string>
     <string name="edit_playlist_cover_note_wait">Luego de seleccionar una imagen, deberás esperar un momento para que la nueva carátula aparezca en tu lista de reproducción.</string>
-    <string name="set_custom_thumbnail">Establecer miniatura personalizada</string>
-    <string name="remove_custom_thumbnail">Remover miniatura personalizada</string>
     <string name="config_proxy">Configurar proxy</string>
     <string name="proxy_username">Nombre de usuario del proxy</string>
     <string name="proxy_password">Contraseña del proxy</string>

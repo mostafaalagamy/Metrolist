@@ -176,8 +176,6 @@
     <string name="edit_playlist_cover">Chỉnh sửa ảnh bìa danh sách phát</string>
     <string name="edit_playlist_cover_note">Lưu ý: Tài khoản của bạn phải được liên kết với số điện thoại và được xác minh trên YouTube Music để thay đổi ảnh bìa danh sách phát.</string>
     <string name="edit_playlist_cover_note_wait">Sau khi chọn hình ảnh, vui lòng đợi để ảnh bìa mới xuất hiện trong danh sách phát của bạn.</string>
-    <string name="set_custom_thumbnail">Đặt hình thu nhỏ tùy chỉnh</string>
-    <string name="remove_custom_thumbnail">Xóa hình thu nhỏ tùy chỉnh</string>
     <string name="config_proxy">Cấu hình proxy</string>
     <string name="proxy_username">Tên người dùng proxy</string>
     <string name="proxy_password">Mật khẩu proxy</string>

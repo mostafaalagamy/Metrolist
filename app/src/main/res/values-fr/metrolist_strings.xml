@@ -199,6 +199,4 @@
     <string name="edit_playlist_cover">Modifier la couverture de la playlist</string>
     <string name="edit_playlist_cover_note">Remarque : votre compte doit être lié à un numéro de téléphone et vérifié sur YouTube Music pour modifier la couverture de la playlist.</string>
     <string name="edit_playlist_cover_note_wait">Après avoir sélectionné une image, veuillez patienter un instant pour que la nouvelle couverture apparaisse dans votre playlist.</string>
-    <string name="set_custom_thumbnail">Définir une miniature personnalisée</string>
-    <string name="remove_custom_thumbnail">Supprimer la miniature personnalisée</string>
 </resources>
