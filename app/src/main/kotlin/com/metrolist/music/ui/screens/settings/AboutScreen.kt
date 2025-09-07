@@ -53,7 +53,11 @@ fun AboutScreen(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .windowInsetsPadding(LocalPlayerAwareWindowInsets.current.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom))
+            .windowInsetsPadding(
+                LocalPlayerAwareWindowInsets.current.only(
+                    WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom
+                )
+            )
             .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -70,7 +74,10 @@ fun AboutScreen(
         Image(
             painter = painterResource(R.drawable.about_splash),
             contentDescription = null,
-            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground, BlendMode.SrcIn),
+            colorFilter = ColorFilter.tint(
+                MaterialTheme.colorScheme.onBackground,
+                BlendMode.SrcIn
+            ),
             modifier = Modifier
                 .clip(CircleShape)
                 .background(MaterialTheme.colorScheme.surfaceContainer)
@@ -158,7 +165,9 @@ fun AboutScreen(
 
         Row {
             IconButton(
-                onClick = { uriHandler.openUri("https://github.com/mostafaalagamy/metrolist") },
+                onClick = {
+                    uriHandler.openUri("https://github.com/mostafaalagamy/metrolist")
+                },
             ) {
                 Icon(
                     painter = painterResource(R.drawable.github),
@@ -167,7 +176,9 @@ fun AboutScreen(
             }
 
             IconButton(
-                onClick = { uriHandler.openUri("https://www.instagram.com/mostafaalagamy") }
+                onClick = {
+                    uriHandler.openUri("https://www.instagram.com/mostafaalagamy")
+                }
             ) {
                 Icon(
                     painter = painterResource(R.drawable.instagram),
@@ -175,6 +186,37 @@ fun AboutScreen(
                 )
             }
         }
+
+        Spacer(Modifier.height(16.dp))
+
+        Text(
+            text = "COLLABORATORS",
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.secondary,
+            modifier = Modifier
+                .border(
+                    width = 1.dp,
+                    color = MaterialTheme.colorScheme.secondary,
+                    shape = CircleShape,
+                )
+                .padding(
+                    horizontal = 6.dp,
+                    vertical = 2.dp,
+                ),
+        )
+
+        Spacer(Modifier.height(4.dp))
+
+        Text(
+            text = "Damian Sobczak",
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.secondary,
+            modifier = Modifier.clickable {
+                uriHandler.openUri("https://github.com/FullerBread2032")
+            }
+        )
+
+        Spacer(Modifier.height(32.dp))
     }
 
     TopAppBar(
@@ -185,7 +227,7 @@ fun AboutScreen(
                 onLongClick = navController::backToMain,
             ) {
                 Icon(
-                    painterResource(R.drawable.arrow_back),
+                    painter = painterResource(R.drawable.arrow_back),
                     contentDescription = null,
                 )
             }
