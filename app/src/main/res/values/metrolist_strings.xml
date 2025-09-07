@@ -121,8 +121,8 @@
     <string name="edit_playlist_cover">Edit playlist cover</string>
     <string name="edit_playlist_cover_note">Note: Your account must be linked to a phone number and verified on YouTube Music to change playlist cover.</string>
     <string name="edit_playlist_cover_note_wait">After selecting an image, please wait a moment for the new cover to appear in your playlist.</string>
-    <string name="set_custom_thumbnail">Set custom thumbnail</string>
-    <string name="remove_custom_thumbnail">Remove custom thumbnail</string>
+    <string name="choose_from_library">Choose from library</string>
+    <string name="remove_custom_image">Remove custom image</string>
 
     <!-- General -->
     <string name="general">General</string>
