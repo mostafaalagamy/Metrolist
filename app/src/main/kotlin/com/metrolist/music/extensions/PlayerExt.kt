@@ -7,6 +7,7 @@ import androidx.media3.common.Player.REPEAT_MODE_ALL
 import androidx.media3.common.Player.REPEAT_MODE_OFF
 import androidx.media3.common.Player.REPEAT_MODE_ONE
 import androidx.media3.common.Timeline
+import androidx.media3.common.TrackSelectionParameters
 import com.metrolist.music.models.MediaMetadata
 import java.util.ArrayDeque
 
@@ -101,4 +102,20 @@ fun Player.findNextMediaItemById(mediaId: String): MediaItem? {
         }
     }
     return null
+}
+
+fun Player.setOffloadEnabled(enabled: Boolean) {
+    trackSelectionParameters = trackSelectionParameters.buildUpon()
+        .setAudioOffloadPreferences(
+            TrackSelectionParameters.AudioOffloadPreferences
+                .Builder()
+                .setAudioOffloadMode(
+                    if (enabled) {
+                        TrackSelectionParameters.AudioOffloadPreferences.AUDIO_OFFLOAD_MODE_ENABLED
+                    } else {
+                        TrackSelectionParameters.AudioOffloadPreferences.AUDIO_OFFLOAD_MODE_DISABLED
+                    }
+                )
+                .build()
+        ).build()
 }
