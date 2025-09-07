@@ -40,6 +40,7 @@ import com.metrolist.music.R
 import com.metrolist.music.constants.AudioNormalizationKey
 import com.metrolist.music.constants.AudioQuality
 import com.metrolist.music.constants.AudioQualityKey
+import com.metrolist.music.constants.AudioOffload
 import com.metrolist.music.constants.AutoDownloadOnLikeKey
 import com.metrolist.music.constants.AutoLoadMoreKey
 import com.metrolist.music.constants.DisableLoadMoreWhenRepeatAllKey
@@ -81,6 +82,11 @@ fun PlayerSettings(
     val (audioNormalization, onAudioNormalizationChange) = rememberPreference(
         AudioNormalizationKey,
         defaultValue = true
+    )
+
+    val (audioOffload, onAudioOffloadChange) = rememberPreference(
+        key = AudioOffload,
+        defaultValue = false
     )
 
     val (seekExtraSeconds, onSeekExtraSeconds) = rememberPreference(
@@ -167,6 +173,14 @@ fun PlayerSettings(
             icon = { Icon(painterResource(R.drawable.volume_up), null) },
             checked = audioNormalization,
             onCheckedChange = onAudioNormalizationChange
+        )
+
+        SwitchPreference(
+            title = { Text(stringResource(R.string.audio_offload)) },
+            description = stringResource(R.string.audio_offload_description),
+            icon = { Icon(painterResource(R.drawable.graphic_eq), null) },
+            checked = audioOffload,
+            onCheckedChange = onAudioOffloadChange
         )
 
         SwitchPreference(
