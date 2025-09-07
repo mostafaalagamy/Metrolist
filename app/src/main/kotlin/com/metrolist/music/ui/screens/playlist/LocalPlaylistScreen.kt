@@ -13,6 +13,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -77,6 +78,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -116,6 +118,7 @@ import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.LocalSyncUtils
 import com.metrolist.music.R
 import com.metrolist.music.constants.AlbumThumbnailSize
+import com.metrolist.music.constants.DarkModeKey
 import com.metrolist.music.constants.PlaylistEditLockKey
 import com.metrolist.music.constants.PlaylistSongSortDescendingKey
 import com.metrolist.music.constants.PlaylistSongSortType
@@ -143,6 +146,7 @@ import com.metrolist.music.ui.component.TextFieldDialog
 import com.metrolist.music.ui.menu.CustomThumbnailMenu
 import com.metrolist.music.ui.menu.SelectionSongMenu
 import com.metrolist.music.ui.menu.SongMenu
+import com.metrolist.music.ui.screens.settings.DarkMode
 import com.metrolist.music.ui.utils.ItemWrapper
 import com.metrolist.music.ui.utils.backToMain
 import com.metrolist.music.utils.makeTimeString
@@ -962,6 +966,14 @@ fun LocalPlaylistHeader(
         }
     }
 
+    val (darkMode, _) = rememberEnumPreference(
+        DarkModeKey,
+        defaultValue = DarkMode.AUTO
+    )
+
+    val cropColor = MaterialTheme.colorScheme
+    val darkTheme = darkMode == DarkMode.ON || (darkMode == DarkMode.AUTO && isSystemInDarkTheme())
+
     val pickLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.PickVisualMedia()
     ) { uri ->
@@ -975,12 +987,13 @@ fun LocalPlaylistHeader(
                 setCompressionQuality(90)
                 setHideBottomControls(true)
                 setToolbarTitle(context.getString(R.string.edit_playlist_cover))
+                
+                setStatusBarLight(!darkTheme)
 
-                setToolbarColor(android.graphics.Color.BLACK)
-                setRootViewBackgroundColor(android.graphics.Color.BLACK)
-
-                setToolbarWidgetColor(android.graphics.Color.WHITE)
-                setActiveControlsWidgetColor(android.graphics.Color.WHITE)
+                setToolbarColor(cropColor.surface.toArgb())
+                setToolbarWidgetColor(cropColor.inverseSurface.toArgb())
+                setRootViewBackgroundColor(cropColor.surface.toArgb())
+                setLogoColor(cropColor.surface.toArgb())
             }
 
             val intent = UCrop.of(sourceUri, destUri)

@@ -35,11 +35,11 @@ fun CustomThumbnailMenu(
         item {
             ListItem(
                 headlineContent = { 
-                    Text(text = stringResource(R.string.set_custom_thumbnail)) 
+                    Text(text = stringResource(R.string.choose_from_library)) 
                 },
                 leadingContent = {
                     Icon(
-                        painter = painterResource(R.drawable.media3_icon_plus),
+                        painter = painterResource(R.drawable.insert_photo),
                         contentDescription = null,
                     )
                 },
@@ -52,11 +52,11 @@ fun CustomThumbnailMenu(
         item {
             ListItem(
                 headlineContent = { 
-                    Text(text = stringResource(R.string.remove_custom_thumbnail)) 
+                    Text(text = stringResource(R.string.remove_custom_image)) 
                 },
                 leadingContent = {
                     Icon(
-                        painter = painterResource(R.drawable.remove),
+                        painter = painterResource(R.drawable.delete),
                         contentDescription = null,
                     )
                 },
