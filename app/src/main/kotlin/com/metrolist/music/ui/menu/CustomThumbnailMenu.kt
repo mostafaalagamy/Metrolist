@@ -39,7 +39,7 @@ fun CustomThumbnailMenu(
                 },
                 leadingContent = {
                     Icon(
-                        painter = painterResource(R.drawable.media3_icon_plus),
+                        painter = painterResource(R.drawable.insert_photo),
                         contentDescription = null,
                     )
                 },
@@ -56,7 +56,7 @@ fun CustomThumbnailMenu(
                 },
                 leadingContent = {
                     Icon(
-                        painter = painterResource(R.drawable.remove),
+                        painter = painterResource(R.drawable.delete),
                         contentDescription = null,
                     )
                 },
