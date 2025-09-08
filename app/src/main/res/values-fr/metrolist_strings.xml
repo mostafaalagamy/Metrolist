@@ -199,4 +199,8 @@
     <string name="edit_playlist_cover">Modifier la couverture de la playlist</string>
     <string name="edit_playlist_cover_note">Remarque : votre compte doit être lié à un numéro de téléphone et vérifié sur YouTube Music pour modifier la couverture de la playlist.</string>
     <string name="edit_playlist_cover_note_wait">Après avoir sélectionné une image, veuillez patienter un instant pour que la nouvelle couverture apparaisse dans votre playlist.</string>
+    <string name="choose_from_library">Choisissez dans la bibliothèque</string>
+    <string name="remove_custom_image">Supprimer l\'image personnalisée</string>
+    <string name="audio_offload">Activer le déchargement</string>
+    <string name="audio_offload_description">Utilisez le chemin audio de déchargement pour la lecture audio. Désactiver cette option peut augmenter la consommation d\'énergie, mais peut s\'avérer utile en cas de problèmes de lecture audio ou de post-traitement.</string>
 </resources>
