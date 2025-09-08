@@ -3,6 +3,7 @@ package com.metrolist.music.ui.screens.settings
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
+import androidx.core.net.toUri
 import android.os.Build
 import android.provider.Settings
 import android.widget.Toast
