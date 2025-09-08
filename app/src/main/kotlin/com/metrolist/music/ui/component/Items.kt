@@ -48,6 +48,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -1371,7 +1372,7 @@ fun SwipeToSongBox(
     val ctx = LocalContext.current
     val player = LocalPlayerConnection.current
     val scope = rememberCoroutineScope()
-    val offset = remember { mutableStateOf(0f) }
+    val offset = remember { mutableFloatStateOf(0f) }
     val threshold = 300f
 
     val dragState = rememberDraggableState { delta ->

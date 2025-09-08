@@ -82,6 +82,8 @@ class HomeViewModel @Inject constructor(
         isLoading.value = true
         val hideExplicit = context.dataStore.get(HideExplicitKey, false)
 
+        val fromTimeStamp = System.currentTimeMillis() - 86400000 * 7 * 2
+
         supervisorScope {
             // Load data concurrently for better performance
             launch { getQuickPicks() }
@@ -91,8 +93,6 @@ class HomeViewModel @Inject constructor(
             }
             
             launch {
-                val fromTimeStamp = System.currentTimeMillis() - 86400000 * 7 * 2
-
                 val keepListeningSongs = database.mostPlayedSongs(fromTimeStamp, limit = 15, offset = 5)
                     .first().shuffled().take(10)
 
@@ -105,14 +105,7 @@ class HomeViewModel @Inject constructor(
                 
                 keepListening.value = (keepListeningSongs + keepListeningAlbums + keepListeningArtists).shuffled()
             }
-        }
-
-        allLocalItems.value = (quickPicks.value.orEmpty() + forgottenFavorites.value.orEmpty() + keepListening.value.orEmpty())
-            .filter { it is Song || it is Album }
-
-        // Account data is now handled in the init block to avoid duplication
-
-        supervisorScope {
+            
             launch(Dispatchers.IO) {
                 val artistRecommendations = database.mostPlayedArtists(fromTimeStamp, limit = 10).first()
                     .filter { it.artist.isYouTubeArtist }
@@ -150,23 +143,22 @@ class HomeViewModel @Inject constructor(
 
                 similarRecommendations.value = (artistRecommendations + songRecommendations).shuffled()
             }
-        }
-
-        launch(Dispatchers.IO) {
-            YouTube.home().onSuccess { page ->
-                homePage.value = page.copy(
-                    sections = page.sections.map { section ->
-                        section.copy(items = section.items.filterExplicit(hideExplicit))
-                    }
-                )
-            }.onFailure {
-                reportException(it)
+            
+            launch(Dispatchers.IO) {
+                YouTube.home().onSuccess { page ->
+                    homePage.value = page.copy(
+                        sections = page.sections.map { section ->
+                            section.copy(items = section.items.filterExplicit(hideExplicit))
+                        }
+                    )
+                }.onFailure {
+                    reportException(it)
+                }
             }
-        }
 
-        launch(Dispatchers.IO) {
-            // Explore section with sorting by favorite artist
-            YouTube.explore().onSuccess { page ->
+            launch(Dispatchers.IO) {
+                // Explore section with sorting by favorite artist
+                YouTube.explore().onSuccess { page ->
             val artists: MutableMap<Int, String> = mutableMapOf()
             val favouriteArtists: MutableMap<Int, String> = mutableMapOf()
             database.allArtistsByPlayTime().first().let { list ->
@@ -197,6 +189,9 @@ class HomeViewModel @Inject constructor(
                 reportException(it)
             }
         }
+
+        allLocalItems.value = (quickPicks.value.orEmpty() + forgottenFavorites.value.orEmpty() + keepListening.value.orEmpty())
+            .filter { it is Song || it is Album }
 
         allYtItems.value = similarRecommendations.value?.flatMap { it.items }.orEmpty() +
                 homePage.value?.sections?.flatMap { it.items }.orEmpty()

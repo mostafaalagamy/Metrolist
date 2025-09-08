@@ -190,7 +190,7 @@ fun Queue(
     ) {
         playerConnection.service.sleepTimer.isActive
     }
-    var sleepTimerTimeLeft by remember { mutableStateOf(0L) }
+    var sleepTimerTimeLeft by remember { mutableLongStateOf(0L) }
 
     LaunchedEffect(sleepTimerEnabled) {
         if (sleepTimerEnabled) {

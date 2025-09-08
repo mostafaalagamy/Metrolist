@@ -43,6 +43,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -132,7 +134,7 @@ private fun NewMiniPlayer(
     val swipeThumbnail by rememberPreference(com.metrolist.music.constants.SwipeThumbnailKey, true)
     
     val offsetXAnimatable = remember { Animatable(0f) }
-    var dragStartTime by remember { mutableStateOf(0L) }
+    var dragStartTime by remember { mutableLongStateOf(0L) }
     var totalDragDistance by remember { mutableFloatStateOf(0f) }
 
     val animationSpec = spring<Float>(
@@ -522,7 +524,7 @@ private fun LegacyMiniPlayer(
     val swipeThumbnail by rememberPreference(com.metrolist.music.constants.SwipeThumbnailKey, true)
     
     val offsetXAnimatable = remember { Animatable(0f) }
-    var dragStartTime by remember { mutableStateOf(0L) }
+    var dragStartTime by remember { mutableLongStateOf(0L) }
     var totalDragDistance by remember { mutableFloatStateOf(0f) }
 
     val animationSpec = spring<Float>(

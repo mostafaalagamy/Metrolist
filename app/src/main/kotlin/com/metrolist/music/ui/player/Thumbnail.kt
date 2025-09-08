@@ -38,6 +38,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -283,7 +285,7 @@ fun Thumbnail(
                             }
                         ) { item ->
                             val incrementalSeekSkipEnabled by rememberPreference(SeekExtraSeconds, defaultValue = false)
-                            var skipMultiplier by remember { mutableStateOf(1) }
+                            var skipMultiplier by remember { mutableIntStateOf(1) }
                             var lastTapTime by remember { mutableLongStateOf(0L) }
 
                             Box(
