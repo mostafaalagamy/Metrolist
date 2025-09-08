@@ -67,6 +67,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -181,7 +183,7 @@ fun Queue(
     var dismissJob: Job? by remember { mutableStateOf(null) }
 
     var showSleepTimerDialog by remember { mutableStateOf(false) }
-    var sleepTimerValue by remember { mutableStateOf(30f) }
+    var sleepTimerValue by remember { mutableFloatStateOf(30f) }
     val sleepTimerEnabled = remember(
         playerConnection.service.sleepTimer.triggerTime,
         playerConnection.service.sleepTimer.pauseWhenSongEnd
