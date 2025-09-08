@@ -202,4 +202,8 @@
     <string name="edit_playlist_cover">Редактировать обложку плейлиста</string>
     <string name="edit_playlist_cover_note">Примечание: чтобы изменить обложку плейлиста, ваш аккаунт должен быть привязан к номеру телефона и подтверждён в YouTube Music.</string>
     <string name="edit_playlist_cover_note_wait">После выбора изображения подождите немного, пока новая обложка появится в вашем плейлисте.</string>
+    <string name="remove_custom_image">Удалить собственное изображение</string>
+    <string name="choose_from_library">Выбрать из библиотеки</string>
+    <string name="audio_offload">Включить аппаратное ускорение аудио</string>
+    <string name="audio_offload_description">Использовать аппаратный путь воспроизведения аудио. Отключение этой функции может увеличить расход энергии, но может быть полезным, если у вас возникают проблемы с воспроизведением или постобработкой звука</string>
 </resources>
