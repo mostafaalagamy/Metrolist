@@ -178,7 +178,7 @@ object ComposeToImage {
 
         val rawLogo = context.getDrawable(R.drawable.small_icon)?.toBitmap(logoSize, logoSize)
         val logo = rawLogo?.let { source ->
-            val colored = Bitmap.createBitmap(source.width, source.height, Bitmap.Config.ARGB_8888)
+            val colored = createBitmap(source.width, source.height)
             val canvasLogo = Canvas(colored)
             val paint = Paint().apply {
                 colorFilter = PorterDuffColorFilter(backgroundColor, PorterDuff.Mode.SRC_IN)

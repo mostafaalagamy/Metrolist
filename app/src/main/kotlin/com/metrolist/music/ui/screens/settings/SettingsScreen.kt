@@ -138,7 +138,7 @@ fun SettingsScreen(
                                 try {
                                     val intent = Intent(
                                         Settings.ACTION_APP_OPEN_BY_DEFAULT_SETTINGS,
-                                        Uri.parse("package:${context.packageName}")
+                                        "package:${context.packageName}".toUri()
                                     )
                                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                                     context.startActivity(intent)
