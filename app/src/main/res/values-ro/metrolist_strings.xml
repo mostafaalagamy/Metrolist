@@ -199,4 +199,8 @@
     <string name="edit_playlist_cover">Editează coperta playlistului</string>
     <string name="edit_playlist_cover_note">Notă: Contul tău trebuie să fie asociat cu un număr de telefon verificat pe YouTube Music pentru a putea schimba coperta playlistului.</string>
     <string name="edit_playlist_cover_note_wait">După selectarea unei imagini, așteaptă un moment pentru ca noua coperta să apară la playlistul tău.</string>
+    <string name="choose_from_library">Alege din bibliotecă</string>
+    <string name="remove_custom_image">Elimină imaginea personalizată</string>
+    <string name="audio_offload">Activează offload</string>
+    <string name="audio_offload_description">Utilizează calea audio offload pentru redarea audio. Dezactivarea acestei setări poate crește utilizarea bateriei, dar poate fi utilă dacă întâmpini probleme cu redarea audio sau cu post procesarea</string>
 </resources>
