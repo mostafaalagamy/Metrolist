@@ -97,4 +97,3 @@ core
 core.*
 *.so
 *.bin
-external/PipePipeExtractor/

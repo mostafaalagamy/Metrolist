@@ -300,9 +300,11 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             LaunchedEffect(Unit) {
-                if (System.currentTimeMillis() - Updater.lastCheckTime > 1.days.inWholeMilliseconds) {
-                    Updater.getLatestVersionName().onSuccess {
-                        latestVersionName = it
+                withContext(Dispatchers.IO) {
+                    if (System.currentTimeMillis() - Updater.lastCheckTime > 1.days.inWholeMilliseconds) {
+                        Updater.getLatestVersionName().onSuccess {
+                            latestVersionName = it
+                        }
                     }
                 }
             }
@@ -340,6 +342,9 @@ class MainActivity : ComponentActivity() {
                                             .Builder(this@MainActivity)
                                             .data(song.thumbnailUrl)
                                             .allowHardware(false) // pixel access is not supported on Config#HARDWARE bitmaps
+                                            .memoryCachePolicy(coil3.request.CachePolicy.ENABLED)
+                                            .diskCachePolicy(coil3.request.CachePolicy.ENABLED)
+                                            .networkCachePolicy(coil3.request.CachePolicy.ENABLED)
                                             .build(),
                                     )
                                 result.image?.toBitmap()?.extractThemeColor()
