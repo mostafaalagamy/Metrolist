@@ -64,7 +64,7 @@
     <plurals name="n_time">
         <item quantity="one">%d vegada</item>
         <item quantity="many">%d vegades</item>
-        <item quantity="other"></item>
+        <item quantity="other"/>
     </plurals>
     <string name="seek_backward">5 segons enrere</string>
     <string name="seek_forward">5 segons endavant</string>
