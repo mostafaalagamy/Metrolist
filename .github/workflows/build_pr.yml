@@ -11,6 +11,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@v5
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+      - name: Install SDK components
+        run: |
+          sdkmanager --install "platform-tools" "platforms;android-36" "build-tools;36.0.0"
+          yes | sdkmanager --licenses
 
       - name: Set up JDK 21
         uses: actions/setup-java@v5
@@ -49,7 +55,7 @@ jobs:
            PULL_REQUEST: 'true'
 
       - name: Lint Debug (app)
-        run: ./gradlew --no-configuration-cache :app:lintDebug --stacktrace --warning-mode all
+        run: ./gradlew --no-configuration-cache :app:lintUniversalDebug --stacktrace --warning-mode all
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
