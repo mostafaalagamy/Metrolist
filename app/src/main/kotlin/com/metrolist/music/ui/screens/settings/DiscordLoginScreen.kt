@@ -1,7 +1,6 @@
 package com.metrolist.music.ui.screens.settings
 
 import android.annotation.SuppressLint
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.*
@@ -26,6 +25,7 @@ import com.metrolist.music.ui.utils.backToMain
 import com.metrolist.music.utils.rememberPreference
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @SuppressLint("SetJavaScriptEnabled")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -63,7 +63,7 @@ fun DiscordLoginScreen(navController: NavController) {
                 addJavascriptInterface(object {
                     @JavascriptInterface
                     fun onRetrieveToken(token: String) {
-                        Log.d("DiscordWebView", "Token: $token")
+                        Timber.d("Token: %s", token)
                         if (token != "null" && token != "error") {
                             discordToken = token
                             scope.launch(Dispatchers.Main) {

@@ -9,19 +9,19 @@
         android:translateX="-16.0"
         android:translateY="-16.0">
         <path
-            android:fillColor="#ffffffff"
+            android:fillColor="@android:color/white"
             android:pathData="M77.89447,43.70847l-6.15161,6.13507l-16.94878,-16.97581l6.15161,-6.13507z" />
         <path
-            android:fillColor="#ffffffff"
+            android:fillColor="@android:color/white"
             android:pathData="M62.71151,64.65333l-8.18089,-0.01683l0.01911,-35.13008l8.18089,0.01683z" />
         <path
-            android:fillColor="#ffffffff"
+            android:fillColor="@android:color/white"
             android:pathData="M53.70625,75.72837l-6.15161,6.13508l-16.94703,-16.97405l6.15161,-6.13508z" />
         <path
-            android:fillColor="#ffffffff"
+            android:fillColor="@android:color/white"
             android:pathData="M48.12682,81.300l-6.1368,-6.14989l13.442,-13.41497l5.9368,6.14989z" />
         <path
-            android:fillColor="#ffffffff"
+            android:fillColor="@android:color/white"
             android:pathData="M36.99032,70.59109l-5.9368,-6.14989l13.442,-13.41497l5.9368,6.14989z" />
     </group>
 </vector>
