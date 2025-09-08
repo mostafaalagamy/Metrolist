@@ -93,7 +93,7 @@ class App : Application(), SingletonImageLoader.Factory {
             YouTube.useLoginForBrowse = true
         }
 
-        applicationScope.launch {
+        applicationScope.launch(Dispatchers.IO) {
             dataStore.data
                 .map { it[VisitorDataKey] }
                 .distinctUntilChanged()
@@ -112,7 +112,7 @@ class App : Application(), SingletonImageLoader.Factory {
                         }
                 }
         }
-        applicationScope.launch {
+        applicationScope.launch(Dispatchers.IO) {
             dataStore.data
                 .map { it[DataSyncIdKey] }
                 .distinctUntilChanged()
@@ -133,7 +133,7 @@ class App : Application(), SingletonImageLoader.Factory {
                     }
                 }
         }
-        applicationScope.launch {
+        applicationScope.launch(Dispatchers.IO) {
             dataStore.data
                 .map { it[InnerTubeCookieKey] }
                 .distinctUntilChanged()
@@ -164,6 +164,8 @@ class App : Application(), SingletonImageLoader.Factory {
         return ImageLoader.Builder(this)
         .crossfade(true)
         .allowHardware(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)
+        .memoryCachePolicy(CachePolicy.ENABLED)
+        .networkCachePolicy(CachePolicy.ENABLED)
         .diskCache(
             DiskCache.Builder()
                 .directory(cacheDir.resolve("coil"))

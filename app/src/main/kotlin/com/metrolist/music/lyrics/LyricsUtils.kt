@@ -626,7 +626,7 @@ object LyricsUtils {
     }
 
     // TODO: This function might be used later if we let the user choose the language manually
-    /* private suspend fun romanizeCyrillicWithLanguage(text: String, language: CyrillicLanguage): String = withContext(Dispatchers.Default) {
+    /** private suspend fun romanizeCyrillicWithLanguage(text: String, language: CyrillicLanguage): String = withContext(Dispatchers.Default) {
         if (text.isEmpty()) return@withContext ""
 
         val detectedLanguage = language ?: when {

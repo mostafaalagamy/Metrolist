@@ -14,10 +14,12 @@ jobs:
     outputs:
       version_changed: ${{ steps.check_version.outputs.version_changed }}
       new_version: ${{ steps.check_version.outputs.new_version }}
+      version_code: ${{ steps.check_version.outputs.version_code }}
     steps:
       - uses: actions/checkout@v5
         with:
           fetch-depth: 0
+          
       - name: Check if version changed
         id: check_version
         run: |
@@ -28,27 +30,43 @@ jobs:
           fi
 
           NEW_VERSION=$(grep -oP 'versionName\s*=\s*"\K[^"]+' app/build.gradle.kts || echo "")
+          VERSION_CODE=$(grep -oP 'versionCode\s*=\s*\K\d+' app/build.gradle.kts || echo "")
+          
           if [ -z "$NEW_VERSION" ]; then
             echo "Could not find versionName in app/build.gradle.kts"
             echo "version_changed=false" >> $GITHUB_OUTPUT
             exit 0
           fi
 
-          OLD_VERSION=$(git diff HEAD^ HEAD -- app/build.gradle.kts | grep -oP 'versionName\s*=\s*"\K[^"]+' || echo "")
+          echo "Current version: $NEW_VERSION (code: $VERSION_CODE)"
 
-          if [ -z "$OLD_VERSION" ]; then
-            echo "version_changed=true" >> $GITHUB_OUTPUT
-            echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
-          elif [ "$OLD_VERSION" != "$NEW_VERSION" ]; then
-            echo "version_changed=true" >> $GITHUB_OUTPUT
-            echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
+          if git show HEAD^:app/build.gradle.kts > /dev/null 2>&1; then
+            OLD_VERSION=$(git show HEAD^:app/build.gradle.kts | grep -oP 'versionName\s*=\s*"\K[^"]+' || echo "")
+            echo "Previous version: $OLD_VERSION"
+            
+            if [ "$OLD_VERSION" != "$NEW_VERSION" ]; then
+              echo "Version changed from $OLD_VERSION to $NEW_VERSION"
+              echo "version_changed=true" >> $GITHUB_OUTPUT
+              echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
+              echo "version_code=$VERSION_CODE" >> $GITHUB_OUTPUT
+            else
+              echo "Version unchanged: $NEW_VERSION"
+              echo "version_changed=false" >> $GITHUB_OUTPUT
+            fi
           else
-            echo "version_changed=false" >> $GITHUB_OUTPUT
+            echo "First version detected: $NEW_VERSION"
+            echo "version_changed=true" >> $GITHUB_OUTPUT
+            echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
+            echo "version_code=$VERSION_CODE" >> $GITHUB_OUTPUT
           fi
+          
       - name: Debug output
         run: |
-          echo "version_changed: ${{ steps.check_version.outputs.version_changed }}"
-          echo "new_version: ${{ steps.check_version.outputs.new_version }}"
+          echo "Debug Information:"
+          echo "  - version_changed: ${{ steps.check_version.outputs.version_changed }}"
+          echo "  - new_version: ${{ steps.check_version.outputs.new_version }}"
+          echo "  - version_code: ${{ steps.check_version.outputs.version_code }}"
+          echo "  - event_name: ${{ github.event_name }}"
 
   build:
     needs: check-version
@@ -70,17 +88,18 @@ jobs:
       - name: Set Up Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
+          cache-disabled: true
           cache-cleanup: on-success
           
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
  
-      - name: Build Release APK
-        run: ./gradlew assemble${{ matrix.abi }}Release
+      - name: Build and Lint Release APK
+        run: ./gradlew --no-configuration-cache --console=plain clean assemble${{ matrix.abi }}Release :app:lint${{ matrix.abi }}Release --warning-mode summary
         env:
           PULL_REQUEST: 'false'
           GITHUB_EVENT_NAME: ${{ github.event_name }}
-
+ 
       - name: Sign APK
         uses: ilharp/sign-android-release@v2.0.0
         with:
@@ -94,11 +113,25 @@ jobs:
       - name: Move and rename signed APKs
         run: |
           mkdir -p app/build/outputs/apk/${{ matrix.abi }}/release/out
-          if [ "${{ matrix.abi }}" = "universal" ]; then
-            find app/build/outputs/apk/${{ matrix.abi }}/release/ -name "*-signed.apk" -o -name "*-unsigned-signed.apk" | xargs -I{} mv {} app/build/outputs/apk/${{ matrix.abi }}/release/out/Metrolist.apk
-          else
-            find app/build/outputs/apk/${{ matrix.abi }}/release/ -name "*-signed.apk" -o -name "*-unsigned-signed.apk" | xargs -I{} mv {} app/build/outputs/apk/${{ matrix.abi }}/release/out/app-${{ matrix.abi }}-release.apk
+          
+          SIGNED_APK=$(find app/build/outputs/apk/${{ matrix.abi }}/release/ -name "*-signed.apk" -o -name "*-unsigned-signed.apk" | head -1)
+          
+          if [ -z "$SIGNED_APK" ]; then
+            echo "No signed APK found for ${{ matrix.abi }}"
+            ls -la app/build/outputs/apk/${{ matrix.abi }}/release/
+            exit 1
           fi
+          
+          if [ "${{ matrix.abi }}" = "universal" ]; then
+            TARGET_NAME="Metrolist.apk"
+          else
+            TARGET_NAME="app-${{ matrix.abi }}-release.apk"
+          fi
+          
+          mv "$SIGNED_APK" "app/build/outputs/apk/${{ matrix.abi }}/release/out/$TARGET_NAME"
+          
+          echo "APK renamed to: $TARGET_NAME"
+          ls -la app/build/outputs/apk/${{ matrix.abi }}/release/out/
   
       - name: Upload Signed APKs
         uses: actions/upload-artifact@v4
@@ -112,21 +145,55 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
       
       - name: Download all APKs
         uses: actions/download-artifact@v5
         with:
           path: downloaded_artifacts/
           
+      - name: Organize APKs for release
+        run: |
+          echo "Organizing APK files..."
+          mkdir -p release_files
+          
+          find downloaded_artifacts -name "*.apk" -exec cp {} release_files/ \;
+          
+          echo "APKs ready for release:"
+          ls -la release_files/
+          
+      - name: Generate release notes
+        run: |
+          echo "Generating release notes..."
+          
+          cat > release_notes.md << EOF
+          Release of version ${{ needs.check-version.outputs.new_version }}
+          
+          $(git log $(git describe --tags --abbrev=0 2>/dev/null || echo "HEAD~10")..HEAD --pretty=format:"- %s" --no-merges | head -10 || echo "- Initial release")
+          EOF
+          
+          echo "Release notes preview:"
+          cat release_notes.md
+          
       - name: Create Release
         env:
           GH_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         run: |
-          UNIVERSAL_APK=$(find downloaded_artifacts/Metrolist -name "*.apk")
-          ABI_APKS=$(find downloaded_artifacts -path "*/app-*-release/*.apk")
+          echo "Creating release v${{ needs.check-version.outputs.new_version }}"
           
           gh release create "v${{ needs.check-version.outputs.new_version }}" \
             --title "${{ needs.check-version.outputs.new_version }}" \
-            --notes "Release of version ${{ needs.check-version.outputs.new_version }}" \
-            "$UNIVERSAL_APK" \
-            $ABI_APKS
+            --notes-file release_notes.md \
+            --latest \
+            release_files/*.apk
+            
+          echo "Release created successfully!"
+          
+      - name: Update release summary
+        run: |
+          echo "## Release Summary" >> $GITHUB_STEP_SUMMARY
+          echo "- **Version**: v${{ needs.check-version.outputs.new_version }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Version Code**: ${{ needs.check-version.outputs.version_code }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **APKs Built**: $(ls release_files/*.apk | wc -l)" >> $GITHUB_STEP_SUMMARY
+          echo "- **Release URL**: https://github.com/${{ github.repository }}/releases/tag/v${{ needs.check-version.outputs.new_version }}" >> $GITHUB_STEP_SUMMARY
