@@ -71,10 +71,22 @@ class HomeViewModel @Inject constructor(
     // Track if we're currently processing account data
     private var isProcessingAccountData = false
 
+    private val _isLoadingMore = MutableStateFlow(false)
+
     private suspend fun getQuickPicks(){
         when (quickPicksEnum.first()) {
             QuickPicks.QUICK_PICKS -> quickPicks.value = database.quickPicks().first().shuffled().take(20)
             QuickPicks.LAST_LISTEN -> songLoad()
+        }
+    }
+
+    private suspend fun songLoad() {
+        val song = database.events().first().firstOrNull()?.song
+        if (song != null) {
+            if (database.hasRelatedSongs(song.id)) {
+                val relatedSongs = database.getRelatedSongs(song.id).first().shuffled().take(20)
+                quickPicks.value = relatedSongs
+            }
         }
     }
 
@@ -159,34 +171,35 @@ class HomeViewModel @Inject constructor(
             launch(Dispatchers.IO) {
                 // Explore section with sorting by favorite artist
                 YouTube.explore().onSuccess { page ->
-            val artists: MutableMap<Int, String> = mutableMapOf()
-            val favouriteArtists: MutableMap<Int, String> = mutableMapOf()
-            database.allArtistsByPlayTime().first().let { list ->
-                var favIndex = 0
-                for ((artistsIndex, artist) in list.withIndex()) {
-                    artists[artistsIndex] = artist.id
-                    if (artist.artist.bookmarkedAt != null) {
-                        favouriteArtists[favIndex] = artist.id
-                        favIndex++
-                    }
-                }
-            }
-            explorePage.value = page.copy(
-                newReleaseAlbums = page.newReleaseAlbums
-                    .sortedBy { album ->
-                        val artistIds = album.artists.orEmpty().mapNotNull { it.id }
-                        val firstArtistKey = artistIds.firstNotNullOfOrNull { artistId ->
-                            if (artistId in favouriteArtists.values) {
-                                favouriteArtists.entries.firstOrNull { it.value == artistId }?.key
-                            } else {
-                                artists.entries.firstOrNull { it.value == artistId }?.key
+                    val artists: MutableMap<Int, String> = mutableMapOf()
+                    val favouriteArtists: MutableMap<Int, String> = mutableMapOf()
+                    database.allArtistsByPlayTime().first().let { list ->
+                        var favIndex = 0
+                        for ((artistsIndex, artist) in list.withIndex()) {
+                            artists[artistsIndex] = artist.id
+                            if (artist.artist.bookmarkedAt != null) {
+                                favouriteArtists[favIndex] = artist.id
+                                favIndex++
                             }
-                        } ?: Int.MAX_VALUE
-                        firstArtistKey
-                    }.filterExplicit(hideExplicit)
-            )
-            }.onFailure {
-                reportException(it)
+                        }
+                    }
+                    explorePage.value = page.copy(
+                        newReleaseAlbums = page.newReleaseAlbums
+                            .sortedBy { album ->
+                                val artistIds = album.artists.orEmpty().mapNotNull { it.id }
+                                val firstArtistKey = artistIds.firstNotNullOfOrNull { artistId ->
+                                    if (artistId in favouriteArtists.values) {
+                                        favouriteArtists.entries.firstOrNull { it.value == artistId }?.key
+                                    } else {
+                                        artists.entries.firstOrNull { it.value == artistId }?.key
+                                    }
+                                } ?: Int.MAX_VALUE
+                                firstArtistKey
+                            }.filterExplicit(hideExplicit)
+                    )
+                }.onFailure {
+                    reportException(it)
+                }
             }
         }
 
@@ -199,17 +212,6 @@ class HomeViewModel @Inject constructor(
         isLoading.value = false
     }
 
-    private suspend fun songLoad() {
-        val song = database.events().first().firstOrNull()?.song
-        if (song != null) {
-            if (database.hasRelatedSongs(song.id)) {
-                val relatedSongs = database.getRelatedSongs(song.id).first().shuffled().take(20)
-                quickPicks.value = relatedSongs
-            }
-        }
-    }
-
-    private val _isLoadingMore = MutableStateFlow(false)
     fun loadMoreYouTubeItems(continuation: String?) {
         if (continuation == null || _isLoadingMore.value) return
         val hideExplicit = context.dataStore.get(HideExplicitKey, false)
@@ -386,5 +388,4 @@ class HomeViewModel @Inject constructor(
                 }
         }
     }
-}
 }
