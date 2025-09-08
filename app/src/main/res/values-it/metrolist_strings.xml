@@ -198,4 +198,7 @@
     <string name="line_by_line_dialog_desc">Questa è una funzione sperimentale.\n\nPer impostazione predefinita, la lingua è determinata dall\'intera canzone ma con questa opzione attiva, sarà invece determinata linea per riga. Questo permetterà a canzoni multilingua di essere romanizzate MA la lingua potrebbe non essere sempre corretta (ad esempio se c\'è un testo in ucraino che non contiene alcuna lettera specifica ucraina, potrebbe essere romanizzato come russo).\n\nSe non ne avete necessità, si consiglia di mantenere questa opzione disattivata.</string>
     <string name="edit_playlist_cover">Modifica immagine della playlist</string>
     <string name="edit_playlist_cover_note">Nota: il tuo account deve essere collegato a un numero di telefono ed essere verificato su YouTube Music per modificare l\'immagine della playlist.</string>
+    <string name="edit_playlist_cover_note_wait">Dopo aver selezionato un\'immagine, si deve attendere un momento affinché compaia la nuova immagine della tua playlist.</string>
+    <string name="choose_from_library">Scegli dalla galleria</string>
+    <string name="remove_custom_image">Rimuovi immagine personalizzata</string>
 </resources>
