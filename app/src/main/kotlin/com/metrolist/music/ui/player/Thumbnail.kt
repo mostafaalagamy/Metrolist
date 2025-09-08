@@ -351,7 +351,12 @@ fun Thumbnail(
                                     } else {
                                         // Blurred background
                                         AsyncImage(
-                                            model = item.mediaMetadata.artworkUri?.toString(),
+                                            model = coil3.request.ImageRequest.Builder(LocalContext.current)
+                                                .data(item.mediaMetadata.artworkUri?.toString())
+                                                .memoryCachePolicy(coil3.request.CachePolicy.ENABLED)
+                                                .diskCachePolicy(coil3.request.CachePolicy.ENABLED)
+                                                .networkCachePolicy(coil3.request.CachePolicy.ENABLED)
+                                                .build(),
                                             contentDescription = null,
                                             contentScale = ContentScale.FillBounds,
                                             modifier = Modifier
@@ -364,7 +369,12 @@ fun Thumbnail(
 
                                         // Main image
                                         AsyncImage(
-                                            model = item.mediaMetadata.artworkUri?.toString(),
+                                            model = coil3.request.ImageRequest.Builder(LocalContext.current)
+                                                .data(item.mediaMetadata.artworkUri?.toString())
+                                                .memoryCachePolicy(coil3.request.CachePolicy.ENABLED)
+                                                .diskCachePolicy(coil3.request.CachePolicy.ENABLED)
+                                                .networkCachePolicy(coil3.request.CachePolicy.ENABLED)
+                                                .build(),
                                             contentDescription = null,
                                             contentScale = ContentScale.Fit,
                                             modifier = Modifier.fillMaxSize()

@@ -410,7 +410,12 @@ fun ArtistListItem(
     badges = badges,
     thumbnailContent = {
         AsyncImage(
-            model = artist.artist.thumbnailUrl,
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(artist.artist.thumbnailUrl)
+                .memoryCachePolicy(coil3.request.CachePolicy.ENABLED)
+                .diskCachePolicy(coil3.request.CachePolicy.ENABLED)
+                .networkCachePolicy(coil3.request.CachePolicy.ENABLED)
+                .build(),
             contentDescription = null,
             modifier = Modifier
                 .size(ListThumbnailSize)
@@ -437,7 +442,12 @@ fun ArtistGridItem(
     badges = badges,
     thumbnailContent = {
         AsyncImage(
-            model = artist.artist.thumbnailUrl,
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(artist.artist.thumbnailUrl)
+                .memoryCachePolicy(coil3.request.CachePolicy.ENABLED)
+                .diskCachePolicy(coil3.request.CachePolicy.ENABLED)
+                .networkCachePolicy(coil3.request.CachePolicy.ENABLED)
+                .build(),
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier
@@ -1037,7 +1047,12 @@ fun ItemThumbnail(
     ) {
         if (albumIndex == null) {
             AsyncImage(
-                model = thumbnailUrl,
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(thumbnailUrl)
+                    .memoryCachePolicy(coil3.request.CachePolicy.ENABLED)
+                    .diskCachePolicy(coil3.request.CachePolicy.ENABLED)
+                    .networkCachePolicy(coil3.request.CachePolicy.ENABLED)
+                    .build(),
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -1109,7 +1124,12 @@ fun LocalThumbnail(
             .clip(shape)
     ) {
         AsyncImage(
-            model = thumbnailUrl,
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(thumbnailUrl)
+                .memoryCachePolicy(coil3.request.CachePolicy.ENABLED)
+                .diskCachePolicy(coil3.request.CachePolicy.ENABLED)
+                .networkCachePolicy(coil3.request.CachePolicy.ENABLED)
+                .build(),
             contentDescription = null,
             modifier = Modifier.fillMaxSize()
         )
@@ -1210,7 +1230,12 @@ fun PlaylistThumbnail(
             placeHolder()
         }
         1 -> AsyncImage(
-            model = thumbnails[0],
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(thumbnails[0])
+                .memoryCachePolicy(coil3.request.CachePolicy.ENABLED)
+                .diskCachePolicy(coil3.request.CachePolicy.ENABLED)
+                .networkCachePolicy(coil3.request.CachePolicy.ENABLED)
+                .build(),
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier
@@ -1229,7 +1254,12 @@ fun PlaylistThumbnail(
                 Alignment.BottomEnd
             ).fastForEachIndexed { index, alignment ->
                 AsyncImage(
-                    model = thumbnails.getOrNull(index),
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(thumbnails.getOrNull(index))
+                        .memoryCachePolicy(coil3.request.CachePolicy.ENABLED)
+                        .diskCachePolicy(coil3.request.CachePolicy.ENABLED)
+                        .networkCachePolicy(coil3.request.CachePolicy.ENABLED)
+                        .build(),
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
