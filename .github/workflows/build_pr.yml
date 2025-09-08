@@ -17,28 +17,81 @@ jobs:
         with:
           java-version: 21
           distribution: "temurin"
-          cache: 'gradle'
+
+      - name: Set Up Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-disabled: true
+          cache-cleanup: on-success
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
 
       - name: Generate debug.keystore if not exists
         run: |
           mkdir -p ~/.android
-          keytool -genkey -v \
-            -keystore ~/.android/debug.keystore \
-            -storepass android \
-            -alias androiddebugkey \
-            -keypass android \
-            -keyalg RSA \
-            -keysize 2048 \
-            -validity 10000 \
-            -dname "CN=Android Debug,O=Android,C=US"
+          if [ ! -f ~/.android/debug.keystore ]; then
+            keytool -genkey -v \
+              -keystore ~/.android/debug.keystore \
+              -storepass android \
+              -alias androiddebugkey \
+              -keypass android \
+              -keyalg RSA \
+              -keysize 2048 \
+              -validity 10000 \
+              -dname "CN=Android Debug,O=Android,C=US"
+          fi
 
       - name: Build universal debug APK
-        run: ./gradlew assembleUniversalDebug
+        run: ./gradlew --no-configuration-cache clean assembleUniversalDebug --stacktrace --warning-mode all
         env:
            GITHUB_EVENT_NAME: ${{ github.event_name }}
+           PULL_REQUEST: 'true'
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: app-universal-debug
+          name: app-universal-debug-pr-${{ github.event.number }}
           path: app/build/outputs/apk/universal/debug/*.apk
+
+      - name: Comment APK info on PR (optional)
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+            
+            const apkPath = 'app/build/outputs/apk/universal/debug';
+            let apkInfo = '';
+            
+            try {
+              const files = fs.readdirSync(apkPath);
+              const apkFiles = files.filter(file => file.endsWith('.apk'));
+              
+              if (apkFiles.length > 0) {
+                const apkFile = apkFiles[0];
+                const stats = fs.statSync(path.join(apkPath, apkFile));
+                const sizeInMB = (stats.size / (1024 * 1024)).toFixed(2);
+                
+                apkInfo = `📱 **APK Build Successful**
+                
+                - **File**: \`${apkFile}\`
+                - **Size**: ${sizeInMB} MB
+                - **Build Type**: Universal Debug
+                - **Download**: Check the artifacts section above
+                
+                Build completed successfully for PR #${{ github.event.number }}`;
+              }
+            } catch (error) {
+              apkInfo = `**APK Build Failed**
+              
+              Error reading APK information: ${error.message}`;
+            }
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: apkInfo
+            });
