@@ -1025,8 +1025,8 @@ object YouTube {
             ?.toAccountInfo()!!
     }
 
-    suspend fun feedback(token: String): Result<Boolean> = runCatching {
-        innerTube.feedback(WEB_REMIX, listOf(token)).body<FeedbackResponse>().feedbackResponses.all { it.isProcessed }
+    suspend fun feedback(tokens: List<String>): Result<Boolean> = runCatching {
+        innerTube.feedback(WEB_REMIX, tokens).body<FeedbackResponse>().feedbackResponses.all { it.isProcessed }
     }
 
     suspend fun getMediaInfo(videoId: String): Result<MediaInfo> = runCatching {

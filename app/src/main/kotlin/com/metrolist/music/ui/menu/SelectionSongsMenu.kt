@@ -345,11 +345,23 @@ fun SelectionSongMenu(
                                 inLibrary(song.id, null)
                             }
                         }
+                        coroutineScope.launch {
+                            val tokens = songSelection.mapNotNull { it.song.libraryRemoveToken }
+                            tokens.chunked(20).forEach {
+                                YouTube.feedback(it)
+                            }
+                        }
                     } else {
                         database.transaction {
                             songSelection.forEach { song ->
                                 insert(song.toMediaMetadata())
                                 inLibrary(song.id, LocalDateTime.now())
+                            }
+                        }
+                        coroutineScope.launch {
+                            val tokens = songSelection.filter {it.song.inLibrary == null}.mapNotNull { it.song.libraryAddToken }
+                            tokens.chunked(20).forEach {
+                                YouTube.feedback(it)
                             }
                         }
                     }

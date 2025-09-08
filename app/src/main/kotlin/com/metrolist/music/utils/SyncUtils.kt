@@ -67,16 +67,21 @@ class SyncUtils @Inject constructor(
             val remoteSongs = page.items.filterIsInstance<SongItem>().reversed()
             val remoteIds = remoteSongs.map { it.id }.toSet()
             val localSongs = database.songsByNameAsc().first()
+            val feedbackTokens = mutableListOf<String>()
 
             localSongs.filterNot { it.id in remoteIds }
                 .forEach { 
                     if (it.song.libraryAddToken != null && it.song.libraryRemoveToken != null) {
-                        YouTube.feedback(it.song.libraryAddToken)
+                        feedbackTokens.add(it.song.libraryAddToken)
                     }
                     else{
                         database.update(it.song.toggleLibrary())
                     }
                 }
+
+            feedbackTokens.chunked(20).forEach {
+                YouTube.feedback(it)
+            }
 
             remoteSongs.forEach { song ->
                 launch {
