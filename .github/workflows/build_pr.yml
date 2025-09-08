@@ -48,6 +48,9 @@ jobs:
            GITHUB_EVENT_NAME: ${{ github.event_name }}
            PULL_REQUEST: 'true'
 
+      - name: Lint Debug (app)
+        run: ./gradlew --no-configuration-cache :app:lintDebug --stacktrace --warning-mode all
+
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
@@ -74,19 +77,10 @@ jobs:
                 const stats = fs.statSync(path.join(apkPath, apkFile));
                 const sizeInMB = (stats.size / (1024 * 1024)).toFixed(2);
                 
-                apkInfo = `📱 **APK Build Successful**
-                
-                - **File**: \`${apkFile}\`
-                - **Size**: ${sizeInMB} MB
-                - **Build Type**: Universal Debug
-                - **Download**: Check the artifacts section above
-                
-                Build completed successfully for PR #${{ github.event.number }}`;
+                apkInfo = `APK Build Successful\n\n- File: \`${apkFile}\`\n- Size: ${sizeInMB} MB\n- Build Type: Universal Debug\n- Download: Check the artifacts section above\n\nBuild completed successfully for PR #${{ github.event.number }}`;
               }
             } catch (error) {
-              apkInfo = `**APK Build Failed**
-              
-              Error reading APK information: ${error.message}`;
+              apkInfo = `APK Build Failed\n\nError reading APK information: ${error.message}`;
             }
             
             github.rest.issues.createComment({
