@@ -141,7 +141,7 @@
         <item quantity="other">%d de secunde</item>
     </plurals>
     <string name="charts">Clasamente</string>
-    <string name="loading_charts">Se încarcă clasamentele...</string>
+    <string name="loading_charts">Se încarcă clasamentele…</string>
     <string name="all_time">Din toate timpurile</string>
     <string name="past_24_hours">Ultimele 24 de ore</string>
     <string name="past_week">Ultima săptămână</string>
