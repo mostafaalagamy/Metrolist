@@ -228,4 +228,53 @@ class SyncUtils @Inject constructor(
             }
         }
     }
+
+    /**
+     * Clears all YouTube Music synced content from the local database.
+     * This includes:
+     * - Liked songs (removes liked status)
+     * - Library songs (removes library status)
+     * - Liked albums (removes liked status)
+     * - Subscribed artists (removes subscription)
+     * - Saved playlists (removes playlists that have browseId)
+     */
+    suspend fun clearAllSyncedContent() = coroutineScope {
+        database.transaction {
+            runBlocking {
+                // Clear liked songs - set liked to false and likedDate to null
+                val likedSongs = database.likedSongsByNameAsc().first()
+                likedSongs.forEach { songWithArtists ->
+                    database.update(songWithArtists.song.copy(liked = false, likedDate = null))
+                }
+
+                // Clear library songs - set inLibrary to null
+                val librarySongs = database.songsByNameAsc().first()
+                librarySongs.forEach { songWithArtists ->
+                    if (songWithArtists.song.inLibrary != null) {
+                        database.update(songWithArtists.song.copy(inLibrary = null))
+                    }
+                }
+
+                // Clear liked albums - set bookmarkedAt to null
+                val likedAlbums = database.albumsLikedByNameAsc().first()
+                likedAlbums.forEach { albumWithArtists ->
+                    database.update(albumWithArtists.album.copy(bookmarkedAt = null))
+                }
+
+                // Clear subscribed artists - set bookmarkedAt to null
+                val subscribedArtists = database.artistsBookmarkedByNameAsc().first()
+                subscribedArtists.forEach { artistWithSongs ->
+                    database.update(artistWithSongs.artist.copy(bookmarkedAt = null))
+                }
+
+                // Clear saved playlists - delete playlists with browseId (synced from YTM)
+                val savedPlaylists = database.playlistsByNameAsc().first()
+                savedPlaylists.forEach { playlistWithSongs ->
+                    if (playlistWithSongs.playlist.browseId != null) {
+                        database.delete(playlistWithSongs.playlist)
+                    }
+                }
+            }
+        }
+    }
 }
