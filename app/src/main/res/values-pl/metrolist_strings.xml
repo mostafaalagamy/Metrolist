@@ -38,7 +38,7 @@
     <string name="cancel">Anuluj</string>
     <string name="no_title">Brak tytułu</string>
     <string name="unknown_artist">Nieznany wykonawca</string>
-    <string name="loading_charts">Ładowanie wykresów...</string>
+    <string name="loading_charts">Ładowanie wykresów…</string>
     <string name="album_cover_desc">Okładka albumu</string>
     <string name="sync_playlist">Synchronizuj playlistę</string>
     <string name="player_background_blur">Rozmycie</string>
@@ -179,4 +179,26 @@
     <string name="settings_section_storage">Pamięć i dane</string>
     <string name="settings_section_system">System i informacje</string>
     <string name="starting_radio">Uruchamianie radia</string>
+    <string name="edit_playlist_cover">Edytuj okładkę playlisty</string>
+    <string name="edit_playlist_cover_note">Uwaga: Twoje konto musi być powiązane z numerem telefonu i zweryfikowane w YouTube Music, aby zmienić okładkę playlisty.</string>
+    <string name="edit_playlist_cover_note_wait">Po wybraniu obrazu, zaczekaj chwilę, aż nowa okładka pojawi się na twojej playliście.</string>
+    <string name="choose_from_library">Wybierz z biblioteki</string>
+    <string name="remove_custom_image">Usuń niestandardowy obraz</string>
+    <string name="config_proxy">Skonfiguruj proxy</string>
+    <string name="proxy_username">Nazwa użytkownika proxy</string>
+    <string name="proxy_password">Hasło proxy</string>
+    <string name="enable_authentication">Włącz uwierzytelnianie</string>
+    <string name="lyrics_romanization_cyrillic">Cyrylica</string>
+    <string name="lyrics_romanize_title">Romanizacja</string>
+    <string name="lyrics_romanization">Romanizacja tekstu</string>
+    <string name="romanization">Romanizacja</string>
+    <string name="lyrics_romanize_russian">Romanizuj teksty rosyjskie</string>
+    <string name="lyrics_romanize_ukrainian">Romanizuj teksty ukraińskie</string>
+    <string name="lyrics_romanize_belarusian">Romanizuj teksty białoruskie</string>
+    <string name="lyrics_romanize_kyrgyz">Romanizuj teksty kirgiskie</string>
+    <string name="lyrics_romanize_serbian">Romanizuj teksty serbskie</string>
+    <string name="lyrics_romanize_bulgarian">Romanizuj teksty bułgarskie</string>
+    <string name="line_by_line_option_title">EKSPERYMENTALNE: Wykrywanie języka linijka po linijce</string>
+    <string name="line_by_line_option_desc">Język cyrylicy będzie wykrywany wiersz po wierszu, zamiast w całej piosence.</string>
+    <string name="line_by_line_dialog_title">Jesteś pewien?</string>
 </resources>
