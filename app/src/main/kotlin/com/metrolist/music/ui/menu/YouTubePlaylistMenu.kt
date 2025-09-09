@@ -405,7 +405,7 @@ fun YouTubePlaylistMenu(
                                         .orEmpty()
                                 }
                             }.let { songs ->
-                                playerConnection.playNext(songs.map { it.toMediaItem() })
+                                playerConnection.playNext(songs.map { it.copy(thumbnail = it.thumbnail.resize(544,544)).toMediaItem() })
                             }
                     }
                     onDismiss()

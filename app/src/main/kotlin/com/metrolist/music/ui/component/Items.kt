@@ -832,7 +832,7 @@ fun YouTubeListItem(
 
     if (item is SongItem && isSwipeable && swipeEnabled) {
         SwipeToSongBox(
-            mediaItem = item.toMediaItem(),
+            mediaItem = item.copy(thumbnail = item.thumbnail.resize(544,544)).toMediaItem(),
             modifier = Modifier.fillMaxWidth()
         ) {
             content()
