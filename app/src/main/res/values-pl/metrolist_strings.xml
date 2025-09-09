@@ -100,7 +100,7 @@
     <string name="swipe_song_to_add">Przesuń utwór w prawo, aby odtworzyć następny lub w lewo, aby dodać go do kolejki</string>
     <string name="lyrics_click_change">Zmiana tekstu po kliknięciu</string>
     <string name="slim">Wąski / Smukły</string>
-    <string name="slim_navbar">Ukryj etykiety dolnego paska nawigacji</string>
+    <string name="slim_navbar">Smukły pasek nawigacji</string>
     <string name="auto_playlists">Automatyczna lista odtwarzania</string>
     <string name="show_liked_playlist">Pokaż playlistę \"Polubione\"</string>
     <string name="show_top_playlist">Pokaż playlistę \"Top\"</string>
@@ -172,7 +172,7 @@
     <string name="seek_seconds_addup_description">Jeśli włączone, dodaje 5 dodatkowych sekund przy każdym pominięciu wyszukiwania</string>
     <string name="disable_load_more_when_repeat_all">Wyłącz opcję „Załaduj więcej” podczas powtarzania wszystkich</string>
     <string name="disable_load_more_when_repeat_all_desc">Nie ładuj automatycznie większej liczby utworów i podobnych treści, gdy włączony jest tryb powtarzania wszystkich utworów</string>
-    <string name="settings_section_ui">Interfejs użytkownika</string>
+    <string name="settings_section_ui">Interfejs</string>
     <string name="settings_section_privacy">Prywatność i bezpieczeństwo</string>
     <string name="settings_section_player">Odtwarzacz i media</string>
     <string name="settings_section_player_content">Odtwarzacz i zawartość</string>
@@ -201,4 +201,9 @@
     <string name="line_by_line_option_title">EKSPERYMENTALNE: Wykrywanie języka linijka po linijce</string>
     <string name="line_by_line_option_desc">Język cyrylicy będzie wykrywany wiersz po wierszu, zamiast w całej piosence.</string>
     <string name="line_by_line_dialog_title">Jesteś pewien?</string>
+    <string name="line_by_line_dialog_desc">Funkcja eksperymentalna.\n\nDomyślnie język jest określany na podstawie całego utworu, ale po włączeniu tej opcji będzie on określany wiersz po wierszu. Umożliwi to działanie utworów wielojęzycznych, ALE język może nie zawsze być poprawny (na przykład, jeśli tekst po ukraińsku nie zawiera liter charakterystycznych dla tego języka, może zostać zromanizowany na rosyjski).\n\nJeśli nie masz problemów, zalecamy wyłączenie tej opcji.</string>
+    <string name="line_by_line_dialog_enable">Włącz</string>
+    <string name="romanize_current_track">Romanizuj bieżący utwór</string>
+    <string name="audio_offload">Włącz odciążenie</string>
+    <string name="audio_offload_description">Użyj ścieżki audio do odtwarzania dźwięku. Wyłączenie tej opcji może zwiększyć zużycie energii, ale może być przydatne w przypadku problemów z odtwarzaniem dźwięku lub jego przetwarzaniem</string>
 </resources>
