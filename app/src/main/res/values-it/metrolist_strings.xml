@@ -201,4 +201,6 @@
     <string name="edit_playlist_cover_note_wait">Dopo aver selezionato un\'immagine, si deve attendere un momento affinché compaia la nuova immagine della tua playlist.</string>
     <string name="choose_from_library">Scegli dalla galleria</string>
     <string name="remove_custom_image">Rimuovi immagine personalizzata</string>
+    <string name="audio_offload">Abilita trasferimento</string>
+    <string name="audio_offload_description">Utilizzare il percorso audio di scarico per la riproduzione audio. Disabilitare questo può aumentare l\'utilizzo dell\'energia ma può essere utile se si verificano problemi con la riproduzione audio o la post elaborazione</string>
 </resources>
