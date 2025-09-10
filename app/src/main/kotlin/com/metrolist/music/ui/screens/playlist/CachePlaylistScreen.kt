@@ -33,6 +33,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarScrollBehavior
+import androidx.compose.material3.Checkbox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -306,20 +307,29 @@ fun CachePlaylistScreen(
                         isSelected = songWrapper.isSelected && selection,
                         showInLibraryIcon = true,
                         trailingContent = {
-                            IconButton(onClick = {
-                                menuState.show {
-                                    SongMenu(
-                                        originalSong = songWrapper.item,
-                                        navController = navController,
-                                        onDismiss = menuState::dismiss,
-                                        isFromCache = true,
+                            if (selection) {
+                                Checkbox(
+                                    checked = songWrapper.isSelected,
+                                    onCheckedChange = { checked ->
+                                        songWrapper.isSelected = checked
+                                    }
+                                )
+                            } else {
+                                IconButton(onClick = {
+                                    menuState.show {
+                                        SongMenu(
+                                            originalSong = songWrapper.item,
+                                            navController = navController,
+                                            onDismiss = menuState::dismiss,
+                                            isFromCache = true,
+                                        )
+                                    }
+                                }) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.more_vert),
+                                        contentDescription = null
                                     )
                                 }
-                            }) {
-                                Icon(
-                                    painter = painterResource(R.drawable.more_vert),
-                                    contentDescription = null
-                                )
                             }
                         },
                         modifier = Modifier

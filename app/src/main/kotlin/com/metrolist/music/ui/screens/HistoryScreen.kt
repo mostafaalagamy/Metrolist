@@ -24,6 +24,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.Checkbox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -304,9 +305,16 @@ fun HistoryScreen(
                             isSelected = wrappedItem.isSelected && selection,
 
                             trailingContent = {
-                                IconButton(
-                                    onClick = {
-                                        if (!selection) {
+                                if (selection) {
+                                    Checkbox(
+                                        checked = wrappedItem.isSelected,
+                                        onCheckedChange = { checked ->
+                                            wrappedItem.isSelected = checked
+                                        }
+                                    )
+                                } else {
+                                    IconButton(
+                                        onClick = {
                                             menuState.show {
                                                 SongMenu(
                                                     originalSong = event.song,
@@ -316,12 +324,12 @@ fun HistoryScreen(
                                                 )
                                             }
                                         }
+                                    ) {
+                                        Icon(
+                                            painter = painterResource(R.drawable.more_vert),
+                                            contentDescription = null
+                                        )
                                     }
-                                ) {
-                                    Icon(
-                                        painter = painterResource(R.drawable.more_vert),
-                                        contentDescription = null
-                                    )
                                 }
                             },
                             modifier = Modifier
