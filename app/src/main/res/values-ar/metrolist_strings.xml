@@ -5,7 +5,7 @@
     <string name="no_title">لا يوجد عنوان</string>
     <string name="unknown_artist">فنان غير معروف</string>
     <string name="unknown_item_type">نوع العنصر غير معروف</string>
-    <string name="loading_charts">جاري تحميل المخططات...</string>
+    <string name="loading_charts">جاري تحميل المخططات…</string>
     <string name="retry_button">إعادة المحاولة</string>
     <string name="album_cover_desc">غلاف الألبوم</string>
     <string name="top_music_videos">أفضل مقاطع الفيديو الموسيقيه</string>
@@ -111,7 +111,7 @@
     <string name="min_playback_duration_description">الحد الأدنى لمدة تشغيل الأغنية قبل اعتبارها مُشغّلة</string>
     <string name="percentage_format">%d%%</string>
     <string name="minimum_playback_duration">الحد الأدنى لمدة التشغيل</string>
-    <string name="auto_download_on_like">التنزيل التلقائي عند الإعجاب</string>
+    <string name="auto_download_on_like">التنزيل أوتوماتيكي عند الإعجاب</string>
     <string name="auto_download_on_like_desc">تنزيل الأغاني تلقائيًا عند الاعجاب بها</string>
     <string name="clear_song_cache_dialog">هل أنت متأكد أنك تريد مسح كافة الأغاني المخزنة مؤقتًا؟</string>
     <string name="clear_downloads_dialog">هل أنت متأكد أنك تريد مسح كافة التنزيلات؟</string>
@@ -144,7 +144,7 @@
     <string name="charts">المخططات</string>
     <string name="release_notes">ملاحظات الاصدار الجديد</string>
     <string name="lyrics_auto_scroll">تمرير كلمات الأغاني تلقائياً</string>
-    <string name="playlist_add_local_to_synced_note">ملاحظة: إضافة الأغاني المحلية إلى قوائم التشغيل المتزامنة / قوائم التشغيل عن بعد غير مدعومة. أي نوع آخر منها صالح.</string>
+    <string name="playlist_add_local_to_synced_note">ملاحظة: إضافة الأغاني المحلية إلى قوائم التشغيل المتزامنة / قوائم التشغيل عن بعد غير مدعومة. أي نوع آخر منها صالح</string>
     <string name="import_csv">استيراد قوائم التشغيل من نوع \"csv\"</string>
     <string name="import_online">استيراد قوائم التشغيل من نوع \"m3u\"</string>
     <string name="lyrics_romanize_japanese">كلمات الأغاني اليابانيه الرومانيه</string>
@@ -205,4 +205,11 @@
     <string name="line_by_line_dialog_desc">هذه ميزة تجريبية قد تكون غير مؤكدة.\n\nافتراضيًا، يتم تحديد اللغة من الأغنية بأكملها، ولكن مع تفعيل هذا الخيار، سيتم تحديدها سطرًا بسطر. هذا يسمح بتعدد اللغات.</string>
     <string name="line_by_line_dialog_enable">تفعيل</string>
     <string name="romanize_current_track">كتابة المسار الحالي بالرومانية</string>
+    <string name="edit_playlist_cover">تبديل غلاف القائمة</string>
+    <string name="edit_playlist_cover_note">ملاحظة: يجب ربط حسابك برقم هاتف والتحقق منه على YouTube Music لتغيير غلاف القائمة.</string>
+    <string name="edit_playlist_cover_note_wait">بعد تحديد الصورة، يرجى الانتظار قليلاً حتى يظهر الغلاف الجديد في قائمتك.</string>
+    <string name="choose_from_library">اختر من المكتبة</string>
+    <string name="remove_custom_image">إزالة الصورة المخصصة</string>
+    <string name="audio_offload">تمكين التفريغ</string>
+    <string name="audio_offload_description">استخدم مسار الصوت غير المحمّل لتشغيل الصوت. قد يؤدي تعطيل هذا إلى زيادة استخدام الطاقة، ولكن قد يكون مفيدًا إذا واجهت مشكلات في تشغيل الصوت أو المعالجة اللاحقة</string>
 </resources>
