@@ -82,7 +82,7 @@
     <string name="no_title">Nenhum título</string>
     <string name="unknown_artist">Artista desconhecido</string>
     <string name="unknown_item_type">Tipo do item desconhecido</string>
-    <string name="loading_charts">Carregando rankings...</string>
+    <string name="loading_charts">Carregando listas…</string>
     <string name="retry_button">Repetir</string>
     <string name="album_cover_desc">Arte do álbum</string>
     <string name="top_music_videos">Vídeos de música populares</string>
@@ -199,4 +199,7 @@
     <string name="line_by_line_dialog_desc">Este é um recurso experimental que pode acertar ou errar.\n\nPor padrão, o idioma é determinado da música inteira, mas com esta opção ativada, será determinado de linha por linha. Isto permite que funcione para músicas em vários idiomas MAS o idioma pode estar incorreto (por exemplo se há uma letra em Ucraniano que não contém nenhum símbolo específico ao Ucraniano, ela pode ser romanizada como Russo).\n\nSe você não está tendo problemas, é recomendado manter esta opção desativada.</string>
     <string name="line_by_line_dialog_enable">Ativar</string>
     <string name="romanize_current_track">Romanizar faixa atual</string>
+    <string name="choose_from_library">Escolher da biblioteca</string>
+    <string name="remove_custom_image">Remover imagem customizada</string>
+    <string name="audio_offload">Habilitar transferência</string>
 </resources>
