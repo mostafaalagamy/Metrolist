@@ -298,7 +298,6 @@ fun SongListItem(
                 ItemThumbnail(
                     thumbnailUrl = song.song.thumbnailUrl,
                     albumIndex = albumIndex,
-                    isSelected = isSelected,
                     isActive = isActive,
                     isPlaying = isPlaying,
                     shape = RoundedCornerShape(ThumbnailCornerRadius),
@@ -746,7 +745,6 @@ fun MediaMetadataListItem(
             ItemThumbnail(
                 thumbnailUrl = mediaMetadata.thumbnailUrl,
                 albumIndex = null,
-                isSelected = isSelected,
                 isActive = isActive,
                 isPlaying = isPlaying,
                 shape = RoundedCornerShape(ThumbnailCornerRadius),
@@ -806,7 +804,6 @@ fun YouTubeListItem(
                 ItemThumbnail(
                     thumbnailUrl = item.thumbnail,
                     albumIndex = albumIndex,
-                    isSelected = isSelected,
                     isActive = isActive,
                     isPlaying = isPlaying,
                     shape = if (item is ArtistItem) CircleShape else RoundedCornerShape(ThumbnailCornerRadius),
@@ -1025,7 +1022,6 @@ fun ItemThumbnail(
     shape: Shape,
     modifier: Modifier = Modifier,
     albumIndex: Int? = null,
-    isSelected: Boolean = false,
     thumbnailRatio: Float = 1f
 ) {
     Box(
@@ -1058,21 +1054,6 @@ fun ItemThumbnail(
             }
         }
 
-        if (isSelected) {
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .zIndex(1f)
-                    .clip(shape)
-                    .background(Color.Black.copy(alpha = 0.5f))
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.done),
-                    contentDescription = null
-                )
-            }
-        }
 
         PlayingIndicatorBox(
             isActive = isActive,
