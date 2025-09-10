@@ -143,7 +143,7 @@ import com.metrolist.music.ui.component.LocalMenuState
 import com.metrolist.music.ui.component.SongListItem
 import com.metrolist.music.ui.component.SortHeader
 import com.metrolist.music.ui.component.TextFieldDialog
-import com.metrolist.music.ui.menu.isCustomThumbnailMenu
+import com.metrolist.music.ui.menu.CustomThumbnailMenu
 import com.metrolist.music.ui.menu.SelectionSongMenu
 import com.metrolist.music.ui.menu.SongMenu
 import com.metrolist.music.ui.screens.settings.DarkMode
@@ -953,7 +953,7 @@ fun LocalPlaylistHeader(
     val editable: Boolean = playlist.playlist.isEditable
 
     val overrideThumbnail = remember {mutableStateOf<String?>(null)}
-        var isCustomThumbnail: Boolean = playlist.thumbnails.firstOrNull()?.let {
+    var isCustomThumbnail: Boolean = playlist.thumbnails.firstOrNull()?.let {
         it.contains("studio_square_thumbnail") || it.contains("content://com.metrolist.music")
     } ?: false
 
