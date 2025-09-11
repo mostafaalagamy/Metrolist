@@ -59,6 +59,30 @@
     <plurals name="n_element">
         <item quantity="one">%d element</item>
         <item quantity="many">%d elements</item>
-        <item quantity="other"></item>
+        <item quantity="other"/>
     </plurals>
+    <plurals name="n_time">
+        <item quantity="one">%d vegada</item>
+        <item quantity="many">%d vegades</item>
+        <item quantity="other"/>
+    </plurals>
+    <string name="seek_backward">5 segons enrere</string>
+    <string name="seek_forward">5 segons endavant</string>
+    <string name="seek_forward_dynamic">+%1$d segons endavant</string>
+    <string name="seek_backward_dynamic">-%1$d segons enrere</string>
+    <string name="seek_seconds_addup">Cerca progressiva</string>
+    <string name="seek_seconds_addup_description">Si està activat, afegeix fins a 5 segons extra per cada salt de cerca</string>
+    <string name="similar_content">Contingut similar</string>
+    <string name="login_settings">Configuració d\'inici de sessió</string>
+    <string name="general_settings">Configuració general</string>
+    <string name="player_background_style">Estil de fons del reproductor</string>
+    <string name="follow_theme">Segueix el tema</string>
+    <string name="gradient">Gradient</string>
+    <string name="new_player_design">Disseny nou del reproductor</string>
+    <string name="new_mini_player_design">Disseny nou del mini reproductor</string>
+    <string name="player_background_blur">Difumina</string>
+    <string name="player_buttons_style">Colors dels botons del reproductor</string>
+    <string name="default_style">Per defecte</string>
+    <string name="secondary_color_style">Secundari</string>
+    <string name="enable_swipe_thumbnail">Habilita llisca per canviar de cançó</string>
 </resources>

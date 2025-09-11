@@ -170,10 +170,30 @@
     </plurals>
     <string name="disable_load_more_when_repeat_all">Zakázať načítanie ďalších položiek pri opakovaní všetkých položiek</string>
     <string name="disable_load_more_when_repeat_all_desc">Nenačítavať automaticky ďalšie skladby a podobný obsah, keď je zapnutý režim opakovania všetkých skladieb</string>
-    <string name="settings_section_ui">Používateľské rozhranie</string>
+    <string name="settings_section_ui">Rozhranie</string>
     <string name="settings_section_privacy">Súkromie a bezpečnosť</string>
     <string name="settings_section_player">Prehrávač a médiá</string>
     <string name="settings_section_player_content">Prehrávač a obsah</string>
     <string name="settings_section_storage">Úložisko a dáta</string>
     <string name="settings_section_system">Systém a informácie</string>
+    <string name="config_proxy">Konfigurácia proxy servera</string>
+    <string name="proxy_username">Používateľské meno proxy servera</string>
+    <string name="proxy_password">Heslo proxy servera</string>
+    <string name="enable_authentication">Povoliť overenie</string>
+    <string name="lyrics_romanization_cyrillic">Cyrilika</string>
+    <string name="lyrics_romanize_title">romanizácia</string>
+    <string name="lyrics_romanization">Romanizácia textov</string>
+    <string name="romanization">romanizácia</string>
+    <string name="lyrics_romanize_russian">Romanizovať ruské texty</string>
+    <string name="lyrics_romanize_ukrainian">Romanizovať ukrajinské texty</string>
+    <string name="lyrics_romanize_belarusian">Romanizácia bieloruských textov</string>
+    <string name="lyrics_romanize_kyrgyz">Romanizovať kirgizské texty</string>
+    <string name="lyrics_romanize_serbian">Romanizovať srbské texty</string>
+    <string name="lyrics_romanize_bulgarian">Romanizovať bulharské texty</string>
+    <string name="line_by_line_option_title">EXPERIMENTÁLNE: Zistenie jazyka riadok po riadku</string>
+    <string name="line_by_line_option_desc">Cyrilika bude detekovaná riadok po riadku, nie v celej skladbe.</string>
+    <string name="line_by_line_dialog_title">Si si istý/á?</string>
+    <string name="line_by_line_dialog_desc">Toto je experimentálna funkcia, ktorá sa buď posúva dopredu, alebo dozadu.\n\nŠtandardne sa jazyk určuje z celej skladby, ale ak je táto možnosť zapnutá, bude sa určovať riadok po riadku. To umožní fungovanie viacjazyčných skladieb, ALE jazyk nemusí byť vždy správny (napríklad, ak existuje ukrajinský text, ktorý neobsahuje žiadne písmená špecifické pre ukrajinčinu, môže byť namiesto toho romanizovaný ako ruský).\n\nAk nemáte problémy, odporúča sa túto možnosť ponechať vypnutú.</string>
+    <string name="line_by_line_dialog_enable">Povoliť</string>
+    <string name="romanize_current_track">Romanizovať aktuálnu skladbu</string>
 </resources>

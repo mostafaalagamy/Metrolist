@@ -170,4 +170,24 @@
     <string name="settings_section_system">系统与关于</string>
     <string name="seek_seconds_addup_description">启用后，每次快进/快退都额外增加5秒</string>
     <string name="starting_radio">正在打开电台</string>
+    <string name="config_proxy">配置代理</string>
+    <string name="proxy_username">代理用户名</string>
+    <string name="proxy_password">代理密码</string>
+    <string name="enable_authentication">启用认证</string>
+    <string name="lyrics_romanization_cyrillic">罗马音设置</string>
+    <string name="lyrics_romanize_title">罗马化</string>
+    <string name="lyrics_romanization">歌词罗马化</string>
+    <string name="romanization">罗马化</string>
+    <string name="lyrics_romanize_russian">使用俄文（罗马音）</string>
+    <string name="lyrics_romanize_ukrainian">使用乌克兰语（罗马音）</string>
+    <string name="lyrics_romanize_belarusian">使用白俄罗斯语（罗马音）</string>
+    <string name="lyrics_romanize_kyrgyz">使用柯尔克孜语（罗马音）</string>
+    <string name="lyrics_romanize_serbian">使用塞尔维亚语（罗马音）</string>
+    <string name="lyrics_romanize_bulgarian">使用保加利亚语（罗马音）</string>
+    <string name="line_by_line_option_title">实验性：逐行检测语言</string>
+    <string name="line_by_line_option_desc">罗马音将会按行检测，而不是检测整首歌曲。</string>
+    <string name="line_by_line_dialog_title">你确定吗？</string>
+    <string name="line_by_line_dialog_desc">这是一个不稳定的实验性功能。\n\n默认情况下，语言会根据整首歌曲来判断，但启用该选项后，将会按行检测语言。这样可以支持多语言歌曲，但检测出的语言可能并非总是正确（例如，如果一行乌克兰语歌词没有包含任何乌克兰语特有字母，可能会被识别并罗马化为俄语）。\n\n如果你没有遇到相关问题，建议保持该选项关闭。</string>
+    <string name="line_by_line_dialog_enable">启用</string>
+    <string name="romanize_current_track">罗马化当前曲目</string>
 </resources>
