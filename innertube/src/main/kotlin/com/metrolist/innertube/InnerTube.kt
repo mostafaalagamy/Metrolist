@@ -237,6 +237,19 @@ class InnerTube {
         )
     }
 
+    suspend fun feedback(
+        client: YouTubeClient,
+        tokens: List<String>
+    ) = httpClient.post("feedback") {
+        ytClient(client, setLogin = true)
+        setBody(
+            FeedbackBody(
+                context = client.toContext(locale, visitorData, dataSyncId),
+                feedbackTokens = tokens
+            )
+        )
+    }
+
     suspend fun getSearchSuggestions(
         client: YouTubeClient,
         input: String,

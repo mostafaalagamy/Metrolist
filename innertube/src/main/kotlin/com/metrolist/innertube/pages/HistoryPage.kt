@@ -52,7 +52,13 @@ data class HistoryPage(
                     it.musicInlineBadgeRenderer?.icon?.iconType == "MUSIC_EXPLICIT_BADGE"
                 } != null,
                 endpoint = renderer.overlay?.musicItemThumbnailOverlayRenderer?.content
-                    ?.musicPlayButtonRenderer?.playNavigationEndpoint?.watchEndpoint
+                    ?.musicPlayButtonRenderer?.playNavigationEndpoint?.watchEndpoint,
+                libraryAddToken = PageHelper.extractFeedbackToken(renderer.menu?.menuRenderer?.items?.find {
+                    it.toggleMenuServiceItemRenderer?.defaultIcon?.iconType?.startsWith("LIBRARY_") == true
+                }?.toggleMenuServiceItemRenderer, "LIBRARY_ADD"),
+                libraryRemoveToken = PageHelper.extractFeedbackToken(renderer.menu?.menuRenderer?.items?.find {
+                    it.toggleMenuServiceItemRenderer?.defaultIcon?.iconType?.startsWith("LIBRARY_") == true
+                }?.toggleMenuServiceItemRenderer, "LIBRARY_SAVED")
             )
         }
     }
