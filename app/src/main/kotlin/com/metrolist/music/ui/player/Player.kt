@@ -8,6 +8,7 @@ import android.content.res.Configuration
 import android.graphics.drawable.BitmapDrawable
 import android.widget.Toast
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
@@ -1084,64 +1085,61 @@ fun BottomSheetPlayer(
             }
         }
 
-        // Background Layer - Previous background as base layer during transitions
-        if (!state.isCollapsed) {
-            Box(modifier = Modifier.fillMaxSize()) {
-                when (playerBackground) {
-                    PlayerBackgroundStyle.BLUR -> {
-                        AnimatedContent(
-                            targetState = mediaMetadata?.thumbnailUrl,
-                            transitionSpec = {
-                                fadeIn(tween(1000)) togetherWith fadeOut(tween(1000))
-                            }
-                        ) { thumbnailUrl ->
-                            if (thumbnailUrl != null) {
-                                Box(modifier = Modifier.fillMaxSize()) {
-                                    AsyncImage(
-                                        model = thumbnailUrl,
-                                        contentDescription = "Blurred background",
-                                        contentScale = ContentScale.FillBounds,
-                                        modifier = Modifier.fillMaxSize().blur(radius = 50.dp)
-                                    )
-                                    Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.4f)))
-                                }
-                            }
-                        }
-                    }
-                    PlayerBackgroundStyle.GRADIENT -> {
-                        AnimatedContent(
-                            targetState = gradientColors,
-                            transitionSpec = {
-                                fadeIn(tween(1000)) togetherWith fadeOut(tween(1000))
-                            }
-                        ) { colors ->
-                            if (colors.isNotEmpty()) {
-                                Box(modifier = Modifier.fillMaxSize()) {
-                                    val gradientColorStops = if (colors.size >= 3) {
-                                        arrayOf(
-                                            0.0f to colors[0], // Top: primary vibrant color
-                                            0.5f to colors[1], // Middle: darker variant
-                                            1.0f to colors[2]  // Bottom: black
-                                        )
-                                    } else {
-                                        arrayOf(
-                                            0.0f to colors[0], // Top: primary color
-                                            0.6f to colors[0].copy(alpha = 0.7f), // Middle: faded variant
-                                            1.0f to Color.Black // Bottom: black
-                                        )
-                                    }
-                                    Box(modifier = Modifier.fillMaxSize().background(Brush.verticalGradient(colorStops = gradientColorStops)))
-                                    Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.2f)))
-                                }
-                            }
-                        }
-                    }
-                    else -> {
-                        // DEFAULT or other modes - no background
-                    }
+        AnimatedVisibility(
+            visible = state.isExpanded,
+            enter = fadeIn(tween(500)),
+            exit = fadeOut(tween(500))
+        ) {
+            AnimatedContent(
+                targetState = mediaMetadata,
+                transitionSpec = {
+                    fadeIn(tween(1000)).togetherWith(fadeOut(tween(1000)))
+                }
+            ) { mediaMetadata ->
+                if (playerBackground == PlayerBackgroundStyle.BLUR) {
+                    AsyncImage(
+                        model = mediaMetadata?.thumbnailUrl,
+                        contentDescription = null,
+                        contentScale = ContentScale.FillBounds,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .blur(150.dp)
+                    )
+
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color.Black.copy(alpha = 0.3f))
+                    )
                 }
             }
 
+            AnimatedContent(
+                targetState = gradientColors,
+                transitionSpec = {
+                    fadeIn(tween(1000)) togetherWith fadeOut(tween(1000))
+                }
+            ) { colors ->
+                if (playerBackground == PlayerBackgroundStyle.GRADIENT && colors.isNotEmpty()) {
+                    Box(modifier = Modifier.fillMaxSize()) {
+                        val gradientColorStops = if (colors.size >= 3) {
+                            arrayOf(
+                                0.0f to colors[0], // Top: primary vibrant color
+                                0.5f to colors[1], // Middle: darker variant
+                                1.0f to colors[2]  // Bottom: black
+                            )
+                        } else {
+                            arrayOf(
+                                0.0f to colors[0], // Top: primary color
+                                0.6f to colors[0].copy(alpha = 0.7f), // Middle: faded variant
+                                1.0f to Color.Black // Bottom: black
+                            )
+                        }
+                        Box(modifier = Modifier.fillMaxSize().background(Brush.verticalGradient(colorStops = gradientColorStops)))
+                        Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.2f)))
+                    }
+                }
+            }
         }
 
 // distance
