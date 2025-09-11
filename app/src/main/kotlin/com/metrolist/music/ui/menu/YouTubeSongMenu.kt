@@ -74,6 +74,7 @@ import com.metrolist.music.ui.component.LocalBottomSheetPageState
 import com.metrolist.music.ui.component.NewAction
 import com.metrolist.music.ui.component.NewActionGrid
 import com.metrolist.music.ui.utils.ShowMediaInfo
+import com.metrolist.music.ui.utils.resize
 import com.metrolist.music.utils.joinByBullet
 import com.metrolist.music.utils.makeTimeString
 import kotlinx.coroutines.Dispatchers
@@ -250,7 +251,7 @@ fun YouTubeSongMenu(
                 },
                 text = stringResource(R.string.play_next),
                 onClick = {
-                    playerConnection.playNext(song.toMediaItem())
+                    playerConnection.playNext(song.copy(thumbnail = song.thumbnail.resize(544,544)).toMediaItem())
                     onDismiss()
                 }
             ),

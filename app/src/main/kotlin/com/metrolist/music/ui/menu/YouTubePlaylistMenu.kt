@@ -68,6 +68,7 @@ import com.metrolist.music.ui.component.ListDialog
 import com.metrolist.music.ui.component.NewAction
 import com.metrolist.music.ui.component.NewActionGrid
 import com.metrolist.music.ui.component.YouTubeListItem
+import com.metrolist.music.ui.utils.resize
 import com.metrolist.music.utils.joinByBullet
 import com.metrolist.music.utils.makeTimeString
 import kotlinx.coroutines.CoroutineScope
@@ -405,7 +406,7 @@ fun YouTubePlaylistMenu(
                                         .orEmpty()
                                 }
                             }.let { songs ->
-                                playerConnection.playNext(songs.map { it.toMediaItem() })
+                                playerConnection.playNext(songs.map { it.copy(thumbnail = it.thumbnail.resize(544,544)).toMediaItem() })
                             }
                     }
                     onDismiss()

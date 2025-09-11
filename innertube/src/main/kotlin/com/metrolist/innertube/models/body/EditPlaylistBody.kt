@@ -43,4 +43,37 @@ sealed class Action {
         val action: String = "ACTION_SET_PLAYLIST_NAME",
         val playlistName: String
     ) : Action()
+
+    @Serializable
+    data class SetCustomThumbnailAction(
+        val action: String = "ACTION_SET_CUSTOM_THUMBNAIL",
+        val addedCustomThumbnail: AddedCustomThumbnail
+    ) : Action() {
+        @Serializable
+        data class AddedCustomThumbnail(
+            val imageKey: ImageKey = ImageKey(
+                name = "studio_square_thumbnail",
+                type = "PLAYLIST_IMAGE_TYPE_CUSTOM_THUMBNAIL"
+            ),
+            val playlistScottyEncryptedBlobId: String
+        ) {
+            @Serializable
+            data class ImageKey(
+                val name: String,
+                val type: String
+            )
+        }
+    }
+
+    @Serializable
+    data class RemoveCustomThumbnailAction(
+        val action: String = "ACTION_REMOVE_CUSTOM_THUMBNAIL",
+        val deletedCustomThumbnail: DeletedCustomThumbnail = DeletedCustomThumbnail()
+    ) : Action() {
+        @Serializable
+        data class DeletedCustomThumbnail(
+            val name: String = "studio_square_thumbnail",
+            val type: String = "PLAYLIST_IMAGE_TYPE_CUSTOM_THUMBNAIL"
+        )
+    }
 }

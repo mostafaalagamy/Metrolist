@@ -11,7 +11,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
 /**
@@ -33,7 +32,6 @@ fun Material3SettingsGroup(
                 text = it,
                 style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.primary,
-                fontWeight = FontWeight.Medium,
                 modifier = Modifier.padding(start = 16.dp, bottom = 8.dp, top = 8.dp)
             )
         }
@@ -132,8 +130,10 @@ private fun Material3SettingsItemRow(
             Column(
                 modifier = Modifier.weight(1f)
             ) {
-                // Title content (can be Text or custom composable)
-                item.title()
+                // Title content
+                ProvideTextStyle(MaterialTheme.typography.titleMedium) {
+                    item.title()
+                }
                 
                 // Description if provided
                 item.description?.let { desc ->

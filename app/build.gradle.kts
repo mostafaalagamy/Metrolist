@@ -154,6 +154,27 @@ ksp {
     arg("room.schemaLocation", "$projectDir/schemas")
 }
 
+kapt {
+    correctErrorTypes = true
+    useBuildCache = true
+    arguments {
+        arg("dagger.fastInit", "enabled")
+        arg("dagger.formatGeneratedSource", "disabled")
+        // dagger.gradle.incremental is deprecated in newer versions
+    }
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+    compilerOptions {
+        freeCompilerArgs.addAll(
+            "-opt-in=kotlin.RequiresOptIn",
+            "-Xcontext-receivers"
+        )
+        // Suppress warnings
+        suppressWarnings.set(true)
+    }
+}
+
 dependencies {
     implementation(libs.guava)
     implementation(libs.coroutines.guava)
@@ -179,8 +200,13 @@ dependencies {
     implementation(libs.palette)
     implementation(libs.materialKolor)
 
+    implementation(libs.appcompat)
+
     implementation(libs.coil)
     implementation(libs.coil.network.okhttp)
+
+    // In-app image cropper (UCrop)
+    implementation(libs.ucrop)
 
     implementation(libs.shimmer)
 
@@ -213,25 +239,4 @@ dependencies {
     implementation(libs.multidex)
 
     implementation(libs.timber)
-}
-
-kapt {
-    correctErrorTypes = true
-    useBuildCache = true
-    arguments {
-        arg("dagger.fastInit", "enabled")
-        arg("dagger.formatGeneratedSource", "disabled")
-        // dagger.gradle.incremental is deprecated in newer versions
-    }
-}
-
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-    compilerOptions {
-        freeCompilerArgs.addAll(
-            "-opt-in=kotlin.RequiresOptIn",
-            "-Xcontext-receivers"
-        )
-        // Suppress warnings
-        suppressWarnings.set(true)
-    }
 }

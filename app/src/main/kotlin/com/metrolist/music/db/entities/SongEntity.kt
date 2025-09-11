@@ -42,6 +42,8 @@ data class SongEntity(
     val isLocal: Boolean = false,
     val libraryAddToken: String? = null,
     val libraryRemoveToken: String? = null,
+    @ColumnInfo(defaultValue = true.toString())
+    val romanizeLyrics: Boolean = true
 ) {
     fun localToggleLike() = copy(
         liked = !liked,

@@ -16,11 +16,11 @@ constructor(
         entityColumn = "id",
         parentColumn = "id",
         associateBy =
-        Junction(
-            value = SortedSongArtistMap::class,
-            parentColumn = "songId",
-            entityColumn = "artistId",
-        ),
+            Junction(
+                value = SortedSongArtistMap::class,
+                parentColumn = "songId",
+                entityColumn = "artistId",
+            ),
     )
     val artists: List<ArtistEntity>,
 
@@ -29,11 +29,11 @@ constructor(
         entityColumn = "id",
         parentColumn = "id",
         associateBy =
-        Junction(
-            value = SongAlbumMap::class,
-            parentColumn = "songId",
-            entityColumn = "albumId",
-        ),
+            Junction(
+                value = SongAlbumMap::class,
+                parentColumn = "songId",
+                entityColumn = "albumId",
+            ),
     )
     val album: AlbumEntity? = null,
 
@@ -49,4 +49,6 @@ constructor(
         get() = song.title
     override val thumbnailUrl: String?
         get() = song.thumbnailUrl
+    val romanizeLyrics: Boolean
+        get() = song.romanizeLyrics
 }
