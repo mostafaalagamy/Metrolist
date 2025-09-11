@@ -70,6 +70,7 @@ import com.metrolist.music.ui.component.TextFieldDialog
 import com.metrolist.music.utils.Updater
 import com.metrolist.music.utils.rememberPreference
 import com.metrolist.music.viewmodels.HomeViewModel
+import com.metrolist.music.viewmodels.AccountSettingsViewModel
 
 @Composable
 fun AccountSettings(
@@ -93,9 +94,10 @@ fun AccountSettings(
     val (useLoginForBrowse, onUseLoginForBrowseChange) = rememberPreference(UseLoginForBrowse, true)
     val (ytmSync, onYtmSyncChange) = rememberPreference(YtmSyncKey, true)
 
-    val viewModel: HomeViewModel = hiltViewModel()
-    val accountName by viewModel.accountName.collectAsState()
-    val accountImageUrl by viewModel.accountImageUrl.collectAsState()
+    val homeViewModel: HomeViewModel = hiltViewModel()
+    val accountSettingsViewModel: AccountSettingsViewModel = hiltViewModel()
+    val accountName by homeViewModel.accountName.collectAsState()
+    val accountImageUrl by homeViewModel.accountImageUrl.collectAsState()
 
     var showToken by remember { mutableStateOf(false) }
     var showTokenEditor by remember { mutableStateOf(false) }
@@ -171,8 +173,7 @@ fun AccountSettings(
             if (isLoggedIn) {
                 OutlinedButton(
                     onClick = {
-                        onInnerTubeCookieChange("")
-                        forgetAccount(context)
+                        accountSettingsViewModel.logoutAndClearSyncedContent(context, onInnerTubeCookieChange)
                     },
                     colors = ButtonDefaults.outlinedButtonColors(
                         containerColor = MaterialTheme.colorScheme.surfaceContainer,

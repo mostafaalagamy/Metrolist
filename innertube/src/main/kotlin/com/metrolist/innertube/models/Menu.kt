@@ -34,6 +34,7 @@ data class Menu(
             data class ToggleMenuServiceRenderer(
                 val defaultIcon: Icon,
                 val defaultServiceEndpoint: DefaultServiceEndpoint,
+                val toggledServiceEndpoint: ToggledServiceEndpoint?
             )
         }
 

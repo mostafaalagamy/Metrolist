@@ -492,6 +492,9 @@ class Migration20To21 : AutoMigrationSpec
 
 class Migration21To22 : AutoMigrationSpec {
     override fun onPostMigrate(db: SupportSQLiteDatabase) {
+        // Add LibraryTokens
+        db.execSQL("ALTER TABLE song ADD COLUMN libraryAddToken TEXT DEFAULT ''")
+        db.execSQL("ALTER TABLE song ADD COLUMN libraryRemoveToken TEXT DEFAULT ''")
         // Add romanizeLyrics column
         db.execSQL("ALTER TABLE song ADD COLUMN romanizeLyrics INTEGER NOT NULL DEFAULT 1")
     }
