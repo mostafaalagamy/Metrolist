@@ -2,6 +2,7 @@ package com.metrolist.music.ui.player
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -266,70 +267,70 @@ fun LyricsScreen(
     BackHandler(onBack = onBackClick)
 
     Box(modifier = modifier.fillMaxSize()) {
-        Box(modifier = Modifier.fillMaxSize()) {
-            when (playerBackground) {
-                PlayerBackgroundStyle.BLUR -> {
-                    AnimatedContent(
-                        targetState = mediaMetadata.thumbnailUrl,
-                        transitionSpec = {
-                            fadeIn(tween(1000)) togetherWith fadeOut(tween(1000))
-                        }
-                    ) { thumbnailUrl ->
-                        if (thumbnailUrl != null) {
-                            Box(modifier = Modifier.fillMaxSize()) {
-                                AsyncImage(
-                                    model = thumbnailUrl,
-                                    contentDescription = "Blurred background",
-                                    contentScale = ContentScale.Crop,
-                                    modifier = Modifier.fillMaxSize().blur(radius = 50.dp)
-                                )
-                                Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.4f)))
-                            }
-                        } else {
-                            Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.surface))
-                        }
-                    }
+        // Background Layer
+        AnimatedVisibility(
+            visible = true, // Always visible in lyrics screen
+            enter = fadeIn(tween(500)),
+            exit = fadeOut(tween(500))
+        ) {
+            AnimatedContent(
+                targetState = mediaMetadata,
+                transitionSpec = {
+                    fadeIn(tween(1000)).togetherWith(fadeOut(tween(1000)))
                 }
-                PlayerBackgroundStyle.GRADIENT -> {
-                    AnimatedContent(
-                        targetState = gradientColors,
-                        transitionSpec = {
-                            fadeIn(tween(1000)) togetherWith fadeOut(tween(1000))
-                        }
-                    ) { colors ->
-                        if (colors.isNotEmpty()) {
-                            Box(modifier = Modifier.fillMaxSize()) {
-                                val gradientColorStops = if (colors.size >= 3) {
-                                    arrayOf(
-                                        0.0f to colors[0],
-                                        0.5f to colors[1],
-                                        1.0f to colors[2]
-                                    )
-                                } else {
-                                    arrayOf(
-                                        0.0f to colors[0],
-                                        0.6f to colors[0].copy(alpha = 0.7f),
-                                        1.0f to Color.Black
-                                    )
-                                }
-                                Box(modifier = Modifier.fillMaxSize().background(Brush.verticalGradient(colorStops = gradientColorStops)))
-                                Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.2f)))
-                            }
-                        }
-                    }
-                }
-                else -> {
-                    Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.surface))
+            ) { mediaMetadata ->
+                if (playerBackground == PlayerBackgroundStyle.BLUR) {
+                    AsyncImage(
+                        model = mediaMetadata.thumbnailUrl,
+                        contentDescription = null,
+                        contentScale = ContentScale.FillBounds,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .blur(150.dp)
+                    )
+
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color.Black.copy(alpha = 0.3f))
+                    )
                 }
             }
 
-            if (playerBackground != PlayerBackgroundStyle.DEFAULT) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(Color.Black.copy(alpha = 0.3f))
-                )
+            AnimatedContent(
+                targetState = gradientColors,
+                transitionSpec = {
+                    fadeIn(tween(1000)) togetherWith fadeOut(tween(1000))
+                }
+            ) { colors ->
+                if (playerBackground == PlayerBackgroundStyle.GRADIENT && colors.isNotEmpty()) {
+                    Box(modifier = Modifier.fillMaxSize()) {
+                        val gradientColorStops = if (colors.size >= 3) {
+                            arrayOf(
+                                0.0f to colors[0], // Top: primary vibrant color
+                                0.5f to colors[1], // Middle: darker variant
+                                1.0f to colors[2]  // Bottom: black
+                            )
+                        } else {
+                            arrayOf(
+                                0.0f to colors[0], // Top: primary color
+                                0.6f to colors[0].copy(alpha = 0.7f), // Middle: faded variant
+                                1.0f to Color.Black // Bottom: black
+                            )
+                        }
+                        Box(modifier = Modifier.fillMaxSize().background(Brush.verticalGradient(colorStops = gradientColorStops)))
+                        Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.2f)))
+                    }
+                }
             }
+        }
+
+        if (playerBackground != PlayerBackgroundStyle.DEFAULT) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.3f))
+            )
         }
 
         // Check orientation and layout accordingly
