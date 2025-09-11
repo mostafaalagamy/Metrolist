@@ -331,6 +331,25 @@ fun YouTubeSongMenu(
                 }
             )
         }
+        if (song.historyRemoveToken != null) {
+            item {
+                ListItem(
+                    headlineContent = { Text(text = stringResource(R.string.remove_from_history)) },
+                    leadingContent = {
+                        Icon(
+                            painter = painterResource(R.drawable.delete),
+                            contentDescription = null,
+                        )
+                    },
+                    modifier = Modifier.clickable {
+                        coroutineScope.launch {
+                            YouTube.feedback(listOf(song.historyRemoveToken!!))
+                        }
+                        onDismiss()
+                    }
+                )
+            }
+        }
         item {
             ListItem(
                 headlineContent = { 

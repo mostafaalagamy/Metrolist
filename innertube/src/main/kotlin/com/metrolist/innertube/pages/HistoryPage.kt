@@ -58,7 +58,10 @@ data class HistoryPage(
                 }?.toggleMenuServiceItemRenderer, "LIBRARY_ADD"),
                 libraryRemoveToken = PageHelper.extractFeedbackToken(renderer.menu?.menuRenderer?.items?.find {
                     it.toggleMenuServiceItemRenderer?.defaultIcon?.iconType?.startsWith("LIBRARY_") == true
-                }?.toggleMenuServiceItemRenderer, "LIBRARY_SAVED")
+                }?.toggleMenuServiceItemRenderer, "LIBRARY_SAVED"),
+                historyRemoveToken = renderer.menu?.menuRenderer?.items?.find {
+                    it.menuServiceItemRenderer?.icon?.iconType == "REMOVE_FROM_HISTORY"
+                }?.menuServiceItemRenderer?.serviceEndpoint?.feedbackEndpoint?.feedbackToken
             )
         }
     }
