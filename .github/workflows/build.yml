@@ -23,7 +23,7 @@ jobs:
 
     strategy:
       matrix:
-        abi: [ 'arm64', 'armeabi', 'x86', 'x86_64', 'universal' ]
+        abi: [ 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64', 'universal' ]
 
     steps:
       - uses: actions/checkout@v5
@@ -44,7 +44,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build Release APK and Run Lint
-        run: ./gradlew --no-configuration-cache --console=plain clean assemble${{ matrix.abi }}Release :app:lint${{ matrix.abi }}Release --warning-mode summary
+        run: ./gradlew --no-configuration-cache --console=plain clean assembleRelease :app:lintRelease --warning-mode summary --parallel -PTARGET_ARCH=${{ matrix.abi }}
         env:
           PULL_REQUEST: 'false'
           GITHUB_EVENT_NAME: ${{ github.event_name }}
@@ -52,7 +52,7 @@ jobs:
       - name: Sign APK
         uses: ilharp/sign-android-release@v2.0.0
         with:
-          releaseDir: app/build/outputs/apk/${{ matrix.abi }}/release/
+          releaseDir: app/build/outputs/apk/release/
           signingKey: ${{ secrets.KEYSTORE }}
           keyAlias: ${{ secrets.KEY_ALIAS }}
           keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
@@ -61,14 +61,18 @@ jobs:
       
       - name: Move signed APK
         run: |
-          mkdir -p app/build/outputs/apk/${{ matrix.abi }}/release/out
-          find app/build/outputs/apk/${{ matrix.abi }}/release/ -name "*-signed.apk" -o -name "*-unsigned-signed.apk" | xargs -I{} mv {} app/build/outputs/apk/${{ matrix.abi }}/release/out/app-${{ matrix.abi }}-release.apk
+          mkdir -p app/build/outputs/apk/release/out
+          if [ "${{ matrix.abi }}" = "universal" ]; then
+            find app/build/outputs/apk/release/ -name "*universal*signed.apk" | head -1 | xargs -I{} mv {} app/build/outputs/apk/release/out/app-${{ matrix.abi }}-release.apk
+          else
+            find app/build/outputs/apk/release/ -name "*${{ matrix.abi }}*signed.apk" | head -1 | xargs -I{} mv {} app/build/outputs/apk/release/out/app-${{ matrix.abi }}-release.apk
+          fi
   
       - name: Upload Signed APK
         uses: actions/upload-artifact@v4
         with:
           name: app-${{ matrix.abi }}-release
-          path: app/build/outputs/apk/${{ matrix.abi }}/release/out/*
+          path: app/build/outputs/apk/release/out/*
 
   build_debug:
     name: build (debug)
@@ -105,7 +109,7 @@ jobs:
           echo "${{ secrets.DEBUG_KEYSTORE }}" | base64 -d > ./app/persistent-debug.keystore
 
       - name: Build Debug APK and Run Lint
-        run: ./gradlew --no-configuration-cache --console=plain clean assembleUniversalDebug :app:lintUniversalDebug --warning-mode summary
+        run: ./gradlew --no-configuration-cache --console=plain clean assembleDebug :app:lintDebug --warning-mode summary -PTARGET_ARCH=universal
         env:
           PULL_REQUEST: 'false'
           GITHUB_EVENT_NAME: ${{ github.event_name }}
@@ -114,4 +118,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: app-universal-debug
-          path: app/build/outputs/apk/universal/debug/*.apk
+          path: app/build/outputs/apk/debug/*universal*.apk

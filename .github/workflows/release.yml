@@ -38,43 +38,28 @@ jobs:
             exit 0
           fi
 
-          echo "Current version: $NEW_VERSION (code: $VERSION_CODE)"
-
           if git show HEAD^:app/build.gradle.kts > /dev/null 2>&1; then
             OLD_VERSION=$(git show HEAD^:app/build.gradle.kts | grep -oP 'versionName\s*=\s*"\K[^"]+' || echo "")
-            echo "Previous version: $OLD_VERSION"
-            
             if [ "$OLD_VERSION" != "$NEW_VERSION" ]; then
-              echo "Version changed from $OLD_VERSION to $NEW_VERSION"
               echo "version_changed=true" >> $GITHUB_OUTPUT
               echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
               echo "version_code=$VERSION_CODE" >> $GITHUB_OUTPUT
             else
-              echo "Version unchanged: $NEW_VERSION"
               echo "version_changed=false" >> $GITHUB_OUTPUT
             fi
           else
-            echo "First version detected: $NEW_VERSION"
             echo "version_changed=true" >> $GITHUB_OUTPUT
             echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
             echo "version_code=$VERSION_CODE" >> $GITHUB_OUTPUT
           fi
           
-      - name: Debug output
-        run: |
-          echo "Debug Information:"
-          echo "  - version_changed: ${{ steps.check_version.outputs.version_changed }}"
-          echo "  - new_version: ${{ steps.check_version.outputs.new_version }}"
-          echo "  - version_code: ${{ steps.check_version.outputs.version_code }}"
-          echo "  - event_name: ${{ github.event_name }}"
-
   build:
     needs: check-version
     if: needs.check-version.outputs.version_changed == 'true' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        abi: [ 'arm64', 'armeabi', 'x86', 'x86_64', 'universal' ]
+        abi: [ 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64', 'universal' ]
 
     steps:
       - uses: actions/checkout@v5
@@ -95,7 +80,7 @@ jobs:
         run: chmod +x gradlew
  
       - name: Build and Lint Release APK
-        run: ./gradlew --no-configuration-cache --console=plain clean assemble${{ matrix.abi }}Release :app:lint${{ matrix.abi }}Release --warning-mode summary
+        run: ./gradlew --no-configuration-cache --console=plain clean assembleRelease :app:lintRelease --warning-mode summary --parallel -PTARGET_ARCH=${{ matrix.abi }}
         env:
           PULL_REQUEST: 'false'
           GITHUB_EVENT_NAME: ${{ github.event_name }}
@@ -103,7 +88,7 @@ jobs:
       - name: Sign APK
         uses: ilharp/sign-android-release@v2.0.0
         with:
-          releaseDir: app/build/outputs/apk/${{ matrix.abi }}/release/
+          releaseDir: app/build/outputs/apk/release/
           signingKey: ${{ secrets.KEYSTORE }}
           keyAlias: ${{ secrets.KEY_ALIAS }}
           keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
@@ -112,32 +97,21 @@ jobs:
       
       - name: Move and rename signed APKs
         run: |
-          mkdir -p app/build/outputs/apk/${{ matrix.abi }}/release/out
-          
-          SIGNED_APK=$(find app/build/outputs/apk/${{ matrix.abi }}/release/ -name "*-signed.apk" -o -name "*-unsigned-signed.apk" | head -1)
-          
-          if [ -z "$SIGNED_APK" ]; then
-            echo "No signed APK found for ${{ matrix.abi }}"
-            ls -la app/build/outputs/apk/${{ matrix.abi }}/release/
-            exit 1
-          fi
-          
+          mkdir -p app/build/outputs/apk/release/out
           if [ "${{ matrix.abi }}" = "universal" ]; then
+            SIGNED_APK=$(find app/build/outputs/apk/release/ -name "*universal*signed.apk" | head -1)
             TARGET_NAME="Metrolist.apk"
           else
+            SIGNED_APK=$(find app/build/outputs/apk/release/ -name "*${{ matrix.abi }}*signed.apk" | head -1)
             TARGET_NAME="app-${{ matrix.abi }}-release.apk"
           fi
-          
-          mv "$SIGNED_APK" "app/build/outputs/apk/${{ matrix.abi }}/release/out/$TARGET_NAME"
-          
-          echo "APK renamed to: $TARGET_NAME"
-          ls -la app/build/outputs/apk/${{ matrix.abi }}/release/out/
+          mv "$SIGNED_APK" "app/build/outputs/apk/release/out/$TARGET_NAME"
   
       - name: Upload Signed APKs
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.abi == 'universal' && 'Metrolist' || format('app-{0}-release', matrix.abi) }}
-          path: app/build/outputs/apk/${{ matrix.abi }}/release/out/${{ matrix.abi == 'universal' && 'Metrolist.apk' || format('app-{0}-release.apk', matrix.abi) }}
+          path: app/build/outputs/apk/release/out/${{ matrix.abi == 'universal' && 'Metrolist.apk' || format('app-{0}-release.apk', matrix.abi) }}
 
   create-release:
     needs: [check-version, build]
@@ -155,40 +129,25 @@ jobs:
           
       - name: Organize APKs for release
         run: |
-          echo "Organizing APK files..."
           mkdir -p release_files
-          
           find downloaded_artifacts -name "*.apk" -exec cp {} release_files/ \;
-          
-          echo "APKs ready for release:"
-          ls -la release_files/
           
       - name: Generate release notes
         run: |
-          echo "Generating release notes..."
-          
           cat > release_notes.md << EOF
           Release of version ${{ needs.check-version.outputs.new_version }}
-          
           $(git log $(git describe --tags --abbrev=0 2>/dev/null || echo "HEAD~10")..HEAD --pretty=format:"- %s" --no-merges | head -10 || echo "- Initial release")
           EOF
-          
-          echo "Release notes preview:"
-          cat release_notes.md
           
       - name: Create Release
         env:
           GH_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         run: |
-          echo "Creating release v${{ needs.check-version.outputs.new_version }}"
-          
           gh release create "v${{ needs.check-version.outputs.new_version }}" \
             --title "${{ needs.check-version.outputs.new_version }}" \
             --notes-file release_notes.md \
             --latest \
             release_files/*.apk
-            
-          echo "Release created successfully!"
           
       - name: Update release summary
         run: |
