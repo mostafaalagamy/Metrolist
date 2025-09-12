@@ -23,7 +23,12 @@ android {
         multiDexEnabled = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
-        buildConfigField("String", "ARCHITECTURE", "\"universal\"")
+
+        val abi = when {
+            project.hasProperty("TARGET_ARCH") -> project.property("TARGET_ARCH").toString()
+            else -> "universal"
+        }
+        buildConfigField("String", "ARCHITECTURE", "\"$abi\"")
     }
 
     splits {
@@ -151,7 +156,6 @@ kapt {
     arguments {
         arg("dagger.fastInit", "enabled")
         arg("dagger.formatGeneratedSource", "disabled")
-        // dagger.gradle.incremental is deprecated in newer versions
     }
 }
 
@@ -161,7 +165,6 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach 
             "-opt-in=kotlin.RequiresOptIn",
             "-Xcontext-receivers"
         )
-        // Suppress warnings
         suppressWarnings.set(true)
     }
 }
@@ -196,7 +199,6 @@ dependencies {
     implementation(libs.coil)
     implementation(libs.coil.network.okhttp)
 
-    // In-app image cropper (UCrop)
     implementation(libs.ucrop)
 
     implementation(libs.shimmer)
