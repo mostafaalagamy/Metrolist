@@ -34,6 +34,12 @@ android {
             isUniversalApk = true
         }
     }
+    
+    packaging {
+        jniLibs {
+            useLegacyPackaging = false
+        }
+    }
 
     signingConfigs {
         create("persistentDebug") {
@@ -64,6 +70,9 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            ndk {
+                debugSymbolLevel = "NONE"
+            }
         }
         debug {
             applicationIdSuffix = ".debug"
@@ -72,6 +81,9 @@ android {
                 signingConfigs.getByName("debug")
             } else {
                 signingConfigs.getByName("persistentDebug")
+            }
+            ndk {
+                debugSymbolLevel = "SYMBOL_TABLE"
             }
         }
     }
