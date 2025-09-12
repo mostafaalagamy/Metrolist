@@ -386,6 +386,7 @@ fun YouTubeSongMenu(
                         database.transaction {
                             insert(song.toMediaMetadata())
                             inLibrary(song.id, LocalDateTime.now())
+                            addLibraryTokens(song.id, song.libraryAddToken, song.libraryRemoveToken)
                         }
                     }
                 }

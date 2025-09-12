@@ -120,8 +120,11 @@ class SyncUtils @Inject constructor(
                                 if (dbSong == null) {
                                     // Use proper MediaMetadata insertion to save artist information
                                     insert(song.toMediaMetadata()) { it.toggleLibrary() }
-                                } else if (dbSong.song.inLibrary == null) {
-                                    update(dbSong.song.toggleLibrary())
+                                } else {
+                                    if (dbSong.song.inLibrary == null) {
+                                        update(dbSong.song.toggleLibrary())
+                                    }
+                                    addLibraryTokens(song.id, song.libraryAddToken, song.libraryRemoveToken)
                                 }
                             }
                         } catch (e: Exception) {
