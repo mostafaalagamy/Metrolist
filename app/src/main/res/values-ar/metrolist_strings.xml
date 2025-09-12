@@ -165,8 +165,8 @@
     <string name="empty_playlist_desc">هذه القائمة لا تحتوي على أي أغنية</string>
     <string name="playlist_not_found_desc">لا يمكن تحميل القائمة المطلوبة</string>
     <string name="now_playing">المُشغل الأن</string>
-    <string name="seek_backward">5 ثوان للخلف</string>
-    <string name="seek_forward">للأمام 5 ثواني</string>
+    <string name="seek_backward">٥ ثواني للخلف</string>
+    <string name="seek_forward">٥ ثواني للأمام</string>
     <string name="seek_forward_dynamic">+%1$d ثواني للأمام</string>
     <string name="seek_backward_dynamic">- %1$d ثواني للخلف</string>
     <string name="seek_seconds_addup">التقدم التدريجي</string>
@@ -202,7 +202,7 @@
     <string name="line_by_line_option_title">تجريبي: اكتشاف اللغة سطرًا بسطر</string>
     <string name="line_by_line_option_desc">سيتم اكتشاف اللغة السيريلية سطرًا بسطر بدلاً من الأغنية بأكملها.</string>
     <string name="line_by_line_dialog_title">هل أنت متأكد؟</string>
-    <string name="line_by_line_dialog_desc">هذه ميزة تجريبية قد تكون غير مؤكدة.\n\nافتراضيًا، يتم تحديد اللغة من الأغنية بأكملها، ولكن مع تفعيل هذا الخيار، سيتم تحديدها سطرًا بسطر. هذا يسمح بتعدد اللغات.</string>
+    <string name="line_by_line_dialog_desc">بالنسبة لميزة التجربة هذه، إما أن تنجح أو تفشل.\n\nبشكل افتراضي، يتم تحديد اللغة من خلال الأغنية بأكملها، ولكن عند تفعيل هذا الخيار، سيتم تحديد اللغة سطراً تلو الآخر. وهذا سيسمح للأغاني متعددة اللغات بالعمل، ولكن قد لا تكون اللغة صحيحة دائماً (على سبيل المثال، إذا كانت هناك كلمات أوكرانية لا تحتوي على أي أحرف خاصة بالأوكرانية، فقد يتم تحويلها إلى الروسية بدلاً من ذلك).\n\nإذا لم تواجه أي مشاكل، يُوصى بإبقاء هذا الخيار معطلاً.</string>
     <string name="line_by_line_dialog_enable">تفعيل</string>
     <string name="romanize_current_track">كتابة المسار الحالي بالرومانية</string>
     <string name="edit_playlist_cover">تبديل غلاف القائمة</string>
