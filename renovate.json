@@ -3,12 +3,16 @@
   "extends": [
     "config:recommended"
   ],
-  "ignoreUnstable": false,
+  "ignoreUnstable": true,
+  "respectLatest": true,
+  "separateMajorMinor": true,
   "packageRules": [
     {
       "matchPackageNames": [
         "*"
-      ]
+      ],
+      "ignoreUnstable": true,
+      "respectLatest": true
     },
     {
       "matchManagers": [
@@ -18,6 +22,11 @@
       "matchPackageNames": [
         "/^com\\.github\\.libre\\-tube:NewPipeExtractor$/"
       ]
+    },
+    {
+      "description": "Ignore all pre-release versions (alpha, beta, rc, dev, snapshot)",
+      "matchPackageNames": ["*"],
+      "allowedVersions": "!/-(alpha|beta|rc|dev|snapshot|SNAPSHOT|Alpha|Beta|RC|Dev)/i"
     }
   ]
 }
