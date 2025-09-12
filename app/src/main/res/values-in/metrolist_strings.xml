@@ -161,4 +161,5 @@
     <string name="maximum_volume">Volume Maksimal</string>
     <string name="seek_seconds_addup">Pencarian progresif</string>
     <string name="seek_seconds_addup_description">Jika diaktifkan, Menambahkan 5 detik ekstra secara bertahap pada setiap lompatan pencarian</string>
+    <string name="edit_playlist_cover">Edit sampul playlist</string>
 </resources>
