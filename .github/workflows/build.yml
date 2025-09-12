@@ -78,6 +78,9 @@ jobs:
     name: build (debug)
     if: github.actor != 'dependabot[bot]' && github.actor != 'renovate[bot]'
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        abi: [ 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64', 'universal' ]
 
     steps:
       - uses: actions/checkout@v5
@@ -117,5 +120,6 @@ jobs:
       - name: Upload Debug APK
         uses: actions/upload-artifact@v4
         with:
-          name: app-universal-debug
-          path: app/build/outputs/apk/debug/*.apk
+          name: app-${{ matrix.abi }}-debug
+          path: |
+            app/build/outputs/apk/debug/*${{ matrix.abi == 'universal' && 'universal' || matrix.abi }}*.apk
