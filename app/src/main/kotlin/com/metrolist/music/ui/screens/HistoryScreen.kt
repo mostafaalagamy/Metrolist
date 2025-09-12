@@ -119,8 +119,10 @@ fun HistoryScreen(
     }
 
     val historySource by viewModel.historySource.collectAsState()
+
+    val historyPage by viewModel.historyPage.collectAsState()
+    
     val events by viewModel.events.collectAsState()
-    val historyPage by viewModel.historyPage
 
     val innerTubeCookie by rememberPreference(InnerTubeCookieKey, "")
     val isLoggedIn = remember(innerTubeCookie) {
@@ -241,7 +243,10 @@ fun HistoryScreen(
                                             YouTubeSongMenu(
                                                 song = song,
                                                 navController = navController,
-                                                onDismiss = menuState::dismiss
+                                                onDismiss = menuState::dismiss,
+                                                onHistoryRemoved = {
+                                                    viewModel.fetchRemoteHistory()
+                                                }
                                             )
                                         }
                                     }
@@ -269,7 +274,10 @@ fun HistoryScreen(
                                             YouTubeSongMenu(
                                                 song = song,
                                                 navController = navController,
-                                                onDismiss = menuState::dismiss
+                                                onDismiss = menuState::dismiss,
+                                                onHistoryRemoved = {
+                                                    viewModel.fetchRemoteHistory()
+                                                }
                                             )
                                         }
                                     }

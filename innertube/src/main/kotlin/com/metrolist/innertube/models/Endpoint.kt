@@ -79,6 +79,11 @@ data class SearchEndpoint(
 ) : Endpoint()
 
 @Serializable
+data class FeedbackEndpoint(
+    val feedbackToken: String
+) : Endpoint()
+
+@Serializable
 data class QueueAddEndpoint(
     val queueInsertPosition: String,
     val queueTarget: QueueTarget,
@@ -105,19 +110,9 @@ data class DefaultServiceEndpoint(
         val channelIds: List<String>,
         val params: String? = null,
     ) : Endpoint()
-
-    @Serializable
-    data class FeedbackEndpoint(
-        val feedbackToken: String
-    ) : Endpoint()
 }
 
 @Serializable
 data class ToggledServiceEndpoint(
     var feedbackEndpoint: FeedbackEndpoint?
-) : Endpoint() {
-    @Serializable
-    data class FeedbackEndpoint(
-        val feedbackToken: String
-    ) : Endpoint()
-}
+) : Endpoint()
