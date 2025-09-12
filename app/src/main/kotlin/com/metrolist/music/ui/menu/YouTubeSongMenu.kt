@@ -78,6 +78,7 @@ import com.metrolist.music.ui.utils.resize
 import com.metrolist.music.utils.joinByBullet
 import com.metrolist.music.utils.makeTimeString
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 
@@ -87,6 +88,7 @@ fun YouTubeSongMenu(
     song: SongItem,
     navController: NavController,
     onDismiss: () -> Unit,
+    onHistoryRemoved: () -> Unit = {}
 ) {
     val context = LocalContext.current
     val database = LocalDatabase.current
@@ -330,6 +332,30 @@ fun YouTubeSongMenu(
                     onDismiss()
                 }
             )
+        }
+        if (song.historyRemoveToken != null) {
+            item {
+                ListItem(
+                    headlineContent = { Text(text = stringResource(R.string.remove_from_history)) },
+                    leadingContent = {
+                        Icon(
+                            painter = painterResource(R.drawable.delete),
+                            contentDescription = null,
+                        )
+                    },
+                    modifier = Modifier.clickable {
+                        coroutineScope.launch {
+                            YouTube.feedback(listOf(song.historyRemoveToken!!))
+
+                            delay(500)
+
+                            onHistoryRemoved()
+
+                            onDismiss()
+                        }
+                    }
+                )
+            }
         }
         item {
             ListItem(

@@ -32,7 +32,7 @@ constructor(
     private val thisMonday = today.with(DayOfWeek.MONDAY)
     private val lastMonday = thisMonday.minusDays(7)
 
-    val historyPage = mutableStateOf<HistoryPage?>(null)
+    val historyPage = MutableStateFlow<HistoryPage?>(null)
 
     val events =
         database
