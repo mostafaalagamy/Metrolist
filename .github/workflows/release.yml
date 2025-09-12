@@ -74,7 +74,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        abi: [ 'arm64', 'armeabi', 'x86', 'x86_64', 'universal' ]
+        abi: [ 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64', 'universal' ]
 
     steps:
       - uses: actions/checkout@v5
@@ -95,7 +95,7 @@ jobs:
         run: chmod +x gradlew
  
       - name: Build and Lint Release APK
-        run: ./gradlew --no-configuration-cache --console=plain clean assemble${{ matrix.abi }}Release :app:lint${{ matrix.abi }}Release --warning-mode summary
+        run: ./gradlew --no-configuration-cache --console=plain clean assembleRelease :app:lintRelease --warning-mode summary
         env:
           PULL_REQUEST: 'false'
           GITHUB_EVENT_NAME: ${{ github.event_name }}
@@ -103,7 +103,7 @@ jobs:
       - name: Sign APK
         uses: ilharp/sign-android-release@v2.0.0
         with:
-          releaseDir: app/build/outputs/apk/${{ matrix.abi }}/release/
+          releaseDir: app/build/outputs/apk/release/
           signingKey: ${{ secrets.KEYSTORE }}
           keyAlias: ${{ secrets.KEY_ALIAS }}
           keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
@@ -112,32 +112,32 @@ jobs:
       
       - name: Move and rename signed APKs
         run: |
-          mkdir -p app/build/outputs/apk/${{ matrix.abi }}/release/out
-          
-          SIGNED_APK=$(find app/build/outputs/apk/${{ matrix.abi }}/release/ -name "*-signed.apk" -o -name "*-unsigned-signed.apk" | head -1)
-          
-          if [ -z "$SIGNED_APK" ]; then
-            echo "No signed APK found for ${{ matrix.abi }}"
-            ls -la app/build/outputs/apk/${{ matrix.abi }}/release/
-            exit 1
-          fi
+          mkdir -p app/build/outputs/apk/release/out
           
           if [ "${{ matrix.abi }}" = "universal" ]; then
+            SIGNED_APK=$(find app/build/outputs/apk/release/ -name "*universal*signed.apk" | head -1)
             TARGET_NAME="Metrolist.apk"
           else
+            SIGNED_APK=$(find app/build/outputs/apk/release/ -name "*${{ matrix.abi }}*signed.apk" | head -1)
             TARGET_NAME="app-${{ matrix.abi }}-release.apk"
           fi
           
-          mv "$SIGNED_APK" "app/build/outputs/apk/${{ matrix.abi }}/release/out/$TARGET_NAME"
+          if [ -z "$SIGNED_APK" ]; then
+            echo "No signed APK found for ${{ matrix.abi }}"
+            ls -la app/build/outputs/apk/release/
+            exit 1
+          fi
+          
+          mv "$SIGNED_APK" "app/build/outputs/apk/release/out/$TARGET_NAME"
           
           echo "APK renamed to: $TARGET_NAME"
-          ls -la app/build/outputs/apk/${{ matrix.abi }}/release/out/
+          ls -la app/build/outputs/apk/release/out/
   
       - name: Upload Signed APKs
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.abi == 'universal' && 'Metrolist' || format('app-{0}-release', matrix.abi) }}
-          path: app/build/outputs/apk/${{ matrix.abi }}/release/out/${{ matrix.abi == 'universal' && 'Metrolist.apk' || format('app-{0}-release.apk', matrix.abi) }}
+          path: app/build/outputs/apk/release/out/${{ matrix.abi == 'universal' && 'Metrolist.apk' || format('app-{0}-release.apk', matrix.abi) }}
 
   create-release:
     needs: [check-version, build]

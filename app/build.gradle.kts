@@ -25,34 +25,12 @@ android {
         vectorDrawables.useSupportLibrary = true
     }
 
-    flavorDimensions += "abi"
-    productFlavors {
-        create("universal") {
-            dimension = "abi"
-            ndk {
-                abiFilters += listOf("armeabi-v7a", "arm64-v8a", "x86", "x86_64")
-            }
-            buildConfigField("String", "ARCHITECTURE", "\"universal\"")
-        }
-        create("arm64") {
-            dimension = "abi"
-            ndk { abiFilters += "arm64-v8a" }
-            buildConfigField("String", "ARCHITECTURE", "\"arm64\"")
-        }
-        create("armeabi") {
-            dimension = "abi"
-            ndk { abiFilters += "armeabi-v7a" }
-            buildConfigField("String", "ARCHITECTURE", "\"armeabi\"")
-        }
-        create("x86") {
-            dimension = "abi"
-            ndk { abiFilters += "x86" }
-            buildConfigField("String", "ARCHITECTURE", "\"x86\"")
-        }
-        create("x86_64") {
-            dimension = "abi"
-            ndk { abiFilters += "x86_64" }
-            buildConfigField("String", "ARCHITECTURE", "\"x86_64\"")
+    splits {
+        abi {
+            isEnable = true
+            reset()
+            include("armeabi-v7a", "arm64-v8a", "x86", "x86_64")
+            isUniversalApk = true
         }
     }
 
