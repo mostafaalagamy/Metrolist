@@ -87,6 +87,7 @@ fun YouTubeSongMenu(
     song: SongItem,
     navController: NavController,
     onDismiss: () -> Unit,
+    onHistoryRemoved: () -> Unit = {}
 ) {
     val context = LocalContext.current
     val database = LocalDatabase.current
@@ -345,6 +346,7 @@ fun YouTubeSongMenu(
                         coroutineScope.launch {
                             YouTube.feedback(listOf(song.historyRemoveToken!!))
                         }
+                        onHistoryRemoved()
                         onDismiss()
                     }
                 )
