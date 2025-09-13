@@ -1,0 +1,22 @@
+Material 3 Android üçün YouTube Musiqi müştərisi
+
+Xüsusiyyətlər:
+
+- YT Music-dən istənilən mahnı və ya videonu səsləndirin
+- Fon oxutma
+- Fərdiləşdirilmiş sürətli seçimlər
+- Kitabxananın idarə edilməsi
+- Oflayn oxutmaq üçün mahnıları yükləyin və yaddaşda saxlamaq imkanı
+- Mahnıları, albomları, sənətçiləri, videoları və çalğı siyahılarını axtarışı
+- Canlı mahnı sözləri
+- YouTube Music hesabına giriş dəstəyi
+- Hesabınızdan mahnıların, sənətçilərin, albomların və çalğı siyahılarının sinxronizasiyası
+- Səssiz hissələri ötürmək imkanı
+- Pleylistləri idxal edin
+- Audio normallaşdırma
+- Tempi/pitchi tənzimləyin
+- Yerli pleylist idarə edilməsi
+- Pleylistdə və ya növbədə mahnıları yenidən sıralayın
+- Açıq - Tünd - qara - Dinamik mövzu
+- Yuxu taymeri - Material 3
+- və s.
