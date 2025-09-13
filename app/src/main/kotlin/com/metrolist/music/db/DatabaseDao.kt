@@ -962,6 +962,14 @@ interface DatabaseDao {
     )
 
     @Transaction
+    @Query("UPDATE song SET libraryAddToken = :libraryAddToken, libraryRemoveToken = :libraryRemoveToken WHERE id = :songId")
+    fun addLibraryTokens(
+        songId: String,
+        libraryAddToken: String?,
+        libraryRemoveToken: String?,
+    )
+    
+    @Transaction
     @Query("SELECT COUNT(1) FROM related_song_map WHERE songId = :songId LIMIT 1")
     fun hasRelatedSongs(songId: String): Boolean
 
