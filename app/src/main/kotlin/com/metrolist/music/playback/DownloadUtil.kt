@@ -158,13 +158,16 @@ constructor(
                             }
                         }
 
-                        if (download.state == Download.STATE_COMPLETED) {
-                            GlobalScope.launch(Dispatchers.IO) {
-                                database.dao.updateDownloadedFlag(download.request.id, true)
-                            }
-                        } else if (download.state == Download.STATE_FAILED || download.state == Download.STATE_STOPPED) {
-                            GlobalScope.launch(Dispatchers.IO) {
-                                database.dao.updateDownloadedFlag(download.request.id, false)
+                        GlobalScope.launch(Dispatchers.IO) {
+                            when (download.state) {
+                                Download.STATE_COMPLETED -> {
+                                    database.dao.updateDownloadedFlag(download.request.id, true)
+                                }
+                                Download.STATE_FAILED,
+                                Download.STATE_STOPPED,
+                                Download.STATE_REMOVING -> {
+                                    database.dao.updateDownloadedFlag(download.request.id, false)
+                                }
                             }
                         }
                     }
