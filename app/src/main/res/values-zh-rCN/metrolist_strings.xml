@@ -61,7 +61,7 @@
     <string name="enable_squiggly_slider">启用波浪形进度条</string>
     <string name="enable_swipe_thumbnail">启用滑动手势切换歌曲</string>
     <string name="swipe_song_to_add">向右滑动歌曲以播放下一首，或向左滑动以添加到播放队列</string>
-    <string name="slim">细</string>
+    <string name="slim">纤细</string>
     <string name="slim_navbar">更细的底部导航栏</string>
     <string name="show_cached_playlist">显示缓存歌单</string>
     <string name="google">Google</string>
@@ -162,7 +162,7 @@
     <string name="seek_seconds_addup">渐进式快进/快退</string>
     <string name="disable_load_more_when_repeat_all">如果循环播放则停止加载更多歌曲</string>
     <string name="disable_load_more_when_repeat_all_desc">循环播放模式启用后，不会自动加载更多歌曲与相似内容</string>
-    <string name="settings_section_ui">UI界面</string>
+    <string name="settings_section_ui">用户界面</string>
     <string name="settings_section_privacy">安全与隐私</string>
     <string name="settings_section_player">播放器与媒体</string>
     <string name="settings_section_player_content">播放器与内容</string>
@@ -190,4 +190,9 @@
     <string name="line_by_line_dialog_desc">这是一个不稳定的实验性功能。\n\n默认情况下，语言会根据整首歌曲来判断，但启用该选项后，将会按行检测语言。这样可以支持多语言歌曲，但检测出的语言可能并非总是正确（例如，如果一行乌克兰语歌词没有包含任何乌克兰语特有字母，可能会被识别并罗马化为俄语）。\n\n如果你没有遇到相关问题，建议保持该选项关闭。</string>
     <string name="line_by_line_dialog_enable">启用</string>
     <string name="romanize_current_track">罗马化当前曲目</string>
+    <string name="edit_playlist_cover">编辑歌单封面图</string>
+    <string name="edit_playlist_cover_note">提示：你的YouTube音乐账户必须绑定电话号码并且通过认证才能更改歌单封面。</string>
+    <string name="edit_playlist_cover_note_wait">选择图片后，请等待片刻，新的封面就会出现在您的歌单中。</string>
+    <string name="choose_from_library">从库中选择</string>
+    <string name="remove_custom_image">删除自定义图片</string>
 </resources>
