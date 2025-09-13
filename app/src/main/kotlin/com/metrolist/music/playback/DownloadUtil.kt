@@ -106,14 +106,19 @@ constructor(
                 val existing = getSongByIdBlocking(mediaId)?.song
 
                 val updatedSong = if (existing != null) {
-                    if (existing.dateDownload == null) existing.copy(dateDownload = now) else existing
+                    if (existing.dateDownload == null) {
+                        existing.copy(dateDownload = now)
+                    } else {
+                        existing
+                    }
                 } else {
                     SongEntity(
                         id = mediaId,
                         title = playbackData.videoDetails?.title ?: "Unknown",
                         duration = playbackData.videoDetails?.lengthSeconds?.toIntOrNull() ?: 0,
                         thumbnailUrl = playbackData.videoDetails?.thumbnail?.thumbnails?.lastOrNull()?.url,
-                        dateDownload = now
+                        dateDownload = now,
+                        isDownloaded = false
                     )
                 }
 
@@ -150,6 +155,16 @@ constructor(
                         downloads.update { map ->
                             map.toMutableMap().apply {
                                 set(download.request.id, download)
+                            }
+                        }
+
+                        if (download.state == Download.STATE_COMPLETED) {
+                            GlobalScope.launch(Dispatchers.IO) {
+                                database.dao.updateDownloadedFlag(download.request.id, true)
+                            }
+                        } else if (download.state == Download.STATE_FAILED || download.state == Download.STATE_STOPPED) {
+                            GlobalScope.launch(Dispatchers.IO) {
+                                database.dao.updateDownloadedFlag(download.request.id, false)
                             }
                         }
                     }
