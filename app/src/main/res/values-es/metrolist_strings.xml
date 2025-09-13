@@ -8,7 +8,7 @@
     <string name="no_title">Sin título</string>
     <string name="unknown_artist">Artista desconocido</string>
     <string name="unknown_item_type">Tipo de elemento desconocido</string>
-    <string name="loading_charts">Cargando gráficos…</string>
+    <string name="loading_charts">Cargando listas de éxitos…</string>
     <string name="retry_button">Reintentar</string>
     <string name="album_cover_desc">Carátula del álbum</string>
     <string name="top_music_videos">Top vídeos musicales</string>
