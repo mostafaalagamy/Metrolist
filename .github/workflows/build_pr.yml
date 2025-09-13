@@ -11,10 +11,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v5
-
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
-
       - name: Install SDK components
         run: |
           sdkmanager --install "platform-tools" "platforms;android-36" "build-tools;36.0.0"
@@ -50,8 +48,8 @@ jobs:
               -dname "CN=Android Debug,O=Android,C=US"
           fi
 
-      - name: Build and Lint Debug APK
-        run: ./gradlew --no-configuration-cache --console=plain clean assembleDebug :app:lintDebug --warning-mode summary -PTARGET_ARCH=universal
+      - name: Build and Lint Universal Debug APK
+        run: ./gradlew --no-configuration-cache --console=plain clean assembleUniversalDebug :app:lintUniversalDebug --warning-mode summary
         env:
            GITHUB_EVENT_NAME: ${{ github.event_name }}
            PULL_REQUEST: 'true'
@@ -60,4 +58,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: app-universal-debug-pr-${{ github.event.number }}
-          path: app/build/outputs/apk/debug/*universal*.apk
+          path: app/build/outputs/apk/universal/debug/*.apk
