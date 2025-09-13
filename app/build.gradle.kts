@@ -23,26 +23,36 @@ android {
         multiDexEnabled = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
-
-        val abi = when {
-            project.hasProperty("TARGET_ARCH") -> project.property("TARGET_ARCH").toString()
-            else -> "universal"
-        }
-        buildConfigField("String", "ARCHITECTURE", "\"$abi\"")
     }
 
-    splits {
-        abi {
-            isEnable = true
-            reset()
-            include("armeabi-v7a", "arm64-v8a", "x86", "x86_64")
-            isUniversalApk = true
+    flavorDimensions += "abi"
+    productFlavors {
+        create("universal") {
+            dimension = "abi"
+            ndk {
+                abiFilters += listOf("armeabi-v7a", "arm64-v8a", "x86", "x86_64")
+            }
+            buildConfigField("String", "ARCHITECTURE", "\"universal\"")
         }
-    }
-    
-    packaging {
-        jniLibs {
-            useLegacyPackaging = false
+        create("arm64") {
+            dimension = "abi"
+            ndk { abiFilters += "arm64-v8a" }
+            buildConfigField("String", "ARCHITECTURE", "\"arm64\"")
+        }
+        create("armeabi") {
+            dimension = "abi"
+            ndk { abiFilters += "armeabi-v7a" }
+            buildConfigField("String", "ARCHITECTURE", "\"armeabi\"")
+        }
+        create("x86") {
+            dimension = "abi"
+            ndk { abiFilters += "x86" }
+            buildConfigField("String", "ARCHITECTURE", "\"x86\"")
+        }
+        create("x86_64") {
+            dimension = "abi"
+            ndk { abiFilters += "x86_64" }
+            buildConfigField("String", "ARCHITECTURE", "\"x86_64\"")
         }
     }
 
@@ -75,9 +85,6 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            ndk {
-                debugSymbolLevel = "NONE"
-            }
         }
         debug {
             applicationIdSuffix = ".debug"
@@ -86,9 +93,6 @@ android {
                 signingConfigs.getByName("debug")
             } else {
                 signingConfigs.getByName("persistentDebug")
-            }
-            ndk {
-                debugSymbolLevel = "SYMBOL_TABLE"
             }
         }
     }
@@ -156,6 +160,7 @@ kapt {
     arguments {
         arg("dagger.fastInit", "enabled")
         arg("dagger.formatGeneratedSource", "disabled")
+        // dagger.gradle.incremental is deprecated in newer versions
     }
 }
 
@@ -165,6 +170,7 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach 
             "-opt-in=kotlin.RequiresOptIn",
             "-Xcontext-receivers"
         )
+        // Suppress warnings
         suppressWarnings.set(true)
     }
 }
@@ -199,6 +205,7 @@ dependencies {
     implementation(libs.coil)
     implementation(libs.coil.network.okhttp)
 
+    // In-app image cropper (UCrop)
     implementation(libs.ucrop)
 
     implementation(libs.shimmer)
