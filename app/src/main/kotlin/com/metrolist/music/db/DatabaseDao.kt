@@ -907,8 +907,8 @@ interface DatabaseDao {
     @Query("SELECT * FROM song WHERE isDownloaded = 1 ORDER BY totalPlayTime")
     fun downloadedSongsByPlayTimeAsc(): Flow<List<Song>>
 
-    @Query("UPDATE song SET isDownloaded = :downloaded WHERE id = :songId")
-    fun updateDownloadedFlag(songId: String, downloaded: Boolean)
+    @Query("UPDATE song SET isDownloaded = :downloaded, dateDownload = :date WHERE id = :songId")
+    fun updateDownloadedInfo(songId: String, downloaded: Boolean, date: LocalDateTime?)
     
     @Transaction
     @Query("SELECT * FROM song WHERE title LIKE '%' || :query || '%' AND inLibrary IS NOT NULL LIMIT :previewSize")
