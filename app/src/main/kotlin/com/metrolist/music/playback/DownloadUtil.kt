@@ -161,12 +161,12 @@ constructor(
                         GlobalScope.launch(Dispatchers.IO) {
                             when (download.state) {
                                 Download.STATE_COMPLETED -> {
-                                    database.updateDownloadedFlag(download.request.id, true)
+                                    database.updateDownloadedInfo(download.request.id, true, LocalDateTime.now())
                                 }
                                 Download.STATE_FAILED,
                                 Download.STATE_STOPPED,
                                 Download.STATE_REMOVING -> {
-                                    database.updateDownloadedFlag(download.request.id, false)
+                                    database.updateDownloadedInfo(download.request.id, false, null)
                                 }
                             }
                         }
