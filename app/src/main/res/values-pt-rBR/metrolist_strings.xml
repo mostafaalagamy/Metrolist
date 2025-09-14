@@ -166,7 +166,7 @@
     <string name="seek_forward_dynamic">+%1$d segundos para frente</string>
     <string name="seek_backward_dynamic">-%1$d segundos para trás</string>
     <string name="starting_radio">Iniciando a rádio</string>
-    <string name="seek_seconds_addup_description">Ao ativar, adiciona até 5 segundos extras incrementalmente em cada pulo do avançar/retroceder</string>
+    <string name="seek_seconds_addup_description">Ao ativar, adiciona acréscimos de até 5 segundos extras em cada pulo do avançar/retroceder</string>
     <string name="disable_load_more_when_repeat_all">Desativar o carregar mais ao repetir tudo</string>
     <string name="disable_load_more_when_repeat_all_desc">Não carregar mais músicas automaticamente e conteúdo parecido quando o modo de repetir tudo está ativado</string>
     <string name="settings_section_ui">Interface</string>
@@ -202,4 +202,5 @@
     <string name="choose_from_library">Escolher da biblioteca</string>
     <string name="remove_custom_image">Remover imagem customizada</string>
     <string name="audio_offload">Habilitar transferência</string>
+    <string name="audio_offload_description">Usar o caminho de descarga de áudio para a reprodução de áudio. Ao desativar isto, o consumo de energia aumenta, mas pode ser útil se ter problemas com reprodução de áudio ou pós-processamento</string>
 </resources>
