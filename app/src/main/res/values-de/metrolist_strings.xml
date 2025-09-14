@@ -171,7 +171,7 @@
     <string name="settings_section_player">Player &amp; Medien</string>
     <string name="settings_section_player_content">Player &amp; Inhalt</string>
     <string name="settings_section_storage">Speicher &amp; Daten</string>
-    <string name="settings_section_system">System % Über</string>
+    <string name="settings_section_system">System &amp; Über</string>
     <string name="starting_radio">Radio starten</string>
     <string name="edit_playlist_cover">Playlist-Cover bearbeiten</string>
     <string name="edit_playlist_cover_note">Hinweis: Ihr Konto muss mit einer Telefonnummer verknüpft und bei YouTube Music verifiziert sein, um das Cover der Wiedergabeliste ändern zu können.</string>
