@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -37,10 +38,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.metrolist.music.BuildConfig
+import com.metrolist.music.constants.CheckForUpdatesKey
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.R
 import com.metrolist.music.ui.component.IconButton
+import com.metrolist.music.ui.component.SwitchPreference
 import com.metrolist.music.ui.utils.backToMain
+import com.metrolist.music.utils.rememberPreference
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -48,6 +52,7 @@ fun AboutScreen(
     navController: NavController,
     scrollBehavior: TopAppBarScrollBehavior,
 ) {
+    val (checkForUpdates, onCheckForUpdatesChange) = rememberPreference(CheckForUpdatesKey, true)
     val uriHandler = LocalUriHandler.current
 
     Column(
@@ -214,6 +219,19 @@ fun AboutScreen(
             modifier = Modifier.clickable {
                 uriHandler.openUri("https://github.com/FullerBread2032")
             }
+        )
+
+        Spacer(Modifier.height(16.dp))
+
+        SwitchPreference(
+            title = { Text(stringResource(R.string.check_for_updates)) },
+            icon = { Icon(painterResource(R.drawable.update), null) },
+            checked = checkForUpdates,
+            onCheckedChange = onCheckForUpdatesChange,
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(16.dp))
+                .background(MaterialTheme.colorScheme.surface)
         )
 
         Spacer(Modifier.height(32.dp))
