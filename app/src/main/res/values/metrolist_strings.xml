@@ -232,7 +232,8 @@
     <string name="settings_section_storage">Storage &amp; Data</string>
     <string name="settings_section_system">System &amp; About</string>
 
-    <!-- About -->
+    <!-- Updater -->
+    <string name="updater">Updater</string>
     <string name="check_for_updates">Automatically check for updates</string>
 
     <!-- Offload -->
