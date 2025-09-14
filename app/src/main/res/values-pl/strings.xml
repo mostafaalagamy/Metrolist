@@ -253,7 +253,6 @@
     <string name="backup_create_failed">Nie udało się stworzyć kopii zapasowej</string>
     <string name="restore_failed">Nie udało się przywrócić kopii zapasowej</string>
     <string name="about">O aplikacji</string>
-    <string name="check_for_updates">Automatycznie sprawdzaj aktualizacje</string>
     <string name="app_version">Wersja aplikacji</string>
     <string name="new_version_available">Dostępna nowa wersja</string>
     <string name="translation_models">Modele tłumaczeń</string>
