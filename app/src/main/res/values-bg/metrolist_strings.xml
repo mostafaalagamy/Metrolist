@@ -151,4 +151,11 @@
     <string name="playlist_not_found_desc">Заявеният плейлист не можа да бъде зареден</string>
     <string name="empty_playlist">Празен плейлист</string>
     <string name="empty_playlist_desc">Този плейлист не съдържа никакви песни</string>
+    <string name="now_playing">Сега слушате</string>
+    <string name="close">Затвори</string>
+    <string name="hide_player_thumbnail_desc">Заменете корицата на албума с логото на приложението в плеъра</string>
+    <string name="seek_backward">5 секунди назад</string>
+    <string name="seek_forward">5 секунди напред</string>
+    <string name="seek_forward_dynamic">N секунди напред</string>
+    <string name="seek_backward_dynamic">N секунди назад</string>
 </resources>
