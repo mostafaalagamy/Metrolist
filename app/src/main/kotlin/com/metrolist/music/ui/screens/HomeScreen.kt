@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -406,7 +407,7 @@ fun HomeScreen(
                         state = quickPicksLazyGridState,
                         rows = GridCells.Fixed(4),
                         flingBehavior = rememberSnapFlingBehavior(quickPicksSnapLayoutInfoProvider),
-                        contentPadding = WindowInsets.systemBars
+                        contentPadding = WindowInsets.safeDrawing
                             .only(WindowInsetsSides.Horizontal)
                             .asPaddingValues(),
                         modifier = Modifier
@@ -540,7 +541,7 @@ fun HomeScreen(
 
                 item {
                     LazyRow(
-                        contentPadding = WindowInsets.systemBars
+                        contentPadding = WindowInsets.safeDrawing
                             .only(WindowInsetsSides.Horizontal)
                             .asPaddingValues(),
                         modifier = Modifier.animateItem()
@@ -572,7 +573,7 @@ fun HomeScreen(
                         flingBehavior = rememberSnapFlingBehavior(
                             forgottenFavoritesSnapLayoutInfoProvider
                         ),
-                        contentPadding = WindowInsets.systemBars
+                        contentPadding = WindowInsets.safeDrawing
                             .only(WindowInsetsSides.Horizontal)
                             .asPaddingValues(),
                         modifier = Modifier
@@ -673,7 +674,7 @@ fun HomeScreen(
 
                 item {
                     LazyRow(
-                        contentPadding = WindowInsets.systemBars
+                        contentPadding = WindowInsets.safeDrawing
                             .only(WindowInsetsSides.Horizontal)
                             .asPaddingValues(),
                         modifier = Modifier.animateItem()
@@ -719,7 +720,7 @@ fun HomeScreen(
 
                 item {
                     LazyRow(
-                        contentPadding = WindowInsets.systemBars
+                        contentPadding = WindowInsets.safeDrawing
                             .only(WindowInsetsSides.Horizontal)
                             .asPaddingValues(),
                         modifier = Modifier.animateItem()
