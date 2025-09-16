@@ -239,7 +239,4 @@ dependencies {
     implementation(libs.multidex)
 
     implementation(libs.timber)
-
-    // Adaptive Navigation Suite for responsive nav rail/bottom bar
-    implementation("androidx.compose.material3:material3-adaptive-navigation-suite:1.0.0-alpha05")
 }
