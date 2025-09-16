@@ -8,7 +8,7 @@
     <string name="no_title">Başlık yok</string>
     <string name="unknown_artist">Bilinmeyen sanatçı</string>
     <string name="unknown_item_type">Bilinmeyen öğe türü</string>
-    <string name="loading_charts">Listeler yükleniyor...</string>
+    <string name="loading_charts">Listeler yükleniyor…</string>
     <string name="retry_button">Tekrar dene</string>
     <string name="album_cover_desc">Albüm kapağı</string>
     <string name="top_music_videos">En Popüler Müzik Videoları</string>
