@@ -43,6 +43,7 @@ import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialogDefaults
@@ -375,9 +376,9 @@ class MainActivity : ComponentActivity() {
                     val focusManager = LocalFocusManager.current
                     val density = LocalDensity.current
                     val configuration = LocalConfiguration.current
-                    val windowsInsets = WindowInsets.systemBars
+                    val windowsInsets = WindowInsets.safeDrawing
                     val bottomInset = with(density) { windowsInsets.getBottom(density).toDp() }
-                    val bottomInsetDp = WindowInsets.systemBars.asPaddingValues().calculateBottomPadding()
+                    val bottomInsetDp = WindowInsets.safeDrawing.asPaddingValues().calculateBottomPadding()
 
                     val navController = rememberNavController()
                     val homeViewModel: HomeViewModel = hiltViewModel()
@@ -482,7 +483,7 @@ class MainActivity : ComponentActivity() {
                     val playerBottomSheetState =
                         rememberBottomSheetState(
                             dismissedBound = 0.dp,
-                            collapsedBound = bottomInset + getNavPadding() + (if (useNewMiniPlayerDesign) MiniPlayerBottomSpacing else 0.dp) + MiniPlayerHeight,
+                            collapsedBound = bottomInset + getNavPadding() + (if (useNewMiniPlayerDesign) MiniPlayerBottomSpacing else 0.dp) + (if (showRail) 0.dp else MiniPlayerHeight),
                             expandedBound = maxHeight,
                         )
 
@@ -654,7 +655,10 @@ class MainActivity : ComponentActivity() {
                         Scaffold(
                             topBar = {
                                 if (shouldShowTopBar) {
-                                    TopAppBar(
+                                    if (showRail) {
+                                        // In landscape with rail, TopAppBar should not overlap with NavigationRail
+                                        TopAppBar(
+                                            modifier = Modifier.padding(start = 80.dp), // Account for NavigationRail width
                                         title = {
                                             Text(
                                                 text = currentTitleRes?.let { stringResource(it) }
@@ -709,6 +713,64 @@ class MainActivity : ComponentActivity() {
                                             navigationIconContentColor = MaterialTheme.colorScheme.onSurfaceVariant
                                         )
                                     )
+                                    } else {
+                                        // In portrait, use full width TopAppBar
+                                        TopAppBar(
+                                        title = {
+                                            Text(
+                                                text = currentTitleRes?.let { stringResource(it) }
+                                                    ?: "",
+                                                style = MaterialTheme.typography.titleLarge,
+                                            )
+                                        },
+                                        actions = {
+                                            IconButton(onClick = { navController.navigate("history") }) {
+                                                Icon(
+                                                    painter = painterResource(R.drawable.history),
+                                                    contentDescription = stringResource(R.string.history)
+                                                )
+                                            }
+                                            IconButton(onClick = { navController.navigate("stats") }) {
+                                                Icon(
+                                                    painter = painterResource(R.drawable.stats),
+                                                    contentDescription = stringResource(R.string.stats)
+                                                )
+                                            }
+                                            IconButton(onClick = { showAccountDialog = true }) {
+                                                BadgedBox(badge = {
+                                                    if (latestVersionName != BuildConfig.VERSION_NAME) {
+                                                        Badge()
+                                                    }
+                                                }) {
+                                                    if (accountImageUrl != null) {
+                                                        AsyncImage(
+                                                            model = accountImageUrl,
+                                                            contentDescription = stringResource(R.string.account),
+                                                            modifier = Modifier
+                                                                .size(24.dp)
+                                                                .clip(CircleShape)
+                                                        )
+                                                    } else {
+                                                        Icon(
+                                                            painter = painterResource(R.drawable.account),
+                                                            contentDescription = stringResource(R.string.account),
+                                                            modifier = Modifier.size(24.dp)
+                                                        )
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        scrollBehavior =
+                                        searchBarScrollBehavior,
+                                        colors = TopAppBarDefaults.topAppBarColors(
+                                            containerColor = if (pureBlack) Color.Black else MaterialTheme.colorScheme.surfaceContainer,
+                                            scrolledContainerColor = if (pureBlack) Color.Black else MaterialTheme.colorScheme.surfaceContainer,
+                                            titleContentColor = MaterialTheme.colorScheme.onSurface,
+                                            actionIconContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                            navigationIconContentColor = MaterialTheme.colorScheme.onSurfaceVariant
+                                        )
+                                    )
+                                    }
                                 }
                                 AnimatedVisibility(
                                     visible = active || navBackStackEntry?.destination?.route?.startsWith("search/") == true,
