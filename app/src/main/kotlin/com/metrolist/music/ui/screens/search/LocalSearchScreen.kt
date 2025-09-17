@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -86,7 +87,7 @@ fun LocalSearchScreen(
                 if (isLandscape) {
                     // Apply safe horizontal insets only in landscape to avoid notch/rail overlap
                     base.windowInsetsPadding(
-                        WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal)
+                        WindowInsets.systemBars.only(WindowInsetsSides.Horizontal)
                     )
                 } else base
             }
@@ -107,7 +108,7 @@ fun LocalSearchScreen(
             state = lazyListState,
             modifier = Modifier.weight(1f),
             // Keep only bottom safe area inside the list; top handled above (landscape only)
-            contentPadding = WindowInsets.safeDrawing
+            contentPadding = WindowInsets.systemBars
                 .only(WindowInsetsSides.Bottom)
                 .asPaddingValues(),
         ) {

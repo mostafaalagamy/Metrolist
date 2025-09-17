@@ -37,7 +37,7 @@ fun NavigationTitle(
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         modifier = modifier
             .fillMaxWidth()
-            .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
+            .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Horizontal))
             .clickable(enabled = onClick != null) {
                 onClick?.invoke()
             }

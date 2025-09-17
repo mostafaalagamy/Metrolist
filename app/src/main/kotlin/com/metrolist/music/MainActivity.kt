@@ -381,9 +381,9 @@ class MainActivity : ComponentActivity() {
                     val density = LocalDensity.current
                     val configuration = LocalConfiguration.current
                     val cutoutInsets = WindowInsets.displayCutout
-                    val windowsInsets = WindowInsets.safeDrawing
+                    val windowsInsets = WindowInsets.systemBars
                     val bottomInset = with(density) { windowsInsets.getBottom(density).toDp() }
-                    val bottomInsetDp = WindowInsets.safeDrawing.asPaddingValues().calculateBottomPadding()
+                    val bottomInsetDp = WindowInsets.systemBars.asPaddingValues().calculateBottomPadding()
 
                     val navController = rememberNavController()
                     val homeViewModel: HomeViewModel = hiltViewModel()

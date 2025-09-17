@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -84,7 +85,7 @@ fun OnlineSearchScreen(
 
     LazyColumn(
         state = lazyListState,
-        contentPadding = WindowInsets.safeDrawing.only(WindowInsetsSides.Bottom).asPaddingValues(),
+        contentPadding = WindowInsets.systemBars.only(WindowInsetsSides.Bottom).asPaddingValues(),
         modifier = Modifier
             .fillMaxSize()
             .background(if (pureBlack) Color.Black else MaterialTheme.colorScheme.background)
@@ -279,7 +280,7 @@ fun SuggestionItem(
             .background(if (pureBlack) Color.Black else MaterialTheme.colorScheme.surface)
             .clickable(onClick = onClick)
             .padding(end = SearchBarIconOffsetX)
-            .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal)),
+            .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Horizontal)),
     ) {
         Icon(
             painterResource(if (online) R.drawable.search else R.drawable.history),

@@ -30,7 +30,7 @@ fun CustomThumbnailMenu(
             start = 8.dp,
             top = 8.dp,
             end = 8.dp,
-            bottom = 8.dp + WindowInsets.safeDrawing.asPaddingValues().calculateBottomPadding(),
+            bottom = 8.dp + WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
         ),
     ) {
         item {
