@@ -94,7 +94,9 @@ fun LocalSearchScreen(
         LazyColumn(
             state = lazyListState,
             modifier = Modifier.weight(1f),
-            contentPadding = WindowInsets.safeDrawing.only(WindowInsetsSides.Bottom).asPaddingValues(),
+            contentPadding = WindowInsets.safeDrawing
+                .only(WindowInsetsSides.Top + WindowInsetsSides.Bottom)
+                .asPaddingValues(),
         ) {
             result.map.forEach { (filter, items) ->
                 if (result.filter == LocalFilter.ALL) {
