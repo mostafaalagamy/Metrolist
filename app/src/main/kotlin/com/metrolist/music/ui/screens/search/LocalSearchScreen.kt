@@ -78,6 +78,7 @@ fun LocalSearchScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(if (pureBlack) Color.Black else MaterialTheme.colorScheme.background)
+            .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top))
     ) {
         ChipsRow(
             chips = listOf(
