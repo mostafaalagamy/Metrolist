@@ -31,9 +31,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.add
+import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -43,6 +45,9 @@ import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialogDefaults
@@ -54,6 +59,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationRail
+import androidx.compose.material3.NavigationRailItem
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Scaffold
@@ -84,6 +91,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -371,9 +379,11 @@ class MainActivity : ComponentActivity() {
                 ) {
                     val focusManager = LocalFocusManager.current
                     val density = LocalDensity.current
-                    val windowsInsets = WindowInsets.systemBars
+                    val configuration = LocalConfiguration.current
+                    val cutoutInsets = WindowInsets.displayCutout
+                    val windowsInsets = WindowInsets.safeDrawing
                     val bottomInset = with(density) { windowsInsets.getBottom(density).toDp() }
-                    val bottomInsetDp = WindowInsets.systemBars.asPaddingValues().calculateBottomPadding()
+                    val bottomInsetDp = WindowInsets.safeDrawing.asPaddingValues().calculateBottomPadding()
 
                     val navController = rememberNavController()
                     val homeViewModel: HomeViewModel = hiltViewModel()
@@ -458,8 +468,11 @@ class MainActivity : ComponentActivity() {
                                     !active
                         }
 
+                    val isLandscape = remember(configuration) { configuration.screenWidthDp > configuration.screenHeightDp }
+                    val showRail = remember(isLandscape, shouldShowNavigationBar) { isLandscape && shouldShowNavigationBar }
+
                     fun getNavPadding(): Dp {
-                        return if (shouldShowNavigationBar) {
+                        return if (shouldShowNavigationBar && !showRail) { // Only add padding when NOT showing rail
                             if (slimNav) SlimNavBarHeight else NavigationBarHeight
                         } else {
                             0.dp
@@ -467,7 +480,7 @@ class MainActivity : ComponentActivity() {
                     }
 
                     val navigationBarHeight by animateDpAsState(
-                        targetValue = if (shouldShowNavigationBar) NavigationBarHeight else 0.dp,
+                        targetValue = if (shouldShowNavigationBar && !showRail) NavigationBarHeight else 0.dp,
                         animationSpec = NavigationBarAnimationSpec,
                         label = "",
                     )
@@ -475,7 +488,10 @@ class MainActivity : ComponentActivity() {
                     val playerBottomSheetState =
                         rememberBottomSheetState(
                             dismissedBound = 0.dp,
-                            collapsedBound = bottomInset + getNavPadding() + (if (useNewMiniPlayerDesign) MiniPlayerBottomSpacing else 0.dp) + MiniPlayerHeight,
+                            collapsedBound = bottomInset + 
+                                (if (!showRail && shouldShowNavigationBar) getNavPadding() else 0.dp) + // Only add nav padding when not showing rail
+                                (if (useNewMiniPlayerDesign) MiniPlayerBottomSpacing else 0.dp) + 
+                                MiniPlayerHeight,
                             expandedBound = maxHeight,
                         )
 
@@ -484,9 +500,12 @@ class MainActivity : ComponentActivity() {
                             bottomInset,
                             shouldShowNavigationBar,
                             playerBottomSheetState.isDismissed,
+                            showRail, // Add showRail dependency
                         ) {
                             var bottom = bottomInset
-                            if (shouldShowNavigationBar) bottom += NavigationBarHeight
+                            if (shouldShowNavigationBar && !showRail) { // Only add navigation bar height when not showing rail
+                                bottom += NavigationBarHeight
+                            }
                             if (!playerBottomSheetState.isDismissed) bottom += MiniPlayerHeight
                             windowsInsets
                                 .only(WindowInsetsSides.Horizontal + WindowInsetsSides.Top)
@@ -647,61 +666,69 @@ class MainActivity : ComponentActivity() {
                         Scaffold(
                             topBar = {
                                 if (shouldShowTopBar) {
-                                    TopAppBar(
-                                        title = {
-                                            Text(
-                                                text = currentTitleRes?.let { stringResource(it) }
-                                                    ?: "",
-                                                style = MaterialTheme.typography.titleLarge,
-                                            )
-                                        },
-                                        actions = {
-                                            IconButton(onClick = { navController.navigate("history") }) {
-                                                Icon(
-                                                    painter = painterResource(R.drawable.history),
-                                                    contentDescription = stringResource(R.string.history)
+                                    Row {
+                                        TopAppBar(
+                                            title = {
+                                                Text(
+                                                    text = currentTitleRes?.let { stringResource(it) } ?: "",
+                                                    style = MaterialTheme.typography.titleLarge,
                                                 )
-                                            }
-                                            IconButton(onClick = { navController.navigate("stats") }) {
-                                                Icon(
-                                                    painter = painterResource(R.drawable.stats),
-                                                    contentDescription = stringResource(R.string.stats)
-                                                )
-                                            }
-                                            IconButton(onClick = { showAccountDialog = true }) {
-                                                BadgedBox(badge = {
-                                                    if (latestVersionName != BuildConfig.VERSION_NAME) {
-                                                        Badge()
-                                                    }
-                                                }) {
-                                                    if (accountImageUrl != null) {
-                                                        AsyncImage(
-                                                            model = accountImageUrl,
-                                                            contentDescription = stringResource(R.string.account),
-                                                            modifier = Modifier
-                                                                .size(24.dp)
-                                                                .clip(CircleShape)
-                                                        )
-                                                    } else {
-                                                        Icon(
-                                                            painter = painterResource(R.drawable.account),
-                                                            contentDescription = stringResource(R.string.account),
-                                                            modifier = Modifier.size(24.dp)
-                                                        )
+                                            },
+                                            actions = {
+                                                IconButton(onClick = { navController.navigate("history") }) {
+                                                    Icon(
+                                                        painter = painterResource(R.drawable.history),
+                                                        contentDescription = stringResource(R.string.history)
+                                                    )
+                                                }
+                                                IconButton(onClick = { navController.navigate("stats") }) {
+                                                    Icon(
+                                                        painter = painterResource(R.drawable.stats),
+                                                        contentDescription = stringResource(R.string.stats)
+                                                    )
+                                                }
+                                                IconButton(onClick = { showAccountDialog = true }) {
+                                                    BadgedBox(badge = {
+                                                        if (latestVersionName != BuildConfig.VERSION_NAME) {
+                                                            Badge()
+                                                        }
+                                                    }) {
+                                                        if (accountImageUrl != null) {
+                                                            AsyncImage(
+                                                                model = accountImageUrl,
+                                                                contentDescription = stringResource(R.string.account),
+                                                                modifier = Modifier
+                                                                    .size(24.dp)
+                                                                    .clip(CircleShape)
+                                                            )
+                                                        } else {
+                                                            Icon(
+                                                                painter = painterResource(R.drawable.account),
+                                                                contentDescription = stringResource(R.string.account),
+                                                                modifier = Modifier.size(24.dp)
+                                                            )
+                                                        }
                                                     }
                                                 }
-                                            }
-                                        },
-                                        scrollBehavior =
-                                        searchBarScrollBehavior,
-                                        colors = TopAppBarDefaults.topAppBarColors(
-                                            containerColor = if (pureBlack) Color.Black else MaterialTheme.colorScheme.surfaceContainer,
-                                            scrolledContainerColor = if (pureBlack) Color.Black else MaterialTheme.colorScheme.surfaceContainer,
-                                            titleContentColor = MaterialTheme.colorScheme.onSurface,
-                                            actionIconContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                                            navigationIconContentColor = MaterialTheme.colorScheme.onSurfaceVariant
+                                            },
+                                            scrollBehavior = searchBarScrollBehavior,
+                                            colors = TopAppBarDefaults.topAppBarColors(
+                                                containerColor = if (pureBlack) Color.Black else MaterialTheme.colorScheme.surfaceContainer,
+                                                scrolledContainerColor = if (pureBlack) Color.Black else MaterialTheme.colorScheme.surfaceContainer,
+                                                titleContentColor = MaterialTheme.colorScheme.onSurface,
+                                                actionIconContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                                navigationIconContentColor = MaterialTheme.colorScheme.onSurfaceVariant
+                                            ),
+                                            modifier = Modifier.windowInsetsPadding(
+                                                if (showRail) {
+                                                    WindowInsets(left = NavigationBarHeight)
+                                                        .add(cutoutInsets.only(WindowInsetsSides.Start))
+                                                } else {
+                                                    cutoutInsets.only(WindowInsetsSides.Start + WindowInsetsSides.End)
+                                                }
+                                            )
                                         )
-                                    )
+                                    }
                                 }
                                 AnimatedVisibility(
                                     visible = active || navBackStackEntry?.destination?.route?.startsWith("search/") == true,
@@ -870,93 +897,104 @@ class MainActivity : ComponentActivity() {
                                 }
                             },
                             bottomBar = {
-                                Box {
+                                if (!showRail) {
+                                    Box {
+                                        BottomSheetPlayer(
+                                            state = playerBottomSheetState,
+                                            navController = navController,
+                                            pureBlack = pureBlack
+                                        )
+                                        NavigationBar(
+                                            modifier = Modifier
+                                                .align(Alignment.BottomCenter)
+                                                .height(bottomInset + getNavPadding())
+                                                .offset {
+                                                    if (navigationBarHeight == 0.dp) {
+                                                        IntOffset(
+                                                            x = 0,
+                                                            y = (bottomInset + NavigationBarHeight).roundToPx(),
+                                                        )
+                                                    } else {
+                                                        val slideOffset =
+                                                            (bottomInset + NavigationBarHeight) *
+                                                                    playerBottomSheetState.progress.coerceIn(
+                                                                        0f,
+                                                                        1f,
+                                                                    )
+                                                        val hideOffset =
+                                                            (bottomInset + NavigationBarHeight) * (1 - navigationBarHeight / NavigationBarHeight)
+                                                        IntOffset(
+                                                            x = 0,
+                                                            y = (slideOffset + hideOffset).roundToPx(),
+                                                        )
+                                                    }
+                                                },
+                                            containerColor = if (pureBlack) Color.Black else MaterialTheme.colorScheme.surfaceContainer,
+                                            contentColor = if (pureBlack) Color.White else MaterialTheme.colorScheme.onSurfaceVariant
+                                        ) {
+                                            navigationItems.fastForEach { screen ->
+                                                val isSelected =
+                                                    navBackStackEntry?.destination?.hierarchy?.any { it.route == screen.route } == true
+
+                                                NavigationBarItem(
+                                                    selected = isSelected,
+                                                    icon = {
+                                                        Icon(
+                                                            painter = painterResource(
+                                                                id = if (isSelected) screen.iconIdActive else screen.iconIdInactive
+                                                            ),
+                                                            contentDescription = null,
+                                                        )
+                                                    },
+                                                    label = {
+                                                        if (!slimNav) {
+                                                            Text(
+                                                                text = stringResource(screen.titleId),
+                                                                maxLines = 1,
+                                                                overflow = TextOverflow.Ellipsis
+                                                            )
+                                                        }
+                                                    },
+                                                    onClick = {
+                                                        if (screen.route == Screens.Search.route) {
+                                                            onActiveChange(true)
+                                                        } else if (isSelected) {
+                                                            navController.currentBackStackEntry?.savedStateHandle?.set("scrollToTop", true)
+                                                            coroutineScope.launch {
+                                                                searchBarScrollBehavior.state.resetHeightOffset()
+                                                            }
+                                                        } else {
+                                                            navController.navigate(screen.route) {
+                                                                popUpTo(navController.graph.startDestinationId) {
+                                                                    saveState = true
+                                                                }
+                                                                launchSingleTop = true
+                                                                restoreState = true
+                                                            }
+                                                        }
+                                                    },
+                                                )
+                                            }
+                                        }
+                                        
+                                        // Fix bottom inset background - only show when not using rail
+                                        val baseBg = if (pureBlack) Color.Black else MaterialTheme.colorScheme.surfaceContainer
+                                        val insetBg = if (playerBottomSheetState.progress > 0f) Color.Transparent else baseBg
+
+                                        Box(
+                                            modifier = Modifier
+                                                .background(insetBg)
+                                                .fillMaxWidth()
+                                                .align(Alignment.BottomCenter)
+                                                .height(bottomInsetDp)
+                                        )
+                                    }
+                                } else {
+                                    // When showing a rail, only show BottomSheetPlayer without extra bottom padding
                                     BottomSheetPlayer(
                                         state = playerBottomSheetState,
                                         navController = navController,
                                         pureBlack = pureBlack
-                                    )
-                                    NavigationBar(
-                                        modifier = Modifier
-                                            .align(Alignment.BottomCenter)
-                                            .height(bottomInset + getNavPadding())
-                                            .offset {
-                                                if (navigationBarHeight == 0.dp) {
-                                                    IntOffset(
-                                                        x = 0,
-                                                        y = (bottomInset + NavigationBarHeight).roundToPx(),
-                                                    )
-                                                } else {
-                                                    val slideOffset =
-                                                        (bottomInset + NavigationBarHeight) *
-                                                                playerBottomSheetState.progress.coerceIn(
-                                                                    0f,
-                                                                    1f,
-                                                                )
-                                                    val hideOffset =
-                                                        (bottomInset + NavigationBarHeight) * (1 - navigationBarHeight / NavigationBarHeight)
-                                                    IntOffset(
-                                                        x = 0,
-                                                        y = (slideOffset + hideOffset).roundToPx(),
-                                                    )
-                                                }
-                                            },
-                                        containerColor = if (pureBlack) Color.Black else MaterialTheme.colorScheme.surfaceContainer,
-                                        contentColor = if (pureBlack) Color.White else MaterialTheme.colorScheme.onSurfaceVariant
-                                    ) {
-                                        navigationItems.fastForEach { screen ->
-                                            val isSelected =
-                                                navBackStackEntry?.destination?.hierarchy?.any { it.route == screen.route } == true
-
-                                            NavigationBarItem(
-                                                selected = isSelected,
-                                                icon = {
-                                                    Icon(
-                                                        painter = painterResource(
-                                                            id = if (isSelected) screen.iconIdActive else screen.iconIdInactive
-                                                        ),
-                                                        contentDescription = null,
-                                                    )
-                                                },
-                                                label = {
-                                                    if (!slimNav) {
-                                                        Text(
-                                                            text = stringResource(screen.titleId),
-                                                            maxLines = 1,
-                                                            overflow = TextOverflow.Ellipsis
-                                                        )
-                                                    }
-                                                },
-                                                onClick = {
-                                                    if (screen.route == Screens.Search.route) {
-                                                        onActiveChange(true)
-                                                    } else if (isSelected) {
-                                                        navController.currentBackStackEntry?.savedStateHandle?.set("scrollToTop", true)
-                                                        coroutineScope.launch {
-                                                            searchBarScrollBehavior.state.resetHeightOffset()
-                                                        }
-                                                    } else {
-                                                        navController.navigate(screen.route) {
-                                                            popUpTo(navController.graph.startDestinationId) {
-                                                                saveState = true
-                                                            }
-                                                            launchSingleTop = true
-                                                            restoreState = true
-                                                        }
-                                                    }
-                                                },
-                                            )
-                                        }
-                                    }
-                                    val baseBg = if (pureBlack) Color.Black else MaterialTheme.colorScheme.surfaceContainer
-                                    val insetBg = if (playerBottomSheetState.progress > 0f) Color.Transparent else baseBg
-
-                                    Box(
-                                        modifier = Modifier
-                                            .background(insetBg)
-                                            .fillMaxWidth()
-                                            .align(Alignment.BottomCenter)
-                                            .height(bottomInsetDp)
                                     )
                                 }
                             },
@@ -988,56 +1026,99 @@ class MainActivity : ComponentActivity() {
                                 }
                             }
 
-                            NavHost(
-                                navController = navController,
-                                startDestination = when (tabOpenedFromShortcut ?: defaultOpenTab) {
-                                    NavigationTab.HOME -> Screens.Home
-                                    NavigationTab.LIBRARY -> Screens.Library
-                                    else -> Screens.Home
-                                }.route,
-                                enterTransition = {
-                                    if (initialState.destination.route in topLevelScreens && targetState.destination.route in topLevelScreens) {
-                                        fadeIn(tween(250))
-                                    } else {
-                                        fadeIn(tween(250)) + slideInHorizontally { it / 2 }
-                                    }
-                                },
-                                exitTransition = {
-                                    if (initialState.destination.route in topLevelScreens && targetState.destination.route in topLevelScreens) {
-                                        fadeOut(tween(200))
-                                    } else {
-                                        fadeOut(tween(200)) + slideOutHorizontally { -it / 2 }
-                                    }
-                                },
-                                popEnterTransition = {
-                                    if ((initialState.destination.route in topLevelScreens || initialState.destination.route?.startsWith("search/") == true) && targetState.destination.route in topLevelScreens) {
-                                        fadeIn(tween(250))
-                                    } else {
-                                        fadeIn(tween(250)) + slideInHorizontally { -it / 2 }
-                                    }
-                                },
-                                popExitTransition = {
-                                    if ((initialState.destination.route in topLevelScreens || initialState.destination.route?.startsWith("search/") == true) && targetState.destination.route in topLevelScreens) {
-                                        fadeOut(tween(200))
-                                    } else {
-                                        fadeOut(tween(200)) + slideOutHorizontally { it / 2 }
-                                    }
-                                },
-                                modifier = Modifier.nestedScroll(
-                                    if (navigationItems.fastAny { it.route == navBackStackEntry?.destination?.route } ||
-                                        navBackStackEntry?.destination?.route?.startsWith("search/") == true
+                            Row(Modifier.fillMaxSize()) {
+                                if (showRail) {
+                                    NavigationRail(
+                                        containerColor = if (pureBlack) Color.Black else MaterialTheme.colorScheme.surfaceContainer
                                     ) {
-                                        searchBarScrollBehavior.nestedScrollConnection
-                                    } else {
-                                        topAppBarScrollBehavior.nestedScrollConnection
+                                        navigationItems.fastForEach { screen ->
+                                            val isSelected =
+                                                navBackStackEntry?.destination?.hierarchy?.any { it.route == screen.route } == true
+                                            NavigationRailItem(
+                                                selected = isSelected,
+                                                onClick = {
+                                                    if (screen.route == Screens.Search.route) {
+                                                        onActiveChange(true)
+                                                    } else if (isSelected) {
+                                                        navController.currentBackStackEntry?.savedStateHandle?.set("scrollToTop", true)
+                                                        coroutineScope.launch {
+                                                            searchBarScrollBehavior.state.resetHeightOffset()
+                                                        }
+                                                    } else {
+                                                        navController.navigate(screen.route) {
+                                                            popUpTo(navController.graph.startDestinationId) {
+                                                                saveState = true
+                                                            }
+                                                            launchSingleTop = true
+                                                            restoreState = true
+                                                        }
+                                                    }
+                                                },
+                                                icon = {
+                                                    Icon(
+                                                        painter = painterResource(
+                                                            id = if (isSelected) screen.iconIdActive else screen.iconIdInactive
+                                                        ),
+                                                        contentDescription = null,
+                                                    )
+                                                },
+                                            )
+                                        }
                                     }
-                                )
-                            ) {
-                                navigationBuilder(
-                                    navController,
-                                    topAppBarScrollBehavior,
-                                    latestVersionName
-                                )
+                                }
+                                Box(Modifier.weight(1f)) {
+                                    NavHost(
+                                        navController = navController,
+                                        startDestination = when (tabOpenedFromShortcut ?: defaultOpenTab) {
+                                            NavigationTab.HOME -> Screens.Home
+                                            NavigationTab.LIBRARY -> Screens.Library
+                                            else -> Screens.Home
+                                        }.route,
+                                        enterTransition = {
+                                            if (initialState.destination.route in topLevelScreens && targetState.destination.route in topLevelScreens) {
+                                                fadeIn(tween(250))
+                                            } else {
+                                                fadeIn(tween(250)) + slideInHorizontally { it / 2 }
+                                            }
+                                        },
+                                        exitTransition = {
+                                            if (initialState.destination.route in topLevelScreens && targetState.destination.route in topLevelScreens) {
+                                                fadeOut(tween(200))
+                                            } else {
+                                                fadeOut(tween(200)) + slideOutHorizontally { -it / 2 }
+                                            }
+                                        },
+                                        popEnterTransition = {
+                                            if ((initialState.destination.route in topLevelScreens || initialState.destination.route?.startsWith("search/") == true) && targetState.destination.route in topLevelScreens) {
+                                                fadeIn(tween(250))
+                                            } else {
+                                                fadeIn(tween(250)) + slideInHorizontally { -it / 2 }
+                                            }
+                                        },
+                                        popExitTransition = {
+                                            if ((initialState.destination.route in topLevelScreens || initialState.destination.route?.startsWith("search/") == true) && targetState.destination.route in topLevelScreens) {
+                                                fadeOut(tween(200))
+                                            } else {
+                                                fadeOut(tween(200)) + slideOutHorizontally { it / 2 }
+                                            }
+                                        },
+                                        modifier = Modifier.nestedScroll(
+                                            if (navigationItems.fastAny { it.route == navBackStackEntry?.destination?.route } ||
+                                                navBackStackEntry?.destination?.route?.startsWith("search/") == true
+                                            ) {
+                                                searchBarScrollBehavior.nestedScrollConnection
+                                            } else {
+                                                topAppBarScrollBehavior.nestedScrollConnection
+                                            }
+                                        )
+                                    ) {
+                                        navigationBuilder(
+                                            navController,
+                                            topAppBarScrollBehavior,
+                                            latestVersionName
+                                        )
+                                    }
+                                }
                             }
                         }
 

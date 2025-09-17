@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -36,7 +37,7 @@ fun NavigationTitle(
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         modifier = modifier
             .fillMaxWidth()
-            .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Horizontal))
+            .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
             .clickable(enabled = onClick != null) {
                 onClick?.invoke()
             }
