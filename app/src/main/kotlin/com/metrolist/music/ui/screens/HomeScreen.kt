@@ -764,7 +764,7 @@ fun HomeScreen(
                 item {
                     LazyHorizontalGrid(
                         rows = GridCells.Fixed(4),
-                        contentPadding = WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal).asPaddingValues() + PaddingValues(6.dp),
+                        contentPadding = WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal).asPaddingValues(),
                         modifier = Modifier
                             .height((MoodAndGenresButtonHeight + 12.dp) * 4 + 12.dp)
                             .animateItem()
