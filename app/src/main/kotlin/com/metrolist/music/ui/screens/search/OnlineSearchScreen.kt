@@ -278,7 +278,8 @@ fun SuggestionItem(
             .height(SuggestionItemHeight)
             .background(if (pureBlack) Color.Black else MaterialTheme.colorScheme.surface)
             .clickable(onClick = onClick)
-            .padding(end = SearchBarIconOffsetX),
+            .padding(end = SearchBarIconOffsetX)
+            .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal)),
     ) {
         Icon(
             painterResource(if (online) R.drawable.search else R.drawable.history),
