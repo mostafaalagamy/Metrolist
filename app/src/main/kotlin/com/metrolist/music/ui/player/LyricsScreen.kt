@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -340,7 +341,7 @@ fun LyricsScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .windowInsetsPadding(WindowInsets.systemBars)
+                        .windowInsetsPadding(WindowInsets.safeDrawing)
                 ) {
                     // Unified header across full width
                     Row(
@@ -684,7 +685,7 @@ fun LyricsScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(WindowInsets.systemBars.asPaddingValues())
+                        .padding(WindowInsets.safeDrawing.asPaddingValues())
                 ) {
                     // Header with More button and Down arrow on opposite sides
                     Row(
