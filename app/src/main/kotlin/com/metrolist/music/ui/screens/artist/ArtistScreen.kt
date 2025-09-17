@@ -542,7 +542,9 @@ fun ArtistScreen(
                             } else {
                                 libraryAlbums
                             }
-                            LazyRow {
+                            LazyRow(
+                                contentPadding = WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal).asPaddingValues(),
+                            ) {
                                 items(
                                     items = filteredLibraryAlbums,
                                     key = { "local_album_${it.id}_${filteredLibraryAlbums.indexOf(it)}" }
@@ -648,7 +650,9 @@ fun ArtistScreen(
                             }
                         } else {
                             item {
-                                LazyRow {
+                                LazyRow(
+                                    contentPadding = WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal).asPaddingValues(),
+                                ) {
                                     items(
                                         items = section.items.distinctBy { it.id },
                                         key = { "youtube_album_${it.id}" },

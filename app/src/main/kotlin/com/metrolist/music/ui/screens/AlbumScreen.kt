@@ -468,7 +468,9 @@ fun AlbumScreen(
                     )
                 }
                 item {
-                    LazyRow {
+                    LazyRow(
+                        contentPadding = WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal).asPaddingValues(),
+                    ) {
                         items(
                             items = otherVersions.distinctBy { it.id },
                             key = { it.id },
