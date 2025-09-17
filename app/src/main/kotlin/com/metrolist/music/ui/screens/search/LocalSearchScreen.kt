@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -74,12 +75,31 @@ fun LocalSearchScreen(
         viewModel.query.value = query
     }
 
+    val configuration = LocalConfiguration.current
+    val isLandscape = configuration.screenWidthDp > configuration.screenHeightDp
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(if (pureBlack) Color.Black else MaterialTheme.colorScheme.background)
-            .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top))
+            .let { base ->
+                if (isLandscape) {
+                    // Apply safe horizontal insets only in landscape to avoid notch/rail overlap
+                    base.windowInsetsPadding(
+                        WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal)
+                    )
+                } else base
+            }
     ) {
+        if (isLandscape) {
+            // Add safe top inset only in landscape so chips don't tuck under status/notch
+            Spacer(
+                modifier = Modifier
+                    .windowInsetsPadding(
+                        WindowInsets.safeDrawing.only(WindowInsetsSides.Top)
+                    )
+            )
+        }
         ChipsRow(
             chips = listOf(
                 LocalFilter.ALL to stringResource(R.string.filter_all),
@@ -95,8 +115,9 @@ fun LocalSearchScreen(
         LazyColumn(
             state = lazyListState,
             modifier = Modifier.weight(1f),
+            // Keep only bottom safe area inside the list; top handled above (landscape only)
             contentPadding = WindowInsets.safeDrawing
-                .only(WindowInsetsSides.Top + WindowInsetsSides.Bottom)
+                .only(WindowInsetsSides.Bottom)
                 .asPaddingValues(),
         ) {
             result.map.forEach { (filter, items) ->
