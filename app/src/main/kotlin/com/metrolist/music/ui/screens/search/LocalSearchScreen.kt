@@ -82,14 +82,6 @@ fun LocalSearchScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(if (pureBlack) Color.Black else MaterialTheme.colorScheme.background)
-            .let { base ->
-                if (isLandscape) {
-                    // Apply safe horizontal insets only in landscape to avoid notch/rail overlap
-                    base.windowInsetsPadding(
-                        WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal)
-                    )
-                } else base
-            }
     ) {
         if (isLandscape) {
             // Add safe top inset only in landscape so chips don't tuck under status/notch
