@@ -73,7 +73,7 @@ import android.content.ClipboardManager
 fun ShowMediaInfo(videoId: String) {
     if (videoId.isBlank() || videoId.isEmpty()) return
 
-    val windowInsets = WindowInsets.safeDrawing
+    val windowInsets = WindowInsets.systemBars
 
     var info by remember {
         mutableStateOf<MediaInfo?>(null)

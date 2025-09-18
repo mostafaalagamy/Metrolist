@@ -121,7 +121,7 @@ fun BottomSheetPage(
             modifier = Modifier
                 .fillMaxWidth()
                 .windowInsetsPadding(WindowInsets.statusBars)
-                .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
+                .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Horizontal))
                 .padding(top = 100.dp) // Give enough space from top
                 .clip(ShapeDefaults.Large.top())
                 .background(background)

@@ -407,7 +407,7 @@ fun HomeScreen(
                         state = quickPicksLazyGridState,
                         rows = GridCells.Fixed(4),
                         flingBehavior = rememberSnapFlingBehavior(quickPicksSnapLayoutInfoProvider),
-                        contentPadding = WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal).asPaddingValues(),
+                        contentPadding = WindowInsets.systemBars.only(WindowInsetsSides.Horizontal).asPaddingValues(),
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(ListItemHeight * 4)
@@ -485,7 +485,7 @@ fun HomeScreen(
                     LazyHorizontalGrid(
                         state = rememberLazyGridState(),
                         rows = GridCells.Fixed(rows),
-                        contentPadding = WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal).asPaddingValues(),
+                        contentPadding = WindowInsets.systemBars.only(WindowInsetsSides.Horizontal).asPaddingValues(),
                         modifier = Modifier
                             .fillMaxWidth()
                             .height((GridThumbnailHeight + with(LocalDensity.current) {
@@ -540,7 +540,7 @@ fun HomeScreen(
 
                 item {
                     LazyRow(
-                        contentPadding = WindowInsets.safeDrawing
+                        contentPadding = WindowInsets.systemBars
                             .only(WindowInsetsSides.Horizontal)
                             .asPaddingValues(),
                         modifier = Modifier.animateItem()
@@ -569,7 +569,7 @@ fun HomeScreen(
                     LazyHorizontalGrid(
                         state = forgottenFavoritesLazyGridState,
                         rows = GridCells.Fixed(rows),
-                        contentPadding = WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal).asPaddingValues(),
+                        contentPadding = WindowInsets.systemBars.only(WindowInsetsSides.Horizontal).asPaddingValues(),
                         flingBehavior = rememberSnapFlingBehavior(
                             forgottenFavoritesSnapLayoutInfoProvider
                         ),
@@ -671,7 +671,7 @@ fun HomeScreen(
 
                 item {
                     LazyRow(
-                        contentPadding = WindowInsets.safeDrawing
+                        contentPadding = WindowInsets.systemBars
                             .only(WindowInsetsSides.Horizontal)
                             .asPaddingValues(),
                         modifier = Modifier.animateItem()
@@ -717,7 +717,7 @@ fun HomeScreen(
 
                 item {
                     LazyRow(
-                        contentPadding = WindowInsets.safeDrawing
+                        contentPadding = WindowInsets.systemBars
                             .only(WindowInsetsSides.Horizontal)
                             .asPaddingValues(),
                         modifier = Modifier.animateItem()
@@ -741,7 +741,7 @@ fun HomeScreen(
                                 .width(250.dp),
                         )
                         LazyRow(
-                            contentPadding = WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal).asPaddingValues(),
+                            contentPadding = WindowInsets.systemBars.only(WindowInsetsSides.Horizontal).asPaddingValues(),
                         ) {
                             items(4) {
                                 GridItemPlaceHolder()
@@ -764,7 +764,7 @@ fun HomeScreen(
                 item {
                     LazyHorizontalGrid(
                         rows = GridCells.Fixed(4),
-                        contentPadding = WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal).asPaddingValues(),
+                        contentPadding = PaddingValues(6.dp),
                         modifier = Modifier
                             .height((MoodAndGenresButtonHeight + 12.dp) * 4 + 12.dp)
                             .animateItem()

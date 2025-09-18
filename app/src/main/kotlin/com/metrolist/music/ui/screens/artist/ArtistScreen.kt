@@ -152,7 +152,7 @@ fun ArtistScreen(
     val density = LocalDensity.current
 
     // Calculate the offset value outside of the offset lambda
-    val systemBarsTopPadding = WindowInsets.safeDrawing.asPaddingValues().calculateTopPadding()
+    val systemBarsTopPadding = WindowInsets.systemBars.asPaddingValues().calculateTopPadding()
     val headerOffset = with(density) {
         -(systemBarsTopPadding + AppBarHeight).roundToPx()
     }
@@ -545,7 +545,7 @@ fun ArtistScreen(
                                 libraryAlbums
                             }
                             LazyRow(
-                                contentPadding = WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal).asPaddingValues(),
+                                contentPadding = WindowInsets.systemBars.only(WindowInsetsSides.Horizontal).asPaddingValues(),
                             ) {
                                 items(
                                     items = filteredLibraryAlbums,
@@ -653,7 +653,7 @@ fun ArtistScreen(
                         } else {
                             item {
                                 LazyRow(
-                                    contentPadding = WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal).asPaddingValues(),
+                                    contentPadding = WindowInsets.systemBars.only(WindowInsetsSides.Horizontal).asPaddingValues(),
                                 ) {
                                     items(
                                         items = section.items.distinctBy { it.id },

@@ -115,7 +115,7 @@ fun YouTubeBrowseScreen(
                                 .width(250.dp),
                         )
                         LazyRow(
-                            contentPadding = WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal).asPaddingValues(),
+                            contentPadding = WindowInsets.systemBars.only(WindowInsetsSides.Horizontal).asPaddingValues(),
                         ) {
                             items(4) {
                                 GridItemPlaceHolder()
@@ -138,7 +138,7 @@ fun YouTubeBrowseScreen(
                                 state = lazyGridState,
                                 rows = GridCells.Fixed(4),
                                 flingBehavior = rememberSnapFlingBehavior(snapLayoutInfoProvider),
-                                contentPadding = WindowInsets.safeDrawing
+                                contentPadding = WindowInsets.systemBars
                                     .only(WindowInsetsSides.Horizontal)
                                     .asPaddingValues(),
                                 modifier = Modifier
@@ -195,7 +195,7 @@ fun YouTubeBrowseScreen(
                     } else {
                         item {
                             LazyRow(
-                                contentPadding = WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal).asPaddingValues(),
+                                contentPadding = WindowInsets.systemBars.only(WindowInsetsSides.Horizontal).asPaddingValues(),
                             ) {
                                 items(
                                     items = it.items,

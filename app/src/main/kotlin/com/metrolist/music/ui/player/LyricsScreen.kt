@@ -341,7 +341,7 @@ fun LyricsScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .windowInsetsPadding(WindowInsets.safeDrawing)
+                        .windowInsetsPadding(WindowInsets.systemBars)
                 ) {
                     // Unified header across full width
                     Row(
@@ -685,7 +685,7 @@ fun LyricsScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(WindowInsets.safeDrawing.asPaddingValues())
+                        .padding(WindowInsets.systemBars.asPaddingValues())
                 ) {
                     // Header with More button and Down arrow on opposite sides
                     Row(
