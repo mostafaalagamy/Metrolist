@@ -1335,9 +1335,14 @@ class MusicService :
         if (nextIndex == C.INDEX_UNSET) return
 
         // build alt player if needed
-        val nextItem = player.getMediaItemAt(nextIndex)
+        // Build alt player timeline with remaining queue starting from nextIndex
+        val remainingItems = player.mediaItems.subList(nextIndex, player.mediaItemCount)
         val alt = altPlayer ?: buildPlayer().also { altPlayer = it }
-        alt.setMediaItem(nextItem)
+        alt.setMediaItems(remainingItems, /* startIndex= */0, /* positionMs= */0)
+        alt.repeatMode = player.repeatMode
+        alt.shuffleModeEnabled = player.shuffleModeEnabled
+        alt.addAnalyticsListener(PlaybackStatsListener(false, this@MusicService))
+        alt.setOffloadEnabled(dataStore.get(AudioOffload, false))
         alt.prepare()
         alt.volume = 0f
         alt.playWhenReady = true
@@ -1369,6 +1374,8 @@ class MusicService :
         player.addListener(sleepTimer)
         player.playWhenReady = true
         player.volume = playerVolume.value * normalizeFactor.value
+        currentMediaMetadata.value = player.currentMetadata
+        crossfadeJob?.cancel()
 
         // fade out old main shortly and cleanup
         val handoverSteps = 8
