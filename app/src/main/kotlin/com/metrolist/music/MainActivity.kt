@@ -475,9 +475,6 @@ class MainActivity : ComponentActivity() {
                     }
                     val showRail = isLandscape && !inSearchScreen
 
-                    val baseBg = if (pureBlack) Color.Black else MaterialTheme.colorScheme.surfaceContainer
-                    val insetBg = if (playerBottomSheetState.progress > 0f) Color.Transparent else baseBg
-
                     fun getNavPadding(): Dp {
                         return if (shouldShowNavigationBar && !showRail) { // Only add padding when NOT showing rail
                             if (slimNav) SlimNavBarHeight else NavigationBarHeight
@@ -660,6 +657,9 @@ class MainActivity : ComponentActivity() {
                     }
 
                     var showAccountDialog by remember { mutableStateOf(false) }
+
+                    val baseBg = if (pureBlack) Color.Black else MaterialTheme.colorScheme.surfaceContainer
+                    val insetBg = if (playerBottomSheetState.progress > 0f) Color.Transparent else baseBg
 
                     CompositionLocalProvider(
                         LocalDatabase provides database,
