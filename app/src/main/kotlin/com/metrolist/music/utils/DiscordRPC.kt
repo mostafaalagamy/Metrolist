@@ -10,9 +10,23 @@ class DiscordRPC(
     val context: Context,
     token: String,
 ) : KizzyRPC(token) {
-    suspend fun updateSong(song: Song, currentPlaybackTimeMillis: Long) = runCatching {
+    suspend fun updateSong(song: Song, currentPlaybackTimeMillis: Long, playbackSpeed: Float = 1.0f) = runCatching {
         val currentTime = System.currentTimeMillis()
         val calculatedStartTime = currentTime - currentPlaybackTimeMillis
+        
+        // Format the title with rate change if different from 1.0
+        val appName = context.getString(R.string.app_name).removeSuffix(" Debug")
+        val titleWithRate = if (playbackSpeed != 1.0f) {
+            "$appName [${String.format("%.1fx", playbackSpeed)}]"
+        } else {
+            appName
+        }
+        
+        // Calculate adjusted end time based on playback speed
+        // If speed is higher, the song will end sooner; if lower, it will take longer
+        val remainingDuration = song.song.duration * 1000L - currentPlaybackTimeMillis
+        val adjustedRemainingDuration = (remainingDuration / playbackSpeed).toLong()
+        
         setActivity(
             name = context.getString(R.string.app_name).removeSuffix(" Debug"),
             details = song.song.title,
@@ -27,10 +41,10 @@ class DiscordRPC(
                 "Visit Metrolist" to "https://github.com/mostafaalagamy/Metrolist"
             ),
             type = Type.LISTENING,
-            statusDisplayType = StatusDisplayType.STATE,
+            statusDisplayType = StatusDisplayType.DETAILS,
             since = currentTime,
             startTime = calculatedStartTime,
-            endTime = currentTime + (song.song.duration * 1000L - currentPlaybackTimeMillis),
+            endTime = currentTime + adjustedRemainingDuration,
             applicationId = APPLICATION_ID
         )
     }

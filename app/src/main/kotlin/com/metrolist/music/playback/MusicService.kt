@@ -20,6 +20,7 @@ import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackException
+import androidx.media3.common.PlaybackParameters
 import androidx.media3.common.Player
 import androidx.media3.common.Player.EVENT_POSITION_DISCONTINUITY
 import androidx.media3.common.Player.EVENT_TIMELINE_CHANGED
@@ -330,7 +331,7 @@ class MusicService :
         currentSong.debounce(1000).collect(scope) { song ->
             updateNotification()
             if (song != null && player.playWhenReady && player.playbackState == Player.STATE_READY) {
-                discordRpc?.updateSong(song, player.currentPosition)
+                discordRpc?.updateSong(song, player.currentPosition, player.playbackParameters.speed)
             } else {
                 discordRpc?.closeRPC()
             }
@@ -397,7 +398,7 @@ class MusicService :
                     discordRpc = DiscordRPC(this, key)
                     if (player.playbackState == Player.STATE_READY && player.playWhenReady) {
                         currentSong.value?.let {
-                            discordRpc?.updateSong(it, player.currentPosition)
+                            discordRpc?.updateSong(it, player.currentPosition, player.playbackParameters.speed)
                         }
                     }
                 }
@@ -988,7 +989,7 @@ class MusicService :
             if (player.isPlaying) {
                 currentSong.value?.let { song ->
                     scope.launch {
-                        discordRpc?.updateSong(song, player.currentPosition)
+                        discordRpc?.updateSong(song, player.currentPosition, player.playbackParameters.speed)
                     }
                 }
             }
@@ -1030,6 +1031,18 @@ class MusicService :
         // Save state when repeat mode changes
         if (dataStore.get(PersistentQueueKey, true)) {
             saveQueueToDisk()
+        }
+    }
+
+    override fun onPlaybackParametersChanged(playbackParameters: PlaybackParameters) {
+        super.onPlaybackParametersChanged(playbackParameters)
+        // Update Discord RPC when playback parameters (speed/pitch) change
+        if (player.playWhenReady && player.playbackState == Player.STATE_READY) {
+            currentSong.value?.let { song ->
+                scope.launch {
+                    discordRpc?.updateSong(song, player.currentPosition, playbackParameters.speed)
+                }
+            }
         }
     }
 
