@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="crossfade_title">Crossfade</string>
+    <string name="crossfade_desc">Fade between songs seamlessly</string>
+    <string name="crossfade_duration">Crossfade duration (seconds)</string>
     <string name="explore">Explore</string>
 
     <string name="local_history">Local</string>

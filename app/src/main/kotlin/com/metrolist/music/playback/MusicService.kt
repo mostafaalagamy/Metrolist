@@ -61,6 +61,8 @@ import com.metrolist.innertube.models.WatchEndpoint
 import com.metrolist.music.MainActivity
 import com.metrolist.music.R
 import com.metrolist.music.constants.AudioNormalizationKey
+import com.metrolist.music.constants.CrossfadeEnabledKey
+import com.metrolist.music.constants.CrossfadeDurationKey
 import com.metrolist.music.constants.AudioQualityKey
 import com.metrolist.music.constants.AudioOffload
 import com.metrolist.music.constants.AutoLoadMoreKey
@@ -369,9 +371,17 @@ class MusicService :
             dataStore.data
                 .map { it[AudioNormalizationKey] ?: true }
                 .distinctUntilChanged(),
-        ) { format, normalizeAudio ->
-            format to normalizeAudio
-        }.collectLatest(scope) { (format, normalizeAudio) ->
+            dataStore.data
+                .map { it[CrossfadeEnabledKey] ?: false }
+                .distinctUntilChanged(),
+            dataStore.data
+                .map { it[CrossfadeDurationKey] ?: 5 }
+                .distinctUntilChanged(),
+        ) { format, normalizeAudio, crossfadeEnabled, crossfadeDuration ->
+            arrayOf(format, normalizeAudio, crossfadeEnabled, crossfadeDuration)
+        }.collectLatest(scope) { arr ->
+            val format = arr[0] as com.metrolist.music.db.entities.FormatEntity?
+            val normalizeAudio = arr[1] as Boolean
             normalizeFactor.value =
                 if (normalizeAudio && format?.loudnessDb != null) {
                     var factor = 10f.pow(-format.loudnessDb.toFloat() / 20)
@@ -382,6 +392,11 @@ class MusicService :
                 } else {
                     1f
                 }
+
+            // Placeholder: wiring for crossfade setting (actual playback switch will follow)
+            if (arr[2] as Boolean) {
+                // Crossfade enabled with duration (arr[3] as Int)
+            }
         }
 
         dataStore.data

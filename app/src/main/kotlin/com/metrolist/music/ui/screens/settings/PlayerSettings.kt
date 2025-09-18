@@ -38,6 +38,8 @@ import androidx.navigation.NavController
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.R
 import com.metrolist.music.constants.AudioNormalizationKey
+import com.metrolist.music.constants.CrossfadeEnabledKey
+import com.metrolist.music.constants.CrossfadeDurationKey
 import com.metrolist.music.constants.AudioQuality
 import com.metrolist.music.constants.AudioQualityKey
 import com.metrolist.music.constants.AudioOffload
@@ -82,6 +84,15 @@ fun PlayerSettings(
     val (audioNormalization, onAudioNormalizationChange) = rememberPreference(
         AudioNormalizationKey,
         defaultValue = true
+    )
+
+    val (crossfadeEnabled, onCrossfadeEnabledChange) = rememberPreference(
+        CrossfadeEnabledKey,
+        defaultValue = false
+    )
+    val (crossfadeDuration, onCrossfadeDurationChange) = rememberPreference(
+        CrossfadeDurationKey,
+        defaultValue = 5
     )
 
     val (audioOffload, onAudioOffloadChange) = rememberPreference(
@@ -173,6 +184,21 @@ fun PlayerSettings(
             icon = { Icon(painterResource(R.drawable.volume_up), null) },
             checked = audioNormalization,
             onCheckedChange = onAudioNormalizationChange
+        )
+
+        SwitchPreference(
+            title = { Text(stringResource(R.string.crossfade_title)) },
+            description = stringResource(R.string.crossfade_desc),
+            icon = { Icon(painterResource(R.drawable.fade), null) },
+            checked = crossfadeEnabled,
+            onCheckedChange = onCrossfadeEnabledChange
+        )
+
+        SliderPreference(
+            title = { Text(stringResource(R.string.crossfade_duration)) },
+            icon = { Icon(painterResource(R.drawable.timer), null) },
+            value = crossfadeDuration.toFloat(),
+            onValueChange = { onCrossfadeDurationChange(it.roundToInt()) },
         )
 
         SwitchPreference(
