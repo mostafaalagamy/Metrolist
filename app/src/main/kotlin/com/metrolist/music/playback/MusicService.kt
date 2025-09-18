@@ -211,6 +211,8 @@ class MusicService :
 
     private val normalizeFactor = MutableStateFlow(1f)
     val playerVolume = MutableStateFlow(dataStore.get(PlayerVolumeKey, 1f).coerceIn(0f, 1f))
+    private val fadeMultiplier = MutableStateFlow(1f)
+    private var crossfadeJob: Job? = null
 
     lateinit var sleepTimer: SleepTimer
 
@@ -317,8 +319,8 @@ class MusicService :
             }
         }
 
-        combine(playerVolume, normalizeFactor) { playerVolume, normalizeFactor ->
-            playerVolume * normalizeFactor
+        combine(playerVolume, normalizeFactor, fadeMultiplier) { playerVolume, normalizeFactor, fadeMultiplier ->
+            playerVolume * normalizeFactor * fadeMultiplier
         }.collectLatest(scope) {
             player.volume = it
         }
@@ -382,6 +384,8 @@ class MusicService :
         }.collectLatest(scope) { arr ->
             val format = arr[0] as com.metrolist.music.db.entities.FormatEntity?
             val normalizeAudio = arr[1] as Boolean
+            val crossfadeEnabled = arr[2] as Boolean
+            val crossfadeDuration = arr[3] as Int
             normalizeFactor.value =
                 if (normalizeAudio && format?.loudnessDb != null) {
                     var factor = 10f.pow(-format.loudnessDb.toFloat() / 20)
@@ -393,9 +397,53 @@ class MusicService :
                     1f
                 }
 
-            // Placeholder: wiring for crossfade setting (actual playback switch will follow)
-            if (arr[2] as Boolean) {
-                // Crossfade enabled with duration (arr[3] as Int)
+            // (Approx.) Crossfade monitor using single ExoPlayer by volume ramp
+            crossfadeJob?.cancel()
+            if (crossfadeEnabled && crossfadeDuration > 0) {
+                crossfadeJob = scope.launch(Dispatchers.Main) {
+                    var armedForThisTrack = false
+                    while (isActive) {
+                        if (player.playbackState == Player.STATE_READY || player.playbackState == Player.STATE_BUFFERING) {
+                            val durationMs = player.duration
+                            val positionMs = player.currentPosition
+                            if (durationMs > 0) {
+                                val remainingSec = ((durationMs - positionMs) / 1000L).toInt()
+                                if (!armedForThisTrack && remainingSec <= crossfadeDuration + 1) {
+                                    armedForThisTrack = true
+                                    // Start fade out, then jump to next and fade in
+                                    val fadeMs = (crossfadeDuration * 1000L).coerceAtLeast(250L)
+                                    // fade out
+                                    val steps = 20
+                                    for (i in 0..steps) {
+                                        fadeMultiplier.value = 1f - (i.toFloat() / steps)
+                                        delay(fadeMs / steps)
+                                    }
+                                    // move to next item if exists
+                                    val nextIndex = player.nextMediaItemIndex
+                                    if (nextIndex != C.INDEX_UNSET) {
+                                        player.seekTo(nextIndex, C.TIME_UNSET)
+                                        player.playWhenReady = true
+                                    }
+                                    // fade in
+                                    for (i in 0..steps) {
+                                        fadeMultiplier.value = (i.toFloat() / steps)
+                                        delay(fadeMs / steps)
+                                    }
+                                    fadeMultiplier.value = 1f
+                                }
+                                // disarm when track changes back far from tail
+                                if (remainingSec > crossfadeDuration + 5) {
+                                    armedForThisTrack = false
+                                }
+                            } else {
+                                armedForThisTrack = false
+                            }
+                        }
+                        delay(200)
+                    }
+                }
+            } else {
+                fadeMultiplier.value = 1f
             }
         }
 
