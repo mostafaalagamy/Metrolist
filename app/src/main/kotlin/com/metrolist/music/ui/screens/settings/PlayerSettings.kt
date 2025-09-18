@@ -189,14 +189,14 @@ fun PlayerSettings(
         SwitchPreference(
             title = { Text(stringResource(R.string.crossfade_title)) },
             description = stringResource(R.string.crossfade_desc),
-            icon = { Icon(painterResource(R.drawable.fade), null) },
+            icon = { Icon(painterResource(R.drawable.graphic_eq), null) },
             checked = crossfadeEnabled,
             onCheckedChange = onCrossfadeEnabledChange
         )
 
         SliderPreference(
             title = { Text(stringResource(R.string.crossfade_duration)) },
-            icon = { Icon(painterResource(R.drawable.timer), null) },
+            icon = { Icon(painterResource(R.drawable.graphic_eq), null) },
             value = crossfadeDuration.toFloat(),
             onValueChange = { onCrossfadeDurationChange(it.roundToInt()) },
         )
