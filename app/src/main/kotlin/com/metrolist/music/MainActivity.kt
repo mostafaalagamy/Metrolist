@@ -1049,10 +1049,10 @@ class MainActivity : ComponentActivity() {
                                                     } else {
                                                         navController.navigate(screen.route) {
                                                             popUpTo(navController.graph.startDestinationId) {
-                                                                saveState = true
+                                                                inclusive = false
                                                             }
                                                             launchSingleTop = true
-                                                            restoreState = true
+                                                            restoreState = false
                                                         }
                                                     }
                                                 },
