@@ -454,11 +454,13 @@ class MainActivity : ComponentActivity() {
                         mutableStateOf(intent?.action == ACTION_SEARCH)
                     }
 
+                    val inSearchScreen = navBackStackEntry?.destination?.route?.startsWith("search/") == true
+
                     val shouldShowSearchBar =
                         remember(active, navBackStackEntry) {
                             active ||
                                     navigationItems.fastAny { it.route == navBackStackEntry?.destination?.route } ||
-                                    navBackStackEntry?.destination?.route?.startsWith("search/") == true
+                                    inSearchScreen
                         }
 
                     val shouldShowNavigationBar =
@@ -468,8 +470,10 @@ class MainActivity : ComponentActivity() {
                                     !active
                         }
 
-                    val isLandscape = remember(configuration) { configuration.screenWidthDp > configuration.screenHeightDp }
-                    val showRail = isLandscape
+                    val isLandscape = remember(configuration) {
+                        configuration.screenWidthDp > configuration.screenHeightDp
+                    }
+                    val showRail = isLandscape && !inSearchScreen
 
                     fun getNavPadding(): Dp {
                         return if (shouldShowNavigationBar && !showRail) { // Only add padding when NOT showing rail
@@ -514,7 +518,7 @@ class MainActivity : ComponentActivity() {
 
                     appBarScrollBehavior(
                         canScroll = {
-                            navBackStackEntry?.destination?.route?.startsWith("search/") == false &&
+                            !inSearchScreen &&
                                     (playerBottomSheetState.isCollapsed || playerBottomSheetState.isDismissed)
                         }
                     )
@@ -522,20 +526,20 @@ class MainActivity : ComponentActivity() {
                     val searchBarScrollBehavior =
                         appBarScrollBehavior(
                             canScroll = {
-                                navBackStackEntry?.destination?.route?.startsWith("search/") == false &&
+                                !inSearchScreen &&
                                         (playerBottomSheetState.isCollapsed || playerBottomSheetState.isDismissed)
                             },
                         )
                     val topAppBarScrollBehavior =
                         appBarScrollBehavior(
                             canScroll = {
-                                navBackStackEntry?.destination?.route?.startsWith("search/") == false &&
+                                !inSearchScreen &&
                                         (playerBottomSheetState.isCollapsed || playerBottomSheetState.isDismissed)
                             },
                         )
 
                     LaunchedEffect(navBackStackEntry) {
-                        if (navBackStackEntry?.destination?.route?.startsWith("search/") == true) {
+                        if (inSearchScreen) {
                             val searchQuery =
                                 withContext(Dispatchers.IO) {
                                     if (navBackStackEntry
@@ -654,6 +658,9 @@ class MainActivity : ComponentActivity() {
 
                     var showAccountDialog by remember { mutableStateOf(false) }
 
+                    val baseBg = if (pureBlack) Color.Black else MaterialTheme.colorScheme.surfaceContainer
+                    val insetBg = if (playerBottomSheetState.progress > 0f) Color.Transparent else baseBg
+
                     CompositionLocalProvider(
                         LocalDatabase provides database,
                         LocalContentColor provides if (pureBlack) Color.White else contentColorFor(MaterialTheme.colorScheme.surface),
@@ -731,7 +738,7 @@ class MainActivity : ComponentActivity() {
                                     }
                                 }
                                 AnimatedVisibility(
-                                    visible = active || navBackStackEntry?.destination?.route?.startsWith("search/") == true,
+                                    visible = active || inSearchScreen,
                                     enter = fadeIn(animationSpec = tween(durationMillis = 300)),
                                     exit = fadeOut(animationSpec = tween(durationMillis = 200))
                                 ) {
@@ -976,10 +983,6 @@ class MainActivity : ComponentActivity() {
                                                 )
                                             }
                                         }
-                                        
-                                        // Fix bottom inset background - only show when not using rail
-                                        val baseBg = if (pureBlack) Color.Black else MaterialTheme.colorScheme.surfaceContainer
-                                        val insetBg = if (playerBottomSheetState.progress > 0f) Color.Transparent else baseBg
 
                                         Box(
                                             modifier = Modifier
@@ -990,11 +993,18 @@ class MainActivity : ComponentActivity() {
                                         )
                                     }
                                 } else {
-                                    // When showing a rail, only show BottomSheetPlayer without extra bottom padding
                                     BottomSheetPlayer(
                                         state = playerBottomSheetState,
                                         navController = navController,
                                         pureBlack = pureBlack
+                                    )
+
+                                    Box(
+                                        modifier = Modifier
+                                            .background(insetBg)
+                                            .fillMaxWidth()
+                                            .align(Alignment.BottomCenter)
+                                            .height(bottomInsetDp)
                                     )
                                 }
                             },
@@ -1093,14 +1103,14 @@ class MainActivity : ComponentActivity() {
                                             }
                                         },
                                         popEnterTransition = {
-                                            if ((initialState.destination.route in topLevelScreens || initialState.destination.route?.startsWith("search/") == true) && targetState.destination.route in topLevelScreens) {
+                                            if ((initialState.destination.route in topLevelScreens || inSearchScreen) && targetState.destination.route in topLevelScreens) {
                                                 fadeIn(tween(250))
                                             } else {
                                                 fadeIn(tween(250)) + slideInHorizontally { -it / 2 }
                                             }
                                         },
                                         popExitTransition = {
-                                            if ((initialState.destination.route in topLevelScreens || initialState.destination.route?.startsWith("search/") == true) && targetState.destination.route in topLevelScreens) {
+                                            if ((initialState.destination.route in topLevelScreens || inSearchScreen) && targetState.destination.route in topLevelScreens) {
                                                 fadeOut(tween(200))
                                             } else {
                                                 fadeOut(tween(200)) + slideOutHorizontally { it / 2 }
@@ -1108,7 +1118,7 @@ class MainActivity : ComponentActivity() {
                                         },
                                         modifier = Modifier.nestedScroll(
                                             if (navigationItems.fastAny { it.route == navBackStackEntry?.destination?.route } ||
-                                                navBackStackEntry?.destination?.route?.startsWith("search/") == true
+                                                inSearchScreen
                                             ) {
                                                 searchBarScrollBehavior.nestedScrollConnection
                                             } else {
