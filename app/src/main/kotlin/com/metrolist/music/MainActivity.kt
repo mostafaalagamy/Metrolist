@@ -976,8 +976,7 @@ class MainActivity : ComponentActivity() {
                                                 )
                                             }
                                         }
-                                        
-                                        // Fix bottom inset background - only show when not using rail
+
                                         val baseBg = if (pureBlack) Color.Black else MaterialTheme.colorScheme.surfaceContainer
                                         val insetBg = if (playerBottomSheetState.progress > 0f) Color.Transparent else baseBg
 
@@ -990,11 +989,18 @@ class MainActivity : ComponentActivity() {
                                         )
                                     }
                                 } else {
-                                    // When showing a rail, only show BottomSheetPlayer without extra bottom padding
                                     BottomSheetPlayer(
                                         state = playerBottomSheetState,
                                         navController = navController,
                                         pureBlack = pureBlack
+                                    )
+
+                                    Box(
+                                        modifier = Modifier
+                                            .background(insetBg)
+                                            .fillMaxWidth()
+                                            .align(Alignment.BottomCenter)
+                                            .height(bottomInsetDp)
                                     )
                                 }
                             },
