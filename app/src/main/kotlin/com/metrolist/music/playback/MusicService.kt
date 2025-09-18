@@ -400,54 +400,12 @@ class MusicService :
                     1f
                 }
 
-            // (Approx.) Crossfade monitor using single ExoPlayer by volume ramp
-            crossfadeJob?.cancel()
-            if (crossfadeEnabled && crossfadeDuration > 0) {
-                crossfadeJob = scope.launch(Dispatchers.Main) {
-                    var armedForThisTrack = false
-                    while (isActive) {
-                        if (player.playbackState == Player.STATE_READY || player.playbackState == Player.STATE_BUFFERING) {
-                            val durationMs = player.duration
-                            val positionMs = player.currentPosition
-                            if (durationMs > 0) {
-                                val remainingSec = ((durationMs - positionMs) / 1000L).toInt()
-                                if (!armedForThisTrack && remainingSec <= crossfadeDuration + 1) {
-                                    armedForThisTrack = true
-                                    // Start fade out, then jump to next and fade in
-                                    val fadeMs = (crossfadeDuration * 1000L).coerceAtLeast(250L)
-                                    // fade out
-                                    val steps = 20
-                                    for (i in 0..steps) {
-                                        fadeMultiplier.value = 1f - (i.toFloat() / steps)
-                                        delay(fadeMs / steps)
-                                    }
-                                    // move to next item if exists
-                                    val nextIndex = player.nextMediaItemIndex
-                                    if (nextIndex != C.INDEX_UNSET) {
-                                        player.seekTo(nextIndex, C.TIME_UNSET)
-                                        player.playWhenReady = true
-                                    }
-                                    // fade in
-                                    for (i in 0..steps) {
-                                        fadeMultiplier.value = (i.toFloat() / steps)
-                                        delay(fadeMs / steps)
-                                    }
-                                    fadeMultiplier.value = 1f
-                                }
-                                // disarm when track changes back far from tail
-                                if (remainingSec > crossfadeDuration + 5) {
-                                    armedForThisTrack = false
-                                }
-                            } else {
-                                armedForThisTrack = false
-                            }
-                        }
-                        delay(200)
-                    }
-                }
-            } else {
-                fadeMultiplier.value = 1f
-            }
+        // Disable volume-ramp path; rely on dual-player crossfade only
+        crossfadeJob?.cancel()
+        fadeMultiplier.value = 1f
+        if (crossfadeEnabled && crossfadeDuration > 0) {
+            scheduleTrueCrossfadeIfNeeded()
+        }
         }
 
         dataStore.data
@@ -1043,7 +1001,7 @@ class MusicService :
                 closeAudioEffectSession()
             }
         }
-        if (events.containsAny(EVENT_TIMELINE_CHANGED, EVENT_POSITION_DISCONTINUITY)) {
+        if (events.containsAny(EVENT_TIMELINE_CHANGED, EVENT_POSITION_DISCONTINUITY, Player.EVENT_MEDIA_ITEM_TRANSITION)) {
             scheduleTrueCrossfadeIfNeeded()
         }
         if (events.containsAny(EVENT_TIMELINE_CHANGED, EVENT_POSITION_DISCONTINUITY)) {
@@ -1323,7 +1281,7 @@ class MusicService :
                         }
                     }
                 }
-                delay(100)
+                delay(80)
             }
         }
     }
