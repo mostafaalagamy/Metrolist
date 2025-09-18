@@ -1031,6 +1031,8 @@ class MainActivity : ComponentActivity() {
                                     NavigationRail(
                                         containerColor = if (pureBlack) Color.Black else MaterialTheme.colorScheme.surfaceContainer
                                     ) {
+                                        Spacer(modifier = Modifier.weight(1f))
+
                                         navigationItems.fastForEach { screen ->
                                             val isSelected =
                                                 navBackStackEntry?.destination?.hierarchy?.any { it.route == screen.route } == true
@@ -1064,6 +1066,8 @@ class MainActivity : ComponentActivity() {
                                                 },
                                             )
                                         }
+  
+                                        Spacer(modifier = Modifier.weight(1f))
                                     }
                                 }
                                 Box(Modifier.weight(1f)) {
