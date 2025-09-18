@@ -1349,29 +1349,35 @@ class MusicService :
             delay(stepDelay)
         }
 
-        // phase 2: handover from alt -> main player seamlessly
-        // synchronize main player to same media and position, then short overlap crossfade back
-        val altPos = alt.currentPosition.coerceAtLeast(0L)
-        player.seekTo(nextIndex, altPos)
+        // phase 2: handover by swapping players to avoid rebuffer/seek gap
+        // detach listeners from current main
+        player.removeListener(sleepTimer)
+        player.removeListener(this)
+        // switch MediaSession player if supported, otherwise keep notification tied to old
+        runCatching {
+            mediaSession.setPlayer(alt)
+        }
+        // swap references
+        val oldMain = player
+        player = alt
+        // re-attach listeners to new main
+        player.addListener(this)
+        sleepTimer = SleepTimer(scope, player)
+        player.addListener(sleepTimer)
         player.playWhenReady = true
+        player.volume = playerVolume.value * normalizeFactor.value
 
-        // short overlap to avoid any click/pop
+        // fade out old main shortly and cleanup
         val handoverSteps = 8
         val handoverDelay = 25L
         for (i in 0..handoverSteps) {
-            val t = i.toFloat() / handoverSteps
-            // ramp main up, alt down
-            player.volume = t * playerVolume.value * normalizeFactor.value
-            alt.volume = (1f - t) * playerVolume.value * normalizeFactor.value
+            val t = 1f - (i.toFloat() / handoverSteps)
+            oldMain.volume = t * playerVolume.value * normalizeFactor.value
             delay(handoverDelay)
         }
-
-        // stop alt and cleanup
-        alt.stop()
-        alt.clearMediaItems()
-        altPlayer?.release()
-        altPlayer = null
-        player.volume = playerVolume.value * normalizeFactor.value
+        oldMain.stop()
+        oldMain.clearMediaItems()
+        oldMain.release()
     }
 
     private fun saveQueueToDisk() {
