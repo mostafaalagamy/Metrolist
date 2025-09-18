@@ -58,6 +58,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -312,12 +313,13 @@ fun TextFieldDialog(
     modifier: Modifier = Modifier,
     icon: (@Composable () -> Unit)? = null,
     title: (@Composable () -> Unit)? = null,
-    initialTextFieldValue: TextFieldValue = TextFieldValue(), // legacy
+    initialTextFieldValue: TextFieldValue = TextFieldValue(),
     placeholder: @Composable (() -> Unit)? = null,
     singleLine: Boolean = true,
     autoFocus: Boolean = true,
     maxLines: Int = if (singleLine) 1 else 10,
     isInputValid: (String) -> Boolean = { it.isNotEmpty() },
+    keyboardType: KeyboardType = KeyboardType.Text,
     onDone: (String) -> Unit = {},
 
     // new multi-field support
@@ -361,13 +363,15 @@ fun TextFieldDialog(
                     } else {
                         onDone(legacyFieldState.value.text)
                     }
-                },
+                }
             ) {
                 Text(text = stringResource(android.R.string.ok))
             }
-        },
+        }
     ) {
-        Column {
+        Column(
+            modifier = Modifier.weight(weight = 1f, fill = false)
+        ) {
             if (textFields != null) {
                 textFields.forEachIndexed { index, (label, value) ->
                     TextField(
@@ -377,18 +381,21 @@ fun TextFieldDialog(
                         singleLine = singleLine,
                         maxLines = maxLines,
                         colors = OutlinedTextFieldDefaults.colors(),
-                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                        keyboardOptions = KeyboardOptions(
+                            imeAction = if (singleLine) ImeAction.Done else ImeAction.None,
+                            keyboardType = keyboardType
+                        ),
                         keyboardActions = KeyboardActions(
                             onDone = {
                                 if (onDoneMultiple != null) {
                                     onDoneMultiple(textFields.map { it.second.text })
                                     onDismiss()
                                 }
-                            },
+                            }
                         ),
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(bottom = 12.dp)
+                            .padding(bottom = if (index < textFields.size - 1) 12.dp else 0.dp)
                             .then(if (index == 0) Modifier.focusRequester(focusRequester) else Modifier)
                     )
                 }
@@ -400,12 +407,15 @@ fun TextFieldDialog(
                     singleLine = singleLine,
                     maxLines = maxLines,
                     colors = OutlinedTextFieldDefaults.colors(),
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = if (singleLine) ImeAction.Done else ImeAction.None,
+                        keyboardType = keyboardType
+                    ),
                     keyboardActions = KeyboardActions(
                         onDone = {
                             onDone(legacyFieldState.value.text)
                             onDismiss()
-                        },
+                        }
                     ),
                     modifier = Modifier
                         .fillMaxWidth()
