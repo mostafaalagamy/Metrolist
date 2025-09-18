@@ -92,12 +92,12 @@
     <string name="import_online">匯入「m3u」播放清單</string>
     <string name="playlist_add_local_to_synced_note">Note: 不支援新增本地歌曲到同步/雲端播放清單。任何其他組合才有效</string>
     <string name="show_top_playlist">顯示「Top」播放清單</string>
-    <string name="charts">圖表</string>
+    <string name="charts">排行榜</string>
     <string name="back_button_desc">返回</string>
     <string name="no_title">暫無標題</string>
     <string name="unknown_artist">未知藝術家</string>
     <string name="unknown_item_type">未知項目類型</string>
-    <string name="loading_charts">正在加載圖表...</string>
+    <string name="loading_charts">載入排行榜中…</string>
     <string name="retry_button">重試</string>
     <string name="album_cover_desc">專輯封面</string>
     <string name="top_music_videos">熱門音樂影片</string>
