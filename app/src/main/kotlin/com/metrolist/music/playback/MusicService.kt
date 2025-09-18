@@ -213,6 +213,7 @@ class MusicService :
     val playerVolume = MutableStateFlow(dataStore.get(PlayerVolumeKey, 1f).coerceIn(0f, 1f))
     private val fadeMultiplier = MutableStateFlow(1f)
     private var crossfadeJob: Job? = null
+    private var isCrossfading: Boolean = false
 
     lateinit var sleepTimer: SleepTimer
 
@@ -1305,7 +1306,7 @@ class MusicService :
     private fun scheduleTrueCrossfadeIfNeeded() {
         val crossfadeEnabled = dataStore.get(CrossfadeEnabledKey, false)
         val crossfadeDuration = dataStore.get(CrossfadeDurationKey, 5)
-        if (!crossfadeEnabled || crossfadeDuration <= 0) return
+        if (!crossfadeEnabled || crossfadeDuration <= 0 || isCrossfading) return
         if (player.mediaItemCount == 0) return
 
         scope.launch {
@@ -1316,7 +1317,7 @@ class MusicService :
                     if (dur > 0) {
                         val remaining = dur - pos
                         val fadeMs = crossfadeDuration * 1000L
-                        if (remaining in 1..(fadeMs + 500)) {
+                        if (!isCrossfading && remaining in 1..(fadeMs + 500)) {
                             performTwoPlayerCrossfade(fadeMs)
                             break
                         }
@@ -1328,6 +1329,8 @@ class MusicService :
     }
 
     private suspend fun performTwoPlayerCrossfade(fadeMs: Long) {
+        if (isCrossfading) return
+        isCrossfading = true
         val nextIndex = player.nextMediaItemIndex
         if (nextIndex == C.INDEX_UNSET) return
 
@@ -1378,6 +1381,7 @@ class MusicService :
         oldMain.stop()
         oldMain.clearMediaItems()
         oldMain.release()
+        isCrossfading = false
     }
 
     private fun saveQueueToDisk() {
