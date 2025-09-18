@@ -469,7 +469,7 @@ class MainActivity : ComponentActivity() {
                         }
 
                     val isLandscape = remember(configuration) { configuration.screenWidthDp > configuration.screenHeightDp }
-                    val showRail = remember(isLandscape, shouldShowNavigationBar) { isLandscape && shouldShowNavigationBar }
+                    val showRail = isLandscape
 
                     fun getNavPadding(): Dp {
                         return if (shouldShowNavigationBar && !showRail) { // Only add padding when NOT showing rail
