@@ -225,6 +225,7 @@ class MusicService :
     lateinit var downloadCache: SimpleCache
 
     lateinit var player: ExoPlayer
+    private var altPlayer: ExoPlayer? = null
     private lateinit var mediaSession: MediaLibrarySession
 
     private var isAudioEffectSessionOpened = false
@@ -236,6 +237,24 @@ class MusicService :
     private var consecutivePlaybackErr = 0
 
     val maxSafeGainFactor = 1.414f // +3 dB    
+
+    private fun buildPlayer(): ExoPlayer =
+        ExoPlayer
+            .Builder(this)
+            .setMediaSourceFactory(createMediaSourceFactory())
+            .setRenderersFactory(createRenderersFactory())
+            .setHandleAudioBecomingNoisy(true)
+            .setWakeMode(C.WAKE_MODE_NETWORK)
+            .setAudioAttributes(
+                AudioAttributes
+                    .Builder()
+                    .setUsage(C.USAGE_MEDIA)
+                    .setContentType(C.AUDIO_CONTENT_TYPE_MUSIC)
+                    .build(),
+                false,
+            ).setSeekBackIncrementMs(5000)
+            .setSeekForwardIncrementMs(5000)
+            .build()
 
     override fun onCreate() {
         super.onCreate()
@@ -250,30 +269,13 @@ class MusicService :
                     setSmallIcon(R.drawable.small_icon)
                 },
         )
-        player =
-            ExoPlayer
-                .Builder(this)
-                .setMediaSourceFactory(createMediaSourceFactory())
-                .setRenderersFactory(createRenderersFactory())
-                .setHandleAudioBecomingNoisy(true)
-                .setWakeMode(C.WAKE_MODE_NETWORK)
-                .setAudioAttributes(
-                    AudioAttributes
-                        .Builder()
-                        .setUsage(C.USAGE_MEDIA)
-                        .setContentType(C.AUDIO_CONTENT_TYPE_MUSIC)
-                        .build(),
-                    false,
-                ).setSeekBackIncrementMs(5000)
-                .setSeekForwardIncrementMs(5000)
-                .build()
-                .apply {
-                    addListener(this@MusicService)
-                    sleepTimer = SleepTimer(scope, this)
-                    addListener(sleepTimer)
-                    addAnalyticsListener(PlaybackStatsListener(false, this@MusicService))
-                    setOffloadEnabled(dataStore.get(AudioOffload, false))
-                }
+        player = buildPlayer().apply {
+            addListener(this@MusicService)
+            sleepTimer = SleepTimer(scope, this)
+            addListener(sleepTimer)
+            addAnalyticsListener(PlaybackStatsListener(false, this@MusicService))
+            setOffloadEnabled(dataStore.get(AudioOffload, false))
+        }
 
         audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
         setupAudioFocusRequest()
@@ -1041,6 +1043,9 @@ class MusicService :
             }
         }
         if (events.containsAny(EVENT_TIMELINE_CHANGED, EVENT_POSITION_DISCONTINUITY)) {
+            scheduleTrueCrossfadeIfNeeded()
+        }
+        if (events.containsAny(EVENT_TIMELINE_CHANGED, EVENT_POSITION_DISCONTINUITY)) {
             currentMediaMetadata.value = player.currentMetadata
         }
 
@@ -1294,6 +1299,64 @@ class MusicService :
                 }
             }
         }
+    }
+
+    // Crossfade scheduling with two ExoPlayers (preload next and overlap)
+    private fun scheduleTrueCrossfadeIfNeeded() {
+        val crossfadeEnabled = dataStore.get(CrossfadeEnabledKey, false)
+        val crossfadeDuration = dataStore.get(CrossfadeDurationKey, 5)
+        if (!crossfadeEnabled || crossfadeDuration <= 0) return
+        if (player.mediaItemCount == 0) return
+
+        scope.launch {
+            while (isActive) {
+                if (player.playbackState == Player.STATE_READY && player.playWhenReady) {
+                    val dur = player.duration
+                    val pos = player.currentPosition
+                    if (dur > 0) {
+                        val remaining = dur - pos
+                        val fadeMs = crossfadeDuration * 1000L
+                        if (remaining in 1..(fadeMs + 500)) {
+                            performTwoPlayerCrossfade(fadeMs)
+                            break
+                        }
+                    }
+                }
+                delay(100)
+            }
+        }
+    }
+
+    private suspend fun performTwoPlayerCrossfade(fadeMs: Long) {
+        val nextIndex = player.nextMediaItemIndex
+        if (nextIndex == C.INDEX_UNSET) return
+
+        // build alt player if needed
+        val nextItem = player.getMediaItemAt(nextIndex)
+        val alt = altPlayer ?: buildPlayer().also { altPlayer = it }
+        alt.setMediaItem(nextItem)
+        alt.prepare()
+        alt.volume = 0f
+        alt.playWhenReady = true
+
+        // overlap volumes
+        val steps = 20
+        for (i in 0..steps) {
+            val t = i.toFloat() / steps
+            alt.volume = t * playerVolume.value * normalizeFactor.value
+            player.volume = (1f - t) * playerVolume.value * normalizeFactor.value
+            delay((fadeMs / steps).coerceAtLeast(10))
+        }
+
+        // switch timeline to alt item
+        player.seekTo(nextIndex, C.TIME_UNSET)
+        player.playWhenReady = true
+        // stop alt and release
+        alt.stop()
+        alt.clearMediaItems()
+        altPlayer?.release()
+        altPlayer = null
+        player.volume = playerVolume.value * normalizeFactor.value
     }
 
     private fun saveQueueToDisk() {
