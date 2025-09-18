@@ -461,7 +461,7 @@ fun BottomSheetPlayer(
     }
 
 
-    val dismissedBound = QueuePeekHeight + WindowInsets.safeDrawing.asPaddingValues().calculateBottomPadding()
+    val dismissedBound = QueuePeekHeight + WindowInsets.systemBars.asPaddingValues().calculateBottomPadding()
 
     val queueSheetState = rememberBottomSheetState(
         dismissedBound = dismissedBound,
@@ -1150,7 +1150,7 @@ fun BottomSheetPlayer(
                 Row(
                     modifier =
                     Modifier
-                        .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
+                        .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Horizontal))
                         .padding(bottom = queueSheetState.collapsedBound + 48.dp),
                 ) {
                     Box(
@@ -1170,7 +1170,7 @@ fun BottomSheetPlayer(
                         modifier =
                         Modifier
                             .weight(1f)
-                            .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top)),
+                            .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Top)),
                     ) {
                         Spacer(Modifier.weight(1f))
 
@@ -1188,7 +1188,7 @@ fun BottomSheetPlayer(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier =
                     Modifier
-                        .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
+                        .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Horizontal))
                         .padding(bottom = queueSheetState.collapsedBound),
                 ) {
                     Box(

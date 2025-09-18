@@ -555,7 +555,7 @@ fun Lyrics(
         } else {
             LazyColumn(
             state = lazyListState,
-            contentPadding = WindowInsets.safeDrawing
+            contentPadding = WindowInsets.systemBars
                 .only(WindowInsetsSides.Top)
                 .add(WindowInsets(top = maxHeight / 3, bottom = maxHeight / 2))
                 .asPaddingValues(),

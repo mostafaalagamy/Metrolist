@@ -220,7 +220,7 @@ fun Queue(
                         .fillMaxWidth()
                         .padding(horizontal = 30.dp, vertical = 12.dp)
                         .windowInsetsPadding(
-                            WindowInsets.safeDrawing.only(
+                            WindowInsets.systemBars.only(
                                 WindowInsetsSides.Bottom + WindowInsetsSides.Horizontal
                             ),
                         ),
@@ -405,7 +405,7 @@ fun Queue(
                         .fillMaxWidth()
                         .padding(horizontal = 30.dp, vertical = 12.dp)
                         .windowInsetsPadding(
-                            WindowInsets.safeDrawing
+                            WindowInsets.systemBars
                                 .only(WindowInsetsSides.Bottom + WindowInsetsSides.Horizontal),
                         ),
                 ) {
@@ -594,7 +594,7 @@ fun Queue(
 
         val reorderableState = rememberReorderableLazyListState(
             lazyListState = lazyListState,
-            scrollThresholdPadding = WindowInsets.safeDrawing.add(
+            scrollThresholdPadding = WindowInsets.systemBars.add(
                 WindowInsets(
                     top = ListItemHeight,
                     bottom = ListItemHeight
@@ -660,7 +660,7 @@ fun Queue(
             LazyColumn(
                 state = lazyListState,
                 contentPadding =
-                WindowInsets.safeDrawing
+                WindowInsets.systemBars
                     .add(
                         WindowInsets(
                             top = ListItemHeight + 8.dp,
@@ -915,7 +915,7 @@ fun Queue(
                         .copy(alpha = 0.90f),
                 )
                 .windowInsetsPadding(
-                    WindowInsets.safeDrawing
+                    WindowInsets.systemBars
                         .only(WindowInsetsSides.Top + WindowInsetsSides.Horizontal),
                 ),
         ) {
@@ -1069,7 +1069,7 @@ fun Queue(
                 .fillMaxWidth()
                 .height(
                     ListItemHeight +
-                            WindowInsets.safeDrawing
+                            WindowInsets.systemBars
                                 .asPaddingValues()
                                 .calculateBottomPadding(),
                 )
@@ -1078,7 +1078,7 @@ fun Queue(
                     state.collapseSoft()
                 }
                 .windowInsetsPadding(
-                    WindowInsets.safeDrawing
+                    WindowInsets.systemBars
                         .only(WindowInsetsSides.Bottom + WindowInsetsSides.Horizontal),
                 )
                 .padding(12.dp),
@@ -1136,7 +1136,7 @@ fun Queue(
                 .padding(
                     bottom =
                     ListItemHeight +
-                            WindowInsets.safeDrawing
+                            WindowInsets.systemBars
                                 .asPaddingValues()
                                 .calculateBottomPadding(),
                 )

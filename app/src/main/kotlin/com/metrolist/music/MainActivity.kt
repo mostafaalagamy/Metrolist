@@ -381,9 +381,9 @@ class MainActivity : ComponentActivity() {
                     val density = LocalDensity.current
                     val configuration = LocalConfiguration.current
                     val cutoutInsets = WindowInsets.displayCutout
-                    val windowsInsets = WindowInsets.safeDrawing
+                    val windowsInsets = WindowInsets.systemBars
                     val bottomInset = with(density) { windowsInsets.getBottom(density).toDp() }
-                    val bottomInsetDp = WindowInsets.safeDrawing.asPaddingValues().calculateBottomPadding()
+                    val bottomInsetDp = WindowInsets.systemBars.asPaddingValues().calculateBottomPadding()
 
                     val navController = rememberNavController()
                     val homeViewModel: HomeViewModel = hiltViewModel()
@@ -469,7 +469,7 @@ class MainActivity : ComponentActivity() {
                         }
 
                     val isLandscape = remember(configuration) { configuration.screenWidthDp > configuration.screenHeightDp }
-                    val showRail = remember(isLandscape, shouldShowNavigationBar) { isLandscape && shouldShowNavigationBar }
+                    val showRail = isLandscape
 
                     fun getNavPadding(): Dp {
                         return if (shouldShowNavigationBar && !showRail) { // Only add padding when NOT showing rail
@@ -1031,6 +1031,8 @@ class MainActivity : ComponentActivity() {
                                     NavigationRail(
                                         containerColor = if (pureBlack) Color.Black else MaterialTheme.colorScheme.surfaceContainer
                                     ) {
+                                        Spacer(modifier = Modifier.weight(1f))
+
                                         navigationItems.fastForEach { screen ->
                                             val isSelected =
                                                 navBackStackEntry?.destination?.hierarchy?.any { it.route == screen.route } == true
@@ -1047,10 +1049,10 @@ class MainActivity : ComponentActivity() {
                                                     } else {
                                                         navController.navigate(screen.route) {
                                                             popUpTo(navController.graph.startDestinationId) {
-                                                                saveState = true
+                                                                inclusive = false
                                                             }
                                                             launchSingleTop = true
-                                                            restoreState = true
+                                                            restoreState = false
                                                         }
                                                     }
                                                 },
@@ -1064,6 +1066,8 @@ class MainActivity : ComponentActivity() {
                                                 },
                                             )
                                         }
+  
+                                        Spacer(modifier = Modifier.weight(1f))
                                     }
                                 }
                                 Box(Modifier.weight(1f)) {

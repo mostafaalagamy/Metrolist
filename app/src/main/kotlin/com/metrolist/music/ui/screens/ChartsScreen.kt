@@ -6,6 +6,7 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -205,7 +206,7 @@ fun ChartsScreen(
                                     state = lazyGridState,
                                     rows = GridCells.Fixed(4),
                                     flingBehavior = rememberSnapFlingBehavior(snapLayoutInfoProvider),
-                                    contentPadding = WindowInsets.safeDrawing
+                                    contentPadding = WindowInsets.systemBars
                                         .only(WindowInsetsSides.Horizontal)
                                         .asPaddingValues(),
                                     modifier = Modifier
@@ -282,7 +283,7 @@ fun ChartsScreen(
                         }
                         item {
                             LazyRow(
-                                contentPadding = WindowInsets.safeDrawing
+                                contentPadding = WindowInsets.systemBars
                                     .only(WindowInsetsSides.Horizontal)
                                     .asPaddingValues(),
                                 modifier = Modifier.animateItem(),
