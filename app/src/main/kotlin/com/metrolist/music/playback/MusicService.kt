@@ -1339,19 +1339,34 @@ class MusicService :
         alt.volume = 0f
         alt.playWhenReady = true
 
-        // overlap volumes
+        // phase 1: crossfade from current player -> alt (next song)
         val steps = 20
+        val stepDelay = (fadeMs / steps).coerceAtLeast(10)
         for (i in 0..steps) {
             val t = i.toFloat() / steps
             alt.volume = t * playerVolume.value * normalizeFactor.value
             player.volume = (1f - t) * playerVolume.value * normalizeFactor.value
-            delay((fadeMs / steps).coerceAtLeast(10))
+            delay(stepDelay)
         }
 
-        // switch timeline to alt item
-        player.seekTo(nextIndex, C.TIME_UNSET)
+        // phase 2: handover from alt -> main player seamlessly
+        // synchronize main player to same media and position, then short overlap crossfade back
+        val altPos = alt.currentPosition.coerceAtLeast(0L)
+        player.seekTo(nextIndex, altPos)
         player.playWhenReady = true
-        // stop alt and release
+
+        // short overlap to avoid any click/pop
+        val handoverSteps = 8
+        val handoverDelay = 25L
+        for (i in 0..handoverSteps) {
+            val t = i.toFloat() / handoverSteps
+            // ramp main up, alt down
+            player.volume = t * playerVolume.value * normalizeFactor.value
+            alt.volume = (1f - t) * playerVolume.value * normalizeFactor.value
+            delay(handoverDelay)
+        }
+
+        // stop alt and cleanup
         alt.stop()
         alt.clearMediaItems()
         altPlayer?.release()
