@@ -194,7 +194,7 @@ class SyncUtils @Inject constructor(
         YouTube.library("FEmusic_library_privately_owned_releases", tabIndex = 1).completed().onSuccess { page ->
             val remoteAlbums = page.items.filterIsInstance<AlbumItem>().reversed()
             val remoteIds = remoteAlbums.map {it.id}.toSet()
-            val localAlbums = database.uploadedAlbums().first()
+            val localAlbums = database.albumsUploadedByNameAsc().first()
 
             localAlbums.filterNot {it.id in remoteIds}
                 .forEach { database.update(it.album.toggleUploaded()) }
