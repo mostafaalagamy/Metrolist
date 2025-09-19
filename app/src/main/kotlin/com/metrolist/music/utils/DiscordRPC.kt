@@ -12,24 +12,25 @@ class DiscordRPC(
 ) : KizzyRPC(token) {
     suspend fun updateSong(song: Song, currentPlaybackTimeMillis: Long, playbackSpeed: Float = 1.0f) = runCatching {
         val currentTime = System.currentTimeMillis()
-        val calculatedStartTime = currentTime - currentPlaybackTimeMillis
         
-        // Format the title with rate change if different from 1.0
-        val appName = context.getString(R.string.app_name).removeSuffix(" Debug")
-        val titleWithRate = if (playbackSpeed != 1.0f) {
-            "$appName [${String.format("%.1fx", playbackSpeed)}]"
+        // adjusting stuff
+        val adjustedPlaybackTime = (currentPlaybackTimeMillis / playbackSpeed).toLong()
+        val calculatedStartTime = currentTime - adjustedPlaybackTime
+        
+        // song name shit
+        val songTitleWithRate = if (playbackSpeed != 1.0f) {
+            "${song.song.title} [${String.format("%.2fx", playbackSpeed)}]"
         } else {
-            appName
+            song.song.title
         }
         
-        // Calculate adjusted end time based on playback speed
-        // If speed is higher, the song will end sooner; if lower, it will take longer
+        // adjusting stuff part 2??? OMG NO WAY IM CREAMING
         val remainingDuration = song.song.duration * 1000L - currentPlaybackTimeMillis
         val adjustedRemainingDuration = (remainingDuration / playbackSpeed).toLong()
         
         setActivity(
             name = context.getString(R.string.app_name).removeSuffix(" Debug"),
-            details = song.song.title,
+            details = songTitleWithRate,
             state = song.artists.joinToString { it.name },
             detailsUrl = "https://music.youtube.com/watch?v=${song.song.id}",
             largeImage = song.song.thumbnailUrl?.let { RpcImage.ExternalImage(it) },
