@@ -3,9 +3,6 @@ package com.metrolist.music.utils
 import android.net.ConnectivityManager
 import androidx.media3.common.PlaybackException
 import com.metrolist.music.constants.AudioQuality
-import com.metrolist.music.utils.YTPlayerUtils.MAIN_CLIENT
-import com.metrolist.music.utils.YTPlayerUtils.STREAM_FALLBACK_CLIENTS
-import com.metrolist.music.utils.YTPlayerUtils.validateStatus
 import com.metrolist.innertube.NewPipeUtils
 import com.metrolist.innertube.YouTube
 import com.metrolist.innertube.models.YouTubeClient
@@ -251,9 +248,11 @@ object YTPlayerUtils {
 
         Timber.tag(logTag)
             .d("Successfully obtained playback data with format: ${format.mimeType}, bitrate: ${format.bitrate}")
+
         PlaybackData(
             audioConfig,
             videoDetails,
+            playbackTracking,
             format,
             streamUrl,
             streamExpiresInSeconds,
