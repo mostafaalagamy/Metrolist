@@ -46,6 +46,8 @@ data class SongEntity(
     val romanizeLyrics: Boolean = true,
     @ColumnInfo(defaultValue = "0")
     val isDownloaded: Boolean = false
+    @ColumnInfo(name = "isUploaded", defaultValue = false.toString())
+    val isUploaded: Boolean = false
 ) {
     fun localToggleLike() = copy(
         liked = !liked,
@@ -67,5 +69,9 @@ data class SongEntity(
         liked = if (inLibrary == null) liked else false,
         inLibrary = if (inLibrary == null) LocalDateTime.now() else null,
         likedDate = if (inLibrary == null) likedDate else null
+    )
+
+    fun toggleUploaded() = copy(
+        isUploaded = !isUploaded
     )
 }

@@ -125,8 +125,11 @@ fun AutoPlaylistScreen(
     val playerConnection = LocalPlayerConnection.current ?: return
     val isPlaying by playerConnection.isPlaying.collectAsState()
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
-    val playlist =
-        if (viewModel.playlist == "liked") stringResource(R.string.liked) else stringResource(R.string.offline)
+    val playlist = when (viewModel.playlist) {
+        "liked" -> stringResource(R.string.liked)
+        "uploaded" -> stringResource(R.string.uploaded_playlist)
+        else -> stringResource(R.string.offline)
+    }
 
     val songs by viewModel.likedSongs.collectAsState(null)
     val mutableSongs =
@@ -156,6 +159,7 @@ fun AutoPlaylistScreen(
     val playlistType = when (playlistId) {
         "liked" -> PlaylistType.LIKE
         "downloaded" -> PlaylistType.DOWNLOAD
+        "uploaded" -> PlaylistType.UPLOADED
         else -> PlaylistType.OTHER
     }
 
@@ -193,6 +197,7 @@ fun AutoPlaylistScreen(
         if (ytmSync) {
             withContext(Dispatchers.IO) {
                 if (playlistType == PlaylistType.LIKE) viewModel.syncLikedSongs()
+                if (playlistType == PlaylistType.UPLOADED) viewModel.syncUploadedSongs()
             }
         }
     }
@@ -698,5 +703,5 @@ fun AutoPlaylistScreen(
 }
 
 enum class PlaylistType {
-    LIKE, DOWNLOAD, OTHER
+    LIKE, DOWNLOAD, UPLOADED, OTHER
 }

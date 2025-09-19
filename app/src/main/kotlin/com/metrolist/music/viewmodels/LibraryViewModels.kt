@@ -126,6 +126,7 @@ constructor(
                                     }.reversed(descending).filterExplicit(hideExplicit)
                                 }
                         }
+                    SongFilter.UPLOADED -> database.uploadedSongs(sortType, descending).map { it.filterExplicit(hideExplicit) }
                 }
             }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
@@ -135,6 +136,10 @@ constructor(
 
     fun syncLibrarySongs() {
         viewModelScope.launch(Dispatchers.IO) { syncUtils.syncLibrarySongs() }
+    }
+
+    fun syncUploadedSongs() {
+        viewModelScope.launch(Dispatchers.IO) { syncUtils.syncUploadedSongs() }
     }
 }
 

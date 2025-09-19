@@ -99,6 +99,7 @@ fun LibrarySongsScreen(
             when (filter) {
                 SongFilter.LIKED -> viewModel.syncLikedSongs()
                 SongFilter.LIBRARY -> viewModel.syncLibrarySongs()
+                SongFilter.UPLOADED -> viewModel.syncUploadedSongs()
                 else -> return@LaunchedEffect
             }
         }
@@ -154,6 +155,7 @@ fun LibrarySongsScreen(
                             SongFilter.LIKED to stringResource(R.string.filter_liked),
                             SongFilter.LIBRARY to stringResource(R.string.filter_library),
                             SongFilter.DOWNLOADED to stringResource(R.string.filter_downloaded),
+                            SongFilter.UPLOADED to stringResource(R.string.filter_uploaded),
                         ),
                         currentValue = filter,
                         onValueUpdate = {

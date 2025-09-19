@@ -911,6 +911,60 @@ interface DatabaseDao {
     fun updateDownloadedInfo(songId: String, downloaded: Boolean, date: LocalDateTime?)
     
     @Transaction
+    @Query("SELECT * FROM song WHERE isUploaded = 1 ORDER BY dateDownload")
+    fun uploadedSongsByCreateDateAsc(): Flow<List<Song>>
+
+    @Transaction
+    @Query("SELECT * FROM song WHERE isUploaded = 1 ORDER BY title")
+    fun uploadedSongsByNameAsc(): Flow<List<Song>>
+
+    @Transaction
+    @Query("SELECT * FROM song WHERE isUploaded = 1 ORDER BY totalPlayTime")
+    fun uploadedSongsByPlayTimeAsc(): Flow<List<Song>>
+
+    @Transaction
+    @Query("SELECT * FROM song WHERE isUploaded = 1 ORDER BY rowId")
+    fun uploadedSongsByRowIdAsc(): Flow<List<Song>>
+
+    fun uploadedSongs(
+        sortType: SongSortType,
+        descending: Boolean,
+    ) = when (sortType) {
+        SongSortType.CREATE_DATE -> uploadedSongsByCreateDateAsc()
+        SongSortType.NAME ->
+            uploadedSongsByNameAsc().map { songs ->
+                val collator = Collator.getInstance(Locale.getDefault())
+                collator.strength = Collator.PRIMARY
+                songs.sortedWith(compareBy(collator) { it.song.title })
+            }
+
+        SongSortType.ARTIST ->
+            uploadedSongsByRowIdAsc().map { songs ->
+                val collator = Collator.getInstance(Locale.getDefault())
+                collator.strength = Collator.PRIMARY
+                songs
+                    .sortedWith(
+                        compareBy(collator) { song ->
+                            song.artists.joinToString("") { it.name }
+                        },
+                    ).groupBy { it.album?.title }
+                    .flatMap { (_, songsByAlbum) ->
+                        songsByAlbum.sortedBy { album ->
+                            album.artists.joinToString(
+                                "",
+                            ) { it.name }
+                        }
+                    }
+            }
+
+        SongSortType.PLAY_TIME -> uploadedSongsByPlayTimeAsc()
+    }.map { it.reversed(descending) }
+
+    @Transaction
+    @Query("SELECT * FROM album WHERE isUploaded = 1")
+    fun uploadedAlbums(): Flow<List<Album>>
+    
+    @Transaction
     @Query("SELECT * FROM song WHERE title LIKE '%' || :query || '%' AND inLibrary IS NOT NULL LIMIT :previewSize")
     fun searchSongs(
         query: String,
