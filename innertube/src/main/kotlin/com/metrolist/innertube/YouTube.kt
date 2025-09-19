@@ -187,7 +187,7 @@ object YouTube {
         )
     }
 
-     suspend fun album(browseId: String, withSongs: Boolean = true): Result<AlbumPage> = runCatching {
+    suspend fun album(browseId: String, withSongs: Boolean = true): Result<AlbumPage> = runCatching {
         val response = innerTube.browse(WEB_REMIX, browseId).body<BrowseResponse>()
         if (browseId.contains("FEmusic_library_privately_owned_release_detail")) {
             val playlistId =
