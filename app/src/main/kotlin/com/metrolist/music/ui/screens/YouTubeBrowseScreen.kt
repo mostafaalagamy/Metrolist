@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -113,7 +114,9 @@ fun YouTubeBrowseScreen(
                                 .padding(12.dp)
                                 .width(250.dp),
                         )
-                        LazyRow {
+                        LazyRow(
+                            contentPadding = WindowInsets.systemBars.only(WindowInsetsSides.Horizontal).asPaddingValues(),
+                        ) {
                             items(4) {
                                 GridItemPlaceHolder()
                             }
@@ -191,7 +194,9 @@ fun YouTubeBrowseScreen(
                         }
                     } else {
                         item {
-                            LazyRow {
+                            LazyRow(
+                                contentPadding = WindowInsets.systemBars.only(WindowInsetsSides.Horizontal).asPaddingValues(),
+                            ) {
                                 items(
                                     items = it.items,
                                 ) { item ->
