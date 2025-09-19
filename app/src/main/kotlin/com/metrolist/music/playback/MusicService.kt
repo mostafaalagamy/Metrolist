@@ -20,6 +20,7 @@ import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackException
+import androidx.media3.common.PlaybackParameters
 import androidx.media3.common.Player
 import androidx.media3.common.Player.EVENT_POSITION_DISCONTINUITY
 import androidx.media3.common.Player.EVENT_TIMELINE_CHANGED
@@ -68,6 +69,7 @@ import com.metrolist.music.constants.DisableLoadMoreWhenRepeatAllKey
 import com.metrolist.music.constants.AutoDownloadOnLikeKey
 import com.metrolist.music.constants.AutoSkipNextOnErrorKey
 import com.metrolist.music.constants.DiscordTokenKey
+import com.metrolist.music.constants.DiscordUseDetailsKey
 import com.metrolist.music.constants.EnableDiscordRPCKey
 import com.metrolist.music.constants.HideExplicitKey
 import com.metrolist.music.constants.HistoryDuration
@@ -226,6 +228,8 @@ class MusicService :
     private var isAudioEffectSessionOpened = false
 
     private var discordRpc: DiscordRPC? = null
+    private var lastPlaybackSpeed = 1.0f
+    private var discordUpdateJob: kotlinx.coroutines.Job? = null
 
     val automixItems = MutableStateFlow<List<MediaItem>>(emptyList())
 
@@ -330,7 +334,7 @@ class MusicService :
         currentSong.debounce(1000).collect(scope) { song ->
             updateNotification()
             if (song != null && player.playWhenReady && player.playbackState == Player.STATE_READY) {
-                discordRpc?.updateSong(song, player.currentPosition)
+                discordRpc?.updateSong(song, player.currentPosition, player.playbackParameters.speed, dataStore.get(DiscordUseDetailsKey, false))
             } else {
                 discordRpc?.closeRPC()
             }
@@ -397,7 +401,24 @@ class MusicService :
                     discordRpc = DiscordRPC(this, key)
                     if (player.playbackState == Player.STATE_READY && player.playWhenReady) {
                         currentSong.value?.let {
-                            discordRpc?.updateSong(it, player.currentPosition)
+                            discordRpc?.updateSong(it, player.currentPosition, player.playbackParameters.speed, dataStore.get(DiscordUseDetailsKey, false))
+                        }
+                    }
+                }
+            }
+
+        // details key stuff
+        dataStore.data
+            .map { it[DiscordUseDetailsKey] ?: false }
+            .debounce(1000)
+            .distinctUntilChanged()
+            .collect(scope) { useDetails ->
+                if (player.playbackState == Player.STATE_READY && player.playWhenReady) {
+                    currentSong.value?.let { song ->
+                        discordUpdateJob?.cancel()
+                        discordUpdateJob = scope.launch {
+                            delay(1000)
+                            discordRpc?.updateSong(song, player.currentPosition, player.playbackParameters.speed, useDetails)
                         }
                     }
                 }
@@ -925,6 +946,10 @@ class MusicService :
         mediaItem: MediaItem?,
         reason: Int,
     ) {
+        lastPlaybackSpeed = -1.0f // force update song
+        
+        discordUpdateJob?.cancel()
+        
         // Auto load more songs
         if (dataStore.get(AutoLoadMoreKey, true) &&
             reason != Player.MEDIA_ITEM_TRANSITION_REASON_REPEAT &&
@@ -988,7 +1013,7 @@ class MusicService :
             if (player.isPlaying) {
                 currentSong.value?.let { song ->
                     scope.launch {
-                        discordRpc?.updateSong(song, player.currentPosition)
+                        discordRpc?.updateSong(song, player.currentPosition, player.playbackParameters.speed, dataStore.get(DiscordUseDetailsKey, false))
                     }
                 }
             }
@@ -1030,6 +1055,24 @@ class MusicService :
         // Save state when repeat mode changes
         if (dataStore.get(PersistentQueueKey, true)) {
             saveQueueToDisk()
+        }
+    }
+
+    override fun onPlaybackParametersChanged(playbackParameters: PlaybackParameters) {
+        super.onPlaybackParametersChanged(playbackParameters)
+        if (playbackParameters.speed != lastPlaybackSpeed) {
+            lastPlaybackSpeed = playbackParameters.speed
+            discordUpdateJob?.cancel()
+            
+            // update scheduling thingy
+            discordUpdateJob = scope.launch {
+                delay(1000)
+                if (player.playWhenReady && player.playbackState == Player.STATE_READY) {
+                    currentSong.value?.let { song ->
+                        discordRpc?.updateSong(song, player.currentPosition, playbackParameters.speed, dataStore.get(DiscordUseDetailsKey, false))
+                    }
+                }
+            }
         }
     }
 
@@ -1308,6 +1351,7 @@ class MusicService :
         player.removeListener(this)
         player.removeListener(sleepTimer)
         player.release()
+        discordUpdateJob?.cancel()
         super.onDestroy()
     }
 
