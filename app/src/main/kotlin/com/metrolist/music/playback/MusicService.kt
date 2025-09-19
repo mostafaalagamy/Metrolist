@@ -227,7 +227,8 @@ class MusicService :
     private var isAudioEffectSessionOpened = false
 
     private var discordRpc: DiscordRPC? = null
-    private var lastPlaybackSpeed = 1.0f // Track previous speed to avoid unnecessary Discord updates
+    private var lastPlaybackSpeed = 1.0f
+    private var discordUpdateJob: kotlinx.coroutines.Job? = nulls
 
     val automixItems = MutableStateFlow<List<MediaItem>>(emptyList())
 
@@ -927,8 +928,9 @@ class MusicService :
         mediaItem: MediaItem?,
         reason: Int,
     ) {
-        // Reset Discord RPC speed tracking when song changes to ensure new song updates
-        lastPlaybackSpeed = -1.0f // Use invalid value to force update on new song
+        lastPlaybackSpeed = -1.0f // force update song
+        
+        discordUpdateJob?.cancel()
         
         // Auto load more songs
         if (dataStore.get(AutoLoadMoreKey, true) &&
@@ -1040,13 +1042,15 @@ class MusicService :
 
     override fun onPlaybackParametersChanged(playbackParameters: PlaybackParameters) {
         super.onPlaybackParametersChanged(playbackParameters)
-        // Only update Discord RPC when playback speed changes (not pitch)
-        // This avoids unnecessary PRESENCE_UPDATE calls to Discord
         if (playbackParameters.speed != lastPlaybackSpeed) {
             lastPlaybackSpeed = playbackParameters.speed
-            if (player.playWhenReady && player.playbackState == Player.STATE_READY) {
-                currentSong.value?.let { song ->
-                    scope.launch {
+            discordUpdateJob?.cancel()
+            
+            // update scheduling thingy
+            discordUpdateJob = scope.launch {
+                delay(1000)
+                if (player.playWhenReady && player.playbackState == Player.STATE_READY) {
+                    currentSong.value?.let { song ->
                         discordRpc?.updateSong(song, player.currentPosition, playbackParameters.speed)
                     }
                 }
