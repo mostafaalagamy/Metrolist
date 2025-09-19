@@ -227,6 +227,7 @@ class MusicService :
     private var isAudioEffectSessionOpened = false
 
     private var discordRpc: DiscordRPC? = null
+    private var lastPlaybackSpeed = 1.0f // Track previous speed to avoid unnecessary Discord updates
 
     val automixItems = MutableStateFlow<List<MediaItem>>(emptyList())
 
@@ -926,6 +927,9 @@ class MusicService :
         mediaItem: MediaItem?,
         reason: Int,
     ) {
+        // Reset Discord RPC speed tracking when song changes to ensure new song updates
+        lastPlaybackSpeed = -1.0f // Use invalid value to force update on new song
+        
         // Auto load more songs
         if (dataStore.get(AutoLoadMoreKey, true) &&
             reason != Player.MEDIA_ITEM_TRANSITION_REASON_REPEAT &&
@@ -1036,11 +1040,15 @@ class MusicService :
 
     override fun onPlaybackParametersChanged(playbackParameters: PlaybackParameters) {
         super.onPlaybackParametersChanged(playbackParameters)
-        // Update Discord RPC when playback parameters (speed/pitch) change
-        if (player.playWhenReady && player.playbackState == Player.STATE_READY) {
-            currentSong.value?.let { song ->
-                scope.launch {
-                    discordRpc?.updateSong(song, player.currentPosition, playbackParameters.speed)
+        // Only update Discord RPC when playback speed changes (not pitch)
+        // This avoids unnecessary PRESENCE_UPDATE calls to Discord
+        if (playbackParameters.speed != lastPlaybackSpeed) {
+            lastPlaybackSpeed = playbackParameters.speed
+            if (player.playWhenReady && player.playbackState == Player.STATE_READY) {
+                currentSong.value?.let { song ->
+                    scope.launch {
+                        discordRpc?.updateSong(song, player.currentPosition, playbackParameters.speed)
+                    }
                 }
             }
         }

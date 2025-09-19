@@ -13,18 +13,15 @@ class DiscordRPC(
     suspend fun updateSong(song: Song, currentPlaybackTimeMillis: Long, playbackSpeed: Float = 1.0f) = runCatching {
         val currentTime = System.currentTimeMillis()
         
-        // adjusting stuff
         val adjustedPlaybackTime = (currentPlaybackTimeMillis / playbackSpeed).toLong()
         val calculatedStartTime = currentTime - adjustedPlaybackTime
         
-        // song name shit
         val songTitleWithRate = if (playbackSpeed != 1.0f) {
             "${song.song.title} [${String.format("%.2fx", playbackSpeed)}]"
         } else {
             song.song.title
         }
         
-        // adjusting stuff part 2??? OMG NO WAY IM CREAMING
         val remainingDuration = song.song.duration * 1000L - currentPlaybackTimeMillis
         val adjustedRemainingDuration = (remainingDuration / playbackSpeed).toLong()
         
@@ -42,7 +39,7 @@ class DiscordRPC(
                 "Visit Metrolist" to "https://github.com/mostafaalagamy/Metrolist"
             ),
             type = Type.LISTENING,
-            statusDisplayType = StatusDisplayType.DETAILS,
+            statusDisplayType = StatusDisplayType.STATE,
             since = currentTime,
             startTime = calculatedStartTime,
             endTime = currentTime + adjustedRemainingDuration,
