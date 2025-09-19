@@ -97,4 +97,3 @@ core
 core.*
 *.so
 *.bin
-app/schemas/com.metrolist.music.db.InternalDatabase/23.json
