@@ -176,6 +176,13 @@ fun SettingsScreen(
                 }
                 add(
                     Material3SettingsItem(
+                        icon = painterResource(R.drawable.update),
+                        title = { Text(stringResource(R.string.updater)) },
+                        onClick = { navController.navigate("settings/updater") }
+                    )
+                )
+                add(
+                    Material3SettingsItem(
                         icon = painterResource(R.drawable.info),
                         title = { Text(stringResource(R.string.about)) },
                         onClick = { navController.navigate("settings/about") }
