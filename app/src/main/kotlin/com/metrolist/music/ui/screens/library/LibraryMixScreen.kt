@@ -650,6 +650,7 @@ fun LibraryMixScreen(
                         ) {
                             PlaylistGridItem(
                                 playlist = uploadedPlaylist,
+                                fillMaxWidth = true,
                                 autoPlaylist = true,
                                 modifier =
                                     Modifier
