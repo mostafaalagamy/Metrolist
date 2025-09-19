@@ -106,6 +106,7 @@ import com.metrolist.music.constants.LyricsRomanizeKyrgyzKey
 import com.metrolist.music.constants.LyricsRomanizeRussianKey
 import com.metrolist.music.constants.LyricsRomanizeSerbianKey
 import com.metrolist.music.constants.LyricsRomanizeUkrainianKey
+import com.metrolist.music.constants.LyricsRomanizeMacedonianKey
 import com.metrolist.music.constants.LyricsScrollKey
 import com.metrolist.music.constants.LyricsTextPositionKey
 import com.metrolist.music.constants.PlayerBackgroundStyle
@@ -122,6 +123,7 @@ import com.metrolist.music.lyrics.LyricsUtils.isRussian
 import com.metrolist.music.lyrics.LyricsUtils.isSerbian
 import com.metrolist.music.lyrics.LyricsUtils.isBulgarian
 import com.metrolist.music.lyrics.LyricsUtils.isUkrainian
+import com.metrolist.music.lyrics.LyricsUtils.isMacedonian
 import com.metrolist.music.lyrics.LyricsUtils.parseLyrics
 import com.metrolist.music.lyrics.LyricsUtils.romanizeCyrillic
 import com.metrolist.music.lyrics.LyricsUtils.romanizeJapanese
@@ -169,6 +171,7 @@ fun Lyrics(
     val romanizeBulgarianLyrics by rememberPreference(LyricsRomanizeBulgarianKey, true)
     val romanizeBelarusianLyrics by rememberPreference(LyricsRomanizeBelarusianKey, true)
     val romanizeKyrgyzLyrics by rememberPreference(LyricsRomanizeKyrgyzKey, true)
+    val romanizeMacedonianLyrics by rememberPreference(LyricsRomanizeMacedonianKey, true)
     val romanizeCyrillicByLine by rememberPreference(LyricsRomanizeCyrillicByLineKey, false)
     val scope = rememberCoroutineScope()
 
@@ -251,6 +254,13 @@ fun Lyrics(
                         }
                     }
                 }
+                if (romanizeMacedonianLyrics) {
+                    if (isMacedonian(if (romanizeCyrillicByLine) entry.text else lyrics)) {
+                        scope.launch {
+                            newEntry.romanizedTextFlow.value = romanizeCyrillic(entry.text)
+                        }
+                    }
+                }
                 newEntry
             }.let {
                 listOf(LyricsEntry.HEAD_LYRICS_ENTRY) + it
@@ -309,6 +319,13 @@ fun Lyrics(
                 }
                 if (romanizeKyrgyzLyrics) {
                     if (isKyrgyz(if (romanizeCyrillicByLine) line else lyrics)) {
+                        scope.launch {
+                            newEntry.romanizedTextFlow.value = romanizeCyrillic(line)
+                        }
+                    }
+                }
+                if (romanizeMacedonianLyrics) {
+                    if (isMacedonian(if (romanizeCyrillicByLine) line else lyrics)) {
                         scope.launch {
                             newEntry.romanizedTextFlow.value = romanizeCyrillic(line)
                         }
@@ -731,31 +748,31 @@ fun Lyrics(
                             },
                             fontWeight = if (index == displayedCurrentLineIndex && isSynced) FontWeight.ExtraBold else FontWeight.Bold
                         )
-                        if (currentSong?.romanizeLyrics == true && (romanizeJapaneseLyrics || romanizeKoreanLyrics || romanizeRussianLyrics || romanizeUkrainianLyrics || romanizeSerbianLyrics || romanizeBulgarianLyrics || romanizeBelarusianLyrics || romanizeKyrgyzLyrics)) {
-                            if (romanizeJapaneseLyrics ||
-                                romanizeKoreanLyrics ||
-                                romanizeRussianLyrics ||
-                                romanizeUkrainianLyrics ||
-                                romanizeSerbianLyrics ||
-                                romanizeBulgarianLyrics ||
-                                romanizeBelarusianLyrics ||
-                                romanizeKyrgyzLyrics) {
-                                // Show romanized text if available
-                                val romanizedText by item.romanizedTextFlow.collectAsState()
-                                romanizedText?.let { romanized ->
-                                    Text(
-                                        text = romanized,
-                                        fontSize = 18.sp,
-                                        color = textColor.copy(alpha = 0.8f),
-                                        textAlign = when (lyricsTextPosition) {
-                                            LyricsPosition.LEFT -> TextAlign.Left
-                                            LyricsPosition.CENTER -> TextAlign.Center
-                                            LyricsPosition.RIGHT -> TextAlign.Right
-                                        },
-                                        fontWeight = FontWeight.Normal,
-                                        modifier = Modifier.padding(top = 2.dp)
-                                    )
-                                }
+                        if (currentSong?.romanizeLyrics == true
+                            && (romanizeJapaneseLyrics ||
+                                    romanizeKoreanLyrics ||
+                                    romanizeRussianLyrics ||
+                                    romanizeUkrainianLyrics ||
+                                    romanizeSerbianLyrics ||
+                                    romanizeBulgarianLyrics ||
+                                    romanizeBelarusianLyrics ||
+                                    romanizeKyrgyzLyrics ||
+                                    romanizeMacedonianLyrics)) {
+                            // Show romanized text if available
+                            val romanizedText by item.romanizedTextFlow.collectAsState()
+                            romanizedText?.let { romanized ->
+                                Text(
+                                    text = romanized,
+                                    fontSize = 18.sp,
+                                    color = textColor.copy(alpha = 0.8f),
+                                    textAlign = when (lyricsTextPosition) {
+                                        LyricsPosition.LEFT -> TextAlign.Left
+                                        LyricsPosition.CENTER -> TextAlign.Center
+                                        LyricsPosition.RIGHT -> TextAlign.Right
+                                    },
+                                    fontWeight = FontWeight.Normal,
+                                    modifier = Modifier.padding(top = 2.dp)
+                                )
                             }
                         }
                     }

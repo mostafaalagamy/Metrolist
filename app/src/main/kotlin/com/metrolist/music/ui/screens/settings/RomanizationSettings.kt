@@ -62,6 +62,7 @@ fun RomanizationSettings(
     val (lyricsRomanizeBulgarian, onLyricsRomanizeBulgarianChange) = rememberPreference(LyricsRomanizeBulgarianKey, defaultValue = true)
     val (lyricsRomanizeBelarusian, onLyricsRomanizeBelarusianChange) = rememberPreference(LyricsRomanizeBelarusianKey, defaultValue = true)
     val (lyricsRomanizeKyrgyz, onLyricsRomanizeKyrgyzChange) = rememberPreference(LyricsRomanizeKyrgyzKey, defaultValue = true)
+    val (lyricsRomanizeMacedonian, onLyricsRomanizeMacedonianChange) = rememberPreference(LyricsRomanizeMacedonianKey, defaultValue = true)
     val (lyricsRomanizeCyrillicByLine, onLyricsRomanizeCyrillicByLineChange) = rememberPreference(LyricsRomanizeCyrillicByLineKey, defaultValue = false)
     val (showDialog, setShowDialog) = remember { mutableStateOf(false) }
 
@@ -122,6 +123,12 @@ fun RomanizationSettings(
             icon = { Icon(painterResource(R.drawable.alphabet_cyrillic), null) },
             checked = lyricsRomanizeKyrgyz,
             onCheckedChange = onLyricsRomanizeKyrgyzChange,
+        )
+        SwitchPreference(
+            title = { Text(stringResource(R.string.lyrics_romanize_macedonian)) },
+            icon = { Icon(painterResource(R.drawable.alphabet_cyrillic), null) },
+            checked = lyricsRomanizeMacedonian,
+            onCheckedChange = onLyricsRomanizeMacedonianChange,
         )
         SwitchPreference(
             title = { Text(stringResource(R.string.line_by_line_option_title)) },
