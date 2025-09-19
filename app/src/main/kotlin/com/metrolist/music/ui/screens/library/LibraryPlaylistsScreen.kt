@@ -528,7 +528,7 @@ fun LibraryPlaylistsScreen(
                             key = "uploadedPlaylist",
                             contentType = { CONTENT_TYPE_PLAYLIST },
                         ) {
-                            PlaylistListItem(
+                            PlaylistGridItem(
                                 playlist = uploadedPlaylist,
                                 autoPlaylist = true,
                                 modifier =
