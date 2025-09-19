@@ -45,7 +45,7 @@ data class SongEntity(
     @ColumnInfo(defaultValue = true.toString())
     val romanizeLyrics: Boolean = true,
     @ColumnInfo(defaultValue = "0")
-    val isDownloaded: Boolean = false
+    val isDownloaded: Boolean = false,
     @ColumnInfo(name = "isUploaded", defaultValue = false.toString())
     val isUploaded: Boolean = false
 ) {
