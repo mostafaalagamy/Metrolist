@@ -21,7 +21,7 @@
     <string name="offline">Scaricati</string>
     <string name="my_top">I miei Top</string>
     <string name="cached_playlist">In cache</string>
-    <string name="sync_playlist">Sincronizza Playlist</string>
+    <string name="sync_playlist">Sincronizza playlist</string>
     <string name="sync_disabled">Sincronizzazione disabilitata</string>
     <string name="elements_selected">%1$d elementi selezionati</string>
     <string name="allows_for_sync_witch_youtube">Nota: questo attiva la sincronizzazione con YouTube Music. Tale azione NON è modificabile successivamente.</string>
@@ -203,4 +203,7 @@
     <string name="remove_custom_image">Rimuovi immagine personalizzata</string>
     <string name="audio_offload">Abilita trasferimento</string>
     <string name="audio_offload_description">Utilizzare il percorso audio di scarico per la riproduzione audio. Disabilitare questo può aumentare l\'utilizzo dell\'energia ma può essere utile se si verificano problemi con la riproduzione audio o la post elaborazione</string>
+    <string name="filter_uploaded">Caricato</string>
+    <string name="uploaded_playlist">Caricato</string>
+    <string name="show_uploaded_playlist">Mostra playlist \"caricata\"</string>
 </resources>
