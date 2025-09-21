@@ -21,7 +21,7 @@ import androidx.compose.foundation.layout.union
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -92,7 +92,7 @@ import com.metrolist.music.extensions.metadata
 import com.metrolist.music.extensions.toMediaItem
 import com.metrolist.music.extensions.togglePlayPause
 import com.metrolist.music.models.toMediaMetadata
-import com.metrolist.music.playback.queues.YouTubeQueue
+import com.metrolist.music.playback.queues.ListQueue
 import com.metrolist.music.ui.component.AutoResizeText
 import com.metrolist.music.ui.component.DraggableScrollbar
 import com.metrolist.music.ui.component.FontSizeRange
@@ -401,12 +401,37 @@ fun OnlinePlaylistScreen(
                                 Spacer(Modifier.height(12.dp))
 
                                 Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                                    playlist.shuffleEndpoint?.let { shuffleEndpoint ->
+                                    if (songs.isNotEmpty()) {
                                         Button(
                                             onClick = {
                                                 playerConnection.playQueue(
-                                                    YouTubeQueue(
-                                                        shuffleEndpoint
+                                                    ListQueue(
+                                                        title = playlist.title,
+                                                        items = songs.map { it.toMediaItem() },
+                                                    )
+                                                )
+                                            },
+                                            contentPadding = ButtonDefaults.ButtonWithIconContentPadding,
+                                            modifier = Modifier.weight(1f)
+                                        ) {
+                                            Icon(
+                                                painter = painterResource(R.drawable.play),
+                                                contentDescription = null,
+                                                modifier = Modifier.size(ButtonDefaults.IconSize)
+                                            )
+                                            Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+                                            Text(stringResource(R.string.play))
+                                        }
+                                    }
+
+                                    playlist.shuffleEndpoint?.let {
+                                        OutlinedButton(
+                                            onClick = {
+                                                val shuffledSongs = songs.map { it.toMediaItem() }.shuffled()
+                                                playerConnection.playQueue(
+                                                    ListQueue(
+                                                        title = playlist.title,
+                                                        items = shuffledSongs,
                                                     )
                                                 )
                                             },
@@ -420,28 +445,6 @@ fun OnlinePlaylistScreen(
                                             )
                                             Spacer(Modifier.size(ButtonDefaults.IconSpacing))
                                             Text(stringResource(R.string.shuffle))
-                                        }
-                                    }
-
-                                    playlist.radioEndpoint?.let { radioEndpoint ->
-                                        OutlinedButton(
-                                            onClick = {
-                                                playerConnection.playQueue(
-                                                    YouTubeQueue(
-                                                        radioEndpoint
-                                                    )
-                                                )
-                                            },
-                                            contentPadding = ButtonDefaults.ButtonWithIconContentPadding,
-                                            modifier = Modifier.weight(1f),
-                                        ) {
-                                            Icon(
-                                                painter = painterResource(R.drawable.radio),
-                                                contentDescription = null,
-                                                modifier = Modifier.size(ButtonDefaults.IconSize),
-                                            )
-                                            Spacer(Modifier.size(ButtonDefaults.IconSpacing))
-                                            Text(stringResource(R.string.radio))
                                         }
                                     }
                                 }
@@ -472,9 +475,9 @@ fun OnlinePlaylistScreen(
                         }
                     }
 
-                    items(
+                    itemsIndexed(
                         items = wrappedSongs,
-                    ) { song ->
+                    ) { index, song ->
                         YouTubeListItem(
                             item = song.item.second,
                             isActive = mediaMetadata?.id == song.item.second.id,
@@ -507,17 +510,12 @@ fun OnlinePlaylistScreen(
                                             if (song.item.second.id == mediaMetadata?.id) {
                                                 playerConnection.player.togglePlayPause()
                                             } else {
-                                                playerConnection.service.getAutomix(playlistId = playlist.id)
                                                 playerConnection.playQueue(
-                                                    YouTubeQueue(
-                                                        song.item.second.endpoint
-                                                            ?: WatchEndpoint(
-                                                                videoId =
-                                                                song.item.second
-                                                                    .id,
-                                                            ),
-                                                        song.item.second.toMediaMetadata(),
-                                                    ),
+                                                    ListQueue(
+                                                        title = playlist.title,
+                                                        items = filteredSongs.map { it.second.toMediaItem() },
+                                                        startIndex = index
+                                                    )
                                                 )
                                             }
                                         } else {
