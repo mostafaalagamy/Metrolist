@@ -138,6 +138,31 @@ class SyncUtils @Inject constructor(
         }
     }
 
+    suspend fun syncUploadedSongs() = coroutineScope {
+        YouTube.library("FEmusic_library_privately_owned_tracks", tabIndex = 1).completed().onSuccess { page ->
+            val remoteSongs = page.items.filterIsInstance<SongItem>().reversed()
+            val remoteIds = remoteSongs.map { it.id }.toSet()
+            val localSongs = database.uploadedSongsByNameAsc().first()
+
+            localSongs.filterNot { it.id in remoteIds }
+                .forEach { database.update(it.song.toggleUploaded()) }
+
+            remoteSongs.forEach { song ->
+                launch {
+                    val dbSong = database.song(song.id).firstOrNull()
+                    database.transaction {
+                        if (dbSong == null) {
+                            // Use proper MediaMetadata insertion to save artist information
+                            insert(song.toMediaMetadata()) { it.toggleUploaded() }
+                        } else if (!dbSong.song.isUploaded) {
+                            update(dbSong.song.toggleUploaded())
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     suspend fun syncLikedAlbums() = coroutineScope {
         YouTube.library("FEmusic_liked_albums").completed().onSuccess { page ->
             val remoteAlbums = page.items.filterIsInstance<AlbumItem>().reversed()
@@ -162,6 +187,36 @@ class SyncUtils @Inject constructor(
                     }
                 }
             }
+        }
+    }
+
+    suspend fun syncUploadedAlbums() = coroutineScope {
+        YouTube.library("FEmusic_library_privately_owned_releases", tabIndex = 1).completed().onSuccess { page ->
+            val remoteAlbums = page.items.filterIsInstance<AlbumItem>().reversed()
+            val remoteIds = remoteAlbums.map {it.id}.toSet()
+            val localAlbums = database.albumsUploadedByNameAsc().first()
+
+            localAlbums.filterNot {it.id in remoteIds}
+                .forEach { database.update(it.album.toggleUploaded()) }
+
+            remoteAlbums.forEach { album ->
+                launch {
+                    val dbAlbum = database.album(album.id).firstOrNull()
+                    YouTube.album(album.browseId).onSuccess { albumPage ->
+                        if (dbAlbum == null) {
+                            database.insert(albumPage)
+                            database.album(album.id).firstOrNull()?.let { newDbAlbum ->
+                                database.update(newDbAlbum.album.toggleUploaded())
+                            }
+                        } else if (!dbAlbum.album.isUploaded) {
+                            database.update(dbAlbum.album.toggleUploaded())
+                        }
+                    }.onFailure {
+                        reportException(it)
+                    }
+                }
+            }
+
         }
     }
 

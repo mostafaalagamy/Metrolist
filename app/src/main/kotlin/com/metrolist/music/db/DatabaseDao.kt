@@ -739,6 +739,46 @@ interface DatabaseDao {
     )
     fun albumsLikedByPlayTimeAsc(): Flow<List<Album>>
 
+        @Transaction
+    @SuppressWarnings(RoomWarnings.QUERY_MISMATCH)
+    @Query("SELECT * FROM album WHERE isUploaded = 1 ORDER BY rowId")
+    fun albumsUploadedByCreateDateAsc(): Flow<List<Album>>
+
+    @Transaction
+    @SuppressWarnings(RoomWarnings.QUERY_MISMATCH)
+    @Query("SELECT * FROM album WHERE bookmarkedAt IS NOT NULL ORDER BY title")
+    fun albumsUploadedByNameAsc(): Flow<List<Album>>
+
+    @Transaction
+    @SuppressWarnings(RoomWarnings.QUERY_MISMATCH)
+    @Query("SELECT * FROM album WHERE bookmarkedAt IS NOT NULL ORDER BY year")
+    fun albumsUploadedByYearAsc(): Flow<List<Album>>
+
+    @Transaction
+    @SuppressWarnings(RoomWarnings.QUERY_MISMATCH)
+    @Query("SELECT * FROM album WHERE bookmarkedAt IS NOT NULL ORDER BY songCount")
+    fun albumsUploadedBySongCountAsc(): Flow<List<Album>>
+
+    @Transaction
+    @SuppressWarnings(RoomWarnings.QUERY_MISMATCH)
+    @Query("SELECT * FROM album WHERE bookmarkedAt IS NOT NULL ORDER BY duration")
+    fun albumsUploadedByLengthAsc(): Flow<List<Album>>
+
+    @Transaction
+    @SuppressWarnings(RoomWarnings.QUERY_MISMATCH)
+    @Query(
+        """
+        SELECT album.*
+        FROM album
+                 JOIN song
+                      ON song.albumId = album.id
+        WHERE bookmarkedAt IS NOT NULL
+        GROUP BY album.id
+        ORDER BY SUM(song.totalPlayTime)
+    """
+    )
+    fun albumsUploadedByPlayTimeAsc(): Flow<List<Album>>
+
     fun albums(
         sortType: AlbumSortType,
         descending: Boolean,
@@ -787,6 +827,31 @@ interface DatabaseDao {
         AlbumSortType.SONG_COUNT -> albumsLikedBySongCountAsc()
         AlbumSortType.LENGTH -> albumsLikedByLengthAsc()
         AlbumSortType.PLAY_TIME -> albumsLikedByPlayTimeAsc()
+    }.map { it.reversed(descending) }
+
+    fun albumsUploaded(
+        sortType: AlbumSortType,
+        descending: Boolean,
+    ) = when (sortType) {
+        AlbumSortType.CREATE_DATE -> albumsUploadedByCreateDateAsc()
+        AlbumSortType.NAME ->
+            albumsUploadedByNameAsc().map { albums ->
+                val collator = Collator.getInstance(Locale.getDefault())
+                collator.strength = Collator.PRIMARY
+                albums.sortedWith(compareBy(collator) { it.album.title })
+            }
+
+        AlbumSortType.ARTIST ->
+            albumsUploadedByCreateDateAsc().map { albums ->
+                val collator = Collator.getInstance(Locale.getDefault())
+                collator.strength = Collator.PRIMARY
+                albums.sortedWith(compareBy(collator) { album -> album.artists.joinToString("") { it.name } })
+            }
+
+        AlbumSortType.YEAR -> albumsUploadedByYearAsc()
+        AlbumSortType.SONG_COUNT -> albumsUploadedBySongCountAsc()
+        AlbumSortType.LENGTH -> albumsUploadedByLengthAsc()
+        AlbumSortType.PLAY_TIME -> albumsUploadedByPlayTimeAsc()
     }.map { it.reversed(descending) }
 
     @Transaction
@@ -909,6 +974,56 @@ interface DatabaseDao {
 
     @Query("UPDATE song SET isDownloaded = :downloaded, dateDownload = :date WHERE id = :songId")
     fun updateDownloadedInfo(songId: String, downloaded: Boolean, date: LocalDateTime?)
+    
+    @Transaction
+    @Query("SELECT * FROM song WHERE isUploaded = 1 ORDER BY dateDownload")
+    fun uploadedSongsByCreateDateAsc(): Flow<List<Song>>
+
+    @Transaction
+    @Query("SELECT * FROM song WHERE isUploaded = 1 ORDER BY title")
+    fun uploadedSongsByNameAsc(): Flow<List<Song>>
+
+    @Transaction
+    @Query("SELECT * FROM song WHERE isUploaded = 1 ORDER BY totalPlayTime")
+    fun uploadedSongsByPlayTimeAsc(): Flow<List<Song>>
+
+    @Transaction
+    @Query("SELECT * FROM song WHERE isUploaded = 1 ORDER BY rowId")
+    fun uploadedSongsByRowIdAsc(): Flow<List<Song>>
+
+    fun uploadedSongs(
+        sortType: SongSortType,
+        descending: Boolean,
+    ) = when (sortType) {
+        SongSortType.CREATE_DATE -> uploadedSongsByCreateDateAsc()
+        SongSortType.NAME ->
+            uploadedSongsByNameAsc().map { songs ->
+                val collator = Collator.getInstance(Locale.getDefault())
+                collator.strength = Collator.PRIMARY
+                songs.sortedWith(compareBy(collator) { it.song.title })
+            }
+
+        SongSortType.ARTIST ->
+            uploadedSongsByRowIdAsc().map { songs ->
+                val collator = Collator.getInstance(Locale.getDefault())
+                collator.strength = Collator.PRIMARY
+                songs
+                    .sortedWith(
+                        compareBy(collator) { song ->
+                            song.artists.joinToString("") { it.name }
+                        },
+                    ).groupBy { it.album?.title }
+                    .flatMap { (_, songsByAlbum) ->
+                        songsByAlbum.sortedBy { album ->
+                            album.artists.joinToString(
+                                "",
+                            ) { it.name }
+                        }
+                    }
+            }
+
+        SongSortType.PLAY_TIME -> uploadedSongsByPlayTimeAsc()
+    }.map { it.reversed(descending) }
     
     @Transaction
     @Query("SELECT * FROM song WHERE title LIKE '%' || :query || '%' AND inLibrary IS NOT NULL LIMIT :previewSize")

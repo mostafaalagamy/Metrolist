@@ -57,6 +57,9 @@ constructor(
                     "downloaded" -> database.downloadedSongs(sortType, descending)
                         .map { it.filterExplicit(hideExplicit) }
 
+                    "uploaded" -> database.uploadedSongs(sortType, descending)
+                        .map { it.filterExplicit(hideExplicit) }
+
                     else -> kotlinx.coroutines.flow.flowOf(emptyList())
                 }
             }
@@ -64,5 +67,9 @@ constructor(
 
     fun syncLikedSongs() {
         viewModelScope.launch(Dispatchers.IO) { syncUtils.syncLikedSongs() }
+    }
+
+    fun syncUploadedSongs() {
+        viewModelScope.launch(Dispatchers.IO) { syncUtils.syncUploadedSongs() }
     }
 }
