@@ -327,6 +327,8 @@ class HomeViewModel @Inject constructor(
                 supervisorScope {
                     launch { syncUtils.syncLikedSongs() }
                     launch { syncUtils.syncLibrarySongs() }
+                    launch { syncUtils.syncUploadedSongs() }
+                    launch { syncUtils.syncUploadedAlbums() }
                     launch { syncUtils.syncSavedPlaylists() }
                     launch { syncUtils.syncLikedAlbums() }
                     launch { syncUtils.syncArtistsSubscriptions() }

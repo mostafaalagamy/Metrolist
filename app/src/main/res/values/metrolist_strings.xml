@@ -25,6 +25,8 @@
     <string name="offline">Downloaded</string>
     <string name="my_top">My top</string>
     <string name="cached_playlist">Cached</string>
+    <string name="uploaded_playlist">Uploaded</string>
+    <string name="filter_uploaded">Uploaded</string>
     <string name="sync_playlist">Sync playlist</string>
     <string name="sync_disabled">Sync disabled</string>
     <string name="elements_selected">%1$d elements selected</string>
@@ -106,6 +108,7 @@
     <string name="show_downloaded_playlist">Show \"Downloaded\" playlist</string>
     <string name="show_top_playlist">Show \"Top\" playlist</string>
     <string name="show_cached_playlist">Show \"Cached\" playlist</string>
+    <string name="show_uploaded_playlist">Show \"Uploaded\" playlist</string>
 
     <string name="google">Google</string>
     <string name="discord">Discord</string>

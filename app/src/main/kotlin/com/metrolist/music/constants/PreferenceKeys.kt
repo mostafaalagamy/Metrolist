@@ -114,6 +114,7 @@ val ShowLikedPlaylistKey = booleanPreferencesKey("show_liked_playlist")
 val ShowDownloadedPlaylistKey = booleanPreferencesKey("show_downloaded_playlist")
 val ShowTopPlaylistKey = booleanPreferencesKey("show_top_playlist")
 val ShowCachedPlaylistKey = booleanPreferencesKey("show_cached_playlist")
+val ShowUploadedPlaylistKey = booleanPreferencesKey("show_uploaded_playlist")
 
 enum class LibraryViewType {
     LIST,
@@ -130,7 +131,8 @@ enum class LibraryViewType {
 enum class SongFilter {
     LIBRARY,
     LIKED,
-    DOWNLOADED
+    DOWNLOADED,
+    UPLOADED
 }
 
 enum class ArtistFilter {
@@ -140,7 +142,8 @@ enum class ArtistFilter {
 
 enum class AlbumFilter {
     LIBRARY,
-    LIKED
+    LIKED,
+    UPLOADED
 }
 
 enum class SongSortType {
