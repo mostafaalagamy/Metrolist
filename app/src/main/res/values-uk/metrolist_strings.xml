@@ -206,4 +206,7 @@
     <string name="audio_offload_description">Використовуйте шлях розвантаження аудіо для відтворення аудіо. Вимкнення цієї функції може збільшити споживання енергії, але може бути корисним, якщо у вас виникнуть проблеми з відтворенням аудіо або постобробкою</string>
     <string name="choose_from_library">Виберіть з бібліотеки</string>
     <string name="remove_custom_image">Вилучити власне зображення</string>
+    <string name="uploaded_playlist">Завантажено</string>
+    <string name="filter_uploaded">Завантаженні</string>
+    <string name="show_uploaded_playlist">Показати список відтворення \"Завантажено\"</string>
 </resources>
