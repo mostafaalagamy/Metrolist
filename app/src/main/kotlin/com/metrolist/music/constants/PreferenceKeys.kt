@@ -40,6 +40,7 @@ val ProxyTypeKey = stringPreferencesKey("proxyType")
 val ProxyUsernameKey = stringPreferencesKey("proxyUsername")
 val ProxyPasswordKey = stringPreferencesKey("proxyPassword")
 val YtmSyncKey = booleanPreferencesKey("ytmSync")
+val CheckForUpdatesKey = booleanPreferencesKey("checkForUpdates")
 
 val AudioQualityKey = stringPreferencesKey("audioQuality")
 

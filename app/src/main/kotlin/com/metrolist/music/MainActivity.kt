@@ -128,6 +128,7 @@ import com.metrolist.innertube.models.SongItem
 import com.metrolist.innertube.models.WatchEndpoint
 import com.metrolist.music.constants.AppBarHeight
 import com.metrolist.music.constants.AppLanguageKey
+import com.metrolist.music.constants.CheckForUpdatesKey
 import com.metrolist.music.constants.DarkModeKey
 import com.metrolist.music.constants.DefaultOpenTabKey
 import com.metrolist.music.constants.DisableScreenshotKey
@@ -307,13 +308,21 @@ class MainActivity : ComponentActivity() {
         }
 
         setContent {
-            LaunchedEffect(Unit) {
-                withContext(Dispatchers.IO) {
-                    if (System.currentTimeMillis() - Updater.lastCheckTime > 1.days.inWholeMilliseconds) {
-                        Updater.getLatestVersionName().onSuccess {
-                            latestVersionName = it
+            val checkForUpdates by rememberPreference(CheckForUpdatesKey, defaultValue = true)
+
+            LaunchedEffect(checkForUpdates) {
+                if (checkForUpdates) {
+                    withContext(Dispatchers.IO) {
+                        if (System.currentTimeMillis() - Updater.lastCheckTime > 1.days.inWholeMilliseconds) {
+                            Updater.getLatestVersionName().onSuccess {
+                                latestVersionName = it
+                            }
                         }
                     }
+                } else {
+                    // when the user disables updates, reset to the current version
+                    // to trick the app into thinking it's on the latest version
+                    latestVersionName = BuildConfig.VERSION_NAME
                 }
             }
 
