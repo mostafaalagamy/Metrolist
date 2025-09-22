@@ -110,8 +110,8 @@
     <string name="lyrics_romanize_japanese">Романизировать японскую лирику</string>
     <string name="lyrics_romanize_korean">Романизировать корейскую лирику</string>
     <string name="auto_playlists">Автоматические списки воспроизведения</string>
-    <string name="show_liked_playlist">Показать плейлист \"Понравилось\"</string>
-    <string name="show_downloaded_playlist">Показать плейлист \"Загруженные\"</string>
+    <string name="show_liked_playlist">Показать плейлист \"Понравившееся\"</string>
+    <string name="show_downloaded_playlist">Показать плейлист \"Скачанное\"</string>
     <string name="show_top_playlist">Показать плейлист \"Топ\"</string>
     <string name="show_cached_playlist">Показать \"Кэшированный\" плейлист</string>
     <string name="advanced_login">Вход в систему с помощью токена</string>
@@ -206,4 +206,7 @@
     <string name="choose_from_library">Выбрать из библиотеки</string>
     <string name="audio_offload">Включить аппаратное ускорение аудио</string>
     <string name="audio_offload_description">Использовать аппаратный путь воспроизведения аудио. Отключение этой функции может увеличить расход энергии, но может быть полезным, если у вас возникают проблемы с воспроизведением или постобработкой звука</string>
+    <string name="uploaded_playlist">Загруженное</string>
+    <string name="filter_uploaded">Загруженные</string>
+    <string name="show_uploaded_playlist">Показать плейлист \"Загруженное\"</string>
 </resources>
