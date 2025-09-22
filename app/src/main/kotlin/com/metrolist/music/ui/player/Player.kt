@@ -9,6 +9,7 @@ import android.graphics.drawable.BitmapDrawable
 import android.widget.Toast
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
@@ -1086,59 +1087,61 @@ fun BottomSheetPlayer(
             }
         }
 
-        AnimatedVisibility(
-            visible = state.isExpanded,
-            enter = fadeIn(tween(500)),
-            exit = fadeOut(tween(500))
-        ) {
-            AnimatedContent(
-                targetState = mediaMetadata,
-                transitionSpec = {
-                    fadeIn(tween(1000)).togetherWith(fadeOut(tween(1000)))
-                }
-            ) { mediaMetadata ->
-                if (playerBackground == PlayerBackgroundStyle.BLUR) {
-                    AsyncImage(
-                        model = mediaMetadata?.thumbnailUrl,
-                        contentDescription = null,
-                        contentScale = ContentScale.FillBounds,
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .blur(150.dp)
-                    )
-
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(Color.Black.copy(alpha = 0.3f))
-                    )
-                }
-            }
-
-            AnimatedContent(
-                targetState = gradientColors,
-                transitionSpec = {
-                    fadeIn(tween(1000)) togetherWith fadeOut(tween(1000))
-                }
-            ) { colors ->
-                if (playerBackground == PlayerBackgroundStyle.GRADIENT && colors.isNotEmpty()) {
-                    Box(modifier = Modifier.fillMaxSize()) {
-                        val gradientColorStops = if (colors.size >= 3) {
-                            arrayOf(
-                                0.0f to colors[0], // Top: primary vibrant color
-                                0.5f to colors[1], // Middle: darker variant
-                                1.0f to colors[2]  // Bottom: black
+        // Background Layer
+        if (!state.isCollapsed) {
+            when (playerBackground) {
+                PlayerBackgroundStyle.BLUR -> {
+                    Crossfade(
+                        targetState = mediaMetadata?.thumbnailUrl,
+                        animationSpec = tween(800)
+                    ) { thumbnailUrl ->
+                        if (thumbnailUrl != null) {
+                            AsyncImage(
+                                model = thumbnailUrl,
+                                contentDescription = null,
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .blur(60.dp)
                             )
-                        } else {
-                            arrayOf(
-                                0.0f to colors[0], // Top: primary color
-                                0.6f to colors[0].copy(alpha = 0.7f), // Middle: faded variant
-                                1.0f to Color.Black // Bottom: black
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .background(Color.Black.copy(alpha = 0.3f))
                             )
                         }
-                        Box(modifier = Modifier.fillMaxSize().background(Brush.verticalGradient(colorStops = gradientColorStops)))
-                        Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.2f)))
                     }
+                }
+                PlayerBackgroundStyle.GRADIENT -> {
+                    Crossfade(
+                        targetState = gradientColors,
+                        animationSpec = tween(800)
+                    ) { colors ->
+                        if (colors.isNotEmpty()) {
+                            val gradientColorStops = if (colors.size >= 3) {
+                                arrayOf(
+                                    0.0f to colors[0],
+                                    0.5f to colors[1],
+                                    1.0f to colors[2]
+                                )
+                            } else {
+                                arrayOf(
+                                    0.0f to colors[0],
+                                    0.6f to colors[0].copy(alpha = 0.7f),
+                                    1.0f to Color.Black
+                                )
+                            }
+                            Box(
+                                Modifier
+                                    .fillMaxSize()
+                                    .background(Brush.verticalGradient(colorStops = gradientColorStops))
+                                    .background(Color.Black.copy(alpha = 0.2f))
+                            )
+                        }
+                    }
+                }
+                else -> {
+                    PlayerBackgroundStyle.DEFAULT
                 }
             }
         }
