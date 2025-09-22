@@ -204,4 +204,7 @@
     <string name="remove_custom_image">Odstranit vlastní obrázek</string>
     <string name="audio_offload">Povolit offload</string>
     <string name="audio_offload_description">Povolit offload zvukové cesty pro přehrávání zvuku. Zakázání může zvýšit spotřebu energie, ale může být užitečné, pokud máte problémy s přehráváním zvuku nebo jeho následným zpracováním</string>
+    <string name="uploaded_playlist">Nahráno</string>
+    <string name="filter_uploaded">Nahráno</string>
+    <string name="show_uploaded_playlist">Zobrazit playlist „Nahráno“</string>
 </resources>
