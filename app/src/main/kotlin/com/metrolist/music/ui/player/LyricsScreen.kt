@@ -3,6 +3,7 @@ package com.metrolist.music.ui.player
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -269,27 +270,20 @@ fun LyricsScreen(
 
     Box(modifier = modifier.fillMaxSize()) {
         // Background Layer
-        AnimatedVisibility(
-            visible = true, // Always visible in lyrics screen
-            enter = fadeIn(tween(500)),
-            exit = fadeOut(tween(500))
-        ) {
-            AnimatedContent(
-                targetState = mediaMetadata,
-                transitionSpec = {
-                    fadeIn(tween(1000)).togetherWith(fadeOut(tween(1000)))
-                }
-            ) { mediaMetadata ->
-                if (playerBackground == PlayerBackgroundStyle.BLUR) {
+        if (playerBackground == PlayerBackgroundStyle.BLUR) {
+            Crossfade(
+                targetState = mediaMetadata?.thumbnailUrl,
+                animationSpec = tween(600)
+            ) { thumbnailUrl ->
+                if (thumbnailUrl != null) {
                     AsyncImage(
-                        model = mediaMetadata.thumbnailUrl,
+                        model = thumbnailUrl,
                         contentDescription = null,
                         contentScale = ContentScale.FillBounds,
                         modifier = Modifier
                             .fillMaxSize()
-                            .blur(150.dp)
+                            .blur(60.dp)
                     )
-
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
@@ -297,31 +291,31 @@ fun LyricsScreen(
                     )
                 }
             }
-
-            AnimatedContent(
+        } else if (playerBackground == PlayerBackgroundStyle.GRADIENT) {
+            Crossfade(
                 targetState = gradientColors,
-                transitionSpec = {
-                    fadeIn(tween(1000)) togetherWith fadeOut(tween(1000))
-                }
+                animationSpec = tween(600)
             ) { colors ->
-                if (playerBackground == PlayerBackgroundStyle.GRADIENT && colors.isNotEmpty()) {
-                    Box(modifier = Modifier.fillMaxSize()) {
-                        val gradientColorStops = if (colors.size >= 3) {
-                            arrayOf(
-                                0.0f to colors[0], // Top: primary vibrant color
-                                0.5f to colors[1], // Middle: darker variant
-                                1.0f to colors[2]  // Bottom: black
-                            )
-                        } else {
-                            arrayOf(
-                                0.0f to colors[0], // Top: primary color
-                                0.6f to colors[0].copy(alpha = 0.7f), // Middle: faded variant
-                                1.0f to Color.Black // Bottom: black
-                            )
-                        }
-                        Box(modifier = Modifier.fillMaxSize().background(Brush.verticalGradient(colorStops = gradientColorStops)))
-                        Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.2f)))
+                if (colors.isNotEmpty()) {
+                    val gradientColorStops = if (colors.size >= 3) {
+                        arrayOf(
+                            0.0f to colors[0], // Top
+                            0.5f to colors[1], // Middle
+                            1.0f to colors[2]  // Bottom
+                        )
+                    } else {
+                        arrayOf(
+                            0.0f to colors[0], // Top
+                            0.6f to colors[0].copy(alpha = 0.7f), // Middle
+                            1.0f to Color.Black // Bottom
+                        )
                     }
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Brush.verticalGradient(colorStops = gradientColorStops))
+                            .background(Color.Black.copy(alpha = 0.2f))
+                    )
                 }
             }
         }
