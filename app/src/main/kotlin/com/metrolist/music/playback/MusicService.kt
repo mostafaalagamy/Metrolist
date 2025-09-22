@@ -7,12 +7,13 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.database.SQLException
-import android.media.AudioManager
 import android.media.AudioFocusRequest
-import android.media.AudioAttributes as LegacyAudioAttributes
+import android.media.AudioManager
 import android.media.audiofx.AudioEffect
+import android.media.audiofx.LoudnessEnhancer
 import android.net.ConnectivityManager
 import android.os.Binder
+import android.util.Log
 import androidx.core.content.getSystemService
 import androidx.core.net.toUri
 import androidx.datastore.preferences.core.edit
@@ -61,20 +62,20 @@ import com.metrolist.innertube.models.WatchEndpoint
 import com.metrolist.music.MainActivity
 import com.metrolist.music.R
 import com.metrolist.music.constants.AudioNormalizationKey
-import com.metrolist.music.constants.AudioQualityKey
 import com.metrolist.music.constants.AudioOffload
-import com.metrolist.music.constants.AutoLoadMoreKey
-import com.metrolist.music.constants.DisableLoadMoreWhenRepeatAllKey
+import com.metrolist.music.constants.AudioQualityKey
 import com.metrolist.music.constants.AutoDownloadOnLikeKey
+import com.metrolist.music.constants.AutoLoadMoreKey
 import com.metrolist.music.constants.AutoSkipNextOnErrorKey
+import com.metrolist.music.constants.DisableLoadMoreWhenRepeatAllKey
 import com.metrolist.music.constants.DiscordTokenKey
 import com.metrolist.music.constants.EnableDiscordRPCKey
 import com.metrolist.music.constants.HideExplicitKey
 import com.metrolist.music.constants.HistoryDuration
 import com.metrolist.music.constants.MediaSessionConstants.CommandToggleLike
-import com.metrolist.music.constants.MediaSessionConstants.CommandToggleStartRadio
 import com.metrolist.music.constants.MediaSessionConstants.CommandToggleRepeatMode
 import com.metrolist.music.constants.MediaSessionConstants.CommandToggleShuffle
+import com.metrolist.music.constants.MediaSessionConstants.CommandToggleStartRadio
 import com.metrolist.music.constants.PauseListenHistoryKey
 import com.metrolist.music.constants.PersistentQueueKey
 import com.metrolist.music.constants.PlayerVolumeKey
@@ -101,26 +102,22 @@ import com.metrolist.music.extensions.toMediaItem
 import com.metrolist.music.extensions.toPersistQueue
 import com.metrolist.music.extensions.toQueue
 import com.metrolist.music.lyrics.LyricsHelper
-import com.metrolist.music.models.PersistQueue
 import com.metrolist.music.models.PersistPlayerState
-import com.metrolist.music.models.QueueData
-import com.metrolist.music.models.QueueType
+import com.metrolist.music.models.PersistQueue
 import com.metrolist.music.models.toMediaMetadata
 import com.metrolist.music.playback.queues.EmptyQueue
-import com.metrolist.music.playback.queues.ListQueue
 import com.metrolist.music.playback.queues.Queue
 import com.metrolist.music.playback.queues.YouTubeQueue
 import com.metrolist.music.playback.queues.filterExplicit
 import com.metrolist.music.utils.CoilBitmapLoader
 import com.metrolist.music.utils.DiscordRPC
+import com.metrolist.music.utils.NetworkConnectivityObserver
 import com.metrolist.music.utils.SyncUtils
 import com.metrolist.music.utils.YTPlayerUtils
 import com.metrolist.music.utils.dataStore
 import com.metrolist.music.utils.enumPreference
 import com.metrolist.music.utils.get
-import com.metrolist.music.utils.isInternetAvailable
 import com.metrolist.music.utils.reportException
-import com.metrolist.music.utils.NetworkConnectivityObserver
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -146,13 +143,8 @@ import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
-import java.net.ConnectException
-import java.net.SocketTimeoutException
-import java.net.UnknownHostException
 import java.time.LocalDateTime
 import javax.inject.Inject
-import kotlin.math.min
-import kotlin.math.pow
 import kotlin.time.Duration.Companion.seconds
 
 @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
@@ -207,7 +199,8 @@ class MusicService :
             database.format(mediaMetadata?.id)
         }
 
-    private val normalizeFactor = MutableStateFlow(1f)
+    private var loudnessEnhancer: LoudnessEnhancer? = null
+    private var isNormalizationEnabled = false
     val playerVolume = MutableStateFlow(dataStore.get(PlayerVolumeKey, 1f).coerceIn(0f, 1f))
 
     lateinit var sleepTimer: SleepTimer
@@ -230,8 +223,6 @@ class MusicService :
     val automixItems = MutableStateFlow<List<MediaItem>>(emptyList())
 
     private var consecutivePlaybackErr = 0
-
-    val maxSafeGainFactor = 1.414f // +3 dB    
 
     override fun onCreate() {
         super.onCreate()
@@ -270,6 +261,9 @@ class MusicService :
                     addAnalyticsListener(PlaybackStatsListener(false, this@MusicService))
                     setOffloadEnabled(dataStore.get(AudioOffload, false))
                 }
+
+        // Inicializar LoudnessEnhancer
+        initializeLoudnessEnhancer()
 
         audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
         setupAudioFocusRequest()
@@ -313,12 +307,6 @@ class MusicService :
                     }
                 }
             }
-        }
-
-        combine(playerVolume, normalizeFactor) { playerVolume, normalizeFactor ->
-            playerVolume * normalizeFactor
-        }.collectLatest(scope) {
-            player.volume = it
         }
 
         playerVolume.debounce(1000).collect(scope) { volume ->
@@ -365,23 +353,40 @@ class MusicService :
             }
 
         combine(
-            currentFormat,
+            playerVolume,
             dataStore.data
                 .map { it[AudioNormalizationKey] ?: true }
                 .distinctUntilChanged(),
-        ) { format, normalizeAudio ->
-            format to normalizeAudio
-        }.collectLatest(scope) { (format, normalizeAudio) ->
-            normalizeFactor.value =
+            currentFormat
+        ) { volume, normalizeAudio, format ->
+            Triple(volume, normalizeAudio, format)
+        }.collectLatest(scope) { (volume, normalizeAudio, format) ->
+            // Siempre establecer el volumen del usuario
+            player.volume = volume
+
+            // Configurar LoudnessEnhancer si está activada la normalización
+            isNormalizationEnabled = normalizeAudio
+
+            try {
                 if (normalizeAudio && format?.loudnessDb != null) {
-                    var factor = 10f.pow(-format.loudnessDb.toFloat() / 20)
-                    if (factor > 1f) {
-                        factor = min(factor, maxSafeGainFactor)
-                    }
-                    factor
+                    // Calcular la ganancia necesaria para normalizar (invertir la loudness)
+                    var gain = (-format.loudnessDb * 100).toInt() // Convertir de dB a milibels
+
+                    // Aplicar límites de seguridad
+                    gain = gain.coerceIn(MIN_GAIN_MB, MAX_GAIN_MB)
+
+                    loudnessEnhancer?.setTargetGain(gain)
+                    loudnessEnhancer?.enabled = true
+                    Log.d(TAG, "Audio normalization enabled: gain=${gain}mB, loudness=${format.loudnessDb}dB")
                 } else {
-                    1f
+                    // Desactivar LoudnessEnhancer si no hay normalización o no hay datos
+                    loudnessEnhancer?.enabled = false
+                    Log.d(TAG, "Audio normalization disabled")
                 }
+            } catch (e: Exception) {
+                Log.e(TAG, "Error configuring audio normalization", e)
+                loudnessEnhancer?.enabled = false
+            }
         }
 
         dataStore.data
@@ -427,7 +432,7 @@ class MusicService :
             }.onSuccess { queue ->
                 automixItems.value = queue.items.map { it.toMediaItem() }
             }
-            
+
             // Restore player state
             runCatching {
                 filesDir.resolve(PERSISTENT_PLAYER_STATE_FILE).inputStream().use { fis ->
@@ -442,7 +447,7 @@ class MusicService :
                     player.repeatMode = playerState.repeatMode
                     player.shuffleModeEnabled = playerState.shuffleModeEnabled
                     player.volume = playerState.volume
-                    
+
                     // Restore position if it's still valid
                     if (playerState.currentMediaItemIndex < player.mediaItemCount) {
                         player.seekTo(playerState.currentMediaItemIndex, playerState.currentPosition)
@@ -460,7 +465,7 @@ class MusicService :
                 }
             }
         }
-        
+
         // Save queue more frequently when playing to ensure state is preserved
         scope.launch {
             while (isActive) {
@@ -469,6 +474,19 @@ class MusicService :
                     saveQueueToDisk()
                 }
             }
+        }
+    }
+
+    private fun initializeLoudnessEnhancer() {
+        try {
+            if (loudnessEnhancer == null) {
+                loudnessEnhancer = LoudnessEnhancer(player.audioSessionId)
+            }
+            loudnessEnhancer?.enabled = false // Inicialmente desactivado
+            Log.d(TAG, "LoudnessEnhancer initialized successfully")
+        } catch (e: Exception) {
+            Log.e(TAG, "Error initializing LoudnessEnhancer", e)
+            loudnessEnhancer = null
         }
     }
 
@@ -497,7 +515,7 @@ class MusicService :
                     wasPlayingBeforeAudioFocusLoss = false
                 }
 
-                player.volume = (playerVolume.value * normalizeFactor.value)
+                player.volume = playerVolume.value
 
                 lastAudioFocusState = focusChange
             }
@@ -533,7 +551,7 @@ class MusicService :
                 wasPlayingBeforeAudioFocusLoss = player.isPlaying
 
                 if (player.isPlaying) {
-                    player.volume = (playerVolume.value * normalizeFactor.value * 0.2f) // خفض إلى 20%
+                    player.volume = (playerVolume.value * 0.2f) // خفض إلى 20%
                 }
 
                 lastAudioFocusState = focusChange
@@ -548,15 +566,15 @@ class MusicService :
                     wasPlayingBeforeAudioFocusLoss = false
                 }
 
-                player.volume = (playerVolume.value * normalizeFactor.value)
-        
+                player.volume = playerVolume.value
+
                 lastAudioFocusState = focusChange
             }
 
             AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK -> {
                 hasAudioFocus = true
 
-                player.volume = (playerVolume.value * normalizeFactor.value)
+                player.volume = playerVolume.value
 
                 lastAudioFocusState = focusChange
             }
@@ -565,7 +583,7 @@ class MusicService :
 
     private fun requestAudioFocus(): Boolean {
         if (hasAudioFocus) return true
-    
+
         audioFocusRequest?.let { request ->
             val result = audioManager.requestAudioFocus(request)
             hasAudioFocus = result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED
@@ -763,10 +781,10 @@ class MusicService :
 
     fun startRadioSeamlessly() {
         val currentMediaMetadata = player.currentMetadata ?: return
-        
+
         // Save current song
         val currentSong = player.currentMediaItem
-        
+
         // Remove other songs from queue
         if (player.currentMediaItemIndex > 0) {
             player.removeMediaItems(0, player.currentMediaItemIndex)
@@ -774,17 +792,17 @@ class MusicService :
         if (player.currentMediaItemIndex < player.mediaItemCount - 1) {
             player.removeMediaItems(player.currentMediaItemIndex + 1, player.mediaItemCount)
         }
-        
+
         scope.launch(SilentHandler) {
             val radioQueue = YouTubeQueue(
                 endpoint = WatchEndpoint(videoId = currentMediaMetadata.id)
             )
             val initialStatus = radioQueue.getInitialStatus()
-            
+
             if (initialStatus.title != null) {
                 queueTitle = initialStatus.title
             }
-            
+
             // Add radio songs after current song
             player.addMediaItems(initialStatus.items.drop(1))
             currentQueue = radioQueue
@@ -802,7 +820,7 @@ class MusicService :
     }
 
     fun getAutomix(playlistId: String) {
-        if (dataStore[SimilarContent] == true && 
+        if (dataStore[SimilarContent] == true &&
             !(dataStore.get(DisableLoadMoreWhenRepeatAllKey, false) && player.repeatMode == REPEAT_MODE_ALL)) {
             scope.launch(SilentHandler) {
                 YouTube
@@ -869,30 +887,30 @@ class MusicService :
     }
 
     fun toggleLike() {
-         database.query {
-             currentSong.value?.let {
-                 val song = it.song.toggleLike()
-                 update(song)
-                 syncUtils.likeSong(song)
+        database.query {
+            currentSong.value?.let {
+                val song = it.song.toggleLike()
+                update(song)
+                syncUtils.likeSong(song)
 
-                 // Check if auto-download on like is enabled and the song is now liked
-                 if (dataStore.get(AutoDownloadOnLikeKey, false) && song.liked) {
-                     // Trigger download for the liked song
-                     val downloadRequest = androidx.media3.exoplayer.offline.DownloadRequest
-                         .Builder(song.id, song.id.toUri())
-                         .setCustomCacheKey(song.id)
-                         .setData(song.title.toByteArray())
-                         .build()
-                     androidx.media3.exoplayer.offline.DownloadService.sendAddDownload(
-                         this@MusicService,
-                         ExoDownloadService::class.java,
-                         downloadRequest,
-                         false
-                     )
-                 }
-             }
-         }
-     }
+                // Check if auto-download on like is enabled and the song is now liked
+                if (dataStore.get(AutoDownloadOnLikeKey, false) && song.liked) {
+                    // Trigger download for the liked song
+                    val downloadRequest = androidx.media3.exoplayer.offline.DownloadRequest
+                        .Builder(song.id, song.id.toUri())
+                        .setCustomCacheKey(song.id)
+                        .setData(song.title.toByteArray())
+                        .build()
+                    androidx.media3.exoplayer.offline.DownloadService.sendAddDownload(
+                        this@MusicService,
+                        ExoDownloadService::class.java,
+                        downloadRequest,
+                        false
+                    )
+                }
+            }
+        }
+    }
 
     fun toggleStartRadio() {
         startRadioSeamlessly()
@@ -900,25 +918,74 @@ class MusicService :
 
     private fun openAudioEffectSession() {
         if (isAudioEffectSessionOpened) return
-        isAudioEffectSessionOpened = true
-        sendBroadcast(
-            Intent(AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION).apply {
-                putExtra(AudioEffect.EXTRA_AUDIO_SESSION, player.audioSessionId)
-                putExtra(AudioEffect.EXTRA_PACKAGE_NAME, packageName)
-                putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC)
-            },
-        )
+
+        try {
+            isAudioEffectSessionOpened = true
+
+            // Habilitar LoudnessEnhancer si la normalización está activa
+            if (isNormalizationEnabled) {
+                loudnessEnhancer?.enabled = true
+            }
+
+            sendBroadcast(
+                Intent(AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION).apply {
+                    putExtra(AudioEffect.EXTRA_AUDIO_SESSION, player.audioSessionId)
+                    putExtra(AudioEffect.EXTRA_PACKAGE_NAME, packageName)
+                    putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC)
+                },
+            )
+            Log.d(TAG, "Audio effect session opened")
+        } catch (e: Exception) {
+            Log.e(TAG, "Error opening audio effect session", e)
+            isAudioEffectSessionOpened = false
+        }
     }
 
     private fun closeAudioEffectSession() {
         if (!isAudioEffectSessionOpened) return
-        isAudioEffectSessionOpened = false
-        sendBroadcast(
-            Intent(AudioEffect.ACTION_CLOSE_AUDIO_EFFECT_CONTROL_SESSION).apply {
-                putExtra(AudioEffect.EXTRA_AUDIO_SESSION, player.audioSessionId)
-                putExtra(AudioEffect.EXTRA_PACKAGE_NAME, packageName)
-            },
-        )
+
+        try {
+            isAudioEffectSessionOpened = false
+
+            // Deshabilitar LoudnessEnhancer
+            loudnessEnhancer?.enabled = false
+
+            sendBroadcast(
+                Intent(AudioEffect.ACTION_CLOSE_AUDIO_EFFECT_CONTROL_SESSION).apply {
+                    putExtra(AudioEffect.EXTRA_AUDIO_SESSION, player.audioSessionId)
+                    putExtra(AudioEffect.EXTRA_PACKAGE_NAME, packageName)
+                },
+            )
+            Log.d(TAG, "Audio effect session closed")
+        } catch (e: Exception) {
+            Log.e(TAG, "Error closing audio effect session", e)
+        }
+    }
+
+    private fun applyAudioNormalizationSettings() {
+        scope.launch {
+            val normalizeAudio = dataStore.data.first()[AudioNormalizationKey] ?: true
+            val format = currentFormat.first()
+
+            // Reaplicar configuración
+            isNormalizationEnabled = normalizeAudio
+
+            try {
+                if (normalizeAudio && format?.loudnessDb != null) {
+                    var gain = (-format.loudnessDb * 100).toInt()
+                    gain = gain.coerceIn(MIN_GAIN_MB, MAX_GAIN_MB)
+                    loudnessEnhancer?.setTargetGain(gain)
+                    loudnessEnhancer?.enabled = true
+                    Log.d(TAG, "Audio normalization reapplied: gain=${gain}mB")
+                } else {
+                    loudnessEnhancer?.enabled = false
+                    Log.d(TAG, "Audio normalization disabled on reapply")
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "Error reapplying audio normalization", e)
+                loudnessEnhancer?.enabled = false
+            }
+        }
     }
 
     override fun onMediaItemTransition(
@@ -940,7 +1007,7 @@ class MusicService :
                 }
             }
         }
-        
+
         // Save state when media item changes
         if (dataStore.get(PersistentQueueKey, true)) {
             saveQueueToDisk()
@@ -950,7 +1017,7 @@ class MusicService :
     override fun onPlaybackStateChanged(
         @Player.State playbackState: Int,
     ) {
-        
+
         // Save state when playback state changes
         if (dataStore.get(PersistentQueueKey, true)) {
             saveQueueToDisk()
@@ -977,6 +1044,15 @@ class MusicService :
                 closeAudioEffectSession()
             }
         }
+
+        // Manejar cambios en la sesión de audio
+        if (events.contains(Player.EVENT_AUDIO_SESSION_ID)) {
+            // Recrear LoudnessEnhancer cuando cambia la sesión de audio
+            initializeLoudnessEnhancer()
+            // Reaplicar configuración de normalización
+            applyAudioNormalizationSettings()
+        }
+
         if (events.containsAny(EVENT_TIMELINE_CHANGED, EVENT_POSITION_DISCONTINUITY)) {
             currentMediaMetadata.value = player.currentMetadata
         }
@@ -1012,7 +1088,7 @@ class MusicService :
             shuffledIndices[0] = player.currentMediaItemIndex
             player.setShuffleOrder(DefaultShuffleOrder(shuffledIndices, System.currentTimeMillis()))
         }
-        
+
         // Save state when shuffle mode changes
         if (dataStore.get(PersistentQueueKey, true)) {
             saveQueueToDisk()
@@ -1026,7 +1102,7 @@ class MusicService :
                 settings[RepeatModeKey] = repeatMode
             }
         }
-        
+
         // Save state when repeat mode changes
         if (dataStore.get(PersistentQueueKey, true)) {
             saveQueueToDisk()
@@ -1200,9 +1276,9 @@ class MusicService :
         val mediaItem = eventTime.timeline.getWindow(eventTime.windowIndex, Timeline.Window()).mediaItem
 
         if (playbackStats.totalPlayTimeMs >= (
-                dataStore[HistoryDuration]?.times(1000f)
-                    ?: 30000f
-            ) &&
+                    dataStore[HistoryDuration]?.times(1000f)
+                        ?: 30000f
+                    ) &&
             !dataStore.get(PauseListenHistoryKey, false)
         ) {
             database.query {
@@ -1216,18 +1292,18 @@ class MusicService :
                         ),
                     )
                 } catch (_: SQLException) {
+                }
             }
-        }
 
-        CoroutineScope(Dispatchers.IO).launch {
-            val playbackUrl = database.format(mediaItem.mediaId).first()?.playbackUrl
-                ?: YTPlayerUtils.playerResponseForMetadata(mediaItem.mediaId, null)
-                    .getOrNull()?.playbackTracking?.videostatsPlaybackUrl?.baseUrl
-            playbackUrl?.let {
-                YouTube.registerPlayback(null, playbackUrl)
-                    .onFailure {
-                        reportException(it)
-                    }
+            CoroutineScope(Dispatchers.IO).launch {
+                val playbackUrl = database.format(mediaItem.mediaId).first()?.playbackUrl
+                    ?: YTPlayerUtils.playerResponseForMetadata(mediaItem.mediaId, null)
+                        .getOrNull()?.playbackTracking?.videostatsPlaybackUrl?.baseUrl
+                playbackUrl?.let {
+                    YouTube.registerPlayback(null, playbackUrl)
+                        .onFailure {
+                            reportException(it)
+                        }
                 }
             }
         }
@@ -1237,7 +1313,7 @@ class MusicService :
         if (player.mediaItemCount == 0) {
             return
         }
-        
+
         // Save current queue with proper type information
         val persistQueue = currentQueue.toPersistQueue(
             title = queueTitle,
@@ -1245,7 +1321,7 @@ class MusicService :
             mediaItemIndex = player.currentMediaItemIndex,
             position = player.currentPosition
         )
-        
+
         val persistAutomix =
             PersistQueue(
                 title = "automix",
@@ -1253,7 +1329,7 @@ class MusicService :
                 mediaItemIndex = 0,
                 position = 0,
             )
-            
+
         // Save player state
         val persistPlayerState = PersistPlayerState(
             playWhenReady = player.playWhenReady,
@@ -1264,7 +1340,7 @@ class MusicService :
             currentMediaItemIndex = player.currentMediaItemIndex,
             playbackState = player.playbackState
         )
-        
+
         runCatching {
             filesDir.resolve(PERSISTENT_QUEUE_FILE).outputStream().use { fos ->
                 ObjectOutputStream(fos).use { oos ->
@@ -1304,6 +1380,17 @@ class MusicService :
         discordRpc = null
         connectivityObserver.unregister()
         abandonAudioFocus()
+
+        // Liberar LoudnessEnhancer de manera segura
+        try {
+            loudnessEnhancer?.enabled = false
+            loudnessEnhancer?.release()
+            loudnessEnhancer = null
+            Log.d(TAG, "LoudnessEnhancer released successfully")
+        } catch (e: Exception) {
+            Log.e(TAG, "Error releasing LoudnessEnhancer", e)
+        }
+
         mediaSession.release()
         player.removeListener(this)
         player.removeListener(sleepTimer)
@@ -1340,5 +1427,10 @@ class MusicService :
         const val PERSISTENT_AUTOMIX_FILE = "persistent_automix.data"
         const val PERSISTENT_PLAYER_STATE_FILE = "persistent_player_state.data"
         const val MAX_CONSECUTIVE_ERR = 5
+        // Constantes para normalización de audio
+        private const val MAX_GAIN_MB = 800 // Máximo gain en milibels (8 dB)
+        private const val MIN_GAIN_MB = -800 // Mínimo gain en milibels (-8 dB)
+
+        private const val TAG = "MusicService"
     }
 }
