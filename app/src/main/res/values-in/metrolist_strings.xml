@@ -102,7 +102,7 @@
     <string name="lyrics_auto_scroll">Lirik gulir otomatis</string>
     <string name="lyrics_romanize_japanese">Ubah lirik Jepang menjadi latin</string>
     <string name="lyrics_romanize_korean">Ubah lirik Korea menjadi latin</string>
-    <string name="slim">Langsing</string>
+    <string name="slim">Tipis</string>
     <string name="slim_navbar">Sembunyikan label bilah navigasi bawah</string>
     <string name="auto_playlists">Daftar putar otomatis</string>
     <string name="show_liked_playlist">Tampilkan daftar putar \"Disukai\"</string>
@@ -197,4 +197,7 @@
     <string name="line_by_line_dialog_enable">Aktifkan</string>
     <string name="lyrics_romanize_title">Latin-isasi</string>
     <string name="lyrics_romanization_cyrillic">Non-latin</string>
+    <string name="uploaded_playlist">Diunggah</string>
+    <string name="filter_uploaded">Diunggah</string>
+    <string name="show_uploaded_playlist">Lihat playlist terupload</string>
 </resources>
