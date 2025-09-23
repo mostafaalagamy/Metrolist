@@ -335,24 +335,22 @@ class MainActivity : ComponentActivity() {
                             Updater.getLatestVersionName().onSuccess {
                                 latestVersionName = it
                                 if (it != BuildConfig.VERSION_NAME && notifEnabled) {
-                                    // Show notification which opens updater screen
-                                    val intent = Intent(this@MainActivity, MainActivity::class.java).apply {
-                                        data = "app://metrolist/settings".toUri()
-                                        flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
-                                    }
-                                    val flags = PendingIntent.FLAG_UPDATE_CURRENT or (if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) PendingIntent.FLAG_IMMUTABLE else 0)
-                                    val pending = TaskStackBuilder.create(this@MainActivity)
-                                        .addNextIntentWithParentStack(intent)
-                                        .getPendingIntent(1001, flags)
-                                    val notif = NotificationCompat.Builder(this@MainActivity, "updates")
-                                        .setSmallIcon(R.drawable.update)
-                                        .setContentTitle(getString(R.string.update_available_title))
-                                        .setContentText(it)
-                                        .setContentIntent(pending)
-                                        .setAutoCancel(true)
-                                        .build()
-                                    NotificationManagerCompat.from(this@MainActivity).notify(1001, notif)
-                                }
+                                   val downloadUrl = Updater.getLatestDownloadUrl()
+                                   val intent = Intent(Intent.ACTION_VIEW, Uri.parse(downloadUrl))
+    
+                                   val flags = PendingIntent.FLAG_UPDATE_CURRENT or 
+                                       (if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) PendingIntent.FLAG_IMMUTABLE else 0)
+                                   val pending = PendingIntent.getActivity(this@MainActivity, 1001, intent, flags)
+    
+                                   val notif = NotificationCompat.Builder(this@MainActivity, "updates")
+                                       .setSmallIcon(R.drawable.update)
+                                       .setContentTitle(getString(R.string.update_available_title))
+                                       .setContentText(it)
+                                       .setContentIntent(pending)
+                                       .setAutoCancel(true)
+                                       .build()
+                                   NotificationManagerCompat.from(this@MainActivity).notify(1001, notif)
+                               }
                             }
                         }
                     }
@@ -1244,12 +1242,7 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun handleDeepLinkIntent(intent: Intent, navController: NavHostController) {
-        val raw = intent.data ?: intent.extras?.getString(Intent.EXTRA_TEXT)?.toUri()
-        val uri = raw ?: return
-        if (uri.scheme == "app" && uri.host == "metrolist" && uri.encodedPath == "/settings") {
-            navController.navigate("settings")
-            return
-        }
+        val uri = intent.data ?: intent.extras?.getString(Intent.EXTRA_TEXT)?.toUri() ?: return
         val coroutineScope = lifecycleScope
 
         when (val path = uri.pathSegments.firstOrNull()) {
