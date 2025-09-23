@@ -63,7 +63,7 @@
     <string name="years">Годы</string>
     <string name="liked">Понравившееся</string>
     <string name="offline">Скачанное</string>
-    <string name="my_top">Моя подборка</string>
+    <string name="my_top">Мой топ</string>
     <string name="cached_playlist">Кешированное</string>
     <string name="sync_playlist">Синхронизировать плейлист</string>
     <string name="sync_disabled">Синхронизация выключена</string>
@@ -168,7 +168,7 @@
     <string name="seek_forward">5 секунд вперёд</string>
     <string name="seek_forward_dynamic">+%1$d секунд вперёд</string>
     <string name="seek_backward_dynamic">-%1$d секунд назад</string>
-    <string name="seek_seconds_addup">Прогрессивный поиск</string>
+    <string name="seek_seconds_addup">Накопительная перемотка</string>
     <string name="seek_seconds_addup_description">Если включено, при каждом пропуске перемотки добавляется ещё 5 секунд</string>
     <string name="disable_load_more_when_repeat_all">Отключить автозагрузку при повторе всех треков</string>
     <string name="disable_load_more_when_repeat_all_desc">Не загружать автоматически больше песен и похожего контента при включённом режиме повтора всех треков</string>
@@ -209,4 +209,7 @@
     <string name="uploaded_playlist">Загруженное</string>
     <string name="filter_uploaded">Загруженные</string>
     <string name="show_uploaded_playlist">Показать плейлист \"Загруженное\"</string>
+    <string name="lyrics_romanize_macedonian">Романизировать македонскую лирику</string>
+    <string name="updater">Обновления</string>
+    <string name="check_for_updates">Автоматически проверять наличие обновлений</string>
 </resources>
