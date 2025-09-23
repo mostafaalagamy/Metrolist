@@ -85,7 +85,7 @@ fun UpdaterScreen(
 
                 SwitchPreference(
                     title = { Text(stringResource(R.string.update_notifications)) },
-                    icon = { Icon(painterResource(R.drawable.update), null) },
+                    icon = { Icon(painterResource(R.drawable.notification), null) },
                     checked = updateNotifications,
                     onCheckedChange = onUpdateNotificationsChange,
                     isEnabled = checkForUpdates,
