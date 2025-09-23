@@ -110,6 +110,14 @@ import androidx.core.net.toUri
 import androidx.core.util.Consumer
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
+import androidx.core.app.NotificationManagerCompat
+import androidx.core.app.NotificationCompat
+import androidx.core.app.TaskStackBuilder
+import android.app.PendingIntent
+import android.Manifest
+import android.content.pm.PackageManager
+import androidx.core.content.ContextCompat
+import androidx.core.app.ActivityCompat
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
@@ -135,6 +143,7 @@ import com.metrolist.music.constants.DisableScreenshotKey
 import com.metrolist.music.constants.DynamicThemeKey
 import com.metrolist.music.constants.MiniPlayerHeight
 import com.metrolist.music.constants.MiniPlayerBottomSpacing
+import com.metrolist.music.constants.UpdateNotificationsEnabledKey
 import com.metrolist.music.constants.UseNewMiniPlayerDesignKey
 import com.metrolist.music.constants.NavigationBarAnimationSpec
 import com.metrolist.music.constants.NavigationBarHeight
@@ -241,6 +250,12 @@ class MainActivity : ComponentActivity() {
 
     override fun onStart() {
         super.onStart()
+        // Request notification permission on Android 13+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.POST_NOTIFICATIONS), 1000)
+            }
+        }
         startService(Intent(this, MusicService::class.java))
         bindService(
             Intent(this, MusicService::class.java),
@@ -314,8 +329,30 @@ class MainActivity : ComponentActivity() {
                 if (checkForUpdates) {
                     withContext(Dispatchers.IO) {
                         if (System.currentTimeMillis() - Updater.lastCheckTime > 1.days.inWholeMilliseconds) {
+                            val updatesEnabled = dataStore.get(CheckForUpdatesKey, true)
+                            val notifEnabled = dataStore.get(UpdateNotificationsEnabledKey, true)
+                            if (!updatesEnabled) return@withContext
                             Updater.getLatestVersionName().onSuccess {
                                 latestVersionName = it
+                                if (it != BuildConfig.VERSION_NAME && notifEnabled) {
+                                    // Show notification which opens updater screen
+                                    val intent = Intent(this@MainActivity, MainActivity::class.java).apply {
+                                        data = "app://metrolist/settings".toUri()
+                                        flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
+                                    }
+                                    val flags = PendingIntent.FLAG_UPDATE_CURRENT or (if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) PendingIntent.FLAG_IMMUTABLE else 0)
+                                    val pending = TaskStackBuilder.create(this@MainActivity)
+                                        .addNextIntentWithParentStack(intent)
+                                        .getPendingIntent(1001, flags)
+                                    val notif = NotificationCompat.Builder(this@MainActivity, "updates")
+                                        .setSmallIcon(R.drawable.update)
+                                        .setContentTitle(getString(R.string.update_available_title))
+                                        .setContentText(it)
+                                        .setContentIntent(pending)
+                                        .setAutoCancel(true)
+                                        .build()
+                                    NotificationManagerCompat.from(this@MainActivity).notify(1001, notif)
+                                }
                             }
                         }
                     }
@@ -1207,7 +1244,12 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun handleDeepLinkIntent(intent: Intent, navController: NavHostController) {
-        val uri = intent.data ?: intent.extras?.getString(Intent.EXTRA_TEXT)?.toUri() ?: return
+        val raw = intent.data ?: intent.extras?.getString(Intent.EXTRA_TEXT)?.toUri()
+        val uri = raw ?: return
+        if (uri.scheme == "app" && uri.host == "metrolist" && uri.encodedPath == "/settings") {
+            navController.navigate("settings")
+            return
+        }
         val coroutineScope = lifecycleScope
 
         when (val path = uri.pathSegments.firstOrNull()) {
