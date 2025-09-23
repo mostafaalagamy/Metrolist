@@ -88,7 +88,7 @@ fun UpdaterScreen(
                     icon = { Icon(painterResource(R.drawable.update), null) },
                     checked = updateNotifications,
                     onCheckedChange = onUpdateNotificationsChange,
-                    enabled = checkForUpdates,
+                    isEnabled = checkForUpdates
                     modifier = Modifier.fillMaxWidth()
                 )
             }
