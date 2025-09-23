@@ -11,7 +11,6 @@ import com.metrolist.music.utils.reportException
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
@@ -19,8 +18,6 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-
-private const val PROACTIVE_LOAD_DELAY_MS = 300L // 300 ms delay between proactive loads
 
 @HiltViewModel
 class OnlinePlaylistViewModel @Inject constructor(
@@ -82,9 +79,6 @@ class OnlinePlaylistViewModel @Inject constructor(
         proactiveLoadJob = viewModelScope.launch(Dispatchers.IO) {
             var currentProactiveToken = continuation
             while (currentProactiveToken != null && isActive) {
-                delay(PROACTIVE_LOAD_DELAY_MS)
-                if (!isActive) break // Check again after delay
-
                 // If a manual loadMore is happening, pause proactive loading
                 if (_isLoadingMore.value) {
                     // Wait until manual load is finished, then re-evaluate
