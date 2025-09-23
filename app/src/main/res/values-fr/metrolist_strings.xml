@@ -209,4 +209,8 @@
     <string name="updater">Mise à jour</string>
     <string name="check_for_updates">Vérifier automatiquement les mises à jour</string>
     <string name="lyrics_romanize_macedonian">Romaniser les paroles en macédonien</string>
+    <string name="update_notifications">Activer les notifications de mise à jour</string>
+    <string name="update_available_title">Mise à jour disponible</string>
+    <string name="update_channel_name">Mises à jour de l\'application</string>
+    <string name="update_channel_desc">Notifications sur les nouvelles versions</string>
 </resources>
