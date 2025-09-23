@@ -212,4 +212,8 @@
     <string name="updater">Оновлення</string>
     <string name="check_for_updates">Автоматично перевіряти наявність оновлень</string>
     <string name="lyrics_romanize_macedonian">Романізувати македонську лірику</string>
+    <string name="update_notifications">Увімкнути сповіщення про оновлення</string>
+    <string name="update_available_title">Доступне оновлення</string>
+    <string name="update_channel_name">Оновлення програм</string>
+    <string name="update_channel_desc">Сповіщення про нові версії</string>
 </resources>
