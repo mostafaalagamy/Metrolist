@@ -5,6 +5,10 @@ import android.content.Context
 import android.os.Build
 import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.datastore.preferences.core.edit
 import coil3.ImageLoader
 import coil3.PlatformContext
@@ -91,6 +95,19 @@ class App : Application(), SingletonImageLoader.Factory {
 
         if (dataStore[UseLoginForBrowse] != false) {
             YouTube.useLoginForBrowse = true
+        }
+
+        // Create update notification channel (O+)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                "updates",
+                getString(R.string.update_channel_name),
+                NotificationManager.IMPORTANCE_DEFAULT
+            ).apply {
+                description = getString(R.string.update_channel_desc)
+            }
+            val nm = getSystemService(NotificationManager::class.java)
+            nm.createNotificationChannel(channel)
         }
 
         applicationScope.launch(Dispatchers.IO) {
