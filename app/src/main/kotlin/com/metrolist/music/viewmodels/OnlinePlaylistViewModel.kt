@@ -20,7 +20,7 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-private const val PROACTIVE_LOAD_DELAY_MS = 1000L // 1 second delay between proactive loads
+private const val PROACTIVE_LOAD_DELAY_MS = 300L // 300 ms delay between proactive loads
 
 @HiltViewModel
 class OnlinePlaylistViewModel @Inject constructor(
