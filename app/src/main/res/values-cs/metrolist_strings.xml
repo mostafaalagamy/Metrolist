@@ -210,4 +210,8 @@
     <string name="updater">Aktualizační služba</string>
     <string name="check_for_updates">Automaticky kontrolovat aktualizace</string>
     <string name="lyrics_romanize_macedonian">Přepsat makedonské texty do latinky</string>
+    <string name="update_notifications">Povolit oznámení o aktualizacích</string>
+    <string name="update_available_title">Je dostupná aktualizace</string>
+    <string name="update_channel_name">Aktualizace aplikací</string>
+    <string name="update_channel_desc">Oznámení o nových verzích</string>
 </resources>
