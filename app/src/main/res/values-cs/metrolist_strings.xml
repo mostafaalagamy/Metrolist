@@ -207,4 +207,7 @@
     <string name="uploaded_playlist">Nahráno</string>
     <string name="filter_uploaded">Nahráno</string>
     <string name="show_uploaded_playlist">Zobrazit playlist „Nahráno“</string>
+    <string name="updater">Aktualizační služba</string>
+    <string name="check_for_updates">Automaticky kontrolovat aktualizace</string>
+    <string name="lyrics_romanize_macedonian">Přepsat makedonské texty do latinky</string>
 </resources>
