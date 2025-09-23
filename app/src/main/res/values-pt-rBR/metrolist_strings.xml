@@ -203,4 +203,10 @@
     <string name="remove_custom_image">Remover imagem customizada</string>
     <string name="audio_offload">Habilitar transferência</string>
     <string name="audio_offload_description">Usar o caminho de descarga de áudio para a reprodução de áudio. Ao desativar isto, o consumo de energia aumenta, mas pode ser útil se ter problemas com reprodução de áudio ou pós-processamento</string>
+    <string name="uploaded_playlist">Enviada</string>
+    <string name="filter_uploaded">Enviado</string>
+    <string name="show_uploaded_playlist">Mostrar listas \"Enviadas\"</string>
+    <string name="updater">Atualizador</string>
+    <string name="check_for_updates">Conferir se há atualizações automaticamente</string>
+    <string name="lyrics_romanize_macedonian">Romanizar letras em Macedônio</string>
 </resources>
