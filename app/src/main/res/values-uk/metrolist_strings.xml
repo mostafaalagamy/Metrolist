@@ -209,4 +209,7 @@
     <string name="uploaded_playlist">Завантажено</string>
     <string name="filter_uploaded">Завантаженні</string>
     <string name="show_uploaded_playlist">Показати список відтворення \"Завантажено\"</string>
+    <string name="updater">Оновлення</string>
+    <string name="check_for_updates">Автоматично перевіряти наявність оновлень</string>
+    <string name="lyrics_romanize_macedonian">Романізувати македонську лірику</string>
 </resources>
