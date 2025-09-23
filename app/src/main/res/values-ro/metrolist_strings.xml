@@ -206,4 +206,7 @@
     <string name="uploaded_playlist">Încărcate</string>
     <string name="filter_uploaded">Încărcate</string>
     <string name="show_uploaded_playlist">Arată playlistul \"Încărcate\"</string>
+    <string name="updater">Actualizator</string>
+    <string name="check_for_updates">Verifică automat pentru actualuzări</string>
+    <string name="lyrics_romanize_macedonian">Romanizează versurile în macedoniană</string>
 </resources>
