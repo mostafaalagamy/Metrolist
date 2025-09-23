@@ -203,4 +203,10 @@
     <string name="remove_custom_image">Eliminar imagen personalizada</string>
     <string name="audio_offload">Activar descarga (offload)</string>
     <string name="audio_offload_description">Usa la ruta de descarga de audio (offload) para la reproducción. Desactivar esta opción podría aumentar el consumo de energía, pero puede ser útil si experimentas problemas con la reproducción o el posprocesamiento de audio</string>
+    <string name="uploaded_playlist">Subida</string>
+    <string name="filter_uploaded">Subido</string>
+    <string name="show_uploaded_playlist">Mostrar lista de reproducción \"Subida\"</string>
+    <string name="updater">Actualizador</string>
+    <string name="check_for_updates">Buscar actualizaciones automáticamente</string>
+    <string name="lyrics_romanize_macedonian">Romanizar letras en macedonio</string>
 </resources>
