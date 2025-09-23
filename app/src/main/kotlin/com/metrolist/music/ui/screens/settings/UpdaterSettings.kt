@@ -29,6 +29,7 @@ import androidx.navigation.NavController
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.R
 import com.metrolist.music.constants.CheckForUpdatesKey
+import com.metrolist.music.constants.UpdateNotificationsEnabledKey
 import com.metrolist.music.ui.component.IconButton
 import com.metrolist.music.ui.component.SwitchPreference
 import com.metrolist.music.ui.utils.backToMain
@@ -41,6 +42,7 @@ fun UpdaterScreen(
     scrollBehavior: TopAppBarScrollBehavior,
 ) {
     val (checkForUpdates, onCheckForUpdatesChange) = rememberPreference(CheckForUpdatesKey, true)
+    val (updateNotifications, onUpdateNotificationsChange) = rememberPreference(UpdateNotificationsEnabledKey, true)
 
     Column(
         modifier = Modifier
@@ -63,16 +65,34 @@ fun UpdaterScreen(
 
         Spacer(Modifier.height(4.dp))
 
-        SwitchPreference(
-            title = { Text(stringResource(R.string.check_for_updates)) },
-            icon = { Icon(painterResource(R.drawable.update), null) },
-            checked = checkForUpdates,
-            onCheckedChange = onCheckForUpdatesChange,
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(16.dp))
                 .background(MaterialTheme.colorScheme.surface)
-        )
+                .padding(8.dp)
+        ) {
+            SwitchPreference(
+                title = { Text(stringResource(R.string.check_for_updates)) },
+                icon = { Icon(painterResource(R.drawable.update), null) },
+                checked = checkForUpdates,
+                onCheckedChange = onCheckForUpdatesChange,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            if (checkForUpdates) {
+                Spacer(Modifier.height(4.dp))
+
+                SwitchPreference(
+                    title = { Text(stringResource(R.string.update_notifications)) },
+                    icon = { Icon(painterResource(R.drawable.notification), null) },
+                    checked = updateNotifications,
+                    onCheckedChange = onUpdateNotificationsChange,
+                    isEnabled = checkForUpdates,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        }
 
         Spacer(Modifier.height(32.dp))
     }
