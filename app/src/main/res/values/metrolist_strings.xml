@@ -238,6 +238,10 @@
     <!-- Updater -->
     <string name="updater">Updater</string>
     <string name="check_for_updates">Automatically check for updates</string>
+    <string name="update_notifications">Enable update notifications</string>
+    <string name="update_available_title">Update available</string>
+    <string name="update_channel_name">App updates</string>
+    <string name="update_channel_desc">Notifications about new versions</string>
 
     <!-- Offload -->
     <string name="audio_offload">Enable offload</string>
