@@ -206,4 +206,7 @@
     <string name="show_uploaded_playlist">Afficher la playlist « Téléchargée »</string>
     <string name="uploaded_playlist">Téléchargé</string>
     <string name="filter_uploaded">Téléchargé</string>
+    <string name="updater">Mise à jour</string>
+    <string name="check_for_updates">Vérifier automatiquement les mises à jour</string>
+    <string name="lyrics_romanize_macedonian">Romaniser les paroles en macédonien</string>
 </resources>
