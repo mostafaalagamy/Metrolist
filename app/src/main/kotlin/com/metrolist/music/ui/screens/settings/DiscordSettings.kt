@@ -270,8 +270,8 @@ fun DiscordSettings(
         )
 
         SwitchPreference(
-            title = { Text("Use Details instead of State") },
-            description = "Show song title prominently instead of artist names",
+            title = { Text(stringResource(R.string.discord_use_details)) },
+            description = stringResource(R.string.discord_use_details_description),
             checked = useDetails,
             onCheckedChange = onUseDetailsChange,
             isEnabled = isLoggedIn && discordRPC,
