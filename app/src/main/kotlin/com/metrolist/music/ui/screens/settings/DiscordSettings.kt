@@ -63,6 +63,7 @@ import com.metrolist.music.constants.DiscordInfoDismissedKey
 import com.metrolist.music.constants.DiscordNameKey
 import com.metrolist.music.constants.DiscordTokenKey
 import com.metrolist.music.constants.DiscordUsernameKey
+import com.metrolist.music.constants.DiscordUseDetailsKey
 import com.metrolist.music.constants.EnableDiscordRPCKey
 import com.metrolist.music.db.entities.Song
 import com.metrolist.music.ui.component.IconButton
@@ -127,6 +128,11 @@ fun DiscordSettings(
     val (discordRPC, onDiscordRPCChange) = rememberPreference(
         key = EnableDiscordRPCKey,
         defaultValue = true
+    )
+
+    val (useDetails, onUseDetailsChange) = rememberPreference(
+        key = DiscordUseDetailsKey,
+        defaultValue = false
     )
 
     val isLoggedIn =
@@ -261,6 +267,14 @@ fun DiscordSettings(
             checked = discordRPC,
             onCheckedChange = onDiscordRPCChange,
             isEnabled = isLoggedIn,
+        )
+
+        SwitchPreference(
+            title = { Text(stringResource(R.string.discord_use_details)) },
+            description = stringResource(R.string.discord_use_details_description),
+            checked = useDetails,
+            onCheckedChange = onUseDetailsChange,
+            isEnabled = isLoggedIn && discordRPC,
         )
 
         PreferenceGroupTitle(
