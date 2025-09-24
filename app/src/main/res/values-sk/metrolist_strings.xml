@@ -196,4 +196,21 @@
     <string name="line_by_line_dialog_desc">Toto je experimentálna funkcia, ktorá sa buď posúva dopredu, alebo dozadu.\n\nŠtandardne sa jazyk určuje z celej skladby, ale ak je táto možnosť zapnutá, bude sa určovať riadok po riadku. To umožní fungovanie viacjazyčných skladieb, ALE jazyk nemusí byť vždy správny (napríklad, ak existuje ukrajinský text, ktorý neobsahuje žiadne písmená špecifické pre ukrajinčinu, môže byť namiesto toho romanizovaný ako ruský).\n\nAk nemáte problémy, odporúča sa túto možnosť ponechať vypnutú.</string>
     <string name="line_by_line_dialog_enable">Povoliť</string>
     <string name="romanize_current_track">Romanizovať aktuálnu skladbu</string>
+    <string name="show_uploaded_playlist">Zobraziť zoznam skladieb \"Nahrané\"</string>
+    <string name="uploaded_playlist">Nahrané</string>
+    <string name="filter_uploaded">Nahrané</string>
+    <string name="edit_playlist_cover">Upraviť obal playlistu</string>
+    <string name="edit_playlist_cover_note">Poznámka: Na zmenu obalu playlistu musí byť váš účet prepojený s telefónnym číslom a overený v službe YouTube Music.</string>
+    <string name="edit_playlist_cover_note_wait">Po výbere obrázka chvíľu počkajte, kým sa nový obal zobrazí vo vašom zozname skladieb.</string>
+    <string name="choose_from_library">Vyberte si z knižnice</string>
+    <string name="remove_custom_image">Odstrániť vlastný obrázok</string>
+    <string name="updater">Aktualizátor</string>
+    <string name="check_for_updates">Automaticky kontrolovať aktualizácie</string>
+    <string name="update_notifications">Povoliť upozornenia na aktualizácie</string>
+    <string name="update_available_title">Aktualizácia je k dispozícii</string>
+    <string name="update_channel_name">Aktualizácie aplikácií</string>
+    <string name="update_channel_desc">Upozornenia na nové verzie</string>
+    <string name="audio_offload">Povoliť odľahčenie</string>
+    <string name="audio_offload_description">Na prehrávanie zvuku použite cestu pre odľahčenie zvuku. Zakázanie tejto funkcie môže zvýšiť spotrebu energie, ale môže byť užitočné, ak máte problémy s prehrávaním zvuku alebo následným spracovaním</string>
+    <string name="lyrics_romanize_macedonian">Romanizovať macedónske texty</string>
 </resources>
