@@ -209,4 +209,8 @@
     <string name="updater">Atualizador</string>
     <string name="check_for_updates">Conferir se há atualizações automaticamente</string>
     <string name="lyrics_romanize_macedonian">Romanizar letras em Macedônio</string>
+    <string name="update_notifications">Habilite notificações de atualizações</string>
+    <string name="update_available_title">Atualização disponível</string>
+    <string name="update_channel_name">Atualizações do aplicativo</string>
+    <string name="update_channel_desc">Notificações sobre novas versões</string>
 </resources>
