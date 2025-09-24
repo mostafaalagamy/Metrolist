@@ -212,4 +212,8 @@
     <string name="lyrics_romanize_macedonian">Романизировать македонскую лирику</string>
     <string name="updater">Обновления</string>
     <string name="check_for_updates">Автоматически проверять наличие обновлений</string>
+    <string name="update_notifications">Включить уведомления об обновлениях</string>
+    <string name="update_available_title">Доступно обновление</string>
+    <string name="update_channel_name">Обновления приложения</string>
+    <string name="update_channel_desc">Уведомления о новых версиях</string>
 </resources>
