@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="home">Spodná navigácia</string>
+    <string name="home">Domov</string>
     <string name="songs">Piesne</string>
     <string name="artists">Umelci</string>
     <string name="albums">Albumy</string>
