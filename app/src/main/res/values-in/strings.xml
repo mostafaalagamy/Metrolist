@@ -76,7 +76,7 @@
     <string name="delete">Hapus</string>
     <string name="remove_from_history">Hapus dari riwayat</string>
     <string name="search_online">Cari online</string>
-    <string name="action_sync">Sinkronkan</string>
+    <string name="action_sync">Sinkron</string>
     <string name="advanced">Lanjutan</string>
     <!-- Sort menu -->
     <string name="sort_by_create_date">Tanggal ditambahkan</string>
@@ -181,7 +181,7 @@
     <string name="center">Tengah</string>
     <string name="right">Kanan</string>
     <string name="content">Konten</string>
-    <string name="login">Terdaftar</string>
+    <string name="login">Masuk</string>
     <string name="content_language">Bahasa konten bawaan</string>
     <string name="content_country">Negara konten bawaan</string>
     <string name="system_default">Bawaan sistem</string>

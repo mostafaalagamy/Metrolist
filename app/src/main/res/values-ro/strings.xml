@@ -210,7 +210,7 @@
     <string name="small">Mică</string>
     <string name="big">Mare</string>
     <string name="content">Conținut</string>
-    <string name="action_logout">Devonectează-te</string>
+    <string name="action_logout">Deconectează-te</string>
     <string name="action_login">Autentifică-te</string>
     <string name="login">Autentificare</string>
     <string name="not_logged_in">Nu ești autentificat</string>

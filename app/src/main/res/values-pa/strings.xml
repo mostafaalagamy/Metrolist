@@ -239,4 +239,13 @@
     <string name="new_version_available">ਨਵਾਂ ਸੰਸਕਰਣ ਉਪਲੱਬਧ ਹੈ</string>
     <string name="translation_models">ਆਨੁਵਾਦ ਦੇ ਮਾਡਲ</string>
     <string name="clear_translation_models">ਅਨੁਵਾਦ ਦੇ ਮਾਡਲ ਮਿਟਾਓ</string>
+    <string name="forgotten_favorites">ਭੁੱਲੇ ਹੋਏ ਮਨਪਸੰਦ ਗਾਣੇ</string>
+    <string name="keep_listening">ਸੁਣਦੇ ਰਹੋ</string>
+    <string name="your_youtube_playlists">ਤੁਹਾਡੀ ਯੂਟਿਊਬ ਚਾਲ ਸੂਚੀਆਂ</string>
+    <string name="similar_to">ਇਹਦੇ ਵਰਗੇ</string>
+    <string name="library_song_empty">ਲਾਇਬ੍ਰੇਰੀ</string>
+    <string name="library_artist_empty">ਲਾਇਬ੍ਰੇਰੀ ਗਾਇਕ ਇੱਥੇ ਦਿਖਣਗੇ</string>
+    <string name="library_album_empty">ਲਾਇਬ੍ਰੇਰੀ ਟੇਪਾਂ ਇੱਥੇ ਦਿਖਣ ਗੀਆਂ</string>
+    <string name="library_playlist_empty">ਤੁਹਾਡੀਆਂ ਚਾਲ ਸੂਚੀਆਂ ਇੱਥੇ ਦਿਖਣ ਗਿਆਂ</string>
+    <string name="other_versions">ਟੇਪ ਦ੍ਰਿਸ਼</string>
 </resources>
