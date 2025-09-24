@@ -200,4 +200,14 @@
     <string name="romanize_current_track">Geçerli parçayı Latinleştir</string>
     <string name="audio_offload">Offload\'u etkinleştir</string>
     <string name="audio_offload_description">Ses çalmak için offload ses yolunu kullan. Bu seçeneği devre dışı bırakmak güç tüketimini artırabilir, ancak ses çalma veya sonrası işleme ile ilgili sorunlar yaşıyorsanız faydalı olabilir.</string>
+    <string name="uploaded_playlist">Yüklendi</string>
+    <string name="filter_uploaded">Yüklendi</string>
+    <string name="show_uploaded_playlist">\"Yüklenen\" çalma listesini göster</string>
+    <string name="updater">Güncelleyici</string>
+    <string name="check_for_updates">Güncellemeleri otomatik olarak kontrol et</string>
+    <string name="update_notifications">Güncelleme bildirimlerini etkinleştir</string>
+    <string name="update_available_title">Güncelleme mevcut</string>
+    <string name="update_channel_name">Uygulama güncellemeleri</string>
+    <string name="update_channel_desc">Yeni sürümlerle ilgili bildirimler</string>
+    <string name="lyrics_romanize_macedonian">Makedonca şarkı sözlerini Latinleştir</string>
 </resources>
