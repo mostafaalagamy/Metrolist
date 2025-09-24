@@ -40,6 +40,8 @@ val ProxyTypeKey = stringPreferencesKey("proxyType")
 val ProxyUsernameKey = stringPreferencesKey("proxyUsername")
 val ProxyPasswordKey = stringPreferencesKey("proxyPassword")
 val YtmSyncKey = booleanPreferencesKey("ytmSync")
+val CheckForUpdatesKey = booleanPreferencesKey("checkForUpdates")
+val UpdateNotificationsEnabledKey = booleanPreferencesKey("updateNotifications")
 
 val AudioQualityKey = stringPreferencesKey("audioQuality")
 
@@ -115,6 +117,7 @@ val ShowLikedPlaylistKey = booleanPreferencesKey("show_liked_playlist")
 val ShowDownloadedPlaylistKey = booleanPreferencesKey("show_downloaded_playlist")
 val ShowTopPlaylistKey = booleanPreferencesKey("show_top_playlist")
 val ShowCachedPlaylistKey = booleanPreferencesKey("show_cached_playlist")
+val ShowUploadedPlaylistKey = booleanPreferencesKey("show_uploaded_playlist")
 
 enum class LibraryViewType {
     LIST,
@@ -131,7 +134,8 @@ enum class LibraryViewType {
 enum class SongFilter {
     LIBRARY,
     LIKED,
-    DOWNLOADED
+    DOWNLOADED,
+    UPLOADED
 }
 
 enum class ArtistFilter {
@@ -141,7 +145,8 @@ enum class ArtistFilter {
 
 enum class AlbumFilter {
     LIBRARY,
-    LIKED
+    LIKED,
+    UPLOADED
 }
 
 enum class SongSortType {
@@ -287,6 +292,7 @@ val LyricsRomanizeSerbianKey = booleanPreferencesKey("lyricsRomanizeSerbian")
 val LyricsRomanizeBulgarianKey = booleanPreferencesKey("lyricsRomanizeBulgarian")
 val LyricsRomanizeBelarusianKey = booleanPreferencesKey("lyricsRomanizeBelarusian")
 val LyricsRomanizeKyrgyzKey = booleanPreferencesKey("lyricsRomanizeKyrgyz")
+val LyricsRomanizeMacedonianKey = booleanPreferencesKey("lyricsRomanizeMacedonian")
 val LyricsRomanizeCyrillicByLineKey = booleanPreferencesKey("lyricsRomanizeCyrillicByLine")
 val TranslateLyricsKey = booleanPreferencesKey("translateLyrics")
 

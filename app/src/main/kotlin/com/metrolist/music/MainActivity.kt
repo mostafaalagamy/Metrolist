@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
 import android.graphics.drawable.BitmapDrawable
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
@@ -110,6 +111,14 @@ import androidx.core.net.toUri
 import androidx.core.util.Consumer
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
+import androidx.core.app.NotificationManagerCompat
+import androidx.core.app.NotificationCompat
+import androidx.core.app.TaskStackBuilder
+import android.app.PendingIntent
+import android.Manifest
+import android.content.pm.PackageManager
+import androidx.core.content.ContextCompat
+import androidx.core.app.ActivityCompat
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
@@ -128,12 +137,14 @@ import com.metrolist.innertube.models.SongItem
 import com.metrolist.innertube.models.WatchEndpoint
 import com.metrolist.music.constants.AppBarHeight
 import com.metrolist.music.constants.AppLanguageKey
+import com.metrolist.music.constants.CheckForUpdatesKey
 import com.metrolist.music.constants.DarkModeKey
 import com.metrolist.music.constants.DefaultOpenTabKey
 import com.metrolist.music.constants.DisableScreenshotKey
 import com.metrolist.music.constants.DynamicThemeKey
 import com.metrolist.music.constants.MiniPlayerHeight
 import com.metrolist.music.constants.MiniPlayerBottomSpacing
+import com.metrolist.music.constants.UpdateNotificationsEnabledKey
 import com.metrolist.music.constants.UseNewMiniPlayerDesignKey
 import com.metrolist.music.constants.NavigationBarAnimationSpec
 import com.metrolist.music.constants.NavigationBarHeight
@@ -240,6 +251,12 @@ class MainActivity : ComponentActivity() {
 
     override fun onStart() {
         super.onStart()
+        // Request notification permission on Android 13+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.POST_NOTIFICATIONS), 1000)
+            }
+        }
         startService(Intent(this, MusicService::class.java))
         bindService(
             Intent(this, MusicService::class.java),
@@ -307,13 +324,41 @@ class MainActivity : ComponentActivity() {
         }
 
         setContent {
-            LaunchedEffect(Unit) {
-                withContext(Dispatchers.IO) {
-                    if (System.currentTimeMillis() - Updater.lastCheckTime > 1.days.inWholeMilliseconds) {
-                        Updater.getLatestVersionName().onSuccess {
-                            latestVersionName = it
+            val checkForUpdates by rememberPreference(CheckForUpdatesKey, defaultValue = true)
+
+            LaunchedEffect(checkForUpdates) {
+                if (checkForUpdates) {
+                    withContext(Dispatchers.IO) {
+                        if (System.currentTimeMillis() - Updater.lastCheckTime > 1.days.inWholeMilliseconds) {
+                            val updatesEnabled = dataStore.get(CheckForUpdatesKey, true)
+                            val notifEnabled = dataStore.get(UpdateNotificationsEnabledKey, true)
+                            if (!updatesEnabled) return@withContext
+                            Updater.getLatestVersionName().onSuccess {
+                                latestVersionName = it
+                                if (it != BuildConfig.VERSION_NAME && notifEnabled) {
+                                   val downloadUrl = Updater.getLatestDownloadUrl()
+                                   val intent = Intent(Intent.ACTION_VIEW, Uri.parse(downloadUrl))
+    
+                                   val flags = PendingIntent.FLAG_UPDATE_CURRENT or 
+                                       (if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) PendingIntent.FLAG_IMMUTABLE else 0)
+                                   val pending = PendingIntent.getActivity(this@MainActivity, 1001, intent, flags)
+    
+                                   val notif = NotificationCompat.Builder(this@MainActivity, "updates")
+                                       .setSmallIcon(R.drawable.update)
+                                       .setContentTitle(getString(R.string.update_available_title))
+                                       .setContentText(it)
+                                       .setContentIntent(pending)
+                                       .setAutoCancel(true)
+                                       .build()
+                                   NotificationManagerCompat.from(this@MainActivity).notify(1001, notif)
+                               }
+                            }
                         }
                     }
+                } else {
+                    // when the user disables updates, reset to the current version
+                    // to trick the app into thinking it's on the latest version
+                    latestVersionName = BuildConfig.VERSION_NAME
                 }
             }
 

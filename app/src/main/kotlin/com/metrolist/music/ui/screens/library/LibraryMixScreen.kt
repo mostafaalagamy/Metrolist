@@ -53,6 +53,7 @@ import com.metrolist.music.constants.ShowLikedPlaylistKey
 import com.metrolist.music.constants.ShowDownloadedPlaylistKey
 import com.metrolist.music.constants.ShowTopPlaylistKey
 import com.metrolist.music.constants.ShowCachedPlaylistKey
+import com.metrolist.music.constants.ShowUploadedPlaylistKey
 import com.metrolist.music.constants.YtmSyncKey
 import com.metrolist.music.db.entities.Album
 import com.metrolist.music.db.entities.Artist
@@ -144,10 +145,21 @@ fun LibraryMixScreen(
             songThumbnails = emptyList(),
         )
 
+    val uploadedPlaylist =
+        Playlist(
+            playlist = PlaylistEntity(
+                id = UUID.randomUUID().toString(),
+                name = stringResource(R.string.uploaded_playlist)
+            ),
+            songCount = 0,
+            songThumbnails = emptyList(),
+        )
+
     val (showLiked) = rememberPreference(ShowLikedPlaylistKey, true)
     val (showDownloaded) = rememberPreference(ShowDownloadedPlaylistKey, true)
     val (showTop) = rememberPreference(ShowTopPlaylistKey, true)
     val (showCached) = rememberPreference(ShowCachedPlaylistKey, true)
+    val (showUploaded) = rememberPreference(ShowUploadedPlaylistKey, true)
 
     val albums = viewModel.albums.collectAsState()
     val artist = viewModel.artists.collectAsState()
@@ -353,6 +365,25 @@ fun LibraryMixScreen(
                                         navController.navigate("cache_playlist/cached")
                                     }
                                     .animateItem(),
+                            )
+                        }
+                    }
+
+                    if (showUploaded) {
+                        item(
+                            key = "uploadedPlaylist",
+                            contentType = { CONTENT_TYPE_PLAYLIST },
+                        ) {
+                            PlaylistListItem(
+                                playlist = uploadedPlaylist,
+                                autoPlaylist = true,
+                                modifier =
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .clickable {
+                                            navController.navigate("auto_playlist/uploaded")
+                                        }
+                                        .animateItem(),
                             )
                         }
                     }
@@ -608,6 +639,26 @@ fun LibraryMixScreen(
                                         },
                                     )
                                     .animateItem(),
+                            )
+                        }
+                    }
+
+                    if (showUploaded) {
+                        item(
+                            key = "uploadedPlaylist",
+                            contentType = { CONTENT_TYPE_PLAYLIST },
+                        ) {
+                            PlaylistGridItem(
+                                playlist = uploadedPlaylist,
+                                fillMaxWidth = true,
+                                autoPlaylist = true,
+                                modifier =
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .clickable {
+                                            navController.navigate("auto_playlist/uploaded")
+                                        }
+                                        .animateItem(),
                             )
                         }
                     }
