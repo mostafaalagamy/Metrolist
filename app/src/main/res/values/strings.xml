@@ -333,8 +333,6 @@
     <string name="options">Options</string>
     <string name="preview">Preview</string>
     <string name="enable_discord_rpc">Enable Rich Presence</string>
-    <string name="discord_use_details">Use Details instead of State</string>
-    <string name="discord_use_details_description">Show song title prominently instead of artist names</string>
 
     <string name="about">About</string>
     <string name="app_version">App version</string>
