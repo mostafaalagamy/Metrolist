@@ -144,6 +144,8 @@
     <string name="proxy_username">Proxy username</string>
     <string name="proxy_password">Proxy password</string>
     <string name="enable_authentication">Enable authentication</string>
+    <string name="discord_use_details">Use details instead of state</string>
+    <string name="discord_use_details_description">Show song title prominently instead of artist names</string>
 
     <string name="audio_quality_max">Max (beta)</string>
     <string name="enable_similar_content">Enable similar content</string>
