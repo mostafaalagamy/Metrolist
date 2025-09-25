@@ -203,4 +203,10 @@
     <string name="remove_custom_image">Elimină imaginea personalizată</string>
     <string name="audio_offload">Activează offload</string>
     <string name="audio_offload_description">Utilizează calea audio offload pentru redarea audio. Dezactivarea acestei setări poate crește utilizarea bateriei, dar poate fi utilă dacă întâmpini probleme cu redarea audio sau cu post procesarea</string>
+    <string name="uploaded_playlist">Încărcate</string>
+    <string name="filter_uploaded">Încărcate</string>
+    <string name="show_uploaded_playlist">Arată playlistul \"Încărcate\"</string>
+    <string name="updater">Actualizator</string>
+    <string name="check_for_updates">Verifică automat pentru actualuzări</string>
+    <string name="lyrics_romanize_macedonian">Romanizează versurile în macedoniană</string>
 </resources>
