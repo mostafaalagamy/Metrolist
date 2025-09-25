@@ -204,4 +204,14 @@
     <string name="remove_custom_image">Odstranit vlastní obrázek</string>
     <string name="audio_offload">Povolit offload</string>
     <string name="audio_offload_description">Povolit offload zvukové cesty pro přehrávání zvuku. Zakázání může zvýšit spotřebu energie, ale může být užitečné, pokud máte problémy s přehráváním zvuku nebo jeho následným zpracováním</string>
+    <string name="uploaded_playlist">Nahráno</string>
+    <string name="filter_uploaded">Nahráno</string>
+    <string name="show_uploaded_playlist">Zobrazit playlist „Nahráno“</string>
+    <string name="updater">Aktualizační služba</string>
+    <string name="check_for_updates">Automaticky kontrolovat aktualizace</string>
+    <string name="lyrics_romanize_macedonian">Přepsat makedonské texty do latinky</string>
+    <string name="update_notifications">Povolit oznámení o aktualizacích</string>
+    <string name="update_available_title">Je dostupná aktualizace</string>
+    <string name="update_channel_name">Aktualizace aplikací</string>
+    <string name="update_channel_desc">Oznámení o nových verzích</string>
 </resources>
