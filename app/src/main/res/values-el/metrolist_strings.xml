@@ -8,7 +8,7 @@
     <string name="no_title">Χωρίς τίτλο</string>
     <string name="unknown_artist">Άγνωστος καλλιτέχνης</string>
     <string name="unknown_item_type">Άγνωστος τύπος στοιχείου</string>
-    <string name="loading_charts">Φόρτωση διαγραμμάτων...</string>
+    <string name="loading_charts">Φόρτωση διαγραμμάτων…</string>
     <string name="retry_button">Επανάληψη</string>
     <string name="album_cover_desc">Εξώφυλλο άλμπουμ</string>
     <string name="top_music_videos">Διάσημα Μουσικά Βίντεο</string>
