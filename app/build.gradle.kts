@@ -17,8 +17,8 @@ android {
         applicationId = "com.metrolist.music"
         minSdk = 26
         targetSdk = 36
-        versionCode = 126
-        versionName = "12.5.1"
+        versionCode = 127
+        versionName = "12.6.0"
 
         multiDexEnabled = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
