@@ -216,4 +216,6 @@
     <string name="update_available_title">Доступно обновление</string>
     <string name="update_channel_name">Обновления приложения</string>
     <string name="update_channel_desc">Уведомления о новых версиях</string>
+    <string name="discord_use_details">Использовать подробности вместо статуса</string>
+    <string name="discord_use_details_description">Выделять название песни вместо имён исполнителей</string>
 </resources>
