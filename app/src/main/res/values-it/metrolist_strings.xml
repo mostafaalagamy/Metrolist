@@ -206,4 +206,13 @@
     <string name="filter_uploaded">Caricato</string>
     <string name="uploaded_playlist">Caricato</string>
     <string name="show_uploaded_playlist">Mostra playlist \"caricata\"</string>
+    <string name="discord_use_details">Usa i dettagli al posto dello stato</string>
+    <string name="discord_use_details_description">Mostra il titolo della canzone prominente al posto dei nomi degli artisti</string>
+    <string name="updater">Aggiornatore</string>
+    <string name="check_for_updates">Controlla automaticamente se ci sono aggiornamenti</string>
+    <string name="update_notifications">Attiva le notifiche sugli aggiornamenti</string>
+    <string name="update_available_title">Un aggiornamento è disponibile</string>
+    <string name="update_channel_name">Aggiornamenti dell\'app</string>
+    <string name="update_channel_desc">Notifiche sulle nuove versioni</string>
+    <string name="lyrics_romanize_macedonian">Romanizza testi in macedone</string>
 </resources>
