@@ -246,7 +246,7 @@ object YTPlayerUtils {
         Timber.tag(logTag).d("Finding format with audioQuality: $audioQuality, network metered: ${connectivityManager.isActiveNetworkMetered}")
 
         val format = playerResponse.streamingData?.adaptiveFormats
-            ?.filter { it.isAudio }
+            ?.filter { it.isAudio && it.isOriginal }
             ?.maxByOrNull {
                 it.bitrate * when (audioQuality) {
                     AudioQuality.AUTO -> if (connectivityManager.isActiveNetworkMetered) -1 else 1

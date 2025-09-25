@@ -61,9 +61,19 @@ data class PlayerResponse(
             val loudnessDb: Double?,
             val lastModified: Long?,
             val signatureCipher: String?,
+            val audioTrack: AudioTrack?
         ) {
             val isAudio: Boolean
                 get() = width == null
+            val isOriginal: Boolean
+                get() = audioTrack?.isAutoDubbed == null
+
+            @Serializable
+            data class AudioTrack(
+                val displayName: String?,
+                val id: String?,
+                val isAutoDubbed: Boolean?,
+            )
         }
     }
 
