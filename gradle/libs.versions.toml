@@ -34,7 +34,7 @@ junit = "4.13.2"
 timber = "5.0.1"
 materialKolor = "3.0.1"
 kuromojiIpadic = "0.9.0"
-newpipeExtractor = "4240401"
+extractor = "06b7ae2"
 
 [libraries]
 annotation = { module = "androidx.annotation:annotation", version.ref = "annotation" }
@@ -111,7 +111,7 @@ multidex = { module = "androidx.multidex:multidex", version.ref = "multidex" }
 
 #newpipe-extractor = { module = "com.github.libre-tube:NewPipeExtractor", version = "70abbdb" }
 #newpipe-extractor = { module = "com.github.TeamNewPipe:NewPipeExtractor", version = "dev-SNAPSHOT" }
-newpipe-extractor = { module = "com.github.InfinityLoop1308:PipePipeExtractor", version.ref = "newpipeExtractor" }
+extractor = { module = "com.github.mostafaalagamy:MetrolistExtractor", version.ref = "extractor" }
 
 kuromoji-ipadic = { module = "com.atilika.kuromoji:kuromoji-ipadic", version.ref = "kuromojiIpadic" }
 
