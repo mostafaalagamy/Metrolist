@@ -216,4 +216,6 @@
     <string name="update_available_title">Доступне оновлення</string>
     <string name="update_channel_name">Оновлення програм</string>
     <string name="update_channel_desc">Сповіщення про нові версії</string>
+    <string name="discord_use_details">Використовуйте деталі замість штату</string>
+    <string name="discord_use_details_description">Помітно показувати назву пісні замість імен виконавців</string>
 </resources>
