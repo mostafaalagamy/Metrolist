@@ -6,21 +6,25 @@ import com.metrolist.music.constants.AudioQuality
 import com.metrolist.innertube.NewPipeUtils
 import com.metrolist.innertube.YouTube
 import com.metrolist.innertube.models.YouTubeClient
+import com.metrolist.innertube.models.YouTubeClient.Companion.ANDROID_CREATOR
+import com.metrolist.innertube.models.YouTubeClient.Companion.ANDROID_VR_NO_AUTH
+import com.metrolist.innertube.models.YouTubeClient.Companion.ANDROID_VR_1_43_32
+import com.metrolist.innertube.models.YouTubeClient.Companion.ANDROID_VR_1_61_48
 import com.metrolist.innertube.models.YouTubeClient.Companion.IOS
+import com.metrolist.innertube.models.YouTubeClient.Companion.IPADOS
+import com.metrolist.innertube.models.YouTubeClient.Companion.MOBILE
 import com.metrolist.innertube.models.YouTubeClient.Companion.TVHTML5
 import com.metrolist.innertube.models.YouTubeClient.Companion.TVHTML5_SIMPLY_EMBEDDED_PLAYER
-import com.metrolist.innertube.models.YouTubeClient.Companion.WEB_REMIX
-import com.metrolist.innertube.models.response.PlayerResponse
-import com.metrolist.innertube.models.YouTubeClient.Companion.ANDROID_VR_NO_AUTH
-import com.metrolist.innertube.models.YouTubeClient.Companion.MOBILE
 import com.metrolist.innertube.models.YouTubeClient.Companion.WEB
 import com.metrolist.innertube.models.YouTubeClient.Companion.WEB_CREATOR
+import com.metrolist.innertube.models.YouTubeClient.Companion.WEB_REMIX
+import com.metrolist.innertube.models.response.PlayerResponse
 import okhttp3.OkHttpClient
 import timber.log.Timber
 
 object YTPlayerUtils {
     private const val logTag = "YTPlayerUtils"
-    
+
     private val httpClient = OkHttpClient.Builder()
         .proxy(YouTube.proxy)
         .build()
@@ -33,11 +37,15 @@ object YTPlayerUtils {
      * - the correct metadata (like loudnessDb)
      * - premium formats
      */
-    private val MAIN_CLIENT: YouTubeClient = WEB_REMIX
+    private val MAIN_CLIENT: YouTubeClient = ANDROID_VR_1_43_32
     /**
      * Clients used for fallback streams in case the streams of the main client do not work.
      */
     private val STREAM_FALLBACK_CLIENTS: Array<YouTubeClient> = arrayOf(
+        ANDROID_VR_1_61_48,
+        WEB_REMIX,
+        ANDROID_CREATOR,
+        IPADOS,
         ANDROID_VR_NO_AUTH,
         MOBILE,
         TVHTML5,
