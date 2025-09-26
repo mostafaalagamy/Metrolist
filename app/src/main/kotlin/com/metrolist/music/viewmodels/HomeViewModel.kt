@@ -436,11 +436,10 @@ class HomeViewModel @Inject constructor(
                     isProcessingAccountData = true
                     
                     try {
+                        accountName.value = "Guest"
+                        accountImageUrl.value = null
+                        accountPlaylists.value = null
                         if (cookie != null && cookie.isNotEmpty()) {
-                            accountName.value = "Guest"
-                            accountImageUrl.value = null
-                            accountPlaylists.value = null
-                            
                             delay(300)
                             
                             YouTube.cookie = cookie
@@ -460,10 +459,6 @@ class HomeViewModel @Inject constructor(
                             }.onFailure {
                                 reportException(it)
                             }
-                        } else {
-                            accountName.value = "Guest"
-                            accountImageUrl.value = null
-                            accountPlaylists.value = null
                         }
                     } finally {
                         isProcessingAccountData = false
