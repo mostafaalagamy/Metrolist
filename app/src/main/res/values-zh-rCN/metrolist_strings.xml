@@ -169,7 +169,7 @@
     <string name="settings_section_storage">储存与数据</string>
     <string name="settings_section_system">系统与关于</string>
     <string name="seek_seconds_addup_description">启用后，每次快进/快退都额外增加5秒</string>
-    <string name="starting_radio">正在打开电台</string>
+    <string name="starting_radio">正在创建电台</string>
     <string name="config_proxy">配置代理</string>
     <string name="proxy_username">代理用户名</string>
     <string name="proxy_password">代理密码</string>
@@ -195,4 +195,7 @@
     <string name="edit_playlist_cover_note_wait">选择图片后，请等待片刻，新的封面就会出现在您的歌单中。</string>
     <string name="choose_from_library">从库中选择</string>
     <string name="remove_custom_image">删除自定义图片</string>
+    <string name="uploaded_playlist">已上传</string>
+    <string name="filter_uploaded">已上传</string>
+    <string name="show_uploaded_playlist">显示“已上传”播放列表</string>
 </resources>
