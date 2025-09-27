@@ -209,4 +209,10 @@
     <string name="updater">Actualizador</string>
     <string name="check_for_updates">Buscar actualizaciones automáticamente</string>
     <string name="lyrics_romanize_macedonian">Romanizar letras en macedonio</string>
+    <string name="discord_use_details">Usar detalles en lugar de estado</string>
+    <string name="discord_use_details_description">Mostrar el título de la canción de forma destacada en lugar de los nombres de los artistas</string>
+    <string name="update_notifications">Habilitar notificaciones de actualización</string>
+    <string name="update_available_title">Actualización disponible</string>
+    <string name="update_channel_name">Actualizaciones de la aplicación</string>
+    <string name="update_channel_desc">Notificaciones sobre nuevas versiones</string>
 </resources>
