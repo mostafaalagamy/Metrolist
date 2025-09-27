@@ -212,4 +212,16 @@
     <string name="remove_custom_image">إزالة الصورة المخصصة</string>
     <string name="audio_offload">تمكين التفريغ</string>
     <string name="audio_offload_description">استخدم مسار الصوت غير المحمّل لتشغيل الصوت. قد يؤدي تعطيل هذا إلى زيادة استخدام الطاقة، ولكن قد يكون مفيدًا إذا واجهت مشكلات في تشغيل الصوت أو المعالجة اللاحقة</string>
+    <string name="uploaded_playlist">مرفوعه</string>
+    <string name="filter_uploaded">مرفوعه</string>
+    <string name="show_uploaded_playlist">عرض قوائم التشغيل المرفوعه</string>
+    <string name="discord_use_details">استخدم التفاصيل بدلاً من الحالة</string>
+    <string name="discord_use_details_description">‎إظهار عنوان الأغنية بشكل بارز بدلاً من أسماء الفنانين</string>
+    <string name="updater">التحديثات</string>
+    <string name="check_for_updates">التحقق تلقائيًا من التحديثات</string>
+    <string name="update_notifications">تمكين إشعارات التحديث</string>
+    <string name="update_available_title">التحديث متاح</string>
+    <string name="update_channel_name">تحديثات التطبيق</string>
+    <string name="update_channel_desc">إشعارات حول الإصدارات الجديدة</string>
+    <string name="lyrics_romanize_macedonian">كلمات أغنية رومانية مقدونية</string>
 </resources>
