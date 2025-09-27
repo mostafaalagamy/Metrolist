@@ -398,6 +398,7 @@ class MainActivity : ComponentActivity() {
                                             .memoryCachePolicy(coil3.request.CachePolicy.ENABLED)
                                             .diskCachePolicy(coil3.request.CachePolicy.ENABLED)
                                             .networkCachePolicy(coil3.request.CachePolicy.ENABLED)
+                                            .crossfade(false)
                                             .build(),
                                     )
                                 result.image?.toBitmap()?.extractThemeColor()

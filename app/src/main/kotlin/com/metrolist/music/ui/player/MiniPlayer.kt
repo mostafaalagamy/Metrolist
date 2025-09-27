@@ -143,11 +143,6 @@ private fun NewMiniPlayer(
         stiffness = Spring.StiffnessLow
     )
     
-    val overlayAlpha by animateFloatAsState(
-        targetValue = if (isPlaying) 0.0f else 0.4f,
-        label = "overlay_alpha",
-        animationSpec = animationSpec
-    )
 
     /**
      * Calculates the auto-swipe threshold based on swipe sensitivity.
@@ -309,7 +304,7 @@ private fun NewMiniPlayer(
                             modifier = Modifier
                                 .fillMaxSize()
                                 .background(
-                                    color = Color.Black.copy(alpha = overlayAlpha),
+                                    color = Color.Black.copy(alpha = if (isPlaying) 0.0f else 0.4f),
                                     shape = CircleShape
                                 )
                         )
@@ -343,36 +338,24 @@ private fun NewMiniPlayer(
                     verticalArrangement = Arrangement.Center
                 ) {
                     mediaMetadata?.let { metadata ->
-                        AnimatedContent(
-                            targetState = metadata.title,
-                            transitionSpec = { fadeIn() togetherWith fadeOut() },
-                            label = "",
-                        ) { title ->
-                            Text(
-                                text = title,
-                                color = MaterialTheme.colorScheme.onSurface,
-                                fontSize = 14.sp,
-                                fontWeight = FontWeight.Medium,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                                modifier = Modifier.basicMarquee(),
-                            )
-                        }
+                        Text(
+                            text = metadata.title,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Medium,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.basicMarquee(),
+                        )
 
-                        AnimatedContent(
-                            targetState = metadata.artists.joinToString { it.name },
-                            transitionSpec = { fadeIn() togetherWith fadeOut() },
-                            label = "",
-                        ) { artists ->
-                            Text(
-                                text = artists,
-                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
-                                fontSize = 12.sp,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                                modifier = Modifier.basicMarquee(),
-                            )
-                        }
+                        Text(
+                            text = metadata.artists.joinToString { it.name },
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+                            fontSize = 12.sp,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.basicMarquee(),
+                        )
                         
                         // Error indicator
                         androidx.compose.animation.AnimatedVisibility(
@@ -396,7 +379,9 @@ private fun NewMiniPlayer(
                 // Subscribe/Subscribed button
                 mediaMetadata?.let { metadata ->
                     metadata.artists.firstOrNull()?.id?.let { artistId ->
-                        val libraryArtist by database.artist(artistId).collectAsState(initial = null)
+                        val libraryArtist by remember(artistId) { 
+                            database.artist(artistId)
+                        }.collectAsState(initial = null)
                         val isSubscribed = libraryArtist?.artist?.bookmarkedAt != null
                         
                         Box(
@@ -458,7 +443,9 @@ private fun NewMiniPlayer(
 
                 // Favorite button (right side)
                 mediaMetadata?.let { metadata ->
-                    val librarySong by database.song(metadata.id).collectAsState(initial = null)
+                    val librarySong by remember(metadata.id) {
+                        database.song(metadata.id)
+                    }.collectAsState(initial = null)
                     val isLiked = librarySong?.song?.liked == true
                     
                     Box(
