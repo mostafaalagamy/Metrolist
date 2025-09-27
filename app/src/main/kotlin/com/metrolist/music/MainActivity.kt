@@ -488,8 +488,10 @@ class MainActivity : ComponentActivity() {
                             onActiveChange(false)
                             navController.navigate("search/${URLEncoder.encode(it, "UTF-8")}")
                             if (dataStore[PauseSearchHistoryKey] != true) {
-                                database.query {
-                                    insert(SearchHistory(query = it))
+                                coroutineScope.launch(Dispatchers.IO) {
+                                    database.query {
+                                        insert(SearchHistory(query = it))
+                                    }
                                 }
                             }
                         }
@@ -935,8 +937,10 @@ class MainActivity : ComponentActivity() {
                                                                 }"
                                                             )
                                                             if (dataStore[PauseSearchHistoryKey] != true) {
-                                                                database.query {
-                                                                    insert(SearchHistory(query = it))
+                                                                coroutineScope.launch(Dispatchers.IO) {
+                                                                    database.query {
+                                                                        insert(SearchHistory(query = it))
+                                                                    }
                                                                 }
                                                             }
                                                         },
@@ -1133,34 +1137,34 @@ class MainActivity : ComponentActivity() {
                                             NavigationTab.LIBRARY -> Screens.Library
                                             else -> Screens.Home
                                         }.route,
-                                        enterTransition = {
-                                            if (initialState.destination.route in topLevelScreens && targetState.destination.route in topLevelScreens) {
-                                                fadeIn(tween(250))
-                                            } else {
-                                                fadeIn(tween(250)) + slideInHorizontally { it / 2 }
-                                            }
-                                        },
-                                        exitTransition = {
-                                            if (initialState.destination.route in topLevelScreens && targetState.destination.route in topLevelScreens) {
-                                                fadeOut(tween(200))
-                                            } else {
-                                                fadeOut(tween(200)) + slideOutHorizontally { -it / 2 }
-                                            }
-                                        },
-                                        popEnterTransition = {
-                                            if ((initialState.destination.route in topLevelScreens || inSearchScreen) && targetState.destination.route in topLevelScreens) {
-                                                fadeIn(tween(250))
-                                            } else {
-                                                fadeIn(tween(250)) + slideInHorizontally { -it / 2 }
-                                            }
-                                        },
-                                        popExitTransition = {
-                                            if ((initialState.destination.route in topLevelScreens || inSearchScreen) && targetState.destination.route in topLevelScreens) {
-                                                fadeOut(tween(200))
-                                            } else {
-                                                fadeOut(tween(200)) + slideOutHorizontally { it / 2 }
-                                            }
-                                        },
+                        enterTransition = {
+                            if (initialState.destination.route in topLevelScreens && targetState.destination.route in topLevelScreens) {
+                                fadeIn(tween(150))
+                            } else {
+                                fadeIn(tween(150)) + slideInHorizontally { it / 4 }
+                            }
+                        },
+                        exitTransition = {
+                            if (initialState.destination.route in topLevelScreens && targetState.destination.route in topLevelScreens) {
+                                fadeOut(tween(100))
+                            } else {
+                                fadeOut(tween(100)) + slideOutHorizontally { -it / 4 }
+                            }
+                        },
+                        popEnterTransition = {
+                            if ((initialState.destination.route in topLevelScreens || inSearchScreen) && targetState.destination.route in topLevelScreens) {
+                                fadeIn(tween(150))
+                            } else {
+                                fadeIn(tween(150)) + slideInHorizontally { -it / 4 }
+                            }
+                        },
+                        popExitTransition = {
+                            if ((initialState.destination.route in topLevelScreens || inSearchScreen) && targetState.destination.route in topLevelScreens) {
+                                fadeOut(tween(100))
+                            } else {
+                                fadeOut(tween(100)) + slideOutHorizontally { it / 4 }
+                            }
+                        },
                                         modifier = Modifier.nestedScroll(
                                             if (navigationItems.fastAny { it.route == navBackStackEntry?.destination?.route } ||
                                                 inSearchScreen

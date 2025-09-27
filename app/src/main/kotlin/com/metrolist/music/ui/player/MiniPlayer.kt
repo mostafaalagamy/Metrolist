@@ -41,6 +41,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableFloatStateOf
@@ -124,8 +125,8 @@ private fun NewMiniPlayer(
     val playbackState by playerConnection.playbackState.collectAsState()
     val error by playerConnection.error.collectAsState()
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
-    val canSkipNext by playerConnection.canSkipNext.collectAsState()
-    val canSkipPrevious by playerConnection.canSkipPrevious.collectAsState()
+    val canSkipNext by remember { derivedStateOf { playerConnection.canSkipNext.value } }
+    val canSkipPrevious by remember { derivedStateOf { playerConnection.canSkipPrevious.value } }
     
     val currentView = LocalView.current
     val layoutDirection = LocalLayoutDirection.current
