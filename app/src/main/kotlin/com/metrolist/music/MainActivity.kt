@@ -131,6 +131,7 @@ import coil3.compose.AsyncImage
 import coil3.imageLoader
 import coil3.request.ImageRequest
 import coil3.request.allowHardware
+import coil3.request.crossfade
 import coil3.toBitmap
 import com.metrolist.innertube.YouTube
 import com.metrolist.innertube.models.SongItem
@@ -489,7 +490,7 @@ class MainActivity : ComponentActivity() {
                             onActiveChange(false)
                             navController.navigate("search/${URLEncoder.encode(it, "UTF-8")}")
                             if (dataStore[PauseSearchHistoryKey] != true) {
-                                coroutineScope.launch(Dispatchers.IO) {
+                                lifecycleScope.launch(Dispatchers.IO) {
                                     database.query {
                                         insert(SearchHistory(query = it))
                                     }
@@ -938,7 +939,7 @@ class MainActivity : ComponentActivity() {
                                                                 }"
                                                             )
                                                             if (dataStore[PauseSearchHistoryKey] != true) {
-                                                                coroutineScope.launch(Dispatchers.IO) {
+                                                                lifecycleScope.launch(Dispatchers.IO) {
                                                                     database.query {
                                                                         insert(SearchHistory(query = it))
                                                                     }
