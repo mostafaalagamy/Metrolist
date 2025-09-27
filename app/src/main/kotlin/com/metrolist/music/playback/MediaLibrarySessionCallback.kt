@@ -232,19 +232,19 @@ constructor(
                                 MediaMetadata.MEDIA_TYPE_PLAYLIST,
                             ),
                         ) +
-                                database.playlistsByCreateDateAsc().first().map { playlist ->
-                                    browsableMediaItem(
-                                        "${MusicService.PLAYLIST}/${playlist.id}",
-                                        playlist.playlist.name,
-                                        context.resources.getQuantityString(
-                                            R.plurals.n_song,
-                                            playlist.songCount,
-                                            playlist.songCount
-                                        ),
-                                        playlist.thumbnails.firstOrNull()?.toUri(),
-                                        MediaMetadata.MEDIA_TYPE_PLAYLIST,
-                                    )
-                                }
+                        database.playlistsByCreateDateAsc().first().map { playlist ->
+                            browsableMediaItem(
+                                "${MusicService.PLAYLIST}/${playlist.id}",
+                                playlist.playlist.name,
+                                context.resources.getQuantityString(
+                                    R.plurals.n_song,
+                                    playlist.songCount,
+                                    playlist.songCount
+                                ),
+                                playlist.thumbnails.firstOrNull()?.toUri(),
+                                MediaMetadata.MEDIA_TYPE_PLAYLIST,
+                            )
+                        }
                     }
 
                     else ->
@@ -387,6 +387,11 @@ constructor(
                 } ?: emptyList()
 
                 onlineResults.forEach { songItem ->
+                    try {
+                        database.query { insert(songItem.toMediaMetadata()) }
+                    } catch (e: Exception) {
+                    }
+                    
                     searchResults.add(
                         MediaItem.Builder()
                             .setMediaId("${MusicService.SEARCH}/$query/${songItem.id}")
@@ -493,56 +498,32 @@ constructor(
 
                 MusicService.SEARCH -> {
                     val songId = path.getOrNull(2) ?: return@future defaultResult
-                    val searchQuery = path.getOrNull(1) ?: return@future defaultResult
-
-                    val searchResults = mutableListOf<MediaItem>()
-                    
-                    val localSongs = database.allSongs().first().filter { song ->
-                        song.song.title.contains(searchQuery, ignoreCase = true) ||
-                        song.artists.any { it.name.contains(searchQuery, ignoreCase = true) } ||
-                        song.album?.title?.contains(searchQuery, ignoreCase = true) == true
+  
+                    val existingSong = database.song(songId).first()
+                    if (existingSong != null) {
+                        val mediaItem = existingSong.toMediaItem()
+                        MediaItemsWithStartPosition(
+                            listOf(mediaItem),
+                            0,
+                            C.TIME_UNSET
+                        )
+                    } else {
+                        val searchQuery = path.getOrNull(1) ?: return@future defaultResult
+                        val mediaItem = MediaItem.Builder()
+                            .setMediaId(songId)
+                            .setMediaMetadata(
+                                MediaMetadata.Builder()
+                                    .setIsPlayable(true)
+                                    .setMediaType(MediaMetadata.MEDIA_TYPE_MUSIC)
+                                    .build()
+                            )
+                            .build()
+                        MediaItemsWithStartPosition(
+                            listOf(mediaItem),
+                            0,
+                            C.TIME_UNSET
+                        )
                     }
-                    
-                    val artistSongs = database.searchArtists(searchQuery).first().flatMap { artist ->
-                        database.artistSongsByCreateDateAsc(artist.id).first()
-                    }
-                    
-                    val albumSongs = database.searchAlbums(searchQuery).first().flatMap { album ->
-                        database.albumSongs(album.id).first()
-                    }
-                    
-                    val playlistSongs = database.searchPlaylists(searchQuery).first().flatMap { playlist ->
-                        database.playlistSongs(playlist.id).first().map { it.song }
-                    }
-                    
-                    val allLocalSongs = (localSongs + artistSongs + albumSongs + playlistSongs)
-                        .distinctBy { it.id }
-                    
-                    allLocalSongs.forEach { song ->
-                        searchResults.add(song.toMediaItem())
-                    }
-
-                    val onlineResults = withTimeoutOrNull(2000L) {
-                        YouTube.search(searchQuery, YouTube.SearchFilter.FILTER_SONG)
-                            .getOrNull()
-                            ?.items
-                            ?.filterIsInstance<SongItem>()
-                            ?.filterExplicit(context.dataStore.get(HideExplicitKey, false))
-                    } ?: emptyList()
-
-                    onlineResults.forEach { songItem ->
-                        try {
-                            database.query { insert(songItem.toMediaMetadata()) }
-                            database.song(songItem.id).first()?.toMediaItem()?.let { mediaItem ->
-                                searchResults.add(mediaItem)
-                            }
-                        } catch (e: Exception) {
-                            reportException(e)
-                        }
-                    }
-                    
-                    val index = searchResults.indexOfFirst { it.mediaId == songId }
-                    MediaItemsWithStartPosition(searchResults, if (index >= 0) index else 0, C.TIME_UNSET)
                 }
 
                 else -> defaultResult
