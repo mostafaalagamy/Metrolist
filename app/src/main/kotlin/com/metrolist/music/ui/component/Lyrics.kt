@@ -196,141 +196,142 @@ fun Lyrics(
             emptyList()
         } else if (lyrics.startsWith("[")) {
             val parsedLines = parseLyrics(lyrics)
+
+            val isRussianLyrics = romanizeRussianLyrics && !romanizeCyrillicByLine && isRussian(lyrics)
+            val isUkrainianLyrics = romanizeUkrainianLyrics && !romanizeCyrillicByLine && isUkrainian(lyrics)
+            val isSerbianLyrics = romanizeSerbianLyrics && !romanizeCyrillicByLine && isSerbian(lyrics)
+            val isBulgarianLyrics = romanizeBulgarianLyrics && !romanizeCyrillicByLine && isBulgarian(lyrics)
+            val isBelarusianLyrics = romanizeBelarusianLyrics && !romanizeCyrillicByLine && isBelarusian(lyrics)
+            val isKyrgyzLyrics = romanizeKyrgyzLyrics && !romanizeCyrillicByLine && isKyrgyz(lyrics)
+            val isMacedonianLyrics = romanizeMacedonianLyrics && !romanizeCyrillicByLine && isMacedonian(lyrics)
+
             parsedLines.map { entry ->
                 val newEntry = LyricsEntry(entry.time, entry.text)
-                if (romanizeJapaneseLyrics) {
-                    if (isJapanese(entry.text) && !isChinese(entry.text)) {
-                        scope.launch {
-                            newEntry.romanizedTextFlow.value = romanizeJapanese(entry.text)
-                        }
+                
+                if (romanizeJapaneseLyrics && isJapanese(entry.text) && !isChinese(entry.text)) {
+                    scope.launch {
+                        newEntry.romanizedTextFlow.value = romanizeJapanese(entry.text)
                     }
                 }
-                if (romanizeKoreanLyrics) {
-                    if (isKorean(entry.text)) {
-                        scope.launch {
-                            newEntry.romanizedTextFlow.value = romanizeKorean(entry.text)
-                        }
+
+                if (romanizeKoreanLyrics && isKorean(entry.text)) {
+                    scope.launch {
+                        newEntry.romanizedTextFlow.value = romanizeKorean(entry.text)
                     }
                 }
-                if (romanizeRussianLyrics) {
-                    if (isRussian(if (romanizeCyrillicByLine) entry.text else lyrics)) {
-                        scope.launch {
-                            newEntry.romanizedTextFlow.value = romanizeCyrillic(entry.text)
-                        }
+
+                if (romanizeRussianLyrics && (if (romanizeCyrillicByLine) isRussian(entry.text) else isRussianLyrics)) {
+                    scope.launch {
+                        newEntry.romanizedTextFlow.value = romanizeCyrillic(entry.text)
                     }
                 }
-                if (romanizeUkrainianLyrics) {
-                    if (isUkrainian(if (romanizeCyrillicByLine) entry.text else lyrics)) {
-                        scope.launch {
-                            newEntry.romanizedTextFlow.value = romanizeCyrillic(entry.text)
-                        }
+
+                else if (romanizeUkrainianLyrics && (if (romanizeCyrillicByLine) isUkrainian(entry.text) else isUkrainianLyrics)) {
+                    scope.launch {
+                        newEntry.romanizedTextFlow.value = romanizeCyrillic(entry.text)
                     }
                 }
-                if (romanizeSerbianLyrics) {
-                    if (isSerbian(if (romanizeCyrillicByLine) entry.text else lyrics)) {
-                        scope.launch {
-                            newEntry.romanizedTextFlow.value = romanizeCyrillic(entry.text)
-                        }
+
+                else if (romanizeSerbianLyrics && (if (romanizeCyrillicByLine) isSerbian(entry.text) else isSerbianLyrics)) {
+                    scope.launch {
+                        newEntry.romanizedTextFlow.value = romanizeCyrillic(entry.text)
                     }
                 }
-                if (romanizeBulgarianLyrics) {
-                    if (isBulgarian(if (romanizeCyrillicByLine) entry.text else lyrics)) {
-                        scope.launch {
-                            newEntry.romanizedTextFlow.value = romanizeCyrillic(entry.text)
-                        }
+
+                else if (romanizeBulgarianLyrics && (if (romanizeCyrillicByLine) isBulgarian(entry.text) else isBulgarianLyrics)) {
+                    scope.launch {
+                        newEntry.romanizedTextFlow.value = romanizeCyrillic(entry.text)
                     }
                 }
-                if (romanizeBelarusianLyrics) {
-                    if (isBelarusian(if (romanizeCyrillicByLine) entry.text else lyrics)) {
-                        scope.launch {
-                            newEntry.romanizedTextFlow.value = romanizeCyrillic(entry.text)
-                        }
+
+                else if (romanizeBelarusianLyrics && (if (romanizeCyrillicByLine) isBelarusian(entry.text) else isBelarusianLyrics)) {
+                    scope.launch {
+                        newEntry.romanizedTextFlow.value = romanizeCyrillic(entry.text)
                     }
                 }
-                if (romanizeKyrgyzLyrics) {
-                    if (isKyrgyz(if (romanizeCyrillicByLine) entry.text else lyrics)) {
-                        scope.launch {
-                            newEntry.romanizedTextFlow.value = romanizeCyrillic(entry.text)
-                        }
+
+                else if (romanizeKyrgyzLyrics && (if (romanizeCyrillicByLine) isKyrgyz(entry.text) else isKyrgyzLyrics)) {
+                    scope.launch {
+                        newEntry.romanizedTextFlow.value = romanizeCyrillic(entry.text)
                     }
                 }
-                if (romanizeMacedonianLyrics) {
-                    if (isMacedonian(if (romanizeCyrillicByLine) entry.text else lyrics)) {
-                        scope.launch {
-                            newEntry.romanizedTextFlow.value = romanizeCyrillic(entry.text)
-                        }
+
+                else if (romanizeMacedonianLyrics && (if (romanizeCyrillicByLine) isMacedonian(entry.text) else isMacedonianLyrics)) {
+                    scope.launch {
+                        newEntry.romanizedTextFlow.value = romanizeCyrillic(entry.text)
                     }
                 }
+
                 newEntry
             }.let {
                 listOf(LyricsEntry.HEAD_LYRICS_ENTRY) + it
             }
         } else {
+            val isRussianLyrics = romanizeRussianLyrics && !romanizeCyrillicByLine && isRussian(lyrics)
+            val isUkrainianLyrics = romanizeUkrainianLyrics && !romanizeCyrillicByLine && isUkrainian(lyrics)
+            val isSerbianLyrics = romanizeSerbianLyrics && !romanizeCyrillicByLine && isSerbian(lyrics)
+            val isBulgarianLyrics = romanizeBulgarianLyrics && !romanizeCyrillicByLine && isBulgarian(lyrics)
+            val isBelarusianLyrics = romanizeBelarusianLyrics && !romanizeCyrillicByLine && isBelarusian(lyrics)
+            val isKyrgyzLyrics = romanizeKyrgyzLyrics && !romanizeCyrillicByLine && isKyrgyz(lyrics)
+            val isMacedonianLyrics = romanizeMacedonianLyrics && !romanizeCyrillicByLine && isMacedonian(lyrics)
+
             lyrics.lines().mapIndexed { index, line ->
                 val newEntry = LyricsEntry(index * 100L, line)
-                if (romanizeJapaneseLyrics) {
-                    if (isJapanese(line) && !isChinese(line)) {
-                        scope.launch {
-                            newEntry.romanizedTextFlow.value = romanizeJapanese(line)
-                        }
+
+                if (romanizeJapaneseLyrics && isJapanese(line) && !isChinese(line)) {
+                    scope.launch {
+                        newEntry.romanizedTextFlow.value = romanizeJapanese(line)
                     }
                 }
-                if (romanizeKoreanLyrics) {
-                    if (isKorean(line)) {
-                        scope.launch {
-                            newEntry.romanizedTextFlow.value = romanizeKorean(line)
-                        }
+
+                if (romanizeKoreanLyrics && isKorean(line)) {
+                    scope.launch {
+                        newEntry.romanizedTextFlow.value = romanizeKorean(line)
                     }
                 }
-                if (romanizeRussianLyrics) {
-                    if (isRussian(if (romanizeCyrillicByLine) line else lyrics)) {
-                        scope.launch {
-                            newEntry.romanizedTextFlow.value = romanizeCyrillic(line)
-                        }
+
+                if (romanizeRussianLyrics && (if (romanizeCyrillicByLine) isRussian(line) else isRussianLyrics)) {
+                    scope.launch {
+                        newEntry.romanizedTextFlow.value = romanizeCyrillic(line)
                     }
                 }
-                if (romanizeUkrainianLyrics) {
-                    if (isUkrainian(if (romanizeCyrillicByLine) line else lyrics)) {
-                        scope.launch {
-                            newEntry.romanizedTextFlow.value = romanizeCyrillic(line)
-                        }
+
+                else if (romanizeUkrainianLyrics && (if (romanizeCyrillicByLine) isUkrainian(line) else isUkrainianLyrics)) {
+                    scope.launch {
+                        newEntry.romanizedTextFlow.value = romanizeCyrillic(line)
                     }
                 }
-                if (romanizeSerbianLyrics) {
-                    if (isSerbian(if (romanizeCyrillicByLine) line else lyrics)) {
-                        scope.launch {
-                            newEntry.romanizedTextFlow.value = romanizeCyrillic(line)
-                        }
+
+                else if (romanizeSerbianLyrics && (if (romanizeCyrillicByLine) isSerbian(line) else isSerbianLyrics)) {
+                    scope.launch {
+                        newEntry.romanizedTextFlow.value = romanizeCyrillic(line)
                     }
                 }
-                if (romanizeBulgarianLyrics) {
-                    if (isBulgarian(if (romanizeCyrillicByLine) line else lyrics)) {
-                        scope.launch {
-                            newEntry.romanizedTextFlow.value = romanizeCyrillic(line)
-                        }
+
+                else if (romanizeBulgarianLyrics && (if (romanizeCyrillicByLine) isBulgarian(line) else isBulgarianLyrics)) {
+                    scope.launch {
+                        newEntry.romanizedTextFlow.value = romanizeCyrillic(line)
                     }
                 }
-                if (romanizeBelarusianLyrics) {
-                    if (isBelarusian(if (romanizeCyrillicByLine) line else lyrics)) {
-                        scope.launch {
-                            newEntry.romanizedTextFlow.value = romanizeCyrillic(line)
-                        }
+
+                else if (romanizeBelarusianLyrics && (if (romanizeCyrillicByLine) isBelarusian(line) else isBelarusianLyrics)) {
+                    scope.launch {
+                        newEntry.romanizedTextFlow.value = romanizeCyrillic(line)
                     }
                 }
-                if (romanizeKyrgyzLyrics) {
-                    if (isKyrgyz(if (romanizeCyrillicByLine) line else lyrics)) {
-                        scope.launch {
-                            newEntry.romanizedTextFlow.value = romanizeCyrillic(line)
-                        }
+
+                else if (romanizeKyrgyzLyrics && (if (romanizeCyrillicByLine) isKyrgyz(line) else isKyrgyzLyrics)) {
+                    scope.launch {
+                        newEntry.romanizedTextFlow.value = romanizeCyrillic(line)
                     }
                 }
-                if (romanizeMacedonianLyrics) {
-                    if (isMacedonian(if (romanizeCyrillicByLine) line else lyrics)) {
-                        scope.launch {
-                            newEntry.romanizedTextFlow.value = romanizeCyrillic(line)
-                        }
+
+                else if (romanizeMacedonianLyrics && (if (romanizeCyrillicByLine) isMacedonian(line) else isMacedonianLyrics)) {
+                    scope.launch {
+                        newEntry.romanizedTextFlow.value = romanizeCyrillic(line)
                     }
                 }
+
                 newEntry
             }
         }
