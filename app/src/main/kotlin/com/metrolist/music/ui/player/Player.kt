@@ -61,6 +61,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableLongStateOf
@@ -109,6 +110,7 @@ import coil3.compose.AsyncImage
 import coil3.imageLoader
 import coil3.request.ImageRequest
 import coil3.request.allowHardware
+import coil3.request.crossfade
 import coil3.toBitmap
 import com.metrolist.music.LocalDownloadUtil
 import com.metrolist.music.LocalPlayerConnection
@@ -232,8 +234,8 @@ fun BottomSheetPlayer(
     val automix by playerConnection.service.automixItems.collectAsState()
     val repeatMode by playerConnection.repeatMode.collectAsState()
 
-    val canSkipPrevious by playerConnection.canSkipPrevious.collectAsState()
-    val canSkipNext by playerConnection.canSkipNext.collectAsState()
+    val canSkipPrevious by remember { derivedStateOf { playerConnection.canSkipPrevious.value } }
+    val canSkipNext by remember { derivedStateOf { playerConnection.canSkipNext.value } }
 
     val sliderStyle by rememberEnumPreference(SliderStyleKey, SliderStyle.DEFAULT)
 
@@ -549,40 +551,34 @@ fun BottomSheetPlayer(
                 Column(
                     modifier = Modifier.weight(1f)
                 ) {
-                    AnimatedContent(
-                        targetState = mediaMetadata.title,
-                        transitionSpec = { fadeIn() togetherWith fadeOut() },
-                        label = "",
-                    ) { title ->
-                        Text(
-                            text = title,
-                            style = MaterialTheme.typography.titleLarge,
-                            fontWeight = FontWeight.Bold,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            color = TextBackgroundColor,
-                            modifier =
-                            Modifier
-                                .basicMarquee()
-                                .combinedClickable(
-                                    enabled = true,
-                                    indication = null,
-                                    interactionSource = remember { MutableInteractionSource() },
-                                    onClick = {
-                                        if(mediaMetadata.album!=null){
-                                            navController.navigate("album/${mediaMetadata.album.id}")
-                                            state.collapseSoft()
-                                        }
-                                    },
-                                    onLongClick = {
-                                        val clip = ClipData.newPlainText("Copied Title", title)
-                                        clipboardManager.setPrimaryClip(clip)
-                                        Toast.makeText(context, "Copied Title", Toast.LENGTH_SHORT).show()
+                    Text(
+                        text = mediaMetadata.title,
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        color = TextBackgroundColor,
+                        modifier =
+                        Modifier
+                            .basicMarquee()
+                            .combinedClickable(
+                                enabled = true,
+                                indication = null,
+                                interactionSource = remember { MutableInteractionSource() },
+                                onClick = {
+                                    if(mediaMetadata.album!=null){
+                                        navController.navigate("album/${mediaMetadata.album.id}")
+                                        state.collapseSoft()
                                     }
-                                )
-                            ,
-                        )
-                    }
+                                },
+                                onLongClick = {
+                                    val clip = ClipData.newPlainText("Copied Title", mediaMetadata.title)
+                                    clipboardManager.setPrimaryClip(clip)
+                                    Toast.makeText(context, "Copied Title", Toast.LENGTH_SHORT).show()
+                                }
+                            )
+                        ,
+                    )
 
                     Spacer(Modifier.height(6.dp))
 
@@ -1097,7 +1093,12 @@ fun BottomSheetPlayer(
                     ) { thumbnailUrl ->
                         if (thumbnailUrl != null) {
                             AsyncImage(
-                                model = thumbnailUrl,
+                                model = ImageRequest.Builder(context)
+                                    .data(thumbnailUrl)
+                                    .memoryCachePolicy(coil3.request.CachePolicy.ENABLED)
+                                    .diskCachePolicy(coil3.request.CachePolicy.ENABLED)
+                                    .crossfade(false)
+                                    .build(),
                                 contentDescription = null,
                                 contentScale = ContentScale.Crop,
                                 modifier = Modifier

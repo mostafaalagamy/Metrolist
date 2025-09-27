@@ -111,3 +111,16 @@
 -dontwarn com.yalantis.ucrop**
 -keep class com.yalantis.ucrop** { *; }
 -keep interface com.yalantis.ucrop** { *; }
+
+## Performance Optimization Rules
+# Keep Compose State classes for better performance
+-keep class androidx.compose.runtime.State { *; }
+-keep class androidx.compose.runtime.MutableState { *; }
+
+# Optimize Coil image loading
+-keep class coil3.** { *; }
+-dontwarn coil3.**
+
+# Keep navigation performance optimizations
+-keep class androidx.navigation.** { *; }
+-dontwarn androidx.navigation.**

@@ -418,8 +418,9 @@ fun HomeScreen(
                             key = { it.id }
                         ) { originalSong ->
                             // fetch song from database to keep updated
-                            val song by database.song(originalSong.id)
-                                .collectAsState(initial = originalSong)
+                            val song by remember(originalSong.id) {
+                                database.song(originalSong.id)
+                            }.collectAsState(initial = originalSong)
 
                             SongListItem(
                                 song = song!!,
