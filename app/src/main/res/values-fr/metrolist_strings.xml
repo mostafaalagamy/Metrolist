@@ -213,4 +213,6 @@
     <string name="update_available_title">Mise à jour disponible</string>
     <string name="update_channel_name">Mises à jour de l\'application</string>
     <string name="update_channel_desc">Notifications sur les nouvelles versions</string>
+    <string name="discord_use_details">Utiliser les détails au lieu de l\'état</string>
+    <string name="discord_use_details_description">Afficher le titre de la chanson en évidence au lieu des noms des artistes</string>
 </resources>
