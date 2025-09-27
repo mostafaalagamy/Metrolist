@@ -1,6 +1,7 @@
 package com.metrolist.music.ui.menu
 
 import android.annotation.SuppressLint
+import android.content.res.Configuration
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
@@ -26,6 +27,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -179,70 +181,11 @@ fun SelectionSongMenu(
         )
     }
 
-    // Enhanced Action Grid using NewMenuComponents
-    NewActionGrid(
-        actions = listOf(
-            NewAction(
-                icon = {
-                    Icon(
-                        painter = painterResource(R.drawable.play),
-                        contentDescription = null,
-                        modifier = Modifier.size(28.dp),
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                },
-                text = stringResource(R.string.play),
-                onClick = {
-                    onDismiss()
-                    playerConnection.playQueue(
-                        ListQueue(
-                            title = "Selection",
-                            items = songSelection.map { it.toMediaItem() },
-                        ),
-                    )
-                    clearAction()
-                }
-            ),
-            NewAction(
-                icon = {
-                    Icon(
-                        painter = painterResource(R.drawable.shuffle),
-                        contentDescription = null,
-                        modifier = Modifier.size(28.dp),
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                },
-                text = stringResource(R.string.shuffle),
-                onClick = {
-                    onDismiss()
-                    playerConnection.playQueue(
-                        ListQueue(
-                            title = "Selection",
-                            items = songSelection.shuffled().map { it.toMediaItem() },
-                        ),
-                    )
-                    clearAction()
-                }
-            ),
-            NewAction(
-                icon = {
-                    Icon(
-                        painter = painterResource(R.drawable.playlist_add),
-                        contentDescription = null,
-                        modifier = Modifier.size(28.dp),
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                },
-                text = stringResource(R.string.add_to_playlist),
-                onClick = {
-                    showChoosePlaylistDialog = true
-                }
-            )
-        ),
-        modifier = Modifier.padding(horizontal = 4.dp, vertical = 16.dp)
-    )
+    val configuration = LocalConfiguration.current
+    val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
 
     LazyColumn(
+        userScrollEnabled = !isPortrait,
         contentPadding = PaddingValues(
             start = 0.dp,
             top = 0.dp,
@@ -250,6 +193,70 @@ fun SelectionSongMenu(
             bottom = 8.dp + WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
         ),
     ) {
+        item {
+            NewActionGrid(
+                actions = listOf(
+                    NewAction(
+                        icon = {
+                            Icon(
+                                painter = painterResource(R.drawable.play),
+                                contentDescription = null,
+                                modifier = Modifier.size(28.dp),
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        },
+                        text = stringResource(R.string.play),
+                        onClick = {
+                            onDismiss()
+                            playerConnection.playQueue(
+                                ListQueue(
+                                    title = "Selection",
+                                    items = songSelection.map { it.toMediaItem() },
+                                ),
+                            )
+                            clearAction()
+                        }
+                    ),
+                    NewAction(
+                        icon = {
+                            Icon(
+                                painter = painterResource(R.drawable.shuffle),
+                                contentDescription = null,
+                                modifier = Modifier.size(28.dp),
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        },
+                        text = stringResource(R.string.shuffle),
+                        onClick = {
+                            onDismiss()
+                            playerConnection.playQueue(
+                                ListQueue(
+                                    title = "Selection",
+                                    items = songSelection.shuffled().map { it.toMediaItem() },
+                                ),
+                            )
+                            clearAction()
+                        }
+                    ),
+                    NewAction(
+                        icon = {
+                            Icon(
+                                painter = painterResource(R.drawable.playlist_add),
+                                contentDescription = null,
+                                modifier = Modifier.size(28.dp),
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        },
+                        text = stringResource(R.string.add_to_playlist),
+                        onClick = {
+                            showChoosePlaylistDialog = true
+                        }
+                    )
+                ),
+                modifier = Modifier.padding(horizontal = 4.dp, vertical = 16.dp)
+            )
+        }
+
         item {
             ListItem(
                 headlineContent = { Text(text = stringResource(R.string.play)) },
