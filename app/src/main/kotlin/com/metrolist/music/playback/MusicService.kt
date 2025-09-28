@@ -1016,6 +1016,8 @@ class MusicService :
         lastPlaybackSpeed = -1.0f // force update song
         
         discordUpdateJob?.cancel()
+
+        applyAudioNormalizationSettings()
         
         // Auto load more songs
         if (dataStore.get(AutoLoadMoreKey, true) &&
