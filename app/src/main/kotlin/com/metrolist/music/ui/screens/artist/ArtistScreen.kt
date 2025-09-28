@@ -471,7 +471,7 @@ fun ArtistScreen(
                         }
                         itemsIndexed(
                             items = filteredLibrarySongs,
-                            key = { index, item -> "local_song_${item.id}_$index" }
+                            key = { _, item -> "local_song_${item.id}" }
                         ) { index, song ->
                             SongListItem(
                                 song = song,
@@ -549,7 +549,7 @@ fun ArtistScreen(
                             ) {
                                 items(
                                     items = filteredLibraryAlbums,
-                                    key = { "local_album_${it.id}_${filteredLibraryAlbums.indexOf(it)}" }
+                                    key = { "local_album_${it.id}" }
                                 ) { album ->
                                     AlbumGridItem(
                                         album = album,
@@ -598,7 +598,7 @@ fun ArtistScreen(
                         if ((section.items.firstOrNull() as? SongItem)?.album != null) {
                             items(
                                 items = section.items.distinctBy { it.id },
-                                key = { "youtube_song_${it.id}" },
+                                key = { it.id },
                             ) { song ->
                                 YouTubeListItem(
                                     item = song as SongItem,
@@ -657,7 +657,7 @@ fun ArtistScreen(
                                 ) {
                                     items(
                                         items = section.items.distinctBy { it.id },
-                                        key = { "youtube_album_${it.id}" },
+                                        key = { it.id },
                                     ) { item ->
                                         YouTubeGridItem(
                                             item = item,
