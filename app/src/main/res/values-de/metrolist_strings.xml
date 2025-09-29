@@ -125,7 +125,7 @@
     <string name="share_as_image">Als Bild teilen</string>
     <string name="generating_image">Generiere Bild</string>
     <string name="max_selection_limit">Höchstgrenze der Auswahl</string>
-    <string name="show_liked_playlist">\"Mag ich\"-Playlist anzeigen</string>
+    <string name="show_liked_playlist">„Mag ich“-Playlist anzeigen</string>
     <string name="show_downloaded_playlist">„Heruntergeladen“-Playlist anzeigen</string>
     <string name="show_top_playlist">„Top“-Playlist anzeigen</string>
     <string name="show_cached_playlist">„Im Cache\"-Playlist anzeigen</string>
@@ -200,4 +200,16 @@
     <string name="romanize_current_track">Aktuellen Titel romanisieren</string>
     <string name="audio_offload">Auslagerung aktivieren</string>
     <string name="audio_offload_description">Verwenden Sie den ausgelagerten Audiopfad für die Audiowiedergabe. Das Deaktivieren dieser Option kann den Stromverbrauch erhöhen, kann jedoch nützlich sein, wenn Probleme mit der Audiowiedergabe oder der Nachbearbeitung auftreten</string>
+    <string name="uploaded_playlist">Hochgeladen</string>
+    <string name="filter_uploaded">Hochgeladen</string>
+    <string name="show_uploaded_playlist">„Hochgeladen“-Playlist anzeigen</string>
+    <string name="discord_use_details">Verwende Details anstelle von Statusangaben</string>
+    <string name="discord_use_details_description">Songtitel anstelle von Künstlernamen prominent anzeigen</string>
+    <string name="updater">Updater</string>
+    <string name="check_for_updates">Automatisch nach Updates suchen</string>
+    <string name="update_notifications">Update-Benachrichtigungen aktivieren</string>
+    <string name="update_available_title">Update verfügbar</string>
+    <string name="update_channel_name">App Updates</string>
+    <string name="update_channel_desc">Benachrichtigungen über neue Versionen</string>
+    <string name="lyrics_romanize_macedonian">Mazedonische Liedtexte romanisieren</string>
 </resources>
