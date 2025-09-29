@@ -45,6 +45,8 @@ constructor(
     private val audioQuality by enumPreference(context, AudioQualityKey, AudioQuality.AUTO)
     private val songUrlCache = HashMap<String, Pair<String, Long>>()
 
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
     val downloads = MutableStateFlow<Map<String, Download>>(emptyMap())
 
     private val dataSourceFactory =
@@ -136,6 +138,7 @@ constructor(
     val downloadNotificationHelper =
         DownloadNotificationHelper(context, ExoDownloadService.CHANNEL_ID)
 
+    @OptIn(DelicateCoroutinesApi::class)
     val downloadManager: DownloadManager =
         DownloadManager(
             context,
@@ -158,7 +161,7 @@ constructor(
                             }
                         }
 
-                        GlobalScope.launch(Dispatchers.IO) {
+                        scope.launch {
                             when (download.state) {
                                 Download.STATE_COMPLETED -> {
                                     database.updateDownloadedInfo(download.request.id, true, LocalDateTime.now())
@@ -167,6 +170,8 @@ constructor(
                                 Download.STATE_STOPPED,
                                 Download.STATE_REMOVING -> {
                                     database.updateDownloadedInfo(download.request.id, false, null)
+                                }
+                                else -> {
                                 }
                             }
                         }
@@ -185,4 +190,8 @@ constructor(
     }
 
     fun getDownload(songId: String): Flow<Download?> = downloads.map { it[songId] }
+
+    fun release() {
+        scope.cancel()
+    }
 }

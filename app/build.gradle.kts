@@ -3,7 +3,6 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     id("com.android.application")
     kotlin("android")
-    kotlin("kapt")
     alias(libs.plugins.hilt)
     alias(libs.plugins.kotlin.ksp)
     alias(libs.plugins.compose.compiler)
@@ -20,7 +19,6 @@ android {
         versionCode = 127
         versionName = "12.6.0"
 
-        multiDexEnabled = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
@@ -81,6 +79,8 @@ android {
         release {
             isMinifyEnabled = true
             isShrinkResources = true
+            isCrunchPngs = false
+            isDebuggable = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -98,14 +98,13 @@ android {
     }
 
     compileOptions {
-        isCoreLibraryDesugaringEnabled = false
+        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
     }
 
     kotlin {
         jvmToolchain(21)
-
         compilerOptions {
             freeCompilerArgs.add("-Xannotation-default-target=param-property")
             jvmTarget.set(JvmTarget.JVM_21)
@@ -154,24 +153,12 @@ ksp {
     arg("room.schemaLocation", "$projectDir/schemas")
 }
 
-kapt {
-    correctErrorTypes = true
-    useBuildCache = true
-    arguments {
-        arg("dagger.fastInit", "enabled")
-        arg("dagger.formatGeneratedSource", "disabled")
-        // dagger.gradle.incremental is deprecated in newer versions
-    }
-}
-
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
     compilerOptions {
         freeCompilerArgs.addAll(
-            "-opt-in=kotlin.RequiresOptIn",
-            "-Xcontext-receivers"
+            "-opt-in=kotlin.RequiresOptIn"
         )
-        // Suppress warnings
-        suppressWarnings.set(true)
+        suppressWarnings.set(false)
     }
 }
 
@@ -181,7 +168,6 @@ dependencies {
     implementation(libs.concurrent.futures)
 
     implementation(libs.activity)
-    implementation(libs.navigation)
     implementation(libs.hilt.navigation)
     implementation(libs.datastore)
 
@@ -205,7 +191,6 @@ dependencies {
     implementation(libs.coil)
     implementation(libs.coil.network.okhttp)
 
-    // In-app image cropper (UCrop)
     implementation(libs.ucrop)
 
     implementation(libs.shimmer)
@@ -224,7 +209,7 @@ dependencies {
 
     implementation(libs.hilt)
     implementation(libs.jsoup)
-    kapt(libs.hilt.compiler)
+    ksp(libs.hilt.compiler)
 
     implementation(project(":innertube"))
     implementation(project(":kugou"))
@@ -235,8 +220,6 @@ dependencies {
     implementation(libs.ktor.serialization.json)
 
     coreLibraryDesugaring(libs.desugaring)
-
-    implementation(libs.multidex)
 
     implementation(libs.timber)
 }
