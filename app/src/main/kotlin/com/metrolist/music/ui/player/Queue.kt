@@ -234,8 +234,8 @@ fun Queue(
                             .size(buttonSize)
                             .clip(
                                 RoundedCornerShape(
-                                    topStart = 25.dp,
-                                    bottomStart = 25.dp,
+                                    topStart = 50.dp,
+                                    bottomStart = 50.dp,
                                     topEnd = 5.dp,
                                     bottomEnd = 5.dp
                                 )
@@ -244,8 +244,8 @@ fun Queue(
                                 1.dp,
                                 borderColor,
                                 RoundedCornerShape(
-                                    topStart = 25.dp,
-                                    bottomStart = 25.dp,
+                                    topStart = 50.dp,
+                                    bottomStart = 50.dp,
                                     topEnd = 5.dp,
                                     bottomEnd = 5.dp
                                 )
@@ -327,8 +327,8 @@ fun Queue(
                                 RoundedCornerShape(
                                     topStart = 5.dp,
                                     bottomStart = 5.dp,
-                                    topEnd = 25.dp,
-                                    bottomEnd = 25.dp
+                                    topEnd = 50.dp,
+                                    bottomEnd = 50.dp
                                 )
                             )
                             .border(
@@ -337,8 +337,8 @@ fun Queue(
                                 RoundedCornerShape(
                                     topStart = 5.dp,
                                     bottomStart = 5.dp,
-                                    topEnd = 25.dp,
-                                    bottomEnd = 25.dp
+                                    topEnd = 50.dp,
+                                    bottomEnd = 50.dp
                                 )
                             )
                             .clickable {
