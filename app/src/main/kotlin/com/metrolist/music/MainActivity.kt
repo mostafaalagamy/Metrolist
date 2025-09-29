@@ -1,11 +1,13 @@
 package com.metrolist.music
 
+import android.Manifest
 import android.annotation.SuppressLint
+import android.app.PendingIntent
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
-import android.graphics.drawable.BitmapDrawable
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -14,7 +16,7 @@ import android.view.View
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.activity.viewModels
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.animateDpAsState
@@ -23,11 +25,8 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -36,18 +35,17 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.add
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.displayCutout
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
-import androidx.compose.foundation.layout.safeDrawing
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -60,11 +58,11 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationRail
 import androidx.compose.material3.NavigationRailItem
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
@@ -72,9 +70,9 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -92,35 +90,32 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastAny
-import androidx.compose.ui.util.fastFirstOrNull
 import androidx.compose.ui.util.fastForEach
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.core.util.Consumer
 import androidx.core.view.WindowCompat
-import androidx.lifecycle.lifecycleScope
-import androidx.core.app.NotificationManagerCompat
-import androidx.core.app.NotificationCompat
-import androidx.core.app.TaskStackBuilder
-import android.app.PendingIntent
-import android.Manifest
-import android.content.pm.PackageManager
-import androidx.core.content.ContextCompat
-import androidx.core.app.ActivityCompat
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.lifecycleScope
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -130,9 +125,9 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import coil3.compose.AsyncImage
 import coil3.imageLoader
+import coil3.request.CachePolicy
 import coil3.request.ImageRequest
 import coil3.request.allowHardware
-import coil3.request.CachePolicy
 import coil3.request.crossfade
 import coil3.toBitmap
 import com.metrolist.innertube.YouTube
@@ -207,6 +202,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -233,7 +229,7 @@ class MainActivity : ComponentActivity() {
     private var latestVersionName by mutableStateOf(BuildConfig.VERSION_NAME)
 
     private var playerConnection by mutableStateOf<PlayerConnection?>(null)
-    
+
     private val serviceConnection =
         object : ServiceConnection {
             override fun onServiceConnected(
@@ -309,7 +305,7 @@ class MainActivity : ComponentActivity() {
                 ?: Locale.getDefault()
             setAppLocale(this, locale)
         }
-        
+
         lifecycleScope.launch {
             dataStore.data
                 .map { it[DisableScreenshotKey] ?: false }
@@ -339,22 +335,22 @@ class MainActivity : ComponentActivity() {
                             Updater.getLatestVersionName().onSuccess {
                                 latestVersionName = it
                                 if (it != BuildConfig.VERSION_NAME && notifEnabled) {
-                                   val downloadUrl = Updater.getLatestDownloadUrl()
-                                   val intent = Intent(Intent.ACTION_VIEW, Uri.parse(downloadUrl))
-    
-                                   val flags = PendingIntent.FLAG_UPDATE_CURRENT or 
-                                       (if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) PendingIntent.FLAG_IMMUTABLE else 0)
-                                   val pending = PendingIntent.getActivity(this@MainActivity, 1001, intent, flags)
-    
-                                   val notif = NotificationCompat.Builder(this@MainActivity, "updates")
-                                       .setSmallIcon(R.drawable.update)
-                                       .setContentTitle(getString(R.string.update_available_title))
-                                       .setContentText(it)
-                                       .setContentIntent(pending)
-                                       .setAutoCancel(true)
-                                       .build()
-                                   NotificationManagerCompat.from(this@MainActivity).notify(1001, notif)
-                               }
+                                    val downloadUrl = Updater.getLatestDownloadUrl()
+                                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(downloadUrl))
+
+                                    val flags = PendingIntent.FLAG_UPDATE_CURRENT or
+                                        (if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) PendingIntent.FLAG_IMMUTABLE else 0)
+                                    val pending = PendingIntent.getActivity(this@MainActivity, 1001, intent, flags)
+
+                                    val notif = NotificationCompat.Builder(this@MainActivity, "updates")
+                                        .setSmallIcon(R.drawable.update)
+                                        .setContentTitle(getString(R.string.update_available_title))
+                                        .setContentText(it)
+                                        .setContentIntent(pending)
+                                        .setAutoCancel(true)
+                                        .build()
+                                    NotificationManagerCompat.from(this@MainActivity).notify(1001, notif)
+                                }
                             }
                         }
                     }
@@ -371,13 +367,13 @@ class MainActivity : ComponentActivity() {
             val useDarkTheme = remember(darkTheme, isSystemInDarkTheme) {
                 if (darkTheme == DarkMode.AUTO) isSystemInDarkTheme else darkTheme == DarkMode.ON
             }
-            
+
             LaunchedEffect(useDarkTheme) {
                 setSystemBarAppearance(useDarkTheme)
             }
-            
+
             val pureBlackEnabled by rememberPreference(PureBlackKey, defaultValue = false)
-            val pureBlack = remember(pureBlackEnabled, useDarkTheme) { 
+            val pureBlack = remember(pureBlackEnabled, useDarkTheme) {
                 pureBlackEnabled && useDarkTheme 
             }
 
@@ -391,7 +387,7 @@ class MainActivity : ComponentActivity() {
                     themeColor = DefaultThemeColor
                     return@LaunchedEffect
                 }
-                
+ 
                 playerConnection.service.currentMediaMetadata.collectLatest { song ->
                     if (song?.thumbnailUrl != null) {
                         withContext(Dispatchers.IO) {
@@ -406,7 +402,7 @@ class MainActivity : ComponentActivity() {
                                         .crossfade(false)
                                         .build()
                                 )
-                                themeColor = result.image?.toBitmap()?.extractThemeColor() 
+                                themeColor = result.image?.toBitmap()?.extractThemeColor()
                                     ?: DefaultThemeColor
                             } catch (e: Exception) {
                                 // Fallback to default on error
@@ -553,9 +549,9 @@ class MainActivity : ComponentActivity() {
                     val playerBottomSheetState =
                         rememberBottomSheetState(
                             dismissedBound = 0.dp,
-                            collapsedBound = bottomInset + 
+                            collapsedBound = bottomInset +
                                 (if (!showRail && shouldShowNavigationBar) getNavPadding() else 0.dp) +
-                                (if (useNewMiniPlayerDesign) MiniPlayerBottomSpacing else 0.dp) + 
+                                (if (useNewMiniPlayerDesign) MiniPlayerBottomSpacing else 0.dp) +
                                 MiniPlayerHeight,
                             expandedBound = maxHeight,
                         )
@@ -638,7 +634,6 @@ class MainActivity : ComponentActivity() {
                                 searchBarScrollBehavior.state.resetHeightOffset()
                             }
                         }
-                        
                         searchBarScrollBehavior.state.resetHeightOffset()
                         topAppBarScrollBehavior.state.resetHeightOffset()
 
@@ -647,7 +642,7 @@ class MainActivity : ComponentActivity() {
                             setPreviousTab(it)
                         }
                     }
-                    
+
                     LaunchedEffect(active) {
                         if (active) {
                             searchBarScrollBehavior.state.resetHeightOffset()
@@ -971,8 +966,8 @@ class MainActivity : ComponentActivity() {
                                                         onDismiss = { onActiveChange(false) },
                                                         pureBlack = pureBlack
                                                     )
-                                           }
-                                       }
+                                            }
+                                        }
                                     }
                                 }
                             },
@@ -1085,7 +1080,6 @@ class MainActivity : ComponentActivity() {
                                 .fillMaxSize()
                                 .nestedScroll(searchBarScrollBehavior.nestedScrollConnection)
                         ) {
-
                             Row(Modifier.fillMaxSize()) {
                                 if (showRail) {
                                     NavigationRail(
@@ -1126,7 +1120,7 @@ class MainActivity : ComponentActivity() {
                                                 },
                                             )
                                         }
-  
+
                                         Spacer(modifier = Modifier.weight(1f))
                                     }
                                 }
@@ -1228,7 +1222,10 @@ class MainActivity : ComponentActivity() {
                         if (showAccountDialog) {
                             AccountSettingsDialog(
                                 navController = navController,
-                                onDismiss = { showAccountDialog = false },
+                                onDismiss = {
+                                    showAccountDialog = false
+                                    homeViewModel.refresh()
+                                },
                                 latestVersionName = latestVersionName
                             )
                         }
@@ -1311,7 +1308,7 @@ class MainActivity : ComponentActivity() {
                     uri.host == "youtu.be" -> uri.pathSegments.firstOrNull()
                     else -> null
                 }
-                
+
                 val playlistId = uri.getQueryParameter("list")
 
                 videoId?.let {
