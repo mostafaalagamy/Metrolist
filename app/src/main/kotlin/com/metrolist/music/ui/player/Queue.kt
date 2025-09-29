@@ -214,7 +214,7 @@ fun Queue(
             if (useNewPlayerDesign) {
                 // New design
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -236,8 +236,8 @@ fun Queue(
                                 RoundedCornerShape(
                                     topStart = 50.dp,
                                     bottomStart = 50.dp,
-                                    topEnd = 10.dp,
-                                    bottomEnd = 10.dp
+                                    topEnd = 5.dp,
+                                    bottomEnd = 5.dp
                                 )
                             )
                             .border(
@@ -246,8 +246,8 @@ fun Queue(
                                 RoundedCornerShape(
                                     topStart = 50.dp,
                                     bottomStart = 50.dp,
-                                    topEnd = 10.dp,
-                                    bottomEnd = 10.dp
+                                    topEnd = 5.dp,
+                                    bottomEnd = 5.dp
                                 )
                             )
                             .clickable { state.expandSoft() },
@@ -264,8 +264,8 @@ fun Queue(
                     Box(
                         modifier = Modifier
                             .size(buttonSize)
-                            .clip(RoundedCornerShape(10.dp))
-                            .border(1.dp, borderColor, RoundedCornerShape(10.dp))
+                            .clip(RoundedCornerShape(5.dp))
+                            .border(1.dp, borderColor, RoundedCornerShape(5.dp))
                             .clickable {
                                 if (sleepTimerEnabled) {
                                     playerConnection.service.sleepTimer.clear()
@@ -305,8 +305,8 @@ fun Queue(
                     Box(
                         modifier = Modifier
                             .size(buttonSize)
-                            .clip(RoundedCornerShape(10.dp))
-                            .border(1.dp, borderColor, RoundedCornerShape(10.dp))
+                            .clip(RoundedCornerShape(5.dp))
+                            .border(1.dp, borderColor, RoundedCornerShape(5.dp))
                             .clickable {
                                 onShowLyrics()
                             },
@@ -325,8 +325,8 @@ fun Queue(
                             .size(buttonSize)
                             .clip(
                                 RoundedCornerShape(
-                                    topStart = 10.dp,
-                                    bottomStart = 10.dp,
+                                    topStart = 5.dp,
+                                    bottomStart = 5.dp,
                                     topEnd = 50.dp,
                                     bottomEnd = 50.dp
                                 )
@@ -335,8 +335,8 @@ fun Queue(
                                 1.dp,
                                 borderColor,
                                 RoundedCornerShape(
-                                    topStart = 10.dp,
-                                    bottomStart = 10.dp,
+                                    topStart = 5.dp,
+                                    bottomStart = 5.dp,
                                     topEnd = 50.dp,
                                     bottomEnd = 50.dp
                                 )
