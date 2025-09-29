@@ -156,8 +156,7 @@ ksp {
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
     compilerOptions {
         freeCompilerArgs.addAll(
-            "-opt-in=kotlin.RequiresOptIn",
-            "-Xcontext-receivers"
+            "-opt-in=kotlin.RequiresOptIn"
         )
         suppressWarnings.set(false)
     }
