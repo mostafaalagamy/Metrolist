@@ -26,13 +26,13 @@ import java.time.LocalDateTime
 import javax.inject.Inject
 import javax.inject.Singleton
 
+@OptIn(ExperimentalCoroutinesApi::class, DelicateCoroutinesApi::class)
 @Singleton
 class SyncUtils @Inject constructor(
     private val database: MusicDatabase,
 ) {
     private val syncScope = CoroutineScope(Dispatchers.IO)
     
-    @OptIn(DelicateCoroutinesApi::class, ExperimentalCoroutinesApi::class)
     private val syncContext = newSingleThreadContext("syncUtils")
 
     fun likeSong(s: SongEntity) {
@@ -274,7 +274,7 @@ class SyncUtils @Inject constructor(
                             thumbnailUrl = playlist.thumbnail,
                             isEditable = playlist.isEditable,
                             bookmarkedAt = LocalDateTime.now(),
-                            remoteSongCount = playlist.songCountText?.let { Regex("""\\d+""").find(it)?.value?.toIntOrNull() },
+                            remoteSongCount = playlist.songCountText?.let { Regex("""\d+""").find(it)?.value?.toIntOrNull() },
                             playEndpointParams = playlist.playEndpoint?.params,
                             shuffleEndpointParams = playlist.shuffleEndpoint?.params,
                             radioEndpointParams = playlist.radioEndpoint?.params

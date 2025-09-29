@@ -1,14 +1,11 @@
 package com.metrolist.music
 
 import android.app.Application
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
 import android.widget.Toast
-import android.widget.Toast.LENGTH_SHORT
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 import androidx.datastore.preferences.core.edit
 import coil3.ImageLoader
 import coil3.PlatformContext
@@ -18,86 +15,98 @@ import coil3.disk.directory
 import coil3.request.CachePolicy
 import coil3.request.allowHardware
 import coil3.request.crossfade
-import com.metrolist.music.constants.*
-import com.metrolist.music.extensions.*
-import com.metrolist.music.utils.dataStore
-import com.metrolist.music.utils.get
-import com.metrolist.music.utils.reportException
 import com.metrolist.innertube.YouTube
 import com.metrolist.innertube.models.YouTubeLocale
 import com.metrolist.kugou.KuGou
+import com.metrolist.music.constants.*
+import com.metrolist.music.di.ApplicationScope
+import com.metrolist.music.extensions.toEnum
+import com.metrolist.music.extensions.toInetSocketAddress
+import com.metrolist.music.utils.dataStore
+import com.metrolist.music.utils.get
+import com.metrolist.music.utils.reportException
 import dagger.hilt.android.HiltAndroidApp
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import okhttp3.Credentials
 import timber.log.Timber
 import java.net.Authenticator
 import java.net.PasswordAuthentication
 import java.net.Proxy
-import java.util.*
-import okhttp3.Credentials
+import java.util.Locale
+import javax.inject.Inject
 
 @HiltAndroidApp
 class App : Application(), SingletonImageLoader.Factory {
-    // Create a proper application scope that will be cancelled when the app is destroyed
-    private val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
-    
-    @OptIn(DelicateCoroutinesApi::class)
+
+    @Inject
+    @ApplicationScope
+    lateinit var applicationScope: CoroutineScope
+
     override fun onCreate() {
         super.onCreate()
-        instance = this;
         Timber.plant(Timber.DebugTree())
 
+        // تهيئة إعدادات التطبيق عند الإقلاع
+        applicationScope.launch {
+            initializeSettings()
+            observeSettingsChanges()
+        }
+    }
+
+    private suspend fun initializeSettings() {
+        val settings = dataStore.data.first()
         val locale = Locale.getDefault()
-        val languageTag = locale.toLanguageTag().replace("-Hant", "") // replace zh-Hant-* to zh-*
+        val languageTag = locale.toLanguageTag().replace("-Hant", "")
+
         YouTube.locale = YouTubeLocale(
-            gl = dataStore[ContentCountryKey]?.takeIf { it != SYSTEM_DEFAULT }
+            gl = settings[ContentCountryKey]?.takeIf { it != SYSTEM_DEFAULT }
                 ?: locale.country.takeIf { it in CountryCodeToName }
                 ?: "US",
-            hl = dataStore[ContentLanguageKey]?.takeIf { it != SYSTEM_DEFAULT }
+            hl = settings[ContentLanguageKey]?.takeIf { it != SYSTEM_DEFAULT }
                 ?: locale.language.takeIf { it in LanguageCodeToName }
                 ?: languageTag.takeIf { it in LanguageCodeToName }
                 ?: "en"
         )
+
         if (languageTag == "zh-TW") {
             KuGou.useTraditionalChinese = true
         }
 
-        if (dataStore[ProxyEnabledKey] == true) {
-            val username = dataStore[ProxyUsernameKey].orEmpty()
-            val password = dataStore[ProxyPasswordKey].orEmpty()
-            val type = dataStore[ProxyTypeKey].toEnum(defaultValue = Proxy.Type.HTTP)
+        if (settings[ProxyEnabledKey] == true) {
+            val username = settings[ProxyUsernameKey].orEmpty()
+            val password = settings[ProxyPasswordKey].orEmpty()
+            val type = settings[ProxyTypeKey].toEnum(defaultValue = Proxy.Type.HTTP)
 
             if (username.isNotEmpty() || password.isNotEmpty()) {
                 if (type == Proxy.Type.HTTP) {
                     YouTube.proxyAuth = Credentials.basic(username, password)
                 } else {
                     Authenticator.setDefault(object : Authenticator() {
-                        override fun getPasswordAuthentication() =
+                        override fun getPasswordAuthentication(): PasswordAuthentication =
                             PasswordAuthentication(username, password.toCharArray())
                     })
                 }
             }
             try {
-                YouTube.proxy = Proxy(type, dataStore[ProxyUrlKey]!!.toInetSocketAddress())
+                settings[ProxyUrlKey]?.let {
+                    YouTube.proxy = Proxy(type, it.toInetSocketAddress())
+                }
             } catch (e: Exception) {
-                Toast.makeText(this, "Failed to parse proxy url.", LENGTH_SHORT).show()
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(this@App, "Failed to parse proxy url.", Toast.LENGTH_SHORT).show()
+                }
                 reportException(e)
             }
         }
 
-        if (dataStore[UseLoginForBrowse] != false) {
-            YouTube.useLoginForBrowse = true
-        }
+        YouTube.useLoginForBrowse = settings[UseLoginForBrowse] ?: true
 
-        // Create update notification channel (O+)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 "updates",
@@ -109,47 +118,36 @@ class App : Application(), SingletonImageLoader.Factory {
             val nm = getSystemService(NotificationManager::class.java)
             nm.createNotificationChannel(channel)
         }
+    }
 
+    private fun observeSettingsChanges() {
         applicationScope.launch(Dispatchers.IO) {
             dataStore.data
                 .map { it[VisitorDataKey] }
                 .distinctUntilChanged()
                 .collect { visitorData ->
-                    YouTube.visitorData = visitorData
-                        ?.takeIf { it != "null" } // Previously visitorData was sometimes saved as "null" due to a bug
-                        ?: YouTube.visitorData().onFailure {
-                            withContext(Dispatchers.Main) {
-                                Toast.makeText(this@App, "Failed to get visitorData.", LENGTH_SHORT).show()
-                            }
-                            reportException(it)
-                        }.getOrNull()?.also { newVisitorData ->
+                    YouTube.visitorData = visitorData?.takeIf { it != "null" }
+                        ?: YouTube.visitorData().getOrNull()?.also { newVisitorData ->
                             dataStore.edit { settings ->
                                 settings[VisitorDataKey] = newVisitorData
                             }
                         }
                 }
         }
+
         applicationScope.launch(Dispatchers.IO) {
             dataStore.data
                 .map { it[DataSyncIdKey] }
                 .distinctUntilChanged()
                 .collect { dataSyncId ->
                     YouTube.dataSyncId = dataSyncId?.let {
-                        /*
-                         * Workaround to avoid breaking older installations that have a dataSyncId
-                         * that contains "||" in it.
-                         * If the dataSyncId ends with "||" and contains only one id, then keep the
-                         * id before the "||".
-                         * If the dataSyncId contains "||" and is not at the end, then keep the
-                         * second id.
-                         * This is needed to keep using the same account as before.
-                         */
                         it.takeIf { !it.contains("||") }
                             ?: it.takeIf { it.endsWith("||") }?.substringBefore("||")
                             ?: it.substringAfter("||")
                     }
                 }
         }
+
         applicationScope.launch(Dispatchers.IO) {
             dataStore.data
                 .map { it[InnerTubeCookieKey] }
@@ -158,8 +156,7 @@ class App : Application(), SingletonImageLoader.Factory {
                     try {
                         YouTube.cookie = cookie
                     } catch (e: Exception) {
-                        // we now allow user input now, here be the demons. This serves as a last ditch effort to avoid a crash loop
-                        Timber.e("Could not parse cookie. Clearing existing cookie. %s", e.message)
+                        Timber.e(e, "Could not parse cookie. Clearing existing cookie.")
                         forgetAccount(this@App)
                     }
                 }
@@ -167,45 +164,33 @@ class App : Application(), SingletonImageLoader.Factory {
     }
 
     override fun newImageLoader(context: PlatformContext): ImageLoader {
-        val cacheSize = dataStore[MaxImageCacheSizeKey]
+        val cacheSize = dataStore.get(MaxImageCacheSizeKey, 512)
 
-        // will crash app if you set to 0 after cache starts being used
-        if (cacheSize == 0) {
-            return ImageLoader.Builder(this)
-                .crossfade(true)
-                .allowHardware(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)
-                .diskCachePolicy(CachePolicy.DISABLED)
-                .build()
-        }
-
-        return ImageLoader.Builder(this)
-        .crossfade(true)
-        .allowHardware(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)
-        .memoryCachePolicy(CachePolicy.ENABLED)
-        .networkCachePolicy(CachePolicy.ENABLED)
-        .diskCache(
-            DiskCache.Builder()
-                .directory(cacheDir.resolve("coil"))
-                .maxSizeBytes((cacheSize ?: 512) * 1024 * 1024L)
-                .build()
-        )
-        .build()
+        return ImageLoader.Builder(this).apply {
+            crossfade(true)
+            allowHardware(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)
+            if (cacheSize == 0) {
+                diskCachePolicy(CachePolicy.DISABLED)
+            } else {
+                diskCache(
+                    DiskCache.Builder()
+                        .directory(cacheDir.resolve("coil"))
+                        .maxSizeBytes(cacheSize * 1024 * 1024L)
+                        .build()
+                )
+            }
+        }.build()
     }
 
     companion object {
-        lateinit var instance: App
-            private set
-
-        fun forgetAccount(context: Context) {
-            runBlocking {
-                context.dataStore.edit { settings ->
-                    settings.remove(InnerTubeCookieKey)
-                    settings.remove(VisitorDataKey)
-                    settings.remove(DataSyncIdKey)
-                    settings.remove(AccountNameKey)
-                    settings.remove(AccountEmailKey)
-                    settings.remove(AccountChannelHandleKey)
-                }
+        suspend fun forgetAccount(context: Context) {
+            context.dataStore.edit { settings ->
+                settings.remove(InnerTubeCookieKey)
+                settings.remove(VisitorDataKey)
+                settings.remove(DataSyncIdKey)
+                settings.remove(AccountNameKey)
+                settings.remove(AccountEmailKey)
+                settings.remove(AccountChannelHandleKey)
             }
         }
     }
