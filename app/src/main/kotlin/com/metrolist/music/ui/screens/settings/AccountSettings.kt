@@ -285,11 +285,12 @@ fun AccountSettings(
                 .background(MaterialTheme.colorScheme.surfaceContainer)
         ) {
             PreferenceEntry(
-                title = { Text(stringResource(R.string.discord_integration)) },
-                icon = { Icon(painterResource(R.drawable.discord), null) },
+                // TODO: Change to stringResource
+                title = { Text("Integrations") },
+                icon = { Icon(painterResource(R.drawable.integration), null) },
                 onClick = {
                     onClose()
-                    navController.navigate("settings/discord")
+                    navController.navigate("settings/integrations")
                 },
                 modifier = Modifier
                     .fillMaxWidth()

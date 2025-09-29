@@ -72,8 +72,13 @@ import com.metrolist.music.constants.DisableLoadMoreWhenRepeatAllKey
 import com.metrolist.music.constants.DiscordTokenKey
 import com.metrolist.music.constants.DiscordUseDetailsKey
 import com.metrolist.music.constants.EnableDiscordRPCKey
+import com.metrolist.music.constants.EnableLastFMScrobbingKey
 import com.metrolist.music.constants.HideExplicitKey
 import com.metrolist.music.constants.HistoryDuration
+import com.metrolist.music.constants.LastFMUseNowPlaying
+import com.metrolist.music.constants.ScrobbleDelayPercentKey
+import com.metrolist.music.constants.ScrobbleMinSongDurationKey
+import com.metrolist.music.constants.ScrobbleDelaySecondsKey
 import com.metrolist.music.constants.MediaSessionConstants.CommandToggleLike
 import com.metrolist.music.constants.MediaSessionConstants.CommandToggleRepeatMode
 import com.metrolist.music.constants.MediaSessionConstants.CommandToggleShuffle
@@ -114,6 +119,7 @@ import com.metrolist.music.playback.queues.filterExplicit
 import com.metrolist.music.utils.CoilBitmapLoader
 import com.metrolist.music.utils.DiscordRPC
 import com.metrolist.music.utils.NetworkConnectivityObserver
+import com.metrolist.music.utils.ScrobbleManager
 import com.metrolist.music.utils.SyncUtils
 import com.metrolist.music.utils.YTPlayerUtils
 import com.metrolist.music.utils.dataStore
@@ -223,6 +229,8 @@ class MusicService :
     private var discordRpc: DiscordRPC? = null
     private var lastPlaybackSpeed = 1.0f
     private var discordUpdateJob: kotlinx.coroutines.Job? = null
+
+    private var scrobbleManager: ScrobbleManager? = null
 
     val automixItems = MutableStateFlow<List<MediaItem>>(emptyList())
 
@@ -426,6 +434,54 @@ class MusicService :
                             discordRpc?.updateSong(song, player.currentPosition, player.playbackParameters.speed, useDetails)
                         }
                     }
+                }
+            }
+
+        dataStore.data
+            .map { it[EnableLastFMScrobbingKey] ?: false }
+            .debounce(300)
+            .distinctUntilChanged()
+            .collect(scope) { enabled ->
+                if (enabled && scrobbleManager == null) {
+                    // TODO: Change default values
+                    val percent = dataStore.get(ScrobbleDelayPercentKey, 0.5f)
+                    val minDuration = dataStore.get(ScrobbleMinSongDurationKey, 30)
+                    val whenSecs = dataStore.get(ScrobbleDelaySecondsKey, 50)
+                    scrobbleManager = ScrobbleManager(
+                        scope,
+                        minSongDuration = minDuration,
+                        scrobbleDelayPercent = percent,
+                        scrobbleDelaySeconds = whenSecs
+                    )
+                    scrobbleManager?.useNowPlaying = dataStore.get(LastFMUseNowPlaying, true)
+                } else if (!enabled && scrobbleManager != null) {
+                    scrobbleManager?.destroy()
+                    scrobbleManager = null
+                }
+            }
+
+        dataStore.data
+            .map { it[LastFMUseNowPlaying] ?: false }
+            .distinctUntilChanged()
+            .collectLatest(scope) {
+                scrobbleManager?.useNowPlaying = it
+            }
+
+        dataStore.data
+            .map { prefs ->
+                Triple(
+                    // TODO: Change default values
+                    prefs[ScrobbleDelayPercentKey] ?: 0.5f,
+                    prefs[ScrobbleMinSongDurationKey] ?: 30,
+                    prefs[ScrobbleDelaySecondsKey] ?: 50
+                )
+            }
+            .distinctUntilChanged()
+            .collect(scope) { (percent, minDuration, whenSecs) ->
+                scrobbleManager?.let {
+                    it.scrobbleDelayPercent = percent
+                    it.minSongDuration = minDuration
+                    it.scrobbleDelaySeconds = whenSecs
                 }
             }
 
@@ -1017,6 +1073,11 @@ class MusicService :
         
         discordUpdateJob?.cancel()
 
+        scrobbleManager?.onSongStop()
+        if (player.playWhenReady && player.playbackState == Player.STATE_READY) {
+            scrobbleManager?.onSongStart(player.currentMetadata, duration = player.duration)
+        }
+
         applyAudioNormalizationSettings()
         
         // Auto load more songs
@@ -1048,6 +1109,10 @@ class MusicService :
         // Save state when playback state changes
         if (dataStore.get(PersistentQueueKey, true)) {
             saveQueueToDisk()
+        }
+
+        if (playbackState == Player.STATE_IDLE || playbackState == Player.STATE_ENDED) {
+            scrobbleManager?.onSongStop()
         }
     }
 
@@ -1102,6 +1167,12 @@ class MusicService :
                 }
             }
         }
+
+        // Scrobbling 
+        if (events.containsAny(Player.EVENT_IS_PLAYING_CHANGED)) {
+            scrobbleManager?.onPlayerStateChanged(player.isPlaying, player.currentMetadata, duration = player.duration)
+        }
+
     }
 
     override fun onShuffleModeEnabledChanged(shuffleModeEnabled: Boolean) {
