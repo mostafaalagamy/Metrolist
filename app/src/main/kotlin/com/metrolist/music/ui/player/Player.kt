@@ -613,17 +613,17 @@ fun BottomSheetPlayer(
 
                 if (useNewPlayerDesign) {
                     val shareShape = RoundedCornerShape(
-                        topStart = 50.dp, bottomStart = 50.dp,
-                        topEnd = 10.dp, bottomEnd = 10.dp
+                        topStart = 25.dp, bottomStart = 25.dp,
+                        topEnd = 5.dp, bottomEnd = 5.dp
                     )
 
                     val favShape = RoundedCornerShape(
-                        topStart = 10.dp, bottomStart = 10.dp,
-                        topEnd = 50.dp, bottomEnd = 50.dp
+                        topStart = 5.dp, bottomStart = 5.dp,
+                        topEnd = 25.dp, bottomEnd = 25.dp
                     )
 
                     Row(
-                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        horizontalArrangement = Arrangement.spacedBy(6.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Box(
