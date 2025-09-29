@@ -1341,9 +1341,8 @@ class MusicService :
             }
 
             CoroutineScope(Dispatchers.IO).launch {
-                val playbackUrl = database.format(mediaItem.mediaId).first()?.playbackUrl
-                    ?: YTPlayerUtils.playerResponseForMetadata(mediaItem.mediaId, null)
-                        .getOrNull()?.playbackTracking?.videostatsPlaybackUrl?.baseUrl
+                val playbackUrl = YTPlayerUtils.playerResponseForMetadata(mediaItem.mediaId, null)
+                    .getOrNull()?.playbackTracking?.videostatsPlaybackUrl?.baseUrl
                 playbackUrl?.let {
                     YouTube.registerPlayback(null, playbackUrl)
                         .onFailure {
