@@ -572,7 +572,7 @@ class MusicService :
                 wasPlayingBeforeAudioFocusLoss = player.isPlaying
 
                 if (player.isPlaying) {
-                    player.volume = (playerVolume.value * 0.2f) // خفض إلى 20%
+                    player.volume = (playerVolume.value * 0.2f)
                 }
 
                 lastAudioFocusState = focusChange
@@ -1016,6 +1016,8 @@ class MusicService :
         lastPlaybackSpeed = -1.0f // force update song
         
         discordUpdateJob?.cancel()
+
+        applyAudioNormalizationSettings()
         
         // Auto load more songs
         if (dataStore.get(AutoLoadMoreKey, true) &&
