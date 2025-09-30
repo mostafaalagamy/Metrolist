@@ -745,13 +745,13 @@ class MainActivity : ComponentActivity() {
                                 AnimatedVisibility(
                                     visible = shouldShowTopBar,
                                     enter = slideInHorizontally(
-                                        initialOffsetX = { -it },
-                                        animationSpec = tween(durationMillis = 300)
-                                    ) + fadeIn(animationSpec = tween(durationMillis = 300)),
+                                        initialOffsetX = { -it / 4 },
+                                        animationSpec = tween(durationMillis = 150)
+                                    ) + fadeIn(animationSpec = tween(durationMillis = 150)),
                                     exit = slideOutHorizontally(
-                                        targetOffsetX = { -it },
-                                        animationSpec = tween(durationMillis = 250)
-                                    ) + fadeOut(animationSpec = tween(durationMillis = 250))
+                                        targetOffsetX = { -it / 4 },
+                                        animationSpec = tween(durationMillis = 100)
+                                    ) + fadeOut(animationSpec = tween(durationMillis = 100))
                                 ) {
                                     Row {
                                         TopAppBar(
