@@ -214,4 +214,6 @@
     <string name="update_available_title">Je dostupná aktualizace</string>
     <string name="update_channel_name">Aktualizace aplikací</string>
     <string name="update_channel_desc">Oznámení o nových verzích</string>
+    <string name="discord_use_details">Použít podrobnosti namísto stavu</string>
+    <string name="discord_use_details_description">Zobrazit jako hlavní název skladby namísto jména interpreta</string>
 </resources>
