@@ -21,6 +21,10 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
+
+        // LastFM API keys from GitHub Secrets
+        buildConfigField("String", "LASTFM_API_KEY", "\"${System.getenv("LASTFM_API_KEY") ?: ""}\"")
+        buildConfigField("String", "LASTFM_SECRET", "\"${System.getenv("LASTFM_SECRET") ?: ""}\"")
     }
 
     flavorDimensions += "abi"
@@ -215,6 +219,7 @@ dependencies {
     implementation(project(":kugou"))
     implementation(project(":lrclib"))
     implementation(project(":kizzy"))
+    implementation(project(":lastfm"))
 
     implementation(libs.ktor.client.core)
     implementation(libs.ktor.serialization.json)
