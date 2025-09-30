@@ -19,7 +19,7 @@ jobs:
       - uses: actions/checkout@v5
         with:
           fetch-depth: 0
-          
+
       - name: Check if version changed
         id: check_version
         run: |
@@ -59,7 +59,7 @@ jobs:
             echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
             echo "version_code=$VERSION_CODE" >> $GITHUB_OUTPUT
           fi
-          
+
       - name: Debug output
         run: |
           echo "Debug Information:"
@@ -78,28 +78,30 @@ jobs:
 
     steps:
       - uses: actions/checkout@v5
-      
+
       - name: Set up JDK 21
         uses: actions/setup-java@v5
         with:
           java-version: '21'
           distribution: 'temurin'
-      
+
       - name: Set Up Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
           cache-disabled: true
           cache-cleanup: on-success
-          
+
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
- 
+
       - name: Build and Lint Release APK
         run: ./gradlew --no-configuration-cache --console=plain clean assemble${{ matrix.abi }}Release :app:lint${{ matrix.abi }}Release --warning-mode summary
         env:
           PULL_REQUEST: 'false'
           GITHUB_EVENT_NAME: ${{ github.event_name }}
- 
+          LASTFM_API_KEY: ${{ secrets.LASTFM_API_KEY }}
+          LASTFM_SECRET: ${{ secrets.LASTFM_SECRET }}
+
       - name: Sign APK
         uses: ilharp/sign-android-release@v2.0.0
         with:
@@ -109,7 +111,7 @@ jobs:
           keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
           keyPassword: ${{ secrets.KEY_PASSWORD }}
           buildToolsVersion: 35.0.0
-      
+
       - name: Move and rename signed APKs
         run: |
           mkdir -p app/build/outputs/apk/${{ matrix.abi }}/release/out
@@ -132,7 +134,7 @@ jobs:
           
           echo "APK renamed to: $TARGET_NAME"
           ls -la app/build/outputs/apk/${{ matrix.abi }}/release/out/
-  
+
       - name: Upload Signed APKs
         uses: actions/upload-artifact@v4
         with:
@@ -147,12 +149,12 @@ jobs:
       - uses: actions/checkout@v5
         with:
           fetch-depth: 0
-      
+
       - name: Download all APKs
         uses: actions/download-artifact@v5
         with:
           path: downloaded_artifacts/
-          
+
       - name: Organize APKs for release
         run: |
           echo "Organizing APK files..."
@@ -162,7 +164,7 @@ jobs:
           
           echo "APKs ready for release:"
           ls -la release_files/
-          
+
       - name: Generate release notes
         run: |
           echo "Generating release notes..."
@@ -175,7 +177,7 @@ jobs:
           
           echo "Release notes preview:"
           cat release_notes.md
-          
+
       - name: Create Release
         env:
           GH_TOKEN: ${{ secrets.RELEASE_TOKEN }}
@@ -189,7 +191,7 @@ jobs:
             release_files/*.apk
             
           echo "Release created successfully!"
-          
+
       - name: Update release summary
         run: |
           echo "## Release Summary" >> $GITHUB_STEP_SUMMARY

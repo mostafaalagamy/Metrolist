@@ -33,7 +33,7 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin'
-      
+
       - name: Set Up Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
@@ -48,6 +48,8 @@ jobs:
         env:
           PULL_REQUEST: 'false'
           GITHUB_EVENT_NAME: ${{ github.event_name }}
+          LASTFM_API_KEY: ${{ secrets.LASTFM_API_KEY }}
+          LASTFM_SECRET: ${{ secrets.LASTFM_SECRET }}
 
       - name: Sign APK
         uses: ilharp/sign-android-release@v2.0.0
@@ -58,7 +60,7 @@ jobs:
           keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
           keyPassword: ${{ secrets.KEY_PASSWORD }}
           buildToolsVersion: 35.0.0
-      
+
       - name: Move signed APK
         run: |
           mkdir -p app/build/outputs/apk/${{ matrix.abi }}/release/out
@@ -84,7 +86,7 @@ jobs:
         run: |
           sdkmanager --install "platform-tools" "platforms;android-36" "build-tools;36.0.0"
           yes | sdkmanager --licenses
-       
+
       - name: Set up JDK 21
         uses: actions/setup-java@v5
         with:
@@ -109,6 +111,8 @@ jobs:
         env:
           PULL_REQUEST: 'false'
           GITHUB_EVENT_NAME: ${{ github.event_name }}
+          LASTFM_API_KEY: ${{ secrets.LASTFM_API_KEY }}
+          LASTFM_SECRET: ${{ secrets.LASTFM_SECRET }}
 
       - name: Upload Debug APK
         uses: actions/upload-artifact@v4
