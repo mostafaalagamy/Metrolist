@@ -116,9 +116,19 @@ object LastFM {
         }
     }
 
-    // TODO: Remove this and inject in build time
-    private const val API_KEY = "f1d30753ba02fd2df89ab7ea6cfad23f"
-    private const val SECRET = "cacfc4b8568212f8c83c618365296cf9"
+    // API keys passed from the app module (loaded from BuildConfig/GitHub Secrets)
+    private var API_KEY = ""
+    private var SECRET = ""
+
+    /**
+     * Initialize LastFM with API credentials
+     * @param apiKey LastFM API key
+     * @param secret LastFM secret key
+     */
+    fun initialize(apiKey: String, secret: String) {
+        API_KEY = apiKey
+        SECRET = secret
+    }
 
     const val DEFAULT_SCROBBLE_DELAY_PERCENT = 0.5f
     const val DEFAULT_SCROBBLE_MIN_SONG_DURATION = 30

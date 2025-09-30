@@ -19,6 +19,7 @@ import com.metrolist.innertube.YouTube
 import com.metrolist.innertube.models.YouTubeLocale
 import com.metrolist.kugou.KuGou
 import com.metrolist.lastfm.LastFM
+import com.metrolist.music.BuildConfig
 import com.metrolist.music.constants.*
 import com.metrolist.music.di.ApplicationScope
 import com.metrolist.music.extensions.toEnum
@@ -78,6 +79,12 @@ class App : Application(), SingletonImageLoader.Factory {
         if (languageTag == "zh-TW") {
             KuGou.useTraditionalChinese = true
         }
+
+        // Initialize LastFM with API keys from BuildConfig (GitHub Secrets)
+        LastFM.initialize(
+            apiKey = BuildConfig.LASTFM_API_KEY.takeIf { it.isNotEmpty() } ?: "",
+            secret = BuildConfig.LASTFM_SECRET.takeIf { it.isNotEmpty() } ?: ""
+        )
 
         if (settings[ProxyEnabledKey] == true) {
             val username = settings[ProxyUsernameKey].orEmpty()
