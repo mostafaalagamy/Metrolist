@@ -172,7 +172,7 @@ fun StatsScreen(
                 LocalPlayerAwareWindowInsets.current.only(WindowInsetsSides.Top)
             )
         ) {
-            item {
+            item(key = "choice_chips") {
                 ChoiceChipsRow(
                     chips =
                     when (selectedOption) {

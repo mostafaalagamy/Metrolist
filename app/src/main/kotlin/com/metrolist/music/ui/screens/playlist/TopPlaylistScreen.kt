@@ -237,7 +237,7 @@ fun TopPlaylistScreen(
         ) {
             if (songs != null) {
                 if (songs!!.isEmpty()) {
-                    item {
+                    item(key = "empty_placeholder") {
                         EmptyPlaceholder(
                             icon = R.drawable.music_note,
                             text = stringResource(R.string.playlist_is_empty),
@@ -245,7 +245,7 @@ fun TopPlaylistScreen(
                     }
                 } else {
                     if (!isSearching) {
-                        item {
+                        item(key = "playlist_header") {
                             Column(
                                 verticalArrangement = Arrangement.spacedBy(12.dp),
                                 modifier = Modifier.padding(12.dp),
@@ -425,7 +425,7 @@ fun TopPlaylistScreen(
                         }
                     }
 
-                    item {
+                    item(key = "songs_header") {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier.padding(start = 16.dp),

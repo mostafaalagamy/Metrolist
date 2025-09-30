@@ -178,7 +178,7 @@ fun ChartsScreen(
                         .asPaddingValues(),
                 ) {
                     chartsPage?.sections?.filter { it.title != "Top music videos" }?.forEach { section ->
-                        item {
+                        item(key = "section_title_${section.title}") {
                             NavigationTitle(
                                 title = when (section.title) {
                                     "Trending" -> stringResource(R.string.trending)
@@ -187,7 +187,7 @@ fun ChartsScreen(
                                 modifier = Modifier.animateItem(),
                             )
                         }
-                        item {
+                        item(key = "section_content_${section.title}") {
                             BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
                                 val horizontalLazyGridItemWidthFactor = if (maxWidth * 0.475f >= 320.dp) 0.475f else 0.9f
                                 val horizontalLazyGridItemWidth = maxWidth * horizontalLazyGridItemWidthFactor
@@ -275,13 +275,13 @@ fun ChartsScreen(
                     }
 
                     chartsPage?.sections?.find { it.title == "Top music videos" }?.let { topVideosSection ->
-                        item {
+                        item(key = "top_videos_title") {
                             NavigationTitle(
                                 title = stringResource(R.string.top_music_videos),
                                 modifier = Modifier.animateItem(),
                             )
                         }
-                        item {
+                        item(key = "top_videos_content") {
                             LazyRow(
                                 contentPadding = WindowInsets.systemBars
                                     .only(WindowInsetsSides.Horizontal)
