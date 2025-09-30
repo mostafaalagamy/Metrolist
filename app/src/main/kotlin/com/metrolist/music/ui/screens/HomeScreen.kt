@@ -396,14 +396,14 @@ fun HomeScreen(
 
             if (selectedChip == null) {
                 quickPicks?.takeIf { it.isNotEmpty() }?.let { quickPicks ->
-                    item {
+                    item(key = "quick_picks_title") {
                         NavigationTitle(
                             title = stringResource(R.string.quick_picks),
                             modifier = Modifier.animateItem()
                         )
                     }
 
-                    item {
+                    item(key = "quick_picks_list") {
                         LazyHorizontalGrid(
                             state = quickPicksLazyGridState,
                             rows = GridCells.Fixed(4),
@@ -479,14 +479,14 @@ fun HomeScreen(
                 }
 
                 keepListening?.takeIf { it.isNotEmpty() }?.let { keepListening ->
-                    item {
+                    item(key = "keep_listening_title") {
                         NavigationTitle(
                             title = stringResource(R.string.keep_listening),
                             modifier = Modifier.animateItem()
                         )
                     }
 
-                    item {
+                    item(key = "keep_listening_list") {
                         val rows = if (keepListening.size > 6) 2 else 1
                         LazyHorizontalGrid(
                             state = rememberLazyGridState(),
@@ -509,7 +509,7 @@ fun HomeScreen(
                 }
 
                 accountPlaylists?.takeIf { it.isNotEmpty() }?.let { accountPlaylists ->
-                    item {
+                    item(key = "account_playlists_title") {
                         NavigationTitle(
                             label = stringResource(R.string.your_youtube_playlists),
                             title = accountName,
@@ -545,7 +545,7 @@ fun HomeScreen(
                         )
                     }
 
-                    item {
+                    item(key = "account_playlists_list") {
                         LazyRow(
                             contentPadding = WindowInsets.systemBars
                                 .only(WindowInsetsSides.Horizontal)
@@ -563,14 +563,14 @@ fun HomeScreen(
                 }
 
                 forgottenFavorites?.takeIf { it.isNotEmpty() }?.let { forgottenFavorites ->
-                    item {
+                    item(key = "forgotten_favorites_title") {
                         NavigationTitle(
                             title = stringResource(R.string.forgotten_favorites),
                             modifier = Modifier.animateItem()
                         )
                     }
 
-                    item {
+                    item(key = "forgotten_favorites_list") {
                         // take min in case list size is less than 4
                         val rows = min(4, forgottenFavorites.size)
                         LazyHorizontalGrid(
@@ -649,15 +649,15 @@ fun HomeScreen(
                     }
                 }
 
-                similarRecommendations?.forEach {
-                    item {
+                similarRecommendations?.forEachIndexed { index, recommendation ->
+                    item(key = "similar_to_title_$index") {
                         NavigationTitle(
                             label = stringResource(R.string.similar_to),
-                            title = it.title.title,
-                            thumbnail = it.title.thumbnailUrl?.let { thumbnailUrl ->
+                            title = recommendation.title.title,
+                            thumbnail = recommendation.title.thumbnailUrl?.let { thumbnailUrl ->
                                 {
                                     val shape =
-                                        if (it.title is Artist) CircleShape else RoundedCornerShape(
+                                        if (recommendation.title is Artist) CircleShape else RoundedCornerShape(
                                             ThumbnailCornerRadius
                                         )
                                     AsyncImage(
@@ -670,10 +670,10 @@ fun HomeScreen(
                                 }
                             },
                             onClick = {
-                                when (it.title) {
-                                    is Song -> navController.navigate("album/${it.title.album!!.id}")
-                                    is Album -> navController.navigate("album/${it.title.id}")
-                                    is Artist -> navController.navigate("artist/${it.title.id}")
+                                when (recommendation.title) {
+                                    is Song -> navController.navigate("album/${recommendation.title.album!!.id}")
+                                    is Album -> navController.navigate("album/${recommendation.title.id}")
+                                    is Artist -> navController.navigate("artist/${recommendation.title.id}")
                                     is Playlist -> {}
                                 }
                             },
@@ -681,14 +681,14 @@ fun HomeScreen(
                         )
                     }
 
-                    item {
+                    item(key = "similar_to_list_$index") {
                         LazyRow(
                             contentPadding = WindowInsets.systemBars
                                 .only(WindowInsetsSides.Horizontal)
                                 .asPaddingValues(),
                             modifier = Modifier.animateItem()
                         ) {
-                            items(it.items) { item ->
+                            items(recommendation.items) { item ->
                                 ytGridItem(item)
                             }
                         }
@@ -696,15 +696,15 @@ fun HomeScreen(
                 }
             }
 
-            homePage?.sections?.forEach {
-                item {
+            homePage?.sections?.forEachIndexed { index, section ->
+                item(key = "home_section_title_$index") {
                     NavigationTitle(
-                        title = it.title,
-                        label = it.label,
-                        thumbnail = it.thumbnail?.let { thumbnailUrl ->
+                        title = section.title,
+                        label = section.label,
+                        thumbnail = section.thumbnail?.let { thumbnailUrl ->
                             {
                                 val shape =
-                                    if (it.endpoint?.isArtistEndpoint == true) CircleShape else RoundedCornerShape(
+                                    if (section.endpoint?.isArtistEndpoint == true) CircleShape else RoundedCornerShape(
                                         ThumbnailCornerRadius
                                     )
                                 AsyncImage(
@@ -716,7 +716,7 @@ fun HomeScreen(
                                 )
                             }
                         },
-                        onClick = it.endpoint?.browseId?.let { browseId ->
+                        onClick = section.endpoint?.browseId?.let { browseId ->
                             {
                                 if (browseId == "FEmusic_moods_and_genres")
                                     navController.navigate("mood_and_genres")
@@ -728,14 +728,14 @@ fun HomeScreen(
                     )
                 }
 
-                item {
+                item(key = "home_section_list_$index") {
                     LazyRow(
                         contentPadding = WindowInsets.systemBars
                             .only(WindowInsetsSides.Horizontal)
                             .asPaddingValues(),
                         modifier = Modifier.animateItem()
                     ) {
-                        items(it.items) { item ->
+                        items(section.items) { item ->
                             ytGridItem(item)
                         }
                     }
@@ -743,7 +743,7 @@ fun HomeScreen(
             }
 
             if (isLoading || homePage?.continuation != null && homePage?.sections?.isNotEmpty() == true) {
-                item {
+                item(key = "loading_shimmer") {
                     ShimmerHost(
                         modifier = Modifier.animateItem()
                     ) {
@@ -766,7 +766,7 @@ fun HomeScreen(
 
             if (selectedChip == null) {
                 explorePage?.moodAndGenres?.let { moodAndGenres ->
-                    item {
+                    item(key = "mood_and_genres_title") {
                         NavigationTitle(
                             title = stringResource(R.string.mood_and_genres),
                             onClick = {
@@ -775,7 +775,7 @@ fun HomeScreen(
                             modifier = Modifier.animateItem()
                         )
                     }
-                    item {
+                    item(key = "mood_and_genres_list") {
                         LazyHorizontalGrid(
                             rows = GridCells.Fixed(4),
                             contentPadding = PaddingValues(6.dp),
@@ -799,7 +799,7 @@ fun HomeScreen(
                 }
 
                 if (isMoodAndGenresLoading) {
-                    item {
+                    item(key = "mood_and_genres_shimmer") {
                         ShimmerHost(
                             modifier = Modifier.animateItem()
                         ) {
