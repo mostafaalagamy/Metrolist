@@ -176,7 +176,7 @@ fun AlbumScreen(
     ) {
         val albumWithSongs = albumWithSongs
         if (albumWithSongs != null && albumWithSongs.songs.isNotEmpty()) {
-            item {
+            item(key = "album_header") {
                 Column(
                     modifier = Modifier.padding(12.dp),
                 ) {
@@ -436,6 +436,7 @@ fun AlbumScreen(
                         modifier =
                         Modifier
                             .fillMaxWidth()
+                            .animateItem()
                             .combinedClickable(
                                 onClick = {
                                     if (!selection) {
@@ -467,12 +468,13 @@ fun AlbumScreen(
             }
 
             if (otherVersions.isNotEmpty()) {
-                item {
+                item(key = "other_versions_title") {
                     NavigationTitle(
                         title = stringResource(R.string.other_versions),
+                        modifier = Modifier.animateItem()
                     )
                 }
-                item {
+                item(key = "other_versions_list") {
                     LazyRow(
                         contentPadding = WindowInsets.systemBars.only(WindowInsetsSides.Horizontal).asPaddingValues(),
                     ) {
@@ -507,8 +509,10 @@ fun AlbumScreen(
                 }
             }
         } else {
-            item {
-                ShimmerHost {
+            item(key = "loading_shimmer") {
+                ShimmerHost(
+                    modifier = Modifier.animateItem()
+                ) {
                     Column(Modifier.padding(12.dp)) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Spacer(
