@@ -165,27 +165,31 @@ fun CachePlaylistScreen(
             contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues(),
         ) {
             if (filteredSongs.isEmpty() && !isSearching) {
-                item {
+                item(key = "empty_placeholder") {
                     EmptyPlaceholder(
                         icon = R.drawable.music_note,
-                        text = stringResource(R.string.playlist_is_empty)
+                        text = stringResource(R.string.playlist_is_empty),
+                        modifier = Modifier.animateItem()
                     )
                 }
             }
 
             if (filteredSongs.isEmpty() && isSearching) {
-                item {
+                item(key = "no_results") {
                     EmptyPlaceholder(
                         icon = R.drawable.search,
-                        text = stringResource(R.string.no_results_found)
+                        text = stringResource(R.string.no_results_found),
+                        modifier = Modifier.animateItem()
                     )
                 }
             } else {
                 if (filteredSongs.isNotEmpty() && !isSearching) {
-                    item {
+                    item(key = "playlist_header") {
                         Column(
                             verticalArrangement = Arrangement.spacedBy(12.dp),
-                            modifier = Modifier.padding(12.dp),
+                            modifier = Modifier
+                                .padding(12.dp)
+                                .animateItem(),
                         ) {
                             Row(
                                 horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -274,10 +278,12 @@ fun CachePlaylistScreen(
                 }
 
                 if (filteredSongs.isNotEmpty()) {
-                    item {
+                    item(key = "sort_header") {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.padding(start = 16.dp),
+                            modifier = Modifier
+                                .padding(start = 16.dp)
+                                .animateItem(),
                         ) {
                             SortHeader(
                                 sortType = sortType,
@@ -324,6 +330,7 @@ fun CachePlaylistScreen(
                         },
                         modifier = Modifier
                             .fillMaxWidth()
+                            .animateItem()
                             .combinedClickable(
                                 onClick = {
                                     if (!selection) {
