@@ -42,9 +42,7 @@ fun IntegrationScreen(
         )
 
         PreferenceEntry(
-            // TODO: Change to stringResource
-            title = { Text("Last.fm Integration") },
-            // TODO: Maybe change icon to match better
+            title = { Text(stringResource(R.string.lastfm_integration)) },
             icon = { Icon(painterResource(R.drawable.music_note), null) },
             onClick = {
                 navController.navigate("settings/integrations/lastfm")
@@ -55,8 +53,7 @@ fun IntegrationScreen(
     }
 
     TopAppBar(
-        // TODO: Change to stringResource
-        title = { Text("Integrations") },
+        title = { Text(stringResource(R.string.integrations)) },
         navigationIcon = {
             IconButton(
                 onClick = navController::navigateUp,

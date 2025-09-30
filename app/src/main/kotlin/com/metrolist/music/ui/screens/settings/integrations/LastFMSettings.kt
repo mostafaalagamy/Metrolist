@@ -47,7 +47,7 @@ import com.metrolist.music.utils.rememberPreference
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import com.metrolist.lastfm.LastFM
-import com.metrolist.music.constants.EnableLastFMScrobbingKey
+import com.metrolist.music.constants.EnableLastFMScrobblingKey
 import com.metrolist.music.constants.LastFMSessionKey
 import com.metrolist.music.constants.LastFMUseNowPlaying
 import com.metrolist.music.constants.LastFMUsernameKey
@@ -78,30 +78,27 @@ fun LastFMSettings(
 
     val (useNowPlaying, onUseNowPlayingChange) = rememberPreference(
         key = LastFMUseNowPlaying,
-        defaultValue = true
+        defaultValue = false
     )
 
-    val (lastfmScrobbing, onlastfmScrobbingChange) = rememberPreference(
-        key = EnableLastFMScrobbingKey,
-        defaultValue = true
+    val (lastfmScrobbling, onlastfmScrobblingChange) = rememberPreference(
+        key = EnableLastFMScrobblingKey,
+        defaultValue = false
     )
 
-    // TODO: Change default values and Key names to match better
     val (scrobbleDelayPercent, onScrobbleDelayPercentChange) = rememberPreference(
         ScrobbleDelayPercentKey,
-        defaultValue = 0.50f
+        defaultValue = LastFM.DEFAULT_SCROBBLE_DELAY_PERCENT
     )
 
-    // TODO: Change default values and Key names to match better
     val (minTrackDuration, onMinTrackDurationChange) = rememberPreference(
         ScrobbleMinSongDurationKey,
-        defaultValue = 30
+        defaultValue = LastFM.DEFAULT_SCROBBLE_MIN_SONG_DURATION
     )
 
-    // TODO: Change default values and Key names to match better
     val (scrobbleDelaySeconds, onScrobbleDelaySecondsChange) = rememberPreference(
         ScrobbleDelaySecondsKey,
-        defaultValue = 90
+        defaultValue = LastFM.DEFAULT_SCROBBLE_DELAY_SECONDS
     )
 
     var showLoginDialog by rememberSaveable { mutableStateOf(false) }
@@ -123,15 +120,13 @@ fun LastFMSettings(
                     OutlinedTextField(
                         value = tempUsername,
                         onValueChange = { tempUsername = it },
-                        // TODO: Change to stringResource
-                        label = { Text("Username or email") },
+                        label = { Text(stringResource(R.string.username)) },
                         modifier = Modifier.fillMaxWidth()
                     )
                     OutlinedTextField(
                         value = tempPassword,
                         onValueChange = { tempPassword = it },
-                        // TODO: Change to stringResource
-                        label = { Text("Password") },
+                        label = { Text(stringResource(R.string.password)) },
                         modifier = Modifier.fillMaxWidth()
                     )
                 }
@@ -214,24 +209,21 @@ fun LastFMSettings(
         )
 
         SwitchPreference(
-            // TODO: Change to stringResource
-            title = { Text("Scrobble music") },
-            checked = lastfmScrobbing,
-            onCheckedChange = onlastfmScrobbingChange,
+            title = { Text(stringResource(R.string.enable_scrobbling)) },
+            checked = lastfmScrobbling,
+            onCheckedChange = onlastfmScrobblingChange,
             isEnabled = isLoggedIn,
         )
 
         SwitchPreference(
-            // TODO: Change to stringResource
-            title = { Text("Submit Now Playing") },
+            title = { Text(stringResource(R.string.lastfm_now_playing)) },
             checked = useNowPlaying,
             onCheckedChange = onUseNowPlayingChange,
-            isEnabled = isLoggedIn && lastfmScrobbing,
+            isEnabled = isLoggedIn && lastfmScrobbling,
         )
 
         PreferenceGroupTitle(
-            // TODO: Change to stringResource
-            title = "Scrobble configuration",
+            title = stringResource(R.string.scrobbling_configuration)
         )
 
         var showMinTrackDurationDialog by rememberSaveable { mutableStateOf(false) }
@@ -247,7 +239,7 @@ fun LastFMSettings(
                 buttons = {
                     TextButton(
                         onClick = {
-                            tempMinTrackDuration = 30
+                            tempMinTrackDuration = LastFM.DEFAULT_SCROBBLE_MIN_SONG_DURATION
                         }
                     ) {
                         Text(stringResource(R.string.reset))
@@ -278,8 +270,7 @@ fun LastFMSettings(
                     modifier = Modifier.padding(16.dp)
                 ) {
                     Text(
-                        // TODO: Change to stringResource
-                        text = "Scrobble songs longer than",
+                        text = stringResource(R.string.scrobble_min_track_duration),
                         style = MaterialTheme.typography.headlineSmall,
                         modifier = Modifier.padding(bottom = 16.dp)
                     )
@@ -301,11 +292,8 @@ fun LastFMSettings(
         }
 
         PreferenceEntry(
-            // TODO: Change to stringResource
-            title = { Text("Scrobble songs longer than") },
+            title = { Text(stringResource(R.string.scrobble_min_track_duration)) },
             description = makeTimeString((minTrackDuration * 1000).toLong()),
-            // TODO: Add matching icon
-            // icon = { Icon(painterResource(R.drawable.timelapse), null) },
             onClick = { showMinTrackDurationDialog = true }
         )
 
@@ -322,7 +310,7 @@ fun LastFMSettings(
                 buttons = {
                     TextButton(
                         onClick = {
-                            tempScrobbleDelayPercent = 0.50f
+                            tempScrobbleDelayPercent = LastFM.DEFAULT_SCROBBLE_DELAY_PERCENT
                         }
                     ) {
                         Text(stringResource(R.string.reset))
@@ -353,8 +341,7 @@ fun LastFMSettings(
                     modifier = Modifier.padding(16.dp)
                 ) {
                     Text(
-                        // TODO: Change to stringResource
-                        text = "Scrobble delay percent",
+                        text = stringResource(R.string.scrobble_delay_percent),
                         style = MaterialTheme.typography.headlineSmall,
                         modifier = Modifier.padding(bottom = 16.dp)
                     )
@@ -376,11 +363,8 @@ fun LastFMSettings(
         }
 
         PreferenceEntry(
-            // TODO: Change to stringResource
-            title = { Text("Scrobble delay percent") },
+            title = { Text(stringResource(R.string.scrobble_delay_percent)) },
             description = stringResource(R.string.sensitivity_percentage, (scrobbleDelayPercent * 100).roundToInt()),
-            // TODO: Add matching icon
-            // icon = { Icon(painterResource(R.drawable.timelapse), null) },
             onClick = { showScrobbleDelayPercentDialog = true }
         )
 
@@ -397,7 +381,7 @@ fun LastFMSettings(
                 buttons = {
                     TextButton(
                         onClick = {
-                            tempScrobbleDelaySeconds = 180
+                            tempScrobbleDelaySeconds = LastFM.DEFAULT_SCROBBLE_DELAY_SECONDS
                         }
                     ) {
                         Text(stringResource(R.string.reset))
@@ -428,8 +412,7 @@ fun LastFMSettings(
                     modifier = Modifier.padding(16.dp)
                 ) {
                     Text(
-                        // TODO: Change to stringResource
-                        text = "Scrobble delay minutes",
+                        text = stringResource(R.string.scrobble_delay_minutes),
                         style = MaterialTheme.typography.headlineSmall,
                         modifier = Modifier.padding(bottom = 16.dp)
                     )
@@ -451,18 +434,14 @@ fun LastFMSettings(
         }
 
         PreferenceEntry(
-            // TODO: Change to stringResource
-            title = { Text("Scrobble delay minutes") },
+            title = { Text(stringResource(R.string.scrobble_delay_minutes)) },
             description = makeTimeString((scrobbleDelaySeconds * 1000).toLong()),
-            // TODO: Add matching icon
-            // icon = { Icon(painterResource(R.drawable.timelapse), null) },
             onClick = { showScrobbleDelaySecondsDialog = true }
         )
     }
 
     TopAppBar(
-        // TODO: Change to stringResource
-        title = { Text("Last.fm Integration") },
+        title = { Text(stringResource(R.string.lastfm_integration)) },
         navigationIcon = {
             IconButton(
                 onClick = navController::navigateUp,

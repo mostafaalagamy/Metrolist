@@ -285,8 +285,7 @@ fun AccountSettings(
                 .background(MaterialTheme.colorScheme.surfaceContainer)
         ) {
             PreferenceEntry(
-                // TODO: Change to stringResource
-                title = { Text("Integrations") },
+                title = { Text(stringResource(R.string.integrations)) },
                 icon = { Icon(painterResource(R.drawable.integration), null) },
                 onClick = {
                     onClose()

@@ -46,7 +46,7 @@ object LastFM {
         extra: Map<String, String> = emptyMap()
     ) {
         contentType(ContentType.Application.FormUrlEncoded)
-        userAgent("Metrolist Debug (https://github.com/mostafaalagamy/Metrolist)")
+        userAgent("Metrolist (https://github.com/mostafaalagamy/Metrolist)")
         val params = mutableMapOf(
             "method" to method,
             "api_key" to apiKey
@@ -119,4 +119,8 @@ object LastFM {
     // TODO: Remove this and inject in build time
     private const val API_KEY = "f1d30753ba02fd2df89ab7ea6cfad23f"
     private const val SECRET = "cacfc4b8568212f8c83c618365296cf9"
+
+    const val DEFAULT_SCROBBLE_DELAY_PERCENT = 0.5f
+    const val DEFAULT_SCROBBLE_MIN_SONG_DURATION = 30
+    const val DEFAULT_SCROBBLE_DELAY_SECONDS = 180
 }

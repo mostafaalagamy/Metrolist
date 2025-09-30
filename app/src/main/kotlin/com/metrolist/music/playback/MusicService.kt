@@ -60,6 +60,7 @@ import com.google.common.util.concurrent.MoreExecutors
 import com.metrolist.innertube.YouTube
 import com.metrolist.innertube.models.SongItem
 import com.metrolist.innertube.models.WatchEndpoint
+import com.metrolist.lastfm.LastFM
 import com.metrolist.music.MainActivity
 import com.metrolist.music.R
 import com.metrolist.music.constants.AudioNormalizationKey
@@ -72,7 +73,7 @@ import com.metrolist.music.constants.DisableLoadMoreWhenRepeatAllKey
 import com.metrolist.music.constants.DiscordTokenKey
 import com.metrolist.music.constants.DiscordUseDetailsKey
 import com.metrolist.music.constants.EnableDiscordRPCKey
-import com.metrolist.music.constants.EnableLastFMScrobbingKey
+import com.metrolist.music.constants.EnableLastFMScrobblingKey
 import com.metrolist.music.constants.HideExplicitKey
 import com.metrolist.music.constants.HistoryDuration
 import com.metrolist.music.constants.LastFMUseNowPlaying
@@ -438,22 +439,21 @@ class MusicService :
             }
 
         dataStore.data
-            .map { it[EnableLastFMScrobbingKey] ?: false }
+            .map { it[EnableLastFMScrobblingKey] ?: false }
             .debounce(300)
             .distinctUntilChanged()
             .collect(scope) { enabled ->
                 if (enabled && scrobbleManager == null) {
-                    // TODO: Change default values
-                    val percent = dataStore.get(ScrobbleDelayPercentKey, 0.5f)
-                    val minDuration = dataStore.get(ScrobbleMinSongDurationKey, 30)
-                    val whenSecs = dataStore.get(ScrobbleDelaySecondsKey, 50)
+                    val delayPercent = dataStore.get(ScrobbleDelayPercentKey, LastFM.DEFAULT_SCROBBLE_DELAY_PERCENT)
+                    val minSongDuration = dataStore.get(ScrobbleMinSongDurationKey, LastFM.DEFAULT_SCROBBLE_MIN_SONG_DURATION)
+                    val delaySeconds = dataStore.get(ScrobbleDelaySecondsKey, LastFM.DEFAULT_SCROBBLE_DELAY_SECONDS)
                     scrobbleManager = ScrobbleManager(
                         scope,
-                        minSongDuration = minDuration,
-                        scrobbleDelayPercent = percent,
-                        scrobbleDelaySeconds = whenSecs
+                        minSongDuration = minSongDuration,
+                        scrobbleDelayPercent = delayPercent,
+                        scrobbleDelaySeconds = delaySeconds
                     )
-                    scrobbleManager?.useNowPlaying = dataStore.get(LastFMUseNowPlaying, true)
+                    scrobbleManager?.useNowPlaying = dataStore.get(LastFMUseNowPlaying, false)
                 } else if (!enabled && scrobbleManager != null) {
                     scrobbleManager?.destroy()
                     scrobbleManager = null
@@ -470,18 +470,17 @@ class MusicService :
         dataStore.data
             .map { prefs ->
                 Triple(
-                    // TODO: Change default values
-                    prefs[ScrobbleDelayPercentKey] ?: 0.5f,
-                    prefs[ScrobbleMinSongDurationKey] ?: 30,
-                    prefs[ScrobbleDelaySecondsKey] ?: 50
+                    prefs[ScrobbleDelayPercentKey] ?: LastFM.DEFAULT_SCROBBLE_DELAY_PERCENT,
+                    prefs[ScrobbleMinSongDurationKey] ?: LastFM.DEFAULT_SCROBBLE_MIN_SONG_DURATION,
+                    prefs[ScrobbleDelaySecondsKey] ?: LastFM.DEFAULT_SCROBBLE_DELAY_SECONDS
                 )
             }
             .distinctUntilChanged()
-            .collect(scope) { (percent, minDuration, whenSecs) ->
+            .collect(scope) { (delayPercent, minSongDuration, delaySeconds) ->
                 scrobbleManager?.let {
-                    it.scrobbleDelayPercent = percent
-                    it.minSongDuration = minDuration
-                    it.scrobbleDelaySeconds = whenSecs
+                    it.scrobbleDelayPercent = delayPercent
+                    it.minSongDuration = minSongDuration
+                    it.scrobbleDelaySeconds = delaySeconds
                 }
             }
 

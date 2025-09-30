@@ -78,7 +78,7 @@ val DiscordUseDetailsKey = booleanPreferencesKey("discordUseDetails")
 
 val LastFMSessionKey = stringPreferencesKey("lastfmSession")
 val LastFMUsernameKey = stringPreferencesKey("lastfmUsername")
-val EnableLastFMScrobbingKey = booleanPreferencesKey("lastfmScrobbingEnable")
+val EnableLastFMScrobblingKey = booleanPreferencesKey("lastfmScrobblingEnable")
 val LastFMUseNowPlaying = booleanPreferencesKey("lastfmUseNowPlaying")
 
 val ScrobbleDelayPercentKey = floatPreferencesKey("scrobbleDelayPercent")
