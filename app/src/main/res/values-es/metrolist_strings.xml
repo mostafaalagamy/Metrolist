@@ -209,4 +209,20 @@
     <string name="updater">Actualizador</string>
     <string name="check_for_updates">Buscar actualizaciones automáticamente</string>
     <string name="lyrics_romanize_macedonian">Romanizar letras en macedonio</string>
+    <string name="discord_use_details">Usar detalles en lugar de estado</string>
+    <string name="discord_use_details_description">Mostrar el título de la canción de forma destacada en lugar de los nombres de los artistas</string>
+    <string name="update_notifications">Habilitar notificaciones de actualización</string>
+    <string name="update_available_title">Actualización disponible</string>
+    <string name="update_channel_name">Actualizaciones de la app</string>
+    <string name="update_channel_desc">Notificaciones sobre nuevas versiones</string>
+    <string name="integrations">Integraciones</string>
+    <string name="username">Nombre de usuario</string>
+    <string name="password">Contraseña</string>
+    <string name="lastfm_integration">Integración con Last.fm</string>
+    <string name="enable_scrobbling">Habilitar scrobbling</string>
+    <string name="lastfm_now_playing">Enviar Reproduciendo ahora</string>
+    <string name="scrobbling_configuration">Configuración de scrobbling</string>
+    <string name="scrobble_min_track_duration">Scrobble a canciones más largas que</string>
+    <string name="scrobble_delay_percent">Porcentaje de retraso de Scrobble</string>
+    <string name="scrobble_delay_minutes">Minutos de retraso de Scrobble</string>
 </resources>
