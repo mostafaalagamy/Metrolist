@@ -61,8 +61,8 @@
     <string name="details">Detalhes</string>
     <string name="edit">Editar</string>
     <string name="start_radio">Iniciar rádio</string>
-    <string name="play">Reproduzir</string>
-    <string name="play_next">Reproduzir em seguida</string>
+    <string name="play">Tocar</string>
+    <string name="play_next">Tocar em seguida</string>
     <string name="add_to_queue">Adicionar à fila</string>
     <string name="add_to_library">Adicionar à biblioteca</string>
     <string name="remove_from_library">Remover da biblioteca</string>
@@ -182,7 +182,7 @@
     <string name="queue_all_songs">Todas as músicas</string>
     <string name="queue_searched_songs">Músicas pesquisadas</string>
     <!-- Notification name -->
-    <string name="music_player">Reprodutor de Música</string>
+    <string name="music_player">Tocador de música</string>
     <!-- Settings -->
     <string name="settings">Configurações</string>
     <string name="appearance">Aparência</string>
@@ -207,7 +207,7 @@
     <string name="proxy_type">Tipo de proxy</string>
     <string name="proxy_url">URL da proxy</string>
     <string name="restart_to_take_effect">Reinicie para que tome efeito</string>
-    <string name="player_and_audio">Reprodutor e áudio</string>
+    <string name="player_and_audio">Tocador e áudio</string>
     <string name="audio_quality">Qualidade do áudio</string>
     <string name="audio_quality_auto">Automática</string>
     <string name="audio_quality_high">Alta</string>
@@ -268,8 +268,8 @@
     <string name="discord_information">O Metrolist usa a biblioteca KizzyRPC para definir o estado da sua conta do Discord. Isto envolve o uso da conexão do Discord Gateway, que pode ser considerado uma violação dos termos de serviço do Discord. Porém, não houve nenhum relato de usuários sendo banidos por esta razão. Use por sua própria conta e risco.\n\nO Metrolist extrairá somente o seu token, e todo o resto é armazenado localmente.</string>
     <string name="sided">Ao lado</string>
     <string name="hide_explicit">Ocultar conteúdo explícito</string>
-    <string name="player_text_alignment">Alinhamento do texto do reprodutor</string>
-    <string name="player_slider_style">Estilo do controle deslizante do reprodutor</string>
+    <string name="player_text_alignment">Alinhamento do texto do tocador</string>
+    <string name="player_slider_style">Estilo do controle deslizante do tocador</string>
     <string name="default_">Padrão</string>
     <string name="squiggly">Cobrinha</string>
     <string name="your_youtube_playlists">Suas listas do YouTube</string>
@@ -288,13 +288,13 @@
     <string name="add_all_to_library">Adicionar tudo à biblioteca</string>
     <string name="remove_from_queue">Remover da fila</string>
     <string name="tempo_and_pitch">Velocidade e Tonalidade</string>
-    <string name="player">Reprodutor</string>
+    <string name="player">Tocador</string>
     <string name="misc">Outros</string>
     <string name="small">Pequeno</string>
     <string name="big">Grande</string>
     <string name="queue">Fila</string>
     <string name="persistent_queue_desc">Restaurar sua última fila ao iniciar o app</string>
-    <string name="auto_load_more">Reproduzir mais músicas automaticamente</string>
+    <string name="auto_load_more">Carregar mais músicas automaticamente</string>
     <string name="auto_skip_next_on_error">Pular automaticamente para a próxima música quando um erro ocorre</string>
     <string name="auto_skip_next_on_error_desc">Garanta uma experiência de reprodução contínua</string>
     <string name="stop_music_on_task_clear">Parar música ao remover dos apps recentes</string>

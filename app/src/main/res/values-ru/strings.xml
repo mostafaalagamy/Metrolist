@@ -8,7 +8,7 @@
     <string name="playlists">Плейлисты</string>
     <!-- Top bar -->
     <plurals name="n_selected">
-        <item quantity="one">%d выбрано</item>
+        <item quantity="one">%d выбран</item>
         <item quantity="few">%d выбрано</item>
         <item quantity="many">%d выбрано</item>
         <item quantity="other">%d выбрано</item>
