@@ -87,45 +87,7 @@ constructor(
                 when (filter) {
                     SongFilter.LIBRARY -> database.songs(sortType, descending).map { it.filterExplicit(hideExplicit) }
                     SongFilter.LIKED -> database.likedSongs(sortType, descending).map { it.filterExplicit(hideExplicit) }
-                    SongFilter.DOWNLOADED ->
-                        downloadUtil.downloads.flatMapLatest { downloads ->
-                            database
-                                .allSongs()
-                                .flowOn(Dispatchers.IO)
-                                .map { songs ->
-                                    songs.filter {
-                                        downloads[it.id]?.state == Download.STATE_COMPLETED
-                                    }
-                                }.map { songs ->
-                                    when (sortType) {
-                                        SongSortType.CREATE_DATE -> songs.sortedBy {
-                                            downloads[it.id]?.updateTimeMs ?: 0L
-                                        }
-
-                                        SongSortType.NAME -> songs.sortedBy { it.song.title }
-                                        SongSortType.ARTIST -> {
-                                            val collator =
-                                                Collator.getInstance(Locale.getDefault())
-                                            collator.strength = Collator.PRIMARY
-                                            songs
-                                                .sortedWith(
-                                                    compareBy(collator) { song ->
-                                                        song.artists.joinToString("") { it.name }
-                                                    },
-                                                ).groupBy { it.album?.title }
-                                                .flatMap { (_, songsByAlbum) ->
-                                                    songsByAlbum.sortedBy { album ->
-                                                        album.artists.joinToString(
-                                                            "",
-                                                        ) { it.name }
-                                                    }
-                                                }
-                                        }
-
-                                        SongSortType.PLAY_TIME -> songs.sortedBy { it.song.totalPlayTime }
-                                    }.reversed(descending).filterExplicit(hideExplicit)
-                                }
-                        }
+                    SongFilter.DOWNLOADED -> database.downloadedSongs(sortType, descending).map { it.filterExplicit(hideExplicit) }
                     SongFilter.UPLOADED -> database.uploadedSongs(sortType, descending).map { it.filterExplicit(hideExplicit) }
                 }
             }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
