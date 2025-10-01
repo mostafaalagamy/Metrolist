@@ -465,15 +465,16 @@ fun LocalPlaylistScreen(
         ) {
             playlist?.let { playlist ->
                 if (playlist.songCount == 0 && playlist.playlist.remoteSongCount == 0) {
-                    item {
+                    item(key = "empty_placeholder") {
                         EmptyPlaceholder(
                             icon = R.drawable.music_note,
                             text = stringResource(R.string.playlist_is_empty),
+                            modifier = Modifier.animateItem()
                         )
                     }
                 } else {
                     if (!isSearching) {
-                        item {
+                        item(key = "playlist_header") {
                             LocalPlaylistHeader(
                                 playlist = playlist,
                                 songs = songs,
@@ -486,10 +487,12 @@ fun LocalPlaylistScreen(
                         }
                     }
 
-                    item {
+                    item(key = "controls_row") {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.padding(start = 16.dp),
+                            modifier = Modifier
+                                .padding(start = 16.dp)
+                                .animateItem(),
                         ) {
                             SortHeader(
                                 sortType = sortType,
@@ -645,11 +648,14 @@ fun LocalPlaylistScreen(
                         }
 
                         if (locked || selection) {
-                            content()
+                            Box(modifier = Modifier.animateItem()) {
+                                content()
+                            }
                         } else {
                             SwipeToDismissBox(
                                 state = dismissBoxState,
                                 backgroundContent = {},
+                                modifier = Modifier.animateItem()
                             ) {
                                 content()
                             }
@@ -771,11 +777,14 @@ fun LocalPlaylistScreen(
                         }
 
                         if (locked || !editable) {
-                            content()
+                            Box(modifier = Modifier.animateItem()) {
+                                content()
+                            }
                         } else {
                             SwipeToDismissBox(
                                 state = dismissBoxState,
                                 backgroundContent = {},
+                                modifier = Modifier.animateItem()
                             ) {
                                 content()
                             }

@@ -742,7 +742,17 @@ class MainActivity : ComponentActivity() {
                     ) {
                         Scaffold(
                             topBar = {
-                                if (shouldShowTopBar) {
+                                AnimatedVisibility(
+                                    visible = shouldShowTopBar,
+                                    enter = slideInHorizontally(
+                                        initialOffsetX = { -it / 4 },
+                                        animationSpec = tween(durationMillis = 100)
+                                    ) + fadeIn(animationSpec = tween(durationMillis = 100)),
+                                    exit = slideOutHorizontally(
+                                        targetOffsetX = { -it / 4 },
+                                        animationSpec = tween(durationMillis = 100)
+                                    ) + fadeOut(animationSpec = tween(durationMillis = 100))
+                                ) {
                                     Row {
                                         TopAppBar(
                                             title = {

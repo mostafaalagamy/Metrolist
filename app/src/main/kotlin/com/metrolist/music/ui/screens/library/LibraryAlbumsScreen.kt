@@ -227,7 +227,7 @@ fun LibraryAlbumsScreen(
 
                     albums.let { albums ->
                         if (albums.isEmpty()) {
-                            item {
+                            item(key = "empty_placeholder") {
                                 EmptyPlaceholder(
                                     icon = R.drawable.album,
                                     text = stringResource(R.string.library_album_empty),

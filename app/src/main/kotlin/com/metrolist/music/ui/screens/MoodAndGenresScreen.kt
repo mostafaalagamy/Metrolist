@@ -56,8 +56,10 @@ fun MoodAndGenresScreen(
         contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues(),
     ) {
         if (moodAndGenresList == null) {
-            item {
-                ShimmerHost {
+            item(key = "mood_and_genres_shimmer") {
+                ShimmerHost(
+                    modifier = Modifier.animateItem()
+                ) {
                     repeat(8) {
                         ListItemPlaceHolder()
                     }
@@ -65,15 +67,16 @@ fun MoodAndGenresScreen(
             }
         }
 
-        moodAndGenresList?.forEach { moodAndGenres ->
-            item {
-                NavigationTitle(
-                    title = moodAndGenres.title,
-                )
-
+        moodAndGenresList?.forEachIndexed { index, moodAndGenres ->
+            item(key = "mood_and_genres_section_$index") {
                 Column(
-                    modifier = Modifier.padding(horizontal = 6.dp),
+                    modifier = Modifier
+                        .animateItem()
+                        .padding(horizontal = 6.dp),
                 ) {
+                    NavigationTitle(
+                        title = moodAndGenres.title,
+                    )
                     moodAndGenres.items.chunked(itemsPerRow).forEach { row ->
                         Row {
                             row.forEach {

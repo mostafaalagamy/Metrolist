@@ -104,7 +104,7 @@ fun YouTubeBrowseScreen(
             contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues(),
         ) {
             if (browseResult == null) {
-                item {
+                item(key = "shimmer_loading") {
                     ShimmerHost(
                         modifier = Modifier.animateItem()
                     ) {
@@ -128,12 +128,12 @@ fun YouTubeBrowseScreen(
             browseResult?.items?.fastForEach {
                 if (it.items.isNotEmpty()) {
                     it.title?.let { title ->
-                        item {
+                        item(key = "section_title_${title.hashCode()}") {
                             NavigationTitle(title)
                         }
                     }
                     if (it.items.all { item -> item is SongItem }) {
-                        item {
+                        item(key = "section_songs_${it.title?.hashCode() ?: it.hashCode()}") {
                             LazyHorizontalGrid(
                                 state = lazyGridState,
                                 rows = GridCells.Fixed(4),
@@ -193,7 +193,7 @@ fun YouTubeBrowseScreen(
                             }
                         }
                     } else {
-                        item {
+                        item(key = "section_items_${it.title?.hashCode() ?: it.hashCode()}") {
                             LazyRow(
                                 contentPadding = WindowInsets.systemBars.only(WindowInsetsSides.Horizontal).asPaddingValues(),
                             ) {
