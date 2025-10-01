@@ -218,4 +218,14 @@
     <string name="update_channel_desc">Сповіщення про нові версії</string>
     <string name="discord_use_details">Використовуйте деталі замість штату</string>
     <string name="discord_use_details_description">Помітно показувати назву пісні замість імен виконавців</string>
+    <string name="integrations">Інтеграції</string>
+    <string name="username">Ім\'я користувача</string>
+    <string name="password">Пароль</string>
+    <string name="lastfm_integration">Інтеграція з Last.fm</string>
+    <string name="enable_scrobbling">Увімкнути скробблінг</string>
+    <string name="lastfm_now_playing">Надіслати «Зараз відтворюється»</string>
+    <string name="scrobbling_configuration">Конфігурація скроблювання</string>
+    <string name="scrobble_min_track_duration">Пісні Scrobble довші за</string>
+    <string name="scrobble_delay_percent">Відсоток затримки Scrobble</string>
+    <string name="scrobble_delay_minutes">Затримка Scrobble у хвилинах</string>
 </resources>

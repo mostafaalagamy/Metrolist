@@ -215,4 +215,14 @@
     <string name="update_channel_name">Aggiornamenti dell\'app</string>
     <string name="update_channel_desc">Notifiche sulle nuove versioni</string>
     <string name="lyrics_romanize_macedonian">Romanizza testi in macedone</string>
+    <string name="enable_scrobbling">Attiva scrobbling</string>
+    <string name="lastfm_now_playing">Invia l\'ascolto attuale</string>
+    <string name="scrobbling_configuration">Configurazione dello scrobbling</string>
+    <string name="scrobble_min_track_duration">Invia brani più lunghi di</string>
+    <string name="scrobble_delay_percent">Percentuale del ritardo sull\'invio</string>
+    <string name="scrobble_delay_minutes">Minuti di ritardo sull\'invio</string>
+    <string name="integrations">Integrazioni</string>
+    <string name="username">Nome utente</string>
+    <string name="password">Password</string>
+    <string name="lastfm_integration">Integrazione di last.fm</string>
 </resources>

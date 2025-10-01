@@ -199,7 +199,7 @@ fun HistoryScreen(
                 )
             )
         ) {
-            item {
+            item(key = "chips_row") {
                 ChipsRow(
                     chips = if (isLoggedIn) listOf(
                         HistorySource.LOCAL to stringResource(R.string.local_history),

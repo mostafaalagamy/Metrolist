@@ -249,4 +249,16 @@
     <string name="audio_offload">Enable offload</string>
     <string name="audio_offload_description">Use the offload audio path for audio playback. Disabling this may increase power usage but can be useful if you experience issues with audio playback or post processing</string>
     <string name="lyrics_romanize_macedonian">Romanize Macedonian lyrics</string>
+
+    <string name="integrations">Integrations</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <!-- Last.fm -->
+    <string name="lastfm_integration">Last.fm Integration</string>
+    <string name="enable_scrobbling">Enable scrobbling</string>
+    <string name="lastfm_now_playing">Send Now Playing</string>
+    <string name="scrobbling_configuration">Scrobbling Configuration</string>
+    <string name="scrobble_min_track_duration">Scrobble songs longer than</string>
+    <string name="scrobble_delay_percent">Scrobble delay percent</string>
+    <string name="scrobble_delay_minutes">Scrobble delay minutes</string>
 </resources>

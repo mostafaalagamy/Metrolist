@@ -1,4 +1,4 @@
-package com.metrolist.music.ui.screens.settings
+package com.metrolist.music.ui.screens.settings.integrations
 
 import android.content.Intent
 import android.net.Uri
