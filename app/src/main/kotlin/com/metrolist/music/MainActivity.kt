@@ -746,8 +746,8 @@ class MainActivity : ComponentActivity() {
                                     visible = shouldShowTopBar,
                                     enter = slideInHorizontally(
                                         initialOffsetX = { -it / 4 },
-                                        animationSpec = tween(durationMillis = 150)
-                                    ) + fadeIn(animationSpec = tween(durationMillis = 150)),
+                                        animationSpec = tween(durationMillis = 100)
+                                    ) + fadeIn(animationSpec = tween(durationMillis = 100)),
                                     exit = slideOutHorizontally(
                                         targetOffsetX = { -it / 4 },
                                         animationSpec = tween(durationMillis = 100)
