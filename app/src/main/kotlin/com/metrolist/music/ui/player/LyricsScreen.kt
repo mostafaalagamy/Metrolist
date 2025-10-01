@@ -226,46 +226,56 @@ fun LyricsScreen(
     BackHandler(onBack = onBackClick)
 
     Box(modifier = modifier.fillMaxSize()) {
-        Box(modifier = Modifier.fillMaxSize().alpha(backgroundAlpha)) {
-            if (playerBackground == PlayerBackgroundStyle.BLUR) {
-                Crossfade(
-                    targetState = mediaMetadata.thumbnailUrl,
-                    animationSpec = tween(600)
-                ) { thumbnailUrl ->
-                    if (thumbnailUrl != null) {
-                        AsyncImage(
-                            model = thumbnailUrl,
-                            contentDescription = null,
-                            contentScale = ContentScale.FillBounds,
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .blur(300.dp)
-                        )
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .background(Color.Black.copy(alpha = 0.3f))
-                        )
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .alpha(backgroundAlpha)
+        ) {
+            when (playerBackground) {
+                PlayerBackgroundStyle.BLUR -> {
+                    Crossfade(
+                        targetState = mediaMetadata.thumbnailUrl,
+                        animationSpec = tween(600)
+                    ) { thumbnailUrl ->
+                        if (thumbnailUrl != null) {
+                            AsyncImage(
+                                model = thumbnailUrl,
+                                contentDescription = null,
+                                contentScale = ContentScale.FillBounds,
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .blur(300.dp)
+                            )
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .background(Color.Black.copy(alpha = 0.3f))
+                            )
+                        }
                     }
                 }
-            } else if (playerBackground == PlayerBackgroundStyle.GRADIENT) {
-                Crossfade(
-                    targetState = gradientColors,
-                    animationSpec = tween(600)
-                ) { colors ->
-                    if (colors.isNotEmpty()) {
-                        val gradientColorStops = if (colors.size >= 3) {
-                            arrayOf(0.0f to colors[0], 0.5f to colors[1], 1.0f to colors[2])
-                        } else {
-                            arrayOf(0.0f to colors[0], 0.6f to colors[0].copy(alpha = 0.7f), 1.0f to Color.Black)
+                PlayerBackgroundStyle.GRADIENT -> {
+                    Crossfade(
+                        targetState = gradientColors,
+                        animationSpec = tween(600)
+                    ) { colors ->
+                        if (colors.isNotEmpty()) {
+                            val gradientColorStops = if (colors.size >= 3) {
+                                arrayOf(0.0f to colors[0], 0.5f to colors[1], 1.0f to colors[2])
+                            } else {
+                                arrayOf(0.0f to colors[0], 0.6f to colors[0].copy(alpha = 0.7f), 1.0f to Color.Black)
+                            }
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .background(Brush.verticalGradient(colorStops = gradientColorStops))
+                                    .background(Color.Black.copy(alpha = 0.2f))
+                            )
                         }
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .background(Brush.verticalGradient(colorStops = gradientColorStops))
-                                .background(Color.Black.copy(alpha = 0.2f))
-                        )
                     }
+                }
+                else -> {
+                    // DEFAULT background
                 }
             }
 
