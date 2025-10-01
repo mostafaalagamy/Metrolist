@@ -35,7 +35,7 @@ jobs:
           distribution: 'temurin'
 
       - name: Set Up Gradle
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v5
         with:
           cache-disabled: true
           cache-cleanup: on-success
@@ -94,7 +94,7 @@ jobs:
           distribution: 'temurin'
           
       - name: Set Up Gradle
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v5
         with:
           cache-disabled: true
           cache-cleanup: on-success
