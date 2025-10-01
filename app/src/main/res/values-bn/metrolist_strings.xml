@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="explore">অনুসন্ধান</string>
+    <string name="local_history">স্থানীয়</string>
+    <string name="remote_history">দুরবর্তী</string>
+    <string name="charts">তালিকা</string>
+    <string name="back_button_desc">পূর্ববর্তী</string>
+    <string name="no_title">নামহীন</string>
+    <string name="unknown_artist">আর্টিস্ট অজানা</string>
+    <string name="unknown_item_type">আইটেমের ধরণ অজানা</string>
+    <string name="loading_charts">তালিকা লোড হচ্ছে…</string>
+    <string name="retry_button">পুনঃচেষ্টা</string>
+    <string name="album_cover_desc">এ্যালবাম কভার</string>
+    <string name="top_music_videos">সর্বোত্তম গানের ভিডিও</string>
+    <string name="trending">ট্রেন্ডিং</string>
+    <string name="weeks">সপ্তাহ</string>
+    <string name="months">মাস</string>
+    <string name="years">বছর</string>
+    <string name="continuous">বিরতিহীন</string>
+    <string name="liked">পছন্দ</string>
+    <string name="offline">ডাউনলোডেড</string>
+    <string name="my_top">আমার সর্বোত্তম</string>
+    <string name="cached_playlist">ক্যাশড</string>
+    <string name="uploaded_playlist">আপলোডেড</string>
+    <string name="filter_uploaded">আপলোডেড</string>
+    <string name="sync_playlist">প্লেলিস্ট সমন্বয়</string>
+    <string name="sync_disabled">সমন্বয় বন্ধ</string>
+    <string name="elements_selected">%1$d এলিমেন্ট নির্বাচিত</string>
+    <string name="allows_for_sync_witch_youtube">নোট: এটা ইউটিউব মিউজিকের সাথে সমন্বয় করতে দেয়। পরবর্তীতে পরিবর্তন করা যাবেনা।</string>
+    <string name="generating_image">ছবি তৈরী হচ্ছে</string>
+    <string name="please_wait">অপেক্ষা করুন</string>
+    <string name="cancel">বাতিল</string>
+    <string name="share_lyrics">লিরিক্স শেয়ার</string>
+    <string name="share_as_text">লেখা হিসেবে শেয়ার</string>
+    <string name="share_as_image">ছবি হিসেবে শেয়ার</string>
+    <string name="max_selection_limit">সর্বোচ্চ নির্বাচন সংখ্যা</string>
+    <string name="share_selected">নির্বাচিতগুলো শেয়ার</string>
+</resources>

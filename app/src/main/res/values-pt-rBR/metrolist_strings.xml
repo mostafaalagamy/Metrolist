@@ -213,4 +213,16 @@
     <string name="update_available_title">Atualização disponível</string>
     <string name="update_channel_name">Atualizações do aplicativo</string>
     <string name="update_channel_desc">Notificações sobre novas versões</string>
+    <string name="discord_use_details">Usar detalhes ao invés do estado</string>
+    <string name="discord_use_details_description">Mostrar o título da música destacadamente em vez do nome do artista</string>
+    <string name="integrations">Integrações</string>
+    <string name="username">Nome do usuário</string>
+    <string name="password">Senha</string>
+    <string name="lastfm_integration">Integração com o Last.fm</string>
+    <string name="enable_scrobbling">Ativar scrobbling</string>
+    <string name="lastfm_now_playing">Enviar reprodução atual</string>
+    <string name="scrobbling_configuration">Configuração de scrobbling</string>
+    <string name="scrobble_min_track_duration">Fazer scrobble de músicas mais longas que</string>
+    <string name="scrobble_delay_percent">Porcentagem do delay do scrobble</string>
+    <string name="scrobble_delay_minutes">Minutos do delay do scrobble</string>
 </resources>
