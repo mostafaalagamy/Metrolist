@@ -250,7 +250,7 @@ private fun NewMiniPlayer(
                 .then(
                     if (isTabletLandscape) {
                         Modifier
-                            .width(288.dp) // ~3 inches (288dp ≈ 3 inches at 96dpi)
+                            .width(500.dp)
                             .align(Alignment.CenterEnd) // Right align
                     } else {
                         Modifier.fillMaxWidth()
