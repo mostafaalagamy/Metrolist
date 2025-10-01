@@ -455,9 +455,10 @@ fun ArtistScreen(
 
                 if (showLocal) {
                     if (librarySongs.isNotEmpty()) {
-                        item {
+                        item(key = "local_songs_title") {
                             NavigationTitle(
                                 title = stringResource(R.string.songs),
+                                modifier = Modifier.animateItem(),
                                 onClick = {
                                     navController.navigate("artist/${viewModel.artistId}/songs")
                                 }
@@ -529,16 +530,17 @@ fun ArtistScreen(
                     }
 
                     if (libraryAlbums.isNotEmpty()) {
-                        item {
+                        item(key = "local_albums_title") {
                             NavigationTitle(
                                 title = stringResource(R.string.albums),
+                                modifier = Modifier.animateItem(),
                                 onClick = {
                                     navController.navigate("artist/${viewModel.artistId}/albums")
                                 }
                             )
                         }
 
-                        item {
+                        item(key = "local_albums_list") {
                             val filteredLibraryAlbums = if (hideExplicit) {
                                 libraryAlbums.filter { !it.album.explicit }
                             } else {
@@ -581,9 +583,10 @@ fun ArtistScreen(
                 } else {
                     artistPage?.sections?.fastForEach { section ->
                         if (section.items.isNotEmpty()) {
-                            item {
+                            item(key = "section_${section.title}") {
                                 NavigationTitle(
                                     title = section.title,
+                                    modifier = Modifier.animateItem(),
                                     onClick = section.moreEndpoint?.let {
                                         {
                                             navController.navigate(
@@ -651,7 +654,7 @@ fun ArtistScreen(
                                 )
                             }
                         } else {
-                            item {
+                            item(key = "section_list_${section.title}") {
                                 LazyRow(
                                     contentPadding = WindowInsets.systemBars.only(WindowInsetsSides.Horizontal).asPaddingValues(),
                                 ) {

@@ -669,7 +669,7 @@ fun Queue(
                     ).asPaddingValues(),
                 modifier = Modifier.nestedScroll(state.preUpPostDownNestedScrollConnection)
             ) {
-                item {
+                item(key = "queue_top_spacer") {
                     Spacer(
                         modifier =
                         Modifier
@@ -729,6 +729,7 @@ fun Queue(
                         val content: @Composable () -> Unit = {
                             Row(
                                 horizontalArrangement = Arrangement.Center,
+                                modifier = Modifier.animateItem(),
                             ) {
                                 MediaMetadataListItem(
                                     mediaMetadata = window.mediaItem.metadata!!,
@@ -825,9 +826,11 @@ fun Queue(
                 }
 
                 if (automix.isNotEmpty()) {
-                    item {
+                    item(key = "automix_divider") {
                         HorizontalDivider(
-                            modifier = Modifier.padding(vertical = 8.dp, horizontal = 4.dp),
+                            modifier = Modifier
+                                .padding(vertical = 8.dp, horizontal = 4.dp)
+                                .animateItem(),
                         )
 
                         Text(

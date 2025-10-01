@@ -127,8 +127,10 @@ fun OnlineSearchScreen(
         }
 
         if (viewState.items.isNotEmpty() && viewState.history.size + viewState.suggestions.size > 0) {
-            item {
-                HorizontalDivider()
+            item(key = "search_divider") {
+                HorizontalDivider(
+                    modifier = Modifier.animateItem()
+                )
             }
         }
 

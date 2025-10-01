@@ -221,7 +221,7 @@ fun LibraryArtistsScreen(
 
                     artists.let { artists ->
                         if (artists.isEmpty()) {
-                            item {
+                            item(key = "empty_placeholder") {
                                 EmptyPlaceholder(
                                     icon = R.drawable.artist,
                                     text = stringResource(R.string.library_artist_empty),

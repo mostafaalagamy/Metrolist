@@ -381,7 +381,7 @@ fun LibraryPlaylistsScreen(
 
                     playlists.let { playlists ->
                         if (playlists.isEmpty()) {
-                            item {
+                            item(key = "empty_placeholder") {
                             }
                         }
 
