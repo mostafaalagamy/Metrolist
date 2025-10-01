@@ -1208,7 +1208,8 @@ fun BottomSheetPlayer(
                     LyricsScreen(
                         mediaMetadata = metadata,
                         onBackClick = { lyricsSheetState.collapseSoft() },
-                        navController = navController
+                        navController = navController,
+                        backgroundAlpha = lyricsSheetState.progress.coerceIn(0f, 1f)
                     )
                 }
             }
