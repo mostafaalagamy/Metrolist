@@ -210,4 +210,16 @@
     <string name="update_channel_name">Uygulama güncellemeleri</string>
     <string name="update_channel_desc">Yeni sürümlerle ilgili bildirimler</string>
     <string name="lyrics_romanize_macedonian">Makedonca şarkı sözlerini Latinleştir</string>
+    <string name="discord_use_details">Durum yerine ayrıntıları kullan</string>
+    <string name="discord_use_details_description">Sanatçı adları yerine şarkı adını belirgin şekilde göster</string>
+    <string name="integrations">Entegrasyonlar</string>
+    <string name="username">Kullanıcı adı</string>
+    <string name="password">Şifre</string>
+    <string name="lastfm_integration">Last.fm Entegrasyonu</string>
+    <string name="enable_scrobbling">Scrobbling\'i etkinleştir</string>
+    <string name="lastfm_now_playing">Şimdi çalanı gönder</string>
+    <string name="scrobbling_configuration">Scrobbling Yapılandırması</string>
+    <string name="scrobble_min_track_duration">Şu süreden uzun şarkıları kaydet</string>
+    <string name="scrobble_delay_percent">Scrobble gecikme yüzdesi</string>
+    <string name="scrobble_delay_minutes">Scrobble gecikme dakikaları</string>
 </resources>
