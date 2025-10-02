@@ -206,4 +206,22 @@
     <string name="romanize_current_track">Romanizuj bieżący utwór</string>
     <string name="audio_offload">Włącz odciążenie</string>
     <string name="audio_offload_description">Użyj ścieżki audio do odtwarzania dźwięku. Wyłączenie tej opcji może zwiększyć zużycie energii, ale może być przydatne w przypadku problemów z odtwarzaniem dźwięku lub jego przetwarzaniem</string>
+    <string name="uploaded_playlist">Przesłano playlistę</string>
+    <string name="filter_uploaded">Przesłano</string>
+    <string name="show_uploaded_playlist">Pokaż playlistę \"Przesłane\"</string>
+    <string name="discord_use_details">Używaj detali zamiast stanu</string>
+    <string name="discord_use_details_description">Pokaż wyraźnie nazwy utworów zamiast artystów</string>
+    <string name="updater">Aktualizacje</string>
+    <string name="check_for_updates">Automatycznie sprawdzaj dostępność aktualizacji</string>
+    <string name="update_notifications">Włącz powiadomienia o aktualizacjach</string>
+    <string name="update_available_title">Aktualizacja dostępna</string>
+    <string name="update_channel_desc">Powiadomienia o nowych wersjach</string>
+    <string name="lyrics_romanize_macedonian">Romanizuj macedońskie teksty</string>
+    <string name="integrations">Integracje</string>
+    <string name="username">Nazwa użytkownika</string>
+    <string name="password">Hasło</string>
+    <string name="lastfm_integration">Integracja Last.fm</string>
+    <string name="enable_scrobbling">Włącz przewijanie</string>
+    <string name="lastfm_now_playing">Wyślij Teraz Odtwarzane</string>
+    <string name="scrobbling_configuration">Konfiguracja scrobblowania</string>
 </resources>
