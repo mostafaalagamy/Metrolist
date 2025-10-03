@@ -209,4 +209,10 @@
     <string name="lyrics_romanize_macedonian">Ubah lirik Macedonian menjadi latin</string>
     <string name="integrations">Integrasi</string>
     <string name="lastfm_integration">Integrasi Last.fm</string>
+    <string name="username">Nama Pengguna</string>
+    <string name="password">Kata Sandi</string>
+    <string name="enable_scrobbling">Aktifkan scrobbling</string>
+    <string name="lastfm_now_playing">Kirim Yang Sedang Diputar</string>
+    <string name="scrobbling_configuration">Konfigurasi Scrobbling</string>
+    <string name="scrobble_min_track_duration">Scrobble lagu yang lebih panjang dari</string>
 </resources>
