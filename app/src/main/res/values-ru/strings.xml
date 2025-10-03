@@ -2,7 +2,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Bottom navigation -->
     <string name="home">Главная</string>
-    <string name="songs">Музыка</string>
+    <string name="songs">Композиции</string>
     <string name="artists">Исполнители</string>
     <string name="albums">Альбомы</string>
     <string name="playlists">Плейлисты</string>
@@ -263,11 +263,11 @@
     <string name="persistent_queue_desc">Восстанавливать последнюю очередь при запуске приложения</string>
     <string name="auto_load_more">Автозагрузка большего количества песен</string>
     <string name="auto_load_more_desc">Автоматически добавлять больше песен при достижении конца очереди, если это возможно</string>
-    <string name="skip_silence">Пропуск тишины в композициях</string>
+    <string name="skip_silence">Пропускать тишину в композициях</string>
     <string name="audio_normalization">Нормализация аудио</string>
-    <string name="auto_skip_next_on_error">Автопереход к следующей песне при ошибке</string>
+    <string name="auto_skip_next_on_error">Автопереход к следующей композиции при ошибке</string>
     <string name="auto_skip_next_on_error_desc">Обеспечить непрерывное воспроизведение</string>
-    <string name="stop_music_on_task_clear">Останавливать музыку при очистке задач</string>
+    <string name="stop_music_on_task_clear">Останавливать воспроизведение при очистке задач</string>
     <string name="equalizer">Эквалайзер</string>
     <string name="storage">Хранилище</string>
     <string name="cache">Кэш</string>
