@@ -121,6 +121,7 @@
     <string name="subscribers">订阅者</string>
     <string name="dislike_all">倒赞所有</string>
     <string name="sort_by_last_updated">更新日期</string>
+    <string name="swipe_song_to_remove">滑动歌曲即可将其从播放列表中删除</string>
     <string name="lyrics_click_change">点击更换歌词</string>
     <string name="auto_playlists">自动播放队列</string>
     <string name="show_liked_playlist">显示已点赞列表</string>

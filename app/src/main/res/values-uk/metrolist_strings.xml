@@ -40,6 +40,7 @@
     <string name="player_background_blur">Розмиття</string>
     <string name="enable_squiggly_slider">Увімкнути хвилястий повзунок</string>
     <string name="enable_swipe_thumbnail">Перемикання пісень проведенням по обкладинці</string>
+    <string name="swipe_song_to_remove">Проведіть пальцем по пісні, щоб видалити її зі списку відтворення</string>
     <string name="lyrics_click_change">Змінити текст пісні при натисканні</string>
     <string name="slim_navbar">Тонка нижня панель навігації</string>
     <string name="google">Google</string>

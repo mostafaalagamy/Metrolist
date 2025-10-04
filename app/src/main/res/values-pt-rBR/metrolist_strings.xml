@@ -33,6 +33,7 @@
     <string name="player_background_blur">Desfocado</string>
     <string name="enable_squiggly_slider">Ativar controle deslizante cobrinha</string>
     <string name="enable_swipe_thumbnail">Habilitar o deslizar para trocar de música</string>
+    <string name="swipe_song_to_remove">Deslize a música para removê-la da lista de reprodução</string>
     <string name="lyrics_click_change">Alterar letra ao clicar</string>
     <string name="slim">Pequeno</string>
     <string name="slim_navbar">Barra de navegação inferior pequena</string>

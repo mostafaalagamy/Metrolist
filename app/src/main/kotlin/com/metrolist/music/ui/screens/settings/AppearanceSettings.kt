@@ -73,6 +73,7 @@ import com.metrolist.music.constants.SwipeThumbnailKey
 import com.metrolist.music.constants.SwipeSensitivityKey
 import com.metrolist.music.constants.SwipeToSongKey
 import com.metrolist.music.constants.HidePlayerThumbnailKey
+import com.metrolist.music.constants.SwipeToRemoveSongKey
 import com.metrolist.music.ui.component.DefaultDialog
 import com.metrolist.music.ui.component.EnumListPreference
 import com.metrolist.music.ui.component.IconButton
@@ -158,6 +159,11 @@ fun AppearanceSettings(
 
     val (swipeToSong, onSwipeToSongChange) = rememberPreference(
         SwipeToSongKey,
+        defaultValue = false
+    )
+
+    val (swipeToRemoveSong, onSwipeToRemoveSongChange) = rememberPreference(
+        SwipeToRemoveSongKey,
         defaultValue = false
     )
 
@@ -595,6 +601,13 @@ fun AppearanceSettings(
             icon = { Icon(painterResource(R.drawable.swipe), null) },
             checked = swipeToSong,
             onCheckedChange = onSwipeToSongChange
+        )
+
+        SwitchPreference(
+            title = { Text(stringResource(R.string.swipe_song_to_remove)) },
+            icon = { Icon(painterResource(R.drawable.swipe), null) },
+            checked = swipeToRemoveSong,
+            onCheckedChange = onSwipeToRemoveSongChange
         )
 
         SwitchPreference(

@@ -73,6 +73,7 @@
     <string name="secondary_color_style">Sekundære</string>
     <string name="enable_squiggly_slider">Snirklete skyveknapp</string>
     <string name="swipe_song_to_add">Sveip til høyre for å spille den av nest eller til venstre for å legge den til i køen</string>
+    <string name="swipe_song_to_remove">Sveip sangen for å fjerne den fra spillelisten</string>
     <string name="lyrics_click_change">Endre sangtekster ved klikk</string>
     <string name="slim">Smal</string>
     <string name="slim_navbar">Skjul etiketter på bunnfeltsnavigasjonen</string>

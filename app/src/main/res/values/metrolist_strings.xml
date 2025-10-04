@@ -99,6 +99,7 @@
     <string name="enable_squiggly_slider">Enable squiggly slider</string>
     <string name="enable_swipe_thumbnail">Enable swipe to change song</string>
     <string name="swipe_song_to_add">Swipe song to the left to add it to the queue or to the right to play it next</string>
+    <string name="swipe_song_to_remove">Swipe song to remove it from the playlist</string>
     <string name="lyrics_click_change">Change lyrics on click</string>
     <string name="lyrics_auto_scroll">Auto scroll lyrics</string>
     <string name="slim">Slim</string>

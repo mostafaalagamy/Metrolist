@@ -81,6 +81,7 @@
     <string name="secondary_color_style">Secondaire</string>
     <string name="enable_squiggly_slider">Activer la barre de défilement</string>
     <string name="enable_swipe_thumbnail">Activer le glissement pour changer de titre</string>
+    <string name="swipe_song_to_remove">Faites glisser la chanson pour la supprimer de la playlist</string>
     <string name="lyrics_click_change">Changer les paroles avec un clic</string>
     <string name="slim">Subtil</string>
     <string name="auto_playlists">Playlists Automatiques</string>
