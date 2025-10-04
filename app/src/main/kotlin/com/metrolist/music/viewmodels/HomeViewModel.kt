@@ -65,6 +65,11 @@ class HomeViewModel @Inject constructor(
     val accountName = MutableStateFlow("Guest")
     val accountImageUrl = MutableStateFlow<String?>(null)
 
+    // Track last processed cookie to avoid unnecessary updates
+    private var lastProcessedCookie: String? = null
+    // Track if we're currently processing account data
+    private var isProcessingAccountData = false
+
     private suspend fun getQuickPicks() {
         when (quickPicksEnum.first()) {
             QuickPicks.QUICK_PICKS -> quickPicks.value = database.quickPicks().first().shuffled().take(20)
@@ -229,24 +234,39 @@ class HomeViewModel @Inject constructor(
                 syncUtils.runAllSyncs()
             }
         }
-        
+
+        // Listen for cookie changes and reload account data
         viewModelScope.launch(Dispatchers.IO) {
             context.dataStore.data
                 .map { it[InnerTubeCookieKey] }
-                .distinctUntilChanged()
                 .collect { cookie ->
-                    if (cookie != null && cookie.isNotEmpty()) {
-                        YouTube.cookie = cookie
-                        YouTube.accountInfo().onSuccess { info ->
-                            accountName.value = info.name
-                            accountImageUrl.value = info.thumbnailUrl
-                        }.onFailure {
-                            reportException(it)
+                    // Avoid processing if already processing
+                    if (isProcessingAccountData) return@collect
+                    
+                    // Always process cookie changes, even if same value (for logout/login scenarios)
+                    lastProcessedCookie = cookie
+                    isProcessingAccountData = true
+                    
+                    try {
+                        if (cookie != null && cookie.isNotEmpty()) {
+                            
+                            // Update YouTube.cookie manually to ensure it's set
+                            YouTube.cookie = cookie
+                            
+                            // Fetch new account data
+                            YouTube.accountInfo().onSuccess { info ->
+                                accountName.value = info.name
+                                accountImageUrl.value = info.thumbnailUrl
+                            }.onFailure {
+                                reportException(it)
+                            }
+                        } else {
+                            accountName.value = "Guest"
+                            accountImageUrl.value = null
+                            accountPlaylists.value = null
                         }
-                    } else {
-                        accountName.value = "Guest"
-                        accountImageUrl.value = null
-                        accountPlaylists.value = null
+                    } finally {
+                        isProcessingAccountData = false
                     }
                 }
         }
