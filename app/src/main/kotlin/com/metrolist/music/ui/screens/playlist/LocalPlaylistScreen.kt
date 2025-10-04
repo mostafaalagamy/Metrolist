@@ -124,6 +124,7 @@ import com.metrolist.music.constants.PlaylistEditLockKey
 import com.metrolist.music.constants.PlaylistSongSortDescendingKey
 import com.metrolist.music.constants.PlaylistSongSortType
 import com.metrolist.music.constants.PlaylistSongSortTypeKey
+import com.metrolist.music.constants.SwipeToRemoveSongKey
 import com.metrolist.music.constants.ThumbnailCornerRadius
 import com.metrolist.music.db.entities.Playlist
 import com.metrolist.music.db.entities.PlaylistSong
@@ -559,6 +560,7 @@ fun LocalPlaylistScreen(
                             // Song removed directly without undo option
                         }
 
+                        val swipeRemoveEnabled by rememberPreference(SwipeToRemoveSongKey, defaultValue = false)
                         val dismissBoxState =
                             rememberSwipeToDismissBoxState(
                                 positionalThreshold = { totalDistance -> totalDistance }
@@ -566,7 +568,7 @@ fun LocalPlaylistScreen(
                         var processedDismiss by remember { mutableStateOf(false) }
                         LaunchedEffect(dismissBoxState.currentValue) {
                             val dv = dismissBoxState.currentValue
-                            if (!processedDismiss && (
+                            if (swipeRemoveEnabled && !processedDismiss && (
                                     dv == SwipeToDismissBoxValue.StartToEnd ||
                                     dv == SwipeToDismissBoxValue.EndToStart
                                 )
@@ -647,7 +649,7 @@ fun LocalPlaylistScreen(
                             )
                         }
 
-                        if (locked || selection) {
+                        if (locked || selection || !swipeRemoveEnabled) {
                             Box(modifier = Modifier.animateItem()) {
                                 content()
                             }
@@ -685,6 +687,7 @@ fun LocalPlaylistScreen(
                             // Song removed directly without undo option
                         }
 
+                        val swipeRemoveEnabled by rememberPreference(SwipeToRemoveSongKey, defaultValue = false)
                         val dismissBoxState =
                             rememberSwipeToDismissBoxState(
                                 positionalThreshold = { totalDistance -> totalDistance }
@@ -692,7 +695,7 @@ fun LocalPlaylistScreen(
                         var processedDismiss2 by remember { mutableStateOf(false) }
                         LaunchedEffect(dismissBoxState.currentValue) {
                             val dv = dismissBoxState.currentValue
-                            if (!processedDismiss2 && (
+                            if (swipeRemoveEnabled && !processedDismiss2 && (
                                     dv == SwipeToDismissBoxValue.StartToEnd ||
                                     dv == SwipeToDismissBoxValue.EndToStart
                                 )
@@ -776,7 +779,7 @@ fun LocalPlaylistScreen(
                             )
                         }
 
-                        if (locked || !editable) {
+                        if (locked || !editable || !swipeRemoveEnabled) {
                             Box(modifier = Modifier.animateItem()) {
                                 content()
                             }
