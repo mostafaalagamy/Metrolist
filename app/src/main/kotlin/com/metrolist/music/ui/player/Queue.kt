@@ -208,7 +208,9 @@ fun Queue(
 
     BottomSheet(
         state = state,
-        backgroundColor = Color.Unspecified,
+        backgroundColor = {
+            Box(Modifier.fillMaxSize().background(Color.Unspecified))
+        },
         modifier = modifier,
         collapsedContent = {
             if (useNewPlayerDesign) {

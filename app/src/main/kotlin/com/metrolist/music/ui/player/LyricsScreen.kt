@@ -167,43 +167,35 @@ fun LyricsScreen(
     val fallbackColor = MaterialTheme.colorScheme.surface.toArgb()
 
     LaunchedEffect(mediaMetadata.id, playerBackground) {
-        if (playerBackground == PlayerBackgroundStyle.GRADIENT) {
-            if (mediaMetadata.thumbnailUrl != null) {
-                val cachedColors = gradientColorsCache[mediaMetadata.id]
-                if (cachedColors != null) {
-                    gradientColors = cachedColors
-                } else {
-                    val request = ImageRequest.Builder(context)
-                        .data(mediaMetadata.thumbnailUrl)
-                        .size(Size(PlayerColorExtractor.Config.IMAGE_SIZE, PlayerColorExtractor.Config.IMAGE_SIZE))
-                        .allowHardware(false)
-                        .memoryCacheKey("gradient_${mediaMetadata.id}")
-                        .build()
-
-                    val result = runCatching {
-                        context.imageLoader.execute(request).image
-                    }.getOrNull()
-
-                    if (result != null) {
-                        val bitmap = result.toBitmap()
-                        val palette = withContext(Dispatchers.Default) {
-                            Palette.from(bitmap)
-                                .maximumColorCount(PlayerColorExtractor.Config.MAX_COLOR_COUNT)
-                                .resizeBitmapArea(PlayerColorExtractor.Config.BITMAP_AREA)
-                                .generate()
-                        }
-                        val extractedColors = PlayerColorExtractor.extractGradientColors(
-                            palette = palette,
-                            fallbackColor = fallbackColor
-                        )
-                        gradientColorsCache[mediaMetadata.id] = extractedColors
-                        gradientColors = extractedColors
-                    } else {
-                        gradientColors = defaultGradientColors
+        if (playerBackground == PlayerBackgroundStyle.GRADIENT && mediaMetadata.thumbnailUrl != null) {
+            val cachedColors = gradientColorsCache[mediaMetadata.id]
+            if (cachedColors != null) {
+                gradientColors = cachedColors
+                return@LaunchedEffect
+            }
+            withContext(Dispatchers.IO) {
+                val request = ImageRequest.Builder(context)
+                    .data(mediaMetadata.thumbnailUrl)
+                    .size(100, 100)
+                    .allowHardware(false)
+                    .memoryCacheKey("gradient_${mediaMetadata.id}")
+                    .build()
+                val result = runCatching { context.imageLoader.execute(request).image }.getOrNull()
+                if (result != null) {
+                    val bitmap = result.toBitmap()
+                    val palette = withContext(Dispatchers.Default) {
+                        Palette.from(bitmap)
+                            .maximumColorCount(8)
+                            .resizeBitmapArea(100 * 100)
+                            .generate()
                     }
+                    val extractedColors = PlayerColorExtractor.extractGradientColors(
+                        palette = palette,
+                        fallbackColor = fallbackColor
+                    )
+                    gradientColorsCache[mediaMetadata.id] = extractedColors
+                    withContext(Dispatchers.Main) { gradientColors = extractedColors }
                 }
-            } else {
-                gradientColors = emptyList()
             }
         } else {
             gradientColors = emptyList()
@@ -223,7 +215,7 @@ fun LyricsScreen(
     LaunchedEffect(playbackState) {
         if (playbackState == STATE_READY) {
             while (isActive) {
-                delay(100)
+                delay(500)
                 position = player.currentPosition
                 duration = player.duration
             }
