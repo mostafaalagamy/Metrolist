@@ -108,6 +108,7 @@ import androidx.media3.exoplayer.offline.DownloadRequest
 import androidx.media3.exoplayer.offline.DownloadService
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
 import com.metrolist.innertube.YouTube
 import com.metrolist.innertube.models.SongItem
 import com.metrolist.innertube.utils.completed
@@ -1133,7 +1134,10 @@ fun LocalPlaylistHeader(
                             .clip(RoundedCornerShape(ThumbnailCornerRadius)),
                     ) {
                         AsyncImage(
-                            model = overrideThumbnail.value ?: playlist.thumbnails[0],
+                            model = ImageRequest.Builder(context)
+                                .data(overrideThumbnail.value ?: playlist.thumbnails[0])
+                                .diskCacheKey(playlist.playlist.id)
+                                .build(),
                             contentDescription = null,
                             modifier = Modifier
                                 .fillMaxWidth()
