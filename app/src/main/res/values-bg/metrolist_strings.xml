@@ -162,8 +162,8 @@
     <string name="filter_uploaded">Качени</string>
     <string name="starting_radio">Стартиране на радио</string>
     <string name="hide_player_thumbnail">Скриване на миниатюрата на плейъра</string>
-    <string name="seek_seconds_addup_description">Ако е активирано, добавят се допълнителни 5 секунди всеки път, когато прескочите превъртането</string>
-    <string name="show_uploaded_playlist">Показване на плейлиста „Качено“</string>
+    <string name="seek_seconds_addup_description">Ако е активирано, добавя допълнителни 5 секунди всеки път, когато прескочите превъртането</string>
+    <string name="show_uploaded_playlist">Показване на плейлиста „Качени“</string>
     <string name="edit_playlist_cover">Редактиране на обложката на плейлиста</string>
     <string name="edit_playlist_cover_note">Забележка: За да променяте обложката на плейлиста, акаунтът ви трябва да е свързан с телефонен номер и потвърден в YouTube Music.</string>
     <string name="edit_playlist_cover_note_wait">След като изберете изображение, моля, изчакайте малко, докато новата обложка се появи във Вашия плейлист.</string>
@@ -197,8 +197,8 @@
     <string name="settings_section_privacy">Поверителност и сигурност</string>
     <string name="settings_section_player">Плейър и медия</string>
     <string name="settings_section_player_content">Плейър и съдържание</string>
-    <string name="settings_section_storage">Съхранение и данни</string>
-    <string name="settings_section_system">Система и информация</string>
+    <string name="settings_section_storage">Съхранение и \'БекЪп\'</string>
+    <string name="settings_section_system">Системни &amp; относно приложението</string>
     <string name="updater">Актуализатор</string>
     <string name="check_for_updates">Автоматична проверка за актуализации</string>
     <string name="update_notifications">Активиране на известия за актуализации</string>
@@ -219,4 +219,5 @@
     <string name="scrobble_delay_minutes">Закъснение на Scrobble в минути</string>
     <string name="minimum_volume">Минимална сила на звука</string>
     <string name="maximum_volume">Максимална сила на звука</string>
+    <string name="seek_seconds_addup">Кумулативно превъртане</string>
 </resources>
