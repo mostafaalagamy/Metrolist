@@ -87,6 +87,7 @@
     <string name="enable_squiggly_slider">Povoliť vlnitý posuvník</string>
     <string name="enable_swipe_thumbnail">Povoliť zmenu skladby potiahnutím prstom</string>
     <string name="swipe_song_to_add">Potiahnutím skladby doľava ju pridáte do frontu alebo doprava ju prehráte ako ďalšiu</string>
+    <string name="swipe_song_to_remove">Prejdením prstom odstráňte skladbu zo zoznamu skladieb</string>
     <string name="lyrics_click_change">Zmena textu po kliknutí</string>
     <string name="lyrics_auto_scroll">Automatické posúvanie textu piesní</string>
     <string name="lyrics_romanize_japanese">Romanizácia japonských textov</string>
