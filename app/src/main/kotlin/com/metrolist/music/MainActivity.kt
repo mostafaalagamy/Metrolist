@@ -819,8 +819,8 @@ class MainActivity : ComponentActivity() {
                                 }
                                 AnimatedVisibility(
                                     visible = active || inSearchScreen,
-                                    enter = fadeIn(animationSpec = tween(durationMillis = 250)),
-                                    exit = fadeOut(animationSpec = tween(durationMillis = 150))
+                                    enter = slideInHorizontally(initialOffsetX = { it }) + fadeIn(tween(150)),
+                                    exit = slideOutHorizontally(targetOffsetX = { it }) + fadeOut(tween(100))
                                 ) {
                                     TopSearch(
                                         query = query,
@@ -1270,12 +1270,17 @@ class MainActivity : ComponentActivity() {
                     LaunchedEffect(shouldShowSearchBar, openSearchImmediately) {
                         if (shouldShowSearchBar && openSearchImmediately) {
                             onActiveChange(true)
-                            try {
-                                delay(100)
-                                searchBarFocusRequester.requestFocus()
-                            } catch (_: Exception) {
-                            }
                             openSearchImmediately = false
+                        }
+                    }
+
+                    LaunchedEffect(active) {
+                        if (active) {
+                            // defer keyboard until after enter animation roughly completes
+                            delay(220)
+                            if (active) {
+                                try { searchBarFocusRequester.requestFocus() } catch (_: Exception) {}
+                            }
                         }
                     }
                 }
