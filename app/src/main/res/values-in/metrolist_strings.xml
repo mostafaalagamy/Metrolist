@@ -215,4 +215,8 @@
     <string name="lastfm_now_playing">Kirim Yang Sedang Diputar</string>
     <string name="scrobbling_configuration">Konfigurasi Scrobbling</string>
     <string name="scrobble_min_track_duration">Scrobble lagu yang lebih panjang dari</string>
+    <string name="update_channel_name">Pembaruan aplikasi</string>
+    <string name="update_channel_desc">Notifikasi tentang versi terbaru</string>
+    <string name="scrobble_delay_minutes">Scrobble delay menit</string>
+    <string name="scrobble_delay_percent">Scrobble delay persen</string>
 </resources>
