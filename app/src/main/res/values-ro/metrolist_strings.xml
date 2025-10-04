@@ -209,4 +209,20 @@
     <string name="updater">Actualizator</string>
     <string name="check_for_updates">Verifică automat pentru actualuzări</string>
     <string name="lyrics_romanize_macedonian">Romanizează versurile în macedoniană</string>
+    <string name="discord_use_details">Utilizează detalii în loc de stare</string>
+    <string name="discord_use_details_description">Arată titlul melodiei în loc de numele artistului</string>
+    <string name="update_notifications">Activează notificările pentru actualizări</string>
+    <string name="update_available_title">Actualizare disponibilă</string>
+    <string name="update_channel_name">Actualizări ale aplicației</string>
+    <string name="update_channel_desc">Notificări despre versiuni noi</string>
+    <string name="integrations">Integrări</string>
+    <string name="username">Nume de utilizator</string>
+    <string name="password">Parolă</string>
+    <string name="lastfm_integration">Integrare Last.fm</string>
+    <string name="lastfm_now_playing">Trimite Se redă acum</string>
+    <string name="enable_scrobbling">Activează scrobblingul</string>
+    <string name="scrobbling_configuration">Configurare scrobbling</string>
+    <string name="scrobble_min_track_duration">Dă scrobble la melodiile mai lungi de</string>
+    <string name="scrobble_delay_percent">Întârziere pentru scrobble în procente</string>
+    <string name="scrobble_delay_minutes">Întârziere pentru scrobble în minute</string>
 </resources>
