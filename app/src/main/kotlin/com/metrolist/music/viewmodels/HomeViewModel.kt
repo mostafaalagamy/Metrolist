@@ -59,6 +59,9 @@ class HomeViewModel @Inject constructor(
     val selectedChip = MutableStateFlow<HomePage.Chip?>(null)
     private val previousHomePage = MutableStateFlow<HomePage?>(null)
 
+    val allLocalItems = MutableStateFlow<List<LocalItem>>(emptyList())
+    val allYtItems = MutableStateFlow<List<YTItem>>(emptyList())
+
     val accountName = MutableStateFlow("Guest")
     val accountImageUrl = MutableStateFlow<String?>(null)
 
@@ -146,6 +149,11 @@ class HomeViewModel @Inject constructor(
         }.onFailure {
             reportException(it)
         }
+
+        allLocalItems.value = (quickPicks.value.orEmpty() + forgottenFavorites.value.orEmpty() + keepListening.value.orEmpty())
+            .filter { it is Song || it is Album }
+        allYtItems.value = similarRecommendations.value?.flatMap { it.items }.orEmpty() +
+                homePage.value?.sections?.flatMap { it.items }.orEmpty()
 
         isLoading.value = false
     }
