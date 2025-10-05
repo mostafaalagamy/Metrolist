@@ -84,6 +84,8 @@ import androidx.media3.exoplayer.offline.Download.STATE_QUEUED
 import coil3.compose.AsyncImage
 import coil3.compose.AsyncImagePainter
 import coil3.request.ImageRequest
+import coil3.request.diskCacheKey
+import coil3.request.memoryCacheKey
 import com.metrolist.innertube.YouTube
 import com.metrolist.innertube.models.SongItem
 import com.metrolist.innertube.models.AlbumItem
@@ -648,6 +650,7 @@ fun PlaylistListItem(
     thumbnailContent = {
         PlaylistThumbnail(
             thumbnails = playlist.thumbnails,
+            cacheKey = playlist.playlist.id,
             size = ListThumbnailSize,
             placeHolder = {
                 val painter = when (playlist.playlist.name) {
@@ -721,6 +724,7 @@ fun PlaylistGridItem(
         val width = maxWidth
         PlaylistThumbnail(
             thumbnails = playlist.thumbnails,
+            cacheKey = playlist.playlist.id,
             size = width,
             placeHolder = {
                 val painter = when (playlist.playlist.name) {
@@ -1238,7 +1242,8 @@ fun PlaylistThumbnail(
     thumbnails: List<String>,
     size: Dp,
     placeHolder: @Composable () -> Unit,
-    shape: Shape
+    shape: Shape,
+    cacheKey: String? = null
 ) {
     when (thumbnails.size) {
         0 -> Box(
@@ -1253,6 +1258,12 @@ fun PlaylistThumbnail(
         1 -> AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
                 .data(thumbnails[0])
+                .apply {
+                    cacheKey?.let { key ->
+                        memoryCacheKey(key)
+                        diskCacheKey(key)
+                    }
+                }
                 .memoryCachePolicy(coil3.request.CachePolicy.ENABLED)
                 .diskCachePolicy(coil3.request.CachePolicy.ENABLED)
                 .networkCachePolicy(coil3.request.CachePolicy.ENABLED)
@@ -1277,6 +1288,13 @@ fun PlaylistThumbnail(
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
                         .data(thumbnails.getOrNull(index))
+                        .apply {
+                            cacheKey?.let { base ->
+                                val key = "${base}_$index"
+                                memoryCacheKey(key)
+                                diskCacheKey(key)
+                            }
+                        }
                         .memoryCachePolicy(coil3.request.CachePolicy.ENABLED)
                         .diskCachePolicy(coil3.request.CachePolicy.ENABLED)
                         .networkCachePolicy(coil3.request.CachePolicy.ENABLED)
