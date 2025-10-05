@@ -17,6 +17,7 @@ import com.metrolist.music.extensions.getQueueWindows
 import com.metrolist.music.extensions.metadata
 import com.metrolist.music.playback.MusicService.MusicBinder
 import com.metrolist.music.playback.queues.Queue
+import com.metrolist.music.utils.JamSessionManager
 import com.metrolist.music.utils.reportException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -72,6 +73,9 @@ class PlayerConnection(
 
     val error = MutableStateFlow<PlaybackException?>(null)
     val waitingForNetworkConnection = service.waitingForNetworkConnection
+
+    // Jam Session Manager for listening with friends
+    val jamSessionManager = JamSessionManager()
 
     init {
         player.addListener(this)
