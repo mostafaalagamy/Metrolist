@@ -1120,7 +1120,7 @@ fun LocalPlaylistHeader(
                         .background(MaterialTheme.colorScheme.surfaceContainer)
                 ) {
                     Icon(
-                        painter = painterResource(R.drawable.small_icon),
+                        painter = painterResource(R.drawable.queue_music),
                         contentDescription = null,
                         tint = LocalContentColor.current.copy(alpha = 0.8f),
                         modifier = Modifier.size(AlbumThumbnailSize / 2)

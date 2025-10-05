@@ -369,7 +369,7 @@ fun TopPlaylistScreen(
                                                 },
                                             ) {
                                                 Icon(
-                                                    painter = painterResource(R.drawable.small_icon),
+                                                    painter = painterResource(R.drawable.queue_music),
                                                     contentDescription = null,
                                                 )
                                             }

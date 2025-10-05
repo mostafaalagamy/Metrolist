@@ -658,7 +658,7 @@ fun PlaylistListItem(
                     stringResource(R.string.cached_playlist) -> R.drawable.cached
                     // R.drawable.backup as placeholder
                     stringResource(R.string.uploaded_playlist) -> R.drawable.backup
-                    else -> if (autoPlaylist) R.drawable.trending_up else R.drawable.small_icon
+                    else -> if (autoPlaylist) R.drawable.trending_up else R.drawable.queue_music
                 }
                 Icon(
                     painter = painterResource(painter),
@@ -731,7 +731,7 @@ fun PlaylistGridItem(
                     stringResource(R.string.cached_playlist) -> R.drawable.cached
                     // R.drawable.backup as placeholder
                     stringResource(R.string.uploaded_playlist) -> R.drawable.backup
-                    else -> if (autoPlaylist) R.drawable.trending_up else R.drawable.small_icon
+                    else -> if (autoPlaylist) R.drawable.trending_up else R.drawable.queue_music
                 }
                 Box(
                     contentAlignment = Alignment.Center,
