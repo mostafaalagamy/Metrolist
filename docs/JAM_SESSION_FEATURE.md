@@ -239,11 +239,23 @@ python relay_server.py
 
 #### Configuring the App
 
-By default, the app connects to `ws://localhost:8080`. To use a different server:
+The relay server URL can be configured directly in the app:
 
-1. Find your computer's local IP address (e.g., 192.168.1.100)
-2. Update the relay server URL in the app code if needed
-3. Make sure the server is accessible from the devices running the app
+1. Open **Settings**
+2. Navigate to **Integrations**
+3. Select **Jam Session**
+4. Enter your relay server URL
+
+**Default:** `ws://localhost:8080` (for local testing)
+
+**Examples:**
+- Local network: `ws://192.168.1.100:8080` (use your computer's IP)
+- Internet (ngrok): `wss://abc123.ngrok.io`
+- Cloud deployment: `wss://your-app.herokuapp.com`
+
+**Note:** Use `wss://` (secure WebSocket) for HTTPS/cloud deployments.
+
+See [Relay Server Configuration Guide](RELAY_SERVER_CONFIGURATION.md) for detailed instructions.
 
 For cloud deployment, you can deploy the relay server to services like:
 - Heroku
