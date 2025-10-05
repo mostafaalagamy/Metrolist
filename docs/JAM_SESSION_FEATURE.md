@@ -87,35 +87,182 @@ Potential improvements for future versions:
 - Playlist collaboration
 - Vote skipping functionality
 
-## Technical Details - Serverless P2P
+## Technical Details - WebSocket Relay Server
 
-This implementation uses **UDP broadcast on local networks** for peer-to-peer connectivity without requiring a backend server:
+This implementation uses **WebSocket relay server** for real-time connectivity, allowing friends to listen together over the internet:
 
 ### How It Works
-1. **Session Creation**: Host generates a code that maps to a UDP port (45000-46000 range)
-2. **Network Discovery**: Participants on the same WiFi/local network can discover each other via UDP broadcast
+1. **Session Creation**: Host generates a unique 6-character session code
+2. **Network Discovery**: All participants connect to the same relay server using the session code
 3. **State Synchronization**: Playback state is broadcast only on manual changes:
    - Song changes (next/previous/selection)
    - Manual seeking
    - Play/pause toggles
    - Queue modifications
 4. **Queue Sync**: The entire playback queue is synchronized across all devices
-5. **No Server Required**: All communication happens directly between devices on the local network
+5. **Relay Server**: A simple WebSocket server relays messages between all participants in a session
 
 ### Requirements
-- Devices must be on the same local network (WiFi/LAN)
+- A WebSocket relay server (see instructions below)
 - INTERNET permission (already included in AndroidManifest.xml)
-- UDP ports 45000-46000 must not be blocked by firewall
+- Internet connection for all participants
+
+### Setting Up the Relay Server
+
+The relay server is a simple WebSocket server that forwards messages between clients in the same session. You can run it on your own machine or deploy it to a cloud service.
+
+#### Option 1: Run Locally with Node.js
+
+1. Install Node.js if you haven't already
+2. Create a file named `relay-server.js`:
+
+```javascript
+const WebSocket = require('ws');
+const http = require('http');
+
+const server = http.createServer();
+const wss = new WebSocket.Server({ server });
+
+// Store sessions: sessionCode -> Set of WebSocket connections
+const sessions = new Map();
+
+wss.on('connection', (ws, req) => {
+    const sessionCode = req.url.slice(1); // Remove leading '/'
+    console.log(`New connection to session: ${sessionCode}`);
+    
+    if (!sessionCode) {
+        ws.close();
+        return;
+    }
+    
+    // Add client to session
+    if (!sessions.has(sessionCode)) {
+        sessions.set(sessionCode, new Set());
+    }
+    sessions.get(sessionCode).add(ws);
+    
+    ws.on('message', (message) => {
+        // Relay message to all other clients in the same session
+        const sessionClients = sessions.get(sessionCode);
+        if (sessionClients) {
+            sessionClients.forEach((client) => {
+                if (client !== ws && client.readyState === WebSocket.OPEN) {
+                    client.send(message);
+                }
+            });
+        }
+    });
+    
+    ws.on('close', () => {
+        // Remove client from session
+        const sessionClients = sessions.get(sessionCode);
+        if (sessionClients) {
+            sessionClients.delete(ws);
+            if (sessionClients.size === 0) {
+                sessions.delete(sessionCode);
+                console.log(`Session ${sessionCode} closed (no clients)`);
+            }
+        }
+    });
+});
+
+const PORT = process.env.PORT || 8080;
+server.listen(PORT, () => {
+    console.log(`WebSocket relay server running on port ${PORT}`);
+});
+```
+
+3. Install dependencies:
+```bash
+npm install ws
+```
+
+4. Run the server:
+```bash
+node relay-server.js
+```
+
+The server will run on `ws://localhost:8080` by default.
+
+#### Option 2: Run with Python
+
+1. Create a file named `relay_server.py`:
+
+```python
+import asyncio
+import websockets
+from collections import defaultdict
+
+# Store sessions: session_code -> set of websocket connections
+sessions = defaultdict(set)
+
+async def handle_client(websocket, path):
+    session_code = path.strip('/')
+    if not session_code:
+        await websocket.close()
+        return
+    
+    print(f"New connection to session: {session_code}")
+    sessions[session_code].add(websocket)
+    
+    try:
+        async for message in websocket:
+            # Relay message to all other clients in the same session
+            for client in sessions[session_code]:
+                if client != websocket and not client.closed:
+                    await client.send(message)
+    finally:
+        sessions[session_code].discard(websocket)
+        if not sessions[session_code]:
+            del sessions[session_code]
+            print(f"Session {session_code} closed (no clients)")
+
+async def main():
+    port = 8080
+    async with websockets.serve(handle_client, "0.0.0.0", port):
+        print(f"WebSocket relay server running on port {port}")
+        await asyncio.Future()  # run forever
+
+if __name__ == "__main__":
+    asyncio.run(main())
+```
+
+2. Install dependencies:
+```bash
+pip install websockets
+```
+
+3. Run the server:
+```bash
+python relay_server.py
+```
+
+#### Configuring the App
+
+By default, the app connects to `ws://localhost:8080`. To use a different server:
+
+1. Find your computer's local IP address (e.g., 192.168.1.100)
+2. Update the relay server URL in the app code if needed
+3. Make sure the server is accessible from the devices running the app
+
+For cloud deployment, you can deploy the relay server to services like:
+- Heroku
+- AWS EC2
+- DigitalOcean
+- Google Cloud Platform
+- Any VPS with WebSocket support
 
 ### Limitations
-- Works only on local networks (not over the internet)
-- Best for home/office WiFi environments
-- Some restrictive networks may block UDP broadcasts
+- Requires a relay server to be running
+- Network latency depends on the relay server location
+- Server needs to handle concurrent connections for all active sessions
 
 ## Notes
-- Uses UDP broadcast for serverless local network P2P
+- Uses WebSocket relay server for internet-based connectivity
+- Allows listening with friends anywhere, not just on local network
 - No database migrations required
 - Minimal code changes for easy maintenance
 - Real-time playback synchronization on manual changes only (efficient battery usage)
 - Queue synchronization keeps everyone's playlist in sync
 - Automatic song discovery within existing queue
+- Simple relay server can be run on any machine or cloud service

@@ -1,24 +1,26 @@
 package com.metrolist.music.utils
 
 import android.util.Log
+import io.ktor.client.HttpClient
+import io.ktor.client.plugins.websocket.WebSockets
+import io.ktor.client.plugins.websocket.webSocketSession
+import io.ktor.websocket.Frame
+import io.ktor.websocket.readText
+import io.ktor.websocket.send
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import org.apache.commons.lang3.RandomStringUtils
-import java.net.DatagramPacket
-import java.net.DatagramSocket
-import java.net.InetAddress
-import kotlin.random.Random
 
 /**
- * Serverless Jam Session Manager using local network P2P
- * Allows creating/joining sessions and syncing playback state via UDP multicast
+ * WebSocket Relay-based Jam Session Manager
+ * Allows creating/joining sessions and syncing playback state via WebSocket relay server
  */
 class JamSessionManager {
     
@@ -40,15 +42,24 @@ class JamSessionManager {
     
     private val scope = CoroutineScope(Dispatchers.IO)
     private var listenerJob: Job? = null
-    private var socket: DatagramSocket? = null
+    private var webSocketSession: io.ktor.client.plugins.websocket.DefaultClientWebSocketSession? = null
+    private val client = HttpClient {
+        install(WebSockets)
+    }
     
-    // Use UDP multicast for local network P2P (serverless)
-    private val MULTICAST_GROUP = "224.0.0.251" // mDNS multicast address
-    private var multicastPort = 0
+    // WebSocket relay server URL - can be configured by users
+    private var relayServerUrl = "ws://localhost:8080"
     
     companion object {
         private const val TAG = "JamSessionManager"
-        private const val BASE_PORT = 45000
+    }
+    
+    /**
+     * Configure the WebSocket relay server URL
+     * Default is ws://localhost:8080
+     */
+    fun setRelayServerUrl(url: String) {
+        relayServerUrl = url
     }
     
     /**
@@ -56,7 +67,6 @@ class JamSessionManager {
      */
     fun createSession(hostName: String): String {
         val sessionCode = generateSessionCode()
-        multicastPort = BASE_PORT + (sessionCode.hashCode() and 0xFFFF) % 1000
         
         _currentSession.value = JamSession(
             sessionCode = sessionCode,
@@ -65,11 +75,8 @@ class JamSessionManager {
         )
         _isHost.value = true
         
-        // Start listening for peers
-        startP2PListener()
-        
-        // Announce presence
-        announcePresence(hostName)
+        // Connect to relay server
+        connectToRelay(sessionCode, hostName)
         
         return sessionCode
     }
@@ -79,8 +86,6 @@ class JamSessionManager {
      */
     fun joinSession(sessionCode: String, userName: String): Boolean {
         try {
-            multicastPort = BASE_PORT + (sessionCode.hashCode() and 0xFFFF) % 1000
-            
             _currentSession.value = JamSession(
                 sessionCode = sessionCode.uppercase(),
                 hostName = "Finding host...",
@@ -88,11 +93,8 @@ class JamSessionManager {
             )
             _isHost.value = false
             
-            // Start listening for host
-            startP2PListener()
-            
-            // Announce joining
-            announcePresence(userName)
+            // Connect to relay server
+            connectToRelay(sessionCode.uppercase(), userName)
             
             return true
         } catch (e: Exception) {
@@ -141,8 +143,14 @@ class JamSessionManager {
      */
     fun leaveSession() {
         listenerJob?.cancel()
-        socket?.close()
-        socket = null
+        scope.launch {
+            try {
+                webSocketSession?.close()
+            } catch (e: Exception) {
+                Log.e(TAG, "Error closing WebSocket", e)
+            }
+        }
+        webSocketSession = null
         _currentSession.value = null
         _isHost.value = false
     }
@@ -153,43 +161,47 @@ class JamSessionManager {
     fun isInSession(): Boolean = _currentSession.value != null
     
     /**
-     * Start listening for P2P messages on local network
+     * Connect to WebSocket relay server
      */
-    private fun startP2PListener() {
+    private fun connectToRelay(sessionCode: String, userName: String) {
         listenerJob?.cancel()
         
         listenerJob = scope.launch {
             try {
-                socket = DatagramSocket(multicastPort).apply {
-                    broadcast = true
-                    reuseAddress = true
+                val url = "$relayServerUrl/$sessionCode"
+                Log.d(TAG, "Connecting to WebSocket relay: $url")
+                
+                webSocketSession = client.webSocketSession(url)
+                
+                // Announce presence
+                val message = if (_isHost.value) {
+                    "PRESENCE|$userName"
+                } else {
+                    "JOIN|$userName"
                 }
+                webSocketSession?.send(Frame.Text(message))
                 
-                val buffer = ByteArray(1024)
-                
-                while (isActive) {
-                    try {
-                        val packet = DatagramPacket(buffer, buffer.size)
-                        socket?.receive(packet)
-                        
-                        val message = String(packet.data, 0, packet.length)
-                        handleP2PMessage(message, packet.address.hostAddress ?: "")
-                    } catch (e: Exception) {
-                        if (isActive) {
-                            Log.e(TAG, "Error receiving packet", e)
+                // Listen for incoming messages
+                webSocketSession?.incoming?.receiveAsFlow()?.collect { frame ->
+                    when (frame) {
+                        is Frame.Text -> {
+                            val receivedMessage = frame.readText()
+                            handleWebSocketMessage(receivedMessage)
                         }
+                        else -> {}
                     }
                 }
             } catch (e: Exception) {
-                Log.e(TAG, "Error starting listener", e)
+                Log.e(TAG, "Error connecting to relay server", e)
+                // Optionally notify user that connection failed
             }
         }
     }
     
     /**
-     * Handle incoming P2P messages
+     * Handle incoming WebSocket messages
      */
-    private fun handleP2PMessage(message: String, fromAddress: String) {
+    private fun handleWebSocketMessage(message: String) {
         try {
             val parts = message.split("|")
             if (parts.size < 2) return
@@ -252,32 +264,16 @@ class JamSessionManager {
         }
     }
     
-    /**
-     * Announce presence to the network
-     */
-    private fun announcePresence(userName: String) {
-        scope.launch {
-            try {
-                val message = if (_isHost.value) {
-                    "PRESENCE|$userName"
-                } else {
-                    "JOIN|$userName"
-                }
-                sendBroadcast(message)
-            } catch (e: Exception) {
-                Log.e(TAG, "Error announcing presence", e)
-            }
-        }
-    }
+
     
     /**
-     * Broadcast playback update to peers
+     * Broadcast playback update to peers via WebSocket
      */
     private fun broadcastUpdate(songId: String?, position: Long, isPlaying: Boolean, queueIds: List<String>) {
         scope.launch {
             try {
                 val message = "UPDATE|$songId|$position|$isPlaying"
-                sendBroadcast(message)
+                sendWebSocketMessage(message)
             } catch (e: Exception) {
                 Log.e(TAG, "Error broadcasting update", e)
             }
@@ -285,14 +281,14 @@ class JamSessionManager {
     }
     
     /**
-     * Broadcast queue update to peers
+     * Broadcast queue update to peers via WebSocket
      */
     private fun broadcastQueue(queueSongIds: List<String>) {
         scope.launch {
             try {
                 val queueData = queueSongIds.joinToString(",")
                 val message = "QUEUE|$queueData"
-                sendBroadcast(message)
+                sendWebSocketMessage(message)
             } catch (e: Exception) {
                 Log.e(TAG, "Error broadcasting queue", e)
             }
@@ -300,21 +296,13 @@ class JamSessionManager {
     }
     
     /**
-     * Send broadcast message to local network
+     * Send message via WebSocket
      */
-    private fun sendBroadcast(message: String) {
+    private suspend fun sendWebSocketMessage(message: String) {
         try {
-            val sendSocket = DatagramSocket()
-            sendSocket.broadcast = true
-            
-            val data = message.toByteArray()
-            val address = InetAddress.getByName("255.255.255.255") // Local network broadcast
-            val packet = DatagramPacket(data, data.size, address, multicastPort)
-            
-            sendSocket.send(packet)
-            sendSocket.close()
+            webSocketSession?.send(Frame.Text(message))
         } catch (e: Exception) {
-            Log.e(TAG, "Error sending broadcast", e)
+            Log.e(TAG, "Error sending WebSocket message", e)
         }
     }
     
