@@ -2,17 +2,13 @@ package com.metrolist.music.ui.player
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.spring
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.border
-import androidx.compose.foundation.gestures.detectHorizontalDragGestures
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,7 +19,6 @@ import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -42,28 +37,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableLongStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.BlurEffect
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalLayoutDirection
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.IntOffset
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.media3.common.PlaybackException
@@ -73,17 +54,12 @@ import com.metrolist.music.LocalDatabase
 import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
 import com.metrolist.music.constants.MiniPlayerHeight
-import com.metrolist.music.constants.SwipeSensitivityKey
 import com.metrolist.music.constants.ThumbnailCornerRadius
 import com.metrolist.music.constants.UseNewMiniPlayerDesignKey
 import com.metrolist.music.db.entities.ArtistEntity
 import com.metrolist.music.extensions.togglePlayPause
 import com.metrolist.music.models.MediaMetadata
 import com.metrolist.music.utils.rememberPreference
-import kotlinx.coroutines.launch
-import kotlin.math.absoluteValue
-import kotlin.math.roundToInt
-import androidx.compose.foundation.clickable
 
 @Composable
 fun MiniPlayer(
@@ -98,8 +74,7 @@ fun MiniPlayer(
         NewMiniPlayer(
             position = position,
             duration = duration,
-            modifier = modifier,
-            pureBlack = pureBlack
+            modifier = modifier
         )
     } else {
         LegacyMiniPlayer(
@@ -115,8 +90,7 @@ fun MiniPlayer(
 private fun NewMiniPlayer(
     position: Long,
     duration: Long,
-    modifier: Modifier = Modifier,
-    pureBlack: Boolean,
+    modifier: Modifier = Modifier
 ) {
     val playerConnection = LocalPlayerConnection.current ?: return
     val database = LocalDatabase.current
@@ -124,45 +98,6 @@ private fun NewMiniPlayer(
     val playbackState by playerConnection.playbackState.collectAsState()
     val error by playerConnection.error.collectAsState()
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
-    val canSkipNext by playerConnection.canSkipNext.collectAsState()
-    val canSkipPrevious by playerConnection.canSkipPrevious.collectAsState()
-    
-    val currentView = LocalView.current
-    val layoutDirection = LocalLayoutDirection.current
-    val coroutineScope = rememberCoroutineScope()
-    val swipeSensitivity by rememberPreference(SwipeSensitivityKey, 0.73f)
-    val swipeThumbnail by rememberPreference(com.metrolist.music.constants.SwipeThumbnailKey, true)
-    
-    val offsetXAnimatable = remember { Animatable(0f) }
-    var dragStartTime by remember { mutableLongStateOf(0L) }
-    var totalDragDistance by remember { mutableFloatStateOf(0f) }
-
-    val animationSpec = spring<Float>(
-        dampingRatio = Spring.DampingRatioNoBouncy,
-        stiffness = Spring.StiffnessLow
-    )
-    
-    val overlayAlpha by animateFloatAsState(
-        targetValue = if (isPlaying) 0.0f else 0.4f,
-        label = "overlay_alpha",
-        animationSpec = animationSpec
-    )
-
-    /**
-     * Calculates the auto-swipe threshold based on swipe sensitivity.
-     * The formula uses a sigmoid function to determine the threshold dynamically.
-     * Constants:
-     * - -11.44748: Controls the steepness of the sigmoid curve.
-     * - 9.04945: Adjusts the midpoint of the curve.
-     * - 600: Base threshold value in pixels.
-     *
-     * @param swipeSensitivity The sensitivity value (typically between 0 and 1).
-     * @return The calculated auto-swipe threshold in pixels.
-     */
-    fun calculateAutoSwipeThreshold(swipeSensitivity: Float): Int {
-        return (600 / (1f + kotlin.math.exp(-(-11.44748 * swipeSensitivity + 9.04945)))).roundToInt()
-    }
-    val autoSwipeThreshold = calculateAutoSwipeThreshold(swipeSensitivity)
 
     Box(
         modifier = modifier
@@ -170,84 +105,14 @@ private fun NewMiniPlayer(
             .height(MiniPlayerHeight)
             .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Horizontal))
             .padding(horizontal = 12.dp)
-            // Move the swipe detection to the outer box to affect the entire box
-            .let { baseModifier ->
-                if (swipeThumbnail) {
-                    baseModifier.pointerInput(Unit) {
-                        detectHorizontalDragGestures(
-                            onDragStart = {
-                                dragStartTime = System.currentTimeMillis()
-                                totalDragDistance = 0f
-                            },
-                            onDragCancel = {
-                                coroutineScope.launch {
-                                    offsetXAnimatable.animateTo(
-                                        targetValue = 0f,
-                                        animationSpec = animationSpec
-                                    )
-                                }
-                            },
-                            onHorizontalDrag = { _, dragAmount ->
-                                val adjustedDragAmount =
-                                    if (layoutDirection == LayoutDirection.Rtl) -dragAmount else dragAmount
-                                val canSkipPrevious = playerConnection.player.previousMediaItemIndex != -1
-                                val canSkipNext = playerConnection.player.nextMediaItemIndex != -1
-                                val allowLeft = adjustedDragAmount < 0 && canSkipNext
-                                val allowRight = adjustedDragAmount > 0 && canSkipPrevious
-                                if (allowLeft || allowRight) {
-                                    totalDragDistance += kotlin.math.abs(adjustedDragAmount)
-                                    coroutineScope.launch {
-                                        offsetXAnimatable.snapTo(offsetXAnimatable.value + adjustedDragAmount)
-                                    }
-                                }
-                            },
-                            onDragEnd = {
-                                val dragDuration = System.currentTimeMillis() - dragStartTime
-                                val velocity = if (dragDuration > 0) totalDragDistance / dragDuration else 0f
-                                val currentOffset = offsetXAnimatable.value
-                                
-                                val minDistanceThreshold = 50f
-                                val velocityThreshold = (swipeSensitivity * -8.25f) + 8.5f
-
-                                val shouldChangeSong = (
-                                    kotlin.math.abs(currentOffset) > minDistanceThreshold &&
-                                    velocity > velocityThreshold
-                                ) || (kotlin.math.abs(currentOffset) > autoSwipeThreshold)
-                                
-                                if (shouldChangeSong) {
-                                    val isRightSwipe = currentOffset > 0
-                                    
-                                    if (isRightSwipe && canSkipPrevious) {
-                                        playerConnection.player.seekToPreviousMediaItem()
-                                    } else if (!isRightSwipe && canSkipNext) {
-                                        playerConnection.player.seekToNext()
-                                    }
-                                }
-                                
-                                coroutineScope.launch {
-                                    offsetXAnimatable.animateTo(
-                                        targetValue = 0f,
-                                        animationSpec = animationSpec
-                                    )
-                                }
-                            }
-                        )
-                    }
-                } else {
-                    baseModifier
-                }
-            }
     ) {
-        // Main MiniPlayer box that moves with swipe
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(64.dp) // Circular height
-                .offset { IntOffset(offsetXAnimatable.value.roundToInt(), 0) }
-                .clip(RoundedCornerShape(32.dp)) // Clip first for perfect rounded corners
-                .background(
-                    color = MaterialTheme.colorScheme.surfaceContainer // Same as navigation bar color
-                )
+                .height(64.dp)
+                .clip(RoundedCornerShape(32.dp))
+                .background(color = MaterialTheme.colorScheme.surfaceContainer)
+                .align(Alignment.Center)
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -255,12 +120,10 @@ private fun NewMiniPlayer(
                     .fillMaxSize()
                     .padding(horizontal = 8.dp, vertical = 8.dp),
             ) {
-                // Play/Pause button with circular progress indicator (left side)
                 Box(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier.size(48.dp)
                 ) {
-                    // Circular progress indicator around the play button
                     if (duration > 0) {
                         CircularProgressIndicator(
                             progress = { (position.toFloat() / duration).coerceIn(0f, 1f) },
@@ -271,7 +134,6 @@ private fun NewMiniPlayer(
                         )
                     }
                     
-                    // Play/Pause button with thumbnail background
                     Box(
                         contentAlignment = Alignment.Center,
                         modifier = Modifier
@@ -291,24 +153,20 @@ private fun NewMiniPlayer(
                                 }
                             }
                     ) {
-                        // Thumbnail background
                         mediaMetadata?.let { metadata ->
                             AsyncImage(
                                 model = metadata.thumbnailUrl,
                                 contentDescription = null,
                                 contentScale = ContentScale.Crop,
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .clip(CircleShape)
+                                modifier = Modifier.fillMaxSize().clip(CircleShape)
                             )
                         }
                         
-                        // Semi-transparent overlay for better icon visibility
                         Box(
                             modifier = Modifier
                                 .fillMaxSize()
                                 .background(
-                                    color = Color.Black.copy(alpha = overlayAlpha),
+                                    color = Color.Black.copy(alpha = if (isPlaying) 0.0f else 0.4f),
                                     shape = CircleShape
                                 )
                         )
@@ -319,13 +177,7 @@ private fun NewMiniPlayer(
                             exit = fadeOut()
                         ) {
                             Icon(
-                                painter = painterResource(
-                                    if (playbackState == Player.STATE_ENDED) {
-                                        R.drawable.replay
-                                    } else {
-                                        R.drawable.play
-                                    }
-                                ),
+                                painter = painterResource(if (playbackState == Player.STATE_ENDED) R.drawable.replay else R.drawable.play),
                                 contentDescription = null,
                                 tint = Color.White,
                                 modifier = Modifier.size(20.dp)
@@ -336,7 +188,6 @@ private fun NewMiniPlayer(
 
                 Spacer(modifier = Modifier.width(16.dp))
 
-                // Song info - takes most space in the middle
                 Column(
                     modifier = Modifier.weight(1f),
                     verticalArrangement = Arrangement.Center
@@ -345,7 +196,7 @@ private fun NewMiniPlayer(
                         AnimatedContent(
                             targetState = metadata.title,
                             transitionSpec = { fadeIn() togetherWith fadeOut() },
-                            label = "",
+                            label = "TitleAnimation",
                         ) { title ->
                             Text(
                                 text = title,
@@ -362,7 +213,7 @@ private fun NewMiniPlayer(
                             AnimatedContent(
                                 targetState = metadata.artists.joinToString { it.name },
                                 transitionSpec = { fadeIn() togetherWith fadeOut() },
-                                label = "",
+                                label = "ArtistAnimation",
                             ) { artists ->
                                 Text(
                                     text = artists,
@@ -375,12 +226,7 @@ private fun NewMiniPlayer(
                             }
                         }
                         
-                        // Error indicator
-                        androidx.compose.animation.AnimatedVisibility(
-                            visible = error != null,
-                            enter = fadeIn(),
-                            exit = fadeOut(),
-                        ) {
+                        androidx.compose.animation.AnimatedVisibility(visible = error != null) {
                             Text(
                                 text = "Error playing",
                                 color = MaterialTheme.colorScheme.error,
@@ -394,70 +240,58 @@ private fun NewMiniPlayer(
 
                 Spacer(modifier = Modifier.width(12.dp))
 
-                // Subscribe/Subscribed button
-                mediaMetadata?.let { metadata ->
-                    metadata.artists.firstOrNull()?.id?.let { artistId ->
-                        val libraryArtist by database.artist(artistId).collectAsState(initial = null)
-                        val isSubscribed = libraryArtist?.artist?.bookmarkedAt != null
-                        
-                        Box(
-                            contentAlignment = Alignment.Center,
-                            modifier = Modifier
-                                .size(40.dp)
-                                .clip(CircleShape)
-                                .border(
-                                    width = 1.dp,
-                                    color = if (isSubscribed)
-                                        MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
-                                    else
-                                        MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
-                                    shape = CircleShape
-                                )
-                                .background(
-                                    color = if (isSubscribed) 
-                                        MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
-                                    else 
-                                        Color.Transparent,
-                                    shape = CircleShape
-                                )
-                                .clickable {
-                                    database.transaction {
-                                        val artist = libraryArtist?.artist
-                                        if (artist != null) {
-                                            update(artist.toggleLike())
-                                        } else {
-                                            metadata.artists.firstOrNull()?.let { artistInfo ->
-                                                insert(
-                                                    ArtistEntity(
-                                                        id = artistInfo.id ?: "",
-                                                        name = artistInfo.name,
-                                                        channelId = null,
-                                                        thumbnailUrl = null,
-                                                    ).toggleLike()
-                                                )
-                                            }
+                mediaMetadata?.artists?.firstOrNull()?.id?.let { artistId ->
+                    val libraryArtist by database.artist(artistId).collectAsState(initial = null)
+                    val isSubscribed = libraryArtist?.artist?.bookmarkedAt != null
+                    
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .size(40.dp)
+                            .clip(CircleShape)
+                            .border(
+                                width = 1.dp,
+                                color = if (isSubscribed) MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
+                                        else MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
+                                shape = CircleShape
+                            )
+                            .background(
+                                color = if (isSubscribed) MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
+                                        else Color.Transparent,
+                                shape = CircleShape
+                            )
+                            .clickable {
+                                database.transaction {
+                                    val artist = libraryArtist?.artist
+                                    if (artist != null) {
+                                        update(artist.toggleLike())
+                                    } else {
+                                        mediaMetadata?.artists?.firstOrNull()?.let { artistInfo ->
+                                            insert(
+                                                ArtistEntity(
+                                                    id = artistInfo.id ?: "",
+                                                    name = artistInfo.name,
+                                                    channelId = null,
+                                                    thumbnailUrl = null,
+                                                ).toggleLike()
+                                            )
                                         }
                                     }
                                 }
-                        ) {
-                            Icon(
-                                painter = painterResource(
-                                    if (isSubscribed) R.drawable.subscribed else R.drawable.subscribe
-                                ),
-                                contentDescription = null,
-                                tint = if (isSubscribed) 
-                                    MaterialTheme.colorScheme.primary 
-                                else 
-                                    MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
-                                modifier = Modifier.size(20.dp)
-                            )
-                        }
+                            }
+                    ) {
+                        Icon(
+                            painter = painterResource(if (isSubscribed) R.drawable.subscribed else R.drawable.subscribe),
+                            contentDescription = null,
+                            tint = if (isSubscribed) MaterialTheme.colorScheme.primary 
+                                   else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+                            modifier = Modifier.size(20.dp)
+                        )
                     }
                 }
 
                 Spacer(modifier = Modifier.width(8.dp))
 
-                // Favorite button (right side)
                 mediaMetadata?.let { metadata ->
                     val librarySong by database.song(metadata.id).collectAsState(initial = null)
                     val isLiked = librarySong?.song?.liked == true
@@ -469,32 +303,22 @@ private fun NewMiniPlayer(
                             .clip(CircleShape)
                             .border(
                                 width = 1.dp,
-                                color = if (isLiked)
-                                    MaterialTheme.colorScheme.error.copy(alpha = 0.5f)
-                                else
-                                    MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
+                                color = if (isLiked) MaterialTheme.colorScheme.error.copy(alpha = 0.5f)
+                                        else MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
                                 shape = CircleShape
                             )
                             .background(
-                                color = if (isLiked) 
-                                    MaterialTheme.colorScheme.error.copy(alpha = 0.1f)
-                                else 
-                                    Color.Transparent,
+                                color = if (isLiked) MaterialTheme.colorScheme.error.copy(alpha = 0.1f)
+                                        else Color.Transparent,
                                 shape = CircleShape
                             )
-                            .clickable {
-                                playerConnection.service.toggleLike()
-                            }
+                            .clickable { playerConnection.service.toggleLike() }
                     ) {
                         Icon(
-                            painter = painterResource(
-                                if (isLiked) R.drawable.favorite else R.drawable.favorite_border
-                            ),
+                            painter = painterResource(if (isLiked) R.drawable.favorite else R.drawable.favorite_border),
                             contentDescription = null,
-                            tint = if (isLiked) 
-                                MaterialTheme.colorScheme.error 
-                            else 
-                                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+                            tint = if (isLiked) MaterialTheme.colorScheme.error 
+                                   else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
                             modifier = Modifier.size(20.dp)
                         )
                     }
@@ -517,184 +341,67 @@ private fun LegacyMiniPlayer(
     val error by playerConnection.error.collectAsState()
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
     val canSkipNext by playerConnection.canSkipNext.collectAsState()
-    val canSkipPrevious by playerConnection.canSkipPrevious.collectAsState()
-    
-    val currentView = LocalView.current
-    val layoutDirection = LocalLayoutDirection.current
-    val coroutineScope = rememberCoroutineScope()
-    val swipeSensitivity by rememberPreference(SwipeSensitivityKey, 0.73f)
-    val swipeThumbnail by rememberPreference(com.metrolist.music.constants.SwipeThumbnailKey, true)
-    
-    val offsetXAnimatable = remember { Animatable(0f) }
-    var dragStartTime by remember { mutableLongStateOf(0L) }
-    var totalDragDistance by remember { mutableFloatStateOf(0f) }
 
-    val animationSpec = spring<Float>(
-        dampingRatio = Spring.DampingRatioNoBouncy,
-        stiffness = Spring.StiffnessLow
-    )
-
-    fun calculateAutoSwipeThreshold(swipeSensitivity: Float): Int {
-        return (600 / (1f + kotlin.math.exp(-(-11.44748 * swipeSensitivity + 9.04945)))).roundToInt()
-    }
-    val autoSwipeThreshold = calculateAutoSwipeThreshold(swipeSensitivity)
-
-    Box(
+    Surface(
         modifier = modifier
             .fillMaxWidth()
             .height(MiniPlayerHeight)
-            .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Horizontal))
-            .background(
-                if (pureBlack) 
-                    Color.Black 
-                else 
-                    MaterialTheme.colorScheme.surfaceContainer // Fixed background independent of player background
+            .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Horizontal)),
+        color = if (pureBlack) Color.Black else MaterialTheme.colorScheme.surfaceContainer
+    ) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            LinearProgressIndicator(
+                progress = { (position.toFloat() / duration).coerceIn(0f, 1f) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(2.dp)
+                    .align(Alignment.BottomCenter),
             )
-            .let { baseModifier ->
-                if (swipeThumbnail) {
-                    baseModifier.pointerInput(Unit) {
-                        detectHorizontalDragGestures(
-                            onDragStart = {
-                                dragStartTime = System.currentTimeMillis()
-                                totalDragDistance = 0f
-                            },
-                            onDragCancel = {
-                                coroutineScope.launch {
-                                    offsetXAnimatable.animateTo(
-                                        targetValue = 0f,
-                                        animationSpec = animationSpec
-                                    )
-                                }
-                            },
-                            onHorizontalDrag = { _, dragAmount ->
-                                val adjustedDragAmount =
-                                    if (layoutDirection == LayoutDirection.Rtl) -dragAmount else dragAmount
-                                val canSkipPrevious = playerConnection.player.previousMediaItemIndex != -1
-                                val canSkipNext = playerConnection.player.nextMediaItemIndex != -1
-                                val allowLeft = adjustedDragAmount < 0 && canSkipNext
-                                val allowRight = adjustedDragAmount > 0 && canSkipPrevious
-                                if (allowLeft || allowRight) {
-                                    totalDragDistance += kotlin.math.abs(adjustedDragAmount)
-                                    coroutineScope.launch {
-                                        offsetXAnimatable.snapTo(offsetXAnimatable.value + adjustedDragAmount)
-                                    }
-                                }
-                            },
-                            onDragEnd = {
-                                val dragDuration = System.currentTimeMillis() - dragStartTime
-                                val velocity = if (dragDuration > 0) totalDragDistance / dragDuration else 0f
-                                val currentOffset = offsetXAnimatable.value
-                                
-                                val minDistanceThreshold = 50f
-                                val velocityThreshold = (swipeSensitivity * -8.25f) + 8.5f
 
-                                val shouldChangeSong = (
-                                    kotlin.math.abs(currentOffset) > minDistanceThreshold &&
-                                    velocity > velocityThreshold
-                                ) || (kotlin.math.abs(currentOffset) > autoSwipeThreshold)
-                                
-                                if (shouldChangeSong) {
-                                    val isRightSwipe = currentOffset > 0
-                                    
-                                    if (isRightSwipe && canSkipPrevious) {
-                                        playerConnection.player.seekToPreviousMediaItem()
-                                    } else if (!isRightSwipe && canSkipNext) {
-                                        playerConnection.player.seekToNext()
-                                    }
-                                }
-                                
-                                coroutineScope.launch {
-                                    offsetXAnimatable.animateTo(
-                                        targetValue = 0f,
-                                        animationSpec = animationSpec
-                                    )
-                                }
-                            }
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxSize(),
+            ) {
+                Box(Modifier.weight(1f)) {
+                    mediaMetadata?.let {
+                        LegacyMiniMediaInfo(
+                            mediaMetadata = it,
+                            error = error,
+                            modifier = Modifier.padding(horizontal = 6.dp)
                         )
                     }
-                } else {
-                    baseModifier
                 }
-            }
-    ) {
-        LinearProgressIndicator(
-            progress = { (position.toFloat() / duration).coerceIn(0f, 1f) },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(2.dp)
-                .align(Alignment.BottomCenter),
-        )
-        
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .fillMaxSize()
-                .offset { IntOffset(offsetXAnimatable.value.roundToInt(), 0) }
-                .padding(end = 12.dp),
-        ) {
-            Box(Modifier.weight(1f)) {
-                mediaMetadata?.let {
-                    LegacyMiniMediaInfo(
-                        mediaMetadata = it,
-                        error = error,
-                        pureBlack = pureBlack,
-                        modifier = Modifier.padding(horizontal = 6.dp),
+
+                IconButton(
+                    onClick = {
+                        if (playbackState == Player.STATE_ENDED) {
+                            playerConnection.player.seekTo(0, 0)
+                            playerConnection.player.playWhenReady = true
+                        } else {
+                            playerConnection.player.togglePlayPause()
+                        }
+                    },
+                ) {
+                    Icon(
+                        painter = painterResource(
+                            if (playbackState == Player.STATE_ENDED) R.drawable.replay
+                            else if (isPlaying) R.drawable.pause
+                            else R.drawable.play
+                        ),
+                        contentDescription = "Play/Pause",
                     )
                 }
-            }
 
-            IconButton(
-                onClick = {
-                    if (playbackState == Player.STATE_ENDED) {
-                        playerConnection.player.seekTo(0, 0)
-                        playerConnection.player.playWhenReady = true
-                    } else {
-                        playerConnection.player.togglePlayPause()
-                    }
-                },
-            ) {
-                Icon(
-                    painter = painterResource(
-                        if (playbackState == Player.STATE_ENDED) {
-                            R.drawable.replay
-                        } else if (isPlaying) {
-                            R.drawable.pause
-                        } else {
-                            R.drawable.play
-                        },
-                    ),
-                    contentDescription = null,
-                )
-            }
-
-            IconButton(
-                enabled = canSkipNext,
-                onClick = playerConnection::seekToNext,
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.skip_next),
-                    contentDescription = null,
-                )
-            }
-        }
-        
-        // Visual indicator
-        if (offsetXAnimatable.value.absoluteValue > 50f) {
-            Box(
-                modifier = Modifier
-                    .align(if (offsetXAnimatable.value > 0) Alignment.CenterStart else Alignment.CenterEnd)
-                    .padding(horizontal = 16.dp)
-            ) {
-                Icon(
-                    painter = painterResource(
-                        if (offsetXAnimatable.value > 0) R.drawable.skip_previous else R.drawable.skip_next
-                    ),
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary.copy(
-                        alpha = (offsetXAnimatable.value.absoluteValue / autoSwipeThreshold).coerceIn(0f, 1f)
-                    ),
-                    modifier = Modifier.size(24.dp)
-                )
+                IconButton(
+                    enabled = canSkipNext,
+                    onClick = { playerConnection.player.seekToNext() },
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.skip_next),
+                        contentDescription = "Skip Next",
+                        tint = MaterialTheme.colorScheme.onSurface.copy(alpha = if (canSkipNext) 1f else 0.5f)
+                    )
+                }
             }
         }
     }
@@ -704,12 +411,11 @@ private fun LegacyMiniPlayer(
 private fun LegacyMiniMediaInfo(
     mediaMetadata: MediaMetadata,
     error: PlaybackException?,
-    pureBlack: Boolean,
     modifier: Modifier = Modifier,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier,
+        modifier = modifier
     ) {
         Box(
             modifier = Modifier
@@ -717,41 +423,27 @@ private fun LegacyMiniMediaInfo(
                 .size(48.dp)
                 .clip(RoundedCornerShape(ThumbnailCornerRadius))
         ) {
-            // Simple background instead of expensive blur
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.surfaceVariant)
-            )
-
-            // Main thumbnail
             AsyncImage(
                 model = mediaMetadata.thumbnailUrl,
-                contentDescription = null,
-                contentScale = ContentScale.Fit,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .clip(RoundedCornerShape(ThumbnailCornerRadius)),
+                contentDescription = "Album Art",
+                modifier = Modifier.fillMaxSize()
             )
 
             androidx.compose.animation.AnimatedVisibility(
                 visible = error != null,
                 enter = fadeIn(),
-                exit = fadeOut(),
+                exit = fadeOut()
             ) {
                 Box(
                     Modifier
                         .fillMaxSize()
-                        .background(
-                            color = if (pureBlack) Color.Black else Color.Black.copy(alpha = 0.6f),
-                            shape = RoundedCornerShape(ThumbnailCornerRadius),
-                        ),
+                        .background(Color.Black.copy(alpha = 0.6f))
                 ) {
                     Icon(
                         painter = painterResource(R.drawable.info),
-                        contentDescription = null,
+                        contentDescription = "Error",
                         tint = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.align(Alignment.Center),
+                        modifier = Modifier.align(Alignment.Center)
                     )
                 }
             }
@@ -762,37 +454,21 @@ private fun LegacyMiniMediaInfo(
                 .weight(1f)
                 .padding(horizontal = 6.dp),
         ) {
-            AnimatedContent(
-                targetState = mediaMetadata.title,
-                transitionSpec = { fadeIn() togetherWith fadeOut() },
-                label = "",
-            ) { title ->
-                Text(
-                    text = title,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.basicMarquee(),
-                )
-            }
-
-            if (mediaMetadata.artists.any { it.name.isNotBlank() }) {
-                AnimatedContent(
-                    targetState = mediaMetadata.artists.joinToString { it.name },
-                    transitionSpec = { fadeIn() togetherWith fadeOut() },
-                    label = "",
-                ) { artists ->
-                    Text(
-                        text = artists,
-                        color = MaterialTheme.colorScheme.secondary,
-                        fontSize = 12.sp,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                }
-            }
+            Text(
+                text = mediaMetadata.title,
+                color = MaterialTheme.colorScheme.onSurface,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+            Text(
+                text = mediaMetadata.artists.joinToString { it.name },
+                color = MaterialTheme.colorScheme.secondary,
+                fontSize = 12.sp,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
         }
     }
 }
