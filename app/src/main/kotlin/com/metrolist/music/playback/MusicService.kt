@@ -275,7 +275,7 @@ class MusicService :
                 }
 
         audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
-        AudioFocusRequest()
+        setupAudioFocusRequest()
 
         mediaLibrarySessionCallback.apply {
             toggleLike = ::toggleLike
@@ -542,7 +542,7 @@ class MusicService :
         }
     }
 
-    private fun AudioFocusRequest() {
+    private fun setupAudioFocusRequest() {
         audioFocusRequest = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
             .setAudioAttributes(
                 android.media.AudioAttributes.Builder()
