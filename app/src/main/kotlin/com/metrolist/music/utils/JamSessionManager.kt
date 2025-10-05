@@ -28,7 +28,8 @@ class JamSessionManager {
         val participants: List<String> = emptyList(),
         val currentSongId: String? = null,
         val currentPosition: Long = 0,
-        val isPlaying: Boolean = false
+        val isPlaying: Boolean = false,
+        val queueSongIds: List<String> = emptyList()
     )
     
     private val _currentSession = MutableStateFlow<JamSession?>(null)
@@ -102,6 +103,7 @@ class JamSessionManager {
     
     /**
      * Update current playback state in the session and broadcast to peers
+     * Only call this on manual changes (song change, seek, play/pause)
      */
     fun updatePlaybackState(songId: String?, position: Long, isPlaying: Boolean) {
         _currentSession.value?.let { session ->
@@ -114,7 +116,22 @@ class JamSessionManager {
             
             // Broadcast update to peers
             if (_isHost.value) {
-                broadcastUpdate(songId, position, isPlaying)
+                broadcastUpdate(songId, position, isPlaying, session.queueSongIds)
+            }
+        }
+    }
+    
+    /**
+     * Update queue and broadcast to peers
+     */
+    fun updateQueue(queueSongIds: List<String>) {
+        _currentSession.value?.let { session ->
+            val updated = session.copy(queueSongIds = queueSongIds)
+            _currentSession.value = updated
+            
+            // Broadcast queue to peers
+            if (_isHost.value) {
+                broadcastQueue(queueSongIds)
             }
         }
     }
@@ -205,6 +222,21 @@ class JamSessionManager {
                         }
                     }
                 }
+                "QUEUE" -> {
+                    // Queue update from host
+                    if (!_isHost.value) {
+                        val queueData = parts.getOrNull(1) ?: return
+                        val queueIds = if (queueData.isNotEmpty()) {
+                            queueData.split(",")
+                        } else {
+                            emptyList()
+                        }
+                        
+                        _currentSession.value?.let { session ->
+                            _currentSession.value = session.copy(queueSongIds = queueIds)
+                        }
+                    }
+                }
                 "PRESENCE" -> {
                     // Host announcement
                     val hostName = parts.getOrNull(1) ?: return
@@ -241,13 +273,28 @@ class JamSessionManager {
     /**
      * Broadcast playback update to peers
      */
-    private fun broadcastUpdate(songId: String?, position: Long, isPlaying: Boolean) {
+    private fun broadcastUpdate(songId: String?, position: Long, isPlaying: Boolean, queueIds: List<String>) {
         scope.launch {
             try {
                 val message = "UPDATE|$songId|$position|$isPlaying"
                 sendBroadcast(message)
             } catch (e: Exception) {
                 Log.e(TAG, "Error broadcasting update", e)
+            }
+        }
+    }
+    
+    /**
+     * Broadcast queue update to peers
+     */
+    private fun broadcastQueue(queueSongIds: List<String>) {
+        scope.launch {
+            try {
+                val queueData = queueSongIds.joinToString(",")
+                val message = "QUEUE|$queueData"
+                sendBroadcast(message)
+            } catch (e: Exception) {
+                Log.e(TAG, "Error broadcasting queue", e)
             }
         }
     }

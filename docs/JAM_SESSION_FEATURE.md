@@ -94,8 +94,13 @@ This implementation uses **UDP broadcast on local networks** for peer-to-peer co
 ### How It Works
 1. **Session Creation**: Host generates a code that maps to a UDP port (45000-46000 range)
 2. **Network Discovery**: Participants on the same WiFi/local network can discover each other via UDP broadcast
-3. **State Synchronization**: Playback state (song, position, play/pause) is broadcast every second
-4. **No Server Required**: All communication happens directly between devices on the local network
+3. **State Synchronization**: Playback state is broadcast only on manual changes:
+   - Song changes (next/previous/selection)
+   - Manual seeking
+   - Play/pause toggles
+   - Queue modifications
+4. **Queue Sync**: The entire playback queue is synchronized across all devices
+5. **No Server Required**: All communication happens directly between devices on the local network
 
 ### Requirements
 - Devices must be on the same local network (WiFi/LAN)
@@ -111,4 +116,6 @@ This implementation uses **UDP broadcast on local networks** for peer-to-peer co
 - Uses UDP broadcast for serverless local network P2P
 - No database migrations required
 - Minimal code changes for easy maintenance
-- Real-time playback synchronization within ~1 second accuracy
+- Real-time playback synchronization on manual changes only (efficient battery usage)
+- Queue synchronization keeps everyone's playlist in sync
+- Automatic song discovery within existing queue

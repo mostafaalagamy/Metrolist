@@ -86,17 +86,12 @@ class PlayerConnection(
     init {
         player.addListener(this)
         
-        // Start syncing playback state with jam session
+        // Start syncing playback state with jam session (clients only)
         syncJob = scope.launch {
             jamSessionManager.currentSession.collect { session ->
-                if (session != null) {
-                    // Sync playback state if we're the host
-                    if (jamSessionManager.isHost.value) {
-                        syncHostPlaybackState()
-                    } else {
-                        // Follow host's playback state
-                        syncClientPlaybackState()
-                    }
+                if (session != null && !jamSessionManager.isHost.value) {
+                    // Follow host's playback state (clients only)
+                    syncClientPlaybackState()
                 }
             }
         }
@@ -140,12 +135,30 @@ class PlayerConnection(
         player.seekToNext()
         player.prepare()
         player.playWhenReady = true
+        
+        // Sync to jam session on manual song change
+        if (jamSessionManager.isInSession() && jamSessionManager.isHost.value) {
+            jamSessionManager.updatePlaybackState(
+                mediaMetadata.value?.id,
+                player.currentPosition,
+                player.playWhenReady
+            )
+        }
     }
 
     fun seekToPrevious() {
         player.seekToPrevious()
         player.prepare()
         player.playWhenReady = true
+        
+        // Sync to jam session on manual song change
+        if (jamSessionManager.isInSession() && jamSessionManager.isHost.value) {
+            jamSessionManager.updatePlaybackState(
+                mediaMetadata.value?.id,
+                player.currentPosition,
+                player.playWhenReady
+            )
+        }
     }
 
     override fun onPlaybackStateChanged(state: Int) {
@@ -158,6 +171,15 @@ class PlayerConnection(
         reason: Int,
     ) {
         playWhenReady.value = newPlayWhenReady
+        
+        // Sync play/pause state to jam session on manual change
+        if (jamSessionManager.isInSession() && jamSessionManager.isHost.value) {
+            jamSessionManager.updatePlaybackState(
+                mediaMetadata.value?.id,
+                player.currentPosition,
+                newPlayWhenReady
+            )
+        }
     }
 
     override fun onMediaItemTransition(
@@ -168,6 +190,15 @@ class PlayerConnection(
         currentMediaItemIndex.value = player.currentMediaItemIndex
         currentWindowIndex.value = player.getCurrentQueueIndex()
         updateCanSkipPreviousAndNext()
+        
+        // Sync song change to jam session
+        if (jamSessionManager.isInSession() && jamSessionManager.isHost.value) {
+            jamSessionManager.updatePlaybackState(
+                mediaItem?.metadata?.id,
+                player.currentPosition,
+                player.playWhenReady
+            )
+        }
     }
 
     override fun onTimelineChanged(
@@ -179,6 +210,17 @@ class PlayerConnection(
         currentMediaItemIndex.value = player.currentMediaItemIndex
         currentWindowIndex.value = player.getCurrentQueueIndex()
         updateCanSkipPreviousAndNext()
+        
+        // Sync queue to jam session on timeline change
+        if (jamSessionManager.isInSession() && jamSessionManager.isHost.value) {
+            val queueIds = mutableListOf<String>()
+            for (i in 0 until timeline.windowCount) {
+                val window = Timeline.Window()
+                timeline.getWindow(i, window)
+                window.mediaItem.metadata?.id?.let { queueIds.add(it) }
+            }
+            jamSessionManager.updateQueue(queueIds)
+        }
     }
 
     override fun onShuffleModeEnabledChanged(enabled: Boolean) {
@@ -223,41 +265,49 @@ class PlayerConnection(
     }
     
     /**
-     * Sync playback state to jam session (for hosts)
-     */
-    private suspend fun syncHostPlaybackState() {
-        while (isActive) {
-            delay(1000) // Update every second
-            val currentSongId = mediaMetadata.value?.id
-            val position = player.currentPosition
-            val isPlaying = player.playWhenReady && playbackState.value == Player.STATE_READY
-            
-            jamSessionManager.updatePlaybackState(currentSongId, position, isPlaying)
-        }
-    }
-    
-    /**
      * Sync playback state from jam session (for clients)
+     * This only runs when updates are received from the host
      */
     private suspend fun syncClientPlaybackState() {
+        var lastSyncedSongId: String? = null
+        var lastSyncedQueueHash: Int = 0
+        
         jamSessionManager.currentSession.collect { session ->
             if (session != null) {
-                // Check if song changed
+                // Sync song change
                 val currentSongId = mediaMetadata.value?.id
                 if (session.currentSongId != null && session.currentSongId != currentSongId) {
-                    // TODO: Queue the song if we have it
-                    // For now, just log it
+                    if (session.currentSongId != lastSyncedSongId) {
+                        lastSyncedSongId = session.currentSongId
+                        // Find and play the song in the queue
+                        for (i in 0 until player.mediaItemCount) {
+                            if (player.getMediaItemAt(i).metadata?.id == session.currentSongId) {
+                                player.seekTo(i, session.currentPosition)
+                                player.playWhenReady = session.isPlaying
+                                break
+                            }
+                        }
+                    }
                 }
                 
                 // Sync position if difference is more than 2 seconds
                 val positionDiff = kotlin.math.abs(player.currentPosition - session.currentPosition)
-                if (positionDiff > 2000) {
+                if (positionDiff > 2000 && session.currentSongId == currentSongId) {
                     player.seekTo(session.currentPosition)
                 }
                 
                 // Sync play/pause state
                 if (session.isPlaying != player.playWhenReady) {
                     player.playWhenReady = session.isPlaying
+                }
+                
+                // Sync queue if changed
+                val queueHash = session.queueSongIds.hashCode()
+                if (queueHash != lastSyncedQueueHash && session.queueSongIds.isNotEmpty()) {
+                    lastSyncedQueueHash = queueHash
+                    // Queue sync would require access to the song database
+                    // For now, just log it
+                    // TODO: Implement queue synchronization with database access
                 }
             }
         }
