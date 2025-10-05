@@ -234,7 +234,7 @@ fun LyricsScreen(
                 PlayerBackgroundStyle.BLUR -> {
                     Crossfade(
                         targetState = mediaMetadata.thumbnailUrl,
-                        animationSpec = tween(600)
+                        animationSpec = tween(800)
                     ) { thumbnailUrl ->
                         if (thumbnailUrl != null) {
                             AsyncImage(
@@ -243,7 +243,7 @@ fun LyricsScreen(
                                 contentScale = ContentScale.FillBounds,
                                 modifier = Modifier
                                     .fillMaxSize()
-                                    .blur(220.dp)
+                                    .blur(if (useDarkTheme) 150.dp else 100.dp)
                             )
                             Box(
                                 modifier = Modifier
@@ -256,13 +256,21 @@ fun LyricsScreen(
                 PlayerBackgroundStyle.GRADIENT -> {
                     Crossfade(
                         targetState = gradientColors,
-                        animationSpec = tween(600)
+                        animationSpec = tween(800)
                     ) { colors ->
                         if (colors.isNotEmpty()) {
                             val gradientColorStops = if (colors.size >= 3) {
-                                arrayOf(0.0f to colors[0], 0.5f to colors[1], 1.0f to colors[2])
+                                arrayOf(
+                                    0.0f to colors[0],
+                                    0.5f to colors[1],
+                                    1.0f to colors[2]
+                                )
                             } else {
-                                arrayOf(0.0f to colors[0], 0.6f to colors[0].copy(alpha = 0.7f), 1.0f to Color.Black)
+                                arrayOf(
+                                    0.0f to colors[0],
+                                    0.6f to colors[0].copy(alpha = 0.7f),
+                                    1.0f to Color.Black
+                                )
                             }
                             Box(
                                 modifier = Modifier
