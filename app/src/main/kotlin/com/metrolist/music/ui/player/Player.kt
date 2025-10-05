@@ -125,6 +125,7 @@ import com.metrolist.music.ui.component.BottomSheetState
 import com.metrolist.music.ui.component.LocalBottomSheetPageState
 import com.metrolist.music.ui.component.LocalMenuState
 import com.metrolist.music.ui.component.PlayerSliderTrack
+import com.metrolist.music.ui.component.JamSessionDialog
 import com.metrolist.music.ui.component.ResizableIconButton
 import com.metrolist.music.ui.component.rememberBottomSheetState
 import com.metrolist.music.ui.menu.PlayerMenu
@@ -408,6 +409,17 @@ fun BottomSheetPlayer(
         mutableStateOf(false)
     }
 
+    var showJamSessionDialog by rememberSaveable {
+        mutableStateOf(false)
+    }
+
+    if (showJamSessionDialog) {
+        JamSessionDialog(
+            jamSessionManager = playerConnection.jamSessionManager,
+            onDismiss = { showJamSessionDialog = false }
+        )
+    }
+
     LaunchedEffect(playbackState) {
         if (playbackState == STATE_READY) {
             while (isActive) {
@@ -675,6 +687,36 @@ fun BottomSheetPlayer(
                                     .size(24.dp)
                             )
                         }
+
+                        // Jam Session button for new design
+                        Box(
+                            modifier = Modifier
+                                .size(42.dp)
+                                .clip(RoundedCornerShape(24.dp))
+                                .background(
+                                    if (playerConnection.jamSessionManager.isInSession()) 
+                                        MaterialTheme.colorScheme.primaryContainer 
+                                    else 
+                                        textButtonColor
+                                )
+                                .clickable {
+                                    showJamSessionDialog = true
+                                }
+                        ) {
+                            Image(
+                                painter = painterResource(R.drawable.account),
+                                contentDescription = "Jam Session",
+                                colorFilter = ColorFilter.tint(
+                                    if (playerConnection.jamSessionManager.isInSession()) 
+                                        MaterialTheme.colorScheme.onPrimaryContainer 
+                                    else 
+                                        iconButtonColor
+                                ),
+                                modifier = Modifier
+                                    .align(Alignment.Center)
+                                    .size(24.dp)
+                            )
+                        }
                     }
                 } else {
                     Box(
@@ -700,6 +742,41 @@ fun BottomSheetPlayer(
                             painter = painterResource(R.drawable.share),
                             contentDescription = null,
                             colorFilter = ColorFilter.tint(iconButtonColor),
+                            modifier =
+                            Modifier
+                                .align(Alignment.Center)
+                                .size(24.dp),
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.size(12.dp))
+
+                    // Jam Session button
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier =
+                        Modifier
+                            .size(40.dp)
+                            .clip(RoundedCornerShape(24.dp))
+                            .background(
+                                if (playerConnection.jamSessionManager.isInSession()) 
+                                    MaterialTheme.colorScheme.primaryContainer 
+                                else 
+                                    textButtonColor
+                            )
+                            .clickable {
+                                showJamSessionDialog = true
+                            },
+                    ) {
+                        Image(
+                            painter = painterResource(R.drawable.account),
+                            contentDescription = "Jam Session",
+                            colorFilter = ColorFilter.tint(
+                                if (playerConnection.jamSessionManager.isInSession()) 
+                                    MaterialTheme.colorScheme.onPrimaryContainer 
+                                else 
+                                    iconButtonColor
+                            ),
                             modifier =
                             Modifier
                                 .align(Alignment.Center)
