@@ -38,12 +38,14 @@ import com.metrolist.music.ui.component.SearchBarIconOffsetX
 import com.metrolist.music.ui.component.YouTubeListItem
 import com.metrolist.music.ui.menu.*
 import com.metrolist.music.viewmodels.OnlineSearchSuggestionViewModel
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.drop
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import androidx.compose.ui.graphics.Color
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class, FlowPreview::class)
 @Composable
 fun OnlineSearchScreen(
     query: String,
@@ -79,7 +81,9 @@ fun OnlineSearchScreen(
     }
 
     LaunchedEffect(query) {
-        viewModel.query.value = query
+        snapshotFlow { query }.debounce(300L).collectLatest {
+            viewModel.query.value = it
+        }
     }
 
     LazyColumn(
@@ -134,7 +138,7 @@ fun OnlineSearchScreen(
             }
         }
 
-        items(viewState.items.distinctBy { it.id }, key = { "item_${it.id}" }) { item ->
+        items(viewState.items, key = { "item_${it.id}" }) { item ->
             YouTubeListItem(
                 item = item,
                 isActive = when (item) {
