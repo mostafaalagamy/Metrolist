@@ -39,7 +39,7 @@ private val client = HttpClient {
         deflate()
     }
 
-    // Removed HttpTimeout as requested
+    
 }
 
 private const val PAGE_SIZE = 8

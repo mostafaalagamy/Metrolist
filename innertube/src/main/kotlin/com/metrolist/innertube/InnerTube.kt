@@ -73,7 +73,7 @@ class InnerTube {
             deflate(0.8F)
         }
 
-        // Removed HttpTimeout as requested
+        
 
         proxy?.let {
             engine {

@@ -27,7 +27,7 @@ object LrcLib {
                 )
             }
 
-            // Removed HttpTimeout as requested
+            
 
             defaultRequest {
                 url("https://lrclib.net")

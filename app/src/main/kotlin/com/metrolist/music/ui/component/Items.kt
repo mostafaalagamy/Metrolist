@@ -1440,7 +1440,7 @@ fun SwipeToSongBox(
                     Alignment.CenterStart
                 ) else
                 Quadruple(
-                    R.drawable.small_icon,
+                    R.drawable.queue_music,
                     MaterialTheme.colorScheme.primary,
                     MaterialTheme.colorScheme.onPrimary,
                     Alignment.CenterEnd

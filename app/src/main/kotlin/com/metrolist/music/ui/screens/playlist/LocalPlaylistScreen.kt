@@ -1470,7 +1470,7 @@ fun LocalPlaylistHeader(
                         modifier = Modifier.size(40.dp)
                     ) {
                         Icon(
-                            painter = painterResource(R.drawable.small_icon),
+                            painter = painterResource(R.drawable.queue_music),
                             contentDescription = null,
                             modifier = Modifier.size(24.dp)
                         )

@@ -31,7 +31,7 @@ class ApiService {
                 encodeDefaults = true
             })
         }
-        // Removed HttpTimeout as requested
+        
         install(HttpCache)
     }
 

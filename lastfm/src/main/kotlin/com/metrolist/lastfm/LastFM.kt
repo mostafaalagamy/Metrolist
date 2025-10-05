@@ -20,7 +20,7 @@ object LastFM {
             install(ContentNegotiation) {
                 json(Json { isLenient = true; ignoreUnknownKeys = true })
             }
-            // Removed HttpTimeout as requested
+            
             defaultRequest { url("https://ws.audioscrobbler.com/2.0/") }
             expectSuccess = true
         }
