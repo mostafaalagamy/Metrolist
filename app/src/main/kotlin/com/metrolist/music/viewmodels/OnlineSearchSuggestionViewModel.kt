@@ -45,6 +45,8 @@ constructor(
                         }
                     } else {
                         val result = YouTube.searchSuggestions(query).getOrNull()
+                        val hideExplicit = context.dataStore.get(HideExplicitKey, false)
+
                         database
                             .searchHistory(query)
                             .map { it.take(3) }
@@ -54,18 +56,15 @@ constructor(
                                     suggestions =
                                     result
                                         ?.queries
-                                        ?.filter { query ->
-                                            history.none { it.query == query }
+                                        ?.filter { suggestionQuery ->
+                                            history.none { it.query == suggestionQuery }
                                         }.orEmpty(),
                                     items =
                                     result
                                         ?.recommendedItems
-                                        ?.filterExplicit(
-                                            context.dataStore.get(
-                                                HideExplicitKey,
-                                                false,
-                                            ),
-                                        ).orEmpty(),
+                                        ?.distinctBy { it.id }
+                                        ?.filterExplicit(hideExplicit)
+                                        .orEmpty(),
                                 )
                             }
                     }
