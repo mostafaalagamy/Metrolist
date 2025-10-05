@@ -21,11 +21,15 @@ import com.metrolist.music.utils.JamSessionManager
 import com.metrolist.music.utils.reportException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class PlayerConnection(
@@ -76,9 +80,26 @@ class PlayerConnection(
 
     // Jam Session Manager for listening with friends
     val jamSessionManager = JamSessionManager()
+    
+    private var syncJob: kotlinx.coroutines.Job? = null
 
     init {
         player.addListener(this)
+        
+        // Start syncing playback state with jam session
+        syncJob = scope.launch {
+            jamSessionManager.currentSession.collect { session ->
+                if (session != null) {
+                    // Sync playback state if we're the host
+                    if (jamSessionManager.isHost.value) {
+                        syncHostPlaybackState()
+                    } else {
+                        // Follow host's playback state
+                        syncClientPlaybackState()
+                    }
+                }
+            }
+        }
 
         playbackState.value = player.playbackState
         playWhenReady.value = player.playWhenReady
@@ -197,5 +218,48 @@ class PlayerConnection(
 
     fun dispose() {
         player.removeListener(this)
+        syncJob?.cancel()
+        jamSessionManager.leaveSession()
+    }
+    
+    /**
+     * Sync playback state to jam session (for hosts)
+     */
+    private suspend fun syncHostPlaybackState() {
+        while (isActive) {
+            delay(1000) // Update every second
+            val currentSongId = mediaMetadata.value?.id
+            val position = player.currentPosition
+            val isPlaying = player.playWhenReady && playbackState.value == Player.STATE_READY
+            
+            jamSessionManager.updatePlaybackState(currentSongId, position, isPlaying)
+        }
+    }
+    
+    /**
+     * Sync playback state from jam session (for clients)
+     */
+    private suspend fun syncClientPlaybackState() {
+        jamSessionManager.currentSession.collect { session ->
+            if (session != null) {
+                // Check if song changed
+                val currentSongId = mediaMetadata.value?.id
+                if (session.currentSongId != null && session.currentSongId != currentSongId) {
+                    // TODO: Queue the song if we have it
+                    // For now, just log it
+                }
+                
+                // Sync position if difference is more than 2 seconds
+                val positionDiff = kotlin.math.abs(player.currentPosition - session.currentPosition)
+                if (positionDiff > 2000) {
+                    player.seekTo(session.currentPosition)
+                }
+                
+                // Sync play/pause state
+                if (session.isPlaying != player.playWhenReady) {
+                    player.playWhenReady = session.isPlaying
+                }
+            }
+        }
     }
 }

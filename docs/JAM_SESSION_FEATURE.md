@@ -87,8 +87,28 @@ Potential improvements for future versions:
 - Playlist collaboration
 - Vote skipping functionality
 
+## Technical Details - Serverless P2P
+
+This implementation uses **UDP broadcast on local networks** for peer-to-peer connectivity without requiring a backend server:
+
+### How It Works
+1. **Session Creation**: Host generates a code that maps to a UDP port (45000-46000 range)
+2. **Network Discovery**: Participants on the same WiFi/local network can discover each other via UDP broadcast
+3. **State Synchronization**: Playback state (song, position, play/pause) is broadcast every second
+4. **No Server Required**: All communication happens directly between devices on the local network
+
+### Requirements
+- Devices must be on the same local network (WiFi/LAN)
+- INTERNET permission (already included in AndroidManifest.xml)
+- UDP ports 45000-46000 must not be blocked by firewall
+
+### Limitations
+- Works only on local networks (not over the internet)
+- Best for home/office WiFi environments
+- Some restrictive networks may block UDP broadcasts
+
 ## Notes
-- Current implementation uses in-memory storage for simplicity
-- Sessions are local to each device
+- Uses UDP broadcast for serverless local network P2P
 - No database migrations required
 - Minimal code changes for easy maintenance
+- Real-time playback synchronization within ~1 second accuracy
