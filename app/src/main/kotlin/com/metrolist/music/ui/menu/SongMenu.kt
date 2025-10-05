@@ -421,7 +421,7 @@ fun SongMenu(
                 headlineContent = { Text(text = stringResource(R.string.add_to_queue)) },
                 leadingContent = {
                     Icon(
-                        painter = painterResource(R.drawable.queue_music),
+                        painter = painterResource(R.drawable.small_icon),
                         contentDescription = null,
                     )
                 },

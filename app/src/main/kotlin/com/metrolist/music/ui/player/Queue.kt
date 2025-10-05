@@ -256,7 +256,7 @@ fun Queue(
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
-                            painter = painterResource(id = R.drawable.queue_music),
+                            painter = painterResource(id = R.drawable.small_icon),
                             contentDescription = null,
                             modifier = Modifier.size(iconSize),
                             tint = TextBackgroundColor
@@ -421,7 +421,7 @@ fun Queue(
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             Icon(
-                                painter = painterResource(id = R.drawable.queue_music),
+                                painter = painterResource(id = R.drawable.small_icon),
                                 contentDescription = null,
                                 modifier = Modifier.size(20.dp),
                                 tint = TextBackgroundColor
@@ -873,7 +873,7 @@ fun Queue(
                                         },
                                     ) {
                                         Icon(
-                                            painter = painterResource(R.drawable.queue_music),
+                                            painter = painterResource(R.drawable.small_icon),
                                             contentDescription = null,
                                         )
                                     }

@@ -278,8 +278,8 @@ fun OnlinePlaylistScreen(
                                             .data(playlist.thumbnail)
                                             .build(),
                                         contentDescription = null,
-                                        placeholder = painterResource(R.drawable.queue_music),
-                                        error = painterResource(R.drawable.queue_music),
+                                        placeholder = painterResource(R.drawable.small_icon),
+                                        error = painterResource(R.drawable.small_icon),
                                         modifier = Modifier
                                             .fillMaxWidth()
                                             .clip(RoundedCornerShape(ThumbnailCornerRadius)),

@@ -419,7 +419,7 @@ fun AutoPlaylistScreen(
                                                 },
                                             ) {
                                                 Icon(
-                                                    painter = painterResource(R.drawable.queue_music),
+                                                    painter = painterResource(R.drawable.small_icon),
                                                     contentDescription = null,
                                                 )
                                             }

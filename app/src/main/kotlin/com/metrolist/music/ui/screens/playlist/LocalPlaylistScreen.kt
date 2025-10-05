@@ -1120,7 +1120,7 @@ fun LocalPlaylistHeader(
                         .background(MaterialTheme.colorScheme.surfaceContainer)
                 ) {
                     Icon(
-                        painter = painterResource(R.drawable.queue_music),
+                        painter = painterResource(R.drawable.small_icon),
                         contentDescription = null,
                         tint = LocalContentColor.current.copy(alpha = 0.8f),
                         modifier = Modifier.size(AlbumThumbnailSize / 2)
@@ -1138,8 +1138,8 @@ fun LocalPlaylistHeader(
                                 .data(overrideThumbnail.value ?: playlist.thumbnails[0])
                                 .build(),
                             contentDescription = null,
-                            placeholder = painterResource(R.drawable.queue_music),
-                            error = painterResource(R.drawable.queue_music),
+                            placeholder = painterResource(R.drawable.small_icon),
+                            error = painterResource(R.drawable.small_icon),
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .clip(RoundedCornerShape(ThumbnailCornerRadius))
@@ -1214,8 +1214,8 @@ fun LocalPlaylistHeader(
                                     .build(),
                                 contentDescription = null,
                                 contentScale = ContentScale.Crop,
-                                placeholder = painterResource(R.drawable.queue_music),
-                                error = painterResource(R.drawable.queue_music),
+                                placeholder = painterResource(R.drawable.small_icon),
+                                error = painterResource(R.drawable.small_icon),
                                 modifier =
                                     Modifier
                                         .align(alignment)
@@ -1470,7 +1470,7 @@ fun LocalPlaylistHeader(
                         modifier = Modifier.size(40.dp)
                     ) {
                         Icon(
-                            painter = painterResource(R.drawable.queue_music),
+                            painter = painterResource(R.drawable.small_icon),
                             contentDescription = null,
                             modifier = Modifier.size(24.dp)
                         )

@@ -84,6 +84,8 @@ import androidx.media3.exoplayer.offline.Download.STATE_QUEUED
 import coil3.compose.AsyncImage
 import coil3.compose.AsyncImagePainter
 import coil3.request.ImageRequest
+import coil3.request.diskCacheKey
+import coil3.request.memoryCacheKey
 import com.metrolist.innertube.YouTube
 import com.metrolist.innertube.models.SongItem
 import com.metrolist.innertube.models.AlbumItem
@@ -656,7 +658,7 @@ fun PlaylistListItem(
                     stringResource(R.string.cached_playlist) -> R.drawable.cached
                     // R.drawable.backup as placeholder
                     stringResource(R.string.uploaded_playlist) -> R.drawable.backup
-                    else -> if (autoPlaylist) R.drawable.trending_up else R.drawable.queue_music
+                    else -> if (autoPlaylist) R.drawable.trending_up else R.drawable.small_icon
                 }
                 Icon(
                     painter = painterResource(painter),
@@ -729,7 +731,7 @@ fun PlaylistGridItem(
                     stringResource(R.string.cached_playlist) -> R.drawable.cached
                     // R.drawable.backup as placeholder
                     stringResource(R.string.uploaded_playlist) -> R.drawable.backup
-                    else -> if (autoPlaylist) R.drawable.trending_up else R.drawable.queue_music
+                    else -> if (autoPlaylist) R.drawable.trending_up else R.drawable.small_icon
                 }
                 Box(
                     contentAlignment = Alignment.Center,
@@ -1254,15 +1256,15 @@ fun PlaylistThumbnail(
         1 -> AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
                 .data(thumbnails[0])
-                .apply { }
+                .apply { cacheKey?.let { memoryCacheKey(it); diskCacheKey(it) } }
                 .memoryCachePolicy(coil3.request.CachePolicy.ENABLED)
                 .diskCachePolicy(coil3.request.CachePolicy.ENABLED)
                 .networkCachePolicy(coil3.request.CachePolicy.ENABLED)
                 .build(),
             contentDescription = null,
             contentScale = ContentScale.Crop,
-            placeholder = painterResource(R.drawable.queue_music),
-            error = painterResource(R.drawable.queue_music),
+            placeholder = painterResource(R.drawable.small_icon),
+            error = painterResource(R.drawable.small_icon),
             modifier = Modifier
                 .size(size)
                 .clip(shape)
@@ -1281,15 +1283,15 @@ fun PlaylistThumbnail(
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
                         .data(thumbnails.getOrNull(index))
-                        .apply { }
+                        .apply { cacheKey?.let { val k = "${it}_$index"; memoryCacheKey(k); diskCacheKey(k) } }
                         .memoryCachePolicy(coil3.request.CachePolicy.ENABLED)
                         .diskCachePolicy(coil3.request.CachePolicy.ENABLED)
                         .networkCachePolicy(coil3.request.CachePolicy.ENABLED)
                         .build(),
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
-                    placeholder = painterResource(R.drawable.queue_music),
-                    error = painterResource(R.drawable.queue_music),
+                    placeholder = painterResource(R.drawable.small_icon),
+                    error = painterResource(R.drawable.small_icon),
                     modifier = Modifier
                         .align(alignment)
                         .size(size / 2)
@@ -1440,7 +1442,7 @@ fun SwipeToSongBox(
                     Alignment.CenterStart
                 ) else
                 Quadruple(
-                    R.drawable.queue_music,
+                    R.drawable.small_icon,
                     MaterialTheme.colorScheme.primary,
                     MaterialTheme.colorScheme.onPrimary,
                     Alignment.CenterEnd
