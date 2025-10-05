@@ -232,6 +232,7 @@ fun LyricsScreen(
         ) {
             when (playerBackground) {
                 PlayerBackgroundStyle.BLUR -> {
+                    // Disable crossfade transitions as requested
                     Crossfade(
                         targetState = mediaMetadata.thumbnailUrl,
                         animationSpec = tween(800)
@@ -254,6 +255,7 @@ fun LyricsScreen(
                     }
                 }
                 PlayerBackgroundStyle.GRADIENT -> {
+                    // Disable crossfade transitions as requested
                     Crossfade(
                         targetState = gradientColors,
                         animationSpec = tween(800)

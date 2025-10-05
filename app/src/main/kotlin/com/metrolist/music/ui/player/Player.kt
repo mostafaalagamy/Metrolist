@@ -1042,6 +1042,7 @@ fun BottomSheetPlayer(
 
             when (playerBackground) {
                 PlayerBackgroundStyle.BLUR -> {
+                    // Disable crossfade transitions as requested
                     Crossfade(
                         targetState = mediaMetadata?.thumbnailUrl,
                         animationSpec = tween(800)
@@ -1070,6 +1071,7 @@ fun BottomSheetPlayer(
                     }
                 }
                 PlayerBackgroundStyle.GRADIENT -> {
+                    // Disable crossfade transitions as requested
                     Crossfade(
                         targetState = gradientColors,
                         animationSpec = tween(800)

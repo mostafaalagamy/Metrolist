@@ -139,7 +139,7 @@ fun LyricsImageCard(
     val painter = rememberAsyncImagePainter(
         ImageRequest.Builder(context)
             .data(mediaMetadata.thumbnailUrl)
-            .crossfade(true)
+            .crossfade(false)
             .build()
     )
 

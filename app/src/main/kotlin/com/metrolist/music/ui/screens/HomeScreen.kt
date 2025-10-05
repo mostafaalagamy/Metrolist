@@ -520,7 +520,7 @@ fun HomeScreen(
                                             .data(url)
                                             .diskCachePolicy(CachePolicy.ENABLED)
                                             .diskCacheKey(url)
-                                            .crossfade(true)
+                                            .crossfade(false)
                                             .build(),
                                         placeholder = painterResource(id = R.drawable.person),
                                         error = painterResource(id = R.drawable.person),

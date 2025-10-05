@@ -937,6 +937,7 @@ class MainActivity : ComponentActivity() {
                                             )
                                         }
                                     ) {
+                                        // Disable crossfade transitions as requested
                                         Crossfade(
                                             targetState = searchSource,
                                             label = "",

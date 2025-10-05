@@ -109,9 +109,6 @@ import androidx.media3.exoplayer.offline.DownloadService
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
-import coil3.request.diskCacheKey
-import coil3.request.memoryCacheKey
-import coil3.request.ImageRequest
 import com.metrolist.innertube.YouTube
 import com.metrolist.innertube.models.SongItem
 import com.metrolist.innertube.utils.completed
@@ -1139,10 +1136,10 @@ fun LocalPlaylistHeader(
                         AsyncImage(
                             model = ImageRequest.Builder(context)
                                 .data(overrideThumbnail.value ?: playlist.thumbnails[0])
-                                .memoryCacheKey(playlist.playlist.id)
-                                .diskCacheKey(playlist.playlist.id)
                                 .build(),
                             contentDescription = null,
+                            placeholder = painterResource(R.drawable.queue_music),
+                            error = painterResource(R.drawable.queue_music),
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .clip(RoundedCornerShape(ThumbnailCornerRadius))
@@ -1214,11 +1211,11 @@ fun LocalPlaylistHeader(
                             AsyncImage(
                                 model = ImageRequest.Builder(context)
                                     .data(overrideThumbnail.value ?: playlist.thumbnails.getOrNull(index))
-                                    .memoryCacheKey("${playlist.playlist.id}_$index")
-                                    .diskCacheKey("${playlist.playlist.id}_$index")
                                     .build(),
                                 contentDescription = null,
                                 contentScale = ContentScale.Crop,
+                                placeholder = painterResource(R.drawable.queue_music),
+                                error = painterResource(R.drawable.queue_music),
                                 modifier =
                                     Modifier
                                         .align(alignment)
