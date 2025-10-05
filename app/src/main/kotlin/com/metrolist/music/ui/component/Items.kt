@@ -84,8 +84,6 @@ import androidx.media3.exoplayer.offline.Download.STATE_QUEUED
 import coil3.compose.AsyncImage
 import coil3.compose.AsyncImagePainter
 import coil3.request.ImageRequest
-import coil3.request.diskCacheKey
-import coil3.request.memoryCacheKey
 import com.metrolist.innertube.YouTube
 import com.metrolist.innertube.models.SongItem
 import com.metrolist.innertube.models.AlbumItem
@@ -1256,7 +1254,7 @@ fun PlaylistThumbnail(
         1 -> AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
                 .data(thumbnails[0])
-                .apply { cacheKey?.let { memoryCacheKey(it); diskCacheKey(it) } }
+                .apply { /* Removed cache key extensions due to unresolved in env */ }
                 .memoryCachePolicy(coil3.request.CachePolicy.ENABLED)
                 .diskCachePolicy(coil3.request.CachePolicy.ENABLED)
                 .networkCachePolicy(coil3.request.CachePolicy.ENABLED)
@@ -1283,7 +1281,7 @@ fun PlaylistThumbnail(
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
                         .data(thumbnails.getOrNull(index))
-                        .apply { cacheKey?.let { val k = "${it}_$index"; memoryCacheKey(k); diskCacheKey(k) } }
+                        .apply { /* Removed cache key extensions due to unresolved in env */ }
                         .memoryCachePolicy(coil3.request.CachePolicy.ENABLED)
                         .diskCachePolicy(coil3.request.CachePolicy.ENABLED)
                         .networkCachePolicy(coil3.request.CachePolicy.ENABLED)
