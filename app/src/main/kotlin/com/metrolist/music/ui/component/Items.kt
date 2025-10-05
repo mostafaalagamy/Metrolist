@@ -1263,8 +1263,8 @@ fun PlaylistThumbnail(
                 .build(),
             contentDescription = null,
             contentScale = ContentScale.Crop,
-            placeholder = painterResource(R.drawable.small_icon),
-            error = painterResource(R.drawable.small_icon),
+            placeholder = painterResource(R.drawable.queue_music),
+            error = painterResource(R.drawable.queue_music),
             modifier = Modifier
                 .size(size)
                 .clip(shape)
@@ -1290,8 +1290,8 @@ fun PlaylistThumbnail(
                         .build(),
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
-                    placeholder = painterResource(R.drawable.small_icon),
-                    error = painterResource(R.drawable.small_icon),
+                    placeholder = painterResource(R.drawable.queue_music),
+                    error = painterResource(R.drawable.queue_music),
                     modifier = Modifier
                         .align(alignment)
                         .size(size / 2)
