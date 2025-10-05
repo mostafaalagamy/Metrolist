@@ -1,6 +1,10 @@
 package com.metrolist.music.utils
 
+import android.content.Context
 import android.util.Log
+import androidx.datastore.preferences.core.edit
+import com.metrolist.music.constants.JamSessionRelayServerKey
+import com.metrolist.music.dataStore
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.websocket.WebSockets
 import io.ktor.client.plugins.websocket.webSocketSession
@@ -13,6 +17,8 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -22,7 +28,7 @@ import org.apache.commons.lang3.RandomStringUtils
  * WebSocket Relay-based Jam Session Manager
  * Allows creating/joining sessions and syncing playback state via WebSocket relay server
  */
-class JamSessionManager {
+class JamSessionManager(private val context: Context) {
     
     data class JamSession(
         val sessionCode: String,
@@ -47,19 +53,20 @@ class JamSessionManager {
         install(WebSockets)
     }
     
-    // WebSocket relay server URL - can be configured by users
-    private var relayServerUrl = "ws://localhost:8080"
-    
     companion object {
         private const val TAG = "JamSessionManager"
+        private const val DEFAULT_RELAY_SERVER_URL = "ws://localhost:8080"
     }
     
     /**
-     * Configure the WebSocket relay server URL
-     * Default is ws://localhost:8080
+     * Get the relay server URL from preferences
      */
-    fun setRelayServerUrl(url: String) {
-        relayServerUrl = url
+    private suspend fun getRelayServerUrl(): String {
+        return context.dataStore.data
+            .map { preferences ->
+                preferences[JamSessionRelayServerKey] ?: DEFAULT_RELAY_SERVER_URL
+            }
+            .first()
     }
     
     /**
@@ -168,6 +175,7 @@ class JamSessionManager {
         
         listenerJob = scope.launch {
             try {
+                val relayServerUrl = getRelayServerUrl()
                 val url = "$relayServerUrl/$sessionCode"
                 Log.d(TAG, "Connecting to WebSocket relay: $url")
                 

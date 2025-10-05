@@ -79,7 +79,7 @@ class PlayerConnection(
     val waitingForNetworkConnection = service.waitingForNetworkConnection
 
     // Jam Session Manager for listening with friends
-    val jamSessionManager = JamSessionManager()
+    val jamSessionManager = JamSessionManager(context)
     
     private var syncJob: kotlinx.coroutines.Job? = null
 
