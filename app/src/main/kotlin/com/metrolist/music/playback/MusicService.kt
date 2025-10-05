@@ -275,7 +275,7 @@ class MusicService :
                 }
 
         audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
-        setupAudioFocusRequest()
+        AudioFocusRequest()
 
         mediaLibrarySessionCallback.apply {
             toggleLike = ::toggleLike
@@ -542,7 +542,7 @@ class MusicService :
         }
     }
 
-    private fun setupAudioFocusRequest() {
+    private fun AudioFocusRequest() {
         audioFocusRequest = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
             .setAudioAttributes(
                 android.media.AudioAttributes.Builder()
@@ -977,6 +977,24 @@ class MusicService :
             val audioSessionId = player.audioSessionId
             if (audioSessionId != C.AUDIO_SESSION_ID_UNSET) {
                 loudnessEnhancer = LoudnessEnhancer(audioSessionId)
+                val currentMediaId = player.currentMediaItem?.mediaId
+                runBlocking {
+                    val normalizeAudio = dataStore.data.map { it[AudioNormalizationKey] ?: true }.first()
+                    if (normalizeAudio && currentMediaId != null) {
+                        val format = database.format(currentMediaId).first()
+                        val loudnessDb = format?.loudnessDb
+
+                        if (loudnessDb != null) {
+                            val targetGain = (-loudnessDb * 100).toInt()
+                            val clampedGain = targetGain.coerceIn(MIN_GAIN_MB, MAX_GAIN_MB)
+
+                            loudnessEnhancer?.setTargetGain(clampedGain)
+                            loudnessEnhancer?.enabled = true
+                        }
+                    } else {
+                        loudnessEnhancer?.enabled = false
+                    }
+                }
             }
         } catch (e: Exception) {
             reportException(e)
