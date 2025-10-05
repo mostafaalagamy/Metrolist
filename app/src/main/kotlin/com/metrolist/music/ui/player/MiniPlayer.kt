@@ -358,19 +358,21 @@ private fun NewMiniPlayer(
                             )
                         }
 
-                        AnimatedContent(
-                            targetState = metadata.artists.joinToString { it.name },
-                            transitionSpec = { fadeIn() togetherWith fadeOut() },
-                            label = "",
-                        ) { artists ->
-                            Text(
-                                text = artists,
-                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
-                                fontSize = 12.sp,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                                modifier = Modifier.basicMarquee(iterations = 1, initialDelayMillis = 3000, velocity = 30.dp),
-                            )
+                        if (metadata.artists.any { it.name.isNotBlank() }) {
+                            AnimatedContent(
+                                targetState = metadata.artists.joinToString { it.name },
+                                transitionSpec = { fadeIn() togetherWith fadeOut() },
+                                label = "",
+                            ) { artists ->
+                                Text(
+                                    text = artists,
+                                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+                                    fontSize = 12.sp,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                    modifier = Modifier.basicMarquee(iterations = 1, initialDelayMillis = 3000, velocity = 30.dp),
+                                )
+                            }
                         }
                         
                         // Error indicator
@@ -776,18 +778,20 @@ private fun LegacyMiniMediaInfo(
                 )
             }
 
-            AnimatedContent(
-                targetState = mediaMetadata.artists.joinToString { it.name },
-                transitionSpec = { fadeIn() togetherWith fadeOut() },
-                label = "",
-            ) { artists ->
-                Text(
-                    text = artists,
-                    color = MaterialTheme.colorScheme.secondary,
-                    fontSize = 12.sp,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
+            if (mediaMetadata.artists.any { it.name.isNotBlank() }) {
+                AnimatedContent(
+                    targetState = mediaMetadata.artists.joinToString { it.name },
+                    transitionSpec = { fadeIn() togetherWith fadeOut() },
+                    label = "",
+                ) { artists ->
+                    Text(
+                        text = artists,
+                        color = MaterialTheme.colorScheme.secondary,
+                        fontSize = 12.sp,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                }
             }
         }
     }
