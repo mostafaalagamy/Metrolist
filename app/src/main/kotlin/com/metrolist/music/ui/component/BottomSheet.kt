@@ -97,7 +97,6 @@ fun BottomSheet(
                     topEnd = if (!state.isExpanded) 16.dp else 0.dp
                 )
             )
-            .background(backgroundColor)
     ) {
         if (!state.isCollapsed && !state.isDismissed) {
             BackHandler(onBack = state::collapseSoft)
