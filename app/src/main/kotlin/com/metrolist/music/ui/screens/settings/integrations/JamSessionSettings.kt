@@ -18,9 +18,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.R
-import com.metrolist.music.constants.JamSessionRelayServerKey
+import com.metrolist.music.constants.JamSessionBrokerUrlKey
 import com.metrolist.music.ui.component.EditTextPreference
 import com.metrolist.music.ui.component.IconButton
+import com.metrolist.music.ui.component.PreferenceEntry
 import com.metrolist.music.ui.component.PreferenceGroupTitle
 import com.metrolist.music.ui.utils.backToMain
 import com.metrolist.music.utils.rememberPreference
@@ -31,7 +32,7 @@ fun JamSessionSettings(
     navController: NavController,
     scrollBehavior: TopAppBarScrollBehavior,
 ) {
-    var relayServerUrl by rememberPreference(JamSessionRelayServerKey, "ws://localhost:8080")
+    var brokerUrl by rememberPreference(JamSessionBrokerUrlKey, "tcp://broker.hivemq.com:1883")
 
     Column(
         Modifier
@@ -41,9 +42,15 @@ fun JamSessionSettings(
         PreferenceGroupTitle(title = stringResource(R.string.jam_session))
 
         EditTextPreference(
-            title = { Text(stringResource(R.string.relay_server_url)) },
-            value = relayServerUrl,
-            onValueChange = { relayServerUrl = it }
+            title = { Text(stringResource(R.string.mqtt_broker_url)) },
+            value = brokerUrl,
+            onValueChange = { brokerUrl = it }
+        )
+        
+        PreferenceEntry(
+            title = { Text(stringResource(R.string.mqtt_broker_info_title)) },
+            description = stringResource(R.string.mqtt_broker_info_desc),
+            onClick = { }
         )
     }
 

@@ -87,194 +87,67 @@ Potential improvements for future versions:
 - Playlist collaboration
 - Vote skipping functionality
 
-## Technical Details - WebSocket Relay Server
+## Technical Details - MQTT-Based Synchronization
 
-This implementation uses **WebSocket relay server** for real-time connectivity, allowing friends to listen together over the internet:
+This implementation uses **MQTT (Message Queuing Telemetry Transport)** for real-time synchronization:
 
 ### How It Works
 1. **Session Creation**: Host generates a unique 6-character session code
-2. **Network Discovery**: All participants connect to the same relay server using the session code
+2. **MQTT Topics**: Each session code creates a unique MQTT topic (e.g., `metrolist/jam/ABC123`)
 3. **State Synchronization**: Playback state is broadcast only on manual changes:
    - Song changes (next/previous/selection)
    - Manual seeking
    - Play/pause toggles
    - Queue modifications
 4. **Queue Sync**: The entire playback queue is synchronized across all devices
-5. **Relay Server**: A simple WebSocket server relays messages between all participants in a session
+5. **Broker-Based**: Uses MQTT broker for message routing (public or private)
 
 ### Requirements
-- A WebSocket relay server (see instructions below)
+- Internet connection
 - INTERNET permission (already included in AndroidManifest.xml)
-- Internet connection for all participants
+- Access to an MQTT broker (public or self-hosted)
 
-### Setting Up the Relay Server
+### Advantages
+- Works over the internet (not limited to local networks)
+- Multiple public brokers available (HiveMQ, Eclipse, Mosquitto)
+- Easy to set up your own broker
+- Scalable and reliable
+- Low bandwidth usage
 
-The relay server is a simple WebSocket server that forwards messages between clients in the same session. You can run it on your own machine or deploy it to a cloud service.
+## Configuration
 
-#### Option 1: Run Locally with Node.js
+### Setting up MQTT Broker
 
-1. Install Node.js if you haven't already
-2. Create a file named `relay-server.js`:
+1. **Go to Settings** → **Integrations** → **Jam Session**
+2. **Configure MQTT Broker URL**
+   - Default: `tcp://broker.hivemq.com:1883` (public HiveMQ broker)
+   - Custom: Your own broker URL
 
-```javascript
-const WebSocket = require('ws');
-const http = require('http');
+### Public Brokers (No Setup Required)
 
-const server = http.createServer();
-const wss = new WebSocket.Server({ server });
+- **HiveMQ**: `tcp://broker.hivemq.com:1883` (default)
+- **Eclipse**: `tcp://test.mosquitto.org:1883`
+- **EMQX**: `tcp://broker.emqx.io:1883`
 
-// Store sessions: sessionCode -> Set of WebSocket connections
-const sessions = new Map();
+### Self-Hosted Broker
 
-wss.on('connection', (ws, req) => {
-    const sessionCode = req.url.slice(1); // Remove leading '/'
-    console.log(`New connection to session: ${sessionCode}`);
-    
-    if (!sessionCode) {
-        ws.close();
-        return;
-    }
-    
-    // Add client to session
-    if (!sessions.has(sessionCode)) {
-        sessions.set(sessionCode, new Set());
-    }
-    sessions.get(sessionCode).add(ws);
-    
-    ws.on('message', (message) => {
-        // Relay message to all other clients in the same session
-        const sessionClients = sessions.get(sessionCode);
-        if (sessionClients) {
-            sessionClients.forEach((client) => {
-                if (client !== ws && client.readyState === WebSocket.OPEN) {
-                    client.send(message);
-                }
-            });
-        }
-    });
-    
-    ws.on('close', () => {
-        // Remove client from session
-        const sessionClients = sessions.get(sessionCode);
-        if (sessionClients) {
-            sessionClients.delete(ws);
-            if (sessionClients.size === 0) {
-                sessions.delete(sessionCode);
-                console.log(`Session ${sessionCode} closed (no clients)`);
-            }
-        }
-    });
-});
+For better privacy and control:
 
-const PORT = process.env.PORT || 8080;
-server.listen(PORT, () => {
-    console.log(`WebSocket relay server running on port ${PORT}`);
-});
-```
-
-3. Install dependencies:
+**Quick Setup with Docker**:
 ```bash
-npm install ws
+docker run -d -p 1883:1883 eclipse-mosquitto
 ```
 
-4. Run the server:
-```bash
-node relay-server.js
-```
+Then set URL in app: `tcp://your-ip:1883`
 
-The server will run on `ws://localhost:8080` by default.
-
-#### Option 2: Run with Python
-
-1. Create a file named `relay_server.py`:
-
-```python
-import asyncio
-import websockets
-from collections import defaultdict
-
-# Store sessions: session_code -> set of websocket connections
-sessions = defaultdict(set)
-
-async def handle_client(websocket, path):
-    session_code = path.strip('/')
-    if not session_code:
-        await websocket.close()
-        return
-    
-    print(f"New connection to session: {session_code}")
-    sessions[session_code].add(websocket)
-    
-    try:
-        async for message in websocket:
-            # Relay message to all other clients in the same session
-            for client in sessions[session_code]:
-                if client != websocket and not client.closed:
-                    await client.send(message)
-    finally:
-        sessions[session_code].discard(websocket)
-        if not sessions[session_code]:
-            del sessions[session_code]
-            print(f"Session {session_code} closed (no clients)")
-
-async def main():
-    port = 8080
-    async with websockets.serve(handle_client, "0.0.0.0", port):
-        print(f"WebSocket relay server running on port {port}")
-        await asyncio.Future()  # run forever
-
-if __name__ == "__main__":
-    asyncio.run(main())
-```
-
-2. Install dependencies:
-```bash
-pip install websockets
-```
-
-3. Run the server:
-```bash
-python relay_server.py
-```
-
-#### Configuring the App
-
-The relay server URL can be configured directly in the app:
-
-1. Open **Settings**
-2. Navigate to **Integrations**
-3. Select **Jam Session**
-4. Enter your relay server URL
-
-**Default:** `ws://localhost:8080` (for local testing)
-
-**Examples:**
-- Local network: `ws://192.168.1.100:8080` (use your computer's IP)
-- Internet (ngrok): `wss://abc123.ngrok.io`
-- Cloud deployment: `wss://your-app.herokuapp.com`
-
-**Note:** Use `wss://` (secure WebSocket) for HTTPS/cloud deployments.
-
-See [Relay Server Configuration Guide](RELAY_SERVER_CONFIGURATION.md) for detailed instructions.
-
-For cloud deployment, you can deploy the relay server to services like:
-- Heroku
-- AWS EC2
-- DigitalOcean
-- Google Cloud Platform
-- Any VPS with WebSocket support
-
-### Limitations
-- Requires a relay server to be running
-- Network latency depends on the relay server location
-- Server needs to handle concurrent connections for all active sessions
+See [JAM_SESSION_MQTT.md](JAM_SESSION_MQTT.md) for detailed setup instructions.
 
 ## Notes
-- Uses WebSocket relay server for internet-based connectivity
-- Allows listening with friends anywhere, not just on local network
+- Uses MQTT for internet-based synchronization
+- Each session code creates a unique MQTT topic (jam room)
 - No database migrations required
 - Minimal code changes for easy maintenance
 - Real-time playback synchronization on manual changes only (efficient battery usage)
 - Queue synchronization keeps everyone's playlist in sync
 - Automatic song discovery within existing queue
-- Simple relay server can be run on any machine or cloud service
+- Easy to deploy your own MQTT broker for privacy

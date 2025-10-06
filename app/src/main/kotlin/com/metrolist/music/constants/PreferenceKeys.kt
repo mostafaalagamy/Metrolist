@@ -81,7 +81,7 @@ val LastFMUsernameKey = stringPreferencesKey("lastfmUsername")
 val EnableLastFMScrobblingKey = booleanPreferencesKey("lastfmScrobblingEnable")
 val LastFMUseNowPlaying = booleanPreferencesKey("lastfmUseNowPlaying")
 
-val JamSessionRelayServerKey = stringPreferencesKey("jamSessionRelayServer")
+val JamSessionBrokerUrlKey = stringPreferencesKey("jamSessionBrokerUrl")
 
 val ScrobbleDelayPercentKey = floatPreferencesKey("scrobbleDelayPercent")
 val ScrobbleMinSongDurationKey = intPreferencesKey("scrobbleMinSongDuration")

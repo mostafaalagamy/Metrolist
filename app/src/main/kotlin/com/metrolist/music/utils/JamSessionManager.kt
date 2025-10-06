@@ -3,14 +3,8 @@ package com.metrolist.music.utils
 import android.content.Context
 import android.util.Log
 import androidx.datastore.preferences.core.edit
-import com.metrolist.music.constants.JamSessionRelayServerKey
+import com.metrolist.music.constants.JamSessionBrokerUrlKey
 import com.metrolist.music.dataStore
-import io.ktor.client.HttpClient
-import io.ktor.client.plugins.websocket.WebSockets
-import io.ktor.client.plugins.websocket.webSocketSession
-import io.ktor.websocket.Frame
-import io.ktor.websocket.readText
-import io.ktor.websocket.send
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -19,14 +13,19 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.receiveAsFlow
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import org.apache.commons.lang3.RandomStringUtils
+import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken
+import org.eclipse.paho.client.mqttv3.MqttCallback
+import org.eclipse.paho.client.mqttv3.MqttClient
+import org.eclipse.paho.client.mqttv3.MqttConnectOptions
+import org.eclipse.paho.client.mqttv3.MqttMessage
+import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence
 
 /**
- * WebSocket Relay-based Jam Session Manager
- * Allows creating/joining sessions and syncing playback state via WebSocket relay server
+ * MQTT-based Jam Session Manager
+ * Allows creating/joining sessions and syncing playback state via MQTT broker
+ * Uses MQTT topics as jam rooms for easy multi-user synchronization
  */
 class JamSessionManager(private val context: Context) {
     
@@ -47,24 +46,22 @@ class JamSessionManager(private val context: Context) {
     val isHost: StateFlow<Boolean> = _isHost.asStateFlow()
     
     private val scope = CoroutineScope(Dispatchers.IO)
-    private var listenerJob: Job? = null
-    private var webSocketSession: io.ktor.client.plugins.websocket.DefaultClientWebSocketSession? = null
-    private val client = HttpClient {
-        install(WebSockets)
-    }
+    private var mqttClient: MqttClient? = null
+    private var currentTopic: String? = null
     
     companion object {
         private const val TAG = "JamSessionManager"
-        private const val DEFAULT_RELAY_SERVER_URL = "ws://localhost:8080"
+        private const val DEFAULT_BROKER_URL = "tcp://broker.hivemq.com:1883" // Public MQTT broker
+        private const val TOPIC_PREFIX = "metrolist/jam/"
     }
     
     /**
-     * Get the relay server URL from preferences
+     * Get the MQTT broker URL from preferences
      */
-    private suspend fun getRelayServerUrl(): String {
+    private suspend fun getBrokerUrl(): String {
         return context.dataStore.data
             .map { preferences ->
-                preferences[JamSessionRelayServerKey] ?: DEFAULT_RELAY_SERVER_URL
+                preferences[JamSessionBrokerUrlKey] ?: DEFAULT_BROKER_URL
             }
             .first()
     }
@@ -82,8 +79,8 @@ class JamSessionManager(private val context: Context) {
         )
         _isHost.value = true
         
-        // Connect to relay server
-        connectToRelay(sessionCode, hostName)
+        // Connect to MQTT broker and subscribe to topic
+        connectToMqttBroker(sessionCode, hostName)
         
         return sessionCode
     }
@@ -100,8 +97,8 @@ class JamSessionManager(private val context: Context) {
             )
             _isHost.value = false
             
-            // Connect to relay server
-            connectToRelay(sessionCode.uppercase(), userName)
+            // Connect to MQTT broker and subscribe to topic
+            connectToMqttBroker(sessionCode.uppercase(), userName)
             
             return true
         } catch (e: Exception) {
@@ -149,15 +146,16 @@ class JamSessionManager(private val context: Context) {
      * Leave the current session
      */
     fun leaveSession() {
-        listenerJob?.cancel()
         scope.launch {
             try {
-                webSocketSession?.close()
+                mqttClient?.disconnect()
+                mqttClient?.close()
+                mqttClient = null
+                currentTopic = null
             } catch (e: Exception) {
-                Log.e(TAG, "Error closing WebSocket", e)
+                Log.e(TAG, "Error disconnecting from MQTT", e)
             }
         }
-        webSocketSession = null
         _currentSession.value = null
         _isHost.value = false
     }
@@ -168,48 +166,62 @@ class JamSessionManager(private val context: Context) {
     fun isInSession(): Boolean = _currentSession.value != null
     
     /**
-     * Connect to WebSocket relay server
+     * Connect to MQTT broker and subscribe to session topic
      */
-    private fun connectToRelay(sessionCode: String, userName: String) {
-        listenerJob?.cancel()
-        
-        listenerJob = scope.launch {
+    private fun connectToMqttBroker(sessionCode: String, userName: String) {
+        scope.launch {
             try {
-                val relayServerUrl = getRelayServerUrl()
-                val url = "$relayServerUrl/$sessionCode"
-                Log.d(TAG, "Connecting to WebSocket relay: $url")
+                val brokerUrl = getBrokerUrl()
+                currentTopic = "$TOPIC_PREFIX$sessionCode"
                 
-                webSocketSession = client.webSocketSession(url)
+                val clientId = "metrolist_${userName}_${System.currentTimeMillis()}"
+                mqttClient = MqttClient(brokerUrl, clientId, MemoryPersistence())
+                
+                val options = MqttConnectOptions().apply {
+                    isCleanSession = true
+                    connectionTimeout = 10
+                    keepAliveInterval = 60
+                }
+                
+                mqttClient?.setCallback(object : MqttCallback {
+                    override fun connectionLost(cause: Throwable?) {
+                        Log.e(TAG, "MQTT connection lost", cause)
+                    }
+                    
+                    override fun messageArrived(topic: String?, message: MqttMessage?) {
+                        message?.let {
+                            val payload = String(it.payload)
+                            handleMqttMessage(payload)
+                        }
+                    }
+                    
+                    override fun deliveryComplete(token: IMqttDeliveryToken?) {
+                        // Message delivered successfully
+                    }
+                })
+                
+                mqttClient?.connect(options)
+                mqttClient?.subscribe(currentTopic, 1)
                 
                 // Announce presence
-                val message = if (_isHost.value) {
+                val presenceMessage = if (_isHost.value) {
                     "PRESENCE|$userName"
                 } else {
                     "JOIN|$userName"
                 }
-                webSocketSession?.send(Frame.Text(message))
+                publishMessage(presenceMessage)
                 
-                // Listen for incoming messages
-                webSocketSession?.incoming?.receiveAsFlow()?.collect { frame ->
-                    when (frame) {
-                        is Frame.Text -> {
-                            val receivedMessage = frame.readText()
-                            handleWebSocketMessage(receivedMessage)
-                        }
-                        else -> {}
-                    }
-                }
+                Log.d(TAG, "Connected to MQTT broker: $brokerUrl, topic: $currentTopic")
             } catch (e: Exception) {
-                Log.e(TAG, "Error connecting to relay server", e)
-                // Optionally notify user that connection failed
+                Log.e(TAG, "Error connecting to MQTT broker", e)
             }
         }
     }
     
     /**
-     * Handle incoming WebSocket messages
+     * Handle incoming MQTT messages
      */
-    private fun handleWebSocketMessage(message: String) {
+    private fun handleMqttMessage(message: String) {
         try {
             val parts = message.split("|")
             if (parts.size < 2) return
@@ -272,16 +284,14 @@ class JamSessionManager(private val context: Context) {
         }
     }
     
-
-    
     /**
-     * Broadcast playback update to peers via WebSocket
+     * Broadcast playback update to peers via MQTT
      */
     private fun broadcastUpdate(songId: String?, position: Long, isPlaying: Boolean, queueIds: List<String>) {
         scope.launch {
             try {
                 val message = "UPDATE|$songId|$position|$isPlaying"
-                sendWebSocketMessage(message)
+                publishMessage(message)
             } catch (e: Exception) {
                 Log.e(TAG, "Error broadcasting update", e)
             }
@@ -289,14 +299,14 @@ class JamSessionManager(private val context: Context) {
     }
     
     /**
-     * Broadcast queue update to peers via WebSocket
+     * Broadcast queue update to peers via MQTT
      */
     private fun broadcastQueue(queueSongIds: List<String>) {
         scope.launch {
             try {
                 val queueData = queueSongIds.joinToString(",")
                 val message = "QUEUE|$queueData"
-                sendWebSocketMessage(message)
+                publishMessage(message)
             } catch (e: Exception) {
                 Log.e(TAG, "Error broadcasting queue", e)
             }
@@ -304,13 +314,19 @@ class JamSessionManager(private val context: Context) {
     }
     
     /**
-     * Send message via WebSocket
+     * Publish message to MQTT topic
      */
-    private suspend fun sendWebSocketMessage(message: String) {
+    private fun publishMessage(message: String) {
         try {
-            webSocketSession?.send(Frame.Text(message))
+            currentTopic?.let { topic ->
+                val mqttMessage = MqttMessage(message.toByteArray()).apply {
+                    qos = 1
+                    isRetained = false
+                }
+                mqttClient?.publish(topic, mqttMessage)
+            }
         } catch (e: Exception) {
-            Log.e(TAG, "Error sending WebSocket message", e)
+            Log.e(TAG, "Error publishing MQTT message", e)
         }
     }
     

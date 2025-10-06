@@ -257,7 +257,9 @@
     <string name="lastfm_integration">Last.fm Integration</string>
     <!-- Jam Session -->
     <string name="jam_session">Jam Session</string>
-    <string name="relay_server_url">Relay Server URL</string>
+    <string name="mqtt_broker_url">MQTT Broker URL</string>
+    <string name="mqtt_broker_info_title">MQTT Broker Information</string>
+    <string name="mqtt_broker_info_desc">Configure your MQTT broker URL (e.g., tcp://broker.hivemq.com:1883). You can use public brokers like HiveMQ, Eclipse, or deploy your own. Each session code creates a unique topic for your jam room.</string>
     <string name="enable_scrobbling">Enable scrobbling</string>
     <string name="lastfm_now_playing">Send Now Playing</string>
     <string name="scrobbling_configuration">Scrobbling Configuration</string>
