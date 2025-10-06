@@ -35,6 +35,7 @@ timber = "5.0.1"
 materialKolor = "3.0.1"
 kuromojiIpadic = "0.9.0"
 extractor = "06b7ae2"
+mqttClient = "1.2.5"
 
 [libraries]
 annotation = { module = "androidx.annotation:annotation", version.ref = "annotation" }
@@ -105,6 +106,9 @@ desugaring = { module = "com.android.tools:desugar_jdk_libs", version.ref = "des
 junit = { module = "junit:junit", version.ref = "junit" }
 
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
+
+mqtt-client = { module = "org.eclipse.paho:org.eclipse.paho.client.mqttv3", version.ref = "mqttClient" }
+mqtt-android-service = { module = "org.eclipse.paho:org.eclipse.paho.android.service", version.ref = "mqttClient" }
 
 multidex = { module = "androidx.multidex:multidex", version.ref = "multidex" }
 

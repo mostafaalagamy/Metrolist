@@ -224,6 +224,9 @@ dependencies {
     implementation(libs.ktor.client.core)
     implementation(libs.ktor.serialization.json)
 
+    implementation(libs.mqtt.client)
+    implementation(libs.mqtt.android.service)
+
     coreLibraryDesugaring(libs.desugaring)
 
     implementation(libs.timber)

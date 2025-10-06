@@ -163,6 +163,8 @@
             </intent-filter>
         </service>
 
+        <service android:name="org.eclipse.paho.android.service.MqttService" />
+
         <receiver
             android:name="androidx.media3.session.MediaButtonReceiver"
             android:exported="true">

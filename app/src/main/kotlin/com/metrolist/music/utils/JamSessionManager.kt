@@ -1,26 +1,33 @@
 package com.metrolist.music.utils
 
+import android.content.Context
 import android.util.Log
+import androidx.datastore.preferences.core.edit
+import com.metrolist.music.constants.JamSessionBrokerUrlKey
+import com.metrolist.music.dataStore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.isActive
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.apache.commons.lang3.RandomStringUtils
-import java.net.DatagramPacket
-import java.net.DatagramSocket
-import java.net.InetAddress
-import kotlin.random.Random
+import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken
+import org.eclipse.paho.client.mqttv3.MqttCallback
+import org.eclipse.paho.client.mqttv3.MqttClient
+import org.eclipse.paho.client.mqttv3.MqttConnectOptions
+import org.eclipse.paho.client.mqttv3.MqttMessage
+import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence
 
 /**
- * Serverless Jam Session Manager using local network P2P
- * Allows creating/joining sessions and syncing playback state via UDP multicast
+ * MQTT-based Jam Session Manager
+ * Allows creating/joining sessions and syncing playback state via MQTT broker
+ * Uses MQTT topics as jam rooms for easy multi-user synchronization
  */
-class JamSessionManager {
+class JamSessionManager(private val context: Context) {
     
     data class JamSession(
         val sessionCode: String,
@@ -39,16 +46,24 @@ class JamSessionManager {
     val isHost: StateFlow<Boolean> = _isHost.asStateFlow()
     
     private val scope = CoroutineScope(Dispatchers.IO)
-    private var listenerJob: Job? = null
-    private var socket: DatagramSocket? = null
-    
-    // Use UDP multicast for local network P2P (serverless)
-    private val MULTICAST_GROUP = "224.0.0.251" // mDNS multicast address
-    private var multicastPort = 0
+    private var mqttClient: MqttClient? = null
+    private var currentTopic: String? = null
     
     companion object {
         private const val TAG = "JamSessionManager"
-        private const val BASE_PORT = 45000
+        private const val DEFAULT_BROKER_URL = "tcp://broker.hivemq.com:1883" // Public MQTT broker
+        private const val TOPIC_PREFIX = "metrolist/jam/"
+    }
+    
+    /**
+     * Get the MQTT broker URL from preferences
+     */
+    private suspend fun getBrokerUrl(): String {
+        return context.dataStore.data
+            .map { preferences ->
+                preferences[JamSessionBrokerUrlKey] ?: DEFAULT_BROKER_URL
+            }
+            .first()
     }
     
     /**
@@ -56,7 +71,6 @@ class JamSessionManager {
      */
     fun createSession(hostName: String): String {
         val sessionCode = generateSessionCode()
-        multicastPort = BASE_PORT + (sessionCode.hashCode() and 0xFFFF) % 1000
         
         _currentSession.value = JamSession(
             sessionCode = sessionCode,
@@ -65,11 +79,8 @@ class JamSessionManager {
         )
         _isHost.value = true
         
-        // Start listening for peers
-        startP2PListener()
-        
-        // Announce presence
-        announcePresence(hostName)
+        // Connect to MQTT broker and subscribe to topic
+        connectToMqttBroker(sessionCode, hostName)
         
         return sessionCode
     }
@@ -79,8 +90,6 @@ class JamSessionManager {
      */
     fun joinSession(sessionCode: String, userName: String): Boolean {
         try {
-            multicastPort = BASE_PORT + (sessionCode.hashCode() and 0xFFFF) % 1000
-            
             _currentSession.value = JamSession(
                 sessionCode = sessionCode.uppercase(),
                 hostName = "Finding host...",
@@ -88,11 +97,8 @@ class JamSessionManager {
             )
             _isHost.value = false
             
-            // Start listening for host
-            startP2PListener()
-            
-            // Announce joining
-            announcePresence(userName)
+            // Connect to MQTT broker and subscribe to topic
+            connectToMqttBroker(sessionCode.uppercase(), userName)
             
             return true
         } catch (e: Exception) {
@@ -140,9 +146,16 @@ class JamSessionManager {
      * Leave the current session
      */
     fun leaveSession() {
-        listenerJob?.cancel()
-        socket?.close()
-        socket = null
+        scope.launch {
+            try {
+                mqttClient?.disconnect()
+                mqttClient?.close()
+                mqttClient = null
+                currentTopic = null
+            } catch (e: Exception) {
+                Log.e(TAG, "Error disconnecting from MQTT", e)
+            }
+        }
         _currentSession.value = null
         _isHost.value = false
     }
@@ -153,43 +166,62 @@ class JamSessionManager {
     fun isInSession(): Boolean = _currentSession.value != null
     
     /**
-     * Start listening for P2P messages on local network
+     * Connect to MQTT broker and subscribe to session topic
      */
-    private fun startP2PListener() {
-        listenerJob?.cancel()
-        
-        listenerJob = scope.launch {
+    private fun connectToMqttBroker(sessionCode: String, userName: String) {
+        scope.launch {
             try {
-                socket = DatagramSocket(multicastPort).apply {
-                    broadcast = true
-                    reuseAddress = true
+                val brokerUrl = getBrokerUrl()
+                currentTopic = "$TOPIC_PREFIX$sessionCode"
+                
+                val clientId = "metrolist_${userName}_${System.currentTimeMillis()}"
+                mqttClient = MqttClient(brokerUrl, clientId, MemoryPersistence())
+                
+                val options = MqttConnectOptions().apply {
+                    isCleanSession = true
+                    connectionTimeout = 10
+                    keepAliveInterval = 60
                 }
                 
-                val buffer = ByteArray(1024)
-                
-                while (isActive) {
-                    try {
-                        val packet = DatagramPacket(buffer, buffer.size)
-                        socket?.receive(packet)
-                        
-                        val message = String(packet.data, 0, packet.length)
-                        handleP2PMessage(message, packet.address.hostAddress ?: "")
-                    } catch (e: Exception) {
-                        if (isActive) {
-                            Log.e(TAG, "Error receiving packet", e)
+                mqttClient?.setCallback(object : MqttCallback {
+                    override fun connectionLost(cause: Throwable?) {
+                        Log.e(TAG, "MQTT connection lost", cause)
+                    }
+                    
+                    override fun messageArrived(topic: String?, message: MqttMessage?) {
+                        message?.let {
+                            val payload = String(it.payload)
+                            handleMqttMessage(payload)
                         }
                     }
+                    
+                    override fun deliveryComplete(token: IMqttDeliveryToken?) {
+                        // Message delivered successfully
+                    }
+                })
+                
+                mqttClient?.connect(options)
+                mqttClient?.subscribe(currentTopic, 1)
+                
+                // Announce presence
+                val presenceMessage = if (_isHost.value) {
+                    "PRESENCE|$userName"
+                } else {
+                    "JOIN|$userName"
                 }
+                publishMessage(presenceMessage)
+                
+                Log.d(TAG, "Connected to MQTT broker: $brokerUrl, topic: $currentTopic")
             } catch (e: Exception) {
-                Log.e(TAG, "Error starting listener", e)
+                Log.e(TAG, "Error connecting to MQTT broker", e)
             }
         }
     }
     
     /**
-     * Handle incoming P2P messages
+     * Handle incoming MQTT messages
      */
-    private fun handleP2PMessage(message: String, fromAddress: String) {
+    private fun handleMqttMessage(message: String) {
         try {
             val parts = message.split("|")
             if (parts.size < 2) return
@@ -253,31 +285,13 @@ class JamSessionManager {
     }
     
     /**
-     * Announce presence to the network
-     */
-    private fun announcePresence(userName: String) {
-        scope.launch {
-            try {
-                val message = if (_isHost.value) {
-                    "PRESENCE|$userName"
-                } else {
-                    "JOIN|$userName"
-                }
-                sendBroadcast(message)
-            } catch (e: Exception) {
-                Log.e(TAG, "Error announcing presence", e)
-            }
-        }
-    }
-    
-    /**
-     * Broadcast playback update to peers
+     * Broadcast playback update to peers via MQTT
      */
     private fun broadcastUpdate(songId: String?, position: Long, isPlaying: Boolean, queueIds: List<String>) {
         scope.launch {
             try {
                 val message = "UPDATE|$songId|$position|$isPlaying"
-                sendBroadcast(message)
+                publishMessage(message)
             } catch (e: Exception) {
                 Log.e(TAG, "Error broadcasting update", e)
             }
@@ -285,14 +299,14 @@ class JamSessionManager {
     }
     
     /**
-     * Broadcast queue update to peers
+     * Broadcast queue update to peers via MQTT
      */
     private fun broadcastQueue(queueSongIds: List<String>) {
         scope.launch {
             try {
                 val queueData = queueSongIds.joinToString(",")
                 val message = "QUEUE|$queueData"
-                sendBroadcast(message)
+                publishMessage(message)
             } catch (e: Exception) {
                 Log.e(TAG, "Error broadcasting queue", e)
             }
@@ -300,21 +314,19 @@ class JamSessionManager {
     }
     
     /**
-     * Send broadcast message to local network
+     * Publish message to MQTT topic
      */
-    private fun sendBroadcast(message: String) {
+    private fun publishMessage(message: String) {
         try {
-            val sendSocket = DatagramSocket()
-            sendSocket.broadcast = true
-            
-            val data = message.toByteArray()
-            val address = InetAddress.getByName("255.255.255.255") // Local network broadcast
-            val packet = DatagramPacket(data, data.size, address, multicastPort)
-            
-            sendSocket.send(packet)
-            sendSocket.close()
+            currentTopic?.let { topic ->
+                val mqttMessage = MqttMessage(message.toByteArray()).apply {
+                    qos = 1
+                    isRetained = false
+                }
+                mqttClient?.publish(topic, mqttMessage)
+            }
         } catch (e: Exception) {
-            Log.e(TAG, "Error sending broadcast", e)
+            Log.e(TAG, "Error publishing MQTT message", e)
         }
     }
     

@@ -87,35 +87,67 @@ Potential improvements for future versions:
 - Playlist collaboration
 - Vote skipping functionality
 
-## Technical Details - Serverless P2P
+## Technical Details - MQTT-Based Synchronization
 
-This implementation uses **UDP broadcast on local networks** for peer-to-peer connectivity without requiring a backend server:
+This implementation uses **MQTT (Message Queuing Telemetry Transport)** for real-time synchronization:
 
 ### How It Works
-1. **Session Creation**: Host generates a code that maps to a UDP port (45000-46000 range)
-2. **Network Discovery**: Participants on the same WiFi/local network can discover each other via UDP broadcast
+1. **Session Creation**: Host generates a unique 6-character session code
+2. **MQTT Topics**: Each session code creates a unique MQTT topic (e.g., `metrolist/jam/ABC123`)
 3. **State Synchronization**: Playback state is broadcast only on manual changes:
    - Song changes (next/previous/selection)
    - Manual seeking
    - Play/pause toggles
    - Queue modifications
 4. **Queue Sync**: The entire playback queue is synchronized across all devices
-5. **No Server Required**: All communication happens directly between devices on the local network
+5. **Broker-Based**: Uses MQTT broker for message routing (public or private)
 
 ### Requirements
-- Devices must be on the same local network (WiFi/LAN)
+- Internet connection
 - INTERNET permission (already included in AndroidManifest.xml)
-- UDP ports 45000-46000 must not be blocked by firewall
+- Access to an MQTT broker (public or self-hosted)
 
-### Limitations
-- Works only on local networks (not over the internet)
-- Best for home/office WiFi environments
-- Some restrictive networks may block UDP broadcasts
+### Advantages
+- Works over the internet (not limited to local networks)
+- Multiple public brokers available (HiveMQ, Eclipse, Mosquitto)
+- Easy to set up your own broker
+- Scalable and reliable
+- Low bandwidth usage
+
+## Configuration
+
+### Setting up MQTT Broker
+
+1. **Go to Settings** → **Integrations** → **Jam Session**
+2. **Configure MQTT Broker URL**
+   - Default: `tcp://broker.hivemq.com:1883` (public HiveMQ broker)
+   - Custom: Your own broker URL
+
+### Public Brokers (No Setup Required)
+
+- **HiveMQ**: `tcp://broker.hivemq.com:1883` (default)
+- **Eclipse**: `tcp://test.mosquitto.org:1883`
+- **EMQX**: `tcp://broker.emqx.io:1883`
+
+### Self-Hosted Broker
+
+For better privacy and control:
+
+**Quick Setup with Docker**:
+```bash
+docker run -d -p 1883:1883 eclipse-mosquitto
+```
+
+Then set URL in app: `tcp://your-ip:1883`
+
+See [JAM_SESSION_MQTT.md](JAM_SESSION_MQTT.md) for detailed setup instructions.
 
 ## Notes
-- Uses UDP broadcast for serverless local network P2P
+- Uses MQTT for internet-based synchronization
+- Each session code creates a unique MQTT topic (jam room)
 - No database migrations required
 - Minimal code changes for easy maintenance
 - Real-time playback synchronization on manual changes only (efficient battery usage)
 - Queue synchronization keeps everyone's playlist in sync
 - Automatic song discovery within existing queue
+- Easy to deploy your own MQTT broker for privacy

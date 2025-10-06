@@ -10,57 +10,52 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.R
-import com.metrolist.music.ui.component.*
+import com.metrolist.music.constants.JamSessionBrokerUrlKey
+import com.metrolist.music.ui.component.EditTextPreference
+import com.metrolist.music.ui.component.IconButton
+import com.metrolist.music.ui.component.PreferenceEntry
+import com.metrolist.music.ui.component.PreferenceGroupTitle
 import com.metrolist.music.ui.utils.backToMain
+import com.metrolist.music.utils.rememberPreference
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun IntegrationScreen(
+fun JamSessionSettings(
     navController: NavController,
     scrollBehavior: TopAppBarScrollBehavior,
 ) {
+    var brokerUrl by rememberPreference(JamSessionBrokerUrlKey, "tcp://broker.hivemq.com:1883")
+
     Column(
         Modifier
             .windowInsetsPadding(LocalPlayerAwareWindowInsets.current)
             .verticalScroll(rememberScrollState()),
     ) {
-        PreferenceGroupTitle(title = stringResource(R.string.general))
+        PreferenceGroupTitle(title = stringResource(R.string.jam_session))
 
-        PreferenceEntry(
-            title = { Text(stringResource(R.string.discord_integration)) },
-            icon = { Icon(painterResource(R.drawable.discord), null) },
-            onClick = {
-                navController.navigate("settings/integrations/discord")
-            }
+        EditTextPreference(
+            title = { Text(stringResource(R.string.mqtt_broker_url)) },
+            value = brokerUrl,
+            onValueChange = { brokerUrl = it }
         )
-
+        
         PreferenceEntry(
-            title = { Text(stringResource(R.string.lastfm_integration)) },
-            icon = { Icon(painterResource(R.drawable.music_note), null) },
-            onClick = {
-                navController.navigate("settings/integrations/lastfm")
-            }
+            title = { Text(stringResource(R.string.mqtt_broker_info_title)) },
+            description = stringResource(R.string.mqtt_broker_info_desc),
+            onClick = { }
         )
-
-        PreferenceEntry(
-            title = { Text(stringResource(R.string.jam_session)) },
-            icon = { Icon(painterResource(R.drawable.account), null) },
-            onClick = {
-                navController.navigate("settings/integrations/jamsession")
-            }
-        )
-
     }
 
     TopAppBar(
-        title = { Text(stringResource(R.string.integrations)) },
+        title = { Text(stringResource(R.string.jam_session)) },
         navigationIcon = {
             IconButton(
                 onClick = navController::navigateUp,
@@ -71,6 +66,7 @@ fun IntegrationScreen(
                     contentDescription = null,
                 )
             }
-        }
+        },
+        scrollBehavior = scrollBehavior
     )
 }
