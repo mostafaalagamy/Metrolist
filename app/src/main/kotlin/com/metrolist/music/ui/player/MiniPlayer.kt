@@ -1,10 +1,5 @@
 package com.metrolist.music.ui.player
 
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.border
@@ -170,12 +165,8 @@ private fun NewMiniPlayer(
                                     shape = CircleShape
                                 )
                         )
-                        
-                        androidx.compose.animation.AnimatedVisibility(
-                            visible = playbackState == Player.STATE_ENDED || !isPlaying,
-                            enter = fadeIn(),
-                            exit = fadeOut()
-                        ) {
+
+                        if (playbackState == Player.STATE_ENDED || !isPlaying) {
                             Icon(
                                 painter = painterResource(if (playbackState == Player.STATE_ENDED) R.drawable.replay else R.drawable.play),
                                 contentDescription = null,
@@ -193,40 +184,28 @@ private fun NewMiniPlayer(
                     verticalArrangement = Arrangement.Center
                 ) {
                     mediaMetadata?.let { metadata ->
-                        AnimatedContent(
-                            targetState = metadata.title,
-                            transitionSpec = { fadeIn() togetherWith fadeOut() },
-                            label = "TitleAnimation",
-                        ) { title ->
+                        Text(
+                            text = metadata.title,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Medium,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.basicMarquee(iterations = 1, initialDelayMillis = 3000, velocity = 30.dp),
+                        )
+
+                        if (metadata.artists.any { it.name.isNotBlank() }) {
                             Text(
-                                text = title,
-                                color = MaterialTheme.colorScheme.onSurface,
-                                fontSize = 14.sp,
-                                fontWeight = FontWeight.Medium,
+                                text = metadata.artists.joinToString { it.name },
+                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+                                fontSize = 12.sp,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis,
                                 modifier = Modifier.basicMarquee(iterations = 1, initialDelayMillis = 3000, velocity = 30.dp),
                             )
                         }
 
-                        if (metadata.artists.any { it.name.isNotBlank() }) {
-                            AnimatedContent(
-                                targetState = metadata.artists.joinToString { it.name },
-                                transitionSpec = { fadeIn() togetherWith fadeOut() },
-                                label = "ArtistAnimation",
-                            ) { artists ->
-                                Text(
-                                    text = artists,
-                                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
-                                    fontSize = 12.sp,
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis,
-                                    modifier = Modifier.basicMarquee(iterations = 1, initialDelayMillis = 3000, velocity = 30.dp),
-                                )
-                            }
-                        }
-                        
-                        androidx.compose.animation.AnimatedVisibility(visible = error != null) {
+                        if (error != null) {
                             Text(
                                 text = "Error playing",
                                 color = MaterialTheme.colorScheme.error,
@@ -429,11 +408,7 @@ private fun LegacyMiniMediaInfo(
                 modifier = Modifier.fillMaxSize()
             )
 
-            androidx.compose.animation.AnimatedVisibility(
-                visible = error != null,
-                enter = fadeIn(),
-                exit = fadeOut()
-            ) {
+            if (error != null) {
                 Box(
                     Modifier
                         .fillMaxSize()
@@ -462,13 +437,15 @@ private fun LegacyMiniMediaInfo(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
-            Text(
-                text = mediaMetadata.artists.joinToString { it.name },
-                color = MaterialTheme.colorScheme.secondary,
-                fontSize = 12.sp,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
+            if (mediaMetadata.artists.any { it.name.isNotBlank() }) {
+                Text(
+                    text = mediaMetadata.artists.joinToString { it.name },
+                    color = MaterialTheme.colorScheme.secondary,
+                    fontSize = 12.sp,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
         }
     }
 }
