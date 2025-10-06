@@ -64,7 +64,7 @@ fun MiniPlayer(
     pureBlack: Boolean,
 ) {
     val useNewMiniPlayerDesign by rememberPreference(UseNewMiniPlayerDesignKey, true)
-    
+
     if (useNewMiniPlayerDesign) {
         NewMiniPlayer(
             position = position,
@@ -128,7 +128,7 @@ private fun NewMiniPlayer(
                             trackColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f)
                         )
                     }
-                    
+
                     Box(
                         contentAlignment = Alignment.Center,
                         modifier = Modifier
@@ -153,10 +153,12 @@ private fun NewMiniPlayer(
                                 model = metadata.thumbnailUrl,
                                 contentDescription = null,
                                 contentScale = ContentScale.Crop,
-                                modifier = Modifier.fillMaxSize().clip(CircleShape)
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .clip(CircleShape)
                             )
                         }
-                        
+
                         Box(
                             modifier = Modifier
                                 .fillMaxSize()
@@ -222,7 +224,7 @@ private fun NewMiniPlayer(
                 mediaMetadata?.artists?.firstOrNull()?.id?.let { artistId ->
                     val libraryArtist by database.artist(artistId).collectAsState(initial = null)
                     val isSubscribed = libraryArtist?.artist?.bookmarkedAt != null
-                    
+
                     Box(
                         contentAlignment = Alignment.Center,
                         modifier = Modifier
@@ -231,12 +233,12 @@ private fun NewMiniPlayer(
                             .border(
                                 width = 1.dp,
                                 color = if (isSubscribed) MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
-                                        else MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
+                                else MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
                                 shape = CircleShape
                             )
                             .background(
                                 color = if (isSubscribed) MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
-                                        else Color.Transparent,
+                                else Color.Transparent,
                                 shape = CircleShape
                             )
                             .clickable {
@@ -262,8 +264,8 @@ private fun NewMiniPlayer(
                         Icon(
                             painter = painterResource(if (isSubscribed) R.drawable.subscribed else R.drawable.subscribe),
                             contentDescription = null,
-                            tint = if (isSubscribed) MaterialTheme.colorScheme.primary 
-                                   else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+                            tint = if (isSubscribed) MaterialTheme.colorScheme.primary
+                            else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
                             modifier = Modifier.size(20.dp)
                         )
                     }
@@ -274,7 +276,7 @@ private fun NewMiniPlayer(
                 mediaMetadata?.let { metadata ->
                     val librarySong by database.song(metadata.id).collectAsState(initial = null)
                     val isLiked = librarySong?.song?.liked == true
-                    
+
                     Box(
                         contentAlignment = Alignment.Center,
                         modifier = Modifier
@@ -283,12 +285,12 @@ private fun NewMiniPlayer(
                             .border(
                                 width = 1.dp,
                                 color = if (isLiked) MaterialTheme.colorScheme.error.copy(alpha = 0.5f)
-                                        else MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
+                                else MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
                                 shape = CircleShape
                             )
                             .background(
                                 color = if (isLiked) MaterialTheme.colorScheme.error.copy(alpha = 0.1f)
-                                        else Color.Transparent,
+                                else Color.Transparent,
                                 shape = CircleShape
                             )
                             .clickable { playerConnection.service.toggleLike() }
@@ -296,8 +298,8 @@ private fun NewMiniPlayer(
                         Icon(
                             painter = painterResource(if (isLiked) R.drawable.favorite else R.drawable.favorite_border),
                             contentDescription = null,
-                            tint = if (isLiked) MaterialTheme.colorScheme.error 
-                                   else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+                            tint = if (isLiked) MaterialTheme.colorScheme.error
+                            else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
                             modifier = Modifier.size(20.dp)
                         )
                     }
@@ -346,6 +348,7 @@ private fun LegacyMiniPlayer(
                         LegacyMiniMediaInfo(
                             mediaMetadata = it,
                             error = error,
+                            pureBlack = pureBlack,
                             modifier = Modifier.padding(horizontal = 6.dp)
                         )
                     }
@@ -390,6 +393,7 @@ private fun LegacyMiniPlayer(
 private fun LegacyMiniMediaInfo(
     mediaMetadata: MediaMetadata,
     error: PlaybackException?,
+    pureBlack: Boolean,
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -402,17 +406,29 @@ private fun LegacyMiniMediaInfo(
                 .size(48.dp)
                 .clip(RoundedCornerShape(ThumbnailCornerRadius))
         ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.surfaceVariant)
+            )
+
             AsyncImage(
                 model = mediaMetadata.thumbnailUrl,
                 contentDescription = "Album Art",
-                modifier = Modifier.fillMaxSize()
+                contentScale = ContentScale.Fit,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clip(RoundedCornerShape(ThumbnailCornerRadius))
             )
 
             if (error != null) {
                 Box(
                     Modifier
                         .fillMaxSize()
-                        .background(Color.Black.copy(alpha = 0.6f))
+                        .background(
+                            color = if (pureBlack) Color.Black else Color.Black.copy(alpha = 0.6f),
+                            shape = RoundedCornerShape(ThumbnailCornerRadius)
+                        )
                 ) {
                     Icon(
                         painter = painterResource(R.drawable.info),
