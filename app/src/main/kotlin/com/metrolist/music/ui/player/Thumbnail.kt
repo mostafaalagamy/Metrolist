@@ -47,9 +47,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.BlurEffect
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -351,24 +349,12 @@ fun Thumbnail(
                                             )
                                         }
                                     } else {
-                                        // Blurred background
-                                        AsyncImage(
-                                            model = coil3.request.ImageRequest.Builder(LocalContext.current)
-                                                .data(item.mediaMetadata.artworkUri?.toString())
-                                                .memoryCachePolicy(coil3.request.CachePolicy.ENABLED)
-                                                .diskCachePolicy(coil3.request.CachePolicy.ENABLED)
-                                                .networkCachePolicy(coil3.request.CachePolicy.ENABLED)
-                                                .build(),
-                                            contentDescription = null,
-                                            contentScale = ContentScale.FillBounds,
+                                        // Solid color background
+                                        Box(
                                             modifier = Modifier
                                                 .fillMaxSize()
-                                                .graphicsLayer(
-                                                    renderEffect = BlurEffect(radiusX = 75f, radiusY = 75f),
-                                                    alpha = 0.5f
-                                                )
+                                                .background(MaterialTheme.colorScheme.surfaceVariant)
                                         )
-
                                         // Main image
                                         AsyncImage(
                                             model = coil3.request.ImageRequest.Builder(LocalContext.current)

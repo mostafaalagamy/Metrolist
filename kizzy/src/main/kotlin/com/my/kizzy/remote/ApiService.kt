@@ -12,7 +12,6 @@
 package com.my.kizzy.remote
 
 import io.ktor.client.HttpClient
-import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.cache.HttpCache
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.get
@@ -31,11 +30,6 @@ class ApiService {
                 ignoreUnknownKeys = true
                 encodeDefaults = true
             })
-        }
-        install(HttpTimeout) {
-            connectTimeoutMillis = 30_000
-            requestTimeoutMillis = 30_000
-            socketTimeoutMillis = 30_000
         }
         install(HttpCache)
     }

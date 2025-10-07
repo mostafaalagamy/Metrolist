@@ -1,8 +1,12 @@
 package com.metrolist.music.ui.player
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -167,43 +171,35 @@ fun LyricsScreen(
     val fallbackColor = MaterialTheme.colorScheme.surface.toArgb()
 
     LaunchedEffect(mediaMetadata.id, playerBackground) {
-        if (playerBackground == PlayerBackgroundStyle.GRADIENT) {
-            if (mediaMetadata.thumbnailUrl != null) {
-                val cachedColors = gradientColorsCache[mediaMetadata.id]
-                if (cachedColors != null) {
-                    gradientColors = cachedColors
-                } else {
-                    val request = ImageRequest.Builder(context)
-                        .data(mediaMetadata.thumbnailUrl)
-                        .size(Size(PlayerColorExtractor.Config.IMAGE_SIZE, PlayerColorExtractor.Config.IMAGE_SIZE))
-                        .allowHardware(false)
-                        .memoryCacheKey("gradient_${mediaMetadata.id}")
-                        .build()
-
-                    val result = runCatching {
-                        context.imageLoader.execute(request).image
-                    }.getOrNull()
-
-                    if (result != null) {
-                        val bitmap = result.toBitmap()
-                        val palette = withContext(Dispatchers.Default) {
-                            Palette.from(bitmap)
-                                .maximumColorCount(PlayerColorExtractor.Config.MAX_COLOR_COUNT)
-                                .resizeBitmapArea(PlayerColorExtractor.Config.BITMAP_AREA)
-                                .generate()
-                        }
-                        val extractedColors = PlayerColorExtractor.extractGradientColors(
-                            palette = palette,
-                            fallbackColor = fallbackColor
-                        )
-                        gradientColorsCache[mediaMetadata.id] = extractedColors
-                        gradientColors = extractedColors
-                    } else {
-                        gradientColors = defaultGradientColors
+        if (playerBackground == PlayerBackgroundStyle.GRADIENT && mediaMetadata.thumbnailUrl != null) {
+            val cachedColors = gradientColorsCache[mediaMetadata.id]
+            if (cachedColors != null) {
+                gradientColors = cachedColors
+                return@LaunchedEffect
+            }
+            withContext(Dispatchers.IO) {
+                val request = ImageRequest.Builder(context)
+                    .data(mediaMetadata.thumbnailUrl)
+                    .size(100, 100)
+                    .allowHardware(false)
+                    .memoryCacheKey("gradient_${mediaMetadata.id}")
+                    .build()
+                val result = runCatching { context.imageLoader.execute(request).image }.getOrNull()
+                if (result != null) {
+                    val bitmap = result.toBitmap()
+                    val palette = withContext(Dispatchers.Default) {
+                        Palette.from(bitmap)
+                            .maximumColorCount(8)
+                            .resizeBitmapArea(100 * 100)
+                            .generate()
                     }
+                    val extractedColors = PlayerColorExtractor.extractGradientColors(
+                        palette = palette,
+                        fallbackColor = fallbackColor
+                    )
+                    gradientColorsCache[mediaMetadata.id] = extractedColors
+                    withContext(Dispatchers.Main) { gradientColors = extractedColors }
                 }
-            } else {
-                gradientColors = emptyList()
             }
         } else {
             gradientColors = emptyList()
@@ -223,7 +219,7 @@ fun LyricsScreen(
     LaunchedEffect(playbackState) {
         if (playbackState == STATE_READY) {
             while (isActive) {
-                delay(100)
+                delay(500)
                 position = player.currentPosition
                 duration = player.duration
             }
@@ -240,9 +236,12 @@ fun LyricsScreen(
         ) {
             when (playerBackground) {
                 PlayerBackgroundStyle.BLUR -> {
-                    Crossfade(
-                        targetState = mediaMetadata.thumbnailUrl,
-                        animationSpec = tween(600)
+                    AnimatedContent(
+                        targetState = mediaMetadata?.thumbnailUrl,
+                        transitionSpec = {
+                            fadeIn(tween(800)).togetherWith(fadeOut(tween(800)))
+                        },
+                        label = "blurBackground"
                     ) { thumbnailUrl ->
                         if (thumbnailUrl != null) {
                             AsyncImage(
@@ -251,7 +250,7 @@ fun LyricsScreen(
                                 contentScale = ContentScale.FillBounds,
                                 modifier = Modifier
                                     .fillMaxSize()
-                                    .blur(220.dp)
+                                    .blur(if (useDarkTheme) 150.dp else 100.dp)
                             )
                             Box(
                                 modifier = Modifier
@@ -262,15 +261,26 @@ fun LyricsScreen(
                     }
                 }
                 PlayerBackgroundStyle.GRADIENT -> {
-                    Crossfade(
+                    AnimatedContent(
                         targetState = gradientColors,
-                        animationSpec = tween(600)
+                        transitionSpec = {
+                            fadeIn(tween(800)).togetherWith(fadeOut(tween(800)))
+                        },
+                        label = "gradientBackground"
                     ) { colors ->
                         if (colors.isNotEmpty()) {
                             val gradientColorStops = if (colors.size >= 3) {
-                                arrayOf(0.0f to colors[0], 0.5f to colors[1], 1.0f to colors[2])
+                                arrayOf(
+                                    0.0f to colors[0],
+                                    0.5f to colors[1],
+                                    1.0f to colors[2]
+                                )
                             } else {
-                                arrayOf(0.0f to colors[0], 0.6f to colors[0].copy(alpha = 0.7f), 1.0f to Color.Black)
+                                arrayOf(
+                                    0.0f to colors[0],
+                                    0.6f to colors[0].copy(alpha = 0.7f),
+                                    1.0f to Color.Black
+                                )
                             }
                             Box(
                                 modifier = Modifier

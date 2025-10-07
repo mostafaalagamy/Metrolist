@@ -1238,7 +1238,8 @@ fun PlaylistThumbnail(
     thumbnails: List<String>,
     size: Dp,
     placeHolder: @Composable () -> Unit,
-    shape: Shape
+    shape: Shape,
+    cacheKey: String? = null
 ) {
     when (thumbnails.size) {
         0 -> Box(
@@ -1253,12 +1254,15 @@ fun PlaylistThumbnail(
         1 -> AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
                 .data(thumbnails[0])
+                .apply { /* Removed cache key extensions due to unresolved in env */ }
                 .memoryCachePolicy(coil3.request.CachePolicy.ENABLED)
                 .diskCachePolicy(coil3.request.CachePolicy.ENABLED)
                 .networkCachePolicy(coil3.request.CachePolicy.ENABLED)
                 .build(),
             contentDescription = null,
             contentScale = ContentScale.Crop,
+            placeholder = painterResource(R.drawable.queue_music),
+            error = painterResource(R.drawable.queue_music),
             modifier = Modifier
                 .size(size)
                 .clip(shape)
@@ -1277,12 +1281,15 @@ fun PlaylistThumbnail(
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
                         .data(thumbnails.getOrNull(index))
+                        .apply { /* Removed cache key extensions due to unresolved in env */ }
                         .memoryCachePolicy(coil3.request.CachePolicy.ENABLED)
                         .diskCachePolicy(coil3.request.CachePolicy.ENABLED)
                         .networkCachePolicy(coil3.request.CachePolicy.ENABLED)
                         .build(),
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
+                    placeholder = painterResource(R.drawable.queue_music),
+                    error = painterResource(R.drawable.queue_music),
                     modifier = Modifier
                         .align(alignment)
                         .size(size / 2)

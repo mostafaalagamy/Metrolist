@@ -13,27 +13,41 @@ import com.metrolist.music.db.entities.PlaylistSongMap
 import com.metrolist.music.db.entities.SongEntity
 import com.metrolist.music.models.toMediaMetadata
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDateTime
 import javax.inject.Inject
 import javax.inject.Singleton
 
-@OptIn(ExperimentalCoroutinesApi::class, DelicateCoroutinesApi::class)
 @Singleton
 class SyncUtils @Inject constructor(
     private val database: MusicDatabase,
 ) {
     private val syncScope = CoroutineScope(Dispatchers.IO)
-    
-    private val syncContext = newSingleThreadContext("syncUtils")
+
+    private val isSyncingLikedSongs = MutableStateFlow(false)
+    private val isSyncingLibrarySongs = MutableStateFlow(false)
+    private val isSyncingUploadedSongs = MutableStateFlow(false)
+    private val isSyncingLikedAlbums = MutableStateFlow(false)
+    private val isSyncingUploadedAlbums = MutableStateFlow(false)
+    private val isSyncingArtists = MutableStateFlow(false)
+    private val isSyncingPlaylists = MutableStateFlow(false)
+
+    fun runAllSyncs() {
+        syncScope.launch {
+            syncLikedSongs()
+            syncLibrarySongs()
+            syncUploadedSongs()
+            syncLikedAlbums()
+            syncUploadedAlbums()
+            syncArtistsSubscriptions()
+            syncSavedPlaylists()
+        }
+    }
 
     fun likeSong(s: SongEntity) {
         syncScope.launch {
@@ -41,51 +55,45 @@ class SyncUtils @Inject constructor(
         }
     }
 
-    suspend fun syncLikedSongs() = coroutineScope {
+    suspend fun syncLikedSongs() {
+        if (isSyncingLikedSongs.value) return
+        isSyncingLikedSongs.value = true
         try {
             YouTube.playlist("LM").completed().onSuccess { page ->
                 val remoteSongs = page.songs
                 val remoteIds = remoteSongs.map { it.id }
                 val localSongs = database.likedSongsByNameAsc().first()
 
-                // Update local songs that are no longer liked remotely
-                localSongs.filterNot { it.id in remoteIds }
-                    .forEach { 
-                        try {
-                            database.transaction {
-                                database.update(it.song.localToggleLike())
-                            }
-                        } catch (e: Exception) {
-                            e.printStackTrace()
-                        }
-                    }
+                localSongs.filterNot { it.id in remoteIds }.forEach {
+                    try {
+                        database.transaction { update(it.song.localToggleLike()) }
+                    } catch (e: Exception) { e.printStackTrace() }
+                }
 
-                val now = LocalDateTime.now()
                 remoteSongs.forEachIndexed { index, song ->
-                    launch(syncContext) {
-                        try {
-                            val dbSong = database.song(song.id).firstOrNull()
-                            val timestamp = LocalDateTime.now().minusSeconds(index.toLong())
-                            database.transaction {
-                                if (dbSong == null) {
-                                    // Use proper MediaMetadata insertion to save artist information
-                                    insert(song.toMediaMetadata()) { it.copy(liked = true, likedDate = timestamp) }
-                                } else if (!dbSong.song.liked || dbSong.song.likedDate != timestamp) {
-                                    update(dbSong.song.copy(liked = true, likedDate = timestamp))
-                                }
+                    try {
+                        val dbSong = database.song(song.id).firstOrNull()
+                        val timestamp = LocalDateTime.now().minusSeconds(index.toLong())
+                        database.transaction {
+                            if (dbSong == null) {
+                                insert(song.toMediaMetadata()) { it.copy(liked = true, likedDate = timestamp) }
+                            } else if (!dbSong.song.liked || dbSong.song.likedDate != timestamp) {
+                                update(dbSong.song.copy(liked = true, likedDate = timestamp))
                             }
-                        } catch (e: Exception) {
-                            e.printStackTrace()
                         }
-                    }
+                    } catch (e: Exception) { e.printStackTrace() }
                 }
             }
         } catch (e: Exception) {
             e.printStackTrace()
+        } finally {
+            isSyncingLikedSongs.value = false
         }
     }
 
-    suspend fun syncLibrarySongs() = coroutineScope {
+    suspend fun syncLibrarySongs() {
+        if (isSyncingLibrarySongs.value) return
+        isSyncingLibrarySongs.value = true
         try {
             YouTube.library("FEmusic_liked_videos").completed().onSuccess { page ->
                 val remoteSongs = page.items.filterIsInstance<SongItem>().reversed()
@@ -93,66 +101,55 @@ class SyncUtils @Inject constructor(
                 val localSongs = database.songsByNameAsc().first()
                 val feedbackTokens = mutableListOf<String>()
 
-                localSongs.filterNot { it.id in remoteIds }
-                    .forEach { 
-                        if (it.song.libraryAddToken != null && it.song.libraryRemoveToken != null) {
-                            feedbackTokens.add(it.song.libraryAddToken)
-                        } else {
-                            try {
-                                database.transaction {
-                                    database.update(it.song.toggleLibrary())
-                                }
-                            } catch (e: Exception) {
-                                e.printStackTrace()
-                            }
-                        }
+                localSongs.filterNot { it.id in remoteIds }.forEach {
+                    if (it.song.libraryAddToken != null && it.song.libraryRemoveToken != null) {
+                        feedbackTokens.add(it.song.libraryAddToken)
+                    } else {
+                        try {
+                            database.transaction { update(it.song.toggleLibrary()) }
+                        } catch (e: Exception) { e.printStackTrace() }
                     }
-
-                feedbackTokens.chunked(20).forEach {
-                    YouTube.feedback(it)
                 }
+                feedbackTokens.chunked(20).forEach { YouTube.feedback(it) }
 
                 remoteSongs.forEach { song ->
-                    launch(syncContext) {
-                        try {
-                            val dbSong = database.song(song.id).firstOrNull()
-                            database.transaction {
-                                if (dbSong == null) {
-                                    // Use proper MediaMetadata insertion to save artist information
-                                    insert(song.toMediaMetadata()) { it.toggleLibrary() }
-                                } else {
-                                    if (dbSong.song.inLibrary == null) {
-                                        update(dbSong.song.toggleLibrary())
-                                    }
-                                    addLibraryTokens(song.id, song.libraryAddToken, song.libraryRemoveToken)
+                    try {
+                        val dbSong = database.song(song.id).firstOrNull()
+                        database.transaction {
+                            if (dbSong == null) {
+                                insert(song.toMediaMetadata()) { it.toggleLibrary() }
+                            } else {
+                                if (dbSong.song.inLibrary == null) {
+                                    update(dbSong.song.toggleLibrary())
                                 }
+                                addLibraryTokens(song.id, song.libraryAddToken, song.libraryRemoveToken)
                             }
-                        } catch (e: Exception) {
-                            e.printStackTrace()
                         }
-                    }
+                    } catch (e: Exception) { e.printStackTrace() }
                 }
             }
         } catch (e: Exception) {
             e.printStackTrace()
+        } finally {
+            isSyncingLibrarySongs.value = false
         }
     }
 
-    suspend fun syncUploadedSongs() = coroutineScope {
-        YouTube.library("FEmusic_library_privately_owned_tracks", tabIndex = 1).completed().onSuccess { page ->
-            val remoteSongs = page.items.filterIsInstance<SongItem>().reversed()
-            val remoteIds = remoteSongs.map { it.id }.toSet()
-            val localSongs = database.uploadedSongsByNameAsc().first()
+    suspend fun syncUploadedSongs() {
+        if (isSyncingUploadedSongs.value) return
+        isSyncingUploadedSongs.value = true
+        try {
+            YouTube.library("FEmusic_library_privately_owned_tracks", tabIndex = 1).completed().onSuccess { page ->
+                val remoteSongs = page.items.filterIsInstance<SongItem>().reversed()
+                val remoteIds = remoteSongs.map { it.id }.toSet()
+                val localSongs = database.uploadedSongsByNameAsc().first()
 
-            localSongs.filterNot { it.id in remoteIds }
-                .forEach { database.update(it.song.toggleUploaded()) }
+                localSongs.filterNot { it.id in remoteIds }.forEach { database.update(it.song.toggleUploaded()) }
 
-            remoteSongs.forEach { song ->
-                launch {
+                remoteSongs.forEach { song ->
                     val dbSong = database.song(song.id).firstOrNull()
                     database.transaction {
                         if (dbSong == null) {
-                            // Use proper MediaMetadata insertion to save artist information
                             insert(song.toMediaMetadata()) { it.toggleUploaded() }
                         } else if (!dbSong.song.isUploaded) {
                             update(dbSong.song.toggleUploaded())
@@ -160,20 +157,25 @@ class SyncUtils @Inject constructor(
                     }
                 }
             }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        } finally {
+            isSyncingUploadedSongs.value = false
         }
     }
 
-    suspend fun syncLikedAlbums() = coroutineScope {
-        YouTube.library("FEmusic_liked_albums").completed().onSuccess { page ->
-            val remoteAlbums = page.items.filterIsInstance<AlbumItem>().reversed()
-            val remoteIds = remoteAlbums.map { it.id }.toSet()
-            val localAlbums = database.albumsLikedByNameAsc().first()
+    suspend fun syncLikedAlbums() {
+        if (isSyncingLikedAlbums.value) return
+        isSyncingLikedAlbums.value = true
+        try {
+            YouTube.library("FEmusic_liked_albums").completed().onSuccess { page ->
+                val remoteAlbums = page.items.filterIsInstance<AlbumItem>().reversed()
+                val remoteIds = remoteAlbums.map { it.id }.toSet()
+                val localAlbums = database.albumsLikedByNameAsc().first()
 
-            localAlbums.filterNot { it.id in remoteIds }
-                .forEach { database.update(it.album.localToggleLike()) }
+                localAlbums.filterNot { it.id in remoteIds }.forEach { database.update(it.album.localToggleLike()) }
 
-            remoteAlbums.forEach { album ->
-                launch {
+                remoteAlbums.forEach { album ->
                     val dbAlbum = database.album(album.id).firstOrNull()
                     YouTube.album(album.browseId).onSuccess { albumPage ->
                         if (dbAlbum == null) {
@@ -187,20 +189,25 @@ class SyncUtils @Inject constructor(
                     }
                 }
             }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        } finally {
+            isSyncingLikedAlbums.value = false
         }
     }
 
-    suspend fun syncUploadedAlbums() = coroutineScope {
-        YouTube.library("FEmusic_library_privately_owned_releases", tabIndex = 1).completed().onSuccess { page ->
-            val remoteAlbums = page.items.filterIsInstance<AlbumItem>().reversed()
-            val remoteIds = remoteAlbums.map {it.id}.toSet()
-            val localAlbums = database.albumsUploadedByNameAsc().first()
+    suspend fun syncUploadedAlbums() {
+        if (isSyncingUploadedAlbums.value) return
+        isSyncingUploadedAlbums.value = true
+        try {
+            YouTube.library("FEmusic_library_privately_owned_releases", tabIndex = 1).completed().onSuccess { page ->
+                val remoteAlbums = page.items.filterIsInstance<AlbumItem>().reversed()
+                val remoteIds = remoteAlbums.map { it.id }.toSet()
+                val localAlbums = database.albumsUploadedByNameAsc().first()
 
-            localAlbums.filterNot {it.id in remoteIds}
-                .forEach { database.update(it.album.toggleUploaded()) }
+                localAlbums.filterNot { it.id in remoteIds }.forEach { database.update(it.album.toggleUploaded()) }
 
-            remoteAlbums.forEach { album ->
-                launch {
+                remoteAlbums.forEach { album ->
                     val dbAlbum = database.album(album.id).firstOrNull()
                     YouTube.album(album.browseId).onSuccess { albumPage ->
                         if (dbAlbum == null) {
@@ -211,26 +218,28 @@ class SyncUtils @Inject constructor(
                         } else if (!dbAlbum.album.isUploaded) {
                             database.update(dbAlbum.album.toggleUploaded())
                         }
-                    }.onFailure {
-                        reportException(it)
-                    }
+                    }.onFailure { reportException(it) }
                 }
             }
-
+        } catch (e: Exception) {
+            e.printStackTrace()
+        } finally {
+            isSyncingUploadedAlbums.value = false
         }
     }
 
-    suspend fun syncArtistsSubscriptions() = coroutineScope {
-        YouTube.library("FEmusic_library_corpus_artists").completed().onSuccess { page ->
-            val remoteArtists = page.items.filterIsInstance<ArtistItem>()
-            val remoteIds = remoteArtists.map { it.id }.toSet()
-            val localArtists = database.artistsBookmarkedByNameAsc().first()
+    suspend fun syncArtistsSubscriptions() {
+        if (isSyncingArtists.value) return
+        isSyncingArtists.value = true
+        try {
+            YouTube.library("FEmusic_library_corpus_artists").completed().onSuccess { page ->
+                val remoteArtists = page.items.filterIsInstance<ArtistItem>()
+                val remoteIds = remoteArtists.map { it.id }.toSet()
+                val localArtists = database.artistsBookmarkedByNameAsc().first()
 
-            localArtists.filterNot { it.id in remoteIds }
-                .forEach { database.update(it.artist.localToggleLike()) }
+                localArtists.filterNot { it.id in remoteIds }.forEach { database.update(it.artist.localToggleLike()) }
 
-            remoteArtists.forEach { artist ->
-                launch {
+                remoteArtists.forEach { artist ->
                     val dbArtist = database.artist(artist.id).firstOrNull()
                     database.transaction {
                         if (dbArtist == null) {
@@ -249,23 +258,25 @@ class SyncUtils @Inject constructor(
                     }
                 }
             }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        } finally {
+            isSyncingArtists.value = false
         }
     }
 
-    suspend fun syncSavedPlaylists() = coroutineScope {
-        YouTube.library("FEmusic_liked_playlists").completed().onSuccess { page ->
-            val remotePlaylists = page.items.filterIsInstance<PlaylistItem>()
-                .filterNot { it.id == "LM" || it.id == "SE" }
-                .reversed()
-            val remoteIds = remotePlaylists.map { it.id }.toSet()
-            val localPlaylists = database.playlistsByNameAsc().first()
+    suspend fun syncSavedPlaylists() {
+        if (isSyncingPlaylists.value) return
+        isSyncingPlaylists.value = true
+        try {
+            YouTube.library("FEmusic_liked_playlists").completed().onSuccess { page ->
+                val remotePlaylists = page.items.filterIsInstance<PlaylistItem>().filterNot { it.id == "LM" || it.id == "SE" }.reversed()
+                val remoteIds = remotePlaylists.map { it.id }.toSet()
+                val localPlaylists = database.playlistsByNameAsc().first()
 
-            localPlaylists.filterNot { it.playlist.browseId in remoteIds }
-                .filterNot { it.playlist.browseId == null }
-                .forEach { database.update(it.playlist.localToggleLike()) }
+                localPlaylists.filterNot { it.playlist.browseId in remoteIds }.filterNot { it.playlist.browseId == null }.forEach { database.update(it.playlist.localToggleLike()) }
 
-            remotePlaylists.forEach { playlist ->
-                launch {
+                remotePlaylists.forEach { playlist ->
                     var playlistEntity = localPlaylists.find { it.playlist.browseId == playlist.id }?.playlist
                     if (playlistEntity == null) {
                         playlistEntity = PlaylistEntity(
@@ -274,160 +285,83 @@ class SyncUtils @Inject constructor(
                             thumbnailUrl = playlist.thumbnail,
                             isEditable = playlist.isEditable,
                             bookmarkedAt = LocalDateTime.now(),
-                            remoteSongCount = playlist.songCountText?.let { Regex("""\d+""").find(it)?.value?.toIntOrNull() },
+                            remoteSongCount = playlist.songCountText?.let {
+                                Regex("""\d+""").find(it)?.value?.toIntOrNull()
+                            },
                             playEndpointParams = playlist.playEndpoint?.params,
                             shuffleEndpointParams = playlist.shuffleEndpoint?.params,
                             radioEndpointParams = playlist.radioEndpoint?.params
                         )
                         database.insert(playlistEntity)
                     } else {
-                        // Update existing playlist with latest information including thumbnail
                         database.update(playlistEntity, playlist)
                     }
                     syncPlaylist(playlist.id, playlistEntity.id)
                 }
             }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        } finally {
+            isSyncingPlaylists.value = false
         }
     }
 
-    private suspend fun syncPlaylist(browseId: String, playlistId: String) = coroutineScope {
+    private suspend fun syncPlaylist(browseId: String, playlistId: String) {
         try {
             YouTube.playlist(browseId).completed().onSuccess { page ->
                 val songs = page.songs.map(SongItem::toMediaMetadata)
-
                 val remoteIds = songs.map { it.id }
-                val localIds = database.playlistSongs(playlistId).first()
-                    .sortedBy { it.map.position }
-                    .map { it.song.id }
+                val localIds = database.playlistSongs(playlistId).first().sortedBy { it.map.position }.map { it.song.id }
 
                 if (remoteIds == localIds) return@onSuccess
-
-                // Verify playlist exists before proceeding
-                val playlistExists = database.playlist(playlistId).firstOrNull() != null
-                if (!playlistExists) return@onSuccess
+                if (database.playlist(playlistId).firstOrNull() == null) return@onSuccess
 
                 database.transaction {
-                    // Clear existing playlist songs
-                    database.clearPlaylist(playlistId)
-                    
-                    // Insert songs first to ensure they exist
+                    clearPlaylist(playlistId)
                     val songEntities = songs.onEach { song ->
                         if (runBlocking { database.song(song.id).firstOrNull() } == null) {
-                            database.insert(song)
+                            insert(song)
                         }
                     }
-                    
-                    // Create playlist song maps
                     val playlistSongMaps = songEntities.mapIndexed { position, song ->
-                        PlaylistSongMap(
-                            songId = song.id,
-                            playlistId = playlistId,
-                            position = position,
-                            setVideoId = song.setVideoId
-                        )
+                        PlaylistSongMap(songId = song.id, playlistId = playlistId, position = position, setVideoId = song.setVideoId)
                     }
-                    
-                    // Insert all playlist song maps
-                    playlistSongMaps.forEach { playlistSongMap ->
-                        database.insert(playlistSongMap)
-                    }
+                    playlistSongMaps.forEach { insert(it) }
                 }
             }
         } catch (e: Exception) {
-            // Log error but don't crash the sync process
             e.printStackTrace()
         }
     }
 
-    /**
-     * Clears all YouTube Music synced content from the local database.
-     * This includes:
-     * - Liked songs (removes liked status)
-     * - Library songs (removes library status)
-     * - Liked albums (removes liked status)
-     * - Subscribed artists (removes subscription)
-     * - Saved playlists (removes playlists that have browseId)
-     */
-    suspend fun clearAllSyncedContent() = coroutineScope {
+    suspend fun clearAllSyncedContent() {
         try {
-            // Get data outside of transaction to avoid long-running queries inside transaction
             val likedSongs = database.likedSongsByNameAsc().first()
             val librarySongs = database.songsByNameAsc().first()
             val likedAlbums = database.albumsLikedByNameAsc().first()
             val subscribedArtists = database.artistsBookmarkedByNameAsc().first()
             val savedPlaylists = database.playlistsByNameAsc().first()
 
-            // Execute updates in smaller, separate transactions to avoid connection pool issues
-            launch(syncContext) {
-                // Clear liked songs
-                likedSongs.forEach { songWithArtists ->
-                    try {
-                        database.transaction {
-                            database.update(songWithArtists.song.copy(liked = false, likedDate = null))
-                        }
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
+            likedSongs.forEach {
+                try { database.transaction { update(it.song.copy(liked = false, likedDate = null)) } } catch (e: Exception) { e.printStackTrace() }
+            }
+            librarySongs.forEach {
+                if (it.song.inLibrary != null) {
+                    try { database.transaction { update(it.song.copy(inLibrary = null)) } } catch (e: Exception) { e.printStackTrace() }
                 }
             }
-
-            launch(syncContext) {
-                // Clear library songs
-                librarySongs.forEach { songWithArtists ->
-                    if (songWithArtists.song.inLibrary != null) {
-                        try {
-                            database.transaction {
-                                database.update(songWithArtists.song.copy(inLibrary = null))
-                            }
-                        } catch (e: Exception) {
-                            e.printStackTrace()
-                        }
-                    }
-                }
+            likedAlbums.forEach {
+                try { database.transaction { update(it.album.copy(bookmarkedAt = null)) } } catch (e: Exception) { e.printStackTrace() }
             }
-
-            launch(syncContext) {
-                // Clear liked albums
-                likedAlbums.forEach { albumWithArtists ->
-                    try {
-                        database.transaction {
-                            database.update(albumWithArtists.album.copy(bookmarkedAt = null))
-                        }
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
-                }
+            subscribedArtists.forEach {
+                try { database.transaction { update(it.artist.copy(bookmarkedAt = null)) } } catch (e: Exception) { e.printStackTrace() }
             }
-
-            launch(syncContext) {
-                // Clear subscribed artists
-                subscribedArtists.forEach { artistWithSongs ->
-                    try {
-                        database.transaction {
-                            database.update(artistWithSongs.artist.copy(bookmarkedAt = null))
-                        }
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
-                }
-            }
-
-            launch(syncContext) {
-                // Clear saved playlists
-                savedPlaylists.forEach { playlistWithSongs ->
-                    if (playlistWithSongs.playlist.browseId != null) {
-                        try {
-                            database.transaction {
-                                database.delete(playlistWithSongs.playlist)
-                            }
-                        } catch (e: Exception) {
-                            e.printStackTrace()
-                        }
-                    }
+            savedPlaylists.forEach {
+                if (it.playlist.browseId != null) {
+                    try { database.transaction { delete(it.playlist) } } catch (e: Exception) { e.printStackTrace() }
                 }
             }
         } catch (e: Exception) {
-            // Log error but don't crash
             e.printStackTrace()
         }
     }
