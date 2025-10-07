@@ -436,6 +436,8 @@ fun BottomSheetPlayer(
             else MaterialTheme.colorScheme.surfaceContainer
     }
 
+    val backgroundAlpha = state.progress.coerceIn(0f, 1f)
+
     BottomSheet(
         state = state,
         modifier = modifier,
@@ -445,70 +447,66 @@ fun BottomSheetPlayer(
                     .fillMaxSize()
                     .background(bottomSheetBackgroundColor)
             ) {
-                if (!state.isCollapsed) {
-                    val backgroundAlpha = state.progress.coerceIn(0f, 1f)
-
-                    when (playerBackground) {
-                        PlayerBackgroundStyle.BLUR -> {
-                            Crossfade(
-                                targetState = mediaMetadata?.thumbnailUrl,
-                                animationSpec = tween(800)
-                            ) { thumbnailUrl ->
-                                if (thumbnailUrl != null) {
-                                    Box(modifier = Modifier.alpha(backgroundAlpha)) {
-                                        AsyncImage(
-                                            model = ImageRequest.Builder(context)
-                                                .data(thumbnailUrl)
-                                                .size(100, 100)
-                                                .allowHardware(false)
-                                                .build(),
-                                            contentDescription = null,
-                                            contentScale = ContentScale.Crop,
-                                            modifier = Modifier
-                                                .fillMaxSize()
-                                                .blur(if (useDarkTheme) 150.dp else 100.dp)
-                                        )
-                                        Box(
-                                            modifier = Modifier
-                                                .fillMaxSize()
-                                                .background(Color.Black.copy(alpha = 0.3f))
-                                        )
-                                    }
-                                }
-                            }
-                        }
-                        PlayerBackgroundStyle.GRADIENT -> {
-                            Crossfade(
-                                targetState = gradientColors,
-                                animationSpec = tween(800)
-                            ) { colors ->
-                                if (colors.isNotEmpty()) {
-                                    val gradientColorStops = if (colors.size >= 3) {
-                                        arrayOf(
-                                            0.0f to colors[0],
-                                            0.5f to colors[1],
-                                            1.0f to colors[2]
-                                        )
-                                    } else {
-                                        arrayOf(
-                                            0.0f to colors[0],
-                                            0.6f to colors[0].copy(alpha = 0.7f),
-                                            1.0f to Color.Black
-                                        )
-                                    }
-                                    Box(
-                                        Modifier
+                when (playerBackground) {
+                    PlayerBackgroundStyle.BLUR -> {
+                        Crossfade(
+                            targetState = mediaMetadata?.thumbnailUrl,
+                            animationSpec = tween(800)
+                        ) { thumbnailUrl ->
+                            if (thumbnailUrl != null) {
+                                Box(modifier = Modifier.alpha(backgroundAlpha)) {
+                                    AsyncImage(
+                                        model = ImageRequest.Builder(context)
+                                            .data(thumbnailUrl)
+                                            .size(100, 100)
+                                            .allowHardware(false)
+                                            .build(),
+                                        contentDescription = null,
+                                        contentScale = ContentScale.Crop,
+                                        modifier = Modifier
                                             .fillMaxSize()
-                                            .alpha(backgroundAlpha)
-                                            .background(Brush.verticalGradient(colorStops = gradientColorStops))
-                                            .background(Color.Black.copy(alpha = 0.2f))
+                                            .blur(if (useDarkTheme) 150.dp else 100.dp)
+                                    )
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .background(Color.Black.copy(alpha = 0.3f))
                                     )
                                 }
                             }
                         }
-                        else -> {
-                            PlayerBackgroundStyle.DEFAULT
+                    }
+                    PlayerBackgroundStyle.GRADIENT -> {
+                        Crossfade(
+                            targetState = gradientColors,
+                            animationSpec = tween(800)
+                        ) { colors ->
+                            if (colors.isNotEmpty()) {
+                                val gradientColorStops = if (colors.size >= 3) {
+                                    arrayOf(
+                                        0.0f to colors[0],
+                                        0.5f to colors[1],
+                                        1.0f to colors[2]
+                                    )
+                                } else {
+                                    arrayOf(
+                                        0.0f to colors[0],
+                                        0.6f to colors[0].copy(alpha = 0.7f),
+                                        1.0f to Color.Black
+                                    )
+                                }
+                                Box(
+                                    Modifier
+                                        .fillMaxSize()
+                                        .alpha(backgroundAlpha)
+                                        .background(Brush.verticalGradient(colorStops = gradientColorStops))
+                                        .background(Color.Black.copy(alpha = 0.2f))
+                                )
+                            }
                         }
+                    }
+                    else -> {
+                            PlayerBackgroundStyle.DEFAULT
                     }
                 }
             }
