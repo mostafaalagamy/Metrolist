@@ -65,11 +65,6 @@ fun BottomSheet(
 ) {
     Box(
         modifier = modifier
-            .fillMaxSize(),
-        content = backgroundColor
-    )
-    Box(
-        modifier = modifier
             .fillMaxSize()
             .offset {
                 val y = (state.expandedBound - state.value)
@@ -103,6 +98,8 @@ fun BottomSheet(
                 )
             )
     ) {
+        backgroundColor()
+
         if (!state.isCollapsed && !state.isDismissed) {
             BackHandler(onBack = state::collapseSoft)
         }
