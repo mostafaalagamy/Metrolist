@@ -353,7 +353,7 @@ fun Thumbnail(
                                         Box(
                                             modifier = Modifier
                                                 .fillMaxSize()
-                                                .background(MaterialTheme.colorScheme.surfaceContainer)
+                                                .background(MaterialTheme.colorScheme.surfaceVariant)
                                         )
                                         // Main image
                                         AsyncImage(
