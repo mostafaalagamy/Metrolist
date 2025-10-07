@@ -34,7 +34,7 @@ junit = "4.13.2"
 timber = "5.0.1"
 materialKolor = "3.0.1"
 kuromojiIpadic = "0.9.0"
-extractor = "06b7ae2"
+extractor = "8773f0d"
 
 [libraries]
 annotation = { module = "androidx.annotation:annotation", version.ref = "annotation" }
