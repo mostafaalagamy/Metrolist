@@ -431,7 +431,7 @@ fun BottomSheetPlayer(
     BottomSheet(
         state = state,
         modifier = modifier,
-        background = {
+        backgroundColor = {
             Box(
                 modifier = Modifier
                     .background(MaterialTheme.colorScheme.background)
