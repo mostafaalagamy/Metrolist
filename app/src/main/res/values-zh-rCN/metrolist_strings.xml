@@ -218,5 +218,5 @@
     <string name="scrobbling_configuration">Scrobbling记录设置</string>
     <string name="scrobble_min_track_duration">记录比…长的歌曲</string>
     <string name="scrobble_delay_minutes">记录所需已听时间（分钟）</string>
-    <string name="scrobble_delay_percent">记录所需已听占比条件</string>
+    <string name="scrobble_delay_percent">记录所需已听占比</string>
 </resources>
