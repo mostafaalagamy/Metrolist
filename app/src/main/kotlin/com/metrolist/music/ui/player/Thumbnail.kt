@@ -44,7 +44,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -86,7 +85,7 @@ import kotlin.math.abs
 fun Thumbnail(
     sliderPositionProvider: () -> Long?,
     modifier: Modifier = Modifier,
-    isPlayerExpanded: Boolean = true,
+    isPlayerExpanded: Boolean = true, // Add parameter to control swipe based on player state
 ) {
     val playerConnection = LocalPlayerConnection.current ?: return
     val context = LocalContext.current
@@ -172,40 +171,32 @@ fun Thumbnail(
     val itemScrollOffset by remember { derivedStateOf { thumbnailLazyGridState.firstVisibleItemScrollOffset } }
 
     // Handle swipe to change song
-    LaunchedEffect(swipeThumbnail, currentMediaIndex) {
-        if (!swipeThumbnail || currentMediaIndex < 0) return@LaunchedEffect
-        
-        snapshotFlow { 
-            Pair(
-                thumbnailLazyGridState.isScrollInProgress,
-                Pair(thumbnailLazyGridState.firstVisibleItemIndex, thumbnailLazyGridState.firstVisibleItemScrollOffset)
-            )
-        }.collect { (isScrolling, indexAndOffset) ->
-            val (index, offset) = indexAndOffset
-            
-            if (!isScrolling || offset != 0) return@collect
-            
-            if (index > currentMediaIndex && canSkipNext) {
-                playerConnection.player.seekToNext()
-            } else if (index < currentMediaIndex && canSkipPrevious) {
-                playerConnection.player.seekToPreviousMediaItem()
-            }
+    LaunchedEffect(itemScrollOffset) {
+        if (!thumbnailLazyGridState.isScrollInProgress || !swipeThumbnail || itemScrollOffset != 0 || currentMediaIndex < 0) return@LaunchedEffect
+
+        if (currentItem > currentMediaIndex && canSkipNext) {
+            playerConnection.player.seekToNext()
+        } else if (currentItem < currentMediaIndex && canSkipPrevious) {
+            playerConnection.player.seekToPreviousMediaItem()
         }
     }
 
     // Update position when song changes
-    LaunchedEffect(mediaMetadata, canSkipPrevious, canSkipNext, playerConnection.player.currentMediaItemIndex) {
-        val index = mediaItems.indexOf(currentMediaItem)
+    LaunchedEffect(mediaMetadata, canSkipPrevious, canSkipNext) {
+        val index = maxOf(0, currentMediaIndex)
         if (index >= 0 && index < mediaItems.size) {
             try {
-                if (isPlayerExpanded) {
-                    thumbnailLazyGridState.animateScrollToItem(index)
-                } else {
-                    thumbnailLazyGridState.scrollToItem(index)
-                }
+                thumbnailLazyGridState.animateScrollToItem(index)
             } catch (e: Exception) {
                 thumbnailLazyGridState.scrollToItem(index)
             }
+        }
+    }
+
+    LaunchedEffect(playerConnection.player.currentMediaItemIndex) {
+        val index = mediaItems.indexOf(currentMediaItem)
+        if (index >= 0 && index != currentItem) {
+            thumbnailLazyGridState.scrollToItem(index)
         }
     }
 
@@ -281,18 +272,19 @@ fun Thumbnail(
                         state = thumbnailLazyGridState,
                         rows = GridCells.Fixed(1),
                         flingBehavior = rememberSnapFlingBehavior(thumbnailSnapLayoutInfoProvider),
-                        userScrollEnabled = swipeThumbnail && isPlayerExpanded,
+                        userScrollEnabled = swipeThumbnail && isPlayerExpanded, // Only allow swipe when player is expanded
                         modifier = Modifier.fillMaxSize()
                     ) {
                         items(
                             items = mediaItems,
                             key = { item -> 
+                                // Use mediaId with stable fallback to avoid recomposition issues
                                 item.mediaId.ifEmpty { "unknown_${item.hashCode()}" }
                             }
                         ) { item ->
                             val incrementalSeekSkipEnabled by rememberPreference(SeekExtraSeconds, defaultValue = false)
-                            var skipMultiplier by remember(item.mediaId) { mutableIntStateOf(1) }
-                            var lastTapTime by remember(item.mediaId) { mutableLongStateOf(0L) }
+                            var skipMultiplier by remember { mutableIntStateOf(1) }
+                            var lastTapTime by remember { mutableLongStateOf(0L) }
 
                             Box(
                                 modifier = Modifier
@@ -365,7 +357,7 @@ fun Thumbnail(
                                         )
                                         // Main image
                                         AsyncImage(
-                                            model = coil3.request.ImageRequest.Builder(context)
+                                            model = coil3.request.ImageRequest.Builder(LocalContext.current)
                                                 .data(item.mediaMetadata.artworkUri?.toString())
                                                 .memoryCachePolicy(coil3.request.CachePolicy.ENABLED)
                                                 .diskCachePolicy(coil3.request.CachePolicy.ENABLED)
