@@ -65,15 +65,6 @@ fun BottomSheet(
 ) {
     Box(
         modifier = modifier
-            .graphicsLayer {
-                // background fades during about 10%-61% progress
-                alpha = (1.4f * (state.progress.coerceAtLeast(0.1f) - 0.1f).pow(0.5f)).coerceIn(0f, 1f)
-            }
-            .fillMaxSize(),
-        content = backgroundColor
-    )
-    Box(
-        modifier = modifier
             .fillMaxSize()
             .offset {
                 val y = (state.expandedBound - state.value)
@@ -107,6 +98,10 @@ fun BottomSheet(
                 )
             )
     ) {
+        if (!state.isCollapsed) {
+            backgroundColor()
+        }
+
         if (!state.isCollapsed && !state.isDismissed) {
             BackHandler(onBack = state::collapseSoft)
         }
