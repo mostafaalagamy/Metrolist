@@ -38,8 +38,6 @@ private val client = HttpClient {
         gzip()
         deflate()
     }
-
-    
 }
 
 private const val PAGE_SIZE = 8
