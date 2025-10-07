@@ -191,7 +191,7 @@ fun OnlineSearchResult(
         contentPadding =
         LocalPlayerAwareWindowInsets.current
             .add(WindowInsets(top = SearchFilterHeight))
-            .add(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
+            .add(WindowInsets.systemBars.only(WindowInsetsSides.Horizontal))
             .asPaddingValues(),
     ) {
         if (searchFilter == null) {
@@ -277,7 +277,7 @@ fun OnlineSearchResult(
         Modifier
             .background(MaterialTheme.colorScheme.surface)
             .windowInsetsPadding(
-                WindowInsets.safeDrawing
+                WindowInsets.systemBars
                     .only(WindowInsetsSides.Horizontal + WindowInsetsSides.Top)
                     .add(WindowInsets(top = AppBarHeight))
             )

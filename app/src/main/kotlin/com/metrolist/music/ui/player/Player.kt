@@ -106,7 +106,6 @@ import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
 import com.metrolist.music.constants.DarkModeKey
 import com.metrolist.music.constants.UseNewPlayerDesignKey
-import com.metrolist.music.constants.UseNewMiniPlayerDesignKey
 import com.metrolist.music.constants.PlayerBackgroundStyle
 import com.metrolist.music.constants.PlayerBackgroundStyleKey
 import com.metrolist.music.constants.PlayerButtonsStyle
@@ -158,10 +157,6 @@ fun BottomSheetPlayer(
         UseNewPlayerDesignKey,
         defaultValue = true
     )
-    val (useNewMiniPlayerDesign) = rememberPreference(
-        UseNewMiniPlayerDesignKey,
-        defaultValue = true
-    )
     val playerBackground by rememberEnumPreference(
         key = PlayerBackgroundStyleKey,
         defaultValue = PlayerBackgroundStyle.DEFAULT
@@ -190,23 +185,6 @@ fun BottomSheetPlayer(
                 if (darkTheme == DarkMode.AUTO) isSystemInDarkTheme else darkTheme == DarkMode.ON
             useDarkTheme && pureBlack
         }
-    val backgroundColor = if (useNewMiniPlayerDesign) {
-        if (useBlackBackground && state.value > state.collapsedBound) {
-            val progress = ((state.value - state.collapsedBound) / (state.expandedBound - state.collapsedBound))
-                .coerceIn(0f, 1f)
-            Color.Black.copy(alpha = progress)
-        } else {
-            val progress = ((state.value - state.collapsedBound) / (state.expandedBound - state.collapsedBound))
-                .coerceIn(0f, 1f)
-            MaterialTheme.colorScheme.surfaceContainer.copy(alpha = progress)
-        }
-    } else {
-        if (useBlackBackground) {
-            lerp(MaterialTheme.colorScheme.surfaceContainer, Color.Black, state.progress)
-        } else {
-            MaterialTheme.colorScheme.surfaceContainer
-        }
-    }
 
     val playbackState by playerConnection.playbackState.collectAsState()
     val isPlaying by playerConnection.isPlaying.collectAsState()
@@ -246,24 +224,24 @@ fun BottomSheetPlayer(
                 val cachedColors = gradientColorsCache[currentMetadata.id]
                 if (cachedColors != null) {
                     gradientColors = cachedColors
-                } else {
+                    return@LaunchedEffect
+                }
+                withContext(Dispatchers.IO) {
                     val request = ImageRequest.Builder(context)
                         .data(currentMetadata.thumbnailUrl)
-                        .size(PlayerColorExtractor.Config.IMAGE_SIZE, PlayerColorExtractor.Config.IMAGE_SIZE)
+                        .size(100, 100)
                         .allowHardware(false)
+                        .memoryCacheKey("gradient_${currentMetadata.id}")
                         .build()
 
-                    val result = runCatching {
-                        context.imageLoader.execute(request)
-                    }.getOrNull()
-
+                    val result = runCatching { context.imageLoader.execute(request) }.getOrNull()
                     if (result != null) {
                         val bitmap = result.image?.toBitmap()
                         if (bitmap != null) {
                             val palette = withContext(Dispatchers.Default) {
                                 Palette.from(bitmap)
-                                    .maximumColorCount(PlayerColorExtractor.Config.MAX_COLOR_COUNT)
-                                    .resizeBitmapArea(PlayerColorExtractor.Config.BITMAP_AREA)
+                                    .maximumColorCount(8)
+                                    .resizeBitmapArea(100 * 100)
                                     .generate()
                             }
                             val extractedColors = PlayerColorExtractor.extractGradientColors(
@@ -271,16 +249,10 @@ fun BottomSheetPlayer(
                                 fallbackColor = fallbackColor
                             )
                             gradientColorsCache[currentMetadata.id] = extractedColors
-                            gradientColors = extractedColors
-                        } else {
-                            gradientColors = defaultGradientColors
+                            withContext(Dispatchers.Main) { gradientColors = extractedColors }
                         }
-                    } else {
-                        gradientColors = defaultGradientColors
                     }
                 }
-            } else {
-                gradientColors = emptyList()
             }
         } else {
             gradientColors = emptyList()
@@ -411,7 +383,7 @@ fun BottomSheetPlayer(
     LaunchedEffect(playbackState) {
         if (playbackState == STATE_READY) {
             while (isActive) {
-                delay(100)
+                delay(500)
                 position = playerConnection.player.currentPosition
                 duration = playerConnection.player.duration
             }
@@ -434,32 +406,92 @@ fun BottomSheetPlayer(
         initialAnchor = 1
     )
 
+    val bottomSheetBackgroundColor = when (playerBackground) {
+        PlayerBackgroundStyle.BLUR, PlayerBackgroundStyle.GRADIENT -> 
+            MaterialTheme.colorScheme.surfaceContainer
+        else -> 
+            if (useBlackBackground) Color.Black 
+            else MaterialTheme.colorScheme.surfaceContainer
+    }
+
+    val backgroundAlpha = state.progress.coerceIn(0f, 1f)
+
     BottomSheet(
         state = state,
         modifier = modifier,
-        backgroundColor = when (playerBackground) {
-            PlayerBackgroundStyle.BLUR, PlayerBackgroundStyle.GRADIENT -> {
-                val progress = ((state.value - state.collapsedBound) / (state.expandedBound - state.collapsedBound))
-                    .coerceIn(0f, 1f)
-                val fadeProgress = if (progress < 0.2f) {
-                    ((0.2f - progress) / 0.2f).coerceIn(0f, 1f)
-                } else {
-                    0f
-                }
-                MaterialTheme.colorScheme.surface.copy(alpha = 1f - fadeProgress)
-            }
-            else -> {
-                val progress = ((state.value - state.collapsedBound) / (state.expandedBound - state.collapsedBound))
-                    .coerceIn(0f, 1f)
-                val fadeProgress = if (progress < 0.2f) {
-                    ((0.2f - progress) / 0.2f).coerceIn(0f, 1f)
-                } else {
-                    0f
-                }
-                if (useBlackBackground) {
-                    Color.Black.copy(alpha = 1f - fadeProgress)
-                } else {
-                    MaterialTheme.colorScheme.surface.copy(alpha = 1f - fadeProgress)
+        background = {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(bottomSheetBackgroundColor)
+            ) {
+                when (playerBackground) {
+                    PlayerBackgroundStyle.BLUR -> {
+                        AnimatedContent(
+                            targetState = mediaMetadata?.thumbnailUrl,
+                            transitionSpec = {
+                                fadeIn(tween(800)).togetherWith(fadeOut(tween(800)))
+                            },
+                            label = "blurBackground"
+                        ) { thumbnailUrl ->
+                            if (thumbnailUrl != null) {
+                                Box(modifier = Modifier.alpha(backgroundAlpha)) {
+                                    AsyncImage(
+                                        model = ImageRequest.Builder(context)
+                                            .data(thumbnailUrl)
+                                            .size(100, 100)
+                                            .allowHardware(false)
+                                            .build(),
+                                        contentDescription = null,
+                                        contentScale = ContentScale.Crop,
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .blur(if (useDarkTheme) 150.dp else 100.dp)
+                                    )
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .background(Color.Black.copy(alpha = 0.3f))
+                                    )
+                                }
+                            }
+                        }
+                    }
+                    PlayerBackgroundStyle.GRADIENT -> {
+                        AnimatedContent(
+                            targetState = gradientColors,
+                            transitionSpec = {
+                                fadeIn(tween(800)).togetherWith(fadeOut(tween(800)))
+                            },
+                            label = "gradientBackground"
+                        ) { colors ->
+                            if (colors.isNotEmpty()) {
+                                val gradientColorStops = if (colors.size >= 3) {
+                                    arrayOf(
+                                        0.0f to colors[0],
+                                        0.5f to colors[1],
+                                        1.0f to colors[2]
+                                    )
+                                } else {
+                                    arrayOf(
+                                        0.0f to colors[0],
+                                        0.6f to colors[0].copy(alpha = 0.7f),
+                                        1.0f to Color.Black
+                                    )
+                                }
+                                Box(
+                                    Modifier
+                                        .fillMaxSize()
+                                        .alpha(backgroundAlpha)
+                                        .background(Brush.verticalGradient(colorStops = gradientColorStops))
+                                        .background(Color.Black.copy(alpha = 0.2f))
+                                )
+                            }
+                        }
+                    }
+                    else -> {
+                        PlayerBackgroundStyle.DEFAULT
+                    }
                 }
             }
         },
@@ -508,7 +540,7 @@ fun BottomSheetPlayer(
                             color = TextBackgroundColor,
                             modifier =
                             Modifier
-                                .basicMarquee()
+                                .basicMarquee(iterations = 1, initialDelayMillis = 3000, velocity = 30.dp)
                                 .combinedClickable(
                                     enabled = true,
                                     indication = null,
@@ -533,79 +565,81 @@ fun BottomSheetPlayer(
 
                     Spacer(Modifier.height(6.dp))
 
-                    val annotatedString = buildAnnotatedString {
-                        mediaMetadata.artists.forEachIndexed { index, artist ->
-                            val tag = "artist_${artist.id.orEmpty()}"
-                            pushStringAnnotation(tag = tag, annotation = artist.id.orEmpty())
-                            withStyle(SpanStyle(color = TextBackgroundColor, fontSize = 16.sp)) {
-                                append(artist.name)
+                    if (mediaMetadata.artists.any { it.name.isNotBlank() }) {
+                        val annotatedString = buildAnnotatedString {
+                            mediaMetadata.artists.forEachIndexed { index, artist ->
+                                val tag = "artist_${artist.id.orEmpty()}"
+                                pushStringAnnotation(tag = tag, annotation = artist.id.orEmpty())
+                                withStyle(SpanStyle(color = TextBackgroundColor, fontSize = 16.sp)) {
+                                    append(artist.name)
+                                }
+                                pop()
+                                if (index != mediaMetadata.artists.lastIndex) append(", ")
                             }
-                            pop()
-                            if (index != mediaMetadata.artists.lastIndex) append(", ")
                         }
-                    }
 
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .basicMarquee()
-                            .padding(end = 12.dp)
-                    ) {
-                        var layoutResult by remember { mutableStateOf<TextLayoutResult?>(null) }
-                        var clickOffset by remember { mutableStateOf<Offset?>(null) }
-                        Text(
-                            text = annotatedString,
-                            style = MaterialTheme.typography.titleMedium.copy(color = TextBackgroundColor),
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            onTextLayout = { layoutResult = it },
+                        Box(
                             modifier = Modifier
-                                .pointerInput(Unit) {
-                                    awaitPointerEventScope {
-                                        while (true) {
-                                            val event = awaitPointerEvent()
-                                            val tapPosition = event.changes.firstOrNull()?.position
-                                            if (tapPosition != null) {
-                                                clickOffset = tapPosition
+                                .fillMaxWidth()
+                                .basicMarquee(iterations = 1, initialDelayMillis = 3000, velocity = 30.dp)
+                                .padding(end = 12.dp)
+                        ) {
+                            var layoutResult by remember { mutableStateOf<TextLayoutResult?>(null) }
+                            var clickOffset by remember { mutableStateOf<Offset?>(null) }
+                            Text(
+                                text = annotatedString,
+                                style = MaterialTheme.typography.titleMedium.copy(color = TextBackgroundColor),
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                onTextLayout = { layoutResult = it },
+                                modifier = Modifier
+                                    .pointerInput(Unit) {
+                                        awaitPointerEventScope {
+                                            while (true) {
+                                                val event = awaitPointerEvent()
+                                                val tapPosition = event.changes.firstOrNull()?.position
+                                                if (tapPosition != null) {
+                                                    clickOffset = tapPosition
+                                                }
                                             }
                                         }
                                     }
-                                }
-                                .combinedClickable(
-                                    enabled = true,
-                                    indication = null,
-                                    interactionSource = remember { MutableInteractionSource() },
-                                    onClick = {
-                                        val tapPosition = clickOffset
-                                        val layout = layoutResult
-                                        if (tapPosition != null && layout != null) {
-                                            val offset = layout.getOffsetForPosition(tapPosition)
-                                            annotatedString
-                                                .getStringAnnotations(offset, offset)
-                                                .firstOrNull()
-                                                ?.let { ann ->
-                                                    val artistId = ann.item
-                                                    if (artistId.isNotBlank()) {
-                                                        navController.navigate("artist/$artistId")
-                                                        state.collapseSoft()
+                                    .combinedClickable(
+                                        enabled = true,
+                                        indication = null,
+                                        interactionSource = remember { MutableInteractionSource() },
+                                        onClick = {
+                                            val tapPosition = clickOffset
+                                            val layout = layoutResult
+                                            if (tapPosition != null && layout != null) {
+                                                val offset = layout.getOffsetForPosition(tapPosition)
+                                                annotatedString
+                                                    .getStringAnnotations(offset, offset)
+                                                    .firstOrNull()
+                                                    ?.let { ann ->
+                                                        val artistId = ann.item
+                                                        if (artistId.isNotBlank()) {
+                                                            navController.navigate("artist/$artistId")
+                                                            state.collapseSoft()
+                                                        }
                                                     }
-                                                }
+                                            }
+                                        },
+                                        onLongClick = {
+                                            val clip =
+                                                ClipData.newPlainText("Copied Artist", annotatedString)
+                                            clipboardManager.setPrimaryClip(clip)
+                                            Toast
+                                                .makeText(
+                                                    context,
+                                                    "Copied Artist",
+                                                    Toast.LENGTH_SHORT
+                                                )
+                                                .show()
                                         }
-                                    },
-                                    onLongClick = {
-                                        val clip =
-                                            ClipData.newPlainText("Copied Artist", annotatedString)
-                                        clipboardManager.setPrimaryClip(clip)
-                                        Toast
-                                            .makeText(
-                                                context,
-                                                "Copied Artist",
-                                                Toast.LENGTH_SHORT
-                                            )
-                                            .show()
-                                    }
-                                )
-                        )
+                                    )
+                            )
+                        }
                     }
                 }
 
@@ -1041,69 +1075,6 @@ fun BottomSheetPlayer(
             }
         }
 
-        if (!state.isCollapsed) {
-            val backgroundAlpha = state.progress.coerceIn(0f, 1f)
-
-            when (playerBackground) {
-                PlayerBackgroundStyle.BLUR -> {
-                    Crossfade(
-                        targetState = mediaMetadata?.thumbnailUrl,
-                        animationSpec = tween(800)
-                    ) { thumbnailUrl ->
-                        if (thumbnailUrl != null) {
-                            Box(modifier = Modifier.alpha(backgroundAlpha)) {
-                                AsyncImage(
-                                    model = thumbnailUrl,
-                                    contentDescription = null,
-                                    contentScale = ContentScale.Crop,
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .blur(220.dp)
-                                )
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .background(Color.Black.copy(alpha = 0.3f))
-                                )
-                            }
-                        }
-                    }
-                }
-                PlayerBackgroundStyle.GRADIENT -> {
-                    Crossfade(
-                        targetState = gradientColors,
-                        animationSpec = tween(800)
-                    ) { colors ->
-                        if (colors.isNotEmpty()) {
-                            val gradientColorStops = if (colors.size >= 3) {
-                                arrayOf(
-                                    0.0f to colors[0],
-                                    0.5f to colors[1],
-                                    1.0f to colors[2]
-                                )
-                            } else {
-                                arrayOf(
-                                    0.0f to colors[0],
-                                    0.6f to colors[0].copy(alpha = 0.7f),
-                                    1.0f to Color.Black
-                                )
-                            }
-                            Box(
-                                Modifier
-                                    .fillMaxSize()
-                                    .alpha(backgroundAlpha)
-                                    .background(Brush.verticalGradient(colorStops = gradientColorStops))
-                                    .background(Color.Black.copy(alpha = 0.2f))
-                            )
-                        }
-                    }
-                }
-                else -> {
-                    PlayerBackgroundStyle.DEFAULT
-                }
-            }
-        }
-
         when (LocalConfiguration.current.orientation) {
             Configuration.ORIENTATION_LANDSCAPE -> {
                 Row(
@@ -1174,7 +1145,7 @@ fun BottomSheetPlayer(
             state = queueSheetState,
             playerBottomSheetState = state,
             navController = navController,
-            backgroundColor =
+            background =
             if (useBlackBackground) {
                 Color.Black
             } else {
@@ -1191,7 +1162,7 @@ fun BottomSheetPlayer(
         mediaMetadata?.let { metadata ->
             BottomSheet(
                 state = lyricsSheetState,
-                backgroundColor = Color.Unspecified,
+                background = { Box(Modifier.fillMaxSize().background(Color.Unspecified)) },
                 onDismiss = { },
                 collapsedContent = {
                 }

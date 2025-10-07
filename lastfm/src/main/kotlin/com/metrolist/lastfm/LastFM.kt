@@ -4,7 +4,6 @@ import com.metrolist.lastfm.models.Authentication
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.okhttp.OkHttp
-import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.request.*
@@ -20,11 +19,6 @@ object LastFM {
         HttpClient(OkHttp) {
             install(ContentNegotiation) {
                 json(Json { isLenient = true; ignoreUnknownKeys = true })
-            }
-            install(HttpTimeout) {
-                requestTimeoutMillis = 15_000
-                connectTimeoutMillis = 10_000
-                socketTimeoutMillis = 15_000
             }
             defaultRequest { url("https://ws.audioscrobbler.com/2.0/") }
             expectSuccess = true

@@ -8,7 +8,6 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.compression.ContentEncoding
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 import io.ktor.http.ContentType
@@ -38,12 +37,6 @@ private val client = HttpClient {
     install(ContentEncoding) {
         gzip()
         deflate()
-    }
-
-    install(HttpTimeout) {
-        requestTimeoutMillis = 15000
-        connectTimeoutMillis = 10000
-        socketTimeoutMillis = 15000
     }
 }
 

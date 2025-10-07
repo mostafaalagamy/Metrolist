@@ -77,6 +77,8 @@ import androidx.compose.ui.util.fastAny
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
+import androidx.compose.ui.platform.LocalContext
 import com.metrolist.innertube.models.SongItem
 import com.metrolist.innertube.models.WatchEndpoint
 import com.metrolist.music.LocalDatabase
@@ -272,8 +274,12 @@ fun OnlinePlaylistScreen(
                                         .fillMaxWidth(),
                                 ) {
                                     AsyncImage(
-                                        model = playlist.thumbnail,
+                                        model = ImageRequest.Builder(LocalContext.current)
+                                            .data(playlist.thumbnail)
+                                            .build(),
                                         contentDescription = null,
+                                        placeholder = painterResource(R.drawable.queue_music),
+                                        error = painterResource(R.drawable.queue_music),
                                         modifier = Modifier
                                             .fillMaxWidth()
                                             .clip(RoundedCornerShape(ThumbnailCornerRadius)),

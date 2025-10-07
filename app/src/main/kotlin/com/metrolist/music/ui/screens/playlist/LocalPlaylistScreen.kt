@@ -108,6 +108,7 @@ import androidx.media3.exoplayer.offline.DownloadRequest
 import androidx.media3.exoplayer.offline.DownloadService
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
 import com.metrolist.innertube.YouTube
 import com.metrolist.innertube.models.SongItem
 import com.metrolist.innertube.utils.completed
@@ -1133,8 +1134,12 @@ fun LocalPlaylistHeader(
                             .clip(RoundedCornerShape(ThumbnailCornerRadius)),
                     ) {
                         AsyncImage(
-                            model = overrideThumbnail.value ?: playlist.thumbnails[0],
+                            model = ImageRequest.Builder(context)
+                                .data(overrideThumbnail.value ?: playlist.thumbnails[0])
+                                .build(),
                             contentDescription = null,
+                            placeholder = painterResource(R.drawable.queue_music),
+                            error = painterResource(R.drawable.queue_music),
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .clip(RoundedCornerShape(ThumbnailCornerRadius))
@@ -1204,9 +1209,13 @@ fun LocalPlaylistHeader(
                             Alignment.BottomEnd,
                         ).fastForEachIndexed { index, alignment ->
                             AsyncImage(
-                                model = overrideThumbnail.value ?: playlist.thumbnails.getOrNull(index),
+                                model = ImageRequest.Builder(context)
+                                    .data(overrideThumbnail.value ?: playlist.thumbnails.getOrNull(index))
+                                    .build(),
                                 contentDescription = null,
                                 contentScale = ContentScale.Crop,
+                                placeholder = painterResource(R.drawable.queue_music),
+                                error = painterResource(R.drawable.queue_music),
                                 modifier =
                                     Modifier
                                         .align(alignment)
