@@ -1,6 +1,7 @@
 package com.metrolist.music.ui.player
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -232,10 +233,12 @@ fun LyricsScreen(
         ) {
             when (playerBackground) {
                 PlayerBackgroundStyle.BLUR -> {
-                    // Disable crossfade transitions as requested
-                    Crossfade(
-                        targetState = mediaMetadata.thumbnailUrl,
-                        animationSpec = tween(800)
+                    AnimatedContent(
+                        targetState = mediaMetadata?.thumbnailUrl,
+                        transitionSpec = {
+                            fadeIn(tween(800)).togetherWith(fadeOut(tween(800)))
+                        },
+                        label = "blurBackground"
                     ) { thumbnailUrl ->
                         if (thumbnailUrl != null) {
                             AsyncImage(
@@ -255,10 +258,12 @@ fun LyricsScreen(
                     }
                 }
                 PlayerBackgroundStyle.GRADIENT -> {
-                    // Disable crossfade transitions as requested
-                    Crossfade(
+                    AnimatedContent(
                         targetState = gradientColors,
-                        animationSpec = tween(800)
+                        transitionSpec = {
+                            fadeIn(tween(800)).togetherWith(fadeOut(tween(800)))
+                        },
+                        label = "gradientBackground"
                     ) { colors ->
                         if (colors.isNotEmpty()) {
                             val gradientColorStops = if (colors.size >= 3) {
