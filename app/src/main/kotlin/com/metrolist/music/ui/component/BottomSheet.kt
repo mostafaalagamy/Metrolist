@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.derivedStateOf
@@ -45,7 +46,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
-import com.metrolist.music.constants.BottomSheetAnimationSpec
 import com.metrolist.music.constants.NavigationBarAnimationSpec
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -117,7 +117,7 @@ fun BottomSheet(
                 modifier = Modifier
                     .fillMaxSize()
                     .graphicsLayer {
-                        alpha = ((state.progress * 4 - 0.25f) * 4).coerceIn(0f, 1f)
+                        alpha = ((state.progress - 0.25f) * 4).coerceIn(0f, 1f)
                     },
                 content = content
             )
@@ -167,7 +167,7 @@ class BottomSheetState(
     }
 
     val isExpanded by derivedStateOf {
-        progress >= 1.0f
+        value == animatable.upperBound
     }
 
     val progress by derivedStateOf {
@@ -189,11 +189,11 @@ class BottomSheetState(
     }
 
     private fun collapse() {
-        collapse(BottomSheetAnimationSpec)
+        collapse(SpringSpec())
     }
 
     private fun expand() {
-        expand(BottomSheetAnimationSpec)
+        expand(SpringSpec())
     }
 
     fun collapseSoft() {
