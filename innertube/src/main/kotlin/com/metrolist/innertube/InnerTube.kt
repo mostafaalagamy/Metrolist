@@ -73,8 +73,6 @@ class InnerTube {
             deflate(0.8F)
         }
 
-        
-
         proxy?.let {
             engine {
                 proxy = this@InnerTube.proxy
