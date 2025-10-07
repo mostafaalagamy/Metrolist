@@ -108,7 +108,6 @@
     <string name="enable_squiggly_slider">Activar línea de tiempo ondulada</string>
     <string name="enable_swipe_thumbnail">Activar deslizar para pasar canción</string>
     <string name="swipe_song_to_add">Desliza la canción hacia la izquierda para agregarla a la cola, o hacia la derecha para reproducirla a continuación</string>
-    <string name="swipe_song_to_remove">Desliza la canción para eliminarla de la lista de reproducción</string>
     <string name="lyrics_click_change">Cambiar letra al presionar</string>
     <string name="auto_download_on_like">Descargar automáticamente al dar \"me gusta\"</string>
     <string name="auto_download_on_like_desc">Automáticamente se descargarán las canciones cuando le des me gusta</string>

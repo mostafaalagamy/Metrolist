@@ -21,7 +21,6 @@
     <string name="player_background_blur">Unschärfe</string>
     <string name="enable_squiggly_slider">Schnörkeligen Schieberegler aktivieren</string>
     <string name="enable_swipe_thumbnail">Wischen zum Songwechsel aktivieren</string>
-    <string name="swipe_song_to_remove">Streichen Sie über den Song, um ihn aus der Playlist zu entfernen</string>
     <string name="lyrics_click_change">Mit Tippen im Songtext springen</string>
     <string name="slim">Schmal</string>
     <string name="slim_navbar">Dünne untere Navigationsleiste</string>

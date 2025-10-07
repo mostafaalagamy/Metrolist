@@ -59,7 +59,6 @@
     <string name="enable_squiggly_slider">Habilitar control deslizante ondulado</string>
     <string name="enable_swipe_thumbnail">Habilitar deslizar para cambiar de canción</string>
     <string name="swipe_song_to_add">Desliza la canción a la derecha para reproducir a continuación o a la izquierda para añadir a la cola</string>
-    <string name="swipe_song_to_remove">Desliza la canción para eliminarla de la lista de reproducción</string>
     <string name="lyrics_click_change">Cambiar letra al hacer clic</string>
     <string name="slim">Delgado</string>
     <string name="slim_navbar">Barra de navegación inferior delgada</string>

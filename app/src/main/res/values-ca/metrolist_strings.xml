@@ -85,5 +85,4 @@
     <string name="default_style">Per defecte</string>
     <string name="secondary_color_style">Secundari</string>
     <string name="enable_swipe_thumbnail">Habilita llisca per canviar de cançó</string>
-    <string name="swipe_song_to_remove">Fes lliscar la cançó per eliminar-la de la llista de reproducció</string>
 </resources>

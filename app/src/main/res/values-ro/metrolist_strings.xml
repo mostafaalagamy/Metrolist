@@ -70,7 +70,6 @@
     <string name="enable_squiggly_slider">Activează slider-ul ondulat</string>
     <string name="enable_swipe_thumbnail">Activează glisarea pentru schimbarea melodiei</string>
     <string name="swipe_song_to_add">Glisează melodia la stânga pentru a o adăuga la coadă sau la dreapta pentru a o reda următoarea</string>
-    <string name="swipe_song_to_remove">Glisează melodia pentru a o elimina din playlist</string>
     <string name="lyrics_click_change">Schimbă versurile la apăsare</string>
     <string name="lyrics_auto_scroll">Derulează automat versurile</string>
     <string name="lyrics_romanize_japanese">Romanizează versurile în japoneză</string>

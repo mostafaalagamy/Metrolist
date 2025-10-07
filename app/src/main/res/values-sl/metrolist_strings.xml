@@ -74,7 +74,6 @@
     <string name="enable_squiggly_slider">Omogoči valovit drsnik</string>
     <string name="enable_swipe_thumbnail">Omogoči poteg za menjavo skladbe</string>
     <string name="swipe_song_to_add">Če želite pesem dodati v čakalno vrsto, jo podrsnite v levo, če jo želite predvajati naslednjo, pa v desno</string>
-    <string name="swipe_song_to_remove">Povlecite pesem, da jo odstranite s seznama predvajanja</string>
     <string name="lyrics_click_change">Spremeni besedila ob kliku</string>
     <string name="lyrics_auto_scroll">Samodejno pomikanje besedil</string>
     <string name="lyrics_romanize_japanese">Romaniziraj japonske besedilo</string>

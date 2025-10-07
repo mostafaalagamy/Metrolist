@@ -59,7 +59,6 @@
     <string name="enable_squiggly_slider">Abilita cursore ondulato</string>
     <string name="enable_swipe_thumbnail">Attiva la possibilità di cambiare brano scorrendo sulla copertina</string>
     <string name="swipe_song_to_add">Scorri il brano verso sinistra aggiungerlo alla coda o verso destra per riprodurlo come successivo</string>
-    <string name="swipe_song_to_remove">Scorri il brano per rimuoverlo dalla playlist</string>
     <string name="lyrics_click_change">Cambia testi con il tocco</string>
     <string name="slim">Sottile</string>
     <string name="slim_navbar">Barra inferiore di navigazione sottile</string>

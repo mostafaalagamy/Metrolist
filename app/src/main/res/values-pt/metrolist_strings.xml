@@ -75,7 +75,6 @@
     <string name="enable_squiggly_slider">Ativar controlo deslizante cobrinha</string>
     <string name="enable_swipe_thumbnail">Ativar o deslizar para trocar de música</string>
     <string name="swipe_song_to_add">Deslizar na música para esquerda para adicionar na fila ou para a direita para tocá-la em seguida</string>
-    <string name="swipe_song_to_remove">Deslize a música para a remover da lista de reprodução</string>
     <string name="lyrics_click_change">Alterar letra ao clicar</string>
     <string name="lyrics_auto_scroll">Rolar letra automaticamente</string>
     <string name="lyrics_romanize_japanese">Romanizar letras em japonês</string>

@@ -122,7 +122,6 @@
     <string name="enable_squiggly_slider">Aktivera vågig slider</string>
     <string name="enable_swipe_thumbnail">Aktivera svepning för att byta låt</string>
     <string name="swipe_song_to_add">Svep låten till vänster för att lägga den i kön eller till höger för att spela den härnäst</string>
-    <string name="swipe_song_to_remove">Svep låten för att ta bort den från spellistan</string>
     <string name="lyrics_click_change">Ändra låttext genom att klicka</string>
     <string name="slim">Smal</string>
     <string name="show_top_playlist">Visa spellistan \"Topp\"</string>

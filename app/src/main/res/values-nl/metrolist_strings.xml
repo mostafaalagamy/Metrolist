@@ -70,5 +70,4 @@
     </plurals>
     <string name="local_history">Lokaal</string>
     <string name="remote_history">Afstandsbediening</string>
-    <string name="swipe_song_to_remove">Veeg over het nummer om het uit de afspeellijst te verwijderen</string>
 </resources>

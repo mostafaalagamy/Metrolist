@@ -57,7 +57,6 @@
     <string name="enable_squiggly_slider">Dalgalı kaydırıcıyı etkinleştir</string>
     <string name="enable_swipe_thumbnail">Şarkıyı değiştirmek için kaydırmayı etkinleştir</string>
     <string name="swipe_song_to_add">Şarkıyı kuyruğa eklemek için sola, sonra çalmak için sağa kaydırın</string>
-    <string name="swipe_song_to_remove">Şarkıyı çalma listesinden çıkarmak için kaydırın</string>
     <string name="lyrics_click_change">Tıklama ile şarkı sözlerini değiştir</string>
     <string name="slim">İnce</string>
     <string name="slim_navbar">İnce alt gezinme çubuğu</string>
