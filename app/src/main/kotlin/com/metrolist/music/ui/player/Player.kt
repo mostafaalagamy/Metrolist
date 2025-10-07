@@ -106,7 +106,6 @@ import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.R
 import com.metrolist.music.constants.DarkModeKey
 import com.metrolist.music.constants.UseNewPlayerDesignKey
-import com.metrolist.music.constants.UseNewMiniPlayerDesignKey
 import com.metrolist.music.constants.PlayerBackgroundStyle
 import com.metrolist.music.constants.PlayerBackgroundStyleKey
 import com.metrolist.music.constants.PlayerButtonsStyle
@@ -158,10 +157,6 @@ fun BottomSheetPlayer(
         UseNewPlayerDesignKey,
         defaultValue = true
     )
-    val (useNewMiniPlayerDesign) = rememberPreference(
-        UseNewMiniPlayerDesignKey,
-        defaultValue = true
-    )
     val playerBackground by rememberEnumPreference(
         key = PlayerBackgroundStyleKey,
         defaultValue = PlayerBackgroundStyle.DEFAULT
@@ -190,23 +185,6 @@ fun BottomSheetPlayer(
                 if (darkTheme == DarkMode.AUTO) isSystemInDarkTheme else darkTheme == DarkMode.ON
             useDarkTheme && pureBlack
         }
-    val backgroundColor = if (useNewMiniPlayerDesign) {
-        if (useBlackBackground && state.value > state.collapsedBound) {
-            val progress = ((state.value - state.collapsedBound) / (state.expandedBound - state.collapsedBound))
-                .coerceIn(0f, 1f)
-            Color.Black.copy(alpha = progress)
-        } else {
-            val progress = ((state.value - state.collapsedBound) / (state.expandedBound - state.collapsedBound))
-                .coerceIn(0f, 1f)
-            MaterialTheme.colorScheme.surfaceContainer.copy(alpha = progress)
-        }
-    } else {
-        if (useBlackBackground) {
-            lerp(MaterialTheme.colorScheme.surfaceContainer, Color.Black, state.progress)
-        } else {
-            MaterialTheme.colorScheme.surfaceContainer
-        }
-    }
 
     val playbackState by playerConnection.playbackState.collectAsState()
     val isPlaying by playerConnection.isPlaying.collectAsState()
@@ -441,7 +419,7 @@ fun BottomSheetPlayer(
     BottomSheet(
         state = state,
         modifier = modifier,
-        backgroundColor = {
+        background = {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -1167,7 +1145,7 @@ fun BottomSheetPlayer(
             state = queueSheetState,
             playerBottomSheetState = state,
             navController = navController,
-            backgroundColor =
+            background =
             if (useBlackBackground) {
                 Color.Black
             } else {
@@ -1184,7 +1162,7 @@ fun BottomSheetPlayer(
         mediaMetadata?.let { metadata ->
             BottomSheet(
                 state = lyricsSheetState,
-                backgroundColor = { Box(Modifier.fillMaxSize().background(Color.Unspecified)) },
+                background = { Box(Modifier.fillMaxSize().background(Color.Unspecified)) },
                 onDismiss = { },
                 collapsedContent = {
                 }
