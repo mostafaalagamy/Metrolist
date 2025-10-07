@@ -44,7 +44,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -95,7 +94,7 @@ fun MiniPlayer(
     pureBlack: Boolean,
 ) {
     val useNewMiniPlayerDesign by rememberPreference(UseNewMiniPlayerDesignKey, true)
-    
+
     if (useNewMiniPlayerDesign) {
         NewMiniPlayer(
             position = position,
@@ -104,12 +103,25 @@ fun MiniPlayer(
             pureBlack = pureBlack
         )
     } else {
-        LegacyMiniPlayer(
-            position = position,
-            duration = duration,
-            modifier = modifier,
-            pureBlack = pureBlack
-        )
+        // NEW: Wrap LegacyMiniPlayer in a Box to allow alignment on tablet landscape.
+        // The outer Box fills the width, providing a container for the inner player to be aligned within.
+        Box(modifier = modifier.fillMaxWidth()) {
+            LegacyMiniPlayer(
+                position = position,
+                duration = duration,
+                // NEW: Align the player to the end if it's a tablet in landscape.
+                // This modifier is passed to LegacyMiniPlayer and applied to its root Box.
+                modifier = if (
+                    LocalConfiguration.current.screenWidthDp >= 600 &&
+                    LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
+                ) {
+                    Modifier.align(Alignment.CenterEnd)
+                } else {
+                    Modifier.align(Alignment.Center)
+                },
+                pureBlack = pureBlack
+            )
+        }
     }
 }
 
@@ -128,17 +140,17 @@ private fun NewMiniPlayer(
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
     val canSkipNext by playerConnection.canSkipNext.collectAsState()
     val canSkipPrevious by playerConnection.canSkipPrevious.collectAsState()
-    
+
     val currentView = LocalView.current
     val layoutDirection = LocalLayoutDirection.current
     val coroutineScope = rememberCoroutineScope()
     val swipeSensitivity by rememberPreference(SwipeSensitivityKey, 0.73f)
     val swipeThumbnail by rememberPreference(com.metrolist.music.constants.SwipeThumbnailKey, true)
-    
+
     val configuration = LocalConfiguration.current
-    val isTabletLandscape = configuration.screenWidthDp >= 600 && 
-                           configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
-    
+    val isTabletLandscape = configuration.screenWidthDp >= 600 &&
+        configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+
     val offsetXAnimatable = remember { Animatable(0f) }
     var dragStartTime by remember { mutableLongStateOf(0L) }
     var totalDragDistance by remember { mutableFloatStateOf(0f) }
@@ -147,7 +159,7 @@ private fun NewMiniPlayer(
         dampingRatio = Spring.DampingRatioNoBouncy,
         stiffness = Spring.StiffnessLow
     )
-    
+
     val overlayAlpha by animateFloatAsState(
         targetValue = if (isPlaying) 0.0f else 0.4f,
         label = "overlay_alpha",
@@ -211,7 +223,7 @@ private fun NewMiniPlayer(
                                 val dragDuration = System.currentTimeMillis() - dragStartTime
                                 val velocity = if (dragDuration > 0) totalDragDistance / dragDuration else 0f
                                 val currentOffset = offsetXAnimatable.value
-                                
+
                                 val minDistanceThreshold = 50f
                                 val velocityThreshold = (swipeSensitivity * -8.25f) + 8.5f
 
@@ -219,17 +231,17 @@ private fun NewMiniPlayer(
                                     kotlin.math.abs(currentOffset) > minDistanceThreshold &&
                                     velocity > velocityThreshold
                                 ) || (kotlin.math.abs(currentOffset) > autoSwipeThreshold)
-                                
+
                                 if (shouldChangeSong) {
                                     val isRightSwipe = currentOffset > 0
-                                    
+
                                     if (isRightSwipe && canSkipPrevious) {
                                         playerConnection.player.seekToPreviousMediaItem()
                                     } else if (!isRightSwipe && canSkipNext) {
                                         playerConnection.player.seekToNext()
                                     }
                                 }
-                                
+
                                 coroutineScope.launch {
                                     offsetXAnimatable.animateTo(
                                         targetValue = 0f,
@@ -284,7 +296,7 @@ private fun NewMiniPlayer(
                             trackColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f)
                         )
                     }
-                    
+
                     // Play/Pause button with thumbnail background
                     Box(
                         contentAlignment = Alignment.Center,
@@ -316,7 +328,7 @@ private fun NewMiniPlayer(
                                     .clip(CircleShape)
                             )
                         }
-                        
+
                         // Semi-transparent overlay for better icon visibility
                         Box(
                             modifier = Modifier
@@ -326,7 +338,7 @@ private fun NewMiniPlayer(
                                     shape = CircleShape
                                 )
                         )
-                        
+
                         androidx.compose.animation.AnimatedVisibility(
                             visible = playbackState == Player.STATE_ENDED || !isPlaying,
                             enter = fadeIn(),
@@ -388,7 +400,7 @@ private fun NewMiniPlayer(
                                 )
                             }
                         }
-                        
+
                         // Error indicator
                         androidx.compose.animation.AnimatedVisibility(
                             visible = error != null,
@@ -413,7 +425,7 @@ private fun NewMiniPlayer(
                     metadata.artists.firstOrNull()?.id?.let { artistId ->
                         val libraryArtist by database.artist(artistId).collectAsState(initial = null)
                         val isSubscribed = libraryArtist?.artist?.bookmarkedAt != null
-                        
+
                         Box(
                             contentAlignment = Alignment.Center,
                             modifier = Modifier
@@ -428,9 +440,9 @@ private fun NewMiniPlayer(
                                     shape = CircleShape
                                 )
                                 .background(
-                                    color = if (isSubscribed) 
+                                    color = if (isSubscribed)
                                         MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
-                                    else 
+                                    else
                                         Color.Transparent,
                                     shape = CircleShape
                                 )
@@ -459,9 +471,9 @@ private fun NewMiniPlayer(
                                     if (isSubscribed) R.drawable.subscribed else R.drawable.subscribe
                                 ),
                                 contentDescription = null,
-                                tint = if (isSubscribed) 
-                                    MaterialTheme.colorScheme.primary 
-                                else 
+                                tint = if (isSubscribed)
+                                    MaterialTheme.colorScheme.primary
+                                else
                                     MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
                                 modifier = Modifier.size(20.dp)
                             )
@@ -475,7 +487,7 @@ private fun NewMiniPlayer(
                 mediaMetadata?.let { metadata ->
                     val librarySong by database.song(metadata.id).collectAsState(initial = null)
                     val isLiked = librarySong?.song?.liked == true
-                    
+
                     Box(
                         contentAlignment = Alignment.Center,
                         modifier = Modifier
@@ -490,7 +502,7 @@ private fun NewMiniPlayer(
                                 shape = CircleShape
                             )
                             .background(
-                                color = if (isLiked) 
+                                color = if (isLiked)
                                     MaterialTheme.colorScheme.error.copy(alpha = 0.1f)
                                 else 
                                     Color.Transparent,
@@ -505,9 +517,9 @@ private fun NewMiniPlayer(
                                 if (isLiked) R.drawable.favorite else R.drawable.favorite_border
                             ),
                             contentDescription = null,
-                            tint = if (isLiked) 
-                                MaterialTheme.colorScheme.error 
-                            else 
+                            tint = if (isLiked)
+                                MaterialTheme.colorScheme.error
+                            else
                                 MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
                             modifier = Modifier.size(20.dp)
                         )
@@ -532,13 +544,18 @@ private fun LegacyMiniPlayer(
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
     val canSkipNext by playerConnection.canSkipNext.collectAsState()
     val canSkipPrevious by playerConnection.canSkipPrevious.collectAsState()
-    
+
     val currentView = LocalView.current
     val layoutDirection = LocalLayoutDirection.current
     val coroutineScope = rememberCoroutineScope()
     val swipeSensitivity by rememberPreference(SwipeSensitivityKey, 0.73f)
     val swipeThumbnail by rememberPreference(com.metrolist.music.constants.SwipeThumbnailKey, true)
-    
+
+    // NEW: Get screen configuration to determine if it's a tablet in landscape mode.
+    val configuration = LocalConfiguration.current
+    val isTabletLandscape = configuration.screenWidthDp >= 600 &&
+        configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+
     val offsetXAnimatable = remember { Animatable(0f) }
     var dragStartTime by remember { mutableLongStateOf(0L) }
     var totalDragDistance by remember { mutableFloatStateOf(0f) }
@@ -555,13 +572,24 @@ private fun LegacyMiniPlayer(
 
     Box(
         modifier = modifier
-            .fillMaxWidth()
+            .then(
+                // NEW: Conditionally set the width based on the device configuration.
+                if (isTabletLandscape) {
+                    Modifier.width(500.dp)
+                } else {
+                    Modifier.fillMaxWidth()
+                }
+            )
             .height(MiniPlayerHeight)
             .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Horizontal))
+            // NEW: Clip the shape BEFORE applying the background.
+            // This ensures that the background is applied to the clipped, rounded shape,
+            // preventing sharp edges when the width is reduced.
+            .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
             .background(
-                if (pureBlack) 
-                    Color.Black 
-                else 
+                if (pureBlack)
+                    Color.Black
+                else
                     MaterialTheme.colorScheme.surfaceContainer // Fixed background independent of player background
             )
             .let { baseModifier ->
@@ -598,7 +626,7 @@ private fun LegacyMiniPlayer(
                                 val dragDuration = System.currentTimeMillis() - dragStartTime
                                 val velocity = if (dragDuration > 0) totalDragDistance / dragDuration else 0f
                                 val currentOffset = offsetXAnimatable.value
-                                
+
                                 val minDistanceThreshold = 50f
                                 val velocityThreshold = (swipeSensitivity * -8.25f) + 8.5f
 
@@ -606,17 +634,17 @@ private fun LegacyMiniPlayer(
                                     kotlin.math.abs(currentOffset) > minDistanceThreshold &&
                                     velocity > velocityThreshold
                                 ) || (kotlin.math.abs(currentOffset) > autoSwipeThreshold)
-                                
+
                                 if (shouldChangeSong) {
                                     val isRightSwipe = currentOffset > 0
-                                    
+
                                     if (isRightSwipe && canSkipPrevious) {
                                         playerConnection.player.seekToPreviousMediaItem()
                                     } else if (!isRightSwipe && canSkipNext) {
                                         playerConnection.player.seekToNext()
                                     }
                                 }
-                                
+
                                 coroutineScope.launch {
                                     offsetXAnimatable.animateTo(
                                         targetValue = 0f,
@@ -638,7 +666,7 @@ private fun LegacyMiniPlayer(
                 .height(2.dp)
                 .align(Alignment.BottomCenter),
         )
-        
+
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
@@ -691,7 +719,7 @@ private fun LegacyMiniPlayer(
                 )
             }
         }
-        
+
         // Visual indicator
         if (offsetXAnimatable.value.absoluteValue > 50f) {
             Box(
