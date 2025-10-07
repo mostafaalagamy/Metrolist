@@ -58,7 +58,7 @@ import kotlinx.coroutines.launch
 fun BottomSheet(
     state: BottomSheetState,
     modifier: Modifier = Modifier,
-    backgroundColor: Color,
+    backgroundColor: @Composable (BoxScope.() -> Unit) = { },
     onDismiss: (() -> Unit)? = null,
     collapsedContent: @Composable BoxScope.() -> Unit,
     content: @Composable BoxScope.() -> Unit,
@@ -97,7 +97,6 @@ fun BottomSheet(
                     topEnd = if (!state.isExpanded) 16.dp else 0.dp
                 )
             )
-            .background(backgroundColor),
     ) {
         if (!state.isCollapsed && !state.isDismissed) {
             BackHandler(onBack = state::collapseSoft)
