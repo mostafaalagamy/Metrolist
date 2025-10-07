@@ -59,7 +59,7 @@ import kotlin.math.pow
 fun BottomSheet(
     state: BottomSheetState,
     modifier: Modifier = Modifier,
-    backgroundColor: @Composable (BoxScope.() -> Unit) = { },
+    background: @Composable (BoxScope.() -> Unit) = { },
     onDismiss: (() -> Unit)? = null,
     collapsedContent: @Composable BoxScope.() -> Unit,
     content: @Composable BoxScope.() -> Unit,
@@ -71,7 +71,7 @@ fun BottomSheet(
                 alpha = (1.4f * (state.progress.coerceAtLeast(0.1f) - 0.1f).pow(0.5f)).coerceIn(0f, 1f)
             }
             .fillMaxSize(),
-        content = backgroundColor
+        content = background
     )
     Box(
         modifier = modifier
