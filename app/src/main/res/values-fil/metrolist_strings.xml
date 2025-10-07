@@ -2,7 +2,6 @@
 <resources>
     <string name="explore">Magsaliksik</string>
     <string name="local_history">Lokal</string>
-    <string name="remote_history"></string>
     <string name="charts">Mga tsart</string>
     <string name="back_button_desc">Balik</string>
     <string name="no_title">Walang titulo</string>
