@@ -912,11 +912,16 @@ class MainActivity : ComponentActivity() {
                                                 }
                                             }
                                         },
-                                        modifier =
-                                        Modifier
-                                            .focusRequester(searchBarFocusRequester)
-                                            .align(Alignment.TopCenter),
                                         focusRequester = searchBarFocusRequester,
+                                        modifier = Modifier
+                                            .align(Alignment.TopCenter)
+                                            .windowInsetsPadding(
+                                                if (shouldShowNavigationRail) {
+                                                    WindowInsets(left = NavigationBarHeight)
+                                                } else {
+                                                    WindowInsets(0.dp)
+                                                }
+                                            ),
                                         colors = if (pureBlack && active) {
                                             SearchBarDefaults.colors(
                                                 containerColor = Color.Black,
@@ -1271,17 +1276,8 @@ class MainActivity : ComponentActivity() {
                     LaunchedEffect(shouldShowSearchBar, openSearchImmediately) {
                         if (shouldShowSearchBar && openSearchImmediately) {
                             onActiveChange(true)
+                            searchBarFocusRequester.requestFocus()
                             openSearchImmediately = false
-                        }
-                    }
-
-                    LaunchedEffect(active) {
-                        if (active) {
-                            // defer keyboard until after enter animation roughly completes
-                            delay(220)
-                            if (active) {
-                                try { searchBarFocusRequester.requestFocus() } catch (_: Exception) {}
-                            }
                         }
                     }
                 }
