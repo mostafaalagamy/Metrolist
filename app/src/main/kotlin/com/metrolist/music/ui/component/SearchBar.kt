@@ -98,7 +98,7 @@ fun TopSearch(
         containerColor = MaterialTheme.colorScheme.surfaceContainerLow
     ),
     tonalElevation: Dp = SearchBarDefaults.TonalElevation,
-    windowInsets: WindowInsets = WindowInsets.safeDrawing,
+    windowInsets: WindowInsets = WindowInsets.systemBars,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     focusRequester: FocusRequester = remember { FocusRequester() },
     content: @Composable ColumnScope.() -> Unit,
