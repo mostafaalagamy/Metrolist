@@ -31,7 +31,6 @@ class ApiService {
                 encodeDefaults = true
             })
         }
-        
         install(HttpCache)
     }
 
