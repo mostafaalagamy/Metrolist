@@ -449,9 +449,12 @@ fun BottomSheetPlayer(
             ) {
                 when (playerBackground) {
                     PlayerBackgroundStyle.BLUR -> {
-                        Crossfade(
+                        AnimatedContent(
                             targetState = mediaMetadata?.thumbnailUrl,
-                            animationSpec = tween(800)
+                            transitionSpec = {
+                                fadeIn(tween(800)).togetherWith(fadeOut(tween(800)))
+                            },
+                            label = "blurBackground"
                         ) { thumbnailUrl ->
                             if (thumbnailUrl != null) {
                                 Box(modifier = Modifier.alpha(backgroundAlpha)) {
@@ -477,9 +480,12 @@ fun BottomSheetPlayer(
                         }
                     }
                     PlayerBackgroundStyle.GRADIENT -> {
-                        Crossfade(
+                        AnimatedContent(
                             targetState = gradientColors,
-                            animationSpec = tween(800)
+                            transitionSpec = {
+                                fadeIn(tween(800)).togetherWith(fadeOut(tween(800)))
+                            },
+                            label = "gradientBackground"
                         ) { colors ->
                             if (colors.isNotEmpty()) {
                                 val gradientColorStops = if (colors.size >= 3) {
@@ -506,7 +512,7 @@ fun BottomSheetPlayer(
                         }
                     }
                     else -> {
-                            PlayerBackgroundStyle.DEFAULT
+                        PlayerBackgroundStyle.DEFAULT
                     }
                 }
             }
