@@ -918,9 +918,8 @@ class MainActivity : ComponentActivity() {
                                             .windowInsetsPadding(
                                                 if (showRail) {
                                                     WindowInsets(left = NavigationBarHeight)
-                                                        .add(cutoutInsets.only(WindowInsetsSides.Start))
                                                 } else {
-                                                    cutoutInsets.only(WindowInsetsSides.Start + WindowInsetsSides.End)
+                                                    WindowInsets(0.dp)
                                                 }
                                             ),
                                         colors = if (pureBlack && active) {
