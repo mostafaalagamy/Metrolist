@@ -428,14 +428,22 @@ fun BottomSheetPlayer(
         initialAnchor = 1
     )
 
+    val bottomSheetBackgroundColor = when (playerBackground) {
+        PlayerBackgroundStyle.BLUR, PlayerBackgroundStyle.GRADIENT -> 
+            MaterialTheme.colorScheme.surfaceContainer
+        else -> 
+            if (useBlackBackground) Color.Black 
+            else MaterialTheme.colorScheme.surfaceContainer
+    }
+
     BottomSheet(
         state = state,
         modifier = modifier,
         backgroundColor = {
             Box(
                 modifier = Modifier
-                    .background(MaterialTheme.colorScheme.background)
                     .fillMaxSize()
+                    .background(bottomSheetBackgroundColor)
             ) {
                 if (!state.isCollapsed) {
                     val backgroundAlpha = state.progress.coerceIn(0f, 1f)
@@ -448,18 +456,18 @@ fun BottomSheetPlayer(
                             ) { thumbnailUrl ->
                                 if (thumbnailUrl != null) {
                                     Box(modifier = Modifier.alpha(backgroundAlpha)) {
-                                    AsyncImage(
-                                        model = ImageRequest.Builder(context)
-                                            .data(thumbnailUrl)
-                                            .size(100, 100)
-                                            .allowHardware(false)
-                                            .build(),
-                                        contentDescription = null,
-                                        contentScale = ContentScale.Crop,
-                                        modifier = Modifier
-                                            .fillMaxSize()
-                                            .blur(if (useDarkTheme) 150.dp else 100.dp)
-                                    )
+                                        AsyncImage(
+                                            model = ImageRequest.Builder(context)
+                                                .data(thumbnailUrl)
+                                                .size(100, 100)
+                                                .allowHardware(false)
+                                                .build(),
+                                            contentDescription = null,
+                                            contentScale = ContentScale.Crop,
+                                            modifier = Modifier
+                                                .fillMaxSize()
+                                                .blur(if (useDarkTheme) 150.dp else 100.dp)
+                                        )
                                         Box(
                                             modifier = Modifier
                                                 .fillMaxSize()
