@@ -27,8 +27,6 @@ object LrcLib {
                 )
             }
 
-            
-
             defaultRequest {
                 url("https://lrclib.net")
             }
