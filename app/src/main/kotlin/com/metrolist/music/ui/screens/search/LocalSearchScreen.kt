@@ -84,9 +84,8 @@ fun LocalSearchScreen(
             .background(if (pureBlack) Color.Black else MaterialTheme.colorScheme.background)
             .let { base ->
                 if (isLandscape) {
-                    // Apply safe horizontal insets only in landscape to avoid notch/rail overlap
                     base.windowInsetsPadding(
-                        WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal)
+                        WindowInsets.systemBars.only(WindowInsetsSides.Horizontal)
                     )
                 } else base
             }
@@ -106,8 +105,7 @@ fun LocalSearchScreen(
         LazyColumn(
             state = lazyListState,
             modifier = Modifier.weight(1f),
-            // Keep only bottom safe area inside the list; top handled above (landscape only)
-            contentPadding = WindowInsets.safeDrawing
+            contentPadding = WindowInsets.systemBars
                 .only(WindowInsetsSides.Bottom)
                 .asPaddingValues(),
         ) {
