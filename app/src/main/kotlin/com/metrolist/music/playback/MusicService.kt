@@ -901,11 +901,72 @@ class MusicService :
     }
 
     fun playNext(items: List<MediaItem>) {
-        player.addMediaItems(
-            if (player.mediaItemCount == 0) 0 else player.currentMediaItemIndex + 1,
-            items
-        )
+        // If queue is empty or player is idle, play immediately instead
+        if (player.mediaItemCount == 0 || player.playbackState == STATE_IDLE) {
+            player.setMediaItems(items)
+            player.prepare()
+            player.play()
+            return
+        }
+
+        val insertIndex = player.currentMediaItemIndex + 1
+        val shuffleEnabled = player.shuffleModeEnabled
+
+        // Insert items immediately after the current item in the window/index space
+        player.addMediaItems(insertIndex, items)
         player.prepare()
+
+        if (shuffleEnabled) {
+            // Rebuild shuffle order so that newly inserted items are played next
+            val timeline = player.currentTimeline
+            if (!timeline.isEmpty) {
+                val size = timeline.windowCount
+                val currentIndex = player.currentMediaItemIndex
+
+                // Newly inserted indices are a contiguous range [insertIndex, insertIndex + items.size)
+                val newIndices = (insertIndex until (insertIndex + items.size)).toSet()
+
+                // Collect existing shuffle traversal order excluding current index
+                val orderAfter = mutableListOf<Int>()
+                var idx = currentIndex
+                while (true) {
+                    idx = timeline.getNextWindowIndex(idx, Player.REPEAT_MODE_OFF, /*shuffleModeEnabled=*/true)
+                    if (idx == C.INDEX_UNSET) break
+                    if (idx != currentIndex) orderAfter.add(idx)
+                }
+
+                val prevList = mutableListOf<Int>()
+                var pIdx = currentIndex
+                while (true) {
+                    pIdx = timeline.getPreviousWindowIndex(pIdx, Player.REPEAT_MODE_OFF, /*shuffleModeEnabled=*/true)
+                    if (pIdx == C.INDEX_UNSET) break
+                    if (pIdx != currentIndex) prevList.add(pIdx)
+                }
+                prevList.reverse() // preserve original forward order
+
+                val existingOrder = (prevList + orderAfter).filter { it != currentIndex && it !in newIndices }
+
+                // Build new shuffle order: current -> newly inserted (in insertion order) -> rest
+                val nextBlock = (insertIndex until (insertIndex + items.size)).toList()
+                val finalOrder = IntArray(size)
+                var pos = 0
+                finalOrder[pos++] = currentIndex
+                nextBlock.forEach { if (it in 0 until size) finalOrder[pos++] = it }
+                existingOrder.forEach { if (pos < size) finalOrder[pos++] = it }
+
+                // Fill any missing indices (safety) to ensure a full permutation
+                if (pos < size) {
+                    for (i in 0 until size) {
+                        if (!finalOrder.contains(i)) {
+                            finalOrder[pos++] = i
+                            if (pos == size) break
+                        }
+                    }
+                }
+
+                player.setShuffleOrder(DefaultShuffleOrder(finalOrder, System.currentTimeMillis()))
+            }
+        }
     }
 
     fun addToQueue(items: List<MediaItem>) {
