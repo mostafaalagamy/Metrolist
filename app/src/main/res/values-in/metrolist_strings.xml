@@ -67,7 +67,7 @@
     <string name="likes">Suka</string>
     <string name="dislikes">Tidak suka</string>
     <string name="clear_downloads_dialog">Apakah anda yakin ingin menghapus semua download?</string>
-    <string name="token_adv_login_description">Ini adalah metode login \"tingkat lanjut\". Sebagai alternatif dari portal web, Anda dapat langsung memasukkan token login Anda di sini. Misalnya, cara ini dapat mempercepat proses masuk di beberapa perangkat. Harap diperhatikan bahwa token yang tidak valid akan gagal diproses oleh aplikasi, dan tidak akan diterima</string>
+    <string name="token_adv_login_description">Ini adalah login \"TINGKAT LANJUT\". Sebagai alternatif dari portal web, Anda dapat memasukkan atau mengubah token login Anda di sini. Misalnya, cara ini dapat mempercepat proses masuk di beberapa perangkat. Token yang tidak valid akan gagal diproses oleh aplikasi, dan tidak diterima</string>
     <string name="local_history">Histori lokal</string>
     <string name="sort_by_last_updated">Tanggal diperbarui</string>
     <string name="link_copied">Link disalin ke clipboard</string>
@@ -199,5 +199,24 @@
     <string name="lyrics_romanization_cyrillic">Non-latin</string>
     <string name="uploaded_playlist">Diunggah</string>
     <string name="filter_uploaded">Diunggah</string>
-    <string name="show_uploaded_playlist">Lihat playlist terupload</string>
+    <string name="show_uploaded_playlist">Tampilkan daftar putar \"Diupload\"</string>
+    <string name="discord_use_details">Gunakan detail, selain status</string>
+    <string name="discord_use_details_description">Tampilkan judul lagu secara jelas, selain nama artis</string>
+    <string name="updater">Pembaruan</string>
+    <string name="check_for_updates">Cek pembaruan secara otomatis</string>
+    <string name="update_notifications">Aktifkan notifikasi pembaruan</string>
+    <string name="update_available_title">Pembaruan tersedia</string>
+    <string name="lyrics_romanize_macedonian">Ubah lirik Macedonian menjadi latin</string>
+    <string name="integrations">Integrasi</string>
+    <string name="lastfm_integration">Integrasi Last.fm</string>
+    <string name="username">Nama Pengguna</string>
+    <string name="password">Kata Sandi</string>
+    <string name="enable_scrobbling">Aktifkan scrobbling</string>
+    <string name="lastfm_now_playing">Kirim Yang Sedang Diputar</string>
+    <string name="scrobbling_configuration">Konfigurasi Scrobbling</string>
+    <string name="scrobble_min_track_duration">Scrobble lagu yang lebih panjang dari</string>
+    <string name="update_channel_name">Pembaruan aplikasi</string>
+    <string name="update_channel_desc">Notifikasi tentang versi terbaru</string>
+    <string name="scrobble_delay_minutes">Scrobble delay menit</string>
+    <string name="scrobble_delay_percent">Scrobble delay persen</string>
 </resources>
