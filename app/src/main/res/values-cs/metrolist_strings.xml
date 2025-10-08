@@ -216,4 +216,14 @@
     <string name="update_channel_desc">Oznámení o nových verzích</string>
     <string name="discord_use_details">Použít podrobnosti namísto stavu</string>
     <string name="discord_use_details_description">Zobrazit jako hlavní název skladby namísto jména interpreta</string>
+    <string name="integrations">Integrace</string>
+    <string name="username">Uživatelské jméno</string>
+    <string name="password">Heslo</string>
+    <string name="lastfm_integration">Integrace Last.fm</string>
+    <string name="enable_scrobbling">Povolit scrobbling</string>
+    <string name="lastfm_now_playing">Odesílat právě hrající skladbu</string>
+    <string name="scrobbling_configuration">Nastavení scrobblingu</string>
+    <string name="scrobble_min_track_duration">Scrobblovat skladby delší než</string>
+    <string name="scrobble_delay_percent">Procento zpoždění scrobblování</string>
+    <string name="scrobble_delay_minutes">Minuty zpoždění scrobblování</string>
 </resources>
