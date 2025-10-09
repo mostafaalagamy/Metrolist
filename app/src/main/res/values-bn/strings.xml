@@ -1,17 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Bottom navigation -->
     <string name="home">হোম</string>
     <string name="songs">গান</string>
     <string name="artists">আর্টিস্ট</string>
     <string name="albums">অ্যালবাম</string>
     <string name="playlists">প্লেলিস্ট</string>
-    <!-- Top bar -->
     <plurals name="n_selected">
         <item quantity="one">%d সিলেক্টেড</item>
         <item quantity="other">%d সিলেক্টেড</item>
     </plurals>
-    <!-- Home -->
     <string name="history">হিস্ট্রি</string>
     <string name="stats">স্টাটস</string>
     <string name="mood_and_genres">মুড ও জনরা</string>
@@ -19,16 +16,13 @@
     <string name="quick_picks">কুইক পিকস্</string>
     <string name="quick_picks_empty">কুইক পিক তৈরি করতে আগে কিছু গান শুনুন</string>
     <string name="new_release_albums">নতুন অ্যালবাম ও সিঙ্গেল</string>
-    <!-- History -->
     <string name="today">আজ</string>
     <string name="yesterday">গতকাল</string>
     <string name="this_week">এই সপ্তাহ</string>
     <string name="last_week">গত সপ্তাহ</string>
-    <!-- Stats -->
     <string name="most_played_songs">সর্বাধিক শোনা গানগুলি</string>
     <string name="most_played_artists">সর্বাধিক শোনা আর্টিস্ট</string>
     <string name="most_played_albums">সর্বাধিক শোনা অ্যালবাম</string>
-    <!-- Search -->
     <string name="search">সার্চ</string>
     <string name="search_yt_music">YouTube Music এ সার্চ করুন</string>
     <string name="search_library">লাইব্রেরিতে সার্চ করুন</string>
@@ -45,18 +39,14 @@
     <string name="filter_featured_playlists">ফিচার্ড প্লেলিস্ট</string>
     <string name="filter_bookmarked">বুকমার্কর্ড</string>
     <string name="no_results_found">কিছু পাওয়া যায়নি</string>
-    <!-- Artist screen -->
     <string name="from_your_library">আপনার লাইব্রেরি থেকে</string>
-    <!-- Playlist -->
     <string name="liked_songs">আপনার লাইক করা গান</string>
     <string name="downloaded_songs">ডাউনলোড করা গান</string>
     <string name="playlist_is_empty">প্লেলিস্ট খালি</string>
-    <!-- Button -->
     <string name="retry">আবার চেষ্টা করুন</string>
     <string name="radio">রেডিও</string>
     <string name="shuffle">শাফেল</string>
     <string name="reset">রিসেট</string>
-    <!-- Menu -->
     <string name="details">বিস্তারিত</string>
     <string name="edit">এডিট</string>
     <string name="start_radio">রেডিও চালু করুন</string>
@@ -79,7 +69,6 @@
     <string name="search_online">অনলাইন এ খুঁজুন</string>
     <string name="action_sync">সিঙ্ক্রোনাইজ</string>
     <string name="advanced">অ্যাডভান্স</string>
-    <!-- Sort menu -->
     <string name="sort_by_create_date">দিন</string>
     <string name="sort_by_name">নাম</string>
     <string name="sort_by_artist">আর্টিস্ট</string>
@@ -88,7 +77,6 @@
     <string name="sort_by_length">গানের লেন্থ</string>
     <string name="sort_by_play_time">প্লে টাইম</string>
     <string name="sort_by_custom">কাস্টম</string>
-    <!-- Dialog -->
     <string name="media_id">মিডিয়া আইডি</string>
     <string name="mime_type">মাইম টাইপ</string>
     <string name="codecs">কডেক</string>
@@ -115,7 +103,6 @@
     <string name="edit_artist">আর্টিস্ট এডিট করুন</string>
     <string name="artist_name">আর্টিস্টের নাম</string>
     <string name="error_artist_name_empty">আর্টিস্টের নাম খালি রাখা যাবে না।</string>
-    <!-- Noun -->
     <plurals name="n_song">
         <item quantity="one">%d গান</item>
         <item quantity="other">%d টা গান</item>
@@ -144,12 +131,10 @@
         <item quantity="one">%d বছর</item>
         <item quantity="other">%d বছর</item>
     </plurals>
-    <!-- Snackbar -->
     <string name="playlist_imported">ইমপোর্ট করা প্লেলিস্ট</string>
     <string name="removed_song_from_playlist">প্লেলিস্ট থেকে \"%s\" সরানো হয়েছে</string>
     <string name="playlist_synced">সিঙ্ক্রোনাইজ করা প্লেলিস্ট</string>
     <string name="undo">বাতিল করুন</string>
-    <!-- Player -->
     <string name="lyrics_not_found">গানের লিরিক পাওয়া যায়নি</string>
     <string name="sleep_timer">স্লীপ টাইমার</string>
     <string name="end_of_song">গান শেষে</string>
@@ -161,7 +146,6 @@
     <string name="error_no_internet">নেটওয়ার্ক কানেকশন নেই</string>
     <string name="error_timeout">ইরর টাইমআউট</string>
     <string name="error_unknown">আননোন ইরর</string>
-    <!-- Player action -->
     <string name="action_like">লাইক</string>
     <string name="action_remove_like">অলাইক</string>
     <string name="action_shuffle_on">শাফেল অন</string>
@@ -169,12 +153,9 @@
     <string name="repeat_mode_off">রিপিট অফ</string>
     <string name="repeat_mode_one">একটা গান রিপিট</string>
     <string name="repeat_mode_all">রিপিট কিউ</string>
-    <!-- Queue Title -->
     <string name="queue_all_songs">সব গান কিউ</string>
     <string name="queue_searched_songs">সার্চ করা গান কিউ</string>
-    <!-- Notification name -->
     <string name="music_player">প্লেয়ার</string>
-    <!-- Settings -->
     <string name="settings">সেটিংস</string>
     <string name="appearance">স্টাইল</string>
     <string name="enable_dynamic_theme">ডাইনামিক থিম চালু করুন</string>

@@ -1,18 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Bottom navigation -->
     <string name="home">ഹോം</string>
     <string name="songs">പാട്ടുകൾ</string>
     <string name="artists">കലാകാരന്മാർ</string>
     <string name="albums">ആൽബങ്ങൾ</string>
     <string name="playlists">പ്ലേലിസ്റ്റുകൾ</string>
-    <!-- Top bar -->
     <plurals name="n_selected">
         <item quantity="one">%d തിരഞ്ഞെടുത്തു</item>
         <item quantity="other">%d തിരഞ്ഞെടുത്തു</item>
     </plurals>
-    <!-- Home -->
-    <!-- Search -->
     <string name="search">തിരയുക</string>
     <string name="search_yt_music">യൂട്യൂബ് സംഗീതം തിരയുക…</string>
     <string name="search_library">തിരയൽ ലൈബ്രറി…</string>
@@ -24,16 +20,12 @@
     <string name="filter_playlists">പ്ലേലിസ്റ്റുകൾ</string>
     <string name="filter_community_playlists">കമ്മ്യൂണിറ്റി പ്ലേലിസ്റ്റുകൾ</string>
     <string name="filter_featured_playlists">തിരഞ്ഞെടുത്ത പ്ലേലിസ്റ്റുകൾ</string>
-    <!-- Artist screen -->
     <string name="from_your_library">നിങ്ങളുടെ ലൈബ്രറിയിൽ നിന്ന്</string>
-    <!-- Playlist -->
     <string name="liked_songs">ഇഷ്ടപ്പെട്ട പാട്ടുകൾ</string>
     <string name="downloaded_songs">ഡൗൺലോഡ് ചെയ്‌ത പാട്ടുകൾ</string>
-    <!-- Button -->
     <string name="retry">വീണ്ടും ശ്രമിക്കുക</string>
     <string name="radio">റേഡിയോ</string>
     <string name="shuffle">ഷഫിൾ</string>
-    <!-- Menu -->
     <string name="edit">എഡിറ്റ് ചെയ്യുക</string>
     <string name="start_radio">റേഡിയോ ആരംഭിക്കുക</string>
     <string name="play">പ്ലേ ചെയ്യുക</string>
@@ -49,14 +41,12 @@
     <string name="refetch">വീണ്ടെടുക്കുക</string>
     <string name="share">പങ്കിടുക</string>
     <string name="delete">ഡിലീറ്റ്</string>
-    <!-- Sort menu -->
     <string name="sort_by_create_date">ചേർത്ത തീയതി</string>
     <string name="sort_by_name">പേര്</string>
     <string name="sort_by_artist">ആർട്ടിസ്റ്റ്</string>
     <string name="sort_by_year">വർഷം</string>
     <string name="sort_by_song_count">പാട്ടുകളുടെ എണ്ണം</string>
     <string name="sort_by_length">ദൈർഘ്യം</string>
-    <!-- Dialog -->
     <string name="copied">്ലിപ്പ്ബോർഡിലേക്ക് പകർത്തി</string>
     <string name="edit_song">ഗാനം എഡിറ്റ് ചെയ്യുക</string>
     <string name="song_title">പാട്ടിന്റെ പേര്</string>
@@ -72,7 +62,6 @@
     <string name="edit_artist">എഡിറ്റ് ആർട്ടിസ്റ്റ്</string>
     <string name="artist_name">കലാകാരന്റെ പേര്</string>
     <string name="error_artist_name_empty">കലാകാരന്റെ പേര് ശൂന്യമാക്കാൻ കഴിയില്ല.</string>
-    <!-- Noun -->
     <plurals name="n_song">
         <item quantity="one">%d പാട്ട്</item>
         <item quantity="other">%d പാട്ടുകൾ</item>
@@ -89,12 +78,8 @@
         <item quantity="one">%d പ്ലേലിസ്റ്റ്</item>
         <item quantity="other">%d പ്ലേലിസ്റ്റുകൾ</item>
     </plurals>
-    <!-- Snackbar -->
     <string name="playlist_imported">പ്ലേലിസ്റ്റ് ഇറക്കുമതി ചെയ്തു</string>
-    <!-- Player -->
-    <!-- Notification name -->
     <string name="music_player">മ്യൂസിക് പ്ലെയർ</string>
-    <!-- Settings -->
     <string name="settings">ക്രമീകരണങ്ങൾ</string>
     <string name="appearance">രൂപഭംഗി</string>
     <string name="dark_theme">ഡാർക്ക് തീം</string>

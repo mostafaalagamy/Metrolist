@@ -1,17 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Bottom navigation -->
     <string name="home">Koti</string>
     <string name="songs">Kappaleet</string>
     <string name="artists">Artistit</string>
     <string name="albums">Albumit</string>
     <string name="playlists">Soittolistat</string>
-    <!-- Top bar -->
     <plurals name="n_selected">
         <item quantity="one">%d valittu</item>
         <item quantity="other">%d kappaletta valittu</item>
     </plurals>
-    <!-- Home -->
     <string name="history">Historia</string>
     <string name="stats">Tilastot</string>
     <string name="mood_and_genres">Mielialat ja genret</string>
@@ -19,16 +16,13 @@
     <string name="quick_picks">Pikalista</string>
     <string name="quick_picks_empty">Kuuntele kappaleita luodaksesi pikavalintasi</string>
     <string name="new_release_albums">Uusia julkaisuja albumeita</string>
-    <!-- History -->
     <string name="today">Tänään</string>
     <string name="yesterday">Eilen</string>
     <string name="this_week">Tämä viikko</string>
     <string name="last_week">Viime viikko</string>
-    <!-- Stats -->
     <string name="most_played_songs">Eniten soitetut kappaleet</string>
     <string name="most_played_artists">Eniten soitetut artistit</string>
     <string name="most_played_albums">Eniten soitetut albumit</string>
-    <!-- Search -->
     <string name="search">Etsi</string>
     <string name="search_yt_music">Hae YouTube Musicista…</string>
     <string name="search_library">Hae kirjastosta…</string>
@@ -45,18 +39,14 @@
     <string name="filter_featured_playlists">Suositellut soittolistat</string>
     <string name="filter_bookmarked">Kirjanmerkkeihin lisätty</string>
     <string name="no_results_found">Tuloksia ei löytynyt</string>
-    <!-- Artist screen -->
     <string name="from_your_library">Kirjastostasi</string>
-    <!-- Playlist -->
     <string name="liked_songs">Tykkätyt kappaleet</string>
     <string name="downloaded_songs">Ladatut kappaleet</string>
     <string name="playlist_is_empty">Soittolista on tyhjä</string>
-    <!-- Button -->
     <string name="retry">Toisto</string>
     <string name="radio">Radio</string>
     <string name="shuffle">Sekoita</string>
     <string name="reset">Nollaa</string>
-    <!-- Menu -->
     <string name="details">Yksityiskohdat</string>
     <string name="edit">Muokkaa</string>
     <string name="start_radio">Käynnistä radio</string>
@@ -79,7 +69,6 @@
     <string name="search_online">Etsi verkossa</string>
     <string name="action_sync">Synkronoi</string>
     <string name="advanced">Edistynyt</string>
-    <!-- Sort menu -->
     <string name="sort_by_create_date">Lisäyspäivä</string>
     <string name="sort_by_name">Nimi</string>
     <string name="sort_by_artist">Artisti</string>
@@ -88,7 +77,6 @@
     <string name="sort_by_length">Pituus</string>
     <string name="sort_by_play_time">Toistoaika</string>
     <string name="sort_by_custom">Mukautettu tilaus</string>
-    <!-- Dialog -->
     <string name="media_id">Mediatunnus</string>
     <string name="mime_type">MIME-tyyppi</string>
     <string name="codecs">Koodekit</string>
@@ -114,7 +102,6 @@
     <string name="edit_artist">Muokkaa artistia</string>
     <string name="artist_name">Artistin nimi</string>
     <string name="error_artist_name_empty">Artistin nimi ei voi olla tyhjä.</string>
-    <!-- Noun -->
     <plurals name="n_song">
         <item quantity="one">%d kappale</item>
         <item quantity="other">%d kappaletta</item>
@@ -143,12 +130,10 @@
         <item quantity="one">%d vuosi</item>
         <item quantity="other">%d vuotta</item>
     </plurals>
-    <!-- Snackbar -->
     <string name="playlist_imported">Soittolista tuotu</string>
     <string name="removed_song_from_playlist">\"%s\" poistettiin soittolistasta</string>
     <string name="playlist_synced">Soittolista synkronoitu</string>
     <string name="undo">Kumoa</string>
-    <!-- Player -->
     <string name="lyrics_not_found">Sanoitusta ei löytynyt</string>
     <string name="sleep_timer">Uniajastin</string>
     <string name="end_of_song">Laulun loppu</string>
@@ -160,7 +145,6 @@
     <string name="error_no_internet">Ei verkkoyhteyttä</string>
     <string name="error_timeout">Aikakatkaisu</string>
     <string name="error_unknown">Tuntematon virhe</string>
-    <!-- Player action -->
     <string name="action_like">Tykkää</string>
     <string name="action_remove_like">Poista \"tykkää\"</string>
     <string name="action_shuffle_on">Sekoitus päällä</string>
@@ -168,11 +152,8 @@
     <string name="repeat_mode_off">Toistotila pois päältä</string>
     <string name="repeat_mode_one">Toista nykyinen laulu</string>
     <string name="repeat_mode_all">Toista jono</string>
-    <!-- Queue Title -->
     <string name="queue_all_songs">Kaikki laulut</string>
-    <!-- Notification name -->
     <string name="music_player">Soitin</string>
-    <!-- Settings -->
     <string name="settings">Asetukset</string>
     <string name="appearance">Ulkoasu</string>
     <string name="dark_theme">Tumma teema</string>

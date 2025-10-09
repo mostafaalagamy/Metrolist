@@ -1,17 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Bottom navigation -->
     <string name="home">Αρχική</string>
     <string name="songs">Τραγούδια</string>
     <string name="artists">Καλλιτέχνες</string>
     <string name="albums">Άλμπουμ</string>
     <string name="playlists">Λίστες</string>
-    <!-- Top bar -->
     <plurals name="n_selected">
         <item quantity="one">%d επιλεγμένο</item>
         <item quantity="other">%d επιλεγμένα</item>
     </plurals>
-    <!-- Home -->
     <string name="history">Ιστορικό</string>
     <string name="stats">Στατιστικά</string>
     <string name="mood_and_genres">Διάθεση και Είδη</string>
@@ -22,16 +19,13 @@
     <string name="keep_listening">Συνέχεια ακρόασης</string>
     <string name="similar_to">Παρόμοια με</string>
     <string name="new_release_albums">Άλμπουμ νέας κυκλοφορίας</string>
-    <!-- History -->
     <string name="today">Σήμερα</string>
     <string name="yesterday">Εχθές</string>
     <string name="this_week">Αυτήν την εβδομάδα</string>
     <string name="last_week">Τελευταία εβδομάδα</string>
-    <!-- Stats -->
     <string name="most_played_songs">Τα πιο πολυπαιγμένα τραγούδια</string>
     <string name="most_played_artists">Οι πιο πολυπαιγμένοι καλλιτέχνες</string>
     <string name="most_played_albums">Τα πιο πολυπαιγμένα άλμπουμ</string>
-    <!-- Search -->
     <string name="search">Αναζήτηση</string>
     <string name="search_yt_music">Αναζήτηση Μουσικής YouTube…</string>
     <string name="search_library">Αναζήτηση βιβλιοθήκης…</string>
@@ -48,24 +42,20 @@
     <string name="filter_featured_playlists">Προτεινόμενες λίστες αναπαραγωγής</string>
     <string name="filter_bookmarked">Σελιδοδείκτες</string>
     <string name="no_results_found">Δεν βρέθηκαν αποτελέσματα</string>
-    <!-- Artist screen -->
     <string name="library_song_empty">Τα τραγούδια βιβλιοθήκης εμφανίζονται εδώ</string>
     <string name="library_artist_empty">Οι καλλιτέχνες βιβλιοθήκης εμφανίζονται εδώ</string>
     <string name="library_album_empty">Τα άλμπουμ βιβλιοθήκης εμφανίζονται εδώ</string>
     <string name="library_playlist_empty">Οι λίστες αναπαραγωγής θα εμφανίζονται εδώ</string>
     <string name="from_your_library">Από τη βιβλιοθήκη σας</string>
-    <!-- Playlist -->
     <string name="liked_songs">Αγαπημένα τραγούδια</string>
     <string name="downloaded_songs">Κατεβασμένα τραγούδια</string>
     <string name="playlist_is_empty">Η λίστα αναπαρ. είναι κενή</string>
     <string name="remove_download_playlist_confirm">Θέλετε πραγματικά να αφαιρέσετε όλα τα τραγούδια της λίστας αναπαραγωγής \\\"%s\\\" από τα Ληφθέντα Τραγούδια;</string>
     <string name="delete_playlist_confirm">Θέλετε πραγματικά να διαγράψετε τη λίστα αναπαραγωγής \"%s\";</string>
-    <!-- Button -->
     <string name="retry">Επανάληψη</string>
     <string name="radio">Ραδιόφωνο</string>
     <string name="shuffle">Ανακάτεμα</string>
     <string name="reset">Επαναφορά</string>
-    <!-- Menu -->
     <string name="details">Λεπτομέρειες</string>
     <string name="edit">Επεξεργασία</string>
     <string name="start_radio">Έναρξη ραδιοφώνου</string>
@@ -91,7 +81,6 @@
     <string name="action_sync">Συγχρονισμός</string>
     <string name="advanced">Προχωρημένο</string>
     <string name="tempo_and_pitch">Τέμπο και Τάση</string>
-    <!-- Sort menu -->
     <string name="sort_by_create_date">Ημερομηνία προσθήκης</string>
     <string name="sort_by_name">Όνομα</string>
     <string name="sort_by_artist">Καλλιτέχνης</string>
@@ -100,7 +89,6 @@
     <string name="sort_by_length">Μήκος</string>
     <string name="sort_by_play_time">Χρόνος παιχνιδιού</string>
     <string name="sort_by_custom">Προσαρμοσμένη σειρά</string>
-    <!-- Dialog -->
     <string name="media_id">Id πολυμέσων</string>
     <string name="mime_type">Τύπος MIME</string>
     <string name="codecs">Κωδικοποιητές</string>
@@ -132,7 +120,6 @@
     <string name="add_anyway">Προσθήκη ούτως ή άλλως</string>
     <string name="duplicates_description_single">Το τραγούδι είναι ήδη στη λίστα αναπαρ. σας</string>
     <string name="duplicates_description_multiple">%d τραγούδια είναι ήδη στη λίστα αναπαρ. σας</string>
-    <!-- Noun -->
     <plurals name="n_song">
         <item quantity="one">%d τραγούδι</item>
         <item quantity="other">%d τραγούδια</item>
@@ -161,12 +148,10 @@
         <item quantity="one">%d έτος</item>
         <item quantity="other">%d χρόνια</item>
     </plurals>
-    <!-- Snackbar -->
     <string name="playlist_imported">Λίστα αναπαραγωγής εισήχθη</string>
     <string name="removed_song_from_playlist">Αφαίρεση του \"%s\" από τη λίστα</string>
     <string name="playlist_synced">Λίστα αναπαραγωγής συγχρονισμένη</string>
     <string name="undo">Αναίρεση</string>
-    <!-- Player -->
     <string name="lyrics_not_found">Δεν βρέθηκαν στίχοι</string>
     <string name="sleep_timer">Χρονοδιακόπτης ύπνου</string>
     <string name="end_of_song">Τέλος τραγουδιού</string>
@@ -178,7 +163,6 @@
     <string name="error_no_internet">Δεν υπάρχει σύνδεση δικτύου</string>
     <string name="error_timeout">Τέλος χρονικού ορίου</string>
     <string name="error_unknown">Άγνωστο σφάλμα</string>
-    <!-- Player action -->
     <string name="action_like">Αγαπημένο</string>
     <string name="action_like_all">Αγαπημένα όλα</string>
     <string name="action_remove_like">Αφαίρεση αγαπημένο</string>
@@ -188,12 +172,9 @@
     <string name="repeat_mode_off">Λειτουργία επανάληψης ανενεργό</string>
     <string name="repeat_mode_one">Επανάληψη τρέχοντος τραγουδιού</string>
     <string name="repeat_mode_all">Επανάληψη ουράς</string>
-    <!-- Queue Title -->
     <string name="queue_all_songs">Όλα τα τραγούδια</string>
     <string name="queue_searched_songs">Αναζητημένα τραγούδια</string>
-    <!-- Notification name -->
     <string name="music_player">Αναπαραγωγέας Μουσικής</string>
-    <!-- Settings -->
     <string name="settings">Ρυθμίσεις</string>
     <string name="appearance">Εμφάνιση</string>
     <string name="theme">Θέμα</string>

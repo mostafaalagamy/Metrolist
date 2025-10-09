@@ -1,17 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Bottom navigation -->
     <string name="home">Ana Sayfa</string>
     <string name="songs">Şarkılar</string>
     <string name="artists">Sanatçılar</string>
     <string name="albums">Albümler</string>
     <string name="playlists">Çalma Listeleri</string>
-    <!-- Top bar -->
     <plurals name="n_selected">
         <item quantity="one">%d seçildi</item>
         <item quantity="other">%d seçililer</item>
     </plurals>
-    <!-- Home -->
     <string name="history">Geçmiş</string>
     <string name="stats">İstatistikler</string>
     <string name="mood_and_genres">Ruh Hali ve Türler</string>
@@ -19,16 +16,13 @@
     <string name="quick_picks">Hızlı seçimler</string>
     <string name="quick_picks_empty">Hızlı seçimlerinizi oluşturmak için birkaç şarkı dinleyin</string>
     <string name="new_release_albums">Yeni çıkan albümler</string>
-    <!-- History -->
     <string name="today">Bugün</string>
     <string name="yesterday">Dün</string>
     <string name="this_week">Bu hafta</string>
     <string name="last_week">Geçen hafta</string>
-    <!-- Stats -->
     <string name="most_played_songs">En çok dinlenen şarkılar</string>
     <string name="most_played_artists">En çok dinlenen sanatçılar</string>
     <string name="most_played_albums">En çok dinlenen albümler</string>
-    <!-- Search -->
     <string name="search">Arama</string>
     <string name="search_yt_music">YouTube Müzik\'te Ara…</string>
     <string name="search_library">Kütüphanede ara…</string>
@@ -45,18 +39,14 @@
     <string name="filter_featured_playlists">Öne çıkan listeler</string>
     <string name="filter_bookmarked">Favoriler</string>
     <string name="no_results_found">Sonuç bulunamadı</string>
-    <!-- Artist screen -->
     <string name="from_your_library">Kütüphanenizden</string>
-    <!-- Playlist -->
     <string name="liked_songs">Beğenilen şarkılar</string>
     <string name="downloaded_songs">İndirilen şarkılar</string>
     <string name="playlist_is_empty">Çalma listesi boş</string>
-    <!-- Button -->
     <string name="retry">Tekrar dene</string>
     <string name="radio">Radyo</string>
     <string name="shuffle">Karıştır</string>
     <string name="reset">Sıfırla</string>
-    <!-- Menu -->
     <string name="details">Detaylar</string>
     <string name="edit">Düzenle</string>
     <string name="start_radio">Radyo başlat</string>
@@ -79,7 +69,6 @@
     <string name="search_online">Çevrim içi ara</string>
     <string name="action_sync">Eşitle</string>
     <string name="advanced">Gelişmiş</string>
-    <!-- Sort menu -->
     <string name="sort_by_create_date">Eklendiği tarih</string>
     <string name="sort_by_name">Ad</string>
     <string name="sort_by_artist">Sanatçı</string>
@@ -88,7 +77,6 @@
     <string name="sort_by_length">Uzunluk</string>
     <string name="sort_by_play_time">Çalma süresi</string>
     <string name="sort_by_custom">Özel sıralama</string>
-    <!-- Dialog -->
     <string name="media_id">Medya kimliği</string>
     <string name="mime_type">MIME türü</string>
     <string name="codecs">Kodekler</string>
@@ -115,7 +103,6 @@
     <string name="edit_artist">Sanatçıyı düzenle</string>
     <string name="artist_name">Sanatçı adı</string>
     <string name="error_artist_name_empty">Sanatçı adı boş olamaz.</string>
-    <!-- Noun -->
     <plurals name="n_song">
         <item quantity="one">%d şarkı</item>
         <item quantity="other">%d şarkılar</item>
@@ -144,12 +131,10 @@
         <item quantity="one">%d yıl</item>
         <item quantity="other">%d yıllar</item>
     </plurals>
-    <!-- Snackbar -->
     <string name="playlist_imported">Çalma listesi içe aktarıldı</string>
     <string name="removed_song_from_playlist">\"%s\" çalma listesinden kaldırıldı</string>
     <string name="playlist_synced">Çalma listesi eşitlendi</string>
     <string name="undo">Geri al</string>
-    <!-- Player -->
     <string name="lyrics_not_found">Şarkı sözleri bulunamadı</string>
     <string name="sleep_timer">Uyku zamanlayıcısı</string>
     <string name="end_of_song">Şarkının sonu</string>
@@ -161,7 +146,6 @@
     <string name="error_no_internet">Ağ bağlantısı yok</string>
     <string name="error_timeout">Zaman aşımı</string>
     <string name="error_unknown">Bilinmeyen hata</string>
-    <!-- Player action -->
     <string name="action_like">Beğen</string>
     <string name="action_remove_like">Beğeniyi kaldır</string>
     <string name="action_shuffle_on">Karıştırma açık</string>
@@ -169,12 +153,9 @@
     <string name="repeat_mode_off">Tekrarlama modu kapalı</string>
     <string name="repeat_mode_one">Şu anki şarkıyı tekrarla</string>
     <string name="repeat_mode_all">Sırayı tekrarla</string>
-    <!-- Queue Title -->
     <string name="queue_all_songs">Tüm şarkılar</string>
     <string name="queue_searched_songs">Aranan şarkılar</string>
-    <!-- Notification name -->
     <string name="music_player">Müzik Çalar</string>
-    <!-- Settings -->
     <string name="settings">Ayarlar</string>
     <string name="appearance">Görünüm</string>
     <string name="enable_dynamic_theme">Dinamik temayı etkinleştir</string>

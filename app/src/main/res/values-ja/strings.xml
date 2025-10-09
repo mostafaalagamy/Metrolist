@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Bottom navigation -->
     <string name="home">ホーム</string>
     <string name="songs">曲</string>
     <string name="artists">アーティスト</string>
     <string name="albums">アルバム</string>
     <string name="playlists">再生リスト</string>
-    <!-- Top bar -->
     <plurals name="n_selected">
         <item quantity="other">%d 個を選択済み</item>
     </plurals>
-    <!-- Home -->
     <string name="history">履歴</string>
     <string name="stats">統計</string>
     <string name="mood_and_genres">ムードとジャンル</string>
@@ -22,16 +19,13 @@
     <string name="keep_listening">視聴を維持</string>
     <string name="your_youtube_playlists">あなたのYouTubeの再生リスト</string>
     <string name="similar_to">これに似ている</string>
-    <!-- History -->
     <string name="today">今日</string>
     <string name="yesterday">昨日</string>
     <string name="this_week">今週</string>
     <string name="last_week">先週</string>
-    <!-- Stats -->
     <string name="most_played_songs">最も聴いた曲</string>
     <string name="most_played_artists">最も聴いたアーティスト</string>
     <string name="most_played_albums">最も聴いたアルバム</string>
-    <!-- Search -->
     <string name="search">検索</string>
     <string name="search_yt_music">YouTube Music を検索…</string>
     <string name="search_library">ライブラリを検索…</string>
@@ -48,27 +42,21 @@
     <string name="filter_featured_playlists">おすすめの再生リスト</string>
     <string name="filter_bookmarked">ブックマーク済み</string>
     <string name="no_results_found">見つかりませんでした</string>
-    <!-- Library -->
     <string name="library_song_empty">曲のライブラリはここに表示されます</string>
     <string name="library_artist_empty">アーティストのライブラリはここに表示されます</string>
     <string name="library_album_empty">アルバムのライブラリはここに表示されます</string>
     <string name="library_playlist_empty">あなたの再生リストはここに表示されます</string>
-    <!-- Artist screen -->
     <string name="from_your_library">ライブラリから</string>
-    <!-- Album screen -->
     <string name="other_versions">別のバージョン</string>
-    <!-- Playlist -->
     <string name="liked_songs">いいねした曲</string>
     <string name="downloaded_songs">ダウンロードした曲</string>
     <string name="playlist_is_empty">再生リストが空です</string>
     <string name="remove_download_playlist_confirm">｢%s｣の再生リスト上の全曲をダウンロード済みから削除しますか？</string>
     <string name="delete_playlist_confirm">｢%s｣の再生リストを削除してもよろしいですか？</string>
-    <!-- Button -->
     <string name="retry">再試行</string>
     <string name="radio">ラジオ</string>
     <string name="shuffle">シャッフル</string>
     <string name="reset">リセット</string>
-    <!-- Menu -->
     <string name="details">詳細</string>
     <string name="edit">編集</string>
     <string name="start_radio">ラジオを再生</string>
@@ -96,7 +84,6 @@
     <string name="action_sync">同期</string>
     <string name="advanced">高度</string>
     <string name="tempo_and_pitch">速度とピッチ</string>
-    <!-- Sort menu -->
     <string name="sort_by_create_date">追加日時</string>
     <string name="sort_by_name">曲名</string>
     <string name="sort_by_artist">アーティスト</string>
@@ -105,7 +92,6 @@
     <string name="sort_by_length">長さ</string>
     <string name="sort_by_play_time">再生時間</string>
     <string name="sort_by_custom">カスタム</string>
-    <!-- Dialog -->
     <string name="media_id">メディア ID</string>
     <string name="mime_type">MIME タイプ</string>
     <string name="codecs">コーデック</string>
@@ -137,7 +123,6 @@
     <string name="add_anyway">気にせず追加</string>
     <string name="duplicates_description_single">曲はすでに再生リストにあります</string>
     <string name="duplicates_description_multiple">%d の曲はすでに再生リストにあります</string>
-    <!-- Noun -->
     <plurals name="n_song">
         <item quantity="other">%d 曲</item>
     </plurals>
@@ -159,12 +144,10 @@
     <plurals name="n_year">
         <item quantity="other">%d 年</item>
     </plurals>
-    <!-- Snackbar -->
     <string name="playlist_imported">再生リストをインポートしました</string>
     <string name="removed_song_from_playlist">再生リストから「%s」を削除しました</string>
     <string name="playlist_synced">再生リストが同期されました</string>
     <string name="undo">元に戻す</string>
-    <!-- Player -->
     <string name="lyrics_not_found">歌詞が見つかりません</string>
     <string name="sleep_timer">スリープタイマー</string>
     <string name="end_of_song">曲の終わり</string>
@@ -175,7 +158,6 @@
     <string name="error_no_internet">ネットワーク接続がありません</string>
     <string name="error_timeout">タイムアウトしました</string>
     <string name="error_unknown">不明なエラー</string>
-    <!-- Player action -->
     <string name="action_like">いいね</string>
     <string name="action_like_all">すべていいね</string>
     <string name="action_remove_like">いいねを削除</string>
@@ -185,12 +167,9 @@
     <string name="repeat_mode_off">リピートモード OFF</string>
     <string name="repeat_mode_one">現在の曲をリピート</string>
     <string name="repeat_mode_all">キューをリピート</string>
-    <!-- Queue Title -->
     <string name="queue_all_songs">すべての曲</string>
     <string name="queue_searched_songs">検索した曲</string>
-    <!-- Notification name -->
     <string name="music_player">音楽プレーヤー</string>
-    <!-- Settings -->
     <string name="settings">設定</string>
     <string name="appearance">外観</string>
     <string name="theme">テーマ</string>
