@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Bottom navigation -->
     <string name="home">Trang chủ</string>
     <string name="songs">Bài hát</string>
     <string name="artists">Nghệ sĩ</string>
     <string name="albums">Album</string>
     <string name="playlists">Danh sách phát</string>
-    <!-- Top bar -->
     <plurals name="n_selected">
         <item quantity="other">Đã chọn %d</item>
     </plurals>
-    <!-- Home -->
     <string name="history">Lịch sử</string>
     <string name="stats">Thống kê</string>
     <string name="mood_and_genres">Tâm trạng và thể loại</string>
@@ -18,16 +15,13 @@
     <string name="quick_picks">Lựa chọn nhanh</string>
     <string name="quick_picks_empty">Hãy nghe các bài hát để tạo danh sách chọn nhanh của bạn</string>
     <string name="new_release_albums">Các album mới phát hành</string>
-    <!-- History -->
     <string name="today">Hôm nay</string>
     <string name="yesterday">Hôm qua</string>
     <string name="this_week">Tuần này</string>
     <string name="last_week">Tuần trước</string>
-    <!-- Stats -->
     <string name="most_played_songs">Bài hát được phát nhiều nhất</string>
     <string name="most_played_artists">Nghệ sĩ được phát nhiều nhất</string>
     <string name="most_played_albums">Album được phát nhiều nhất</string>
-    <!-- Search -->
     <string name="search">Tìm kiếm</string>
     <string name="search_yt_music">Tìm kiếm trên YouTube Music…</string>
     <string name="search_library">Tìm kiếm trong thư viện…</string>
@@ -44,18 +38,14 @@
     <string name="filter_featured_playlists">Danh sách phát nổi bật</string>
     <string name="filter_bookmarked">Đã đánh dấu</string>
     <string name="no_results_found">Không tìm thấy kết quả nào</string>
-    <!-- Artist screen -->
     <string name="from_your_library">Từ thư viện của bạn</string>
-    <!-- Playlist -->
     <string name="liked_songs">Bài hát được yêu thích</string>
     <string name="downloaded_songs">Bài hát được tải xuống</string>
     <string name="playlist_is_empty">Danh sách phát đang trống</string>
-    <!-- Button -->
     <string name="retry">Thử lại</string>
     <string name="radio">Đài phát</string>
     <string name="shuffle">Trộn bài</string>
     <string name="reset">Cài lại</string>
-    <!-- Menu -->
     <string name="details">Chi tiết</string>
     <string name="edit">Chỉnh sửa</string>
     <string name="start_radio">Bắt đầu đài phát</string>
@@ -78,7 +68,6 @@
     <string name="search_online">Tìm kiếm trực tuyến</string>
     <string name="action_sync">Đồng bộ</string>
     <string name="advanced">Nâng cao</string>
-    <!-- Sort menu -->
     <string name="sort_by_create_date">Ngày thêm vào</string>
     <string name="sort_by_name">Tên</string>
     <string name="sort_by_artist">Nghệ sĩ</string>
@@ -87,7 +76,6 @@
     <string name="sort_by_length">Độ dài</string>
     <string name="sort_by_play_time">Thời gian phát</string>
     <string name="sort_by_custom">Tuỳ chỉnh bộ lọc</string>
-    <!-- Dialog -->
     <string name="media_id">ID phương tiện</string>
     <string name="mime_type">Định dạng</string>
     <string name="codecs">Bộ giải mã</string>
@@ -114,7 +102,6 @@
     <string name="edit_artist">Chỉnh sửa nghệ sĩ</string>
     <string name="artist_name">Tên nghệ sĩ</string>
     <string name="error_artist_name_empty">Tên nghệ sĩ không được để trống.</string>
-    <!-- Noun -->
     <plurals name="n_song">
         <item quantity="other">%d bài hát</item>
     </plurals>
@@ -136,12 +123,10 @@
     <plurals name="n_year">
         <item quantity="other">%d năm</item>
     </plurals>
-    <!-- Snackbar -->
     <string name="playlist_imported">Danh sách phát đã được nhập vào</string>
     <string name="removed_song_from_playlist">Đã xoá \"%s\" khỏi danh sách phát</string>
     <string name="playlist_synced">Danh sách phát được đồng bộ</string>
     <string name="undo">Hoàn tác</string>
-    <!-- Player -->
     <string name="lyrics_not_found">Không tìm thấy lời bài hát</string>
     <string name="sleep_timer">Hẹn giờ ngủ</string>
     <string name="end_of_song">Kết thúc bài hát</string>
@@ -152,7 +137,6 @@
     <string name="error_no_internet">Không có kết nối mạng</string>
     <string name="error_timeout">Hết giờ</string>
     <string name="error_unknown">Lỗi không xác định</string>
-    <!-- Player action -->
     <string name="action_like">Thích</string>
     <string name="action_remove_like">Bỏ thích</string>
     <string name="action_shuffle_on">Bật trộn bài</string>
@@ -160,12 +144,9 @@
     <string name="repeat_mode_off">Tắt lặp lại</string>
     <string name="repeat_mode_one">Lặp lại bài hát này</string>
     <string name="repeat_mode_all">Lặp lại hàng đợi</string>
-    <!-- Queue Title -->
     <string name="queue_all_songs">Tất cả bài hát</string>
     <string name="queue_searched_songs">Những bài hát được tìm kiếm</string>
-    <!-- Notification name -->
     <string name="music_player">Trình phát nhạc</string>
-    <!-- Settings -->
     <string name="settings">Cài đặt</string>
     <string name="appearance">Hiển thị</string>
     <string name="enable_dynamic_theme">Bật chủ đề theo màu sắc</string>
