@@ -49,7 +49,7 @@
     <string name="no_title">Sin titulo</string>
     <string name="unknown_artist">Artista desconocido</string>
     <string name="unknown_item_type">Tipo de ítem desconocido</string>
-    <string name="loading_charts">Cargando lista de éxitos...</string>
+    <string name="loading_charts">Cargando lista de éxitos…</string>
     <string name="retry_button">Reintentar</string>
     <string name="album_cover_desc">Portada de álbum</string>
     <string name="top_music_videos">Top de vídeos músicales</string>
