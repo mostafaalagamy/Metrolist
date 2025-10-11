@@ -222,4 +222,5 @@
     <string name="scrobble_min_track_duration">Şu süreden uzun şarkıları kaydet</string>
     <string name="scrobble_delay_percent">Scrobble gecikme yüzdesi</string>
     <string name="scrobble_delay_minutes">Scrobble gecikme dakikaları</string>
+    <string name="swipe_song_to_remove">Şarkıyı çalma listesinden kaldırmak için kaydırın</string>
 </resources>

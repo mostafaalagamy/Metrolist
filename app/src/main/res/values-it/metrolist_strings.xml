@@ -63,13 +63,13 @@
     <string name="slim">Sottile</string>
     <string name="slim_navbar">Barra inferiore di navigazione sottile</string>
     <string name="auto_playlists">Playlist automatiche</string>
-    <string name="show_liked_playlist">Mostra la Playlist dei brani piaciuti</string>
-    <string name="show_downloaded_playlist">Mostra la Playlist dei brani scaricati</string>
-    <string name="show_top_playlist">Mostra la Playlist dei migliori brani</string>
-    <string name="show_cached_playlist">Mostra la Playlist dei brani in cache</string>
+    <string name="show_liked_playlist">Mostra la playlist dei brani piaciuti</string>
+    <string name="show_downloaded_playlist">Mostra la playlist dei brani scaricati</string>
+    <string name="show_top_playlist">Mostra la playlist dei migliori brani</string>
+    <string name="show_cached_playlist">Mostra la playlist dei brani in cache</string>
     <string name="google">Google</string>
     <string name="discord">Discord</string>
-    <string name="advanced_login">Login con il token</string>
+    <string name="advanced_login">Accedi con il token</string>
     <string name="token_hidden">Tocca per mostrare il token</string>
     <string name="token_shown">Tocca ancora per copiarlo o modificarlo</string>
     <string name="token_adv_login_description">Questo è un metodo AVANZATO per fare l\'accesso a YouTube Music. Come alternativa al portale web, puoi inserire o aggiornare direttamente il tuo token di accesso qui. Per esempio, questo può velocizzare l\'accesso su più dispositivi. Tieni presente che qualsiasi formato di token non valido che l\'app non riesce ad analizzare non sarà accettato</string>
@@ -134,7 +134,7 @@
     <string name="background_color">Colore dello sfondo</string>
     <string name="auto_download_on_like">Scarica automaticamente quando si mette Mi piace</string>
     <string name="auto_download_on_like_desc">Scarica automaticamente i brani quando si mette Mi piace</string>
-    <string name="lyrics_auto_scroll">Scorri testi automaticamente</string>
+    <string name="lyrics_auto_scroll">Scorri testo automaticamente</string>
     <string name="import_csv">Importa una playlist in formato \"csv\"</string>
     <string name="playlist_add_local_to_synced_note">Nota: non è supportata l\'importazione di brani locali in una playlist sincronizzata o remota. Qualsiasi altra combinazione è valida</string>
     <string name="import_online">Importa una playlist in formato \"m3u\"</string>
@@ -205,7 +205,7 @@
     <string name="audio_offload_description">Utilizzare il percorso audio di scarico per la riproduzione audio. Disabilitare questo può aumentare l\'utilizzo dell\'energia ma può essere utile se si verificano problemi con la riproduzione audio o la post elaborazione</string>
     <string name="filter_uploaded">Caricato</string>
     <string name="uploaded_playlist">Caricato</string>
-    <string name="show_uploaded_playlist">Mostra playlist \"caricata\"</string>
+    <string name="show_uploaded_playlist">Mostra la playlist dei brani caricati</string>
     <string name="discord_use_details">Usa i dettagli al posto dello stato</string>
     <string name="discord_use_details_description">Mostra il titolo della canzone prominente al posto dei nomi degli artisti</string>
     <string name="updater">Aggiornatore</string>
@@ -225,4 +225,5 @@
     <string name="username">Nome utente</string>
     <string name="password">Password</string>
     <string name="lastfm_integration">Integrazione di last.fm</string>
+    <string name="swipe_song_to_remove">Scorri il brano per rimuoverlo dalla playlist</string>
 </resources>

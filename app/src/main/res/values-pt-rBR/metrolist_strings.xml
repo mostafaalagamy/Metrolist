@@ -225,4 +225,5 @@
     <string name="scrobble_min_track_duration">Fazer scrobble de músicas mais longas que</string>
     <string name="scrobble_delay_percent">Porcentagem do delay do scrobble</string>
     <string name="scrobble_delay_minutes">Minutos do delay do scrobble</string>
+    <string name="swipe_song_to_remove">Deslizar música para removê-la da lista</string>
 </resources>
