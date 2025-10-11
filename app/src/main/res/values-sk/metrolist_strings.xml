@@ -8,7 +8,7 @@
     <string name="no_title">Bez názvu</string>
     <string name="unknown_artist">Neznámy skladateľ</string>
     <string name="unknown_item_type">Neznámy typ položky</string>
-    <string name="loading_charts">Načítavajú sa grafy...</string>
+    <string name="loading_charts">Načítavajú sa grafy…</string>
     <string name="retry_button">Skúsiť znova</string>
     <string name="album_cover_desc">Obal albumu</string>
     <string name="top_music_videos">Najlepšie videá s hudbou</string>
@@ -213,4 +213,17 @@
     <string name="audio_offload">Povoliť odľahčenie</string>
     <string name="audio_offload_description">Na prehrávanie zvuku použite cestu pre odľahčenie zvuku. Zakázanie tejto funkcie môže zvýšiť spotrebu energie, ale môže byť užitočné, ak máte problémy s prehrávaním zvuku alebo následným spracovaním</string>
     <string name="lyrics_romanize_macedonian">Romanizovať macedónske texty</string>
+    <string name="swipe_song_to_remove">Prejdením prstom odstráňte skladbu zo zoznamu skladieb</string>
+    <string name="discord_use_details">Použite podrobnosti namiesto štátu</string>
+    <string name="discord_use_details_description">Zobrazovať názov skladby výrazne namiesto mien interpretov</string>
+    <string name="integrations">Integrácie</string>
+    <string name="username">Používateľské meno</string>
+    <string name="password">Heslo</string>
+    <string name="lastfm_integration">Integrácia s Last.fm</string>
+    <string name="enable_scrobbling">Povoliť scrobbling</string>
+    <string name="lastfm_now_playing">Odoslať Práve sa prehráva</string>
+    <string name="scrobbling_configuration">Konfigurácia scrobblingu</string>
+    <string name="scrobble_min_track_duration">Scrobble piesne dlhšie ako</string>
+    <string name="scrobble_delay_percent">Percentuálne oneskorenie Scrobble</string>
+    <string name="scrobble_delay_minutes">Minúty oneskorenia Scrobble</string>
 </resources>
