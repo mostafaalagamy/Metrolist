@@ -404,16 +404,17 @@ fun BottomSheetPlayer(
                         }
                     }
                     PlayerBackgroundStyle.DEFAULT -> {
-                        // Default background - no additional background effects
+                        // Default background - no special effects
                     }
+                }
 
-                    if (playerBackground != PlayerBackgroundStyle.DEFAULT && showLyrics) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .background(Color.Black.copy(alpha = 0.3f))
-                        )
-                    }
+                // Add lyrics overlay for non-default backgrounds
+                if (playerBackground != PlayerBackgroundStyle.DEFAULT && showLyrics) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color.Black.copy(alpha = 0.3f))
+                    )
                 }
             }
         },
