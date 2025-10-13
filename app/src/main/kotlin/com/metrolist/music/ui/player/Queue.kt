@@ -146,6 +146,7 @@ fun Queue(
     textButtonColor: Color,
     iconButtonColor: Color,
     onShowLyrics: () -> Unit = {},
+    onExpandLyrics: () -> Unit = {},
     pureBlack: Boolean,
 ) {
     val context = LocalContext.current
