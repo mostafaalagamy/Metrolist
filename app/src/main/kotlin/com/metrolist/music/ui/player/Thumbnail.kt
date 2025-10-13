@@ -71,9 +71,11 @@ import com.metrolist.music.constants.PlayerBackgroundStyle
 import com.metrolist.music.constants.PlayerBackgroundStyleKey
 import com.metrolist.music.constants.PlayerHorizontalPadding
 import com.metrolist.music.constants.SeekExtraSeconds
+import com.metrolist.music.constants.ShowLyricsKey
 import com.metrolist.music.constants.SwipeThumbnailKey
 import com.metrolist.music.constants.ThumbnailCornerRadius
 import com.metrolist.music.constants.HidePlayerThumbnailKey
+import com.metrolist.music.ui.component.Lyrics
 import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
 import kotlinx.coroutines.delay
@@ -86,6 +88,7 @@ fun Thumbnail(
     sliderPositionProvider: () -> Long?,
     modifier: Modifier = Modifier,
     isPlayerExpanded: Boolean = true, // Add parameter to control swipe based on player state
+    onExpandLyrics: () -> Unit = {},
 ) {
     val playerConnection = LocalPlayerConnection.current ?: return
     val context = LocalContext.current
@@ -96,7 +99,7 @@ fun Thumbnail(
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
     val error by playerConnection.error.collectAsState()
     val queueTitle by playerConnection.queueTitle.collectAsState()
-
+    val showLyrics by rememberPreference(ShowLyricsKey, false)
     val swipeThumbnail by rememberPreference(SwipeThumbnailKey, true)
     val hidePlayerThumbnail by rememberPreference(HidePlayerThumbnailKey, false)
     val canSkipPrevious by playerConnection.canSkipPrevious.collectAsState()
@@ -200,12 +203,29 @@ fun Thumbnail(
         }
     }
 
+    // Keep screen on when lyrics are shown
+    DisposableEffect(showLyrics) {
+        currentView.keepScreenOn = showLyrics
+        onDispose { currentView.keepScreenOn = false }
+    }
+
     // Seek on double tap
     var showSeekEffect by remember { mutableStateOf(false) }
     var seekDirection by remember { mutableStateOf("") }
     val layoutDirection = LocalLayoutDirection.current
 
     Box(modifier = modifier) {
+        // Lyrics view
+        AnimatedVisibility(
+            visible = showLyrics && error == null,
+            enter = fadeIn(),
+            exit = fadeOut(),
+        ) {
+            Lyrics(
+                sliderPositionProvider = sliderPositionProvider,
+                onExpandLyrics = onExpandLyrics
+            )
+        }
         // Error view
         AnimatedVisibility(
             visible = error != null,
@@ -225,7 +245,7 @@ fun Thumbnail(
 
         // Main thumbnail view
         AnimatedVisibility(
-            visible = error == null,
+            visible = !showLyrics && error == null,
             enter = fadeIn(),
             exit = fadeOut(),
             modifier = Modifier
