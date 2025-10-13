@@ -234,4 +234,5 @@
     <string name="scrobble_min_track_duration">أغاني سكرابل أطول من</string>
     <string name="scrobble_delay_percent">نسبة تأخير سكرابل</string>
     <string name="scrobble_delay_minutes">دقائق تأخير سكرابل</string>
+    <string name="swipe_song_to_remove">مرر الأغنية لإزالتها من قائمة التشغيل</string>
 </resources>
