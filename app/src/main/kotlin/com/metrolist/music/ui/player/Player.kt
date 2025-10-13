@@ -404,8 +404,7 @@ fun BottomSheetPlayer(
                         }
                     }
                     PlayerBackgroundStyle.DEFAULT -> {
-                            // Default background - no additional background effects
-                        }
+                        // Default background - no additional background effects
                     }
 
                     if (playerBackground != PlayerBackgroundStyle.DEFAULT && showLyrics) {
