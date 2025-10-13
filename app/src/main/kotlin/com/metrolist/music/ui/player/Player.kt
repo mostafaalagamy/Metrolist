@@ -406,6 +406,14 @@ fun BottomSheetPlayer(
                     else -> {
                         PlayerBackgroundStyle.DEFAULT
                     }
+
+                    if (playerBackground != PlayerBackgroundStyle.DEFAULT && showLyrics) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(Color.Black.copy(alpha = 0.3f))
+                        )
+                    }
                 }
             }
         },
