@@ -228,4 +228,5 @@
     <string name="scrobble_min_track_duration">Скробблить треки длиннее</string>
     <string name="scrobble_delay_percent">Задержка скробблинга (в процентах)</string>
     <string name="scrobble_delay_minutes">Задержка скробблинга (в минутах)</string>
+    <string name="swipe_song_to_remove">Свайп по песне, чтобы удалить её из плейлиста</string>
 </resources>
