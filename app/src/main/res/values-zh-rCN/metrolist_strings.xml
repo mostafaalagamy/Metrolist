@@ -199,7 +199,7 @@
     <string name="filter_uploaded">已上传</string>
     <string name="show_uploaded_playlist">展示“已上传”歌单</string>
     <string name="discord_use_details">使用详细信息代替状态</string>
-    <string name="discord_use_details_description">明显地显示歌名，代替艺人名字</string>
+    <string name="discord_use_details_description">突出显示歌曲标题，而非艺术家姓名</string>
     <string name="updater">更新器</string>
     <string name="check_for_updates">自动检查更新</string>
     <string name="update_notifications">启用更新通知</string>
@@ -219,4 +219,5 @@
     <string name="scrobble_min_track_duration">记录比…长的歌曲</string>
     <string name="scrobble_delay_minutes">记录所需已听时间（分钟）</string>
     <string name="scrobble_delay_percent">记录所需已听占比</string>
+    <string name="swipe_song_to_remove">滑动歌曲将其从播放列表中删除</string>
 </resources>
