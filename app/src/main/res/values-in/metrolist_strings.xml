@@ -219,4 +219,5 @@
     <string name="update_channel_desc">Notifikasi tentang versi terbaru</string>
     <string name="scrobble_delay_minutes">Scrobble delay menit</string>
     <string name="scrobble_delay_percent">Scrobble delay persen</string>
+    <string name="swipe_song_to_remove">Geser lagu untuk menghapus dari playlist</string>
 </resources>
