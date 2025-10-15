@@ -96,10 +96,10 @@
         <item quantity="other">%d элементов</item>
     </plurals>
     <plurals name="n_time">
-        <item quantity="one">%d час</item>
-        <item quantity="few">%d часа</item>
-        <item quantity="many">%d часов</item>
-        <item quantity="other">%d часов</item>
+        <item quantity="one">%d раз</item>
+        <item quantity="few">%d раз</item>
+        <item quantity="many">%d раз</item>
+        <item quantity="other">%d раз</item>
     </plurals>
     <string name="login_settings">Настройки логина</string>
     <string name="new_player_design">Новый дизайн проигрывателя</string>
