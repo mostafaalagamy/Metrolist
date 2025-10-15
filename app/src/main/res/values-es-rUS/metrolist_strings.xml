@@ -199,4 +199,10 @@
     <string name="line_by_line_dialog_desc">Esta función es experimental y propensa a fallos.\n\nPor defecto, el idioma es determinado a partir de la canción completa, pero al activar esta opción, será determinado línea por línea. Esto permitirá que las canciones multilingüe funcionen, PERO el idioma podría no ser siempre el correcto (por ejemplo, si hay alguna letra en ucraniano que no contiene caracteres específico de este idioma, podría ser romanizada al ruso).\n\nSi no tienes inconvenientes, es recomendable que dejes esta opción desactivada.</string>
     <string name="line_by_line_dialog_enable">Habilitar</string>
     <string name="romanize_current_track">Romanizar pista actual</string>
+    <string name="uploaded_playlist">Subidas</string>
+    <string name="swipe_song_to_remove">Desliza la canción para eliminarla de la playlist</string>
+    <string name="show_uploaded_playlist">Mostrar listas de reproducción \"Subidas\"</string>
+    <string name="choose_from_library">Elija de la biblioteca</string>
+    <string name="remove_custom_image">Eliminar imagen personalizada</string>
+    <string name="discord_use_details">Usar detalles en lugar de estado</string>
 </resources>
