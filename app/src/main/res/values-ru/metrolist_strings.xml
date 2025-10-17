@@ -64,7 +64,7 @@
     <string name="liked">Понравившееся</string>
     <string name="offline">Скачанное</string>
     <string name="my_top">Мой топ</string>
-    <string name="cached_playlist">Кешированное</string>
+    <string name="cached_playlist">Кэшированное</string>
     <string name="sync_playlist">Синхронизировать плейлист</string>
     <string name="sync_disabled">Синхронизация выключена</string>
     <string name="elements_selected">%1$d элементов выбрано</string>
@@ -113,7 +113,7 @@
     <string name="show_liked_playlist">Показать плейлист \"Понравившееся\"</string>
     <string name="show_downloaded_playlist">Показать плейлист \"Скачанное\"</string>
     <string name="show_top_playlist">Показать плейлист \"Топ\"</string>
-    <string name="show_cached_playlist">Показать \"Кэшированный\" плейлист</string>
+    <string name="show_cached_playlist">Показать плейлист \"Кэшированное\"</string>
     <string name="advanced_login">Вход в систему с помощью токена</string>
     <string name="yt_sync">Автоматическая синхронизация с учетной записью</string>
     <string name="more_content">Доп. содержание</string>
