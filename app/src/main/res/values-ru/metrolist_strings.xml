@@ -97,7 +97,7 @@
     </plurals>
     <plurals name="n_time">
         <item quantity="one">%d раз</item>
-        <item quantity="few">%d раз</item>
+        <item quantity="few">%d раза</item>
         <item quantity="many">%d раз</item>
         <item quantity="other">%d раз</item>
     </plurals>
