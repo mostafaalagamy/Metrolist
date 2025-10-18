@@ -2,6 +2,7 @@ package com.metrolist.music.ui.player
 
 import androidx.activity.compose.BackHandler
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.text.format.Formatter
 import android.widget.Toast
 import androidx.compose.animation.AnimatedContent
@@ -230,6 +231,33 @@ fun Queue(
                                     topEnd = 5.dp,
                                     bottomEnd = 5.dp
                                 )
+                            )
+                            .clickable {
+                                val intent = Intent().apply {
+                                    action = Intent.ACTION_SEND
+                                    type = "text/plain"
+                                    putExtra(
+                                        Intent.EXTRA_TEXT,
+                                        "https://music.youtube.com/watch?v=${mediaMetadata?.id}"
+                                    )
+                                }
+                                context.startActivity(Intent.createChooser(intent, null))
+                            },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.share),
+                            contentDescription = null,
+                            modifier = Modifier.size(iconSize),
+                            tint = TextBackgroundColor
+                        )
+                    }
+
+                    Box(
+                        modifier = Modifier
+                            .size(buttonSize)
+                            .clip(RoundedCornerShape(5.dp))
+                            .border(1.dp, borderColor, RoundedCornerShape(5.dp)
                             )
                             .clickable { state.expandSoft() },
                         contentAlignment = Alignment.Center
