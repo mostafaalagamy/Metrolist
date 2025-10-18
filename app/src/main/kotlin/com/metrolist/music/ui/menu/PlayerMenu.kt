@@ -6,6 +6,7 @@ import android.media.audiofx.AudioEffect
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.DrawableRes
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
@@ -61,6 +62,15 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
 import androidx.core.net.toUri
 import android.widget.Toast
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Slider
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.pluralStringResource
 import androidx.media3.common.PlaybackParameters
 import androidx.media3.exoplayer.offline.Download
 import androidx.media3.exoplayer.offline.DownloadRequest
@@ -76,16 +86,22 @@ import com.metrolist.music.constants.ListItemHeight
 import com.metrolist.music.models.MediaMetadata
 import com.metrolist.music.playback.ExoDownloadService
 import com.metrolist.music.playback.queues.YouTubeQueue
+import com.metrolist.music.ui.component.ActionPromptDialog
 import com.metrolist.music.ui.component.BigSeekBar
 import com.metrolist.music.ui.component.BottomSheetState
 import com.metrolist.music.ui.component.ListDialog
 import com.metrolist.music.ui.component.NewAction
 import com.metrolist.music.ui.component.NewActionGrid
+import com.metrolist.music.ui.player.Queue
+import com.metrolist.music.utils.makeTimeString
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlin.math.log2
 import kotlin.math.pow
 import kotlin.math.round
+import kotlin.math.roundToInt
 
 @Composable
 fun PlayerMenu(
@@ -95,12 +111,15 @@ fun PlayerMenu(
     isQueueTrigger: Boolean? = false,
     onShowDetailsDialog: () -> Unit,
     onDismiss: () -> Unit,
+    onShowSleepTimerDialog: () -> Unit,
 ) {
     mediaMetadata ?: return
     val context = LocalContext.current
     val database = LocalDatabase.current
     val playerConnection = LocalPlayerConnection.current ?: return
     val playerVolume = playerConnection.service.playerVolume.collectAsState()
+    val sleepTimer = playerConnection.service.sleepTimer
+
     val activityResultLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { }
     val librarySong by database.song(mediaMetadata.id).collectAsState(initial = null)
@@ -407,6 +426,37 @@ fun PlayerMenu(
                 }
             )
         }
+
+        item {
+            ListItem(
+                headlineContent = {
+                    AnimatedContent(
+                        label = "sleepTimer",
+                        targetState = sleepTimer.isActive,
+                    ) { enabled ->
+                        if (enabled) {
+                            Text(text = makeTimeString(sleepTimer.timeLeft))
+                        } else {
+                            Text(text = stringResource(id = R.string.sleep_timer))
+                        }
+                    }
+                },
+                leadingContent = {
+                    Icon(
+                        painter = painterResource(id = R.drawable.bedtime),
+                        contentDescription = null,
+                    )
+                },
+                modifier = Modifier.clickable {
+                    if (sleepTimer.isActive) {
+                        sleepTimer.clear()
+                    } else {
+                        onShowSleepTimerDialog()
+                    }
+                }
+            )
+        }
+
         if (isQueueTrigger != true) {
             item {
                 ListItem(

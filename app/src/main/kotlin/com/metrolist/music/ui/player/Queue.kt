@@ -147,6 +147,7 @@ fun Queue(
     iconButtonColor: Color,
     onShowLyrics: () -> Unit = {},
     pureBlack: Boolean,
+    onShowSleepTimerDialog: () -> Unit,
 ) {
     val context = LocalContext.current
     val haptic = LocalHapticFeedback.current
@@ -157,6 +158,7 @@ fun Queue(
     val playerConnection = LocalPlayerConnection.current ?: return
     val isPlaying by playerConnection.isPlaying.collectAsState()
     val repeatMode by playerConnection.repeatMode.collectAsState()
+    val sleepTimer = playerConnection.service.sleepTimer
 
     val currentWindowIndex by playerConnection.currentWindowIndex.collectAsState()
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
@@ -182,29 +184,6 @@ fun Queue(
 
     val snackbarHostState = remember { SnackbarHostState() }
     var dismissJob: Job? by remember { mutableStateOf(null) }
-
-    var showSleepTimerDialog by remember { mutableStateOf(false) }
-    var sleepTimerValue by remember { mutableFloatStateOf(30f) }
-    val sleepTimerEnabled = remember(
-        playerConnection.service.sleepTimer.triggerTime,
-        playerConnection.service.sleepTimer.pauseWhenSongEnd
-    ) {
-        playerConnection.service.sleepTimer.isActive
-    }
-    var sleepTimerTimeLeft by remember { mutableLongStateOf(0L) }
-
-    LaunchedEffect(sleepTimerEnabled) {
-        if (sleepTimerEnabled) {
-            while (isActive) {
-                sleepTimerTimeLeft = if (playerConnection.service.sleepTimer.pauseWhenSongEnd) {
-                    playerConnection.player.duration - playerConnection.player.currentPosition
-                } else {
-                    playerConnection.service.sleepTimer.triggerTime - System.currentTimeMillis()
-                }
-                delay(1000L)
-            }
-        }
-    }
 
     BottomSheet(
         state = state,
@@ -266,48 +245,6 @@ fun Queue(
                     Box(
                         modifier = Modifier
                             .size(buttonSize)
-                            .clip(RoundedCornerShape(5.dp))
-                            .border(1.dp, borderColor, RoundedCornerShape(5.dp))
-                            .clickable {
-                                if (sleepTimerEnabled) {
-                                    playerConnection.service.sleepTimer.clear()
-                                } else {
-                                    showSleepTimerDialog = true
-                                }
-                            },
-                        contentAlignment = Alignment.Center
-                    ) {
-                        // TODO: Sleep timer button to move to player menu
-                        AnimatedContent(
-                            label = "sleepTimer",
-                            targetState = sleepTimerEnabled,
-                        ) { enabled ->
-                            if (enabled) {
-                                Text(
-                                    text = makeTimeString(sleepTimerTimeLeft),
-                                    color = TextBackgroundColor,
-                                    fontSize = 10.sp,
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis,
-                                    textAlign = TextAlign.Center,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .basicMarquee()
-                                )
-                            } else {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.bedtime),
-                                    contentDescription = null,
-                                    modifier = Modifier.size(iconSize),
-                                    tint = TextBackgroundColor
-                                )
-                            }
-                        }
-                    }
-
-                    Box(
-                        modifier = Modifier
-                            .size(buttonSize)
                             .clip( RoundedCornerShape(
                                 topStart = 5.dp,
                                 bottomStart = 5.dp,
@@ -357,7 +294,8 @@ fun Queue(
                                                 }
                                             }
                                         },
-                                        onDismiss = menuState::dismiss
+                                        onDismiss = menuState::dismiss,
+                                        onShowSleepTimerDialog = onShowSleepTimerDialog,
                                     )
                                 }
                             },
@@ -413,10 +351,10 @@ fun Queue(
 
                     TextButton(
                         onClick = {
-                            if (sleepTimerEnabled) {
-                                playerConnection.service.sleepTimer.clear()
+                            if (sleepTimer.isActive) {
+                                sleepTimer.clear()
                             } else {
-                                showSleepTimerDialog = true
+                                onShowSleepTimerDialog()
                             }
                         },
                         modifier = Modifier.weight(1.2f)
@@ -435,11 +373,11 @@ fun Queue(
                             Spacer(modifier = Modifier.width(6.dp))
                             AnimatedContent(
                                 label = "sleepTimer",
-                                targetState = sleepTimerEnabled,
+                                targetState = sleepTimer.isActive,
                             ) { enabled ->
                                 if (enabled) {
                                     Text(
-                                        text = makeTimeString(sleepTimerTimeLeft),
+                                        text = makeTimeString(sleepTimer.timeLeft),
                                         color = TextBackgroundColor,
                                         maxLines = 1,
                                         overflow = TextOverflow.Ellipsis,
@@ -487,68 +425,6 @@ fun Queue(
                         }
                     }
                 }
-            }
-
-            if (showSleepTimerDialog) {
-                ActionPromptDialog(
-                    titleBar = {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.Center
-                        ) {
-                            Text(
-                                text = stringResource(R.string.sleep_timer),
-                                overflow = TextOverflow.Ellipsis,
-                                maxLines = 1,
-                                style = MaterialTheme.typography.headlineSmall,
-                            )
-                        }
-                    },
-                    onDismiss = { showSleepTimerDialog = false },
-                    onConfirm = {
-                        showSleepTimerDialog = false
-                        playerConnection.service.sleepTimer.start(sleepTimerValue.roundToInt())
-                    },
-                    onCancel = {
-                        showSleepTimerDialog = false
-                    },
-                    onReset = {
-                        sleepTimerValue = 30f // Default value
-                    },
-                    content = {
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text(
-                                text = pluralStringResource(
-                                    R.plurals.minute,
-                                    sleepTimerValue.roundToInt(),
-                                    sleepTimerValue.roundToInt()
-                                ),
-                                style = MaterialTheme.typography.bodyLarge,
-                            )
-
-                            Spacer(Modifier.height(16.dp))
-
-                            Slider(
-                                value = sleepTimerValue,
-                                onValueChange = { sleepTimerValue = it },
-                                valueRange = 5f..120f,
-                                steps = (120 - 5) / 5 - 1,
-                                modifier = Modifier.fillMaxWidth()
-                            )
-
-                            Spacer(Modifier.height(8.dp))
-
-                            OutlinedButton(
-                                onClick = {
-                                    showSleepTimerDialog = false
-                                    playerConnection.service.sleepTimer.start(-1)
-                                }
-                            ) {
-                                Text(stringResource(R.string.end_of_song))
-                            }
-                        }
-                    }
-                )
             }
         },
     ) {
@@ -728,6 +604,7 @@ fun Queue(
                                                             }
                                                         },
                                                         onDismiss = menuState::dismiss,
+                                                        onShowSleepTimerDialog = onShowSleepTimerDialog,
                                                     )
                                                 }
                                             },
@@ -871,6 +748,7 @@ fun Queue(
                                                         }
                                                     },
                                                     onDismiss = menuState::dismiss,
+                                                    onShowSleepTimerDialog = onShowSleepTimerDialog,
                                                 )
                                             }
                                         },

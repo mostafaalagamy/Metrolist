@@ -48,6 +48,7 @@ import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
@@ -119,6 +120,7 @@ import com.metrolist.music.constants.SliderStyleKey
 import com.metrolist.music.extensions.togglePlayPause
 import com.metrolist.music.extensions.toggleRepeatMode
 import com.metrolist.music.models.MediaMetadata
+import com.metrolist.music.ui.component.ActionPromptDialog
 import com.metrolist.music.ui.component.BottomSheet
 import com.metrolist.music.ui.component.BottomSheetState
 import com.metrolist.music.ui.component.LocalBottomSheetPageState
@@ -284,98 +286,6 @@ fun BottomSheetPlayer(
     val download by LocalDownloadUtil.current.getDownload(mediaMetadata?.id ?: "")
         .collectAsState(initial = null)
 
-    val sleepTimerEnabled =
-        remember(
-            playerConnection.service.sleepTimer.triggerTime,
-            playerConnection.service.sleepTimer.pauseWhenSongEnd
-        ) {
-            playerConnection.service.sleepTimer.isActive
-        }
-
-    var sleepTimerTimeLeft by remember {
-        mutableLongStateOf(0L)
-    }
-
-    LaunchedEffect(sleepTimerEnabled) {
-        if (sleepTimerEnabled) {
-            while (isActive) {
-                sleepTimerTimeLeft =
-                    if (playerConnection.service.sleepTimer.pauseWhenSongEnd) {
-                        playerConnection.player.duration - playerConnection.player.currentPosition
-                    } else {
-                        playerConnection.service.sleepTimer.triggerTime - System.currentTimeMillis()
-                    }
-                delay(1000L)
-            }
-        }
-    }
-
-    var showSleepTimerDialog by remember {
-        mutableStateOf(false)
-    }
-
-    var sleepTimerValue by remember {
-        mutableFloatStateOf(30f)
-    }
-    if (showSleepTimerDialog) {
-        AlertDialog(
-            properties = DialogProperties(usePlatformDefaultWidth = false),
-            onDismissRequest = { showSleepTimerDialog = false },
-            icon = {
-                Icon(
-                    painter = painterResource(R.drawable.bedtime),
-                    contentDescription = null
-                )
-            },
-            title = { Text(stringResource(R.string.sleep_timer)) },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        showSleepTimerDialog = false
-                        playerConnection.service.sleepTimer.start(sleepTimerValue.roundToInt())
-                    },
-                ) {
-                    Text(stringResource(android.R.string.ok))
-                }
-            },
-            dismissButton = {
-                TextButton(
-                    onClick = { showSleepTimerDialog = false },
-                ) {
-                    Text(stringResource(android.R.string.cancel))
-                }
-            },
-            text = {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(
-                        text = pluralStringResource(
-                            R.plurals.minute,
-                            sleepTimerValue.roundToInt(),
-                            sleepTimerValue.roundToInt()
-                        ),
-                        style = MaterialTheme.typography.bodyLarge,
-                    )
-
-                    Slider(
-                        value = sleepTimerValue,
-                        onValueChange = { sleepTimerValue = it },
-                        valueRange = 5f..120f,
-                        steps = (120 - 5) / 5 - 1,
-                    )
-
-                    OutlinedIconButton(
-                        onClick = {
-                            showSleepTimerDialog = false
-                            playerConnection.service.sleepTimer.start(-1)
-                        },
-                    ) {
-                        Text(stringResource(R.string.end_of_song))
-                    }
-                }
-            },
-        )
-    }
-
     var showChoosePlaylistDialog by rememberSaveable {
         mutableStateOf(false)
     }
@@ -415,6 +325,70 @@ fun BottomSheetPlayer(
     }
 
     val backgroundAlpha = state.progress.coerceIn(0f, 1f)
+
+    var showSleepTimerDialog by rememberSaveable { mutableStateOf(false) }
+    var sleepTimerValue by remember { mutableFloatStateOf(30f) }
+    if (showSleepTimerDialog) {
+        ActionPromptDialog(
+            titleBar = {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = stringResource(R.string.sleep_timer),
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 1,
+                        style = MaterialTheme.typography.headlineSmall,
+                    )
+                }
+            },
+            onDismiss = { showSleepTimerDialog = false },
+            onConfirm = {
+                showSleepTimerDialog = false
+                playerConnection.service.sleepTimer.start(sleepTimerValue.roundToInt())
+            },
+            onCancel = {
+                showSleepTimerDialog = false
+            },
+            onReset = {
+                sleepTimerValue = 30f // Default value
+            },
+            content = {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(
+                        text = pluralStringResource(
+                            R.plurals.minute,
+                            sleepTimerValue.roundToInt(),
+                            sleepTimerValue.roundToInt()
+                        ),
+                        style = MaterialTheme.typography.bodyLarge,
+                    )
+
+                    Spacer(Modifier.height(16.dp))
+
+                    Slider(
+                        value = sleepTimerValue,
+                        onValueChange = { sleepTimerValue = it },
+                        valueRange = 5f..120f,
+                        steps = (120 - 5) / 5 - 1,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    Spacer(Modifier.height(8.dp))
+
+                    OutlinedButton(
+                        onClick = {
+                            showSleepTimerDialog = false
+                            playerConnection.service.sleepTimer.start(-1)
+                        }
+                    ) {
+                        Text(stringResource(R.string.end_of_song))
+                    }
+                }
+            }
+        )
+    }
 
     BottomSheet(
         state = state,
@@ -764,6 +738,7 @@ fun BottomSheetPlayer(
                                             }
                                         },
                                         onDismiss = menuState::dismiss,
+                                        onShowSleepTimerDialog = { showSleepTimerDialog = true },
                                     )
                                 }
                             },
@@ -1157,6 +1132,7 @@ fun BottomSheetPlayer(
             iconButtonColor = iconButtonColor,
             onShowLyrics = { lyricsSheetState.expandSoft() },
             pureBlack = pureBlack,
+            onShowSleepTimerDialog = { showSleepTimerDialog = true },
         )
 
         mediaMetadata?.let { metadata ->
