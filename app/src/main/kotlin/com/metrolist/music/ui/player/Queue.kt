@@ -305,12 +305,25 @@ fun Queue(
                         }
                     }
 
-                    // TODO: Lyrics button rounded corner shape
                     Box(
                         modifier = Modifier
                             .size(buttonSize)
-                            .clip(RoundedCornerShape(5.dp))
-                            .border(1.dp, borderColor, RoundedCornerShape(5.dp))
+                            .clip( RoundedCornerShape(
+                                topStart = 5.dp,
+                                bottomStart = 5.dp,
+                                topEnd = 50.dp,
+                                bottomEnd = 50.dp
+                            ))
+                            .border(
+                                1.dp,
+                                borderColor,
+                                RoundedCornerShape(
+                                    topStart = 5.dp,
+                                    bottomStart = 5.dp,
+                                    topEnd = 50.dp,
+                                    bottomEnd = 50.dp
+                                )
+                            )
                             .clickable {
                                 onShowLyrics()
                             },
