@@ -1,17 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Bottom navigation -->
     <string name="home">خانه</string>
     <string name="songs">ترانه‌ها</string>
     <string name="artists">هنرمندها</string>
     <string name="albums">مجموعه‌ها</string>
     <string name="playlists">فهرست‌پخش‌ها</string>
-    <!-- Top bar -->
     <plurals name="n_selected">
         <item quantity="one">%d انتخاب‌شده</item>
         <item quantity="other">%d انتخاب‌شده‌اند</item>
     </plurals>
-    <!-- Home -->
     <string name="history">تاریخچه</string>
     <string name="stats">آمار</string>
     <string name="mood_and_genres">حالت و سبک</string>
@@ -19,16 +16,13 @@
     <string name="quick_picks">انتخاب‌های سریع</string>
     <string name="quick_picks_empty">به ترانه‌ها گوش دهید تا انتخاب سریع خود ساخته شود</string>
     <string name="new_release_albums">مجموعه‌های منتشرشده‌ی جدید</string>
-    <!-- History -->
     <string name="today">امروز</string>
     <string name="yesterday">دیروز</string>
     <string name="this_week">این هفته</string>
     <string name="last_week">هفته‌ی گذشته</string>
-    <!-- Stats -->
     <string name="most_played_songs">بیشترین ترانه‌های پخش‌شده</string>
     <string name="most_played_artists">بیشترین هنرمندهای پخش‌شده</string>
     <string name="most_played_albums">بیشترین مجموعه‌های پخش‌شده</string>
-    <!-- Search -->
     <string name="search">جستجو</string>
     <string name="search_yt_music">جستجو در یوتیوب موزیک…</string>
     <string name="search_library">جستجوی کتاب‌خانه…</string>
@@ -45,18 +39,14 @@
     <string name="filter_featured_playlists">فهرست‌پخش‌های ویژه</string>
     <string name="filter_bookmarked">نشانک‌گذاری‌شده</string>
     <string name="no_results_found">نتیجه‌ای پیدا نشد</string>
-    <!-- Artist screen -->
     <string name="from_your_library">از کتابخانه شما</string>
-    <!-- Playlist -->
     <string name="liked_songs">آهنگ های پسندیده شده</string>
     <string name="downloaded_songs">آهنگ های دانلود شده</string>
     <string name="playlist_is_empty">فهرست‌ پخش خالی است</string>
-    <!-- Button -->
     <string name="retry">تلاش‌ مجدد</string>
     <string name="radio">رادیو</string>
     <string name="shuffle">مخلوط</string>
     <string name="reset">بازنشانی</string>
-    <!-- Menu -->
     <string name="details">جزئیات</string>
     <string name="edit">ویرایش</string>
     <string name="start_radio">شروع رادیو</string>
@@ -79,7 +69,6 @@
     <string name="search_online">جستجوی برخط</string>
     <string name="action_sync">همگام‌سازی</string>
     <string name="advanced">پیشرفته</string>
-    <!-- Sort menu -->
     <string name="sort_by_create_date">تاریخ اضافه‌شده</string>
     <string name="sort_by_name">نام</string>
     <string name="sort_by_artist">هنرمند</string>
@@ -88,7 +77,6 @@
     <string name="sort_by_length">طول</string>
     <string name="sort_by_play_time">زمان پخش</string>
     <string name="sort_by_custom">ترتیب سفارشی</string>
-    <!-- Dialog -->
     <string name="media_id">شناسه‌ی رسانه</string>
     <string name="mime_type">نوع رسانه</string>
     <string name="codecs">رمزگشاها</string>
@@ -115,7 +103,6 @@
     <string name="edit_artist">ویرایش هنرمند</string>
     <string name="artist_name">نام هنرمند</string>
     <string name="error_artist_name_empty">نام هنرمند نمی تواند خالی باشد.</string>
-    <!-- Noun -->
     <plurals name="n_song">
         <item quantity="one">%d ترانه</item>
         <item quantity="other">%d ترانه‌ها</item>
@@ -144,12 +131,10 @@
         <item quantity="one">%d سال</item>
         <item quantity="other">%d سال‌ها</item>
     </plurals>
-    <!-- Snackbar -->
     <string name="playlist_imported">فهرست‌پخش واردشد</string>
     <string name="removed_song_from_playlist">«%s» از فهرست‌پخش حذف شد</string>
     <string name="playlist_synced">فهرست‌پخش همگام‌شد</string>
     <string name="undo">واگرد</string>
-    <!-- Player -->
     <string name="lyrics_not_found">متن‌ترانه پیدا نشد</string>
     <string name="sleep_timer">شمارنده‌ی خواب</string>
     <string name="end_of_song">پایان ترانه</string>
@@ -161,7 +146,6 @@
     <string name="error_no_internet">بدون اتصال به تارکده</string>
     <string name="error_timeout">اتمام وقت</string>
     <string name="error_unknown">خطای ناشناخته</string>
-    <!-- Player action -->
     <string name="action_like">پسندیدن</string>
     <string name="action_remove_like">حذف پسندیدن</string>
     <string name="action_shuffle_on">بُرزدن روشن</string>
@@ -169,12 +153,9 @@
     <string name="repeat_mode_off">حالت تکرار خاموش</string>
     <string name="repeat_mode_one">تکرار ترانه‌ی فعلی</string>
     <string name="repeat_mode_all">ترار صف</string>
-    <!-- Queue Title -->
     <string name="queue_all_songs">همه‌ی ترانه‌ها</string>
     <string name="queue_searched_songs">ترانه‌های جستجوشده</string>
-    <!-- Notification name -->
     <string name="music_player">پخش‌کننده‌ی موسیقی</string>
-    <!-- Settings -->
     <string name="settings">تنظیمات</string>
     <string name="appearance">ظاهر</string>
     <string name="enable_dynamic_theme">فعال‌کردن طرح پویا</string>
