@@ -51,4 +51,6 @@
     <string name="hide_player_thumbnail">Itago ang thumbnail ng player</string>
     <string name="hide_player_thumbnail_desc">Palitan ang artwork ng album ng logo ng aplikasyon sa player</string>
     <string name="already_in_playlist">Nasa playlist na:</string>
+    <string name="album_cover_desc">Cover ng Album</string>
+    <string name="remote_history">Remote</string>
 </resources>
