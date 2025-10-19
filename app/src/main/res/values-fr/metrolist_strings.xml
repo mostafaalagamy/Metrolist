@@ -225,4 +225,5 @@
     <string name="scrobble_min_track_duration">Chansons de Scrobble plus longues que</string>
     <string name="scrobble_delay_percent">Pourcentage de retard du Scrobble</string>
     <string name="scrobble_delay_minutes">Minutes de retard du Scrobble</string>
+    <string name="swipe_song_to_remove">Faites glisser le titre pour le supprimer de la playlist</string>
 </resources>

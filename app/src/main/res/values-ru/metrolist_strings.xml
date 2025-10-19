@@ -14,9 +14,9 @@
     <string name="player_background_style">Стиль фона плеера</string>
     <string name="follow_theme">Следовать теме</string>
     <string name="gradient">Градиент</string>
-    <string name="player_buttons_style">Цвета кнопок плеера</string>
+    <string name="player_buttons_style">Цветовой стиль кнопок плеера</string>
     <string name="enable_squiggly_slider">Включить волнистый слайдер</string>
-    <string name="swipe_song_to_add">Проведите пальцем по песне влево, чтобы добавить ее в очередь, или вправо, чтобы воспроизвести ее следующей</string>
+    <string name="swipe_song_to_add">Свайп песни влево - добавить её в очередь, свайп песни вправо - воспроизвести её следующей</string>
     <string name="slim">Тонкий</string>
     <string name="google">Google</string>
     <string name="discord">Discord</string>
@@ -35,7 +35,7 @@
     <string name="min_playback_duration_title">Минимальная длительность воспроизведения</string>
     <string name="minimum_playback_duration">Минимальная длительность воспроизведения</string>
     <string name="views">Просмотры</string>
-    <string name="subscribers">Подписчики</string>
+    <string name="subscribers">Подписки</string>
     <string name="enable_swipe_thumbnail">Включить переключение треков свайпом</string>
     <string name="copy_link">Скопировать ссылку</string>
     <plurals name="seconds">
@@ -64,12 +64,12 @@
     <string name="liked">Понравившееся</string>
     <string name="offline">Скачанное</string>
     <string name="my_top">Мой топ</string>
-    <string name="cached_playlist">Кешированное</string>
+    <string name="cached_playlist">Кэшированное</string>
     <string name="sync_playlist">Синхронизировать плейлист</string>
     <string name="sync_disabled">Синхронизация выключена</string>
     <string name="elements_selected">%1$d элементов выбрано</string>
     <string name="cancel">Отмена</string>
-    <string name="share_lyrics">Поделится текстом</string>
+    <string name="share_lyrics">Поделиться текстом</string>
     <string name="trending">Тренды</string>
     <string name="generating_image">Генерация изображения</string>
     <string name="local_history">Локальный</string>
@@ -96,10 +96,10 @@
         <item quantity="other">%d элементов</item>
     </plurals>
     <plurals name="n_time">
-        <item quantity="one">%d час</item>
-        <item quantity="few">%d часа</item>
-        <item quantity="many">%d часов</item>
-        <item quantity="other">%d часов</item>
+        <item quantity="one">%d раз</item>
+        <item quantity="few">%d раза</item>
+        <item quantity="many">%d раз</item>
+        <item quantity="other">%d раз</item>
     </plurals>
     <string name="login_settings">Настройки логина</string>
     <string name="new_player_design">Новый дизайн проигрывателя</string>
@@ -113,7 +113,7 @@
     <string name="show_liked_playlist">Показать плейлист \"Понравившееся\"</string>
     <string name="show_downloaded_playlist">Показать плейлист \"Скачанное\"</string>
     <string name="show_top_playlist">Показать плейлист \"Топ\"</string>
-    <string name="show_cached_playlist">Показать \"Кэшированный\" плейлист</string>
+    <string name="show_cached_playlist">Показать плейлист \"Кэшированное\"</string>
     <string name="advanced_login">Вход в систему с помощью токена</string>
     <string name="yt_sync">Автоматическая синхронизация с учетной записью</string>
     <string name="more_content">Доп. содержание</string>
@@ -128,15 +128,15 @@
     <string name="import_csv">Импорт плейлиста в формате \"csv\"</string>
     <string name="playlist_add_local_to_synced_note">Примечание: Добавление локальных композиций в синхронизированные/удаленные списки воспроизведения не поддерживается. Любая другая комбинация допустима</string>
     <string name="auto_download_on_like">Автозагрузка по понравившимся</string>
-    <string name="auto_download_on_like_desc">Автоматически загружайте песни, когда они вам нравятся</string>
-    <string name="clear_song_cache_dialog">Вы уверены, что хотите очистить все кэшированные песни?</string>
+    <string name="auto_download_on_like_desc">Автоматически загружать треки, отмечаемые как понравившиеся</string>
+    <string name="clear_song_cache_dialog">Вы уверены, что хотите очистить все закэшированные треки?</string>
     <string name="clear_downloads_dialog">Вы уверены, что хотите очистить все загрузки?</string>
     <string name="pause_remote_listen_history">Приостановить совместное прослушивание истории с YouTube Music</string>
     <string name="not_logged_in_youtube">Не вошел в систему YouTube</string>
     <string name="default_links">Открыть поддерживаемые ссылки</string>
     <string name="open_app_settings_error">Невозможно открыть настройки приложения</string>
     <string name="release_notes">Примечания к выпуску</string>
-    <string name="all_time">Все время</string>
+    <string name="all_time">Всё время</string>
     <string name="past_24_hours">Последние 24 часа</string>
     <string name="past_week">Прошедшую неделю</string>
     <string name="past_month">Последний месяц</string>
@@ -145,12 +145,12 @@
     <string name="history_duration">Продолжительность истории</string>
     <string name="information">Информация</string>
     <string name="description">Описание</string>
-    <string name="numbers">Номера</string>
+    <string name="numbers">Цифры</string>
     <string name="sensitivity_percentage">%1$d%%</string>
     <string name="disable">Отключить</string>
     <string name="subscribe">Подписаться</string>
     <string name="subscribed">Вы подписаны</string>
-    <string name="clear_image_cache_dialog">Вы уверены, что хотите очистить все кэшированные изображения?</string>
+    <string name="clear_image_cache_dialog">Вы уверены, что хотите очистить все закэшированные изображения?</string>
     <string name="swipe_sensitivity">Чувствительность проведения по мини плееру</string>
     <string name="swipe_sensitivity_desc">Настроить чувствительность жестов для переключения песен</string>
     <string name="new_mini_player_design">Новый дизайн мини проигрывателя</string>
@@ -163,7 +163,7 @@
     <string name="minimum_volume">Минимальная громкость</string>
     <string name="maximum_volume">Максимальная громкость</string>
     <string name="hide_player_thumbnail">Скрыть миниатюру проигрывателя</string>
-    <string name="hide_player_thumbnail_desc">Заменить обложку альбома на значок приложения в проигрывателе</string>
+    <string name="hide_player_thumbnail_desc">Заменить в проигрывателе обложку альбома на значок приложения</string>
     <string name="seek_backward">5 секунд назад</string>
     <string name="seek_forward">5 секунд вперёд</string>
     <string name="seek_forward_dynamic">+%1$d секунд вперёд</string>
@@ -171,7 +171,7 @@
     <string name="seek_seconds_addup">Накопительная перемотка</string>
     <string name="seek_seconds_addup_description">Если включено, при каждом пропуске перемотки добавляется ещё 5 секунд</string>
     <string name="disable_load_more_when_repeat_all">Отключить автозагрузку при повторе всех треков</string>
-    <string name="disable_load_more_when_repeat_all_desc">Не загружать автоматически больше песен и похожего контента при включённом режиме повтора всех треков</string>
+    <string name="disable_load_more_when_repeat_all_desc">Отключить автоматическую подгрузку песен и похожего контента при включённом режиме повтора всех треков</string>
     <string name="settings_section_ui">Интерфейс</string>
     <string name="settings_section_privacy">Конфиденциальность и безопасность</string>
     <string name="settings_section_player">Плеер и медиа</string>
@@ -228,4 +228,5 @@
     <string name="scrobble_min_track_duration">Скробблить треки длиннее</string>
     <string name="scrobble_delay_percent">Задержка скробблинга (в процентах)</string>
     <string name="scrobble_delay_minutes">Задержка скробблинга (в минутах)</string>
+    <string name="swipe_song_to_remove">Свайп по песне, чтобы удалить её из плейлиста</string>
 </resources>
